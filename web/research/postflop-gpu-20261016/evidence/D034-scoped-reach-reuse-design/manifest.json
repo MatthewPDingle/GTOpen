@@ -1,0 +1,86 @@
+{
+  "id": "D034-scoped-reach-reuse-design",
+  "created_at": "2026-10-16T09:07:08.706807+00:00",
+  "status": "source_only_NO_GO_for_implementation_or_timing_now",
+  "source_feasibility": true,
+  "performance_policy_justified": false,
+  "candidate_authorized": false,
+  "E016_disposition": "terminally rejected; no more timing extensions or revived cohort",
+  "candidate_or_gain_claim": false,
+  "builds": 0,
+  "gpu_calls": 0,
+  "timing_runs": 0,
+  "production_edits": 0,
+  "dashboard_edits": 0,
+  "inputs": {
+    "accepted_mod": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a"
+    },
+    "rejected_E016_mod": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\candidate-mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+    },
+    "accepted_plan": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    "accepted_kernels": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+    },
+    "D025_audit": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D025-next-hypothesis\\audit.md",
+      "sha256": "8fbebcdf9de2e71d09a03e607ba788d59317ac1ca2844bdbb1a3b393e0ce147c"
+    },
+    "D025_critic": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D025-next-hypothesis\\independent-critic.md",
+      "sha256": "868b41264b716789207ecb21089f3a86e849412343a7567bba2397ee1e27ded5"
+    },
+    "D025_work_counts": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D025-next-hypothesis\\work-counts.json",
+      "sha256": "f573ed7874ad72973d57c1419b81bd9431accde4416a303ae71a7b88cd12fdd2"
+    },
+    "E016_primary": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\validation.json",
+      "sha256": "84b620daa89baf6d97eff6d9271429fcc53bc9e8dd4d42bd0fcce3ed9883c7c0"
+    },
+    "E016_primary_summary": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\summary.md",
+      "sha256": "a02eccb11efb009259d7f87cddf4683a275dc616da6139c211c2aa4f30e4de61"
+    },
+    "E016_terminal": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-extension-independent-review\\validation.json",
+      "sha256": "faac12001753790ae68b288398dc0f53755ea58c464e1dc643db14f11d230b33"
+    },
+    "E016_terminal_summary": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-extension-independent-review\\summary.md",
+      "sha256": "d8b6329382aee9cc5564582abf6f28e68000237cdf80b0c7902e9771bb103872"
+    },
+    "D028_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D028-three-arm-review\\report.json",
+      "sha256": "96bc4963211f2deb7a92aeaeb72e1b024e03444e18e46becc76b1e755201011f"
+    },
+    "D028_summary": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D028-three-arm-review\\summary.md",
+      "sha256": "e76f3a5c6963a4bf423347b60e51c64459d13be97f2c06ef3b1a2e89d740204d"
+    },
+    "E016_broader": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\broader-validation.json",
+      "sha256": "43794f6db4dfc72466f2fb7f6dd642b1aaafb79a7dbae591ed7415b125285f27"
+    },
+    "E016_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-source-review\\review.json",
+      "sha256": "ff1dcae66c86d1ef4813067a182ff723373c698ccfdd7a44de383d349aeba1b3"
+    }
+  },
+  "artifacts": {
+    "audit.md": "ce9bd0c8b8c1ec9a891955473921e4f4b767d9070bee7b41aeab0ec4c26968ea",
+    "source\\E015-kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "source\\E015-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "source\\E015-plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "source\\E016-mod.rs": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+  },
+  "peer": "menu_change_review: independent source-only critique agrees with NO-GO now; no edits/build/GPU by peer",
+  "next_dependency": "D033 device timing interpretation, then independent prospective policy evidence if separately authorized; no frozen-fixture threshold tuning"
+}

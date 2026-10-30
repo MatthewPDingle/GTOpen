@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.10. CUPTI Profiling API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.11. CUPTI Range Profiling API" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html" />
+    <link rel="prev" title="5.9. CUPTI Profiler Host API" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.10. CUPTI Profiling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.10.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.10.2. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.10.3. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.10. </span>CUPTI Profiling API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-profiling-api">
+<h1><span class="section-number">5.10. </span>CUPTI Profiling API<a class="headerlink" href="#cupti-profiling-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i">Functions, types, and enums that implement the CUPTI Profiling API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___profiler___begin_pass___params.html#struct_c_upti___profiler___begin_pass___params"><span class="std std-ref">CUpti_Profiler_BeginPass_Params</span></a></dt><dd><p>Params for cuptiProfilerBeginPass.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___begin_session___params.html#struct_c_upti___profiler___begin_session___params"><span class="std std-ref">CUpti_Profiler_BeginSession_Params</span></a></dt><dd><p>Params for cuptiProfilerBeginSession.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___counter_data_image_options.html#struct_c_upti___profiler___counter_data_image_options"><span class="std std-ref">CUpti_Profiler_CounterDataImageOptions</span></a></dt><dd><p>Input parameter to define the counterDataImage.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_scratch_buffer_size___params.html#struct_c_upti___profiler___counter_data_image___calculate_scratch_buffer_size___params"><span class="std std-ref">CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params</span></a></dt><dd><p>Params for cuptiProfilerCounterDataImageCalculateScratchBufferSize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_size___params.html#struct_c_upti___profiler___counter_data_image___calculate_size___params"><span class="std std-ref">CUpti_Profiler_CounterDataImage_CalculateSize_Params</span></a></dt><dd><p>Params for cuptiProfilerCounterDataImageCalculateSize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize_scratch_buffer___params.html#struct_c_upti___profiler___counter_data_image___initialize_scratch_buffer___params"><span class="std std-ref">CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params</span></a></dt><dd><p>Params for cuptiProfilerCounterDataImageInitializeScratchBuffer.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize___params.html#struct_c_upti___profiler___counter_data_image___initialize___params"><span class="std std-ref">CUpti_Profiler_CounterDataImage_Initialize_Params</span></a></dt><dd><p>Params for cuptiProfilerCounterDataImageInitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___de_initialize___params.html#struct_c_upti___profiler___de_initialize___params"><span class="std std-ref">CUpti_Profiler_DeInitialize_Params</span></a></dt><dd><p>Default parameter for cuptiProfilerDeInitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___device_supported___params.html#struct_c_upti___profiler___device_supported___params"><span class="std std-ref">CUpti_Profiler_DeviceSupported_Params</span></a></dt><dd><p>Params for cuptiProfilerDeviceSupported.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___disable_profiling___params.html#struct_c_upti___profiler___disable_profiling___params"><span class="std std-ref">CUpti_Profiler_DisableProfiling_Params</span></a></dt><dd><p>Params for cuptiProfilerDisableProfiling.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___enable_profiling___params.html#struct_c_upti___profiler___enable_profiling___params"><span class="std std-ref">CUpti_Profiler_EnableProfiling_Params</span></a></dt><dd><p>Params for cuptiProfilerEnableProfiling.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___end_pass___params.html#struct_c_upti___profiler___end_pass___params"><span class="std std-ref">CUpti_Profiler_EndPass_Params</span></a></dt><dd><p>Params for cuptiProfilerEndPass.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___end_session___params.html#struct_c_upti___profiler___end_session___params"><span class="std std-ref">CUpti_Profiler_EndSession_Params</span></a></dt><dd><p>Params for cuptiProfilerEndSession.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___flush_counter_data___params.html#struct_c_upti___profiler___flush_counter_data___params"><span class="std std-ref">CUpti_Profiler_FlushCounterData_Params</span></a></dt><dd><p>Params for cuptiProfilerFlushCounterData.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___get_counter_availability___params.html#struct_c_upti___profiler___get_counter_availability___params"><span class="std std-ref">CUpti_Profiler_GetCounterAvailability_Params</span></a></dt><dd><p>Params for cuptiProfilerGetCounterAvailability.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___initialize___params.html#struct_c_upti___profiler___initialize___params"><span class="std std-ref">CUpti_Profiler_Initialize_Params</span></a></dt><dd><p>Default parameter for cuptiProfilerInitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___is_pass_collected___params.html#struct_c_upti___profiler___is_pass_collected___params"><span class="std std-ref">CUpti_Profiler_IsPassCollected_Params</span></a></dt><dd><p>Params for cuptiProfilerIsPassCollected.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___pop_range___params.html#struct_c_upti___profiler___pop_range___params"><span class="std std-ref">CUpti_Profiler_PopRange_Params</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___push_range___params.html#struct_c_upti___profiler___push_range___params"><span class="std std-ref">CUpti_Profiler_PushRange_Params</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___set_config___params.html#struct_c_upti___profiler___set_config___params"><span class="std std-ref">CUpti_Profiler_SetConfig_Params</span></a></dt><dd><p>Params for cuptiProfilerSetConfig.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___unset_config___params.html#struct_c_upti___profiler___unset_config___params"><span class="std std-ref">CUpti_Profiler_UnsetConfig_Params</span></a></dt><dd><p>Params for cuptiProfilerUnsetConfig.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gab5fe1d45dfd8888581eb709920ee833d"><span class="std std-ref">CUpti_Profiler_BeginPass_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad305a7d172f07ba7a4720114e513f09f"><span class="std std-ref">CUpti_Profiler_BeginSession_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga8fe9d3a79db63147e1748342b5bce723"><span class="std std-ref">CUpti_Profiler_CounterDataImageOptions_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga95dc7991e8edd7d6902313ba25db8fad"><span class="std std-ref">CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga579ff7365d5c18a1fe5cee6c2303808d"><span class="std std-ref">CUpti_Profiler_CounterDataImage_CalculateSize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga94b177c001b3f8adc04f0320de36ff44"><span class="std std-ref">CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4ca84755116396800ae9df46be585a45"><span class="std std-ref">CUpti_Profiler_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5e77fb55dc80d62dee8c7621a709feb1"><span class="std std-ref">CUpti_Profiler_DeInitialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga87a54677b3cd64fec67d51ca316b5658"><span class="std std-ref">CUpti_Profiler_DeviceSupported_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaffd26a80acbe32853644864693195679"><span class="std std-ref">CUpti_Profiler_DisableProfiling_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4329977eddeffa0cfda4604bdbfdae18"><span class="std std-ref">CUpti_Profiler_EnableProfiling_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5fa1bf2ce361afac389c3f3b8a699da2"><span class="std std-ref">CUpti_Profiler_EndPass_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga73eeab7c0b0439d2eb14bd13fe9bf751"><span class="std std-ref">CUpti_Profiler_EndSession_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga03c9ce387f3a8d19e1f36d9d1577e818"><span class="std std-ref">CUpti_Profiler_FlushCounterData_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gac94ee61418d05fdf5ee2eb99193e514a"><span class="std std-ref">CUpti_Profiler_GetCounterAvailability_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga93c1ed6ff6fd5f113930909b7fe9bd90"><span class="std std-ref">CUpti_Profiler_Initialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga1209928fd2b1e27ee10695dc21c7e091"><span class="std std-ref">CUpti_Profiler_IsPassCollected_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa4c9373ca3a7aa7c2897f5cba554150c"><span class="std std-ref">CUpti_Profiler_PopRange_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga57f1c913897076c598c6e51ed7cc3615"><span class="std std-ref">CUpti_Profiler_PushRange_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga9140ef9840542190eedf1992c1c81cc9"><span class="std std-ref">CUpti_Profiler_SetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga596977722d7474009c343098865836c2"><span class="std std-ref">CUpti_Profiler_UnsetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa6faef578b53da403b15878e05d1b395"><span class="std std-ref">CUpti_ProfilerRange</span></a></dt><dd><p>Profiler range attribute.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad6960f26de20f317a784ee565743e457"><span class="std std-ref">CUpti_ProfilerReplayMode</span></a></dt><dd><p>Profiler replay attribute.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga28394e0ca7a2ba0eaab79ce6accf1cff"><span class="std std-ref">CUpti_Profiler_API</span></a></dt><dd><p>Profiler API types.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gae9c7f68d6d33973878b56e39fb9cfa52"><span class="std std-ref">CUpti_Profiler_Support_Level</span></a></dt><dd><p>Generic support level enum for CUPTI.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga8c96f8bcc440b84a243369d1e41d1520"><span class="std std-ref">cuptiProfilerBeginPass</span></a>(CUpti_Profiler_BeginPass_Params *pParams)</dt><dd><p>Replay API: used for multipass collection.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga19d3db3d5081911499ee8884f8a858ab"><span class="std std-ref">cuptiProfilerBeginSession</span></a>(CUpti_Profiler_BeginSession_Params *pParams)</dt><dd><p>Begin profiling session sets up the profiling on the device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga21e53b286d5fcca64ef63b92694deb17"><span class="std std-ref">cuptiProfilerCounterDataImageCalculateScratchBufferSize</span></a>(CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params *pParams)</dt><dd><p>A temporary storage for CounterData image needed for internal operations.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5bb34e2042b3675158f2d5a922f34125"><span class="std std-ref">cuptiProfilerCounterDataImageCalculateSize</span></a>(CUpti_Profiler_CounterDataImage_CalculateSize_Params *pParams)</dt><dd><p>A CounterData image allocates space for values for each counter for each range.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga80b20bca8a7d0de2a103f81b4c98339c"><span class="std std-ref">cuptiProfilerCounterDataImageInitialize</span></a>(CUpti_Profiler_CounterDataImage_Initialize_Params *pParams)</dt><dd><p></p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5e9263e64c3d63c14ed4d77a1ca96549"><span class="std std-ref">cuptiProfilerCounterDataImageInitializeScratchBuffer</span></a>(CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params *pParams)</dt><dd><p></p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga9d49c7e7e0707ad0260effdc5ab9021b"><span class="std std-ref">cuptiProfilerDeInitialize</span></a>(CUpti_Profiler_DeInitialize_Params *pParams)</dt><dd><p>DeInitializes the profiler interface.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaef5552aa70dede36361da992a82f2cb4"><span class="std std-ref">cuptiProfilerDeviceSupported</span></a>(CUpti_Profiler_DeviceSupported_Params *pParams)</dt><dd><p>Query device compatibility with Profiling API.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa64dfbcde27a202af83e1795fdd4a484"><span class="std std-ref">cuptiProfilerDisableProfiling</span></a>(CUpti_Profiler_DisableProfiling_Params *pParams)</dt><dd><p>Disable Profiling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga287bf4dc8e3acb547a1d082c8b337837"><span class="std std-ref">cuptiProfilerEnableProfiling</span></a>(CUpti_Profiler_EnableProfiling_Params *pParams)</dt><dd><p>Enables Profiling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaaab3e227e392cd92da172d49506f6cd8"><span class="std std-ref">cuptiProfilerEndPass</span></a>(CUpti_Profiler_EndPass_Params *pParams)</dt><dd><p>Replay API: used for multipass collection.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gabe577146ea3e1f187913ae906260530d"><span class="std std-ref">cuptiProfilerEndSession</span></a>(CUpti_Profiler_EndSession_Params *pParams)</dt><dd><p>Ends profiling session.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad2c936e79a90a46a29dcfc409166c39b"><span class="std std-ref">cuptiProfilerFlushCounterData</span></a>(CUpti_Profiler_FlushCounterData_Params *pParams)</dt><dd><p>Decode all the submitted passes.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gae88e65505f6f863ac5b85026cd12da5c"><span class="std std-ref">cuptiProfilerGetCounterAvailability</span></a>(CUpti_Profiler_GetCounterAvailability_Params *pParams)</dt><dd><p>Query counter availibility.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad64f44975cdfa93a1c179eb8c8d51b53"><span class="std std-ref">cuptiProfilerInitialize</span></a>(CUpti_Profiler_Initialize_Params *pParams)</dt><dd><p>Initializes the profiler interface.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4f57f687f8837e74e73668cd8412259b"><span class="std std-ref">cuptiProfilerIsPassCollected</span></a>(CUpti_Profiler_IsPassCollected_Params *pParams)</dt><dd><p>Asynchronous call to query if the submitted pass to GPU is collected.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4fb53a9736ed17cd8910dc491b958f9a"><span class="std std-ref">cuptiProfilerPopRange</span></a>(CUpti_Profiler_PopRange_Params *pParams)</dt><dd><p>Range API's : Pop user range.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gab300cc3e24b408e4c5cfed310fed084f"><span class="std std-ref">cuptiProfilerPushRange</span></a>(CUpti_Profiler_PushRange_Params *pParams)</dt><dd><p>Range API's : Push user range.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa1ff2f08b95cf9534b3ec1e73dcfda5b"><span class="std std-ref">cuptiProfilerSetConfig</span></a>(CUpti_Profiler_SetConfig_Params *pParams)</dt><dd><p>Set metrics configuration to be profiled.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga20449fe304f3f3cd0b174f63ab868054"><span class="std std-ref">cuptiProfilerUnsetConfig</span></a>(CUpti_Profiler_UnsetConfig_Params *pParams)</dt><dd><p>Unset metrics configuration profiled.</p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.10.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_BeginPass_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gab5fe1d45dfd8888581eb709920ee833d"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_BeginPass_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_BeginPass_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_BeginSession_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad305a7d172f07ba7a4720114e513f09f"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_BeginSession_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_BeginSession_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_CounterDataImageOptions_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga8fe9d3a79db63147e1748342b5bce723"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImageOptions_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_CounterDataImageOptions_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga95dc7991e8edd7d6902313ba25db8fad"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_CounterDataImage_CalculateSize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga579ff7365d5c18a1fe5cee6c2303808d"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_CalculateSize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_CounterDataImage_CalculateSize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga94b177c001b3f8adc04f0320de36ff44"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_CounterDataImage_Initialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4ca84755116396800ae9df46be585a45"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_CounterDataImage_Initialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_DeInitialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5e77fb55dc80d62dee8c7621a709feb1"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_DeInitialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_DeInitialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_DeviceSupported_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga87a54677b3cd64fec67d51ca316b5658"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_DeviceSupported_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_DeviceSupported_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_DisableProfiling_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaffd26a80acbe32853644864693195679"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_DisableProfiling_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_DisableProfiling_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_EnableProfiling_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4329977eddeffa0cfda4604bdbfdae18"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_EnableProfiling_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_EnableProfiling_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_EndPass_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5fa1bf2ce361afac389c3f3b8a699da2"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_EndPass_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_EndPass_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_EndSession_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga73eeab7c0b0439d2eb14bd13fe9bf751"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_EndSession_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_EndSession_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_FlushCounterData_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga03c9ce387f3a8d19e1f36d9d1577e818"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_FlushCounterData_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_FlushCounterData_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_GetCounterAvailability_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gac94ee61418d05fdf5ee2eb99193e514a"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_GetCounterAvailability_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_GetCounterAvailability_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Initialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga93c1ed6ff6fd5f113930909b7fe9bd90"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Initialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Initialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_IsPassCollected_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga1209928fd2b1e27ee10695dc21c7e091"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_IsPassCollected_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_IsPassCollected_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_PopRange_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa4c9373ca3a7aa7c2897f5cba554150c"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_PopRange_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_PopRange_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_PushRange_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga57f1c913897076c598c6e51ed7cc3615"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_PushRange_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_PushRange_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_SetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga9140ef9840542190eedf1992c1c81cc9"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_SetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_SetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_UnsetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga596977722d7474009c343098865836c2"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_UnsetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_UnsetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="enumerations">
+<h2><span class="section-number">5.10.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv419CUpti_ProfilerRange">
+<span id="_CPPv319CUpti_ProfilerRange"></span><span id="_CPPv219CUpti_ProfilerRange"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa6faef578b53da403b15878e05d1b395"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ProfilerRange</span></span></span><a class="headerlink" href="#_CPPv419CUpti_ProfilerRange" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiler range attribute. </p>
+<p>A metric enabled in the session’s configuration is collected separately per unique range-stack in the pass. This is an attribute to collect metrics around each kernel in a profiling session or in an user defined range. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19CUpti_ProfilerRange19CUPTI_Range_INVALIDE">
+<span id="_CPPv3N19CUpti_ProfilerRange19CUPTI_Range_INVALIDE"></span><span id="_CPPv2N19CUpti_ProfilerRange19CUPTI_Range_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395a3a0ae3eb8dfc68f682cb4dc48891c1c3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_Range_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N19CUpti_ProfilerRange19CUPTI_Range_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid value. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19CUpti_ProfilerRange15CUPTI_AutoRangeE">
+<span id="_CPPv3N19CUpti_ProfilerRange15CUPTI_AutoRangeE"></span><span id="_CPPv2N19CUpti_ProfilerRange15CUPTI_AutoRangeE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395aee196550a6a859439d2a4aa4ab531cf0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_AutoRange</span></span></span><a class="headerlink" href="#_CPPv4N19CUpti_ProfilerRange15CUPTI_AutoRangeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ranges are auto defined around each kernel in a profiling session. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19CUpti_ProfilerRange15CUPTI_UserRangeE">
+<span id="_CPPv3N19CUpti_ProfilerRange15CUPTI_UserRangeE"></span><span id="_CPPv2N19CUpti_ProfilerRange15CUPTI_UserRangeE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395a3e0453d960147ca83509d1cf065fd130"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_UserRange</span></span></span><a class="headerlink" href="#_CPPv4N19CUpti_ProfilerRange15CUPTI_UserRangeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A range in which metric data to be collected is defined by the user. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19CUpti_ProfilerRange17CUPTI_Range_COUNTE">
+<span id="_CPPv3N19CUpti_ProfilerRange17CUPTI_Range_COUNTE"></span><span id="_CPPv2N19CUpti_ProfilerRange17CUPTI_Range_COUNTE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395a67699d7d36b4984204519c6ce9da2fc3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_Range_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N19CUpti_ProfilerRange17CUPTI_Range_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Range count. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv424CUpti_ProfilerReplayMode">
+<span id="_CPPv324CUpti_ProfilerReplayMode"></span><span id="_CPPv224CUpti_ProfilerReplayMode"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad6960f26de20f317a784ee565743e457"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ProfilerReplayMode</span></span></span><a class="headerlink" href="#_CPPv424CUpti_ProfilerReplayMode" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiler replay attribute. </p>
+<p>For metrics which require multipass collection, a replay of the GPU kernel(s) is required. This is an attribute which specify how the replay of the kernel(s) to be measured is done. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_ProfilerReplayMode20CUPTI_Replay_INVALIDE">
+<span id="_CPPv3N24CUpti_ProfilerReplayMode20CUPTI_Replay_INVALIDE"></span><span id="_CPPv2N24CUpti_ProfilerReplayMode20CUPTI_Replay_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457a9131a584b3b6d3f74912bf8364b2d54e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_Replay_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_ProfilerReplayMode20CUPTI_Replay_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid Value. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_ProfilerReplayMode23CUPTI_ApplicationReplayE">
+<span id="_CPPv3N24CUpti_ProfilerReplayMode23CUPTI_ApplicationReplayE"></span><span id="_CPPv2N24CUpti_ProfilerReplayMode23CUPTI_ApplicationReplayE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457a298b65c9526dabe7113fdb5b9e45c957"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ApplicationReplay</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_ProfilerReplayMode23CUPTI_ApplicationReplayE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay is done by CUPTI user around the process. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_ProfilerReplayMode18CUPTI_KernelReplayE">
+<span id="_CPPv3N24CUpti_ProfilerReplayMode18CUPTI_KernelReplayE"></span><span id="_CPPv2N24CUpti_ProfilerReplayMode18CUPTI_KernelReplayE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457ac2e3d8f8e8ad65399ae39f6d0e266bc8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_KernelReplay</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_ProfilerReplayMode18CUPTI_KernelReplayE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay is done around kernel implicitly by CUPTI. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_ProfilerReplayMode16CUPTI_UserReplayE">
+<span id="_CPPv3N24CUpti_ProfilerReplayMode16CUPTI_UserReplayE"></span><span id="_CPPv2N24CUpti_ProfilerReplayMode16CUPTI_UserReplayE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457aa052699f076ad798166b7b653b0ce14e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_UserReplay</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_ProfilerReplayMode16CUPTI_UserReplayE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay is done by CUPTI user within a process. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_ProfilerReplayMode18CUPTI_Replay_COUNTE">
+<span id="_CPPv3N24CUpti_ProfilerReplayMode18CUPTI_Replay_COUNTE"></span><span id="_CPPv2N24CUpti_ProfilerReplayMode18CUPTI_Replay_COUNTE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457a6908be49535e25864fe614d148be00ba"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_Replay_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_ProfilerReplayMode18CUPTI_Replay_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay count. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv418CUpti_Profiler_API">
+<span id="_CPPv318CUpti_Profiler_API"></span><span id="_CPPv218CUpti_Profiler_API"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga28394e0ca7a2ba0eaab79ce6accf1cff"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_API</span></span></span><a class="headerlink" href="#_CPPv418CUpti_Profiler_API" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiler API types. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_Profiler_API30CUPTI_PROFILER_RANGE_PROFILINGE">
+<span id="_CPPv3N18CUpti_Profiler_API30CUPTI_PROFILER_RANGE_PROFILINGE"></span><span id="_CPPv2N18CUpti_Profiler_API30CUPTI_PROFILER_RANGE_PROFILINGE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gga28394e0ca7a2ba0eaab79ce6accf1cffabc7131f526898ef1b2f82d308fb30dde"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_RANGE_PROFILING</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_Profiler_API30CUPTI_PROFILER_RANGE_PROFILINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI APIs for range based profiling (cuptiProfiler*) </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_Profiler_API26CUPTI_PROFILER_PC_SAMPLINGE">
+<span id="_CPPv3N18CUpti_Profiler_API26CUPTI_PROFILER_PC_SAMPLINGE"></span><span id="_CPPv2N18CUpti_Profiler_API26CUPTI_PROFILER_PC_SAMPLINGE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gga28394e0ca7a2ba0eaab79ce6accf1cffab421f614f3e8c58963ff78f8186e6372"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_PC_SAMPLING</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_Profiler_API26CUPTI_PROFILER_PC_SAMPLINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI APIs collecting pc sampling data (cuptiPcSampling*) </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_Profiler_API27CUPTI_PROFILER_SASS_METRICSE">
+<span id="_CPPv3N18CUpti_Profiler_API27CUPTI_PROFILER_SASS_METRICSE"></span><span id="_CPPv2N18CUpti_Profiler_API27CUPTI_PROFILER_SASS_METRICSE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gga28394e0ca7a2ba0eaab79ce6accf1cffabde32a94667d8e98b55f960d1faaca11"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_SASS_METRICS</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_Profiler_API27CUPTI_PROFILER_SASS_METRICSE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI APIs collecting SASS metrics data (cuptiSassMetrics*) </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_Profiler_API26CUPTI_PROFILER_PM_SAMPLINGE">
+<span id="_CPPv3N18CUpti_Profiler_API26CUPTI_PROFILER_PM_SAMPLINGE"></span><span id="_CPPv2N18CUpti_Profiler_API26CUPTI_PROFILER_PM_SAMPLINGE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gga28394e0ca7a2ba0eaab79ce6accf1cffa3899685cb3db42c780731d73e596a852"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_PM_SAMPLING</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_Profiler_API26CUPTI_PROFILER_PM_SAMPLINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI APIs collecting PM Sampling data (cuptiPmSampling*) </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_Profiler_API22CUPTI_PROFILER_UNKNOWNE">
+<span id="_CPPv3N18CUpti_Profiler_API22CUPTI_PROFILER_UNKNOWNE"></span><span id="_CPPv2N18CUpti_Profiler_API22CUPTI_PROFILER_UNKNOWNE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gga28394e0ca7a2ba0eaab79ce6accf1cffa106264e1ab766b14e8a6b02b26898e51"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_Profiler_API22CUPTI_PROFILER_UNKNOWNE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv428CUpti_Profiler_Support_Level">
+<span id="_CPPv328CUpti_Profiler_Support_Level"></span><span id="_CPPv228CUpti_Profiler_Support_Level"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gae9c7f68d6d33973878b56e39fb9cfa52"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Support_Level</span></span></span><a class="headerlink" href="#_CPPv428CUpti_Profiler_Support_Level" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Generic support level enum for CUPTI. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_Profiler_Support_Level36CUPTI_PROFILER_CONFIGURATION_UNKNOWNE">
+<span id="_CPPv3N28CUpti_Profiler_Support_Level36CUPTI_PROFILER_CONFIGURATION_UNKNOWNE"></span><span id="_CPPv2N28CUpti_Profiler_Support_Level36CUPTI_PROFILER_CONFIGURATION_UNKNOWNE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggae9c7f68d6d33973878b56e39fb9cfa52a1531a22440546f0922fb6896c4ee03ca"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_CONFIGURATION_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_Profiler_Support_Level36CUPTI_PROFILER_CONFIGURATION_UNKNOWNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Configuration support level unknown - either detection code errored out before setting this value, or unable to determine it. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_Profiler_Support_Level40CUPTI_PROFILER_CONFIGURATION_UNSUPPORTEDE">
+<span id="_CPPv3N28CUpti_Profiler_Support_Level40CUPTI_PROFILER_CONFIGURATION_UNSUPPORTEDE"></span><span id="_CPPv2N28CUpti_Profiler_Support_Level40CUPTI_PROFILER_CONFIGURATION_UNSUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggae9c7f68d6d33973878b56e39fb9cfa52a7d0d69f3739dd9b9a3cfde9c525b67cd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_CONFIGURATION_UNSUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_Profiler_Support_Level40CUPTI_PROFILER_CONFIGURATION_UNSUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling is unavailable. For specific feature fields, this means that the current configuration of this feature does not work with profiling. For instance, SLI-enabled devices do not support profiling, and this value would be returned for SLI on an SLI-enabled device. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_Profiler_Support_Level37CUPTI_PROFILER_CONFIGURATION_DISABLEDE">
+<span id="_CPPv3N28CUpti_Profiler_Support_Level37CUPTI_PROFILER_CONFIGURATION_DISABLEDE"></span><span id="_CPPv2N28CUpti_Profiler_Support_Level37CUPTI_PROFILER_CONFIGURATION_DISABLEDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggae9c7f68d6d33973878b56e39fb9cfa52a6186602beff3f8d1a3b2ad605007f5e6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_CONFIGURATION_DISABLED</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_Profiler_Support_Level37CUPTI_PROFILER_CONFIGURATION_DISABLEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling would be available for this configuration, but was disabled by the system. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_Profiler_Support_Level38CUPTI_PROFILER_CONFIGURATION_SUPPORTEDE">
+<span id="_CPPv3N28CUpti_Profiler_Support_Level38CUPTI_PROFILER_CONFIGURATION_SUPPORTEDE"></span><span id="_CPPv2N28CUpti_Profiler_Support_Level38CUPTI_PROFILER_CONFIGURATION_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggae9c7f68d6d33973878b56e39fb9cfa52a93bf24837eb116ff291d565e63b86eec"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_CONFIGURATION_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_Profiler_Support_Level38CUPTI_PROFILER_CONFIGURATION_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling is supported. For specific feature fields, this means that the current configuration of this feature works with profiling. For instance, SLI-enabled devices do not support profiling, and this value would only be returned for devices which are not SLI-enabled. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.10.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiProfilerBeginPassP31CUpti_Profiler_BeginPass_Params">
+<span id="_CPPv322cuptiProfilerBeginPassP31CUpti_Profiler_BeginPass_Params"></span><span id="_CPPv222cuptiProfilerBeginPassP31CUpti_Profiler_BeginPass_Params"></span><span id="cuptiProfilerBeginPass__CUpti_Profiler_BeginPass_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga8c96f8bcc440b84a243369d1e41d1520"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerBeginPass</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___begin_pass___params.html#_CPPv431CUpti_Profiler_BeginPass_Params" title="CUpti_Profiler_BeginPass_Params"><span class="n"><span class="pre">CUpti_Profiler_BeginPass_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiProfilerBeginPassP31CUpti_Profiler_BeginPass_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay API: used for multipass collection. </p>
+<p>These APIs are used if user chooses to replay by itself <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457aa052699f076ad798166b7b653b0ce14e"><span class="std std-ref">CUPTI_UserReplay</span></a> or <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457a298b65c9526dabe7113fdb5b9e45c957"><span class="std std-ref">CUPTI_ApplicationReplay</span></a> for multipass collection of the metrics configurations. It’s a no-op in case of <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457ac2e3d8f8e8ad65399ae39f6d0e266bc8"><span class="std std-ref">CUPTI_KernelReplay</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiProfilerBeginSessionP34CUpti_Profiler_BeginSession_Params">
+<span id="_CPPv325cuptiProfilerBeginSessionP34CUpti_Profiler_BeginSession_Params"></span><span id="_CPPv225cuptiProfilerBeginSessionP34CUpti_Profiler_BeginSession_Params"></span><span id="cuptiProfilerBeginSession__CUpti_Profiler_BeginSession_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga19d3db3d5081911499ee8884f8a858ab"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerBeginSession</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___begin_session___params.html#_CPPv434CUpti_Profiler_BeginSession_Params" title="CUpti_Profiler_BeginSession_Params"><span class="n"><span class="pre">CUpti_Profiler_BeginSession_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiProfilerBeginSessionP34CUpti_Profiler_BeginSession_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Begin profiling session sets up the profiling on the device. </p>
+<p>Although, it doesn’t start the profiling but GPU resources needed for profiling are allocated. Outside of a session, the GPU will return to its normal operating state. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv455cuptiProfilerCounterDataImageCalculateScratchBufferSizeP65CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params">
+<span id="_CPPv355cuptiProfilerCounterDataImageCalculateScratchBufferSizeP65CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params"></span><span id="_CPPv255cuptiProfilerCounterDataImageCalculateScratchBufferSizeP65CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params"></span><span id="cuptiProfilerCounterDataImageCalculateScratchBufferSize__CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga21e53b286d5fcca64ef63b92694deb17"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerCounterDataImageCalculateScratchBufferSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_scratch_buffer_size___params.html#_CPPv465CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params" title="CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv455cuptiProfilerCounterDataImageCalculateScratchBufferSizeP65CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A temporary storage for CounterData image needed for internal operations. </p>
+<p>Use these APIs to calculate the allocation size and initialize counterData image scratch buffer. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv442cuptiProfilerCounterDataImageCalculateSizeP52CUpti_Profiler_CounterDataImage_CalculateSize_Params">
+<span id="_CPPv342cuptiProfilerCounterDataImageCalculateSizeP52CUpti_Profiler_CounterDataImage_CalculateSize_Params"></span><span id="_CPPv242cuptiProfilerCounterDataImageCalculateSizeP52CUpti_Profiler_CounterDataImage_CalculateSize_Params"></span><span id="cuptiProfilerCounterDataImageCalculateSize__CUpti_Profiler_CounterDataImage_CalculateSize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5bb34e2042b3675158f2d5a922f34125"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerCounterDataImageCalculateSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_size___params.html#_CPPv452CUpti_Profiler_CounterDataImage_CalculateSize_Params" title="CUpti_Profiler_CounterDataImage_CalculateSize_Params"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_CalculateSize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv442cuptiProfilerCounterDataImageCalculateSizeP52CUpti_Profiler_CounterDataImage_CalculateSize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A CounterData image allocates space for values for each counter for each range. </p>
+<p>User borne the resposibility of managing the counterDataImage allocations. CounterDataPrefix contains meta data about the metrics that will be stored in counterDataImage. Use these APIs to calculate the allocation size and initialize counterData image. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv439cuptiProfilerCounterDataImageInitializeP49CUpti_Profiler_CounterDataImage_Initialize_Params">
+<span id="_CPPv339cuptiProfilerCounterDataImageInitializeP49CUpti_Profiler_CounterDataImage_Initialize_Params"></span><span id="_CPPv239cuptiProfilerCounterDataImageInitializeP49CUpti_Profiler_CounterDataImage_Initialize_Params"></span><span id="cuptiProfilerCounterDataImageInitialize__CUpti_Profiler_CounterDataImage_Initialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga80b20bca8a7d0de2a103f81b4c98339c"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerCounterDataImageInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize___params.html#_CPPv449CUpti_Profiler_CounterDataImage_Initialize_Params" title="CUpti_Profiler_CounterDataImage_Initialize_Params"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_Initialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv439cuptiProfilerCounterDataImageInitializeP49CUpti_Profiler_CounterDataImage_Initialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv452cuptiProfilerCounterDataImageInitializeScratchBufferP62CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params">
+<span id="_CPPv352cuptiProfilerCounterDataImageInitializeScratchBufferP62CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params"></span><span id="_CPPv252cuptiProfilerCounterDataImageInitializeScratchBufferP62CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params"></span><span id="cuptiProfilerCounterDataImageInitializeScratchBuffer__CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga5e9263e64c3d63c14ed4d77a1ca96549"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerCounterDataImageInitializeScratchBuffer</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize_scratch_buffer___params.html#_CPPv462CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params" title="CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params"><span class="n"><span class="pre">CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv452cuptiProfilerCounterDataImageInitializeScratchBufferP62CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiProfilerDeInitializeP34CUpti_Profiler_DeInitialize_Params">
+<span id="_CPPv325cuptiProfilerDeInitializeP34CUpti_Profiler_DeInitialize_Params"></span><span id="_CPPv225cuptiProfilerDeInitializeP34CUpti_Profiler_DeInitialize_Params"></span><span id="cuptiProfilerDeInitialize__CUpti_Profiler_DeInitialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga9d49c7e7e0707ad0260effdc5ab9021b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerDeInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___de_initialize___params.html#_CPPv434CUpti_Profiler_DeInitialize_Params" title="CUpti_Profiler_DeInitialize_Params"><span class="n"><span class="pre">CUpti_Profiler_DeInitialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiProfilerDeInitializeP34CUpti_Profiler_DeInitialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>DeInitializes the profiler interface. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428cuptiProfilerDeviceSupportedP37CUpti_Profiler_DeviceSupported_Params">
+<span id="_CPPv328cuptiProfilerDeviceSupportedP37CUpti_Profiler_DeviceSupported_Params"></span><span id="_CPPv228cuptiProfilerDeviceSupportedP37CUpti_Profiler_DeviceSupported_Params"></span><span id="cuptiProfilerDeviceSupported__CUpti_Profiler_DeviceSupported_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaef5552aa70dede36361da992a82f2cb4"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerDeviceSupported</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___device_supported___params.html#_CPPv437CUpti_Profiler_DeviceSupported_Params" title="CUpti_Profiler_DeviceSupported_Params"><span class="n"><span class="pre">CUpti_Profiler_DeviceSupported_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428cuptiProfilerDeviceSupportedP37CUpti_Profiler_DeviceSupported_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query device compatibility with Profiling API. </p>
+<p>Use this call to determine whether a compute device and configuration are compatible with the Profiling API. If the configuration does not support profiling, one of several flags will indicate why. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv429cuptiProfilerDisableProfilingP38CUpti_Profiler_DisableProfiling_Params">
+<span id="_CPPv329cuptiProfilerDisableProfilingP38CUpti_Profiler_DisableProfiling_Params"></span><span id="_CPPv229cuptiProfilerDisableProfilingP38CUpti_Profiler_DisableProfiling_Params"></span><span id="cuptiProfilerDisableProfiling__CUpti_Profiler_DisableProfiling_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa64dfbcde27a202af83e1795fdd4a484"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerDisableProfiling</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___disable_profiling___params.html#_CPPv438CUpti_Profiler_DisableProfiling_Params" title="CUpti_Profiler_DisableProfiling_Params"><span class="n"><span class="pre">CUpti_Profiler_DisableProfiling_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429cuptiProfilerDisableProfilingP38CUpti_Profiler_DisableProfiling_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Disable Profiling. </p>
+<p>In <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395aee196550a6a859439d2a4aa4ab531cf0"><span class="std std-ref">CUPTI_AutoRange</span></a>, these APIs are used to enable/disable profiling for the kernels to be executed in a profiling session. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428cuptiProfilerEnableProfilingP37CUpti_Profiler_EnableProfiling_Params">
+<span id="_CPPv328cuptiProfilerEnableProfilingP37CUpti_Profiler_EnableProfiling_Params"></span><span id="_CPPv228cuptiProfilerEnableProfilingP37CUpti_Profiler_EnableProfiling_Params"></span><span id="cuptiProfilerEnableProfiling__CUpti_Profiler_EnableProfiling_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga287bf4dc8e3acb547a1d082c8b337837"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerEnableProfiling</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___enable_profiling___params.html#_CPPv437CUpti_Profiler_EnableProfiling_Params" title="CUpti_Profiler_EnableProfiling_Params"><span class="n"><span class="pre">CUpti_Profiler_EnableProfiling_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428cuptiProfilerEnableProfilingP37CUpti_Profiler_EnableProfiling_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enables Profiling. </p>
+<p>In <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395aee196550a6a859439d2a4aa4ab531cf0"><span class="std std-ref">CUPTI_AutoRange</span></a>, these APIs are used to enable/disable profiling for the kernels to be executed in a profiling session. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiProfilerEndPassP29CUpti_Profiler_EndPass_Params">
+<span id="_CPPv320cuptiProfilerEndPassP29CUpti_Profiler_EndPass_Params"></span><span id="_CPPv220cuptiProfilerEndPassP29CUpti_Profiler_EndPass_Params"></span><span id="cuptiProfilerEndPass__CUpti_Profiler_EndPass_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaaab3e227e392cd92da172d49506f6cd8"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerEndPass</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___end_pass___params.html#_CPPv429CUpti_Profiler_EndPass_Params" title="CUpti_Profiler_EndPass_Params"><span class="n"><span class="pre">CUpti_Profiler_EndPass_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiProfilerEndPassP29CUpti_Profiler_EndPass_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Replay API: used for multipass collection. </p>
+<p>These APIs are used if user chooses to replay by itself <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457aa052699f076ad798166b7b653b0ce14e"><span class="std std-ref">CUPTI_UserReplay</span></a> or <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457a298b65c9526dabe7113fdb5b9e45c957"><span class="std std-ref">CUPTI_ApplicationReplay</span></a> for multipass collection of the metrics configurations. Its a no-op in case of <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggad6960f26de20f317a784ee565743e457ac2e3d8f8e8ad65399ae39f6d0e266bc8"><span class="std std-ref">CUPTI_KernelReplay</span></a>. Returns information for next pass. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiProfilerEndSessionP32CUpti_Profiler_EndSession_Params">
+<span id="_CPPv323cuptiProfilerEndSessionP32CUpti_Profiler_EndSession_Params"></span><span id="_CPPv223cuptiProfilerEndSessionP32CUpti_Profiler_EndSession_Params"></span><span id="cuptiProfilerEndSession__CUpti_Profiler_EndSession_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gabe577146ea3e1f187913ae906260530d"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerEndSession</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___end_session___params.html#_CPPv432CUpti_Profiler_EndSession_Params" title="CUpti_Profiler_EndSession_Params"><span class="n"><span class="pre">CUpti_Profiler_EndSession_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiProfilerEndSessionP32CUpti_Profiler_EndSession_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ends profiling session. </p>
+<p>Frees up the GPU resources acquired for profiling. Outside of a session, the GPU will return to it’s normal operating state. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv429cuptiProfilerFlushCounterDataP38CUpti_Profiler_FlushCounterData_Params">
+<span id="_CPPv329cuptiProfilerFlushCounterDataP38CUpti_Profiler_FlushCounterData_Params"></span><span id="_CPPv229cuptiProfilerFlushCounterDataP38CUpti_Profiler_FlushCounterData_Params"></span><span id="cuptiProfilerFlushCounterData__CUpti_Profiler_FlushCounterData_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad2c936e79a90a46a29dcfc409166c39b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerFlushCounterData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___flush_counter_data___params.html#_CPPv438CUpti_Profiler_FlushCounterData_Params" title="CUpti_Profiler_FlushCounterData_Params"><span class="n"><span class="pre">CUpti_Profiler_FlushCounterData_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429cuptiProfilerFlushCounterDataP38CUpti_Profiler_FlushCounterData_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decode all the submitted passes. </p>
+<p>Flush Counter data API to ensure every pass is decoded into the counterDataImage passed at beginSession. This will cause the CPU/GPU sync to collect all the undecoded pass. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv435cuptiProfilerGetCounterAvailabilityP44CUpti_Profiler_GetCounterAvailability_Params">
+<span id="_CPPv335cuptiProfilerGetCounterAvailabilityP44CUpti_Profiler_GetCounterAvailability_Params"></span><span id="_CPPv235cuptiProfilerGetCounterAvailabilityP44CUpti_Profiler_GetCounterAvailability_Params"></span><span id="cuptiProfilerGetCounterAvailability__CUpti_Profiler_GetCounterAvailability_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gae88e65505f6f863ac5b85026cd12da5c"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerGetCounterAvailability</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___get_counter_availability___params.html#_CPPv444CUpti_Profiler_GetCounterAvailability_Params" title="CUpti_Profiler_GetCounterAvailability_Params"><span class="n"><span class="pre">CUpti_Profiler_GetCounterAvailability_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv435cuptiProfilerGetCounterAvailabilityP44CUpti_Profiler_GetCounterAvailability_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query counter availibility. </p>
+<p>Use this API to query counter availability information in a buffer which can be used to filter unavailable raw metrics on host. Note: This API may fail, if any profiling or sampling session is active on the specified context or its device. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiProfilerInitializeP32CUpti_Profiler_Initialize_Params">
+<span id="_CPPv323cuptiProfilerInitializeP32CUpti_Profiler_Initialize_Params"></span><span id="_CPPv223cuptiProfilerInitializeP32CUpti_Profiler_Initialize_Params"></span><span id="cuptiProfilerInitialize__CUpti_Profiler_Initialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gad64f44975cdfa93a1c179eb8c8d51b53"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___initialize___params.html#_CPPv432CUpti_Profiler_Initialize_Params" title="CUpti_Profiler_Initialize_Params"><span class="n"><span class="pre">CUpti_Profiler_Initialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiProfilerInitializeP32CUpti_Profiler_Initialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initializes the profiler interface. </p>
+<p>Loads the required libraries in the process address space. Sets up the hooks with the CUDA driver. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428cuptiProfilerIsPassCollectedP37CUpti_Profiler_IsPassCollected_Params">
+<span id="_CPPv328cuptiProfilerIsPassCollectedP37CUpti_Profiler_IsPassCollected_Params"></span><span id="_CPPv228cuptiProfilerIsPassCollectedP37CUpti_Profiler_IsPassCollected_Params"></span><span id="cuptiProfilerIsPassCollected__CUpti_Profiler_IsPassCollected_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4f57f687f8837e74e73668cd8412259b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerIsPassCollected</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___is_pass_collected___params.html#_CPPv437CUpti_Profiler_IsPassCollected_Params" title="CUpti_Profiler_IsPassCollected_Params"><span class="n"><span class="pre">CUpti_Profiler_IsPassCollected_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428cuptiProfilerIsPassCollectedP37CUpti_Profiler_IsPassCollected_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Asynchronous call to query if the submitted pass to GPU is collected. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiProfilerPopRangeP30CUpti_Profiler_PopRange_Params">
+<span id="_CPPv321cuptiProfilerPopRangeP30CUpti_Profiler_PopRange_Params"></span><span id="_CPPv221cuptiProfilerPopRangeP30CUpti_Profiler_PopRange_Params"></span><span id="cuptiProfilerPopRange__CUpti_Profiler_PopRange_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga4fb53a9736ed17cd8910dc491b958f9a"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerPopRange</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___pop_range___params.html#_CPPv430CUpti_Profiler_PopRange_Params" title="CUpti_Profiler_PopRange_Params"><span class="n"><span class="pre">CUpti_Profiler_PopRange_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiProfilerPopRangeP30CUpti_Profiler_PopRange_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Range API’s : Pop user range. </p>
+<p>Counter data is collected per unique range-stack. Identified by a string label passsed by the user. It’s an invalid operation in case of <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395aee196550a6a859439d2a4aa4ab531cf0"><span class="std std-ref">CUPTI_AutoRange</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiProfilerPushRangeP31CUpti_Profiler_PushRange_Params">
+<span id="_CPPv322cuptiProfilerPushRangeP31CUpti_Profiler_PushRange_Params"></span><span id="_CPPv222cuptiProfilerPushRangeP31CUpti_Profiler_PushRange_Params"></span><span id="cuptiProfilerPushRange__CUpti_Profiler_PushRange_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gab300cc3e24b408e4c5cfed310fed084f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerPushRange</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___push_range___params.html#_CPPv431CUpti_Profiler_PushRange_Params" title="CUpti_Profiler_PushRange_Params"><span class="n"><span class="pre">CUpti_Profiler_PushRange_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiProfilerPushRangeP31CUpti_Profiler_PushRange_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Range API’s : Push user range. </p>
+<p>Counter data is collected per unique range-stack. Identified by a string label passsed by the user. It’s an invalid operation in case of <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ggaa6faef578b53da403b15878e05d1b395aee196550a6a859439d2a4aa4ab531cf0"><span class="std std-ref">CUPTI_AutoRange</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiProfilerSetConfigP31CUpti_Profiler_SetConfig_Params">
+<span id="_CPPv322cuptiProfilerSetConfigP31CUpti_Profiler_SetConfig_Params"></span><span id="_CPPv222cuptiProfilerSetConfigP31CUpti_Profiler_SetConfig_Params"></span><span id="cuptiProfilerSetConfig__CUpti_Profiler_SetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1gaa1ff2f08b95cf9534b3ec1e73dcfda5b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerSetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___set_config___params.html#_CPPv431CUpti_Profiler_SetConfig_Params" title="CUpti_Profiler_SetConfig_Params"><span class="n"><span class="pre">CUpti_Profiler_SetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiProfilerSetConfigP31CUpti_Profiler_SetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set metrics configuration to be profiled. </p>
+<p>Use these APIs to set the config to profile in a session. It can be used for advanced cases such as where multiple configurations are collected into a single CounterData Image on the need basis, without restarting the session. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424cuptiProfilerUnsetConfigP33CUpti_Profiler_UnsetConfig_Params">
+<span id="_CPPv324cuptiProfilerUnsetConfigP33CUpti_Profiler_UnsetConfig_Params"></span><span id="_CPPv224cuptiProfilerUnsetConfigP33CUpti_Profiler_UnsetConfig_Params"></span><span id="cuptiProfilerUnsetConfig__CUpti_Profiler_UnsetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i_1ga20449fe304f3f3cd0b174f63ab868054"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerUnsetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___unset_config___params.html#_CPPv433CUpti_Profiler_UnsetConfig_Params" title="CUpti_Profiler_UnsetConfig_Params"><span class="n"><span class="pre">CUpti_Profiler_UnsetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424cuptiProfilerUnsetConfigP33CUpti_Profiler_UnsetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unset metrics configuration profiled. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

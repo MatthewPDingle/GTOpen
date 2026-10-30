@@ -1,0 +1,87 @@
+{
+  "id": "D063-scoped-cleanup-addendum",
+  "created_at": "2026-10-16T19:39:02.157665+00:00",
+  "verdict": "DOCUMENTED_SCOPED_CLEANUP_ROUTE_FEASIBLE_IN_DESIGN_ONLY",
+  "decision": "The documented applypriority instruction removes the prior need to infer normalization from NORMAL read traffic. It supports a narrowly scoped feasibility check, not immediate E033 implementation or primary execution. Graph inheritance and executed cleanup/epoch/error handling remain unproved.",
+  "preservation": "The original D063 report and independent review remain unchanged. This note supersedes only the proposed complete-allocation window and generic NORMAL-read-pass cleanup: use the fixed fully owned 128-byte prefix and explicit applypriority. Graph destruction is not required at each normalization if further launch is prohibited until a deliberate new dirty epoch.",
+  "official_contract": {
+    "instruction": "applypriority.global.L2::evict_normal [ptr], 128;",
+    "compatibility": "PTX 7.4, SM80 or newer; archived CUDA12.1.1 and13.0.3 both document the instruction. Runtime eligibility alone is insufficient: unsupported architectures must not compile an unconditional instruction. Actual installed NVRTC compilation has not been attempted.",
+    "ownership": "Global address, 128-byte alignment and literal size128. Each operation applies normal eviction priority to that 128-byte range. No discard instruction: discard can invalidate data without preserving its value.",
+    "cost": "CUDA12.1.1 explicitly describes prefetch when the target line is absent. Cleanup may therefore fetch the entire window and is neither bandwidth-free nor presumed cheap.",
+    "excluded_bulk": "The current async.bulk variant is PTX9.4 and family-specific sm107f; it is outside the installed NVRTC12.9/RTX5090 design. Only the original per-line instruction is proposed.",
+    "proof_limit": "No getter exposes actual per-line priorities. Future evidence can check emitted instruction, owned address coverage, ordered successful completion and unchanged data; it must not claim to measure physical cache residency.",
+    "urls": {
+      "ptx_12_1_1": "https://docs.nvidia.com/cuda/archive/12.1.1/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-applypriority",
+      "ptx_13_0_3": "https://docs.nvidia.com/cuda/archive/13.0.3/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-applypriority",
+      "ptx_current": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-applypriority",
+      "access_window": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/structCUaccessPolicyWindow__v1.html",
+      "stream": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html"
+    }
+  },
+  "fixed_policy": {
+    "allocation": "Existing immutable d_cfv_slot; no new solver data buffer.",
+    "geometry": {
+      "rainbow": {
+        "allocation_bytes": 5387252,
+        "window_bytes": 5387136,
+        "line_count": 42087,
+        "unhinted_tail_bytes": 116
+      },
+      "two-tone": {
+        "allocation_bytes": 5387252,
+        "window_bytes": 5387136,
+        "line_count": 42087,
+        "unhinted_tail_bytes": 116
+      },
+      "river": {
+        "allocation_bytes": 132,
+        "window_bytes": 128,
+        "line_count": 1,
+        "unhinted_tail_bytes": 4
+      }
+    },
+    "rule": "Require actual base %128==0; checked bytes=len*4, W=(bytes//128)*128. No base rounding, padded access or alternate window. W must be nonzero and fit both the actual solver-context current reservation and device maximum window. Unsupported or ineligible remains unhinted.",
+    "attributes": "base=owned base, num_bytes=W, hitRatio=1.0, hitProp=PERSISTING, missProp=NORMAL. Require stream and captured-node readback to match that exact window; unexpected driver alignment/extent fails this variant. No context limit setter, limit restoration or global cache reset.",
+    "cleanup_coverage": "One per-line applypriority for base+128*i with 0<=i<W/128. Tail bytes remain unhinted and untouched by cleanup. Verify pointer arithmetic overflow and bounds before launch.",
+    "capacity_limit": "The D06118MiB observation belongs to its query process. Fit must be checked in the actual solver context; multiple windows still contend for a shared existing reservation."
+  },
+  "epoch_and_teardown_design": [
+    "Before any eager execution, capture, or cached graph replay can access hinted metadata, rearm the private stream as needed and mark the epoch potentially dirty BEFORE any fallible submission. Captured graph attributes persist independently of later stream setters.",
+    "Quiesce submissions and drain existing work. Disable the launch-stream window and verify the disabled attribute; then queue the normalization on that stream while allocation/module remain live. Synchronize successful completion before marking clean. No graph may replay during this sequence. Retained graphs may replay only in a subsequent deliberately dirty epoch.",
+    "Normal full sync_to_cpu must complete this fallible cleanup before returning. Continued iterate/profile/evaluation, standalone continuation, warm capture and lock-triggered recapture must rearm consistently. A dirty bit set only after successful method return would miss partially submitted error paths.",
+    "Explicit close must prevent all later launches and normalize any dirty epoch before fields free. Custom Drop may use the still-owned allocation for a best-effort fallback; preserve and surface errors. A failed cleanup must remain failed/dirty, never be labeled clean. Constructor failure after policy setup also needs a scoped owner/guard.",
+    "No setter or MemFree is assumed to clear old priorities. Separate solvers may share the primary context, so scoped ownership forbids touching peers or global cache state. Cache contention remains possible. Fatal device errors can prevent successful cleanup; qualification must retain that failure rather than assert recovery."
+  ],
+  "measurement_boundary": {
+    "accepted_source": "postflop_autoresearch.rs:232-236 calls sync_to_cpu, synchronizes, then stops readback and total timers. gpu/mod.rs:997-1018 is the full readback method.",
+    "requirement": "Normalization, window disable/verification and required synchronization must complete inside successful sync_to_cpu before return, without changing the frozen evaluator. They therefore count in registered readback/complete-cycle time. Compile/setup costs belong in constructor time. Destructor-only cleanup is insufficient for performance qualification.",
+    "continuation_cost": "An intermediate full readback also cleans; subsequent work deliberately rearms and later pays cleanup again. Graphs may remain allocated. Drop must avoid duplicating successful clean-epoch normalization but still disable any armed policy and handle unsynced work. Whole-process evidence remains useful for residual destructor/error-path cost.",
+    "no_claim": "No cleanup latency, cache miss rate, numerical equivalence or speed benefit has been measured."
+  },
+  "bounded_next_evidence": [
+    "First use the separately authorized D064 capture-only investigation to establish actual captured-node window inheritance with cudarc immediate instantiation. This addendum does not expand D064 to replay or cleanup launches.",
+    "Only after a separate root decision, prepare one small standalone cleanup feasibility check: compile the supported per-line instruction, inspect emitted PTX, use one deterministic owned allocation with a non-128-byte tail and guarded data, run a fixed dirty-clean-dirty-clean sequence with eager/captured reads, and verify exact full data/tail/guards plus API/cleanup results and unchanged context limit. No solver or performance gate; no variant search. Stop on nonmatching inherited/applied attributes.",
+    "Production remains conditional on a source-reviewed epoch/error/close design, cleanup inside the frozen timing boundary, old/new exact raw/full-state lifecycle controls and the unchanged fixed primary/broader gates. A successful instruction or toy graph check alone cannot qualify production."
+  ],
+  "source_identity": {
+    "accepted": "E020",
+    "verified_entries": 162,
+    "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\report.json": "96434f27199d8321cfc6f57e4aaa5f77b63f0f3726d5acd7e5e48d7aa1d59135",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\manifest.json": "68a7cd68abe6191aa8216bbfd2936b545c568f580dce32fef8cee297f8ed7c77",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D063-independent-design-review\\report.json": "3e88bda881f6e6f5451d343070db8a11d9d8be9cb7d9bcb900b50a2a0001845f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\execution\\result.json": "4b1baf0fcc17eab443ca8b6fef0c3ce28659077e4771d28d50d34d0f20b5f28d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\source\\crates__solver__src__gpu__mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\source\\cudarc__src__driver__safe__graph.rs": "dfd8eae6e2cb21bdc9089dec4fb58d0fa9fe2f6c191e06ff994780df20dddb8e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\source\\cudarc__src__driver__safe__core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  },
+  "production_modified": false,
+  "compiler_native_gpu_executed": false,
+  "probe_prepared": false,
+  "performance_measurement": false,
+  "candidate_accepted": false
+}

@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D274-root-observation.py", line 104, in <module>
+    id=f['fixture'];c=pair(H/identity/(id+'-baseline.spot.bin'),H/identity/(id+'-observed.spot.bin'),f);check(c['shape']['hands']==e['hands']);cases.append({'process':identity,'fixture':id,**c})
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D274-root-observation.py", line 91, in pair
+    check(ha.digest()==hb.digest());shape=parse(a,fixture)
+                                          ^^^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D274-root-observation.py", line 37, in parse
+    check(config==fixture['config']);check(treeconfig==config['tree']);board=vec('board','B');check(3<=len(board)<=5 and len(set(board))==len(board)and all(c<52 for c in board));bm=scalar('board_mask','Q');check(bm==sum(1<<c for c in board))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D274-root-observation.py", line 11, in check
+    assert x;checks+=1
+           ^
+AssertionError

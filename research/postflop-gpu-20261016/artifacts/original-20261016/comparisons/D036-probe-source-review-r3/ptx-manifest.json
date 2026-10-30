@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-16T10:12:02.512919+00:00",
+  "verdict": "MECHANISM_CONFIRMED_IN_EMITTED_PTX",
+  "scope": "Read-only emitted-code inspection; no speed claim",
+  "dynamic_barriers_active_128_cta": {
+    "reduction_with_partial_store": {
+      "baseline": 8,
+      "candidate": 4
+    },
+    "whole_kernel": {
+      "baseline": 9,
+      "candidate": 5
+    }
+  },
+  "static_bar_sync_sites": {
+    "baseline": 3,
+    "candidate": 6
+  },
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\prepared-manifest.json",
+      "sha256": "b0fd45d3bceffb9fb5ba6de294dc3af3ede144a1707cd3ceacbd616e0e4d8279",
+      "bytes": 4601
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline-up_fold.ptx",
+      "sha256": "a47c1bdb095a0d7a26c95bac47a59c44c035717dddd4cc06c9674af4e7fb511d",
+      "bytes": 13330
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate-up_fold.ptx",
+      "sha256": "2bbd3c51157908daf7cc9ef33133dea6c1b7430e4b6f27511cfdfd5128900bc0",
+      "bytes": 15175
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline.ptx",
+      "sha256": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+      "bytes": 230494
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate.ptx",
+      "sha256": "ffb4f05f9c70006e42f125b30f9b658035f7e68110a456866ab6e4b7568c4764",
+      "bytes": 232339
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.stdout.log",
+      "sha256": "8c0255b0d99dec2ea1245da6bd071e8fbe6092071976ab934af804a011722495",
+      "bytes": 238022
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\rustc.command.json",
+      "sha256": "e56f57766c6a42e24a7f7d0a956eac199cbf7f53942ec81634ae590e992fb98f",
+      "bytes": 787
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.command.json",
+      "sha256": "fc598049861d7b376c4c53d94607ed5ac6f9fbfcda16dbccc38a3e7353ebd05c",
+      "bytes": 360
+    }
+  ],
+  "review": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-probe-source-review-r3\\ptx-review.md",
+    "sha256": "de9dc963fb44b0da51317c736a271691b810695055b3e7cf59077b4536e94a09",
+    "bytes": 2389
+  }
+}

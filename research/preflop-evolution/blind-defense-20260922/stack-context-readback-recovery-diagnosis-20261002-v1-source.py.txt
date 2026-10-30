@@ -1,0 +1,129 @@
+"""Existing metadata and synthetic negative cases only; no model/native replay."""
+import copy
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import sys
+import time
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+TRAIN = Path(r'S:\GTOpen-research\stack-context-matched-learning-v1')
+NAME = 'stack-context-readback-recovery-diagnosis-20261002-v1'
+TARGET = OUT / (NAME + '.json')
+SOURCE = OUT / (NAME + '-source.py.txt')
+CANDIDATE = Path(__file__).with_name('stack_context_recovery_flags_v2.py')
+DESTINATION = ROOT / 'tools/research/stack_context_recovery_flags_v2.py'
+began = time.monotonic()
+inputs = {}
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+def sha(path):
+    with Path(path).open('rb') as stream:
+        value = hashlib.file_digest(stream, 'sha256').hexdigest()
+    inputs[str(path)] = value
+    return value
+
+def read(path):
+    sha(path)
+    return json.loads(Path(path).read_bytes())
+
+require(not any(p.exists() for p in (TARGET, SOURCE, DESTINATION)), 'Preserve existing qualified evidence')
+sys.path.insert(0, str(ROOT / 'tools/research'))
+import stack_context_interruption_provenance_v1 as recovery
+spec = importlib.util.spec_from_file_location('candidate_recovery_flags', CANDIDATE)
+flags = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(flags)
+train_result = read(OUT / 'stack-context-pressure-continuation-v2-training-result.json')
+identity, paths = recovery.verify_recovery(train_result)
+for p in paths:
+    sha(p)
+selection = read(Path(r'S:\GTOpen-research\stack-context-matched-evaluation-v5\bank-identities.json'))['selection']
+proof = read(OUT / 'stack-context-interruption-readback-v1-result.json')
+require(proof['complete'] and proof['passed'] and proof['recovery'] == identity == selection['interruption_recovery'], 'Different actual qualified recovery')
+amendment = sha(OUT / 'stack-context-parallel-continuation-v2-amendment.json')
+rows, mismatches = [], []
+for arm in flags.CYCLES:
+    progress = read(TRAIN / arm / 'progress.json')
+    for record in progress['updates']:
+        cycle = record['cycle']
+        receipt = sha(TRAIN / arm / f'chance-{cycle:04d}.json')
+        flags.validate(arm, cycle, record, receipt_sha256=receipt, amendment=amendment, interruption=identity)
+        rows.append((arm, cycle, record, receipt))
+        if cycle > (2 if arm == 'A-baseline' else 1):
+            require(record['chance_receipt_sha256'] == receipt and record['continuation_amendment_sha256'] == amendment, 'Actual receipt/amendment inconsistency')
+            if record['recovered_without_scientific_repeat'] is not (arm == 'A-relative' and cycle == 2):
+                mismatches.append(dict(arm=arm, cycle=cycle, field='recovered_without_scientific_repeat',
+                    actual=True, old_checker_expected=False, independently_verified_recovery=True))
+require(len(rows) == 256 and {(r['arm'], r['cycle']) for r in mismatches} == set(flags.CYCLES.items()), 'Unexpected broader evidence mismatch')
+arm, cycle, record, receipt = next(r for r in rows if r[0] == 'A-baseline' and r[1] == 4)
+cases = []
+def negative(name, edit_record=None, edit_identity=None, test_arm=arm, test_cycle=cycle, test_receipt=receipt, test_amendment=amendment):
+    r, i = copy.deepcopy(record), copy.deepcopy(identity)
+    if edit_record:
+        edit_record(r)
+    if edit_identity:
+        edit_identity(i)
+    try:
+        flags.validate(test_arm, test_cycle, r, receipt_sha256=test_receipt, amendment=test_amendment, interruption=i)
+    except (ValueError, KeyError):
+        cases.append(name)
+        return
+    raise AssertionError('Unsafe metadata accepted: ' + name)
+negative('changed-receipt', test_receipt='0' * 64)
+negative('changed-continuation-amendment', test_amendment='0' * 64)
+negative('missing-recovery-flag', lambda r: r.pop('recovered_without_scientific_repeat'))
+negative('false-recovered-boundary', lambda r: r.update(recovered_without_scientific_repeat=False))
+negative('integer-recovery-flag', lambda r: r.update(recovered_without_scientific_repeat=1))
+negative('wrong-recovery-action', lambda r: r.update(recovery_action='continue-retained-partial-cycle'))
+negative('wrong-recovery-amendment', lambda r: r.update(interruption_recovery_amendment_sha256='0' * 64))
+negative('wrong-recognized-cycle', edit_identity=lambda i: i['recovered_cycles'].update({'A-baseline': 5}))
+negative('wrong-recognized-action', edit_identity=lambda i: i['recovered_actions'].update({'A-baseline': 'other'}))
+negative('wrong-registration', edit_identity=lambda i: i.update(original_registration_sha256='0' * 64))
+negative('missing-original-byte-coverage', edit_identity=lambda i: i.update(retained_files_bound=9399))
+negative('refitted-completed-cycle', edit_identity=lambda i: i.update(completed_cycles_refitted=True))
+negative('changed-scientific-budget', edit_identity=lambda i: i.update(seeds_budgets_targets_unchanged=False))
+negative('wrong-interruption-identity', edit_identity=lambda i: i.update(amendment_sha256='0' * 64))
+negative('unknown-arm', test_arm='C-baseline')
+negative('changed-cycle', test_cycle=5)
+ordinary = copy.deepcopy(next(r[2] for r in rows if r[0] == 'A-baseline' and r[1] == 5))
+ordinary['recovered_without_scientific_repeat'] = True
+try:
+    flags.validate('A-baseline', 5, ordinary, receipt_sha256=ordinary['chance_receipt_sha256'], amendment=amendment, interruption=identity)
+except ValueError:
+    cases.append('unregistered-extra-recovery')
+else:
+    raise AssertionError('Extra recovery accepted')
+for name in ('stack-context-matched-readback-v6-attempt.json', 'stack-context-matched-readback-v6-failure.json',
+             'stack-context-resumed-readback-v1-failure.json', 'stack-context-resumed-readback-v1-reader-started.json',
+             'stack-context-resumed-readback-v1-reader-finished.json', 'stack-context-resumed-readback-v1-reader-stderr.log',
+             'stack-context-matched-evaluation-v5-terminal-transition-20261002-v1.json'):
+    sha(OUT / name)
+sha(ROOT / 'tools/research/stack_context_independent_chance_audit_v1.py')
+sha(ROOT / 'tools/research/stack_context_matched_readback_v6.py')
+for p, digest in inputs.items():
+    with Path(p).open('rb') as stream:
+        observed = hashlib.file_digest(stream, 'sha256').hexdigest()
+    require(observed == digest, 'Existing immutable diagnosis input changed')
+with DESTINATION.open('xb') as stream:
+    stream.write(CANDIDATE.read_bytes())
+sha(DESTINATION)
+with SOURCE.open('xb') as stream:
+    stream.write(Path(__file__).read_bytes())
+sha(SOURCE)
+result = dict(complete=True, passed=True, seconds=time.monotonic() - began, unix=time.time(),
+    actual_metadata_cycles_checked=256, mismatches=mismatches, actual_qualified_recovery=identity,
+    synthetic_negative_cases_refused=cases, candidate_source=str(DESTINATION), candidate_sha256=inputs[str(DESTINATION)],
+    checker_integration_complete=False, archive_and_chance_reconstruction_integration_outstanding=True,
+    independent_final_readback_complete=False, original_checker_and_failure_preserved=True,
+    scientific_worker_retried=False, new_scientific_deals=False, fitting=False, model_inference=False,
+    native_execution=False, gpu_used=False, comparison_values_interpreted=False, range_probabilities_interpreted=False,
+    production_modified=False, broad_goal_complete=False, inputs=inputs)
+with TARGET.open('x', encoding='utf-8') as stream:
+    json.dump(result, stream, sort_keys=True, separators=(',', ':'), allow_nan=False)
+print(json.dumps(dict(passed=True, actual_cycles=256, diagnosed_metadata_mismatches=4, unsafe_cases_refused=len(cases),
+    seconds=result['seconds'], result=str(TARGET), sha256=hashlib.sha256(TARGET.read_bytes()).hexdigest())))

@@ -1,0 +1,95 @@
+{
+  "id": "E019-prospective-independent-audit-plan",
+  "at": "2026-10-16T10:17:38.465458+00:00",
+  "verdict": "PASS source-only primary protocol/helper review; no runtime outcome asserted",
+  "protocol_sha256": "c74dfd6cbd57804c1fd8e9bad65744a8ab2b525f3e6aa230b5ed46c6959b1fba",
+  "plan_and_script_seals_verified": true,
+  "order": [
+    "V019-unit",
+    "B059",
+    "E019R1",
+    "E019R2",
+    "B060",
+    "B061",
+    "E019R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B059",
+      "candidate": "E019R1"
+    },
+    {
+      "baseline": "B060",
+      "candidate": "E019R2"
+    },
+    {
+      "baseline": "B061",
+      "candidate": "E019R3"
+    }
+  ],
+  "aggregate_rule": "100*(sum baseline fixture medians - sum candidate fixture medians)/sum baseline fixture medians >=2",
+  "fixture_guard": "Median candidate fixture regression>3 percent AND >3 percent in strict majority of paired runs, minimum2; with3 pairs requires2",
+  "helper_exact_fields": [
+    "state_fingerprint",
+    "fingerprint",
+    "exploit_bits",
+    "iteration",
+    "board",
+    "fixture_index",
+    "config",
+    "storage",
+    "algorithm",
+    "use_isomorphism",
+    "nodes",
+    "cpu_arena_bytes",
+    "target_pct",
+    "check_every",
+    "max_iterations",
+    "runtime_nvrtc_jit_included",
+    "flushed_progress_logging_included"
+  ],
+  "helper_target_met_enforced_separately": true,
+  "helper_fixed_identity_and_configuration_enforced_separately": true,
+  "full_non_timing_audit_exclusions": [
+    "full_cycle_ms",
+    "build_ms",
+    "init_ms",
+    "solve_ms",
+    "readback_ms",
+    "fingerprint_ms_excluded"
+  ],
+  "full_result_fields_outside_helper_exact_tuple": [
+    "schema_version",
+    "stage",
+    "fixture_id",
+    "target_met",
+    "exploit_chips",
+    "exploit_pct_pot"
+  ],
+  "additional_independent_audit": [
+    "Parse all18 raw AUTORESEARCH_RESULT objects and require exact report equality",
+    "Compare entire result objects excluding only six timing fields across all6 physical runs",
+    "Verify source-scope difference only kernels.cu and exact D036 candidate source bytes using immutable build manifests, not evolving checkout",
+    "Verify original accepted E015 binary+manifest pins; candidate samebinary+manifest across3 runs; evaluator/workload unchanged",
+    "Verify protocol order, unit84passed/0failed/4ignored/0measured/0filtered before timing, no overlap/exclusions/extensions",
+    "Verify candidate/reference stdout/binary/manifests/source/loghashes and complete chronology",
+    "Independently recompute score and fixture guards; helper qualifying wording alone is not a passing gate",
+    "Review pair/component spread descriptively without inventing causality/significance",
+    "Compare convergence-check sequences including exploitbits, excluding elapsed timing; distinguish supplemental trajectory check from final frozen score",
+    "Record logical E019 vs physical E019R1 alias and exact patch adapter without synthesizing a measurement",
+    "If screen fails retain broader-check limitation; if passes require immutable original F32/full-state controls and fresh cumulative original cohort before acceptance"
+  ],
+  "logical_identity_reminder": "postflop_compare.main loads runs/<candidate-id>/report.json and requires runs/<candidate-id>.patch; logical E019 vs physical E019R1 needs explicit preserved adapter/patch association",
+  "correctness_scope": "Primary compressed complete-CPU fingerprints and exploitbits are necessary. Shared-candidate kernel tests alone cannot establish original-kernel equivalence; raw F32/full-state original controls remain required on primary success. D036 is bounded standalone numerical evidence, not solver acceptance.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\protocol.json": "c74dfd6cbd57804c1fd8e9bad65744a8ab2b525f3e6aa230b5ed46c6959b1fba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\scripts-manifest.json": "fe2d98e59c127b4ab56945a170a06aa702d22689190e5e732d83c8d9558851a8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\build.py": "9a70f07528879b6316c3cddf5ae3751696360946d64e96046ca1712110e85e25",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\primary.py": "993fcac3be703a7f003e4d9a424b880bb9a6da04e72e876dd33b4f6d1a422564",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-independent-review\\manifest.json": "91cd2a56c871cbecc5895746b5b925763262a6d3173a820a81981feb5ac816be"
+  },
+  "actions": "Source/evidence reads and this additive checklist only; no build/GPU/production/status change"
+}

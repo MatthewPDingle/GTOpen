@@ -1,0 +1,67 @@
+{
+  "id": "E033-primary-preparation",
+  "status": "SOURCE_AND_SCRIPT_CHECKS_ONLY",
+  "at": "2026-10-16T20:02:22.261751+00:00",
+  "source_manifest_sha256": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+  "protocol_sha256": "86f08d04b6cc8c7aad0027be8c84b644eb70dcf757f023c2a5742af289699f08",
+  "accepted_source_entries_verified": 162,
+  "candidate_source_entries": 163,
+  "python_ast_parse": [
+    "compile_check.py",
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "policy_parser_primary_assessor_ast_identical": true,
+  "ordinary_cleanup_error_marker_rejected": true,
+  "inventory": {
+    "accepted_gpu_passed": 84,
+    "added_gpu_tests": 3,
+    "prospective_gpu_passed": 87,
+    "ignored": 4,
+    "feature_only_added": 1
+  },
+  "unit_names": [
+    "gpu::cache_policy::tests::owned_prefix_geometry_is_bounded",
+    "gpu::tests::persisting_l2_matches_unhinted_solver_lifecycle",
+    "gpu::tests::persisting_l2_cleanup_ownership_and_errors"
+  ],
+  "feature_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback",
+  "unused_paths_verified": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B104",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033R1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033R2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B105",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B106",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033R3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e033-primary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e033-research",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-compile-check",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-primary-execution",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-assessment",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E033-solver.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E033-solver.manifest.json",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E033-postflop_autoresearch.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E033-postflop_autoresearch.manifest.json"
+  ],
+  "fixed_order": [
+    "V033-unit",
+    "B104",
+    "E033R1",
+    "E033R2",
+    "B105",
+    "B106",
+    "E033R3"
+  ],
+  "parent_script_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\build.py": "fcbefb06c301d4e337afe761820b330cd8d2ab26e1b21d014faaff4fc205cc98",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\primary.py": "a8a3ed4b4bff0be524d6e86d44b42bd7fdeeae0dc1d4b28b5aa66d19f4eb1fa5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\assess.py": "b3617785e0359e82a183c62145a194078fce823849a4828d19974138f3600f4f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-primary-plan\\compile_check.py": "59c6c8f027ffa57807bfcf239648c87c1a6f6460b504a7f0c080cc5a90f4e14c"
+  },
+  "compiler_native_gpu_executed": false,
+  "production_or_status_edits": false,
+  "scope": "AST/pin/source-inventory/unused-output checks only; no runtime scripts imported or executed."
+}

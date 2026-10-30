@@ -1,0 +1,67 @@
+{
+  "id": "E036",
+  "kind": "frozen off-tree up_show positive-zero shortcut plus focused original-GPU unit",
+  "base": "accepted E020",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "crates/solver/src/gpu/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+  },
+  "artifact_sha256": {
+    "base/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "base/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "candidate/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "candidate/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+    "candidate.patch": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+    "design-manifest.json": "425d0feded4d6fc9e26441670f9efa84c346a6fa07639956cfb519c07650f218",
+    "draft-r1/candidate/kernels.cu": "522a42d2501712d998a1ab2fce5ba661ee171b18aa623793a05e4d4549ec4f62",
+    "draft-r1/candidate/mod.rs": "2af876f4ba4d1555082200d308ac1549f161709ec16a5a6c4ab00ec7a18ba573",
+    "draft-r1/original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2",
+    "draft-r1/preparation-error.json": "3ee631b7b397caf9bc3883207539c99ff0c25016053cb9c1e729d47d914c900e",
+    "draft-r1/test-insertion.rs": "ac8537f7c483e49aa026a9a5f255b712bb63fff213240e42b5a2108185116f91",
+    "original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2",
+    "README.md": "15563a452a44e876c84236198da589baa4c150b6c30a989cc213cb64872c8cf3",
+    "runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "source-checks.json": "f33f8404a63320343d1c74a6acbb8df6b1a01fa7ef08558b75ee38129d339b6b",
+    "syntax-check.json": "253f5a8c697b72c71202e26c1b54b5d974896e3105b699f3a9232df45ef5f148",
+    "test-body.rs": "135b07cea14fbe758fcff79a72a1d3b5700a21658aac0974d41f0539c4cb927e",
+    "test-insertion.rs": "ac8537f7c483e49aa026a9a5f255b712bb63fff213240e42b5a2108185116f91"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-root-decisions\\preparation.json": "ba9b74076bd0401aaa4ec27dccf156cbbed41e43be2f6ace36098cd0bf91e594",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\report.json": "1ecbdcd95211088d000e6ebbee566a1c3a0ab96c1e6e6ef6f69839950cc22cce",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\manifest.json": "073f3994873b5344a3dbe6fada218c4b5d45a655dc05d7ea8340e8ab5a707608",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-planned-show-incidence\\report.json": "bc2abc4281d230d3e8348758bd12795c3ec5a8bf00d6a2c0ac074ba57f831c94",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\report.json": "d48545168f79a1ad4d97d7402581ebf66aa757d762309e64c4d28b17c78d5202",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\source-locations.json": "29d9af7dd05a037d2c64727d69a112cf50a9516f995cc38b887cba3b24bb17f7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\manifest.json": "044151bbf7a9118b96d71ddf8d08d4ee2c36122d1a87ecd3ffa098591320d126",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\test-insertion.rs": "9081ea844547a61cf8484f936206abaa2dbd4c6d73790971b1c475df7e3d42cd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "feature_only_test_additions": 0,
+  "test_name": "gpu::tests::show_positive_zero_matches_original_kernel",
+  "test_marker": {
+    "prefix": "E036_SHOW_ZERO_TEST ",
+    "fields": {
+      "comparison_pairs": 34,
+      "kernel_launches": 68,
+      "threads": 128,
+      "exact": true,
+      "performance_measurement": false
+    }
+  },
+  "source_preparation_only": true,
+  "compiler_native_gpu_executed": false
+}

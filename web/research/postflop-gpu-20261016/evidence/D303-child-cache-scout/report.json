@@ -1,0 +1,26 @@
+{
+  "id": "D303",
+  "at": "2026-10-29T20:00:15.541246+00:00",
+  "status": "history_review_before_prototype",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 240
+    }
+  ],
+  "unique_CUDA_hashes": 142,
+  "local_all_ref_revisions": 28,
+  "retained_matches": [],
+  "local_matches": [],
+  "candidate_concept": "Keep all original rc regret caching, sums/sigma/out/strategy/discount/regret equations. Remove only vc array and its copy; original late regret phase reloads same child CFV word. All template arities, ABI, host, launch/arrays/quality unchanged. No volatile, asm, flags, new helper or closed source composition.",
+  "counterevidence": "E024 removes BOTH caches ONLY in generic NA0; failedspeed. E117 loads child CFV EARLIER into vc during regret-sum pass; resource/maxthreadfailed. E123 would instead remove child cache across original helper while retaining regret cache and original load/equation order otherwise. Not a transfer/tune of either closed fixed hunk.",
+  "critical_uncertainty": "Compiler may CSE late reloads into original registers, producing no new mechanism; extra memory traffic can erase any resource benefit. Require actual compute120 register count strictly below62 and changed native body before application kernels, in addition to original resource/ABI gates. No advantage inferred from source cache words.",
+  "alias_argument": "No cfv writes in helper between original value load and regret-phase reload; only regrets/strategy stores, with original device allocations disjoint from cfv. Final parent CFV store stays after all regret updates. For na>8 original already reloads. Full actual raw GPU inputs/outputs/caller alias and broader controls mandatory; source argument not universal/compiler/NaN proof.",
+  "accepted_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "new_compiler_GPU_applicationkernel_solver_or_speed_samples": 0,
+  "limits": "Bounded recognized helper/literal/local-all-ref search, not exhaustive semantic or remote novelty. Review any hits before staging."
+}

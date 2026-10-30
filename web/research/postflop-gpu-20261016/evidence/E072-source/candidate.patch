@@ -1,0 +1,57 @@
+--- accepted-E051/kernels.cu
++++ E072/kernels.cu
+@@ -151,7 +151,11 @@
+ {
+     extern __shared__ float local_reach[];
+     __shared__ float s[52];
+-    __shared__ float total_parts[256];
++    // Index staging finishes before the unchanged total reduction starts.
++    __shared__ union {
++        float total_parts[256];
++        u32 card_indices[256];
++    } fold_scratch;
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+@@ -159,27 +163,36 @@
+         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+         local_reach[j] = global_reach[j];
++    const u32 cache_base = card_off[0];
++    const u32 cache_count = min((u32)256, card_off[52] - cache_base);
++    for (u32 k = threadIdx.x; k < cache_count; k += blockDim.x)
++        fold_scratch.card_indices[k] = card_idx[cache_base + k];
+     __syncthreads();
+     const float* ro = local_reach;
+     // Card lists preserve opponent hand order; all sums use the existing f32 precision.
+     // Each card has one writer, so no atomic order noise or contention.
+     for (int card = threadIdx.x; card < 52; card += blockDim.x) {
+         float sum = 0.0;
+-        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
+-            sum += (float)ro[card_idx[k]];
++        for (u32 k = card_off[card]; k < card_off[card + 1]; k++) {
++            u32 index = k - cache_base < cache_count
++                ? fold_scratch.card_indices[k - cache_base] : card_idx[k];
++            sum += (float)ro[index];
++        }
+         s[card] = sum;
+     }
+     float partial = 0.0;
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+         partial += (float)ro[j];
+-    total_parts[threadIdx.x] = partial;
++    // Every card-index consumer must finish before this storage is repurposed.
++    __syncthreads();
++    fold_scratch.total_parts[threadIdx.x] = partial;
+     __syncthreads();
+     for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+         if (threadIdx.x < (u32)step)
+-            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++            fold_scratch.total_parts[threadIdx.x] += fold_scratch.total_parts[threadIdx.x + step];
+         __syncthreads();
+     }
+-    float T = total_parts[0];
++    float T = fold_scratch.total_parts[0];
+     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];

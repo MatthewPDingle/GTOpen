@@ -1,0 +1,25 @@
+{
+  "id": "D298-up-fold-root-raw-decoder",
+  "status": "pass_scoped_encoded_input_full_raw_equivalence",
+  "checks": 29676210,
+  "cases": 380,
+  "kernel_launches": 760,
+  "output_words_both_arms": 25049840,
+  "immutable_words_both_arms": 44032780,
+  "guard_words_both_arms": 14994480,
+  "full_output_files_equal": true,
+  "every_physical_input_checked_against_declared_encoding": true,
+  "changed_input_field": "candidate same_p valid hand prefix only; all other words exact",
+  "raw_sha256": {
+    "baseline-inputs.bin": "743041e154157160624264dca606718711e1be7e553fcd690f91e5ee56dd1256",
+    "baseline.bin": "c78447c94f9fa3737e4acc0406ca4bc9b47f178fd2646ac15c0c2bedcd762e72",
+    "candidate-inputs.bin": "c6b3025658bb53651881829067c0a192af5143248d9463cdda0fba4273014ddd",
+    "candidate.bin": "c78447c94f9fa3737e4acc0406ca4bc9b47f178fd2646ac15c0c2bedcd762e72",
+    "inputs.bin": "1aa3dc48c6da8aa14f9de349425b89c58a71325eda7b1179eac1f2af2431b22b"
+  },
+  "audit_sha256": "fc016e16ab35c128defea746e63f47e95e918a28e91fabf4f8314352b1952322",
+  "corpus_sha256": "dfd4cca3b573b910566b3f35d916a2cd9ea538524f578506ba2032301cd634b1",
+  "limits": "Finite declared inputs only. Root replay is not external independent review; no solver accuracy, speed, universal NaN/layout or wide-address proof.",
+  "performance_measured": false,
+  "candidate_accepted": false
+}

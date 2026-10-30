@@ -1,0 +1,678 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1517,3 +1517,6 @@
+     }
+ 
+ }
++
++#[cfg(test)]
++mod graph_device_events;
+--- /dev/null
++++ b/crates/solver/src/gpu/graph_device_events.rs
+@@ -0,0 +1,666 @@
++//! Temporary D045 sparse diagnostic. Never a performance acceptance test.
++//! Clone E020's real captured graphs; preserve every original kernel and edge.
++use super::*;
++use crate::{Spot, SpotConfig};
++use crate::store::Storage;
++use cudarc::driver::CudaEvent;
++use serde_json::{json, Value};
++use std::collections::{HashMap, HashSet};
++use std::ffi::CStr;
++use std::io::{self, Write};
++use std::ptr;
++use std::time::Instant;
++
++type DiagResult<T> = Result<T, String>;
++const CHUNK: usize = 1_048_576;
++const GIB: u64 = 1 << 30;
++// Fixed D035 metadata-only selectors, rebound to accepted E020 shared-memory sizes.
++const SELECTED: [(usize, &str); 3] = [(19, "down_action"), (29, "up_show"), (34, "up_action")];
++const EVENT_BOUNDARIES: [usize; 6] = [19, 20, 29, 30, 34, 35];
++
++fn validate_selected(descriptions: &[KernelDescription], graph: usize) -> DiagResult<()> {
++    if graph >= 2 || descriptions.len() != 63 {
++        return Err("registered graph index or kernel count differs".into());
++    }
++    for &(ordinal, family) in &SELECTED {
++        let desc = &descriptions[ordinal];
++        let expected_shared = if family == "up_show" { [6300, 5060][graph] } else { 0 };
++        if desc.name != family || desc.grid != [141120, 1, 1]
++            || desc.block != [128, 1, 1] || desc.shared != expected_shared {
++            return Err(format!("graph{graph} registered selector{ordinal} descriptor differs"));
++        }
++        // Largest CTA count, first ordinal on ties; never select from observed timings.
++        let mut selected = None;
++        let mut largest = 0u128;
++        for (i, candidate) in descriptions.iter().enumerate() {
++            if candidate.name == family {
++                let count = candidate.grid.iter().fold(1u128, |a, &b| a * b as u128);
++                if selected.is_none() || count > largest {
++                    selected = Some(i);
++                    largest = count;
++                }
++            }
++        }
++        if selected != Some(ordinal) {
++            return Err(format!("graph{graph} registered metadata selector differs for {family}"));
++        }
++    }
++    Ok(())
++}
++
++fn emit(value: Value) -> DiagResult<()> {
++    let stdout=io::stdout();
++    let mut output=stdout.lock();
++    writeln!(output,"D045_EVENT_DIAGNOSTIC {value}").map_err(e)?;
++    output.flush().map_err(e)
++}
++
++fn cu(code: sys::CUresult) -> DiagResult<()> { code.result().map_err(e) }
++
++fn checked_sum(values: &[u64]) -> DiagResult<u64> {
++    values.iter().try_fold(0u64, |a, &b| a.checked_add(b).ok_or("byte-count overflow".into()))
++}
++
++fn bytes<T>(values: &[T]) -> DiagResult<u64> {
++    (values.len() as u64).checked_mul(std::mem::size_of::<T>() as u64)
++        .ok_or("byte-count overflow".into())
++}
++
++#[cfg(windows)]
++fn available_ram() -> DiagResult<u64> {
++    #[repr(C)]
++    struct MemoryStatus { length: u32, load: u32, total: u64, available: u64,
++        total_page: u64, available_page: u64, total_virtual: u64,
++        available_virtual: u64, extended: u64 }
++    #[link(name = "kernel32")]
++    extern "system" { fn GlobalMemoryStatusEx(status: *mut MemoryStatus) -> i32; }
++    let mut status: MemoryStatus = unsafe { std::mem::zeroed() };
++    status.length = std::mem::size_of::<MemoryStatus>() as u32;
++    if unsafe { GlobalMemoryStatusEx(&mut status) } == 0 {
++        return Err(format!("GlobalMemoryStatusEx: {}", io::Error::last_os_error()));
++    }
++    Ok(status.available)
++}
++
++#[cfg(not(windows))]
++fn available_ram() -> DiagResult<u64> { Err("D045 admission is registered for Windows only".into()) }
++
++// Count every actual E020 device payload; private admission only, no production changes.
++fn planned_device_bytes(spot: &Spot, plan: &GpuPlan) -> DiagResult<u64> {
++    let mut sizes = Vec::new();
++    macro_rules! push { ($($v:expr),+ $(,)?) => { $(sizes.push(bytes(&$v)?);)+ }; }
++    push!(plan.action_nodes, plan.chance_parents, plan.chance_children, plan.chance_cards,
++        plan.chance_nodes, plan.fold_nodes, plan.show_nodes, plan.node_player, plan.node_na,
++        plan.node_data_off, plan.node_children_start, plan.node_twin, plan.node_tlose,
++        plan.node_ttie, plan.node_cdiv, plan.node_river_slot, plan.cc_start, plan.cc_count,
++        plan.cc_card, plan.cc_child, plan.cc_perm, plan.cfv_slot, spot.tree.children);
++    for p in 0..2 {
++        push!(plan.hand_perm_flat[p], plan.reach_slot[p], plan.hand_c1[p], plan.hand_c2[p],
++            plan.hand_mask[p], plan.same_combo[p], plan.weights[p], plan.riv_off[p],
++            plan.riv_cnt[p], plan.riv_sorted_idx[p], plan.riv_lower[p], plan.riv_upper[p],
++            plan.riv_card_off[p], plan.riv_card_pos[p]);
++        // Every two-card hand appears in two fold-card lists; 53 offsets per player.
++        sizes.push(checked_sum(&[53 * 4, (spot.hands[p].len() as u64).checked_mul(8)
++            .ok_or("fold-list overflow")?])?);
++        sizes.push((plan.arena_elements[p] as u64).checked_mul(8).ok_or("arena overflow")?);
++        sizes.push((plan.reach_blocks[p] as u64).checked_mul(plan.nh[p] as u64)
++            .and_then(|x| x.checked_mul(4)).ok_or("reach overflow")?);
++    }
++    sizes.push((plan.cfv_blocks as u64).checked_mul(plan.nh_max as u64)
++        .and_then(|x| x.checked_mul(4)).ok_or("CFV overflow")?);
++    sizes.push((plan.num_nodes as u64).checked_mul(8).ok_or("lock overflow")?);
++    sizes.extend([4, 12, (plan.nh_max as u64).checked_mul(16).ok_or("eval overflow")?]);
++    checked_sum(&sizes)
++}
++
++#[derive(Clone, Debug, PartialEq, Eq)]
++struct KernelDescription { function: usize, name: String, grid: [u32; 3], block: [u32; 3], shared: u32 }
++
++impl KernelDescription {
++    fn logical(&self) -> Value {
++        json!({"kernel": self.name, "grid": self.grid, "block": self.block, "shared_bytes": self.shared})
++    }
++}
++
++fn describe_kernel(node: sys::CUgraphNode) -> DiagResult<KernelDescription> {
++    let mut kind = sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL;
++    unsafe { cu(sys::cuGraphNodeGetType(node, &mut kind))?; }
++    if kind != sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL {
++        return Err(format!("unexpected non-kernel graph node: {kind:?}"));
++    }
++    let mut params: sys::CUDA_KERNEL_NODE_PARAMS = unsafe { std::mem::zeroed() };
++    unsafe { cu(sys::cuGraphKernelNodeGetParams_v2(node, &mut params))?; }
++    let mut name = ptr::null();
++    unsafe { cu(sys::cuFuncGetName(&mut name, params.func))?; }
++    if name.is_null() { return Err("null kernel name".into()); }
++    let name = unsafe { CStr::from_ptr(name) }.to_str().map_err(e)?.to_owned();
++    if !KERNEL_NAMES.contains(&name.as_str()) { return Err(format!("unexpected training kernel {name}")); }
++    // Do not compare kernelParams pointer identity or struct padding across clones.
++    Ok(KernelDescription { function: params.func as usize, name,
++        grid: [params.gridDimX, params.gridDimY, params.gridDimZ],
++        block: [params.blockDimX, params.blockDimY, params.blockDimZ], shared: params.sharedMemBytes })
++}
++
++fn graph_nodes(graph: sys::CUgraph) -> DiagResult<Vec<sys::CUgraphNode>> {
++    let mut n = 0;
++    unsafe { cu(sys::cuGraphGetNodes(graph, ptr::null_mut(), &mut n))?; }
++    let mut nodes = vec![ptr::null_mut(); n];
++    unsafe { cu(sys::cuGraphGetNodes(graph, nodes.as_mut_ptr(), &mut n))?; }
++    if n != nodes.len() || nodes.iter().any(|n| n.is_null()) { return Err("graph node enumeration changed".into()); }
++    Ok(nodes)
++}
++
++fn graph_edges(graph: sys::CUgraph) -> DiagResult<Vec<(usize, usize)>> {
++    let mut n = 0;
++    unsafe { cu(sys::cuGraphGetEdges_v2(graph, ptr::null_mut(), ptr::null_mut(), ptr::null_mut(), &mut n))?; }
++    let mut from = vec![ptr::null_mut(); n];
++    let mut to = vec![ptr::null_mut(); n];
++    let mut data: Vec<sys::CUgraphEdgeData> = (0..n).map(|_| unsafe { std::mem::zeroed() }).collect();
++    unsafe { cu(sys::cuGraphGetEdges_v2(graph, from.as_mut_ptr(), to.as_mut_ptr(), data.as_mut_ptr(), &mut n))?; }
++    if n != data.len() || data.iter().any(|d| d.from_port != 0 || d.to_port != 0 || d.type_ != 0) {
++        return Err("changed edge count or nondefault graph dependency".into());
++    }
++    Ok(from.into_iter().zip(to).map(|(a, b)| (a as usize, b as usize)).collect())
++}
++
++fn chain(graph: sys::CUgraph) -> DiagResult<Vec<sys::CUgraphNode>> {
++    let nodes = graph_nodes(graph)?;
++    let edges = graph_edges(graph)?;
++    if nodes.is_empty() || edges.len() != nodes.len() - 1 { return Err("graph is not a nonempty chain".into()); }
++    let ids: HashSet<_> = nodes.iter().map(|&n| n as usize).collect();
++    let mut next = HashMap::new();
++    let mut incoming = HashSet::new();
++    for &(a, b) in &edges {
++        if !ids.contains(&a) || !ids.contains(&b) || next.insert(a, b).is_some() || !incoming.insert(b) {
++            return Err("graph has unknown endpoints or branching dependencies".into());
++        }
++    }
++    let roots: Vec<_> = ids.difference(&incoming).copied().collect();
++    if roots.len() != 1 { return Err("graph needs exactly one root".into()); }
++    let mut order = Vec::with_capacity(nodes.len());
++    let mut seen = HashSet::new();
++    let mut id = roots[0];
++    loop {
++        if !seen.insert(id) { return Err("graph cycle".into()); }
++        order.push(id as sys::CUgraphNode);
++        if let Some(&child) = next.get(&id) { id = child; } else { break; }
++    }
++    if order.len() != nodes.len() { return Err("graph chain omits nodes".into()); }
++    for &node in &order { describe_kernel(node)?; }
++    Ok(order)
++}
++
++struct TimedGraph {
++    ctx: Arc<CudaContext>, stream: Arc<CudaStream>, graph: sys::CUgraph, exec: sys::CUgraphExec,
++    events: Vec<CudaEvent>, descriptions: Vec<KernelDescription>, topology: Value,
++}
++
++impl TimedGraph {
++    fn close(&mut self) -> DiagResult<()> {
++        if self.graph.is_null() && self.exec.is_null() { return Ok(()); }
++        let mut errors = Vec::new();
++        if let Err(err) = self.ctx.bind_to_thread() { errors.push(format!("bind: {err:?}")); }
++        if let Err(err) = self.stream.synchronize() { errors.push(format!("wait: {err:?}")); }
++        unsafe {
++            if !self.exec.is_null() {
++                if let Err(err) = cu(sys::cuGraphExecDestroy(self.exec)) { errors.push(err); }
++                self.exec = ptr::null_mut();
++            }
++            if !self.graph.is_null() {
++                if let Err(err) = cu(sys::cuGraphDestroy(self.graph)) { errors.push(err); }
++                self.graph = ptr::null_mut();
++            }
++        }
++        // These handles outlive both graph destroy attempts; no borrowed source is destroyed.
++        self.events.clear();
++        if let Err(err)=self.ctx.check_err() { errors.push(format!("event/context cleanup: {err:?}")); }
++        if errors.is_empty() { Ok(()) } else { Err(errors.join("; ")) }
++    }
++
++    fn new(gpu: &GpuSolver, source: &CudaGraph, graph_index: usize) -> DiagResult<Self> {
++        gpu._ctx.bind_to_thread().map_err(e)?;
++        let original = chain(source.cu_graph())?;
++        let descriptions = original.iter().map(|&n| describe_kernel(n)).collect::<DiagResult<Vec<_>>>()?;
++        validate_selected(&descriptions, graph_index)?;
++        let mut result = Self { ctx: gpu._ctx.clone(), stream: gpu.stream.clone(),
++            graph: ptr::null_mut(), exec: ptr::null_mut(), events: vec![], descriptions, topology: Value::Null };
++        unsafe { cu(sys::cuGraphClone(&mut result.graph, source.cu_graph()))?; }
++        let mut mapped = Vec::new();
++        for (i, &node) in original.iter().enumerate() {
++            let mut clone = ptr::null_mut();
++            unsafe { cu(sys::cuGraphNodeFindInClone(&mut clone, node, result.graph))?; }
++            if clone.is_null() || describe_kernel(clone)? != result.descriptions[i] {
++                return Err("cloned kernel descriptor changed".into());
++            }
++            mapped.push(clone);
++        }
++        if chain(result.graph)? != mapped { return Err("clone changed original ordering".into()); }
++        let mut expected: HashSet<_> = graph_edges(result.graph)?.into_iter().collect();
++        for (event_index, &boundary) in EVENT_BOUNDARIES.iter().enumerate() {
++            result.events.push(gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?);
++            let mut event_node = ptr::null_mut();
++            // Keep every source edge; each timestamp is ordered between its two neighbors.
++            unsafe { cu(sys::cuGraphAddEventRecordNode(&mut event_node, result.graph,
++                &mapped[boundary - 1], 1, result.events[event_index].cu_event()))?; }
++            expected.insert((mapped[boundary - 1] as usize, event_node as usize));
++            unsafe { cu(sys::cuGraphAddDependencies(result.graph, &event_node, &mapped[boundary], 1))?; }
++            expected.insert((event_node as usize, mapped[boundary] as usize));
++        }
++        let edges = graph_edges(result.graph)?;
++        if graph_nodes(result.graph)?.len() != 69 || edges.len() != 74
++            || result.events.len() != 6 || edges.len() != expected.len()
++            || edges.iter().copied().collect::<HashSet<_>>() != expected {
++            return Err("instrumented graph topology differs from registered sparse boundaries".into());
++        }
++        for (i, &node) in mapped.iter().enumerate() {
++            if describe_kernel(node)? != result.descriptions[i] || describe_kernel(original[i])? != result.descriptions[i] {
++                return Err("event insertion modified an original kernel".into());
++            }
++        }
++        if chain(source.cu_graph())? != original { return Err("source graph changed".into()); }
++        let stable_edges: Vec<_> = (0..mapped.len() - 1).map(|i| json!([format!("K{i}"), format!("K{}", i+1)])).collect();
++        let boundaries: Vec<_> = EVENT_BOUNDARIES.iter().flat_map(|&b|
++            [json!([format!("K{}", b-1), format!("E{b}")]),
++             json!([format!("E{b}"), format!("K{b}")])]).collect();
++        result.topology = json!({"graph": graph_index, "original_kernel_nodes": mapped.len(),
++            "event_nodes": result.events.len(), "event_boundaries": EVENT_BOUNDARIES,
++            "selected_ordinals": SELECTED.iter().map(|x| x.0).collect::<Vec<_>>(),
++            "total_nodes": 69, "total_edges": edges.len(),
++            "original_edges": stable_edges, "added_edges": boundaries,
++            "kernel_descriptors": result.descriptions.iter().enumerate().map(|(i,d)| json!({
++                "ordinal":i,"logical":d.logical(),"run_local_function":format!("0x{:x}",d.function)
++            })).collect::<Vec<_>>(), "kernel_argument_setter_calls":0,
++            "argument_preservation":"CUDA graph clone; no parameter dereference or setter"});
++        unsafe { cu(sys::cuGraphInstantiateWithFlags(&mut result.exec, result.graph,
++            sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH as u64))?; }
++        Ok(result)
++    }
++
++    fn upload(&self) -> DiagResult<()> {
++        self.ctx.bind_to_thread().map_err(e)?;
++        unsafe { cu(sys::cuGraphUpload(self.exec, self.stream.cu_stream())) }
++    }
++
++    fn launch(&self) -> DiagResult<()> {
++        self.ctx.bind_to_thread().map_err(e)?;
++        unsafe { cu(sys::cuGraphLaunch(self.exec, self.stream.cu_stream())) }
++    }
++
++    fn sample(&self, graph: usize, iteration: u32) -> DiagResult<Value> {
++        // Caller completed the whole batch. Each event holds only its final replay timestamp.
++        let mut nodes = Vec::new();
++        for &(ordinal, _) in &SELECTED {
++            let begin = EVENT_BOUNDARIES.iter().position(|&b| b == ordinal).ok_or("missing start boundary")?;
++            let end = EVENT_BOUNDARIES.iter().position(|&b| b == ordinal + 1).ok_or("missing end boundary")?;
++            let ms = self.events[begin].elapsed_ms(&self.events[end]).map_err(e)?;
++            if !ms.is_finite() || ms < 0.0 { return Err("invalid selected device interval".into()); }
++            let desc = &self.descriptions[ordinal];
++            nodes.push(json!({"ordinal":ordinal,"kernel":desc.name,"logical":desc.logical(),
++                "start_boundary":ordinal,"end_boundary":ordinal+1,"ms":ms,"near_resolution":ms<=0.0005}));
++        }
++        Ok(json!({"graph":graph,"iteration":iteration,
++            "scope":"selected original kernels, final replay only; event-perturbed intervals",
++            "nodes":nodes}))
++    }
++}
++
++impl Drop for TimedGraph {
++    fn drop(&mut self) {
++        // Context/stream Arcs and the enclosing solver borrow keep all references alive.
++        if let Err(error) = self.close() {
++            let _ = writeln!(io::stderr().lock(), "D045_CLEANUP_ERROR {error}");
++        }
++    }
++}
++
++struct Instrumented<'a> { gpu: &'a mut GpuSolver, graphs: Vec<TimedGraph> }
++impl<'a> Instrumented<'a> {
++    fn new(gpu: &'a mut GpuSolver) -> DiagResult<Self> {
++        let source = gpu.graphs.as_ref().ok_or("native graphs not captured")?;
++        let graphs = vec![TimedGraph::new(gpu, &source[0], 0)?, TimedGraph::new(gpu, &source[1], 1)?];
++        for graph in &graphs { graph.upload()?; emit(json!({"stage":"graph","topology":graph.topology}))?; }
++        gpu.synchronize()?;
++        Ok(Self { gpu, graphs })
++    }
++
++    fn iterate(&mut self) -> DiagResult<()> {
++        self.gpu.iteration += 1;
++        let disc = Discounts::for_iteration(self.gpu.algo, self.gpu.iteration);
++        self.gpu.stream
++            .memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.gpu.d_disc)
++            .map_err(e)?;
++        for graph in &self.graphs { graph.launch()?; }
++        Ok(())
++    }
++
++    fn close(&mut self) -> DiagResult<()> {
++        let errors: Vec<_> = self.graphs.iter_mut().filter_map(|graph|graph.close().err()).collect();
++        if errors.is_empty() { Ok(()) } else { Err(errors.join("; ")) }
++    }
++}
++
++// Also drain ordinary arms on an early error, before solver-owned buffers/module drop.
++struct SolverGuard(GpuSolver);
++impl std::ops::Deref for SolverGuard { type Target=GpuSolver; fn deref(&self)->&GpuSolver { &self.0 } }
++impl std::ops::DerefMut for SolverGuard { fn deref_mut(&mut self)->&mut GpuSolver { &mut self.0 } }
++impl Drop for SolverGuard {
++    fn drop(&mut self) {
++        if let Err(error)=self.0.synchronize() {
++            let _=writeln!(io::stderr().lock(),"D045_SOLVER_CLEANUP_ERROR {error}");
++        }
++    }
++}
++
++fn compare_raw(a: &GpuSolver, b: &GpuSolver, iteration: u32) -> DiagResult<()> {
++    a.synchronize()?; b.synchronize()?;
++    if a.iteration != iteration || b.iteration != iteration { return Err("raw checkpoint iteration mismatch".into()); }
++    let mut records = Vec::new();
++    for p in 0..2 {
++        for (name, left, right) in [("regrets",&a.d_regrets[p],&b.d_regrets[p]),
++            ("strategy",&a.d_strat[p],&b.d_strat[p]), ("reach",&a.d_reach[p],&b.d_reach[p]),
++            ("weights",&a.d_weights[p],&b.d_weights[p])] {
++            if left.len()!=right.len() { return Err(format!("{name}/{p} length mismatch")); }
++            let mut hash = Fingerprint::new();
++            for offset in (0..left.len()).step_by(CHUNK) {
++                let end = (offset+CHUNK).min(left.len());
++                let x=a.stream.clone_dtoh(&left.slice(offset..end)).map_err(e)?;
++                let y=b.stream.clone_dtoh(&right.slice(offset..end)).map_err(e)?;
++                for (i,(x,y)) in x.iter().zip(&y).enumerate() {
++                    if x.to_bits()!=y.to_bits() { return Err(format!("raw {name}/{p}/{}: {:08x}!={:08x}",offset+i,x.to_bits(),y.to_bits())); }
++                    hash.bytes(&x.to_bits().to_le_bytes());
++                }
++            }
++            records.push(json!({"array":name,"player":p,"entries":left.len(),"hash":hash.finish()}));
++        }
++    }
++    let disc=Discounts::for_iteration(a.algo,iteration);
++    let expected=[disc.pos.to_bits(),disc.neg.to_bits(),disc.strat.to_bits()];
++    for gpu in [a,b] {
++        let actual=gpu.stream.clone_dtoh(&gpu.d_disc).map_err(e)?;
++        if actual.iter().map(|x|x.to_bits()).collect::<Vec<_>>()!=expected { return Err("discount payload differs".into()); }
++    }
++    emit(json!({"stage":"raw_exact","iteration":iteration,"pass":true,"arrays":records,
++        "discount_bits":expected,"chunk_floats":CHUNK,"peak_pairwise_snapshot_bytes":CHUNK*8,
++        "cfv_scratch_compared":false,"before_exploitability":true}))
++}
++
++fn compare_cpu(a: &Solver,b: &Solver) -> DiagResult<()> {
++    if a.iteration!=b.iteration { return Err("CPU iteration mismatch".into()); }
++    for p in 0..2 {
++        for (x,y) in [(&a.regrets[p],&b.regrets[p]),(&a.strat[p],&b.strat[p])] {
++            let equal=match (x,y) {
++                (Store::I16{q:x,scale:xs},Store::I16{q:y,scale:ys}) => x.as_slice()==y.as_slice()
++                    && xs.len()==ys.len() && xs.as_slice().iter().zip(ys.as_slice()).all(|(x,y)|x.to_bits()==y.to_bits()),
++                (Store::U16{q:x,scale:xs},Store::U16{q:y,scale:ys}) => x.as_slice()==y.as_slice()
++                    && xs.len()==ys.len() && xs.as_slice().iter().zip(ys.as_slice()).all(|(x,y)|x.to_bits()==y.to_bits()),
++                _ => false,
++            };
++            if !equal { return Err(format!("CPU compressed store mismatch player{p}")); }
++        }
++    }
++    Ok(())
++}
++
++fn check_exploit(gpu:&mut GpuSolver,host:&Solver,anchors:&Value) -> DiagResult<f64> {
++    let exploit=gpu.exploitability(host)?;
++    let expected=anchors.as_array().ok_or("anchor array")?.iter()
++        .find(|x|x["iteration"].as_u64()==Some(gpu.iteration as u64)).ok_or("missing iteration anchor")?;
++    if !exploit.is_finite() || Some(exploit.to_bits())!=expected["exploit_bits"].as_u64() {
++        return Err(format!("iteration{} exploit anchor mismatch: {}",gpu.iteration,exploit.to_bits()));
++    }
++    Ok(exploit)
++}
++
++fn batch_native(gpu:&mut GpuSolver) -> DiagResult<Value> {
++    let start=gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?;
++    let end=gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?;
++    let wall=Instant::now();
++    start.record(&gpu.stream).map_err(e)?;
++    for _ in 0..20 { gpu.iterate()?; }
++    end.record(&gpu.stream).map_err(e)?;
++    gpu.synchronize()?;
++    let wall_ms=wall.elapsed().as_secs_f64()*1000.;
++    let ms=start.elapsed_ms(&end).map_err(e)?;
++    if !ms.is_finite() || ms<0. { return Err("invalid native batch interval".into()); }
++    Ok(json!({"arm":"native","end_iteration":gpu.iteration,"iterations":20,"device_batch_ms":ms,"host_batch_ms":wall_ms}))
++}
++
++fn batch_instrumented(arm:&mut Instrumented<'_>) -> DiagResult<Value> {
++    let start=arm.gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?;
++    let end=arm.gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?;
++    let wall=Instant::now();
++    start.record(&arm.gpu.stream).map_err(e)?;
++    for _ in 0..20 { arm.iterate()?; }
++    end.record(&arm.gpu.stream).map_err(e)?;
++    arm.gpu.synchronize()?;
++    let wall_ms=wall.elapsed().as_secs_f64()*1000.;
++    let ms=start.elapsed_ms(&end).map_err(e)?;
++    if !ms.is_finite() || ms<0. { return Err("invalid instrumented interval".into()); }
++    let samples=arm.graphs.iter().enumerate().map(|(i,g)|g.sample(i,arm.gpu.iteration)).collect::<DiagResult<Vec<_>>>()?;
++    Ok(json!({"arm":"instrumented","end_iteration":arm.gpu.iteration,"iterations":20,
++        "device_batch_ms":ms,"host_batch_ms":wall_ms,
++        "final_replay_only":samples,"setup_upload_wait_excluded":true}))
++}
++
++fn diagnostic() -> DiagResult<()> {
++    let anchor:Value=serde_json::from_str(ANCHOR_JSON).map_err(e)?;
++    let convergence:Value=serde_json::from_str(CONVERGENCE_JSON).map_err(e)?;
++    let free_before_spot=available_ram()?;
++    if free_before_spot<16*GIB { return Err("less than16GiB available RAM before shared Spot build".into()); }
++    let config:SpotConfig=serde_json::from_value(anchor["config"].clone()).map_err(e)?;
++    let spot=Arc::new(Spot::new(config)?);
++    if spot.config.board!="Ks7h2d" || spot.tree.config.rake_cap!=3.0 || spot.tree.config.rake_pct!=0.0 {
++        return Err("diagnostic fixture differs from frozen config".into());
++    }
++    let plan=GpuPlan::build(&spot,true);
++    let device_per_arm=planned_device_bytes(&spot,&plan)?;
++    let dual_device=checked_sum(&[device_per_arm,device_per_arm,2*GIB])?;
++    let cpu_per_arm=spot.arena_bytes_for(Storage::Compressed);
++    let pinned_per_arm=(plan.arena_elements[0].max(plan.arena_elements[1]) as u64)
++        .checked_mul(4).ok_or("pinned bytes overflow")?;
++    // Reserve covers per-solver retained host layouts, constructor temporary plans,
++    // graph metadata/events and allocator overhead; raw pairwise copies are separately bounded.
++    let host_additional=checked_sum(&[cpu_per_arm,cpu_per_arm,pinned_per_arm,pinned_per_arm,CHUNK as u64*8,8*GIB])?;
++    let ram=available_ram()?;
++    let ctx=CudaContext::new(0).map_err(e)?;
++    let (free,total)=ctx.mem_get_info().map_err(e)?;
++    emit(json!({"stage":"admission","device_per_arm_payload_bytes":device_per_arm,
++        "dual_device_required_with_reserve":dual_device,"device_reserve_bytes":2*GIB,
++        "device_free_bytes":free,"device_total_bytes":total,"host_free_before_spot":free_before_spot,
++        "host_free_after_spot_and_plan":ram,"host_additional_required":host_additional,
++        "host_reserve_bytes":8*GIB,"cpu_arena_bytes_per_arm":cpu_per_arm,
++        "pinned_bytes_per_arm":pinned_per_arm,"shared_tree_bytes":spot.tree_bytes(),
++        "raw_compare_max_bytes":CHUNK*8,"diagnostic_only":true}))?;
++    if (free as u64)<dual_device || ram<host_additional { return Err("dual-arm memory admission refused".into()); }
++    drop(plan);
++    let mut host_a=Solver::with_storage(spot.clone(),Storage::Compressed);
++    let mut host_b=Solver::with_storage(spot,Storage::Compressed);
++    if host_a.algo!=Algorithm::Dcfr || !host_a.use_isomorphism || !host_a.locks.is_empty()
++        || host_b.algo!=host_a.algo || !host_b.use_isomorphism || !host_b.locks.is_empty() {
++        return Err("unexpected solver defaults".into());
++    }
++    let mut native=SolverGuard(GpuSolver::new(&host_a)?);
++    native.synchronize()?;
++    let (free_before_second,_)=ctx.mem_get_info().map_err(e)?;
++    if (free_before_second as u64)<checked_sum(&[device_per_arm,2*GIB])? {
++        return Err("live memory changed before second solver allocation".into());
++    }
++    let mut candidate=SolverGuard(GpuSolver::new(&host_b)?);
++    candidate.synchronize()?;
++    for _ in 0..7 {
++        for _ in 0..20 { native.iterate()?; }
++        native.synchronize()?;
++        for _ in 0..20 { candidate.iterate()?; }
++        candidate.synchronize()?;
++        if native.iteration==140 { compare_raw(&native,&candidate,140)?; }
++        let x=check_exploit(&mut native,&host_a,&convergence)?;
++        let y=check_exploit(&mut candidate,&host_b,&convergence)?;
++        if x.to_bits()!=y.to_bits() { return Err("warm exploit mismatch".into()); }
++        emit(json!({"stage":"warm_check","iteration":native.iteration,"exploit_bits":x.to_bits()}))?;
++    }
++    native.sync_to_cpu(&mut host_a)?; candidate.sync_to_cpu(&mut host_b)?;
++    compare_cpu(&host_a,&host_b)?;
++    for (a,b) in native.graphs.as_ref().unwrap().iter().zip(candidate.graphs.as_ref().unwrap()) {
++        let describe=|graph:&CudaGraph| -> DiagResult<Vec<Value>> {
++            chain(graph.cu_graph())?.iter().map(|&n|describe_kernel(n).map(|x|x.logical())).collect()
++        };
++        if describe(a)?!=describe(b)? { return Err("native/instrumented original graph logical descriptors differ".into()); }
++        a.upload().map_err(e)?; b.upload().map_err(e)?;
++    }
++    native.synchronize()?; candidate.synchronize()?;
++    let mut instrumented=Instrumented::new(&mut candidate)?;
++    for (batch,checkpoint) in [160,180,200].into_iter().enumerate() {
++        let (a,b)=if batch%2==0 {
++            let a=batch_native(&mut native)?;
++            let b=batch_instrumented(&mut instrumented)?;
++            (a,b)
++        } else {
++            let b=batch_instrumented(&mut instrumented)?;
++            let a=batch_native(&mut native)?;
++            (a,b)
++        };
++        emit(json!({"stage":"batch","batch":batch,"checkpoint":checkpoint,
++            "arm_order":if batch%2==0 { ["native","instrumented"] } else { ["instrumented","native"] },
++            "native":a,"instrumented":b,"claim":"event-perturbed diagnostic; no performance acceptance"}))?;
++        compare_raw(&native,instrumented.gpu,checkpoint)?;
++        let exploit=check_exploit(&mut native,&host_a,&convergence)?;
++        let other=check_exploit(instrumented.gpu,&host_b,&convergence)?;
++        if exploit.to_bits()!=other.to_bits() { return Err("sampled exploit mismatch".into()); }
++        native.sync_to_cpu(&mut host_a)?; instrumented.gpu.sync_to_cpu(&mut host_b)?;
++        compare_cpu(&host_a,&host_b)?;
++        emit(json!({"stage":"checkpoint_exact","iteration":checkpoint,"raw_and_compressed_pass":true,"exploit_bits":exploit.to_bits()}))?;
++        if checkpoint==200 {
++            let first=state_fingerprint(&host_a,exploit);
++            let second=state_fingerprint(&host_b,other);
++            if first!=anchor["state_fingerprint"] || second!=first { return Err("immutable E015/original full-state anchor mismatch".into()); }
++            emit(json!({"stage":"final_anchor_exact","state_fingerprint":first,"original_run":"B038",
++                "accepted_run":"E020C1","historical_anchor_run":"E015C1"}))?;
++        }
++    }
++    native.synchronize()?; instrumented.gpu.synchronize()?;
++    instrumented.close()?;
++    native._ctx.check_err().map_err(e)?;
++    instrumented.gpu._ctx.check_err().map_err(e)?;
++    drop(instrumented); // cloned execs/graphs/events finish before candidate module/buffers.
++    emit(json!({"stage":"complete","checkpoints":[140,160,180,200],"node_samples":[160,180,200],
++        "selected_intervals_per_graph_per_checkpoint":3,"total_selected_intervals":18,
++        "accepted_performance_claim":false,"scope":"rainbow compressed selected captured training kernels only"}))
++}
++
++#[test]
++#[ignore = "manual D045 captured-graph device event diagnostic; serialized GPU execution only"]
++fn captured_graph_device_event_diagnostic() {
++    if let Err(error)=diagnostic() {
++        let _=emit(json!({"stage":"invalid","error":error}));
++        panic!("D045 invalid diagnostic: {error}");
++    }
++}
++
++// Frozen evaluator helpers and literal native anchors are appended below unchanged.
++// Stream every byte without allocating a second copy of the multi-GB arenas.
++// This is a deterministic equality fingerprint, not a cryptographic digest.
++struct Fingerprint(u64);
++impl Fingerprint {
++    fn new() -> Self {
++        Self(0xcbf29ce484222325)
++    }
++
++    fn bytes(&mut self, bytes: &[u8]) {
++        for &byte in bytes {
++            self.0 = (self.0 ^ u64::from(byte)).wrapping_mul(0x100000001b3);
++        }
++    }
++
++    fn finish(&self) -> String {
++        format!("{:016x}", self.0)
++    }
++}
++
++fn fingerprint_store(store: &Store, combined: &mut Fingerprint) -> Value {
++    let mut hash = Fingerprint::new();
++    let mut feed = |bytes: &[u8]| {
++        hash.bytes(bytes);
++        combined.bytes(bytes);
++    };
++    let (kind, entries, scales) = match store {
++        Store::F32(values) => {
++            feed(b"f32");
++            feed(&(values.len() as u64).to_le_bytes());
++            for value in values.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("f32", values.len(), 0)
++        }
++        Store::I16 { q, scale } => {
++            feed(b"i16");
++            feed(&(q.len() as u64).to_le_bytes());
++            feed(&(scale.len() as u64).to_le_bytes());
++            for value in q.as_slice() {
++                feed(&value.to_le_bytes());
++            }
++            for value in scale.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("i16", q.len(), scale.len())
++        }
++        Store::U16 { q, scale } => {
++            feed(b"u16");
++            feed(&(q.len() as u64).to_le_bytes());
++            feed(&(scale.len() as u64).to_le_bytes());
++            for value in q.as_slice() {
++                feed(&value.to_le_bytes());
++            }
++            for value in scale.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("u16", q.len(), scale.len())
++        }
++    };
++    json!({
++        "kind": kind, "entries": entries, "scale_entries": scales,
++        "bytes": store.bytes(), "hash": hash.finish(),
++    })
++}
++
++fn state_fingerprint(solver: &Solver, exploit: f64) -> Value {
++    let mut combined = Fingerprint::new();
++    combined.bytes(b"postflop-autoresearch-state-v1");
++    let algorithm = serde_json::to_vec(&solver.algo).unwrap();
++    combined.bytes(&(algorithm.len() as u64).to_le_bytes());
++    combined.bytes(&algorithm);
++    combined.bytes(&solver.iteration.to_le_bytes());
++    combined.bytes(&[u8::from(solver.use_isomorphism)]);
++    combined.bytes(&exploit.to_bits().to_le_bytes());
++    let mut arenas = Vec::new();
++    for player in 0..2 {
++        for (name, store) in [
++            ("regrets", &solver.regrets[player]),
++            ("strategy_sums", &solver.strat[player]),
++        ] {
++            combined.bytes(&(player as u64).to_le_bytes());
++            combined.bytes(name.as_bytes());
++            let mut arena = fingerprint_store(store, &mut combined);
++            arena["player"] = json!(player);
++            arena["arena"] = json!(name);
++            arenas.push(arena);
++        }
++    }
++    // Root strategy is cheap and does not materialize inactive suit branches.
++    let root_strategy_bits: Vec<u32> = solver
++        .average_strategy(0, &solver.spot.tree.nodes[0])
++        .iter()
++        .map(|value| value.to_bits())
++        .collect();
++    json!({
++        "method": "fnv1a64-little-endian-v1", "hash": combined.finish(),
++        "algorithm": solver.algo, "iteration": solver.iteration,
++        "iteration_le_bytes": solver.iteration.to_le_bytes(),
++        "exploit_bits": exploit.to_bits(), "arenas": arenas,
++        "root_strategy_bits": root_strategy_bits,
++        "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback",
++    })
++}
++
++
++const ANCHOR_JSON: &str = r#"{"fixture_id":"rainbow","board":"Ks7h2d","storage":"compressed","config":{"board":"Ks7h2d","range_ip":"22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo","range_oop":"55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o","tree":{"add_allin":false,"allin_threshold":0.85,"carry_aggressor_through_checks":null,"effective_stack":970.0,"ip":[{"bet":[{"PotPct":33.0},{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]}],"max_raises":10,"oop":[{"bet":[{"PotPct":33.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]}],"rake_cap":3.0,"rake_pct":0.0,"starting_pot":60.0}},"algorithm":"Dcfr","use_isomorphism":true,"nodes":1346813,"cpu_arena_bytes":1386321040,"iteration":200,"target_pct":0.3,"check_every":20,"max_iterations":400,"target_met":true,"exploit_bits":4595130701932466176,"fingerprint":"65fb2853a11f3acc","state_fingerprint":{"algorithm":"Dcfr","arenas":[{"arena":"regrets","bytes":317428942,"entries":156020845,"hash":"af31c4ea5b36e0de","kind":"i16","player":0,"scale_entries":1346813},{"arena":"strategy_sums","bytes":317428942,"entries":156020845,"hash":"47bb30304cc30491","kind":"u16","player":0,"scale_entries":1346813},{"arena":"regrets","bytes":375731578,"entries":185172163,"hash":"c0fbb58a97c882ba","kind":"i16","player":1,"scale_entries":1346813},{"arena":"strategy_sums","bytes":375731578,"entries":185172163,"hash":"b3f701482b98c098","kind":"u16","player":1,"scale_entries":1346813}],"exploit_bits":4595130701932466176,"hash":"65fb2853a11f3acc","iteration":200,"iteration_le_bytes":[200,0,0,0],"method":"fnv1a64-little-endian-v1","root_strategy_bits":[1065085704,1065070093,1065067529,1065248517,1065228548,1065248517,1065247491,1065256707,1065249283,1065352448,1065352448,1065258499,1065352448,1065229318,1065255940,1065352448,1065258756,1065262852,1065256964,1065352448,1065352448,1065352448,1065322497,1065242373,1065352448,1065245187,1065241859,1065252611,1065352448,1065196549,1065243139,1065253635,1065253893,1065352448,1065352448,1065352448,1065253635,1065352448,1065164809,1065352448,1065213446,1065110791,1065198597,1065155337,1065196293,1065224454,1065224452,1065352448,1065297410,1065026831,1065270531,1065128711,1065313793,1065262595,1065300994,1065352448,1065352448,1065352448,1065352448,1065275906,1065352448,1065201927,1065352192,1065352448,1065352448,1065352192,1065270786,1065352448,1065270019,1065352448,1065352448,1065352448,1065148934,1065299202,1065352448,1065350656,1065351424,1065351936,1065295875,1065245957,1065351680,1065347584,1065350912,1065201927,1065351680,1065343488,1065350912,1065290242,1065234437,1065350144,1065330433,1065336320,1065270786,1065352192,1065352448,1065348096,1065348096,1065341440,1065242883,1065352192,1065147401,1065346304,1065334529,1065317377,1065351936,1065106696,1065348352,1065337856,1065327105,1065240835,1065352192,1065018895,1065342208,1065325313,1065327105,1065351936,1065299202,1065351936,1065351936,1065351936,1065351936,1065351168,1065346304,1065346048,1065346304,1065351936,1065261827,1065351424,1065309186,1065351680,1065350656,1065344512,1065346048,1065341185,1065338625,1065351936,1065351424,1065285890,1065351936,1065350656,1065347584,1065346048,1065340416,1065337856,1065352192,1065251587,1065351936,1065266435,1065351168,1065348864,1065349632,1065346048,1065334785,1065337857,1065263620,1065065737,1065255171,1065256195,1065284098,1065281026,1065264132,1065250563,1065244419,1065246211,1065213702,1065040654,1065218052,1065278467,1065174792,1065285634,1065282050,1065245443,1065244419,1065251587,1065202949,1065201159,1065281794,1065292547,1065157129,1065285635,1065251333,1065258755,1065260547,1065261572,1065340416,1065339392,1065337857,1065337344,1065273858,1065321729,1065318913,1065320193,1065319170,1065302018,1065304066,1065301506,1065287426,1065287426,1065282818,1065310721,1065309185,1065310977,1065268739,1065217286,1065129735,1065295874,1065237508,1065316610,1065236741,1065314561,1065313281,1065295106,1065291522,1065287170,1065273090,1065265411,1065259780,1065306369,1065293570,1065301250,1065204741,1065259011,1065182469,1065262340,1065289218,1065315841,1065311490,1065247491,1065312258,1065293058,1065284866,1065284611,1065270786,1065262339,1065257987,1065306881,1065301762,1065302018,1065215494,1065179912,1065239301,1065160713,1065268484,1065255171,1065314305,1065309185,1065311234,1065203461,1065288963,1065279491,1065284098,1065267203,1065257988,1065261315,1065305346,1065299970,1065298178,1015193339,1015692897,1015774953,1003257242,1005813273,1003257242,1003388515,1002208903,1003159146,943718016,943718016,1001979534,943718016,1005714730,1002307014,943718016,1001946582,1001422318,1002175948,943718016,943718016,943718016,988806448,1004043638,943718016,1003683418,1004109389,1002733175,943718016,1008271054,1003945554,1002602107,1002569146,943718016,943718016,943718016,1002602107,943718016,1010302424,943718016,1007189606,1013759526,1008139986,1010908604,1008287438,1006337294,1006337545,943718016,995753548,1017077282,1000439485,1012612682,991559372,1001455262,994835868,943718016,943718016,943718016,943718016,999751378,943718016,1007926853,947911936,943718016,943718016,947911936,1000406718,943718016,1000505019,943718016,943718016,943718016,1011318385,995294810,943718016,958398144,954203488,950009376,996146528,1003584908,952106432,967835120,957349456,1007926853,952106432,974650936,957349600,997588500,1005059400,960495232,984743402,981729016,1000406718,947911936,943718016,966786752,966786592,976748176,1003978321,947912192,1011416485,970456440,982646492,990641896,950009376,1014021662,966262480,980418080,986447464,1004240457,947912192,1017331222,975961596,987364940,986447260,950009536,995294599,950009536,950009536,950009536,950009376,956300800,970456656,970980704,970456656,950009536,1001553563,954203488,992738812,952106624,958398144,973602544,970980704,977010124,979631444,950009376,954203488,998473465,950009536,958397984,967835296,970980704,977796720,980418080,947911936,1002864243,950009536,1000963757,956300800,965213800,962592320,970980704,982515280,980417840,1001324019,1015832295,1002405505,1002274437,998702834,999096038,1001258486,1002995311,1003781719,1003552350,1007173223,1016634934,1006894840,999423562,1009663477,998506232,998964970,1003650651,1003781719,1002864243,1007861466,1007976002,998997737,996998457,1010793922,998506100,1002896811,1001946767,1001717398,1001586151,977796720,978845264,980417840,980942352,1000013514,989199892,990248692,989921022,990183025,994573936,994049472,994705004,998276863,998276863,998866669,992345780,992738984,992280246,1000668854,1006943858,1012547148,996146752,1004666428,990838355,1004764502,991362770,991690440,996343354,997260830,998309630,1000111815,1001094825,1001815516,993459858,996736558,994770538,1007746782,1001914000,1009172146,1001487852,997850636,991035100,992149015,1003388515,991952416,996867626,998604533,998637166,1000406718,1001488029,1002045068,993328790,994639470,994573936,1007058540,1009335812,1004436836,1010564556,1000701456,1002405505,991428304,992738984,992214548,1007828700,997915919,999292496,998702834,1000865456,1002044882,1001619097,993721807,995098000,995556731],"scope":"all CPU regret and strategy entries and scales immediately after full GPU readback"},"provenance":{"accepted_run":"E015C1","original_run":"B038","full_state_objects_equal":true,"accepted_binary_sha256":"37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda","report_sha256":"9a1ccb80a329b52fee7123ef5f0795348b0017df673b526569ad5cf10b319e88"}}"#;
++const CONVERGENCE_JSON: &str = r#"[{"iteration":20,"exploit_bits":4622293349835068352,"exploit_chips":10.84240569381825,"exploit_pct_pot":18.07067615636375},{"iteration":40,"exploit_bits":4615910349596779108,"exploit_chips":3.875979891159931,"exploit_pct_pot":6.459966485266551},{"iteration":60,"exploit_bits":4611592466607110480,"exploit_chips":1.9792273230264819,"exploit_pct_pot":3.298712205044137},{"iteration":80,"exploit_bits":4607812973746629388,"exploit_chips":1.1400113240039813,"exploit_pct_pot":1.900018873339969},{"iteration":100,"exploit_bits":4604651510606006304,"exploit_chips":0.71901274497964,"exploit_pct_pot":1.1983545749660667},{"iteration":120,"exploit_bits":4602400871342019424,"exploit_chips":0.4845707959396375,"exploit_pct_pot":0.8076179932327291},{"iteration":140,"exploit_bits":4600062402970321824,"exploit_chips":0.35475972450881876,"exploit_pct_pot":0.5912662075146979},{"iteration":160,"exploit_bits":4598526937924752800,"exploit_chips":0.2695242921539265,"exploit_pct_pot":0.44920715358987745},{"iteration":180,"exploit_bits":4596673615736125952,"exploit_chips":0.2083221219304079,"exploit_pct_pot":0.3472035365506798},{"iteration":200,"exploit_bits":4595130701932466176,"exploit_chips":0.16549766118453135,"exploit_pct_pot":0.2758294353075523}]"#;

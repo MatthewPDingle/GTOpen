@@ -1,0 +1,32 @@
+warning: private item shadows public glob re-export
+  --> S:\GTOpen-research\postflop-gpu-20261016\runs\E087-host-type-check\probe.rs:3:1
+   |
+ 3 | / mod gpu {
+ 4 | |  use solver::{Solver,store::Store};
+ 5 | |  use rayon::prelude::*;
+ 6 | |  pub mod plan { pub use solver::gpu::plan::*; }
+...  |
+31 | |  #[path = r"S:\GTOpen-research\postflop-gpu-20261016\runs\E087-source\candidate\arena.rs"] mod arena;
+32 | | }
+   | |_^
+   |
+note: the name `gpu` in the type namespace is supposed to be publicly re-exported here
+  --> S:\GTOpen-research\postflop-gpu-20261016\runs\E087-host-type-check\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> S:\GTOpen-research\postflop-gpu-20261016\runs\E087-host-type-check\probe.rs:3:1
+   |
+ 3 | / mod gpu {
+ 4 | |  use solver::{Solver,store::Store};
+ 5 | |  use rayon::prelude::*;
+ 6 | |  pub mod plan { pub use solver::gpu::plan::*; }
+...  |
+31 | |  #[path = r"S:\GTOpen-research\postflop-gpu-20261016\runs\E087-source\candidate\arena.rs"] mod arena;
+32 | | }
+   | |_^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: 1 warning emitted
+

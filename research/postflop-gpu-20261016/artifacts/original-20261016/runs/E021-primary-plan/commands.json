@@ -1,0 +1,27 @@
+{
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "activation": "Root only after all prerequisites; verify162 accepted source pins, then apply the reviewed E021-design/candidate.patch and verify exact two candidate hashes. No activation script is supplied.",
+  "build": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-primary-plan\\build.py",
+    "ROOT_FILL_AUTHORIZATION_SHA256"
+  ],
+  "primary": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-primary-plan\\primary.py"
+  ],
+  "assessment": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-primary-plan\\assess.py"
+  ],
+  "build_outputs": [
+    "E021-solver.exe",
+    "E021-postflop_autoresearch.exe"
+  ],
+  "native_test_filter": "postflop_complete_cycle",
+  "unit_tests": "ordinary GPU-only library suite84 passed/4 ignored",
+  "no_live_server_action": true
+}

@@ -1,0 +1,149 @@
+{
+  "id": "D031-independent-review",
+  "at": "2026-10-16T08:40:32.513896+00:00",
+  "status": "compiler_evidence_pass_integration_experiment_supported_not_qualified",
+  "scope": "Retrospective independent artifact/source/PTX recheck; no execution/build/GPU/production edits by reviewer.",
+  "raw_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D031-child-slot-probe\\report.json",
+    "sha256": "1f97402acdc281ce851b27a756fc39f2738352d054989fb24a0b11024660fe09"
+  },
+  "prepared_manifest_sha256": "99625988935e01e966c9b0ed06e519b1aca08de0740752ac4d12fb222cfc87ed",
+  "verified_raw_artifacts": 29,
+  "verified_prepared_inputs": 12,
+  "artifact_hash_failures": [],
+  "raw_metric_rows_match": true,
+  "prepared_inputs_before_after_exact": true,
+  "dependency_rlibs_verified": 2,
+  "nvrtc_dlls_verified": 3,
+  "exact_scoped_source_transform": true,
+  "baseline_ptx_matches_D021": true,
+  "independent_ptx_counts": {
+    "baseline": {
+      "lines": 2407,
+      "bytes_utf8": 75821,
+      "global_loads": 338,
+      "local_loads": 21,
+      "local_stores": 14
+    },
+    "candidate": {
+      "lines": 2195,
+      "bytes_utf8": 68333,
+      "global_loads": 267,
+      "local_loads": 21,
+      "local_stores": 14
+    }
+  },
+  "other_eight_entrypoints_byte_exact": {
+    "copy_root": true,
+    "down_action": true,
+    "down_chance": true,
+    "up_fold": true,
+    "up_show": true,
+    "up_chance": true,
+    "copy_span": true,
+    "up_action_eval": true
+  },
+  "float_opcode_sequence_equal_textual_only": true,
+  "resource_results": [
+    {
+      "architecture": "compute_120",
+      "area": "postflop",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default",
+      "device": "NVIDIA GeForce RTX 5090",
+      "device_ordinal": 0,
+      "dynamic_shared_bytes": 0,
+      "experiment": "D031",
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "numerical_validation": "not executed",
+      "occupancy_blocks_per_sm_128": 7,
+      "occupancy_warps_per_sm_128": 28,
+      "performance_measurement": false,
+      "registers": 66,
+      "same_cuda_context": true,
+      "schema_version": 1,
+      "scope": "Compiler resources and theoretical residency only; zero dynamic shared matches up_action launch.",
+      "solver_executions": 0,
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "static_shared_bytes": 0
+    },
+    {
+      "architecture": "compute_120",
+      "area": "postflop",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default",
+      "device": "NVIDIA GeForce RTX 5090",
+      "device_ordinal": 0,
+      "dynamic_shared_bytes": 0,
+      "experiment": "D031",
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "numerical_validation": "not executed",
+      "occupancy_blocks_per_sm_128": 7,
+      "occupancy_warps_per_sm_128": 28,
+      "performance_measurement": false,
+      "registers": 66,
+      "same_cuda_context": true,
+      "schema_version": 1,
+      "scope": "Compiler resources and theoretical residency only; zero dynamic shared matches up_action launch.",
+      "solver_executions": 0,
+      "source_bytes": 22654,
+      "source_fnv1a64": "072e23408c39a7f1",
+      "source_variant": "candidate",
+      "static_shared_bytes": 0
+    }
+  ],
+  "instruction_delta": {
+    "ld.global.nc.u32": -71,
+    "mul.wide.u32": -71,
+    "add.s64": -71,
+    "setp.lt.s32": 1,
+    "local_loads": 0,
+    "local_stores": 0
+  },
+  "correction_to_D030": "tree.children contains u32::MAX chance SENTINELs. Naive plan.cfv_slot[child] for every full-table entry panics. Preserve sentinel explicitly, or initialize full sentinel table and fill only visited action-edge positions; verify every consumed child and physical slot.",
+  "integration_costs": {
+    "device_payload_bytes": "4 * tree.children.len() for full indexing",
+    "new_device_allocations": 1,
+    "upload_bytes": "4 * tree.children.len()",
+    "host_temporary_payload_bytes": "4 * tree.children.len(), unless intentionally retained",
+    "host_work": "initialize/map full table and validate consumed action edges; include in timed constructor",
+    "budget_rule": "Explicit payload in full/compact admission and all exact-budget estimators; no absorption into unchanged reserve, no staging_bytes semantic disguise."
+  },
+  "recommendation": "GO for one bounded E018 integration experiment from accepted E015, subject to mapping/accounting/tests and unchanged qualification gates; NO acceptance or predicted >=2% gain from this diagnostic.",
+  "runtime_validation": [
+    "Mapping invariants over iso on/off, full/compact arenas, sentinel and generic/locked action children; validate physical slots and ordered address equality.",
+    "GPU full-cycle screen and registered paired cohort, all non-timing records exact; include construction/allocation/upload/JIT/solve/readback and retain river guard.",
+    "If qualifying, full compressed/F32/resume/lock/menu controls and continuation capacity/paging/storage checks; preserve exact budget-minus-one rejection semantics."
+  ],
+  "peer_review": "menu_change_review retrospective source/script PASS; no execution/edit by peer, not pre-execution approval.",
+  "source_reference_sha256": {
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_replay_tests.rs": "6333065a4a2b4eccfdcf342b325e67b50a12c3dd2b4085b23f49739e59b2b54c",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "crates/solver/src/tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "crates/solver/tests/continuation_symmetry.rs": "6135cf31b478d789e4ba454cfc47de3d0b768e04b8ea330b109d3ba9f2c02ec8",
+    "crates/solver/tests/continuation_coherent_symmetry.rs": "97d014790e889cad0e58f623ff939a8639482407a54c5a270c41097e137948cd",
+    "crates/solver/tests/continuation_settled_ranges.rs": "dba670791f5219951ce35228fd404a838123276517e734980219be8bf5a0c9e5",
+    "crates/solver/tests/continuation_host_orbit_large.rs": "8cdccc39a89249066ce26d852f3de250f7bc3aa82dd6424d27e1a014fd8c069f",
+    "crates/solver/examples/integrated_continuation_compact.rs": "5bf5354b77fd2e1e0232e057126df297292f81f7b955f0e767a71db25467f93b",
+    "crates/solver/examples/integrated_continuation_orbits.rs": "71299fcd2c6bd6d40ca19cc8fc13ffdc0b655e387707338d28dbb610d8db20ed"
+  },
+  "source_identity_note": "Current reviewed mod.rs/kernel hashes equal accepted E015 archives. Git research bookkeeping commit may differ.",
+  "limitations": [
+    "71 static load sites are distributed across branches/specializations; not 71 loads saved per node/hand or runtime speedup.",
+    "Same registers/local-memory/theoretical occupancy; common-arity addressing partly hoisted already.",
+    "PTX opcode sequence equality does not establish operands, CFG/SASS equivalence, float bitwise accuracy or complete-cycle performance.",
+    "New allocation/upload/host initialization and reduced spare budget may offset any solve savings, especially river.",
+    "Existing console staging+arenas field excludes generic metadata; do not relabel it total without accounting all payload."
+  ]
+}

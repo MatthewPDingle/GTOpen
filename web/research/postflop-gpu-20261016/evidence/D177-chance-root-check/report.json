@@ -1,0 +1,33 @@
+{
+  "id": "E086-kernel-control",
+  "at": "2026-10-28T16:51:05.385493+00:00",
+  "status": "pass_scoped_chance_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 2508695,
+  "cases": 425,
+  "kernel_launches": 850,
+  "family_cases": {
+    "0": 157,
+    "1": 268
+  },
+  "output_words_both_arms": 18950844,
+  "actual_immutable_words_both_arms": 3951272,
+  "guard_words_both_arms": 13112256,
+  "independent_cpu_down_relations_both_arms": 1840420,
+  "individual_up_dealt_cards_full_canonical_hands": 52,
+  "full_raw_files_equal": true,
+  "actual_immutable_images_preserved": true,
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\output\\baseline.bin": "66d6e7d41c846410ca2d08a339ef9ee38855a21b8503488b23ee78f8f4a40284",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\output\\candidate.bin": "66d6e7d41c846410ca2d08a339ef9ee38855a21b8503488b23ee78f8f4a40284",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\output\\inputs.bin": "67b9d1bae574e4ff6bd1caae34e694d7042a87316f988d28ab5d0f423e6534e2"
+  },
+  "protocol_sha256": "6b955bee482582bbee53b49f91da6bb8f3b5976b22eeaf98bd206beb4dea76c6",
+  "corpus_sha256": "166210e856f8665e192053f6a9da8cd42ffe3a35503de2f157cea7cbcfaacff0",
+  "complete_sha256": "f0e12112d48ff9cc9eeef8b426e1307fa5065e0472f665b8e069c73aa923459a",
+  "audit_script_sha256": "64d8588039cd854dfb4190431336e8e1e66f886f6e658c561f9f1c4d88d21acf",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite canonical card/float corpus and small physical offsets; not malformed custom HandInfo or >2^32 span equivalence. Root decoder is not external independent review. No full solver or speed claim."
+}

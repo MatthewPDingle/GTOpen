@@ -1,0 +1,163 @@
+{
+  "id": "E029-primary-plan",
+  "at": "2026-10-16T16:49:32.164094+00:00",
+  "status": "DRAFT_NOT_AUTHORIZATION",
+  "candidate": "E029",
+  "reference": "accepted E020",
+  "production_scope": "Exact complement-only initial zero stores in up_show; unchanged present-hand arithmetic,128threads,scan/barriers/shared memory. Two immutable per-slot complement index buffers with exact metadata/admission accounting.",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "order": [
+    "V028-unit",
+    "B095",
+    "E029R1",
+    "E029R2",
+    "B096",
+    "B097",
+    "E029R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B095",
+      "candidate": "E029R1"
+    },
+    {
+      "baseline": "B096",
+      "candidate": "E029R2"
+    },
+    {
+      "baseline": "B097",
+      "candidate": "E029R3"
+    }
+  ],
+  "unit_screen": "GPU-only ordinary library84passed,0failed,4ignored,0measured,0filtered; existing geometry test extended, no new test declaration.",
+  "aggregate_gate": "At least2 percent reduction in the sum of complete-cycle fixture medians across all3 alternating pairs.",
+  "fixture_guard": "Reject if a fixture median is more than3 percent slower and a strict majority (minimum2) of paired repetitions are more than3 percent slower.",
+  "exactness": "All complete non-timing result and configuration fields, full fingerprints, stopping iterations and exploitability bits match. Every raw run remains preserved.",
+  "broader_qualification_if_pass": "Independent primary audit, original160state/menu/resume records,3F32,6GPU, relevant continuation metadata/admission/paging/stored controls, fixed wide-turn and fresh-original3pair cumulative qualification. No acceptance from direct or primary alone.",
+  "measurement_boundaries": "Frozen compressed3-fixture native complete cycles include construction/allocation, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo, final fingerprinting/destruction, browser/API latency and disk saving excluded. Warm driver cache disclosed.",
+  "exclusions": [],
+  "builds_before_timing": true,
+  "concurrent_gpu_or_build_work": false,
+  "first_physical_run": "E029R1",
+  "logical_dashboard_row": "E029",
+  "outcome_triggered_extensions": false,
+  "acceptance_from_probe": false,
+  "script_freeze": "Execution scripts and candidate/source identities will be sealed and independently checked before build/native launch; this prospective measurement order and gates must remain unchanged.",
+  "candidate_source_authorization": "Root pins exact five candidate sources, independent source/script reviews and independent terminal152-pair direct exact PASS before activation. No auxiliary files or activation helper.",
+  "owned_sources": [
+    "crates/solver/src/game.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "source_entry_count": 162,
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\README.md",
+  "design_sha256": "6deafaa7ca77f98e4a5694aae19611738a4856b04e45a350702e70065c6af0a3",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841",
+    "crates/solver/src/gpu/mod.rs": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116",
+    "crates/solver/src/gpu/plan.rs": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681",
+    "crates/solver/src/gpu/continuation_capacity.rs": "52bd8ffd92438111c58572499461315af8b0bd14bc8b5bf27bbfa1ac33e2ba65",
+    "crates/solver/src/game.rs": "1cb99500c81fc16be85ef3d84bfff48a95ddc2f5b81e59ffc7f1530c5b992f8b"
+  },
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\manifest.json",
+  "source_archive_sha256": "ba67dff90d2c2735cfe7acae8792ebf7ce111f9c93d4f513d994aed169bf4e0d",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-primary-e029",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "wide_turn_holdout_if_pass": {
+    "fixture_id": "wide-turn-full169",
+    "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+    "prior_protocol_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\protocol.json",
+    "prior_protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+    "reference": "accepted E020",
+    "candidate": "E029",
+    "fixed_order": [
+      "B1",
+      "C1",
+      "C2",
+      "B2",
+      "B3",
+      "C3"
+    ],
+    "algorithm": "dcfr",
+    "storage": "compressed",
+    "use_isomorphism": true,
+    "target_pct": 0.3,
+    "check_every": 20,
+    "max_iterations": 400,
+    "guard": "Median slowdown greater than3 percent AND at least2 of3 paired slowdowns greater than3 percent rejects adoption. No2 percent gain requirement on holdout. Failure to reach target by400 is inconclusive/failed qualification, not permission to retune.",
+    "exactness": "All6 complete CPU store files byte-identical; every non-timing field, root vector, stopping iteration and convergence trajectory exact.",
+    "admission": "Unchanged2GiB constructor budget,4GiB device free/30GiB total,16GiB host available,50GiB S reserve plus outputs; hands1128/1128,river max1081/1081,48river cards,node bound11691. Candidate admission must account for the actual immutable complement buffers including dummy allocations. No duplicate planning pass, budget relaxation or rescue.",
+    "harness": "Reuse exact R2 evaluator/resource/raw-codec provenance and numerical body; separately freeze E020/E029 bindings and per-arm unused Cargo targets before build. No shared-target reuse.",
+    "resource": "Both arms retain128 physical up_show threads and reserve21808 dynamic shared bytes on the fixed wide-turn fixture. Resource metadata alone is not a speed measure; normal admission and the native fixed holdout guard apply. No arbitrary register/occupancy nonregression threshold.",
+    "separate_from_primary_score": true
+  },
+  "prerequisites": [
+    "formal immutable E020 acceptance record",
+    "terminal successful E020 server qualification evidence",
+    "independent E029 source review",
+    "independent E029 primary script review",
+    "independent terminal exact E029-direct152pairs304launches PASS"
+  ],
+  "no_live_server_changes": true,
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "cuda_provenance": "Fresh GPU-only binaries embed complete E029 CUDA and omit full E020 CUDA. Exactly5changed accepted-map entries;157unowned entries/evaluator unchanged. Feature library no-run uses a separate fresh target.",
+  "resource_gate": "No arbitrary register, spill or occupancy nonregression threshold. Normal correct device admission and fixed complete-cycle/fixture gates govern qualification.",
+  "owned_source_entry_count": 5,
+  "expected_unit_passed": 84,
+  "expected_unit_ignored": 4,
+  "compile_check_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e029-research",
+  "compile_check_output": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check",
+  "compile_only_commands": [
+    [
+      "cargo",
+      "test",
+      "--release",
+      "--locked",
+      "--offline",
+      "-p",
+      "solver",
+      "--features",
+      "preflop-research",
+      "--lib",
+      "--no-run",
+      "--message-format=json"
+    ]
+  ],
+  "direct_prerequisite": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-direct-independent-review\\validation.json",
+    "prepared_manifest_sha256": "cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8",
+    "id": "E029-direct",
+    "verdict": "PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON",
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "baseline_physical_threads": 128,
+    "candidate_physical_threads": 128,
+    "performance_measurement": false,
+    "candidate_accepted": false
+  },
+  "conditional_complement_checks": "Before adoption, exact raw immutable-old/candidate complete states for F32/compressed plus training/evaluation, locks/warm/standalone and continuation paths; actual two immutable complement allocations/metadata planned versus observed and tight-budget admission, including logically empty one-word dummy. Mutable seven-buffer/11component workspace schema stays unchanged."
+}

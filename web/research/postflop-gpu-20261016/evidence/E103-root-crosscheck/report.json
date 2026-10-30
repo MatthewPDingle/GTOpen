@@ -1,0 +1,25 @@
+{
+  "id": "E103-root-crosscheck",
+  "at": "2026-10-28T21:37:12.905950+00:00",
+  "status": "pass_rejection_replay",
+  "checks": 99,
+  "primary_report_sha256": "64424876e8825cc04954b21dbd3c095f8cac5767cd29728e226b8eef61c23404",
+  "protocol_sha256": "425de18b1a129ecd53c8dfd8d304b2a27b169719a59aba2354b5316eb98fd6ca",
+  "baseline_ms": 9636.4502,
+  "candidate_ms": 9624.6403,
+  "observed_gain_pct": 0.12255446512866532,
+  "gates": {
+    "aggregate_ge1pct": false,
+    "strict_fixture_clear": false,
+    "CPU_ms_median_regression_le1pct": false,
+    "lifetime_ms_median_regression_le1pct": true,
+    "parent_wall_ms_median_regression_le1pct": true
+  },
+  "all_complete_logs_science_and_checkpoints_exact": true,
+  "ordinary_units_per_arm": 86,
+  "full_records_including_warmups": 24,
+  "checkpoints_including_warmups": 184,
+  "all_samples_retained": true,
+  "candidate_accepted": false,
+  "scope": "Separate parsing of complete retained native logs, exact original payloads/checkpoints and sortedthree-valuemedian/strictfixture/terminalcost arithmetic. No newnative/compiler/GPU calls. Notexternalindependentreview or significance/adoption. Rawprimaryarenabytesnotrecaptured; fullfingerprints partofscientificrecords,D201fullrawseparate."
+}

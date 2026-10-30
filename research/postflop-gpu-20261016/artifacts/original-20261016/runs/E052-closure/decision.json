@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-17T04:49:10.161321+00:00",
+  "id": "E052",
+  "decision": "rejected",
+  "accepted_source": "E051",
+  "gain_pct": -0.6375089948445328,
+  "minimum_gain_pct": 1.0,
+  "repeatable_fixture_slowdowns": [
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 1.3308147498021816,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        1.6551272472461636,
+        -0.2242231177664097,
+        1.3308147498021816
+      ],
+      "failed": true
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": 3.773308749640236,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        3.773308749640236,
+        -5.6568638861154295,
+        3.0884798774911113
+      ],
+      "failed": true
+    }
+  ],
+  "all18full_results_138checkpoints_exact": true,
+  "ordinary_tests_passed": 84,
+  "kernel_cases_passed": 328,
+  "source_restored_and_never_promoted": true,
+  "confirmation_broader_holdout_cumulative_not_run": true,
+  "no_variant_rescue_or_extra_samples": true,
+  "resource_report_sha256": "fb1b89b9246767a5097c168a78ff0596f25d319d31260770ab068e00eab74f99",
+  "raw_control_report_sha256": "4fdcac3bc8f9a52af2b7eb963a5f316bb0f671115f46722f7543b69061e9d00b",
+  "primary_report_sha256": "04f11bfd353867328437c9bd4c36409813865c7947bdb5544cc134383680704f",
+  "root_report_sha256": "964b896527d0616a4f5a7e1c04d5fdc598f9cc347df3abaf41e96e676286bad1",
+  "goal_active": true
+}

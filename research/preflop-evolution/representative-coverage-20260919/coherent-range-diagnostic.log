@@ -1,0 +1,33 @@
+
+running 1 test
+test coherent_range_pairs_compare_full_and_compact_without_replacing_old_gate ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+COHERENT {"avg_br_difference":0.00835160817950964,"board":"KsQs2d","immediate_root":0.07029098272323608,"mode":"abrupt_pair","passed":false,"root_drift":0.0006289780139923096,"same_policy_quotient_difference":2.5671286039141705e-6,"same_state_cfv":0.000012964612324140035,"trajectory_cfv":0.1429479867219925}
+gpu: 195813 nodes, 12 levels, staging+arenas 22.9 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+COHERENT {"avg_br_difference":0.03005594201385975,"board":"KsQs2s","immediate_root":0.037800729274749756,"mode":"abrupt_pair","passed":false,"root_drift":0.000639498233795166,"same_policy_quotient_difference":2.0176621546852402e-6,"same_state_cfv":0.000012964612324140035,"trajectory_cfv":0.30212000012397766}
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+COHERENT {"avg_br_difference":0.0,"board":"KsQh2d","immediate_root":0.058535635471343994,"mode":"abrupt_pair","passed":false,"root_drift":0.0,"same_policy_quotient_difference":0.0,"same_state_cfv":0.000010836156434379518,"trajectory_cfv":0.0}
+gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+COHERENT {"avg_br_difference":0.03617264702916145,"board":"KsQs2d","immediate_root":5.960464477539063e-8,"mode":"smooth_pair","passed":false,"root_drift":0.0019750595092773438,"same_policy_quotient_difference":4.0353243093704805e-6,"same_state_cfv":0.000010256715540890582,"trajectory_cfv":2.0045464038848877}
+gpu: 195813 nodes, 12 levels, staging+arenas 22.9 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+COHERENT {"avg_br_difference":0.02593313343822956,"board":"KsQs2s","immediate_root":5.960464477539063e-8,"mode":"smooth_pair","passed":false,"root_drift":0.0016204416751861572,"same_policy_quotient_difference":2.0176621546852402e-6,"same_state_cfv":0.000011209762305952609,"trajectory_cfv":1.3752802610397339}
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+COHERENT {"avg_br_difference":0.0,"board":"KsQh2d","immediate_root":5.960464477539063e-8,"mode":"smooth_pair","passed":true,"root_drift":0.0,"same_policy_quotient_difference":0.0,"same_state_cfv":0.000011631960660452023,"trajectory_cfv":0.0}
+
+thread 'coherent_range_pairs_compare_full_and_compact_without_replacing_old_gate' (74184) panicked at crates\solver\tests\continuation_coherent_symmetry.rs:161:5:
+Additional coherent-pair diagnostic gates failed: [("abrupt_pair", "KsQs2d"), ("abrupt_pair", "KsQs2s"), ("abrupt_pair", "KsQh2d"), ("smooth_pair", "KsQs2d"), ("smooth_pair", "KsQs2s")]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    coherent_range_pairs_compare_full_and_compact_without_replacing_old_gate
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 42.15s
+

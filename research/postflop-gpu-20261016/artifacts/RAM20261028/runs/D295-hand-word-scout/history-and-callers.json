@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-29T18:43:26.400513+00:00",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 224
+    }
+  ],
+  "unique_CUDA_hashes": 140,
+  "retained_matches": [],
+  "all_local_ref_history": [
+    {
+      "path": "kernels.cu",
+      "revisions": 28,
+      "hits": []
+    },
+    {
+      "path": "mod.rs",
+      "revisions": 46,
+      "hits": []
+    }
+  ],
+  "pattern": "(?:hand_(?:word|desc)|(?:packed|encode)\\w*_(?:hand|same)|same_p\\s*\\[[^\\]]+\\]\\s*>>|(?:pc1|pc2)\\s*\\[[^\\]]+\\]\\s*<<)",
+  "current_GPU_references": [
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs:18:        n+=owned(&s.hands[p])+owned(&s.weights[p])+owned(&s.same_combo[p])+owned(&s.hand_perm[p]);",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs:34:            +bytes(&p.hand_mask[q])+bytes(&p.same_combo[q])+bytes(&p.weights[q])+bytes(&p.riv_off[q])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs:52:        n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs:53:            d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs:91:    pub same_combo: [Vec<u32>; 2],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs:470:            same_combo: [spot.same_combo[0].clone(), spot.same_combo[1].clone()],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:129:    d_hand_c1: [CudaSlice<u32>; 2],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:130:    d_hand_c2: [CudaSlice<u32>; 2],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:132:    d_same: [CudaSlice<u32>; 2],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:376:            d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:377:            d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:379:            d_same: [up32(&plan.same_combo[0])?, up32(&plan.same_combo[1])?],",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:675:                        .arg(&self.d_hand_c1[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:676:                        .arg(&self.d_hand_c2[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:679:                        .arg(&self.d_same[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:715:                        .arg(&self.d_same[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:716:                        .arg(&self.d_hand_c1[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:717:                        .arg(&self.d_hand_c2[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:903:                        .arg(&self.d_hand_c1[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:904:                        .arg(&self.d_hand_c2[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:907:                        .arg(&self.d_same[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:945:                        .arg(&self.d_same[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:946:                        .arg(&self.d_hand_c1[p])",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs:947:                        .arg(&self.d_hand_c2[p])"
+  ],
+  "semantic_classification": "Private immutable per-hand descriptor, not E070 nodeplayer/arity byteencoding,E046 chance-recordAoS,E073 boundarynarrowing,E094 nodeoffsetnarrowing,E048 dealtcardmask rewrite or E115 node-row reorder. Closed mechanisms remain closed, no hunk composed. Sourcehistory boundedliteral/local, not exhaustive semantic/remote novelty proof.",
+  "caller_contract": "Only4terminal launch sites inmod.rs consume d_same(2training/evalpaths eachfold/show); d_hand_c1/c2stillallocated/uploaded/passed butterminalkernelstoppointees unused. Continuation wrappers route common GpuSolver; capacity accounting uses sameu32length. update_locks/iterate/sync do not rewrite immutable hand metadata. PublicGpuPlan/Spot same_combo/handcards andsaveformats remain original."
+}

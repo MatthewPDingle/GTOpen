@@ -1,0 +1,34 @@
+{
+  "id": "E069",
+  "at": "2026-10-17T19:42:06.401409+00:00",
+  "status": "pass_root_scoped_show_order_design",
+  "owned_source": "crates/solver/src/gpu/plan.rs",
+  "candidate_sha256": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862",
+  "transform": "One in-place tuple (river_slot,node_id) sort within each existing show span after slot assignment. No threshold/key/order/scope variants.",
+  "mechanical_reverse_equals_accepted": true,
+  "immutable_inputs": "node_river_slot derived from original DFS/key assignment; sorting mutates only show_nodes, not slots/maps/hand tables/CFV maps.",
+  "dependencies": "Same show node multisets in each existing launch; current up_show reads immutable tables and completed reach buffers, writes separate persistent CFV rows, never reads CFV. Same inter-kernel stream order and per-node float operands/order.",
+  "risks": "CPU sort cost and different reach/output locality may outweigh table locality. Tuple keys have total integer order; source no panic/quality/cache benefit assumed. Actual graph/CPU/peak/responsiveness/capacity/compatibility checks required before adoption.",
+  "not_composed": "Not E056action arity order, E032terminal consolidation, E063cutoff, cache policy, E068 arithmetic or failed D110 observation. All old failures retained.",
+  "bounded_history_review": "Current ledger, preserved Rust plan sources and local all-ref plan history searches returned no show-by-river sort match. Not exhaustive remote history.",
+  "canonical_structural_transitions": {
+    "2": [
+      345738,
+      7050
+    ],
+    "6": [
+      210057,
+      4788
+    ],
+    "10": [
+      0,
+      0
+    ]
+  },
+  "source_census_sha256": "58cb1c3ebc1e251650a91292e89fae9716a13a5826cd763d997ae961d746e330",
+  "resource_scope": "CUDA bytes/entry ABI/host launch/config/shared reservations/counts/buffer lengths/physical maps unchanged. CPU metadata full raw controls next; CUDA resource recompile/single-node raw kernel controls do not test this ordering-only mechanism.",
+  "sort_documentation": "https://doc.rust-lang.org/std/primitive.slice.html#method.sort_unstable_by_key",
+  "official_doc_paraphrase": "The standard library documents this as an in-place sort without allocation. That is not measured process peak/CPU cost.",
+  "external_independent_review": false,
+  "optimization_accepted": false
+}

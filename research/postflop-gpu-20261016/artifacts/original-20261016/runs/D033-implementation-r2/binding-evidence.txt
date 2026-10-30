@@ -1,0 +1,62 @@
+318: #[cfg(any(feature = "cuda-11040", feature = "cuda-11050", feature = "cuda-11060", feature = "cuda-11070", feature = "cuda-11080"))]
+319: pub type CUDA_KERNEL_NODE_PARAMS = CUDA_KERNEL_NODE_PARAMS_v1;
+320: #[cfg(any(feature = "cuda-12000", feature = "cuda-12010", feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+321: pub type CUDA_KERNEL_NODE_PARAMS = CUDA_KERNEL_NODE_PARAMS_v2;
+322: pub type CUDA_KERNEL_NODE_PARAMS_v1 = CUDA_KERNEL_NODE_PARAMS_st;
+323: #[cfg(any(feature = "cuda-12000", feature = "cuda-12010", feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+324: pub type CUDA_KERNEL_NODE_PARAMS_v2 = CUDA_KERNEL_NODE_PARAMS_v2_st;
+325: #[cfg(any(feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+326: pub type CUDA_KERNEL_NODE_PARAMS_v3 = CUDA_KERNEL_NODE_PARAMS_v3_st;
+5884: #[cfg(any(feature = "cuda-12000", feature = "cuda-12010", feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+5885: #[repr(C)]
+5886: #[derive(Debug, Copy, Clone, Hash, PartialOrd, Ord, PartialEq, Eq)]
+5887: pub struct CUDA_KERNEL_NODE_PARAMS_v2_st {
+5888:     pub func: CUfunction,
+5889:     pub gridDimX: ::core::ffi::c_uint,
+5890:     pub gridDimY: ::core::ffi::c_uint,
+5891:     pub gridDimZ: ::core::ffi::c_uint,
+5892:     pub blockDimX: ::core::ffi::c_uint,
+5893:     pub blockDimY: ::core::ffi::c_uint,
+5894:     pub blockDimZ: ::core::ffi::c_uint,
+5895:     pub sharedMemBytes: ::core::ffi::c_uint,
+5896:     pub kernelParams: *mut *mut ::core::ffi::c_void,
+5897:     pub extra: *mut *mut ::core::ffi::c_void,
+5898:     pub kern: CUkernel,
+5899:     pub ctx: CUcontext,
+5900: }
+5901: #[cfg(any(feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+10276: #[cfg(any(feature = "cuda-11040", feature = "cuda-11050", feature = "cuda-11060", feature = "cuda-11070", feature = "cuda-11080"))]
+10277: pub unsafe fn cuGraphKernelNodeGetParams(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+10278:     #[cfg(feature = "dynamic-loading")]
+10279:     {
+10280:         type _F = unsafe extern "C" fn(CUgraphNode, *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult;
+10281:         static _S: OnceLock<_F> = OnceLock::new();
+10282:         let _f = _S.get_or_init(|| unsafe { load::<_F>("cuGraphKernelNodeGetParams") });
+10283:         _f(hNode, nodeParams)
+10284:     }
+10285:     #[cfg(not(feature = "dynamic-loading"))]
+10286:     {
+10287:         extern "C" {
+10288:             fn cuGraphKernelNodeGetParams(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult;
+10289:         }
+10290:         cuGraphKernelNodeGetParams(hNode, nodeParams)
+10291:     }
+10292: }
+10293: #[cfg(any(feature = "cuda-12000", feature = "cuda-12010", feature = "cuda-12020", feature = "cuda-12030", feature = "cuda-12040", feature = "cuda-12050", feature = "cuda-12060", feature = "cuda-12080", feature = "cuda-12090", feature = "cuda-13000", feature = "cuda-13010", feature = "cuda-13020"))]
+10294: pub unsafe fn cuGraphKernelNodeGetParams_v2(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+10295:     #[cfg(feature = "dynamic-loading")]
+10296:     {
+10297:         type _F = unsafe extern "C" fn(CUgraphNode, *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult;
+10298:         static _S: OnceLock<_F> = OnceLock::new();
+10299:         let _f = _S.get_or_init(|| unsafe { load::<_F>("cuGraphKernelNodeGetParams_v2") });
+10300:         _f(hNode, nodeParams)
+10301:     }
+10302:     #[cfg(not(feature = "dynamic-loading"))]
+10303:     {
+10304:         extern "C" {
+10305:             fn cuGraphKernelNodeGetParams_v2(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult;
+10306:         }
+10307:         cuGraphKernelNodeGetParams_v2(hNode, nodeParams)
+10308:     }
+10309: }
+10310: pub unsafe fn cuGraphKernelNodeSetAttribute(hNode: CUgraphNode, attr: CUkernelNodeAttrID, value: *const CUkernelNodeAttrValue) -> CUresult {

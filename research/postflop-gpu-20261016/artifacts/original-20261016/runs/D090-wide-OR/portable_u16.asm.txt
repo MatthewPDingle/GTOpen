@@ -1,0 +1,77 @@
+_RNvCsluSbfOPdzkh_10d090_probe12portable_i16:
+.Lfunc_begin50:
+	testq	%rdx, %rdx
+	je	.LBB50_1
+	cmpq	$4, %rdx
+	jae	.LBB50_5
+	xorl	%r8d, %r8d
+	xorl	%eax, %eax
+	jmp	.LBB50_4
+.LBB50_1:
+	xorl	%eax, %eax
+	retq
+.LBB50_5:
+	cmpq	$16, %rdx
+	jae	.LBB50_7
+	xorl	%r8d, %r8d
+	xorl	%eax, %eax
+	jmp	.LBB50_11
+.LBB50_7:
+	movabsq	$4611686018427387888, %r8
+	andq	%rdx, %r8
+	leaq	(%rdx,%rdx), %rax
+	andq	$-32, %rax
+	pxor	%xmm0, %xmm0
+	xorl	%r9d, %r9d
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB50_8:
+	movdqu	(%rcx,%r9), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%rcx,%r9), %xmm2
+	por	%xmm2, %xmm0
+	addq	$32, %r9
+	cmpq	%r9, %rax
+	jne	.LBB50_8
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movdqa	%xmm0, %xmm1
+	psrld	$16, %xmm1
+	por	%xmm0, %xmm1
+	movd	%xmm1, %eax
+	cmpq	%r8, %rdx
+	je	.LBB50_15
+	testb	$12, %dl
+	je	.LBB50_4
+.LBB50_11:
+	movq	%r8, %r9
+	movabsq	$4611686018427387900, %r8
+	andq	%rdx, %r8
+	movzwl	%ax, %eax
+	movd	%eax, %xmm0
+	.p2align	4
+.LBB50_12:
+	movq	(%rcx,%r9,2), %xmm1
+	por	%xmm1, %xmm0
+	addq	$4, %r9
+	cmpq	%r9, %r8
+	jne	.LBB50_12
+	pshufd	$85, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	movdqa	%xmm1, %xmm0
+	psrld	$16, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %eax
+	jmp	.LBB50_14
+.LBB50_4:
+	orw	(%rcx,%r8,2), %ax
+	incq	%r8
+.LBB50_14:
+	cmpq	%r8, %rdx
+	jne	.LBB50_4
+.LBB50_15:
+	retq
+.Lfunc_end50:

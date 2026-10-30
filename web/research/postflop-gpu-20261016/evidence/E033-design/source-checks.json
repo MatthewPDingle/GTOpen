@@ -1,0 +1,42 @@
+{
+  "status": "PASS_SOURCE_ONLY_CHECKS",
+  "at": "2026-10-16T19:59:20.782634+00:00",
+  "accepted_source_entries_verified": 162,
+  "candidate_source_entries": 163,
+  "owned_existing": [
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "new_sources": [
+    "crates/solver/src/gpu/cache_policy.rs"
+  ],
+  "all_original_numerical_cuda_and_compilation_block_exact": true,
+  "new_gpu_payload_buffers": 0,
+  "workspace_schema_changed": false,
+  "syntax_parse_exit": {
+    "mod.rs": 0,
+    "cache_policy.rs": 0
+  },
+  "patch_apply_check_exit": 0,
+  "original_unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "prospective_gpu_only_unit_inventory": {
+    "passed": 87,
+    "ignored": 4,
+    "total": 91
+  },
+  "new_ordinary_tests": [
+    "gpu::cache_policy::tests::owned_prefix_geometry_is_bounded",
+    "gpu::tests::persisting_l2_matches_unhinted_solver_lifecycle",
+    "gpu::tests::persisting_l2_cleanup_ownership_and_errors"
+  ],
+  "new_feature_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback",
+  "compiler_or_native_or_gpu_executed": false,
+  "preserved_drafts": [
+    "draft-r1 partial-set guard finding",
+    "draft-r2-encoding adapter UnicodeDecodeError",
+    "draft-r3-before-review-fixes partial-set test and recorded Drop error review",
+    "draft-r4-line-endings failed patch applicability/CRLF"
+  ]
+}

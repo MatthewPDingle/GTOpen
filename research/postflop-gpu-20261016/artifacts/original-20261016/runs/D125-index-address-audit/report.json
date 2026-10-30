@@ -1,0 +1,441 @@
+{
+  "id": "D125",
+  "at": "2026-10-18T04:29:43.658042+00:00",
+  "status": "pass_original_tag_decode_semantics_with_byte_offset_masks",
+  "protocol_sha256": "f160826a5aca8455652c01bf9dd4ec62b4666baf75db04c914c8f24d8849a612",
+  "original_resource_report_sha256": "ce887fc6e38eed7f42aa5fb4194baa500c1fb9494896054e8828d4961fa65991",
+  "original_report_and_failed_literal_proxy_preserved": true,
+  "original_failed_literal_count_gates": [
+    "compute_120:low31bit_decode_masks_emitted",
+    "compute_75:low31bit_decode_masks_emitted"
+  ],
+  "effective_gates": {
+    "compute_120:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_120:ABI27_exact": true,
+    "compute_120:show_entry_changed": true,
+    "compute_75:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_75:ABI27_exact": true,
+    "compute_75:show_entry_changed": true,
+    "rainbow_p0:local_bytes_not_increased": true,
+    "rainbow_p0:dynamic_shared_not_increased": true,
+    "rainbow_p0:max_threads_not_reduced": true,
+    "rainbow_p0:supports_all_fixed_thread_controls": true,
+    "rainbow_p0:both_fit_default_limits": true,
+    "rainbow_p0:positive_fixed_driver_occupancy": true,
+    "rainbow_p0:local_bytes_exact": true,
+    "rainbow_p0:static_shared_bytes_exact": true,
+    "rainbow_p0:dynamic_shared_bytes_exact": true,
+    "rainbow_p1:local_bytes_not_increased": true,
+    "rainbow_p1:dynamic_shared_not_increased": true,
+    "rainbow_p1:max_threads_not_reduced": true,
+    "rainbow_p1:supports_all_fixed_thread_controls": true,
+    "rainbow_p1:both_fit_default_limits": true,
+    "rainbow_p1:positive_fixed_driver_occupancy": true,
+    "rainbow_p1:local_bytes_exact": true,
+    "rainbow_p1:static_shared_bytes_exact": true,
+    "rainbow_p1:dynamic_shared_bytes_exact": true,
+    "two_tone_p0:local_bytes_not_increased": true,
+    "two_tone_p0:dynamic_shared_not_increased": true,
+    "two_tone_p0:max_threads_not_reduced": true,
+    "two_tone_p0:supports_all_fixed_thread_controls": true,
+    "two_tone_p0:both_fit_default_limits": true,
+    "two_tone_p0:positive_fixed_driver_occupancy": true,
+    "two_tone_p0:local_bytes_exact": true,
+    "two_tone_p0:static_shared_bytes_exact": true,
+    "two_tone_p0:dynamic_shared_bytes_exact": true,
+    "two_tone_p1:local_bytes_not_increased": true,
+    "two_tone_p1:dynamic_shared_not_increased": true,
+    "two_tone_p1:max_threads_not_reduced": true,
+    "two_tone_p1:supports_all_fixed_thread_controls": true,
+    "two_tone_p1:both_fit_default_limits": true,
+    "two_tone_p1:positive_fixed_driver_occupancy": true,
+    "two_tone_p1:local_bytes_exact": true,
+    "two_tone_p1:static_shared_bytes_exact": true,
+    "two_tone_p1:dynamic_shared_bytes_exact": true,
+    "river_p0:local_bytes_not_increased": true,
+    "river_p0:dynamic_shared_not_increased": true,
+    "river_p0:max_threads_not_reduced": true,
+    "river_p0:supports_all_fixed_thread_controls": true,
+    "river_p0:both_fit_default_limits": true,
+    "river_p0:positive_fixed_driver_occupancy": true,
+    "river_p0:local_bytes_exact": true,
+    "river_p0:static_shared_bytes_exact": true,
+    "river_p0:dynamic_shared_bytes_exact": true,
+    "river_p1:local_bytes_not_increased": true,
+    "river_p1:dynamic_shared_not_increased": true,
+    "river_p1:max_threads_not_reduced": true,
+    "river_p1:supports_all_fixed_thread_controls": true,
+    "river_p1:both_fit_default_limits": true,
+    "river_p1:positive_fixed_driver_occupancy": true,
+    "river_p1:local_bytes_exact": true,
+    "river_p1:static_shared_bytes_exact": true,
+    "river_p1:dynamic_shared_bytes_exact": true,
+    "wide_turn:local_bytes_not_increased": true,
+    "wide_turn:dynamic_shared_not_increased": true,
+    "wide_turn:max_threads_not_reduced": true,
+    "wide_turn:supports_all_fixed_thread_controls": true,
+    "wide_turn:both_fit_default_limits": true,
+    "wide_turn:positive_fixed_driver_occupancy": true,
+    "wide_turn:local_bytes_exact": true,
+    "wide_turn:static_shared_bytes_exact": true,
+    "wide_turn:dynamic_shared_bytes_exact": true,
+    "full_hand_upper_bound:local_bytes_not_increased": true,
+    "full_hand_upper_bound:dynamic_shared_not_increased": true,
+    "full_hand_upper_bound:max_threads_not_reduced": true,
+    "full_hand_upper_bound:supports_all_fixed_thread_controls": true,
+    "full_hand_upper_bound:both_fit_default_limits": true,
+    "full_hand_upper_bound:positive_fixed_driver_occupancy": true,
+    "full_hand_upper_bound:local_bytes_exact": true,
+    "full_hand_upper_bound:static_shared_bytes_exact": true,
+    "full_hand_upper_bound:dynamic_shared_bytes_exact": true,
+    "empty_sorted_opponent:local_bytes_not_increased": true,
+    "empty_sorted_opponent:dynamic_shared_not_increased": true,
+    "empty_sorted_opponent:max_threads_not_reduced": true,
+    "empty_sorted_opponent:supports_all_fixed_thread_controls": true,
+    "empty_sorted_opponent:both_fit_default_limits": true,
+    "empty_sorted_opponent:positive_fixed_driver_occupancy": true,
+    "empty_sorted_opponent:local_bytes_exact": true,
+    "empty_sorted_opponent:static_shared_bytes_exact": true,
+    "empty_sorted_opponent:dynamic_shared_bytes_exact": true,
+    "single_sorted_opponent:local_bytes_not_increased": true,
+    "single_sorted_opponent:dynamic_shared_not_increased": true,
+    "single_sorted_opponent:max_threads_not_reduced": true,
+    "single_sorted_opponent:supports_all_fixed_thread_controls": true,
+    "single_sorted_opponent:both_fit_default_limits": true,
+    "single_sorted_opponent:positive_fixed_driver_occupancy": true,
+    "single_sorted_opponent:local_bytes_exact": true,
+    "single_sorted_opponent:static_shared_bytes_exact": true,
+    "single_sorted_opponent:dynamic_shared_bytes_exact": true,
+    "compute_120:every_tagged_index_address_is_decoded": true,
+    "compute_120:both_index_parameters_have_masked_address_consumers": true,
+    "compute_75:every_tagged_index_address_is_decoded": true,
+    "compute_75:both_index_parameters_have_masked_address_consumers": true
+  },
+  "address_analyses": {
+    "compute_120": {
+      "sources": [
+        {
+          "line": 155,
+          "register": "%r109",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r109, [%rd84];"
+        },
+        {
+          "line": 220,
+          "register": "%r119",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r119, [%rd103];"
+        },
+        {
+          "line": 244,
+          "register": "%r122",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r122, [%rd108];"
+        },
+        {
+          "line": 255,
+          "register": "%r124",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r124, [%rd110];"
+        },
+        {
+          "line": 265,
+          "register": "%r126",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r126, [%rd112];"
+        },
+        {
+          "line": 275,
+          "register": "%r128",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r128, [%rd114];"
+        },
+        {
+          "line": 354,
+          "register": "%r137",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r137, [%rd124];"
+        },
+        {
+          "line": 375,
+          "register": "%r139",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r139, [%rd128];"
+        },
+        {
+          "line": 387,
+          "register": "%r141",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r141, [%rd131];"
+        },
+        {
+          "line": 397,
+          "register": "%r143",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r143, [%rd133];"
+        },
+        {
+          "line": 407,
+          "register": "%r145",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r145, [%rd135];"
+        },
+        {
+          "line": 460,
+          "register": "%r55",
+          "parameter": 11,
+          "instruction": "ld.global.nc.u32 \t%r55, [%rd153];"
+        }
+      ],
+      "address_sinks": [
+        {
+          "line": 160,
+          "instruction": "ld.shared.f32 \t%f96, [%rd89];",
+          "parameters": [
+            16
+          ],
+          "decoded": true
+        },
+        {
+          "line": 487,
+          "instruction": "ld.global.nc.u32 \t%r152, [%rd163];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 489,
+          "instruction": "ld.global.nc.u32 \t%r58, [%rd164];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 1028,
+          "instruction": "ld.global.nc.u32 \t%r94, [%rd290];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 1050,
+          "instruction": "st.global.f32 \t[%rd296], %f336;",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        }
+      ],
+      "mask_witnesses": [
+        {
+          "line": 158,
+          "instruction": "and.b64  \t%rd87, %rd86, 8589934588;",
+          "parameters": [
+            16
+          ],
+          "form": "low33byte_offset"
+        },
+        {
+          "line": 481,
+          "instruction": "and.b32  \t%r151, %r55, 2147483647;",
+          "parameters": [
+            11
+          ],
+          "form": "low31word"
+        },
+        {
+          "line": 485,
+          "instruction": "and.b64  \t%rd162, %rd161, 8589934588;",
+          "parameters": [
+            11
+          ],
+          "form": "low33byte_offset"
+        }
+      ],
+      "unmasked_address_sinks": [],
+      "unsupported_index_operations": [],
+      "multiply_defined_index_slice_registers": {},
+      "source_parameters": [
+        11,
+        16
+      ],
+      "sink_parameters": [
+        11,
+        16
+      ],
+      "mask_parameters": [
+        11,
+        16
+      ]
+    },
+    "compute_75": {
+      "sources": [
+        {
+          "line": 156,
+          "register": "%r97",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r97, [%rd93];"
+        },
+        {
+          "line": 232,
+          "register": "%r107",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r107, [%rd112];"
+        },
+        {
+          "line": 268,
+          "register": "%r115",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r115, [%rd119];"
+        },
+        {
+          "line": 281,
+          "register": "%r117",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r117, [%rd121];"
+        },
+        {
+          "line": 293,
+          "register": "%r119",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r119, [%rd123];"
+        },
+        {
+          "line": 304,
+          "register": "%r120",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r120, [%rd125];"
+        },
+        {
+          "line": 349,
+          "register": "%r131",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r131, [%rd134];"
+        },
+        {
+          "line": 383,
+          "register": "%r138",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r138, [%rd141];"
+        },
+        {
+          "line": 395,
+          "register": "%r140",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r140, [%rd143];"
+        },
+        {
+          "line": 407,
+          "register": "%r142",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r142, [%rd145];"
+        },
+        {
+          "line": 418,
+          "register": "%r143",
+          "parameter": 16,
+          "instruction": "ld.global.nc.u32 \t%r143, [%rd147];"
+        },
+        {
+          "line": 487,
+          "register": "%r57",
+          "parameter": 11,
+          "instruction": "ld.global.nc.u32 \t%r57, [%rd166];"
+        }
+      ],
+      "address_sinks": [
+        {
+          "line": 161,
+          "instruction": "ld.shared.f32 \t%f74, [%rd98];",
+          "parameters": [
+            16
+          ],
+          "decoded": true
+        },
+        {
+          "line": 519,
+          "instruction": "ld.global.nc.u32 \t%r60, [%rd177];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 520,
+          "instruction": "ld.global.nc.u32 \t%r152, [%rd176];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 843,
+          "instruction": "ld.global.nc.u32 \t%r79, [%rd267];",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        },
+        {
+          "line": 868,
+          "instruction": "st.global.f32 \t[%rd273], %f184;",
+          "parameters": [
+            11
+          ],
+          "decoded": true
+        }
+      ],
+      "mask_witnesses": [
+        {
+          "line": 159,
+          "instruction": "and.b64  \t%rd96, %rd95, 8589934588;",
+          "parameters": [
+            16
+          ],
+          "form": "low33byte_offset"
+        },
+        {
+          "line": 512,
+          "instruction": "and.b32  \t%r151, %r57, 2147483647;",
+          "parameters": [
+            11
+          ],
+          "form": "low31word"
+        },
+        {
+          "line": 516,
+          "instruction": "and.b64  \t%rd175, %rd174, 8589934588;",
+          "parameters": [
+            11
+          ],
+          "form": "low33byte_offset"
+        }
+      ],
+      "unmasked_address_sinks": [],
+      "unsupported_index_operations": [],
+      "multiply_defined_index_slice_registers": {},
+      "source_parameters": [
+        11,
+        16
+      ],
+      "sink_parameters": [
+        11,
+        16
+      ],
+      "mask_parameters": [
+        11,
+        16
+      ]
+    }
+  },
+  "checks": 2699,
+  "compiled_source_PTX_and_resource_rows_unchanged": true,
+  "compiler_native_GPU_solver_or_timing_executions": 0,
+  "admit_compiled_host_and_full_raw_GPU_controls": true,
+  "source_main_live_PTX_custody_pass": true,
+  "candidate_accepted": false,
+  "limits": "The dataflow verifier is deliberately restricted to this PTX integer subset and single-definition tagged-value slice. It proves tag stripping/address use, not full numerical semantics, active-store counts, dynamic traffic, universal compiler behavior or speed. Full compiled host tagging/GPU raw controls and all later gates remain. No new performance or accuracy observation and no source/timing rescue. Literal32bit mask count was an invalid spelling proxy; exact byte-offset mask is verified against both original input-parameter/address slices and legal hand domain."
+}

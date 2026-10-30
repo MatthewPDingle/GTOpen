@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-29T20:24:48.834460+00:00",
+  "source": "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#floating-point-instructions-div",
+  "source_review": "NVIDIA PTX8.8/CUDA12.9 documents RN as nearest-even and FTZ as flushing subnormal instruction inputs/results. No approximate division, reciprocal multiplication or global compiler fast-math/FTZ option proposed.",
+  "fixed_guard": "n>=2^-63 && d<=2^63 && n<=d; ordinary original n/d otherwise. Zero/NaN/infinity/negative/tiny/too-large inputs fallback naturally through ordered comparisons.",
+  "exact_bits": {
+    "numerator_lower": "0x20000000",
+    "denominator_upper": "0x5f000000",
+    "minimum_quotient": "0x00800000"
+  },
+  "proof": "Guard implies finite positive normal2^-63<=n<=d<=2^63. Exact real q=n/d lies in[2^-126,1]. RN to binary32 stays in the same representable bounded interval, hence is normal. FTZ modifies neither original operands nor RN output under these bounds. This algebra covers every guard-eligible binary32 pair assuming documented instruction semantics; it does not prove source lowering, branch execution, IEEE special fallback/NaN payloads or actual GPU outputs.",
+  "CPU_boundary_cases": 1764,
+  "eligible": 36,
+  "original_fallback": 1728,
+  "exact_rational_nearest_even_reference_fixture_checks": 5,
+  "negative_guard_counterexamples": [
+    {
+      "case": "weaken_numerator_bound",
+      "numerator_bits": 536870910,
+      "denominator_bits": 1593835520,
+      "RN_original_bits": 8388607,
+      "incorrectly_unguarded_FTZ_output_bits": 0
+    },
+    {
+      "case": "weaken_denominator_bound",
+      "numerator_bits": 536870912,
+      "denominator_bits": 1593835521,
+      "RN_original_bits": 8388607,
+      "incorrectly_unguarded_FTZ_output_bits": 0
+    }
+  ],
+  "new_compiler_GPU_kernel_solver_or_speed_samples": 0
+}

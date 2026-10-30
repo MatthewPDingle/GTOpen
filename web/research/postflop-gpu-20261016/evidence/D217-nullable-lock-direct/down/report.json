@@ -1,0 +1,103 @@
+{
+  "id": "D217-down",
+  "at": "2026-10-28T23:57:32.782849+00:00",
+  "status": "pass_direct_full_raw_nullable_lock_equivalence",
+  "cases": 4302,
+  "kernel_launches": 8604,
+  "null_cases": 1332,
+  "nonnull_cases": 2970,
+  "kernel_mode_counts": {},
+  "output_words_both_arms": 61991014,
+  "immutable_words_both_arms": 45322248,
+  "guard_words_both_arms": 49300790,
+  "reader_checks": 633743,
+  "coverage": {
+    "nullable": [
+      false,
+      true
+    ],
+    "nh": [
+      0,
+      1,
+      7,
+      31,
+      32,
+      33,
+      63,
+      64,
+      65,
+      127,
+      128,
+      129,
+      257,
+      513,
+      1024,
+      1326
+    ],
+    "na": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      16,
+      17
+    ],
+    "block": [
+      1,
+      32,
+      64,
+      128,
+      256
+    ],
+    "actor": [
+      0,
+      1
+    ],
+    "lock_mode": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "regret_mode": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "reach_mode": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "reuse_zero": [
+      false,
+      true
+    ],
+    "count": [
+      0,
+      1
+    ]
+  },
+  "raw_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\down\\output\\baseline-inputs.bin": "f13d3a13753cd5cc76872b72f3ea74e017064d5a4a930d2549a3aff476c8f03a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\down\\output\\baseline.bin": "6e702335ffa9e9efbd4835d0bb0ba2d3780b9de430678a5516c15edcd90dceed",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\down\\output\\candidate-inputs.bin": "f13d3a13753cd5cc76872b72f3ea74e017064d5a4a930d2549a3aff476c8f03a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\down\\output\\candidate.bin": "6e702335ffa9e9efbd4835d0bb0ba2d3780b9de430678a5516c15edcd90dceed",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\down\\output\\inputs.bin": "8f99e6f7b3844c4f525dca0dbf434de0e6c68142f68b1510ca7bc3d004e65c2b"
+  },
+  "source_native_immutable_guard_assertions_passed": true,
+  "all_case_records_retained": true,
+  "source_or_compiler_or_shader_changed": false,
+  "candidate_accepted": false,
+  "performance_samples": 0,
+  "limits": "Finite direct corpus only. Whole raw outputs/immutable snapshots/unowned guards exact; no universal IEEE payload/illegal alias/arbitrary bounds, host predicate/graphs/fullcanonical/paging/material/capacity/complete speed/adoption proof."
+}

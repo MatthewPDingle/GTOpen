@@ -1,0 +1,2597 @@
+//! Preflop solver validation: CFR vs an independent push/fold oracle,
+//! structural sanity of the action grammar, and model invariants.
+
+use solver::preflop::equity::{class_prob, EquityTable, NUM_CLASSES};
+use solver::preflop::{PreflopConfig, PreflopSolver};
+use std::sync::{Arc, OnceLock};
+
+// These established convergence/profile regressions pin their original payoff
+// game. New-model conservation and traversal tests live in preflop/multiway.rs
+// and preflop/gpu.rs; migrating saved-game payoffs must be explicit too.
+fn legacy_solver(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<PreflopSolver, String> {
+    let mut s = PreflopSolver::new(cfg, eq)?;
+    s.set_multiway_equity_model("legacy_product")?;
+    Ok(s)
+}
+
+#[test]
+fn dataset_contexts_replace_position_prior_and_preserve_measured_hands() {
+    use solver::preflop::{archetypes, BucketPolicy};
+    use solver::preflop::dataset::{DatasetModel, DatasetRow};
+    let mut cfg=hu_push_fold_config(10.0);
+    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];
+    cfg.posts=vec![0.0,0.5,1.0]; cfg.limp=true;cfg.open_raises=vec![2.0];
+    let mut solver=legacy_solver(cfg,table()).unwrap();solver.iterate();
+    let mut stats=archetypes()[3].1.clone();
+    let rows=vec![0,-1,-2].into_iter().map(|role|DatasetRow{
+        players:3,role,open_raise:if role==0 {17.0}else{31.0},open_limp:8.0,
+        iso_raise:12.0,limp_behind:21.0,opening:None,responses:Default::default(),
+    }).collect();
+    stats.dataset=Some(DatasetModel{contextual_reraise:None,site:"Test".into(),min_players:5,max_players:7,ante:true,small_blind_bb:Some(0.5),
+        empirical_opening:false,scope:"fixture".into(),rows,response_policies:vec![],response_notes:Default::default()});
+    let (_,btn)=solver.generate_profile(0,&stats,"context").unwrap();
+    let (_,sb)=solver.generate_profile(1,&stats,"context").unwrap();
+    assert!((btn.pfr-17.0).abs()<1e-4);
+    assert!((sb.pfr-31.0).abs()<1e-4);
+    assert!(btn.context_note.unwrap().contains("extrapolated"));
+    let d=stats.dataset.as_mut().unwrap();d.empirical_opening=true;
+    for row in &mut d.rows {
+        row.opening=Some(BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![0.2;169],raise:vec![0.3;169],jam:vec![0.0;169],raise_size:"min".into()});
+    }
+    let (profile,implied)=solver.generate_profile(0,&stats,"empirical").unwrap();
+    let policy=profile.buckets[0].as_ref().unwrap();
+    assert!(policy.call.iter().all(|&x|x==0.2));assert!(policy.raise.iter().all(|&x|x==0.3));
+    assert!((implied.pfr-30.0).abs()<1e-4);
+    let saved=serde_json::to_string(&profile).unwrap();
+    let restored:solver::preflop::SeatProfile=serde_json::from_str(&saved).unwrap();
+    assert!(restored.response.unwrap().source_stats.unwrap().dataset.unwrap().empirical_opening);
+    stats.dataset.as_mut().unwrap().rows[0].opening.as_mut().unwrap().raise[0]=0.99;
+    assert!(solver.generate_profile(0,&stats,"invalid").unwrap_err().contains("probabilities"));
+}
+
+fn table() -> Arc<EquityTable> {
+    static T: OnceLock<Arc<EquityTable>> = OnceLock::new();
+    T.get_or_init(|| Arc::new(EquityTable::build(4000))).clone()
+}
+
+#[test]
+fn measured_responses_reach_size_bands_squeezes_and_cold_reraises() {
+    use solver::preflop::{archetypes, BucketPolicy};
+    let mut cfg=hu_push_fold_config(100.0);
+    cfg.positions=vec!["BTN".into(),"SB".into(),"BB".into()];cfg.posts=vec![0.0,0.5,1.0];
+    cfg.limp=true;cfg.open_raises=vec![2.0];cfg.raise_mults=vec![3.0];cfg.max_raises=3;
+    let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
+    let flat=|call,raise|BucketPolicy{ raise_multiples: Vec::new(), raise_sizes: Vec::new(),call:vec![call;169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()};
+    let mut st=archetypes()[3].1.clone();
+    let rows:Vec<_>=[0,-1,-2].iter().map(|r|serde_json::json!({"players":3,"role":r,"open_raise":20,"open_limp":10,"iso_raise":10,"limp_behind":20,
+        "responses":{"raise":0,"reraise":0,"squeeze":3,"cold_reraise":2,"raise_2.5":1}})).collect();
+    st.dataset=Some(serde_json::from_value(serde_json::json!({"site":"Fixture","min_players":3,"max_players":3,"ante":false,"empirical_opening":false,"scope":"fixture","rows":rows,
+        "response_policies":[flat(0.2,0.3),flat(0.6,0.1),flat(0.05,0.15),flat(0.4,0.2)]})).unwrap());
+    st.cont_vs_raise_bands=Some(vec![(999.0,99.0)]); // Must not overwrite measured bands.
+    let profiles:Vec<_>=(0..3).map(|seat|Some(s.generate_profile(seat,&st,"learned").unwrap().0)).collect();
+    s.set_table(vec![false;3],profiles).unwrap();
+    for (path,expected) in [(vec!["raise","fold"],0.6),(vec!["raise","call"],0.4),
+                            (vec!["raise","raise"],0.05),(vec!["raise","raise","fold"],0.2)] {
+        let mut node=0;
+        for kind in path {
+            let a=s.nodes[node].actions.iter().position(|a|a.kind==kind).unwrap();node=s.child(node,a);
+        }
+        let sig=s.average_strategy(node);
+        let call=s.nodes[node].actions.iter().position(|a|a.kind=="call").unwrap();
+        assert!((sig[call*169]-expected).abs()<1e-6,"wrong conditional response at node {node}");
+    }
+    let encoded=serde_json::to_string(&s.seat_profiles).unwrap();
+    let restored:Vec<Option<solver::preflop::SeatProfile>>=serde_json::from_str(&encoded).unwrap();
+    assert_eq!(restored[2].as_ref().unwrap().response.as_ref().unwrap().cold_reraise.as_ref().unwrap().call[0],0.05);
+    st.dataset.as_mut().unwrap().rows[0].responses.insert("raise".into(),999);
+    assert!(s.generate_profile(0,&st,"bad index").unwrap_err().contains("reference"));
+}
+
+#[test]
+fn limp_policies_route_by_paid_entry_free_check_and_voluntary_limper_count() {
+    use solver::preflop::{archetypes, BucketPolicy, LimpContextPolicy, ProfileResponse};
+    for sb in [0.5, 1.0] {
+        let mut cfg=hu_push_fold_config(20.0);
+        cfg.positions=vec!["CO".into(),"BTN".into(),"SB".into(),"BB".into()];
+        cfg.posts=vec![0.0,0.0,sb,1.0];cfg.ante=0.1;cfg.limp=true;cfg.open_raises=vec![3.0];
+        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
+        let mut profiles=Vec::new();
+        for seat in 0..4 {
+            let mut p=s.generate_profile(seat,&archetypes()[3].1,"fixture").unwrap().0;
+            p.response=Some(ProfileResponse {limp_contexts:[false,true].into_iter().flat_map(|free_check|
+                (1..=3).map(move |limpers| {
+                    let raise=limpers as f32/10.0;
+                    LimpContextPolicy {limpers,free_check,policy:BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
+                        call:vec![if free_check {1.0-raise}else{0.1};169],raise:vec![raise;169],jam:vec![0.0;169],raise_size:"min".into()
+                    }}
+                })).collect(),..Default::default()});
+            profiles.push(Some(p));
+        }
+        let encoded=serde_json::to_string(&profiles).unwrap();
+        s.set_table(vec![false;4],serde_json::from_str(&encoded).unwrap()).unwrap();
+        let last=if sb==1.0 {"check"}else{"call"};
+        for (path,count,free) in [
+            (vec!["call"],1,false),
+            (vec!["call","call"],2,sb==1.0),
+            (vec!["call","fold",last],if sb==1.0 {1}else{2},true),
+            (vec!["call","call",last],if sb==1.0 {2}else{3},true),
+        ] {
+            let mut node=0;
+            for kind in path {let a=s.nodes[node].actions.iter().position(|a|a.kind==kind).unwrap();node=s.child(node,a);}
+            let sigma=s.average_strategy(node);
+            let raise=s.nodes[node].actions.iter().position(|a|a.kind=="raise").unwrap();
+            assert!((sigma[raise*169]-count as f32/10.0).abs()<1e-6,"wrong limper count");
+            let passive=s.nodes[node].actions.iter().position(|a|a.kind==if free {"check"}else{"call"}).unwrap();
+            assert!((sigma[passive*169]-if free {1.0-count as f32/10.0}else{0.1}).abs()<1e-6);
+        }
+    }
+}
+
+#[test]
+fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
+    let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../docs/ignition/models.json");
+    let models:serde_json::Value=serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let st:solver::preflop::HudStats=serde_json::from_value(models[0]["stats"].clone()).unwrap();
+    let d=st.dataset.as_ref().unwrap();d.validate().unwrap();
+    assert!(!d.response_policies.is_empty());
+    for n in [3,6,8,9] {
+        let mut cfg=hu_push_fold_config(4.0);
+        cfg.positions=(0..n).map(|i|format!("P{i}")).collect();cfg.posts=vec![0.0;n];cfg.posts[n-2]=0.5;cfg.posts[n-1]=1.0;
+        let mut s=legacy_solver(cfg,table()).unwrap();s.iterate();
+        let mut profiles=Vec::new();
+        for seat in 0..n {
+            let (p,_)=s.generate_profile(seat,&st,"Ignition").unwrap();
+            let row=d.resolve(&s.cfg,seat).unwrap();
+            assert_eq!(p.buckets[0].as_ref().unwrap().call,row.opening.as_ref().unwrap().call);
+            assert_eq!(p.buckets[0].as_ref().unwrap().raise,row.opening.as_ref().unwrap().raise);
+            if n==8 && seat<2 {
+                assert!(d.response_notes[&format!("open_{n}_{}",n-3-seat)].starts_with("Position-adjusted estimate"));
+            }
+            let contexts=&p.response.as_ref().unwrap().limp_contexts;
+            assert_eq!(contexts.len(),6);
+            assert_eq!(contexts[0].free_check,seat==n-1);
+            for context in contexts {
+                let key=format!("limps_{}_{}",if context.free_check {"free"}else{"paid"},context.limpers);
+                let expected=&d.response_policies[row.responses[&key]];
+                assert_eq!(context.policy.call,expected.call);
+                assert_eq!(context.policy.raise,expected.raise);
+            }
+            for (b,key) in [(2,"raise"),(3,"squeeze"),(4,"reraise")] {
+                let expected=&d.response_policies[row.responses[key]];
+                assert_eq!(p.buckets[b].as_ref().unwrap().call,expected.call);
+                assert_eq!(p.buckets[b].as_ref().unwrap().raise,expected.raise);
+            }
+            let encoded=serde_json::to_string(&p).unwrap();
+            let restored:solver::preflop::SeatProfile=serde_json::from_str(&encoded).unwrap();
+            assert_eq!(restored.response.as_ref().unwrap().source_stats.as_ref().unwrap().dataset.as_ref().unwrap().response_policies.len(),d.response_policies.len());
+            profiles.push(Some(restored));
+        }
+        s.set_table(vec![false;n],profiles).unwrap();
+    }
+}
+
+fn hu_push_fold_config(stack: f64) -> PreflopConfig {
+    PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["SB".into(), "BB".into()],
+        stack,
+        posts: vec![0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![],
+        raise_mults: vec![],
+        max_raises: 1,
+        add_allin: true,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    }
+}
+
+/// Independent Nash oracle for heads-up jam/fold at `stack` bb, using the
+/// SAME equity table and the same mean-field assumptions as the solver.
+/// Fictitious play (best response vs the opponent's AVERAGED strategy),
+/// which converges in two-player zero-sum games — pure alternating best
+/// responses cycle around the indifference boundary. Returns the averaged
+/// (jam, call) frequencies plus each class's final decision margin in bb
+/// against the averaged opponent strategy.
+fn push_fold_oracle(eq: &EquityTable, stack: f64) -> (Vec<f32>, Vec<f32>, Vec<f64>, Vec<f64>) {
+    let prob: Vec<f64> = (0..NUM_CLASSES).map(|h| class_prob(h) as f64).collect();
+    let total: f64 = prob.iter().sum();
+    let mut jam_mix = vec![1f64; NUM_CLASSES];
+    let mut call_mix = vec![0f64; NUM_CLASSES];
+    let (mut jam_margin, mut call_margin) = (vec![0f64; NUM_CLASSES], vec![0f64; NUM_CLASSES]);
+    for t in 1..=4000u32 {
+        // BB best response vs averaged jam range: call risks (stack-1) more
+        // to win 2*stack total; folding loses the posted blind.
+        let mut dist: Vec<f32> = (0..NUM_CLASSES)
+            .map(|j| (prob[j] * jam_mix[j]) as f32)
+            .collect();
+        let s: f32 = dist.iter().sum();
+        if s > 0.0 {
+            dist.iter_mut().for_each(|d| *d /= s);
+        }
+        let mut call_br = vec![0f64; NUM_CLASSES];
+        for h in 0..NUM_CLASSES {
+            let e = eq.eq_vs_dist(h, &dist) as f64;
+            call_margin[h] = (e * 2.0 * stack - stack) - (-1.0);
+            call_br[h] = if call_margin[h] > 0.0 { 1.0 } else { 0.0 };
+        }
+        // SB best response vs averaged call range.
+        let p_call: f64 = (0..NUM_CLASSES)
+            .map(|j| prob[j] * call_mix[j])
+            .sum::<f64>()
+            / total;
+        let mut cdist: Vec<f32> = (0..NUM_CLASSES)
+            .map(|j| (prob[j] * call_mix[j]) as f32)
+            .collect();
+        let cs: f32 = cdist.iter().sum();
+        if cs > 0.0 {
+            cdist.iter_mut().for_each(|d| *d /= cs);
+        }
+        let mut jam_br = vec![0f64; NUM_CLASSES];
+        for h in 0..NUM_CLASSES {
+            let e = eq.eq_vs_dist(h, &cdist) as f64;
+            let ev_jam = (1.0 - p_call) * 1.0 + p_call * (e * 2.0 * stack - stack);
+            jam_margin[h] = ev_jam - (-0.5);
+            jam_br[h] = if jam_margin[h] > 0.0 { 1.0 } else { 0.0 };
+        }
+        // fictitious-play averaging
+        let w = 1.0 / t as f64;
+        for h in 0..NUM_CLASSES {
+            call_mix[h] += w * (call_br[h] - call_mix[h]);
+            jam_mix[h] += w * (jam_br[h] - jam_mix[h]);
+        }
+    }
+    (
+        jam_mix.iter().map(|&x| x as f32).collect(),
+        call_mix.iter().map(|&x| x as f32).collect(),
+        jam_margin,
+        call_margin,
+    )
+}
+
+/// CFR must reproduce the oracle's push/fold equilibrium for every class
+/// whose decision margin is clear (mixing at the indifference boundary is
+/// expected and excluded).
+#[test]
+fn hu_push_fold_matches_oracle() {
+    let eq = table();
+    let stack = 10.0;
+    let mut s = legacy_solver(hu_push_fold_config(stack), eq.clone()).unwrap();
+    // tree: SB [Fold, All-in] -> BB [Fold, Call]
+    assert_eq!(s.nodes[0].actions.len(), 2, "SB should have fold/jam");
+    for _ in 0..4000 {
+        s.iterate();
+    }
+
+    let (jam, call, jam_margin, call_margin) = push_fold_oracle(&eq, stack);
+    let sb = s.average_strategy(0);
+    let sb_jam = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "jam")
+        .unwrap();
+    let bb_idx = s.child(0, sb_jam);
+    let bb = s.average_strategy(bb_idx);
+    let bb_call_a = s.nodes[bb_idx]
+        .actions
+        .iter()
+        .position(|a| a.kind == "call")
+        .unwrap();
+    let sb_jam_a = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "jam")
+        .unwrap();
+
+    let (mut checked, mut skipped) = (0, 0);
+    for h in 0..NUM_CLASSES {
+        // SB decision
+        if jam_margin[h].abs() > 0.10 {
+            let f = sb[sb_jam_a * NUM_CLASSES + h];
+            let want = jam[h] > 0.5;
+            assert!(
+                if want { f > 0.85 } else { f < 0.15 },
+                "SB class {} ({}): oracle jam={} margin={:.3}bb, CFR jam freq={:.3}",
+                h,
+                solver::preflop::equity::class_label(h),
+                want,
+                jam_margin[h],
+                f
+            );
+            checked += 1;
+        } else {
+            skipped += 1;
+        }
+        // BB decision
+        if call_margin[h].abs() > 0.10 {
+            let f = bb[bb_call_a * NUM_CLASSES + h];
+            let want = call[h] > 0.5;
+            assert!(
+                if want { f > 0.85 } else { f < 0.15 },
+                "BB class {} ({}): oracle call={} margin={:.3}bb, CFR call freq={:.3}",
+                h,
+                solver::preflop::equity::class_label(h),
+                want,
+                call_margin[h],
+                f
+            );
+        }
+    }
+    assert!(
+        checked > 120,
+        "oracle should give clear answers for most classes, got {checked} (skipped {skipped})"
+    );
+
+    // sanity anchors: at 10bb, AA always jams and always calls; 72o folds to a jam
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let seven_deuce = solver::preflop::equity::class_index(5, 0, false);
+    assert!(sb[sb_jam_a * NUM_CLASSES + aa] > 0.99);
+    assert!(bb[bb_call_a * NUM_CLASSES + aa] > 0.99);
+    assert!(bb[bb_call_a * NUM_CLASSES + seven_deuce] < 0.05);
+
+    // zero-sum (no rake): total EV across players ~ 0
+    let evs = s.evs();
+    let total: f64 = evs.iter().sum();
+    assert!(total.abs() < 0.01, "EVs should sum to ~0, got {total}");
+
+    // convergence: BR gaps small
+    let gaps = s.br_gaps();
+    for (p, g) in gaps.iter().enumerate() {
+        assert!(*g < 0.02, "BR gap for player {p} too big: {g} bb");
+    }
+}
+
+/// Full grammar: 6-max with limps, an open size and a 3-bet builds a legal
+/// tree, converges in the model, and conserves chips (minus rake when on).
+#[test]
+fn six_max_limp_tree_sanity() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec![
+            "UTG".into(),
+            "HJ".into(),
+            "CO".into(),
+            "BTN".into(),
+            "SB".into(),
+            "BB".into(),
+        ],
+        stack: 100.0,
+        posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![2.5],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "static".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    let mut s = legacy_solver(cfg, eq.clone()).unwrap();
+    let action_nodes = s.nodes.iter().filter(|n| n.kind == 0).count();
+    assert!(action_nodes > 100, "tree suspiciously small: {action_nodes}");
+
+    // UTG's root actions must include limp (limp=true), a raise and fold
+    let kinds: Vec<&str> = s.nodes[0].actions.iter().map(|a| a.kind.as_str()).collect();
+    assert!(kinds.contains(&"fold") && kinds.contains(&"call") && kinds.contains(&"raise"));
+
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let evs = s.evs();
+    let total: f64 = evs.iter().sum();
+    assert!(
+        total.abs() < 0.06,
+        "chips should be conserved without rake, got sum {total} ({evs:?})"
+    );
+    let g1: f64 = s.br_gaps().iter().sum();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let g2: f64 = s.br_gaps().iter().sum();
+    assert!(g2 < g1, "BR gap should shrink with iterations: {g1} -> {g2}");
+}
+
+/// Rake drains EV: with rake on, total EV goes negative (and not absurdly).
+#[test]
+fn rake_drains_total_ev() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 2;
+    cfg.limp = true;
+    cfg.rake_pct = 5.0;
+    cfg.rake_cap = 3.0;
+    cfg.no_flop_no_drop = true;
+    let mut s = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let total: f64 = s.evs().iter().sum();
+    assert!(total < 0.0, "rake should make the game net negative, got {total}");
+    assert!(total > -1.0, "rake drain implausibly large: {total}");
+}
+
+/// The size estimator must agree exactly with what the builder builds —
+/// they share the enumeration logic, and this pins that they stay shared.
+#[test]
+fn estimate_matches_build() {
+    let eq = table();
+    let mut cfgs = vec![hu_push_fold_config(10.0)];
+    let mut six = hu_push_fold_config(100.0);
+    six.positions = vec![
+        "UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into(),
+    ];
+    six.posts = vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0];
+    six.limp = true;
+    six.open_raises = vec![2.5];
+    six.raise_mults = vec![3.0];
+    six.max_raises = 2;
+    six.add_allin = false;
+    cfgs.push(six);
+    for cfg in cfgs {
+        let est = solver::preflop::estimate_tree(&cfg).unwrap();
+        let s = legacy_solver(cfg, eq.clone()).unwrap();
+        assert!(!est.truncated);
+        assert_eq!(est.nodes as usize, s.nodes.len(), "node count mismatch");
+        assert_eq!(
+            est.action_nodes as usize,
+            s.nodes.iter().filter(|n| n.kind == 0).count(),
+            "action node mismatch"
+        );
+        assert!((est.arena_len as f64 * 8.0 / 1e6 - s.arena_mb()).abs() < 1e-6);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Player profiles (P1): buckets, seat modes, behavioral anchors
+// ---------------------------------------------------------------------------
+
+use solver::preflop::{
+    BucketPolicy, HudStats, SeatProfile, BUCKET_SQUEEZE, BUCKET_UNOPENED, BUCKET_VS_3BET,
+    BUCKET_VS_LIMPS, BUCKET_VS_RAISE, NUM_BUCKETS,
+};
+
+fn hu_limp_config() -> PreflopConfig {
+    PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["SB".into(), "BB".into()],
+        stack: 25.0,
+        posts: vec![0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![2.5, 5.0],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "static".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    }
+}
+
+fn flat_policy(call: f32, raise: f32) -> BucketPolicy {
+    BucketPolicy { raise_multiples: Vec::new(), raise_sizes: Vec::new(),
+        call: vec![call; NUM_CLASSES],
+        raise: vec![raise; NUM_CLASSES],
+        jam: vec![0.0; NUM_CLASSES],
+        raise_size: "max".into(),
+    }
+}
+
+fn profile_with(bucket: u8, pol: BucketPolicy, name: &str) -> SeatProfile {
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    buckets[bucket as usize] = Some(pol);
+    SeatProfile { name: name.into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }
+}
+
+fn agg_freq(s: &PreflopSolver, node: usize, act_pred: impl Fn(&str) -> bool) -> f64 {
+    let sigma = s.average_strategy(node);
+    let nd = &s.nodes[node];
+    let (mut num, mut den) = (0f64, 0f64);
+    for h in 0..NUM_CLASSES {
+        let w = class_prob(h) as f64;
+        den += w;
+        for (a, act) in nd.actions.iter().enumerate() {
+            if act_pred(&act.kind) {
+                num += w * sigma[a * NUM_CLASSES + h] as f64;
+            }
+        }
+    }
+    num / den
+}
+
+/// Situation buckets tag the tree the way a player would describe spots.
+#[test]
+fn buckets_are_tagged_correctly() {
+    let eq = table();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    assert_eq!(s.nodes[0].bucket, BUCKET_UNOPENED);
+    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
+    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    assert_eq!(s.nodes[s.child(0, limp)].bucket, BUCKET_VS_LIMPS);
+    let vs_raise = s.child(0, open);
+    assert_eq!(s.nodes[vs_raise].bucket, BUCKET_VS_RAISE);
+    let threebet = s.nodes[vs_raise].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let vs_3bet = s.child(vs_raise, threebet);
+    assert_eq!(s.nodes[vs_3bet].bucket, BUCKET_VS_3BET);
+    // ...and the SAME bucket at every deeper re-raise: fold-to-3bet+ covers
+    // 4-bets, 5-bets, jams (at 25bb the 4-bet clips to a jam — still a raise)
+    let fourbet = s.nodes[vs_3bet]
+        .actions
+        .iter()
+        .position(|a| a.kind == "raise" || a.kind == "jam")
+        .unwrap();
+    assert_eq!(s.nodes[s.child(vs_3bet, fourbet)].bucket, BUCKET_VS_3BET);
+
+    // squeeze needs 3 players: BTN opens, SB calls, BB faces raise + caller
+    let mut cfg3 = hu_limp_config();
+    cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg3.posts = vec![0.0, 0.5, 1.0];
+    let s3 = legacy_solver(cfg3, eq).unwrap();
+    let open3 = s3.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let n1 = s3.child(0, open3); // SB facing the raise
+    assert_eq!(s3.nodes[n1].bucket, BUCKET_VS_RAISE);
+    let call3 = s3.nodes[n1].actions.iter().position(|a| a.kind == "call").unwrap();
+    let n2 = s3.child(n1, call3); // BB facing raise + cold caller
+    assert_eq!(s3.nodes[n2].bucket, BUCKET_SQUEEZE);
+}
+
+/// Anchor: against a BB who NEVER 3-bets, the SB attacks more (raise+limp
+/// pressure up, and specifically the raise frequency should not shrink).
+#[test]
+fn never_threebettor_gets_attacked_wider() {
+    let eq = table();
+    let mut base = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..400 {
+        base.iterate();
+    }
+    let base_raise = agg_freq(&base, 0, |k| k == "raise" || k == "jam");
+
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    let pol = flat_policy(0.5, 0.0); // calls half of everything, raises nothing
+    s.set_table(
+        vec![false, false],
+        vec![None, Some(profile_with(BUCKET_VS_RAISE, pol, "never-3bets"))],
+    )
+    .unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let vs_nit_raise = agg_freq(&s, 0, |k| k == "raise" || k == "jam");
+    assert!(
+        vs_nit_raise > base_raise + 0.02,
+        "SB should open wider vs a never-3-bettor: {base_raise:.3} -> {vs_nit_raise:.3}"
+    );
+}
+
+/// Anchor: an OMC who only raises AA/KK (max size) gets respect — the BB
+/// mostly folds QQ to the raise and never folds AA.
+#[test]
+fn omc_raises_get_respect() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let kk = solver::preflop::equity::class_index(11, 11, false);
+    let qq = solver::preflop::equity::class_index(10, 10, false);
+    let mut pol = flat_policy(0.0, 0.0);
+    pol.raise[aa] = 1.0;
+    pol.raise[kk] = 1.0;
+    // limps all pairs below KK and strong suited stuff; folds the rest
+    for h in 0..NUM_CLASSES {
+        if h != aa && h != kk {
+            let (hi, lo, suited) = solver::preflop::equity::class_parts(h);
+            if hi == lo || (suited && hi >= 8) {
+                pol.call[h] = 1.0;
+            }
+        }
+    }
+    s.set_table(
+        vec![false, false],
+        vec![Some(profile_with(BUCKET_UNOPENED, pol, "OMC")), None],
+    )
+    .unwrap();
+    for _ in 0..500 {
+        s.iterate();
+    }
+    // SB's aggregate open-raise frequency == AA+KK share of the deck
+    let raise_freq = agg_freq(&s, 0, |k| k == "raise");
+    assert!(
+        (raise_freq - 12.0 / 1326.0).abs() < 0.004,
+        "OMC raise freq should be ~0.9%, got {raise_freq:.4}"
+    );
+    // BB facing the max-size raise: QQ mostly folds, AA never does
+    let nd0 = &s.nodes[0];
+    let raises: Vec<(f64, usize)> = nd0
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise")
+        .map(|(i, a)| (a.to, i))
+        .collect();
+    let max_raise = raises
+        .iter()
+        .max_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
+        .unwrap()
+        .1;
+    let bb_node = s.child(0, max_raise);
+    let bb = s.average_strategy(bb_node);
+    let fold_a = s.nodes[bb_node].actions.iter().position(|a| a.kind == "fold").unwrap();
+    assert!(
+        bb[fold_a * NUM_CLASSES + qq] > 0.5,
+        "QQ should mostly fold to the OMC raise, folds {:.3}",
+        bb[fold_a * NUM_CLASSES + qq]
+    );
+    assert!(
+        bb[fold_a * NUM_CLASSES + aa] < 0.05,
+        "AA should never fold to the OMC raise"
+    );
+}
+
+/// Anchor: a whale who never folds bleeds, and exploiting him raises the
+/// other seat's EV vs baseline.
+#[test]
+fn whale_bleeds_and_gets_exploited() {
+    let eq = table();
+    let mut base = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..400 {
+        base.iterate();
+    }
+    let base_ev_sb = base.evs()[0];
+
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    for b in 0..NUM_BUCKETS {
+        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    }
+    s.set_table(
+        vec![false, false],
+        vec![None, Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None })],
+    )
+    .unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let ev_sb = s.evs()[0];
+    assert!(
+        ev_sb > base_ev_sb + 0.15,
+        "SB should exploit the whale: EV {base_ev_sb:.3} -> {ev_sb:.3}"
+    );
+    let bleed = s.br_gaps()[1];
+    assert!(bleed > 0.3, "the whale should bleed plainly, got {bleed:.3} bb");
+}
+
+/// Frozen seats keep their exact average strategy while others keep moving.
+#[test]
+fn frozen_seat_stops_adapting() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let open = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let bb_node = s.child(0, open);
+    let before = s.average_strategy(bb_node);
+    let sb_before = s.average_strategy(0);
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let after = s.average_strategy(bb_node);
+    let sb_after = s.average_strategy(0);
+    let bb_moved = before
+        .iter()
+        .zip(after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    let sb_moved = sb_before
+        .iter()
+        .zip(sb_after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(bb_moved < 1e-4, "frozen BB moved: {bb_moved}");
+    assert!(sb_moved > 1e-3, "live SB should keep adapting, moved {sb_moved}");
+}
+
+/// Point locks pin a single node and unlock cleanly.
+#[test]
+fn point_lock_roundtrip() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let before = s.average_strategy(0);
+    let pol = flat_policy(0.0, 1.0); // raise everything
+    s.lock_point(&[], Some(pol)).unwrap();
+    let locked = s.average_strategy(0);
+    let raise_mass: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise")
+        .map(|(a, _)| locked[a * NUM_CLASSES])
+        .sum();
+    assert!(raise_mass > 0.99, "point lock should force raising, got {raise_mass}");
+    assert!(s.has_overrides());
+    assert!(s.unlock_point(&[]).unwrap());
+    let unlocked = s.average_strategy(0);
+    let diff = before
+        .iter()
+        .zip(unlocked.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(diff < 1e-6, "unlock should restore the solver strategy");
+}
+
+/// P2: equilibrium-distortion generation hits its stat targets and puts the
+/// right hands in the right slices.
+#[test]
+fn generated_profiles_match_stats()  {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let seven_deuce = solver::preflop::equity::class_index(5, 0, false);
+
+    // a whale: 60/8, mostly position-blind
+    let whale_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("Whale"))
+        .unwrap()
+        .1;
+    let (whale, implied) = s.generate_profile(1, &whale_stats, "whale").unwrap();
+    assert!((implied.vpip - 60.0).abs() < 3.0, "implied vpip {}", implied.vpip);
+    assert!((implied.pfr - 8.0).abs() < 2.0, "implied pfr {}", implied.pfr);
+    let b0 = whale.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    let cont_aa = b0.call[aa] + b0.raise[aa] + b0.jam[aa];
+    assert!(cont_aa > 0.99, "AA must be in a 60% range");
+
+    // The whale's defend-vs-raise range must be HUMAN-shaped, not
+    // equilibrium-polarized: dominated broadways in (fish call Q9o),
+    // low suited junk out (fish don't call raises with 53s).
+    let bvr = whale.buckets[BUCKET_VS_RAISE as usize].as_ref().unwrap();
+    let q9o = solver::preflop::equity::class_index(10, 7, false);
+    let three2s = solver::preflop::equity::class_index(1, 0, true);
+    let cont = |b: &solver::preflop::BucketPolicy, h: usize| b.call[h] + b.raise[h] + b.jam[h];
+    assert!(
+        cont(bvr, q9o) > 0.9,
+        "a whale calls raises with Q9o, got {}",
+        cont(bvr, q9o)
+    );
+    assert!(
+        cont(bvr, three2s) < 0.1,
+        "even a whale's 55% defend excludes 32s, got {}",
+        cont(bvr, three2s)
+    );
+
+    // a nit/OMC: tiny pfr -> premiums raise, junk folds
+    let nit_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("Nit"))
+        .unwrap()
+        .1;
+    let (nit, ni) = s.generate_profile(1, &nit_stats, "nit").unwrap();
+    assert!((ni.vpip - 12.0).abs() < 2.5, "implied vpip {}", ni.vpip);
+    let b0 = nit.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    assert!(b0.raise[aa] > 0.9, "AA must be in the OMC's raising range");
+    let cont_72 = b0.call[seven_deuce] + b0.raise[seven_deuce] + b0.jam[seven_deuce];
+    assert!(cont_72 < 0.05, "72o must be out of a 12% range, got {cont_72}");
+
+    // applying a generated profile keeps the solver healthy
+    s.set_table(vec![false, false], vec![None, Some(whale)]).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let evs = s.evs();
+    assert!(evs[0] > 0.0, "SB should profit vs the generated whale: {evs:?}");
+}
+
+/// A bucket the baseline never reaches has no equilibrium ordering to
+/// distort — its propensities are exact zeros (or float noise once limps
+/// decay out of a converged multiway solve), and ranking those used to fill
+/// ranges in class-index order: 22, 32o, ... — bottom half of the grid in,
+/// every playable hand out. Generation must fall back to card appeal.
+/// Repro: no-limp game => VS_LIMPS mass is exactly zero for every seat, and
+/// a LOW-naiveté player (whose ordering leans hardest on the equilibrium).
+#[test]
+fn unreached_bucket_falls_back_to_card_appeal() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 40.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![2.5],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: true,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    let mut s = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let tag_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("TAG"))
+        .unwrap()
+        .1;
+    let (tag, _) = s.generate_profile(0, &tag_stats, "tag").unwrap();
+    let bvl = tag.buckets[BUCKET_VS_LIMPS as usize].as_ref().unwrap();
+    let cont = |h: usize| bvl.call[h] + bvl.raise[h] + bvl.jam[h];
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let aks = solver::preflop::equity::class_index(12, 11, true);
+    let seven_deuce = solver::preflop::equity::class_index(5, 0, false);
+    let three_two = solver::preflop::equity::class_index(1, 0, false);
+    assert!(cont(aa) > 0.99, "AA must head an appeal-ordered range, got {}", cont(aa));
+    assert!(cont(aks) > 0.99, "AKs must be in a ~22% range, got {}", cont(aks));
+    assert!(cont(seven_deuce) < 0.05, "72o out, got {}", cont(seven_deuce));
+    assert!(cont(three_two) < 0.05, "32o out, got {}", cont(three_two));
+
+    // A nit at the same data-less seat: defend-vs-raise must come out
+    // TIGHTER than unopened (not wider — the old table-numerator over
+    // own-denominator scaling gave a 12-VPIP nit a 21% defend), premiums
+    // in, and no low-suited-junk polarization borrowed from BB defense.
+    let nit_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("Nit"))
+        .unwrap()
+        .1;
+    let (nit, ni) = s.generate_profile(0, &nit_stats, "nit").unwrap();
+    assert!(
+        ni.cont_vs_raise < nit_stats.vpip && ni.cont_vs_raise > 2.0,
+        "nit defend-vs-raise should be tighter than VPIP {}, got {}",
+        nit_stats.vpip,
+        ni.cont_vs_raise
+    );
+    let nvr = nit.buckets[BUCKET_VS_RAISE as usize].as_ref().unwrap();
+    let ncont = |h: usize| nvr.call[h] + nvr.raise[h] + nvr.jam[h];
+    let qq = solver::preflop::equity::class_index(10, 10, false);
+    let six_two_s = solver::preflop::equity::class_index(4, 0, true);
+    assert!(ncont(qq) > 0.99, "QQ continues vs a raise, got {}", ncont(qq));
+    assert!(ncont(six_two_s) < 0.05, "62s must not be in a nit's defend, got {}", ncont(six_two_s));
+}
+
+/// Saved games restore the WHOLE session bit-for-bit: config, solver state,
+/// seat models, and the solve can continue from where it stopped.
+#[test]
+fn game_save_load_roundtrip() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..120 {
+        s.iterate();
+    }
+    let whale_stats = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| n.starts_with("Whale"))
+        .unwrap()
+        .1;
+    let (prof, _) = s.generate_profile(1, &whale_stats, "whale").unwrap();
+    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    let path = std::env::temp_dir().join("gtopen_pf_roundtrip.gtop");
+    let path = path.to_str().unwrap().to_string();
+    s.save_game(&path).unwrap();
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    std::fs::remove_file(&path).ok();
+    assert_eq!(l.iteration, s.iteration);
+    assert!(l.seat_profiles[1].is_some(), "seat model must ride along");
+    let a = s.average_strategy(0);
+    let b = l.average_strategy(0);
+    for (x, y) in a.iter().zip(b.iter()) {
+        assert!((x - y).abs() < 1e-7, "root strategy must survive the roundtrip");
+    }
+    // resuming the solve from the loaded state works and stays sane
+    let mut l = l;
+    for _ in 0..20 {
+        l.iterate();
+    }
+    assert!(l.br_gaps().iter().all(|g| g.is_finite()));
+}
+
+/// M5 Phase D: the calibrated realization table loads, its monotonicities
+/// hold, the solver uses it end-to-end, and all-in anchors are untouched.
+#[test]
+fn calibrated_realization_works() {
+    use solver::preflop::RealizationFit;
+    let fit = RealizationFit::load("../../cache/realization_fit.json")
+        .expect("shipped fit table");
+    let ci = solver::preflop::equity::class_index;
+    // aggressor+IP beats defender+OOP at the same holdings
+    let m_def = fit.seat_mult(-0.5, 8.0, 0.5, -0.5);
+    let m_agg = fit.seat_mult(0.5, 8.0, 0.5, 0.5);
+    let t9s = ci(8, 7, true);
+    assert!(fit.eval(m_agg, t9s) > fit.eval(m_def, t9s));
+    // playability + the v1 postmortem orderings
+    let m0 = fit.seat_mult(0.0, 8.0, 0.5, 0.0);
+    let (s76, o76, s72) = (ci(5, 4, true), ci(5, 4, false), ci(5, 0, true));
+    assert!(fit.eval(m0, s76) > fit.eval(m0, o76));
+    assert!(fit.eval(m0, s76) > fit.eval(m0, s72));
+    let (a9o, s32) = (ci(7, 12, false), ci(1, 0, true));
+    assert!(fit.eval(m_def, a9o) >= fit.eval(m_def, s32), "A9o must not crater below 32s");
+    // clip bounds hold at extremes
+    for k in [ci(12, 12, false), ci(0, 0, false), ci(5, 0, false)] {
+        let r = fit.eval(fit.seat_mult(0.5, 80.0, 0.9, 0.5), k);
+        assert!((0.2..=2.5).contains(&r), "R out of clip: {r}");
+    }
+
+    // end-to-end: calibrated solves converge and diverge from static
+    let eq = table();
+    let mut cal_cfg = hu_limp_config();
+    cal_cfg.realization = "calibrated".into();
+    let mut cal = legacy_solver(cal_cfg, eq.clone()).unwrap();
+    assert!(cal.fit.is_some(), "fit must load (cwd fallback path)");
+    let mut sta = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..300 {
+        cal.iterate();
+        sta.iterate();
+    }
+    assert!(cal.br_gaps().iter().all(|g| g.is_finite() && *g < 1.0));
+    let (a, b) = (cal.average_strategy(0), sta.average_strategy(0));
+    let diff = a.iter().zip(b.iter()).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+    assert!(diff > 0.02, "calibrated should reshape strategies, max diff {diff}");
+
+    // push/fold anchors: all-in terminals bypass R entirely
+    let mut pf = hu_push_fold_config(10.0);
+    pf.realization = "calibrated".into();
+    let mut s = legacy_solver(pf, eq).unwrap();
+    for _ in 0..2000 {
+        s.iterate();
+    }
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let jam_a = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
+    let sb = s.average_strategy(0);
+    assert!(sb[jam_a * NUM_CLASSES + aa] > 0.99, "AA still jams at 10bb");
+}
+
+// ---------------------------------------------------------------------------
+// Regression tests (review 2026-07-16)
+// ---------------------------------------------------------------------------
+
+/// Heads-up the SB IS the button and acts LAST postflop: the BB is OOP.
+/// Exports must assign positions accordingly and the static realization
+/// premium must go to the SB. 3+ players keep the standard order.
+#[test]
+fn hu_postflop_position_bb_is_oop() {
+    let eq = table();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    assert_eq!(s.postflop_order(), vec![1, 0], "HU: BB first (OOP), SB/button last");
+    // limp, check -> flop terminal
+    let limp = s.nodes[0].actions.iter().position(|a| a.kind == "call").unwrap();
+    let bb_node = s.child(0, limp);
+    let check = s.nodes[bb_node].actions.iter().position(|a| a.kind == "check").unwrap();
+    let term = s.child(bb_node, check);
+    assert_eq!(s.nodes[term].kind, 2, "expected a pot_share terminal");
+    let ex = s.export_spot(&[limp, check]).unwrap();
+    assert_eq!(ex.oop_pos, "BB");
+    assert_eq!(ex.ip_pos, "SB");
+    // static realization: IP premium to the SB (seat 0), discount to the BB
+    let nd = &s.nodes[term];
+    assert!(
+        nd.r[0] > 1.0 && nd.r[1] < 1.0,
+        "IP premium must go to the SB/button, got r = {:?}",
+        nd.r
+    );
+    assert!(
+        nd.posf[0] > 0.0 && nd.posf[1] < 0.0,
+        "SB acts last: posf = {:?}",
+        nd.posf
+    );
+    // 3-handed keeps blinds-first order: SB, BB, then BTN
+    let mut cfg3 = hu_limp_config();
+    cfg3.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg3.posts = vec![0.0, 0.5, 1.0];
+    let s3 = legacy_solver(cfg3, eq).unwrap();
+    assert_eq!(s3.postflop_order(), vec![1, 2, 0]);
+}
+
+/// A frozen seat's pinned average must survive any number of solve cycles:
+/// the DCFR strategy-sum discount may not touch frozen blocks, or the pins
+/// decay below the uniform-fallback floor after a couple of hero switches.
+#[test]
+fn frozen_average_survives_hero_cycles() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(10.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    let mut s = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let node = (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 2)
+        .unwrap();
+    let pinned = s.average_strategy(node);
+    // two hero cycles; seat 2 stays frozen through both, and each cycle
+    // restarts iteration at 0 where the discount decays hardest
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..1500 {
+        s.iterate();
+    }
+    s.set_hero(Some(1)).unwrap();
+    for _ in 0..1500 {
+        s.iterate();
+    }
+    let after = s.average_strategy(node);
+    let moved = pinned
+        .iter()
+        .zip(after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(
+        moved < 1e-4,
+        "frozen seat's pinned average moved by {moved} across hero cycles"
+    );
+    let na = s.nodes[node].actions.len();
+    let uni = 1.0 / na as f32;
+    let max_dev = after.iter().map(|x| (x - uni).abs()).fold(0f32, f32::max);
+    assert!(max_dev > 0.3, "frozen average flipped to ~uniform (max dev {max_dev})");
+}
+
+/// Leaving hero mode restores the frozen flags the table had before it —
+/// explicitly pinned seats must stay pinned.
+#[test]
+fn hero_off_restores_explicit_frozen_seats() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    s.set_hero(None).unwrap();
+    assert_eq!(
+        s.seat_frozen,
+        vec![false, true],
+        "hero off must restore the explicitly frozen seat"
+    );
+}
+
+/// REGRESSION: an explicitly frozen seat must be REFUSED as hero. Hero entry
+/// zeroes the hero's strategy sums ("converges fresh") and hero exit restores
+/// the pre-hero frozen flags, so pin BB -> set_hero(BB) -> hero off used to
+/// re-freeze BB over zeroed sums — the seat then played uniform random
+/// forever while labeled frozen (the frozen-block discount skip preserves
+/// the zeros), bypassing the uniform-pin guards in set_table and set_hero.
+#[test]
+fn frozen_seat_refused_as_hero() {
+    let eq = table();
+    let mut s = legacy_solver(hu_push_fold_config(10.0), eq).unwrap();
+    for _ in 0..300 {
+        s.iterate();
+    }
+    // pin BB (seat 1) "as solved", then solve on so learning state is live
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    let node = (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 1)
+        .unwrap();
+    let pinned = s.average_strategy(node);
+    let iter_before = s.iteration;
+    // the confirmed failure sequence starts here — it must be refused
+    let err = s.set_hero(Some(1)).unwrap_err();
+    assert!(err.contains("frozen"), "refusal must name the freeze, got: {err}");
+    // ...and refused BEFORE any state is touched: no hero, flags intact,
+    // learning not reset
+    assert_eq!(s.seat_frozen, vec![false, true]);
+    assert_eq!(s.iteration, iter_before, "refusal must not reset learning");
+    s.set_hero(None).unwrap();
+    assert_eq!(s.seat_frozen, vec![false, true]);
+    // the pinned average survives further solving, and is nowhere near the
+    // uniform fallback the old sequence left behind
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let after = s.average_strategy(node);
+    let moved = pinned
+        .iter()
+        .zip(after.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(moved < 1e-4, "pinned average moved by {moved}");
+    let na = s.nodes[node].actions.len();
+    let uni = 1.0 / na as f32;
+    let max_dev = after.iter().map(|x| (x - uni).abs()).fold(0f32, f32::max);
+    assert!(
+        max_dev > 0.3,
+        "frozen seat plays ~uniform (max dev {max_dev}) — its pinned average was wiped"
+    );
+    // the live seat is still a legal hero; while hero mode is active every
+    // villain is hero-frozen, so the guard must consult the TABLE's flags:
+    // switching hero onto the pinned seat is still refused, switching back
+    // off still restores the pin
+    s.set_hero(Some(0)).unwrap();
+    let err = s.set_hero(Some(1)).unwrap_err();
+    assert!(err.contains("frozen"), "hero switch onto the pinned seat, got: {err}");
+    assert_eq!(s.hero, Some(0), "failed switch must leave hero mode as it was");
+    s.set_hero(None).unwrap();
+    assert_eq!(s.seat_frozen, vec![false, true]);
+}
+
+/// The one exemption from the frozen-hero refusal: a FULLY ruled seat. Its
+/// profile forces every node, so its strategy sums never matter — the
+/// hero-entry reset cannot corrupt its play (same exemption set_table's
+/// uniform-pin guard makes).
+#[test]
+fn fully_ruled_frozen_seat_allowed_as_hero() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    for b in 0..NUM_BUCKETS {
+        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    }
+    s.set_table(
+        vec![true, false],
+        vec![Some(SeatProfile { name: "station".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }), None],
+    )
+    .unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    s.set_hero(None).unwrap();
+    assert_eq!(s.seat_frozen, vec![true, false]);
+    // the profile rules the seat again — no uniform fallback possible
+    let sigma = s.average_strategy(0);
+    let pass = s.nodes[0]
+        .actions
+        .iter()
+        .position(|a| a.kind == "check" || a.kind == "call")
+        .unwrap();
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    assert!(
+        (sigma[pass * NUM_CLASSES + aa] - 1.0).abs() < 1e-6,
+        "profile must rule the restored frozen seat"
+    );
+}
+
+/// Hero mode on a fully-ruled seat computes that seat's FREE max exploit:
+/// the hero is exempt from its own profile (otherwise the solve is a no-op
+/// that returns the profile itself), and the profile snaps back when hero
+/// mode ends.
+#[test]
+fn hero_on_ruled_seat_learns_free_exploit() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    for b in 0..NUM_BUCKETS {
+        buckets[b] = Some(flat_policy(1.0, 0.0)); // never folds, never raises
+    }
+    s.set_table(
+        vec![false, false],
+        vec![Some(SeatProfile { name: "whale".into(), buckets, vs_raise_bands: None, postflop: None, limp_defense: None, response: None }), None],
+    )
+    .unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let ruled = s.average_strategy(0);
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, 0, "hero entry resets the exploit solve");
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let exploit = s.average_strategy(0);
+    let diff = ruled
+        .iter()
+        .zip(exploit.iter())
+        .map(|(a, b)| (a - b).abs())
+        .fold(0f32, f32::max);
+    assert!(diff > 0.2, "hero must escape its own profile, max diff {diff}");
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    let aggr_aa: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise" || a.kind == "jam")
+        .map(|(a, _)| exploit[a * NUM_CLASSES + aa])
+        .sum();
+    assert!(aggr_aa > 0.5, "the exploit raises AA, got {aggr_aa}");
+    // hero off: the profile rules the seat again
+    s.set_hero(None).unwrap();
+    let back = s.average_strategy(0);
+    let aggr_back: f32 = s.nodes[0]
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, a)| a.kind == "raise" || a.kind == "jam")
+        .map(|(a, _)| back[a * NUM_CLASSES + aa])
+        .sum();
+    assert!(aggr_back < 0.01, "profile must rule again after hero off");
+}
+
+/// rake_cap = 0 means UNCAPPED (the documented convention, shared with the
+/// postflop engine and the UI tooltip) — not "no rake".
+#[test]
+fn rake_cap_zero_is_uncapped() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 2;
+    cfg.limp = true;
+    cfg.rake_pct = 10.0;
+    cfg.rake_cap = 0.0;
+    let mut raked = legacy_solver(cfg.clone(), eq.clone()).unwrap();
+    cfg.rake_pct = 0.0;
+    let mut free = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..400 {
+        raked.iterate();
+        free.iterate();
+    }
+    let free_total: f64 = free.evs().iter().sum();
+    let raked_total: f64 = raked.evs().iter().sum();
+    assert!(free_total.abs() < 0.05, "no-rake game conserves chips, got {free_total}");
+    assert!(
+        raked_total < -0.05,
+        "rake_pct=10 with cap 0 must charge rake (0 = uncapped), got {raked_total}"
+    );
+}
+
+/// Locking a node "as currently solved" before any solve would pin it to a
+/// uniform random sigma — it must be rejected like set_table/set_hero are.
+#[test]
+fn lock_point_before_solve_is_rejected() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    assert!(s.lock_point(&[], None).is_err(), "as-solved lock needs a solve first");
+    assert!(!s.has_overrides());
+    // an explicit policy is fine at iteration 0
+    s.lock_point(&[], Some(flat_policy(1.0, 0.0))).unwrap();
+    assert!(s.has_overrides());
+}
+
+/// A malformed clip/mult_clip array in the fit table must be a load ERROR
+/// (the caller falls back to static realization), never a panic.
+#[test]
+fn malformed_fit_clip_is_err_not_panic() {
+    use solver::preflop::RealizationFit;
+    let mut v: serde_json::Value = serde_json::from_str(
+        &std::fs::read_to_string("../../cache/realization_fit.json").expect("shipped fit table"),
+    )
+    .unwrap();
+    v["mult_clip"] = serde_json::json!([0.8]); // truncated write / hand edit
+    let path = std::env::temp_dir().join("gtopen_bad_fit.json");
+    std::fs::write(&path, v.to_string()).unwrap();
+    let r = RealizationFit::load(path.to_str().unwrap());
+    std::fs::remove_file(&path).ok();
+    assert!(r.is_err(), "1-element mult_clip must be a load error");
+}
+
+// ===== config economics validation =====
+
+/// Impossible economics must be rejected at build with an error naming the
+/// offending field: negative rake minted chips at every raked terminal,
+/// rake >= 100% made effective pots negative, NaN slipped through every
+/// range comparison, over-stack opens invested chips that don't exist.
+#[test]
+fn impossible_economics_are_rejected() {
+    let eq = table();
+    let reject = |what: &str, needle: &str, mutate: &dyn Fn(&mut PreflopConfig)| {
+        let mut cfg = hu_limp_config();
+        mutate(&mut cfg);
+        match legacy_solver(cfg, eq.clone()) {
+            Ok(_) => panic!("{what}: config unexpectedly accepted"),
+            Err(e) => assert!(e.contains(needle), "{what}: error should name {needle}: {e}"),
+        }
+    };
+    reject("negative rake", "rake_pct", &|c| c.rake_pct = -5.0);
+    reject("rake at 100%", "rake_pct", &|c| c.rake_pct = 100.0);
+    reject("NaN rake", "rake_pct", &|c| c.rake_pct = f64::NAN);
+    reject("negative rake cap", "rake_cap", &|c| c.rake_cap = -1.0);
+    reject("NaN stack", "stack", &|c| c.stack = f64::NAN);
+    reject("infinite stack", "stack", &|c| c.stack = f64::INFINITY);
+    reject("negative ante", "ante", &|c| c.ante = -0.25);
+    reject("NaN post", "posts", &|c| c.posts = vec![0.5, f64::NAN]);
+    reject("negative post", "posts", &|c| c.posts = vec![-0.5, 1.0]);
+    reject("negative open", "open_raises", &|c| c.open_raises = vec![-2.5]);
+    reject("zero open", "open_raises", &|c| c.open_raises = vec![0.0]);
+    reject("infinite open", "open_raises", &|c| c.open_raises = vec![2.5, f64::INFINITY]);
+    reject("over-stack open", "open_raises", &|c| c.open_raises = vec![250.0]);
+    reject("zero raise mult", "raise_mults", &|c| c.raise_mults = vec![0.0]);
+    reject("NaN raise mult", "raise_mults", &|c| c.raise_mults = vec![f64::NAN]);
+    reject("zero all-in threshold", "allin_threshold", &|c| c.allin_threshold = 0.0);
+    reject("threshold above 1", "allin_threshold", &|c| c.allin_threshold = 1.5);
+    reject("NaN threshold", "allin_threshold", &|c| c.allin_threshold = f64::NAN);
+}
+
+/// Boundary values are all VALID (0% rake, uncapped, jam threshold 1.0) and
+/// so are sub-minimum opens: "any raise sizes" is an advertised study
+/// feature — the builder recomputes last_raise from the actual open and
+/// clamps every RE-raise up to a legal increment, so a 1.5bb open is an
+/// unusual config, not a broken one.
+#[test]
+fn boundary_and_study_configs_still_build() {
+    let eq = table();
+    let mut cfg = hu_limp_config();
+    cfg.rake_pct = 0.0;
+    cfg.rake_cap = 0.0;
+    cfg.allin_threshold = 1.0;
+    legacy_solver(cfg, eq.clone()).expect("boundary values are valid");
+
+    let mut cfg = hu_limp_config();
+    cfg.open_raises = vec![1.5];
+    let s = legacy_solver(cfg, eq).expect("sub-min opens are a valid study config");
+    assert!(
+        s.nodes[0]
+            .actions
+            .iter()
+            .any(|a| a.kind == "raise" && (a.to - 1.5).abs() < 1e-9),
+        "the 1.5bb open must be offered at the root"
+    );
+}
+
+/// Opens at/below the biggest blind are silently dropped by the action
+/// builder; with no limp and no all-in that would build a fold-only root.
+#[test]
+fn all_dropped_opens_are_rejected() {
+    let eq = table();
+    let mut cfg = hu_limp_config();
+    cfg.limp = false;
+    cfg.open_raises = vec![1.0]; // == BB: never offered
+    match legacy_solver(cfg, eq) {
+        Ok(_) => panic!("fold-only config unexpectedly accepted"),
+        Err(e) => assert!(e.contains("opening"), "unexpected error: {e}"),
+    }
+}
+
+// ===== save/load session-state validation =====
+
+/// Rewrite one field of a .gtop header in place (the header is a JSON line
+/// between the magic and the arenas; the arenas are kept verbatim).
+fn doctor_pf_header(path: &str, field: &str, value: serde_json::Value) {
+    let bytes = std::fs::read(path).unwrap();
+    const MAGIC_LEN: usize = 12; // b"GTOPREFLOP1\n"
+    let nl = MAGIC_LEN + bytes[MAGIC_LEN..].iter().position(|&b| b == b'\n').unwrap();
+    let mut header: serde_json::Value = serde_json::from_slice(&bytes[MAGIC_LEN..nl]).unwrap();
+    header[field] = value;
+    let mut out = bytes[..MAGIC_LEN].to_vec();
+    out.extend_from_slice(serde_json::to_string(&header).unwrap().as_bytes());
+    out.extend_from_slice(&bytes[nl..]); // '\n' + arenas, untouched
+    std::fs::write(path, out).unwrap();
+}
+
+/// A malformed point_locks entry used to be installed unvalidated; the
+/// panic then fired in the traversal's copy_from_slice at the first solve
+/// step or query — under the server's session mutex, wedging the lab.
+/// Load must return a clear Err instead.
+#[test]
+fn load_rejects_malformed_point_locks() {
+    let eq = table();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    let path = std::env::temp_dir().join("gtopen_pf_badlocks.gtop");
+    let path = path.to_str().unwrap().to_string();
+
+    let reject = |locks: serde_json::Value, needle: &str, what: &str| {
+        s.save_game(&path).unwrap();
+        doctor_pf_header(&path, "point_locks", locks);
+        match PreflopSolver::load_game(&path, eq.clone()) {
+            Ok(_) => panic!("{what}: load unexpectedly succeeded"),
+            Err(e) => assert!(e.contains(needle), "{what}: unexpected error: {e}"),
+        }
+    };
+    // the review's reproducer: a 1-entry sigma at the root
+    reject(serde_json::json!([[0, [1.0]]]), "expected", "short sigma");
+    reject(serde_json::json!([[999_999, [1.0]]]), "out of range", "oob node index");
+    let na = s.nodes[0].actions.len();
+    let mut sigma = vec![0.5f32; na * NUM_CLASSES];
+    sigma[0] = -1.0;
+    reject(serde_json::json!([[0, sigma]]), "finite", "negative frequency");
+    // a lock on a terminal: 0 actions x 169 classes = 0 entries, so only
+    // the node-kind check stands between an empty sigma and the consumers
+    let term = s
+        .nodes
+        .iter()
+        .position(|n| n.actions.is_empty())
+        .expect("tree has terminals");
+    reject(
+        serde_json::json!([[term, Vec::<f32>::new()]]),
+        "not an action node",
+        "terminal lock",
+    );
+
+    // control: a WELL-FORMED lock still loads, and the consumer that used
+    // to panic serves it verbatim
+    s.save_game(&path).unwrap();
+    let uniform = vec![1.0f32 / na as f32; na * NUM_CLASSES];
+    doctor_pf_header(&path, "point_locks", serde_json::json!([[0, uniform.clone()]]));
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    assert_eq!(l.average_strategy(0), uniform, "the lock must be served verbatim");
+    std::fs::remove_file(&path).ok();
+}
+
+/// Hero-mode state rides the same header and gets the same scrutiny: the
+/// hero seat indexes per-seat arrays, and pre-hero frozen flags are
+/// installed as-is.
+#[test]
+fn load_rejects_bad_hero_state() {
+    let eq = table();
+    let s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    let path = std::env::temp_dir().join("gtopen_pf_badhero.gtop");
+    let path = path.to_str().unwrap().to_string();
+
+    s.save_game(&path).unwrap();
+    doctor_pf_header(&path, "hero", serde_json::json!(7));
+    match PreflopSolver::load_game(&path, eq.clone()) {
+        Ok(_) => panic!("hero seat 7 of 2: load unexpectedly succeeded"),
+        Err(e) => assert!(e.contains("hero"), "unexpected error: {e}"),
+    }
+
+    s.save_game(&path).unwrap();
+    doctor_pf_header(&path, "pre_hero_frozen", serde_json::json!([true]));
+    match PreflopSolver::load_game(&path, eq) {
+        Ok(_) => panic!("1 pre-hero flag for 2 seats: load unexpectedly succeeded"),
+        Err(e) => assert!(e.contains("pre-hero"), "unexpected error: {e}"),
+    }
+    std::fs::remove_file(&path).ok();
+}
+
+/// A failed save must leave the previous save intact: save_game used to
+/// File::create (truncate) the destination first, so disk-full or a kill
+/// mid-write destroyed the only copy. It now stages into `{path}.tmp` and
+/// renames; blocking the staging path simulates the write failure.
+#[test]
+fn failed_save_leaves_previous_game_intact() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..10 {
+        s.iterate();
+    }
+    let dir = std::env::temp_dir().join("gtopen_pf_atomic");
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("game.gtop");
+    let path = path.to_str().unwrap().to_string();
+    let tmp = format!("{path}.tmp");
+
+    s.save_game(&path).unwrap();
+    assert!(
+        !std::path::Path::new(&tmp).exists(),
+        "staging file must not survive a successful save"
+    );
+    let before = std::fs::read(&path).unwrap();
+
+    // a directory at the staging path makes its File::create fail — the
+    // same failure point as a full disk
+    std::fs::create_dir(&tmp).unwrap();
+    for _ in 0..5 {
+        s.iterate();
+    }
+    assert!(s.save_game(&path).is_err(), "blocked staging path must fail the save");
+    assert_eq!(
+        before,
+        std::fs::read(&path).unwrap(),
+        "failed save must leave the previous save byte-identical"
+    );
+    std::fs::remove_dir(&tmp).unwrap();
+
+    // the next save recovers, replaces the old file and loads
+    s.save_game(&path).unwrap();
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    assert_eq!(l.iteration, s.iteration);
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+/// call_only_seats: the masked seat's nodes never offer a raise or jam, while
+/// other seats' menus are untouched and the masked seat can still limp/call.
+#[test]
+fn call_only_seat_never_raises() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![4.0],
+        raise_mults: vec![3.0],
+        max_raises: 4,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![0],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
+    let (mut masked_nodes, mut others_raise) = (0, 0);
+    for nd in &s.nodes {
+        if nd.kind != 0 {
+            continue;
+        }
+        let has_raise = nd.actions.iter().any(|a| a.kind == "raise" || a.kind == "jam");
+        if nd.actor == 0 {
+            masked_nodes += 1;
+            assert!(!has_raise, "call-only seat offered a raise: {:?}",
+                nd.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>());
+            assert!(nd.actions.iter().any(|a| a.kind == "call" || a.kind == "check"),
+                "call-only seat should still be able to limp/call/check");
+        } else if has_raise {
+            others_raise += 1;
+        }
+    }
+    assert!(masked_nodes > 0, "masked seat never acted");
+    assert!(others_raise > 0, "unmasked seats lost their raises");
+
+    // out-of-range index is refused
+    let mut bad = cfg;
+    bad.call_only_seats = vec![7];
+    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad index accepted") };
+    assert!(err.contains("call_only_seats"));
+}
+
+/// Per-seat size menus: the overridden seat sees its own sizes while every
+/// other seat keeps the global menu.
+#[test]
+fn per_seat_size_menus() {
+    let eq = table();
+    let mut cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![4.0],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    cfg.open_raises_by_seat = Some(vec![vec![2.5, 3.0, 5.0], vec![], vec![]]);
+    cfg.raise_mults_by_seat = Some(vec![vec![2.5, 4.0], vec![], vec![]]);
+    let s = legacy_solver(cfg.clone(), eq.clone()).unwrap();
+    let mut seen_btn_opens: Vec<f64> = vec![];
+    let mut seen_other_opens: Vec<f64> = vec![];
+    for nd in &s.nodes {
+        if nd.kind != 0 {
+            continue;
+        }
+        for a in &nd.actions {
+            if a.kind == "raise" {
+                let owed_zero_open = a.label.starts_with("Raise");
+                if owed_zero_open {
+                    if nd.actor == 0 {
+                        seen_btn_opens.push(a.to);
+                    } else {
+                        seen_other_opens.push(a.to);
+                    }
+                }
+            }
+        }
+    }
+    seen_btn_opens.sort_by(f64::total_cmp);
+    seen_btn_opens.dedup();
+    seen_other_opens.sort_by(f64::total_cmp);
+    seen_other_opens.dedup();
+    assert_eq!(seen_btn_opens, vec![2.5, 3.0, 5.0], "override seat menu");
+    assert_eq!(seen_other_opens, vec![4.0], "global menu untouched");
+
+    // wrong length rejected
+    let mut bad = cfg;
+    bad.open_raises_by_seat = Some(vec![vec![2.5]]);
+    let err = match legacy_solver(bad, eq) { Err(e) => e, Ok(_) => panic!("bad len accepted") };
+    assert!(err.contains("open_raises_by_seat"));
+}
+
+/// Size-banded VS_RAISE response: a ruled villain with cont_vs_raise_bands
+/// defends each hero open size at THAT band's continue target — the size
+/// blindness that overvalued big opens in max-exploit studies is gone. The
+/// bands generate, apply without a solve, and survive a game-save roundtrip.
+#[test]
+fn banded_vs_raise_tightens_vs_big_opens() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 40.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![2.5],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        // hero (BTN) explores two open sizes; the ruled seats stay pinned
+        open_raises_by_seat: Some(vec![vec![2.5, 5.0], vec![], vec![]]),
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    let mut s = legacy_solver(cfg, eq.clone()).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let stats = HudStats {
+        vpip: 30.0,
+        pfr: 18.0,
+        threebet: 5.0,
+        fold_to_3bet: 50.0,
+        squeeze: 5.0,
+        fourbet: None,
+        flatten: 0.5,
+        raise_size: "min".into(),
+        cont_vs_raise: None,
+        cont_vs_raise_bands: Some(vec![(3.0, 60.0), (999.0, 10.0)]),
+        cont_squeeze: None,
+        cont_vs_raise_limped: None,
+        open_raise: None,
+        open_limp: None,
+        iso_raise: None,
+        limp_behind: None,
+        dataset: None,
+    };
+    let (prof, implied) = s.generate_profile(1, &stats, "banded").unwrap();
+    let bands = prof.vs_raise_bands.as_ref().expect("bands must be generated");
+    assert_eq!(bands.len(), 2, "one policy per band");
+    // the legacy single policy stays as the band-less fallback, anchored at
+    // the bands' mid response, and the readback reports it
+    assert!(
+        implied.cont_vs_raise > 15.0 && implied.cont_vs_raise < 55.0,
+        "fallback policy should sit between the bands, implied {}",
+        implied.cont_vs_raise
+    );
+
+    s.set_table(vec![false, false, false], vec![None, Some(prof), None])
+        .unwrap();
+
+    // forced sigma shows WITHOUT solving: read the SB response to each size
+    let cont_after = |s: &PreflopSolver, to: f64| {
+        let a = s.nodes[0]
+            .actions
+            .iter()
+            .position(|x| x.kind == "raise" && (x.to - to).abs() < 1e-9)
+            .unwrap_or_else(|| panic!("no {to}bb open at the root"));
+        let n = s.child(0, a);
+        assert_eq!(s.nodes[n].bucket, BUCKET_VS_RAISE);
+        1.0 - agg_freq(s, n, |k| k == "fold")
+    };
+    let c25 = cont_after(&s, 2.5);
+    let c50 = cont_after(&s, 5.0);
+    assert!(
+        (c25 - 0.60).abs() < 0.02,
+        "SB must continue ~60% vs the 2.5x open, got {c25:.3}"
+    );
+    assert!(
+        (c50 - 0.10).abs() < 0.02,
+        "SB must continue ~10% vs the 5x open, got {c50:.3}"
+    );
+
+    // bands ride the game save like the rest of the seat model
+    let path = std::env::temp_dir().join("gtopen_pf_bands_roundtrip.gtop");
+    let path = path.to_str().unwrap().to_string();
+    s.save_game(&path).unwrap();
+    let l = PreflopSolver::load_game(&path, eq).unwrap();
+    std::fs::remove_file(&path).ok();
+    let lb = l.seat_profiles[1]
+        .as_ref()
+        .unwrap()
+        .vs_raise_bands
+        .as_ref()
+        .expect("bands must survive the save");
+    assert_eq!(lb.len(), 2);
+    assert!((cont_after(&l, 2.5) - c25).abs() < 1e-6);
+    assert!((cont_after(&l, 5.0) - c50).abs() < 1e-6);
+}
+
+/// Hand-built band policies: set_table validates their shape and thresholds,
+/// and application selects the band by the FACED size, not the action menu.
+#[test]
+fn set_table_validates_and_applies_hand_built_bands() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    let mut prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.0), "bands");
+
+    // descending thresholds refused
+    prof.vs_raise_bands = Some(vec![
+        (5.0, flat_policy(0.5, 0.0)),
+        (3.0, flat_policy(0.2, 0.0)),
+    ]);
+    let err = match s.set_table(vec![false, false], vec![None, Some(prof.clone())]) {
+        Err(e) => e,
+        Ok(_) => panic!("descending band thresholds accepted"),
+    };
+    assert!(err.contains("ascending"), "{err}");
+
+    // short class vectors refused
+    let mut shorty = flat_policy(0.5, 0.0);
+    shorty.call.truncate(10);
+    prof.vs_raise_bands = Some(vec![(3.0, shorty)]);
+    let err = match s.set_table(vec![false, false], vec![None, Some(prof.clone())]) {
+        Err(e) => e,
+        Ok(_) => panic!("malformed band policy accepted"),
+    };
+    assert!(err.contains("169"), "{err}");
+
+    // valid bands: defend everything vs small opens, fold everything vs big
+    prof.vs_raise_bands = Some(vec![
+        (3.0, flat_policy(1.0, 0.0)),
+        (999.0, flat_policy(0.0, 0.0)),
+    ]);
+    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    let open_to = |s: &PreflopSolver, to: f64| {
+        let a = s.nodes[0]
+            .actions
+            .iter()
+            .position(|x| x.kind == "raise" && (x.to - to).abs() < 1e-9)
+            .unwrap();
+        s.child(0, a)
+    };
+    let fold25 = agg_freq(&s, open_to(&s, 2.5), |k| k == "fold");
+    let fold50 = agg_freq(&s, open_to(&s, 5.0), |k| k == "fold");
+    assert!(fold25 < 1e-6, "BB must defend 100% vs 2.5x, folds {fold25}");
+    assert!(fold50 > 1.0 - 1e-6, "BB must fold 100% vs 5x, folds {fold50}");
+}
+
+/// Profile generation rejects non-finite / out-of-range stats with an error
+/// naming the field — BEFORE the solve-first guard, so garbage never reaches
+/// the range fills.
+#[test]
+fn hud_stats_validation_names_the_field() {
+    let eq = table();
+    let s = legacy_solver(hu_limp_config(), eq).unwrap(); // deliberately unsolved
+    let base = || {
+        solver::preflop::archetypes()
+            .into_iter()
+            .find(|(n, _)| n.starts_with("TAG"))
+            .unwrap()
+            .1
+    };
+    let cases: Vec<(HudStats, &str)> = vec![
+        (HudStats { vpip: f64::NAN, ..base() }, "vpip"),
+        (HudStats { pfr: -1.0, ..base() }, "pfr"),
+        (HudStats { threebet: 101.0, ..base() }, "threebet"),
+        (HudStats { fold_to_3bet: f64::INFINITY, ..base() }, "fold_to_3bet"),
+        (HudStats { squeeze: -0.1, ..base() }, "squeeze"),
+        (HudStats { fourbet: Some(f64::NAN), ..base() }, "fourbet"),
+        (HudStats { flatten: 1.5, ..base() }, "flatten"),
+        (HudStats { cont_vs_raise: Some(150.0), ..base() }, "cont_vs_raise"),
+        (HudStats { cont_squeeze: Some(-2.0), ..base() }, "cont_squeeze"),
+        (HudStats { raise_size: "huge".into(), ..base() }, "raise_size"),
+        (HudStats { cont_vs_raise_bands: Some(vec![]), ..base() }, "cont_vs_raise_bands"),
+        (
+            HudStats {
+                cont_vs_raise_bands: Some(vec![(5.0, 30.0), (3.0, 20.0)]),
+                ..base()
+            },
+            "ascending",
+        ),
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(f64::NAN, 30.0)]), ..base() },
+            "cont_vs_raise_bands",
+        ),
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 120.0)]), ..base() },
+            "cont_vs_raise_bands",
+        ),
+        // a band continue below the 3-bet stat couldn't even hold the raises
+        (
+            HudStats { cont_vs_raise_bands: Some(vec![(3.0, 1.0)]), ..base() },
+            "threebet",
+        ),
+    ];
+    for (stats, needle) in cases {
+        let err = match s.generate_profile(0, &stats, "bad") {
+            Err(e) => e,
+            Ok(_) => panic!("garbage stats accepted ({needle})"),
+        };
+        assert!(err.contains(needle), "error should name {needle}: {err}");
+    }
+    // control: valid stats pass validation and reach the solve-first guard
+    let err = match s.generate_profile(0, &base(), "ok") {
+        Err(e) => e,
+        Ok(_) => panic!("unsolved generate must still be refused"),
+    };
+    assert!(err.contains("solve"), "valid stats must clear validation: {err}");
+}
+
+
+// ---------------------------------------------------------------------------
+// Regression tests for the 2026-09 audit fixes (hero mode, profile
+// generation, fold-win rake, live-seat convergence)
+// ---------------------------------------------------------------------------
+
+fn max_abs_diff(a: &[f32], b: &[f32]) -> f32 {
+    a.iter().zip(b).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max)
+}
+
+fn first_action_node_of(s: &PreflopSolver, seat: u8) -> usize {
+    (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == seat)
+        .unwrap()
+}
+
+/// REGRESSION (audit 2026-09, high): re-sending the table while hero mode
+/// was on compared the request's frozen flags against the HERO mask and
+/// wiped the whole solve — every SAVE GAME / SOLVE / no-op APPLY made in
+/// hero mode. An unchanged table must keep hero mode and every arena
+/// intact, and a cosmetic profile rename is not a change either.
+#[test]
+fn unchanged_table_in_hero_mode_is_a_no_op() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let iter_before = s.iteration;
+    let (r0, s0) = s.arena_snapshot();
+    // exactly what the lab's applyModel sends for an all-live table
+    s.set_table(vec![false, false], vec![None, None]).unwrap();
+    assert_eq!(s.hero, Some(0), "an unchanged table must not leave hero mode");
+    assert_eq!(s.iteration, iter_before, "an unchanged table must not reset the solve");
+    assert_eq!(s.seat_frozen, vec![false, true], "hero mask must survive a no-op table push");
+    let (r1, s1) = s.arena_snapshot();
+    assert!(r0 == r1 && s0 == s1, "an unchanged table must not touch the arenas");
+    // re-applying the same hero is a no-op too (it used to re-zero the hero)
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, iter_before, "re-applying the current hero must not reset it");
+
+    // a renamed profile is still the same table
+    s.set_hero(None).unwrap();
+    let prof = profile_with(BUCKET_VS_RAISE, flat_policy(0.5, 0.2), "a");
+    s.set_table(vec![false, false], vec![None, Some(prof.clone())]).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    let it = s.iteration;
+    let renamed = SeatProfile { name: "b".into(), ..prof };
+    s.set_table(vec![false, false], vec![None, Some(renamed)]).unwrap();
+    assert_eq!(s.iteration, it, "renaming a profile must not reset the solve");
+    assert_eq!(s.seat_profiles[1].as_ref().unwrap().name, "b", "the new name is kept");
+}
+
+/// REGRESSION (audit 2026-09, high): switching hero A -> B froze A at the
+/// max-exploit line it learned as hero, and hero off left the equilibrium
+/// averages contaminated. Hero exit and hero switch must put the outgoing
+/// hero back on its SOLVED table strategy and restore the table's iteration
+/// count.
+#[test]
+fn hero_exit_and_switch_restore_the_solved_strategy() {
+    // the limp/raise tree keeps plenty of mixed classes at 200 iterations, so
+    // a best response visibly differs from the solved average (a 10bb
+    // push/fold spot is nearly pure and the exploit coincides with it)
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..200 {
+        s.iterate();
+    }
+    let table_iter = s.iteration;
+    let node_sb = first_action_node_of(&s, 0);
+    let node_bb = first_action_node_of(&s, 1);
+    let solved_sb = s.average_strategy(node_sb);
+    let solved_bb = s.average_strategy(node_bb);
+
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.iteration, 0, "hero entry restarts the hero's learning");
+    for _ in 0..300 {
+        s.iterate();
+    }
+    let exploit_sb = s.average_strategy(node_sb);
+    assert!(
+        max_abs_diff(&solved_sb, &exploit_sb) > 1e-3,
+        "hero SB should have moved off the equilibrium while exploiting"
+    );
+
+    // switch hero to BB: SB must be frozen at its SOLVED strategy
+    s.set_hero(Some(1)).unwrap();
+    assert_eq!(s.seat_frozen, vec![true, false]);
+    let frozen_sb = s.average_strategy(node_sb);
+    assert!(
+        max_abs_diff(&solved_sb, &frozen_sb) < 1e-6,
+        "SB must be frozen at the solved table strategy, not its exploit line"
+    );
+    for _ in 0..100 {
+        s.iterate();
+    }
+
+    // hero off: everyone back on the table, iteration count restored
+    s.set_hero(None).unwrap();
+    assert_eq!(s.seat_frozen, vec![false, false]);
+    assert_eq!(s.iteration, table_iter, "hero off must restore the table's iteration count");
+    assert!(max_abs_diff(&solved_sb, &s.average_strategy(node_sb)) < 1e-6);
+    assert!(max_abs_diff(&solved_bb, &s.average_strategy(node_bb)) < 1e-6);
+}
+
+/// The hero's pre-hero blocks survive save/load, so a game saved in hero
+/// mode can still leave hero mode onto its solved table strategy.
+#[test]
+fn hero_backup_survives_save_load() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq.clone()).unwrap();
+    for _ in 0..150 {
+        s.iterate();
+    }
+    let node = first_action_node_of(&s, 0);
+    let solved = s.average_strategy(node);
+    let table_iter = s.iteration;
+    s.set_hero(Some(0)).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let path = std::env::temp_dir().join(format!("gtopen_hero_backup_{}.gtop", std::process::id()));
+    let path = path.to_str().unwrap().to_string();
+    s.save_game(&path).unwrap();
+    let mut l = PreflopSolver::load_game(&path, eq).unwrap();
+    std::fs::remove_file(&path).ok();
+    assert_eq!(l.hero, Some(0));
+    l.set_hero(None).unwrap();
+    assert_eq!(l.iteration, table_iter, "the table's iteration count rides along in the save");
+    assert!(
+        max_abs_diff(&solved, &l.average_strategy(node)) < 1e-6,
+        "hero off after a load must restore the solved strategy"
+    );
+}
+
+/// REGRESSION (audit 2026-09, high): the BB never acts in an unopened pot,
+/// so the continue-vs-raise ratio divided the BB's real defend propensity by
+/// a structural zero — every non-CP archetype generated at the BB defended
+/// ~92-100% vs a raise.
+#[test]
+fn bb_generated_profile_has_sane_defense() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(40.0);
+    cfg.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    cfg.posts = vec![0.0, 0.5, 1.0];
+    cfg.limp = true;
+    cfg.open_raises = vec![2.5];
+    cfg.raise_mults = vec![3.0];
+    cfg.max_raises = 3;
+    cfg.add_allin = false;
+    let mut s = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..400 {
+        s.iterate();
+    }
+    let tag = solver::preflop::archetypes()
+        .into_iter()
+        .find(|(n, _)| *n == "TAG")
+        .unwrap()
+        .1;
+    let (_, implied) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!(
+        implied.cont_vs_raise < 70.0,
+        "BB TAG continues {}% vs a raise — the unopened-denominator blow-up is back",
+        implied.cont_vs_raise
+    );
+    assert!(
+        implied.cont_vs_raise > 10.0,
+        "BB TAG continues only {}% vs a raise — implausibly tight",
+        implied.cont_vs_raise
+    );
+    // the same stats at a seat WITH unopened data stay sane too
+    let (_, btn) = s.generate_profile(0, &tag, "tag").unwrap();
+    assert!(btn.cont_vs_raise < 70.0, "BTN TAG continues {}% vs a raise", btn.cont_vs_raise);
+}
+
+/// REGRESSION (audit 2026-09, medium): a fold-win terminal raked the whole
+/// pot INCLUDING the winner's uncalled raise when no_flop_no_drop=false.
+/// Only the matched pot is raked (uncalled chips are returned first).
+#[test]
+fn fold_win_rakes_the_matched_pot_only() {
+    let eq = table();
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.limp = false;
+    cfg.open_raises = vec![3.0];
+    cfg.raise_mults = vec![];
+    cfg.max_raises = 1;
+    cfg.add_allin = false;
+    cfg.rake_pct = 5.0;
+    cfg.rake_cap = 0.0;
+    cfg.no_flop_no_drop = false;
+    let s = legacy_solver(cfg, eq).unwrap();
+    // SB opens to 3, BB folds: pot 4, matched 1 (BB's blind) + 1 = 2
+    let nd = s
+        .nodes
+        .iter()
+        .find(|n| {
+            n.actions.is_empty()
+                && n.winner == 0
+                && n.invested.len() == 2
+                && (n.invested[0] - 3.0).abs() < 1e-9
+                && (n.invested[1] - 1.0).abs() < 1e-9
+        })
+        .expect("SB-open, BB-fold terminal");
+    let rake = s.fold_win_rake(nd);
+    assert!(
+        (rake - 0.1).abs() < 1e-9,
+        "rake on the matched 2 bb at 5% is 0.10, got {rake} (0.20 = the uncalled raise was raked)"
+    );
+    // no-flop-no-drop: nothing at all
+    let mut cfg2 = s.cfg.clone();
+    cfg2.no_flop_no_drop = true;
+    let s2 = legacy_solver(cfg2, table()).unwrap();
+    let nd2 = s2.nodes.iter().find(|n| n.actions.is_empty() && n.winner == 0 && (n.invested[0] - 3.0).abs() < 1e-9).unwrap();
+    assert_eq!(s2.fold_win_rake(nd2), 0.0);
+}
+
+/// REGRESSION (audit 2026-09, medium): the BR-gap early stop summed the
+/// bleeds of frozen/ruled seats, so table/hero solves never reached the
+/// target. live_seats() names the seats whose gaps measure convergence.
+#[test]
+fn live_seats_exclude_frozen_and_ruled() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..50 {
+        s.iterate();
+    }
+    assert_eq!(s.live_seats(), vec![true, true]);
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    s.set_hero(None).unwrap();
+    // a fully ruled seat is not learning either — but a ruled HERO is
+    let full = SeatProfile {
+        name: "all".into(),
+        buckets: vec![Some(flat_policy(0.5, 0.2)); NUM_BUCKETS],
+        vs_raise_bands: None,
+        postflop: None,
+        limp_defense: None,
+            response: None,
+    };
+    s.set_table(vec![false, false], vec![None, Some(full)]).unwrap();
+    assert_eq!(s.live_seats(), vec![true, false]);
+    for _ in 0..20 {
+        s.iterate(); // a changed table resets the solve; hero needs a solved table
+    }
+    s.set_hero(Some(1)).unwrap();
+    assert_eq!(s.live_seats(), vec![false, true]);
+}
+
+/// REGRESSION (audit 2026-09, medium): a seat ruled by a profile never
+/// accumulates strategy sums, so switching it to "Frozen (as solved)" pinned
+/// it to uniform random — silently. Its forced nodes are now pinned to what
+/// the profile actually played, and a never-solved seat is still refused.
+#[test]
+fn ruled_seat_frozen_as_solved_keeps_its_play() {
+    let eq = table();
+    let mut s = legacy_solver(hu_limp_config(), eq).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    // rule BB "call everything" facing a raise, solve on against it
+    let prof = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
+    s.set_table(vec![false, false], vec![None, Some(prof)]).unwrap();
+    for _ in 0..100 {
+        s.iterate();
+    }
+    let node = (0..s.nodes.len())
+        .find(|&i| s.nodes[i].kind == 0 && s.nodes[i].actor == 1 && s.nodes[i].bucket == BUCKET_VS_RAISE)
+        .unwrap();
+    let call_idx = s.nodes[node].actions.iter().position(|a| a.kind == "call").unwrap();
+    let aa = solver::preflop::equity::class_index(12, 12, false);
+    // switch BB to Frozen (as solved): it must keep calling, not go uniform
+    s.set_table(vec![false, true], vec![None, None]).unwrap();
+    let call_aa = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
+    assert!(call_aa > 0.99, "frozen ruled seat must keep the profile's play, got call {call_aa}");
+    for _ in 0..50 {
+        s.iterate();
+    }
+    let after = s.average_strategy(node)[call_idx * NUM_CLASSES + aa];
+    assert!((after - call_aa).abs() < 1e-6, "the pin must hold through further solving, got {after}");
+    // a never-solved live seat still cannot be frozen "as solved"
+    let mut fresh = legacy_solver(hu_limp_config(), table()).unwrap();
+    assert!(fresh.set_table(vec![false, true], vec![None, None]).is_err());
+}
+
+/// A profile seat facing a raise PLUS a re-raise COLD (it has not entered
+/// the pot) must not apply the flat "1 - fold-to-3bet" continue rate to its
+/// whole starting range: it continues only with the hands it would 3-bet a
+/// single raise with. The original raiser facing a 3-bet keeps the flat rate.
+#[test]
+fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
+    let eq = table();
+    let cfg = PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: false,
+        open_raises: vec![3.0],
+        raise_mults: vec![3.0],
+        max_raises: 3,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    };
+    let mut s = legacy_solver(cfg, eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    // BB: vs a single raise calls 30% / 3-bets 6% of every class; vs a 3-bet
+    // continues 70% (all calls) — the numbers from the bug report
+    let mut buckets: Vec<Option<BucketPolicy>> = vec![None; NUM_BUCKETS];
+    buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.30, 0.06));
+    buckets[BUCKET_VS_3BET as usize] = Some(flat_policy(0.70, 0.0));
+    let prof = SeatProfile { name: "adelaide".into(), buckets: buckets.clone(), vs_raise_bands: None, postflop: None, limp_defense: None, response: None };
+    s.set_table(vec![false, false, false], vec![None, None, Some(prof.clone())]).unwrap();
+
+    let raise_at = |s: &PreflopSolver, node: usize| {
+        s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise")
+    };
+    // BTN raises, SB 3-bets, BB faces it COLD
+    let r1 = raise_at(&s, 0);
+    let sb = s.child(0, r1);
+    let r2 = raise_at(&s, sb);
+    let bb = s.child(sb, r2);
+    assert_eq!(s.nodes[bb].actor, 2);
+    let cont = agg_freq(&s, bb, |k| k == "call" || k == "raise" || k == "jam");
+    assert!(
+        (cont - 0.06).abs() < 0.01,
+        "cold vs 3-bet must continue with ~the 3-betting hands (6%), got {cont:.3}"
+    );
+
+    // the same profile on the SB, which RAISED and now faces BTN's 4-bet:
+    // the flat continue rate applies as before
+    s.set_table(vec![false, false, false], vec![None, Some(prof), None]).unwrap();
+    let r1 = raise_at(&s, 0);
+    let sb = s.child(0, r1);
+    let r2 = raise_at(&s, sb);
+    let bb = s.child(sb, r2);
+    let call_i = s.nodes[bb].actions.iter().position(|a| a.kind == "call").unwrap();
+    let btn = s.child(bb, call_i); // BB calls; BTN to act vs the 3-bet
+    let r3 = raise_at(&s, btn);
+    let sb2 = s.child(btn, r3); // BTN 4-bets; SB (the 3-bettor) faces it having invested
+    assert_eq!(s.nodes[sb2].actor, 1);
+    let cont2 = agg_freq(&s, sb2, |k| k == "call" || k == "raise" || k == "jam");
+    assert!(
+        (cont2 - 0.70).abs() < 0.02,
+        "invested raiser facing a re-raise keeps the flat 70% continue, got {cont2:.3}"
+    );
+}
+
+/// Reach-weighted action frequency at the node reached by `path` (agg_freq
+/// weights by the deck, which is right at the root and wrong deeper in).
+fn reach_freq(s: &PreflopSolver, path: &[usize], act_pred: impl Fn(&str) -> bool) -> f64 {
+    let (node, reaches) = s.walk(path).unwrap();
+    let sigma = s.average_strategy(node);
+    let nd = &s.nodes[node];
+    let actor = nd.actor as usize;
+    let (mut num, mut den) = (0f64, 0f64);
+    for h in 0..NUM_CLASSES {
+        let w = reaches[actor][h] as f64;
+        den += w;
+        for (a, act) in nd.actions.iter().enumerate() {
+            if act_pred(&act.kind) {
+                num += w * sigma[a * NUM_CLASSES + h] as f64;
+            }
+        }
+    }
+    num / den
+}
+
+fn six_max_cfg() -> PreflopConfig {
+    PreflopConfig {
+        utg_straddle: false,
+        positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
+        stack: 100.0,
+        posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
+        ante: 0.0,
+        limp: true,
+        open_raises: vec![3.0],
+        raise_mults: vec![3.0],
+        max_raises: 2,
+        add_allin: false,
+        allin_threshold: 0.85,
+        rake_pct: 0.0,
+        rake_cap: 0.0,
+        no_flop_no_drop: true,
+        realization: "raw".into(),
+        call_only_seats: vec![],
+        open_raises_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+    }
+}
+
+fn tag_stats() -> HudStats {
+    HudStats {
+        vpip: 19.0,
+        pfr: 14.0,
+        threebet: 5.0,
+        fold_to_3bet: 56.0,
+        squeeze: 4.0,
+        fourbet: Some(9.0),
+        flatten: 0.0,
+        raise_size: "min".into(),
+        cont_vs_raise: Some(15.0),
+        cont_vs_raise_bands: None,
+        cont_squeeze: None,
+        cont_vs_raise_limped: None,
+        open_raise: None,
+        open_limp: None,
+        iso_raise: None,
+        limp_behind: None,
+        dataset: None,
+    }
+}
+
+/// "Fold to 3-bet 56%" is a share of the hands the player RAISED with. The
+/// generated VS 3-BET+ policy used to be filled over the whole deck, so an
+/// opener's entire (top-14%) range sat inside the "top 44% continue" and it
+/// called every 3-bet. Now the raiser facing a 3-bet continues ~44% of its
+/// opening range.
+#[test]
+fn raiser_facing_3bet_continues_a_share_of_its_opens() {
+    let eq = table();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let (prof, implied) = s.generate_profile(0, &tag_stats(), "tag").unwrap();
+    assert!(
+        (implied.cont_vs_3bet - 44.0).abs() < 6.0,
+        "implied continue vs 3-bet should be ~44% of the opens, got {:.1}",
+        implied.cont_vs_3bet
+    );
+    // install it on UTG and read the node: UTG opens, BTN 3-bets, blinds fold
+    s.set_table(vec![false, false, false, false, false, false], vec![Some(prof), None, None, None, None, None]).unwrap();
+    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
+    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    let mut path = Vec::new();
+    let mut node = 0usize;
+    for pick in [raise_i, fold_i, fold_i, raise_i, fold_i, fold_i] { // UTG raise, HJ/CO fold, BTN 3-bet, SB/BB fold
+        let i = pick(&s, node);
+        path.push(i);
+        node = s.child(node, i);
+    }
+    assert_eq!(s.nodes[node].actor, 0, "UTG to act vs the 3-bet");
+    let cont = reach_freq(&s, &path, |k| k != "fold");
+    assert!(
+        cont > 0.30 && cont < 0.60,
+        "opener should continue ~44% of its opens vs a 3-bet (fold-to-3bet 56), got {cont:.3}"
+    );
+}
+
+/// The same player is wider late: with naiveté 0 the entry-bucket widths
+/// follow the equilibrium's positional shape around the entered VPIP/PFR.
+#[test]
+fn profile_opens_wider_on_the_button_than_utg() {
+    let eq = table();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let (_, utg) = s.generate_profile(0, &tag_stats(), "tag").unwrap();
+    let (_, btn) = s.generate_profile(3, &tag_stats(), "tag").unwrap();
+    assert!(
+        btn.pfr > utg.pfr * 1.5 && btn.vpip > utg.vpip * 1.3,
+        "BTN {:.1}/{:.1} should be much wider than UTG {:.1}/{:.1}",
+        btn.vpip, btn.pfr, utg.vpip, utg.pfr
+    );
+    // a position-blind player (naiveté 1) opens the same everywhere
+    let mut blind = tag_stats();
+    blind.flatten = 1.0;
+    let (_, u2) = s.generate_profile(0, &blind, "blind").unwrap();
+    let (_, b2) = s.generate_profile(3, &blind, "blind").unwrap();
+    assert!((u2.pfr - b2.pfr).abs() < 1.0 && (u2.vpip - b2.vpip).abs() < 1.5,
+        "naiveté 1 must be position-blind: UTG {:.1}/{:.1} vs BTN {:.1}/{:.1}", u2.vpip, u2.pfr, b2.vpip, b2.pfr);
+}
+
+/// After limping, a raise is met with the limp-defence policy: the
+/// measured after-limping continue rate over the LIMP range, not the cold
+/// vs-raise policy (which folds a junk limp range almost entirely).
+#[test]
+fn limper_defends_at_its_after_limping_rate() {
+    let eq = table();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let mut whale = tag_stats();
+    whale.vpip = 55.0;
+    whale.pfr = 10.0;
+    whale.flatten = 0.7;
+    whale.cont_vs_raise = Some(45.0);
+    whale.cont_vs_raise_limped = Some(65.0);
+    let (prof, _) = s.generate_profile(1, &whale, "whale").unwrap(); // HJ
+    assert!(prof.limp_defense.is_some(), "a limping player gets a limp-defence policy");
+    s.set_table(vec![false; 6], vec![None, Some(prof), None, None, None, None]).unwrap();
+    let call_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "call").expect("call");
+    let raise_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "raise").expect("raise");
+    let fold_i = |s: &PreflopSolver, node: usize| s.nodes[node].actions.iter().position(|a| a.kind == "fold").expect("fold");
+    let mut path = Vec::new();
+    let mut node = 0usize;
+    for pick in [fold_i, call_i, fold_i, raise_i, fold_i, fold_i] { // UTG fold, HJ limp, CO fold, BTN raise, SB/BB fold
+        let i = pick(&s, node);
+        path.push(i);
+        node = s.child(node, i);
+    }
+    assert_eq!(s.nodes[node].actor, 1, "HJ to act after limping");
+    let cont = reach_freq(&s, &path, |k| k != "fold");
+    assert!(
+        (cont - 0.65).abs() < 0.08,
+        "limper should continue ~65% of its limp range vs the raise, got {cont:.3}"
+    );
+}
+
+/// First-in stats drive the entry buckets: a 17/12 TAG's VPIP-PFR gap is
+/// calls and blind defence, not limps. With open_raise / open_limp given,
+/// the unopened bucket raises ~17% and limps ~2% instead of raising 12%
+/// and limping 5%; limp_behind / iso_raise do the same over limpers.
+#[test]
+fn first_in_stats_drive_the_entry_buckets() {
+    let eq = table();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    let mut tag = tag_stats();
+    tag.vpip = 16.9;
+    tag.pfr = 12.4;
+    tag.flatten = 1.0; // position-blind, so the implied numbers are the inputs
+    let (_, plain) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!((plain.vpip - 16.9).abs() < 1.0 && (plain.pfr - 12.4).abs() < 1.0, "fallback = VPIP/PFR: {plain:?}");
+    tag.open_raise = Some(17.4);
+    tag.open_limp = Some(1.7);
+    tag.iso_raise = Some(14.6);
+    tag.limp_behind = Some(9.2);
+    let (prof, fi) = s.generate_profile(2, &tag, "tag").unwrap();
+    assert!((fi.pfr - 17.4).abs() < 1.0, "first-in raise should be the open_raise input, got {:.1}", fi.pfr);
+    assert!((fi.vpip - 19.1).abs() < 1.0, "first-in continue = raise + limp, got {:.1}", fi.vpip);
+    let vl = prof.buckets[BUCKET_VS_LIMPS as usize].as_ref().unwrap();
+    let pct = |v: &Vec<f32>| (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * v[h] as f64).sum::<f64>() * 100.0;
+    let iso = pct(&vl.raise) + pct(&vl.jam);
+    let behind = pct(&vl.call);
+    assert!((iso - 14.6).abs() < 1.5, "iso-raise over limpers should follow iso_raise, got {iso:.1}");
+    assert!((behind - 9.2).abs() < 1.5, "limp-behind should follow limp_behind, got {behind:.1}");
+}
+
+/// Range ORDER comes from the reference solve, not from equity vs random:
+/// a solver-shaped (naivete 0) 20% first-in raise range opens 76s (opened
+/// from every seat in the reference) and folds KTo (opened from a third of
+/// them); a card-appeal player (naivete 1) does the opposite.
+#[test]
+fn opening_order_follows_the_reference_solve_at_low_naivete() {
+    let eq = table();
+    let mut s = legacy_solver(six_max_cfg(), eq).unwrap();
+    for _ in 0..30 {
+        s.iterate();
+    }
+    let ci = solver::preflop::equity::class_index;
+    let (s76, kto) = (ci(5, 4, true), ci(11, 8, false));
+    let mut st = tag_stats();
+    st.open_raise = Some(20.0);
+    st.open_limp = Some(1.0);
+    st.flatten = 0.0;
+    let (gto, _) = s.generate_profile(1, &st, "gto").unwrap();
+    let un = gto.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    assert!(un.raise[s76] > 0.9, "solver-shaped 20% open must raise 76s, got {}", un.raise[s76]);
+    assert!(un.raise[kto] < 0.1, "solver-shaped 20% open must fold KTo, got {}", un.raise[kto]);
+    st.flatten = 1.0;
+    let (naive, _) = s.generate_profile(1, &st, "naive").unwrap();
+    let un = naive.buckets[BUCKET_UNOPENED as usize].as_ref().unwrap();
+    assert!(un.raise[kto] > un.raise[s76], "card-appeal player raises KTo before 76s: KTo {} 76s {}", un.raise[kto], un.raise[s76]);
+}
+
+
+#[test]
+fn distinct_limp_entry_ranges_keep_their_conditional_defense() {
+    let mut s = legacy_solver(six_max_cfg(), table()).unwrap();
+    s.iterate();
+    let mut st = tag_stats();
+    st.flatten = 1.0;
+    st.open_raise = Some(12.0);
+    st.open_limp = Some(20.0);
+    st.iso_raise = Some(8.0);
+    st.limp_behind = Some(55.0);
+    st.cont_vs_raise_limped = Some(68.7);
+    let (p, _) = s.generate_profile(1, &st, "asymmetric limper").unwrap();
+    for (entry, defense) in [(BUCKET_UNOPENED, p.response.as_ref().unwrap().limp_unopened.as_ref().unwrap()),
+                              (BUCKET_VS_LIMPS, p.limp_defense.as_ref().unwrap())] {
+        let range = &p.buckets[entry as usize].as_ref().unwrap().call;
+        let total: f64 = (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * range[h] as f64).sum();
+        let defend: f64 = (0..NUM_CLASSES).map(|h| class_prob(h) as f64 * range[h] as f64
+            * (defense.call[h] + defense.raise[h] + defense.jam[h]) as f64).sum();
+        assert!((defend / total - 0.687).abs() < 0.005, "entry {entry}: {}", defend / total);
+    }
+    s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None]).unwrap();
+    // UTG fold / limp, HJ limp, CO fold, BTN raise, blinds fold; UTG folds if it limped.
+    for behind in [false, true] {
+        let mut path = Vec::new();
+        let mut node = 0;
+        let mut kinds = vec![if behind {"call"} else {"fold"}, "call", "fold", "raise", "fold", "fold"];
+        if behind { kinds.push("fold"); }
+        for kind in kinds {
+            let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
+            path.push(a); node = s.child(node, a);
+        }
+        assert_eq!(s.nodes[node].actor, 1);
+        let cont = reach_freq(&s, &path, |k| k != "fold");
+        assert!((cont - 0.687).abs() < 0.005, "behind={behind}: {cont}");
+    }
+}
+
+#[test]
+fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
+    use solver::preflop::ProfileResponse;
+    let mut cfg = six_max_cfg(); cfg.stack = 20.0; cfg.add_allin = true;
+    let mut s = legacy_solver(cfg, table()).unwrap();
+    let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
+    p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
+    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
+    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    assert!(s.live_seats()[1]);
+    assert!(s.set_hero(Some(0)).unwrap_err().contains("joint solving"));
+    let small = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
+    let jam = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
+    let sn = s.child(0, small); let jn = s.child(0, jam);
+    let sig = s.average_strategy(sn);
+    let call = s.nodes[sn].actions.iter().position(|a| a.kind == "call").unwrap();
+    assert_eq!(sig[call * NUM_CLASSES], 1.0);
+    let js = s.average_strategy(jn);
+    assert!(js.iter().all(|v| *v > 0.0 && *v < 1.0));
+    let mut lock = vec![0.0; js.len()]; lock[..NUM_CLASSES].fill(1.0);
+    s.lock_point(&[jam], Some(flat_policy(0.0, 0.0))).unwrap();
+    assert_eq!(s.average_strategy(jn), lock);
+    s.iterate();
+    p.response.as_mut().unwrap().adaptive_from = Some(0.5);
+    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    assert_eq!(s.iteration, 0);
+    s.iterate(); p.limp_defense = Some(flat_policy(0.5, 0.0));
+    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    assert_eq!(s.iteration, 0);
+    let path = std::env::temp_dir().join(format!("gtopen_adaptive_{}.gtop", std::process::id()));
+    let path = path.to_str().unwrap();
+    s.save_game(path).unwrap();
+    let loaded = PreflopSolver::load_game(path, table()).unwrap();
+    std::fs::remove_file(path).unwrap();
+    assert_eq!(serde_json::to_value(&s.seat_profiles).unwrap(), serde_json::to_value(&loaded.seat_profiles).unwrap());
+    assert_eq!(loaded.average_strategy(jn), lock);
+    p.response.as_mut().unwrap().adaptive_from = Some(f64::NAN);
+    assert!(s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None]).is_err());
+}
+
+
+#[test]
+fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {
+    use solver::preflop::ProfileResponse;
+    let mut s = legacy_solver(hu_push_fold_config(10.0), table()).unwrap();
+    let mut p = profile_with(BUCKET_UNOPENED, flat_policy(0.0, 0.0), "fold first in");
+    p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
+    s.set_table(vec![false; 2], vec![Some(p.clone()), None]).unwrap();
+    assert!(s.br_gaps()[0].abs() < 1e-7, "cannot deviate from the fixed opening action");
+    p.response.as_mut().unwrap().adaptive_from = None;
+    s.set_table(vec![false; 2], vec![Some(p), None]).unwrap();
+    assert!(s.br_gaps()[0] > 0.1, "legacy fixed profile must still report its unrestricted bleed");
+}
+
+
+#[test]
+fn equal_blinds_allow_checks_and_keep_bb_out_of_position_heads_up() {
+    let mut cfg = hu_push_fold_config(20.0);
+    cfg.posts = vec![1.0, 1.0]; cfg.limp = true;
+    let s = legacy_solver(cfg, table()).unwrap();
+    assert_eq!(s.postflop_order(), vec![1, 0]);
+    assert_eq!(s.nodes[0].actions[0].kind, "check");
+    assert!(!s.nodes[0].actions.iter().any(|a| a.kind == "fold" || a.kind == "call"));
+    let bb = s.child(0, 0);
+    assert_eq!(s.nodes[bb].actor, 1);
+    assert_eq!(s.nodes[bb].actions[0].kind, "check");
+    assert_eq!(s.nodes[s.child(bb, 0)].pot, 2.0);
+
+    let mut cfg = six_max_cfg();
+    cfg.posts[4] = 1.0;
+    let s = legacy_solver(cfg, table()).unwrap();
+    let mut node = 0;
+    // UTG limps, next three seats fold; the SB already matches the live bet.
+    for kind in ["call", "fold", "fold", "fold"] {
+        let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
+        node = s.child(node, a);
+    }
+    assert_eq!(s.nodes[node].actor, 4);
+    assert_eq!(s.nodes[node].actions[0].kind, "check");
+    assert!(!s.nodes[node].actions.iter().any(|a| a.kind == "call" || a.kind == "fold"));
+    assert_eq!(s.nodes[node].pot, 3.0);
+}
+#[test]
+fn observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders() {
+    use solver::preflop::{BucketPolicy, SeatProfile, NUM_BUCKETS};
+    let mut cfg=hu_push_fold_config(30.0);
+    cfg.limp=true; cfg.open_raises=vec![2.0,2.5,3.0,5.0];cfg.raise_mults=vec![2.5];cfg.max_raises=2;
+    let mut s=legacy_solver(cfg,table()).unwrap();
+    assert!(s.node_view(&[]).unwrap().strategy_note.is_some());
+    s.iterate();
+    let mut pol=flat_policy(0.2,0.6);
+    pol.raise_sizes=vec![(2.0,2.0),(2.6,1.0),(5.0,1.0)];
+    pol.jam.fill(0.1);
+    let mut buckets=vec![None;NUM_BUCKETS];buckets[0]=Some(pol.clone());
+    let p=SeatProfile{name:"measured sizes".into(),buckets,vs_raise_bands:None,postflop:None,limp_defense:None,response:None};
+    s.set_table(vec![false;2],vec![Some(p.clone()),None]).unwrap();
+    let root=s.node_view(&[]).unwrap();
+    for (size,expected) in [(2.0,0.3),(2.5,0.15),(3.0,0.0),(5.0,0.15)] {
+        let i=root.actions.iter().position(|a|a.kind=="raise" && a.to==size).unwrap();
+        assert!((root.actions[i].freq-expected).abs()<1e-6);
+        if size==3.0 {
+            let v=s.node_view(&[i]).unwrap();
+            assert!(v.strategy.is_none());
+            assert!(v.strategy_note.as_ref().unwrap().contains("Unreachable"));
+            assert!(v.history.last().unwrap().strategy_note.is_some());
+            let call=v.actions.iter().position(|a|a.kind=="call").unwrap();
+            assert!(!s.node_view(&[i,call]).unwrap().exportable);
+            assert!(s.export_spot(&[i,call]).is_err());
+        }
+    }
+    assert!((root.actions.iter().map(|a|a.freq).sum::<f32>()-1.0).abs()<1e-6);
+    let jam=root.actions.iter().find(|a|a.kind=="jam").unwrap();assert!((jam.freq-0.1).abs()<1e-6);
+    let restored:BucketPolicy=serde_json::from_str(&serde_json::to_string(&pol).unwrap()).unwrap();
+    assert_eq!(restored.raise_sizes,pol.raise_sizes);
+    // Legacy saves omit size distributions and retain their exact min/max behavior.
+    let mut old=serde_json::to_value(&pol).unwrap();old.as_object_mut().unwrap().remove("raise_sizes");
+    assert!(serde_json::from_value::<BucketPolicy>(old).unwrap().raise_sizes.is_empty());
+    let mut bad=p.clone();bad.buckets[0].as_mut().unwrap().raise_sizes=vec![(2.0,-1.0)];
+    assert!(s.set_table(vec![false;2],vec![Some(bad),None]).is_err());
+    // Moving to one available size preserves all ordinary raise mass, never creates a jam.
+    pol.raise_sizes=vec![(1000.0,1.0)];
+    let mut modified=p;modified.buckets[0]=Some(pol);
+    s.set_table(vec![false;2],vec![Some(modified),None]).unwrap();
+    let v=s.node_view(&[]).unwrap();assert!((v.actions.iter().find(|a|a.to==5.0).unwrap().freq-0.6).abs()<1e-6);
+}

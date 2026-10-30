@@ -1,0 +1,68 @@
+{
+  "id": "D052-independent-source-review",
+  "at": "2026-10-16T16:00:55.807758+00:00",
+  "verdict": "SOURCE_FEASIBLE_DISTINCT_WITH_ACCOUNTING_AND_LIFECYCLE_CONSTRAINTS",
+  "scope": "Independent read-only source and scoped closed-history audit of a separate physical reach-row pitch rounded to eight f32 values, against accepted E020. This preserves completed findings; no new investigation or experiment is authorized by this report.",
+  "production_source_changed": false,
+  "build_executed": false,
+  "native_executed": false,
+  "gpu_executed": false,
+  "performance_measured": false,
+  "measured_gain": null,
+  "candidate_accepted": false,
+  "findings": [
+    {
+      "finding": "No hidden continuation or save-layout blocker found. Paging and stored continuation record actual device slice lengths, borrow/swap whole buffers, check sufficient capacity and synchronize before release. Parked and checkpointed state contains only four regret/strategy arrays, not reach rows.",
+      "locations": [
+        "crates/solver/src/gpu/continuation_paging.rs:69-85,98-128",
+        "crates/solver/src/gpu/continuation_storage.rs:35-90,137-140,164-172,202-214,255-274,301-314"
+      ]
+    },
+    {
+      "finding": "Exact reach-byte accounting must use physical pitch in the plan, two existing device allocations, public VRAM estimate and stored-capacity planner. Existing research_capacity_check compares metadata and state, not predicted workspace-component bytes against actual lengths.",
+      "locations": [
+        "crates/solver/src/gpu/plan.rs:493-497",
+        "crates/solver/src/gpu/mod.rs:365-367",
+        "crates/solver/src/game.rs:396-421",
+        "crates/solver/src/gpu/continuation_capacity.rs:59-80",
+        "crates/solver/src/gpu/continuation_storage.rs:217-226"
+      ]
+    },
+    {
+      "finding": "Additional resident and zero-initialized payload is 4*sum(reach_blocks[p]*(pitch[p]-nh[p])) bytes in the two existing buffers. This increases constructor zero-fill/workspace cost and may change budget admission or full-versus-compact action layout selection. No cost or gain was measured.",
+      "locations": [
+        "crates/solver/src/gpu/mod.rs:203-223,365-367",
+        "crates/solver/src/gpu/continuation_paging.rs:15-24",
+        "crates/solver/src/gpu/continuation_storage.rs:124-140"
+      ]
+    },
+    {
+      "finding": "Logical nh must remain unchanged for loops, regret/sigma indexing, shared memory, normalization and saved layouts. Five kernels address reach rows: down_action, down_chance, up_fold, up_show and training up_action. Root physical slot zero remains unchanged. Deriving zero pitch from E015 down_nh1=0 is safe only while the existing zero logical loops prevent reach memory access.",
+      "locations": [
+        "crates/solver/src/gpu/kernels.cu:18-433",
+        "crates/solver/src/gpu/plan.rs:412-425",
+        "crates/solver/src/gpu/mod.rs:757-846"
+      ]
+    },
+    {
+      "finding": "Existing reach lifecycle checks compare entire buffers within the same compiled layout and include poisoned workspace/changed-root cases. They remain useful for dispatch consistency but do not establish original-layout versus padded-layout raw-vector equality, since lengths and row offsets differ.",
+      "locations": [
+        "crates/solver/src/gpu/mod.rs:1204-1271,1346-1389"
+      ]
+    },
+    {
+      "finding": "No direct reach-pitch duplicate was found in the scoped postflop ledger and archived design-note search. E025 changed only CFV physical stride and was rejected at 0.9378% slower. D038/D039 global-gather designs explicitly retained nh_o reach stride. D049 pointer selection and E026 physical showdown width are distinct rejected work. None supplies evidence that reach padding improves complete-cycle time.",
+      "locations": [
+        "research/postflop-gpu-20261016/experiments.md:436-460,486-492",
+        "S:/GTOpen-research/postflop-gpu-20261016/runs/D038-next-hypothesis-source/README.md:9",
+        "S:/GTOpen-research/postflop-gpu-20261016/runs/D039-showdown-cache-composition/README.md:7"
+      ]
+    }
+  ],
+  "limitations": [
+    "Scoped history search, not an exhaustive audit of every older experiment.",
+    "Source feasibility only; no allocation, compiler, arithmetic differential, GPU or complete-cycle validation was run.",
+    "No new experiment, test matrix, implementation or performance acceptance is proposed by this preservation note."
+  ],
+  "source_root": "X:/Dev/GTOpen-gpu-research-20261016"
+}

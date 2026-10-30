@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-29T01:10:27.443025+00:00",
+  "status": "mechanical_CPU_reader_binding_failure_preserved",
+  "original_script_sha256": "d86e52e3674897e6c6a944d03a52c3e4903b0a5e8e4159801c508878ba3572d8",
+  "original_protocol_sha256": "1758ba8224338a1427428f2c72f1934835b2319f5ac0d2f0a7147520f324ab66",
+  "reader_exit_sha256": "ebe65b773c732e34ddb8e5b8aa32873027bb3928870804fbf9527dbd9f86f839",
+  "reader_terminal_returncode": 1,
+  "failure": "compute75 holds m_o in a lossless cvt.s64.s32 then cvt.u32.u64 register chain. Original reader demanded a direct ld.global to final m_o register. Current120 complete region traces may have executed before the75 metadata-binding assertion; no GPU/compiler/application cases ran.",
+  "repair": "Backward exact def-use across only width-preserving/positive-bound-lossless mov/cvt operations to an actual ld.global.u32. Trace its 64bit pointer through param/cvta/add to require exactly o_cnt parameter15. All339712exactnumerator/quotient/path/divisor rules and source/PTX bytes remain fixed. Keep all old scripts/protocol/exit/logs; no candidate/source/gate or native-case rescue.",
+  "CUDA_contexts_application_kernels_compilers_solves_or_speed_samples": 0
+}

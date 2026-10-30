@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-29T01:08:21.463088+00:00",
+  "status": "pre_execution_decoder_preflight_correction",
+  "original_script_sha256": "785ffdf47905420e94667a3eacd0be79a0a05fe1785ee5f16a33b5cbc22e77b0",
+  "original_protocol_sha256": "0c03bf2e8a48263faeaad9df244f5178f139ff7121984b362b6a9a907568d51d",
+  "CPU_decoder_or_GPU_native_runs_before_repair": 0,
+  "issues": "Original decoder required m_o to be a direct operand in the final numerator add. Accepted PTX forms (width+m_o)-1 in two adds, candidate forms (width-1)+m_o; both valid. Also an unused fixture scaffold was not executed.",
+  "repair": "Accept the sole final add definition and verify every actual numerator equals m+width-1 during all339712shape executions. Same single external m_o load binding and exact quotient/fallback/bypass requirements. Replace unused scaffold with two real inverted-predicate fixture executions. No source/PTX/compiler/flags/quality/gate change, no previous native case repeated.",
+  "candidate_accepted": false
+}

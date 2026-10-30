@@ -1,0 +1,178 @@
+
+    // Pinned accepted E020 up_fold only; entry rename is the sole body change.
+    const FOLD_ORIGINAL_REFERENCE: &str = r###"typedef unsigned int u32;
+typedef unsigned long long u64;
+#define SENTINEL 0xFFFFFFFFu
+
+extern "C" __global__ void up_fold_reference(
+    const u32* __restrict__ nodes, int start, int count, int p,
+    const int* __restrict__ node_player,
+    const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
+    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+    const float* __restrict__ reach0, const float* __restrict__ reach1,
+    const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
+    const u32* __restrict__ same_p,
+    const u32* __restrict__ cfv_slot, float* cfv,
+    int nh_p, int nh_o, int nh_max)
+{
+    extern __shared__ float local_reach[];
+    __shared__ float s[52];
+    __shared__ float total_parts[256];
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    const float* global_reach = (p == 0 ? reach1 : reach0)
+        + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+        local_reach[j] = global_reach[j];
+    __syncthreads();
+    const float* ro = local_reach;
+    // Card lists preserve opponent hand order; all sums use the existing f32 precision.
+    // Each card has one writer, so no atomic order noise or contention.
+    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
+        float sum = 0.0;
+        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
+            sum += (float)ro[card_idx[k]];
+        s[card] = sum;
+    }
+    float partial = 0.0;
+    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+        partial += (float)ro[j];
+    total_parts[threadIdx.x] = partial;
+    __syncthreads();
+    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+        if (threadIdx.x < (u32)step)
+            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
+        __syncthreads();
+    }
+    float T = total_parts[0];
+    float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
+    for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+        u32 sc = same_p[i];
+        float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
+        cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;
+    }
+}
+
+"###;
+
+    #[test]
+    fn fold_positive_zero_matches_original_kernel() {
+        fn bits(values: &[f32]) -> Vec<u32> { values.iter().map(|v|v.to_bits()).collect() }
+        const GUARD: u32 = 0x4f12_3456;
+        const NH_O: usize = 257;
+        const NH_P: usize = 129;
+        const NH_MAX: usize = 144;
+        let ctx = CudaContext::new(0).unwrap();
+        let stream = ctx.default_stream();
+        let (major,minor) = ctx.compute_capability().unwrap();
+        let arch: &'static str = Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+        let compile = |source: &str, entry: &str| {
+            let ptx = cudarc::nvrtc::compile_ptx_with_opts(source,cudarc::nvrtc::CompileOptions {
+                arch: Some(arch), ..Default::default()
+            }).unwrap();
+            ctx.load_module(ptx).unwrap().load_function(entry).unwrap()
+        };
+        let reference = compile(FOLD_ORIGINAL_REFERENCE,"up_fold_reference");
+        let candidate = compile(include_str!("kernels.cu"),"up_fold");
+        let all_hands: Vec<(u32,u32)> = (0..52u32).flat_map(|a|((a+1)..52).map(move |b|(a,b))).collect();
+        let opponent = &all_hands[..NH_O];
+        let own: Vec<_> = (0..NH_P).map(|i|if i%2==0 { opponent[i] } else { all_hands[NH_O+i] }).collect();
+        let pc1: Vec<_> = own.iter().map(|h|h.0).collect();
+        let pc2: Vec<_> = own.iter().map(|h|h.1).collect();
+        let same: Vec<_> = own.iter().map(|h|opponent.iter().position(|x|x==h).map_or(u32::MAX,|i|i as u32)).collect();
+        assert!(same.contains(&u32::MAX) && same.iter().any(|&x|x!=u32::MAX));
+        let mut card_off = Vec::with_capacity(53);
+        let mut card_idx = Vec::new();
+        for card in 0..52 {
+            card_off.push(card_idx.len() as u32);
+            for (i,&(a,b)) in opponent.iter().enumerate() { if card==a || card==b { card_idx.push(i as u32); } }
+        }
+        card_off.push(card_idx.len() as u32);
+        let overflow = f64::MAX as f32;
+        assert_eq!(overflow.to_bits(),0x7f80_0000);
+        // name, reach profile, selected payout, exact shortcut eligibility.
+        let cases = [
+            ("zero_positive",0,2.5f32,true), ("zero_negative",0,-2.5,true),
+            ("zero_positive_zero",0,0.0,true), ("zero_negative_zero",0,-0.0,true),
+            ("zero_positive_overflow",0,overflow,false), ("zero_negative_overflow",0,-overflow,false),
+            ("zero_nan_payout",0,f32::from_bits(0x7fc1_2345),false),
+            ("negative_zero_tail",1,-2.5,false), ("positive_nonzero",2,2.5,false),
+            ("signed_cancellation",3,-2.5,false), ("infinite_reach",4,2.5,false),
+            ("nan_reach",5,-2.5,false),
+        ];
+        let mut pairs = 0usize;
+        let mut launches = 0usize;
+        for &(name,profile,amount,eligible) in &cases { for p in [0i32,1] {
+            let mut row = vec![0.0f32;NH_O];
+            match profile {
+                0=>{}, 1=>row[256]=f32::from_bits(0x8000_0000), 2=>row[128]=0.5,
+                3=>{row[0]=1.0;row[129]=-1.0;}, 4=>row[256]=f32::INFINITY,
+                5=>row[128]=f32::from_bits(0x7fc1_2345), _=>unreachable!(),
+            }
+            assert_eq!(row.iter().all(|v|v.to_bits()==0) && amount.is_finite(),eligible,"{name}");
+            let nodes = vec![u32::MAX,2,u32::MAX];
+            let owner = vec![1i32,1,0,1];
+            let mut twin = vec![9.5f32;4]; let mut tlose = vec![9.5f32;4];
+            if p==0 { tlose[2]=amount; } else { twin[2]=amount; }
+            let rsrc0 = vec![0u32,0,1,0]; let rsrc1 = vec![0u32,0,2,0];
+            let mut reach0 = vec![3.5f32;4*NH_O]; let mut reach1 = vec![3.5f32;4*NH_O];
+            if p==0 { reach1[2*NH_O..3*NH_O].copy_from_slice(&row); }
+            else { reach0[NH_O..2*NH_O].copy_from_slice(&row); }
+            let slots = vec![u32::MAX,u32::MAX,2,u32::MAX];
+            let d_nodes=stream.clone_htod(&nodes).unwrap(); let d_owner=stream.clone_htod(&owner).unwrap();
+            let d_twin=stream.clone_htod(&twin).unwrap(); let d_tlose=stream.clone_htod(&tlose).unwrap();
+            let d_rsrc0=stream.clone_htod(&rsrc0).unwrap(); let d_rsrc1=stream.clone_htod(&rsrc1).unwrap();
+            let d_reach0=stream.clone_htod(&reach0).unwrap(); let d_reach1=stream.clone_htod(&reach1).unwrap();
+            let d_pc1=stream.clone_htod(&pc1).unwrap(); let d_pc2=stream.clone_htod(&pc2).unwrap();
+            let d_off=stream.clone_htod(&card_off).unwrap(); let d_idx=stream.clone_htod(&card_idx).unwrap();
+            let d_same=stream.clone_htod(&same).unwrap(); let d_slots=stream.clone_htod(&slots).unwrap();
+            // One count0 pair per player; all other pairs execute exactly one CTA.
+            let counts: &[i32] = if name=="zero_positive" { &[1,0] } else { &[1] };
+            for &count in counts {
+                let initial = vec![f32::from_bits(GUARD);4*NH_MAX];
+                let mut outputs = Vec::new();
+                for function in [&reference,&candidate] {
+                    let mut out=stream.clone_htod(&initial).unwrap();
+                    let start=1i32; let nh_p=NH_P as i32; let nh_o=NH_O as i32; let nh_max=NH_MAX as i32;
+                    unsafe { stream.launch_builder(function).arg(&d_nodes).arg(&start).arg(&count).arg(&p)
+                        .arg(&d_owner).arg(&d_twin).arg(&d_tlose).arg(&d_rsrc0).arg(&d_rsrc1)
+                        .arg(&d_reach0).arg(&d_reach1).arg(&d_pc1).arg(&d_pc2).arg(&d_off).arg(&d_idx)
+                        .arg(&d_same).arg(&d_slots).arg(&mut out).arg(&nh_p).arg(&nh_o).arg(&nh_max)
+                        .launch(LaunchConfig {grid_dim:(2,1,1),block_dim:(128,1,1),shared_mem_bytes:(NH_O*4) as u32}).unwrap(); }
+                    launches+=1;
+                    let actual=bits(&stream.clone_dtoh(&out).unwrap());
+                    for (i,&word) in actual.iter().enumerate() {
+                        if count==1 && (2*NH_MAX..2*NH_MAX+NH_P).contains(&i) {
+                            assert_ne!(word,GUARD,"active store {name}/p{p}/{i}");
+                            if eligible { assert_eq!(word,amount.to_bits()&0x8000_0000,"signed zero {name}/p{p}/{i}"); }
+                        } else { assert_eq!(word,GUARD,"guard {name}/p{p}/{i}"); }
+                    }
+                    macro_rules! same_int { ($h:expr,$d:expr) => { assert_eq!(&stream.clone_dtoh($d).unwrap(),$h,"immutable {name}/p{p}"); }; }
+                    macro_rules! same_float { ($h:expr,$d:expr) => { assert_eq!(bits(&stream.clone_dtoh($d).unwrap()),bits($h),"immutable float {name}/p{p}"); }; }
+                    same_int!(&nodes,&d_nodes); same_int!(&owner,&d_owner);
+                    same_float!(&twin,&d_twin); same_float!(&tlose,&d_tlose);
+                    same_int!(&rsrc0,&d_rsrc0); same_int!(&rsrc1,&d_rsrc1);
+                    same_float!(&reach0,&d_reach0); same_float!(&reach1,&d_reach1);
+                    same_int!(&pc1,&d_pc1); same_int!(&pc2,&d_pc2);
+                    same_int!(&card_off,&d_off); same_int!(&card_idx,&d_idx);
+                    same_int!(&same,&d_same); same_int!(&slots,&d_slots);
+                    stream.synchronize().unwrap();
+                    outputs.push(actual);
+                }
+                assert_eq!(outputs[0],outputs[1],"full original GPU comparison {name}/p{p}/count{count}");
+                if count==1 && (profile==2 || profile==3) {
+                    assert!(outputs[0][2*NH_MAX..2*NH_MAX+NH_P].iter().any(|&x|x&0x7fff_ffff!=0),"nonzero witness {name}/p{p}");
+                }
+                pairs+=1;
+            }
+        }}
+        stream.synchronize().unwrap();
+        drop(reference); drop(candidate);
+        ctx.check_err().unwrap();
+        assert_eq!((pairs,launches),(26,52));
+        println!("E035_FOLD_ZERO_TEST {{\"comparison_pairs\":26,\"kernel_launches\":52,\"threads\":128,\"exact\":true,\"performance_measurement\":false}}");
+    }
+

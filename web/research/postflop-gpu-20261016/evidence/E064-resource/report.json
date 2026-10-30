@@ -1,0 +1,519 @@
+{
+  "id": "E064-resource",
+  "at": "2026-10-17T10:21:37.751943+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "protocol_sha256": "759a5e3b5daec75e1becefca0f89ad18949b46ce0c9e50e0b753d1cc4b9f959f",
+  "source_manifest_sha256": "47c039ac26bdaa91c50a9fad96f847bce0ecbc417fe0aa3797a70f9d6a515426",
+  "raw_markers": [
+    {
+      "base_address_cases": 55427463,
+      "base_patterns": 7,
+      "floating_results_compared": false,
+      "kernel_launches": 0,
+      "local_combinations": 7918209,
+      "max_local_element_index": 5303,
+      "no_memory_dereferences": true,
+      "stage": "integer_proof"
+    },
+    {
+      "architecture": "compute_120",
+      "block_thread_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "theoretical_blocks_per_sm": 8,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 896,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          7
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 68,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "theoretical_blocks_per_sm": 7,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "integer_model_proof": {
+    "base_address_cases": 55427463,
+    "base_patterns": 7,
+    "floating_results_compared": false,
+    "kernel_launches": 0,
+    "local_combinations": 7918209,
+    "max_local_element_index": 5303,
+    "no_memory_dereferences": true,
+    "stage": "integer_proof"
+  },
+  "static_address_code": {
+    "baseline": {
+      "explicit64_arithmetic_sites": 779,
+      "wide_u32_multiply_sites": 148,
+      "integer_arithmetic_and_conversion_sites": 1254,
+      "entry_lines": 2393,
+      "opcode_histogram": {
+        "add.s32": 135,
+        "add.s64": 493,
+        "add.u64": 2,
+        "cvt.s64.s32": 52,
+        "cvt.u32.u64": 8,
+        "cvt.u64.u32": 119,
+        "mad.lo.s32": 3,
+        "mul.lo.s32": 4,
+        "mul.lo.s64": 115,
+        "mul.wide.s32": 4,
+        "mul.wide.u32": 148,
+        "shl.b32": 2,
+        "shl.b64": 169
+      }
+    },
+    "candidate": {
+      "explicit64_arithmetic_sites": 788,
+      "wide_u32_multiply_sites": 148,
+      "integer_arithmetic_and_conversion_sites": 1278,
+      "entry_lines": 2389,
+      "opcode_histogram": {
+        "add.s32": 141,
+        "add.s64": 499,
+        "add.u64": 2,
+        "cvt.s64.s32": 52,
+        "cvt.u32.u64": 8,
+        "cvt.u64.u32": 128,
+        "mad.lo.s32": 3,
+        "mul.lo.s32": 4,
+        "mul.lo.s64": 115,
+        "mul.wide.s32": 4,
+        "mul.wide.u32": 148,
+        "shl.b32": 2,
+        "shl.b64": 172
+      }
+    },
+    "limits": "PTX virtual static sites only. No machine-address throughput, dynamic instruction or runtime speed inference. If resources pass, separately pinned driver-machine proof required before any application kernel."
+  },
+  "details": {
+    "up_action": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 62,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "theoretical_blocks_per_sm": 8,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 64,
+        "max_threads": 896,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            7
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 68,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "theoretical_blocks_per_sm": 7,
+        "variant": "candidate"
+      },
+      "gates": {
+        "changed_body": true,
+        "allocated_registers_not_increased": false,
+        "local_bytes_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_not_increased": true,
+        "max_threads_not_reduced": false,
+        "both_fit_default_limits": true,
+        "driver_occupancy_not_reduced": false,
+        "baseline_abi_exact": true,
+        "candidate_abi_exact": true
+      },
+      "allocation_admission": {
+        "status": "reject_resource_prefilter",
+        "gates": {
+          "allocated_registers_not_increased": false,
+          "local_bytes_not_increased": true,
+          "static_shared_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": false,
+          "both_fit_default_limits": true,
+          "driver_occupancy_not_reduced": false
+        },
+        "nominal_registers": [
+          62,
+          68
+        ],
+        "allocated_registers_per_warp": [
+          2048,
+          2304
+        ],
+        "allocated_registers_per_block": [
+          {
+            "threads": 64,
+            "baseline": 4096,
+            "candidate": 4608
+          },
+          {
+            "threads": 128,
+            "baseline": 8192,
+            "candidate": 9216
+          },
+          {
+            "threads": 256,
+            "baseline": 16384,
+            "candidate": 18432
+          }
+        ],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    }
+  },
+  "abi": {
+    "up_action": {
+      "baseline": [
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 0
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 1
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 2
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 3
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 4
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 5
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 6
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 7
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 8
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 9
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 10
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 11
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 12
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 13
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 14
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 15
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 16
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 17
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 18
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 19
+        }
+      ],
+      "candidate": [
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 0
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 1
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 2
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 3
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 4
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 5
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 6
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 7
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 8
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 9
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 10
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 11
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 12
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 13
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 14
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 15
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 16
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 17
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 18
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 19
+        }
+      ]
+    }
+  },
+  "gates": {
+    "other8_entries_exact": true,
+    "other8_compute75_entries_exact": true,
+    "up_action:changed_body": true,
+    "up_action:allocated_registers_not_increased": false,
+    "up_action:local_bytes_not_increased": true,
+    "up_action:static_shared_not_increased": true,
+    "up_action:dynamic_shared_not_increased": true,
+    "up_action:max_threads_not_reduced": false,
+    "up_action:both_fit_default_limits": true,
+    "up_action:driver_occupancy_not_reduced": false,
+    "up_action:baseline_abi_exact": true,
+    "up_action:candidate_abi_exact": true
+  },
+  "ptx_sha256": {
+    "baseline": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate": "0a4082d082254216c736148f17084125114028beeea3ed670c48d14962e5079f"
+  },
+  "entry_body_sha256": {
+    "baseline": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    },
+    "candidate": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "d464f3675121355c29de62c24d66ecab8b729684c5e186ba6611ff9a4c7e0071",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    }
+  },
+  "binary_sha256": "435333d7f87f629ace8404c0c9f22fe6f5c1b844037d51aec39752aac7a89c9b",
+  "stdout_sha256": "5cea5c9da9cfbe6b86a0af692028c78f5af06b53b06d007681028dc93ac22e63",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Actual compiled attributes and theoretical occupancy only. No numerical, runtime utilization, capacity or speed qualification."
+}

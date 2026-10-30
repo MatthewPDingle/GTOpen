@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D267-node-order-model.py", line 4, in <module>
+    spec=importlib.util.spec_from_file_location('modelio',ROOT/'runs/D267-model-io.py');io=importlib.util.module_from_spec(spec);spec.loader.exec_module(io)
+                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 991, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 1129, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1059, in source_to_code
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D267-model-io.py", line 22
+    width=4 if name=='d_children'else8;assert words*4%width==0
+          ^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: expected 'else' after 'if' expression

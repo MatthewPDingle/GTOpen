@@ -1,0 +1,21 @@
+{
+  "inputs": {
+    "target\\qualified-paging\\owner-download-v1-fixture.exe": "652abac09ff042fa0775e8c9425c765f67c9c7e2f403c0b71c675397a9c0c765",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35",
+    "research\\preflop-evolution\\representative-coverage-20260919\\PAGING-PROTOCOL.md": "e48252667b5c90a1043b8d2352ca89ad255f67f02515a9a7998ee2558943372d",
+    "crates\\solver\\src\\gpu\\mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+    "crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates\\solver\\tests\\continuation_paging.rs": "9c93c8bd9b84c40a40d4a8ad2b4b6844bfc2b68bb93b64fe450e4a21c670de2f",
+    "crates\\solver\\examples\\integrated_continuation_paged.rs": "3d3d9ff6552bdbfd91f45c53442afaf56bda45830b6624d84e57f3af7bc56dc8",
+    "research\\preflop-evolution\\ssd-storage-20260920\\OWNER-DOWNLOAD-PROTOCOL.md": "f83b86fc1c5e3ceb771e63db4d34fb58a1f53888a7e2e4104ebeb9e3e5153a82"
+  },
+  "command": [
+    "T:\\Dev\\GTOpen\\target\\qualified-paging\\owner-download-v1-fixture.exe",
+    "gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes",
+    "--exact",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "maximum_seconds": 900.0,
+  "registered_utc": "2026-09-20T00:57:48Z"
+}

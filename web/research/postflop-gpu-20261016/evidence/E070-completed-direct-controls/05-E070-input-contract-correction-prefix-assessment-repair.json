@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-18T01:15:29.899515+00:00",
+  "error": "Prefix decoder correctly parsed raw arrays but retained the complete-run marker[:-1] identity check, incorrectly omitting the last of1172case markers. There is no completion marker in the stopped process.",
+  "original_sha256": "2792bdde1dd559849631c40532a62eb39fe3e57665d5dc8c8abb6a9e554b10a7",
+  "repaired_sha256": "3f4c2240e8518fa5950ceb73e83994fadf7df7777f648c3a3a90197199434c23",
+  "change": "Use every existing prefix case marker; no data, source candidate, gate, sample or GPU execution change."
+}

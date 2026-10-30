@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "source_hashes_verified": 115,
+  "registration_sha256": "958eae0085993248fe50da412699fba393713eca6f9582aeef4e1cf2f0948aff",
+  "probe_games": 9,
+  "panel_games": 336,
+  "river_subgames": 11507596,
+  "constant_sum_local_subgames": 7801760,
+  "variable_sum_local_subgames": 3705836,
+  "trunk_state_bytes": 6245717784,
+  "river_state_bytes": 1087676445288,
+  "boundary_f64_values_only_bytes": 160032195192,
+  "boundary_planning_allowance_bytes": 320800876528,
+  "trunk_plus_boundary_allowance_bytes": 327046594312,
+  "plus_old_retained_host_payload_bytes": 359532092064,
+  "max_river_state_bytes": 99680,
+  "selected_largest_river": {
+    "action_nodes": 6,
+    "board": "4c3d2hAsAh",
+    "constant_sum_local_subgame": true,
+    "max_terminal_rake": 2.0,
+    "min_terminal_rake": 2.0,
+    "original_root_node": 904035,
+    "remaining_stack": 119.25,
+    "starting_pot": 162.0,
+    "state_bytes": 99680,
+    "terminals": 9,
+    "tree_nodes": 15
+  },
+  "optimistic_2000_outer_iterations_hours_by_complete_river_solve_us": {
+    "1": 6.3931088888888885,
+    "10": 63.931088888888894,
+    "100": 639.3108888888889,
+    "1000": 6393.108888888889
+  },
+  "complete_river_solve_us_for_four_hours_at_2000_outer": 0.625673685450897,
+  "runtime_limitations": "Arithmetic only: assumes one full mutual subgame solve per outer iteration, no trunk/transfer/reconstruction cost. Alternating trunk updates may require two. Not measured GPU throughput.",
+  "resources": {
+    "probe": {
+      "seconds": 1.0320000000065193,
+      "minimum_free_host_bytes": 102949863424,
+      "exit_code": 0
+    },
+    "panel": {
+      "seconds": 27.04700000002049,
+      "minimum_free_host_bytes": 102723596288,
+      "exit_code": 0
+    }
+  },
+  "resource_snapshot": {
+    "free_ram_bytes": 102941655040,
+    "free_disk_bytes": 217511411712
+  },
+  "full_study_admitted": false,
+  "strategic_accuracy_claim": false,
+  "production_modified": false
+}

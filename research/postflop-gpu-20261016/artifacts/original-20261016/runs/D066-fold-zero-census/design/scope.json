@@ -1,0 +1,76 @@
+{
+  "id": "D066",
+  "kind": "source-only prospective fold positive-zero reach census",
+  "execution_authorized": false,
+  "accepted_source": "E020",
+  "test_filter": "gpu::fold_zero_census::fold_zero_reach_census",
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "board": "Ks7h2d",
+      "snapshots": [
+        20,
+        200
+      ],
+      "final_iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "board": "Ks7s2d",
+      "snapshots": [
+        20,
+        200
+      ],
+      "final_iteration": 200
+    },
+    {
+      "fixture_id": "river",
+      "board": "Ks7h2dQhTc",
+      "snapshots": [
+        20,
+        60
+      ],
+      "final_iteration": 60
+    }
+  ],
+  "arms": "Two independent ordinary GpuSolver instances share immutable Spot only; unchanged 20-iteration/exploitability schedule. No kernel, graph, event, evaluator or production method changes. Fixture instances are released before next fixture.",
+  "snapshot_position": "After complete paired iteration and before either arm exploitability. E015 retained reach1 is the exact last p0 fold input, retained reach0 the exact last p1 fold input; not arbitrary current-strategy reaches.",
+  "snapshot_reads": "Only d_reach[0/1] at20/final, chunk_floats=1048576, paired bitwise equality, max8MiB float snapshot. No intermediate regret/strategy arena reads. Metadata is independently compared once with uploaded arrays for both arms.",
+  "logical_mapping": "Every flattened fold_nodes entry counted once per traverser. Opponent q=1-p; physical start=reach_slot[q][node]*nh[q], exactly nh[q] words. Bounds, complete contiguous fold spans, node kind and uploaded metadata must match. No uniqueness assumption; no padding or non-fold rows counted as fold work.",
+  "word_categories": [
+    "positive_zero_bits_00000000",
+    "negative_zero_bits_80000000",
+    "finite_nonzero",
+    "nonfinite"
+  ],
+  "row_flags": {
+    "0": "all positive zero",
+    "bit0": "any negative zero",
+    "bit1": "any finite nonzero",
+    "bit2": "any nonfinite",
+    "combination": "flags independent and preserved across readback chunks; mixed rows may enter multiple category counts"
+  },
+  "eligibility": "Report all+0 fold CTA incidence separately from all+0 with finite selected f32 amount: node_player[n]==p ? node_tlose[n] : node_twin[n]. No inference that output is +0 or that stores can be skipped.",
+  "evidence": "Create-new per-fixture binary fold mapping: five little-endian u32 words per CTA (node,slot0,slot1,amount0bits,amount1bits), JSON level spans, plus one byte per physical row per player/snapshot. Keep complete reach-word category totals and FNV hashes. Raw reach float payloads are not retained. Runner additionally SHA256-pins files.",
+  "controls": "23 checkpoints per arm must match immutable E020C1 and original B065 exploit bits; six paired reach snapshots exact; final complete compressed q/scale arrays compared bitwise for both players and both stores, then complete final evaluator fingerprint equals immutable anchors. Full CPU stores are independent of compact device arena sizes.",
+  "memory": "D045 exact planned device payload preflight for two arms plus2GiB device reserve. Before Spot16GiB free host; after Spot+plan two CPU stores, two pinned buffers,8MiB reach snapshot, compact geometry+rowflags plus8GiB reserve. Sequential fixtures. Fail closed, no smaller alternative fixture.",
+  "marker": "D066_FOLD_ZERO_CENSUS ",
+  "native_output_directory_env": "D066_CENSUS_DIR",
+  "fixed_counts": {
+    "fixtures": 3,
+    "snapshots": 6,
+    "reach_array_snapshots": 12,
+    "checkpoint_records": 23,
+    "final_full_state_records": 3
+  },
+  "no_claims": [
+    "performance",
+    "kernel cost",
+    "fraction of dynamic work over all iterations",
+    "savings",
+    "fast-path correctness",
+    "acceptance"
+  ],
+  "no_timing_or_incidence_threshold": true,
+  "failure_policy": "One fixed invocation; preserve every failure and completed observation. No retry, resampling, extension or outcome-driven selection. CUDA/numerical/mapping errors fail closed."
+}

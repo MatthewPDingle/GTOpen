@@ -1,0 +1,143 @@
+{
+  "id": "D057-source-output",
+  "marker": "D057_EVAL_DIAGNOSTIC ",
+  "expected_stage_order": [
+    "admission",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "raw_exact",
+    "checkpoint_exact",
+    "graph_metadata",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "final_anchor_exact",
+    "complete"
+  ],
+  "successful_marker_count": 22,
+  "warm_check_iterations": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140
+  ],
+  "raw_and_checkpoint_iterations": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "sample_iterations": [
+    160,
+    180,
+    200
+  ],
+  "arm_order": [
+    [
+      "ordinary",
+      "instrumented"
+    ],
+    [
+      "instrumented",
+      "ordinary"
+    ],
+    [
+      "ordinary",
+      "instrumented"
+    ]
+  ],
+  "raw_exact": {
+    "arrays": 12,
+    "eight_full_arrays": [
+      "regrets",
+      "strategy",
+      "reach",
+      "weights"
+    ],
+    "players": [
+      0,
+      1
+    ],
+    "four_evaluation_root_arrays": "mode0/1 eachplayer, logical nh length only",
+    "before_exploitability": false,
+    "post_evaluation": true,
+    "cfv_scratch_compared": false,
+    "discount_bits": "iteration DCFR pos/neg/strat"
+  },
+  "graph_metadata": {
+    "iteration": 140,
+    "ordinary_and_instrumented_fields": [
+      "node_count",
+      "node_kinds",
+      "kernel_descriptors_sorted",
+      "comparison"
+    ],
+    "comparison": "equal sorted logical multiset only; kinds include memcpy; kernel name mapped through own borrowed module handles",
+    "raw_pointer_or_argument_comparison": false
+  },
+  "batch_fields": [
+    "checkpoint",
+    "iterations",
+    "arm_order",
+    "ordinary_host_batch_ms",
+    "instrumented_host_batch_ms",
+    "host_batch_change_pct",
+    "abs_host_batch_change_pct",
+    "within_10pct",
+    "instrumented_evaluation_device_envelope_ms",
+    "near_resolution",
+    "ordinary_exploit_bits",
+    "instrumented_exploit_bits",
+    "event_record_counts",
+    "post_both_arm_completion",
+    "scope"
+  ],
+  "complete": {
+    "checkpoints": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "sample_iterations": [
+      160,
+      180,
+      200
+    ],
+    "event_handles": 2,
+    "event_record_counts": [
+      3,
+      3
+    ],
+    "evaluation_intervals": 3,
+    "checked_cleanup": true,
+    "accepted_performance_claim": false,
+    "candidate_accepted": false
+  },
+  "usefulness": "Source retains all samples. Assessor separately applies every abs host batch difference<=10%; numerical success can be diagnostically inconclusive.",
+  "native_test_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 88
+  },
+  "test_filter": "gpu::evaluation_device_events::captured_evaluation_envelope_diagnostic",
+  "admission": {
+    "device_arena_elements": "Actual finalized GpuPlan arena_elements[2], used to bind compact raw regrets/strategy lengths; distinct from full CPU arena entries. No new plan/allocation/work."
+  }
+}

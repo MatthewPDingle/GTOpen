@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "id": "D011-init-summary",
+  "created_at": "2026-10-16T05:50:59Z",
+  "kind": "diagnostic",
+  "accepted_gain": false,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "init_ms": 720.4967,
+      "quantized_setup_ms": 26.1699,
+      "function_load_host_calls_ms": 0.1255,
+      "exact_screen": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true
+      },
+      "trace": {
+        "clock": "host_wall",
+        "diagnostic_only": true,
+        "environment": {
+          "CUDA_MODULE_LOADING": null,
+          "POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE": "1"
+        },
+        "extra_cuda_synchronizations": 0,
+        "note": "Host-call spans may submit asynchronous work. Existing wait spans drain pending stream work; they are not isolated kernel/device times. Logging and timers perturb constructor time; exclude this run from qualification.",
+        "outcome": "selected",
+        "phase": "quantized_try_new",
+        "schema_version": 1,
+        "spans": [
+          {
+            "player": null,
+            "stage": "eligibility_cpu",
+            "wall_ms": 0.0003
+          },
+          {
+            "player": 0,
+            "stage": "descriptors_cpu",
+            "wall_ms": 7.5532
+          },
+          {
+            "player": 1,
+            "stage": "descriptors_cpu",
+            "wall_ms": 5.472
+          },
+          {
+            "player": null,
+            "stage": "staging_capacity_and_budget_cpu",
+            "wall_ms": 0.0007999999999999999
+          },
+          {
+            "player": null,
+            "stage": "existing_preparation_stream_wait",
+            "wall_ms": 4.9333
+          },
+          {
+            "player": null,
+            "stage": "load_signed_function_host_call",
+            "wall_ms": 0.0965
+          },
+          {
+            "player": null,
+            "stage": "load_unsigned_function_host_call",
+            "wall_ms": 0.029
+          },
+          {
+            "player": null,
+            "stage": "scratch_sizes_and_words_allocation_host_call",
+            "wall_ms": 0.8639
+          },
+          {
+            "player": null,
+            "stage": "scales_allocation_host_call",
+            "wall_ms": 0.003
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.1153
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.0024
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 1.2281
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 4.5639
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0543
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 0.8023
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 0.41
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0395
+          },
+          {
+            "player": null,
+            "stage": "exit_tail_cpu_or_failed_operation",
+            "wall_ms": 0.002
+          }
+        ],
+        "wall_ms_before_logging": 26.1699
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "init_ms": 470.7707,
+      "quantized_setup_ms": 15.7886,
+      "function_load_host_calls_ms": 0.11400000000000002,
+      "exact_screen": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true
+      },
+      "trace": {
+        "clock": "host_wall",
+        "diagnostic_only": true,
+        "environment": {
+          "CUDA_MODULE_LOADING": null,
+          "POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE": "1"
+        },
+        "extra_cuda_synchronizations": 0,
+        "note": "Host-call spans may submit asynchronous work. Existing wait spans drain pending stream work; they are not isolated kernel/device times. Logging and timers perturb constructor time; exclude this run from qualification.",
+        "outcome": "selected",
+        "phase": "quantized_try_new",
+        "schema_version": 1,
+        "spans": [
+          {
+            "player": null,
+            "stage": "eligibility_cpu",
+            "wall_ms": 0.00039999999999999996
+          },
+          {
+            "player": 0,
+            "stage": "descriptors_cpu",
+            "wall_ms": 1.6692
+          },
+          {
+            "player": 1,
+            "stage": "descriptors_cpu",
+            "wall_ms": 1.2910000000000001
+          },
+          {
+            "player": null,
+            "stage": "staging_capacity_and_budget_cpu",
+            "wall_ms": 0.0005
+          },
+          {
+            "player": null,
+            "stage": "existing_preparation_stream_wait",
+            "wall_ms": 7.715299999999999
+          },
+          {
+            "player": null,
+            "stage": "load_signed_function_host_call",
+            "wall_ms": 0.07490000000000001
+          },
+          {
+            "player": null,
+            "stage": "load_unsigned_function_host_call",
+            "wall_ms": 0.0391
+          },
+          {
+            "player": null,
+            "stage": "scratch_sizes_and_words_allocation_host_call",
+            "wall_ms": 0.5952999999999999
+          },
+          {
+            "player": null,
+            "stage": "scales_allocation_host_call",
+            "wall_ms": 0.003
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.0038
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.0024
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 0.7311000000000001
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 2.6486
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0389
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 0.6134
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 0.3246
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0351
+          },
+          {
+            "player": null,
+            "stage": "exit_tail_cpu_or_failed_operation",
+            "wall_ms": 0.002
+          }
+        ],
+        "wall_ms_before_logging": 15.7886
+      }
+    },
+    {
+      "fixture_id": "river",
+      "init_ms": 167.7424,
+      "quantized_setup_ms": 0.14679999999999999,
+      "function_load_host_calls_ms": 0.06,
+      "exact_screen": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true
+      },
+      "trace": {
+        "clock": "host_wall",
+        "diagnostic_only": true,
+        "environment": {
+          "CUDA_MODULE_LOADING": null,
+          "POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE": "1"
+        },
+        "extra_cuda_synchronizations": 0,
+        "note": "Host-call spans may submit asynchronous work. Existing wait spans drain pending stream work; they are not isolated kernel/device times. Logging and timers perturb constructor time; exclude this run from qualification.",
+        "outcome": "selected",
+        "phase": "quantized_try_new",
+        "schema_version": 1,
+        "spans": [
+          {
+            "player": null,
+            "stage": "eligibility_cpu",
+            "wall_ms": 0.0005
+          },
+          {
+            "player": 0,
+            "stage": "descriptors_cpu",
+            "wall_ms": 0.0014
+          },
+          {
+            "player": 1,
+            "stage": "descriptors_cpu",
+            "wall_ms": 0.0005
+          },
+          {
+            "player": null,
+            "stage": "staging_capacity_and_budget_cpu",
+            "wall_ms": 0.0003
+          },
+          {
+            "player": null,
+            "stage": "existing_preparation_stream_wait",
+            "wall_ms": 0.0015999999999999999
+          },
+          {
+            "player": null,
+            "stage": "load_signed_function_host_call",
+            "wall_ms": 0.036399999999999995
+          },
+          {
+            "player": null,
+            "stage": "load_unsigned_function_host_call",
+            "wall_ms": 0.0236
+          },
+          {
+            "player": null,
+            "stage": "scratch_sizes_and_words_allocation_host_call",
+            "wall_ms": 0.0022
+          },
+          {
+            "player": null,
+            "stage": "scales_allocation_host_call",
+            "wall_ms": 0.0013
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.0031
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_allocations_host_calls",
+            "wall_ms": 0.003
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 0.0005
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 0.0504
+          },
+          {
+            "player": 0,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0027
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_vectors_cpu",
+            "wall_ms": 0.00019999999999999998
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_upload_host_calls",
+            "wall_ms": 0.0165
+          },
+          {
+            "player": 1,
+            "stage": "descriptor_existing_stream_wait",
+            "wall_ms": 0.0022
+          },
+          {
+            "player": null,
+            "stage": "exit_tail_cpu_or_failed_operation",
+            "wall_ms": 0.00019999999999999998
+          }
+        ],
+        "wall_ms_before_logging": 0.14679999999999999
+      }
+    }
+  ],
+  "conclusion": "The river optional quantized setup took only 0.1468 ms, including 0.0600 ms in the two function-load calls, while enclosing initialization took 167.7424 ms. This diagnostic does not support optional setup or function lookup as the source of the repeated river regression. Profile surrounding context/PTX/module/base initialization next.",
+  "scope": "One diagnostic run; finite host wall spans, including existing waits. No added CUDA operations. Timers/logging perturb initialization; excluded from qualifying performance comparisons. Exact compressed state matched B023 on all three fixtures.",
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D011\\report.json",
+      "sha256": "9cfc2bbbb63e15b61a08de003bbca24ace25b45067ffc96a44d6b0822b30454a"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D011\\stdout.log",
+      "sha256": "093416e1bee8aa51d7cc755a936d5d4160c7b5b02661dacb066672a849a96d7f"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D011-design\\manifest.json",
+      "sha256": "5d0ca77c2a81beb93f7e836ad7b69d60c86eece7cfe6655eeb67a0dfe367e534"
+    }
+  ]
+}

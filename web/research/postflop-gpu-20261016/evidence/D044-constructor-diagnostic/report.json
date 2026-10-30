@@ -1,0 +1,678 @@
+{
+  "id": "D044-constructor-diagnostic",
+  "status": "pass",
+  "scope": "Grouped diagnostic host spans only; no performance acceptance or projected saving.",
+  "protocol_sha256": "f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a",
+  "schema_sha256": "f36d5ced23c7f1a16ebe89c5de87175255307d22f7dde5b25505cf2ab11721e2",
+  "all_complete_states_exact": 18,
+  "convergence_checks_exact": 138,
+  "profile_records": 9,
+  "uninstrumented_records": 0,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "ordinary_full_cycles_ms": [
+        5762.3153,
+        5777.7009,
+        5774.0669
+      ],
+      "instrumented_full_cycles_ms": [
+        5793.067900000001,
+        5819.0414,
+        5760.972
+      ],
+      "ordinary_median_ms": 5774.0669,
+      "instrumented_median_ms": 5793.067900000001,
+      "median_change_pct": 0.3290748155342804,
+      "paired_change_pct": [
+        0.5336847846559412,
+        0.715518174365859,
+        -0.22678815862005042
+      ],
+      "ordinary_build_ms": [
+        83.10900000000001,
+        88.265,
+        82.23049999999999
+      ],
+      "instrumented_build_ms": [
+        84.4361,
+        83.1336,
+        78.8529
+      ],
+      "identity": {
+        "fixture_id": "rainbow",
+        "board": "Ks7h2d",
+        "board_mask": 140737492549634,
+        "board_cards": 3,
+        "hands": [
+          257,
+          319
+        ],
+        "node_count": 1346813,
+        "suit_permutations": 1
+      },
+      "components": [
+        {
+          "stage": "tree_build",
+          "all_profiled_ms": [
+            77.44959999999999,
+            76.603,
+            72.862
+          ],
+          "median_ms": 76.603,
+          "range_ms": [
+            72.862,
+            77.44959999999999
+          ]
+        },
+        {
+          "stage": "river_table",
+          "all_profiled_ms": [
+            3.618,
+            3.3669000000000002,
+            2.9981999999999998
+          ],
+          "median_ms": 3.3669000000000002,
+          "range_ms": [
+            2.9981999999999998,
+            3.618
+          ]
+        },
+        {
+          "stage": "suit_symmetry",
+          "all_profiled_ms": [
+            0.0368,
+            0.0376,
+            0.048799999999999996
+          ],
+          "median_ms": 0.0376,
+          "range_ms": [
+            0.0368,
+            0.048799999999999996
+          ]
+        },
+        {
+          "stage": "constructor_before_logging",
+          "all_profiled_ms": [
+            81.3798,
+            80.2578,
+            76.10210000000001
+          ],
+          "median_ms": 80.2578,
+          "range_ms": [
+            76.10210000000001,
+            81.3798
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_and_timer_overhead",
+          "all_profiled_ms": [
+            0.27540000000000875,
+            0.2503000000000029,
+            0.19310000000000582
+          ],
+          "median_ms": 0.2503000000000029,
+          "range_ms": [
+            0.19310000000000582,
+            0.27540000000000875
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_CPU_storage_and_timing_logging_overhead",
+          "all_profiled_ms": [
+            3.331699999999998,
+            3.126100000000008,
+            2.9438999999999993
+          ],
+          "median_ms": 3.126100000000008,
+          "range_ms": [
+            2.9438999999999993,
+            3.331699999999998
+          ]
+        },
+        {
+          "stage": "outer_build_minus_constructor_CPU_storage_return_logging_other_overhead",
+          "all_profiled_ms": [
+            3.056299999999993,
+            2.875799999999998,
+            2.750799999999998
+          ],
+          "median_ms": 2.875799999999998,
+          "range_ms": [
+            2.750799999999998,
+            3.056299999999993
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "two-tone",
+      "ordinary_full_cycles_ms": [
+        3967.6844,
+        3935.5183,
+        3947.2673999999997
+      ],
+      "instrumented_full_cycles_ms": [
+        3875.9429999999998,
+        3811.7172,
+        3938.3761
+      ],
+      "ordinary_median_ms": 3947.2673999999997,
+      "instrumented_median_ms": 3875.9429999999998,
+      "median_change_pct": -1.806931042979254,
+      "paired_change_pct": [
+        -2.312215155015862,
+        -3.1457381356859715,
+        -0.22525203131664728
+      ],
+      "ordinary_build_ms": [
+        460.8476,
+        367.971,
+        375.9017
+      ],
+      "instrumented_build_ms": [
+        398.8974,
+        316.50149999999996,
+        378.342
+      ],
+      "identity": {
+        "fixture_id": "two-tone",
+        "board": "Ks7s2d",
+        "board_mask": 140737496743938,
+        "board_cards": 3,
+        "hands": [
+          258,
+          320
+        ],
+        "node_count": 1346813,
+        "suit_permutations": 2
+      },
+      "components": [
+        {
+          "stage": "tree_build",
+          "all_profiled_ms": [
+            205.3876,
+            174.92959999999997,
+            169.3214
+          ],
+          "median_ms": 174.92959999999997,
+          "range_ms": [
+            169.3214,
+            205.3876
+          ]
+        },
+        {
+          "stage": "river_table",
+          "all_profiled_ms": [
+            4.0795,
+            3.5668,
+            3.495
+          ],
+          "median_ms": 3.5668,
+          "range_ms": [
+            3.495,
+            4.0795
+          ]
+        },
+        {
+          "stage": "suit_symmetry",
+          "all_profiled_ms": [
+            0.045399999999999996,
+            0.0436,
+            0.08940000000000001
+          ],
+          "median_ms": 0.045399999999999996,
+          "range_ms": [
+            0.0436,
+            0.08940000000000001
+          ]
+        },
+        {
+          "stage": "constructor_before_logging",
+          "all_profiled_ms": [
+            209.65470000000002,
+            178.70469999999997,
+            173.05010000000001
+          ],
+          "median_ms": 178.70469999999997,
+          "range_ms": [
+            173.05010000000001,
+            209.65470000000002
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_and_timer_overhead",
+          "all_profiled_ms": [
+            0.14220000000001165,
+            0.16470000000001164,
+            0.14429999999998835
+          ],
+          "median_ms": 0.14429999999998835,
+          "range_ms": [
+            0.14220000000001165,
+            0.16470000000001164
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_CPU_storage_and_timing_logging_overhead",
+          "all_profiled_ms": [
+            189.38490000000002,
+            137.9615,
+            205.43619999999996
+          ],
+          "median_ms": 189.38490000000002,
+          "range_ms": [
+            137.9615,
+            205.43619999999996
+          ]
+        },
+        {
+          "stage": "outer_build_minus_constructor_CPU_storage_return_logging_other_overhead",
+          "all_profiled_ms": [
+            189.24269999999999,
+            137.7968,
+            205.29189999999997
+          ],
+          "median_ms": 189.24269999999999,
+          "range_ms": [
+            137.7968,
+            205.29189999999997
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "river",
+      "ordinary_full_cycles_ms": [
+        106.6524,
+        102.1571,
+        102.2281
+      ],
+      "instrumented_full_cycles_ms": [
+        96.23379999999999,
+        97.739,
+        104.0717
+      ],
+      "ordinary_median_ms": 102.2281,
+      "instrumented_median_ms": 97.739,
+      "median_change_pct": -4.3912583722088065,
+      "paired_change_pct": [
+        -9.768744069519308,
+        -4.324809533551754,
+        1.8034180425929858
+      ],
+      "ordinary_build_ms": [
+        0.22699999999999998,
+        0.1981,
+        0.1991
+      ],
+      "instrumented_build_ms": [
+        0.2235,
+        0.2692,
+        0.3025
+      ],
+      "identity": {
+        "fixture_id": "river",
+        "board": "Ks7h2dQhTc",
+        "board_mask": 145139834028034,
+        "board_cards": 5,
+        "hands": [
+          233,
+          280
+        ],
+        "node_count": 33,
+        "suit_permutations": 1
+      },
+      "components": [
+        {
+          "stage": "tree_build",
+          "all_profiled_ms": [
+            0.0052,
+            0.0074,
+            0.0076
+          ],
+          "median_ms": 0.0074,
+          "range_ms": [
+            0.0052,
+            0.0076
+          ]
+        },
+        {
+          "stage": "river_table",
+          "all_profiled_ms": [
+            0.0251,
+            0.025700000000000004,
+            0.03219999999999999
+          ],
+          "median_ms": 0.025700000000000004,
+          "range_ms": [
+            0.0251,
+            0.03219999999999999
+          ]
+        },
+        {
+          "stage": "suit_symmetry",
+          "all_profiled_ms": [
+            0.0203,
+            0.0235,
+            0.0222
+          ],
+          "median_ms": 0.0222,
+          "range_ms": [
+            0.0203,
+            0.0235
+          ]
+        },
+        {
+          "stage": "constructor_before_logging",
+          "all_profiled_ms": [
+            0.166,
+            0.19090000000000001,
+            0.1986
+          ],
+          "median_ms": 0.19090000000000001,
+          "range_ms": [
+            0.166,
+            0.1986
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_and_timer_overhead",
+          "all_profiled_ms": [
+            0.1154,
+            0.1343,
+            0.1366
+          ],
+          "median_ms": 0.1343,
+          "range_ms": [
+            0.1154,
+            0.1366
+          ]
+        },
+        {
+          "stage": "unprofiled_constructor_CPU_storage_and_timing_logging_overhead",
+          "all_profiled_ms": [
+            0.1729,
+            0.21259999999999998,
+            0.2405
+          ],
+          "median_ms": 0.21259999999999998,
+          "range_ms": [
+            0.1729,
+            0.2405
+          ]
+        },
+        {
+          "stage": "outer_build_minus_constructor_CPU_storage_return_logging_other_overhead",
+          "all_profiled_ms": [
+            0.057499999999999996,
+            0.07829999999999998,
+            0.10389999999999999
+          ],
+          "median_ms": 0.07829999999999998,
+          "range_ms": [
+            0.057499999999999996,
+            0.10389999999999999
+          ]
+        }
+      ]
+    }
+  ],
+  "raw_profiles": [
+    {
+      "run_id": "D044P1",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 77449.59999999999,
+        "river_table": 3618,
+        "suit_symmetry": 36.8
+      },
+      "constructor_us_before_logging": 81379.8,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P1",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 2,
+      "stage_us": {
+        "tree_build": 205387.6,
+        "river_table": 4079.5,
+        "suit_symmetry": 45.4
+      },
+      "constructor_us_before_logging": 209654.7,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P1",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 5.2,
+        "river_table": 25.1,
+        "suit_symmetry": 20.299999999999997
+      },
+      "constructor_us_before_logging": 166,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P2",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 76603,
+        "river_table": 3366.9,
+        "suit_symmetry": 37.6
+      },
+      "constructor_us_before_logging": 80257.8,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P2",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 2,
+      "stage_us": {
+        "tree_build": 174929.59999999998,
+        "river_table": 3566.8,
+        "suit_symmetry": 43.6
+      },
+      "constructor_us_before_logging": 178704.69999999998,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P2",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 7.4,
+        "river_table": 25.700000000000003,
+        "suit_symmetry": 23.5
+      },
+      "constructor_us_before_logging": 190.9,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P3",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 72862,
+        "river_table": 2998.2,
+        "suit_symmetry": 48.8
+      },
+      "constructor_us_before_logging": 76102.1,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P3",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813,
+      "suit_permutations": 2,
+      "stage_us": {
+        "tree_build": 169321.40000000002,
+        "river_table": 3495,
+        "suit_symmetry": 89.4
+      },
+      "constructor_us_before_logging": 173050.1,
+      "extra_cuda_synchronizations": 0
+    },
+    {
+      "run_id": "D044P3",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "instrumentation": "D044_unconditional_source_only",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33,
+      "suit_permutations": 1,
+      "stage_us": {
+        "tree_build": 7.6,
+        "river_table": 32.199999999999996,
+        "suit_symmetry": 22.2
+      },
+      "constructor_us_before_logging": 198.6,
+      "extra_cuda_synchronizations": 0
+    }
+  ],
+  "ordinary_sum_fixture_medians_ms": 9823.562399999999,
+  "instrumented_sum_fixture_medians_ms": 9766.7499,
+  "observed_outer_change_pct": -0.5783288962464161,
+  "absolute_change_limit_pct": 10.0,
+  "diagnostic_usefulness_guard_pass": true,
+  "grouped_stage_sum_fixture_medians_ms": {
+    "tree_build": 251.53999999999996,
+    "river_table": 6.9594000000000005,
+    "suit_symmetry": 0.1052
+  },
+  "grouped_stage_fraction_of_ordinary_pct": {
+    "tree_build": 2.560578227710957,
+    "river_table": 0.07084395371683089,
+    "suit_symmetry": 0.001070894607438947
+  },
+  "possible_2pct_saving_established": false,
+  "interpretation": "The river-table span contains the entire unchanged builder, not isolated ranking. No removable fraction is established. Residuals include unprofiled constructor/CPU storage and timing/logging overhead. Overlapping envelopes and residuals must not be summed as disjoint components. The10pct outer usefulness guard does not bound component bias or establish a performance saving.",
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "native_process_wall_ms_including_teardown": {
+    "D044B1": 12906.999999999243,
+    "D044P1": 12780.999999995402,
+    "D044P2": 12655.999999995402,
+    "D044B2": 12844.000000004598,
+    "D044B3": 12781.999999999243,
+    "D044P3": 12889.999999999418
+  },
+  "evidence": {
+    "D044B1": {
+      "report_sha256": "4f78251ad6c4cd411def886fd74620106849e603af63549dadf382227da388fd",
+      "stdout_sha256": "5f81bba1bcd15ce44f736b0431041f392d8782b8c4c3cae8aa8abf1186931af3"
+    },
+    "D044P1": {
+      "report_sha256": "52e99d1507222a68f0f7066a14853b41c0dddf5802dc95fbac0657c3cc0dd871",
+      "stdout_sha256": "2d31878dbf6b6479e732045c47c9f593bb6340e9d6182a6249c274cef53e8b6b"
+    },
+    "D044P2": {
+      "report_sha256": "c1aa90c55c50e74bad75075221a2bf07d430db5063a6ce76b4aed092282771d5",
+      "stdout_sha256": "4e5bf6cadb7ec5b12eb687291d32eea13e195372468ec15b2b91eafe652258f0"
+    },
+    "D044B2": {
+      "report_sha256": "aa8fe72763186c9de4e58eed7d40f0c936649231d7fa74d05b95f51fd7b641cd",
+      "stdout_sha256": "3de746262fff95c3fa23d21d2e8ba5e9894e6efd5a3b25cd66805f5e70a3a71a"
+    },
+    "D044B3": {
+      "report_sha256": "2be69207ac3b5a31b119c053f56bf19401bd9176cb601b7adde42b0d8284977e",
+      "stdout_sha256": "0daa4aaef6b404d86eccfc3921c47e4523fb98ef7121619a1ce0927c49d27164"
+    },
+    "D044P3": {
+      "report_sha256": "bbad5db088d9e6d0858f4f7cf5616844cd503166068c6a64f28cf97443c27250",
+      "stdout_sha256": "a2a523f5f430d3bf4ae9301b472e9de14a5e5481a4332fdfc92702e95bbccfef"
+    }
+  },
+  "binary_manifests": {
+    "ordinary": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "instrumented": "b79c187a13c34907d49293fef51c4cc21e2d04dd79baeefcebb7d4b9ebb00111"
+  }
+}

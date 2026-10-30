@@ -1,0 +1,375 @@
+diff --git a/crates/solver/src/gpu/continuation_capacity.rs b/crates/solver/src/gpu/continuation_capacity.rs
+index f6fd7afa..678082ca 100644
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -28,7 +28,7 @@ fn metadata(p: &GpuPlan, s: &Spot) -> u64 {
+     macro_rules! sum {($($f:ident),*)=>{0u64 $(+bytes(&p.$f))*};}
+     let mut n=sum!(action_nodes,chance_parents,chance_children,chance_cards,chance_nodes,fold_nodes,show_nodes,
+         node_player,node_na,node_data_off,node_children_start,node_twin,node_tlose,node_ttie,node_cdiv,node_river_slot,
+-        cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot)+bytes(&s.tree.children);
++        cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot,child_cfv_slots)+bytes(&s.tree.children);
+     for q in 0..2 {
+         n+=bytes(&p.hand_perm_flat[q])+bytes(&p.reach_slot[q])+bytes(&p.hand_c1[q])+bytes(&p.hand_c2[q])
+             +bytes(&p.hand_mask[q])+bytes(&p.same_combo[q])+bytes(&p.weights[q])+bytes(&p.riv_off[q])
+@@ -46,7 +46,7 @@ pub(super) fn observed_metadata(g: &GpuSolver) -> u64 {
+         d_fold_nodes:u32,d_show_nodes:u32,d_node_player:i32,d_node_na:i32,d_node_data_off:u64,d_node_children_start:u32,
+         d_node_twin:f32,d_node_tlose:f32,d_node_ttie:f32,d_node_cdiv:f32,d_node_river_slot:i32,d_cc_start:u32,
+         d_cc_count:u32,d_cc_card:u32,d_cc_child:u32,d_cc_perm:u32,d_children:u32,d_lock_off:i64,d_lock_sigma:f32,
+-        d_cfv_slot:u32,d_eval_roots:f32,d_disc:f32);
++        d_cfv_slot:u32,d_child_cfv_slots:u32,d_eval_roots:f32,d_disc:f32);
+     for q in 0..2 {
+         macro_rules! arr {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f[q].len()*size_of::<$t>()) as u64)*};}
+         n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,
+@@ -80,3 +80,39 @@ pub fn stored_capacity_plan(s: &Spot) -> Value {
+         "node_count":s.tree.nodes.len(),"canonical_actions":compact.action_nodes.len(),"iso_active":compact.iso_active,
+         "limitations":"Payload accounting; excludes CUDA context/modules, allocator bookkeeping, driver scratch, process baseline, constructor temporary plans and evaluation recursion scratch. Reserve separately. Construction temporarily holds previous workspace plus this game's workspace. CPU materialization also holds full explicit arrays."})
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::{parse_sizes, Solver, SpotConfig, StreetSizing};
++    use std::sync::Arc;
++
++    #[test]
++    fn child_mapping_matches_observed_metadata_for_turn_and_river() {
++        for board in ["KsQs2dJd", "KsQs2dJd3c"] {
++            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++            let spot = Arc::new(Spot::new(SpotConfig {
++                board: board.into(), range_oop: "AA,KK,QQ,AKs,AKo".into(),
++                range_ip: "AA,QQ,TT,AQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                    ..Default::default() },
++            }).unwrap());
++            let mut solver = Solver::new(spot.clone());
++            solver.use_isomorphism = false;
++            let mut plan = GpuPlan::build(&spot, false);
++            plan.use_full_action_arenas(&spot);
++            let expected = metadata(&plan, &spot);
++            let gpu = GpuSolver::new(&solver).expect("test requires CUDA");
++            assert_eq!(gpu.d_child_cfv_slots.len(), spot.tree.children.len());
++            assert_eq!(gpu.stream.clone_dtoh(&gpu.d_child_cfv_slots).unwrap(), plan.child_cfv_slots);
++            assert_eq!(observed_metadata(&gpu), expected);
++            let capacity = stored_capacity_plan(&spot);
++            assert_eq!(capacity["base_gpu_metadata_bytes"].as_u64().unwrap(), expected);
++            let added = plan.training_metadata_bytes();
++            plan.child_cfv_slots.clear();
++            assert_eq!(expected - metadata(&plan, &spot), added,
++                "new immutable payload must be counted exactly once");
++        }
++    }
++}
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf4772..fe802ba0 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -330,7 +330,7 @@ __device__ __forceinline__ void up_action_impl(
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+-    const u32* __restrict__ children,
++    const u32* __restrict__ child_cfv_slots,
+     float* regrets_p, float* strat_p,
+     const u32* __restrict__ rsrc_p,
+     const float* __restrict__ reach_p_buf,
+@@ -355,7 +355,7 @@ __device__ __forceinline__ void up_action_impl(
+             for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+                 float out = 0.f;
+                 for (int a = 0; a < na; a++)
+-                    out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                    out += sig[a * nh_p + i] * cfv[(u64)child_cfv_slots[cs + a] * nh_max + i];
+                 cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+             }
+             return;
+@@ -377,14 +377,14 @@ __device__ __forceinline__ void up_action_impl(
+             for (int a = 0; a < na; a++) {
+                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+-                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                float v = cfv[(u64)child_cfv_slots[cs + a] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;
+             }
+             float reach = rp[i];
+             for (int a = 0; a < na; a++) {
+                 u64 idx = doff + (u64)a * nh_p + i;
+-                float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                float val = small ? vc[a] : cfv[(u64)child_cfv_slots[cs + a] * nh_max + i];
+                 float r = small ? rc[a] : regrets_p[idx];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+                 float d = r > 0.f ? pos : neg;
+@@ -397,7 +397,7 @@ __device__ __forceinline__ void up_action_impl(
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+-                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                acc += cfv[(u64)child_cfv_slots[cs + a] * nh_max + i];
+             cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+         }
+     }
+@@ -408,7 +408,7 @@ extern "C" __global__ void up_action(
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+-    const u32* __restrict__ children,
++    const u32* __restrict__ child_cfv_slots,
+     float* regrets_p, float* strat_p,
+     const u32* __restrict__ rsrc_p,
+     const float* __restrict__ reach_p_buf,
+@@ -423,10 +423,10 @@ extern "C" __global__ void up_action(
+     const int na = node_na[nodes[start + blockIdx.x]];
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+-    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, child_cfv_slots, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, child_cfv_slots, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, child_cfv_slots, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, child_cfv_slots, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+ }
+ 
+ // Copy the first n floats (used to extract the root cfv span).
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 8cce0279..f0850767 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -123,6 +123,8 @@ pub struct GpuSolver {
+     iso_active: bool,
+     d_rsrc: [CudaSlice<u32>; 2],
+     d_children: CudaSlice<u32>,
++    /// Immutable training-up mapping; never part of continuation workspace swaps.
++    d_child_cfv_slots: CudaSlice<u32>,
+     // device: hands
+     d_fold_card_off: [CudaSlice<u32>; 2],
+     d_fold_card_idx: [CudaSlice<u32>; 2],
+@@ -210,14 +212,21 @@ impl GpuSolver {
+         // fits, avoiding inactive host snapshots on warm full-precision solves.
+         // Compressed stores benefit from packing and parallel readback anyway;
+         // a tight F32 budget can use the same exact compact representation.
+-        let full_needed = plan.staging_bytes()
+-            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+-            + 512 * 1024 * 1024;
++        let required = |elements: u64| plan.staging_bytes().checked_add(elements.checked_mul(8)?)
++            .and_then(|v| v.checked_add(512 * 1024 * 1024));
++        let full_elements = solver.spot.tree.data_size[0].checked_add(solver.spot.tree.data_size[1])
++            .ok_or("GPU arena size overflow")?;
++        let full_needed = required(full_elements).ok_or("GPU admission size overflow")?;
++        let compact_elements = (plan.arena_elements[0] as u64).checked_add(plan.arena_elements[1] as u64)
++            .ok_or("GPU arena size overflow")?;
++        let compact_needed = required(compact_elements).ok_or("GPU admission size overflow")?;
++        let needed;
+         if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+             plan.use_full_action_arenas(&solver.spot);
++            needed = full_needed;
++        } else {
++            needed = compact_needed;
+         }
+-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+-        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+         if needed > budget_bytes {
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+@@ -343,6 +352,7 @@ impl GpuSolver {
+             iso_active: plan.iso_active,
+             d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+             d_children: up32(&solver.spot.tree.children)?,
++            d_child_cfv_slots: up32(&plan.child_cfv_slots)?,
+             d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
+             d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+@@ -971,7 +981,7 @@ impl GpuSolver {
+                         .arg(&self.d_node_na)
+                         .arg(&self.d_node_data_off)
+                         .arg(&self.d_node_children_start)
+-                        .arg(&self.d_children)
++                        .arg(&self.d_child_cfv_slots)
+                         .arg(&mut self.d_regrets[p])
+                         .arg(&mut self.d_strat[p])
+                         .arg(&self.d_rsrc[p])
+@@ -1179,6 +1189,8 @@ mod tests {
+                 + 512 * 1024 * 1024
+         } else { u64::MAX };
+         let gpu = GpuSolver::new_with_budget(s, budget).expect("test requires CUDA");
++        assert_eq!(gpu.d_child_cfv_slots.len(), s.spot.tree.children.len());
++        assert_eq!(gpu.stream.clone_dtoh(&gpu.d_child_cfv_slots).unwrap(), plan.child_cfv_slots);
+         for p in 0..2 {
+             if compact {
+                 assert!(gpu.d_regrets[p].len() < s.spot.tree.data_size[p] as usize,
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 8a98e494..4fbb6b3b 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -83,6 +83,9 @@ pub struct GpuPlan {
+     /// Unvisited nodes have no allocation.
+     pub cfv_slot: Vec<u32>,
+     pub cfv_blocks: usize,
++    /// Training-up child CFV slots in original tree.children coordinates.
++    /// Only visited action-edge entries are populated; all others are SENTINEL.
++    pub child_cfv_slots: Vec<u32>,
+ 
+     // Per-hand arrays.
+     pub hand_c1: [Vec<u32>; 2],
+@@ -273,6 +276,7 @@ impl GpuPlan {
+             (flat, spans)
+         };
+         let (action_nodes, action_spans) = flatten_nodes(action_by_level);
++        let child_cfv_slots = action_child_cfv_slots(spot, &action_nodes, &cfv_slot, cfv_blocks);
+         let (fold_nodes, fold_spans) = flatten_nodes(fold_by_level);
+         let (show_nodes, show_spans) = flatten_nodes(show_by_level);
+         let (chance_nodes, chance_node_spans) = flatten_nodes(cnode_by_level);
+@@ -464,6 +468,7 @@ impl GpuPlan {
+             reach_blocks,
+             cfv_slot,
+             cfv_blocks,
++            child_cfv_slots,
+             hand_c1,
+             hand_c2,
+             hand_mask,
+@@ -490,21 +495,107 @@ impl GpuPlan {
+         }
+     }
+ 
+-    /// Total bytes of GPU staging (reach + cfv) this plan needs.
++    /// Additional immutable metadata used only by training-up action kernels.
++    pub fn training_metadata_bytes(&self) -> u64 {
++        (self.child_cfv_slots.len() as u64).checked_mul(4)
++            .expect("GPU training metadata byte count exceeds u64")
++    }
++
++    /// Traversal working storage: reach + CFV + training-only metadata.
++    /// Includes the full mapped child table so existing exact-budget callers
++    /// account for its allocation, including unused chance/sentinel entries.
+     pub fn staging_bytes(&self) -> u64 {
+-        (self.reach_blocks[0] as u64 * self.nh[0] as u64
+-            + self.reach_blocks[1] as u64 * self.nh[1] as u64
+-            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
++        let words = [(self.reach_blocks[0], self.nh[0]),
++            (self.reach_blocks[1], self.nh[1]), (self.cfv_blocks, self.nh_max)]
++            .into_iter().try_fold(0u64, |sum, (n, width)| {
++                (n as u64).checked_mul(width as u64).and_then(|v| sum.checked_add(v))
++            }).expect("GPU traversal storage exceeds u64");
++        words.checked_mul(4).and_then(|v| v.checked_add(self.training_metadata_bytes()))
++            .expect("GPU traversal byte count exceeds u64")
+     }
+ }
+ 
++fn action_child_cfv_slots(spot: &Spot, actions: &[u32], cfv_slot: &[u32], cfv_blocks: usize) -> Vec<u32> {
++    let mut slots = vec![SENTINEL; spot.tree.children.len()];
++    for &id in actions {
++        let node = &spot.tree.nodes[id as usize];
++        assert_eq!(node.kind, KIND_ACTION);
++        let start = node.children_start as usize;
++        let end = start.checked_add(node.num_children as usize).expect("action child span overflow");
++        let children = spot.tree.children.get(start..end).expect("invalid action child span");
++        for (a, &child) in children.iter().enumerate() {
++            let &slot = cfv_slot.get(child as usize).expect("invalid visited action child");
++            assert!(slot != SENTINEL && (slot as usize) < cfv_blocks,
++                "visited action child has no valid physical CFV slot");
++            slots[start + a] = slot;
++        }
++    }
++    slots
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+ 
++    fn assert_child_mapping(spot: &Spot, plan: &GpuPlan) {
++        assert_eq!(plan.child_cfv_slots.len(), spot.tree.children.len());
++        let mut consumed = vec![false; spot.tree.children.len()];
++        for &id in &plan.action_nodes {
++            let node = &spot.tree.nodes[id as usize];
++            for a in 0..node.num_children as usize {
++                let edge = node.children_start as usize + a;
++                assert!(!consumed[edge], "action edges must retain distinct child indices");
++                consumed[edge] = true;
++                let child = spot.tree.children[edge];
++                assert_ne!(child, SENTINEL);
++                let slot = plan.child_cfv_slots[edge];
++                assert!((slot as usize) < plan.cfv_blocks);
++                assert_eq!(slot, plan.cfv_slot[child as usize], "physical address must match original lookup");
++            }
++        }
++        for (edge, &used) in consumed.iter().enumerate() {
++            if !used { assert_eq!(plan.child_cfv_slots[edge], SENTINEL); }
++            if spot.tree.children[edge] == SENTINEL {
++                assert!(!used, "chance sentinels must not be read as action children");
++            }
++        }
++        assert_eq!(plan.training_metadata_bytes(), spot.tree.children.len() as u64 * 4);
++        let original_staging = (plan.reach_blocks[0] * plan.nh[0]
++            + plan.reach_blocks[1] * plan.nh[1] + plan.cfv_blocks * plan.nh_max) as u64 * 4;
++        assert_eq!(plan.staging_bytes(), original_staging + plan.training_metadata_bytes());
++    }
++
++    #[test]
++    fn child_mapping_handles_generic_menus_and_rejects_invalid_physical_slots() {
++        let sizing = || StreetSizing {
++            bet: parse_sizes("10,20,30,40,50,60,70,80,90,100").unwrap(), raise: vec![], donk: vec![],
++        };
++        let spot = Spot::new(SpotConfig {
++            board: "KsQs2dJd3c".into(), range_oop: "AA,KK,AKs".into(), range_ip: "QQ,TT,AQs".into(),
++            tree: TreeConfig { starting_pot: 10.0, effective_stack: 100.0,
++                oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                ..Default::default() },
++        }).unwrap();
++        let plan = GpuPlan::build(&spot, false);
++        assert!(plan.action_nodes.iter().any(|&n| spot.tree.nodes[n as usize].num_children > 8));
++        assert_child_mapping(&spot, &plan);
++        let none = action_child_cfv_slots(&spot, &[], &plan.cfv_slot, plan.cfv_blocks);
++        assert_eq!(none, vec![SENTINEL; spot.tree.children.len()]);
++        let node = &spot.tree.nodes[plan.action_nodes[0] as usize];
++        let child = spot.tree.children[node.children_start as usize] as usize;
++        for invalid in [SENTINEL, plan.cfv_blocks as u32] {
++            let mut slots = plan.cfv_slot.clone();
++            slots[child] = invalid;
++            assert!(std::panic::catch_unwind(std::panic::AssertUnwindSafe(||
++                action_child_cfv_slots(&spot, &plan.action_nodes, &slots, plan.cfv_blocks)
++            )).is_err(), "an invalid consumed slot must fail before GPU upload");
++        }
++    }
++
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
++        let mut saw_inactive_action = false;
+         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+             let sizing = || StreetSizing {
+                 bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+@@ -521,7 +612,13 @@ mod tests {
+                 },
+             }).unwrap();
+             for iso in [false, true] {
+-                let plan = GpuPlan::build(&spot, iso);
++                let mut plan = GpuPlan::build(&spot, iso);
++                assert_child_mapping(&spot, &plan);
++                saw_inactive_action |= spot.tree.nodes.iter().enumerate().any(|(n, node)|
++                    node.kind == KIND_ACTION && plan.cfv_slot[n] == SENTINEL);
++                if spot.board.len() < 5 {
++                    assert!(spot.tree.children.contains(&SENTINEL), "fixture must exercise chance sentinel entries");
++                }
+                 assert_eq!(plan.cfv_slot[0], 0);
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();
+@@ -550,6 +647,10 @@ mod tests {
+                 for &child in &plan.cc_child {
+                     assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
+                 }
++                let mapped = plan.child_cfv_slots.clone();
++                plan.use_full_action_arenas(&spot);
++                assert_eq!(plan.child_cfv_slots, mapped, "full arenas must preserve physical child addresses");
++                assert_child_mapping(&spot, &plan);
+                 for p in 0..2 {
+                     assert_eq!(plan.reach_slot[p][0], 0);
+                     let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];
+@@ -584,5 +685,6 @@ mod tests {
+                 }
+             }
+         }
++        assert!(saw_inactive_action, "isomorphic fixtures must exercise inactive action-edge sentinels");
+     }
+ }

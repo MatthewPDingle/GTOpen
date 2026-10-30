@@ -1,0 +1,4 @@
+
+thread 'main' (31524) panicked at X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D205-cooperative-grid-controls\probe-r2.rs:50:300:
+called `Result::unwrap()` on an `Err` value: DriverError(CUDA_ERROR_STREAM_CAPTURE_ISOLATION, "dependency created on uncaptured work in another stream")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

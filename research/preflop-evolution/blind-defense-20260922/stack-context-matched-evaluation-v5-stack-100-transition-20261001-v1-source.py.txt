@@ -1,0 +1,52 @@
+"""Metadata-only boundary observation; no scientific values/ranges interpreted."""
+from pathlib import Path
+import hashlib
+import json
+import re
+import time
+import psutil
+
+OUT = Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+FOLDER = Path('S:/GTOpen-research/stack-context-matched-evaluation-v5/stack-100')
+NAME = 'stack-context-matched-evaluation-v5-stack-100-transition-20261001-v1'
+def read(path): return json.loads(path.read_bytes())
+def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
+
+helper = psutil.Process(101740); evaluator = psutil.Process(101396)
+assert abs(helper.create_time()-1790820578.6834643)<.01
+assert abs(evaluator.create_time()-1790836790.4066665)<.01 and evaluator.ppid()==helper.pid
+started = OUT/'stack-context-pressure-evaluation-handoff-v1-002-evaluation-started.json'
+child = read(started)
+assert child['pid']==evaluator.pid and child['created']==evaluator.create_time()
+assert child['command']==evaluator.cmdline()
+helper_status = read(OUT/'stack-context-pressure-evaluation-handoff-v1-status.json')
+assert helper_status['phase']=='evaluation' and helper_status['child']==child
+status = read(OUT/'stack-context-matched-evaluation-v5-status.json')
+assert status['pid']==evaluator.pid and status['process_created']==evaluator.create_time()
+assert status['depth']>100 or (status['depth']==100 and status['completed_deals']==4096)
+commits = sorted(FOLDER.glob('commit-*.json'))
+assert len(commits)==128
+commit_ids = []
+for path in commits:
+    match=re.fullmatch(r'commit-(\d{6})-([0-9a-f]{64})\.json',path.name)
+    assert match and sha(path)==match[2]
+    commit_ids.append(dict(completed_deals=int(match[1]),path=str(path),sha256=match[2]))
+assert [row['completed_deals'] for row in commit_ids]==list(range(32,4097,32))
+ranges={str(FOLDER/(arm+'-preflop-ranges.json')):sha(FOLDER/(arm+'-preflop-ranges.json'))
+        for arm in ('A-baseline','A-relative','B-baseline','B-relative')}
+source_copy=OUT/(NAME+'-source.py.txt'); receipt=OUT/(NAME+'.json')
+assert not source_copy.exists() and not receipt.exists()
+with source_copy.open('xb') as stream:stream.write(Path(__file__).read_bytes())
+proof=dict(format=1,unix=time.time(),collection_depth=100,completed_deals=4096,
+    actual_helper=dict(pid=helper.pid,created=helper.create_time(),command=helper.cmdline()),
+    actual_evaluator=dict(pid=evaluator.pid,created=evaluator.create_time(),parent=evaluator.ppid(),
+                         command=evaluator.cmdline(),cpu_seconds=sum(evaluator.cpu_times()[:2])),
+    immutable_started_sha256=sha(started),current_status=status,commit_file_identities=commit_ids,
+    range_export_file_identities=ranges,observer_source_sha256=sha(source_copy),
+    scope='Actual process/immutable-started binding and complete commit/export file identities; no journal lineage or scientific replay',
+    scientific_values_inspected=False,range_probabilities_inspected=False,
+    new_scientific_work=False,study_restarted=False,production_modified=False)
+with receipt.open('x',encoding='utf-8') as stream:
+    json.dump(proof,stream,sort_keys=True,allow_nan=False);stream.write('\n')
+assert read(receipt)==proof
+print(json.dumps(dict(saved=True,receipt_sha256=sha(receipt),current_status=status,commit_files=128,range_exports=4)))

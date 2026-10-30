@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-28T20:04:23.594661+00:00",
+  "bounded_queries": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%h %s",
+        "-G",
+        "SmallVec|ArrayVec|inline.*Vec",
+        "--",
+        "crates/solver/src/tree.rs"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "SmallVec|smallvec",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "--glob",
+        "*.rs",
+        "--glob",
+        "*.py",
+        "--glob",
+        "*review*.json",
+        "--glob",
+        "*.md"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "not_exhaustive_remote_semantic_novelty": true
+}

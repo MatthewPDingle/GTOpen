@@ -1,0 +1,36 @@
+warning: variable does not need to be mutable
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences-r2\baseline\mod.rs:282:13
+    |
+282 |         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+    |             ----^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences-r2\baseline\mod.rs:283:13
+    |
+283 |         let mut arena_layout = [
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences-r2\candidate\mod.rs:282:13
+    |
+282 |         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+    |             ----^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences-r2\candidate\mod.rs:283:13
+    |
+283 |         let mut arena_layout = [
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: 4 warnings emitted
+

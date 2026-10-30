@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.11. CUPTI Range Profiling API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.12. CUPTI Result Codes" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html" />
+    <link rel="prev" title="5.10. CUPTI Profiling API" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.11. CUPTI Range Profiling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.11.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.11.2. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.11.3. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.11. </span>CUPTI Range Profiling API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-range-profiling-api">
+<h1><span class="section-number">5.11. </span>CUPTI Range Profiling API<a class="headerlink" href="#cupti-range-profiling-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i">Functions, types, and enums that implement the CUPTI Range Profiling API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#struct_c_upti___range_profiler___counter_data_image___initialize___params"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerCounterDataImageInitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#struct_c_upti___range_profiler___counter_data___get_range_info___params"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerCounterDataGetRangeInfo.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#struct_c_upti___range_profiler___decode_data___params"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerDecodeData.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#struct_c_upti___range_profiler___disable___params"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerDisable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#struct_c_upti___range_profiler___enable___params"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerEnable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#struct_c_upti___range_profiler___get_counter_data_info___params"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerGetCounterDataInfo.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#struct_c_upti___range_profiler___get_counter_data_size___params"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerGetCounterDataSize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#struct_c_upti___range_profiler___pop_range___params"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerPopRange.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#struct_c_upti___range_profiler___push_range___params"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerPushRange.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#struct_c_upti___range_profiler___set_config___params"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerSetConfig.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#struct_c_upti___range_profiler___start___params"><span class="std std-ref">CUpti_RangeProfiler_Start_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerStart.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#struct_c_upti___range_profiler___stop___params"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params</span></a></dt><dd><p>Params for cuptiRangeProfilerStop.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga0e05a12d7a8d2247d7b1ac68d04306d2"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaae9493b0f31e271797efbd19e0e46342"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gae363ce62c78e6900feb39096c0339475"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga15cb38194d2e74710c9e3d3c3ecf3437"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga149dfba551985671e3b5a3eace593429"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga52d83581c5b7af09147023812f5a376a"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gad897ff02fe1739b7e7baaba4681d0a80"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaf62c1c24617186634882ca68a37f24d0"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga9fd7034c790b8672f7eb962f56d2357d"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gade89b2634d6bd954ce2d8b0c3dc36d34"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7f9eaa1f465fb3d7b112d0faf1bd3341"><span class="std std-ref">CUpti_RangeProfiler_Start_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7168662a5f02cd2d1c31556843eed230"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3a75df42394dd3a9e92815a95b5974ee"><span class="std std-ref">cuptiRangeProfilerCounterDataGetRangeInfo</span></a>(CUpti_RangeProfiler_CounterData_GetRangeInfo_Params *pParams)</dt><dd><p>Get the range name for the given range index.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac9b723489c1bf0b5a7e7fa37f276a6de"><span class="std std-ref">cuptiRangeProfilerCounterDataImageInitialize</span></a>(CUpti_RangeProfiler_CounterDataImage_Initialize_Params *pParams)</dt><dd><p>Initialize the counter data image with the profiling data for the ranges profiled.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab7ea389b1957ec7cd26162ad7af7205a"><span class="std std-ref">cuptiRangeProfilerDecodeData</span></a>(CUpti_RangeProfiler_DecodeData_Params *pParams)</dt><dd><p>Decode the profiling data stored in the hardware to the counter data image passed in the SetConfig API.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga062be4b9c43eec450718b2d01ceda582"><span class="std std-ref">cuptiRangeProfilerDisable</span></a>(CUpti_RangeProfiler_Disable_Params *pParams)</dt><dd><p>Disable the range profiler on the CUDA context and destroy the range profiler object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7ea8fd4160643df21e66c2242d044010"><span class="std std-ref">cuptiRangeProfilerEnable</span></a>(CUpti_RangeProfiler_Enable_Params *pParams)</dt><dd><p>Create a range profiler object and enable range profiling on the CUDA context.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaab887096e8046e1e99ea98bf80039099"><span class="std std-ref">cuptiRangeProfilerGetCounterDataInfo</span></a>(CUpti_RangeProfiler_GetCounterDataInfo_Params *pParams)</dt><dd><p>Get the number of ranges stored in the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1dfe3a77592a9bd10e4d7321c17ea664"><span class="std std-ref">cuptiRangeProfilerGetCounterDataSize</span></a>(CUpti_RangeProfiler_GetCounterDataSize_Params *pParams)</dt><dd><p>Get the size of the counter data image required to store the profiling data for the ranges profiled.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7470778814dac22a92d76ffc2e63b527"><span class="std std-ref">cuptiRangeProfilerPopRange</span></a>(CUpti_RangeProfiler_PopRange_Params *pParams)</dt><dd><p>pop the current range to the Range Profiler.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaef4180eb7242908530fc8c4f23e22c9f"><span class="std std-ref">cuptiRangeProfilerPushRange</span></a>(CUpti_RangeProfiler_PushRange_Params *pParams)</dt><dd><p>Add a new range to the Range Profiler with a given range name.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1553671fd1ddda16ba35a923a6c84cc5"><span class="std std-ref">cuptiRangeProfilerSetConfig</span></a>(CUpti_RangeProfiler_SetConfig_Params *pParams)</dt><dd><p>Set the configuration for range profiler like maximum number of ranges per pass, number of nesting levels, range and replay mode and the config image which has scheduling info for metric collection.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaae839f931a50f1436df35367e3e71416"><span class="std std-ref">cuptiRangeProfilerStart</span></a>(CUpti_RangeProfiler_Start_Params *pParams)</dt><dd><p>Start the range profiler.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gae64164c9209b9fb92d2d91b61b052643"><span class="std std-ref">cuptiRangeProfilerStop</span></a>(CUpti_RangeProfiler_Stop_Params *pParams)</dt><dd><p>Stop the range profiler.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga548500158f637ea9d367e5d8e435e1a6"><span class="std std-ref">CUpti_RangeProfiler_Object</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Variables</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1d90460a42dfa8338a44c98c6ca8447c"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params::counterDataSize</span></a></dt><dd><p>[in] Size of the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint8_t *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac3d8d47120022d012f8182893902db70"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params::pCounterData</span></a></dt><dd><p>[in] Counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1368f4ac952ee03fbec20d3d9bcc1c08"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga9b844d59038705bf4fbecd26c66a837b"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Periodic sampler object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gafdca529f38105686f872437858f24139"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga8041306b27b4b058ef2443ed79c6568a"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::counterDataImageSize</span></a></dt><dd><p>[in] Size of the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const uint8_t *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga29dc19d5b050d1b99dcfd43e42285dd8"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::pCounterDataImage</span></a></dt><dd><p>[in] Counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga0f337197fe68930fb2d3c99d6087ff89"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const char *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga75e306d44f7533b2ba3b0b9ffac8cbc8"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::rangeDelimiter</span></a></dt><dd><p>[in] range delimiter.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga4ff0f6e45ea6f743d1df2657cae683ee"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::rangeIndex</span></a></dt><dd><p>[in] Index of the sample.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const char *</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga9c48064fa05cdd84371ac1e0631e70ab"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::rangeName</span></a></dt><dd><p>[out] RangeName;</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga4300fe6030920d13613a683b71c6ed0f"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac845a296fb7cc80e8b12eb8e01383590"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params::numOfRangeDropped</span></a></dt><dd><p>[out] Number of ranges dropped in the processed passes.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3b23e8519bc7dc75456245860f8e77d9"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaedca8261ba00773c53e81e5e43694c05"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac9b29940ef0b38cf96b6e40c93072d82"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga86a2c9d380149b16e9b2ff9de04d11ff"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga2fc5d90a3682b9513e5151eff6d7f823"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7421c8b9ea92075a285d4f3ed6a5da94"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUcontext</span> <a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7a18fdb35efe46ce814d120d593b5f6d"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params::ctx</span></a></dt><dd><p>[in] Context to be used for profiling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab5891a5da7ada305a5cd99e37ceeac93"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga37bc40b5b69bce2c0ce7e71cc5da4eea"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params::pRangeProfilerObject</span></a></dt><dd><p>[out] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga8c1832bf0b6e0e21b717a91ce0a81b9e"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga8452238bbaeb986570caadbacb898731"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params::counterDataImageSize</span></a></dt><dd><p>[in] Size of the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga2add79360bc9b38beb82489c3a24c5ca"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params::numTotalRanges</span></a></dt><dd><p>[out] Number of ranges in the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const uint8_t *</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga4fbf569b5f025323e6582da90356d2ee"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params::pCounterDataImage</span></a></dt><dd><p>[in] Counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gacf912cc745637f04b96568c3d0a3545d"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga42e4d3406a7de18a71a3b277bf8d0b54"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab50ff8781c882eee147020596dd3c7b9"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::counterDataSize</span></a></dt><dd><p>[out] Size of the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3c410a612233e4d9c7e3584ad1fac8c5"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::maxNumOfRanges</span></a></dt><dd><p>[in] Maximum number of ranges to be stored in the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint32_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga89f3373e6f852f45d0f2a698c3bccc83"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::maxNumRangeTreeNodes</span></a></dt><dd><p>[in] Maximum number of RangeTree nodes; must be &gt;= maxNumOfRanges</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga87b89bb8216415cd987abf662bb567ae"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::numMetrics</span></a></dt><dd><p>[in] Number of metrics to be collected.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const char **</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab1407455abc5b9b17f080e90540281db"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::pMetricNames</span></a></dt><dd><p>[in] Names of the metrics to be collected.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga519ca98c5681f8362e9e29abf103f861"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga676472eb7738b1cf9ae0180d99052550"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Periodic sampler object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga89d081c33aa7a81cc0bf8af9bea27762"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac5ed09dc655241c74fd9f420edd74dd4"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab50d8339a4888f766374f3587bc393a6"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3d89d097eb893ab92083844a4180bd33"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga374f1d6ea45cf8d1e4bcd159b2347014"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const char *</span> <a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga613933c1ee227b269f0455eb8a313311"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params::pRangeName</span></a></dt><dd><p>[in] Name of the range to be profiled (only valid for User range mode).</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaad27da303b73f6144fbb5d900a6f9f09"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaa0f62f1a20e2cafb1e7a9b733ec45703"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3e348cbc7b8ba5decb74d5f056ee1091"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::configSize</span></a></dt><dd><p>[in] Size of the config image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga14a831019118b31889b355fa5d243801"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::counterDataImageSize</span></a></dt><dd><p>[in] Size of the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga55cdd497ed7664af548c75cb2a8284a2"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::maxRangesPerPass</span></a></dt><dd><p>[in] Maximum number of ranges that can be profiled in a pass.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint16_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaf8c400b93c279be74455a2f8aae66c8e"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::minNestingLevel</span></a></dt><dd><p>[in] minimum nesting level to be profiled.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint16_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga667ba0af505cb76470c6b6dcb838df53"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::numNestingLevels</span></a></dt><dd><p>[in] number of nesting level to be profiled. For Auto range mode, this should be set to 1.</p>
+</dd>
+<dt><span class="tag-as-table-cell">const uint8_t *</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gafc6d788eebcd7940cdd64fef8a83af64"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::pConfig</span></a></dt><dd><p>[in] Config image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint8_t *</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga5c623c9a9ad64dc150c0344b63457da1"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::pCounterDataImage</span></a></dt><dd><p>[in] Counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaee9490e61e663783e8903d622b7961c4"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga6fa9bb4d40c4b5a4921ecf9e749244b2"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7f5fa82b24fce407ba0f3e786bbc12ee"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::passIndex</span></a></dt><dd><p>[in] Pass index for the replay session.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_ProfilerRange</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gabb8fbb27546b3cc3f002272ec5e9b592"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::range</span></a></dt><dd><p>[in] Profiling Range mode.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_ProfilerReplayMode</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga8200339927bc146a33faaf998e170c5f"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::replayMode</span></a></dt><dd><p>[in] Replay mode.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga29a60c6ec5c370fcded6ae0cefd71184"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint16_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab1412c0987906032f40db58b7f84d992"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params::targetNestingLevel</span></a></dt><dd><p>[in] Target nesting level for the replay session.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac45fc2c99f9804a742e60d977288ec67"><span class="std std-ref">CUpti_RangeProfiler_Start_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga390dc0e01e173f3f064d5caf4982fa4f"><span class="std std-ref">CUpti_RangeProfiler_Start_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaf1ff22bb568401284f5bbf54e84e891a"><span class="std std-ref">CUpti_RangeProfiler_Start_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">uint8_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaa743861c117b2829c1a62ed3bc9d88cb"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::isAllPassSubmitted</span></a></dt><dd><p>[out] 1 if all passes are submitted to GPU for collection, 0 otherwise.</p>
+</dd>
+<dt><span class="tag-as-table-cell">void *</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga0c7fa56b173998b89f435d8bfea89fe5"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::pPriv</span></a></dt><dd><p>[in] Set to NULL.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUpti_RangeProfiler_Object *</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaf865e36991d9793c5ae6228d46234536"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::pRangeProfilerObject</span></a></dt><dd><p>[in] Range Profiler Object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaadc3cfcf036043a5efc8e844b0edf226"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::passIndex</span></a></dt><dd><p>[out] pass index for the replay session.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gafe667406164c367515d6f1ed22917d60"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::structSize</span></a></dt><dd><p>[in] Size of the data structure.</p>
+</dd>
+<dt><span class="tag-as-table-cell">size_t</span> <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga9ac20d88a8af57f475cfc0d3acf1e5d1"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params::targetNestingLevel</span></a></dt><dd><p>[out] target nesting level for the replay session.</p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.11.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_CounterDataImage_Initialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga0e05a12d7a8d2247d7b1ac68d04306d2"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_CounterDataImage_Initialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_CounterData_GetRangeInfo_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaae9493b0f31e271797efbd19e0e46342"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_CounterData_GetRangeInfo_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_DecodeData_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gae363ce62c78e6900feb39096c0339475"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_DecodeData_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_DecodeData_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_Disable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga15cb38194d2e74710c9e3d3c3ecf3437"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_Disable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_Disable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_Enable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga149dfba551985671e3b5a3eace593429"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_Enable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_Enable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_GetCounterDataInfo_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga52d83581c5b7af09147023812f5a376a"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_GetCounterDataInfo_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_GetCounterDataInfo_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_GetCounterDataSize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gad897ff02fe1739b7e7baaba4681d0a80"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_GetCounterDataSize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_GetCounterDataSize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_PopRange_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaf62c1c24617186634882ca68a37f24d0"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_PopRange_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_PopRange_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_PushRange_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga9fd7034c790b8672f7eb962f56d2357d"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_PushRange_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_PushRange_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_SetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gade89b2634d6bd954ce2d8b0c3dc36d34"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_SetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_SetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_Start_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7f9eaa1f465fb3d7b112d0faf1bd3341"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_Start_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_Start_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_RangeProfiler_Stop_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7168662a5f02cd2d1c31556843eed230"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_Stop_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_RangeProfiler_Stop_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.11.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv441cuptiRangeProfilerCounterDataGetRangeInfoP51CUpti_RangeProfiler_CounterData_GetRangeInfo_Params">
+<span id="_CPPv341cuptiRangeProfilerCounterDataGetRangeInfoP51CUpti_RangeProfiler_CounterData_GetRangeInfo_Params"></span><span id="_CPPv241cuptiRangeProfilerCounterDataGetRangeInfoP51CUpti_RangeProfiler_CounterData_GetRangeInfo_Params"></span><span id="cuptiRangeProfilerCounterDataGetRangeInfo__CUpti_RangeProfiler_CounterData_GetRangeInfo_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga3a75df42394dd3a9e92815a95b5974ee"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerCounterDataGetRangeInfo</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#_CPPv451CUpti_RangeProfiler_CounterData_GetRangeInfo_Params" title="CUpti_RangeProfiler_CounterData_GetRangeInfo_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv441cuptiRangeProfilerCounterDataGetRangeInfoP51CUpti_RangeProfiler_CounterData_GetRangeInfo_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the range name for the given range index. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html#struct_c_upti___range_profiler___counter_data___get_range_info___params"><span class="std std-ref">CUpti_RangeProfiler_CounterData_GetRangeInfo_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv444cuptiRangeProfilerCounterDataImageInitializeP54CUpti_RangeProfiler_CounterDataImage_Initialize_Params">
+<span id="_CPPv344cuptiRangeProfilerCounterDataImageInitializeP54CUpti_RangeProfiler_CounterDataImage_Initialize_Params"></span><span id="_CPPv244cuptiRangeProfilerCounterDataImageInitializeP54CUpti_RangeProfiler_CounterDataImage_Initialize_Params"></span><span id="cuptiRangeProfilerCounterDataImageInitialize__CUpti_RangeProfiler_CounterDataImage_Initialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gac9b723489c1bf0b5a7e7fa37f276a6de"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerCounterDataImageInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#_CPPv454CUpti_RangeProfiler_CounterDataImage_Initialize_Params" title="CUpti_RangeProfiler_CounterDataImage_Initialize_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_CounterDataImage_Initialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv444cuptiRangeProfilerCounterDataImageInitializeP54CUpti_RangeProfiler_CounterDataImage_Initialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize the counter data image with the profiling data for the ranges profiled. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html#struct_c_upti___range_profiler___counter_data_image___initialize___params"><span class="std std-ref">CUpti_RangeProfiler_CounterDataImage_Initialize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler CounterDataImageInitialize is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428cuptiRangeProfilerDecodeDataP37CUpti_RangeProfiler_DecodeData_Params">
+<span id="_CPPv328cuptiRangeProfilerDecodeDataP37CUpti_RangeProfiler_DecodeData_Params"></span><span id="_CPPv228cuptiRangeProfilerDecodeDataP37CUpti_RangeProfiler_DecodeData_Params"></span><span id="cuptiRangeProfilerDecodeData__CUpti_RangeProfiler_DecodeData_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gab7ea389b1957ec7cd26162ad7af7205a"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerDecodeData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#_CPPv437CUpti_RangeProfiler_DecodeData_Params" title="CUpti_RangeProfiler_DecodeData_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_DecodeData_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428cuptiRangeProfilerDecodeDataP37CUpti_RangeProfiler_DecodeData_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decode the profiling data stored in the hardware to the counter data image passed in the SetConfig API. </p>
+<p>This API should be called after cuptiRangeProfilerStop. The counter data image will be updated with the profiling data for the ranges profiled.</p>
+<p>For the cases where the number of ranges counter data image can store is less than the number of ranges profiled (= maxRangesPerPass in SetConfig API), the counter data image will report dropped ranges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html#struct_c_upti___range_profiler___decode_data___params"><span class="std std-ref">CUpti_RangeProfiler_DecodeData_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler DecodeData is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiRangeProfilerDisableP34CUpti_RangeProfiler_Disable_Params">
+<span id="_CPPv325cuptiRangeProfilerDisableP34CUpti_RangeProfiler_Disable_Params"></span><span id="_CPPv225cuptiRangeProfilerDisableP34CUpti_RangeProfiler_Disable_Params"></span><span id="cuptiRangeProfilerDisable__CUpti_RangeProfiler_Disable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga062be4b9c43eec450718b2d01ceda582"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerDisable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#_CPPv434CUpti_RangeProfiler_Disable_Params" title="CUpti_RangeProfiler_Disable_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_Disable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiRangeProfilerDisableP34CUpti_RangeProfiler_Disable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Disable the range profiler on the CUDA context and destroy the range profiler object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html#struct_c_upti___range_profiler___disable___params"><span class="std std-ref">CUpti_RangeProfiler_Disable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424cuptiRangeProfilerEnableP33CUpti_RangeProfiler_Enable_Params">
+<span id="_CPPv324cuptiRangeProfilerEnableP33CUpti_RangeProfiler_Enable_Params"></span><span id="_CPPv224cuptiRangeProfilerEnableP33CUpti_RangeProfiler_Enable_Params"></span><span id="cuptiRangeProfilerEnable__CUpti_RangeProfiler_Enable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7ea8fd4160643df21e66c2242d044010"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerEnable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#_CPPv433CUpti_RangeProfiler_Enable_Params" title="CUpti_RangeProfiler_Enable_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_Enable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424cuptiRangeProfilerEnableP33CUpti_RangeProfiler_Enable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a range profiler object and enable range profiling on the CUDA context. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html#struct_c_upti___range_profiler___enable___params"><span class="std std-ref">CUpti_RangeProfiler_Enable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_OUT_OF_MEMORY</strong> – if memory allocation fails while creating the PM sampling object </p></li>
+<li><p><strong>CUPTI_ERROR_INSUFFICIENT_PRIVILEGES</strong> – if the user does not have sufficient privileges to perform the operation </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv436cuptiRangeProfilerGetCounterDataInfoP45CUpti_RangeProfiler_GetCounterDataInfo_Params">
+<span id="_CPPv336cuptiRangeProfilerGetCounterDataInfoP45CUpti_RangeProfiler_GetCounterDataInfo_Params"></span><span id="_CPPv236cuptiRangeProfilerGetCounterDataInfoP45CUpti_RangeProfiler_GetCounterDataInfo_Params"></span><span id="cuptiRangeProfilerGetCounterDataInfo__CUpti_RangeProfiler_GetCounterDataInfo_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaab887096e8046e1e99ea98bf80039099"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerGetCounterDataInfo</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#_CPPv445CUpti_RangeProfiler_GetCounterDataInfo_Params" title="CUpti_RangeProfiler_GetCounterDataInfo_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_GetCounterDataInfo_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv436cuptiRangeProfilerGetCounterDataInfoP45CUpti_RangeProfiler_GetCounterDataInfo_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of ranges stored in the counter data image. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html#struct_c_upti___range_profiler___get_counter_data_info___params"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataInfo_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv436cuptiRangeProfilerGetCounterDataSizeP45CUpti_RangeProfiler_GetCounterDataSize_Params">
+<span id="_CPPv336cuptiRangeProfilerGetCounterDataSizeP45CUpti_RangeProfiler_GetCounterDataSize_Params"></span><span id="_CPPv236cuptiRangeProfilerGetCounterDataSizeP45CUpti_RangeProfiler_GetCounterDataSize_Params"></span><span id="cuptiRangeProfilerGetCounterDataSize__CUpti_RangeProfiler_GetCounterDataSize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1dfe3a77592a9bd10e4d7321c17ea664"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerGetCounterDataSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#_CPPv445CUpti_RangeProfiler_GetCounterDataSize_Params" title="CUpti_RangeProfiler_GetCounterDataSize_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_GetCounterDataSize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv436cuptiRangeProfilerGetCounterDataSizeP45CUpti_RangeProfiler_GetCounterDataSize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the size of the counter data image required to store the profiling data for the ranges profiled. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html#struct_c_upti___range_profiler___get_counter_data_size___params"><span class="std std-ref">CUpti_RangeProfiler_GetCounterDataSize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler GetCounterDataSize is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426cuptiRangeProfilerPopRangeP35CUpti_RangeProfiler_PopRange_Params">
+<span id="_CPPv326cuptiRangeProfilerPopRangeP35CUpti_RangeProfiler_PopRange_Params"></span><span id="_CPPv226cuptiRangeProfilerPopRangeP35CUpti_RangeProfiler_PopRange_Params"></span><span id="cuptiRangeProfilerPopRange__CUpti_RangeProfiler_PopRange_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga7470778814dac22a92d76ffc2e63b527"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerPopRange</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#_CPPv435CUpti_RangeProfiler_PopRange_Params" title="CUpti_RangeProfiler_PopRange_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_PopRange_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426cuptiRangeProfilerPopRangeP35CUpti_RangeProfiler_PopRange_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>pop the current range to the Range Profiler. </p>
+<p>The number of pop range API call should be same as number of push ranges in the same order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html#struct_c_upti___range_profiler___pop_range___params"><span class="std std-ref">CUpti_RangeProfiler_PopRange_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler PopRange is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427cuptiRangeProfilerPushRangeP36CUpti_RangeProfiler_PushRange_Params">
+<span id="_CPPv327cuptiRangeProfilerPushRangeP36CUpti_RangeProfiler_PushRange_Params"></span><span id="_CPPv227cuptiRangeProfilerPushRangeP36CUpti_RangeProfiler_PushRange_Params"></span><span id="cuptiRangeProfilerPushRange__CUpti_RangeProfiler_PushRange_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaef4180eb7242908530fc8c4f23e22c9f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerPushRange</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#_CPPv436CUpti_RangeProfiler_PushRange_Params" title="CUpti_RangeProfiler_PushRange_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_PushRange_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427cuptiRangeProfilerPushRangeP36CUpti_RangeProfiler_PushRange_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Add a new range to the Range Profiler with a given range name. </p>
+<p>For nested ranges, this API should be called again for the innermost range. For profiling the nested range, users need to set the values for minNestingLevel and numNestingLevels in the SetConfig API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html#struct_c_upti___range_profiler___push_range___params"><span class="std std-ref">CUpti_RangeProfiler_PushRange_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler PushRange is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427cuptiRangeProfilerSetConfigP36CUpti_RangeProfiler_SetConfig_Params">
+<span id="_CPPv327cuptiRangeProfilerSetConfigP36CUpti_RangeProfiler_SetConfig_Params"></span><span id="_CPPv227cuptiRangeProfilerSetConfigP36CUpti_RangeProfiler_SetConfig_Params"></span><span id="cuptiRangeProfilerSetConfig__CUpti_RangeProfiler_SetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga1553671fd1ddda16ba35a923a6c84cc5"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerSetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#_CPPv436CUpti_RangeProfiler_SetConfig_Params" title="CUpti_RangeProfiler_SetConfig_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_SetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427cuptiRangeProfilerSetConfigP36CUpti_RangeProfiler_SetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set the configuration for range profiler like maximum number of ranges per pass, number of nesting levels, range and replay mode and the config image which has scheduling info for metric collection. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html#struct_c_upti___range_profiler___set_config___params"><span class="std std-ref">CUpti_RangeProfiler_SetConfig_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiRangeProfilerStartP32CUpti_RangeProfiler_Start_Params">
+<span id="_CPPv323cuptiRangeProfilerStartP32CUpti_RangeProfiler_Start_Params"></span><span id="_CPPv223cuptiRangeProfilerStartP32CUpti_RangeProfiler_Start_Params"></span><span id="cuptiRangeProfilerStart__CUpti_RangeProfiler_Start_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gaae839f931a50f1436df35367e3e71416"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerStart</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#_CPPv432CUpti_RangeProfiler_Start_Params" title="CUpti_RangeProfiler_Start_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_Start_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiRangeProfilerStartP32CUpti_RangeProfiler_Start_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Start the range profiler. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___start___params.html#struct_c_upti___range_profiler___start___params"><span class="std std-ref">CUpti_RangeProfiler_Start_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler Start is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiRangeProfilerStopP31CUpti_RangeProfiler_Stop_Params">
+<span id="_CPPv322cuptiRangeProfilerStopP31CUpti_RangeProfiler_Stop_Params"></span><span id="_CPPv222cuptiRangeProfilerStopP31CUpti_RangeProfiler_Stop_Params"></span><span id="cuptiRangeProfilerStop__CUpti_RangeProfiler_Stop_ParamsP"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1gae64164c9209b9fb92d2d91b61b052643"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRangeProfilerStop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#_CPPv431CUpti_RangeProfiler_Stop_Params" title="CUpti_RangeProfiler_Stop_Params"><span class="n"><span class="pre">CUpti_RangeProfiler_Stop_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiRangeProfilerStopP31CUpti_RangeProfiler_Stop_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stop the range profiler. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html#struct_c_upti___range_profiler___stop___params"><span class="std std-ref">CUpti_RangeProfiler_Stop_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if range profiler Stop is called without enabling range profiler </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.11.3. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv426CUpti_RangeProfiler_Object">
+<span id="_CPPv326CUpti_RangeProfiler_Object"></span><span id="_CPPv226CUpti_RangeProfiler_Object"></span><span id="CUpti_RangeProfiler_Object"></span><span class="target" id="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i_1ga548500158f637ea9d367e5d8e435e1a6"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv426CUpti_RangeProfiler_Object" title="CUpti_RangeProfiler_Object"><span class="n"><span class="pre">CUpti_RangeProfiler_Object</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_RangeProfiler_Object</span></span></span><a class="headerlink" href="#_CPPv426CUpti_RangeProfiler_Object" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

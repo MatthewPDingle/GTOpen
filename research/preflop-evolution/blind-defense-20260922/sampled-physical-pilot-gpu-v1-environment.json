@@ -1,0 +1,30 @@
+{
+  "max_iterations": 128,
+  "deals_per_iteration": 64,
+  "query_limit": 100000,
+  "fit_steps": 512,
+  "fit_seed_base": 19301,
+  "reservoir_capacity": 262144,
+  "sampler_seed": 17301,
+  "action_seed": 18301,
+  "reservoir_seeds": [
+    18302,
+    18303
+  ],
+  "chance": "full_deck",
+  "device": "cuda",
+  "threads": 2,
+  "tf32": false,
+  "architecture": [
+    269,
+    64,
+    64,
+    4
+  ],
+  "chunk_size": 4096,
+  "learning_rate": 0.003,
+  "iteration_weights": "equal",
+  "torch_version": "2.6.0+cu126",
+  "numpy_version": "1.26.4",
+  "device_name": "NVIDIA GeForce RTX 3090"
+}

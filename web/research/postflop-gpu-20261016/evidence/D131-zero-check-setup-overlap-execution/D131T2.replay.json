@@ -1,0 +1,127 @@
+{
+  "at": "2026-10-18T06:44:10.868782+00:00",
+  "rows": [
+    {
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 3117330432,
+        "faults": 642298,
+        "peak_commit_bytes": 3117375488,
+        "peak_working_set_bytes": 2596212736,
+        "working_set_bytes": 2596208640
+      },
+      "all_original_full_predicates_and_guards": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 2363408384,
+        "faults": 121278,
+        "peak_commit_bytes": 2363457536,
+        "peak_working_set_bytes": 471842816,
+        "working_set_bytes": 471842816
+      },
+      "board": "Ks7h2d",
+      "component_ms": 201.8315,
+      "cpu_after_ticks100ns": 6406250,
+      "cpu_before_ticks100ns": 3281250,
+      "fixture_index": 0,
+      "full_private_layout_words_per_arm": 28,
+      "nodes": 1346813,
+      "overlap_eligible": true,
+      "performance_is_full_solve": false,
+      "pinned_bytes": 740688652,
+      "process_CPU_ms": 312.5,
+      "q_bytes": 1364772032,
+      "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-0.bin",
+      "setup_CUDA_calls_stay_on_caller": true,
+      "stage": "zero_setup_component"
+    },
+    {
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 3103899648,
+        "faults": 902644,
+        "peak_commit_bytes": 3464376320,
+        "peak_working_set_bytes": 2798493696,
+        "working_set_bytes": 2443255808
+      },
+      "all_original_full_predicates_and_guards": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 3014553600,
+        "faults": 701784,
+        "peak_commit_bytes": 3117375488,
+        "peak_working_set_bytes": 2596270080,
+        "working_set_bytes": 1976647680
+      },
+      "board": "Ks7s2d",
+      "component_ms": 131.1301,
+      "cpu_after_ticks100ns": 13593750,
+      "cpu_before_ticks100ns": 11875000,
+      "fixture_index": 1,
+      "full_private_layout_words_per_arm": 2436526,
+      "nodes": 1346813,
+      "overlap_eligible": true,
+      "performance_is_full_solve": false,
+      "pinned_bytes": 442981120,
+      "process_CPU_ms": 171.875,
+      "q_bytes": 1369522280,
+      "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-1.bin",
+      "setup_CUDA_calls_stay_on_caller": true,
+      "stage": "zero_setup_component"
+    },
+    {
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 2735505408,
+        "faults": 946047,
+        "peak_commit_bytes": 3464376320,
+        "peak_working_set_bytes": 2798493696,
+        "working_set_bytes": 2056359936
+      },
+      "all_original_full_predicates_and_guards": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 2733170688,
+        "faults": 945362,
+        "peak_commit_bytes": 3464376320,
+        "peak_working_set_bytes": 2798493696,
+        "working_set_bytes": 2053558272
+      },
+      "board": "Ks7h2dQhTc",
+      "component_ms": 1.637,
+      "cpu_after_ticks100ns": 15000000,
+      "cpu_before_ticks100ns": 15000000,
+      "fixture_index": 2,
+      "full_private_layout_words_per_arm": 28,
+      "nodes": 33,
+      "overlap_eligible": false,
+      "performance_is_full_solve": false,
+      "pinned_bytes": 17920,
+      "process_CPU_ms": 0.0,
+      "q_bytes": 32832,
+      "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-2.bin",
+      "setup_CUDA_calls_stay_on_caller": true,
+      "stage": "zero_setup_component"
+    }
+  ],
+  "all_full_layout_and_counter_invariants_pass": true,
+  "stdout_sha256": "e14a705c21fe6afd5e79a63f6ab937f330af3ae4b1b93176bda469207f3ec051"
+}

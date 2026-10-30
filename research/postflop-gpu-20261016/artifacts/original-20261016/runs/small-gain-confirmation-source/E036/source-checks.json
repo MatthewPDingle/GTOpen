@@ -1,0 +1,39 @@
+{
+  "id": "E036",
+  "accepted162_current_exact": true,
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "unowned_entries_unchanged": 160,
+  "independent_candidate_not_combined": true,
+  "preparation_method": "exact archived E020-based source bytes reused including existing tests",
+  "historical_patch_sha256": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+  "current_base_patch_sha256": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+  "read_only_patch_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "new_tests_relative_to_E020": [
+    "gpu::tests::show_positive_zero_matches_original_kernel"
+  ],
+  "test_marker": {
+    "prefix": "E036_SHOW_ZERO_TEST ",
+    "fields": {
+      "comparison_pairs": 34,
+      "kernel_launches": 68,
+      "threads": 128,
+      "exact": true,
+      "performance_measurement": false
+    }
+  },
+  "inventory_basis": "accepted E02084/4 unchanged or exact previously archived candidate85/4; no fresh execution",
+  "compiler_native_gpu_executed": false,
+  "historical_outcomes_preserved": true
+}

@@ -1,0 +1,52 @@
+{
+  "id": "D048-down-action-pointer-source-audit",
+  "at": "2026-10-16T14:34:35.311950+00:00",
+  "status": "SOURCE_FEASIBLE_FOR_ONE_FUTURE_COMPILER_PROBE_ONLY; no implementation/probe authorized here",
+  "candidate": "In down_action_impl only, select const u32* rsrc_a = actor == 0 ? rsrc0 : rsrc1 once, then use rsrc_a[n] and rsrc_a[child] in the existing locked/unlocked destination expressions.",
+  "scope": "One local selected pointer plus three equivalent index expressions. No new restrict qualifier, metadata table, cache array, float arithmetic, arity dispatcher, kernel entry, host code, allocation, admission change, launch count/shape, graph path or source activation.",
+  "mechanism": "The selected map is invariant for the CTA. Current common-arity PTX hoists child IDs but retains actor branches and selected rsrc child-slot loads within the hand loop. Selecting the map pointer once may allow those loads/address products to move outside that loop and remove repeated actor selection. Compiler response is unproved.",
+  "evidence": [
+    {
+      "source": "crates/solver/src/gpu/kernels.cu:43-94",
+      "finding": "Actor already selects regret/reach pointers and nh_a before loops; src and two destination expressions separately select rsrc0/rsrc1. Both paths read immutable integer maps."
+    },
+    {
+      "source": "D046-generic-cache-resource/baseline.ptx:354-428",
+      "finding": "NA2 child IDs and both map addresses are prepared at362-372, then loopBB1_20 repeats actor branch and selected map loads389/392 and411/414; backedge returns toBB1_20."
+    },
+    {
+      "source": "D046-generic-cache-resource/baseline.ptx:562-666",
+      "finding": "NA3 child-ID/address prologue precedesBB1_46, but actor tests and selected map loads remain in its body; loopback666 re-entersBB1_46."
+    },
+    {
+      "source": "D038-next-hypothesis-source/README.md:25",
+      "finding": "Alternative extra sigma cache was previously screened out: commonNA2/3/4 normalized values already reused by value and strategy updates. Do not revive that apparent redundancy."
+    }
+  ],
+  "exactness_conditions": [
+    "Actor==0 selects rsrc0 and every other value selects rsrc1 exactly as original; do not add stronger actor assumptions.",
+    "Every original node/child index and nh_a stride is unchanged. Immutable map inputs remain separate from reach outputs under the existing contracts.",
+    "Keep both locked/unlocked arithmetic and ascending action/hand loops intact, with the existing nh_a==0 guards. Do not explicitly move child accesses before their original zero-hand/count guards.",
+    "Any later compiled candidate still needs the original exact controls: both actors/locks, generic/common arities, eager/captured/resumed and standalone continuation, F32/compressed. Source identity alone does not establish native numeric equality."
+  ],
+  "scoped_history": "Reviewed E001-E024 ledger, relevant design README/audit/patch matches and repository autoresearch notes. No equivalent selected-map-pointer experiment found in that bounded search; not a claim of exhaustive historical novelty. E018 precomputed a new up-action child-slot table; E017 filtered down CTAs; E023 split up actor entries; E024 removed generic rc/vc caches. This proposal retains all of those accepted original paths.",
+  "minimal_future_prerequisite": "Only after separate authorization: one small no-launch baseline/candidate compiler/PTX/resource comparison using unchanged production options. Require a concrete commonNA2/3/4 improvement (actor branch removal and/or selected slot-load hoisting), unchanged floating dependencies/ABI and the other8 entry bodies, registers/local bytes no worse and theoretical128-thread occupancy no lower. Stop if the compiler produces no useful reduction; no automatic variant or rescue.",
+  "interpretation_limit": "No claim of >=2% full-cycle benefit. These uniform metadata loads may already be cheap/cache-served, additional live addresses can raise register pressure, and compiled scheduling may offset a smaller instruction count. D045 selected intervals are not family/native/full-cycle shares and are not used to project savings. Only an independently authorized complete-cycle comparison could qualify a candidate.",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\baseline.ptx": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "7f764f30f77f42a18971e7c75440e6c6a4659f4ea1f1dd05adfa652294186bb7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\audit.md": "90d5f603f39a0359aeb8e2138f9c4290b3086040bceb91a5f891333298dafed4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D038-next-hypothesis-source\\README.md": "e7e4b1725ba17c811f13799f474509e98cc0c16379cd4e76daf091359b2edcab",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\README.md": "7971c3199200f83efd4b1fd4f6adb1b15b16396e7dbd09a0fee455c18e20633f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-independent-review\\summary.md": "9d286e1e1a112fd09b7e8e316274654295b9a9d5e64f2ecb32d521be6ad8bd78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-three-pair-comparison\\report.json": "7707cb0bcf46f6d41639a5d19385edf301d161518d0cc0ea5de3d017158dd5ec"
+  },
+  "execution_counts": {
+    "source_edits": 0,
+    "candidate_implementation": 0,
+    "builds": 0,
+    "compiler_probes": 0,
+    "native_or_gpu_runs": 0
+  }
+}

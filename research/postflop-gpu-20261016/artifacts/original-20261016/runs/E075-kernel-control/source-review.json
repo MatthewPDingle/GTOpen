@@ -1,0 +1,14 @@
+{
+  "id": "E075-direct-review",
+  "at": "2026-10-18T03:21:08.843062+00:00",
+  "status": "source_and_full_raw_control_plan_review_pass",
+  "resource_report_sha256": "0d88322a3d7a72341e7956d380e2cdfeabf2f21cfbfa3bd423e844b83b45faee",
+  "source_review_sha256": "58eebe095909dbf47a26ff8ded804097c159cdd687742cbea82e71e13d2fe66f",
+  "case_count": 819,
+  "kernel_launches": 1638,
+  "actually_changed_metadata_cases": 807,
+  "source_floating_recurrences_unchanged": true,
+  "uniformity_contract": "Every transformed pointer is nodes+start+blockIdx or immutablearray+n. The node and every n-based address remain CTAconstant across hand-loop tails, thread widths1/32/64/128/256, allactor/lock/generic paths and independently scheduled threads. No per-hand/action-indexed value or mutable data loadedwithLDU.",
+  "corpus": "Exact E054/E051819case descriptors: bothplayers/DCFR/CFR+,own/locked/opponent,arities1/2/3/4/5/8/9/16/17,hands0..1326/tails,countzero/excessgrid,finite/signedzero/subnormal/quietNaN/infinity/finite-overflow profiles. Full3mutable outputs/12actual immutable buffers/guards and actual mutable-range/parent-child disjointness witnesses.",
+  "limits": "Bounded declared corpus, not universal NaNpayload/illegalalias/wide-address proof. Rootdecoder is not external independent audit. No performance/state/save/resume/capacity/material conclusion. All integrated/broad/performance gates remain required."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "E008",
+  "scope": "Source-only cost inventory; no material-cost or compatibility acceptance claim",
+  "mechanism": "Exact original ascending chunk prefix recurrence retained in a running float: running starts+0; each step computes chunk_sum[t]+running then stores it. No loop truncation/reassociation.",
+  "new_device_or_host_buffers": false,
+  "device_layout_or_serialization_change": false,
+  "host_production_change": false,
+  "declared_storage": "One automatic float scalar replaces repeated prior shared-prefix reads; static/dynamic shared declarations and launch shape unchanged. Physical register/local allocation is a compiler result, not measured here.",
+  "compatibility": "Same kernel ABI, block-count loop bound, synchronization and accepted E020 card-position cache. Source preserves operand/addition order; fresh GPU exactness remains required.",
+  "resource_costs_pending": "Instruction/register/local changes and whole-cycle effects on current E020 are unknown; historical compiler/performance outcomes do not transfer.",
+  "required_before_adoption": "Fresh exact states including chunk-boundary/F32/original-kernel controls as relevant, actual compiled-resource/compatibility evidence, and unchanged user confirmation/fixture/holdout/cumulative requirements.",
+  "compiler_native_gpu_executed": false
+}

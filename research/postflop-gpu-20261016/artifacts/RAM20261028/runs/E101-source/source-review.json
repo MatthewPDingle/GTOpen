@@ -1,0 +1,33 @@
+{
+  "id": "E101",
+  "at": "2026-10-28T20:22:47.743925+00:00",
+  "status": "one_exact_zero_numerator_strength_reduction",
+  "source_changes": [
+    {
+      "baseline": "pr * ((r > 0.f ? r : 0.f) / sum)",
+      "candidate": "pr * (r > 0.f ? r / sum : 0.f)",
+      "count": 1
+    },
+    {
+      "baseline": "sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni",
+      "candidate": "sum > 1e-12f ? (r > 0.f ? r / sum : 0.f) : uni",
+      "count": 1
+    },
+    {
+      "baseline": "sum > 1e-12f ? (s > 0.f ? s : 0.f) / sum : uni",
+      "candidate": "sum > 1e-12f ? (s > 0.f ? s / sum : 0.f) : uni",
+      "count": 1
+    }
+  ],
+  "scope": "Only three normalization expressions in down_action_impl, up_action_impl and up_action_eval. All existing positive-sum tests, ordered sums, positive-numerator native divisions, uniform fallbacks, multiplication by parent reach (including zero/nonfinite), child sums, updates, addresses, locks, dispatch, other kernels, host/allocation/ABI/launch/graph/quality/precision/save format remain.",
+  "algebraic_contract": "Replacement occurs only when existing sum>1e-12f. This ordered predicate rejects NaN and nonpositive/zero/subnormal denominators; positive infinity remains possible. When r>0 or s>0 is false, the old selected numerator is exactly +0. For a positive nonzero finite denominator or +infinity, its quotient is +0. Keep original native division when numerator is positive, including +infinity/+infinity. NaN/nonpositive/signedzero source values still select +0. Keep the outer parent-reach multiplication so signedzero/NaN/Inf behavior is not bypassed. Native raw checks remain mandatory; documentation/algebra alone is not a local-GPU full-output proof.",
+  "not_closed_rescues": "E091 bypassed an entire down-action hand based on parent reach zero plus finite sum. This has no parent-reach predicate and retains its multiplication. E060 shared an approximate reciprocal/refinement across positive and zero numerators under new numeric guard windows; this adds no approximation/window and leaves every nonzero division native. E058 tried to suppress uniform pr/na fallback work; that expression is unchanged here. No old hunk composed, denominator threshold/entry subset/arity/flags changed.",
+  "compiler_hypothesis": "The original compiler may already suppress zero-numerator quotient work, or the extra branch may hurt divergence/resources. Require all three actual full entries to change AND a separate full-entry control-flow proof that the zero-numerator arm bypasses quotient work before application kernels. Changed PTX or instruction counts alone do not pass mechanism qualification.",
+  "official_reference": "https://docs.nvidia.com/cuda/archive/12.9.1/floating-point/index.html",
+  "official_reference_scope": "NVIDIA describes IEEE operations, rounding and the importance of operation order/compiler settings. No speed or whole-integration equivalence is inferred. Existing compiler default math flags remain untouched.",
+  "resource_gates": "D108 feasibility: same payload and shapes; no local/spill or dynamic shared growth, no lowered maxthread/default stack, positive64/128/256 occupancy and default feasibility. Disclose registers/shared/occupancy changes. Same ABI/barriers/other6entries on120/75. Compatibility75 mechanism differences retained, actual120 bypass is mandatory.",
+  "failure": "Any genuine compiler/mechanism/resource/raw/numerical/material/speed failure closes this exact form. No conditional syntax, predicate, denominator, placement, helper, arity, entry subset, flags, source or sample rescue. All complete1%/strictfixture/fresh16/broad/material/capacity/holdout/cumulative/application gates remain before adoption.",
+  "source_activated": false,
+  "application_kernels": 0,
+  "candidate_accepted": false
+}

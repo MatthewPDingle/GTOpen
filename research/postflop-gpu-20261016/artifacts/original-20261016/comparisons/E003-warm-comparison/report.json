@@ -1,0 +1,841 @@
+{
+  "cohorts": {
+    "baseline": {
+      "run_ids": [
+        "B004",
+        "B005",
+        "B006R"
+      ],
+      "count": 3,
+      "binary_sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+      "build_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+        "sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411",
+        "data": {
+          "source_root": "X:\\Dev\\GTOpen-gpu-research-20261016",
+          "commit": "bad4779b2e597159ac9b334af6051d1de359cfff",
+          "hashes": {
+            "crates/solver/src/gpu/plan.rs": "ACA00F163DB77AF01960CD55CB5484226F25C7C58BAE325D4C50EBC44672B680",
+            "crates/solver/src/gpu/arena.rs": "5E76B02963F3C938ADE5A407CD5D4DB73EFF399EE7A1E3EFBCF23B01F5C189F4",
+            "crates/solver/src/gpu/mod.rs": "0DF4108EC3CCB81151782A667BEB9906ED61F99C876D26D16BCF8957E4B9C82B",
+            "bench_spot.json": "62BCDD31EB723A10E6C86032EB4BA1F1088A284F8BDEC164CB33E4130201397C",
+            "crates/solver/tests/postflop_autoresearch.rs": "F13D79410A22F140C05CB9A822FE9685C2180E5BAEDA4B625D52AE03FEEBD327",
+            "crates/solver/src/gpu/kernels.cu": "8FE86CB859124592F9DF13821F4A300450045620E6947E99466E4228B78C20D0"
+          },
+          "created_at": "2026-10-16T14:16:09.8680317+10:30",
+          "binary_sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f"
+        },
+        "binary_hash_verified": true
+      },
+      "source_sha256": {
+        "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+        "crates/solver/src/gpu/arena.rs": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+        "crates/solver/src/gpu/mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+        "bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+        "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+        "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+      }
+    },
+    "candidate": {
+      "run_ids": [
+        "E003R2",
+        "E003R3",
+        "E003R4"
+      ],
+      "count": 3,
+      "binary_sha256": "54225aefc314ab5fa15b6a7a9570eac9816f68c2c3973117dfe1b4be49471f15",
+      "build_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E003-restrict-action.manifest.json",
+        "sha256": "fabdfaad22af143f8310a2458892e9b47b733d1735474558c9aec78f699f74e0",
+        "data": {
+          "source_sha256": {
+            "crates/solver/src/gpu/plan.rs": "ACA00F163DB77AF01960CD55CB5484226F25C7C58BAE325D4C50EBC44672B680",
+            "crates/solver/src/gpu/mod.rs": "0DF4108EC3CCB81151782A667BEB9906ED61F99C876D26D16BCF8957E4B9C82B",
+            "crates/solver/tests/postflop_autoresearch.rs": "F13D79410A22F140C05CB9A822FE9685C2180E5BAEDA4B625D52AE03FEEBD327",
+            "crates/solver/src/gpu/kernels.cu": "CAEB931B90DE3CD19BD490F9A1CBD2D47FEB067A24F7293959C1D3DAA58C8793",
+            "crates/solver/src/gpu/arena.rs": "5E76B02963F3C938ADE5A407CD5D4DB73EFF399EE7A1E3EFBCF23B01F5C189F4",
+            "bench_spot.json": "62BCDD31EB723A10E6C86032EB4BA1F1088A284F8BDEC164CB33E4130201397C"
+          },
+          "parent_commit": "bad4779b2e597159ac9b334af6051d1de359cfff",
+          "candidate": "E003",
+          "binary_sha256": "54225aefc314ab5fa15b6a7a9570eac9816f68c2c3973117dfe1b4be49471f15",
+          "at": "2026-10-16T03:58:17.6929420+00:00",
+          "hypothesis": "Restrict independent regret and strategy pointers in up_action; original128thread launch"
+        },
+        "binary_hash_verified": true
+      },
+      "source_sha256": {
+        "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+        "crates/solver/src/gpu/mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+        "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+        "crates/solver/src/gpu/kernels.cu": "caeb931b90de3cd19bd490f9a1cbd2d47feb067a24f7293959c1d3daa58c8793",
+        "crates/solver/src/gpu/arena.rs": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+        "bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c"
+      }
+    }
+  },
+  "environment": {
+    "RAYON_NUM_THREADS": "16",
+    "nvrtc_path": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": null,
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0"
+  },
+  "gpu_identity": [
+    [
+      "NVIDIA GeForce RTX 5090",
+      "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "610.88",
+      "32607"
+    ]
+  ],
+  "source_changes": [
+    {
+      "path": "crates/solver/src/gpu/kernels.cu",
+      "baseline": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "candidate": "caeb931b90de3cd19bd490f9a1cbd2d47feb067a24f7293959c1d3daa58c8793"
+    }
+  ],
+  "source_scope": "Recorded build-time source hashes; cross-cohort implementation differences are expected. Current working-tree snapshots do not identify preserved binary sources.",
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 6330.172100000001,
+          "min_ms": 6311.5199999999995,
+          "max_ms": 6982.5229,
+          "range_ms": 671.0029000000004,
+          "raw_ms": [
+            6311.5199999999995,
+            6330.172100000001,
+            6982.5229
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 80.321,
+          "min_ms": 78.71209999999999,
+          "max_ms": 88.6789,
+          "range_ms": 9.966800000000006,
+          "raw_ms": [
+            78.71209999999999,
+            80.321,
+            88.6789
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 943.2937999999999,
+          "min_ms": 923.0086,
+          "max_ms": 1043.0906,
+          "range_ms": 120.082,
+          "raw_ms": [
+            923.0086,
+            943.2937999999999,
+            1043.0906
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 4979.1067,
+          "min_ms": 4978.7739,
+          "max_ms": 5475.862,
+          "range_ms": 497.08809999999994,
+          "raw_ms": [
+            4979.1067,
+            4978.7739,
+            5475.862
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 330.6441,
+          "min_ms": 327.73999999999995,
+          "max_ms": 374.8413,
+          "range_ms": 47.10130000000004,
+          "raw_ms": [
+            330.6441,
+            327.73999999999995,
+            374.8413
+          ]
+        }
+      },
+      "candidate": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 6306.0692,
+          "min_ms": 6293.7496,
+          "max_ms": 6326.6305,
+          "range_ms": 32.88090000000011,
+          "raw_ms": [
+            6306.0692,
+            6326.6305,
+            6293.7496
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 78.59280000000001,
+          "min_ms": 77.3155,
+          "max_ms": 79.7163,
+          "range_ms": 2.400800000000004,
+          "raw_ms": [
+            79.7163,
+            77.3155,
+            78.59280000000001
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 919.8148,
+          "min_ms": 910.8505,
+          "max_ms": 919.9525,
+          "range_ms": 9.101999999999975,
+          "raw_ms": [
+            919.8148,
+            919.9525,
+            910.8505
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 4982.8934,
+          "min_ms": 4977.7608,
+          "max_ms": 4988.245199999999,
+          "range_ms": 10.484399999999368,
+          "raw_ms": [
+            4982.8934,
+            4988.245199999999,
+            4977.7608
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 326.5007,
+          "min_ms": 323.6039,
+          "max_ms": 341.0761,
+          "range_ms": 17.472199999999987,
+          "raw_ms": [
+            323.6039,
+            341.0761,
+            326.5007
+          ]
+        }
+      },
+      "observed_gain_pct": 0.3807621596891618,
+      "exact_screen": {
+        "status": "pass",
+        "fields": [
+          "state_fingerprint",
+          "fingerprint",
+          "exploit_bits",
+          "iteration",
+          "board",
+          "fixture_index",
+          "config",
+          "storage",
+          "algorithm",
+          "use_isomorphism",
+          "nodes",
+          "cpu_arena_bytes",
+          "target_pct",
+          "check_every",
+          "max_iterations",
+          "runtime_nvrtc_jit_included",
+          "flushed_progress_logging_included"
+        ],
+        "fingerprint": "65fb2853a11f3acc",
+        "exploit_bits": 4595130701932466176,
+        "iteration": 200
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 4321.8274,
+          "min_ms": 4256.8111,
+          "max_ms": 4747.305899999999,
+          "range_ms": 490.4947999999995,
+          "raw_ms": [
+            4321.8274,
+            4256.8111,
+            4747.305899999999
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 360.9602,
+          "min_ms": 322.3979,
+          "max_ms": 361.9734,
+          "range_ms": 39.575500000000034,
+          "raw_ms": [
+            361.9734,
+            322.3979,
+            360.9602
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 678.2911,
+          "min_ms": 652.7287,
+          "max_ms": 792.3122999999999,
+          "range_ms": 139.58359999999993,
+          "raw_ms": [
+            678.2911,
+            652.7287,
+            792.3122999999999
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 3042.296,
+          "min_ms": 3042.2693,
+          "max_ms": 3330.5616000000005,
+          "range_ms": 288.2923000000005,
+          "raw_ms": [
+            3042.2693,
+            3042.296,
+            3330.5616000000005
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 239.33769999999998,
+          "min_ms": 239.2357,
+          "max_ms": 263.40930000000003,
+          "range_ms": 24.17360000000002,
+          "raw_ms": [
+            239.2357,
+            239.33769999999998,
+            263.40930000000003
+          ]
+        }
+      },
+      "candidate": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 4283.185399999999,
+          "min_ms": 4270.6728,
+          "max_ms": 4294.1704,
+          "range_ms": 23.497599999999693,
+          "raw_ms": [
+            4294.1704,
+            4283.185399999999,
+            4270.6728
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 362.24309999999997,
+          "min_ms": 347.2849,
+          "max_ms": 395.5103,
+          "range_ms": 48.22539999999998,
+          "raw_ms": [
+            347.2849,
+            395.5103,
+            362.24309999999997
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 613.4522999999999,
+          "min_ms": 597.6206,
+          "max_ms": 658.3668,
+          "range_ms": 60.746200000000044,
+          "raw_ms": [
+            658.3668,
+            597.6206,
+            613.4522999999999
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 3043.2511999999997,
+          "min_ms": 3042.9713,
+          "max_ms": 3043.7217,
+          "range_ms": 0.7503999999998996,
+          "raw_ms": [
+            3043.7217,
+            3042.9713,
+            3043.2511999999997
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 247.0288,
+          "min_ms": 244.7454,
+          "max_ms": 251.6756,
+          "range_ms": 6.9302000000000135,
+          "raw_ms": [
+            244.7454,
+            247.0288,
+            251.6756
+          ]
+        }
+      },
+      "observed_gain_pct": 0.8941125228647663,
+      "exact_screen": {
+        "status": "pass",
+        "fields": [
+          "state_fingerprint",
+          "fingerprint",
+          "exploit_bits",
+          "iteration",
+          "board",
+          "fixture_index",
+          "config",
+          "storage",
+          "algorithm",
+          "use_isomorphism",
+          "nodes",
+          "cpu_arena_bytes",
+          "target_pct",
+          "check_every",
+          "max_iterations",
+          "runtime_nvrtc_jit_included",
+          "flushed_progress_logging_included"
+        ],
+        "fingerprint": "9dd12ac305ce542f",
+        "exploit_bits": 4594601713124613664,
+        "iteration": 200
+      }
+    },
+    {
+      "fixture_id": "river",
+      "baseline": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 105.002,
+          "min_ms": 100.48899999999999,
+          "max_ms": 107.7701,
+          "range_ms": 7.281100000000009,
+          "raw_ms": [
+            105.002,
+            100.48899999999999,
+            107.7701
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 0.2108,
+          "min_ms": 0.1969,
+          "max_ms": 0.2157,
+          "range_ms": 0.01880000000000001,
+          "raw_ms": [
+            0.2157,
+            0.1969,
+            0.2108
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 85.38759999999999,
+          "min_ms": 82.6271,
+          "max_ms": 87.9503,
+          "range_ms": 5.3232,
+          "raw_ms": [
+            85.38759999999999,
+            82.6271,
+            87.9503
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 18.532300000000003,
+          "min_ms": 16.9529,
+          "max_ms": 18.663,
+          "range_ms": 1.7101000000000006,
+          "raw_ms": [
+            18.532300000000003,
+            16.9529,
+            18.663
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 0.8399,
+          "min_ms": 0.6840999999999999,
+          "max_ms": 0.9185000000000001,
+          "range_ms": 0.23440000000000016,
+          "raw_ms": [
+            0.8399,
+            0.6840999999999999,
+            0.9185000000000001
+          ]
+        }
+      },
+      "candidate": {
+        "full_cycle_ms": {
+          "count": 3,
+          "median_ms": 101.2193,
+          "min_ms": 100.5577,
+          "max_ms": 111.8344,
+          "range_ms": 11.276700000000005,
+          "raw_ms": [
+            100.5577,
+            101.2193,
+            111.8344
+          ]
+        },
+        "build_ms": {
+          "count": 3,
+          "median_ms": 0.2062,
+          "min_ms": 0.19770000000000001,
+          "max_ms": 0.2071,
+          "range_ms": 0.009399999999999992,
+          "raw_ms": [
+            0.2062,
+            0.19770000000000001,
+            0.2071
+          ]
+        },
+        "init_ms": {
+          "count": 3,
+          "median_ms": 83.5351,
+          "min_ms": 80.4014,
+          "max_ms": 92.78190000000001,
+          "range_ms": 12.380500000000012,
+          "raw_ms": [
+            80.4014,
+            83.5351,
+            92.78190000000001
+          ]
+        },
+        "solve_ms": {
+          "count": 3,
+          "median_ms": 17.0958,
+          "min_ms": 16.616100000000003,
+          "max_ms": 17.8625,
+          "range_ms": 1.2463999999999977,
+          "raw_ms": [
+            17.0958,
+            16.616100000000003,
+            17.8625
+          ]
+        },
+        "readback_ms": {
+          "count": 3,
+          "median_ms": 0.9564,
+          "min_ms": 0.8462,
+          "max_ms": 2.8249,
+          "range_ms": 1.9787,
+          "raw_ms": [
+            2.8249,
+            0.8462,
+            0.9564
+          ]
+        }
+      },
+      "observed_gain_pct": 3.6025028094702876,
+      "exact_screen": {
+        "status": "pass",
+        "fields": [
+          "state_fingerprint",
+          "fingerprint",
+          "exploit_bits",
+          "iteration",
+          "board",
+          "fixture_index",
+          "config",
+          "storage",
+          "algorithm",
+          "use_isomorphism",
+          "nodes",
+          "cpu_arena_bytes",
+          "target_pct",
+          "check_every",
+          "max_iterations",
+          "runtime_nvrtc_jit_included",
+          "flushed_progress_logging_included"
+        ],
+        "fingerprint": "63944e67a4f99157",
+        "exploit_bits": 4595002455471455360,
+        "iteration": 60
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "baseline_id": "B004",
+      "candidate_id": "E003R2",
+      "order": [
+        "E003R2",
+        "B004"
+      ],
+      "baseline_full_cycle_ms": 10738.3494,
+      "candidate_full_cycle_ms": 10700.7973,
+      "observed_gain_pct": 0.3497008581225619,
+      "fixture_gain_pct": {
+        "rainbow": 0.08636271452834844,
+        "two-tone": 0.6399376337888957,
+        "river": 4.232586045980075
+      }
+    },
+    {
+      "baseline_id": "B005",
+      "candidate_id": "E003R3",
+      "order": [
+        "B005",
+        "E003R3"
+      ],
+      "baseline_full_cycle_ms": 10687.4722,
+      "candidate_full_cycle_ms": 10711.0352,
+      "observed_gain_pct": -0.22047308810777633,
+      "fixture_gain_pct": {
+        "rainbow": 0.055947925965558996,
+        "two-tone": -0.6195788203991363,
+        "river": -0.7267462110280867
+      }
+    },
+    {
+      "baseline_id": "B006R",
+      "candidate_id": "E003R4",
+      "order": [
+        "E003R4",
+        "B006R"
+      ],
+      "baseline_full_cycle_ms": 11837.598899999999,
+      "candidate_full_cycle_ms": 10676.256800000001,
+      "observed_gain_pct": 9.810622152436657,
+      "fixture_gain_pct": {
+        "rainbow": 9.86424691854573,
+        "two-tone": 10.040075572126058,
+        "river": -3.7712686542927982
+      }
+    }
+  ],
+  "chronology": [
+    {
+      "id": "E003R2",
+      "started_at": "2026-10-16T04:04:05Z",
+      "finished_at": "2026-10-16T04:04:19Z"
+    },
+    {
+      "id": "B004",
+      "started_at": "2026-10-16T04:04:28Z",
+      "finished_at": "2026-10-16T04:04:42Z"
+    },
+    {
+      "id": "B005",
+      "started_at": "2026-10-16T04:05:14Z",
+      "finished_at": "2026-10-16T04:05:28Z"
+    },
+    {
+      "id": "E003R3",
+      "started_at": "2026-10-16T04:05:44Z",
+      "finished_at": "2026-10-16T04:05:58Z"
+    },
+    {
+      "id": "E003R4",
+      "started_at": "2026-10-16T04:06:08Z",
+      "finished_at": "2026-10-16T04:06:22Z"
+    },
+    {
+      "id": "B006R",
+      "started_at": "2026-10-16T04:07:03Z",
+      "finished_at": "2026-10-16T04:07:19Z"
+    }
+  ],
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 10757.0015,
+    "candidate_full_cycle_ms": 10690.473899999999,
+    "observed_gain_pct": 0.6184585918297144,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": false,
+    "fixture_median_regression_above_3pct": [],
+    "statistical_significance_established": false
+  },
+  "preserved_artifacts": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe",
+      "sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+      "sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B004\\stdout.log",
+      "sha256": "eb3db89b966d017d6eaa92afd30c90ae3f1002cd979b2e00e44d8af716af39ac"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B005\\stdout.log",
+      "sha256": "b5f8bf5fe91109c14224fef634415710443bb5d821dd5d1aa2313e64282af0ae"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B006R\\stdout.log",
+      "sha256": "25c96b5167cc373980b9b3dd255d819a23ca52d1feac552eb21ea1e9a045784e"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E003-restrict-action.exe",
+      "sha256": "54225aefc314ab5fa15b6a7a9570eac9816f68c2c3973117dfe1b4be49471f15"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E003-restrict-action.manifest.json",
+      "sha256": "fabdfaad22af143f8310a2458892e9b47b733d1735474558c9aec78f699f74e0"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R2\\stdout.log",
+      "sha256": "328ce540a00b37917bc51dfd9bcaceb9d6e1bc8f3a97c574359b141d792d5507"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R3\\stdout.log",
+      "sha256": "a2bd4d55927668dda6b2b40c08fa06bef7a0b887cd88f201c592b9b8dee06370"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R4\\stdout.log",
+      "sha256": "7696f7815fcd5c34ee822c4dda5db337541478df7ebe3e5d90b2edf60f56c697"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003.patch",
+      "sha256": "f7fe67778cc854c0a1c01e3f58c4b225002afefee6b42ed4ba6209cfc1d64008"
+    }
+  ],
+  "original_candidate_report": {
+    "id": "E003",
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003\\report.json",
+    "sha256": "16985aa303156a0217d721d9617eb8758da8a9b084e29bada04a206b70718571"
+  },
+  "schema_version": 1,
+  "id": "E003-warm-comparison",
+  "created_at": "2026-10-16T04:12:58Z",
+  "candidate_id": "E003",
+  "decision": "rejected",
+  "accepted": false,
+  "deployed": false,
+  "scope": "Repeated warm-cache compressed-storage complete-cycle screen",
+  "reason": "Rejected: 3 measurements per binary; sum of fixture medians 10757.0015 -> 10690.4739 ms (0.6185% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+  "correctness": {
+    "status": "pending",
+    "exact_compressed_screen": "pass",
+    "broader_validation": "not run",
+    "f32_storage": "not run"
+  },
+  "input_reports": [
+    {
+      "id": "B004",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B004\\report.json",
+      "sha256": "cee088d8ad819d03b079d138ec110a784c1e408c1e53222bd943473795e760f3"
+    },
+    {
+      "id": "B005",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B005\\report.json",
+      "sha256": "b979d48eba215366370d598af1fe40878ed6fb546d5ce0dfc5cadcd53e4b4146"
+    },
+    {
+      "id": "B006R",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B006R\\report.json",
+      "sha256": "289676e48b5d45224abdaf1823c981ef14225616ecec8a9e60e999551e2dbf15"
+    },
+    {
+      "id": "E003R2",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R2\\report.json",
+      "sha256": "53db7ea5a1634fa5deb106182bcfb3fa011ee47bc767efabec61b01c6a13049b"
+    },
+    {
+      "id": "E003R3",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R3\\report.json",
+      "sha256": "4bfd61b1ed56748835aa94f1e3bcf6d1dcce5252e9454da31a1ba6f7192d8cff"
+    },
+    {
+      "id": "E003R4",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003R4\\report.json",
+      "sha256": "beb23ed04bb699e8999bd7b66fee344f386773ad464a477e6abc253d86189baf"
+    }
+  ],
+  "excluded_runs": [
+    {
+      "id": "B003",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B003\\report.json",
+      "sha256": "e41326e7a2c545ab4c3ef7078407bf936a70b26ccac6838b1f8d07b94a18935a",
+      "status": "measured",
+      "started_at": "2026-10-16T03:58:17Z",
+      "results": [
+        {
+          "fixture_id": "rainbow",
+          "full_cycle_ms": 6915.0123,
+          "build_ms": 91.6352,
+          "init_ms": 1039.4896,
+          "solve_ms": 5437.4266,
+          "readback_ms": 346.4108
+        },
+        {
+          "fixture_id": "two-tone",
+          "full_cycle_ms": 4727.3451,
+          "build_ms": 385.6764,
+          "init_ms": 660.9879,
+          "solve_ms": 3405.1638,
+          "readback_ms": 275.451
+        },
+        {
+          "fixture_id": "river",
+          "full_cycle_ms": 106.6106,
+          "build_ms": 0.2134,
+          "init_ms": 87.34519999999999,
+          "solve_ms": 18.285,
+          "readback_ms": 0.7381
+        }
+      ],
+      "reason": "Outside explicitly selected repeated cohort; retained separately, not erased or rescored"
+    },
+    {
+      "id": "E003",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E003\\report.json",
+      "sha256": "16985aa303156a0217d721d9617eb8758da8a9b084e29bada04a206b70718571",
+      "status": "measured",
+      "started_at": "2026-10-16T03:59:08Z",
+      "results": [
+        {
+          "fixture_id": "rainbow",
+          "full_cycle_ms": 7440.9289,
+          "build_ms": 80.997,
+          "init_ms": 1654.3862,
+          "solve_ms": 5379.253000000001,
+          "readback_ms": 326.2346
+        },
+        {
+          "fixture_id": "two-tone",
+          "full_cycle_ms": 4119.8492,
+          "build_ms": 239.8617,
+          "init_ms": 596.3601,
+          "solve_ms": 3041.4438,
+          "readback_ms": 242.1332
+        },
+        {
+          "fixture_id": "river",
+          "full_cycle_ms": 128.2346,
+          "build_ms": 32.619299999999996,
+          "init_ms": 77.6867,
+          "solve_ms": 17.1322,
+          "readback_ms": 0.7622
+        }
+      ],
+      "reason": "Outside explicitly selected repeated cohort; retained separately, not erased or rescored"
+    },
+    {
+      "id": "B006",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B006\\report.json",
+      "sha256": "c857c81167b9aeff978a014f85adebfa53c9ff09255d303123f9791c7833d986",
+      "status": "invalid",
+      "started_at": "2026-10-16T04:06:31Z",
+      "results": [],
+      "reason": "Outside explicitly selected repeated cohort; retained separately, not erased or rescored"
+    }
+  ],
+  "frozen_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\baseline-manifest.json",
+    "sha256": "67d9b0aea75b8885521217c00673cb50687b5e847fd964748d43175afba256fa"
+  },
+  "measurement_boundaries": {
+    "cargo_compilation": "Excluded from every run by the fixed evaluator; no Cargo build cost subtracted selectively",
+    "runtime_nvrtc_jit": "Included in every init_ms/full_cycle_ms, including warm-cache qualification; no runtime compile cost subtracted",
+    "warm_cache_cohort": true,
+    "cold_start_limit": "Warm-cache cohort does not qualify first-use/cold-start performance; separately retained initial runs disclose potential cache/compiler costs. Cache temperature was not experimentally reset or proved identical.",
+    "other_exclusions": "Correctness fingerprint hashing, HTTP and disk saving; not part of the fixed complete-cycle score"
+  }
+}

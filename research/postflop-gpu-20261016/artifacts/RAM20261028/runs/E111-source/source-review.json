@@ -1,0 +1,85 @@
+{
+  "id": "E111",
+  "at": "2026-10-29T04:24:22.483426+00:00",
+  "history": [
+    {
+      "command": [
+        "rg",
+        "-l",
+        "-e",
+        "map_shared_rank|cluster_dims|mapa.u64|barrier.cluster",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 1,
+      "matches": []
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "-e",
+        "map_shared_rank|cluster_dims|mapa.u64|barrier.cluster",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 0,
+      "matches": [
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\primitive.cu"
+      ]
+    }
+  ],
+  "census_sha256": "31367d996eff6bd99699690c85791fdb669e594c8512baca5df8a3205d8abfa4",
+  "kernel_replacements": [
+    {
+      "old": "    if (b >= count) return;",
+      "new": "    if (b >= count) {\r\n        show_cluster_sync();\r\n        show_cluster_sync();\r\n        return;\r\n    }"
+    },
+    {
+      "old": "    int slot = node_river_slot[n];",
+      "new": "    int slot = node_river_slot[n];\r\n    int peer = b ^ 1;\r\n    bool share_card_pos = peer < count && node_river_slot[nodes[start + peer]] == slot;"
+    },
+    {
+      "old": "    for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)\r\n        card_pos_sh[j] = o_card_pos[card_base + j];",
+      "new": "    if (!share_card_pos || (b & 1) == 0) {\r\n        for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)\r\n            card_pos_sh[j] = o_card_pos[card_base + j];\r\n    }"
+    },
+    {
+      "old": "    __syncthreads();\r\n    const float* ro = ro_sh;",
+      "new": "    show_cluster_sync();\r\n    if (share_card_pos && (b & 1) != 0) card_pos_sh = show_cluster_peer(card_pos_sh);\r\n    const float* ro = ro_sh;"
+    }
+  ],
+  "host_replacements": [
+    {
+      "old": "    iso_active: bool,",
+      "new": "    iso_active: bool,\n    cluster_show: bool,"
+    },
+    {
+      "old": "        let func = |name: &str| module.load_function(name).map_err(e);",
+      "new": "        let func = |name: &str| module.load_function(name).map_err(e);\n        let cluster_show = ctx.compute_capability().map_err(e)?.0 >= 9\n            && ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_CLUSTER_LAUNCH).unwrap_or(0) != 0;"
+    },
+    {
+      "old": "            f_up_show: func(\"up_show\")?,",
+      "new": "            f_up_show: func(if cluster_show { \"up_show_cluster\" } else { \"up_show\" })?,\n            cluster_show,"
+    },
+    {
+      "old": ".launch(Self::cfg(sp.count, show_shared))",
+      "new": ".launch(Self::cfg(if self.cluster_show { (sp.count + 1) & !1 } else { sp.count }, show_shared))"
+    }
+  ],
+  "source_projection": "Original nine entries stay byte-identical, plus one guarded SM90+ cluster entry. Reverse the exact four metadata/copy/barrier replacements, final lifetime barrier and attribute/name to recover original show source byte-for-byte. All original f32 expressions, operand/order, per-node reach/scan/prefix, four remaining local barriers, ABI27 and128thread launch retained. Fixed adjacent pairs, no sorting. Inactive odd mate executes both cluster synchronization phases without reading any arrays. Publication and lifetime barrier prevent peer use before fill or after producer exit. Same slot guarantees identical card-position extent and offset; rank1 maps its identical local offset to rank0, never reads peer reach or prefix. Mismatches use both original local fills.",
+  "semantic_history": "Extra output-lane cluster lead declined as too close to E026; this exact form only removes duplicate immutable copies. E069 sort remains closed and no worklist/order change is included; D068 mutable reach-owner reuse is excluded; no E104 persistent grid/cooperative launch. Not universal novelty proof.",
+  "prospective_costs": [
+    "One extra CUDA entry/module code and two device queries; ordinary runtime compilation/JIT counted in complete cycle.",
+    "One bool intended to occupy existing wrapper padding; actual Rust size/alignment must be measured before numeric trials.",
+    "First original CTA barrier becomes release/acquire cluster barrier; additional final lifetime cluster barrier, remote shared reads and same-slot predicate. Four original later CTA barriers unchanged.",
+    "Static cluster2 co-scheduling and at most one inactive tail CTA per existing launch; actual default-fit/active-cluster/resource checks required.",
+    "No host/global data arrays or capacities, per-block dynamic reservation or worklist/metadata changes proposed. Actual allocation/paging/graph/CPU memory and supported fallback must still be verified."
+  ],
+  "official_sources": [
+    "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#parallel-synchronization-and-communication-instructions-barrier-cluster",
+    "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-mapa"
+  ],
+  "failure": "Any genuine mechanism/resource/ABI/numerical/state/capacity/material-cost/primary failure closes this fixed form without source/helper/width/loop/placement/flags/threshold/entry-subset/quality/sample rescue. Mechanical observer/binding/preparation errors preserved additively; no completed native scientific case repeated. Separate primary3/fresh16/broad/material/holdout/cumulative/app gates unchanged."
+}

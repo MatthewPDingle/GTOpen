@@ -1,0 +1,41 @@
+{
+  "id": "E074",
+  "at": "2026-10-18T03:02:06.693632+00:00",
+  "status": "pass_source_forwarding_and_body_reversal",
+  "manifest_sha256": "ad353aab9d87a65dbd3cba0bba734ce996f48d0c556dccca149da1d4d31972be",
+  "D120_protocol_sha256": "96ce185af1cd1ff72e7056d7ecfbb032dc6e5ca6a27b3e07fa1254f998f22548",
+  "original_helper_body_and_signature_exact": true,
+  "mechanical_reversal_to_accepted_source_exact": true,
+  "all20forwarded_argument_names_order_exact": [
+    "nodes",
+    "start",
+    "count",
+    "p",
+    "node_player",
+    "node_na",
+    "node_data_off",
+    "node_children_start",
+    "children",
+    "regrets_p",
+    "strat_p",
+    "rsrc_p",
+    "reach_p_buf",
+    "lock_off",
+    "lock_sigma",
+    "cfv_slot",
+    "cfv",
+    "disc",
+    "nh_p",
+    "nh_max"
+  ],
+  "other8global_source_entries_exact": true,
+  "common_inline_dispatch_unchanged": "NA2/3/4still call original forceinline helper; genericfallbackcall replaces only existingNA0dispatch. Added wrapper uses exact same20parameterdeclarations and original up_action_impl<0>body. No recursion, synchronization, new user/kernelentry, buffer, host launch or numeric expression.",
+  "risks": "A device call can add parameter/call-stack/local/register/scheduling work. DriverLOCAL_SIZE_BYTESalone may not measure every dynamic call-stack cost. Even a passing resource screen must separately qualify real memory/capacity/CPU/performance and broad exactness. No free-cost or benefit assertion.",
+  "reference": {
+    "url": "https://docs.nvidia.com/cuda/archive/12.9.2/cuda-c-programming-guide/index.html#noinline-and-forceinline",
+    "review": "NVIDIA noinline is a non-inlining hint; forceinline applies only to the separate original helper. They are never combined on one function. Actual call emission must be verified, not assumed."
+  },
+  "source_activated": false,
+  "compilers_or_kernel_executions": 0,
+  "candidate_accepted": false
+}

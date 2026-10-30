@@ -1,0 +1,1500 @@
+_RNvMNtNtCsifJ2Jc9XidW_6solver3gpu5arenaNtB2_11ArenaLayout6upload:
+.Lfunc_begin140:
+.seh_proc _RNvMNtNtCsifJ2Jc9XidW_6solver3gpu5arenaNtB2_11ArenaLayout6upload
+	.seh_handler __CxxFrameHandler3, @unwind, @except
+	pushq	%rbp
+	.seh_pushreg %rbp
+	pushq	%r15
+	.seh_pushreg %r15
+	pushq	%r14
+	.seh_pushreg %r14
+	pushq	%r13
+	.seh_pushreg %r13
+	pushq	%r12
+	.seh_pushreg %r12
+	pushq	%rsi
+	.seh_pushreg %rsi
+	pushq	%rdi
+	.seh_pushreg %rdi
+	pushq	%rbx
+	.seh_pushreg %rbx
+	subq	$392, %rsp
+	.seh_stackalloc 392
+	leaq	128(%rsp), %rbp
+	.seh_setframe %rbp, 128
+	movaps	%xmm8, 240(%rbp)
+	.seh_savexmm %xmm8, 368
+	movdqa	%xmm7, 224(%rbp)
+	.seh_savexmm %xmm7, 352
+	movaps	%xmm6, 208(%rbp)
+	.seh_savexmm %xmm6, 336
+	.seh_endprologue
+	movq	$-2, 200(%rbp)
+	movq	%r8, 176(%rbp)
+	movq	%rdx, %r14
+	movq	%rcx, 192(%rbp)
+	movq	392(%rbp), %r8
+	movq	384(%rbp), %rax
+	movq	%rax, 160(%rbp)
+	movq	376(%rbp), %rcx
+	movq	368(%rbp), %r10
+	movq	%rcx, -56(%rbp)
+	imulq	$56, %r10, %rax
+	testq	%rcx, %rcx
+	je	.LBB140_7
+	leaq	(%r9,%rax), %rsi
+	addq	$112, %rsi
+	movq	112(%r9,%rax), %rdi
+	testq	%rdi, %rdi
+	je	.LBB140_82
+	cmpl	$2, %edi
+	jne	.LBB140_12
+	movq	40(%rsi), %rax
+	movq	48(%rsi), %rcx
+	shlq	$2, %rax
+	xorl	%edx, %edx
+	.p2align	4
+.LBB140_4:
+	cmpq	%rdx, %rax
+	je	.LBB140_20
+	cmpl	$0, (%rcx,%rdx)
+	leaq	4(%rdx), %rdx
+	je	.LBB140_4
+	jmp	.LBB140_19
+.LBB140_7:
+	leaq	(%r9,%rax), %rsi
+	movq	(%r9,%rax), %rdi
+	testq	%rdi, %rdi
+	je	.LBB140_82
+	cmpl	$1, %edi
+	jne	.LBB140_16
+	movq	40(%rsi), %rax
+	movq	48(%rsi), %rcx
+	shlq	$2, %rax
+	xorl	%edx, %edx
+	.p2align	4
+.LBB140_10:
+	cmpq	%rdx, %rax
+	je	.LBB140_26
+	cmpl	$0, (%rcx,%rdx)
+	leaq	4(%rdx), %rdx
+	je	.LBB140_10
+	jmp	.LBB140_15
+.LBB140_12:
+	movq	40(%rsi), %rax
+	movq	48(%rsi), %rcx
+	shlq	$2, %rax
+	xorl	%edx, %edx
+	.p2align	4
+.LBB140_13:
+	cmpq	%rdx, %rax
+	je	.LBB140_23
+	cmpl	$0, (%rcx,%rdx)
+	leaq	4(%rdx), %rdx
+	je	.LBB140_13
+.LBB140_15:
+	movl	$1, %edi
+	jmp	.LBB140_82
+.LBB140_16:
+	movq	40(%rsi), %rax
+	movq	48(%rsi), %rcx
+	shlq	$2, %rax
+	xorl	%edx, %edx
+	.p2align	4
+.LBB140_17:
+	cmpq	%rdx, %rax
+	je	.LBB140_29
+	cmpl	$0, (%rcx,%rdx)
+	leaq	4(%rdx), %rdx
+	je	.LBB140_17
+.LBB140_19:
+	movl	$2, %edi
+	jmp	.LBB140_82
+.LBB140_20:
+	movq	16(%rsi), %rax
+	testq	%rax, %rax
+	je	.LBB140_57
+	movq	24(%rsi), %rcx
+	cmpq	$4, %rax
+	jae	.LBB140_32
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_47
+.LBB140_23:
+	movq	16(%rsi), %rax
+	testq	%rax, %rax
+	je	.LBB140_57
+	movq	24(%rsi), %rcx
+	cmpq	$4, %rax
+	jae	.LBB140_34
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_55
+.LBB140_26:
+	movq	16(%rsi), %rax
+	testq	%rax, %rax
+	je	.LBB140_78
+	movq	24(%rsi), %rcx
+	cmpq	$4, %rax
+	jae	.LBB140_36
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_68
+.LBB140_29:
+	movq	16(%rsi), %rax
+	testq	%rax, %rax
+	je	.LBB140_78
+	movq	24(%rsi), %rcx
+	cmpq	$4, %rax
+	jae	.LBB140_38
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_76
+.LBB140_32:
+	cmpq	$16, %rax
+	jae	.LBB140_40
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_44
+.LBB140_34:
+	cmpq	$16, %rax
+	jae	.LBB140_48
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_52
+.LBB140_36:
+	cmpq	$16, %rax
+	jae	.LBB140_61
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_65
+.LBB140_38:
+	cmpq	$16, %rax
+	jae	.LBB140_69
+	xorl	%edx, %edx
+	xorl	%r11d, %r11d
+	jmp	.LBB140_73
+.LBB140_40:
+	movq	%rax, %rdx
+	andq	$-16, %rdx
+	pxor	%xmm0, %xmm0
+	xorl	%r11d, %r11d
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB140_41:
+	movdqu	(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm0
+	addq	$16, %r11
+	cmpq	%r11, %rdx
+	jne	.LBB140_41
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movdqa	%xmm0, %xmm1
+	psrld	$16, %xmm1
+	por	%xmm0, %xmm1
+	movd	%xmm1, %r11d
+	cmpq	%rdx, %rax
+	je	.LBB140_56
+	testb	$12, %al
+	je	.LBB140_47
+.LBB140_44:
+	movq	%rdi, %rbx
+	movq	%rdx, %rdi
+	movq	%rax, %rdx
+	andq	$-4, %rdx
+	movzwl	%r11w, %r11d
+	movd	%r11d, %xmm0
+	.p2align	4
+.LBB140_45:
+	movq	(%rcx,%rdi,2), %xmm1
+	por	%xmm1, %xmm0
+	addq	$4, %rdi
+	cmpq	%rdi, %rdx
+	jne	.LBB140_45
+	pshufd	$85, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	movdqa	%xmm1, %xmm0
+	psrld	$16, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %r11d
+	cmpq	%rdx, %rax
+	movq	%rbx, %rdi
+	je	.LBB140_56
+	.p2align	4
+.LBB140_47:
+	orw	(%rcx,%rdx,2), %r11w
+	incq	%rdx
+	cmpq	%rdx, %rax
+	jne	.LBB140_47
+	jmp	.LBB140_56
+.LBB140_48:
+	movq	%rax, %rdx
+	andq	$-16, %rdx
+	pxor	%xmm0, %xmm0
+	xorl	%r11d, %r11d
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB140_49:
+	movdqu	(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm0
+	addq	$16, %r11
+	cmpq	%r11, %rdx
+	jne	.LBB140_49
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movdqa	%xmm0, %xmm1
+	psrld	$16, %xmm1
+	por	%xmm0, %xmm1
+	movd	%xmm1, %r11d
+	cmpq	%rdx, %rax
+	je	.LBB140_56
+	testb	$12, %al
+	je	.LBB140_55
+.LBB140_52:
+	movq	%rdi, %rbx
+	movq	%rdx, %rdi
+	movq	%rax, %rdx
+	andq	$-4, %rdx
+	movzwl	%r11w, %r11d
+	movd	%r11d, %xmm0
+	.p2align	4
+.LBB140_53:
+	movq	(%rcx,%rdi,2), %xmm1
+	por	%xmm1, %xmm0
+	addq	$4, %rdi
+	cmpq	%rdi, %rdx
+	jne	.LBB140_53
+	pshufd	$85, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	movdqa	%xmm1, %xmm0
+	psrld	$16, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %r11d
+	cmpq	%rdx, %rax
+	movq	%rbx, %rdi
+	je	.LBB140_56
+	.p2align	4
+.LBB140_55:
+	orw	(%rcx,%rdx,2), %r11w
+	incq	%rdx
+	cmpq	%rdx, %rax
+	jne	.LBB140_55
+.LBB140_56:
+	testw	%r11w, %r11w
+	jne	.LBB140_82
+.LBB140_57:
+	cmpq	$0, 112(%r14)
+	jne	.LBB140_82
+	movq	56(%r14), %rax
+	movq	64(%r14), %rcx
+	shlq	$3, %rcx
+	leaq	(%rcx,%rcx,4), %rcx
+	.p2align	4
+.LBB140_59:
+	testq	%rcx, %rcx
+	je	.LBB140_213
+	addq	$-40, %rcx
+	cmpq	$-1, 8(%rax)
+	leaq	40(%rax), %rax
+	je	.LBB140_59
+	jmp	.LBB140_82
+.LBB140_61:
+	movq	%rax, %rdx
+	andq	$-16, %rdx
+	pxor	%xmm0, %xmm0
+	xorl	%r11d, %r11d
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB140_62:
+	movdqu	(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm0
+	addq	$16, %r11
+	cmpq	%r11, %rdx
+	jne	.LBB140_62
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movdqa	%xmm0, %xmm1
+	psrld	$16, %xmm1
+	por	%xmm0, %xmm1
+	movd	%xmm1, %r11d
+	cmpq	%rdx, %rax
+	je	.LBB140_77
+	testb	$12, %al
+	je	.LBB140_68
+.LBB140_65:
+	movq	%rdi, %rbx
+	movq	%rdx, %rdi
+	movq	%rax, %rdx
+	andq	$-4, %rdx
+	movzwl	%r11w, %r11d
+	movd	%r11d, %xmm0
+	.p2align	4
+.LBB140_66:
+	movq	(%rcx,%rdi,2), %xmm1
+	por	%xmm1, %xmm0
+	addq	$4, %rdi
+	cmpq	%rdi, %rdx
+	jne	.LBB140_66
+	pshufd	$85, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	movdqa	%xmm1, %xmm0
+	psrld	$16, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %r11d
+	cmpq	%rdx, %rax
+	movq	%rbx, %rdi
+	je	.LBB140_77
+	.p2align	4
+.LBB140_68:
+	orw	(%rcx,%rdx,2), %r11w
+	incq	%rdx
+	cmpq	%rdx, %rax
+	jne	.LBB140_68
+	jmp	.LBB140_77
+.LBB140_69:
+	movq	%rax, %rdx
+	andq	$-16, %rdx
+	pxor	%xmm0, %xmm0
+	xorl	%r11d, %r11d
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB140_70:
+	movdqu	(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%rcx,%r11,2), %xmm2
+	por	%xmm2, %xmm0
+	addq	$16, %r11
+	cmpq	%r11, %rdx
+	jne	.LBB140_70
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movdqa	%xmm0, %xmm1
+	psrld	$16, %xmm1
+	por	%xmm0, %xmm1
+	movd	%xmm1, %r11d
+	cmpq	%rdx, %rax
+	je	.LBB140_77
+	testb	$12, %al
+	je	.LBB140_76
+.LBB140_73:
+	movq	%rdi, %rbx
+	movq	%rdx, %rdi
+	movq	%rax, %rdx
+	andq	$-4, %rdx
+	movzwl	%r11w, %r11d
+	movd	%r11d, %xmm0
+	.p2align	4
+.LBB140_74:
+	movq	(%rcx,%rdi,2), %xmm1
+	por	%xmm1, %xmm0
+	addq	$4, %rdi
+	cmpq	%rdi, %rdx
+	jne	.LBB140_74
+	pshufd	$85, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	movdqa	%xmm1, %xmm0
+	psrld	$16, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %r11d
+	cmpq	%rdx, %rax
+	movq	%rbx, %rdi
+	je	.LBB140_77
+	.p2align	4
+.LBB140_76:
+	orw	(%rcx,%rdx,2), %r11w
+	incq	%rdx
+	cmpq	%rdx, %rax
+	jne	.LBB140_76
+.LBB140_77:
+	testw	%r11w, %r11w
+	jne	.LBB140_82
+.LBB140_78:
+	cmpq	$0, 88(%r14)
+	jne	.LBB140_82
+	movq	56(%r14), %rax
+	movq	64(%r14), %rcx
+	shlq	$3, %rcx
+	leaq	(%rcx,%rcx,4), %rcx
+	xorl	%edx, %edx
+	.p2align	4
+.LBB140_80:
+	cmpq	%rdx, %rcx
+	je	.LBB140_213
+	cmpq	$-1, (%rax,%rdx)
+	leaq	40(%rdx), %rdx
+	je	.LBB140_80
+.LBB140_82:
+	cmpb	$0, 152(%r14)
+	movq	176(%rbp), %rdx
+	movq	%rdi, (%rbp)
+	je	.LBB140_105
+	movq	144(%r14), %rax
+	movq	%rax, 184(%rbp)
+	cmpq	%r8, %rax
+	ja	.LBB140_235
+	testq	%rdi, %rdi
+	je	.LBB140_143
+	movq	16(%r14), %rax
+	testq	%rax, %rax
+	je	.LBB140_150
+	movq	8(%r14), %r8
+	shlq	$5, %rax
+	addq	%r8, %rax
+	movq	160(%rbp), %rcx
+	leaq	16(%rcx), %r9
+	movss	__real@477fff00(%rip), %xmm0
+	pxor	%xmm1, %xmm1
+	movss	__real@46fffe00(%rip), %xmm2
+	jmp	.LBB140_88
+	.p2align	4
+.LBB140_87:
+	addq	$32, %r8
+	cmpq	%rax, %r8
+	je	.LBB140_150
+.LBB140_88:
+	movq	8(%r8), %rcx
+	movq	16(%r8), %r10
+	movq	%rcx, %rdx
+	addq	%r10, %rdx
+	jb	.LBB140_229
+	cmpq	184(%rbp), %rdx
+	ja	.LBB140_229
+	movq	(%r8), %rbx
+	movl	24(%r8), %edi
+	movq	160(%rbp), %rdx
+	leaq	(%rdx,%rcx,4), %rdx
+	movq	24(%rsi), %r15
+	movq	48(%rsi), %r12
+	leaq	(%r15,%rbx,2), %r11
+	movss	(%r12,%rdi,4), %xmm3
+	cmpl	$2, (%rbp)
+	jne	.LBB140_94
+	divss	%xmm0, %xmm3
+	testq	%r10, %r10
+	je	.LBB140_87
+	cmpq	$8, %r10
+	jae	.LBB140_97
+	xorl	%edi, %edi
+	jmp	.LBB140_103
+	.p2align	4
+.LBB140_94:
+	divss	%xmm2, %xmm3
+	testq	%r10, %r10
+	je	.LBB140_87
+	cmpq	$8, %r10
+	jae	.LBB140_99
+	xorl	%edi, %edi
+	jmp	.LBB140_102
+.LBB140_97:
+	movq	%r10, %rdi
+	andq	$-8, %rdi
+	movaps	%xmm3, %xmm4
+	shufps	$0, %xmm3, %xmm4
+	leaq	(%r15,%rbx,2), %rbx
+	addq	$8, %rbx
+	leaq	(%r9,%rcx,4), %rcx
+	xorl	%r15d, %r15d
+	.p2align	4
+.LBB140_98:
+	movq	-8(%rbx,%r15,2), %xmm5
+	movq	(%rbx,%r15,2), %xmm6
+	punpcklwd	%xmm1, %xmm5
+	cvtdq2ps	%xmm5, %xmm5
+	punpcklwd	%xmm1, %xmm6
+	cvtdq2ps	%xmm6, %xmm6
+	mulps	%xmm4, %xmm5
+	mulps	%xmm4, %xmm6
+	movups	%xmm5, -16(%rcx,%r15,4)
+	movups	%xmm6, (%rcx,%r15,4)
+	addq	$8, %r15
+	cmpq	%r15, %rdi
+	jne	.LBB140_98
+	jmp	.LBB140_104
+.LBB140_99:
+	movq	%r10, %rdi
+	andq	$-8, %rdi
+	movaps	%xmm3, %xmm4
+	shufps	$0, %xmm3, %xmm4
+	leaq	(%r15,%rbx,2), %rbx
+	addq	$8, %rbx
+	leaq	(%r9,%rcx,4), %rcx
+	xorl	%r15d, %r15d
+	.p2align	4
+.LBB140_100:
+	movq	-8(%rbx,%r15,2), %xmm5
+	punpcklwd	%xmm5, %xmm5
+	movq	(%rbx,%r15,2), %xmm6
+	punpcklwd	%xmm6, %xmm6
+	psrad	$16, %xmm5
+	cvtdq2ps	%xmm5, %xmm5
+	psrad	$16, %xmm6
+	cvtdq2ps	%xmm6, %xmm6
+	mulps	%xmm4, %xmm5
+	mulps	%xmm4, %xmm6
+	movups	%xmm5, -16(%rcx,%r15,4)
+	movups	%xmm6, (%rcx,%r15,4)
+	addq	$8, %r15
+	cmpq	%r15, %rdi
+	jne	.LBB140_100
+	.p2align	4
+.LBB140_101:
+	cmpq	%rdi, %r10
+	je	.LBB140_87
+.LBB140_102:
+	movswl	(%r11,%rdi,2), %ecx
+	xorps	%xmm4, %xmm4
+	cvtsi2ss	%ecx, %xmm4
+	mulss	%xmm3, %xmm4
+	movss	%xmm4, (%rdx,%rdi,4)
+	incq	%rdi
+	jmp	.LBB140_101
+	.p2align	4
+.LBB140_103:
+	movzwl	(%r11,%rdi,2), %ecx
+	xorps	%xmm4, %xmm4
+	cvtsi2ss	%ecx, %xmm4
+	mulss	%xmm3, %xmm4
+	movss	%xmm4, (%rdx,%rdi,4)
+	incq	%rdi
+.LBB140_104:
+	cmpq	%rdi, %r10
+	jne	.LBB140_103
+	jmp	.LBB140_87
+.LBB140_105:
+	testq	%rdi, %rdi
+	je	.LBB140_140
+	movq	144(%r14), %rax
+	cmpq	%r8, %rax
+	ja	.LBB140_236
+	movq	224(%r9), %rcx
+	movq	1088(%rcx), %r8
+	testq	%r8, %r8
+	je	.LBB140_129
+	leaq	(%r10,%r10,2), %rdx
+	movq	1184(%rcx,%rdx,8), %r9
+	movq	1080(%rcx), %r11
+	shlq	$6, %r8
+	addq	%r11, %r8
+	movq	160(%rbp), %rcx
+	addq	$16, %rcx
+	movq	%rcx, 184(%rbp)
+	xorl	%ebx, %ebx
+	movss	__real@477fff00(%rip), %xmm0
+	pxor	%xmm1, %xmm1
+	movss	__real@46fffe00(%rip), %xmm2
+	jmp	.LBB140_110
+	.p2align	4
+.LBB140_109:
+	addq	$64, %r11
+	incq	%rbx
+	cmpq	%r8, %r11
+	je	.LBB140_129
+.LBB140_110:
+	cmpb	$0, 56(%r11)
+	jne	.LBB140_109
+	movzbl	57(%r11), %ecx
+	cmpq	%rcx, %r10
+	jne	.LBB140_109
+	movzbl	59(%r11), %r14d
+	imulq	%r9, %r14
+	movq	16(%r11), %rcx
+	movq	%r14, %rdx
+	addq	%rcx, %rdx
+	jb	.LBB140_234
+	cmpq	%rax, %rdx
+	ja	.LBB140_234
+	movq	160(%rbp), %rdx
+	leaq	(%rdx,%rcx,4), %rdx
+	movq	24(%rsi), %r13
+	movq	48(%rsi), %rdi
+	leaq	(,%rcx,2), %r15
+	addq	%r13, %r15
+	movl	%ebx, %r12d
+	movss	(%rdi,%r12,4), %xmm3
+	cmpl	$2, (%rbp)
+	jne	.LBB140_118
+	divss	%xmm0, %xmm3
+	testq	%r14, %r14
+	je	.LBB140_109
+	cmpq	$8, %r14
+	jae	.LBB140_121
+	xorl	%r12d, %r12d
+	jmp	.LBB140_128
+.LBB140_118:
+	divss	%xmm2, %xmm3
+	testq	%r14, %r14
+	je	.LBB140_109
+	cmpq	$8, %r14
+	jae	.LBB140_123
+	xorl	%r12d, %r12d
+	jmp	.LBB140_125
+.LBB140_121:
+	movq	%r14, %r12
+	andq	$-8, %r12
+	movaps	%xmm3, %xmm4
+	shufps	$0, %xmm3, %xmm4
+	leaq	8(%r13,%rcx,2), %r13
+	movq	184(%rbp), %rdi
+	leaq	(%rdi,%rcx,4), %rcx
+	xorl	%edi, %edi
+	.p2align	4
+.LBB140_122:
+	movq	-8(%r13,%rdi,2), %xmm5
+	movq	(%r13,%rdi,2), %xmm6
+	punpcklwd	%xmm1, %xmm5
+	cvtdq2ps	%xmm5, %xmm5
+	punpcklwd	%xmm1, %xmm6
+	cvtdq2ps	%xmm6, %xmm6
+	mulps	%xmm4, %xmm5
+	mulps	%xmm4, %xmm6
+	movups	%xmm5, -16(%rcx,%rdi,4)
+	movups	%xmm6, (%rcx,%rdi,4)
+	addq	$8, %rdi
+	cmpq	%rdi, %r12
+	jne	.LBB140_122
+	jmp	.LBB140_127
+.LBB140_123:
+	movq	%r14, %r12
+	andq	$-8, %r12
+	movaps	%xmm3, %xmm4
+	shufps	$0, %xmm3, %xmm4
+	leaq	8(%r13,%rcx,2), %r13
+	movq	184(%rbp), %rdi
+	leaq	(%rdi,%rcx,4), %rcx
+	xorl	%edi, %edi
+	.p2align	4
+.LBB140_124:
+	movq	-8(%r13,%rdi,2), %xmm5
+	punpcklwd	%xmm5, %xmm5
+	movq	(%r13,%rdi,2), %xmm6
+	punpcklwd	%xmm6, %xmm6
+	psrad	$16, %xmm5
+	cvtdq2ps	%xmm5, %xmm5
+	psrad	$16, %xmm6
+	cvtdq2ps	%xmm6, %xmm6
+	mulps	%xmm4, %xmm5
+	mulps	%xmm4, %xmm6
+	movups	%xmm5, -16(%rcx,%rdi,4)
+	movups	%xmm6, (%rcx,%rdi,4)
+	addq	$8, %rdi
+	cmpq	%rdi, %r12
+	jne	.LBB140_124
+	jmp	.LBB140_126
+	.p2align	4
+.LBB140_125:
+	movswl	(%r15,%r12,2), %ecx
+	xorps	%xmm4, %xmm4
+	cvtsi2ss	%ecx, %xmm4
+	mulss	%xmm3, %xmm4
+	movss	%xmm4, (%rdx,%r12,4)
+	incq	%r12
+.LBB140_126:
+	cmpq	%r12, %r14
+	jne	.LBB140_125
+	jmp	.LBB140_109
+	.p2align	4
+.LBB140_127:
+	cmpq	%r12, %r14
+	je	.LBB140_109
+.LBB140_128:
+	movzwl	(%r15,%r12,2), %ecx
+	xorps	%xmm4, %xmm4
+	cvtsi2ss	%ecx, %xmm4
+	mulss	%xmm3, %xmm4
+	movss	%xmm4, (%rdx,%r12,4)
+	incq	%r12
+	jmp	.LBB140_127
+.LBB140_129:
+	leaq	64(%rbp), %rcx
+	movq	176(%rbp), %rsi
+	movq	%rsi, %rdx
+	movq	160(%rbp), %r8
+	movq	%rax, %r9
+	callq	_RINvMs1i_NtNtNtCs5UjBoGikVie_6cudarc6driver4safe4coreNtB7_10CudaStream10clone_htodfSfECsifJ2Jc9XidW_6solver
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	je	.LBB140_223
+	leaq	72(%rbp), %rcx
+	movq	16(%rcx), %rdx
+	movups	(%rcx), %xmm0
+	movdqu	96(%rbp), %xmm1
+	movdqu	%xmm1, 40(%rbp)
+	movq	112(%rbp), %rcx
+	movq	%rcx, 56(%rbp)
+	movups	%xmm0, 16(%rbp)
+	movq	%rdx, 32(%rbp)
+	movq	%rax, 8(%rbp)
+	movq	16(%rsi), %rsi
+	xorl	%eax, %eax
+	xchgl	%eax, 44(%rsi)
+	testl	%eax, %eax
+	jne	.LBB140_138
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_238
+.LBB140_132:
+	leaq	64(%rbp), %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_138
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	setne	%cl
+	movq	16(%rsi), %rdi
+	cmpq	%rdi, %rax
+	sete	%al
+	testb	%al, %cl
+	jne	.LBB140_136
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_242
+.LBB140_135:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_138
+.LBB140_136:
+	movq	176(%rbp), %rax
+	movq	24(%rax), %rdi
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_241
+.LBB140_137:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	je	.LBB140_228
+.LBB140_138:
+	movl	%eax, -48(%rbp)
+	leaq	-48(%rbp), %rax
+	movq	%rax, 128(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, 136(%rbp)
+.Ltmp8028:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	64(%rbp), %rcx
+	leaq	128(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	nop
+.Ltmp8029:
+.LBB140_139:
+	movq	80(%rbp), %rax
+	movq	192(%rbp), %rcx
+	movq	%rax, 24(%rcx)
+	movups	64(%rbp), %xmm0
+	movups	%xmm0, 8(%rcx)
+	movq	$0, (%rcx)
+	leaq	8(%rbp), %rcx
+	callq	_RINvNtCs8xEFJqa6dYS_4core3ptr9drop_glueINtNtNtNtCs5UjBoGikVie_6cudarc6driver4safe4core9CudaSlicefEECsifJ2Jc9XidW_6solver
+	jmp	.LBB140_224
+.LBB140_140:
+	movq	16(%rsi), %r9
+	movq	24(%rsi), %r8
+	leaq	64(%rbp), %rcx
+	callq	_RINvMs1i_NtNtNtCs5UjBoGikVie_6cudarc6driver4safe4coreNtB7_10CudaStream10clone_htodfSfECsifJ2Jc9XidW_6solver
+	cmpq	$0, 64(%rbp)
+	je	.LBB140_212
+	movq	112(%rbp), %rax
+	movq	192(%rbp), %rcx
+	movq	%rax, 48(%rcx)
+	movups	64(%rbp), %xmm0
+	movdqu	80(%rbp), %xmm1
+	movdqu	96(%rbp), %xmm2
+.LBB140_142:
+	movdqu	%xmm2, 32(%rcx)
+	movdqu	%xmm1, 16(%rcx)
+	movups	%xmm0, (%rcx)
+	jmp	.LBB140_224
+.LBB140_143:
+	movq	40(%r14), %rax
+	testq	%rax, %rax
+	je	.LBB140_150
+	movq	32(%r14), %rdi
+	leaq	(%rax,%rax,2), %rax
+	leaq	(%rdi,%rax,8), %rbx
+	.p2align	4
+.LBB140_145:
+	movq	8(%rdi), %rcx
+	movq	16(%rdi), %r8
+	movq	%r8, %rdx
+	addq	%rcx, %rdx
+	jb	.LBB140_232
+	cmpq	184(%rbp), %rdx
+	ja	.LBB140_232
+	movq	(%rdi), %rdx
+	movq	16(%rsi), %rax
+	movq	%r8, %r10
+	addq	%rdx, %r10
+	jb	.LBB140_233
+	cmpq	%rax, %r10
+	ja	.LBB140_233
+	movq	160(%rbp), %rax
+	leaq	(%rax,%rcx,4), %rcx
+	shlq	$2, %rdx
+	addq	24(%rsi), %rdx
+	shlq	$2, %r8
+	callq	memcpy
+	addq	$24, %rdi
+	cmpq	%rbx, %rdi
+	jne	.LBB140_145
+.LBB140_150:
+	movq	136(%r14), %rbx
+	testq	%rbx, %rbx
+	movq	%rbx, 120(%rbp)
+	je	.LBB140_153
+	leaq	(,%rbx,4), %rdi
+	movl	$4, %edx
+	movq	%rdi, %rcx
+	callq	mi_zalloc_aligned
+	testq	%rax, %rax
+	jne	.LBB140_154
+	movl	$4, %ecx
+	movq	%rdi, %rdx
+	callq	_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error
+	ud2
+.LBB140_153:
+	movl	$4, %eax
+.LBB140_154:
+	movq	%rax, 168(%rbp)
+	movq	56(%r14), %rbx
+	movq	64(%r14), %rax
+	leaq	(%rax,%rax,4), %rax
+	leaq	(%rbx,%rax,8), %r15
+	movq	-56(%rbp), %rax
+	leaq	(%rax,%rax,2), %rax
+	leaq	(%r14,%rax,8), %r14
+	addq	$72, %r14
+	movss	__real@477fff00(%rip), %xmm6
+	pxor	%xmm7, %xmm7
+	movss	__real@46fffe00(%rip), %xmm8
+	.p2align	4
+.LBB140_155:
+	movq	(%rbp), %r11
+.LBB140_156:
+	cmpq	%r15, %rbx
+	je	.LBB140_190
+	movq	%rbx, %rax
+	addq	$40, %rbx
+	testq	%r11, %r11
+	je	.LBB140_163
+	movq	24(%rax), %r12
+	cmpq	120(%rbp), %r12
+	ja	.LBB140_227
+	movl	32(%rax), %edx
+	movq	16(%rax), %r8
+	movq	24(%rsi), %r9
+	movq	48(%rsi), %r10
+	leaq	(%r9,%r8,2), %rcx
+	movss	(%r10,%rdx,4), %xmm0
+	cmpl	$2, %r11d
+	jne	.LBB140_167
+	divss	%xmm6, %xmm0
+	testq	%r12, %r12
+	je	.LBB140_156
+	cmpq	$8, %r12
+	jae	.LBB140_170
+	xorl	%edx, %edx
+	movq	168(%rbp), %r13
+	jmp	.LBB140_185
+	.p2align	4
+.LBB140_163:
+	movq	16(%rax), %r13
+	movq	24(%rax), %r12
+	movq	16(%rsi), %r8
+	movq	%r12, %rdx
+	addq	%r13, %rdx
+	jb	.LBB140_230
+	cmpq	%r8, %rdx
+	ja	.LBB140_230
+	testq	%r12, %r12
+	je	.LBB140_156
+	shlq	$2, %r13
+	addq	24(%rsi), %r13
+	jmp	.LBB140_174
+	.p2align	4
+.LBB140_167:
+	divss	%xmm8, %xmm0
+	testq	%r12, %r12
+	je	.LBB140_156
+	cmpq	$8, %r12
+	jae	.LBB140_172
+	xorl	%edx, %edx
+	movq	168(%rbp), %r13
+	jmp	.LBB140_183
+.LBB140_170:
+	movq	%r12, %rdx
+	andq	$-8, %rdx
+	movaps	%xmm0, %xmm1
+	shufps	$0, %xmm0, %xmm1
+	leaq	(%r9,%r8,2), %r8
+	addq	$8, %r8
+	xorl	%r9d, %r9d
+	movq	168(%rbp), %r13
+	.p2align	4
+.LBB140_171:
+	movq	-8(%r8,%r9,2), %xmm2
+	movq	(%r8,%r9,2), %xmm3
+	punpcklwd	%xmm7, %xmm2
+	cvtdq2ps	%xmm2, %xmm2
+	punpcklwd	%xmm7, %xmm3
+	cvtdq2ps	%xmm3, %xmm3
+	mulps	%xmm1, %xmm2
+	mulps	%xmm1, %xmm3
+	movups	%xmm2, (%r13,%r9,4)
+	movups	%xmm3, 16(%r13,%r9,4)
+	addq	$8, %r9
+	cmpq	%r9, %rdx
+	jne	.LBB140_171
+	jmp	.LBB140_184
+.LBB140_172:
+	movq	%r12, %rdx
+	andq	$-8, %rdx
+	movaps	%xmm0, %xmm1
+	shufps	$0, %xmm0, %xmm1
+	leaq	(%r9,%r8,2), %r8
+	addq	$8, %r8
+	xorl	%r9d, %r9d
+	movq	168(%rbp), %r13
+	.p2align	4
+.LBB140_173:
+	movq	-8(%r8,%r9,2), %xmm2
+	punpcklwd	%xmm2, %xmm2
+	movq	(%r8,%r9,2), %xmm3
+	punpcklwd	%xmm3, %xmm3
+	psrad	$16, %xmm2
+	cvtdq2ps	%xmm2, %xmm2
+	psrad	$16, %xmm3
+	cvtdq2ps	%xmm3, %xmm3
+	mulps	%xmm1, %xmm2
+	mulps	%xmm1, %xmm3
+	movups	%xmm2, (%r13,%r9,4)
+	movups	%xmm3, 16(%r13,%r9,4)
+	addq	$8, %r9
+	cmpq	%r9, %rdx
+	jne	.LBB140_173
+	jmp	.LBB140_182
+	.p2align	4
+.LBB140_174:
+	cmpq	$8, %r12
+	jae	.LBB140_176
+	xorl	%ecx, %ecx
+	xorl	%edx, %edx
+	jmp	.LBB140_179
+	.p2align	4
+.LBB140_176:
+	movq	%r12, %rcx
+	andq	$-8, %rcx
+	pxor	%xmm0, %xmm0
+	xorl	%edx, %edx
+	pxor	%xmm1, %xmm1
+	.p2align	4
+.LBB140_177:
+	movdqu	(%r13,%rdx,4), %xmm2
+	por	%xmm2, %xmm1
+	movdqu	16(%r13,%rdx,4), %xmm2
+	por	%xmm2, %xmm0
+	addq	$8, %rdx
+	cmpq	%rdx, %rcx
+	jne	.LBB140_177
+	por	%xmm1, %xmm0
+	pshufd	$238, %xmm0, %xmm1
+	por	%xmm0, %xmm1
+	pshufd	$85, %xmm1, %xmm0
+	por	%xmm1, %xmm0
+	movd	%xmm0, %edx
+	jmp	.LBB140_180
+	.p2align	4
+.LBB140_179:
+	orl	(%r13,%rcx,4), %edx
+	incq	%rcx
+.LBB140_180:
+	cmpq	%rcx, %r12
+	jne	.LBB140_179
+	testl	%edx, %edx
+	jne	.LBB140_186
+	jmp	.LBB140_156
+	.p2align	4
+.LBB140_182:
+	cmpq	%rdx, %r12
+	je	.LBB140_174
+.LBB140_183:
+	movswl	(%rcx,%rdx,2), %r8d
+	xorps	%xmm1, %xmm1
+	cvtsi2ss	%r8d, %xmm1
+	mulss	%xmm0, %xmm1
+	movss	%xmm1, (%r13,%rdx,4)
+	incq	%rdx
+	jmp	.LBB140_182
+	.p2align	4
+.LBB140_184:
+	cmpq	%rdx, %r12
+	je	.LBB140_174
+.LBB140_185:
+	movzwl	(%rcx,%rdx,2), %r8d
+	xorps	%xmm1, %xmm1
+	cvtsi2ss	%r8d, %xmm1
+	mulss	%xmm0, %xmm1
+	movss	%xmm1, (%r13,%rdx,4)
+	incq	%rdx
+	jmp	.LBB140_184
+	.p2align	4
+.LBB140_186:
+	movq	16(%r14), %rdi
+	movq	-56(%rbp), %rcx
+	movq	%rdi, (%rax,%rcx,8)
+	movq	(%r14), %rax
+	subq	%rdi, %rax
+	cmpq	%rax, %r12
+	ja	.LBB140_188
+.LBB140_187:
+	leaq	(,%rdi,4), %rcx
+	addq	8(%r14), %rcx
+	leaq	(,%r12,4), %r8
+	movq	%r13, %rdx
+	callq	memcpy
+	addq	%r12, %rdi
+	movq	%rdi, 16(%r14)
+	jmp	.LBB140_155
+.LBB140_188:
+.Ltmp8032:
+	movq	$4, 32(%rsp)
+	movl	$4, %r9d
+	movq	%r14, %rcx
+	movq	%rdi, %rdx
+	movq	%r12, %r8
+	callq	_RINvNvMs2_NtCsfQUUnEvlYZE_5alloc7raw_vecINtB8_11RawVecInnerpE7reserve21do_reserve_and_handleNtNtBa_5alloc6GlobalECsifJ2Jc9XidW_6solver
+	nop
+.Ltmp8033:
+	movq	16(%r14), %rdi
+	jmp	.LBB140_187
+.LBB140_190:
+	movq	16(%r14), %rsi
+	cmpq	%rsi, (%r14)
+	jbe	.LBB140_196
+	movq	8(%r14), %rcx
+	testq	%rsi, %rsi
+	je	.LBB140_194
+	leaq	(,%rsi,4), %rdi
+	movl	$4, %r8d
+	movq	%rdi, %rdx
+	callq	mi_realloc_aligned
+	testq	%rax, %rax
+	jne	.LBB140_195
+.Ltmp8036:
+	movl	$4, %ecx
+	movq	%rdi, %rdx
+	callq	_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error
+	nop
+.Ltmp8037:
+	jmp	.LBB140_231
+.LBB140_194:
+	callq	mi_free
+	movl	$4, %eax
+.LBB140_195:
+	movq	%rax, 8(%r14)
+	movq	%rsi, (%r14)
+.LBB140_196:
+.Ltmp8038:
+	leaq	64(%rbp), %rcx
+	movq	176(%rbp), %rdx
+	movq	160(%rbp), %r8
+	movq	184(%rbp), %r9
+	callq	_RINvMs1i_NtNtNtCs5UjBoGikVie_6cudarc6driver4safe4coreNtB7_10CudaStream10clone_htodfSfECsifJ2Jc9XidW_6solver
+	nop
+.Ltmp8039:
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	je	.LBB140_209
+	leaq	72(%rbp), %rcx
+	movq	16(%rcx), %rdx
+	movups	(%rcx), %xmm0
+	movdqu	96(%rbp), %xmm1
+	movdqu	%xmm1, 40(%rbp)
+	movq	112(%rbp), %rcx
+	movq	%rcx, 56(%rbp)
+	movups	%xmm0, 16(%rbp)
+	movq	%rdx, 32(%rbp)
+	movq	%rax, 8(%rbp)
+	movq	176(%rbp), %rax
+	movq	16(%rax), %rsi
+	xorl	%eax, %eax
+	xchgl	%eax, 44(%rsi)
+	testl	%eax, %eax
+	jne	.LBB140_206
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_237
+.LBB140_200:
+	leaq	64(%rbp), %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_206
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	setne	%cl
+	movq	16(%rsi), %rdi
+	cmpq	%rdi, %rax
+	sete	%al
+	testb	%al, %cl
+	jne	.LBB140_204
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_240
+.LBB140_203:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_206
+.LBB140_204:
+	movq	176(%rbp), %rax
+	movq	24(%rax), %rdi
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_239
+.LBB140_205:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	je	.LBB140_225
+.LBB140_206:
+	movl	%eax, -48(%rbp)
+	leaq	-48(%rbp), %rax
+	movq	%rax, 128(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, 136(%rbp)
+.Ltmp8046:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	64(%rbp), %rcx
+	leaq	128(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	nop
+.Ltmp8047:
+	movq	80(%rbp), %rax
+	movq	192(%rbp), %rcx
+	movq	%rax, 24(%rcx)
+	movups	64(%rbp), %xmm0
+	movups	%xmm0, 8(%rcx)
+	movq	$0, (%rcx)
+.Ltmp8048:
+	leaq	8(%rbp), %rcx
+	callq	_RINvNtCs8xEFJqa6dYS_4core3ptr9drop_glueINtNtNtNtCs5UjBoGikVie_6cudarc6driver4safe4core9CudaSlicefEECsifJ2Jc9XidW_6solver
+	nop
+.Ltmp8049:
+	cmpq	$0, 120(%rbp)
+	jne	.LBB140_211
+	jmp	.LBB140_224
+.LBB140_209:
+	movl	72(%rbp), %eax
+	movl	%eax, -4(%rbp)
+	leaq	-4(%rbp), %rax
+	movq	%rax, -24(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, -16(%rbp)
+.Ltmp8050:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	128(%rbp), %rcx
+	leaq	-24(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	nop
+.Ltmp8051:
+	movq	144(%rbp), %rax
+	movups	128(%rbp), %xmm0
+	movaps	%xmm0, -80(%rbp)
+	movq	%rax, -64(%rbp)
+	movq	192(%rbp), %rcx
+	movq	%rax, 24(%rcx)
+	movups	%xmm0, 8(%rcx)
+	movq	$0, (%rcx)
+	cmpq	$0, 120(%rbp)
+	je	.LBB140_224
+.LBB140_211:
+	movq	168(%rbp), %rcx
+	callq	mi_free
+	jmp	.LBB140_224
+.LBB140_212:
+	movl	72(%rbp), %eax
+	movl	%eax, 128(%rbp)
+	leaq	128(%rbp), %rax
+	movq	%rax, 8(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, 16(%rbp)
+	movq	192(%rbp), %rsi
+	leaq	8(%rsi), %rcx
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	8(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	movq	$0, (%rsi)
+	jmp	.LBB140_224
+.LBB140_213:
+	movq	144(%r14), %r8
+	leaq	64(%rbp), %rcx
+	movq	176(%rbp), %rsi
+	movq	%rsi, %rdx
+	callq	_RINvMs1i_NtNtNtCs5UjBoGikVie_6cudarc6driver4safe4coreNtB7_10CudaStream11alloc_zerosfECsifJ2Jc9XidW_6solver
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	je	.LBB140_223
+	leaq	72(%rbp), %rcx
+	movq	16(%rcx), %rdx
+	movups	(%rcx), %xmm0
+	movdqu	96(%rbp), %xmm1
+	movdqu	%xmm1, 40(%rbp)
+	movq	112(%rbp), %rcx
+	movq	%rcx, 56(%rbp)
+	movups	%xmm0, 16(%rbp)
+	movq	%rdx, 32(%rbp)
+	movq	%rax, 8(%rbp)
+	movq	16(%rsi), %rsi
+	xorl	%eax, %eax
+	xchgl	%eax, 44(%rsi)
+	testl	%eax, %eax
+	jne	.LBB140_222
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_243
+.LBB140_216:
+	leaq	64(%rbp), %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxGetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_222
+	movq	64(%rbp), %rax
+	testq	%rax, %rax
+	setne	%cl
+	movq	16(%rsi), %rdi
+	cmpq	%rdi, %rax
+	sete	%al
+	testb	%al, %cl
+	jne	.LBB140_220
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_245
+.LBB140_219:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys15cuCtxSetCurrent2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	jne	.LBB140_222
+.LBB140_220:
+	movq	176(%rbp), %rax
+	movq	24(%rax), %rdi
+	movl	_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262+8(%rip), %eax
+	testl	%eax, %eax
+	jne	.LBB140_244
+.LBB140_221:
+	movq	%rdi, %rcx
+	callq	*_RNvNvNtNtCs5UjBoGikVie_6cudarc6driver3sys19cuStreamSynchronize2__S.llvm.1750587498003715262(%rip)
+	testl	%eax, %eax
+	je	.LBB140_228
+.LBB140_222:
+	movl	%eax, -48(%rbp)
+	leaq	-48(%rbp), %rax
+	movq	%rax, 128(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, 136(%rbp)
+.Ltmp8020:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	64(%rbp), %rcx
+	leaq	128(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	nop
+.Ltmp8021:
+	jmp	.LBB140_139
+.LBB140_223:
+	movl	72(%rbp), %eax
+	movl	%eax, -24(%rbp)
+	leaq	-24(%rbp), %rax
+	movq	%rax, -80(%rbp)
+	leaq	_RNvXs0_NtNtCs5UjBoGikVie_6cudarc6driver6resultNtB5_11DriverErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt(%rip), %rax
+	movq	%rax, -72(%rbp)
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.100.llvm.12338317323221176213(%rip), %rdx
+	leaq	128(%rbp), %rcx
+	leaq	-80(%rbp), %r8
+	callq	_RNvNvNtCsfQUUnEvlYZE_5alloc3fmt6format12format_inner
+	movq	144(%rbp), %rax
+	movq	%rax, -32(%rbp)
+	movaps	128(%rbp), %xmm0
+	movaps	%xmm0, -48(%rbp)
+	movq	192(%rbp), %rcx
+	movq	%rax, 24(%rcx)
+	movups	%xmm0, 8(%rcx)
+	movq	$0, (%rcx)
+.LBB140_224:
+	movaps	208(%rbp), %xmm6
+	movaps	224(%rbp), %xmm7
+	movaps	240(%rbp), %xmm8
+	.seh_startepilogue
+	addq	$392, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	popq	%rbp
+	.seh_endepilogue
+	retq
+.LBB140_225:
+	movq	56(%rbp), %rax
+	movq	192(%rbp), %rcx
+	movq	%rax, 48(%rcx)
+	movups	8(%rbp), %xmm0
+	movdqu	24(%rbp), %xmm1
+	movdqu	40(%rbp), %xmm2
+	movdqu	%xmm2, 32(%rcx)
+	movdqu	%xmm1, 16(%rcx)
+	movups	%xmm0, (%rcx)
+	cmpq	$0, 120(%rbp)
+	je	.LBB140_224
+	movq	168(%rbp), %rcx
+	movaps	208(%rbp), %xmm6
+	movaps	224(%rbp), %xmm7
+	movaps	240(%rbp), %xmm8
+	.seh_startepilogue
+	addq	$392, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	popq	%rbp
+	.seh_endepilogue
+	jmp	mi_free
+.LBB140_227:
+.Ltmp8030:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.929(%rip), %r9
+	xorl	%ecx, %ecx
+	movq	%r12, %rdx
+	movq	120(%rbp), %r8
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	nop
+.Ltmp8031:
+	jmp	.LBB140_231
+.LBB140_228:
+	movq	56(%rbp), %rax
+	movq	192(%rbp), %rcx
+	movq	%rax, 48(%rcx)
+	movups	8(%rbp), %xmm0
+	movdqu	24(%rbp), %xmm1
+	movdqu	40(%rbp), %xmm2
+	jmp	.LBB140_142
+.LBB140_229:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.927(%rip), %r9
+	movq	184(%rbp), %r8
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_230:
+.Ltmp8034:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.928(%rip), %r9
+	movq	%r13, %rcx
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	nop
+.Ltmp8035:
+.LBB140_231:
+	ud2
+.LBB140_232:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.926(%rip), %r9
+	movq	184(%rbp), %r8
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_233:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.925(%rip), %r9
+	movq	%rdx, %rcx
+	movq	%r10, %rdx
+	movq	%rax, %r8
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_234:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.923(%rip), %r9
+	movq	%rax, %r8
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_235:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.930(%rip), %r9
+	xorl	%ecx, %ecx
+	movq	184(%rbp), %rdx
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_236:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.924(%rip), %r9
+	xorl	%ecx, %ecx
+	movq	%rax, %rdx
+	callq	_RNvNtNtCs8xEFJqa6dYS_4core5slice5index16slice_index_fail
+	ud2
+.LBB140_237:
+.Ltmp8040:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCOONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtB10_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvB10_15cuCtxGetCurrent0E0zEB14_.llvm.1750587498003715262
+	nop
+.Ltmp8041:
+	jmp	.LBB140_200
+.LBB140_238:
+.Ltmp8022:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCOONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtB10_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvB10_15cuCtxGetCurrent0E0zEB14_.llvm.1750587498003715262
+	nop
+.Ltmp8023:
+	jmp	.LBB140_132
+.LBB140_239:
+.Ltmp8044:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys11CUstream_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_19cuStreamSynchronize0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8045:
+	jmp	.LBB140_205
+.LBB140_240:
+.Ltmp8042:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_15cuCtxSetCurrent0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8043:
+	jmp	.LBB140_203
+.LBB140_241:
+.Ltmp8026:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys11CUstream_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_19cuStreamSynchronize0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8027:
+	jmp	.LBB140_137
+.LBB140_242:
+.Ltmp8024:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_15cuCtxSetCurrent0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8025:
+	jmp	.LBB140_135
+.LBB140_243:
+.Ltmp8014:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCOONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtB10_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvB10_15cuCtxGetCurrent0E0zEB14_.llvm.1750587498003715262
+	nop
+.Ltmp8015:
+	jmp	.LBB140_216
+.LBB140_244:
+.Ltmp8018:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys11CUstream_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_19cuStreamSynchronize0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8019:
+	jmp	.LBB140_221
+.LBB140_245:
+.Ltmp8016:
+	callq	_RINvMNtNtCse0R8cuyqEa_3std4sync9once_lockINtB3_8OnceLockFUKCONtNtNtCs5UjBoGikVie_6cudarc6driver3sys8CUctx_stENtBZ_14cudaError_enumE10initializeNCINvB2_11get_or_initNCNvBZ_15cuCtxSetCurrent0E0zEB13_.llvm.1750587498003715262
+	nop
+.Ltmp8017:
+	jmp	.LBB140_219
+	.seh_handlerdata
+	.long	$cppxdata$_RNvMNtNtCsifJ2Jc9XidW_6solver3gpu5arenaNtB2_11ArenaLayout6upload@IMGREL
+	.section	.text,"xr",one_only,_RNvMNtNtCsifJ2Jc9XidW_6solver3gpu5arenaNtB2_11ArenaLayout6upload,unique,141
+	

@@ -1,0 +1,25 @@
+{
+  "id": "E022-independent-terminal-audit-checklist",
+  "prepared_at": "2026-10-16T12:17:41.498867+00:00",
+  "status": "prepared_not_executed",
+  "execution_gate": "Root confirms all seven primary/unit runs plus assessment terminal before this audit executes.",
+  "base_audit": "comparisons/E021-independent-review/audit-primary.py",
+  "protocol_sha256": "65e680ac9a02e09e37919ba854c3f6a1fbe7629ef586c896589567cb48acfec8",
+  "authorization_sha256": "3db003570444d408a6899da295f6e05fd09e748bead1bb55b14ad70a2c0ca90c",
+  "checks": [
+    "E020 acceptance and server qualification precede frozen E022 review/authorization/native execution.",
+    "Full162 source maps differ only in reviewed kernels.cu only; mod.rs and every other entry remain exact E020; exact archive/build copies and frozen evaluator match.",
+    "Fresh target Cargo terminal success, newly compiled source-correct solver/test artifacts, no inherited compiler overrides, candidate embedded CUDA and opposite absence.",
+    "Unit84passed/4ignored inventory; fixed V022-unit,B071,E022R1,E022R2,B072,B073,E022R3 chronology and native commands.",
+    "All18 complete non-timing results plus138 convergence checks and normalized stage trajectories exact; all three fixtures and200/200/60 stopping iterations.",
+    "Independent sum-of-fixture-medians score and unchanged aggregate>=2% plus repeated fixture>3% guard, retaining every pair/sample.",
+    "Physical E022R1 patch alias, baseline/candidate binary provenance, raw hashes and helper decision agree.",
+    "If primary fails: reject, preserve evidence, no broader/F32/holdout/cumulative execution or acceptance."
+  ],
+  "review_actions": {
+    "native_tests": 0,
+    "GPU_jobs": 0,
+    "builds": 0,
+    "source_edits": 0
+  }
+}

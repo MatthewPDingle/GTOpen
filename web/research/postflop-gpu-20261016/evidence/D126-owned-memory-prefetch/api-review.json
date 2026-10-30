@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-18T05:06:47.632090+00:00",
+  "primary_sources": {
+    "prefetch": "https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-prefetchvirtualmemory",
+    "range_layout": "https://learn.microsoft.com/en-us/windows/desktop/api/memoryapi/ns-memoryapi-win32_memory_range_entry",
+    "memory_counters": "https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters",
+    "counter_function": "https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-getprocessmemoryinfo"
+  },
+  "contract": "Current-process handle only, borrowed owned quantized-buffer ranges, flags0, no data mutation or required correctness dependency. API is a best-effort hint, chiefly useful for paged-out memory; fresh zero allocations may receive no benefit. Cached prefetched pages are not immediately reflected in working set, so process counters alone cannot prove physical-cache cost. Only ranges consumed by unchanged full scans are requested. No settings, privileges, working-set limit setters, page eviction, memory lock or external-process access.",
+  "ABI": "Win64 repr(C) range pointer+usize=16bytes; basic PROCESS_MEMORY_COUNTERS has2u32+8usize=72bytes. Kernel32 imports, current-process memory info only. Native ability checks layouts/return codes and full owned byte guards.",
+  "novelty_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "PrefetchVirtualMemory|prefault|WIN32_MEMORY_RANGE_ENTRY",
+    "--",
+    "crates/solver/src/gpu",
+    "crates/solver/src/store.rs"
+  ],
+  "local_all_ref_matches": [],
+  "closed_forms_remain_closed": "E045 parallel OR, D090 widened OR, E049 provenance/scan omission, D123 metadata initialization and E077 prefix tags are not composed or reopened."
+}

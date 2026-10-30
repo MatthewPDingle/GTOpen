@@ -1,0 +1,62 @@
+--- retained-control/audit.py
++++ E082-control/audit.py
+@@ -1,28 +1,14 @@
+-"""Independent complete raw replay for the fixed E077 five-width showdown matrix."""
++"""Independent complete raw replay for the fixed E082 five-width showdown matrix."""
+ from pathlib import Path
+ import bisect,collections,json,sys
+ H=Path(__file__).resolve().parent;R=H.parent.parent
+-sys.path.insert(0,str(R/'runs/accepted-E051-live-20261018'));import common_e051_live as old
++sys.path.insert(0,str(R/'runs/accepted-E080-live-20261018'));import common_e080_live as old
+ P=old.read(H/'protocol.json');C=old.read(H/'execution/complete.json');corpus=old.read(H/'corpus.json');checks=0
+ for p,h in P['input_sha256'].items():old.pin(p,h)
+ old.pin(H/'execution/raw-results.jsonl',C['raw_sha256'])
+ def req(v,label):
+  global checks
+  assert v,label;checks+=1
+-def tagged(g):
+- a=g['arrays'];pi=list(a['p_idx']);oi=list(a['o_idx']);pb=a['p_off'][1];ob=a['o_off'][1];mp=g['m_p'];mo=g['m_o']
+- own=[g['strengths_p'][i]for i in pi[pb:pb+mp]];need_p=set();need_o=set()
+- if mp:need_p.add(mp-1)
+- if mo:need_o.add(mo-1)
+- for v in a['p_lower'][pb:pb+mp]+a['p_upper'][pb:pb+mp]:
+-  if v:need_o.add(v-1)
+- for i in oi[ob:ob+mo]:
+-  strength=g['strengths_o'][i]
+-  for v in [bisect.bisect_left(own,strength),bisect.bisect_right(own,strength)]:
+-   if v:need_p.add(v-1)
+- for k in need_p:pi[pb+k]|=1<<31
+- for k in need_o:oi[ob+k]|=1<<31
+- return pi,oi
+ fields=[('nodes','nodes'),('win','node_twin'),('lose','node_tlose'),('tie','node_ttie'),('river','node_river_slot'),('rsrc','rsrc_o'),('reach',None),('po','p_off'),('pc','p_cnt'),('pi','p_idx'),('pl','p_lower'),('pu','p_upper'),('oo','o_off'),('oc','o_cnt'),('oi','o_idx'),('co','o_card_off'),('cp','o_card_pos'),('same','same_p'),('c1','pc1'),('c2','pc2'),('slots','cfv_slot')]
+ geometries={g['id']:g for g in corpus['geometries']};total=collections.Counter();raw=H/'execution/raw-results.jsonl'
+ with raw.open(encoding='utf-8')as f:
+@@ -43,19 +29,15 @@
+    ac=sum(active);guards=2*(len(initial)-ac);words=[x for x,owned in zip(before,active)if owned]
+    req(row['active_words']==ac and row['guard_word_checks']==guards,'active/guard inventory')
+    req(all(x!=0x4b123456 for x in words),'active anti-stale guard overwritten')
+-   pi,oi=tagged(g)
+    for label in ['baseline','candidate']:
+     snapshots=d[label+'_actual_device_inputs'];req([x['buffer']for x in snapshots]==[x[0]for x in fields],'all21 actual device inputs present in order')
+     word_count=0
+     for snapshot,(short,key)in zip(snapshots,fields):
+      expected=case['reach_o_bits']if key is None else g['arrays'][key]
+-     if label=='candidate'and key=='p_idx':expected=pi
+-     if label=='candidate'and key=='o_idx':expected=oi
+      actual=snapshot['actual_device_words'];req(actual==expected,'complete actual '+label+' '+short+' image matches explicit expected bits');word_count+=len(actual)
+     total['device_input_word_checks']+=word_count;total['device_input_buffer_checks']+=21
+    bs=d['baseline_actual_device_inputs'];cs=d['candidate_actual_device_inputs']
+-   req(all(x['actual_device_words']==y['actual_device_words']for x,y in zip(bs,cs)if x['buffer']not in['pi','oi']),'other19 actual metadata buffers byte-identical')
+-   for key,encoded,offset,m in [('p_idx',pi,g['arrays']['p_off'][1],g['m_p']),('o_idx',oi,g['arrays']['o_off'][1],g['m_o'])]:req(all((encoded[offset+i]&0x7fffffff)==g['arrays'][key][offset+i]for i in range(m)),'all active physical hand indices decode exactly')
++   req(all(x['actual_device_words']==y['actual_device_words']for x,y in zip(bs,cs)),'all21 actual metadata buffers byte-identical')
+    total['active_words_compared']+=ac;total['output_guard_word_checks']+=guards;total['full_output_words_both_arms']+=len(before)+len(after);total['comparison_pairs']+=1
+    if width==128 and case['count']and g['board_text']=='AsKsQsJsTs'and g['target_m']==257 and case['profile']=='sparse_rounding_witness':
+     i=g['rounding_witness_own_index'];slot=g['arrays']['cfv_slot'][5];req(before[slot*g['nh_max']+i]==0xbe800000,'original128thread sparse rounding witness');total['rounding_witness_checks']+=1
+@@ -64,5 +46,5 @@
+ for k in ['comparison_pairs','active_words_compared','output_guard_word_checks','device_input_buffer_checks','device_input_word_checks','rounding_witness_checks']:req(total[k]==summary[k],'root/native full '+k+' inventory')
+ req(total['comparison_pairs']==1820 and summary['kernel_launches']==3640 and summary['tested_block_widths']==P['widths'],'all predefined launches and widths')
+ req(summary['all_output_bits_exact']and summary['all_inputs_unchanged']and summary['performance_measurement']is False,'native summary scope')
+-old.custody();O=R/'comparisons/E077-kernel-control-root-check';assert not O.exists();O.mkdir()
+-report={'id':'E077-kernel-control','at':old.now(),'status':'pass_scoped_full_selective_prefix_raw_equivalence','checks':checks,'root_cross_check_only':True,'inventory':dict(total),'kernel_launches':3640,'tested_block_widths':P['widths'],'whole_physical_outputs_bitwise_equal':True,'all_actual_inputs_match_own_encoded_expected':True,'other19_input_buffers_identical':True,'raw_sha256':C['raw_sha256'],'raw_bytes':C['raw_bytes'],'protocol_sha256':old.sha(H/'protocol.json'),'source_main_live_PTX_custody_pass':True,'performance_measured':False,'candidate_accepted':False,'limits':'Finite declared1820pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; metadata index tags intentionally differ and every complete input image is checked against its own explicit expected bits. Full solver/state/save/resume/material/speed qualification remains.'};old.save(O/'report.json',report);print(json.dumps({'status':report['status'],'checks':checks,'inventory':dict(total)}),flush=True)
++old.custody();O=R/'comparisons/E082-kernel-control-root-check';assert not O.exists();O.mkdir()
++report={'id':'E082-kernel-control','at':old.now(),'status':'pass_scoped_full_prefix_consumer_raw_equivalence','checks':checks,'root_cross_check_only':True,'inventory':dict(total),'kernel_launches':3640,'tested_block_widths':P['widths'],'whole_physical_outputs_bitwise_equal':True,'all_actual_inputs_match_exact_expected':True,'all21_input_buffers_identical':True,'raw_sha256':C['raw_sha256'],'raw_bytes':C['raw_bytes'],'protocol_sha256':old.sha(H/'protocol.json'),'source_main_live_PTX_custody_pass':True,'performance_measured':False,'candidate_accepted':False,'limits':'Finite declared1820pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; all21metadata inputs byte-identical and every complete input image checked against the original explicit expected bits. Full solver/state/save/resume/material/speed qualification remains.'};old.save(O/'report.json',report);print(json.dumps({'status':report['status'],'checks':checks,'inventory':dict(total)}),flush=True)

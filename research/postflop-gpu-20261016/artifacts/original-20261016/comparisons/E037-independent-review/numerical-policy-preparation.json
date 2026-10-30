@@ -1,0 +1,24 @@
+{
+  "id": "E037-independent-numerical-policy-amendment",
+  "status": "PREPARED_NOT_EXECUTED_AWAITING_TERMINAL_EVIDENCE",
+  "old_audit_preserved_sha256": "c2b717b97e9c073047b090249d9aa58f9112e7f9313c092bca504f830103e032",
+  "audit_sha256": "d413f563e38ad3e4b79e4029c287f912627e2c27cffda97ca59568e6391a8cfc",
+  "patch_sha256": "f3c984a368c56d7ae5142e103a07f51d509236bb1f996f8bbd2fb7ec6be21af3",
+  "policy_sha256": "f2eaef2759f628db85a414e5496f7dec89be1e398f7d00d8d068d1db74be55d4",
+  "policy_manifest_sha256": "bf84a6f7f685d42ee3fbcf7aed5737a073b8acbf9401544ddaa03c9cc1b4d37a",
+  "policy_authorization_sha256": "df9e39cc5ad89c9eb9c9133b2205acd706926343c67c6d3ee1d326a38c4b9da3",
+  "source_of_change": "Explicit user1%/no-repeatable-slowdown instruction before native measurement, independently reviewed policy.",
+  "thresholds": {
+    "aggregate_gain_pct_at_least": 1.0,
+    "fixture_median_regression_pct_strictly_above": 0.0,
+    "paired_fixture_regressions_pct_strictly_above": 0.0,
+    "minimum_repeats": 2
+  },
+  "unchanged_18_result_138_checkpoint_block_byte_exact": true,
+  "unchanged_unit_85_4_and_34_68_marker_block_byte_exact": true,
+  "terminal_inputs_required": "terminal-inputs-policy-1pct.json with root terminal notice and frozen comparison SHA; intentionally absent until then. Original audit remains unexecuted.",
+  "syntax_check": "ast.parse only",
+  "outcome_read": false,
+  "native_gpu_compiler_execution": false,
+  "current_checkout_requirement": false
+}

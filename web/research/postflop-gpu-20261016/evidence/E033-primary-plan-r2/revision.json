@@ -1,0 +1,20 @@
+{
+  "id": "E033-primary-plan-r2",
+  "parent_manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-primary-plan\\scripts-manifest.json",
+  "parent_manifest_sha256": "cc3a71ce30dbc8921a369481e74acc7b6f07aabf06ae6e0996678cd55d196457",
+  "finding": "Root discovered the sealed R1 strict untracked-name guard counts two pre-existing research-fixture PTX artifacts. R1 never executed.",
+  "repair": "Pin and exclude precisely those two generated paths, retain163 source map and every other tracked/untracked admission guard; relocate only plan-owned paths to R2.",
+  "source_and_numerical_scope_unchanged": true,
+  "unused_build_outputs_and_ids_unchanged": true,
+  "preexisting_target_artifacts": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "compiler_native_gpu_execution": false
+}

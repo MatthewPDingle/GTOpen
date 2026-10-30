@@ -1,0 +1,31 @@
+{
+  "id": "E070-three-helper-root-full-raw-audit",
+  "status": "pass_scoped_full_raw_equivalence_and_CPU_oracles",
+  "checks": 3038902,
+  "cases": 2120,
+  "kernel_launches": 4240,
+  "output_words_both_arms": 548526080,
+  "immutable_words_both_arms": 2314540,
+  "guard_words_both_arms": 495130760,
+  "CPU_oracle_words_both_arms": 53370742,
+  "nonfinite_reduction_words_without_cross_platform_CPU_payload_oracle": 24578,
+  "all_raw_files_sha256": {
+    "baseline-inputs.bin": "8494d0d20a7a516b914900a485cc0c73bc8d3b39a2e8bf65db6fd37a3170356d",
+    "baseline.bin": "96855a2fc269709cce23feb4dcfe3a6f425bb367350c572dc7ab29f44a739669",
+    "candidate-inputs.bin": "8494d0d20a7a516b914900a485cc0c73bc8d3b39a2e8bf65db6fd37a3170356d",
+    "candidate.bin": "96855a2fc269709cce23feb4dcfe3a6f425bb367350c572dc7ab29f44a739669",
+    "inputs.bin": "9c9419b61d75fa9234f6c8d5c25f3aec46c83898e3e84c3f448ac4301d3936c4"
+  },
+  "corpus_sha256": "d50cde98adc72e7782fcae4a2e7b4658f78b1c1df68de50676c2d5a2f4f6be41",
+  "audit_source_sha256": "be9e9ca762dc00c83efc7faf417eb34116fbd50661e655089cc93dc59fcffd24",
+  "numerical_admission_sha256": "e0690bb8dbad5e807ebfa888f30cb2abd47eea527cea6e73a4ae3fc5fc560eb8",
+  "helper_ptx_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-baseline-compute_120.ptx": "82c1695b5f78b90a0e1a6c0c4078f1b486623ad4f9694d5f3b97154ee3c60aa3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-candidate-compute_120.ptx": "9e1a5b7a87ea92b0d5e89c2d89a541d3f3b2fb8ac436f377c2e9b8304330f12f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-baseline-compute_120.ptx": "e0d3f0abdecad1c69f69bc2c874c22ac90334c2a697d5fadfb35c9ffc6160aa6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-candidate-compute_120.ptx": "f4681cfc27a17a80d8de47db8e9ac516f5e5f3d514dce7d822b6ebd82a3bdc16"
+  },
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared synthetic layouts and order2 groups. Root replay is not external independent review. Complete baseline/candidate bits include nonfinite reductions; CPU NaN-payload parity is not claimed. Full solver/group/continuation/storage/capacity/material/speed checks remain required."
+}

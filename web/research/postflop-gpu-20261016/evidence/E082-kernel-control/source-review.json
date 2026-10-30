@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-18T09:04:00.887074+00:00",
+  "id": "E082-direct-source-review",
+  "case_descriptors_and_order_unchanged": true,
+  "corpus_sha256": "1214d93086831c413e145148229d86fb5eeb91c1a60f245f94ebf478af1adfae",
+  "geometries": 36,
+  "base_cases": 364,
+  "widths": [
+    1,
+    32,
+    64,
+    128,
+    256
+  ],
+  "expected_pairs": 1820,
+  "expected_launches": 3640,
+  "control_adaptation": "Reuse retained E077 full showdown matrix, exact physical inputs/payouts/boards/ranks/reaches/profiles. Remove only its candidate-specific immutable index tagging. Both arms now receive all21identical original input buffers; complete CFV images, all21actual readback images and all unowned/guard words retained. Add no cases or precision/expected-output/tolerance changes. Reuse sealed120PTX from one resource probe; no NVRTC rerun.",
+  "coverage": "Both players, two simultaneous terminal nodes, count0/excessgrid, empty/small/tail/full valid physical opponent hands, partial block/chunk boundaries, whole/tie/blocker payoffs, nontrivial card/order lists, finite/signedzero/subnormal/quietNaN/infinity/overflow and original sparse rounding witness. Host comparator and guard corruptions rejected before math but not counted as GPU passes.",
+  "scope": "Finite fixed corpus, not universal GPU/NaN/address proof. No whole-solver/material/performance conclusion. Actual failure closes exact candidate with no variants or native extensions."
+}

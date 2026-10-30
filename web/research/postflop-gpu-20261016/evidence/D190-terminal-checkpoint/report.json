@@ -1,0 +1,97 @@
+{
+  "id": "D190/E100-close",
+  "at": "2026-10-28T20:09:22.208830+00:00",
+  "status": "rejected_component_admission_closed",
+  "native_report_sha256": "672b1017a2b5d0c37e2ba9d436b9e82fdd5ee34536a507d2542719549f9af867",
+  "root_replay_sha256": "e34b0218fe7b13d043ced52ba1fb821873fedf5289ffedd531ec101b36ff22ae",
+  "source_review_sha256": "b28761b32971dd2b49739b9db301cfc3cf32749359955f2fcd33e963d8c20b53",
+  "protocol_sha256": "f13ca9b505078cdb527f5c47adef02863d0567235ef55e413800f71956477160",
+  "baseline_CPU_wrapper_median_sum_ms": 94.08370000000001,
+  "candidate_CPU_wrapper_median_sum_ms": 76.51950000000001,
+  "CPU_component_saving_ms": 17.564200000000003,
+  "required_component_saving_ms": 95.086109,
+  "component_fixture_guards": [
+    {
+      "id": 0,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 1,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 2,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    }
+  ],
+  "full_cycle_performance_measured": false,
+  "raw_typed_words_compared": 159838548,
+  "whole_retained_raw_bytes": 2470234362,
+  "full_typed_raw_files": 23,
+  "native_exact_error_equalities": 10,
+  "all_retained_raw_extents_verified_after_reader": true,
+  "raw_not_rehashed_after_successful_original_reader": true,
+  "successful_child_receipts": [
+    {
+      "label": "smallvec-rustc",
+      "receipt_sha256": "1ef7c4105be8cb42f7b29bf222e52723c2aca9788f9ffca6c67ed81f95d83937",
+      "returncode": 0
+    },
+    {
+      "label": "rustc",
+      "receipt_sha256": "a6ada0ad1a4193f013c3bcdb8182ea1187efcee3196ec866d282d2878af8e79b",
+      "returncode": 0
+    },
+    {
+      "label": "canonical-0",
+      "receipt_sha256": "b8b1ddbfb1697298a53ce00391d1f40b9db39de0160c46d5a7da4c2bef4050f5",
+      "returncode": 0
+    },
+    {
+      "label": "canonical-1",
+      "receipt_sha256": "0d04b35c9a6466c063dee68963e0485ee795bbc319d2e862bfbb8e991e3a4091",
+      "returncode": 0
+    },
+    {
+      "label": "canonical-2",
+      "receipt_sha256": "74ac34c03c5ce5a0251ce714aff10c016070d0af2accb5c14757713410bb5ecb",
+      "returncode": 0
+    },
+    {
+      "label": "controls",
+      "receipt_sha256": "7bc5fa1e1e737adc2d1499d7771a478ba9a09c99d2380b68058591f2d529c1e4",
+      "returncode": 0
+    },
+    {
+      "label": "audit",
+      "receipt_sha256": "0969fe8630fcc3fb31c35384301f9f2a464db138fba6d6d8729bbdb7ae199e45",
+      "returncode": 0
+    }
+  ],
+  "all_owned_compiler_native_reader_processes_terminal": true,
+  "new_GPU_processes": 0,
+  "production_source_activation": false,
+  "new_gain_accepted_or_deployed": false,
+  "precision_quality_CUDA_or_save_format_changes": false,
+  "resource_risks_remaining_unqualified": {
+    "baseline_action_vec_bytes": 24,
+    "baseline_amount_vec_bytes": 24,
+    "candidate_action_smallvec_bytes": 80,
+    "candidate_amount_smallvec_bytes": 48,
+    "inline_capacity": 4,
+    "stage": "temporary_container_sizes"
+  },
+  "closure": "No inline capacity, container, scope, helper, flags, threshold, source or sample rescue. No whole-solve timing or broader/material/adoption progression after the failed component gate.",
+  "limitations": "Finite returned-tree/config/fields/capacities and original budget/menu/error corpus only. No GPU/solver numerical qualification or universal exactness claim. CPU wrapper excludes final Tree destruction and cannot prove full-cycle speed or overall resource neutrality.",
+  "best_qualified": "E080 / GPU / compressed / 16 workers",
+  "last_primary_baseline": "B313",
+  "new_output_physical_drive": "X:",
+  "archive_read_only": true,
+  "T_drive_accesses": 0
+}

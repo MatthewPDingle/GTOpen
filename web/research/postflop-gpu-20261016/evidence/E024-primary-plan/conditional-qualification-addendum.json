@@ -1,0 +1,37 @@
+{
+  "id": "E024-conditional-qualification-addendum",
+  "at": "2026-10-16T14:15:19.107615+00:00",
+  "status": "prospective_before_primary_execution",
+  "primary_protocol_sha256": "39fb1748192c01f5cf190e31edbc5d6cf4282966c798b44fd196fe8e04fde62e",
+  "original_scripts_manifest_sha256": "bf92f79e85fc3c0afe315b39893defe34e41296c73982a30ddae6bcf8289397f",
+  "reason": "Root added NA9, the first original uncached boundary, immediately after the primary script seal. Preserve the seal; strengthen only the later adoption requirement.",
+  "required_generic_action_counts": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    16,
+    17
+  ],
+  "algorithms": [
+    "Dcfr",
+    "CfrPlus"
+  ],
+  "storage": [
+    "Compressed",
+    "F32"
+  ],
+  "new_tiny_river_cases": 28,
+  "exact_original_kernel_comparison_required": true,
+  "reference": "accepted E020 original kernel",
+  "candidate": "E024",
+  "coverage": "Assert both actors have the target arity. Compare unlocked and jointly locked states, graph recreation and warm resume under the separately frozen conditional test design.",
+  "relationship": "This supersedes the generic-arity list in protocol.broader_qualification_if_pass and related README text only; all existing broad controls, wide-turn holdout and fresh original cumulative qualification remain mandatory.",
+  "must_pass_before_adoption": true,
+  "root_authorization_and_independent_review_must_pin_this_addendum": true,
+  "primary_source_schedule_workload_gates_scripts_changed": false,
+  "conditional_harness_implemented_here": false,
+  "builds_or_native_execution": 0,
+  "candidate_accepted": false
+}

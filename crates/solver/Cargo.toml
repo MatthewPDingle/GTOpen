@@ -22,6 +22,7 @@ path = "src/bin/solve_cli.rs"
 [features]
 gpu = ["dep:cudarc"]
 preflop-research = ["gpu"]
+continuation-transfer-research = ["preflop-research", "serde_json/float_roundtrip"]
 
 [[example]]
 name = "learned_decisions"
@@ -181,4 +182,52 @@ required-features = ["preflop-research"]
 
 [[example]]
 name = "continuation_orbit_memory"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_compact"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_paged"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "continuation_transfer"
+required-features = ["continuation-transfer-research"]
+
+[[example]]
+name = "continuation_transfer_streamed"
+required-features = ["continuation-transfer-research"]
+
+[[example]]
+name = "integrated_continuation_stored"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "continuation_storage_capacity"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_context_capacity"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_context_cold_replay"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_context_wide_cold_replay"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_public_chance_capacity"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_river_frontier_capacity"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "hu_wide_state_maturity"
 required-features = ["preflop-research"]

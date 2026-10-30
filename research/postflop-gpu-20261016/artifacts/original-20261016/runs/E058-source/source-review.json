@@ -1,0 +1,23 @@
+{
+  "id": "D095-uniform-division",
+  "at": "2026-10-17T07:36:39.765592+00:00",
+  "proposal": "One source expression in down_action_impl: form the fallback pr/na only when sum>1e-12f is false; initialize the otherwise unused uni to0. The original per-action condition, division operands, stores and loop order remain unchanged.",
+  "compiled_baseline_observation": "Accepted E051 down_action PTX has pr/3 before the sum-threshold branch and pr/na before the generic action loop. Common2/4 paths use selected constant fractions. Compiler may speculate or transform the candidate back; a real compiled body difference is required, and no division saving or speedup is assumed.",
+  "semantic_argument": [
+    "If sum>1e-12f, every unlocked action writes pr*((r>0?r:0)/sum) and never consumes uni; changing that unused scalar to0 does not change any stored value.",
+    "Otherwise, including unordered sum, source evaluates the identical pr/(float)na expression and writes the original uni for every action. No reciprocal substitution or reassociation is proposed.",
+    "Locked path, regret loads, ordered positive-regret sum, threshold, parent reach, child addresses, common2/3/4/generic dispatch and all other entries unchanged. No new storage, host/ABI/layout/graph/launch/precision/quality setting.",
+    "GPU floating operations that produce stored results retain original expressions and order; exact direct device controls including signedzero/nonfinite/extremes and full solver state/checkpoint qualification remain required before any adoption."
+  ],
+  "history_scope": "Distinct from E055 immutable discount loads in up_action, E051 strategy-store scheduling, E047 dispatch, E028 probability cache and closed register/cache/ordering variants. No matching conditional fallback source found by scoped retained source search; exact hash checked across retained CU files.",
+  "retained_cuda_files_hash_checked": 241,
+  "exact_hash_duplicates": [],
+  "resource_policy": "Prospective D094 allocation-based prefilter. No increased allocated registers, spill/shared bytes or reduced occupancy/maxthreads; ABI and other8entries exact. Report nominal counts too. No retry/conditional syntax/placement/arity/factor variant to rescue a failed gate.",
+  "performance_policy": "Current >=1% complete-cycle/no repeatable fixture slowdown; separate fixed16 confirmation and all broader/F32/state/menu/save/resume/continuation/material/holdout/cumulative gates. No performance observation or historical candidate reopening.",
+  "reviewer": "Root source review, not external independent audit",
+  "source_activated": false,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

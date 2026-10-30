@@ -1,0 +1,26 @@
+{
+  "id": "E042-kernel-control-source-review",
+  "at": "2026-10-17T01:34:16.343233+00:00",
+  "status": "pass_prospective_control_for_one_execution",
+  "root_review_only": true,
+  "accepted_source_unchanged": true,
+  "resource_report_sha256": "165c946cfa6c41ad11440502fdc8ce57ecb37132a0dbef8c42d3c530e5ac1fa9",
+  "checks": [
+    "Exact original/candidate PTX files from the passed resource probe; separate modules, same up_action entry/ABI.",
+    "All20 kernel arguments match frozen source signature, integer widths and actual buffers.",
+    "Parent and child CFV slots disjoint; padded hand stride exceeds logical hands; nonzero data and lock prefixes.",
+    "Countzero plus excess grid returns before invalid sentinel node IDs.",
+    "Only own-unlocked may change owned regret/strategy span; all roles may change only parent logical CFV span.",
+    "Both full output arms and actual immutable input snapshots are written/flushed before assertions.",
+    "Every immutable metadata/float vector checked after each arm, with NaN-aware raw bits.",
+    "Production discount method body copied byte-for-byte except surrounding type declarations; main matrix covers algorithms and iterations1/20/200.",
+    "717-case Rust enumeration separately expanded in corpus.json; no random search or outcome-driven sample changes."
+  ],
+  "pending": [
+    "Compilation",
+    "1434 direct GPU launches",
+    "Separate raw decoder/evidence review",
+    "Feature/GPU complete-solver build, ordinary suite and fresh fixed primary timing if direct control passes"
+  ],
+  "performance_claim": null
+}

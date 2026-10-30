@@ -1,0 +1,56 @@
+{
+  "id": "D256-source-adapter",
+  "at": "2026-10-29T05:26:17.795929+00:00",
+  "original_probe_sha256": "1856b798a620078312009886409dcd58c0a39102b4f8dec93b0662e2fb398263",
+  "adapted_probe_sha256": "69452fa95a9990bfa8f1c6993976af1828c8f78763e0274ce302adfba969f293",
+  "namespace_only_before_documented_changes": true,
+  "all_exact_edit_positions_reverse_to_original": true,
+  "changes": [
+    {
+      "position": 291,
+      "old": "type Out=BufWriter<File>;",
+      "new": "type Out=BufWriter<File>;\n\nfn region<T:cudarc::driver::DeviceRepr>(s:&Arc<CudaStream>,d:&CudaSlice<T>)->[u64;2]{let(p,_g)=d.device_ptr(s);[p,(d.len()*std::mem::size_of::<T>())as u64]}\nfn disjoint(all:&[[u64;2]]){for(i,a)in all.iter().enumerate(){for b in &all[i+1..]{assert!(a[0]+a[1]<=b[0]||b[0]+b[1]<=a[0],\"actual bound input/output/symbol overlap\");}}}\nfn symbol_words(m:&Arc<cudarc::driver::CudaModule>,s:&Arc<CudaStream>)->Vec<u32>{let d=m.get_global(\"gto_postflop_discounts\",s).unwrap();assert_eq!(d.len(),12);let v=s.clone_dtoh(&d).unwrap();v.chunks_exact(4).map(|b|u32::from_le_bytes(b.try_into().unwrap())).collect()}\nfn symbol_upload(m:&Arc<cudarc::driver::CudaModule>,s:&Arc<CudaStream>,v:&[f32]){assert_eq!(v.len(),3);let mut raw=m.get_global(\"gto_postflop_discounts\",s).unwrap();assert_eq!(raw.len(),12);let mut typed=unsafe{raw.transmute_mut::<f32>(3).unwrap()};s.memcpy_htod(v,&mut typed).unwrap();}\n"
+    },
+    {
+      "position": 3514,
+      "old": "let mut ci=file(dir.join(\"candidate-inputs.bin\"),b\"D256_IM1\");",
+      "new": "let mut ci=file(dir.join(\"candidate-inputs.bin\"),b\"D256_IM1\");let mut symbols=file(dir.join(\"symbol-bindings.bin\"),b\"D256_CONST1\");"
+    },
+    {
+      "position": 4076,
+      "old": "let cf=cm.load_function(\"up_action\").unwrap();",
+      "new": "let cf=cm.load_function(\"up_action\").unwrap();assert_eq!(symbol_words(&cm,&stream),[0,0,0]);"
+    },
+    {
+      "position": 8023,
+      "old": "  let mut expected:Option<Vec<Vec<u32>>>=None;",
+      "new": "  let immutable_regions=vec![region(&stream,&dn),region(&stream,&dp),region(&stream,&da),region(&stream,&doff),region(&stream,&dcs),region(&stream,&dc),region(&stream,&drs),region(&stream,&drp),region(&stream,&dl),region(&stream,&dls),region(&stream,&dslot),region(&stream,&dd)];\n  let mut expected:Option<Vec<Vec<u32>>>=None;"
+    },
+    {
+      "position": 8630,
+      "old": "   device_ranges.push(serde_json::json!({\"arm\":label,\"regions\":disjoint_regions(&stream,[&dr,&ds,&dv])}));",
+      "new": "   let regions=disjoint_regions(&stream,[&dr,&ds,&dv]);let mut all_regions=immutable_regions.clone();all_regions.extend_from_slice(&regions);let mut discount_symbol=None;\n   if label==\"candidate\"{let raw=cm.get_global(\"gto_postflop_discounts\",&stream).unwrap();assert_eq!(raw.len(),12);let(ptr,guard)=raw.device_ptr(&stream);drop(guard);discount_symbol=Some([ptr,12]);all_regions.push([ptr,12]);id(&mut symbols,index);words(&mut symbols,&symbol_words(&cm,&stream));symbol_upload(&cm,&stream,&disc);let uploaded=symbol_words(&cm,&stream);assert_eq!(uploaded,fb(&disc),\"actual symbol upload\");words(&mut symbols,&uploaded);symbols.flush().unwrap();}\n   disjoint(&all_regions);device_ranges.push(serde_json::json!({\"arm\":label,\"regions\":regions,\"immutable_regions\":immutable_regions,\"discount_symbol\":discount_symbol,\"kernel_parameter_count\":if label==\"baseline\"{20}else{19}}));"
+    },
+    {
+      "position": 9509,
+      "old": "unsafe{stream.launch_builder(f).arg(&dn)",
+      "new": "unsafe{let mut launch=stream.launch_builder(f);launch.arg(&dn)"
+    },
+    {
+      "position": 9728,
+      "old": ".arg(&mut dv).arg(&dd).arg(&nharg).arg(&maxarg).launch(",
+      "new": ".arg(&mut dv);if label==\"baseline\"{launch.arg(&dd);}launch.arg(&nharg).arg(&maxarg).launch("
+    },
+    {
+      "position": 10665,
+      "old": "post.push(readf(&stream,&dd));stream.synchronize().unwrap();",
+      "new": "if label==\"baseline\"{post.push(readf(&stream,&dd));}else{let actual=symbol_words(&cm,&stream);words(&mut symbols,&actual);let unchanged_global=readf(&stream,&dd);assert_eq!(unchanged_global,fb(&disc));words(&mut symbols,&unchanged_global);symbols.flush().unwrap();post.push(actual);}stream.synchronize().unwrap();"
+    },
+    {
+      "position": 12334,
+      "old": "for f in [&mut input,&mut baseline,&mut candidate,&mut bi,&mut ci]",
+      "new": "for f in [&mut input,&mut baseline,&mut candidate,&mut bi,&mut ci,&mut symbols]"
+    }
+  ],
+  "scope": "Same original819cases andall floatdata/ownership/oracle/guard operations. Only candidatefunction ABI removal andconstantupload/readback binding differ. New symbol rawframes andactualallinput/mutable/symbol region evidence additive; no productioncandidate/source/quality change."
+}

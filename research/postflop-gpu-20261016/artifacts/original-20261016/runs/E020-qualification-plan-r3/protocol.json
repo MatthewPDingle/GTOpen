@@ -1,0 +1,312 @@
+{
+  "id": "E020-qualification-plan",
+  "at": "2026-10-16T10:51:13.018693+00:00",
+  "status": "SOURCE_ONLY_PENDING_INDEPENDENT_REVIEW",
+  "executed": false,
+  "candidate": "E020",
+  "entry_gate": "Root authorization must pin qualifying primary report and independent primary/source/script reviews. Unit screen already84passed/4ignored; never rerun to select a favorable outcome.",
+  "controls": [
+    {
+      "id": "V020-state",
+      "binary": "E020-postflop_state_perf",
+      "test": "postflop_states",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "V020-menu",
+      "binary": "E020-postflop_action_menus",
+      "test": "postflop_action_menus",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "V020-resume",
+      "binary": "E020-postflop_resume_state",
+      "test": "postflop_resume_state",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "V020-gpu",
+      "binary": "E020-gpu",
+      "test": "*",
+      "ordinary": true,
+      "storage": "compressed",
+      "passes": 6
+    },
+    {
+      "id": "V020-f32-original",
+      "binary": "baseline-complete",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "f32",
+      "passes": 1
+    },
+    {
+      "id": "V020-f32-candidate",
+      "binary": "E020-postflop_autoresearch",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "f32",
+      "passes": 1
+    },
+    {
+      "id": "V020-continuation-paging",
+      "binary": "E020-continuation_paging",
+      "test": "paging_preserves_resident_trajectories_and_rejects_invalid_inputs",
+      "ordinary": true,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "V020-continuation-rejection",
+      "binary": "E020-continuation_symmetry",
+      "test": "symmetric_continuation_rejects_unsupported_inputs_without_mutation",
+      "ordinary": true,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "V020-continuation-stored",
+      "binary": "E020-continuation-tests",
+      "test": "gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes",
+      "ordinary": true,
+      "storage": "compressed",
+      "passes": 1
+    }
+  ],
+  "build_order": [
+    {
+      "purpose": "Ordinary GPU integration and frozen state/menu/resume controls",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--features",
+        "gpu",
+        "--test",
+        "postflop_state_perf",
+        "--test",
+        "postflop_action_menus",
+        "--test",
+        "postflop_resume_state",
+        "--test",
+        "gpu",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "expected_targets": [
+        "postflop_state_perf",
+        "postflop_action_menus",
+        "postflop_resume_state",
+        "gpu"
+      ]
+    },
+    {
+      "purpose": "Only selected feature-gated continuation tests; no full preflop research suite",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--features",
+        "preflop-research",
+        "--lib",
+        "--test",
+        "continuation_paging",
+        "--test",
+        "continuation_symmetry",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "expected_targets": [
+        "solver",
+        "continuation_paging",
+        "continuation_symmetry"
+      ],
+      "copy_target_names": {
+        "solver": "E020-continuation-tests",
+        "continuation_paging": "E020-continuation_paging",
+        "continuation_symmetry": "E020-continuation_symmetry"
+      }
+    }
+  ],
+  "cumulative_order": [
+    {
+      "id": "B065",
+      "binary": "baseline-complete",
+      "kind": "baseline",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "E020C1",
+      "binary": "E020-postflop_autoresearch",
+      "kind": "candidate",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "E020C2",
+      "binary": "E020-postflop_autoresearch",
+      "kind": "candidate",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "B066",
+      "binary": "baseline-complete",
+      "kind": "baseline",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "B067",
+      "binary": "baseline-complete",
+      "kind": "baseline",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    },
+    {
+      "id": "E020C3",
+      "binary": "E020-postflop_autoresearch",
+      "kind": "candidate",
+      "test": "postflop_complete_cycle",
+      "ordinary": false,
+      "storage": "compressed",
+      "passes": 1
+    }
+  ],
+  "pairs": [
+    {
+      "baseline": "B065",
+      "candidate": "E020C1"
+    },
+    {
+      "baseline": "B066",
+      "candidate": "E020C2"
+    },
+    {
+      "baseline": "B067",
+      "candidate": "E020C3"
+    }
+  ],
+  "original_controls": [
+    "V000-state-baseline",
+    "V000-menu-baseline",
+    "V000-resume-baseline-r"
+  ],
+  "original_f32_anchor": "V004-f32-baseline",
+  "controls_comparison_id": "E020-controls-comparison",
+  "broader_comparison_id": "E020-broader-qualification",
+  "cumulative_comparison_id": "E020-cumulative-comparison",
+  "stored_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-stored-state",
+  "build_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build",
+  "controls_execution_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-execution",
+  "cumulative_execution_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-cumulative-execution",
+  "candidate_primary_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json",
+  "all_builds_before_gpu": "Both broader Cargo builds and both separately prepared holdout binaries complete and immutable before any qualification native run. Root seals all-builds-ready.json with input hashes and explicit holdout build terminal success. No builds between any timing pairs.",
+  "baseline_identity": "Original baseline-complete.exe + its historical build manifest; runtime checkout stays E020. Build-time provenance alone identifies binary implementation.",
+  "control_gates": [
+    {
+      "id": "V020-state",
+      "gate": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-state-baseline; metrics must be empty."
+    },
+    {
+      "id": "V020-menu",
+      "gate": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-menu-baseline; metrics must be empty."
+    },
+    {
+      "id": "V020-resume",
+      "gate": "One executed ignored test;16 ordered records/112 exact snapshots vs V000-resume-baseline-r; metrics empty; exact raw/save/query/exploit fields."
+    },
+    {
+      "id": "V020-gpu",
+      "gate": "Complete tests/gpu.rs ordinary suite:6 passed,0 failed,0 ignored,0 measured,0 filtered. Internal CPU/GPU tolerance controls are distinct from bit-exact original comparisons."
+    },
+    {
+      "id": "V020-f32-original",
+      "gate": "One executed ignored test, all3 fixtures; raw results identical to report; complete non-timing equality to preserved V004-f32-baseline."
+    },
+    {
+      "id": "V020-f32-candidate",
+      "gate": "One executed ignored test, all3 fixtures; every non-timing/config/state field exact vs fresh original. No F32 speed claim."
+    },
+    {
+      "id": "V020-continuation-paging",
+      "gate": "Exactly named test1 passed/0 failed/0 ignored;160 alternating board/player sweeps; exact CFVs+F32 arenas and rejected invalid-input state unchanged."
+    },
+    {
+      "id": "V020-continuation-rejection",
+      "gate": "Exactly named test1 passed/0 failed/0 ignored; invalid/nonfinite/asymmetric roots and unsupported host states rejected without mutation."
+    },
+    {
+      "id": "V020-continuation-stored",
+      "gate": "Exactly fully qualified test1 passed/0 failed/0 ignored;720 unique pass rows, all passed; one summary720, full_device_arrays_bitwise_equal/restored_arrays_bitwise_equal/values_bitwise_equal all true. Explicit unique bulk GTO_SSD_STUDY_DIR recorded; test uses unlimited RAM budget, no forced SSD-spill claim."
+    }
+  ],
+  "f32_policy": {
+    "fixtures": [
+      "rainbow",
+      "two-tone",
+      "river"
+    ],
+    "known_iterations": [
+      200,
+      200,
+      60
+    ],
+    "ignored_fields_only": [
+      "build_ms",
+      "init_ms",
+      "solve_ms",
+      "readback_ms",
+      "full_cycle_ms",
+      "fingerprint_ms_excluded"
+    ],
+    "compare": "All remaining top-level and nested fields, including config,state_fingerprint,root_strategy_bits,exploit_bits,stopping iteration, target settings and storage, exactly equal. Raw AUTORESEARCH_RESULT records must equal report.results. Verify report/raw/binary/manifest/evaluator source hashes; target_met true, target_pct0.3,check_every20,max_iterations400. Correctness only; do not promote component or F32 timing."
+  },
+  "holdout_gate": "Frozen E020-wide-turn-holdout-plan protocol33d4a047... remains separate. Cumulative starts only after broader controls AND holdout terminal gate AND independent audits pass, recorded in qualification-ready.json.",
+  "cumulative_gates": ">=2% reduction in sum of3fixture complete-cycle medians; reject median fixture slowdown>3% AND at least2of3 paired slowdowns>3%. All18 complete non-timing/config/state objects exact. No exclusions, extension, substitutions or adaptive reruns.",
+  "primary_delta": "Exactly kernels.cu07565169... and mod.rsce71fa3b... relative acceptedE015; immutable E020 primary binary reused for F32 and cumulative, never a feature-enabled replacement.",
+  "scope": "Three snapshot suites160exact states;6GPU integration tests include tolerance checks; three continuation controls demonstrate integration consistency, not original-kernel equivalence; full original F32 oracle separate. No new ownership/ABI harness needed for two matching shared-size sites and integer-only kernel cache.",
+  "limits": [
+    "No statistical significance claim from three pairs.",
+    "No F32, saved-state, API, cold-start or SSD-spill performance qualification.",
+    "Continuation comparisons share changed up_show on both sides; they prove integration consistency, not original-kernel equivalence.",
+    "Selected continuation tests share the changed up_show in their internal arms; no full preflop research or rejected E016 invalidation test.",
+    "No statistical significance, cold-cache, F32 speed, SSD-spill or deployment claim."
+  ],
+  "resource_policy": {
+    "disk_reserve_bytes": 53687091200,
+    "output_reservation_bytes": 4294967296,
+    "build_timeout_seconds": 1800,
+    "heartbeat_seconds": 10,
+    "gpu_lock": "gpu-run.lock",
+    "live_refusal": "existing GET-only live status before each child; never mutate server",
+    "compiler_override_policy": "Refuse effective RUSTFLAGS/CARGO_ENCODED_RUSTFLAGS/RUSTC/WRAPPER/CARGO_BUILD_* compiler overrides, CARGO_TARGET_*_RUSTFLAGS and CARGO_PROFILE_RELEASE_* overrides; capture absence map in build invocation. Do not silently alter an inherited build mode."
+  },
+  "commands": {
+    "build": "python -B build.py <authorization-sha256>",
+    "controls": "python -B controls.py <authorization-sha256> <all-builds-ready-sha256>",
+    "cumulative": "python -B cumulative.py <authorization-sha256> <qualification-ready-sha256>",
+    "assess": "python -B assess.py <authorization-sha256>"
+  }
+}

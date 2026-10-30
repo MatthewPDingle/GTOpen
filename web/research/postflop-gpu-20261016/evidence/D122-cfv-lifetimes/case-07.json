@@ -1,0 +1,193 @@
+{
+  "case": 7,
+  "board": "Ks7s2d",
+  "iso_requested": true,
+  "iso_active": true,
+  "full_arenas": true,
+  "nodes": 1346813,
+  "levels": 14,
+  "single_action_nodes": 23080,
+  "single_action_child_kind_counts": {
+    "0": 23080
+  },
+  "action_child_arity_counts": {
+    "2": 23080
+  },
+  "disjoint_share_pairs": 23080,
+  "naive_early_write_analysis": {
+    "no_other_action_input_at_original_target": 5886,
+    "potential_cross_CTA_read_write_conflict": 17146,
+    "same_child_CTA_only": 48
+  },
+  "naive_cross_CTA_witnesses": [
+    {
+      "parent": 399685,
+      "child_CTA": 399686,
+      "parent_level": 4,
+      "old_target_slot": 98,
+      "other_reader_CTA": 4777,
+      "other_input_node": 4779,
+      "other_input_level": 6
+    },
+    {
+      "parent": 405693,
+      "child_CTA": 405694,
+      "parent_level": 4,
+      "old_target_slot": 99,
+      "other_reader_CTA": 4777,
+      "other_input_node": 5221,
+      "other_input_level": 6
+    },
+    {
+      "parent": 741260,
+      "child_CTA": 741261,
+      "parent_level": 4,
+      "old_target_slot": 135,
+      "other_reader_CTA": 13645,
+      "other_input_node": 13647,
+      "other_input_level": 6
+    },
+    {
+      "parent": 743232,
+      "child_CTA": 743233,
+      "parent_level": 4,
+      "old_target_slot": 136,
+      "other_reader_CTA": 13645,
+      "other_input_node": 14236,
+      "other_input_level": 6
+    },
+    {
+      "parent": 1151771,
+      "child_CTA": 1151772,
+      "parent_level": 4,
+      "old_target_slot": 222,
+      "other_reader_CTA": 19656,
+      "other_input_node": 19658,
+      "other_input_level": 6
+    },
+    {
+      "parent": 1153743,
+      "child_CTA": 1153744,
+      "parent_level": 4,
+      "old_target_slot": 223,
+      "other_reader_CTA": 19656,
+      "other_input_node": 20247,
+      "other_input_level": 6
+    },
+    {
+      "parent": 591638,
+      "child_CTA": 591639,
+      "parent_level": 6,
+      "old_target_slot": 3146,
+      "other_reader_CTA": 76364,
+      "other_input_node": 76366,
+      "other_input_level": 8
+    },
+    {
+      "parent": 593812,
+      "child_CTA": 593813,
+      "parent_level": 6,
+      "old_target_slot": 3147,
+      "other_reader_CTA": 76375,
+      "other_input_node": 76378,
+      "other_input_level": 8
+    }
+  ],
+  "old_scratch_rows": 163950,
+  "new_scratch_rows": 153947,
+  "old_CFV_rows": 645909,
+  "new_CFV_rows": 635906,
+  "CFV_payload_bytes_saved": 12803840,
+  "nh_max": 320,
+  "maximum_live_group_count": 153947,
+  "all_graph_and_lifetime_invariants_pass": true,
+  "original_raw_sha256": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+  "proposed_map_sha256": "dc920e67cbb8938cef928744522af1acec6a32627810fcae4abf9bdd29698f5e",
+  "proposed_map_bytes": 5387312,
+  "stage_lifetime_inventory": [
+    {
+      "stage": 13,
+      "born_groups": 0,
+      "retired_groups": 0,
+      "live_groups": 0
+    },
+    {
+      "stage": 12,
+      "born_groups": 18577,
+      "retired_groups": 0,
+      "live_groups": 18577
+    },
+    {
+      "stage": 11,
+      "born_groups": 62876,
+      "retired_groups": 0,
+      "live_groups": 81453
+    },
+    {
+      "stage": 10,
+      "born_groups": 83098,
+      "retired_groups": 18577,
+      "live_groups": 145974
+    },
+    {
+      "stage": 9,
+      "born_groups": 67991,
+      "retired_groups": 60018,
+      "live_groups": 153947
+    },
+    {
+      "stage": 8,
+      "born_groups": 41272,
+      "retired_groups": 75953,
+      "live_groups": 119266
+    },
+    {
+      "stage": 7,
+      "born_groups": 16873,
+      "retired_groups": 73707,
+      "live_groups": 62432
+    },
+    {
+      "stage": 6,
+      "born_groups": 6441,
+      "retired_groups": 39843,
+      "live_groups": 29030
+    },
+    {
+      "stage": 5,
+      "born_groups": 510,
+      "retired_groups": 22481,
+      "live_groups": 7059
+    },
+    {
+      "stage": 4,
+      "born_groups": 150,
+      "retired_groups": 6549,
+      "live_groups": 660
+    },
+    {
+      "stage": 3,
+      "born_groups": 78,
+      "retired_groups": 402,
+      "live_groups": 336
+    },
+    {
+      "stage": 2,
+      "born_groups": 5,
+      "retired_groups": 258,
+      "live_groups": 83
+    },
+    {
+      "stage": 1,
+      "born_groups": 2,
+      "retired_groups": 78,
+      "live_groups": 7
+    },
+    {
+      "stage": 0,
+      "born_groups": 1,
+      "retired_groups": 5,
+      "live_groups": 3
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "D031",
+  "status": "prepared_not_executed",
+  "protocol_sha256": "7d2427790154d41accc34114423120ebbb4e5ce638d39e35b600b9f2d1abcdf7",
+  "source_variants": {
+    "baseline": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "fnv1a64": "3f0594b037a1dda3",
+      "bytes": 22624
+    },
+    "candidate": {
+      "sha256": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+      "fnv1a64": "072e23408c39a7f1",
+      "bytes": 22654
+    }
+  },
+  "dependency_rlibs": {
+    "cudarc": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+      "sha256": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+      "bytes": 7170642
+    },
+    "serde_json": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+      "sha256": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532",
+      "bytes": 2069500
+    }
+  },
+  "artifact_sha256": {
+    "baseline.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "candidate.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "candidate.patch": "f13890e29409852066a97ed617befb072864c631b87e747dad84f9f9f30e5fe0",
+    "probe.rs": "c7c7b6af414399b497c2c5fea978d5a1d53dd8998ca947836d4fecd24c509bf4",
+    "protocol.json": "7d2427790154d41accc34114423120ebbb4e5ce638d39e35b600b9f2d1abcdf7",
+    "README.md": "57aa1643b9140b1cc880022c1863a0f4e3df37527aed3282c2dd93499190b0d4",
+    "run.py": "cd00c88eded9229dd28aaf64c4b9398f18db683540297ff0bad4b5f74debaa61",
+    "runner-primitives-source.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "source-checks.json": "5adb0e3449f06bef8195e3dcee7cbc40963593596fa0fc1ab71f0dbdaa792d38",
+    "source-D021-probe.rs": "85f729c26099b916b4297829d9c2f96caaebf3530bc03beabfdc194c1f83e1e9",
+    "source-D021-run.py": "edefa9b4008e127e25070192d042fdf8110a3b244b577f619eb03a76a203a37b",
+    "source-D030-audit.md": "90d5f603f39a0359aeb8e2138f9c4290b3086040bceb91a5f891333298dafed4"
+  },
+  "builds_executed": 0,
+  "gpu_calls_executed": 0,
+  "production_edits": 0
+}

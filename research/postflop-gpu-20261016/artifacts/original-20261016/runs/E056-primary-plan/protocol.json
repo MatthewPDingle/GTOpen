@@ -1,0 +1,84 @@
+{
+  "id": "E056-primary",
+  "at": "2026-10-17T07:12:36.309290+00:00",
+  "status": "FROZEN_PRE_PRIMARY_NATIVE",
+  "baseline": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json",
+    "sha256": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028"
+  },
+  "baseline_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+    "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "8d7b94f352bb0aa2460ffeea85e8b0f1d5a32654f1130d3634d002e12d88b0ca"
+  },
+  "build_protocol_sha256": "eba065d9d10f0a05c3ed84609369cc29d34010f5fb7529cbfd7c481a2f278420",
+  "control_ids": [
+    "V056-unit"
+  ],
+  "measurement_order": [
+    "B183",
+    "E056R1",
+    "E056R2",
+    "B184",
+    "B185",
+    "E056R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B183",
+      "candidate": "E056R1"
+    },
+    {
+      "baseline": "B184",
+      "candidate": "E056R2"
+    },
+    {
+      "baseline": "B185",
+      "candidate": "E056R3"
+    }
+  ],
+  "policy": {
+    "minimum_complete_cycle_gain_pct": 1.0,
+    "fixture_guard": "Unrounded positive median slowdown and at least2/3 positive paired slowdowns rejects; no epsilon.",
+    "exactness": "All18 full non-timing result payloads and138 checkpoints match accepted E020C1.",
+    "sampling": "Fixed three pairs, no historical timing pooling/exclusions/extensions/rescue samples.",
+    "scope": "Initial primary screen only; no automatic acceptance or statistical-confidence claim."
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-final-build\\complete.json": "ff249b3ff98f834e2dea64b91ed9102fe8e8438a275b9fa885dc8ca3c7208340",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\report.json": "724be58144d61e220a01342e0116832ad061d3261e805ace6d8f9f06f0fd7536",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-build-plan\\build-protocol.json": "eba065d9d10f0a05c3ed84609369cc29d34010f5fb7529cbfd7c481a2f278420",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-source\\source-review.json": "d32be9a696cc75f5df1483406002b0b4b86e451f7110a0fc72ab28c7a0b1b267",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-source\\manifest.json": "c9ecaf7d38d65623da41060f6f336872c293f4ea6f6194663e9d845549a4f100",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-freeze-primary.py": "bb2cadee034b226554f40890501c1707af032ff89b41a930b4469fa33a1be1b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-primary-plan\\assess.py": "a1b5c02643a948e6718354edb766df2d5302ba13c8e1047f2ec45117502fe5f9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-primary-plan\\native.py": "359d58177627f8a2c3d135eda45d80e41820e8a75109cdedeb8106e4dd395df8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-primary-plan\\root-check.py": "a40d4a1ed2a2e8e22e20a3b78847fee3bc0a945dab24e5c1175c4240a8fe1e96",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-primary-plan\\run.py": "43499a3491cbd053dd80cf651b52afd5eb9339abb989fb0982e2be528b06ca86",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E056-solver.exe": "e9488bdc0f5a802cc1abad97c8d12def1f809c8627577e770bf0282b7f1cd4f8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E056-solver.manifest.json": "463e3a985621b584661ce346eea07d9eda0be37c7bd311f4ce495c4542e5b551",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E056-postflop_autoresearch.exe": "f24844f15e8f4d97bd23c191fc0c00605e9669d0dd11313e84639e1931f9aba8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E056-postflop_autoresearch.manifest.json": "55b22f461bd3fef92fd3b16524e82a5bb513401fa88d88709b7d3e445667d8ca"
+  },
+  "adoption_requirements": [
+    "Separately frozen fresh16 pairs: unrounded aggregate >=1%, >=13 improving pairs, positive paired/block/order medians, no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/save/resume/continuation, actual graph/launch/memory/capacity and material CPU setup-cost checks.",
+    "Fixed holdout and fresh-original cumulative qualification. Initial screen alone does not establish significance, universal behavior or adoption."
+  ],
+  "source_scope": "One CPU plan-list permutation: ascending actual action count within each existing depth, unchanged CUDA source/dispatch, span counts, node/child IDs, arenas, physical maps, buffer capacities, launch code and graph structure. Full cycle includes sorting. All53 plan fields/capacities and actual ownership controlled across12 CPU cases; actual GPU results, graphs and broader costs must still qualify.",
+  "scope": "Initial warm-cache three-pair complete-cycle screen only; no automatic adoption, confidence or cold-start claim. No historical timing pooling/exclusions/extensions.",
+  "runtime_authority": "Ongoing user-authorized local GPU research; root source/script review only. No live deployment.",
+  "ordinary_unit_id": "V056-unit",
+  "cpu_control_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\report.json",
+    "sha256": "724be58144d61e220a01342e0116832ad061d3261e805ace6d8f9f06f0fd7536"
+  }
+}

@@ -1,0 +1,127 @@
+--- crates/solver/src/gpu/kernels.cu
++++ crates/solver/src/gpu/kernels.cu
+@@ -230,7 +230,7 @@
+     __syncthreads();
+     const float* ro = ro_sh;
+     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+-        reach_sh[k] = ro[o_idx[ob + k]];
++        reach_sh[k] = ro[o_idx[ob + k] & 0x7fffffffu];
+     }
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+@@ -246,7 +246,7 @@
+         float acc = 0.f;
+         for (int k = lo_k; k < hi_k; k++) {
+             acc += reach_sh[k];
+-            prefix[k] = acc;
++            if (o_idx[ob + k] & 0x80000000u) prefix[k] = acc;
+         }
+         chunk_sum[threadIdx.x + 1] = acc;
+         __syncthreads();
+@@ -256,7 +256,9 @@
+         }
+         __syncthreads();
+         float base = chunk_sum[threadIdx.x];
+-        for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
++        for (int k = lo_k; k < hi_k; k++) {
++            if (o_idx[ob + k] & 0x80000000u) prefix[k] += base;
++        }
+     }
+     __syncthreads();
+     float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
+@@ -265,7 +267,7 @@
+     int m_p = p_cnt[slot];
+     u32 pb = p_off[slot];
+     for (int k = threadIdx.x; k < m_p; k += blockDim.x) {
+-        u32 i = p_idx[pb + k];
++        u32 i = p_idx[pb + k] & 0x7fffffffu;
+         u32 lb = p_lower[pb + k], ub = p_upper[pb + k];
+         float lower = lb > 0 ? prefix[lb - 1] : 0.f;
+         float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);
+--- crates/solver/src/gpu/plan.rs
++++ crates/solver/src/gpu/plan.rs
+@@ -498,10 +498,74 @@
+     }
+ }
+ 
++/// Tag precisely the shared prefixes read by the opposite player's showdown
++/// evaluation. This mutates only a constructor-owned plan after its public build;
++/// GPU index loads mask bit31, leaving every physical hand index unchanged.
++pub(crate) fn tag_prefix_reads(plan: &mut GpuPlan) {
++    const NEEDED: u32 = 0x8000_0000;
++    for opponent in 0..2 {
++        let own = 1 - opponent;
++        for slot in 0..plan.num_slots {
++            let ob = plan.riv_off[opponent][slot] as usize;
++            let count = plan.riv_cnt[opponent][slot] as usize;
++            if count != 0 { plan.riv_sorted_idx[opponent][ob + count - 1] |= NEEDED; }
++            let begin = plan.riv_off[own][slot] as usize;
++            let end = begin + plan.riv_cnt[own][slot] as usize;
++            for i in begin..end {
++                let lower = plan.riv_lower[own][i] as usize;
++                let upper = plan.riv_upper[own][i] as usize;
++                if lower != 0 { plan.riv_sorted_idx[opponent][ob + lower - 1] |= NEEDED; }
++                if upper != 0 { plan.riv_sorted_idx[opponent][ob + upper - 1] |= NEEDED; }
++            }
++        }
++    }
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
++
++    #[test]
++    fn index_tags_preserve_hands_and_exact_prefix_consumers() {
++        for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
++            let spot = Spot::new(SpotConfig {
++                board: board.into(),
++                range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
++                range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0, ..Default::default() },
++            }).unwrap();
++            for iso in [false, true] {
++                let mut plan = GpuPlan::build(&spot, iso);
++                let before = plan.riv_sorted_idx.clone();
++                tag_prefix_reads(&mut plan);
++                for opponent in 0..2 {
++                    assert_eq!(plan.riv_sorted_idx[opponent].len(), before[opponent].len());
++                    for (&tagged, &original) in plan.riv_sorted_idx[opponent].iter().zip(&before[opponent]) {
++                        assert_eq!(tagged & 0x7fff_ffff, original);
++                    }
++                    let own = 1 - opponent;
++                    for slot in 0..plan.num_slots {
++                        let ob = plan.riv_off[opponent][slot] as usize;
++                        let count = plan.riv_cnt[opponent][slot] as usize;
++                        let begin = plan.riv_off[own][slot] as usize;
++                        let end = begin + plan.riv_cnt[own][slot] as usize;
++                        let mut expected = std::collections::HashSet::new();
++                        if count != 0 { expected.insert(count - 1); }
++                        for &bound in plan.riv_lower[own][begin..end].iter().chain(&plan.riv_upper[own][begin..end]) {
++                            if bound != 0 { expected.insert(bound as usize - 1); }
++                        }
++                        let actual: std::collections::HashSet<_> = plan.riv_sorted_idx[opponent][ob..ob + count]
++                            .iter().enumerate().filter_map(|(i, &v)| (v & 0x8000_0000 != 0).then_some(i)).collect();
++                        assert_eq!(actual, expected);
++                    }
++                }
++                let once = plan.riv_sorted_idx.clone();
++                tag_prefix_reads(&mut plan);
++                assert_eq!(plan.riv_sorted_idx, once, "tagging must be idempotent");
++            }
++        }
++    }
+ 
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
+--- crates/solver/src/gpu/mod.rs
++++ crates/solver/src/gpu/mod.rs
+@@ -222,6 +222,7 @@
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
++        plan::tag_prefix_reads(&mut plan);
+         let ctx = CudaContext::new(0).map_err(e)?;
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's

@@ -1,0 +1,8 @@
+gpu: postflop NVRTC13.0 runtime compiler
+gpu: optional postflop NVRTC13 declined: compile returned 6: default_program(1): error: expected a declaration
+  this is deliberately invalid CUDA source
+  ^
+
+1 error detected in the compilation of "default_program".
+; using original compiler
+gpu: optional postflop NVRTC13 declined: nul byte found in provided data at position: 7; using original compiler

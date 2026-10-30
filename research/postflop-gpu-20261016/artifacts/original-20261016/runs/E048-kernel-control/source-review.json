@@ -1,0 +1,18 @@
+{
+  "id": "E048-direct-control-source-review",
+  "at": "2026-10-17T02:53:52.895985+00:00",
+  "status": "pass_to_one_frozen_original_gpu_control",
+  "root_review_only": true,
+  "resource_root_check_sha256": "eb1dcffd68b7d864847f0f78b0ec3efc56e476fb48608a0278cddc7e8cc43fa1",
+  "case_count": 425,
+  "kernel_launches": 850,
+  "family_case_counts": {
+    "0": 157,
+    "1": 268
+  },
+  "reference": "Exact passed-resource original/new PTX in distinct modules. Identical typed canonical masks/card arrays uploaded to both arms, including unused representations. All actual immutable images read back and compared.",
+  "correctness": "Full mutable outputs compared bitwise; every unowned/guard word unchanged. Finite down matrix also checks independent CPU zero/copy membership. Three complete raw files retained. No hash substitutes for raw comparisons.",
+  "safety": "Every copy/kernel completes on one owned stream before buffers release; no cross-stream tracking. Descriptor-derived allocations bound active/guard rows and arbitrary valid permutations.",
+  "summary_counts": "Native comparator reads the frozen JSON corpus; completed-case and launch counters are derived from the actual loop, never copied constants.",
+  "limits": "Finite explicit corpus/canonical inputs; not universal floating payload, malformed input or speed proof. No full solver run yet."
+}

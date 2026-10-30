@@ -1,0 +1,9 @@
+{
+  "status": "invalid_generated_python_escape_adapter",
+  "observed_exec_returncode": 1,
+  "error": "SyntaxError: unterminated string literal in generated source line16",
+  "source_preserved": "repair-script-before-escape-fix.py",
+  "cause": "Unnecessary conversion of already valid raw-string byte escapes before ast.parse",
+  "generated_script_written": false,
+  "Cargo_or_native_or_source_activation": 0
+}

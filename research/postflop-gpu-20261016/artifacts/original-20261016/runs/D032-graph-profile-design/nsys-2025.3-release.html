@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Notes &mdash; nsight-systems 2025.3 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installation Guide" href="../InstallationGuide/index.html" />
+    <link rel="prev" title="Nsight Systems" href="../index.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/devzone.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-new">What’s New</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nsight-systems-2025-3-highlights">Nsight Systems 2025.3 Highlights:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#known-issues">Known Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-issues">General Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vgpu-issues">vGPU Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-issues">Docker Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cuda-trace-issues">CUDA Trace Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-report-analysis-issues">Multi Report Analysis Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../InstallationGuide/index.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../UserGuide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CopyrightAndLicenses/index.html">Copyright and Licenses</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Archives</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Archives/index.html">Archives</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">nsight-systems</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+<li>Release Notes</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.3 |</span>
+
+
+
+  <a href="https://docs.nvidia.com/nsight-systems/Archives/index.html" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-notes">
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline"></a></h1>
+<p>Release notes and known issues.</p>
+<section id="what-s-new">
+<h2>What’s New<a class="headerlink" href="#what-s-new" title="Permalink to this headline"></a></h2>
+<section id="nsight-systems-2025-3-highlights">
+<h3>Nsight Systems 2025.3 Highlights:<a class="headerlink" href="#nsight-systems-2025-3-highlights" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>CUDA 12.9 support</p></li>
+<li><p>NVIDIA Nsight Streamer is now available on NGC for viewing reports on remote headless servers</p>
+<ul>
+<li><p><a class="reference external" href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/devtools/helm-charts/nsight-streamer">Kubernetes</a></p></li>
+<li><p><a class="reference external" href="https://catalog.ngc.nvidia.com/orgs/nvidia/teams/devtools/containers/nsight-streamer-nsys">Docker</a></p></li>
+</ul>
+</li>
+<li><p>NVIDIA Nsight Operator releasing soon on NGC for Kubernetes.
+Learn more <a class="reference external" href="https://developer.nvidia.com/nsight-cloud">here</a> and apply for early access features.</p></li>
+<li><p>Collect GPUDirect Storage kernel-mode counters</p></li>
+</ul>
+</section>
+</section>
+<section id="known-issues">
+<h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline"></a></h2>
+<section id="general-issues">
+<h3>General Issues<a class="headerlink" href="#general-issues" title="Permalink to this headline"></a></h3>
+<ul>
+
+<li><p>The default time conversion used by Nsight Systems is not reliable on WSL,
+and we need to fall back to a safer, but less precise time system. To do that
+please set the config file option CuptiUseRawGpuTimestamps to false. The
+config file option can be set using the following commands:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>mkdir -p &quot;$(dirname &quot;$(nsys -z)&quot;)&quot;
+echo &#39;CuptiUseRawGpuTimestamps=false&#39; &gt;&gt; &quot;$(nsys -z)&quot;
+</pre></div>
+</div>
+<p>This is needed until the timestamp conversion is handled correctly in a
+future version.</p>
+</li>
+<li><p>Nsight Systems versions, starting with 2024.2 do not provide support for Power
+PC, we recommend you use an older version, downloadable from
+<a class="reference external" href="https://developer.nvidia.com/gameworksdownload">https://developer.nvidia.com/gameworksdownload</a>.</p></li>
+<li><p>Nsight Systems versions, starting with 2024.4 do not provide support for
+cuBLAS versions prior to 11.4. If you cannot update your cuBLAS, we recommend
+you use an older version, downloadable from
+<a class="reference external" href="https://developer.nvidia.com/gameworksdownload">https://developer.nvidia.com/gameworksdownload</a>.</p></li>
+<li><p>The current release of Nsight Systems CLI doesn’t support naming a session
+with a name longer than 127 characters. Profiling an executable with a name
+exceeding 111 characters is also unsupported by the <code class="docutils literal notranslate"><span class="pre">nsys</span> <span class="pre">profile</span></code> command.
+Those limitations will be removed in a future version of the CLI.</p></li>
+<li><p>Nsight Systems 2020.4 introduces collection of thread scheduling information
+without full sampling. While this allows system information at a lower cost,
+it does add overhead. To turn off thread schedule information collection, add
+<code class="docutils literal notranslate"><span class="pre">--cpuctxsw=none</span></code> to your command line or turn off in the GUI.</p></li>
+<li><p>Profiling greater than 5 minutes is not officially supported at this time.
+Profiling high activity applications, on high performance machines, over a
+long analysis time can create large result files that may take a very long
+time to load, run out of memory, or lock up the system. If you have a complex
+application, we recommend starting with a short profiling session duration of
+no more than 5 minutes for your initial profile. If your application has a
+natural repeating pattern, often referred to as a frame or an iteration, you
+will typically only need a few of these. This suggested limit will increase
+in future releases.</p></li>
+<li><p>Attaching or re-attaching to a process from the GUI is not supported with the
+x86_64 Linux target. Equivalent results can be obtained by using
+the interactive CLI to launch the process and then starting and stopping
+analysis at multiple points.</p></li>
+<li><p>To reduce overhead, Nsight Systems traces a subset of API calls likely to
+impact performance when tracing APIs rather than all possible calls. There
+is currently no way to change the subset being traced when using the CLI.
+See respective library portion of this documentation for a list of calls
+traced by default. The CLI limitation will be removed in a future version of
+the product.</p></li>
+<li><p>There is an upper bound on the default size used by the tool to record trace
+events during the collection. If you see the following diagnostic error, then
+Nsight Systems hit the upper limit.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Reached</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">recording</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="n">events</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">process</span><span class="p">.</span><span class="w"></span>
+<span class="w">       </span><span class="n">Try</span><span class="w"> </span><span class="n">reducing</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">profiling</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">reduce</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">features</span><span class="w"></span>
+<span class="w">       </span><span class="n">traced</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+</div>
+</li>
+<li><p>When profiling a framework or application that uses CUPTI, like some versions
+of TensorFlow(tm), Nsight Systems will not be able to trace CUDA usage due to
+limitations in CUPTI. These limitations will be corrected in a future version
+of CUPTI. Consider turning off the application’s use of CUPTI if CUDA tracing
+is required.</p></li>
+<li><p>Tracing an application that uses a memory allocator that is not thread-safe
+is not supported.</p></li>
+<li><p>Tracing OS Runtime libraries in an application that preloads glibc symbols is
+unsupported and can lead to undefined behavior.</p></li>
+<li><p>Nsight Systems cannot profile applications launched through a virtual window
+manager like GNU Screen.</p></li>
+<li><p>Using Nsight Systems MPI trace functionality with the Darshan runtime module
+can lead to segfaults. To resolve the issue, unload the module.</p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">unload</span><span class="w"> </span><span class="n">darshan</span><span class="o">-</span><span class="n">runtime</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Profiling MPI Fortran APIs with MPI_Status as an argument, e.g. MPI_Recv,
+MPI_Test[all], MPI_Wait[all], can potentially cause memory corruption for
+MPICH versions 3.0.x. The reason is that the MPI_Status structure in MPICH
+3.0.x has a different memory layout than in other MPICH versions
+(2.1.x and &gt;=3.1.x have been tested) and the version (3.3.2) we used to
+compile the Nsight Systems MPI interception library.</p></li>
+<li><p>Using <code class="docutils literal notranslate"><span class="pre">nsys</span> <span class="pre">export</span></code> to export to an SQLite database will fail if the
+destination filesystem doesn’t support file locking. The error message will
+mention:</p></li>
+</ul>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">::</span><span class="n">what</span><span class="o">:</span><span class="w"> </span><span class="n">database</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">locked</span><span class="w"></span>
+</pre></div>
+</div>
+<ul>
+<li><p>On some Linux systems when VNC is used, some widgets can be rendered
+incorrectly, or Nsight Systems can crash when opening Analysis Summary or
+Diagnostics Summary pages. In this case, try forcing a specific software
+renderer: <code class="docutils literal notranslate"><span class="pre">GALLIUM_DRIVER=llvmpipe</span> <span class="pre">nsys-ui</span></code></p></li>
+<li><p>Due to <a class="reference external" href="https://github.com/open-mpi/ompi/issues/6648">a known bug in Open MPI 4.0.1</a>, target application may
+crash at the end of execution when being profiled by Nsight Systems. To avoid
+the issue, use a different Open MPI version, or add <code class="docutils literal notranslate"><span class="pre">--mca</span> <span class="pre">btl</span> <span class="pre">^vader</span></code>
+option to <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> command line.</p></li>
+<li><p>The multiprocessing module in Python is commonly used by customers to create
+new processes. On Linux, the module defaults to using the “fork” mode where
+it forks new processes, but does not call exec. According to the POSIX
+standard, fork without exec leads to undefined behavior and tools like
+Nsight Systems that rely on injection are only allowed to make
+async-signal-safe calls in such a process. This makes it very hard for tools
+like Nsight Systems to collect profiling information. See
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods">https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods</a></p>
+<p>Use the set_start_method in the multiprocessing module to change the start
+method to “spawn” which is much safer and allows tools like Nsight Systems to
+collect data. See the code example given in the link above.</p>
+<p>The user needs to ensure that processes exit gracefully (by using close and
+join methods, for example, in the multiprocessing module’s objects).
+Otherwise, Nsight Systems cannot flush buffers properly and you might end up
+with missing traces.</p>
+</li>
+<li><p>When the CLI sequence launch, start, stop is used to profile a process-tree,
+LinuxPerf does a depth first search (DFS) to find all of the threads launched
+by the process-tree before programming the OS to collect the data. If, during
+the DFS, one or more threads are created by the process tree, it is possible
+those threads won’t be found and LinuxPerf would not collect data for them.</p>
+<p>Note that once a thread is programmed via perf_event_open, any subsequent
+children processes or threads generated by that thread will be tracked since
+the perf_event_open inherit bit is set.</p>
+<p>No other CLI command sequence suffers from this possible issue. Also, if a
+systemwide mode is used, the issue does not exist.</p>
+</li>
+</ul>
+</section>
+<section id="vgpu-issues">
+<span id="id1"></span><h3>vGPU Issues<a class="headerlink" href="#vgpu-issues" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>When running Nsight Systems on vGPU you should always use the profiler grant. See <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#enabling-cuda-toolkit-profilers-vgpu">Virtual GPU Software Documentation</a> for details on enabling NVIDIA CUDA Toolkit profilers for NVIDIA vGPUs. Without the grant, unexpected migrations may crash a running session, report an error and abort. It may also silently produce a corrupted report which may be unloadable or show inaccurate data with no warning.</p></li>
+<li><p>Starting with vGPU 13.0, device level metrics collection is exposed to end users even on vGPU. Device level metrics will give info about all the work being executed on the GPU. The work might be in the same VM or some other VM running on the same physical GPU.</p></li>
+<li><p>As of CUDA 11.4 and R470 TRD1 driver release, Nsight Systems is supported in a vGPU environment which requires a vGPU license. If the license is not obtained after 20 minutes, the tool will still work but the reported GPU performance metrics data will be inaccurate. This is because of a feature in vGPU environment which reduces performance but retains functionality as specified in <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-licensing-user-guide/index.html#software-enforcement-grid-licensing">Grid Licensing User Guide</a>.</p></li>
+</ul>
+</section>
+<section id="docker-issues">
+<h3>Docker Issues<a class="headerlink" href="#docker-issues" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>In a Docker, when a system’s host utilizes a kernel older than v4.3, it is not possible for Nsight Systems to collect sampling data unless both the host and Docker are running a RHEL or CentOS operating system utilizing kernel version 3.10.1-693 or newer. A user override for this will be made available in a future version.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span></code> is called on a running container and stdout is kept open from a command invoked inside that shell, the exec shell hangs until the command exits. You can avoid this issue by running with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">--tty</span></code>. See the bug reports at:</p></li>
+<li><p><a class="reference external" href="https://github.com/moby/moby/issues/33039">https://github.com/moby/moby/issues/33039</a></p></li>
+<li><p><a class="reference external" href="https://github.com/drud/ddev/issues/732">https://github.com/drud/ddev/issues/732</a></p></li>
+</ul>
+</section>
+<section id="cuda-trace-issues">
+<h3>CUDA Trace Issues<a class="headerlink" href="#cuda-trace-issues" title="Permalink to this headline"></a></h3>
+<ul>
+<li><p>When tracing CUDA Graphs with a large number (e.g., millions) of parallel
+kernel nodes under node-level trace mode (i.e., –cuda-graph-trace=node),
+the accumulated overhead can be high, and parallelism (i.e., the number of
+kernels running simultaneously on different CUDA Streams) may be reduced. On
+Blackwell or future GPU architectures, switching to hardware-based CUDA trace
+(i.e., –trace=cuda-hw) can mitigate this overhead.</p></li>
+<li><p>If a system is in the CC-DevTools mode (CC stands for Confidential Compute)
+and Nsight Systems is used to trace CUDA in an application using libcrypto,
+Nsight Systems may crash when the application exits. The crash occurs during
+the application teardown and causes profiler data loss. To avoid losing CUDA
+tracing data in this situation, a few options exist.</p>
+<p>1. Add a cudaDeviceSynchronize call to the application immediately before the
+application exits. Nsight Systems flushes all available data on a
+synchronization and data loss will be avoided.</p>
+<p>2. Add a cudaProfilerStop call to the application immediately before the
+application exits and set the Nsight Systems <code class="docutils literal notranslate"><span class="pre">--flush-on-cudaprofilerstop</span></code>
+switch to true.  In this case, Nsight Systems will flush all available data
+at this point.</p>
+<p>3. End the profile before the application exits using one of many Nsight Systems
+mechanisms to end a profile. For example;</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Set a collection duration that ends before the application exits (see
+the <code class="docutils literal notranslate"><span class="pre">--duration</span></code> switch).</p></li>
+<li><p>Use a capture range to only collect data during a specific period of the
+application’s execution (see the <code class="docutils literal notranslate"><span class="pre">--capture-range</span></code> switch).</p></li>
+<li><p>Set the CUDA flush interval to frequently flush data during a profile. Any
+data collected after the last flush and before the application’s exit will
+likely be lost. Note that frequent CUDA flushes will increase profiling
+overhead.</p></li>
+<li><p>Use the Nsight Systems CLI’s <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">launch</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code> commands
+to manually start and stop a collection before the application exits.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>The <cite>cudaMemPrefetchAsync()</cite> API allows the user to specify a stream to
+enqueue a memory prefetch operation. However, Nsight Systems does not get the
+stream information for UVM page migrations from the UVM backend. Thus,
+Nsight Systems cannot show stream information correctly correlated with a
+<cite>cudaMemPrefetchAsync()</cite> API call. This will be fixed in a future version.</p></li>
+<li><p>When using CUDA Toolkit 10.X, tracing of DtoD memory copy operations may
+result in a crash. To avoid this issue, update CUDA Toolkit to 11.X or the
+latest version.</p></li>
+<li><p>Nsight Systems will not trace kernels when a CDP (CUDA Dynamic Parallelism)
+kernel is found in a target application on Volta devices or later.</p></li>
+<li><p>On Tegra platforms, CUDA trace requires root privileges. Use the
+<strong>Launch as root</strong> checkbox in project settings to make the profiled
+application run as root.</p></li>
+<li><p>If the target application uses multiple streams from multiple threads,
+CUDA event buffers may not be released properly. In this case, you will see
+the following diagnostic error:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Couldn&#39;t allocate CUPTI bufer x times. Some CUPTI events may
+       be missing.
+</pre></div>
+</div>
+<p>Please contact the Nsight Systems team.</p>
+</li>
+<li><p>In this version of Nsight Systems, if you are starting and stopping profiling
+inside your application using the interactive CLI, the CUDA memory allocation
+graph generation is only guaranteed to be correct in the first profiling
+range. This limitation will be removed in a future version of the product.</p></li>
+<li><p>CUDA GPU trace collection requires a fraction of GPU memory. If your
+application utilizes all available GPU memory, CUDA trace might not work or
+can break your application. As an example cuDNN application can crash with
+<code class="docutils literal notranslate"><span class="pre">CUDNN_STATUS_INTERNAL_ERROR</span></code> error if GPU memory allocation fails.</p></li>
+<li><p>For older Linux kernels, prior to 4.4, when profiling very short-lived
+applications (~1 second) that exit in the middle of the profiling session, it
+is possible that Nsight Systems will not show the CUDA events on the timeline.</p></li>
+<li><p>When more than 64k serialized CUDA kernels and memory copies are executed in
+the application, you may encounter the following exception during profiling:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="nl">InvalidArgumentException</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Wrong event order detected&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Please upgrade to the CUDA 9.2 driver at minimum to avoid this problem. If
+you cannot upgrade, you can get a partial analysis, missing potentially a
+large fraction of CUDA events, by using the CLI.</p>
+</li>
+<li><p>On Vibrante, when running a profiling session with multiple targets that are
+guest VMs in a CCC configuration behind a NAT, you may encounter an error
+with the following text during profiling:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Failed</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">sync</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="n">on</span><span class="w"> </span><span class="n">device</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Please edit the group connection settings, select <strong>Targets on the same SoC</strong>
+checkbox there and try again.</p>
+</li>
+<li><p>When using the 455 driver, as shipped with CUDA Tool Kit 11.1, and tracing
+CUDA with Nsight Systems you many encounter a crash when the application
+exits. To avoid this issue, end your profiling session before the application
+exits or update your driver.</p></li>
+</ul>
+</section>
+<section id="multi-report-analysis-issues">
+<h3>Multi Report Analysis Issues<a class="headerlink" href="#multi-report-analysis-issues" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Be aware that setting up Dask analysis on your workstation requires some additional work on the system. For small data inputs, running the recipes without Dask may be faster.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on Apr 26, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

@@ -1,0 +1,895 @@
+{
+  "id": "D129",
+  "at": "2026-10-18T05:35:22.098072+00:00",
+  "status": "pass_same_sealed_E078_ABI_criterion",
+  "protocol_sha256": "ee6d7e9fa1f722d94bb80f760317272faa9857479bfbded522ccb4f52c6f3b51",
+  "original_resource_report_sha256": "3dbf6c14274981fdab882fd65819bd738e678589cba97c852ec62ff28832f9d7",
+  "original_rejected_report_preserved": true,
+  "original_failed_keys": [
+    "compute_120:original20ABI_parameters_exact",
+    "compute_120:candidate30ABI_parameters"
+  ],
+  "original_other_gates_unchanged": true,
+  "effective_gates": {
+    "compute_120:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_120:original20ABI_parameters_exact": true,
+    "compute_120:candidate30ABI_parameters": true,
+    "compute_120:three_original_fold_shared_arrays": true,
+    "compute_120:private_fold_marker_compare_emitted": true,
+    "compute_120:fold_collectives_emitted": true,
+    "compute_120:action_entry_changed": true,
+    "compute_75:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_75:original20ABI_parameters_exact": true,
+    "compute_75:candidate30ABI_parameters": true,
+    "compute_75:three_original_fold_shared_arrays": true,
+    "compute_75:private_fold_marker_compare_emitted": true,
+    "compute_75:fold_collectives_emitted": true,
+    "compute_75:action_entry_changed": true,
+    "local_bytes_not_increased": true,
+    "dynamic_shared_not_increased": true,
+    "max_threads_not_reduced": true,
+    "supports_all_fixed_thread_controls": true,
+    "both_fit_default_limits": true,
+    "positive_fixed_driver_occupancy": true,
+    "dynamic_shared_exact": true
+  },
+  "checks": 30,
+  "analyses": {
+    "compute_120": {
+      "baseline_complete_header": ".visible .entry up_action(\n\t.param .u64 .ptr .align 1 up_action_param_0,\n\t.param .u32 up_action_param_1,\n\t.param .u32 up_action_param_2,\n\t.param .u32 up_action_param_3,\n\t.param .u64 .ptr .align 1 up_action_param_4,\n\t.param .u64 .ptr .align 1 up_action_param_5,\n\t.param .u64 .ptr .align 1 up_action_param_6,\n\t.param .u64 .ptr .align 1 up_action_param_7,\n\t.param .u64 .ptr .align 1 up_action_param_8,\n\t.param .u64 .ptr .align 1 up_action_param_9,\n\t.param .u64 .ptr .align 1 up_action_param_10,\n\t.param .u64 .ptr .align 1 up_action_param_11,\n\t.param .u64 .ptr .align 1 up_action_param_12,\n\t.param .u64 .ptr .align 1 up_action_param_13,\n\t.param .u64 .ptr .align 1 up_action_param_14,\n\t.param .u64 .ptr .align 1 up_action_param_15,\n\t.param .u64 .ptr .align 1 up_action_param_16,\n\t.param .u64 .ptr .align 1 up_action_param_17,\n\t.param .u32 up_action_param_18,\n\t.param .u32 up_action_param_19\n)\n",
+      "candidate_complete_header": ".visible .entry up_action(\n\t.param .u64 .ptr .align 1 up_action_param_0,\n\t.param .u32 up_action_param_1,\n\t.param .u32 up_action_param_2,\n\t.param .u32 up_action_param_3,\n\t.param .u64 .ptr .align 1 up_action_param_4,\n\t.param .u64 .ptr .align 1 up_action_param_5,\n\t.param .u64 .ptr .align 1 up_action_param_6,\n\t.param .u64 .ptr .align 1 up_action_param_7,\n\t.param .u64 .ptr .align 1 up_action_param_8,\n\t.param .u64 .ptr .align 1 up_action_param_9,\n\t.param .u64 .ptr .align 1 up_action_param_10,\n\t.param .u64 .ptr .align 1 up_action_param_11,\n\t.param .u64 .ptr .align 1 up_action_param_12,\n\t.param .u64 .ptr .align 1 up_action_param_13,\n\t.param .u64 .ptr .align 1 up_action_param_14,\n\t.param .u64 .ptr .align 1 up_action_param_15,\n\t.param .u64 .ptr .align 1 up_action_param_16,\n\t.param .u64 .ptr .align 1 up_action_param_17,\n\t.param .u32 up_action_param_18,\n\t.param .u32 up_action_param_19,\n\t.param .u64 .ptr .align 1 up_action_param_20,\n\t.param .u64 .ptr .align 1 up_action_param_21,\n\t.param .u64 .ptr .align 1 up_action_param_22,\n\t.param .u64 .ptr .align 1 up_action_param_23,\n\t.param .u64 .ptr .align 1 up_action_param_24,\n\t.param .u64 .ptr .align 1 up_action_param_25,\n\t.param .u64 .ptr .align 1 up_action_param_26,\n\t.param .u64 .ptr .align 1 up_action_param_27,\n\t.param .u64 .ptr .align 1 up_action_param_28,\n\t.param .u32 up_action_param_29\n)\n",
+      "baseline_declarations": [
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_0",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_0"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_1",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_1"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_2",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_2"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_3",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_3"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_4",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_4"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_5",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_5"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_6",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_6"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_7",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_7"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_8",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_8"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_9",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_9"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_10",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_10"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_11",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_11"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_12",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_12"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_13",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_13"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_14",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_14"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_15",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_15"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_16",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_16"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_17",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_17"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_18",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_18"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_19",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_19"
+        }
+      ],
+      "candidate_declarations": [
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_0",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_0"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_1",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_1"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_2",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_2"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_3",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_3"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_4",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_4"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_5",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_5"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_6",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_6"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_7",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_7"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_8",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_8"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_9",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_9"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_10",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_10"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_11",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_11"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_12",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_12"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_13",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_13"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_14",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_14"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_15",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_15"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_16",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_16"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_17",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_17"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_18",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_18"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_19",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_19"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_20",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_20"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_21",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_21"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_22",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_22"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_23",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_23"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_24",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_24"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_25",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_25"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_26",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_26"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_27",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_27"
+        },
+        {
+          "declaration": ".param .u64 .ptr .align 1 up_action_param_28",
+          "type": "u64",
+          "pointer_qualified": true,
+          "alignment": 1,
+          "name": "up_action_param_28"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_29",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_29"
+        }
+      ],
+      "prefix20_exact": true,
+      "original_criterion_pass": true
+    },
+    "compute_75": {
+      "baseline_complete_header": ".visible .entry up_action(\n\t.param .u64 up_action_param_0,\n\t.param .u32 up_action_param_1,\n\t.param .u32 up_action_param_2,\n\t.param .u32 up_action_param_3,\n\t.param .u64 up_action_param_4,\n\t.param .u64 up_action_param_5,\n\t.param .u64 up_action_param_6,\n\t.param .u64 up_action_param_7,\n\t.param .u64 up_action_param_8,\n\t.param .u64 up_action_param_9,\n\t.param .u64 up_action_param_10,\n\t.param .u64 up_action_param_11,\n\t.param .u64 up_action_param_12,\n\t.param .u64 up_action_param_13,\n\t.param .u64 up_action_param_14,\n\t.param .u64 up_action_param_15,\n\t.param .u64 up_action_param_16,\n\t.param .u64 up_action_param_17,\n\t.param .u32 up_action_param_18,\n\t.param .u32 up_action_param_19\n)\n",
+      "candidate_complete_header": ".visible .entry up_action(\n\t.param .u64 up_action_param_0,\n\t.param .u32 up_action_param_1,\n\t.param .u32 up_action_param_2,\n\t.param .u32 up_action_param_3,\n\t.param .u64 up_action_param_4,\n\t.param .u64 up_action_param_5,\n\t.param .u64 up_action_param_6,\n\t.param .u64 up_action_param_7,\n\t.param .u64 up_action_param_8,\n\t.param .u64 up_action_param_9,\n\t.param .u64 up_action_param_10,\n\t.param .u64 up_action_param_11,\n\t.param .u64 up_action_param_12,\n\t.param .u64 up_action_param_13,\n\t.param .u64 up_action_param_14,\n\t.param .u64 up_action_param_15,\n\t.param .u64 up_action_param_16,\n\t.param .u64 up_action_param_17,\n\t.param .u32 up_action_param_18,\n\t.param .u32 up_action_param_19,\n\t.param .u64 up_action_param_20,\n\t.param .u64 up_action_param_21,\n\t.param .u64 up_action_param_22,\n\t.param .u64 up_action_param_23,\n\t.param .u64 up_action_param_24,\n\t.param .u64 up_action_param_25,\n\t.param .u64 up_action_param_26,\n\t.param .u64 up_action_param_27,\n\t.param .u64 up_action_param_28,\n\t.param .u32 up_action_param_29\n)\n",
+      "baseline_declarations": [
+        {
+          "declaration": ".param .u64 up_action_param_0",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_0"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_1",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_1"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_2",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_2"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_3",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_3"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_4",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_4"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_5",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_5"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_6",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_6"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_7",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_7"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_8",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_8"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_9",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_9"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_10",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_10"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_11",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_11"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_12",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_12"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_13",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_13"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_14",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_14"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_15",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_15"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_16",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_16"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_17",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_17"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_18",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_18"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_19",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_19"
+        }
+      ],
+      "candidate_declarations": [
+        {
+          "declaration": ".param .u64 up_action_param_0",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_0"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_1",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_1"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_2",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_2"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_3",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_3"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_4",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_4"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_5",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_5"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_6",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_6"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_7",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_7"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_8",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_8"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_9",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_9"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_10",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_10"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_11",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_11"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_12",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_12"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_13",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_13"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_14",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_14"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_15",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_15"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_16",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_16"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_17",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_17"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_18",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_18"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_19",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_19"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_20",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_20"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_21",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_21"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_22",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_22"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_23",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_23"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_24",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_24"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_25",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_25"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_26",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_26"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_27",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_27"
+        },
+        {
+          "declaration": ".param .u64 up_action_param_28",
+          "type": "u64",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_28"
+        },
+        {
+          "declaration": ".param .u32 up_action_param_29",
+          "type": "u32",
+          "pointer_qualified": false,
+          "alignment": null,
+          "name": "up_action_param_29"
+        }
+      ],
+      "prefix20_exact": true,
+      "original_criterion_pass": true
+    }
+  },
+  "CUDA_parameter_declarations": [
+    "const u32* __restrict__ nodes",
+    "int start",
+    "int count",
+    "int p",
+    "const int* __restrict__ node_player",
+    "const int* __restrict__ node_na",
+    "const u64* __restrict__ node_data_off",
+    "const u32* __restrict__ node_children_start",
+    "const u32* __restrict__ children",
+    "float* regrets_p",
+    "float* strat_p",
+    "const u32* __restrict__ rsrc_p",
+    "const float* __restrict__ reach_p_buf",
+    "const long long* __restrict__ lock_off",
+    "const float* __restrict__ lock_sigma",
+    "const u32* __restrict__ cfv_slot",
+    "float* cfv",
+    "const float* __restrict__ disc",
+    "int nh_p",
+    "int nh_max",
+    "const float* __restrict__ node_twin",
+    "const float* __restrict__ node_tlose",
+    "const u32* __restrict__ rsrc_o",
+    "const float* __restrict__ reach_o_buf",
+    "const u32* __restrict__ pc1",
+    "const u32* __restrict__ pc2",
+    "const u32* __restrict__ card_off",
+    "const u32* __restrict__ card_idx",
+    "const u32* __restrict__ same_p",
+    "int nh_o"
+  ],
+  "host_argument_expressions": [
+    "&self.d_action_nodes",
+    "&start",
+    "&count",
+    "&pi",
+    "&self.d_node_player",
+    "&self.d_node_na",
+    "&self.d_node_data_off",
+    "&self.d_node_children_start",
+    "&self.d_children",
+    "&mut self.d_regrets[p]",
+    "&mut self.d_strat[p]",
+    "&self.d_rsrc[p]",
+    "&self.d_reach[p]",
+    "&self.d_lock_off",
+    "&self.d_lock_sigma",
+    "&self.d_cfv_slot",
+    "&mut self.d_cfv",
+    "&self.d_disc",
+    "&nh_p",
+    "&nh_max",
+    "&self.d_node_twin",
+    "&self.d_node_tlose",
+    "&self.d_rsrc[1 - p]",
+    "&self.d_reach[1 - p]",
+    "&self.d_hand_c1[p]",
+    "&self.d_hand_c2[p]",
+    "&self.d_fold_card_off[1 - p]",
+    "&self.d_fold_card_idx[1 - p]",
+    "&self.d_same[p]",
+    "&nh_o"
+  ],
+  "resource_rows_unchanged": [
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 6544,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings_unchanged": [
+    "static_shared_not_increased",
+    "driver_occupancy_not_reduced"
+  ],
+  "admit_frozen_E078_raw_controls": true,
+  "source_compile_resource_kernel_solver_timing_reruns": 0,
+  "candidate_accepted": false,
+  "limits": "Read-only parser repair before firstnumerical or speedrun, same frozen ABI contract/candidate/PTX/resources. Rootaudit not externalindependence, not actualGPUaccuracy/speed/material proof. Shared6544driverbytes and64threadoccupancy16to13warnings retained;128threads8blocks unchanged. Actualhostcompiledmetadata/rawGPU/state/fullcycle/material qualification remains."
+}

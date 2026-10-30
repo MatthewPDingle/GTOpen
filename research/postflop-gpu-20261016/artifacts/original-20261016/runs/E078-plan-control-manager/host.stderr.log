@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\E078-plan-control\execute.py", line 13, in <module>
+    old.child([str(B/'tests.exe'),'--test-threads=1'],E,'unit',old.env(),300);verify();unit=(E/'unit.stdout.log').read_text(encoding='utf-8');assert 'test result: ok.'in unit and 'fold_producer_markers_are_private_and_exact ... ok'in unit
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\small-gain-confirmation-plan\common.py", line 94, in child
+    assert proc.returncode==0,(label,(out/(label+'.stderr.log')).read_text(encoding='utf-8',errors='replace')[-4000:])
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('unit', '')

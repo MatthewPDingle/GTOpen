@@ -1,0 +1,22 @@
+{
+  "checkpoint": 500,
+  "actual_transferred_bytes": 52884279168000,
+  "all_board_arena_bytes": 35256186112,
+  "baseline_bytes_per_iteration": 105768558336,
+  "proposed_bytes_per_iteration": 88140465280,
+  "proposed_saved_bytes_per_iteration": 17628093056,
+  "fractional_byte_reduction": 0.16666666666666666,
+  "patch_applied": false,
+  "candidate_executed": false,
+  "result_at_checkpoint_sha256": "9dfd49e6be5438ab89f57132b4580c7bd9044f547bb13b966a18319cd42ff6de",
+  "candidate_patch_sha256": "7a77260986a3f6c6ff106b05db84855501d1b5de477e00d1f10289ef9a2d8ea9",
+  "inputs_sha256": {
+    "tools\\research\\paging_transfer_audit.py": "864796883e47dceb337c8bc5c8dee9bd300500119d1e38f38ce4b3009b796e30",
+    "research\\preflop-evolution\\representative-coverage-20260919\\memory-plan.json": "ea30e3625d59803d588b0bdffdf3c874a46c034c9d389c97eca9dbeef8b70554",
+    "crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates\\solver\\src\\gpu\\mod.rs": "4a8b98ac3d591ae636d29306cd189e13fda44680af0c06a6319d0dc200c0acce",
+    "crates\\solver\\src\\gpu\\kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates\\solver\\tests\\continuation_paging.rs": "9c93c8bd9b84c40a40d4a8ad2b4b6844bfc2b68bb93b64fe450e4a21c670de2f"
+  },
+  "interpretation": "Counter exactly matches two uploads of all arenas plus one combined download per iteration. Candidate omits only opposing average-strategy uploads during training. Its dataflow rationale is not a parity test. Bytes are counted arena traffic, not a measured timing breakdown or proof of a speedup. No host-memory savings and no production/current-queue change."
+}

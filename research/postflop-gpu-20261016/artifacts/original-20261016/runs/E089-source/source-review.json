@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T12:05:03.822509+00:00",
+  "scope": "Only #pragma unroll1 on existing up_show inner serial card-correction loop. Original two-card/ascending-position iterations, selected loads/predicates, all float expressions and accumulator order, prefix/card cache, barriers/shared/ABI/host/launch/graph/precision/quality/save unchanged.",
+  "source_reverse_exact": true,
+  "hypothesis": "Suppress compiler loop replication for serial card corrections to reduce generated instruction body/working resources. Compiled smaller PTX is a prerequisite only; no measured instruction-cache pressure/SASS/dynamic memory/cycle attribution. Reduced replication may lose load overlap and hurt throughput.",
+  "numeric_contract": "Directive leaves loopbound/torder/operandarrays,tot/lower/higheraccumulation exactlysourceidentical. Compiler still owns scheduling; require original/candidate full GPU float/immutable/guard comparisons, including nonfinite and rounding witnesses. No reordering/reassociation/precision/FTZ/fastmath/tolerance change.",
+  "separation": "E042unroll2 targets own unlocked up_action hand-stride loop. This targets code replication of a serial conditional card-correction walk in up_show; no hand unroll, caches, fused producers, selectiveprefix, offset widths or previous candidate hunk.",
+  "primary_sources": [
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#pragma-unroll"
+  ],
+  "required": "Other8entries/27ABI exact120/75; targetentry strictlysmaller bothPTXtargets; unchangedbarrier count; noactual local/shared/limits/defaultresidency/stackregression. Then full1820rawGPUcontrolpairs,ordinaryunits/fullcomplete-solve1%strictfixture/fresh16/broad/material/capacity/holdout/cumulative beforeadoption."
+}

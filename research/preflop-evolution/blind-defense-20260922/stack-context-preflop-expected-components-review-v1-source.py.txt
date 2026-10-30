@@ -1,0 +1,100 @@
+"""Bind successful software controls and save the next-component derivation."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT/'research/preflop-evolution/blind-defense-20260922'
+
+
+def sha(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+
+def main():
+    publication = OUT/'stack-context-preflop-expected-components-publication-v1.json'
+    p = json.loads(publication.read_bytes())
+    bindings = dict(p['inputs']); bindings.update(p['outputs'])
+    bindings[str(publication)] = sha(publication)
+    results = []
+    for v in (1, 2):
+        path = OUT/f'stack-context-preflop-expected-components-check-v{v}-result.json'
+        r = json.loads(path.read_bytes())
+        assert r['passed'] and not r['accuracy_qualified'] and r['synthetic_policies_and_payoffs']
+        assert not any(r[k] for k in ('native_execution', 'model_inference', 'gpu_used', 'training', 'new_scientific_deals', 'production_modified'))
+        assert [c['stack'] for c in r['cases']] == [20, 40, 100, 200, 400]
+        assert all(c['physical_board_holdings'] == 1081 for c in r['cases'])
+        assert r['maximum_independent_forward_error'] < 1e-9
+        assert r['maximum_original_root_error'] < 1e-9
+        assert r['excluded_own_past_reach'] and r['preserved_opponent_past_reach_scale']
+        bindings.update(r['inputs']); bindings[str(path)] = sha(path)
+        results.append(r)
+    for path, h in bindings.items(): assert sha(path) == h, path
+    v2 = results[1]
+    assert v2['native_terminal_schema_checked'] and v2['nonsequential_node_ids_checked']
+    nodes = sum(c['nodes'] for c in v2['cases'])
+    text = f'''# Expected targets for later preflop decisions
+
+The sparse AA diagnosis points to a learning problem: rare preflop decisions receive too few representative outcomes. A new isolated calculation now extends the existing board-integrated BB-root method to **every preflop decision for both players** in the current heads-up context. It integrates all compatible opponent holdings on each supplied fixed board and preserves the weights needed for learning. Software controls passed; no new model has been trained or scientifically admitted, and production remains unchanged.
+
+## The target and its weighting
+
+The initial private-pair law is proportional to the two original entry weights, excluding overlapping cards. Let `m[c]` be the acting player's initial class marginal, after private-card compatibility. At decision `I`, for candidate action `a`, the target `Q[c,a]` averages future payoffs conditional on that initial class, multiplying the opponent's earlier action probabilities. Future actions follow the same supplied frozen policy.
+
+The acting player's **own earlier action probabilities are excluded** from this target. This lets the learner evaluate a candidate at a branch even if its current strategy rarely reaches it. The opponent's earlier probabilities remain in the target; normalizing those away would change the scale of counterfactual regrets. Once targets are available, the centered advantage is `Q[c,a] - sum_b sigma[c,b] Q[c,b]`. A cumulative update would multiply by the original class marginal and the declared common generation scale. This new component computes the targets and advantages, but implements no update or policy replacement.
+
+The component reports own-history probability, opponent-history probability and original class support separately. A class with no initial entry support has a zero placeholder and an explicit unsupported mask. A branch with zero opponent history has zero counterfactual targets. Zero own-history probability alone does not remove a supported counterfactual target. These are learning quantities; a played-range view still needs genuine arriving support.
+
+## Exact endpoints and sampled boards
+
+Preflop folds use their original chip utilities. All-in endpoints use the existing exact class-pair matrices, with the current context's terminal economics. The component checks pair support, marginal consistency, cashflow conservation and original chip bounds. The current topology validator refuses all-in endpoints with different economics rather than silently reusing one matrix.
+
+For postflop leaves, a supplied five-card board has all **1,081 legal private holdings per player**. The existing terminal reducer excludes shared private cards and integrates the opponent's holdings. Both actor vectors from each branch evaluation are retained. The class reduction weights each hero holding by its original entry weight; it does not multiply by that hero's earlier action probability.
+
+An unconditional board draw uses the correction `C(52,5) / C(48,5)`. The same ratio follows independently from chronological flop, turn and river domains: `C(52,3)*49*48 / (C(48,3)*45*44)`. Together with the original private-pair normalizer and class marginal, this yields one importance-weighted chance contribution. **A single board contribution is not a full expected action EV.** Multiple draws must come from a prospectively specified chance law, preserve duplicate draws and use the same frozen generation policy before averaging. The new component does not choose or draw boards.
+
+A reverse traversal of the preflop tree converts terminal vectors into all decision/action targets. At a hero node it averages the hero's future actions; at an opponent node it sums child vectors because the opponent probabilities are already included in their prefix reach. Child pointers define topology, so node-number ordering is irrelevant.
+
+## What the controls establish
+
+The controls use synthetic class-dependent policies, synthetic hand strengths and synthetic postflop payoffs on the existing 20, 40, 100, 200 and 400bb topologies. An independent forward enumeration forces every candidate action and sums physical private-pair outcomes. It checks all {nodes} decision nodes and {nodes*169:,} class rows in each exact and board component, including the later BB 4-bet response.
+
+The largest difference from that independent enumeration is **{v2['maximum_independent_forward_error']:.3g}bb**. The BB-root outputs agree with the previous implementation to **{v2['maximum_original_root_error']:.3g}bb**. Additional controls verify zero own-history behavior, zero opponent-history behavior, proportional opponent-reach scaling, absent entry classes, source-policy snapshots, reordered node IDs and compatibility with the native export's terminal schema. The stronger component refuses {len(v2['rejected_cases'])} malformed cases, including cycles, altered cashflow offsets, incomplete policies, missing physical holdings and unsupported entry mass.
+
+The two published control runs finished in {results[0]['seconds']:.3f} and {results[1]['seconds']:.3f} seconds while running independently in parallel. These are small software-control durations, **not a speedup benchmark or a training-time estimate**. No native executable, scientific model inference, GPU workload or new scientific deals were used. Preserved staging evidence is separate from the final published control receipts.
+
+## Resource implications and remaining work
+
+The extension reuses both actor vectors already produced by each existing fixed-board branch evaluation. It adds class-sized preflop reductions rather than launching a separate postflop simulation for each hand or decision. This is a source-level efficiency opportunity; actual runtime, inference batching, memory and throughput still need measurement on representative native trees. Increasing the number of board draws can still increase total work substantially.
+
+Before scientific training, the component needs integration with authenticated native trees, the original entry population, visible-only current-policy inference and immutable generation identities. A persistent preflop accumulator must replace the one-visit override mechanism without treating chance draws as actual hand-history observations. It needs complete-generation publication, restart controls and separate evidence counts. The next stability comparison needs prospectively declared board budgets, independent runs and evaluation gates; none has been registered or started here.
+
+This is preparation for the current BB-versus-BTN continuation model. It does not establish accurate learned poker ranges, stack-specific opening ranges, multiway postflop values or agreement with GTO Wizard. The completed comparison's failed improvement criterion remains unchanged. There is no arbitrary premium-hand calling rule and no installation on port 56708.
+
+Sources and controls: [new component](../../../..//tools/research/stack_context_preflop_expected_components_v2.py), [independent controls](../../../..//tools/research/stack_context_preflop_expected_components_check_v2.py), [published control result](stack-context-preflop-expected-components-check-v2-result.json), and [prior AA diagnosis](STACK-CONTEXT-AA-DIAGNOSIS-20261002.md). The accompanying review receipt binds all consumed source and result identities.
+'''
+    # Existing research depth is three directories below the repository root.
+    text = text.replace('../../../..//tools/', '../../../tools/')
+    doc = OUT/'STACK-CONTEXT-PREFLOP-EXPECTED-TARGETS-20261002.md'
+    receipt = OUT/'stack-context-preflop-expected-components-review-v1.json'
+    source_copy = OUT/'stack-context-preflop-expected-components-review-v1-source.py.txt'
+    assert all(not x.exists() for x in (doc, receipt, source_copy))
+    with doc.open('x', encoding='utf-8', newline='') as f: f.write(text)
+    with source_copy.open('xb') as f: f.write(Path(__file__).read_bytes())
+    outputs = {str(x):sha(x) for x in (doc, source_copy)}
+    result = dict(complete=True, unix=time.time(), inputs=bindings, outputs=outputs,
+        stronger_component=2, independently_checked_decision_nodes=nodes,
+        class_rows_per_component=nodes*169, maximum_forward_error=v2['maximum_independent_forward_error'],
+        maximum_root_error=v2['maximum_original_root_error'], malformed_refusals=len(v2['rejected_cases']),
+        controls_qualified=True, native_integration_qualified=False,
+        cumulative_accumulator_implemented=False, scientific_training_admitted=False,
+        accuracy_qualified=False, new_scientific_work=False, production_modified=False,
+        broad_goal_complete=False)
+    with receipt.open('x', encoding='utf-8') as f: json.dump(result, f, indent=2, allow_nan=False)
+    print(json.dumps(dict(document=str(doc), receipt=str(receipt), verified_bindings=len(bindings),
+                         decision_nodes=nodes, class_rows=nodes*169, malformed_refusals=len(v2['rejected_cases']))))
+
+
+if __name__ == '__main__':
+    main()

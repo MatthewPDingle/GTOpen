@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-17T10:12:02.186044+00:00",
+  "official_sources": [
+    {
+      "url": "https://docs.nvidia.com/cupti/12.9/api/group__CUPTI__PROFILER__API.html",
+      "finding": "cuptiProfilerGetCounterAvailability queries a metadata image used to filter available raw metrics; active profiling/sampling can cause failure."
+    },
+    {
+      "url": "https://docs.nvidia.com/cupti/12.9.1/main/main.html",
+      "finding": "New host/range APIs are recommended for future range collection. This stage uses the common availability query only, not legacy event/metric collection."
+    }
+  ],
+  "local_authority": "Pinned CUDA12.9.79API28headers and runtime. GetCounterAvailability official struct has ctx/imageSize/imagePointer, size40by macro, null image first, fill only after positive bounded size success. cuCtxCreate/cuCtxDestroy macros explicitly map to v2, typed bindings use matching exported names. No device architecture exception found in this query declaration/docs; D103reports range compatibility. No assertion of future collection support/privilege from that evidence.",
+  "scope": "One private context in a fresh process,2phase size/fill metadata query, destroy/deinitialize, zero app kernels/sessions/collections. Failure closes route without retry/privilege/global setting workaround.",
+  "previous_goal_turn_classification": "progress: E062/E063fixed speed failures closed, D102integer proof, D103compatibility result changes next action."
+}

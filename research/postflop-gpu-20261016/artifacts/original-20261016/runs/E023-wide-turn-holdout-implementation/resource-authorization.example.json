@@ -1,0 +1,30 @@
+{
+  "candidate": "E023",
+  "primary_audit_pass": true,
+  "holdout_source_review_pass": true,
+  "all18_primary_states_exact": true,
+  "all138_primary_checks_exact": true,
+  "prepared_manifest_sha256": "ROOT_FILL_AFTER_REVIEW",
+  "primary_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E023-three-pair-comparison\\report.json",
+    "sha256": "ROOT_PIN_TERMINAL"
+  },
+  "independent_primary_audit": {
+    "path": "ABSOLUTE_INDEPENDENT_PRIMARY_AUDIT",
+    "sha256": "ROOT_PIN"
+  },
+  "required_evidence": [
+    {
+      "path": "ABSOLUTE_INDEPENDENT_PRIMARY_AUDIT",
+      "sha256": "ROOT_PIN"
+    },
+    {
+      "path": "ABSOLUTE_HOLDOUT_SOURCE_REVIEW",
+      "sha256": "ROOT_PIN"
+    }
+  ],
+  "all_builds_ready": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-qualification-plan\\all-builds-ready.json",
+    "sha256": "ROOT_PIN_AFTER_ALL_BUILDS"
+  }
+}

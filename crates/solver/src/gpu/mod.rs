@@ -7,7 +7,19 @@
 
 pub mod plan;
 mod arena;
-use arena::ArenaLayout;
+#[cfg(feature = "preflop-research")]
+mod continuation;
+#[cfg(feature = "preflop-research")]
+pub use continuation::{SymmetricContinuationGpu, StoredContinuationGpu, StoredWorkspace};
+#[cfg(feature = "preflop-research")]
+mod continuation_capacity;
+#[cfg(feature = "preflop-research")]
+pub use continuation_capacity::stored_capacity_plan;
+#[cfg(feature = "preflop-research")]
+mod continuation_paging;
+#[cfg(feature = "preflop-research")]
+pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};
+use arena::{ArenaLayout, ZeroCheck};
 
 use crate::cfr::{Algorithm, Discounts, Solver};
 use crate::store::Store;
@@ -150,6 +162,15 @@ pub struct GpuSolver {
     pub algo: Algorithm,
 }
 
+fn checks_with_setup<S,V:Send,F:FnOnce()->Result<S,String>,C:Fn()->V+Sync>(eligible:bool,setup:F,checks:C)->Result<(S,V),String>{
+ if !eligible{let s=setup()?;return Ok((s,checks()));}
+ std::thread::scope(|scope|{
+  let worker=std::thread::Builder::new().name("gtopen-zero-check".into()).spawn_scoped(scope,||checks());
+  let s=setup();let result=worker.ok().map(|h|h.join());let s=s?;
+  let values=match result{Some(Ok(v))=>v,Some(Err(payload))=>std::panic::resume_unwind(payload),None=>checks()};Ok((s,values))
+ })
+}
+
 impl GpuSolver {
     /// Research-only counterpart of Solver::research_continuation_sweep.
     /// This deliberately uses eager launches until integrated correctness is
@@ -159,7 +180,14 @@ impl GpuSolver {
     pub fn research_continuation_sweep(
         &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32],
     ) -> Result<Vec<f32>, String> {
-        if p > 1 || t == 0 || self.iso_active || self.algo != Algorithm::CfrPlus {
+        self.research_continuation_sweep_impl(p, t, own, opponent, false)
+    }
+
+    #[cfg(feature = "preflop-research")]
+    fn research_continuation_sweep_impl(
+        &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32], allow_iso: bool,
+    ) -> Result<Vec<f32>, String> {
+        if p > 1 || t == 0 || (self.iso_active && !allow_iso) || self.algo != Algorithm::CfrPlus {
             return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
         }
         if own.len() != self.nh[p] as usize || opponent.len() != self.nh[1-p] as usize
@@ -210,6 +238,18 @@ impl GpuSolver {
         // records would invalidate CUDA graph capture.
         unsafe { ctx.disable_event_tracking() };
 
+        let stores = [&solver.regrets[0], &solver.regrets[1], &solver.strat[0], &solver.strat[1]];
+        let q_bytes: usize = stores.iter().map(|store| match store {
+            Store::I16 { q, .. } => q.len() * 2,
+            Store::U16 { q, .. } => q.len() * 2,
+            Store::F32(_) => 0,
+        }).sum();
+        let overlap = q_bytes >= 64 * 1024 * 1024;
+        // Only immutable store scans leave this caller. Context, compilation,
+        // allocation and every CUDA API stay here; joining precedes all uploads.
+        let ((module, mut h_staging, mut arena_layout), zero_checks) = checks_with_setup(
+            overlap,
+            || {
         // Compile the PTX for the device we actually found: hardcoded
         // compute_86 refuses to load on an A100 (8.0) and makes newer cards
         // JIT from stale PTX. (&'static is what cudarc's CompileOptions
@@ -232,6 +272,18 @@ impl GpuSolver {
             })
             .clone()?;
         let module = ctx.load_module(ptx).map_err(e)?;
+
+        let data_len = plan.arena_elements;
+        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+        let mut arena_layout = [
+            ArenaLayout::new(solver, &plan, 0),
+            ArenaLayout::new(solver, &plan, 1),
+        ];
+
+                Ok((module, h_staging, arena_layout))
+            },
+            || overlap.then(|| stores.map(ZeroCheck::new)),
+        )?;
         let func = |name: &str| module.load_function(name).map_err(e);
 
         let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
@@ -240,18 +292,13 @@ impl GpuSolver {
         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
 
         let data_len = plan.arena_elements;
-        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
-        let mut arena_layout = [
-            ArenaLayout::new(solver, &plan, 0),
-            ArenaLayout::new(solver, &plan, 1),
-        ];
         let d_regrets = [
-            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
-            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
+            arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]))?,
+            arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]))?,
         ];
         let d_strat = [
-            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
-            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
+            arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
+            arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
         ];
         let (lock_off, lock_sigma) = build_lock_table(solver);
 
@@ -389,7 +436,7 @@ impl GpuSolver {
                         sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
                     )
                     .map_err(e)?;
-                let res = self.sweep(p, None);
+                let res = self.paired_sweep(p, None, p == 1);
                 let graph = self
                     .stream
                     .end_capture(
@@ -409,7 +456,7 @@ impl GpuSolver {
             }
         } else {
             for p in 0..2 {
-                self.sweep(p, None)?;
+                self.paired_sweep(p, None, p == 1)?;
             }
         }
         Ok(())
@@ -426,7 +473,7 @@ impl GpuSolver {
             .map_err(e)?;
         let mut prof = Profile::default();
         for p in 0..2 {
-            self.sweep(p, Some(&mut prof))?;
+            self.paired_sweep(p, Some(&mut prof), p == 1)?;
         }
         Ok(prof)
     }
@@ -605,7 +652,7 @@ impl GpuSolver {
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
             if terminals && sp.count > 0 {
@@ -735,9 +782,22 @@ impl GpuSolver {
         Ok(())
     }
 
-    fn sweep(&mut self, p: usize, mut prof: Option<&mut Profile>) -> Result<(), String> {
+    // Standalone/continuation calls may follow changed roots or a workspace
+    // swap, so even p=1 must refresh both players' reaches.
+    fn sweep(&mut self, p: usize, prof: Option<&mut Profile>) -> Result<(), String> {
+        self.paired_sweep(p, prof, false)
+    }
+
+    fn paired_sweep(
+        &mut self, p: usize, mut prof: Option<&mut Profile>, reuse_player1_reach: bool,
+    ) -> Result<(), String> {
+        debug_assert!(!reuse_player1_reach || p == 1);
         let nh0 = self.nh[0];
         let nh1 = self.nh[1];
+        // Only the second sweep of an uninterrupted pair can reuse reach1:
+        // p0 up updates player0 learning state and never writes either reach.
+        // Every first sweep stays full, including after evaluation or resume.
+        let down_nh1 = if reuse_player1_reach { 0 } else { nh1 };
         let nh_p = self.nh[p];
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
@@ -752,7 +812,7 @@ impl GpuSolver {
                 .arg(&mut *reach0)
                 .arg(&mut *reach1)
                 .arg(&nh0)
-                .arg(&nh1)
+                .arg(&down_nh1)
                 .launch(Self::cfg(4, 0))
                 .map_err(e)?;
         }
@@ -784,7 +844,7 @@ impl GpuSolver {
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
                         .arg(&nh0)
-                        .arg(&nh1)
+                        .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
                 }
@@ -810,7 +870,7 @@ impl GpuSolver {
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
                         .arg(&nh0)
-                        .arg(&nh1)
+                        .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
                 }
@@ -819,7 +879,7 @@ impl GpuSolver {
         }
 
         let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 8 + nh_o as usize * 4) as u32;
+        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
         for l in (0..self.num_levels).rev() {
             let sp = self.fold_spans[l];
             if sp.count > 0 {
@@ -1124,6 +1184,241 @@ mod tests {
     use super::*;
     use crate::{parse_sizes, LockMode, PathStep, Spot, SpotConfig, StreetSizing, TreeConfig};
 
+    fn reach_reuse_solver(storage: crate::store::Storage, algo: Algorithm, compact: bool, menu: &str) -> Solver {
+        let sizing = || StreetSizing { bet: parse_sizes(menu).unwrap(), raise: vec![], donk: vec![] };
+        let mut s = Solver::with_storage(Arc::new(Spot::new(SpotConfig {
+            board: "KsQs2dJd".into(),
+            range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
+            range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
+            tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
+                rake_pct: 0.05, rake_cap: 1.0, allin_threshold: 1.0,
+                oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
+                ..Default::default() },
+        }).unwrap()), storage);
+        s.algo = algo;
+        s.use_isomorphism = compact;
+        s
+    }
+
+    fn reach_reuse_gpu(s: &Solver, compact: bool) -> GpuSolver {
+        let plan = GpuPlan::build(&s.spot, s.use_isomorphism);
+        let budget = if compact {
+            plan.staging_bytes() + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8
+                + 512 * 1024 * 1024
+        } else { u64::MAX };
+        let gpu = GpuSolver::new_with_budget(s, budget).expect("test requires CUDA");
+        for p in 0..2 {
+            if compact {
+                assert!(gpu.d_regrets[p].len() < s.spot.tree.data_size[p] as usize,
+                    "fixture must actually exercise compact action arenas");
+            } else {
+                assert_eq!(gpu.d_regrets[p].len(), s.spot.tree.data_size[p] as usize);
+            }
+        }
+        gpu
+    }
+
+    fn device_bits(gpu: &GpuSolver, data: &CudaSlice<f32>) -> Vec<u32> {
+        gpu.stream.clone_dtoh(data).unwrap().into_iter().map(f32::to_bits).collect()
+    }
+
+    fn assert_device_bits(a: &[u32], b: &[u32], label: &str) {
+        assert_eq!(a.len(), b.len(), "{label}: length");
+        if let Some(i) = a.iter().zip(b).position(|(a, b)| a != b) {
+            panic!("{label}: first mismatch at {i}: {:08x} != {:08x}", a[i], b[i]);
+        }
+    }
+
+    fn assert_reach_reuse_state(candidate: &GpuSolver, reference: &GpuSolver, stage: &str) {
+        assert_eq!(candidate.iteration, reference.iteration, "{stage}");
+        for p in 0..2 {
+            for (name, a, b) in [
+                ("regrets", &candidate.d_regrets[p], &reference.d_regrets[p]),
+                ("strategy", &candidate.d_strat[p], &reference.d_strat[p]),
+                ("reach", &candidate.d_reach[p], &reference.d_reach[p]),
+            ] {
+                assert_device_bits(&device_bits(candidate, a), &device_bits(reference, b),
+                    &format!("{stage}/{name}/{p}"));
+            }
+        }
+        // CFV storage is reused scratch; no comparison of inactive/unwritten slots.
+    }
+
+    fn legacy_iteration(gpu: &mut GpuSolver) {
+        gpu.iteration += 1;
+        let d = Discounts::for_iteration(gpu.algo, gpu.iteration);
+        gpu.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut gpu.d_disc).unwrap();
+        gpu.sweep(0, None).unwrap();
+        gpu.sweep(1, None).unwrap();
+    }
+
+    // Test-only copy of the original full-down dispatch. This deliberately
+    // does not call paired_sweep or share its hand-count override.
+    fn legacy_down(gpu: &mut GpuSolver) {
+        let [reach0, reach1] = &mut gpu.d_reach;
+        let nh0 = gpu.nh[0];
+        let nh1 = gpu.nh[1];
+        unsafe {
+            gpu.stream.launch_builder(&gpu.f_copy_root)
+                .arg(&gpu.d_weights[0]).arg(&gpu.d_weights[1])
+                .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                .launch(GpuSolver::cfg(4, 0)).unwrap();
+        }
+        for l in 0..gpu.num_levels {
+            let sp = gpu.action_spans[l];
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                unsafe {
+                    gpu.stream.launch_builder(&gpu.f_down_action)
+                        .arg(&gpu.d_action_nodes).arg(&start).arg(&count)
+                        .arg(&gpu.d_node_player).arg(&gpu.d_node_na).arg(&gpu.d_node_data_off)
+                        .arg(&gpu.d_node_children_start).arg(&gpu.d_children)
+                        .arg(&gpu.d_rsrc[0]).arg(&gpu.d_rsrc[1])
+                        .arg(&gpu.d_regrets[0]).arg(&gpu.d_regrets[1])
+                        .arg(&gpu.d_lock_off).arg(&gpu.d_lock_sigma)
+                        .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                        .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
+                }
+            }
+            let sp = gpu.chance_spans[l];
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                unsafe {
+                    gpu.stream.launch_builder(&gpu.f_down_chance)
+                        .arg(&gpu.d_chance_parents).arg(&gpu.d_chance_children)
+                        .arg(&gpu.d_chance_cards).arg(&start).arg(&count)
+                        .arg(&gpu.d_rsrc[0]).arg(&gpu.d_rsrc[1])
+                        .arg(&gpu.d_hand_mask[0]).arg(&gpu.d_hand_mask[1])
+                        .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                        .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn paired_reach_reuse_matches_full_sweeps_across_lifecycle() {
+        use crate::store::Storage;
+        let mut arities = std::collections::BTreeSet::new();
+        for (ai, algo) in [Algorithm::Dcfr, Algorithm::CfrPlus].into_iter().enumerate() {
+            for (si, storage) in [Storage::F32, Storage::Compressed].into_iter().enumerate() {
+                for compact in [false, true] {
+                    let menu = ["50", "25,75", "25,50,75", "20,40,60,80"][ai * 2 + si];
+                    let mut s = reach_reuse_solver(storage, algo, compact, menu);
+                    arities.extend(s.spot.tree.nodes.iter().filter(|n| n.kind == crate::tree::KIND_ACTION)
+                        .map(|n| n.num_children));
+                    let mut candidate = reach_reuse_gpu(&s, compact);
+                    let mut reference = reach_reuse_gpu(&s, compact);
+                    let case = format!("{algo:?}/{storage:?}/compact={compact}");
+                    for step in 1..=3 {
+                        candidate.iterate().unwrap();
+                        legacy_iteration(&mut reference);
+                        assert_eq!(candidate.graphs.is_some(), step > 1);
+                        assert!(reference.graphs.is_none());
+                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/iteration{step}"));
+                    }
+                    assert!(device_bits(&candidate, &candidate.d_strat[1]).iter().any(|&b| b != 0));
+                    // Evaluation overwrites reaches with average-strategy values.
+                    // The following p0 sweep must refresh both before any reuse.
+                    for _ in 0..2 {
+                        assert_eq!(candidate.exploitability(&s).unwrap().to_bits(),
+                            reference.exploitability(&s).unwrap().to_bits(), "{case}/evaluation");
+                    }
+                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/evaluated"));
+                    candidate.iterate().unwrap();
+                    legacy_iteration(&mut reference);
+                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation"));
+                    let profile = candidate.iterate_profiled().unwrap();
+                    assert_eq!(profile.launches[0], 2);
+                    legacy_iteration(&mut reference);
+                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled"));
+                    candidate.sync_to_cpu(&mut s).unwrap();
+                    // Lock both actors, invalidate the captured pair, then recapture.
+                    s.lock_node(&[], LockMode::Freeze, "reach reuse OOP".into()).unwrap();
+                    s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze,
+                        "reach reuse IP".into()).unwrap();
+                    candidate.update_locks(&s).unwrap();
+                    reference.update_locks(&s).unwrap();
+                    assert!(candidate.graphs.is_none());
+                    for _ in 0..2 {
+                        candidate.iterate().unwrap();
+                        legacy_iteration(&mut reference);
+                        assert!(candidate.graphs.is_some());
+                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/locked"));
+                    }
+                    candidate.sync_to_cpu(&mut s).unwrap();
+                    assert!(s.iteration > 0);
+                    drop(candidate);
+                    drop(reference);
+                    // Both start from the same warm CPU image (including compressed
+                    // re-encoding), with fresh zeroed reaches and no captured graph.
+                    let mut resumed = reach_reuse_gpu(&s, compact);
+                    let mut resumed_reference = reach_reuse_gpu(&s, compact);
+                    for _ in 0..2 {
+                        resumed.iterate().unwrap();
+                        legacy_iteration(&mut resumed_reference);
+                        assert!(resumed.graphs.is_some(), "warm first call must capture");
+                        assert_reach_reuse_state(&resumed, &resumed_reference, &format!("{case}/warm"));
+                    }
+                }
+            }
+        }
+        for arity in [1, 2, 3, 4, 5] {
+            assert!(arities.contains(&arity), "missing action arity {arity}");
+        }
+    }
+
+    #[test]
+    fn paired_reach_reuse_preserves_raw_player1_and_standalone_refresh() {
+        for compact in [false, true] {
+            let s = reach_reuse_solver(crate::store::Storage::F32, Algorithm::CfrPlus,
+                compact, "25,50,75,100");
+            let mut gpu = reach_reuse_gpu(&s, compact);
+            for _ in 0..3 { legacy_iteration(&mut gpu); }
+            // Independent original down, then p0's full sweep/up, then the old
+            // p1 down: all three complete reach1 images must match bit for bit.
+            legacy_down(&mut gpu);
+            let before_up0 = device_bits(&gpu, &gpu.d_reach[1]);
+            gpu.sweep(0, None).unwrap();
+            let after_up0 = device_bits(&gpu, &gpu.d_reach[1]);
+            assert_device_bits(&before_up0, &after_up0, "p0 up preserves reach1");
+            legacy_down(&mut gpu);
+            assert_device_bits(&after_up0, &device_bits(&gpu, &gpu.d_reach[1]),
+                "legacy p1 down repeats reach1 exactly");
+
+            // Simulate externally changed roots/workspace contents without a p0
+            // predecessor. Arbitrary weights need not respect suit isomorphism:
+            // this checks dispatch refresh, not an isomorphic game solution.
+            for p in 0..2 {
+                let weights: Vec<f32> = (0..gpu.nh[p] as usize)
+                    .map(|i| if i % 7 == 0 { -0.0 } else { (i % 11 + 1) as f32 / 16.0 }).collect();
+                gpu.stream.memcpy_htod(&weights, &mut gpu.d_weights[p]).unwrap();
+            }
+            let poison = f32::from_bits(0x7fc1_2345);
+            let poison_reaches = |gpu: &mut GpuSolver| {
+                for p in 0..2 {
+                    let values = vec![poison; gpu.d_reach[p].len()];
+                    gpu.stream.memcpy_htod(&values, &mut gpu.d_reach[p]).unwrap();
+                }
+            };
+            poison_reaches(&mut gpu);
+            legacy_down(&mut gpu);
+            let expected = [device_bits(&gpu, &gpu.d_reach[0]), device_bits(&gpu, &gpu.d_reach[1])];
+            for p in 0..2 {
+                assert!(expected[p].iter().any(|&b| b != poison.to_bits()));
+            }
+            poison_reaches(&mut gpu);
+            // Same generic entrypoint used by continuation, including isolated p1.
+            gpu.sweep(1, None).unwrap();
+            for p in 0..2 {
+                assert_device_bits(&expected[p], &device_bits(&gpu, &gpu.d_reach[p]),
+                    &format!("standalone p1 refreshes player{p}"));
+            }
+        }
+    }
+
     fn arenas(s: &Solver) -> Vec<Vec<f32>> {
         s.regrets.iter().chain(&s.strat).map(|arena| match arena {
             Store::F32(data) => data.as_slice().to_vec(),
@@ -1247,6 +1542,23 @@ mod tests {
             assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
                 full.exploitability(&s).unwrap().to_bits());
         }
+    }
+
+    #[test]
+    fn zero_check_setup_preserves_caller_error_priority_and_joined_cleanup() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        struct Mock(Arc<AtomicUsize>);
+        impl Drop for Mock { fn drop(&mut self) { self.0.fetch_add(1, Ordering::SeqCst); } }
+ let mut lifecycle=0;let caller=std::thread::current().id();
+ for eligible in[false,true]{for setupmode in[0,1,2]{for checkmode in[0,1]{
+  let calls=Arc::new(AtomicUsize::new(0));let drops=Arc::new(AtomicUsize::new(0));let c=calls.clone();let d=drops.clone();
+  let outcome=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||checks_with_setup(eligible,||{assert_eq!(std::thread::current().id(),caller);match setupmode{0=>Ok(7usize),1=>Err("setup".into()),_=>panic!("setup mock")}},||{c.fetch_add(1,Ordering::SeqCst);assert_eq!(std::thread::current().id()==caller,!eligible);if checkmode==1{panic!("check mock");}Mock(d.clone())})));
+  let expected=if eligible||setupmode==0{1}else{0};assert_eq!(calls.load(Ordering::SeqCst),expected);
+  match(setupmode,checkmode,outcome){(1,_,Ok(Err(x)))=>assert_eq!(x,"setup"),(2,_,Err(_))=>{},(0,0,Ok(Ok((s,v))))=>{assert_eq!(s,7);drop(v);},(0,1,Err(_))=>{},_=>panic!("incorrect lifecycle")}
+  assert_eq!(drops.load(Ordering::SeqCst),if checkmode==0{expected}else{0});lifecycle+=1;
+ }}}
+
+        assert_eq!(lifecycle, 12);
     }
 
 }

@@ -1,0 +1,2316 @@
+{
+  "id": "D036-independent-runtime-review",
+  "at": "2026-10-16T10:13:24.057924+00:00",
+  "verdict": "PASS bounded standalone numerical and resource probe; eligible to propose a separately qualified solver candidate",
+  "reviewer_attempt_note": "First audit stopped after all numerical checks on PTX excerpt newline assertion; runner intentionally appends one newline. Initial script and failure record preserved, corrected only this check.",
+  "review_actions": "CPU-only parsing/recomputation of preserved evidence; no build, GPU call, source or dashboard mutation",
+  "prepared_manifest_sha256": "b0fd45d3bceffb9fb5ba6de294dc3af3ede144a1707cd3ceacbd616e0e4d8279",
+  "binary_sha256": "4f3d7d226f52a83711ff1d379ca8155ffb54b84f425a839c2146ad55931b12d2",
+  "raw_results_sha256": "1e327e0b77868b1e1a1ac1e72625bef977a7e5004b4ddc27d86a0950b3943e39",
+  "checks": {
+    "sealed_r3_manifest": 1,
+    "sealed_prospective_matrix": 1,
+    "prepared_artifact_hash": 25,
+    "dependency_hash": 2,
+    "protected_accepted_source_hash": 5,
+    "unchanged_before_after_inputs": 1,
+    "manifest_link": 3,
+    "actual_binary_hash": 1,
+    "raw_result_hash": 1,
+    "nvrtc_dll_hash": 3,
+    "no_r3_failure_artifact": 1,
+    "empty_success_errorlogs": 3,
+    "exact_command_records": 1,
+    "one_compile_one_native_success": 1,
+    "frozen_compile_command": 1,
+    "native_binary_path": 1,
+    "no_timeout_or_child_cleanup": 1,
+    "build_precedes_probe": 1,
+    "r2_failure_artifact_preserved": 28,
+    "r2_compile_only_failure": 1,
+    "r2_no_native_case": 1,
+    "stdout_only_known_marker": 195,
+    "stdout_exact_report_records": 1,
+    "all_expected_stages": 1,
+    "fixed_stage_order": 1,
+    "complete_matches_terminal_stdout": 1,
+    "harness_rejects_bad_bit_and_guard": 1,
+    "runtime_corpus_identity": 1,
+    "fixed_resource_matrix": 32,
+    "actual_resources": 8,
+    "actual_device_architecture": 8,
+    "runtime_cuda_source_identity": 8,
+    "no_resource_timing_claim": 8,
+    "raw_row_order": 1490,
+    "raw_block_variant_order": 10,
+    "raw_output_length": 10,
+    "raw_guard_word": 4520,
+    "raw_full_image_exact": 5,
+    "raw_image_hash": 5,
+    "raw_nonfinite_summary": 5,
+    "raw_marker_obligations": 5,
+    "raw_case_identity": 1120,
+    "mandatory_raw_case_exact": 1120,
+    "raw_finiteness": 1120,
+    "independent_cpu_f32_raw_total": 1040,
+    "distinct_output_ownership": 1771280,
+    "expected_full_active_matrix": 180,
+    "fixed_full_order": 1440,
+    "full_variant_order": 360,
+    "full_output_length": 360,
+    "all_full_guard_words": 360,
+    "mandatory_full_entire_image_exact": 180,
+    "full_image_hash": 180,
+    "full_marker_configuration": 1260,
+    "required_full_all_finite": 180,
+    "full_antivacuity_counts": 180,
+    "full_actual_active_writes": 180,
+    "full_overflow_nonfinite_summary": 180,
+    "full_marker_obligations": 180,
+    "raw_file_no_extra_rows": 1,
+    "exact_raw_counts": 1,
+    "recomputed_totals": 11,
+    "terminal_recomputed_counts": 1,
+    "launch_counts": 1,
+    "terminal_exact_obligations": 1,
+    "terminal_scope": 1,
+    "same_nine_full_entrypoints": 1,
+    "other_entry_ptx_exact": 8,
+    "ptx_entry_hash": 4,
+    "saved_ptx_entry_exact": 4,
+    "five_static_shuffle_sites": 1,
+    "baseline_no_static_shuffle": 1
+  },
+  "check_assertions": 1787334,
+  "stats": {
+    "raw_guard_word_checks": 4520,
+    "raw_pairs": 1120,
+    "finite_cpu_raw_pairs": 1040,
+    "mandatory_overflow_raw_pairs": 80,
+    "full_guard_word_checks": 5969780,
+    "full_pairs": 180,
+    "full_active_word_pairs": 1771280,
+    "finite_full_word_pairs": 1644760,
+    "mandatory_overflow_full_word_pairs": 126520,
+    "finite_full_changed_words": 1644760,
+    "finite_full_nonzero_words": 942363,
+    "zero_count_pairs": 10,
+    "zero_own_hand_pairs": 10
+  },
+  "observed_overflow_outputs_per_baseline_candidate_pair": {
+    "raw_overflow_nonfinite": 70,
+    "raw_overflow_inf": 70,
+    "raw_overflow_nan": 0,
+    "full_overflow_nonfinite": 125760,
+    "full_overflow_inf": 7200,
+    "full_overflow_nan": 118560
+  },
+  "resource_rows": [
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 0,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 1028,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 257,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 1276,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 319,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 1326,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 0,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 23306,
+      "source_fnv1a64": "6fa761d5bdd97d79",
+      "source_variant": "candidate",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 1028,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 257,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 23306,
+      "source_fnv1a64": "6fa761d5bdd97d79",
+      "source_variant": "candidate",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 1276,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 319,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 23306,
+      "source_fnv1a64": "6fa761d5bdd97d79",
+      "source_variant": "candidate",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    },
+    {
+      "architecture": "compute_120",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other CompileOptions default, matching accepted production",
+      "device": "NVIDIA GeForce RTX 5090",
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads_per_block": 1024,
+      "nh_o": 1326,
+      "occupancy_blocks_per_sm_128": 12,
+      "performance_measurement": false,
+      "registers": 39,
+      "scope": "theoretical occupancy/resources only",
+      "source_bytes": 23306,
+      "source_fnv1a64": "6fa761d5bdd97d79",
+      "source_variant": "candidate",
+      "stage": "resource",
+      "static_shared_bytes": 1232
+    }
+  ],
+  "all_eight_other_entrypoints_exact": true,
+  "full_case_output_summaries": [
+    {
+      "scenario": "n0-own1",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "f6b045a14966f1a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 128,
+      "p": 0,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "1144a3db0cacf4a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 128,
+      "p": 1,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "f6b045a14966f1a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 16,
+      "p": 0,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "1144a3db0cacf4a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 16,
+      "p": 1,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "f6b045a14966f1a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 32,
+      "p": 0,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "1144a3db0cacf4a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 32,
+      "p": 1,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "f6b045a14966f1a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 64,
+      "p": 0,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "1144a3db0cacf4a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 64,
+      "p": 1,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "f6b045a14966f1a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 256,
+      "p": 0,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "1144a3db0cacf4a5",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n0-own1",
+      "block": 256,
+      "p": 1,
+      "count": 0,
+      "hash": "2517160034e5db05",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "d5bfb4f025be1131",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "ebf468a213dc4211",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "d5bfb4f025be1131",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "ebf468a213dc4211",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "d5bfb4f025be1131",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "ebf468a213dc4211",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "d5bfb4f025be1131",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "ebf468a213dc4211",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "d5bfb4f025be1131",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n1-own33",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "ebf468a213dc4211",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 60
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "576e44a19d44e191",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "1a41d85971147210",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "576e44a19d44e191",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "1a41d85971147210",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "576e44a19d44e191",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "1a41d85971147210",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "576e44a19d44e191",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "1a41d85971147210",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "576e44a19d44e191",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n31-own129",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "1a41d85971147210",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "42ac44cedda5a0b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "ce19890bd88d4f6e",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "42ac44cedda5a0b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "ce19890bd88d4f6e",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "42ac44cedda5a0b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "ce19890bd88d4f6e",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "42ac44cedda5a0b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "ce19890bd88d4f6e",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "42ac44cedda5a0b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n32-own257",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "ce19890bd88d4f6e",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "f47b9586e9767b48",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "41fe313d3625e865",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "f47b9586e9767b48",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "654ee5d8e234ed1f",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "f47b9586e9767b48",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "41fe313d3625e865",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "f47b9586e9767b48",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "41fe313d3625e865",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "f47b9586e9767b48",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n33-own1",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "41fe313d3625e865",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "8528b2fa357bcc01",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "9cf1618c687fb44d",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "4776793911b82560",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "3e31a60c5c9751a6",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "8528b2fa357bcc01",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "9cf1618c687fb44d",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "8528b2fa357bcc01",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "9cf1618c687fb44d",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "8528b2fa357bcc01",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n63-own33",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "9cf1618c687fb44d",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "d386e0e8e62283f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "546f22bf32b430f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "ba67596eba0dbb3e",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "a6d55cce871d1261",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "d386e0e8e62283f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "546f22bf32b430f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "d386e0e8e62283f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "546f22bf32b430f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "d386e0e8e62283f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n64-own129",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "546f22bf32b430f6",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "5bf4bc2055976495",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "8cebfe5bdd5fc505",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "975609d648fc0429",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "ec097fa95a2300e9",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "5bf4bc2055976495",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "8cebfe5bdd5fc505",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "5bf4bc2055976495",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "8cebfe5bdd5fc505",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "5bf4bc2055976495",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n65-own257",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "8cebfe5bdd5fc505",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "264506126da965ae",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "ca1f18298166e66c",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "d3fb78cd5f6d3977",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "dfeaa857d57c8465",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "264506126da965ae",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "199307f14c52ecef",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "264506126da965ae",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "ca1f18298166e66c",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "264506126da965ae",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n127-own1",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "ca1f18298166e66c",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "264db8de48e909e3",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "43a4743c4fd561cd",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "6a6fac755770013b",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "f2acbd9c6bd861c3",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "264db8de48e909e3",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "43a4743c4fd561cd",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "264db8de48e909e3",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "43a4743c4fd561cd",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "264db8de48e909e3",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n128-own33",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "43a4743c4fd561cd",
+      "all_active_words": 1848,
+      "finite_changed_words": 1716,
+      "overflow_nonfinite": 132
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "c34ef350c96cb6e1",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "afd695b432d0b6d9",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "430932d394ae8e9a",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "02a8cc528bd2f139",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "c34ef350c96cb6e1",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "afd695b432d0b6d9",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "c34ef350c96cb6e1",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "afd695b432d0b6d9",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "c34ef350c96cb6e1",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n129-own129",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "afd695b432d0b6d9",
+      "all_active_words": 7224,
+      "finite_changed_words": 6708,
+      "overflow_nonfinite": 516
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "1805bcf7cd6928b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "dd6e4f62256bcdc4",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "5daf513dd7af71f1",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "39b89c65192cc24c",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "1805bcf7cd6928b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "dd6e4f62256bcdc4",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "9868afd9edea577a",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "e33e58b72d7caaa2",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "1805bcf7cd6928b0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n255-own257",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "dd6e4f62256bcdc4",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "7487d3bdd2fffbce",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "8dd22c6fc1ffd266",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "d168111df89880a6",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "d10065459942d7e6",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "7487d3bdd2fffbce",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "07b2124986de6aaf",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "0e6b64e2f25b9727",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "23a459bfaaa9e78c",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "7487d3bdd2fffbce",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n256-own1",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "8dd22c6fc1ffd266",
+      "all_active_words": 56,
+      "finite_changed_words": 52,
+      "overflow_nonfinite": 4
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "70ae0f1403913fc0",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "2b8a1d2cfb622b68",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "cc293639b6ab6098",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "44ce381aec898596",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "70ae0f1403913fc0",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "2b8a1d2cfb622b68",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "312e32e21712af78",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "8f283ad03e4f2119",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "70ae0f1403913fc0",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n257-own319",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "2b8a1d2cfb622b68",
+      "all_active_words": 17864,
+      "finite_changed_words": 16588,
+      "overflow_nonfinite": 1276
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "51aa5b71155d740b",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "5e0fe662121f9cf7",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "5f25d61e0637f91d",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "6d546fdb48268ebb",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "fc930e9c1cede9aa",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "2df60ed9bfcf55f5",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "11c51a9db03d835f",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "a318d8840b684bc0",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "cc3ebf3e328adecb",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n319-own257",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "1d477dce47a689bc",
+      "all_active_words": 14392,
+      "finite_changed_words": 13364,
+      "overflow_nonfinite": 1028
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "ca860d22d54219f7",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "c8bde4613db6e5dc",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "f23150be1022469d",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "f2e1db3ff32a12f9",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "a3b2e4055b8f24d5",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "89c6f4de244fdc2b",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "87c292df44c1136c",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "7d8deabb6a70ae4f",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "352900b225c7a19b",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n1326-own1326",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "ceee2b66193e2440",
+      "all_active_words": 74256,
+      "finite_changed_words": 68952,
+      "overflow_nonfinite": 5304
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 128,
+      "p": 0,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 128,
+      "p": 1,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 16,
+      "p": 0,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 16,
+      "p": 1,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 32,
+      "p": 0,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 32,
+      "p": 1,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 64,
+      "p": 0,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 64,
+      "p": 1,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 256,
+      "p": 0,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    },
+    {
+      "scenario": "n319-own0",
+      "block": 256,
+      "p": 1,
+      "count": 56,
+      "hash": "9e4cb15bfe0bbb1d",
+      "all_active_words": 0,
+      "finite_changed_words": 0,
+      "overflow_nonfinite": 0
+    }
+  ],
+  "fixed_seed": "0xd036202610165eed",
+  "fixed_blocks": [
+    128,
+    16,
+    32,
+    64,
+    256
+  ],
+  "all_planned_cases_retained": true,
+  "r2_failed_compile": {
+    "returncode": 1,
+    "e0277_count": 62,
+    "native_cases": 0,
+    "all_28_files_preserved": true
+  },
+  "r3_execution": {
+    "compiler_seconds": 4.546999999998661,
+    "probe_process_seconds": 2.8910000000032596,
+    "one_compile_one_native": true,
+    "not_performance_evidence": true
+  },
+  "input_immutability_evidence": {
+    "full_input_buffer_comparisons": 5040,
+    "raw_input_buffer_comparisons": 30,
+    "basis": "Frozen successful native code compares every device input after each variant; markers confirm completion. Device input readback images are not separately persisted, so these are not independently recomputed from saved images."
+  },
+  "limits": [
+    "Finite constructed corpus, not proof for all finite inputs or NaN/Inf input payloads",
+    "Mandatory finite-overflow output bits match, with nonfinite counts retained; no overflow exemptions",
+    "Independent CPU oracle covers finite-domain raw totals only; full compiled accepted kernel remains full-CFV oracle",
+    "No solver lifecycle, complete-cycle timing, candidate acceptance or speedup claim",
+    "Registers/static PTX/occupancy and whole probe duration are diagnostic metadata, not native solver speed"
+  ],
+  "input_artifacts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline-up_fold.ptx": {
+      "sha256": "a47c1bdb095a0d7a26c95bac47a59c44c035717dddd4cc06c9674af4e7fb511d",
+      "bytes": 13330
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline.cu": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline.ptx": {
+      "sha256": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+      "bytes": 230494
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate-up_fold.ptx": {
+      "sha256": "2bbd3c51157908daf7cc9ef33133dea6c1b7430e4b6f27511cfdfd5128900bc0",
+      "bytes": 15175
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate.cu": {
+      "sha256": "9eff0e598c69bafcf4dc8a04ad116bd25482b06bd9bde34c143d45688ab5505a",
+      "bytes": 23306
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate.patch": {
+      "sha256": "b9431427f7bebc36310c9b25e22171a3c374e952038e523941381ef18facd0b2",
+      "bytes": 1335
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\candidate.ptx": {
+      "sha256": "ffb4f05f9c70006e42f125b30f9b658035f7e68110a456866ab6e4b7568c4764",
+      "bytes": 232339
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\corpus.json": {
+      "sha256": "265f74834e8d0b3506abb0b7229308f732ca8405387958fb0ae79528c9a2a217",
+      "bytes": 16136375
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\execution-manifest.json": {
+      "sha256": "0462dd43af0137aa46766941e93f9ef23c7fa99f826a779dbec12f027e90d695",
+      "bytes": 3955
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\execution-started.json": {
+      "sha256": "367cdb34e8a00d05111c891d176fb238f3dd10947b8b5eb13ecdc96d6b6b9763",
+      "bytes": 284
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\failed-r2-evidence.json": {
+      "sha256": "9c794871c0a16e66609350e6d94e34cea6bf6435a122571118e159861564d80d",
+      "bytes": 3984
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\launch-preflight.json": {
+      "sha256": "56fb2130e11991dea5e004944420387321501ae4425eea543ca3a1372019e02c",
+      "bytes": 837
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\preflight.json": {
+      "sha256": "8866e6b689cbc2669e677e05d5b77e09d81b70008e58dfd519c01bb99c78739a",
+      "bytes": 4741
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\preparation-checks.json": {
+      "sha256": "a0333bf839577bb8a3a7cfe3a7e47031910fb31c6995054aeef1390139bf51f2",
+      "bytes": 692
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\prepare.py": {
+      "sha256": "72d2b6e1f67fe18eb2ddd2d6886c61264bb0c365bc79dbd2bebe880e8924bc5e",
+      "bytes": 9408
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\prepared-manifest.json": {
+      "sha256": "b0fd45d3bceffb9fb5ba6de294dc3af3ede144a1707cd3ceacbd616e0e4d8279",
+      "bytes": 4601
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.command.json": {
+      "sha256": "fc598049861d7b376c4c53d94607ed5ac6f9fbfcda16dbccc38a3e7353ebd05c",
+      "bytes": 360
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.exe": {
+      "sha256": "4f3d7d226f52a83711ff1d379ca8155ffb54b84f425a839c2146ad55931b12d2",
+      "bytes": 16636928
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.pdb": {
+      "sha256": "41ca9f8ad6c38d78cd6593f4665f533fa6eaab99eeeadf19dea40d473188e0d2",
+      "bytes": 1208320
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.rs": {
+      "sha256": "18c89f33d42802b1e9e367bbd0d3252a73bb2b2f34070746bbc48afe63555022",
+      "bytes": 19388
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.stdout.log": {
+      "sha256": "8c0255b0d99dec2ea1245da6bd071e8fbe6092071976ab934af804a011722495",
+      "bytes": 238022
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\protocol.json": {
+      "sha256": "8e89cc3ea42e74c081a0db3fedd4e249582aded031bd597dca575df0c1ece8a6",
+      "bytes": 3205
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\r1-to-r2.patch": {
+      "sha256": "069de18433b67a85dffdd55f38602989399e29a8a29fa95e1c302e7c5f5b98c9",
+      "bytes": 813
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\r2-to-r3.patch": {
+      "sha256": "98f0689f7f28c2d8faf4123bf9a92d1eeb7d5e2bbc945a049764768d35cff384",
+      "bytes": 1640
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-baseline-raw_total.ptx": {
+      "sha256": "0522fa60ca565f7d4d2b7a6512a31d6cb5dc32ca1c496f27bb758274b0afcfac",
+      "bytes": 2290
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-baseline.cu": {
+      "sha256": "ac883f651e5def02f4a04ebf339986cd87dd0c2d68abe9f6c6df7ceaa15d84f9",
+      "bytes": 837
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-baseline.ptx": {
+      "sha256": "aaa241308126527cf3fd297e16c42b94a4945ffc33c72fed639cf06d0123655f",
+      "bytes": 2561
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-candidate-raw_total.ptx": {
+      "sha256": "e8c09cd1bfb68c41d8cd23c605878bf050aad589d092897c257f44b19abae962",
+      "bytes": 4014
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-candidate.cu": {
+      "sha256": "fd85fefd631678d5381927f1eb77722d13f997e4a8fa41b17751afff89797d41",
+      "bytes": 1519
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-candidate.ptx": {
+      "sha256": "86805c0fddabd40ee1d643fbfaa82302255c81a01f45cde010fea778b9de3a18",
+      "bytes": 4285
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\raw-results.jsonl": {
+      "sha256": "1e327e0b77868b1e1a1ac1e72625bef977a7e5004b4ddc27d86a0950b3943e39",
+      "bytes": 98314311
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\README.md": {
+      "sha256": "8cf05e7081d52e7befbcf4c815c0cd431f9ee0b93e906f48b7239c90757cd448",
+      "bytes": 7314
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\report.json": {
+      "sha256": "c1edf0d61c7c96f16cf8fafb6168481bc558fdb692526bb67349cca8761aaa5f",
+      "bytes": 504316
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\revision-checks.json": {
+      "sha256": "025222ec46b531f5862ddb6513c3116ea8317c09576580fb68e2096dd3c0495d",
+      "bytes": 595
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\REVISION-R2.md": {
+      "sha256": "6558da40e822b9b2df9bb7ce5a038ccb07613443ccd70646c61a2b5792427330",
+      "bytes": 1275
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\revision-r3-checks.json": {
+      "sha256": "1bb7a9a7a48312046984cf42e6a8808f29cd4c6e93f3dbd55de1468f40520ecd",
+      "bytes": 530
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\REVISION-R3.md": {
+      "sha256": "652342386f6822977451f727d29295c318773ed2c0571b89a44040597cdb3a59",
+      "bytes": 1607
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\run.py": {
+      "sha256": "5a63bfb0817aaf747b4da90afcf68463e1f104d9cb5a3f0a7ff2acd7f0d54d77",
+      "bytes": 10092
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\runner-primitives-source.py": {
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\rustc.command.json": {
+      "sha256": "e56f57766c6a42e24a7f7d0a956eac199cbf7f53942ec81634ae590e992fb98f",
+      "bytes": 787
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\rustc.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\rustc.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\seal.py": {
+      "sha256": "d5347f900c61a3b219c134029740d2bcf9783d37021c87b7c1d6f5a212706665",
+      "bytes": 6472
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\source-checks.json": {
+      "sha256": "063b089fe5b17c4baccec5d09d49ae501aa665281c9ad1e18620c8298d8a1e40",
+      "bytes": 1254
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\source-r1-prepared-manifest.json": {
+      "sha256": "aa00b819764e2693d5c37c63f0c668308851b249d130274b6ad567d325ebadfa",
+      "bytes": 3509
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\source-r2-prepared-manifest.json": {
+      "sha256": "c23945d7afbf1364931047f58b41dc2b5460d854d39225fb3cbd86d4e298be18",
+      "bytes": 4014
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\source-variants.json": {
+      "sha256": "6e6310ed8e3bdbaa81434acd3db4522d100d11f3f4b4bd82e7a9663a08522ce1",
+      "bytes": 638
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\frozen-protocol-validation.json": {
+      "sha256": "77ef8708090e3cdf5460025c78ba91bb579b4cf331bf50a6a5d249c2e8a36d3f",
+      "bytes": 6256
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\runtime-expected-matrix.json": {
+      "sha256": "68421e9a94be1e4184c554e1836b8b4243586631f7750aa56f5d2ab352b549b7",
+      "bytes": 58297
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\r2-provenance-supplement.json": {
+      "sha256": "c06a0bc55c502da371d301327503240b7e3eb9dded4625967446d2805581842e",
+      "bytes": 3868
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\r3-provenance-supplement.json": {
+      "sha256": "3f9d18cae60284fc1f5cf5657101b19081d28cb518647372e2a038e5ac7909af",
+      "bytes": 3468
+    }
+  }
+}

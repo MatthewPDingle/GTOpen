@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-18T05:33:40.878543+00:00",
+  "primary_source": "https://docs.nvidia.com/cuda/archive/12.9.2/cuda-c-programming-guide/index.html#synchronization-functions",
+  "contract": "Block barrier provides prior global/shared memory access visibility to block threads; conditional barriers require uniform condition across block. Here parentID/start/count/arity/immutable childmarker are CTAconstant, so every active CTAthread takes same foldbranch/loop and alloriginalcollectives. Uniform out-of-count block returns before barrier.",
+  "scope": "Source reasoning and D128metadata model only; actual compiled/raw/state/lock/continuation equivalence pending. Shared/helper storage perCTA, no crossCTAbarrier. Extra terminalrow ownership unique; delaying original producer1level has nootherconsumer. Validhandbound1326 and controlthreads1..256 retain originalfoldcapacity.",
+  "quotations": []
+}

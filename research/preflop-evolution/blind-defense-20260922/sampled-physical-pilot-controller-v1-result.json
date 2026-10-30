@@ -1,0 +1,191 @@
+{
+  "terminal": true,
+  "completed_iterations": 2,
+  "config": {
+    "max_iterations": 2,
+    "deals_per_iteration": 2,
+    "query_limit": 100000,
+    "fit_steps": 8,
+    "fit_seed_base": 29301,
+    "reservoir_capacity": 32,
+    "sampler_seed": 27301,
+    "action_seed": 28301,
+    "reservoir_seeds": [
+      28302,
+      28303
+    ],
+    "chance": "full_deck",
+    "device": "cpu",
+    "threads": 2,
+    "tf32": false,
+    "architecture": [
+      269,
+      64,
+      64,
+      4
+    ],
+    "chunk_size": 31,
+    "learning_rate": 0.003,
+    "iteration_weights": "equal",
+    "torch_version": "2.6.0+cu126",
+    "numpy_version": "1.26.4",
+    "device_name": "cpu"
+  },
+  "store": "S:\\GTOpen-research\\sampled-physical-pilot-controller-v1",
+  "checkpoint": {
+    "file": "checkpoint-d6a4968e7d44e415a029449ba34ab26283e01d36f20e8ffd5977e420925fe7fb.json",
+    "sha256": "d6a4968e7d44e415a029449ba34ab26283e01d36f20e8ffd5977e420925fe7fb"
+  },
+  "steps": [
+    {
+      "iteration": 1,
+      "seconds": 2.7189999999827705,
+      "total_seconds": 2.7820000000065193,
+      "deals": 2,
+      "observations": 910,
+      "advantage_records": [
+        52,
+        6
+      ],
+      "reservoirs": [
+        {
+          "player": 0,
+          "capacity": 32,
+          "seen": 52,
+          "retained": 32,
+          "allocated_payload_bytes": 4128,
+          "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+        },
+        {
+          "player": 1,
+          "capacity": 32,
+          "seen": 6,
+          "retained": 6,
+          "allocated_payload_bytes": 4128,
+          "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+        }
+      ],
+      "fits": [
+        {
+          "player": 0,
+          "device": "cpu",
+          "steps": 8,
+          "seed": 229304,
+          "learning_rate": 0.003,
+          "chunk_size": 31,
+          "retained_examples": 32,
+          "grouped_observations": 32,
+          "legal_target_count": 77,
+          "advantage_scale": 36.67628742434111,
+          "normalized_grouped_loss_before": 1.6050109565258026,
+          "normalized_grouped_loss_after": 1.031738981604576,
+          "normalized_within_observation_variance": 0.0,
+          "scope": "Fixed retained-data fit; fitting loss does not measure poker strength."
+        },
+        {
+          "player": 1,
+          "device": "cpu",
+          "steps": 8,
+          "seed": 229305,
+          "learning_rate": 0.003,
+          "chunk_size": 31,
+          "retained_examples": 6,
+          "grouped_observations": 6,
+          "legal_target_count": 15,
+          "advantage_scale": 30.598596998457566,
+          "normalized_grouped_loss_before": 1.5429009199142456,
+          "normalized_grouped_loss_after": 0.8364846110343933,
+          "normalized_within_observation_variance": 0.0,
+          "scope": "Fixed retained-data fit; fitting loss does not measure poker strength."
+        }
+      ],
+      "checkpoint": {
+        "file": "checkpoint-4d619a65141bee388181501f07954da2e52f6aa2aa076e23731980a4e1573c5c.json",
+        "sha256": "4d619a65141bee388181501f07954da2e52f6aa2aa076e23731980a4e1573c5c"
+      },
+      "artifacts": {
+        "batch.json": "997e22d6dda39970c784480c3be451efbe88eb4ae52c15cf30c203d8ba925618",
+        "queries.json": "9ab035b9b69c67e33dad3a73339ee5080065a91be1feb1a146a870fac0564938",
+        "policies.json": "daa3a69674d151962227f915a02b77b3d5360e48628aee300ad1cfe3cbc68247",
+        "updates.json": "b9644c822ce2dd29e44c4110a1bcba4820d60574b5dd34d679fdc985497a12f7"
+      }
+    },
+    {
+      "iteration": 2,
+      "seconds": 0.28100000001722947,
+      "total_seconds": 3.0630000000237487,
+      "deals": 2,
+      "observations": 910,
+      "advantage_records": [
+        8,
+        2
+      ],
+      "reservoirs": [
+        {
+          "player": 0,
+          "capacity": 32,
+          "seen": 60,
+          "retained": 32,
+          "allocated_payload_bytes": 4128,
+          "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+        },
+        {
+          "player": 1,
+          "capacity": 32,
+          "seen": 8,
+          "retained": 8,
+          "allocated_payload_bytes": 4128,
+          "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+        }
+      ],
+      "fits": [
+        {
+          "player": 0,
+          "device": "cpu",
+          "steps": 8,
+          "seed": 429307,
+          "learning_rate": 0.003,
+          "chunk_size": 31,
+          "retained_examples": 32,
+          "grouped_observations": 32,
+          "legal_target_count": 75,
+          "advantage_scale": 33.013549549699604,
+          "normalized_grouped_loss_before": 1.7584310173988342,
+          "normalized_grouped_loss_after": 1.01613849401474,
+          "normalized_within_observation_variance": 0.0,
+          "scope": "Fixed retained-data fit; fitting loss does not measure poker strength."
+        },
+        {
+          "player": 1,
+          "device": "cpu",
+          "steps": 8,
+          "seed": 429308,
+          "learning_rate": 0.003,
+          "chunk_size": 31,
+          "retained_examples": 8,
+          "grouped_observations": 8,
+          "legal_target_count": 19,
+          "advantage_scale": 56.698511697446804,
+          "normalized_grouped_loss_before": 1.7616561651229858,
+          "normalized_grouped_loss_after": 1.28028404712677,
+          "normalized_within_observation_variance": 0.0,
+          "scope": "Fixed retained-data fit; fitting loss does not measure poker strength."
+        }
+      ],
+      "checkpoint": {
+        "file": "checkpoint-d6a4968e7d44e415a029449ba34ab26283e01d36f20e8ffd5977e420925fe7fb.json",
+        "sha256": "d6a4968e7d44e415a029449ba34ab26283e01d36f20e8ffd5977e420925fe7fb"
+      },
+      "artifacts": {
+        "batch.json": "e7aa13eee1296aa5645f0ac7d8210c6ae3d81154910aac64de79659160ec6d4f",
+        "queries.json": "40253d1165e97447260e2b344d579718c60f11d54648425324978d7324617a6c",
+        "policies.json": "9a29645f90ff104e3f1b1e9f67475ca2fadae033ca3fff15b85d35144866c3ab",
+        "updates.json": "912369d960c6366187bf2a205ff2aa2f34649e25c14abdbe3420fcb6fa2357a6"
+      }
+    }
+  ],
+  "seconds": 3.0630000000237487,
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false,
+  "scope": "Training/resource pilot. No fresh held-out strength evaluation or best-response certificate."
+}

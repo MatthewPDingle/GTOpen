@@ -1,0 +1,220 @@
+{
+  "id": "D169",
+  "at": "2026-10-28T15:13:56.123497+00:00",
+  "status": "FROZEN_PRE_COMPILER_UNITS_WARMUPS_AND_FIRST_TIMING",
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\probe.rs",
+    "--edition=2021",
+    "--test",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+    "--extern",
+    "solver=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "rayon=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\probe.exe"
+  ],
+  "unit_binary": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-solver.exe",
+  "unit_binary_sha256": "a0acbeca63eef3f4039420711306207b62f4e526905c7ccbf692e60781f56c16",
+  "sequence": [
+    {
+      "id": "D169-U16",
+      "workers": 16,
+      "kind": "unit"
+    },
+    {
+      "id": "D169-U8",
+      "workers": 8,
+      "kind": "unit"
+    },
+    {
+      "id": "D169-U32",
+      "workers": 32,
+      "kind": "unit"
+    },
+    {
+      "id": "D169-W16",
+      "workers": 16,
+      "kind": "warmup"
+    },
+    {
+      "id": "D169-W8",
+      "workers": 8,
+      "kind": "warmup"
+    },
+    {
+      "id": "D169-W32",
+      "workers": 32,
+      "kind": "warmup"
+    },
+    {
+      "id": "D169-T16-R1",
+      "workers": 16,
+      "kind": "scored",
+      "block": 1
+    },
+    {
+      "id": "D169-T8-R1",
+      "workers": 8,
+      "kind": "scored",
+      "block": 1
+    },
+    {
+      "id": "D169-T32-R1",
+      "workers": 32,
+      "kind": "scored",
+      "block": 1
+    },
+    {
+      "id": "D169-T8-R2",
+      "workers": 8,
+      "kind": "scored",
+      "block": 2
+    },
+    {
+      "id": "D169-T32-R2",
+      "workers": 32,
+      "kind": "scored",
+      "block": 2
+    },
+    {
+      "id": "D169-T16-R2",
+      "workers": 16,
+      "kind": "scored",
+      "block": 2
+    },
+    {
+      "id": "D169-T32-R3",
+      "workers": 32,
+      "kind": "scored",
+      "block": 3
+    },
+    {
+      "id": "D169-T16-R3",
+      "workers": 16,
+      "kind": "scored",
+      "block": 3
+    },
+    {
+      "id": "D169-T8-R3",
+      "workers": 8,
+      "kind": "scored",
+      "block": 3
+    }
+  ],
+  "scored_blocks": [
+    [
+      16,
+      8,
+      32
+    ],
+    [
+      8,
+      32,
+      16
+    ],
+    [
+      32,
+      16,
+      8
+    ]
+  ],
+  "reference_workers": 16,
+  "candidate_workers": [
+    8,
+    32
+  ],
+  "required_units_per_config": 86,
+  "required_unit_ignored": 4,
+  "expected_scored_results": 27,
+  "expected_scored_checkpoints": 207,
+  "minimum_aggregate_gain_pct": 1.0,
+  "max_process_CPU_or_lifetime_median_regression_pct": 1.0,
+  "strict_fixture_guard": "Failifcandidatefixturemedian>referenceandatleast2of3matchedblockpairsslower,withnominimumslowdownthreshold.",
+  "required_free_bytes": 17179869184,
+  "native_timeout_seconds": 1200,
+  "all_samples_required": true,
+  "excluded_or_extension_samples_allowed": false,
+  "historical_timing_pooling_allowed": false,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-prepare.py": "680af62543840c854ed8731d4f957d489acdd81beff4cd78e739d95b7fa9e704",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D168-worker-raw-control\\report.json": "363d523140a077e0ccdaa3ac44954f5f7d82e0917e5675ed9b0b15738622386a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\protocol.json": "cb1a5555b598ea4297529eec7d64e071ecc48c8145970892c19926cb86d4de77",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\execution\\complete.json": "d798f72dad80521a2b9354fb6fb5005b75d19fc169a990eb0337011a6c403caf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-RAM-thread-config-scope\\scope-review.json": "6e4b5414acaabd93ee3fa6abc1f60817d6d5e4f692a449df1eb248889b0a4afa",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-solver.exe": "a0acbeca63eef3f4039420711306207b62f4e526905c7ccbf692e60781f56c16",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-solver.manifest.json": "6fed37ce153ded3e583dc197ad19c61d6364fec08f0a6d43159536627ff1d988",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\exact-anchor.json": "f37067f252068f7094196e3ff0a6e77c4ffe45a9bfc98fc399cde07622936245",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\assess.py": "28c87c8fbfd42f9b8c11f94484a37f2138db1e6a24999094a00d4c1c89a41a53",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\execute.py": "3aa9995bd43fa28622841abc479e2dc2a61f295182b768c778cc917963d23f86",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\probe.rs": "e0d3978a6e5be6bf005e9115959b789b689ea6a7dc12f7b6faddedffd9031353",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\sampler.py": "0cd4ff305843c96321b6d331997f2b014067df13a61f27b458436873b6cf7d8c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\source-review.json": "9512e8380b08a528c444655f0c6ff2ba5075b1fcd346b3ea1c95069b9af5fae8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcc-47cbe2715a82d6dc.rlib": "2177f3eb37d163800753bf8e4bb5cf6a3cd5dd045e168356234ba18f92e6f7da",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcc-47cbe2715a82d6dc.rmeta": "63c89db00004e27e20ea7f51bc7a1a6c765cc6a827d5a991c7bd320b5e22a6f5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_deque-1a1d6578b74865e7.rlib": "d02166d41f1d7e94dc5645eedaf57de820e18b17572022e0c5a7bee63cd20b51",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_deque-1a1d6578b74865e7.rmeta": "2763faa92da796539b65f88959c539feede4207b9419331e09cea7e5bf369f22",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_epoch-83f0dcc2dba25447.rlib": "8be3fb3a0fa036b3083b1a2b822437488fab54ffda1390cc0c90ac4346ed82a6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_epoch-83f0dcc2dba25447.rmeta": "8318a01427f6b99a9bb34b5f8cf3944b9ba58953efe6474dba7afd049028b765",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_utils-f12feddf568a8de6.rlib": "0213e1cbca469f6c77fda43a8dc46733a88c9f76dabd99c757731ed281bf8ee6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_utils-f12feddf568a8de6.rmeta": "03d6fd2d0e13b12e57e41ad688b31fced1f8032cd684ebb9b54cebb7228a0a56",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rmeta": "c130b3e383dfb24adcd58ca8e92d476c52251af8452ada1a9a46b3dc312b5224",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libeither-4baf58b0742f8bd6.rlib": "4ef82757c3fe5d6efd6c88c18a38e0753c63a483c97f4831a335c619bd50caa6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libeither-4baf58b0742f8bd6.rmeta": "7214a79c32423e3fc8f3b8b65c35865a84b320f16ca02c6200af0762a29975a3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libfind_msvc_tools-50bafbacf9e2acf8.rlib": "e8a198265161b5e388d38e996374fccd256b6b914a4015e816a137a99e101af4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libfind_msvc_tools-50bafbacf9e2acf8.rmeta": "11b8e5288ec8ae6dc9e448a60f4bfe2cf578974b41aea31cf25ca39293e22912",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libitoa-74a051154152f23d.rlib": "d2633a672f7ec1f86c34dfc1ef08eb09d803c689e00c54a4a31c99163ffdcce6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libitoa-74a051154152f23d.rmeta": "ab45a2874f069f7c310ae2bc1fd6e6f354e854650f3f2ae58ee99b9265b93bba",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibloading-8d2068e2bf38a2f1.rlib": "f0ec6e05540ac2927203e498facedafbf2cc9bb4d3cceae3e992fd600863bb1c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibloading-8d2068e2bf38a2f1.rmeta": "0b9168eb9f2bb482ab192a2696834fc892666d8b893e389582421b1dd7f24d11",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rlib": "5650f70c22405b2e0976f77b0956e4b4b76044d5b4974af1c2f1b1fa38a88dd1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rmeta": "d90c8cc2cd4c931a469b3304f1fcd8b38a3f95f1f8f205043fa8427efe4c9f60",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmemchr-863cd9a4723da2aa.rlib": "75e2fd3759fc303aa73149097286c98d3964ba6201948fee3e01bd116ce27095",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmemchr-863cd9a4723da2aa.rmeta": "0d58be3c92eb0e6ab92fd5f21dca37f5e507e8f6ceae8008c9195544a914b566",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rlib": "3fb4e5350de37c8791f50e84864068a1a5da078677e43dd28b3ec8c727763c0c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rmeta": "2b2a09abca5f11fb0d0f47dfbbc7fe8be1d242eab3cc8dc7fb5c91d88926727b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libproc_macro2-270112166e35f5e1.rlib": "6649f7c16910d0f34543ee996315458613995f68eb8dca728acbc82d51e41cde",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libproc_macro2-270112166e35f5e1.rmeta": "0a583bdedeff64075a65f1a6159d135db3dba4876b6af086ba5c44a24fbd3523",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libquote-fe2f21b86a966e3a.rlib": "40e648f79c4578ee719cb9a30b578450f54ac8739308b3bd079dab809f5add81",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libquote-fe2f21b86a966e3a.rmeta": "078a7c44f5f9700b113cfb7bbf427b7fa0f5c29855977bf0657b97e6011ed23a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib": "2a1339eeec5fa4417ba824dd425f52ae1aebaa4d06e488f3273f2b8769473be9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rmeta": "af841bb76869e24769e23dbc8c9ad0f727555d549a1c2f1435ec6a04865c7e75",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon_core-0787e97421794457.rlib": "3411c2b88e10b4bc416f8140695ba5c7e55683f3f3fcb10e62a7ca710e75c30b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon_core-0787e97421794457.rmeta": "520a1b7da8946d9c45cb1c62f64888c69f6b7ff809b94fa1cf8149af4a6a031b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rlib": "1aff1aee92c314f890733948cdccf675c28f83ca0b7a9851af888372de797974",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rmeta": "5470f3bdd2f2a59bf6f2b377ff19d7eee95b8b90e8764e9f035368eef7215266",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_core-94e9cc654b950df9.rlib": "e7951f0b3905194114f2abc65a0f1b401dfe3ab4b2c5b21f4cd4bc4f1fecda01",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_core-94e9cc654b950df9.rmeta": "cacb4fb3eeec0bcc57918b3f69e8fc265b41a033cadeb606adb7f0cd720e4b64",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib": "1198bd7f593e9c60787894d6c5dc4c3b6308f2f98edfcab5ad8dba9320ee116d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rmeta": "3cdf7c1be8fe2fb9004b33b662e308f2acfb67e5b9b347245bdbd2528a6de693",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libshlex-f6524cb5e4bd3a31.rlib": "909159493a963a321926084dde05a3456a865c5b7929f021c738bde4c3168a9d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libshlex-f6524cb5e4bd3a31.rmeta": "24adb849c458c23b29d18bd37dbe438c1bc602226268f8021c83333e01409337",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib": "732e7ce60c2a47fe2e88c3b471e3ceb601e95f6635d123272c01b2ef51a6e318",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rmeta": "ca6c7e79449d74f86fedbcdc1750273aca9c9b494ed267bf0f182a1165e9043d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsyn-10acf42acce28688.rlib": "f6c7ff103d5ee103160d1b86ba780a30b6e9a1a14242a3bc91a1e9e4e1d1500c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsyn-10acf42acce28688.rmeta": "8a7767d82d58f1e1cbd2c0f0df946c6f528885afc62a0e4cc88c488173e7ebc8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libunicode_ident-0252c41d2e9f2d1c.rlib": "0590f88bebe92bc8e1aca05748b8799755cd0e6050ac75167159606cd1ee81fb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libunicode_ident-0252c41d2e9f2d1c.rmeta": "34aa0023afc9819f9e7f0098fb3306ce9c1a2e03e78728f412adb22dac3e4f8a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libwindows_link-b52ec09ce44eaf82.rlib": "1edf850d4debee91f4e612ba0a85f79cc4e3a54dd5a809bd5fed06ae133c8573",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libwindows_link-b52ec09ce44eaf82.rmeta": "2d60884cdfadf66cc567b208c2c20b4b681bcc93d1beb3364292bbecfca85ed3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libzmij-421e3e50aa0a9d3e.rlib": "0de97588e6b6e787650894c7225ea73be63e51bc8df82fcc84a9dd1cd9d9c0c0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libzmij-421e3e50aa0a9d3e.rmeta": "be8a98261370be72c006200123ec2b4494d6f1c47dc9dc906992c65b22663327",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\serde_derive-1314214cb8b4b16d.dll": "a2c9222b21383f9858b2981a599106a3640f510740f7b450cbf16856819f829a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\serde_derive-1314214cb8b4b16d.dll.lib": "cb8f063fa47f1eaa262b8afbdd9339467bd13d6c8575893350defa4819e77b21"
+  },
+  "scope": "One acceptedE080 solver/onefreshmatchedharness,threechildCPUworkerconfigs. Allsameoriginalcompleteclocks/quality/science,actualworkerobservationafterallwork. Exact86units/configthen3equalprespecifiedwarmups,9scoredbalancedprocesses. Eachconfigscreenindependentvsprospectivelyshared16controls. TerminalCPU/lifetimechecksavoidcostshifting. Nostatisticalsignificance/adoptionfromsmallinitialscreen;failedformsclosedwithoutcounts/source/flags/resampling rescue."
+}

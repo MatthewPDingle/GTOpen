@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-29T15:06:45.392474+00:00",
+  "status": "DESIGN_DRAFT_NOT_NATIVE_ADMISSION",
+  "input_report_sha256": "c365c4141494fcd5d512802f470b1a139475a8e609d6c8f952400a4fe790795a",
+  "route": "One fixed Windows VirtualAlloc plus cuMemHostRegister_v2 flags0, exactly>=64MiBlogicalbytes; original cuMemHostAlloc flags0fallbackbelowthreshold. No production/sourceactivation.",
+  "fixtures": [
+    {
+      "fixture": "rainbow",
+      "words": 185172163,
+      "logical_bytes": 740688652,
+      "source": "Original full canonical accepted GPU frame d_regrets/d_strat extents; PinnedBuf::new uses maxarenaelements."
+    },
+    {
+      "fixture": "two-tone",
+      "words": 110745280,
+      "logical_bytes": 442981120,
+      "source": "Original full canonical accepted GPU frame d_regrets/d_strat extents; PinnedBuf::new uses maxarenaelements."
+    },
+    {
+      "fixture": "river",
+      "words": 4480,
+      "logical_bytes": 17920,
+      "source": "Original full canonical accepted GPU frame d_regrets/d_strat extents; PinnedBuf::new uses maxarenaelements."
+    }
+  ],
+  "native_scope": "Future standalone model links accepted solver/mimalloc/cudarc/rayon deps. Common existing GPUcontext/defaultownedstream, originaleventtracking disabled. Before each componentclock allocate/synchronize one equal devicebuffer. Inside componentstages include full hostallocation/pinning,2wholewordCPUwrite/HtoD/poison/DtoH/fullbitcheckcycles, full explicit unregister/free/drop. Rawoutputs written outside componentclocks but wholeprocessCPU/wall/peakincludes them. No CUDAkernel/NVRTC/CFR/solver solve.",
+  "fixed_sampling": "2unscored fresh warmup processes baseline then candidate, then3fresh matched pairs BO/OB/BO, eachprocessall original3canonical sizes; no completedcase rerun orsampleextension. Warmups also small1/1023/1024/1025word page/tail controls. Everycanonical output everyword/2patterns retained and independently fullraw decoded/paired.",
+  "allocation_bounds": "Ordinary VirtualAlloc pages only, checkedlen*4/page rounding/isize bounds, no large pages/MEM_RESET/prefetch. CandidateArc<CudaContext>owner heldthroughunregister/free. Registrationfailurefreeunregisteredpages; unregisterfailureneverfree registeredregion; stopchild andpreserveerror. No failureinjectionthatcanchange machinepermissions.",
+  "prospective_component_gate": "Sum three fixturemedian complete componentstagesaving >=100.521554ms effortconstantonly. Reject anyfixturepositive medianslowdown plus2/3slower. Record matched all-thread CPUtime/lifetime/parentwall/peakWS/privatecommit/systemcommit/GPUfree; CPUtradeoff/materialgates mustfreeze before native. Source-defined owner/type growth bound<=16B before sourceadmission. Componentpassingisnot1%full-solvegain oradoption.",
+  "storage": "Newraw reservation32GiB +64GiBheadroom onX, availableRAM>=32GiB beforeeachnative and boundedoversight. Sreadonly/noT. Allownedchildrenwaitedterminal undergpu-run.lock.",
+  "next": "Write exact model/native/rootreader/manager, freezeprospective resources/materialgates/protocol, then compileonce/executeonlyfixednewhandles. Draftalone authorizes no new native experiment."
+}

@@ -1,0 +1,56 @@
+{
+  "interim_numerical_checks_passed": true,
+  "training_segment_complete": false,
+  "accuracy_claim": false,
+  "production_ready": false,
+  "result_sha256": "e6f77f47bd013e78a40eb9d14480b4305567c904affae6bd566fe423764be3d3",
+  "resources_sha256": "a5f1b43ffa0aef900794e49f6e69dfbd15571052de104716a58a89e8bedc17c3",
+  "source": "research\\preflop-evolution\\ssd-storage-20260920\\strategic-weighted112-500-v1-result.json",
+  "resumed_boundary_exact": true,
+  "records": [
+    {
+      "iteration": 20,
+      "gap_total": 5.454920696863878,
+      "gaps": [
+        3.3750252431237184,
+        2.0798954537401597
+      ],
+      "ev": [
+        -3.1374641496366187,
+        6.066580818109398
+      ],
+      "expected_rake": 0.5708833262136054,
+      "root_frequencies": [
+        0.7672195812480465,
+        0.08421407848169271,
+        0.11707588555774559,
+        0.0314904547125163
+      ],
+      "conservation_error": 5.3136153255195495e-09
+    },
+    {
+      "iteration": 100,
+      "gap_total": 0.8238350843540267,
+      "gaps": [
+        0.4263531108132028,
+        0.39748197354082393
+      ],
+      "ev": [
+        -3.194370580979958,
+        6.1068986749534195
+      ],
+      "expected_rake": 0.5874717818431892,
+      "root_frequencies": [
+        0.7444822836078415,
+        0.08734347895441827,
+        0.13159408486995197,
+        0.036580152567789445
+      ],
+      "conservation_error": 1.2418334938146813e-07
+    }
+  ],
+  "minimum_free_host_bytes": 25696997376,
+  "minimum_free_gpu_bytes": 11869880320,
+  "stage_registration_sha256": "f1559092819bc1bb2d68f6b31d87689c648296450b4e7e3532ca198accc2c5b1",
+  "validation_scope": "Interim iteration-100 output, probability and chip/rake accounting, storage transfer counts, exact iteration-20 boundary, frozen inputs. Iteration-500 snapshot and held-out comparison remain pending."
+}

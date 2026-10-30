@@ -1,0 +1,34 @@
+--- audit-primary.py
++++ audit-primary-r2.py
+@@ -92,7 +92,7 @@
+     ck(r['id']==identity and r['status']=='measured' and r['returncode']==0,'successful_physical_run')
+     pin(ROOT/f'runs/{identity}/stdout.log',r['stdout_sha256']);pin(r['command'][0],r['binary_sha256'])
+     bm=r['binary_build_manifest'];pin(bm['path'],bm['sha256']);ck(bm['data']==load(bm['path']) and bm['binary_hash_verified'] and bm['data']['binary_sha256']==r['binary_sha256'],'runtime_binary_manifest_link')
+-    which='E026-solver' if identity=='V025-unit' else ('E020-postflop_autoresearch' if identity.startswith('B') else 'E026-postflop_autoresearch')
++    which='E026-solver' if identity=='V026-unit' else ('E020-postflop_autoresearch' if identity.startswith('B') else 'E026-postflop_autoresearch')
+     ck(bm['data']==BM[which],'right_binary_for_run')
+     ck(r['provenance']['source_sha256']==Csrc,'runtime_current_snapshot_candidate_not_baseline_identity')
+     ck(r['provenance']['source_manifest_sha256']==hashlib.sha256(json.dumps(Csrc,sort_keys=True).encode()).hexdigest(),'runtime_snapshot_digest')
+@@ -112,11 +112,11 @@
+     ck(rs==r['results'] and st==[x['data'] for x in r['stages']],'raw_json_exact_report')
+     rawstages[identity]=st;rawresults[identity]=rs
+     summary=re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out; finished in ([0-9.]+)s',text)
+-    expected=('84','0','4','0','0') if identity=='V025-unit' else ('1','0','0','0','0')
++    expected=('84','0','4','0','0') if identity=='V026-unit' else ('1','0','0','0','0')
+     ck(len(summary)==1 and tuple(summary[0][:5])==expected,'full_native_test_summary')
+     ck(r['test_pass_count']==int(expected[0]),'reported_pass_count')
+     summary_runtime[identity]=float(summary[0][-1])
+-    if identity=='V025-unit':unit_names=sorted(re.findall(r'^test (\S+) \.\.\.',text,re.M));continue
++    if identity=='V026-unit':unit_names=sorted(re.findall(r'^test (\S+) \.\.\.',text,re.M));continue
+     ck(r['command'][1:]==['postflop_complete_cycle','--nocapture','--test-threads=1','--ignored'],'fixed_native_invocation')
+     ck([x['fixture_id'] for x in rs]==['rainbow','two-tone','river'],'fixed_fixture_order')
+     ck(len(rs)==3 and [x['iteration'] for x in rs]==[200,200,60] and len([x for x in st if x['stage']=='convergence_check'])==23,'full_three_fixture23_check_completeness')
+@@ -199,7 +199,7 @@
+ # Pin terminal outputs supplied only after root reports completion; no evaluation imported or executed.
+ pin(ROOT/'binaries/E026-postflop_autoresearch.exe',PRIMARY_PIN)
+ pin(ROOT/'binaries/E026-solver.exe',UNIT_PIN)
+-ck(set(owned)=={'crates/solver/src/gpu/kernels.cu','crates/solver/src/gpu/mod.rs'} and P['order']==['V025-unit','B086','E026R1','E026R2','B087','B088','E026R3'],'two_showdown_files_and_fixed_IDs')
++ck(set(owned)=={'crates/solver/src/gpu/kernels.cu','crates/solver/src/gpu/mod.rs'} and P['order']==['V026-unit','B086','E026R1','E026R2','B087','B088','E026R3'],'two_showdown_files_and_fixed_IDs')
+ ck(len(unit_names)==88,'complete_unit_inventory88')
+ d050=load(A['prerequisites']['D050_terminal_review']['path']);d051=load(A['prerequisites']['direct_up_show_terminal_review']['path'])
+ pin(A['prerequisites']['D050_terminal_review']['path'],'9aa099575d3ada3b00653fe5eddc88ed7a4b07d31fbedbd2b6b21a721c0eb8e5')

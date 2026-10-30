@@ -1,0 +1,29 @@
+{
+  "inputs": {
+    "tools/research/hu_sampled_physical_reservoir_control_20260922.py": "c24f6253dc4930c56d3137254811e2bd7ee0fd8db105737633cdddc48c201efb",
+    "tools/research/sampled_physical_reservoir_v1.py": "0c0269e6f67d4333e321124a1c0e171cf6b63488beb4df7d872f148c0d4d1691",
+    "tools/research/loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v2-queries.json": "d5a9855fc867639aeab299f40be46afd6c72db03c38bd175dd4797f8eea19f3b",
+    "research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v2-updates.json": "672869bc097999beef1f92c5320cb433e4e777ba5ec94c2aeb3d2ad2fafb1c08",
+    "research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v2-result.json": "2b68c9f2cf24c6e24836331a7a6cc3d301fa1280be1f2c401ec6d715a19d5c97",
+    "research/preflop-evolution/blind-defense-20260922/sampled-batch-bridge-v2-review.json": "573dcd4fef14fde4a301f83a33083114e125fa05fd0a01641d709a58885acf83"
+  },
+  "maximum_seconds": 120,
+  "capacity": 17,
+  "seeds": [
+    2101,
+    2102
+  ],
+  "algorithm": "Algorithm R: uniform reservoir of actual positive-tag visits; equal ordinary-CFR iteration weights.",
+  "checks": [
+    "independent slot oracle",
+    "split versus whole ingestion",
+    "save/resume RNG and rows",
+    "duplicate visits retained",
+    "late invalid record leaves state unchanged",
+    "exhaustive 5-visit capacity-2 inclusion law",
+    "fixed payload after repeated ingestion"
+  ],
+  "scope": "Physical replay-storage correctness only; no training, no GPU work, no poker accuracy claim.",
+  "production_modified": false
+}

@@ -1,0 +1,84 @@
+{
+  "id": "E069-primary",
+  "at": "2026-10-17T21:57:21.986002+00:00",
+  "status": "FROZEN_PRE_PRIMARY_NATIVE",
+  "baseline": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json",
+    "sha256": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028"
+  },
+  "baseline_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+    "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862"
+  },
+  "build_protocol_sha256": "09b625708b1ff64445df20947704967276cdf2352bfd6b37452cdc6ef7df9118",
+  "control_ids": [
+    "V069-unit"
+  ],
+  "measurement_order": [
+    "B223",
+    "E069R1",
+    "E069R2",
+    "B224",
+    "B225",
+    "E069R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B223",
+      "candidate": "E069R1"
+    },
+    {
+      "baseline": "B224",
+      "candidate": "E069R2"
+    },
+    {
+      "baseline": "B225",
+      "candidate": "E069R3"
+    }
+  ],
+  "policy": {
+    "minimum_complete_cycle_gain_pct": 1.0,
+    "fixture_guard": "Unrounded positive median slowdown and at least2/3 positive paired slowdowns rejects; no epsilon.",
+    "exactness": "All18 full non-timing result payloads and138 checkpoints match accepted E020C1.",
+    "sampling": "Fixed three pairs, no historical timing pooling/exclusions/extensions/rescue samples.",
+    "scope": "Initial primary screen only; no automatic acceptance or statistical-confidence claim."
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-freeze-run-publish.py": "fb13b65e4489299ab395b94ac69c5b8224641114e32696515f91616c27fa1bba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-final-build\\complete.json": "6bcf4ab34292bfb13ec0bdf57f13fa4919ab094228c85e45679f7cea09ce823f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D112-showdown-order-control\\report.json": "d296a54987c0851682a6727f73a649383aa94a095826b40d9973318445f2be8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-build-plan\\build-protocol.json": "09b625708b1ff64445df20947704967276cdf2352bfd6b37452cdc6ef7df9118",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-source\\source-review.json": "75794208857762bbbf69e0642ce70ecb37926c78af15a898a37e6055a21a3ac0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-source\\manifest.json": "0b7fd7274fb16beb1f5ecf8df0f93b91e592761992c348c23e7709c733b9271e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-primary-plan\\assess.py": "308c9aac8f35469033bffd068480b43ce20a349386cfde2f1e5a59db93528172",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-primary-plan\\native.py": "8dae902b968ea5884d3c35bf88b40888f73fce7562bd5ed0959f9a6960da8f3e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-primary-plan\\root-check.py": "5789b04e191dd41f865e8398874aff499c7aa810ef8acb349c58fb3eccf757d8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-primary-plan\\run.py": "1079e1f333a17679c81b4804a6e2647d978f74c7aec93366611c0caa2cb422b7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E069-solver.exe": "1d98f895b3313689557278a2afae77d3aa4ba6e642d08f2b26aef462db03d5e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E069-solver.manifest.json": "b6f68c28c8d4de489d35f149ff0b2a5350a54777673b91ef30a6bf958a336f7e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E069-postflop_autoresearch.exe": "79fe4a640e874a6ad75cc9d41748b93e61655e215653a4d9b83db64a37af2c72",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E069-postflop_autoresearch.manifest.json": "59f9324f93f627959837ad98c4337fd201316db8ae6b36d012da4583980db477"
+  },
+  "adoption_requirements": [
+    "Separately frozen fresh16 pairs: unrounded aggregate >=1%, >=13 improving pairs, positive paired/block/order medians, no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/save/resume/continuation, actual graph/launch/memory/capacity and material CPU setup-cost checks.",
+    "Fixed holdout and fresh-original cumulative qualification. Initial screen alone does not establish significance, universal behavior or adoption."
+  ],
+  "source_scope": "One in-place tuple(river_slot,node_id) sort of existing independent showdown nodes within unchanged level spans. All52other complete plan fields, capacities, physical maps and per-level output ownership unchanged across12CPU controls. CUDA, arithmetic, launch structure and quality controls unchanged. Full-cycle clocks include the added sort cost. GPU numerical/whole-state results, actual resources and material tradeoffs still require qualification.",
+  "scope": "Initial warm-cache three-pair complete-cycle screen only; no automatic adoption, confidence or cold-start claim. No historical timing pooling/exclusions/extensions.",
+  "runtime_authority": "Ongoing user-authorized local GPU research; root source/script review only. No live deployment.",
+  "ordinary_unit_id": "V069-unit",
+  "cpu_control_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D112-showdown-order-control\\report.json",
+    "sha256": "d296a54987c0851682a6727f73a649383aa94a095826b40d9973318445f2be8d"
+  }
+}

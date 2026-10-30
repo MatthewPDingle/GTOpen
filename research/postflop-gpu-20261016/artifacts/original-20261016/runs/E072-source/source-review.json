@@ -1,0 +1,36 @@
+{
+  "id": "E072",
+  "at": "2026-10-18T02:14:28.014069+00:00",
+  "status": "frozen_root_source_design_not_external_review",
+  "candidate_sha256": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3",
+  "owned_source": "crates/solver/src/gpu/kernels.cu",
+  "entry": "up_fold",
+  "mechanism": "Cooperatively read the first at most256 card_idx words into the existing256word reduction scratch before its first use. Original card loops consume cached prefix or original global fallback, in original k order. One new CTA barrier ends all integer readers before the original float reduction writes this union storage.",
+  "unchanged": "Original reach loads,53card offsets,all card/partial/tree-reduction/valid/payout float expressions and per-thread ordering,ABI,host/plan/launch widths/counts/graphs,global arrays/payload,public budgets,save schema and all other8entries.",
+  "scratch_lifetime_proof": [
+    "All threads return together only at original uniform block-count guard.",
+    "Each staging index has one block-stride writer; existing first CTA barrier publishes reach and cached indices.",
+    "Card loops are the only readers of cached indices. Every thread reaches the added barrier after its card/partial loops.",
+    "Only after that barrier does every thread write its original float total_parts slot. Original reduction barriers/order and final consumers stay exact.",
+    "Union arms both25632bitwords with matching alignment; no additional static or dynamic scratch allocation authored.",
+    "No union word is read as the other type; indices are dead before float stores, and every subsequently consumed float slot is initialized as before."
+  ],
+  "global_access_model": "Total card_idx words read per CTA are unchanged for valid ordered spans: cached prefix once cooperatively, remaining words once through fallback. Coalescing and instruction locality are hypotheses, not measured transaction counts or speed. Two extra boundary loads and one additional barrier can outweigh them.",
+  "producer_and_consumers": "mod.rs288-299 builds53monotonic fold offsets and original-order indices, uploads to private immutable d_fold_card_off/idx; only existing fold launch arguments read them. Engine tables start0; shifted CPU model is additional coverage.",
+  "bounded_novelty": "Current ledger, retained *.cu/source-review files and all-ref kernels.cu searches find no matching fold card-index staging form. This is not an exhaustive remote novelty claim.",
+  "not_closed_rescue": "Not E031/E066showdown53offset cache, E030fold-card reordering, E019fold reduction shuffle, E035zero shortcut, E070global metadata encoding or E071parallel CPU planner. None composed or reopened.",
+  "declined_leads": [
+    "NVRTCalready selects actual compute capability; no arch-switch optimizer needed.",
+    "D085traced up_action_eval family is only27.764328ms on its rainbow trace; no new evaluation cache prototype justified from that limited diagnostic.",
+    "Showdown offset reuse is within the closed E031/E066cache family and is not pursued."
+  ],
+  "authoritative_reference": {
+    "url": "https://nvidia.github.io/cccl/unstable/cub/index.html",
+    "section": "Block-wide sorting example,shared union of TempStorage and barriers for shared-memory reuse",
+    "use": "Reference demonstrates the shared-union/barrier idiom only, not this implementation correctness/performance. No CUB dependency or reduction algorithm introduced."
+  },
+  "resource_rule": "Both compute120and75 compile; unchanged8PTXentries and foldABI; emitted integer shared staging and extra barrier; original FP opcode counts; no increased local/dynamic/static bytes, maxthread loss or zero occupancy/default-limit failure. Register/occupancy warnings follow D108, never acceptance.",
+  "next": "Only if compiler/resource gates pass, freeze direct full-output/input/guard numerical controls, then integrated1%complete-solve screen and downstream full qualification. No source/cache-width/threshold variants after failure.",
+  "source_activated": false,
+  "native_solver_or_timing_runs": 0
+}

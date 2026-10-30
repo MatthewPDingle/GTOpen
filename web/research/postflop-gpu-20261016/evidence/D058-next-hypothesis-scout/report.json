@@ -1,0 +1,178 @@
+{
+  "id": "D058",
+  "created_at": "2026-10-16T18:37:11.334401+00:00",
+  "verdict": "NOT_JUSTIFIED_FOR_IMMEDIATE_IMPLEMENTATION",
+  "recommendation": "Park evaluation BR/average mode specialization. No production candidate, new harness or full primary cohort is recommended from this scout.",
+  "accepted_base": "E020",
+  "hypothesis_examined": "Select separate constant-mode entrypoints for up_action_eval at the existing host launch, leaving node lists, CTA counts, ordered floating operations, locks and memory mappings unchanged.",
+  "source_findings": [
+    {
+      "reference": "accepted kernels.cu:466-486",
+      "finding": "Opponent and locked paths return before the mode test. Mode specialization does not remove their child sums or locked weighted sums."
+    },
+    {
+      "reference": "accepted kernels.cu:488-512; baseline.ptx:6782-6785,7083-7093",
+      "finding": "The uniform mode branch already precedes per-hand loops. Best response already avoids the average-strategy sum, normalization and weighted child loop. No repeated per-hand mode branch or unconditional unused average arithmetic was found."
+    },
+    {
+      "reference": "accepted mod.rs:521-537,725-749",
+      "finding": "Evaluation already shares its downward pass and terminal values between modes. The host knows mode when building each existing launch, so specialization is structurally possible without extra CTA launches, but would introduce additional compiled entrypoints and host function selection."
+    },
+    {
+      "reference": "baseline.ptx:6080-6083; extracted accepted-up_action_eval.ptx",
+      "finding": "No explicit .local declaration in this PTX entry. Its virtual PTX register declarations do not establish physical register allocation, compiler spills or occupancy. No specialized candidate has been compiled."
+    }
+  ],
+  "ptx_evidence": {
+    "whole_ptx_sha256": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "entry_first_line": 6060,
+    "entry_sha256": "e7fe3e719bfffb555bc7cb538f844f8167da93ade1ee26e28181fd3e82e36960",
+    "entry_bytes": 48305,
+    "mode_param_load_line": 6089,
+    "mode_test_lines": [
+      6783,
+      6784
+    ],
+    "br_path_starts_line": 6785,
+    "average_path_starts_line": 7083,
+    "explicit_local_declaration": false,
+    "candidate_compiled": false
+  },
+  "measured_evidence": {
+    "D045": {
+      "scope": "Six selected captured training launches at final replays160/180/200. Event-perturbed intervals only; not complete-solve or whole-family cost.",
+      "selected_interval_count": 18,
+      "limitation": "Selected training launches on rainbow only; not evaluation-family attribution, native family shares or complete-cycle headroom."
+    },
+    "D057": {
+      "scope": "Three event-perturbed captured raked evaluation-device envelopes at160/180/200 on the fixed two-tone compressed fixture.",
+      "envelope_ms": {
+        "samples": [
+          12.975296020507812,
+          12.971199989318848,
+          12.977343559265137
+        ],
+        "median": 12.975296020507812,
+        "min": 12.971199989318848,
+        "max": 12.977343559265137
+      },
+      "outer_batches": [
+        {
+          "checkpoint": 160,
+          "order": [
+            "ordinary",
+            "instrumented"
+          ],
+          "ordinary_host_batch_ms": 282.4531,
+          "instrumented_host_batch_ms": 282.5524,
+          "host_change_pct": 0.035156279042425354,
+          "abs_host_change_pct": 0.035156279042425354,
+          "within_10pct": true,
+          "instrumented_evaluation_device_envelope_ms": 12.975296020507812,
+          "near_resolution": false
+        },
+        {
+          "checkpoint": 180,
+          "order": [
+            "instrumented",
+            "ordinary"
+          ],
+          "ordinary_host_batch_ms": 282.68080000000003,
+          "instrumented_host_batch_ms": 283.8502,
+          "host_change_pct": 0.4136821460813511,
+          "abs_host_change_pct": 0.4136821460813511,
+          "within_10pct": true,
+          "instrumented_evaluation_device_envelope_ms": 12.971199989318848,
+          "near_resolution": false
+        },
+        {
+          "checkpoint": 200,
+          "order": [
+            "ordinary",
+            "instrumented"
+          ],
+          "ordinary_host_batch_ms": 282.4364,
+          "instrumented_host_batch_ms": 282.11789999999996,
+          "host_change_pct": -0.11276875077009807,
+          "abs_host_change_pct": 0.11276875077009807,
+          "within_10pct": true,
+          "instrumented_evaluation_device_envelope_ms": 12.977343559265137,
+          "near_resolution": false
+        }
+      ],
+      "graph_kernel_counts_structural_only": {
+        "down_action": 13,
+        "up_action_eval": 52,
+        "up_fold": 24,
+        "down_chance": 9,
+        "up_show": 12,
+        "up_chance": 36,
+        "copy_root": 1
+      },
+      "graph_nodes": 151,
+      "graph_memcpy_nodes": 4,
+      "independent_runtime_reviews_pinned": true,
+      "limitations": [
+        "The hostbatch guard is not evaluation wall time, pure device work or a bound on individual event interval bias.",
+        "The interval includes captured evaluation kernels/root copies and may include scheduling/submission idle; it excludes normal root DTOH and CPU reductions.",
+        "No training/evaluation fraction, kernel-family/individual timing, native solve fraction, removable headroom, speedup, acceptance or deployment follows.",
+        "Logical graph metadata excludes cross-arm raw handles/argument bytes/memcpy addresses and edges.",
+        "Full raw bits and compressed words/scales are compared directly by the frozen native test; multi-GB raw snapshots are not retained.",
+        "One fixed fixture and three samples give no workload generalization."
+      ]
+    }
+  },
+  "complete_cycle_assessment": "No >=2% complete-cycle case is established. D057 times a whole event-perturbed evaluation interval, while the examined branch affects only unlocked traverser action evaluation. Neither the interval nor structural kernel counts attribute time to that subset. No fraction, removable-work upper bound or predicted gain is calculated.",
+  "missing_evidence_and_minimum_question": {
+    "missing": "Actual physical register/spill consequences of splitting the mode branch, and any meaningful execution mechanism beyond removal of one uniform branch. Native contribution and complete-cycle benefit remain unknown.",
+    "smallest_optional_question": "Only if root separately elects to revisit: an existing no-launch compiler/resource workflow could compare the original entry with two constant-mode wrappers using identical CUDA options, inspecting allocated registers/local bytes and retained floating dependencies. No new harness is prepared here. An unchanged or merely branch-shortened result would add no case for a production cohort; a resource change alone would still not prove complete-cycle relevance.",
+    "current_action": "Do not implement or launch a production cohort on this evidence."
+  },
+  "exactness_and_cost_constraints_if_revisited": [
+    "Preserve first-child initialization and ordered strict greater-than BR selection, including ties, signed zero and NaN comparison behavior; do not substitute fmax.",
+    "Preserve positive-zero accumulators, child order, average sum/normalization/weighted-add order and all lock/opponent branches; no fast-math or FTZ change.",
+    "Keep generic action counts, source guards and slot mappings; load any additional entrypoints before graph capture and preserve eager/captured evaluation and lock graph invalidation.",
+    "Extra entrypoints may change JIT/load cost and code size; unchanged launch counts do not establish unchanged initialization cost.",
+    "Any later numerical claim needs an immutable original-kernel comparison; a helper sharing the modified evaluation kernel is insufficient."
+  ],
+  "history_scope": {
+    "ledger_snapshot_sha256": "9ffe89c4ceb01bf0e736eeb4a38ff97d5be74585df46e3e665a5577efdf1ead3",
+    "ledger_original_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md",
+    "novelty": "No equivalent evaluation-mode specialization was found in the scoped E001-E030 ledger and prior scout/design search. D056 already named this as a question, so this is a source/PTX follow-up rather than a newly discovered measured opportunity. Novelty is scoped, not exhaustive.",
+    "counterevidence": "Training dispatch/arity changes E005/E014/E023 and resource-only improvements such as E024 did not produce qualifying complete-cycle gains. They do not mathematically reject evaluation specialization, but discourage interpreting reduced code or resources as speed.",
+    "search_patterns": [
+      "up_action_eval",
+      "eval.{0,30}special",
+      "special.{0,30}eval",
+      "template.{0,20}mode",
+      "mode.{0,20}template",
+      "mode.{0,20}dispatch"
+    ],
+    "search_scope": "research/autoresearch; research/postflop-gpu-20261016; bulk run Markdown/protocol/report/audit files. No frozen evidence was changed."
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\baseline.ptx": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\report.json": "51498c9737462de0d01cb081e0ecbc15e4eba0099caef7c2a2747842311be55d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D050-independent-review\\validation.json": "9aa099575d3ada3b00653fe5eddc88ed7a4b07d31fbedbd2b6b21a721c0eb8e5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D056-next-hypothesis-scout\\report.json": "71d4fb1ca0c4e3d62240fd241dbda1443795c35648ff4c04d6fc6fc8890f95dc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-evaluation-envelope-diagnostic\\report.json": "ac6f63332bb3d0c512a7096cb3c1c8fee8de138e6a0c5129c9e90e9c241be350",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-independent-review\\numerical-validation.json": "a4ad3a1988d6205a64731c37e9c723af57272518390b0c00d3a8b72afb48eb68",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-independent-review\\custody-validation.json": "5590b25e6fe632f3f9ff98697a17062e36ca79e0815d0e7743b3428a6f6f1098",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-independent-review\\manifest.json": "4389d4fc9f13c5b99238f95a6bbcd52530453afd230c616d3c2c80ae73f6b90a"
+  },
+  "candidate_prepared": false,
+  "new_harness_prepared": false,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "production_modified": false,
+  "status_or_deployment_changed": false,
+  "exploratory_notes": [
+    "One initial read targeted nonexistent ledger.md; corrected to experiments.md. No input or evidence was changed."
+  ]
+}

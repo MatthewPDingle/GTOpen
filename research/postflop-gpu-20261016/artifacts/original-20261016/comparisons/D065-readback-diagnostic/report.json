@@ -1,0 +1,2450 @@
+{
+  "id": "D065-readback-diagnostic",
+  "status": "pass",
+  "scope": "Grouped diagnostic host spans only; optimistic measured-span overlap ceiling is not a saving or candidate qualification.",
+  "protocol_sha256": "dde52ea3701933f7ffea61d104dd7fd74fcf456cba655df90b2b5a8a6cbf3735",
+  "schema_sha256": "b64fc23a3d00c8b620bc900decc450314dd6596a70cd330ab03a91a39a7b5399",
+  "all_complete_states_exact": 18,
+  "convergence_checks_exact": 138,
+  "profile_records": 9,
+  "ordered_spans": 126,
+  "uninstrumented_records": 0,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "ordinary_full_cycles_ms": [
+        5613.4505,
+        5646.0336,
+        5633.9344
+      ],
+      "instrumented_full_cycles_ms": [
+        5656.222299999999,
+        5657.6741,
+        5665.3728
+      ],
+      "ordinary_median_ms": 5633.9344,
+      "instrumented_median_ms": 5657.6741,
+      "median_change_pct": 0.42136983348617374,
+      "paired_change_pct": [
+        0.7619520293266957,
+        0.2061712845633945,
+        0.5580185669183502
+      ],
+      "ordinary_readback_ms": [
+        316.8886,
+        328.93420000000003,
+        339.72020000000003
+      ],
+      "instrumented_readback_ms": [
+        318.23040000000003,
+        323.4627,
+        325.5055
+      ],
+      "identity": {
+        "fixture_id": "rainbow",
+        "board": "Ks7h2d",
+        "board_mask": 140737492549634,
+        "board_cards": 3,
+        "hands": [
+          257,
+          319
+        ],
+        "node_count": 1346813
+      },
+      "device_arena_bytes_per_player": [
+        624083380,
+        740688652
+      ],
+      "components": [
+        {
+          "stage": "initial_stream_wait",
+          "all_profiled_ms": [
+            0.0009,
+            0.0011,
+            0.0011
+          ],
+          "median_ms": 0.0011,
+          "range_ms": [
+            0.0009,
+            0.0011
+          ]
+        },
+        {
+          "stage": "dtoh_host_call",
+          "all_profiled_ms": [
+            0.3321,
+            0.2889,
+            0.2914
+          ],
+          "median_ms": 0.2914,
+          "range_ms": [
+            0.2889,
+            0.3321
+          ]
+        },
+        {
+          "stage": "dtoh_stream_wait",
+          "all_profiled_ms": [
+            96.58070000000001,
+            99.2269,
+            98.013
+          ],
+          "median_ms": 98.013,
+          "range_ms": [
+            96.58070000000001,
+            99.2269
+          ]
+        },
+        {
+          "stage": "encode_scatter_restore_cpu",
+          "all_profiled_ms": [
+            220.07150000000001,
+            222.6987,
+            225.9348
+          ],
+          "median_ms": 222.6987,
+          "range_ms": [
+            220.07150000000001,
+            225.9348
+          ]
+        },
+        {
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "all_profiled_ms": [
+            0.0009,
+            0.0003,
+            0.00039999999999999996
+          ],
+          "median_ms": 0.00039999999999999996,
+          "range_ms": [
+            0.0003,
+            0.0009
+          ]
+        },
+        {
+          "stage": "transfer_host_ms",
+          "all_profiled_ms": [
+            96.9128,
+            99.5158,
+            98.3044
+          ],
+          "median_ms": 98.3044,
+          "range_ms": [
+            96.9128,
+            99.5158
+          ]
+        },
+        {
+          "stage": "cpu_encode_scatter_restore_ms",
+          "all_profiled_ms": [
+            220.07150000000001,
+            222.6987,
+            225.9348
+          ],
+          "median_ms": 222.6987,
+          "range_ms": [
+            220.07150000000001,
+            225.9348
+          ]
+        },
+        {
+          "stage": "optimistic_overlap_ceiling_ms",
+          "all_profiled_ms": [
+            96.9128,
+            99.5158,
+            98.3044
+          ],
+          "median_ms": 98.3044,
+          "range_ms": [
+            96.9128,
+            99.5158
+          ]
+        },
+        {
+          "stage": "measured_span_sum_ms",
+          "all_profiled_ms": [
+            316.9861,
+            322.2159,
+            324.2407
+          ],
+          "median_ms": 322.2159,
+          "range_ms": [
+            316.9861,
+            324.2407
+          ]
+        },
+        {
+          "stage": "full_readback_before_logging_ms",
+          "all_profiled_ms": [
+            316.98629999999997,
+            322.2161,
+            324.2409
+          ],
+          "median_ms": 322.2161,
+          "range_ms": [
+            316.98629999999997,
+            324.2409
+          ]
+        },
+        {
+          "stage": "trace_timer_bookkeeping_residual_ms",
+          "all_profiled_ms": [
+            0.0001999999999497959,
+            0.0002000000000066393,
+            0.0002000000000066393
+          ],
+          "median_ms": 0.0002000000000066393,
+          "range_ms": [
+            0.0001999999999497959,
+            0.0002000000000066393
+          ]
+        },
+        {
+          "stage": "outer_readback_minus_trace_ms",
+          "all_profiled_ms": [
+            1.24410000000006,
+            1.2466000000000008,
+            1.264599999999973
+          ],
+          "median_ms": 1.2466000000000008,
+          "range_ms": [
+            1.24410000000006,
+            1.264599999999973
+          ]
+        }
+      ],
+      "ordered_spans": [
+        {
+          "ordinal": 0,
+          "stage": "initial_stream_wait",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            0.0009,
+            0.0011,
+            0.0011
+          ],
+          "median_ms": 0.0011,
+          "range_ms": [
+            0.0009,
+            0.0011
+          ]
+        },
+        {
+          "ordinal": 1,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            0.0384,
+            0.0423,
+            0.0457
+          ],
+          "median_ms": 0.0423,
+          "range_ms": [
+            0.0384,
+            0.0457
+          ]
+        },
+        {
+          "ordinal": 2,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            22.0196,
+            24.352,
+            23.2043
+          ],
+          "median_ms": 23.2043,
+          "range_ms": [
+            22.0196,
+            24.352
+          ]
+        },
+        {
+          "ordinal": 3,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            51.738,
+            54.1372,
+            54.0985
+          ],
+          "median_ms": 54.0985,
+          "range_ms": [
+            51.738,
+            54.1372
+          ]
+        },
+        {
+          "ordinal": 4,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            0.1005,
+            0.0613,
+            0.0919
+          ],
+          "median_ms": 0.0919,
+          "range_ms": [
+            0.0613,
+            0.1005
+          ]
+        },
+        {
+          "ordinal": 5,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            22.4531,
+            22.314400000000003,
+            22.4134
+          ],
+          "median_ms": 22.4134,
+          "range_ms": [
+            22.314400000000003,
+            22.4531
+          ]
+        },
+        {
+          "ordinal": 6,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 624083380,
+          "all_profiled_ms": [
+            51.1068,
+            50.8404,
+            55.6313
+          ],
+          "median_ms": 51.1068,
+          "range_ms": [
+            50.8404,
+            55.6313
+          ]
+        },
+        {
+          "ordinal": 7,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            0.12129999999999999,
+            0.097,
+            0.07550000000000001
+          ],
+          "median_ms": 0.097,
+          "range_ms": [
+            0.07550000000000001,
+            0.12129999999999999
+          ]
+        },
+        {
+          "ordinal": 8,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            26.027600000000003,
+            26.1902,
+            26.396
+          ],
+          "median_ms": 26.1902,
+          "range_ms": [
+            26.027600000000003,
+            26.396
+          ]
+        },
+        {
+          "ordinal": 9,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            58.602000000000004,
+            58.634899999999995,
+            58.4784
+          ],
+          "median_ms": 58.602000000000004,
+          "range_ms": [
+            58.4784,
+            58.634899999999995
+          ]
+        },
+        {
+          "ordinal": 10,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            0.0719,
+            0.0883,
+            0.07830000000000001
+          ],
+          "median_ms": 0.07830000000000001,
+          "range_ms": [
+            0.0719,
+            0.0883
+          ]
+        },
+        {
+          "ordinal": 11,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            26.0804,
+            26.3703,
+            25.999299999999998
+          ],
+          "median_ms": 26.0804,
+          "range_ms": [
+            25.999299999999998,
+            26.3703
+          ]
+        },
+        {
+          "ordinal": 12,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 740688652,
+          "all_profiled_ms": [
+            58.624700000000004,
+            59.0862,
+            57.726600000000005
+          ],
+          "median_ms": 58.624700000000004,
+          "range_ms": [
+            57.726600000000005,
+            59.0862
+          ]
+        },
+        {
+          "ordinal": 13,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            0.0009,
+            0.0003,
+            0.00039999999999999996
+          ],
+          "median_ms": 0.00039999999999999996,
+          "range_ms": [
+            0.0003,
+            0.0009
+          ]
+        }
+      ],
+      "optimistic_overlap_ceiling_pct_of_ordinary_fixture": 1.7448623469950237
+    },
+    {
+      "fixture_id": "two-tone",
+      "ordinary_full_cycles_ms": [
+        3822.0697999999998,
+        3815.1584000000003,
+        3824.1749999999997
+      ],
+      "instrumented_full_cycles_ms": [
+        3790.8275,
+        3781.3377,
+        3824.3428000000004
+      ],
+      "ordinary_median_ms": 3822.0697999999998,
+      "instrumented_median_ms": 3790.8275,
+      "median_change_pct": -0.8174183527469792,
+      "paired_change_pct": [
+        -0.8174183527469792,
+        -0.8864821969121972,
+        0.004387874508893219
+      ],
+      "ordinary_readback_ms": [
+        245.02689999999998,
+        235.3555,
+        237.3766
+      ],
+      "instrumented_readback_ms": [
+        234.6578,
+        235.2957,
+        238.0831
+      ],
+      "identity": {
+        "fixture_id": "two-tone",
+        "board": "Ks7s2d",
+        "board_mask": 140737496743938,
+        "board_cards": 3,
+        "hands": [
+          258,
+          320
+        ],
+        "node_count": 1346813
+      },
+      "device_arena_bytes_per_player": [
+        373525176,
+        442981120
+      ],
+      "components": [
+        {
+          "stage": "initial_stream_wait",
+          "all_profiled_ms": [
+            0.0013,
+            0.0017000000000000001,
+            0.0013
+          ],
+          "median_ms": 0.0013,
+          "range_ms": [
+            0.0013,
+            0.0017000000000000001
+          ]
+        },
+        {
+          "stage": "dtoh_host_call",
+          "all_profiled_ms": [
+            0.5945,
+            0.5027,
+            0.5319
+          ],
+          "median_ms": 0.5319,
+          "range_ms": [
+            0.5027,
+            0.5945
+          ]
+        },
+        {
+          "stage": "dtoh_stream_wait",
+          "all_profiled_ms": [
+            58.2132,
+            59.0262,
+            60.174099999999996
+          ],
+          "median_ms": 59.0262,
+          "range_ms": [
+            58.2132,
+            60.174099999999996
+          ]
+        },
+        {
+          "stage": "encode_scatter_restore_cpu",
+          "all_profiled_ms": [
+            174.6729,
+            174.456,
+            176.1389
+          ],
+          "median_ms": 174.6729,
+          "range_ms": [
+            174.456,
+            176.1389
+          ]
+        },
+        {
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "all_profiled_ms": [
+            0.0005,
+            0.00039999999999999996,
+            0.0005
+          ],
+          "median_ms": 0.0005,
+          "range_ms": [
+            0.00039999999999999996,
+            0.0005
+          ]
+        },
+        {
+          "stage": "transfer_host_ms",
+          "all_profiled_ms": [
+            58.8077,
+            59.5289,
+            60.705999999999996
+          ],
+          "median_ms": 59.5289,
+          "range_ms": [
+            58.8077,
+            60.705999999999996
+          ]
+        },
+        {
+          "stage": "cpu_encode_scatter_restore_ms",
+          "all_profiled_ms": [
+            174.6729,
+            174.456,
+            176.1389
+          ],
+          "median_ms": 174.6729,
+          "range_ms": [
+            174.456,
+            176.1389
+          ]
+        },
+        {
+          "stage": "optimistic_overlap_ceiling_ms",
+          "all_profiled_ms": [
+            58.8077,
+            59.5289,
+            60.705999999999996
+          ],
+          "median_ms": 59.5289,
+          "range_ms": [
+            58.8077,
+            60.705999999999996
+          ]
+        },
+        {
+          "stage": "measured_span_sum_ms",
+          "all_profiled_ms": [
+            233.48239999999998,
+            233.987,
+            236.8467
+          ],
+          "median_ms": 233.987,
+          "range_ms": [
+            233.48239999999998,
+            236.8467
+          ]
+        },
+        {
+          "stage": "full_readback_before_logging_ms",
+          "all_profiled_ms": [
+            233.4829,
+            233.9872,
+            236.847
+          ],
+          "median_ms": 233.9872,
+          "range_ms": [
+            233.4829,
+            236.847
+          ]
+        },
+        {
+          "stage": "trace_timer_bookkeeping_residual_ms",
+          "all_profiled_ms": [
+            0.0005000000000165983,
+            0.0002000000000066393,
+            0.00030000000000995897
+          ],
+          "median_ms": 0.00030000000000995897,
+          "range_ms": [
+            0.0002000000000066393,
+            0.0005000000000165983
+          ]
+        },
+        {
+          "stage": "outer_readback_minus_trace_ms",
+          "all_profiled_ms": [
+            1.174900000000008,
+            1.3085000000000093,
+            1.2360999999999933
+          ],
+          "median_ms": 1.2360999999999933,
+          "range_ms": [
+            1.174900000000008,
+            1.3085000000000093
+          ]
+        }
+      ],
+      "ordered_spans": [
+        {
+          "ordinal": 0,
+          "stage": "initial_stream_wait",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            0.0013,
+            0.0017000000000000001,
+            0.0013
+          ],
+          "median_ms": 0.0013,
+          "range_ms": [
+            0.0013,
+            0.0017000000000000001
+          ]
+        },
+        {
+          "ordinal": 1,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            0.0392,
+            0.0395,
+            0.0427
+          ],
+          "median_ms": 0.0395,
+          "range_ms": [
+            0.0392,
+            0.0427
+          ]
+        },
+        {
+          "ordinal": 2,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            13.1407,
+            13.1438,
+            13.1363
+          ],
+          "median_ms": 13.1407,
+          "range_ms": [
+            13.1363,
+            13.1438
+          ]
+        },
+        {
+          "ordinal": 3,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            40.1967,
+            40.9165,
+            42.0525
+          ],
+          "median_ms": 40.9165,
+          "range_ms": [
+            40.1967,
+            42.0525
+          ]
+        },
+        {
+          "ordinal": 4,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            0.1972,
+            0.13770000000000002,
+            0.1478
+          ],
+          "median_ms": 0.1478,
+          "range_ms": [
+            0.13770000000000002,
+            0.1972
+          ]
+        },
+        {
+          "ordinal": 5,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            13.5949,
+            13.68,
+            15.145499999999998
+          ],
+          "median_ms": 13.68,
+          "range_ms": [
+            13.5949,
+            15.145499999999998
+          ]
+        },
+        {
+          "ordinal": 6,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 373525176,
+          "all_profiled_ms": [
+            41.7782,
+            40.311899999999994,
+            40.8716
+          ],
+          "median_ms": 40.8716,
+          "range_ms": [
+            40.311899999999994,
+            41.7782
+          ]
+        },
+        {
+          "ordinal": 7,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            0.206,
+            0.1825,
+            0.1717
+          ],
+          "median_ms": 0.1825,
+          "range_ms": [
+            0.1717,
+            0.206
+          ]
+        },
+        {
+          "ordinal": 8,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            15.8097,
+            15.9272,
+            16.2124
+          ],
+          "median_ms": 15.9272,
+          "range_ms": [
+            15.8097,
+            16.2124
+          ]
+        },
+        {
+          "ordinal": 9,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            46.3691,
+            46.9852,
+            46.371700000000004
+          ],
+          "median_ms": 46.371700000000004,
+          "range_ms": [
+            46.3691,
+            46.9852
+          ]
+        },
+        {
+          "ordinal": 10,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            0.1521,
+            0.14300000000000002,
+            0.16970000000000002
+          ],
+          "median_ms": 0.1521,
+          "range_ms": [
+            0.14300000000000002,
+            0.16970000000000002
+          ]
+        },
+        {
+          "ordinal": 11,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            15.667899999999998,
+            16.2752,
+            15.6799
+          ],
+          "median_ms": 15.6799,
+          "range_ms": [
+            15.667899999999998,
+            16.2752
+          ]
+        },
+        {
+          "ordinal": 12,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 442981120,
+          "all_profiled_ms": [
+            46.3289,
+            46.2424,
+            46.8431
+          ],
+          "median_ms": 46.3289,
+          "range_ms": [
+            46.2424,
+            46.8431
+          ]
+        },
+        {
+          "ordinal": 13,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            0.0005,
+            0.00039999999999999996,
+            0.0005
+          ],
+          "median_ms": 0.0005,
+          "range_ms": [
+            0.00039999999999999996,
+            0.0005
+          ]
+        }
+      ],
+      "optimistic_overlap_ceiling_pct_of_ordinary_fixture": 1.5575042611728338
+    },
+    {
+      "fixture_id": "river",
+      "ordinary_full_cycles_ms": [
+        89.20490000000001,
+        96.4695,
+        95.62320000000001
+      ],
+      "instrumented_full_cycles_ms": [
+        98.0837,
+        97.66969999999999,
+        95.21350000000001
+      ],
+      "ordinary_median_ms": 95.62320000000001,
+      "instrumented_median_ms": 97.66969999999999,
+      "median_change_pct": 2.1401710045260813,
+      "paired_change_pct": [
+        9.953264899125468,
+        1.2441237904208036,
+        -0.42845250943285285
+      ],
+      "ordinary_readback_ms": [
+        0.9083,
+        0.7397,
+        0.6542
+      ],
+      "instrumented_readback_ms": [
+        2.0899,
+        1.9805000000000001,
+        1.8102
+      ],
+      "identity": {
+        "fixture_id": "river",
+        "board": "Ks7h2dQhTc",
+        "board_mask": 145139834028034,
+        "board_cards": 5,
+        "hands": [
+          233,
+          280
+        ],
+        "node_count": 33
+      },
+      "device_arena_bytes_per_player": [
+        14912,
+        17920
+      ],
+      "components": [
+        {
+          "stage": "initial_stream_wait",
+          "all_profiled_ms": [
+            0.0017000000000000001,
+            0.0012,
+            0.0009
+          ],
+          "median_ms": 0.0012,
+          "range_ms": [
+            0.0009,
+            0.0017000000000000001
+          ]
+        },
+        {
+          "stage": "dtoh_host_call",
+          "all_profiled_ms": [
+            0.0932,
+            0.0859,
+            0.078
+          ],
+          "median_ms": 0.0859,
+          "range_ms": [
+            0.078,
+            0.0932
+          ]
+        },
+        {
+          "stage": "dtoh_stream_wait",
+          "all_profiled_ms": [
+            0.0532,
+            0.0815,
+            0.0531
+          ],
+          "median_ms": 0.0532,
+          "range_ms": [
+            0.0531,
+            0.0815
+          ]
+        },
+        {
+          "stage": "encode_scatter_restore_cpu",
+          "all_profiled_ms": [
+            0.8075,
+            0.5482,
+            0.6624
+          ],
+          "median_ms": 0.6624,
+          "range_ms": [
+            0.5482,
+            0.8075
+          ]
+        },
+        {
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "all_profiled_ms": [
+            9.999999999999999e-05,
+            9.999999999999999e-05,
+            9.999999999999999e-05
+          ],
+          "median_ms": 9.999999999999999e-05,
+          "range_ms": [
+            9.999999999999999e-05,
+            9.999999999999999e-05
+          ]
+        },
+        {
+          "stage": "transfer_host_ms",
+          "all_profiled_ms": [
+            0.1464,
+            0.1674,
+            0.1311
+          ],
+          "median_ms": 0.1464,
+          "range_ms": [
+            0.1311,
+            0.1674
+          ]
+        },
+        {
+          "stage": "cpu_encode_scatter_restore_ms",
+          "all_profiled_ms": [
+            0.8075,
+            0.5482,
+            0.6624
+          ],
+          "median_ms": 0.6624,
+          "range_ms": [
+            0.5482,
+            0.8075
+          ]
+        },
+        {
+          "stage": "optimistic_overlap_ceiling_ms",
+          "all_profiled_ms": [
+            0.1464,
+            0.1674,
+            0.1311
+          ],
+          "median_ms": 0.1464,
+          "range_ms": [
+            0.1311,
+            0.1674
+          ]
+        },
+        {
+          "stage": "measured_span_sum_ms",
+          "all_profiled_ms": [
+            0.9557,
+            0.7169,
+            0.7945
+          ],
+          "median_ms": 0.7945,
+          "range_ms": [
+            0.7169,
+            0.9557
+          ]
+        },
+        {
+          "stage": "full_readback_before_logging_ms",
+          "all_profiled_ms": [
+            0.9558,
+            0.717,
+            0.7946
+          ],
+          "median_ms": 0.7946,
+          "range_ms": [
+            0.717,
+            0.9558
+          ]
+        },
+        {
+          "stage": "trace_timer_bookkeeping_residual_ms",
+          "all_profiled_ms": [
+            9.999999999998899e-05,
+            9.999999999998899e-05,
+            9.999999999998899e-05
+          ],
+          "median_ms": 9.999999999998899e-05,
+          "range_ms": [
+            9.999999999998899e-05,
+            9.999999999998899e-05
+          ]
+        },
+        {
+          "stage": "outer_readback_minus_trace_ms",
+          "all_profiled_ms": [
+            1.1341,
+            1.2635,
+            1.0156
+          ],
+          "median_ms": 1.1341,
+          "range_ms": [
+            1.0156,
+            1.2635
+          ]
+        }
+      ],
+      "ordered_spans": [
+        {
+          "ordinal": 0,
+          "stage": "initial_stream_wait",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            0.0017000000000000001,
+            0.0012,
+            0.0009
+          ],
+          "median_ms": 0.0012,
+          "range_ms": [
+            0.0009,
+            0.0017000000000000001
+          ]
+        },
+        {
+          "ordinal": 1,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.022500000000000003,
+            0.0176,
+            0.0084
+          ],
+          "median_ms": 0.0176,
+          "range_ms": [
+            0.0084,
+            0.022500000000000003
+          ]
+        },
+        {
+          "ordinal": 2,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.0138,
+            0.0423,
+            0.0144
+          ],
+          "median_ms": 0.0144,
+          "range_ms": [
+            0.0138,
+            0.0423
+          ]
+        },
+        {
+          "ordinal": 3,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "regrets",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.30679999999999996,
+            0.1153,
+            0.2366
+          ],
+          "median_ms": 0.2366,
+          "range_ms": [
+            0.1153,
+            0.30679999999999996
+          ]
+        },
+        {
+          "ordinal": 4,
+          "stage": "dtoh_host_call",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.0246,
+            0.0276,
+            0.031
+          ],
+          "median_ms": 0.0276,
+          "range_ms": [
+            0.0246,
+            0.031
+          ]
+        },
+        {
+          "ordinal": 5,
+          "stage": "dtoh_stream_wait",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.012700000000000001,
+            0.0125,
+            0.0122
+          ],
+          "median_ms": 0.0125,
+          "range_ms": [
+            0.0122,
+            0.012700000000000001
+          ]
+        },
+        {
+          "ordinal": 6,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 0,
+          "arena": "strat",
+          "bytes": 14912,
+          "all_profiled_ms": [
+            0.1698,
+            0.2179,
+            0.163
+          ],
+          "median_ms": 0.1698,
+          "range_ms": [
+            0.163,
+            0.2179
+          ]
+        },
+        {
+          "ordinal": 7,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.0262,
+            0.0235,
+            0.024
+          ],
+          "median_ms": 0.024,
+          "range_ms": [
+            0.0235,
+            0.0262
+          ]
+        },
+        {
+          "ordinal": 8,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.0134,
+            0.0126,
+            0.0129
+          ],
+          "median_ms": 0.0129,
+          "range_ms": [
+            0.0126,
+            0.0134
+          ]
+        },
+        {
+          "ordinal": 9,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "regrets",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.186,
+            0.1026,
+            0.1594
+          ],
+          "median_ms": 0.1594,
+          "range_ms": [
+            0.1026,
+            0.186
+          ]
+        },
+        {
+          "ordinal": 10,
+          "stage": "dtoh_host_call",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.019899999999999998,
+            0.0172,
+            0.0146
+          ],
+          "median_ms": 0.0172,
+          "range_ms": [
+            0.0146,
+            0.019899999999999998
+          ]
+        },
+        {
+          "ordinal": 11,
+          "stage": "dtoh_stream_wait",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.0133,
+            0.0141,
+            0.013600000000000001
+          ],
+          "median_ms": 0.013600000000000001,
+          "range_ms": [
+            0.0133,
+            0.0141
+          ]
+        },
+        {
+          "ordinal": 12,
+          "stage": "encode_scatter_restore_cpu",
+          "player": 1,
+          "arena": "strat",
+          "bytes": 17920,
+          "all_profiled_ms": [
+            0.1449,
+            0.1124,
+            0.1034
+          ],
+          "median_ms": 0.1124,
+          "range_ms": [
+            0.1034,
+            0.1449
+          ]
+        },
+        {
+          "ordinal": 13,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "player": null,
+          "arena": null,
+          "bytes": null,
+          "all_profiled_ms": [
+            9.999999999999999e-05,
+            9.999999999999999e-05,
+            9.999999999999999e-05
+          ],
+          "median_ms": 9.999999999999999e-05,
+          "range_ms": [
+            9.999999999999999e-05,
+            9.999999999999999e-05
+          ]
+        }
+      ],
+      "optimistic_overlap_ceiling_pct_of_ordinary_fixture": 0.15310092111537785
+    }
+  ],
+  "raw_profiles": [
+    {
+      "run_id": "D065P1",
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0009
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0384
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 22.0196
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 51.738
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1005
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 22.4531
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 51.1068
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.12129999999999999
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 26.027600000000003
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 58.602000000000004
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0719
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 26.0804
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 58.624700000000004
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.0009
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 316.98629999999997
+    },
+    {
+      "run_id": "D065P1",
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0013
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0392
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 13.1407
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 40.1967
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1972
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 13.5949
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 41.7782
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.206
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 15.8097
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.3691
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1521
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 15.667899999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.3289
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.0005
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 233.4829
+    },
+    {
+      "run_id": "D065P1",
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0017000000000000001
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.022500000000000003
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0138
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.30679999999999996
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0246
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.012700000000000001
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1698
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0262
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0134
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.186
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.019899999999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0133
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1449
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 9.999999999999999e-05
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.9558
+    },
+    {
+      "run_id": "D065P2",
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0011
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0423
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 24.352
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 54.1372
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0613
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 22.314400000000003
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 50.8404
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.097
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 26.1902
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 58.634899999999995
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0883
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 26.3703
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 59.0862
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.0003
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 322.2161
+    },
+    {
+      "run_id": "D065P2",
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0017000000000000001
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0395
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 13.1438
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 40.9165
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.13770000000000002
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 13.68
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 40.311899999999994
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1825
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 15.9272
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.9852
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.14300000000000002
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 16.2752
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.2424
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.00039999999999999996
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 233.9872
+    },
+    {
+      "run_id": "D065P2",
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0012
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0176
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0423
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1153
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0276
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0125
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.2179
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0235
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0126
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1026
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0172
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0141
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1124
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 9.999999999999999e-05
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.717
+    },
+    {
+      "run_id": "D065P3",
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0011
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0457
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 23.2043
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 54.0985
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0919
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 22.4134
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 55.6313
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.07550000000000001
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 26.396
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 58.4784
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.07830000000000001
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 25.999299999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 57.726600000000005
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.00039999999999999996
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 324.2409
+    },
+    {
+      "run_id": "D065P3",
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0013
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0427
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 13.1363
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 42.0525
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1478
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 15.145499999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 40.8716
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.1717
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 16.2124
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.371700000000004
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.16970000000000002
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 15.6799
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 46.8431
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.0005
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 236.847
+    },
+    {
+      "run_id": "D065P3",
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0009
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0084
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0144
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.2366
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.031
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0122
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.163
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.024
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0129
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1594
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0146
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.013600000000000001
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1034
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 9.999999999999999e-05
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.7946
+    }
+  ],
+  "ordinary_sum_fixture_medians_ms": 9551.6274,
+  "instrumented_sum_fixture_medians_ms": 9546.1713,
+  "observed_outer_change_pct": -0.05712220307085847,
+  "absolute_change_limit_pct": 10.0,
+  "diagnostic_usefulness_guard_pass": true,
+  "grouped_stage_sum_fixture_medians_ms": {
+    "initial_stream_wait": 0.0036,
+    "dtoh_host_call": 0.9092,
+    "dtoh_stream_wait": 157.0924,
+    "encode_scatter_restore_cpu": 398.034,
+    "publish_iteration_and_symmetry_flag_cpu": 0.001,
+    "transfer_host_ms": 157.9797,
+    "cpu_encode_scatter_restore_ms": 398.034,
+    "optimistic_overlap_ceiling_ms": 157.9797,
+    "measured_span_sum_ms": 556.9974,
+    "full_readback_before_logging_ms": 556.9979,
+    "trace_timer_bookkeeping_residual_ms": 0.0006000000000165873,
+    "outer_readback_minus_trace_ms": 3.6167999999999942
+  },
+  "grouped_stage_fraction_of_ordinary_pct": {
+    "initial_stream_wait": 3.768991240173376e-05,
+    "dtoh_host_call": 0.009518796765460094,
+    "dtoh_stream_wait": 1.644666331938367,
+    "encode_scatter_restore_cpu": 4.167185164697694,
+    "publish_iteration_and_symmetry_flag_cpu": 1.0469420111592713e-05,
+    "transfer_host_ms": 1.6539558484033834,
+    "cpu_encode_scatter_restore_ms": 4.167185164697694,
+    "optimistic_overlap_ceiling_ms": 1.6539558484033834,
+    "measured_span_sum_ms": 5.831439781664851,
+    "full_readback_before_logging_ms": 5.831445016374905,
+    "trace_timer_bookkeeping_residual_ms": 6.281652067129286e-06,
+    "outer_readback_minus_trace_ms": 0.037865798659608464
+  },
+  "optimistic_overlap_ceiling_pct_of_ordinary": 1.6539558484033834,
+  "possible_2pct_saving_established": false,
+  "interpretation": "Copy host call plus existing wait is transfer-related host elapsed, not isolated PCIe duration. CPU spans include encoding, scatter and inactive restore. min(transfer_host,CPUencode) is only an optimistic measured-span overlap ceiling; unavoidable startup/tail, extra pinned buffers, bandwidth/contention and implementation costs remain unmeasured. No actual saving, family attribution or full-cycle headroom is proven. Grouped components/envelopes overlap and must not be summed. The10pct outer usefulness guard does not bound component bias.",
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "native_process_wall_ms_including_teardown": {
+    "D065B1": 12515.999999995984,
+    "D065P1": 12561.99999999808,
+    "D065P2": 12516.00000000326,
+    "D065B2": 12531.999999999243,
+    "D065B3": 12546.999999998661,
+    "D065P3": 12563.00000000192
+  },
+  "evidence": {
+    "D065B1": {
+      "report_sha256": "b685d69e6826c7b1239cb399f9d0769feab1883f11149785bcedd39a47924882",
+      "stdout_sha256": "8e82be165a18592962d321d4f7ccf2c3f77848279b4604106d725bb6cf8530e8",
+      "invocation_sha256": "56f155a3355586d0f69c768d617a5dc1282336aea9760ab8d8811c9371a63c3f"
+    },
+    "D065P1": {
+      "report_sha256": "fd5aae78e449a9712bb5cec12806d885a1844c0d5f2043ce7a8d6d3ba12808b6",
+      "stdout_sha256": "0f0e8fe62fbcf80046d38a8437ee16dafbdcfa81cde800d552b5428d19eba547",
+      "invocation_sha256": "b4ccb6b907ba4dd14e52075a666bf10178d351cde73474558c08cadccf8d6fd3"
+    },
+    "D065P2": {
+      "report_sha256": "0a0ba03331abfc8909a9b2df84e1897079b424b8b7f71f666fe7308b30229158",
+      "stdout_sha256": "0040d25da8969bcac2faeef770b2f2f9a3a131dc9d669ea533ca6d3917d5e96a",
+      "invocation_sha256": "e9b184b1f710c6ec8e9a001b35bd09a0202812c1963beac30c19df5f11b316b6"
+    },
+    "D065B2": {
+      "report_sha256": "ced1bac041c596d9f5cb7696550632557403db6a59e053689e44bcc4b003bd48",
+      "stdout_sha256": "83ce2810cbad1ec9045b92f00d52d5e9f29ed5fa1316ac3cdf83ea0d24412ddf",
+      "invocation_sha256": "c0bd64c34fe4e35b24db121cfdf9f7fb8f92d2dbe575acc13a272e56bb111539"
+    },
+    "D065B3": {
+      "report_sha256": "b0f56406590b408fab005aa539f85de7287c9ffc7e7ed41bd059f91d940d96e6",
+      "stdout_sha256": "80da5c5700ca862e40263404fc4c25470b91a10421ac00e0188de1c84444e564",
+      "invocation_sha256": "d56da31eaff394d23139d37183611b5829aa99ecfc6e07ce61a9a519b1c6e878"
+    },
+    "D065P3": {
+      "report_sha256": "13b6235de689bf4cb16fc493bc87d581ec2ea292dece4f94e6723522c2318016",
+      "stdout_sha256": "5b5d627b44aaf32e11c8bddd1185905a96275f68a970bca3735a76dcd9002630",
+      "invocation_sha256": "94ff09a7878465ec6eb496f02f0b0c6f4e70debadc10be153566917c1163ff5f"
+    }
+  },
+  "binary_manifests": {
+    "ordinary": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "instrumented": "0ea258b5bf12395415fba47c961090650e756c4cf99c6b39296cf6df2dd69ead"
+  }
+}

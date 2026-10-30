@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-28T20:04:45.839791+00:00",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\probe.rs",
+    "--crate-name",
+    "d190_tree_probe",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--extern",
+    "solver=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "serde=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rlib",
+    "--extern",
+    "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "smallvec=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\libsmallvec.rlib",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\probe.exe"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution"
+}

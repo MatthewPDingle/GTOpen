@@ -1,0 +1,34 @@
+{
+  "id": "E020-holdout-source-review",
+  "at": "2026-10-16T11:05:02.224650+00:00",
+  "verdict": "PASS_SOURCE_ONLY",
+  "input_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation",
+  "prepared_manifest_sha256": "cac3399c20ce42c85fd0f2074f41cbb93d790ebe345673808857f46892f43340",
+  "verified_artifacts": 680,
+  "workspace_files_per_arm": 321,
+  "primary_source_entries_verified_per_arm": 162,
+  "production_differences": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+  "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+  "evaluator_sha256": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+  "runner_sha256": "c635188a2e4eb7bb17f6d7082047e9204d98871bd2fa0919465da42ef47c789a",
+  "resource_source_sha256": "8590fc6c73c792a15f5ea62d54fba74b7cd9f2ad45e8aa19e755393c755af39e",
+  "nvrtc_dll_sha256": {
+    "nvrtc-builtins64_129.dll": "c405226b0b394ed8bdc593bb1419b94a989f93248ed2873e8f2e0e27c1688ca1",
+    "nvrtc64_120_0.alt.dll": "ac56a4d3b5a99f294523abec28b8f648b96324a9277622a450ec20ddb9e2c47d",
+    "nvrtc64_120_0.dll": "0cc63349fedffeec1660b30955e8028b6e4e4c26cf1e41c56dc4569fd5eca82c"
+  },
+  "api_source": {
+    "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs",
+    "sha256": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e"
+  },
+  "review_sha256": "bb4476bd1c33a81b6591ebd784134ff1623a6cfee194ea37a09aa8f14cf0e507",
+  "builds": 0,
+  "gpu_jobs": 0,
+  "source_edits": 0,
+  "accepted": false,
+  "deployed": false
+}

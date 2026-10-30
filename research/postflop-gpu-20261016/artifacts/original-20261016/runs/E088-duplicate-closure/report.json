@@ -1,0 +1,18 @@
+{
+  "id": "E088",
+  "at": "2026-10-18T12:03:40.596689+00:00",
+  "status": "declined_duplicate_before_execution",
+  "reason": "Declined before compiler/native: exact generic-cache-removal mechanism already tested asD046/E024 and rejected for complete-solve slowdown. NA!=0 is equivalent to the archived NA!=0&&na<=8 on all0/2/3/4instantiations. Frozen candidate/protocol retained, never activated or executed; no retest/rescue.",
+  "source_review_correction": "Initial staged source-review omitted D046/E024 attribution; the generated history did contain both hits. Root inspection stopped execution. New/independent characterization is withdrawn.",
+  "predicate_domain_checks": 258,
+  "historical_candidate_sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+  "E024_outcome": "-0.5027%complete-solve gain,rejected",
+  "candidate_manifest_sha256": "a04cebbdeaca0741aec9f1883d34f5865911829de75fbd95d74224314e56211a",
+  "frozen_unexecuted_protocol_sha256": "1a2aa1c6e25715b0bd283367e50a840dbc0255e5784559b88a553eca5d7fd33e",
+  "compiler_invocations": 0,
+  "application_kernel_launches": 0,
+  "solve_samples": 0,
+  "accepted": "E080",
+  "source_main_live_PTX_custody_pass": true,
+  "second_declined_lead": "Fold shuffle tail already tested/rejectedE019. No second candidate or compiler prepared."
+}

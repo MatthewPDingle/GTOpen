@@ -1,0 +1,47 @@
+--- E080/mod.rs
++++ E111/mod.rs
+@@ -121,6 +121,7 @@
+     d_hand_perm: [CudaSlice<u32>; 2],
+     /// Orbit folding active: syncs must mark the CPU solver sym-dirty.
+     iso_active: bool,
++    cluster_show: bool,
+     d_rsrc: [CudaSlice<u32>; 2],
+     d_children: CudaSlice<u32>,
+     // device: hands
+@@ -285,6 +286,8 @@
+             || overlap.then(|| stores.map(ZeroCheck::new)),
+         )?;
+         let func = |name: &str| module.load_function(name).map_err(e);
++        let cluster_show = ctx.compute_capability().map_err(e)?.0 >= 9
++            && ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_CLUSTER_LAUNCH).unwrap_or(0) != 0;
+ 
+         let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
+         let upi32 = |v: &Vec<i32>| stream.clone_htod(v).map_err(e);
+@@ -332,7 +335,8 @@
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+             f_up_fold: func("up_fold")?,
+-            f_up_show: func("up_show")?,
++            f_up_show: func(if cluster_show { "up_show_cluster" } else { "up_show" })?,
++            cluster_show,
+             f_up_chance: func("up_chance")?,
+             f_up_action: func("up_action")?,
+             f_up_action_eval: func("up_action_eval")?,
+@@ -720,7 +724,7 @@
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, show_shared))
++                        .launch(Self::cfg(if self.cluster_show { (sp.count + 1) & !1 } else { sp.count }, show_shared))
+                         .map_err(e)?;
+                 }
+             }
+@@ -950,7 +954,7 @@
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, show_shared))
++                        .launch(Self::cfg(if self.cluster_show { (sp.count + 1) & !1 } else { sp.count }, show_shared))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 4, t0)?;

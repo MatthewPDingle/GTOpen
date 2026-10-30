@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-16T10:23:34.856401+00:00",
+  "origin": "Observed exec_command tool completion; no separate stderr transcript",
+  "script_sha256": "c1da520b22032983e6c0672301cd8118cfae2ca7e53516a9c9dc1a45f50e9544",
+  "exit_code": 1,
+  "error": "AssertionError frozen_evaluator_and_workload at line40",
+  "cause": "Original frozen-manifest SHA hex strings uppercase; build manifests lowercase; values identical case-insensitively",
+  "repair": "Normalize original hex string lowercase, same as existing comparison helper",
+  "no_gpu_or_benchmark_rerun": true
+}

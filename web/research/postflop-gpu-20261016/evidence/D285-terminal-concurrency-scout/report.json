@@ -1,0 +1,1170 @@
+{
+  "id": "D285",
+  "at": "2026-10-29T16:43:31.109372+00:00",
+  "status": "pass_scoped_terminal_output_independence_next_graph_primitive",
+  "protocol_sha256": "2f04f6c4662d959f7e92fff0f0120e46f0b5c34d18bce43a68f7a09250f23114",
+  "checks": 12413693,
+  "cases": [
+    {
+      "id": "rainbow-iso-on",
+      "nodes": 1346813,
+      "CFV_rows": 1062286,
+      "CFV_stride": 319,
+      "terminal_rows": 792737,
+      "scratch_rows": 269549,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 101,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 199,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 492,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 8,
+          "fold_CTAs": 10045,
+          "show_CTAs": 21168,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 9,
+          "fold_CTAs": 26607,
+          "show_CTAs": 54096,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 10,
+          "fold_CTAs": 66150,
+          "show_CTAs": 122304,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 11,
+          "fold_CTAs": 96432,
+          "show_CTAs": 141120,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 12,
+          "fold_CTAs": 89376,
+          "show_CTAs": 103488,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 13,
+          "fold_CTAs": 30576,
+          "show_CTAs": 30576,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        }
+      ],
+      "raw_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    {
+      "id": "two-tone-iso-on",
+      "nodes": 1346813,
+      "CFV_rows": 645909,
+      "CFV_stride": 320,
+      "terminal_rows": 481959,
+      "scratch_rows": 163950,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 75,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 147,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 362,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 8,
+          "fold_CTAs": 6184,
+          "show_CTAs": 12861,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 9,
+          "fold_CTAs": 16259,
+          "show_CTAs": 32867,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 10,
+          "fold_CTAs": 40228,
+          "show_CTAs": 74308,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 11,
+          "fold_CTAs": 58589,
+          "show_CTAs": 85740,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 12,
+          "fold_CTAs": 54302,
+          "show_CTAs": 62876,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 13,
+          "fold_CTAs": 18577,
+          "show_CTAs": 18577,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            206690880,
+            206690880
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        }
+      ],
+      "raw_sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    {
+      "id": "river-iso-on",
+      "nodes": 33,
+      "CFV_rows": 25,
+      "CFV_stride": 280,
+      "terminal_rows": 21,
+      "scratch_rows": 4,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 1,
+          "show_CTAs": 1,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        }
+      ],
+      "raw_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    {
+      "id": "rainbow-iso-off",
+      "nodes": 1346813,
+      "CFV_rows": 1062286,
+      "CFV_stride": 319,
+      "terminal_rows": 792737,
+      "scratch_rows": 269549,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 101,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 199,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 492,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 8,
+          "fold_CTAs": 10045,
+          "show_CTAs": 21168,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 9,
+          "fold_CTAs": 26607,
+          "show_CTAs": 54096,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 10,
+          "fold_CTAs": 66150,
+          "show_CTAs": 122304,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 11,
+          "fold_CTAs": 96432,
+          "show_CTAs": 141120,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 12,
+          "fold_CTAs": 89376,
+          "show_CTAs": 103488,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        },
+        {
+          "level": 13,
+          "fold_CTAs": 30576,
+          "show_CTAs": 30576,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            338869234,
+            338869234
+          ],
+          "per_row_owned_words": [
+            257,
+            319
+          ]
+        }
+      ],
+      "raw_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    {
+      "id": "two-tone-iso-off",
+      "nodes": 1346813,
+      "CFV_rows": 1062286,
+      "CFV_stride": 320,
+      "terminal_rows": 792737,
+      "scratch_rows": 269549,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 3,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 101,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 199,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 492,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 8,
+          "fold_CTAs": 10045,
+          "show_CTAs": 21168,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 9,
+          "fold_CTAs": 26607,
+          "show_CTAs": 54096,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 10,
+          "fold_CTAs": 66150,
+          "show_CTAs": 122304,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 11,
+          "fold_CTAs": 96432,
+          "show_CTAs": 141120,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 12,
+          "fold_CTAs": 89376,
+          "show_CTAs": 103488,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        },
+        {
+          "level": 13,
+          "fold_CTAs": 30576,
+          "show_CTAs": 30576,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            339931520,
+            339931520
+          ],
+          "per_row_owned_words": [
+            258,
+            320
+          ]
+        }
+      ],
+      "raw_sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    {
+      "id": "river-iso-off",
+      "nodes": 33,
+      "CFV_rows": 25,
+      "CFV_stride": 280,
+      "terminal_rows": 21,
+      "scratch_rows": 4,
+      "overlap_levels": 6,
+      "levels": [
+        {
+          "level": 0,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 1,
+          "fold_CTAs": 0,
+          "show_CTAs": 0,
+          "both_nonempty": false,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 2,
+          "fold_CTAs": 1,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 3,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 4,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 5,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 6,
+          "fold_CTAs": 2,
+          "show_CTAs": 2,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        },
+        {
+          "level": 7,
+          "fold_CTAs": 1,
+          "show_CTAs": 1,
+          "both_nonempty": true,
+          "CFV_rows_globally_disjoint": true,
+          "both_players_output_extent_words": [
+            7000,
+            7000
+          ],
+          "per_row_owned_words": [
+            233,
+            280
+          ]
+        }
+      ],
+      "raw_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    }
+  ],
+  "kernel_CFV_store_only_source_checked": true,
+  "all_original6_fullplan_hashes_verified": true,
+  "original_phase_timings_not_used": true,
+  "component_effort_reference_ms": 9597.276500000002,
+  "minimum_component_effort_saving_ms": 95.97276500000002,
+  "current_activity_fold_sum_median_ms": null,
+  "limits": "Structural proof and prospective fork/join concept, not actual graph/ownership/capture failure cleanup/overlap/numerical/material/headroom/performance/adoption evidence. No new compiler/CUDA context/kernel/solve/source candidate. Component effort constant is a screening proxy, not a proven removable bound or fullcycle gain. Same CUDA functions must be retained; exact overlap primitive then full-size actual terminal component before considering production optimizer.",
+  "new_compiler_CUDA_context_kernel_solver_or_performance_samples": 0,
+  "optimizer_created_or_accepted": false
+}

@@ -1,0 +1,147 @@
+.visible .entry raw_total(
+	.param .u64 .ptr .align 1 raw_total_param_0,
+	.param .u64 .ptr .align 1 raw_total_param_1,
+	.param .u64 .ptr .align 1 raw_total_param_2,
+	.param .u32 raw_total_param_3,
+	.param .u64 .ptr .align 1 raw_total_param_4
+)
+{
+	.reg .pred 	%p<26>;
+	.reg .b32 	%r<28>;
+	.reg .f32 	%f<33>;
+	.reg .b64 	%rd<24>;
+	// demoted variable
+	.shared .align 4 .b8 _ZZ9raw_totalE11total_parts[1024];
+	ld.param.u64 	%rd4, [raw_total_param_0];
+	ld.param.u64 	%rd5, [raw_total_param_1];
+	ld.param.u64 	%rd6, [raw_total_param_2];
+	ld.param.u32 	%r11, [raw_total_param_3];
+	ld.param.u64 	%rd7, [raw_total_param_4];
+	mov.u32 	%r1, %ctaid.x;
+	setp.ge.u32 	%p1, %r1, %r11;
+	@%p1 bra 	$L__BB0_19;
+	cvta.to.global.u64 	%rd8, %rd6;
+	cvta.to.global.u64 	%rd9, %rd5;
+	mul.wide.u32 	%rd10, %r1, 4;
+	add.s64 	%rd11, %rd8, %rd10;
+	ld.global.u32 	%r2, [%rd11];
+	add.s64 	%rd12, %rd9, %rd10;
+	ld.global.u32 	%r3, [%rd12];
+	mov.u32 	%r4, %tid.x;
+	setp.ge.s32 	%p2, %r4, %r2;
+	mov.f32 	%f32, 0f00000000;
+	@%p2 bra 	$L__BB0_4;
+	mov.u32 	%r5, %ntid.x;
+	cvta.to.global.u64 	%rd1, %rd4;
+	cvt.u64.u32 	%rd2, %r3;
+	mov.f32 	%f32, 0f00000000;
+	mov.u32 	%r26, %r4;
+$L__BB0_3:
+	cvt.s64.s32 	%rd13, %r26;
+	add.s64 	%rd14, %rd13, %rd2;
+	shl.b64 	%rd15, %rd14, 2;
+	add.s64 	%rd16, %rd1, %rd15;
+	ld.global.f32 	%f7, [%rd16];
+	add.f32 	%f32, %f32, %f7;
+	add.s32 	%r26, %r26, %r5;
+	setp.lt.s32 	%p3, %r26, %r2;
+	@%p3 bra 	$L__BB0_3;
+$L__BB0_4:
+	mul.wide.u32 	%rd17, %r4, 4;
+	mov.u64 	%rd18, _ZZ9raw_totalE11total_parts;
+	add.s64 	%rd3, %rd18, %rd17;
+	st.shared.f32 	[%rd3], %f32;
+	bar.sync 	0;
+	mov.u32 	%r27, %ntid.x;
+	setp.eq.s32 	%p4, %r27, 128;
+	mov.u32 	%r12, %ntid.y;
+	setp.eq.s32 	%p5, %r12, 1;
+	and.pred  	%p6, %p4, %p5;
+	mov.u32 	%r13, %ntid.z;
+	setp.eq.s32 	%p7, %r13, 1;
+	and.pred  	%p8, %p7, %p6;
+	@%p8 bra 	$L__BB0_9;
+	setp.lt.u32 	%p9, %r27, 2;
+	@%p9 bra 	$L__BB0_17;
+$L__BB0_6:
+	shr.u32 	%r10, %r27, 1;
+	setp.ge.u32 	%p10, %r4, %r10;
+	@%p10 bra 	$L__BB0_8;
+	mul.wide.u32 	%rd19, %r10, 4;
+	add.s64 	%rd20, %rd3, %rd19;
+	ld.shared.f32 	%f8, [%rd20];
+	ld.shared.f32 	%f9, [%rd3];
+	add.f32 	%f10, %f8, %f9;
+	st.shared.f32 	[%rd3], %f10;
+$L__BB0_8:
+	bar.sync 	0;
+	setp.gt.u32 	%p11, %r27, 3;
+	mov.u32 	%r27, %r10;
+	@%p11 bra 	$L__BB0_6;
+	bra.uni 	$L__BB0_17;
+$L__BB0_9:
+	setp.gt.u32 	%p12, %r4, 63;
+	@%p12 bra 	$L__BB0_11;
+	ld.shared.f32 	%f11, [%rd3+256];
+	ld.shared.f32 	%f12, [%rd3];
+	add.f32 	%f13, %f11, %f12;
+	st.shared.f32 	[%rd3], %f13;
+$L__BB0_11:
+	bar.sync 	0;
+	setp.gt.u32 	%p13, %r4, 31;
+	@%p13 bra 	$L__BB0_13;
+	ld.shared.f32 	%f14, [%rd3+128];
+	ld.shared.f32 	%f15, [%rd3];
+	add.f32 	%f16, %f14, %f15;
+	st.shared.f32 	[%rd3], %f16;
+$L__BB0_13:
+	setp.gt.u32 	%p14, %r4, 31;
+	bar.sync 	0;
+	@%p14 bra 	$L__BB0_16;
+	ld.shared.f32 	%f17, [%rd3];
+	mov.b32 	%r14, %f17;
+	shfl.sync.down.b32	%r15|%p15, %r14, 16, 31, -1;
+	mov.b32 	%f18, %r15;
+	setp.lt.u32 	%p16, %r4, 16;
+	add.f32 	%f19, %f17, %f18;
+	selp.f32 	%f20, %f19, %f17, %p16;
+	mov.b32 	%r16, %f20;
+	shfl.sync.down.b32	%r17|%p17, %r16, 8, 31, -1;
+	mov.b32 	%f21, %r17;
+	setp.lt.u32 	%p18, %r4, 8;
+	add.f32 	%f22, %f20, %f21;
+	selp.f32 	%f23, %f22, %f20, %p18;
+	mov.b32 	%r18, %f23;
+	shfl.sync.down.b32	%r19|%p19, %r18, 4, 31, -1;
+	mov.b32 	%f24, %r19;
+	setp.lt.u32 	%p20, %r4, 4;
+	add.f32 	%f25, %f23, %f24;
+	selp.f32 	%f26, %f25, %f23, %p20;
+	mov.b32 	%r20, %f26;
+	shfl.sync.down.b32	%r21|%p21, %r20, 2, 31, -1;
+	mov.b32 	%f27, %r21;
+	setp.lt.u32 	%p22, %r4, 2;
+	add.f32 	%f28, %f26, %f27;
+	selp.f32 	%f29, %f28, %f26, %p22;
+	mov.b32 	%r22, %f29;
+	shfl.sync.down.b32	%r23|%p23, %r22, 1, 31, -1;
+	mov.b32 	%f30, %r23;
+	setp.ne.s32 	%p24, %r4, 0;
+	add.f32 	%f4, %f29, %f30;
+	@%p24 bra 	$L__BB0_16;
+	st.shared.f32 	[_ZZ9raw_totalE11total_parts], %f4;
+$L__BB0_16:
+	bar.sync 	0;
+$L__BB0_17:
+	setp.ne.s32 	%p25, %r4, 0;
+	@%p25 bra 	$L__BB0_19;
+	ld.shared.u32 	%r24, [_ZZ9raw_totalE11total_parts];
+	mad.lo.s32 	%r25, %r1, 3, 2;
+	cvta.to.global.u64 	%rd21, %rd7;
+	mul.wide.u32 	%rd22, %r25, 4;
+	add.s64 	%rd23, %rd21, %rd22;
+	st.global.u32 	[%rd23], %r24;
+$L__BB0_19:
+	ret;
+
+}

@@ -1,0 +1,1103 @@
+{
+  "id": "E070-continuation-helper-resource-audit",
+  "status": "pass_helper_compiler_ABI_and_resource_prerequisites",
+  "gates": [
+    {
+      "gate": "projection:source_reverse",
+      "pass": true,
+      "details": "Only pointer pair and integer metadata decodes may change."
+    },
+    {
+      "gate": "projection:baseline:compute_120:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_project",
+        "continuation_transport"
+      ]
+    },
+    {
+      "gate": "projection:candidate:compute_120:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_project",
+        "continuation_transport"
+      ]
+    },
+    {
+      "gate": "continuation_project:compute_120:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 12,
+        "candidate_count": 11,
+        "baseline_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_project:compute_120:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16",
+          "u8",
+          "u8"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "continuation_transport:compute_120:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 12,
+        "candidate_count": 11,
+        "baseline_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_transport:compute_120:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16",
+          "u8"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "projection:baseline:compute_75:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_project",
+        "continuation_transport"
+      ]
+    },
+    {
+      "gate": "projection:candidate:compute_75:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_project",
+        "continuation_transport"
+      ]
+    },
+    {
+      "gate": "continuation_project:compute_75:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 12,
+        "candidate_count": 11,
+        "baseline_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_project:compute_75:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16",
+          "u8",
+          "u8",
+          "u8"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "continuation_transport:compute_75:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 12,
+        "candidate_count": 11,
+        "baseline_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_transport:compute_75:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16",
+          "u8"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "storage-copy:source_reverse",
+      "pass": true,
+      "details": "Only pointer pair and integer metadata decodes may change."
+    },
+    {
+      "gate": "storage-copy:baseline:compute_120:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_storage_copy"
+      ]
+    },
+    {
+      "gate": "storage-copy:candidate:compute_120:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_storage_copy"
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:compute_120:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 13,
+        "candidate_count": 12,
+        "baseline_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u64 .ptr .align 1",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_storage_copy:compute_120:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "storage-copy:baseline:compute_75:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_storage_copy"
+      ]
+    },
+    {
+      "gate": "storage-copy:candidate:compute_75:entry_inventory",
+      "pass": true,
+      "details": [
+        "continuation_storage_copy"
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:compute_75:ABI",
+      "pass": true,
+      "details": {
+        "baseline_count": 13,
+        "candidate_count": 12,
+        "baseline_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ],
+        "candidate_types": [
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u64",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ],
+          [
+            ".u32",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "gate": "continuation_storage_copy:compute_75:narrow_load",
+      "pass": true,
+      "details": {
+        "widths": [
+          "u16"
+        ],
+        "scope": "PTX metadata load, not driver SASS/cache-transaction proof"
+      }
+    },
+    {
+      "gate": "continuation_project:no_new_local_bytes",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_project:shared_unchanged",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_project:maxthreads_and_fit",
+      "pass": true,
+      "details": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "gate": "continuation_project:residency_positive",
+      "pass": true,
+      "details": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "gate": "continuation_transport:no_new_local_bytes",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_transport:shared_unchanged",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_transport:maxthreads_and_fit",
+      "pass": true,
+      "details": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "gate": "continuation_transport:residency_positive",
+      "pass": true,
+      "details": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:no_new_local_bytes",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:shared_unchanged",
+      "pass": true,
+      "details": [
+        0,
+        0
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:maxthreads_and_fit",
+      "pass": true,
+      "details": [
+        1024,
+        1024
+      ]
+    },
+    {
+      "gate": "continuation_storage_copy:residency_positive",
+      "pass": true,
+      "details": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    }
+  ],
+  "warnings": [],
+  "resource_rows": [
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_project",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "projection",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_transport",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "projection",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_project",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "projection",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 37,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_transport",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "projection",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_storage_copy",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "storage-copy",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 18,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "continuation_storage_copy",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "module": "storage-copy",
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 18,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "all_eight_PTX_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-baseline-compute_120.ptx": "82c1695b5f78b90a0e1a6c0c4078f1b486623ad4f9694d5f3b97154ee3c60aa3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-candidate-compute_120.ptx": "9e1a5b7a87ea92b0d5e89c2d89a541d3f3b2fb8ac436f377c2e9b8304330f12f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-baseline-compute_75.ptx": "bff6ca7fa74d985aaf0e973ea552773e247f36669655467f41accc25103cad05",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-candidate-compute_75.ptx": "a87e57395d23bbe560424842c2202ef7f2d693ee2c9c2dd69d0ac4c38e056b3f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-baseline-compute_120.ptx": "e0d3f0abdecad1c69f69bc2c874c22ac90334c2a697d5fadfb35c9ffc6160aa6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-candidate-compute_120.ptx": "f4681cfc27a17a80d8de47db8e9ac516f5e5f3d514dce7d822b6ebd82a3bdc16",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-baseline-compute_75.ptx": "90a2c572b4915eb9fe2a556390e9dbe04bfac817278d60440b177f030f1fedcf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-candidate-compute_75.ptx": "bd183726ce81aaee61f0808389cbb076343146379f430ba1e7d07cb50b123afd"
+  },
+  "application_kernel_launches": 0,
+  "preparation_sha256": "b0a77c8cbb286e51c4335d44260c598b174f312de074ef6697d383e610b18c27",
+  "audit_source_sha256": "f7da109066b413c00aa3b31ff5a00eea7d9f7e5f3153811027ca10d4431464f2",
+  "stdout_sha256": "82aa94ea6e5a6e84f52c92319f03815ebc58177cc116815037f2d4f2f3a66769",
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Compiler/PTX/driver resource prerequisites only. No GPU floating-result, actual memory traffic, complete-solver performance or no-tradeoff proof. compute_75 is compiler coverage, not a tested second physical GPU."
+}

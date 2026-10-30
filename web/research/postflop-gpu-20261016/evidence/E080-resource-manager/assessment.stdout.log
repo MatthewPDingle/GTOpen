@@ -1,0 +1,77 @@
+{
+  "status": "pass_registered_process_CPU_and_memory_cost_screen",
+  "checks": [
+    {
+      "metric": "rainbow",
+      "baseline_median": 10343.75,
+      "candidate_median": 10203.125,
+      "limit": 10566.25,
+      "unit": "all-thread CPU ms",
+      "passed": true
+    },
+    {
+      "metric": "two-tone",
+      "baseline_median": 7281.25,
+      "candidate_median": 7218.75,
+      "limit": 7442.5,
+      "unit": "all-thread CPU ms",
+      "passed": true
+    },
+    {
+      "metric": "river",
+      "baseline_median": 125.0,
+      "candidate_median": 93.75,
+      "limit": 143.125,
+      "unit": "all-thread CPU ms",
+      "passed": true
+    },
+    {
+      "metric": "phase_sum_CPU_ms",
+      "baseline_median": 17421.875,
+      "candidate_median": 17578.125,
+      "limit": 17785.9375,
+      "unit": "all-thread CPU ms",
+      "passed": true
+    },
+    {
+      "metric": "whole_process_CPU_ms",
+      "baseline_median": 20500.0,
+      "candidate_median": 20609.375,
+      "limit": 20925.625,
+      "unit": "all-thread CPU ms",
+      "passed": true
+    },
+    {
+      "metric": "peak_working_bytes",
+      "baseline_median": 2612064256,
+      "candidate_median": 2612322304,
+      "limit": 2638184898.56,
+      "unit": "bytes",
+      "passed": true
+    },
+    {
+      "metric": "peak_total_commit_bytes",
+      "baseline_median": 9048412160,
+      "candidate_median": 9049587712,
+      "limit": 9138896281.6,
+      "unit": "bytes",
+      "passed": true
+    },
+    {
+      "metric": "GPU_dedicated_peak_bytes",
+      "baseline_median": 6359678976,
+      "candidate_median": 6359678976,
+      "limit": 6361776128,
+      "unit": "PID-filtered software-accounted bytes",
+      "passed": true
+    },
+    {
+      "metric": "GPU_shared_peak_bytes",
+      "baseline_median": 822083584,
+      "candidate_median": 822083584,
+      "limit": 824180736,
+      "unit": "PID-filtered software-accounted bytes",
+      "passed": true
+    }
+  ]
+}

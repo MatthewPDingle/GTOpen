@@ -1,0 +1,52 @@
+{
+  "id": "D046",
+  "status": "prospective_before_execution",
+  "base": "Accepted E020",
+  "base_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+  "source_delta": "Exactly one literal in up_action_impl: bool small = na <= 8; becomes bool small = NA != 0 && na <= 8;. The down_action cache and all other bytes stay unchanged.",
+  "source_arity_variants": [
+    2,
+    3,
+    4,
+    0
+  ],
+  "resource_rows": [
+    {
+      "variant": "baseline",
+      "kernel": "up_action"
+    },
+    {
+      "variant": "candidate",
+      "kernel": "up_action"
+    }
+  ],
+  "same_context": true,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "architecture": "compute_120",
+  "compile_options": "arch only; other cudarc CompileOptions default, matching accepted production",
+  "block_threads": 128,
+  "dynamic_shared_bytes": 0,
+  "resource_prerequisite": {
+    "zero_local_bytes": true,
+    "registers_no_more_than_baseline": true,
+    "active_blocks_per_sm_no_fewer_than_baseline": true,
+    "max_threads_per_block_at_least": 128,
+    "scope": "Resource-only prerequisite for a later bounded candidate; no numerical or performance acceptance."
+  },
+  "per_stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "minimum_free_bytes": 53687091200,
+  "output_reservation_bytes": 1073741824,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "preserve_failure_no_overwrite": true,
+  "other_eight_entries_must_have_byte_identical_extracted_ptx": true,
+  "entry_names_and_up_action_signature_unchanged": true,
+  "root_execution_requires_D045_terminal_and_accepted_E020_restored": true,
+  "required_up_action_ptx_review": "Archive both complete entries, unified diff, local declarations/operations and floating opcode counts; independent reviewer checks cache-removal/loads and arithmetic source/order. Counts alone are not runtime arithmetic proof."
+}

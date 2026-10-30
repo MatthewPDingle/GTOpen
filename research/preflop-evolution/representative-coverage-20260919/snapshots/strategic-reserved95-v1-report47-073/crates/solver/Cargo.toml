@@ -1,0 +1,209 @@
+[package]
+name = "solver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rayon = "1.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+mimalloc = "0.1"
+cudarc = { version = "0.19", default-features = false, features = [
+    "driver",
+    "nvrtc",
+    "dynamic-loading",
+    "cuda-12060",
+], optional = true }
+
+[[bin]]
+name = "solve-cli"
+path = "src/bin/solve_cli.rs"
+
+[features]
+gpu = ["dep:cudarc"]
+preflop-research = ["gpu"]
+continuation-transfer-research = ["preflop-research", "serde_json/float_roundtrip"]
+
+[[example]]
+name = "learned_decisions"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "learned_interface"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_bench"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_local"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_diagnostics"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_variance"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_refine"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_refine_large"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_audit_paths"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_repair_ancestors"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_joint_refine"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_frontier"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_root_repair"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_fixed_units"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_particle_quality"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_large_normalized_quality"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_conditional_sampling"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_normalized_pair"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_normalized_pair_tail"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_large_normalized_pair"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_large_averaging"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_compare_arenas"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_average_opponents"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_rm_plus"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_prediction_storage"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_predictive"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_policy_repair"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_shared_cv_storage"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_shared_cv"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_behavioral"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "convergence_behavioral_finish"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "balanced_continuation_audit"
+required-features = ["gpu"]
+
+[[example]]
+name = "range_value_reference"
+required-features = ["gpu"]
+
+[[example]]
+name = "range_value_diagnostic"
+required-features = ["gpu"]
+
+[[example]]
+name = "continuation_terminal_ranges"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_supported"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_orbits"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "entry_fold_audit"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "continuation_orbit_memory"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_compact"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "integrated_continuation_paged"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "continuation_transfer"
+required-features = ["continuation-transfer-research"]
+
+[[example]]
+name = "continuation_transfer_streamed"
+required-features = ["continuation-transfer-research"]
+
+[[example]]
+name = "integrated_continuation_stored"
+required-features = ["preflop-research"]
+
+[[example]]
+name = "continuation_storage_capacity"
+required-features = ["preflop-research"]

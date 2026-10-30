@@ -1,0 +1,796 @@
+{
+  "id": "D156",
+  "at": "2026-10-28T11:55:54.486858+00:00",
+  "status": "pass_scoped_full_primary_raw_lifecycle_equivalence",
+  "protocol_sha256": "04b6e7dc2433f74898ff181211a3e16be838a5cf001136a2d8259af7aab7df9b",
+  "scientific_full_records_exact": 6,
+  "canonical_checkpoints_exact": 46,
+  "full_CPU_raw_pairs": 12,
+  "physical_CFV_raw_pairs": 12,
+  "query_pairs": 6,
+  "save_pairs": 3,
+  "additional_EV_pairs": 9,
+  "all_CPU_q_scale_and_file_bytes_exact": true,
+  "all_physical_CFV_words_beyond65544_preserved_on_packed_paths": true,
+  "entire_physical_CFV_exact_on_declined_paths": true,
+  "actual_normal_admission": {
+    "rainbow": true,
+    "two-tone": true,
+    "river": false
+  },
+  "reader_checks": 24380,
+  "pair_bytes_compared": 25305798211,
+  "CPU_q_scale_values_represented_per_arm": 5511752832,
+  "baseline_controls": [
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "rainbow",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              true,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 200,
+            "packet_module_loaded": false,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 200,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4595063149308489792,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              true,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 201,
+            "packet_module_loaded": false,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 201,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4594951938508613696,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 202,
+            "packet_module_loaded": false,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 202,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594908152232987392,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 203,
+            "packet_module_loaded": false,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 203,
+          "stage": "resumed"
+        }
+      ]
+    },
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "two-tone",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 200,
+            "packet_module_loaded": false,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 200,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4594546375876543424,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 201,
+            "packet_module_loaded": false,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 201,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4594443874668767904,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 202,
+            "packet_module_loaded": false,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 202,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594398580519522560,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 203,
+            "packet_module_loaded": false,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 203,
+          "stage": "resumed"
+        }
+      ]
+    },
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "river",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 60,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 60,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4594827563815015152,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 61,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 61,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4593900681192754032,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 62,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 62,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594211037845245536,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 63,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4448
+          },
+          "iteration": 63,
+          "stage": "resumed"
+        }
+      ]
+    }
+  ],
+  "candidate_controls": [
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "rainbow",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              true,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 200,
+            "packet_module_loaded": true,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 200,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4595063149308489792,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              true,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 201,
+            "packet_module_loaded": true,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 201,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4594951938508613696,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 202,
+            "packet_module_loaded": true,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 202,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594908152232987392,
+          "info": {
+            "CFV_words": 338869234,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              257,
+              319
+            ],
+            "iso_active": false,
+            "iteration": 203,
+            "packet_module_loaded": true,
+            "pinned_words": 185172163,
+            "regret_words": [
+              156020845,
+              185172163
+            ],
+            "strategy_words": [
+              156020845,
+              185172163
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 203,
+          "stage": "resumed"
+        }
+      ]
+    },
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "two-tone",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 200,
+            "packet_module_loaded": true,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 200,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4594546375876543424,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 201,
+            "packet_module_loaded": true,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 201,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4594443874668767904,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 202,
+            "packet_module_loaded": true,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 202,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594398580519522560,
+          "info": {
+            "CFV_words": 206690880,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              258,
+              320
+            ],
+            "iso_active": true,
+            "iteration": 203,
+            "packet_module_loaded": true,
+            "pinned_words": 110745280,
+            "regret_words": [
+              93381294,
+              110745280
+            ],
+            "strategy_words": [
+              93381294,
+              110745280
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 203,
+          "stage": "resumed"
+        }
+      ]
+    },
+    {
+      "all_GPU_and_CPU_objects_dropped": true,
+      "fixture_id": "river",
+      "performance_measurement": false,
+      "stages": [
+        {
+          "ev_bits": null,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 60,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 60,
+          "stage": "converged"
+        },
+        {
+          "ev_bits": 4594827563815015152,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              true
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 61,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 61,
+          "stage": "continued"
+        },
+        {
+          "ev_bits": 4593900681192754032,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 62,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 62,
+          "stage": "locked"
+        },
+        {
+          "ev_bits": 4594211037845245536,
+          "info": {
+            "CFV_words": 7000,
+            "eval_graphs_present": [
+              false,
+              false
+            ],
+            "graphs_present": true,
+            "hands": [
+              233,
+              280
+            ],
+            "iso_active": false,
+            "iteration": 63,
+            "packet_module_loaded": false,
+            "pinned_words": 4480,
+            "regret_words": [
+              3728,
+              4480
+            ],
+            "strategy_words": [
+              3728,
+              4480
+            ],
+            "wrapper_bytes": 4480
+          },
+          "iteration": 63,
+          "stage": "resumed"
+        }
+      ]
+    }
+  ],
+  "D155_original_coverage_failure_not_regraded": true,
+  "all_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "performance_qualification_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Existing three full canonical workloads with ordinary frozen production admission, exact full raw CPU q/scales and physical CFV boundary guards through continued/locked/save/load/warm resume. Primary scientific records/checkpoints still exact original anchor. Printed timing fields are diagnostic because large raw/lifecycle work changes suite history; never use for speed score. Broader F32/CfrPlus/paging/holdout/resource/capacity and fresh performance qualification remain required."
+}

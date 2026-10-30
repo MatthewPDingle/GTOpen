@@ -1,0 +1,13 @@
+{
+  "candidate": "E024",
+  "source_reversal_exact": true,
+  "only_changed_literal": "bool small = na <= 8; -> bool small = NA != 0 && na <= 8; within up_action_impl",
+  "original_down_action_literal_preserved": true,
+  "D046_candidate_exact": true,
+  "accepted_source_entries_verified": 162,
+  "base_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+  "production_edits": 0,
+  "builds": 0,
+  "native_or_gpu_execution": 0
+}

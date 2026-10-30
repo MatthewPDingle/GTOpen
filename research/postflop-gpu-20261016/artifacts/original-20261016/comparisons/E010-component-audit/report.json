@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "id": "E010-component-audit",
+  "created_at": "2026-10-16T05:55:40Z",
+  "kind": "diagnostic_analysis",
+  "primary_score_unchanged": true,
+  "candidate_decision": "rejected",
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "median_baseline": {
+        "build_ms": 83.2199,
+        "init_ms": 677.6619000000001,
+        "solve_ms": 5462.9655,
+        "readback_ms": 350.6209,
+        "full_cycle_ms": 6558.9232
+      },
+      "median_candidate": {
+        "build_ms": 81.5942,
+        "init_ms": 682.0823,
+        "solve_ms": 5472.2833,
+        "readback_ms": 259.9281,
+        "full_cycle_ms": 6506.1893
+      },
+      "paired_baseline_minus_candidate_ms": {
+        "build_ms": [
+          -4.152100000000004,
+          2.938699999999983,
+          0.5009999999999906
+        ],
+        "init_ms": [
+          -43.61710000000005,
+          15.904300000000148,
+          -50.5071999999999
+        ],
+        "solve_ms": [
+          -9.317799999999806,
+          -23.83560000000034,
+          30.709000000000742
+        ],
+        "readback_ms": [
+          86.22719999999998,
+          100.0721,
+          89.94490000000002
+        ],
+        "full_cycle_ms": [
+          29.325600000000122,
+          95.07560000000012,
+          70.64829999999893
+        ]
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_baseline": {
+        "build_ms": 418.2104,
+        "init_ms": 431.9621,
+        "solve_ms": 3322.6104,
+        "readback_ms": 261.0244,
+        "full_cycle_ms": 4453.8976
+      },
+      "median_candidate": {
+        "build_ms": 159.9457,
+        "init_ms": 418.4898,
+        "solve_ms": 3357.9186,
+        "readback_ms": 215.2756,
+        "full_cycle_ms": 4153.8665
+      },
+      "paired_baseline_minus_candidate_ms": {
+        "build_ms": [
+          258.2647,
+          259.8185,
+          313.2532
+        ],
+        "init_ms": [
+          83.83659999999998,
+          -15.408999999999992,
+          -14.622000000000014
+        ],
+        "solve_ms": [
+          -24.665599999999813,
+          -12.361000000000331,
+          -43.18510000000015
+        ],
+        "readback_ms": [
+          45.74880000000002,
+          42.369999999999976,
+          44.575699999999955
+        ],
+        "full_cycle_ms": [
+          363.1940000000004,
+          274.42159999999967,
+          300.03110000000015
+        ]
+      }
+    },
+    {
+      "fixture_id": "river",
+      "median_baseline": {
+        "build_ms": 0.2434,
+        "init_ms": 97.903,
+        "solve_ms": 19.7767,
+        "readback_ms": 0.8515,
+        "full_cycle_ms": 117.4631
+      },
+      "median_candidate": {
+        "build_ms": 0.24659999999999999,
+        "init_ms": 187.7067,
+        "solve_ms": 17.4468,
+        "readback_ms": 0.7933,
+        "full_cycle_ms": 211.2934
+      },
+      "paired_baseline_minus_candidate_ms": {
+        "build_ms": [
+          -0.0031999999999999806,
+          -0.0024000000000000132,
+          -0.03710000000000002
+        ],
+        "init_ms": [
+          -99.37520000000002,
+          -99.90229999999998,
+          -87.02400000000002
+        ],
+        "solve_ms": [
+          2.4979000000000013,
+          1.0020000000000024,
+          -1.569700000000001
+        ],
+        "readback_ms": [
+          0.2953999999999999,
+          0.05820000000000003,
+          -0.30720000000000003
+        ],
+        "full_cycle_ms": [
+          -96.57770000000002,
+          -98.8418,
+          -88.93979999999999
+        ]
+      }
+    }
+  ],
+  "mean_paired_suite_delta_ms": {
+    "build_ms": 276.8604333333333,
+    "init_ms": -103.57196666666661,
+    "solve_ms": -26.90863333333323,
+    "readback_ms": 136.32836666666665,
+    "full_cycle_ms": 282.77896666666646
+  },
+  "conclusion": "Consistent readback savings are present, but the net mean paired saving is dominated by two-tone construction/CPU allocation timing. Earlier-fixture allocation/teardown history is a hypothesis, not established cause. Run the existing two-tone fixture filter in fresh processes as a separate diagnostic, without replacing the frozen primary score.",
+  "limitations": [
+    "Component medians are not additive to full-cycle medians.",
+    "Mean paired deltas are attribution diagnostics only; primary aggregation remains sum of per-fixture medians.",
+    "No accepted gain or allocator-causality claim follows from this analysis."
+  ],
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B023\\report.json",
+      "sha256": "2b85cb27bb30a465196e93138969d3b02b87f4a269b8e14f62a6b551a2b1bbbb"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B024\\report.json",
+      "sha256": "05a6e1f0745500cd39cbfea47c47f5a6d3d00b9893300b40e1f5fc21b963e1d2"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B025\\report.json",
+      "sha256": "34b1a662dd600b4a411a6435b3ac2740caf3d0c60ce12d73aa8a1374c6d42cd6"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010\\report.json",
+      "sha256": "8d1b1d50b73f9cfc57ba3079297fdb278b235f0cf155e110d6d3414ab93a6ca7"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010R2\\report.json",
+      "sha256": "0618e89a9366931bee458f26680928bfb9966da510fd699e79bc49bf3c1f658c"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010R3\\report.json",
+      "sha256": "97078be3511f9cb75102d08949e0e3a87b3d6b32c53a1adf6b7bd3f0621656cd"
+    }
+  ]
+}

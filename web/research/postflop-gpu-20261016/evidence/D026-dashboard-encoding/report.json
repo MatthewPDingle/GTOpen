@@ -1,0 +1,43 @@
+{
+  "id": "D026",
+  "status": "pass",
+  "scope": "Display encoding maintenance only; no solver or measurement changes",
+  "created_at": "2026-10-16T07:40:08Z",
+  "default_text_encoding": "cp1252",
+  "cause": "A manual status update read UTF-8 JSON with the Windows default encoding; runner and comparison tools already use explicit UTF-8.",
+  "changed_strings": [
+    {
+      "path": "$.hardware.gpu",
+      "before": "NVIDIA GeForce RTX 5090 Â· 32 GB",
+      "after": "NVIDIA GeForce RTX 5090 · 32 GB"
+    },
+    {
+      "path": "$.hardware.backend",
+      "before": "CUDA Â· Windows Â· driver 610.88",
+      "after": "CUDA · Windows · driver 610.88"
+    },
+    {
+      "path": "$.fixtures[0].description",
+      "before": "Ks7h2d Â· zero rake",
+      "after": "Ks7h2d · zero rake"
+    },
+    {
+      "path": "$.fixtures[1].description",
+      "before": "Ks7s2d Â· 5% rake, cap 3",
+      "after": "Ks7s2d · 5% rake, cap 3"
+    },
+    {
+      "path": "$.fixtures[2].description",
+      "before": "Ks7h2dQhTc Â· 5% rake, cap 3",
+      "after": "Ks7h2dQhTc · 5% rake, cap 3"
+    },
+    {
+      "path": "$.experiments[93].reason",
+      "before": "Standalone exact screen passed (20,480,834 encoded words; 22,696 scales). All 56 timing groups improved; finite block times fell 51â€“55%. Runtime feature check included. This is a CPU component probe, not a complete-cycle gain; E012 will test integration.",
+      "after": "Standalone exact screen passed (20,480,834 encoded words; 22,696 scales). All 56 timing groups improved; finite block times fell 51–55%. Runtime feature check included. This is a CPU component probe, not a complete-cycle gain; E012 will test integration."
+    }
+  ],
+  "all_other_fields_equal_before_metadata_update": true,
+  "preserved_failed_browser_report": "X:\\Dev\\GTOpen\\output\\playwright\\postflop-dashboard-20261016\\accepted-audit-report-E015.json",
+  "future_rule": "All status reads and writes must explicitly specify UTF-8."
+}

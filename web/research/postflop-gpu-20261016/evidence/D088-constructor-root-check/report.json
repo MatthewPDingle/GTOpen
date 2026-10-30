@@ -1,0 +1,476 @@
+{
+  "at": "2026-10-17T06:00:33.151394+00:00",
+  "status": "pass_scoped_constructor_diagnostic",
+  "checks": [
+    {
+      "label": "D088B1 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088B1 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088B1 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088B1 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088B1 no diagnostic markers",
+      "passed": true
+    },
+    {
+      "label": "D088T1 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088T1 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088T1 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088T1 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088T1 exact actual marker order",
+      "passed": true
+    },
+    {
+      "label": "D088T1 finite positive timings",
+      "passed": true
+    },
+    {
+      "label": "D088T1 exactly12outer4scans",
+      "passed": true
+    },
+    {
+      "label": "D088T1 nested scans contained",
+      "passed": true
+    },
+    {
+      "label": "D088T1 enclosing init/accounting",
+      "passed": true
+    },
+    {
+      "label": "D088T1 event images match retained profile",
+      "passed": true
+    },
+    {
+      "label": "D088T2 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088T2 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088T2 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088T2 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088T2 exact actual marker order",
+      "passed": true
+    },
+    {
+      "label": "D088T2 finite positive timings",
+      "passed": true
+    },
+    {
+      "label": "D088T2 exactly12outer4scans",
+      "passed": true
+    },
+    {
+      "label": "D088T2 nested scans contained",
+      "passed": true
+    },
+    {
+      "label": "D088T2 enclosing init/accounting",
+      "passed": true
+    },
+    {
+      "label": "D088T2 event images match retained profile",
+      "passed": true
+    },
+    {
+      "label": "D088B2 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088B2 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088B2 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088B2 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088B2 no diagnostic markers",
+      "passed": true
+    },
+    {
+      "label": "D088B3 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088B3 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088B3 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088B3 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088B3 no diagnostic markers",
+      "passed": true
+    },
+    {
+      "label": "D088T3 all non-timing state",
+      "passed": true
+    },
+    {
+      "label": "D088T3 all ten checkpoints",
+      "passed": true
+    },
+    {
+      "label": "D088T3 serial terminal0",
+      "passed": true
+    },
+    {
+      "label": "D088T3 accepted sources restored",
+      "passed": true
+    },
+    {
+      "label": "D088T3 exact actual marker order",
+      "passed": true
+    },
+    {
+      "label": "D088T3 finite positive timings",
+      "passed": true
+    },
+    {
+      "label": "D088T3 exactly12outer4scans",
+      "passed": true
+    },
+    {
+      "label": "D088T3 nested scans contained",
+      "passed": true
+    },
+    {
+      "label": "D088T3 enclosing init/accounting",
+      "passed": true
+    },
+    {
+      "label": "D088T3 event images match retained profile",
+      "passed": true
+    },
+    {
+      "label": "D088T1 four raw observer clocks",
+      "passed": true
+    },
+    {
+      "label": "D088T1 preset observer decision",
+      "passed": true
+    },
+    {
+      "label": "D088T2 four raw observer clocks",
+      "passed": true
+    },
+    {
+      "label": "D088T2 preset observer decision",
+      "passed": true
+    },
+    {
+      "label": "D088T3 four raw observer clocks",
+      "passed": true
+    },
+    {
+      "label": "D088T3 preset observer decision",
+      "passed": true
+    },
+    {
+      "label": "complete observer rule",
+      "passed": true
+    },
+    {
+      "label": "no exclusions or extensions or pooling",
+      "passed": true
+    }
+  ],
+  "checks_passed": 53,
+  "native_results_exact": 6,
+  "convergence_checkpoints_exact": 60,
+  "observer_usefulness_pass": true,
+  "observer_changes": [
+    {
+      "baseline": "D088B1",
+      "diagnostic": "D088T1",
+      "cycle_change_pct": 0.38389668581926273,
+      "init_change_pct": 2.6321120081314042,
+      "native_change_pct": 0.22456140355451293,
+      "runner_change_pct": 0.5829487490313978,
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D088B2",
+      "diagnostic": "D088T2",
+      "cycle_change_pct": 0.4733244082622434,
+      "init_change_pct": 1.698788419052355,
+      "native_change_pct": 0.6611337741730061,
+      "runner_change_pct": 0.19467088457556514,
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D088B3",
+      "diagnostic": "D088T3",
+      "cycle_change_pct": 0.5963760423744136,
+      "init_change_pct": 0.911315614189756,
+      "native_change_pct": 1.3109670142869456,
+      "runner_change_pct": 0.3764420158187676,
+      "usefulness_pass": true
+    }
+  ],
+  "median_stages": [
+    {
+      "stage": "plan_budget",
+      "median_ms": 121.7085,
+      "raw_ms": [
+        120.2479,
+        127.4208,
+        121.7085
+      ]
+    },
+    {
+      "stage": "context_stream",
+      "median_ms": 121.5975,
+      "raw_ms": [
+        117.0171,
+        121.5975,
+        122.3522
+      ]
+    },
+    {
+      "stage": "regret0_upload",
+      "median_ms": 63.48180000000001,
+      "raw_ms": [
+        62.3408,
+        66.6752,
+        63.48180000000001
+      ]
+    },
+    {
+      "stage": "regret1_upload",
+      "median_ms": 61.3763,
+      "raw_ms": [
+        62.370000000000005,
+        58.8554,
+        61.3763
+      ]
+    },
+    {
+      "stage": "strategy1_upload",
+      "median_ms": 59.5095,
+      "raw_ms": [
+        59.5095,
+        59.1802,
+        60.8078
+      ]
+    },
+    {
+      "stage": "nvrtc_module",
+      "median_ms": 53.2587,
+      "raw_ms": [
+        55.3598,
+        53.1991,
+        53.2587
+      ]
+    },
+    {
+      "stage": "pinned_staging",
+      "median_ms": 53.2063,
+      "raw_ms": [
+        52.5124,
+        65.8756,
+        53.2063
+      ]
+    },
+    {
+      "stage": "strategy0_upload",
+      "median_ms": 52.0695,
+      "raw_ms": [
+        52.0695,
+        49.7997,
+        52.5484
+      ]
+    },
+    {
+      "stage": "metadata_upload_and_object",
+      "median_ms": 41.2319,
+      "raw_ms": [
+        46.216,
+        39.508799999999994,
+        41.2319
+      ]
+    },
+    {
+      "stage": "arena_layouts",
+      "median_ms": 13.4291,
+      "raw_ms": [
+        9.8956,
+        13.4291,
+        13.818999999999999
+      ]
+    },
+    {
+      "stage": "lock_table",
+      "median_ms": 0.6495,
+      "raw_ms": [
+        0.6565,
+        0.6495,
+        0.6489999999999999
+      ]
+    },
+    {
+      "stage": "fold_table",
+      "median_ms": 0.0307,
+      "raw_ms": [
+        0.029,
+        0.0327,
+        0.0307
+      ]
+    }
+  ],
+  "median_nested_zero_scan_sum_ms": 187.80790000000002,
+  "median_outer_sum_ms": 644.4706,
+  "median_unattributed_init_ms": 15.883500000000026,
+  "profiles": {
+    "D088T1": {
+      "outer_stages_ms": {
+        "plan_budget": 120.2479,
+        "context_stream": 117.0171,
+        "nvrtc_module": 55.3598,
+        "pinned_staging": 52.5124,
+        "arena_layouts": 9.8956,
+        "regret0_upload": 62.3408,
+        "regret1_upload": 62.370000000000005,
+        "strategy0_upload": 52.0695,
+        "strategy1_upload": 59.5095,
+        "lock_table": 0.6565,
+        "fold_table": 0.029,
+        "metadata_upload_and_object": 46.216
+      },
+      "nested_zero_scans_ms": [
+        44.5755,
+        51.651,
+        42.4384,
+        49.143
+      ],
+      "zero_scan_sum_ms": 187.80790000000002,
+      "outer_sum_ms": 638.2241,
+      "unattributed_init_ms": 15.883500000000026,
+      "enclosing_gpu_init_ms": 654.1076
+    },
+    "D088T2": {
+      "outer_stages_ms": {
+        "plan_budget": 127.4208,
+        "context_stream": 121.5975,
+        "nvrtc_module": 53.1991,
+        "pinned_staging": 65.8756,
+        "arena_layouts": 13.4291,
+        "regret0_upload": 66.6752,
+        "regret1_upload": 58.8554,
+        "strategy0_upload": 49.7997,
+        "strategy1_upload": 59.1802,
+        "lock_table": 0.6495,
+        "fold_table": 0.0327,
+        "metadata_upload_and_object": 39.508799999999994
+      },
+      "nested_zero_scans_ms": [
+        48.745200000000004,
+        48.200100000000006,
+        40.535000000000004,
+        47.9469
+      ],
+      "zero_scan_sum_ms": 185.42720000000003,
+      "outer_sum_ms": 656.2236,
+      "unattributed_init_ms": 15.161799999999971,
+      "enclosing_gpu_init_ms": 671.3854
+    },
+    "D088T3": {
+      "outer_stages_ms": {
+        "plan_budget": 121.7085,
+        "context_stream": 122.3522,
+        "nvrtc_module": 53.2587,
+        "pinned_staging": 53.2063,
+        "arena_layouts": 13.818999999999999,
+        "regret0_upload": 63.48180000000001,
+        "regret1_upload": 61.3763,
+        "strategy0_upload": 52.5484,
+        "strategy1_upload": 60.8078,
+        "lock_table": 0.6489999999999999,
+        "fold_table": 0.0307,
+        "metadata_upload_and_object": 41.2319
+      },
+      "nested_zero_scans_ms": [
+        47.0611,
+        50.3836,
+        42.2086,
+        48.647299999999994
+      ],
+      "zero_scan_sum_ms": 188.3006,
+      "outer_sum_ms": 644.4706,
+      "unattributed_init_ms": 16.37480000000005,
+      "enclosing_gpu_init_ms": 660.8454
+    }
+  },
+  "preserved_raw_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B1\\report.json": "347fdc2f5bcf7f9418fdcdc38d16264c28927bb1ac2447682f7a5d2a3ba14087",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B1\\stdout.log": "49108d02cb1051c840974dba82c37dbd89dd84c6e0f5eccac97963a32c9918e7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B1.exit.json": "d055fd49989ed615c1dc56802d22ea3de338929debf2f1087353a83377f10c44",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B1.outer-wall.json": "7afff9d58279821eb1811d302f750b6fb2e618cb1b95b8feb6c63d9541fdd5ee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T1\\report.json": "9872149aacc0f8bb242ba612fd87a66cf8711be0bd9b794122318dd17cdb280f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T1\\stdout.log": "0bd55d1babd1c1ea47a8779522e95af25076390851c753f1579d089269c4c082",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T1.exit.json": "48322321eee19445a692554d9567a93c04eabeb4aab31e9dcb19a9d06b4ac0b3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T1.outer-wall.json": "dcf85f84976819b3dc2b5229980d4010aabf38b9bfb115887ca947cedb2d5475",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T2\\report.json": "6b1f23294c648c20797099755ccce6dcdd6d16a97422c2478fa0c1538ab715ab",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T2\\stdout.log": "e89fe4dd5022bfd013598b0036d441965e8825b227079c713cbba816529c8a4a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T2.exit.json": "5c0228fb9126dfa5b3b27fd8ab3c28bdb8ff154d7d5ee0d85f674ed58e5568fe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T2.outer-wall.json": "c5d9f95ceed2ee98c11f5ce5dfcc37e69af8cd22f557d11f8ed7a364945f8fe1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B2\\report.json": "8cdf308908ec96bcd81a96bb7236af11ba3ca6b55c743477810be071b290ee99",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B2\\stdout.log": "7f22c9071939605ffe2560cdf5d91538737dec249a52557fc01874a2d41591db",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B2.exit.json": "8c287b09ae29e65c719da88eb4875297360f389a05e91c974282c51c180950f5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B2.outer-wall.json": "6bfff60602de1863a0082c3fd06e85fa7bda975f239a64bdc2147998bcaf7082",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B3\\report.json": "d50a2c43d68cf1bc571e86d0d9ef2a07524d240ff0a479af4863b542738540ad",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088B3\\stdout.log": "78ab3308cd904fb04dafced02ae015b08eb52c13607b6329c4167924aa44b633",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B3.exit.json": "57fa955e622adb2440b4b03ef737c2ccce783e43e8d53fc04faa07846d8ab44a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088B3.outer-wall.json": "c5d9f95ceed2ee98c11f5ce5dfcc37e69af8cd22f557d11f8ed7a364945f8fe1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T3\\report.json": "bd13e5cb517304f7469cca73af3be7e2f80885c3d5bf4d5ec076d3e8d18fbc51",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088T3\\stdout.log": "24484c3cd4eda077570ec4e0d1073b24612db8ceec66bc6e79b455254ed0c755",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T3.exit.json": "8ff1c1544eb4aa5b59e1891e0cdc839ad48e1a0ab2cff9400e07ed553ae807a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\execution-r2\\D088T3.outer-wall.json": "c9c6f91cb18478ce95b06173580f8ffe22610135db5d8d9a978aab9e4efe7f85"
+  },
+  "cohort_report_sha256": "823bd0664b2073d861f8c9fde1214240d9f39c42c62fcb0accdf6034ce3d9882",
+  "accepted_source": "E051",
+  "accepted_cumulative_gain_unchanged": 12.4372274192464,
+  "optimization_accepted": false,
+  "root_external_independent_review": false,
+  "limits": "Only fresh compressed rainbow and fixed measured process lifecycle. Observer gate is not universal/per-stage-bias proof. CPU markers perturb codegen/scheduling and log outside their own spans. No optimizer accepted; nested times are not additive to enclosing spans. Individual medians do not sum to a median complete cycle. No optimizer admitted by this diagnostic alone."
+}

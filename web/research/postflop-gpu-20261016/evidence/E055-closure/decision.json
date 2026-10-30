@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-17T06:44:45.581649+00:00",
+  "id": "E055",
+  "decision": "rejected_below_unrounded1pct",
+  "accepted_source": "E051",
+  "observed_gain_pct": 0.9745312080561975,
+  "minimum_gain_pct": 1.0,
+  "fixture_regression_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": -1.2966384927790402,
+      "slower_pairs": 1,
+      "paired_slowdown_pct": [
+        -4.1926794726714345,
+        0.44844566175319783,
+        -0.8957337606188982
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": -0.4962245128252191,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -0.3296733200580282,
+        -3.1956911611061707,
+        -0.30689692577686745
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": -1.3659708615044324,
+      "slower_pairs": 1,
+      "paired_slowdown_pct": [
+        17.170611947419633,
+        -1.6569310578540877,
+        -11.889450718050668
+      ],
+      "failed": false
+    }
+  ],
+  "no_fixture_guard_failed": true,
+  "all18full_results_138checkpoints_exact": true,
+  "ordinary_units_passed": 84,
+  "raw_kernel_cases_passed": 819,
+  "raw_kernel_launches": 1638,
+  "compiled_resources_and_conditional_mechanism_passed": true,
+  "source_restored_never_promoted": true,
+  "confirmation_broader_holdout_cumulative_not_run": true,
+  "no_rounding_extension_subset_placement_variant_rescue": true,
+  "primary_report_sha256": "3a54b303ce0f9be1cdd8bc25ab56773c27960f2c4bd4b79b9bfd8d8e8e17663d",
+  "root_report_sha256": "869325641b1ceb4afc4a03aa488d8660c71497301169a6c3f5309b494fca3bb4",
+  "goal_active": true
+}

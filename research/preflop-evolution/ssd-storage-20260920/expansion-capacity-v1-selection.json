@@ -1,0 +1,68 @@
+{
+  "selected_boards": 112,
+  "candidates": [
+    {
+      "boards": 128,
+      "totals": {
+        "canonical_state_bytes": 73198387104,
+        "constructor_gpu_payload_upper_bytes": 12898951328,
+        "host_retained_payload_bytes": 9813455640,
+        "max_canonical_state_bytes": 631417528,
+        "max_constructor_pinned_bytes": 236208252,
+        "max_explicit_state_bytes": 634475240,
+        "ram_payload_total_bytes": 83011842744,
+        "retained_gpu_payload_bytes": 9230046392,
+        "shared_gpu_workspace_bytes": 1848943560,
+        "steady_gpu_payload_bytes": 11078989952
+      },
+      "eligible": false,
+      "reasons": [
+        "fixed host payload cap",
+        "current host reserve"
+      ]
+    },
+    {
+      "boards": 112,
+      "totals": {
+        "canonical_state_bytes": 61718272480,
+        "constructor_gpu_payload_upper_bytes": 11482604844,
+        "host_retained_payload_bytes": 8583871284,
+        "max_canonical_state_bytes": 634475240,
+        "max_constructor_pinned_bytes": 236208252,
+        "max_explicit_state_bytes": 634475240,
+        "ram_payload_total_bytes": 70302143764,
+        "retained_gpu_payload_bytes": 8068504824,
+        "shared_gpu_workspace_bytes": 1846208952,
+        "steady_gpu_payload_bytes": 9914713776
+      },
+      "eligible": true,
+      "reasons": []
+    },
+    {
+      "boards": 96,
+      "totals": {
+        "canonical_state_bytes": 52690715104,
+        "constructor_gpu_payload_upper_bytes": 10584883684,
+        "host_retained_payload_bytes": 7357255396,
+        "max_canonical_state_bytes": 623773248,
+        "max_constructor_pinned_bytes": 236972680,
+        "max_explicit_state_bytes": 636004096,
+        "ram_payload_total_bytes": 60047970500,
+        "retained_gpu_payload_bytes": 6915088888,
+        "shared_gpu_workspace_bytes": 1853765008,
+        "steady_gpu_payload_bytes": 8768853896
+      },
+      "eligible": true,
+      "reasons": []
+    }
+  ],
+  "available_host_bytes": 97884643328,
+  "available_gpu_bytes": 22851616768,
+  "training_started": false,
+  "rule": "Largest candidate passing all frozen capacity-only limits; recheck before launch.",
+  "evidence": {
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-capacity-128.json": "bfd8265a367f06d7c79a440e4d1fad6aa414ae7dc2c048869b09ef9c666ddf7f",
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-capacity-112.json": "275f6c84fa648f0f591a01b6112d53c0e3d703e31481c3c09b47025e794a94dc",
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-capacity-96.json": "0e80ab80e6fcd7aac6a6a3c7a1fa1fae93789a81996491913c35808e70ee3b75"
+  }
+}

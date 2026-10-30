@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\E080-broader-controls-plan\native.py", line 30, in <module>
+    old.child(command,E,row['id'],env,1200)
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\small-gain-confirmation-plan\common.py", line 94, in child
+    assert proc.returncode==0,(label,(out/(label+'.stderr.log')).read_text(encoding='utf-8',errors='replace')[-4000:])
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: ('V080-symmetry-baseline', '')

@@ -1,0 +1,26 @@
+{
+  "id": "E039",
+  "at": "2026-10-17T00:21:47Z",
+  "status": "OFF_TREE_SOURCE_PRE_RESOURCE",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "baseline_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_sha256": "efefc20695beaadfa2720f2c00d853a14e9ff22f41674f19749a977e3b8523ee",
+  "artifact_sha256": {
+    "baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate.cu": "efefc20695beaadfa2720f2c00d853a14e9ff22f41674f19749a977e3b8523ee",
+    "candidate.patch": "94760e2240fd4ee679c63162bab49f1640caf4d82caa58e5260f7e35d338af25",
+    "README.md": "f498ae1e5703a507f9ea9b3a11ab07c88bfff25f85ef8fa13fa9708f2e2fa4b3"
+  },
+  "reference_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "host_source_unchanged": true,
+  "kernel_abi_unchanged": true,
+  "float_accumulation_order_unchanged": true,
+  "kernel_launches": 0,
+  "gain_measured": false,
+  "resource_gate_before_timing": true
+}

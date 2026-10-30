@@ -1,0 +1,11 @@
+--- retained-D087-evaluator.rs
++++ D096-evaluator.rs
+@@ -167,7 +167,7 @@
+         Ok("0") | Err(_) => false,
+         Ok(other) => panic!("unknown POSTFLOP_AUTORESEARCH_PROFILE {other:?}"),
+     };
+-    assert_eq!(filter.as_deref(),Some("rainbow"),"D087 diagnostic fixture");
++    assert_eq!(filter.as_deref(),Some("two-tone"),"D096 diagnostic fixture");
+     assert!(storage==Storage::Compressed && !profile,"D087 diagnostic settings");
+     emit_stage(json!({
+         "schema_version": 1, "stage": "suite_start", "storage": storage_name,

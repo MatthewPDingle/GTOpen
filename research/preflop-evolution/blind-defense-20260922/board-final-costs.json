@@ -1,0 +1,107 @@
+{
+  "arms": [
+    {
+      "arm": "9266201-stratified",
+      "updates": 78,
+      "committed_update_wall_seconds": 3622.154999999998,
+      "stage_seconds": {
+        "pipeline_wall": 1612.129,
+        "fit": 1371.0280000000012,
+        "sampling": 4.907000000000153,
+        "native_queries": 125.1650000000136,
+        "native_updates": 79.3350000000064,
+        "native_trace": 139.31699999998364,
+        "inference": 675.7090000000071,
+        "ingestion": 1084.8589999999904,
+        "root_integration": 835.9400000000096,
+        "publication": 365.01700000000073
+      },
+      "residual_board_wait_seconds": null,
+      "fit_setup_seconds": 695.0300000000052,
+      "fit_optimizer_seconds": 624.1999999999944,
+      "fit_graph_capture_seconds": 47.04800000000432,
+      "note": "Stage durations overlap. Do not add them to estimate elapsed time or GPU utilization."
+    },
+    {
+      "arm": "9266201-board-root",
+      "updates": 78,
+      "committed_update_wall_seconds": 3457.066000000006,
+      "stage_seconds": {
+        "pipeline_wall": 1623.421999999984,
+        "fit": 1143.1089999999895,
+        "sampling": 4.093000000015309,
+        "native_queries": 132.32199999995646,
+        "native_updates": 82.13900000000285,
+        "native_trace": 142.87099999997008,
+        "inference": 696.7529999998442,
+        "ingestion": 1063.0230000002266,
+        "root_integration": 823.6659999999902,
+        "publication": 285.73400000001857
+      },
+      "residual_board_wait_seconds": 0.0,
+      "fit_setup_seconds": 571.2950000000492,
+      "fit_optimizer_seconds": 529.0419999999722,
+      "fit_graph_capture_seconds": 38.426999999952386,
+      "note": "Stage durations overlap. Do not add them to estimate elapsed time or GPU utilization."
+    },
+    {
+      "arm": "9266301-stratified",
+      "updates": 78,
+      "committed_update_wall_seconds": 3494.6139999999923,
+      "stage_seconds": {
+        "pipeline_wall": 1580.890999999996,
+        "fit": 1319.5609999999942,
+        "sampling": 4.861000000002605,
+        "native_queries": 120.1790000000019,
+        "native_updates": 76.95799999999872,
+        "native_trace": 134.70600000000195,
+        "inference": 660.4960000000065,
+        "ingestion": 1052.9530000000032,
+        "root_integration": 825.3359999999539,
+        "publication": 332.56299999999464
+      },
+      "residual_board_wait_seconds": null,
+      "fit_setup_seconds": 653.8369999999941,
+      "fit_optimizer_seconds": 618.6550000000043,
+      "fit_graph_capture_seconds": 42.75699999999779,
+      "note": "Stage durations overlap. Do not add them to estimate elapsed time or GPU utilization."
+    },
+    {
+      "arm": "9266301-board-root",
+      "updates": 78,
+      "committed_update_wall_seconds": 3461.1120000000155,
+      "stage_seconds": {
+        "pipeline_wall": 1636.9979999999923,
+        "fit": 1133.0950000000157,
+        "sampling": 4.2189999999973224,
+        "native_queries": 132.62100000005012,
+        "native_updates": 82.76899999995658,
+        "native_trace": 143.10700000001088,
+        "inference": 705.5600000000559,
+        "ingestion": 1067.453000000016,
+        "root_integration": 831.383000000038,
+        "publication": 283.1150000000198
+      },
+      "residual_board_wait_seconds": 0.0,
+      "fit_setup_seconds": 564.4830000000293,
+      "fit_optimizer_seconds": 526.0259999999762,
+      "fit_graph_capture_seconds": 38.37500000003638,
+      "note": "Stage durations overlap. Do not add them to estimate elapsed time or GPU utilization."
+    }
+  ],
+  "observed_candidate_boundary_peak_allocated_bytes": 15996691900,
+  "candidate_final_allocated_bytes": 15972482314,
+  "candidate_allocation_limit_bytes": 87407253036,
+  "candidate_prefix_invocation_seconds": 391.375,
+  "candidate_final_continuation_invocation_seconds": 8465.328000000001,
+  "training_audit_seconds": 14513.172000000006,
+  "final_evaluation_invocation_seconds": 7237.5,
+  "final_evaluation_audit_seconds": 831.9070000000065,
+  "control_final_allocated_bytes": 15883712212,
+  "limitations": [
+    "Peak is observed at quiescent storage boundaries, not continuous telemetry.",
+    "Invocation times are not total research elapsed time; earlier interrupted attempts and idle gaps may be excluded.",
+    "Historical controls were timed earlier; this is not a controlled throughput benchmark.",
+    "File allocation excludes filesystem overhead; separate free-volume guards apply."
+  ]
+}

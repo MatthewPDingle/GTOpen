@@ -1,0 +1,59 @@
+{
+  "id": "D065-script-preparation",
+  "status": "PASS_HOST_SOURCE_CHECKS_ONLY",
+  "at": "2026-10-16T20:32:57.910544+00:00",
+  "accepted_source_entries_verified": 162,
+  "source_manifest_sha256": "742d75d2acd0ad495e35b3a5feb7507bd441518297390cd9bb01f9d91c31efd8",
+  "schema_sha256": "b64fc23a3d00c8b620bc900decc450314dd6596a70cd330ab03a91a39a7b5399",
+  "protocol_sha256": "dde52ea3701933f7ffea61d104dd7fd74fcf456cba655df90b2b5a8a6cbf3735",
+  "python_ast_parse": [
+    "build.py",
+    "cohort.py",
+    "assess.py"
+  ],
+  "historical_D009_3_records_14_ordered_spans_metadata_checked": true,
+  "expected_device_arena_bytes": {
+    "rainbow": [
+      624083380,
+      740688652
+    ],
+    "two-tone": [
+      373525176,
+      442981120
+    ],
+    "river": [
+      14912,
+      17920
+    ]
+  },
+  "runtime_flag_recorded_per_invocation": {
+    "ordinary": "0",
+    "profiled": "1"
+  },
+  "fixed_order": [
+    "D065B1",
+    "D065P1",
+    "D065P2",
+    "D065B2",
+    "D065B3",
+    "D065P3"
+  ],
+  "unused_paths_verified": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065B1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065P1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065P2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065B2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065B3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065P3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d065-readback",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-execution",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-readback-diagnostic",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D065-postflop_autoresearch.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D065-postflop_autoresearch.manifest.json"
+  ],
+  "unused_ids_dashboard_checked": true,
+  "scope": "No runtime script imported/executed; only AST, source/manifest hashes, preserved-log metadata and output absence checks. No native or performance evidence created.",
+  "compiler_native_gpu_executed": false,
+  "production_or_status_edits": false
+}

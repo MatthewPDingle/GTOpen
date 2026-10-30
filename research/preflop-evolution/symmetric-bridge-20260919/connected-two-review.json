@@ -1,0 +1,82 @@
+{
+  "panel": "two",
+  "audits": {
+    "explicit": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.326981191069777e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 2.7040280947687734e-07
+    },
+    "compact": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.324948400467264e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 1.9441016707588687e-07
+    }
+  },
+  "gates": {
+    "converged": true,
+    "nonnegative_gains": true,
+    "ev_agreement": true,
+    "policy_agreement": true
+  },
+  "passed": true,
+  "max_ev_difference_bb": 5.687031789491925e-06,
+  "prior_weighted_policy_tv": 8.96908676655297e-06,
+  "max_supported_hand_action_difference": 5.557206680889548e-05,
+  "summary": {
+    "explicit": {
+      "ev": [
+        -1.4250796597071822,
+        3.8029308307989496
+      ],
+      "gaps": [
+        0.0009810670514294184,
+        0.0011041049338769149
+      ],
+      "gap_total": 0.0020851719853063333,
+      "root_frequencies": [
+        0.5887294107989459,
+        0.24523640273540553,
+        0.16603414116542825,
+        4.530022005222592e-08
+      ]
+    },
+    "compact": {
+      "ev": [
+        -1.4250793694199002,
+        3.80292514376716
+      ],
+      "gaps": [
+        0.0009619650864671758,
+        0.0011085273479607416
+      ],
+      "gap_total": 0.0020704924344279174,
+      "root_frequencies": [
+        0.5887290266542162,
+        0.24523766756682816,
+        0.1660332608052135,
+        4.4973742460248746e-08
+      ]
+    }
+  },
+  "changes_from_original": {
+    "explicit": {
+      "ev_delta": [
+        -2.671834375966853e-07,
+        3.89179829651809e-06
+      ],
+      "prior_weighted_policy_tv": 7.129394298599282e-06
+    },
+    "compact": {
+      "ev_delta": [
+        2.3103844393190798e-08,
+        -1.7952334929738356e-06
+      ],
+      "prior_weighted_policy_tv": 6.613480541398583e-06
+    }
+  },
+  "limitation": "Finite development-panel game. Passing does not validate full poker or erase the rapid-range stress failure."
+}

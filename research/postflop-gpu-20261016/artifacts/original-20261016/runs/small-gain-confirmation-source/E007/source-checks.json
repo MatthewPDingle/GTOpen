@@ -1,0 +1,27 @@
+{
+  "id": "E007",
+  "accepted162_current_exact": true,
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "unowned_entries_unchanged": 161,
+  "independent_candidate_not_combined": true,
+  "preparation_method": "exact historical hunk on current E020, reversed byte-exactly",
+  "historical_patch_sha256": "8f7aec88dce41b68c19646d833c93c42ccae7d367a2dd42e6f6808c4a70936ed",
+  "current_base_patch_sha256": "5b1007e4e80b42ac26c57aa7f5a8ecc68aabf311d1f89ad6d5b5e8c57bfc845c",
+  "read_only_patch_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 84,
+    "ignored": 4,
+    "total": 88
+  },
+  "new_tests_relative_to_E020": [],
+  "test_marker": null,
+  "inventory_basis": "accepted E02084/4 unchanged or exact previously archived candidate85/4; no fresh execution",
+  "compiler_native_gpu_executed": false,
+  "historical_outcomes_preserved": true
+}

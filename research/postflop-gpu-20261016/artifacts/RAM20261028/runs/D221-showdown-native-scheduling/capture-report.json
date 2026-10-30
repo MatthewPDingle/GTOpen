@@ -1,0 +1,339 @@
+{
+  "id": "D221",
+  "at": "2026-10-29T00:36:34.902274+00:00",
+  "status": "captured_native_showdown_code_semantic_review_pending",
+  "protocol_sha256": "1e973e83808c3a2e41badaa4ed100d26f8081fe3c6afbcde0be78b594b76f0c7",
+  "captures": {
+    "baseline": {
+      "CUBIN_sha256": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47",
+      "SASS_sha256": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061",
+      "up_show_sha256": "5eb84080af5a339f8ac1da16b4a5aa8093c54f52e0e087a1643ba25f3ebb65ca",
+      "markers": {
+        "D098_DEVICE": [
+          {
+            "name": "NVIDIA GeForce RTX 5090",
+            "major": 12,
+            "minor": 0,
+            "driver_api_version": 13030
+          }
+        ],
+        "D098_KERNEL": [
+          {
+            "name": "copy_root",
+            "registers": 26,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "down_action",
+            "registers": 40,
+            "local": 32,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "down_chance",
+            "registers": 30,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_fold",
+            "registers": 39,
+            "local": 0,
+            "shared": 1232,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_show",
+            "registers": 38,
+            "local": 0,
+            "shared": 1040,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_chance",
+            "registers": 30,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_action",
+            "registers": 62,
+            "local": 64,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              16,
+              8,
+              4
+            ]
+          },
+          {
+            "name": "copy_span",
+            "registers": 26,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_action_eval",
+            "registers": 40,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          }
+        ],
+        "D098_MODULE": [
+          {
+            "index": 0,
+            "module_id": 21,
+            "bytes": 195184,
+            "same_owned_context": true,
+            "elf_magic": true
+          }
+        ],
+        "D098_COMPLETE": [
+          {
+            "callback_errors": 0,
+            "modules": 1,
+            "kernel_launches": 0,
+            "solver_executions": 0,
+            "performance_measured": false
+          }
+        ]
+      },
+      "all_children_terminal": true
+    },
+    "candidate": {
+      "CUBIN_sha256": "5f538908beec7f4de4ab66ee79f58ce58692e2310bcd80e3b3b33252d930b0fd",
+      "SASS_sha256": "3f06a5e604593e3407c72f8f68c534cd436fb7c4de03eb9274c2072991ce92fb",
+      "up_show_sha256": "51e488ea46b82001eeb308e50e1cb65293f86f0d17e8627d66175735b3bc5150",
+      "markers": {
+        "D098_DEVICE": [
+          {
+            "name": "NVIDIA GeForce RTX 5090",
+            "major": 12,
+            "minor": 0,
+            "driver_api_version": 13030
+          }
+        ],
+        "D098_KERNEL": [
+          {
+            "name": "copy_root",
+            "registers": 26,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "down_action",
+            "registers": 40,
+            "local": 32,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "down_chance",
+            "registers": 30,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_fold",
+            "registers": 39,
+            "local": 0,
+            "shared": 1232,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_show",
+            "registers": 39,
+            "local": 0,
+            "shared": 1040,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_chance",
+            "registers": 30,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_action",
+            "registers": 62,
+            "local": 64,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              16,
+              8,
+              4
+            ]
+          },
+          {
+            "name": "copy_span",
+            "registers": 26,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          },
+          {
+            "name": "up_action_eval",
+            "registers": 40,
+            "local": 0,
+            "shared": 0,
+            "maxthreads": 1024,
+            "binary_version": 120,
+            "ptx_version": 120,
+            "occupancy64_128_256": [
+              24,
+              12,
+              6
+            ]
+          }
+        ],
+        "D098_MODULE": [
+          {
+            "index": 0,
+            "module_id": 21,
+            "bytes": 195184,
+            "same_owned_context": true,
+            "elf_magic": true
+          }
+        ],
+        "D098_COMPLETE": [
+          {
+            "callback_errors": 0,
+            "modules": 1,
+            "kernel_launches": 0,
+            "solver_executions": 0,
+            "performance_measured": false
+          }
+        ]
+      },
+      "all_children_terminal": true
+    }
+  },
+  "all_owned_compilers_native_readers_terminal": true,
+  "application_kernels": 0,
+  "solver_executions": 0,
+  "speed_samples": 0,
+  "new_compilers": 0,
+  "candidate_accepted": false,
+  "limits": "Reuse checksum-bound original D098 generic module-capture executable and code unchanged; same cuModuleLoadData/default JIT as cudarc. Copy nvdisasm12.9.88 to X. Two owned primary-context module loads and two disassembly readers, no new compiler, application kernels, hardware counters, activity profiling, injection, live attach, solve or speed samples. Query helper occupancy uses zero dynamic shared and is not scored; actual worst-shape resources are E107-resource."
+}

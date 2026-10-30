@@ -1,0 +1,25 @@
+{
+  "id": "E102-prerequisite-checkpoint",
+  "at": "2026-10-28T20:49:29.465828+00:00",
+  "status": "compiled_prerequisites_pass_raw_controls_pending",
+  "resource_sha256": "009c3a065249afe93af2c10463be0a081db31df3f439e3d5c5ed47afe725bd2a",
+  "mechanism_sha256": "106cc526ebb37350de97f377db2c6db51f3f97383d76c611e3dfc06454bb95ba",
+  "D194_integer_census_sha256": "6b0ff23f450635006b7e9de5281e17711d349effb7b948e2822d2e67c6f754fd",
+  "all_owned_compiler_native_readers_terminal": true,
+  "application_kernels": 0,
+  "solver_runs": 0,
+  "speed_samples": 0,
+  "actual_new_registers": 40,
+  "actual_original_registers": 30,
+  "new_local_bytes": 0,
+  "default128thread_theoretical_residency_old_new": [
+    12,
+    12
+  ],
+  "warning": "Registers increase30->40; same default occupancy/local/shared/maxthread feasibility is not material neutrality or a gain.",
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "new_gain_accepted_or_deployed": false,
+  "best_qualified": "E080 / GPU / compressed /16 workers",
+  "last_primary_baseline": "B313",
+  "raw_and_complete_qualification_remaining": true
+}

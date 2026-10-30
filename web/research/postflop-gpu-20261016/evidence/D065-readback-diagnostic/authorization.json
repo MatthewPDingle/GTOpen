@@ -1,0 +1,45 @@
+{
+  "candidate": "D065",
+  "at": "2026-10-16T20:34:19Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D065_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-source-review\\report.json",
+      "sha256": "9136a87d6055a2efc8066dc52a8b637ee59de155adcec4019d8dd71487c8cfcf"
+    },
+    "D065_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-script-review\\report.json",
+      "sha256": "6b53f6ca619afb46abc7c36da1562673b48cc9928ceddf8b37e755789e8dc34a"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\candidate\\mod.rs",
+      "sha256": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-source-review\\report.json": "9136a87d6055a2efc8066dc52a8b637ee59de155adcec4019d8dd71487c8cfcf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-script-review\\report.json": "6b53f6ca619afb46abc7c36da1562673b48cc9928ceddf8b37e755789e8dc34a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\scripts-manifest.json": "a8e1cba0df3ecad7dd8d29bb1eef8d1ef13114cdb1a83059729e018363b256af",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\protocol.json": "dde52ea3701933f7ffea61d104dd7fd74fcf456cba655df90b2b5a8a6cbf3735",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\source-manifest.json": "742d75d2acd0ad495e35b3a5feb7507bd441518297390cd9bb01f9d91c31efd8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-root-decisions\\preparation.json": "067bee97303018dd3808f6ec6eeb13a08988b6c16dc3f38c3c4cbf28455b753b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-script-review\\manifest.json": "4ae667eeb9807bd34fba32b3590e32ab6cdf48031dbf86f0b9742470b1c1893b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-source-review\\manifest.json": "7e5394d252d0706bc1ffbaa31f607c05f593b12f075b8816d2ea7cbc7eb38606"
+  },
+  "scope": "One exact temporary full-readback timing activation, fresh diagnostic build, fixed six-run cohort only after successful build, then assessment. No optimization/adoption/live changes or additional samples. Restore exact owned source after cohort; preserve all outcomes. Component timings and optimistic overlap estimate are not measured savings."
+}

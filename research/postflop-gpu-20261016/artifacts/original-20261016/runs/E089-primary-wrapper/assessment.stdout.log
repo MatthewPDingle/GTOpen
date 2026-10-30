@@ -1,0 +1,48 @@
+{
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9604.3736,
+    "candidate_full_cycle_ms": 9560.375,
+    "observed_gain_pct": 0.4581100426997217,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.35371277683639074,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -0.35371277683639074,
+          0.7581494597830235,
+          -0.7749924706594238
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -0.5368318909632169,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          0.152051261892501,
+          -0.5111773241952412,
+          -3.1490650600321786
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -2.86727214512203,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          5.3951439713560605,
+          -2.86727214512203,
+          -11.140405310514891
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "report_sha256": "70da5a04d0bf930e39a91744778023eb6696e1637028e1143b1bff079e35de37"
+}

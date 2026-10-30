@@ -1,0 +1,36 @@
+{
+  "id": "E121-kernel-control",
+  "at": "2026-10-29T19:11:57.107391+00:00",
+  "status": "pass_scoped_encoded_hand_word_full_raw_equivalence",
+  "checks": 13469091,
+  "root_cross_check_only": true,
+  "inventory": {
+    "device_input_word_checks": 129552160,
+    "device_input_buffer_checks": 558600,
+    "active_words_compared": 7783100,
+    "output_guard_word_checks": 64469440,
+    "full_output_words_both_arms": 80035640,
+    "comparison_pairs": 13300,
+    "rounding_witness_checks": 2
+  },
+  "kernel_launches": 26600,
+  "tested_block_widths": [
+    1,
+    32,
+    64,
+    128,
+    256
+  ],
+  "whole_physical_outputs_bitwise_equal": true,
+  "all_actual_inputs_match_exact_expected": true,
+  "all21_input_buffers_fully_checked": true,
+  "all20_unchanged_buffers_identical": true,
+  "encoded_same_all_words_checked_and_decoded": true,
+  "raw_sha256": "61c5721052af97e51b367cccc3ba9ae1077d23665ab4a65bef607b86e735b09e",
+  "raw_bytes": 1756441637,
+  "protocol_sha256": "839d596c3e8800d4de6904b9402f971bc40982246527851378746be6eb5cd6d5",
+  "source_main_live_PTX_custody_pass": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared13300pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; all20unchangedmetadata inputs byte-identical andeveryencoded same wordfullychecked/decoded and every complete input image checked against the original explicit expected bits. Full solver/state/save/resume/material/speed qualification remains."
+}

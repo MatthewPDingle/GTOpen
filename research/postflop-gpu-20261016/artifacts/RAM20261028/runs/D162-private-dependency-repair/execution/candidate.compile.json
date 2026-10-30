@@ -1,0 +1,79 @@
+{
+  "builtin_absolute_path_verified": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D161-toolchain-scout\\toolchain\\nvidia\\cu13\\bin\\x86_64\\nvrtc-builtins64_130.dll",
+  "builtin_sha256": "cd4ce3e0351b0d10f43b07c667782028420e03858999fab65207c40a28546d19",
+  "DLL_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D161-toolchain-scout\\toolchain\\nvidia\\cu13\\bin\\x86_64\\nvrtc64_130_0.dll",
+  "DLL_sha256": "28d1021a82003f4aed742ea36ece1d595e32a107f915dfbd07d3ee8764858bce",
+  "version": [
+    13,
+    0
+  ],
+  "supported_architectures": [
+    75,
+    80,
+    86,
+    87,
+    88,
+    89,
+    90,
+    100,
+    103,
+    110,
+    120,
+    121
+  ],
+  "source_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "program_name": null,
+  "headers": 0,
+  "options": [
+    "--gpu-architecture=compute_120"
+  ],
+  "API_calls": [
+    {
+      "api": "nvrtcVersion",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetNumSupportedArchs",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetSupportedArchs",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcCreateProgram",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcCompileProgram",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetProgramLogSize",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetProgramLog",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetPTXSize",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetPTX",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcDestroyProgram",
+      "returncode": 0
+    }
+  ],
+  "program_destroyed_and_pointer_null": true,
+  "API_itself_cleared_handle": true,
+  "PTX_bytes_without_NUL": 221672,
+  "PTX_sha256": "fa485cd14fd6b0171569d3d1ef1b50b141f10f22c3b9da36b697cbb31300e1b1",
+  "standalone_acquisition_ns_diagnostic_only": 548093500,
+  "GPU_context_or_kernel_calls": 0,
+  "scope": "One original compile in fresh CPU-only child through exact header-bound C API. Diagnostic cold acquisition includes query adapter work;not comparable solver timing or speed score."
+}

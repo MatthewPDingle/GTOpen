@@ -1,0 +1,55 @@
+--- crates/solver/src/gpu/plan.rs
++++ crates/solver/src/gpu/plan.rs
+@@ -356,30 +356,32 @@
+         }
+ 
+         // --- Per-node scalar arrays -----------------------------------------
+-        let mut node_player = vec![0i32; n];
+-        let mut node_na = vec![0i32; n];
+-        let mut node_data_off = vec![u64::MAX; n];
++        let mut node_player = Vec::<i32>::with_capacity(n);
++        let mut node_na = Vec::<i32>::with_capacity(n);
++        let mut node_data_off = Vec::<u64>::with_capacity(n);
+         let mut arena_elements = [0usize; 2];
+-        let mut node_children_start = vec![0u32; n];
+-        let mut node_twin = vec![0f32; n];
+-        let mut node_tlose = vec![0f32; n];
+-        let mut node_ttie = vec![0f32; n];
+-        let mut node_cdiv = vec![0f32; n];
++        let mut node_children_start = Vec::<u32>::with_capacity(n);
++        let mut node_twin = Vec::<f32>::with_capacity(n);
++        let mut node_tlose = Vec::<f32>::with_capacity(n);
++        let mut node_ttie = Vec::<f32>::with_capacity(n);
++        let mut node_cdiv = Vec::<f32>::with_capacity(n);
+         for (ni, node) in spot.tree.nodes.iter().enumerate() {
+-            node_player[ni] = node.player as i32;
+-            node_na[ni] = node.num_children as i32;
+-            if node.kind == KIND_ACTION && reached[ni] {
++            node_player.push(node.player as i32);
++            node_na.push(node.num_children as i32);
++            let off = if node.kind == KIND_ACTION && reached[ni] {
+                 let p = node.player as usize;
+-                node_data_off[ni] = arena_elements[p] as u64;
++                let off = arena_elements[p] as u64;
+                 arena_elements[p] += node.num_children as usize * nh[p];
+-            }
+-            node_children_start[ni] = node.children_start;
+-            node_twin[ni] = node.t_win as f32;
+-            node_tlose[ni] = node.t_lose as f32;
+-            node_ttie[ni] = node.t_tie as f32;
+-            if node.kind == KIND_CHANCE {
+-                node_cdiv[ni] = 1.0 / (46 - node.street as i32) as f32;
+-            }
++                off
++            } else { u64::MAX };
++            node_data_off.push(off);
++            node_children_start.push(node.children_start);
++            node_twin.push(node.t_win as f32);
++            node_tlose.push(node.t_lose as f32);
++            node_ttie.push(node.t_tie as f32);
++            node_cdiv.push(if node.kind == KIND_CHANCE {
++                1.0 / (46 - node.street as i32) as f32
++            } else { 0.0 });
+         }
+ 
+         // Packing adds host copy/restore work. Keep direct whole-arena DMA

@@ -1,0 +1,10 @@
+{
+  "finding": "Independent cudarc context wrappers record destruction errors independently. Admission context check alone did not prove solver cleanup.",
+  "repair": "Retain both solver context Arcs and admission Arc, drop solvers, check all and aggregate failures before cleanup_complete.",
+  "numerical_or_schedule_change": false,
+  "files": {
+    "candidate-fold_zero_census.rs": "7a9ac0ca1937dc71fda6d8a97722e6c4d8ac342dcb60f96f24be044814d5f49d",
+    "candidate-mod.rs": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+    "syntax-checks.json": "c069831f4fa366f3eac5484f72f888a5881824b4c0d9c9d1393702b6c271398e"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "id": "E029-source-checks",
+  "created_at": "2026-10-16T17:09:44.308939+00:00",
+  "accepted_source_count": 162,
+  "accepted_current_sha256_exact": true,
+  "owned_count": 5,
+  "syntax_only": [
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--emit",
+        "stdout",
+        "--config",
+        "skip_children=true",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs"
+      ],
+      "exit_code": 0,
+      "scope": "syntax-only, no typecheck/build"
+    },
+    {
+      "path": "crates/solver/src/gpu/plan.rs",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--emit",
+        "stdout",
+        "--config",
+        "skip_children=true",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs"
+      ],
+      "exit_code": 0,
+      "scope": "syntax-only, no typecheck/build"
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_capacity.rs",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--emit",
+        "stdout",
+        "--config",
+        "skip_children=true",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs"
+      ],
+      "exit_code": 0,
+      "scope": "syntax-only, no typecheck/build"
+    },
+    {
+      "path": "crates/solver/src/game.rs",
+      "command": [
+        "rustfmt",
+        "--edition",
+        "2021",
+        "--emit",
+        "stdout",
+        "--config",
+        "skip_children=true",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\game.rs"
+      ],
+      "exit_code": 0,
+      "scope": "syntax-only, no typecheck/build"
+    }
+  ],
+  "patch_applicability": {
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate.patch"
+    ],
+    "exit_code": 0
+  },
+  "unchanged_cuda_outside_up_show": true,
+  "unchanged_scan_text": true,
+  "unchanged_present_hand_fp_tail": true,
+  "barriers_per_up_show": 5,
+  "both_training_eval_missing_args": true,
+  "unchanged_show_shared_reservation": true,
+  "unchanged_test_declaration_inventory": true,
+  "prospective_gpu_only_passed": 84,
+  "prospective_gpu_only_ignored": 4,
+  "constructor_partial_move_audit": "All whole-plan methods remain before struct field moves; new upload closures borrow unmoved individual list fields only.",
+  "accounting": "Exact sum(max(len_p,1)*4) in admission/planned metadata; observed slice lengths; public estimate per-player all-slot bound; seven mutable buffers and11 capacity components unchanged.",
+  "compile_native_gpu_execution": false,
+  "numeric_tests_executed": false,
+  "candidate_accepted": false
+}

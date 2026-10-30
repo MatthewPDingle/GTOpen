@@ -1,0 +1,3568 @@
+{
+  "id": "D183",
+  "at": "2026-10-28T18:12:04.925204+00:00",
+  "status": "CPU_only_plan_phase_observation_complete",
+  "read_only_visibility_adapter": true,
+  "original_failed_preparation_compiler_runs": 1,
+  "protocol_sha256": "d2addfa108fd5206f3980641a18bd2fc93f382cfab86e1395289c57c93f909dc",
+  "full_plan_pairs_exact": 18,
+  "all_plan_fields": [
+    "num_levels",
+    "nh",
+    "nh_max",
+    "num_nodes",
+    "iso_active",
+    "action_nodes",
+    "action_spans",
+    "chance_parents",
+    "chance_children",
+    "chance_cards",
+    "chance_spans",
+    "chance_nodes",
+    "chance_node_spans",
+    "fold_nodes",
+    "fold_spans",
+    "show_nodes",
+    "show_spans",
+    "cc_start",
+    "cc_count",
+    "cc_card",
+    "cc_child",
+    "cc_perm",
+    "hand_perm_flat",
+    "node_player",
+    "node_na",
+    "node_data_off",
+    "arena_elements",
+    "node_children_start",
+    "node_twin",
+    "node_tlose",
+    "node_ttie",
+    "node_cdiv",
+    "node_river_slot",
+    "reach_src",
+    "reach_slot",
+    "reach_blocks",
+    "cfv_slot",
+    "cfv_blocks",
+    "hand_c1",
+    "hand_c2",
+    "hand_mask",
+    "same_combo",
+    "weights",
+    "num_slots",
+    "riv_off",
+    "riv_cnt",
+    "riv_sorted_idx",
+    "riv_sorted_str",
+    "riv_lower",
+    "riv_upper",
+    "riv_card_off",
+    "riv_card_pos",
+    "riv_max_cnt"
+  ],
+  "field_pairs_exact": 954,
+  "whole_pair_bytes_compared": 1368741336,
+  "all36_raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-on-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-on-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-on-baseline.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-on-observed.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-on-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-on-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-off-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-off-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-off-baseline.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-off-observed.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-off-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-off-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\rainbow-iso-on-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\rainbow-iso-on-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\two-tone-iso-on-baseline.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\two-tone-iso-on-observed.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\river-iso-on-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\river-iso-on-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\rainbow-iso-off-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\rainbow-iso-off-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\two-tone-iso-off-baseline.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\two-tone-iso-off-observed.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\river-iso-off-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P2\\river-iso-off-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\rainbow-iso-on-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\rainbow-iso-on-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\two-tone-iso-on-baseline.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\two-tone-iso-on-observed.plan.bin": {
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\river-iso-on-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\river-iso-on-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\rainbow-iso-off-baseline.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\rainbow-iso-off-observed.plan.bin": {
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\two-tone-iso-off-baseline.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\two-tone-iso-off-observed.plan.bin": {
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\river-iso-off-baseline.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P3\\river-iso-off-observed.plan.bin": {
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+    }
+  },
+  "rows": [
+    {
+      "id": "rainbow-iso-on",
+      "fixture": "rainbow",
+      "use_iso": true,
+      "baseline_plan_median_ms": 107.3037,
+      "observed_plan_median_ms": 107.27390000000001,
+      "observer_outer_difference_pct": -0.027771642543541832,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 1.2165,
+        "representative_DFS": 43.959199999999996,
+        "CFV_width_count": 3.6504,
+        "CFV_slots": 4.8386000000000005,
+        "classify_nodes": 6.5032,
+        "flatten_node_lists": 1.5286,
+        "chance_edge_lists": 1.9295,
+        "river_slot_assignment": 4.1418,
+        "river_tables": 15.994100000000001,
+        "scalar_arrays": 13.7586,
+        "full_or_compact_selection": 4.153,
+        "hand_tables": 0.0122,
+        "reach_compaction": 6.204000000000001
+      }
+    },
+    {
+      "id": "two-tone-iso-on",
+      "fixture": "two-tone",
+      "use_iso": true,
+      "baseline_plan_median_ms": 72.13759999999999,
+      "observed_plan_median_ms": 71.1971,
+      "observer_outer_difference_pct": -1.3037583728873514,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 1.7612,
+        "representative_DFS": 27.6513,
+        "CFV_width_count": 3.3842999999999996,
+        "CFV_slots": 3.6184,
+        "classify_nodes": 4.8130999999999995,
+        "flatten_node_lists": 0.7749,
+        "chance_edge_lists": 1.0044,
+        "river_slot_assignment": 2.9096,
+        "river_tables": 10.122900000000001,
+        "scalar_arrays": 10.5285,
+        "full_or_compact_selection": 0.0013,
+        "hand_tables": 0.0134,
+        "reach_compaction": 3.9895
+      }
+    },
+    {
+      "id": "river-iso-on",
+      "fixture": "river",
+      "use_iso": true,
+      "baseline_plan_median_ms": 0.039400000000000004,
+      "observed_plan_median_ms": 0.0294,
+      "observer_outer_difference_pct": -25.380710659898487,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 0.0005,
+        "representative_DFS": 0.0007999999999999999,
+        "CFV_width_count": 0.00019999999999999998,
+        "CFV_slots": 0.00019999999999999998,
+        "classify_nodes": 0.0006,
+        "flatten_node_lists": 0.0012,
+        "chance_edge_lists": 0.00019999999999999998,
+        "river_slot_assignment": 0.0003,
+        "river_tables": 0.0184,
+        "scalar_arrays": 0.0003,
+        "full_or_compact_selection": 0.0,
+        "hand_tables": 0.0047,
+        "reach_compaction": 0.00039999999999999996
+      }
+    },
+    {
+      "id": "rainbow-iso-off",
+      "fixture": "rainbow",
+      "use_iso": false,
+      "baseline_plan_median_ms": 105.66929999999999,
+      "observed_plan_median_ms": 110.8049,
+      "observer_outer_difference_pct": 4.8600681560301915,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 3.1867,
+        "representative_DFS": 41.9456,
+        "CFV_width_count": 4.4784,
+        "CFV_slots": 4.597300000000001,
+        "classify_nodes": 6.321000000000001,
+        "flatten_node_lists": 1.3181,
+        "chance_edge_lists": 1.5241,
+        "river_slot_assignment": 4.3998,
+        "river_tables": 15.655700000000001,
+        "scalar_arrays": 13.676,
+        "full_or_compact_selection": 4.4512,
+        "hand_tables": 0.014199999999999999,
+        "reach_compaction": 6.4716000000000005
+      }
+    },
+    {
+      "id": "two-tone-iso-off",
+      "fixture": "two-tone",
+      "use_iso": false,
+      "baseline_plan_median_ms": 95.4321,
+      "observed_plan_median_ms": 96.68079999999999,
+      "observer_outer_difference_pct": 1.3084695820378942,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 1.8121999999999998,
+        "representative_DFS": 39.0445,
+        "CFV_width_count": 3.9219,
+        "CFV_slots": 4.2677000000000005,
+        "classify_nodes": 6.1088000000000005,
+        "flatten_node_lists": 0.8763,
+        "chance_edge_lists": 1.3584999999999998,
+        "river_slot_assignment": 4.0794999999999995,
+        "river_tables": 14.3884,
+        "scalar_arrays": 10.8667,
+        "full_or_compact_selection": 4.060099999999999,
+        "hand_tables": 0.0147,
+        "reach_compaction": 4.9745
+      }
+    },
+    {
+      "id": "river-iso-off",
+      "fixture": "river",
+      "use_iso": false,
+      "baseline_plan_median_ms": 0.0363,
+      "observed_plan_median_ms": 0.024300000000000002,
+      "observer_outer_difference_pct": -33.05785123966942,
+      "phase_medians_ms": {
+        "preamble": 9.999999999999999e-05,
+        "DFS_buffers": 0.0007,
+        "representative_DFS": 0.0013,
+        "CFV_width_count": 9.999999999999999e-05,
+        "CFV_slots": 0.00019999999999999998,
+        "classify_nodes": 0.0009,
+        "flatten_node_lists": 0.0007999999999999999,
+        "chance_edge_lists": 0.00019999999999999998,
+        "river_slot_assignment": 0.0003,
+        "river_tables": 0.0161,
+        "scalar_arrays": 0.0003,
+        "full_or_compact_selection": 9.999999999999999e-05,
+        "hand_tables": 0.0029000000000000002,
+        "reach_compaction": 0.00039999999999999996
+      }
+    }
+  ],
+  "all18_observations": [
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 96.067,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 106.1807,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          0.00019999999999999998
+        ],
+        [
+          "DFS_buffers",
+          1.2165
+        ],
+        [
+          "representative_DFS",
+          43.8237
+        ],
+        [
+          "CFV_width_count",
+          3.246
+        ],
+        [
+          "CFV_slots",
+          4.424
+        ],
+        [
+          "classify_nodes",
+          6.1487
+        ],
+        [
+          "flatten_node_lists",
+          1.5286
+        ],
+        [
+          "chance_edge_lists",
+          1.9295
+        ],
+        [
+          "river_slot_assignment",
+          4.1418
+        ],
+        [
+          "river_tables",
+          15.6642
+        ],
+        [
+          "scalar_arrays",
+          13.7586
+        ],
+        [
+          "full_or_compact_selection",
+          4.153
+        ],
+        [
+          "hand_tables",
+          0.0122
+        ],
+        [
+          "reach_compaction",
+          6.1064
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 71.2823,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 70.9843,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          0.0005
+        ],
+        [
+          "DFS_buffers",
+          1.7612
+        ],
+        [
+          "representative_DFS",
+          27.6513
+        ],
+        [
+          "CFV_width_count",
+          3.2039999999999997
+        ],
+        [
+          "CFV_slots",
+          3.5836
+        ],
+        [
+          "classify_nodes",
+          4.7911
+        ],
+        [
+          "flatten_node_lists",
+          1.1386
+        ],
+        [
+          "chance_edge_lists",
+          1.0943
+        ],
+        [
+          "river_slot_assignment",
+          3.1974
+        ],
+        [
+          "river_tables",
+          10.3925
+        ],
+        [
+          "scalar_arrays",
+          10.1585
+        ],
+        [
+          "full_or_compact_selection",
+          0.001
+        ],
+        [
+          "hand_tables",
+          0.016
+        ],
+        [
+          "reach_compaction",
+          3.9895
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.0445,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-on",
+      "nodes": 33,
+      "observed_plan_ms": 0.0294,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          0.0005
+        ],
+        [
+          "representative_DFS",
+          0.0007999999999999999
+        ],
+        [
+          "CFV_width_count",
+          0.00019999999999999998
+        ],
+        [
+          "CFV_slots",
+          9.999999999999999e-05
+        ],
+        [
+          "classify_nodes",
+          0.0006
+        ],
+        [
+          "flatten_node_lists",
+          0.0012
+        ],
+        [
+          "chance_edge_lists",
+          0.00019999999999999998
+        ],
+        [
+          "river_slot_assignment",
+          0.0003
+        ],
+        [
+          "river_tables",
+          0.0184
+        ],
+        [
+          "scalar_arrays",
+          0.0003
+        ],
+        [
+          "full_or_compact_selection",
+          0.0
+        ],
+        [
+          "hand_tables",
+          0.0053
+        ],
+        [
+          "reach_compaction",
+          0.00039999999999999996
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 105.9848,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 110.8049,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          3.1867
+        ],
+        [
+          "representative_DFS",
+          40.1901
+        ],
+        [
+          "CFV_width_count",
+          4.2678
+        ],
+        [
+          "CFV_slots",
+          4.597300000000001
+        ],
+        [
+          "classify_nodes",
+          6.321000000000001
+        ],
+        [
+          "flatten_node_lists",
+          1.4086
+        ],
+        [
+          "chance_edge_lists",
+          1.4362000000000001
+        ],
+        [
+          "river_slot_assignment",
+          4.6434
+        ],
+        [
+          "river_tables",
+          16.0598
+        ],
+        [
+          "scalar_arrays",
+          16.3872
+        ],
+        [
+          "full_or_compact_selection",
+          4.6689
+        ],
+        [
+          "hand_tables",
+          0.0145
+        ],
+        [
+          "reach_compaction",
+          7.618200000000001
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 95.4321,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 98.6149,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          2.0294000000000003
+        ],
+        [
+          "representative_DFS",
+          38.7959
+        ],
+        [
+          "CFV_width_count",
+          4.05
+        ],
+        [
+          "CFV_slots",
+          5.0384
+        ],
+        [
+          "classify_nodes",
+          5.9499
+        ],
+        [
+          "flatten_node_lists",
+          0.8605
+        ],
+        [
+          "chance_edge_lists",
+          1.3243
+        ],
+        [
+          "river_slot_assignment",
+          4.0708
+        ],
+        [
+          "river_tables",
+          15.0632
+        ],
+        [
+          "scalar_arrays",
+          12.377
+        ],
+        [
+          "full_or_compact_selection",
+          4.060099999999999
+        ],
+        [
+          "hand_tables",
+          0.0147
+        ],
+        [
+          "reach_compaction",
+          4.9745
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.040299999999999996,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-off",
+      "nodes": 33,
+      "observed_plan_ms": 0.024300000000000002,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          0.0003
+        ],
+        [
+          "representative_DFS",
+          0.0013
+        ],
+        [
+          "CFV_width_count",
+          9.999999999999999e-05
+        ],
+        [
+          "CFV_slots",
+          0.00019999999999999998
+        ],
+        [
+          "classify_nodes",
+          0.0006
+        ],
+        [
+          "flatten_node_lists",
+          0.0006
+        ],
+        [
+          "chance_edge_lists",
+          0.00019999999999999998
+        ],
+        [
+          "river_slot_assignment",
+          0.0003
+        ],
+        [
+          "river_tables",
+          0.0161
+        ],
+        [
+          "scalar_arrays",
+          0.0003
+        ],
+        [
+          "full_or_compact_selection",
+          9.999999999999999e-05
+        ],
+        [
+          "hand_tables",
+          0.003
+        ],
+        [
+          "reach_compaction",
+          0.00039999999999999996
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P1"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 112.872,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 118.3627,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          2.1477000000000004
+        ],
+        [
+          "representative_DFS",
+          45.7047
+        ],
+        [
+          "CFV_width_count",
+          5.1227
+        ],
+        [
+          "CFV_slots",
+          5.626
+        ],
+        [
+          "classify_nodes",
+          8.484200000000001
+        ],
+        [
+          "flatten_node_lists",
+          1.8682
+        ],
+        [
+          "chance_edge_lists",
+          2.5641000000000003
+        ],
+        [
+          "river_slot_assignment",
+          4.162
+        ],
+        [
+          "river_tables",
+          15.994100000000001
+        ],
+        [
+          "scalar_arrays",
+          16.168499999999998
+        ],
+        [
+          "full_or_compact_selection",
+          4.292800000000001
+        ],
+        [
+          "hand_tables",
+          0.011899999999999999
+        ],
+        [
+          "reach_compaction",
+          6.204000000000001
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 72.13759999999999,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 71.88029999999999,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          2.2234
+        ],
+        [
+          "representative_DFS",
+          28.3541
+        ],
+        [
+          "CFV_width_count",
+          3.4169
+        ],
+        [
+          "CFV_slots",
+          3.6184
+        ],
+        [
+          "classify_nodes",
+          5.234
+        ],
+        [
+          "flatten_node_lists",
+          0.7749
+        ],
+        [
+          "chance_edge_lists",
+          1.0044
+        ],
+        [
+          "river_slot_assignment",
+          2.9096
+        ],
+        [
+          "river_tables",
+          10.122900000000001
+        ],
+        [
+          "scalar_arrays",
+          10.5285
+        ],
+        [
+          "full_or_compact_selection",
+          0.0013
+        ],
+        [
+          "hand_tables",
+          0.0134
+        ],
+        [
+          "reach_compaction",
+          3.6736999999999997
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.0292,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-on",
+      "nodes": 33,
+      "observed_plan_ms": 0.0409,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          0.0
+        ],
+        [
+          "DFS_buffers",
+          0.0062
+        ],
+        [
+          "representative_DFS",
+          0.0043
+        ],
+        [
+          "CFV_width_count",
+          0.00019999999999999998
+        ],
+        [
+          "CFV_slots",
+          0.0003
+        ],
+        [
+          "classify_nodes",
+          0.0006
+        ],
+        [
+          "flatten_node_lists",
+          0.0012
+        ],
+        [
+          "chance_edge_lists",
+          0.00019999999999999998
+        ],
+        [
+          "river_slot_assignment",
+          0.0005
+        ],
+        [
+          "river_tables",
+          0.0207
+        ],
+        [
+          "scalar_arrays",
+          0.0019
+        ],
+        [
+          "full_or_compact_selection",
+          9.999999999999999e-05
+        ],
+        [
+          "hand_tables",
+          0.0033
+        ],
+        [
+          "reach_compaction",
+          0.0003
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 105.66929999999999,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 104.6005,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          2.5535
+        ],
+        [
+          "representative_DFS",
+          41.9456
+        ],
+        [
+          "CFV_width_count",
+          4.4784
+        ],
+        [
+          "CFV_slots",
+          4.4395
+        ],
+        [
+          "classify_nodes",
+          6.2669
+        ],
+        [
+          "flatten_node_lists",
+          0.9483
+        ],
+        [
+          "chance_edge_lists",
+          1.6155
+        ],
+        [
+          "river_slot_assignment",
+          4.140300000000001
+        ],
+        [
+          "river_tables",
+          14.4703
+        ],
+        [
+          "scalar_arrays",
+          12.800799999999999
+        ],
+        [
+          "full_or_compact_selection",
+          4.4512
+        ],
+        [
+          "hand_tables",
+          0.014199999999999999
+        ],
+        [
+          "reach_compaction",
+          6.4716000000000005
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 95.13380000000001,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 96.68079999999999,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          1.8023
+        ],
+        [
+          "representative_DFS",
+          39.0445
+        ],
+        [
+          "CFV_width_count",
+          3.9219
+        ],
+        [
+          "CFV_slots",
+          4.2677000000000005
+        ],
+        [
+          "classify_nodes",
+          6.6274999999999995
+        ],
+        [
+          "flatten_node_lists",
+          0.8764000000000001
+        ],
+        [
+          "chance_edge_lists",
+          1.4163999999999999
+        ],
+        [
+          "river_slot_assignment",
+          4.0794999999999995
+        ],
+        [
+          "river_tables",
+          14.3884
+        ],
+        [
+          "scalar_arrays",
+          10.8667
+        ],
+        [
+          "full_or_compact_selection",
+          4.2632
+        ],
+        [
+          "hand_tables",
+          0.0162
+        ],
+        [
+          "reach_compaction",
+          5.1035
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.0237,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-off",
+      "nodes": 33,
+      "observed_plan_ms": 0.0296,
+      "order": "OB",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          0.0012
+        ],
+        [
+          "representative_DFS",
+          0.0015
+        ],
+        [
+          "CFV_width_count",
+          9.999999999999999e-05
+        ],
+        [
+          "CFV_slots",
+          0.00019999999999999998
+        ],
+        [
+          "classify_nodes",
+          0.0009
+        ],
+        [
+          "flatten_node_lists",
+          0.0007999999999999999
+        ],
+        [
+          "chance_edge_lists",
+          9.999999999999999e-05
+        ],
+        [
+          "river_slot_assignment",
+          0.0005
+        ],
+        [
+          "river_tables",
+          0.019
+        ],
+        [
+          "scalar_arrays",
+          0.0006
+        ],
+        [
+          "full_or_compact_selection",
+          9.999999999999999e-05
+        ],
+        [
+          "hand_tables",
+          0.0028
+        ],
+        [
+          "reach_compaction",
+          0.0006
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P2"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 107.3037,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 107.27390000000001,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          1.0759
+        ],
+        [
+          "representative_DFS",
+          43.959199999999996
+        ],
+        [
+          "CFV_width_count",
+          3.6504
+        ],
+        [
+          "CFV_slots",
+          4.8386000000000005
+        ],
+        [
+          "classify_nodes",
+          6.5032
+        ],
+        [
+          "flatten_node_lists",
+          1.3166
+        ],
+        [
+          "chance_edge_lists",
+          1.6005
+        ],
+        [
+          "river_slot_assignment",
+          4.1269
+        ],
+        [
+          "river_tables",
+          16.3425
+        ],
+        [
+          "scalar_arrays",
+          13.264800000000001
+        ],
+        [
+          "full_or_compact_selection",
+          3.9370999999999996
+        ],
+        [
+          "hand_tables",
+          0.0122
+        ],
+        [
+          "reach_compaction",
+          6.6234
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P3"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 72.6169,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-on",
+      "nodes": 1346813,
+      "observed_plan_ms": 71.1971,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          1.7553
+        ],
+        [
+          "representative_DFS",
+          27.3213
+        ],
+        [
+          "CFV_width_count",
+          3.3842999999999996
+        ],
+        [
+          "CFV_slots",
+          4.5588
+        ],
+        [
+          "classify_nodes",
+          4.8130999999999995
+        ],
+        [
+          "flatten_node_lists",
+          0.5611
+        ],
+        [
+          "chance_edge_lists",
+          0.8529
+        ],
+        [
+          "river_slot_assignment",
+          2.8081
+        ],
+        [
+          "river_tables",
+          9.6904
+        ],
+        [
+          "scalar_arrays",
+          11.291
+        ],
+        [
+          "full_or_compact_selection",
+          0.0015999999999999999
+        ],
+        [
+          "hand_tables",
+          0.0121
+        ],
+        [
+          "reach_compaction",
+          4.1424
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P3"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.039400000000000004,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-on",
+      "nodes": 33,
+      "observed_plan_ms": 0.0261,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          0.0003
+        ],
+        [
+          "representative_DFS",
+          0.0007
+        ],
+        [
+          "CFV_width_count",
+          9.999999999999999e-05
+        ],
+        [
+          "CFV_slots",
+          0.00019999999999999998
+        ],
+        [
+          "classify_nodes",
+          0.0006
+        ],
+        [
+          "flatten_node_lists",
+          0.0007
+        ],
+        [
+          "chance_edge_lists",
+          0.00019999999999999998
+        ],
+        [
+          "river_slot_assignment",
+          0.0003
+        ],
+        [
+          "river_tables",
+          0.016900000000000002
+        ],
+        [
+          "scalar_arrays",
+          0.0003
+        ],
+        [
+          "full_or_compact_selection",
+          0.0
+        ],
+        [
+          "hand_tables",
+          0.0047
+        ],
+        [
+          "reach_compaction",
+          0.00039999999999999996
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": true,
+      "process": "P3"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 104.6977,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "rainbow",
+      "hands": [
+        257,
+        319
+      ],
+      "id": "rainbow-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 112.041,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          3.2573
+        ],
+        [
+          "representative_DFS",
+          44.9724
+        ],
+        [
+          "CFV_width_count",
+          4.5548
+        ],
+        [
+          "CFV_slots",
+          5.1519
+        ],
+        [
+          "classify_nodes",
+          6.9422
+        ],
+        [
+          "flatten_node_lists",
+          1.3181
+        ],
+        [
+          "chance_edge_lists",
+          1.5241
+        ],
+        [
+          "river_slot_assignment",
+          4.3998
+        ],
+        [
+          "river_tables",
+          15.655700000000001
+        ],
+        [
+          "scalar_arrays",
+          13.676
+        ],
+        [
+          "full_or_compact_selection",
+          4.1967
+        ],
+        [
+          "hand_tables",
+          0.0126
+        ],
+        [
+          "reach_compaction",
+          6.372199999999999
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P3"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 95.7269,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "two-tone",
+      "hands": [
+        258,
+        320
+      ],
+      "id": "two-tone-iso-off",
+      "nodes": 1346813,
+      "observed_plan_ms": 93.457,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          9.999999999999999e-05
+        ],
+        [
+          "DFS_buffers",
+          1.8121999999999998
+        ],
+        [
+          "representative_DFS",
+          39.5063
+        ],
+        [
+          "CFV_width_count",
+          3.8122
+        ],
+        [
+          "CFV_slots",
+          3.9191
+        ],
+        [
+          "classify_nodes",
+          6.1088000000000005
+        ],
+        [
+          "flatten_node_lists",
+          0.8763
+        ],
+        [
+          "chance_edge_lists",
+          1.3584999999999998
+        ],
+        [
+          "river_slot_assignment",
+          4.224
+        ],
+        [
+          "river_tables",
+          14.3137
+        ],
+        [
+          "scalar_arrays",
+          10.0664
+        ],
+        [
+          "full_or_compact_selection",
+          3.5332
+        ],
+        [
+          "hand_tables",
+          0.0133
+        ],
+        [
+          "reach_compaction",
+          3.9074
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P3"
+    },
+    {
+      "GPU_context_or_kernel_calls": 0,
+      "all_fields_retained": 53,
+      "baseline_plan_ms": 0.0363,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "fixture": "river",
+      "hands": [
+        233,
+        280
+      ],
+      "id": "river-iso-off",
+      "nodes": 33,
+      "observed_plan_ms": 0.0242,
+      "order": "BO",
+      "performance_candidate": false,
+      "phase_ms": [
+        [
+          "preamble",
+          0.0
+        ],
+        [
+          "DFS_buffers",
+          0.0007
+        ],
+        [
+          "representative_DFS",
+          0.0007999999999999999
+        ],
+        [
+          "CFV_width_count",
+          9.999999999999999e-05
+        ],
+        [
+          "CFV_slots",
+          9.999999999999999e-05
+        ],
+        [
+          "classify_nodes",
+          0.0009
+        ],
+        [
+          "flatten_node_lists",
+          0.0007999999999999999
+        ],
+        [
+          "chance_edge_lists",
+          0.00019999999999999998
+        ],
+        [
+          "river_slot_assignment",
+          0.0003
+        ],
+        [
+          "river_tables",
+          0.016
+        ],
+        [
+          "scalar_arrays",
+          0.0003
+        ],
+        [
+          "full_or_compact_selection",
+          9.999999999999999e-05
+        ],
+        [
+          "hand_tables",
+          0.0029000000000000002
+        ],
+        [
+          "reach_compaction",
+          0.0003
+        ]
+      ],
+      "solver_runs": 0,
+      "stage": "fixture",
+      "use_iso": false,
+      "process": "P3"
+    }
+  ],
+  "primary_iso_phase_median_sum_ms": {
+    "representative_DFS": 71.6113,
+    "river_tables": 26.135400000000004,
+    "scalar_arrays": 24.287399999999998,
+    "classify_nodes": 11.316899999999999,
+    "reach_compaction": 10.193900000000001,
+    "CFV_slots": 8.4572,
+    "river_slot_assignment": 7.0517,
+    "CFV_width_count": 7.0348999999999995,
+    "full_or_compact_selection": 4.154299999999999,
+    "DFS_buffers": 2.9782,
+    "chance_edge_lists": 2.9341,
+    "flatten_node_lists": 2.3047,
+    "hand_tables": 0.0303,
+    "preamble": 0.0003
+  },
+  "primary_reference_plan_median_sum_ms": 179.48069999999998,
+  "GPU_context_or_kernel_or_solver_runs": 0,
+  "complete_cycle_headroom_or_speedup_established": false,
+  "optimizer_admitted": false,
+  "candidate_accepted": false,
+  "scope": "Two read-only key/table adapters replace inaccessible private calls; original key arithmetic and public get inverse preserved. Their lookup/control cost can perturb representative_DFS/river_tables phases; no claim these are instruction-identical production spans. Every byte of all original plan fields compared and hashed, including float bits, default/unreachable metadata, order/slots/spans. CPU-only14phase component clocks/paired observer differences are diagnostic; they exclude Spot/CPUarena construction, GPU, solves/readback/serialize/destruction and cannot prove integration speed/removable complete-cycle headroom. No exclusions/repeats/alternativefixture/source/flags. Any future candidate needs distinct history/source proof and every unchanged qualification gate."
+}

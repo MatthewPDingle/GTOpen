@@ -1,0 +1,75 @@
+{
+  "id": "D067",
+  "verdict": "SOURCE_FEASIBLE_ONLY_PENDING_INCIDENCE_AND_RUNTIME_PROOF",
+  "candidate_implemented": false,
+  "compiler_native_gpu_executed": false,
+  "performance_claim": false,
+  "base": "accepted E020; E035 is closed and its fold change is not retained",
+  "sufficient_input_predicate": "Every logical opponent row word has bits0x00000000; never use sum==0 or floating equality==0. This rejects -0/nonzero/nonfinite words even if absent from this river sorted subset. The full-row predicate is deliberately sufficient, not necessary.",
+  "selected_payout_guard": "All three actual f32 node_twin[n],node_tlose[n],node_ttie[n] must have finite exponents. GpuPlan casts f64 tree values to f32, so finite configuration values alone do not prove this guard.",
+  "algebra": [
+    {
+      "stage": "staging and prefix",
+      "proof": "All copied ro and selected reach_sh values are +0. Each per-thread acc begins +0 and every addend is +0; every chunk total, thread0 serial recurrence, base addition, prefix and total is +0. Empty m_o uses explicit +0."
+    },
+    {
+      "stage": "card and same-combo corrections",
+      "proof": "Every traversed card-position reach is +0, hence tot_c/lower_c/higher_c remain +0. same_r is either a checked logical row value or explicit +0 for SENTINEL, so it is +0. Full-row predicate covers same-combo access outside a filtered subset as well."
+    },
+    {
+      "stage": "masses",
+      "proof": "Under unchanged production arithmetic, valid=total-tot_c+same_r, lower-=lower_c, higher-=higher_c, tied=valid-lower-higher are all +0."
+    },
+    {
+      "stage": "present-hand result",
+      "proof": "Retain the original expression win*lower + lose*higher + tie*tied with lower/higher/tied initialized +0. Do not replace it with unconditional +0 or a single payout product. Finite negative/negative-zero payouts can produce signed-zero terms; exact original expression and production compilation remain obligations."
+    },
+    {
+      "stage": "absent own hands",
+      "proof": "They receive only the explicit full-span 0.f initialization. A shortcut must preserve +0 for these indices even if the present-hand expression produces -0."
+    }
+  ],
+  "minimal_structural_option": {
+    "predicate": "Fuse per-thread integer OR into existing ro_g->ro_sh load; first __syncthreads_or publishes both existing reach and card-position staging and gives a uniform all+0 decision. Existing count guard is block-uniform. No proposal to move or omit card-position staging in this scout.",
+    "early_branch": "Only all+0 and all3 finite payoffs: zero the entire logical own CFV span, execute a block barrier, then overwrite only p_idx entries with the original three-term payout expression at zero masses, then uniformly return.",
+    "race_reason": "Full-span zeroing is assigned by original hand index while present writes are assigned by sorted index, so those stores may be performed by different lanes. The separating block barrier is required unless a different independently justified store scheme is introduced; no such scheme is proposed here.",
+    "fallback": "Keep entire original suffix after the first barrier, including gather, full-span zeroing, scan, card walks, same-combo accesses and payout order. No shared-memory/ABI/launch/host/continuation changes.",
+    "empty_lists": "m_p=0 still requires all logical full-span +0 stores; m_o=0 is covered conservatively when the full row predicate and finite payoffs hold. No special empty-list optimization or relaxed eligibility proposed."
+  },
+  "work_scope": {
+    "skippable_on_proved_eligible_CTA": [
+      "sorted opponent gather",
+      "blocked inclusive scan and original128-step serial chunk-total recurrence",
+      "per-present-own-hand card-conflict walks and lower/higher corrections",
+      "same-combo read and mass reconstruction"
+    ],
+    "retained": [
+      "original full logical opponent row load",
+      "original2*m_o card-position preload",
+      "all full-span and present-hand output stores",
+      "128-thread shape and shared reservations"
+    ],
+    "cost_caveat": "Compared with fold, the distinct source opportunity includes conflict-list traversal repeated for each present own hand, rather than52 card totals computed once. This is a structurally larger possible arithmetic/lookup surface, not measured saved work or guaranteed larger runtime benefit.",
+    "barrier_caveat": "At production128 threads the original up_show has5 block barriers; the outlined branch would retain2, avoiding3. E035 fold avoided8 of9 barriers. Thus larger barrier savings are specifically NOT a reason to prefer showdown.",
+    "overheads": "Every CTA pays predicate work and any new control/register pressure. No native incidence, occupancy change, kernel cost, device-time share, complete-cycle headroom or >=2% prediction is established here."
+  },
+  "D066_reuse_boundary": {
+    "existing": "Retained flags cover all physical rows for both players at20/final before evaluation. Uninterrupted paired E015 execution leaves reach1 as the last p0 terminal input and reach0 as the last p1 terminal input, applying to show as well as fold.",
+    "mapping_required": "New separate derivation must reconstruct finalized show_nodes/show_spans, reach_slot[q], river slots and three f32 payout bits from exact frozen inputs, proving bounds and complete representative coverage. Each show CTA counts once per traverser, not each unique row.",
+    "provenance_limit": "D066 independently compared uploaded full reach_slot arrays and node_twin/tlose metadata, but did not retain/upload-compare show_nodes, river_slot or node_ttie. A proposed host-only derivation must state and justify these source-deterministic relationships instead of claiming fresh device validation.",
+    "not_retroactive": "D066 published fold counts remain untouched; planned-showdown counts would be separately named evidence. Raw reach floats were not retained; row flags are native source-pinned classifications."
+  },
+  "minimum_future_correctness_obligations": [
+    "Compare actual complete candidate up_show GPU outputs with pinned original GPU kernel under matching production compile options.",
+    "Cover full/partial/empty present-own lists, nonzero slots/start, partial128-thread lanes, full poisoned output/padding and all input buffers unchanged.",
+    "Eligible all+0 reaches with mixed payout signs, all-negative and +/-0 payoff combinations; absent own hands must stay+0 while present results match exact expression.",
+    "Reject -0, nonzero/cancelling, nonfinite reach and any nonfinite/overflowed f32 payoff; preserve observed output bits, without universal NaN payload claims.",
+    "Existing training/evaluation/continuation exactness and fixed complete-cycle gates would remain necessary if a later candidate is separately authorized."
+  ],
+  "recommendation": "No immediate candidate implementation from this scout. First finish the separately assigned bounded feasibility of deriving planned-showdown incidence from existing row flags. If root authorizes later source preparation, use one minimal kernel change and a focused actual-old-GPU comparison, not a new broad profiling framework.",
+  "source_references": {
+    "kernels.cu": "up_show lines195-296: staging/first barrier225-228, full zero/second barrier233-236, scan238-261, payout/corrections264-295",
+    "plan.rs": "representative show list244-277; river lists/card positions315-357; f32 payoff casts377-379; physical reach slots412-424",
+    "mod.rs": "actual arch/default compile233-252; uploads327,332-345; evaluation show661-697; training show890-927; E015 paired sweep759-990"
+  }
+}

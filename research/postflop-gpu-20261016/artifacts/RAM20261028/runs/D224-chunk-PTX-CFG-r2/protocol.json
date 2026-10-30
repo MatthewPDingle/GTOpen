@@ -1,0 +1,36 @@
+{
+  "id": "D224",
+  "at": "2026-10-29T01:08:22.291213+00:00",
+  "status": "FROZEN_PRE_CPU_PTX_CFG_DECODER",
+  "PTX_entries": {
+    "compute_120": {
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\baseline-compute_120-showdown.ptx.txt",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_120-showdown.ptx.txt"
+    },
+    "compute_75": {
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\baseline-compute_75-showdown.ptx.txt",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_75-showdown.ptx.txt"
+    }
+  },
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-PTX-chunk-CFG-r2.py": "d86e52e3674897e6c6a944d03a52c3e4903b0a5e8e4159801c508878ba3572d8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-PTX-chunk-CFG.py": "785ffdf47905420e94667a3eacd0be79a0a05fe1785ee5f16a33b5cbc22e77b0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG\\protocol.json": "0c03bf2e8a48263faeaad9df244f5178f139ff7121984b362b6a9a907568d51d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG\\preflight-decoder-repair.json": "8c8083bd1e105e6c055bf1cd161bdb0a0dfd42fc5ce89d01082ead9d6886b83c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\protocol.json": "756843e234d1e37e282c90a75f27ddf3e9a50972bcaa5cdce515f373f49c826b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\report.json": "deca015d5168ba08fc7d5f392df0f3b21f22c16253ea2019ad86b5dfcea1f7f3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\protocol.json": "7d324a38d9041a036eefa1e3c089331becf146f2678412a086f1fdd97212f9dd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\report.json": "5505ef516895e78a37bb5fc9ac0c24e833efe89993252d505e95a68c0345ba75",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\shapes.bin": "5e2da81db001e219fa11f9df14dd7da7af9db288ab26ddc7922f28b4db9a712a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-source\\manifest.json": "f8f2951de9feba2836f8988d92757f7b658176f4398fcdba0d4abd931480c6dc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-source\\source-review.json": "bcb519c2151022555ef18b402b3c3c2b326c44d2b1feada56f65c3269634dc9e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\baseline-compute_120-showdown.ptx.txt": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_120-showdown.ptx.txt": "c778cfd4ddb3ae59fd84b9d8c73016bf4c42bd3e1a95564f01488197244690f4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\baseline-compute_75-showdown.ptx.txt": "77dc2bd1c113913149254ebeff5acd43e2ed13087e145bb316bfd8d0afb3abf6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_75-showdown.ptx.txt": "8be1822ed23bb74b5727e44b1533df324414d93df56e20488270723994d6f3a4"
+  },
+  "expected_shapes_per_arm_architecture": 339712,
+  "rules": "Extract sole div.u32 and preceding ntid width definition through first use of quotient in scan lo_k product. Interpret only whitelisted integer/move/setp/branch/clz/shift instructions and actual label CFG, reject unknown/external inputs except same m_o. Every retained m0..1326,width1..256 must yield same original/candidate ceil and unchanged numerator/divisor. Original executes one div for all; candidate executes zero for each power-of-two width and exactly one original-operand div for every nonpower width. Then assert quotient feeds original lo_k/add/min scan boundary operation contract. Static CPU PTX only, no dynamic latency or GPU arithmetic/speed claim.",
+  "failure": "Absent intended bypass or changed quotient closes frozen E108 before application kernels. Mechanical decoder errors additive without completed native cases rerun; no source/helper/spelling/flags/width rescue."
+}

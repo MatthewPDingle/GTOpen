@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-17T05:40:56.520550+00:00",
+  "id": "E054",
+  "decision": "rejected",
+  "accepted_source": "E051",
+  "gain_pct": -0.5455507996486247,
+  "minimum_gain_pct": 1.0,
+  "strict_fixture_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": 0.23589310116274068,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        -0.06613132453212649,
+        0.3891790314450609,
+        0.12788195878710065
+      ],
+      "failed": true
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 1.2133388863653563,
+      "slower_pairs": 1,
+      "paired_slowdown_pct": [
+        -0.21301183431358214,
+        2.1338398358328936,
+        -0.5669005582820742
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": -6.886463353551375,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -6.886463353551375,
+        -8.349998414374806,
+        -6.242455326420225
+      ],
+      "failed": false
+    }
+  ],
+  "all18full_results_138checkpoints_exact": true,
+  "ordinary_tests_passed": 84,
+  "raw_kernel_cases_passed": 819,
+  "raw_kernel_launches": 1638,
+  "all_parent_child_rows_disjoint": true,
+  "source_restored_and_never_promoted": true,
+  "confirmation_broader_holdout_cumulative_not_run": true,
+  "no_variant_rescue_or_extra_samples": true,
+  "resource_report_sha256": "7bda4cf60cb773de59e5a3b6620f2f62f328f7cf6fbeaf576b2253a35662e391",
+  "raw_root_report_sha256": "c0732d807ba30c23b85abc7ad2cd72dd8d91a424fd23bc59e301b47413b694c8",
+  "primary_report_sha256": "63f263dcf396e07c580336b9012ae1a735a7350ac9615652e6e35572de7976c2",
+  "root_report_sha256": "cae9b5dc3ad8371418f0b1441fad3e622836be9b9e611f86772cd23b2a16b15a",
+  "goal_active": true
+}

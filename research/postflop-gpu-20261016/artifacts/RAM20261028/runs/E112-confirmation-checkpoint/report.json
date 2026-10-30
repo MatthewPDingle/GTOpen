@@ -1,0 +1,233 @@
+{
+  "id": "E112-confirmation-checkpoint",
+  "at": "2026-10-29T06:06:28.638750+00:00",
+  "status": "rejected_closed_fixed_constant_form",
+  "protocol_sha256": "62358dee24a9847480a3a43b624b41d1b4cd96b1ec0fdcfe9d3f81d8d6b85364",
+  "assessment_sha256": "441a8e7258e15caf534f3c53d19a700b1ec87ce35eb7279a9b29564ed939a94a",
+  "root_replay_sha256": "1882c3700577d0fc1d1e0d526c64a51a08581eaed55885794a338ad1aa5bdf7a",
+  "performance": {
+    "baseline_full_cycle_ms": 10329.918,
+    "candidate_full_cycle_ms": 10307.920750000001,
+    "observed_gain_pct": 0.21294699531979375,
+    "required_gain_pct": 1,
+    "positive_pairs": 11,
+    "required_positive_pairs": 13,
+    "pair_median_gain_pct": 0.35676939120067497,
+    "block_median_gains_pct": [
+      -0.3390606772816783,
+      -0.12628845455709475,
+      0.6788224693187492,
+      0.5657444159047849
+    ],
+    "order_strata_median_gains_pct": {
+      "BC": 0.47753249464789316,
+      "CB": 0.22280915077598662
+    },
+    "fresh_confirmation_pass": false
+  },
+  "gates": {
+    "aggregate_at_least1pct": false,
+    "at_least13_positive_pairs": false,
+    "positive_pair_median": true,
+    "all4block_medians_positive": false,
+    "both_order_strata_positive": true,
+    "no_fixture_regression": false,
+    "all96results_736checkpoints_exact": true
+  },
+  "all96fullresults_736checkpoints_exact": true,
+  "no_exclusions_extensions_or_pooling": true,
+  "prior_units_not_reexecuted": true,
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-wrapper\\assess.exit.json",
+      "sha256": "8b8fba9cde00d4f79f44bfdb11add1a97eb304ff9b93e6abe223f67c627c3c71",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-wrapper\\native.exit.json",
+      "sha256": "a226ed4437672a72664d8d20e26e0cec5c5a448ba9cf83faa7bd46af008c7432",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-wrapper\\root-check.exit.json",
+      "sha256": "312a6b979d9e75a5c6bc4df4ac9b7af70057c309a8fcb95230dcce7bce32ed18",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B341.exit.json",
+      "sha256": "eb45188393d09c3a676185c4ba242bbea3ba02fd9e3518f82d2c4c424d228875",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B342.exit.json",
+      "sha256": "a21eaed221da87b4ebf03a9159a17c77764388fc9cc8e7111797d820546fb3f9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B343.exit.json",
+      "sha256": "c66e7a48d9f5938ff0ecb667d592c288571c9a286a1b765fee17046315e756b4",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B344.exit.json",
+      "sha256": "36327e067f86a2c7dd6385ecae1b13b14eab9261a2cce32e19bed4488ec365f6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B345.exit.json",
+      "sha256": "b5d0c3fc5df5b27ec7c6f2f6290d245c9fb2a9f5cd327b701994f00d9aae78ad",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B346.exit.json",
+      "sha256": "366d5c7fdc4546bc2437466eb79847ab6523a5b01090a9d98ad06c54f6629c1a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B347.exit.json",
+      "sha256": "82c2e0887c62d9db47eca805671d1ff558d70c0dc0c5d798d2e8a1212f50d585",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B348.exit.json",
+      "sha256": "e84b215a0123cb84af1e5b770a8326c08ee3f2359afb2a8a0787b375ed879582",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B349.exit.json",
+      "sha256": "b979a5c53b3eded32459358c8e8c7a41e84de9ca5e84841b3c0c72986a1f3387",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B350.exit.json",
+      "sha256": "b16503386f515db8c27fc2df095571eda716bca1bfc76e404999bc6e6dd7de77",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B351.exit.json",
+      "sha256": "6a82ff3a0a51c9fda95bc3090511bd3d75a48e0456e7f67a613003a8c167cf1e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B352.exit.json",
+      "sha256": "22b14b3db8de72bc1d01ddb77cb802eb3a9027f9a154d0b2889b406c694697b1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B353.exit.json",
+      "sha256": "a6f7ec96839e9b988ea4a1edd15db40f373d70245683016a45be4dd7d7995a8a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B354.exit.json",
+      "sha256": "7a348830eebbde999846b05dca409a758b55cce5b8e4ac953f75e1957dae1b0d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B355.exit.json",
+      "sha256": "2fe26fe3856f87eecd8e1f20ec73c24cadf12ff278235b37128318dfc9e6864a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\B356.exit.json",
+      "sha256": "e4a3036c6f9b547d20c4627691cf4491c65b8a5ec4164a18bba756476df5e36b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C01.exit.json",
+      "sha256": "5bfce582789ddf15c28fafd0195b3984b86a3b456643ecdc2aa1969a439fb0cd",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C02.exit.json",
+      "sha256": "ad889ed2bd736b3f086afc7a6c81c4fcbabad9703f35dc396b463382494c5c6b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C03.exit.json",
+      "sha256": "61ea5ef9b9cc69ade457c989c3e5d69930cb32e106bcc6073d031cff056126c6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C04.exit.json",
+      "sha256": "a20ffbefe482c328ae0aa1cab69d1a4c0cd054b0ceaf8282e11a78e0da014e54",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C05.exit.json",
+      "sha256": "4ac48e82e1fb08c0f34d5cfa0dad7113e0d4debe0e8b6ebeb01fe2210eee29a6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C06.exit.json",
+      "sha256": "d7d84dc042d175714aea640068a972e2eb567493b599bfac69ea9689ecfce666",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C07.exit.json",
+      "sha256": "e3a98100118b15ebdd0ec17926e5691afee7c6792e5de47aa20db9a00cf9a84b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C08.exit.json",
+      "sha256": "7be450f2af7309a28c52766a906122663636bc87c7c54778bff75730ac163cdb",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C09.exit.json",
+      "sha256": "ca1dba2f1474c1753881d3fde25554abedb3003cb0b09402ab1686a5d96efe24",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C10.exit.json",
+      "sha256": "6ae4dc088b5a1218fdc367931f145f2e90831c2e408a7beb8e05c3128aea5084",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C11.exit.json",
+      "sha256": "fd86beb2966c8e793fbc3dd9987154f6aed581838c063428100696d85628fad3",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C12.exit.json",
+      "sha256": "9b1090c2f5b11d77cc6d864a014c1e42a38fdc3a39f5d2a24099db079d8dd53b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C13.exit.json",
+      "sha256": "9face95db86031c2f5be1e111441ca6c62a810febe09ba96a09cf58ff545c01d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C14.exit.json",
+      "sha256": "974a2926af2a578d25dfc3ac7682c3b6d05a99ac30f46c1d9c5d10c540343ad8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C15.exit.json",
+      "sha256": "ebb2d9075f3d071fda40e51ce8612a95f4cddfd104074d5fd5217bf5713352f9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-confirmation-execution\\E112C16.exit.json",
+      "sha256": "a80fa189803b4a1d6dde5f053b96a7f4333b4543f0448da6f23c42f2b2ad33f1",
+      "returncode": 0
+    }
+  ],
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "all_owned_children_terminal": true,
+  "locks_absent": true,
+  "candidate_accepted_or_deployed": false,
+  "reason": "Fresh16 complete-solve gain 0.21294699531979375%, 11/16 improving pairs. Fixed confirmation failed: aggregate_at_least1pct, at_least13_positive_pairs, all4block_medians_positive, no_fixture_regression. Fixed form closed without source/flags/quality/sample rescue.",
+  "remaining_adoption_requirements": [
+    "Separately frozen fresh16:unroundedaggregate>=1%,>=13improvingpairs,positivepaired/block/ordermedians andstrictfixtureguards.",
+    "BroaderF32/menu/state/nonemptylocks/save/resume/paged/storedcontinuation/supportedfallback andactualCPU/GPU/process/memory/capacity/graph/resource/materialcosts. Logical12byteconstantreplacesold12globalbytes butdriverrounding/query/cache/modulecosts remain unqualifiedbyprimaryalone.",
+    "Fixedholdout,fresh-originalcurrentRAMcumulative andactualtemporaryserverqualification beforeadoption. No universal/significance/no-tradeoffclaim fromprimary."
+  ],
+  "last_primary_baseline_id": "B356",
+  "next_unused_baseline_id": "B357",
+  "best_qualified_config": "E080 / GPU / compressed /16workers/defaultaffinity",
+  "goal_active": true,
+  "all_new_bulk_output_on_X": true,
+  "S_archive_read_only_no_T_access": true
+}

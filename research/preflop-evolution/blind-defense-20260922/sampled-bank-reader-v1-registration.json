@@ -1,0 +1,40 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_bank_reader_probe_20260922.py": "0ec40afc78cea93123f190ea2fb4f1004bf7678cad7f20d73552371b370e3221",
+    "target\\research-sampled\\sampled-bank-reader-v1-snapshot.npz": "c62183ac29cd5daf4453263f33b39b5b5c1ffad86b3651bfb303057797f1f70c"
+  },
+  "source_snapshot_iteration": 1024,
+  "indices": [
+    0,
+    92,
+    185,
+    278,
+    371,
+    464,
+    557,
+    650,
+    743,
+    836,
+    929,
+    1022
+  ],
+  "keys": [
+    "p0_scales",
+    "p0_0.weight",
+    "p0_0.bias",
+    "p0_2.weight",
+    "p0_2.bias",
+    "p0_4.weight",
+    "p0_4.bias",
+    "p1_scales",
+    "p1_0.weight",
+    "p1_0.bias",
+    "p1_2.weight",
+    "p1_2.bias",
+    "p1_4.weight",
+    "p1_4.bias"
+  ],
+  "maximum_seconds": 60,
+  "purpose": "Read-only checkpoint verification overhead; identical arrays, no training or GPU activity",
+  "production_modified": false
+}

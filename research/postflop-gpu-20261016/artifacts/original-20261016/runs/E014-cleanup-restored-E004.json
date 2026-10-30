@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-16T07:08:04Z",
+  "reason": "E014 rejected after failed complete-cycle performance screen",
+  "candidate_source_sha256": {
+    "mod.rs": "183bf4ce61d2fe3f2f71703c0890967b977dbf8ae065e3235ab8e9d366bb720b",
+    "plan.rs": "039dde407eb440021d1d6afd46cacc77bd7959f60bf146bd30807ae84b4208bb",
+    "kernels.cu": "cfcbaff4ed6815fd6d27ffd2b2d3bb95fba64c0e56bee96308e64df5605a8704",
+    "continuation_capacity.rs": "15c2e22e6712f42e647d376a4c05df66cf8aa4400c23d923a7638528a3b375f1"
+  },
+  "restored_source_sha256": {
+    "mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+    "plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_source_archive": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E014-source",
+  "candidate_patch": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E014.patch",
+  "supplemental_test_preserved_uncompiled": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D022-direct3-control-design\\postflop_direct3_controls.rs",
+  "supplemental_sha256": "cb672486733f2e51bd03f066abbd1620a1f1b173e8575d77383f3bf44d3945d1",
+  "restored_accepted_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+  "git_status": {
+    "command": [
+      "git",
+      "status",
+      "--short"
+    ],
+    "returncode": 0,
+    "stdout": "?? crates/solver/target/",
+    "stderr": ""
+  }
+}

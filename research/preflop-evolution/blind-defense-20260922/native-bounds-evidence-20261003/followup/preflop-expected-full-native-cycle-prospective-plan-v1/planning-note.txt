@@ -1,0 +1,198 @@
+Prospective plan for one complete 20/40/100/200/400bb native cycle
+
+This is planning evidence only. No native poker export, sampler draw, inference,
+fit, CUDA initialization, registration or scientific attempt was performed. The
+original launcher/profile, controls, production and older stores stay preserved.
+The completed v2 publication is pinned separately in publication-readback.json.
+
+Necessary changes to a separate future launcher
+
+Use the published preflop_expected_training_pipeline_v2 and the four bounded
+executables from the isolated build. Board/bridge/trace use the default feature
+build; river uses continuation-transfer-research, which also enables the retained
+float_roundtrip serde path. The artifact hashes and absolute paths are recorded
+in inputs-and-interfaces.json. Do not rebuild or substitute the old executables.
+
+The proposed five fit entries are 20/40/100/200/400bb, retaining 60/150bb as heldout
+registry entries. Fit context weights must each be 0.2: copying v1's per-context
+1.0 would violate the normalized joint objective. Actual collection order is the
+registry's sorted context SHA order, not numerical stack order. Pipeline v2
+already collects contexts sequentially against one frozen played model, restores
+board draw order, filters physical training to postflop, and publishes only after
+both joint CUDA fits and every context complete. It accepts no partial resume.
+
+For a directly comparable first cycle, the provisional budgets are two boards
+per context, all 1081 board-legal private hands per actor, generation_scale169,
+169 physical source deals per context sliced into13, reservoir_capacity512 per
+actor/context, existing posterior64, four fit steps per actor, chunk512, LR.001,
+preflop_fraction.25 and fit_seed_base6500020. Proposed stack-specific seeds are
+recorded in inputs-and-interfaces.json. These are not yet registered study
+parameters. A real study uses execution_mode='study'; checkpoint config/type and
+scientific provider/target formats remain their original qualified v1/v2 forms.
+Only the native execution/worker/coordinator transport provenance becomes v2.
+
+Declare a new immediate S:\GTOpen-research descendant and call the qualified
+ntfs_expected_retention_v2.create_new_store only for that new path. Refuse every
+existing destination or attempt marker. Keep registration, attempt, failure/raw
+outputs and complete terminal result. Preserve owned exclusive lock acquisition,
+both researcher/production priority gates, and exact lock SHA/PID/creation-time
+release; save a release witness for terminal failures as well as success. Never
+delete an unchecked lock or compress/relink/delete an old store.
+
+Close the configuration and final admission before launch: pin the completed
+publication, actual installed modules and imported research dependencies, bounded
+source/executable build identities, all seven registry contexts/public documents,
+the five exact matrices/catalogs, complete all-in cache and its93769-key readback,
+launcher and I/O resource layer. Verify byte-exact source strings and hashes.
+Record one global deadline and per-worker/native limits as operational failure
+bounds, not convergence stopping criteria; original river worker caps remain
+lifetime<=3600s, bridge/trace<=120s, river<=60s. Board cap must be explicit and
+within256..2,000,000,000 bytes. Never silently raise/cap a declared limit.
+
+Resource arithmetic and what it does not establish
+
+At the original two board/three physical workers, at most six native processes
+overlap within one context: two boards, three physical workers, one parent
+bridge-query exporter. Native declared output totals4,256,000,000 bytes at2GB
+per board/64MB otherwise. The physical workers can also produce up to192MB of
+retained river JSON copies at once. Thus4.448GB is a useful active native/copy
+envelope, not a total store or RAM bound. Up to six physical results are pending
+for ordered admission; finished results and event dictionaries remain in RAM.
+The other four contexts do not run concurrently.
+
+Resource-only alternatives preserve draw/order/math: one board/two physical
+workers with the same board cap gives2.192GB native plus128MB duplicate envelope.
+An explicitly registered256MB board cap gives768MB native+192MB copies with2/3
+workers, or448MB native+128MB copies with1/2 workers. Such a tighter cap is a
+prospective failure condition, not a guarantee deeper-stack boards fit it.
+No unattempted launcher or new cap has been applied.
+
+The proposed generation contains10 board exports,65 physical batches and65 each
+of query/verify/trace exports. Conditional river chunk count is data dependent.
+The very loose query_limit1m bound allows31,250 chunks/batch and4,062,500 river
+exports. The resulting raw-native-plus-retained-copy ceiling is520,032,480,000,000
+bytes at the original caps, even before derived files. This loose finite bound
+demonstrates that per-invocation caps alone cannot guarantee an800GB whole-study
+ceiling or predict a successful five-stack run. It is not an expected workload.
+
+Specified array sizes are smaller: ten512-row weighted reservoirs total701,440
+bytes; five cumulative preflop array sets304,200 bytes; maximum fit rows per
+actor4926/4250. Width362 implies14,580,960/12,580,000 bytes for host float64
+features+targets+weights, and7,290,480/6,290,000 CUDA float32 bytes. These exclude
+staged/restored copies, grouping temporaries, Python/Rust trees and dictionaries,
+models/Adam/graphs/allocator/runtime, inference caches and queues. The9,348,488
+matrix figure in resource-arithmetic.json is hypothetical dense1081x1081 float64
+arithmetic, not evidence that the current sorted-terminal reducer allocates one.
+Neither the20GB free-RAM guard nor an output byte cap is a total memory quota.
+
+Concrete derived writers and minimal prospective I/O controls
+
+sampled_physical_root_evaluation_v1.save is imported into pipeline/river worker,
+and passed as transport.generate(write=save). It writes source-generation.json,
+batch.json, policies.json, collection.json, metrics.json, worker-result.json;
+derived-targets/postflop-targets/weighted-targets/river-targets/ordered-events;
+and conditional requests/process/evidence/overlay JSON. It currently opens the
+exclusive file BEFORE json.dumps. Board worker _save writes request/result JSON.
+Native execution _write writes success/failure process receipts. The launcher
+write writes registration/attempt/result/failure/release. Checkpoint objects use
+sampled_visible_hybrid_checkpoint_v1.encoded and publish: publish writes .partial-*
+then renames to a content-addressed destination and verifies existing conflicts.
+Do not change this object's bytes, hashes, duplicate/conflict semantics or RNGs.
+
+Transport directly copies <=64MB native stdout to each *-native.json and writes
+policy arrays via np.savez_compressed. The native river query gate bounds history
+and selected rows to250,000 each, four float64 probabilities per row: combined
+array payload<=16MB per policy npz;17MB is a conservative proposed file bound
+including ZIP/NPY overhead. A worker performs one such write at a time. Three
+simultaneous physical writers would add at most51MB if this file bound is enforced.
+Checkpoint reservoir NPZ calls also bypass JSON save and need coverage.
+
+A minimal RESOURCE-ONLY prospective layer should check serialized length and
+admission BEFORE open/first write, preserve exact original JSON separators/key
+order/newline bytes and atomic checkpoint semantics, cap streaming NPZ/raw writes,
+and enforce that every destination is a new ordinary file in the new owned store.
+Keep a small separate reserved failure/receipt/release budget so a resource refusal
+can still retain its bounded diagnostic and cancellation witnesses. Native direct
+outputs already use declared argv roles/create_new; do not reinterpret them.
+
+For example,64MB per ordinary derived write and1MB per receipt/diagnostic are
+candidate resource limits, not selected parameters or demonstrated sufficient
+sizes. At2/3 workers, six Python processes can each serialize/write one derived
+artifact (two boards, three physical, parent); this adds up to384MB, plus up to6MB
+receipt allowance. Combined with native/copies/51MB NPZ, the illustrative envelope
+is4.889GB. Adding envelopes is deliberately conservative; it is not total RAM or
+a hard disk quota, and ordinary Python objects exist before serialization.
+
+Calling the old guard before a write is insufficient if its storage measurement
+is still throttled for3 seconds: a process can finish many writes between scans.
+Either perform the storage check at every admitted write or use an atomic shared
+logical-byte reservation/counter across ALL parent and spawned writers. Reserve
+each native operation's declared aggregate cap before launch; replace reservation
+with retained actual bytes after terminal verification without dropping failed
+artifacts. Reserve derived serialized length before open. Include temporary
+checkpoint bytes, raw duplicates, NPZ and diagnostics. Parent-only monkeypatches
+do not carry into spawn: install the same declared resource layer in child
+initializers, and pin/check the extra implementation and its configuration.
+
+Per-write caps plus unthrottled guarded accounting close most derived disk burst
+risk. A shared pre-write reservation cap gives a logical allocation acceptance
+contract. NTFS allocation and volume free-space remain separate sampled checks;
+none of this is a filesystem quota. Checking len(json.dumps(...)) after building
+the document also fails to bound decoding/construction/serialization peak memory.
+Bounded streaming encoding can cap the serialization buffer, but actual Python/
+Rust object construction and deeper topology remain an explicit memory gap.
+Do not implement a new poker evaluator or alter target/inference/retention gates
+to make a resource check pass. A refused attempt is retained and cannot retry.
+
+Inventory, actual hardware and CUDA policy
+
+The old inventory is stale and not reusable for launch. A new read-only complete
+allocated-file inventory must cover S:\GTOpen-research, T:\GTOpen-research and
+T:\Dev\GTOpen\research, including all added controls/build/publication/failure
+stores. Verify exact three roots, sums, read_only=true, <=1h age/no future time,
+source hash and global800,000,000,000-byte cap at preparation and immediately
+before the one attempt. NTFS named allocated bytes are measured via Win32 handles
+and GetCompressedFileSizeW; refuse hardlinks/reparse points. Keep logical bytes,
+named allocated bytes and volume free separately. Account for metadata/transient
+allocation; the observed311.49MB allocation for1.279GB prior copied logical data
+is retention qualification, not a promised future compression ratio.
+
+This snapshot has16 physical/32 logical CPU cores,137.357GB RAM with89.410GB
+available, S:282.982GB free, T:10.780GB free; both registered research locks absent.
+Artifacts must be on S: under the existing40GB free-space reserve; T: cannot meet
+that reserve. Installed versions are Torch2.6.0+cu126, NumPy1.26.4, psutil6.1.1,
+threadpoolctl3.5.0. nvidia-smi identifies one RTX3090 UUID
+GPU-98852218-fedf-ec6f-3e2d-832b9203efaf, driver591.86,6%utilization,
+4141MiB used/20186MiB free. These are one-time observations, not launch admission.
+
+Parent inference and both joint fits require CUDA by the checkpoint config;
+there is no CPU fit fallback. Spawned collection workers hide CUDA and limit CPU
+thread pools to1. Pin/reapply parent BLAS reduction threads4 and Torch threads4,
+TF32false, CUDA/library/driver/runtime identity; enter threadpool_limits(4) AFTER
+imports for initialization, exact-term envelopes, collection, fits and restore.
+Prior independent replay proved exact envelope digests differ under BLAS1 versus
+BLAS4. Numerical equivalence across those runtimes is not bit identity. Record
+actual threadpool_info under the declared limit rather than only environment vars.
+
+Retain production_available's actual port56708/API idle gates; a closed port is
+idle, an open one must pass preflop/status, status and reports/status (including
+the verified empty-session exception). Original GPU sharing synchronizes own
+CUDA, quiesces1.2s every30s, then yields if external utilization>=65%; any sample
+with<8192MiB free fails. Light desktop/video use remains permitted. Shared spawn
+cancellation must stop queued/active native work before cleanup and release.
+
+Terminal obligations and remaining gaps
+
+After one attempted cycle, independently read the retained complete result:
+five context identities/order against one used model; all10 exact1081-hand board
+requests/raw reductions/receipts; all65 physical batch source/order bindings and
+postflop-only admissions; every conditional posterior64 evidence; both joint fit
+receipts/objectives; initial/final checkpoint exact arrays, RNGs and played bank;
+stored metrics/checkpoint/config/model pointers; logical/named allocated counts,
+failed/orphan artifacts and owned-lock release. Preserve failures without retry.
+
+Completed publication is now pinned. Still unresolved before launch: exact new
+registration/store/global logical and allocated budgets; fresh inventory; chosen
+worker/cap/runtime values and profile I/O coverage; actual declared reduction
+runtime fingerprint; deeper-stack time/output/memory feasibility. Failure gates
+are acceptable; claiming a hard total quota or improved poker accuracy is not.

@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T10:17:33.098467+00:00",
+  "cases": 425,
+  "kernel_launches": 850,
+  "family_cases": {
+    "down_chance_unchanged_control": 157,
+    "up_chance_changed_predicate": 268
+  },
+  "corpus_descriptors_identical": true,
+  "original_corpus_sha256": "192880c382e4d9abc362790925149a84b6b4343990795d4e1f4aabe94f025232",
+  "adaptation": "Keep original425descriptors/order/geometry/float profiles/guards. Both arms now use original mask argument builder for both kernels; delete only historical candidate card-ID ABI branches and rename unused variant parameter. All original canonical mask/card-ID arrays still allocated and read back in both arms. Down_chance source/PTX unchanged; up_chance differs only in bit-field predicate. Corpus metadata changes only ID/raw-schema magic labels.",
+  "coverage": "Every canonical1326hand/dealt52card relationship individually; both down player orientations/asymmetry; zero counts/empty lists/tails; five widths1/32/64/128/256; identity/nonidentity permutations; signedzero/subnormal/quietNaN/infinity/finite overflow. Full outputs,actual immutable inputs and unowned guards retained in3raw files. Positive finite down zero/copy relation separately checked.",
+  "limits": "Finite canonical geometries/small offsets only. No malformed mask/large-address, universal NaN or whole-solver/speed proof."
+}

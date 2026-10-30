@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-29T20:52:00.608611+00:00",
+  "primary_reference": "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#floating-point-instructions-fma",
+  "secondary_reference": "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#floating-point-instructions-sub",
+  "source_semantics": "PTX8.8 specifies two independent binary32 components, RN options and default subnormal support; f32x2 operands are64bit bit containers. This probe uses explicitRN/noFTZ/noSAT/noapprox/no dtypeconversion. Targetsupport sm100+ is virtual ISA support, not proof of native SIMD issue savings onSM120.",
+  "intended_formula": "Each component independently RN_FMA(r,d,RN_SUB(v,out)); same final regret expression as existing scalar helper. Existing baselinePTX shows sub.f32 then fma.rn.f32 before regretstores. No sum/reduction or crosscomponent arithmetic. Full original solver FP-DAG/address/NaN/caller equivalence remains mandatory before any integration/adoption.",
+  "pack_unpack": "low32=r0/high32=r1; integerbit masks/shifts invert for every u32pair algebraically;169special-pattern pairs checked onCPU. Actual compiler/register/IEEE andNaNpayload behavior unqualified.",
+  "scope": "Two new diagnostickernels appended after entire exactaccepted9kernel sourceprefix, preserve originals byteexact. No solver code change, kernel launch, array allocation, numerical orspeed execution. One compiler/one NVRTC120module probe then oneownedCUPTIcapture/nvdisasm onlyif resource prerequisitespass.",
+  "hard_native_gate": "Packed primitive must provide fewer actual issued FP arithmetic instruction sites per2results than scalar2SUB+2FMAreference, with actual2component packed instruction/dataflow. One or both packedoperations mayqualify; vectorvirtualop alone, load/store/address or globalhistogram changes do not. Same4scalararithmetic sites means decline without solverprototype. Packing/register/codecosts remainreal and later wholecycle tests required.",
+  "failure": "Close tested packedaction arithmetic form without width/componentcount/handpair/scope/guard/helper/flags/precision/source/sample rescue if unsupported/scalarized/resourcefailed. Do not substitute FP16/BF16/TF32."
+}

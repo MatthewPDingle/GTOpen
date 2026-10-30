@@ -1,0 +1,55 @@
+{
+  "candidate": "E033",
+  "at": "2026-10-16T20:09:09Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E033_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-source-review\\report.json",
+      "sha256": "5c24836212e5bab1645b5dc47a3cedd2e785ee1e9bc07ffedf4e5b8eea06facd"
+    },
+    "E033_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-script-review\\report.json",
+      "sha256": "bd084ad4154b0454e19705c1aafe32d0b8bc601007ddff5ef55b773c11804241"
+    },
+    "D064_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D064-terminal-review\\report.json",
+      "sha256": "ff4019206cd48938a56eafc45b316499baa4979b59e11b940f2195f495b7bcdf"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\mod.rs",
+      "sha256": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc"
+    },
+    "crates/solver/src/gpu/cache_policy.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\cache_policy.rs",
+      "sha256": "e87bd468b383645387019868a81de96fe89a5741f81d675821497df0cc8c9f14"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-primary-plan-r2\\scripts-manifest.json": "09d71fb28ed17f672bf837bfbc16d02bbe31e55cb6057157bdad8034e3f95050",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-primary-plan-r2\\protocol.json": "35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-source-review\\report.json": "5c24836212e5bab1645b5dc47a3cedd2e785ee1e9bc07ffedf4e5b8eea06facd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-script-review\\report.json": "bd084ad4154b0454e19705c1aafe32d0b8bc601007ddff5ef55b773c11804241",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D064-terminal-review\\report.json": "ff4019206cd48938a56eafc45b316499baa4979b59e11b940f2195f495b7bcdf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\manifest.json": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-root-decisions\\preparation.json": "3a7119d416b28c846fc91287cd7b45347b5415010c9e9e40bf8f6392a27d0d99",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-source-review\\scope-clarification.json": "9b46713e9eeb6641951051dd813bcb427681954db44e8768eb1d667eaed33d8f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-script-review\\manifest.json": "2d36cb9961af102ffdce78327c7a5e0e21ef299d8946faedc00e6e18df177f7c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\scoped-cleanup-addendum\\report.json": "afe42688933201d9af77631d5096225107c08f51b244f5fddffef445b46ca0be"
+  },
+  "scope": "One fixed source activation, fresh feature compile then separate fresh GPU-only build, fixed unit and six-run primary only after successful build, assessment. No live deployment, extra samples, broader work or adoption. Preserve evidence and restore owned source on rejection or failure."
+}

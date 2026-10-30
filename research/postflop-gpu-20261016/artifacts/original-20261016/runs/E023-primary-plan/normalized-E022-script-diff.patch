@@ -1,0 +1,106 @@
+--- normalized-E022/build.py
++++ E023/build.py
+@@ -14,12 +14,13 @@
+ assert authorization['candidate'] == 'E023' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E023_source_review', 'E023_script_review']:
++assert authorization['resource_probe_pass'] is True
++for role in ['E020_acceptance', 'E020_server_qualification', 'E023_source_review', 'E023_script_review', 'D043_resource_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-owned = ('crates/solver/src/gpu/kernels.cu',)
++owned = ('crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/plan.rs', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/game.rs')
+ assert set(authorization['candidate_sources']) == set(owned)
+ protocol_hash = '9e9dd8943acf6ae8a5ad55aeef61f13e9fbc993b5ec8ae1860a3bb7413116844'
+ out = ar.RESEARCH / 'runs/E023-build'
+@@ -60,7 +61,7 @@
+             assert current[name] == expected, name
+     expected_owned = json.loads((here / 'protocol.json').read_text(encoding='utf-8'))['accepted_owned_sha256']
+     assert {name: accepted[name] for name in owned} == expected_owned
+-    assert all(current[name] != accepted[name] for name in owned), 'The reviewed CUDA file must change'
++    assert all(current[name] != accepted[name] for name in owned), 'All five reviewed candidate source files must change'
+     changed = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+     assert changed == sorted(owned), changed
+ 
+@@ -69,8 +70,8 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen E023 showdown unused-prefix-tail candidate', active_experiment='E023',
+-                          activity='Accepted E020 server qualification and source/script review passed. Building the one-file candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
++            status.update(updated_at=ar.now(), stage='Building frozen E023 opponent action candidate', active_experiment='E023',
++                          activity='Accepted E020 server qualification and source/script review passed. Building the five-file candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+         # Dashboard trouble must never release the GPU lock around a live compiler.
+@@ -94,7 +95,7 @@
+     before = ar.source_identity()
+     ar.atomic_json(out / 'source-before.json', before)
+     source_copies = {}
+-    for name, output in zip(owned, ('candidate.cu',)):
++    for name, output in zip(owned, ('candidate.cu', 'plan.rs', 'mod.rs', 'continuation_capacity.rs', 'game.rs')):
+         destination = out / output
+         shutil.copyfile(repo / name, destination)
+         source_copies[name] = {'path': str(destination), 'sha256': ar.sha256(destination)}
+@@ -164,17 +165,21 @@
+         data=destination.read_bytes()
+         candidate_cuda=Path(authorization['candidate_sources']['crates/solver/src/gpu/kernels.cu']['path']).read_bytes()
+         accepted_cuda=(ar.RESEARCH/'runs/E023-design/base/kernels.cu').read_bytes()
+-        assert candidate_cuda in data and accepted_cuda not in data, 'Wrong embedded CUDA variant'
++        opponent_marker = b'extern \"C\" __global__ void up_action_opponent('
++        assert candidate_cuda.startswith(accepted_cuda), 'Accepted E020 prefix must be exact'
++        assert candidate_cuda.count(opponent_marker) == 1 and opponent_marker not in accepted_cuda
++        assert candidate_cuda in data and opponent_marker in data, 'Wrong embedded CUDA variant'
++        assert accepted_cuda in data, 'Append-only candidate intentionally contains accepted E020 prefix'
+         assert ar.sha256(destination)!=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['reference_binary_sha256']
+         manifest = {**before, 'candidate': 'E023', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
+-                    'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'expected_cuda_present':True,'accepted_cuda_absent':True, 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
++                    'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'expected_cuda_present':True,'accepted_cuda_prefix_present':True,'new_opponent_entry_present':True, 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
+                     'build_stderr_log': str(err), 'build_stderr_sha256': ar.sha256(err),
+                     'patch': str(patch), 'patch_sha256': ar.sha256(patch), 'source_matches_prebuild': True,
+                     'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+                     'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020, completed server qualification and independent E023 source/script review; not numerical proof',
+-                    'change': 'Only omit unconsumed up_show chunk-prefix tail using the guarded last_base bound. Original consumed recurrence, all barriers/card cache, host shared reservations, ABI, layout and launch shapes unchanged.'}
++                    'prerequisite_scope': 'Accepted E020, completed server qualification, D043 compiler-resource prerequisite and independent E023 source/script review; not numerical proof',
++                    'change': 'Route training-up actor partitions to unchanged traverser dispatch and appended opponent-only dispatch. Preserve child accumulation order, original down/eval worklists, 128-thread launches and graph lifecycle; account added immutable metadata in estimates.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+     print('E023 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
+--- normalized-E022/primary.py
++++ E023/primary.py
+@@ -13,6 +13,7 @@
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_source_review_pass'] is True and authorization['independent_script_review_pass'] is True
++assert authorization['resource_probe_pass'] is True
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==ar.sha256(here/'scripts-manifest.json')
+ for path,h in authorization['evidence_sha256'].items(): assert ar.sha256(Path(path))==h
+ def interrupted(signum,_frame): raise KeyboardInterrupt(f'received signal {signum}')
+@@ -76,7 +77,7 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'E023 showdown unused-prefix-tail candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E023 GPU solver unit screen'),
++               'E023 opponent action candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E023 GPU solver unit screen'),
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+@@ -95,11 +96,11 @@
+     assert proc.returncode == 0, identity
+     report = json.loads((ar.RESEARCH / 'runs' / identity / 'report.json').read_text(encoding='utf-8'))
+     assert report['status'] == 'measured' and report['returncode'] == 0, identity
+-    assert report['test_pass_count'] == (84 if ordinary else 1), identity
++    assert report['test_pass_count'] == (86 if ordinary else 1), identity
+     if ordinary:
+         raw = (ar.RESEARCH / 'runs' / identity / 'stdout.log').read_text(encoding='utf-8')
+         summaries = re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out;', raw)
+-        assert summaries == [('84', '0', '4', '0', '0')], summaries
++        assert summaries == [('86', '0', '4', '0', '0')], summaries
+     verify_binary()
+     assert ar.source_identity()['source_sha256'] == current, 'Source drift during run'
+     print('Completed', identity, flush=True)

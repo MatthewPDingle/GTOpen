@@ -1,0 +1,171 @@
+{
+  "at": "2026-10-18T04:23:40.159377+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "report_sha256": "ce887fc6e38eed7f42aa5fb4194baa500c1fb9494896054e8828d4961fa65991",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "source_main_live_PTX_custody_pass": true,
+  "HTTP_byte_verified_artifacts": [
+    {
+      "url": "evidence/E077-resource/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E077-resource/candidate.cu",
+      "sha256": "5c815c688d3565a7f8405738273f2f4ba3d3625df8c47b5a52e9e9788223f03d"
+    },
+    {
+      "url": "evidence/E077-resource/execute.py",
+      "sha256": "f7c1fa0783cbc25c9628c69b7e3890be6600557122db751a59cd27130247026f"
+    },
+    {
+      "url": "evidence/E077-resource/pre-resource-publication.json",
+      "sha256": "686dbe3d18106baf7611fd3f98328b99335dd4e309c2f1392d214b19257b5cbf"
+    },
+    {
+      "url": "evidence/E077-resource/probe.rs",
+      "sha256": "52719aec97d34bd5b866f8987210dbe3c736c2483aa9d5b5bb58d1c36b23c64d"
+    },
+    {
+      "url": "evidence/E077-resource/protocol.json",
+      "sha256": "e4ac257e3accd80520585025ca19b198b01fa45c68e6007e36c0677f91e91a79"
+    },
+    {
+      "url": "evidence/E077-resource/report.json",
+      "sha256": "ce887fc6e38eed7f42aa5fb4194baa500c1fb9494896054e8828d4961fa65991"
+    },
+    {
+      "url": "evidence/E077-resource-execution/baseline-compute_120.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    },
+    {
+      "url": "evidence/E077-resource-execution/baseline-compute_75.ptx",
+      "sha256": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70"
+    },
+    {
+      "url": "evidence/E077-resource-execution/before.json",
+      "sha256": "39ad2968270acce57fb098931478cb891a264166984c23a9b8bc685cc80c55c9"
+    },
+    {
+      "url": "evidence/E077-resource-execution/build-complete.json",
+      "sha256": "403615aaf2556f75e1c5678332aa966847f04ec8ebf884347efa95e53be73432"
+    },
+    {
+      "url": "evidence/E077-resource-execution/candidate-compute_120.ptx",
+      "sha256": "f81059cb00ef2f95598f108fecab140149bcde0a6186f88d414d4c1c22f0e1c5"
+    },
+    {
+      "url": "evidence/E077-resource-execution/candidate-compute_75.ptx",
+      "sha256": "2536fffd45e967dc2accd517e92595bba92df2008501e81b26be42292f1842f2"
+    },
+    {
+      "url": "evidence/E077-resource-execution/complete.json",
+      "sha256": "f660c608dfc1a4aeb4143cc15f24919920594baec9edba405477eb255328a599"
+    },
+    {
+      "url": "evidence/E077-resource-execution/probe.exit.json",
+      "sha256": "878f9d15b569cbd9bc7fe9aae70ee383e52cd4f51482bc30b3cffc51a7787546"
+    },
+    {
+      "url": "evidence/E077-resource-execution/probe.invocation.json",
+      "sha256": "2ca1b73031cd4f61ffe581d98d95562b4cc6052a67da218430b878b05feb711e"
+    },
+    {
+      "url": "evidence/E077-resource-execution/probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E077-resource-execution/probe.stdout.log",
+      "sha256": "e71eb7fbf41acb1600633738834ff8c933e93812c88a86cb5468b48ce24e49f2"
+    },
+    {
+      "url": "evidence/E077-resource-execution/rustc.exit.json",
+      "sha256": "ab244a62d4d47c1abf81285b35bbcc4dbdd041560b9d8ad253597466489395e1"
+    },
+    {
+      "url": "evidence/E077-resource-execution/rustc.invocation.json",
+      "sha256": "a8209e60fd3ebe052e2f390e6d8b9d45be25a27948bc0a31a909d0724cdd5a85"
+    },
+    {
+      "url": "evidence/E077-resource-execution/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E077-resource-execution/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E077-resource-manager/resource.exit.json",
+      "sha256": "7dc9f9bcd608e96f7d610888a582b54cba986030db971ef2c9907d91043f0509"
+    },
+    {
+      "url": "evidence/E077-resource-manager/resource.invocation.json",
+      "sha256": "1178d2667939774279c046b59481ccd905d3b947c453d6020ae092413f89585e"
+    },
+    {
+      "url": "evidence/E077-resource-manager/resource.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E077-resource-manager/resource.stdout.log",
+      "sha256": "262362cc5d0a25c1ee4200dcfba3edc18cba49f3bdfb3cdd8ba40b8949b1f833"
+    },
+    {
+      "url": "evidence/E077-source/baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+    },
+    {
+      "url": "evidence/E077-source/baseline-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    {
+      "url": "evidence/E077-source/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E077-source/candidate-mod.rs",
+      "sha256": "2753a4aa658022d879b5882312a0e2a89e4edb94ecaee603d185debee4686e12"
+    },
+    {
+      "url": "evidence/E077-source/candidate-plan.rs",
+      "sha256": "c941683287f3683be1d713ad4c1a954d47801439f9a2b51fa56de88d38c4e165"
+    },
+    {
+      "url": "evidence/E077-source/candidate.cu",
+      "sha256": "5c815c688d3565a7f8405738273f2f4ba3d3625df8c47b5a52e9e9788223f03d"
+    },
+    {
+      "url": "evidence/E077-source/candidate.patch",
+      "sha256": "5c2af2e68f25f187e42921279709d15e9fd4ccb5726e4787b594be3013b572a6"
+    },
+    {
+      "url": "evidence/E077-source/manifest.json",
+      "sha256": "7ffd6d87097e18d11c08b78d46db0c3138e750a4ed4d54ee5442287cd6a91d48"
+    },
+    {
+      "url": "evidence/E077-source/source-review.json",
+      "sha256": "abd4702f49ccc775df70f46b5b0606e19b8157e2dfb66bb189a64b724a803e4c"
+    },
+    {
+      "url": "evidence/E077-source/tag-prefix.rs",
+      "sha256": "dcdbc1323156eede99b70804c04db652af13ed6a2b02fa08e765e52864970965"
+    },
+    {
+      "url": "evidence/E077-preparation-draft-r1/failure.json",
+      "sha256": "31b12d1d31ea531c5e6bab0040a0b8ae53fffc2d1ce05deedc6f0b1041bce3d7"
+    },
+    {
+      "url": "evidence/E077-preparation-draft-r1/prepare.py",
+      "sha256": "7f70e1040f488d86f5fd74f423f3cc5b5be604d64c3c535152bfb9194438023a"
+    },
+    {
+      "url": "evidence/E077-preparation-draft-r1/source/baseline.cu",
+      "sha256": "9fe18b3227943f90df87c641cfc07b58bbf0ef350fe448c1e1eb9a6b4b8e36e4"
+    },
+    {
+      "url": "evidence/E077-resource/run-resource.py",
+      "sha256": "4fd9e3f522e653465716c17f4a901d7899ac836d3af501f800735d57cc87b5e8"
+    }
+  ],
+  "reason": "Closed at compiled prerequisite: compute_120:low31bit_decode_masks_emitted, compute_75:low31bit_decode_masks_emitted. No flag/map/mask/guard/source/helper/width/placement variants or resampling."
+}

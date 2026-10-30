@@ -1,0 +1,33 @@
+{
+  "id": "D075-zero-proof-parallel-source",
+  "at": "2026-10-17T02:15:28.705137+00:00",
+  "status": "go_one_fixed_parallel_proof_candidate",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "diagnostic_sha256": "abb01cbd1dd3af865c6c6df84b47c3fcf63205c5b756ad4104f834b0b132d87c",
+  "historical_sum_fixture_medians_ms": {
+    "predicate": 270.8338,
+    "alloc_zeros_host_call": 18.8896,
+    "existing_stream_wait": 56.66499999999999
+  },
+  "timing_limits": "Historical nested host spans only. They do not establish current headroom, removable work or projected complete-cycle gain. No new timings have run.",
+  "novelty": "D041 suggested parallel integer OR but it was not implemented. E038 omitted only unsigned q scanning and failed; E045 retains both complete scans and changes integer reduction scheduling only. E044 changed discount transfer scheduling, not these scans.",
+  "fixed_mechanism": {
+    "chunk_words": 1048576,
+    "parallel_min_words": 2097152,
+    "thread_policy": "existing Rayon pool; research16 threads",
+    "factor_or_threshold_sweep_after_outcome": false
+  },
+  "exactness": "Scale-first bits check, signed u16 cast, all q values, zero identity, existing snapshot/inactive/F32 guards and all GPU/upload/readback behavior retained. OR is associative and commutative on u16; full result bits independent of chunk order. Read-only slices, no concurrent mutation under existing Solver borrowing contract.",
+  "cost_gate": "If timing qualifies, separately freeze matched whole-process CPU-time/peak-memory and responsiveness measurements. Positive median CPU-time increase plus strict majority paired increases disqualifies; no adoption on wall time alone. Existing16-worker pool can create extra concurrent CPU demand. No claim of no tradeoffs yet.",
+  "required_before_timing": [
+    "fresh feature/primary compilation",
+    "ordinary86pass/4ignored incl fixed raw integer corpus and576 full accepted-reference predicates",
+    "frozen3pair initial screen with1%/strict fixture policy"
+  ],
+  "candidate_accepted": false
+}

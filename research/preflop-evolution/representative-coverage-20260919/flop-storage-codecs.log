@@ -1,0 +1,144 @@
+{
+  "passed": true,
+  "packages": {
+    "lz4": "4.4.5",
+    "zstandard": "0.25.0"
+  },
+  "summaries": [
+    {
+      "iteration": 1,
+      "mode": "raw",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 1.0000085970014052,
+      "encode_seconds": 0.7843296996434219,
+      "decode_seconds": 0.7788369998743292,
+      "raw_fallback_blocks": 2104
+    },
+    {
+      "iteration": 1,
+      "mode": "lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.17264671469350448,
+      "encode_seconds": 1.5978056004678365,
+      "decode_seconds": 1.7614105992252007,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1,
+      "mode": "shuffle_lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.1765894617985832,
+      "encode_seconds": 4.093898599065142,
+      "decode_seconds": 6.208748599834507,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1,
+      "mode": "zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.11372777483547493,
+      "encode_seconds": 2.257708799239481,
+      "decode_seconds": 1.8528133004147094,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1,
+      "mode": "shuffle_zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.12483356067262735,
+      "encode_seconds": 4.102502399589866,
+      "decode_seconds": 5.031714101409307,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 100,
+      "mode": "raw",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 1.0000085970014052,
+      "encode_seconds": 0.7906838007911574,
+      "decode_seconds": 0.7783111992175691,
+      "raw_fallback_blocks": 2104
+    },
+    {
+      "iteration": 100,
+      "mode": "lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.831193695134233,
+      "encode_seconds": 3.64527579935384,
+      "decode_seconds": 1.9143021997297183,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 100,
+      "mode": "shuffle_lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.7464643705793861,
+      "encode_seconds": 6.065332299855072,
+      "decode_seconds": 6.2192613001097925,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 100,
+      "mode": "zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.7443925132168818,
+      "encode_seconds": 8.638157500041416,
+      "decode_seconds": 4.007794100558385,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 100,
+      "mode": "shuffle_zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.6691210551794631,
+      "encode_seconds": 10.276138399378397,
+      "decode_seconds": 7.3950331002124585,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1000,
+      "mode": "raw",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 1.0000085970014052,
+      "encode_seconds": 0.9009488996234722,
+      "decode_seconds": 0.8722563007031567,
+      "raw_fallback_blocks": 2104
+    },
+    {
+      "iteration": 1000,
+      "mode": "lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.8504225336298024,
+      "encode_seconds": 4.184992800292093,
+      "decode_seconds": 2.1830665000597946,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1000,
+      "mode": "shuffle_lz4",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.768171124932852,
+      "encode_seconds": 5.485066699446179,
+      "decode_seconds": 5.661309100338258,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1000,
+      "mode": "zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.7693574312222272,
+      "encode_seconds": 7.382865200081142,
+      "decode_seconds": 3.404223499528598,
+      "raw_fallback_blocks": 0
+    },
+    {
+      "iteration": 1000,
+      "mode": "shuffle_zstd1",
+      "raw_bytes": 2202628464,
+      "encoded_fraction": 0.6937237936284111,
+      "encode_seconds": 8.460120700183325,
+      "decode_seconds": 5.90981440077303,
+      "raw_fallback_blocks": 0
+    }
+  ]
+}

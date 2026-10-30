@@ -1,0 +1,17 @@
+{
+  "id": "E082",
+  "at": "2026-10-18T09:01:58.259396+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E082-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E082-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "90c400257d2d7cd5d937ffe5b4fede19fadc67782b721a81d57dfe002756163a"
+  },
+  "scope": "Only up_show chunk-offset construction changes. Original per-thread sorted-reach chunk scan and full prefix[k] values retain their original floating operands/order. After the existing producer barrier, each thread independently folds unchanged raw chunk totals1..threadIdx into private +0 base using raw[t]+prior_prefix. Remove thread0 cumulative shared writes and their following barrier. Keep the final CTA barrier, shared allocation/declaration, original host/ABI/thread shape/launch/node mapping, all other kernels, arithmetic downstream, layouts, storage, quality and saves unchanged.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

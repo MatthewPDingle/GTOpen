@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "source_results": {
+    "research\\preflop-evolution\\blind-defense-20260922\\weighted-training-readback-parallel-v1-w4-9266201-stratified-0002-result.json": "98c2a879277fc360c7f16282206830c00268ffe4fd86a2e636730f26efcbd2f8",
+    "research\\preflop-evolution\\blind-defense-20260922\\weighted-training-readback-parallel-v1-w8-9266201-stratified-0002-result.json": "e67a7558e51aef2bbda93f0c03e9d103d245463997f8a6bf1cadd8bed987a6f7"
+  },
+  "matched_fields": [
+    "passed",
+    "arm",
+    "completed_updates",
+    "complete_arm",
+    "source_registration_sha256",
+    "final_checkpoint",
+    "bb_roots_reconstructed",
+    "postflop_targets_reconstructed",
+    "insertion_counts",
+    "maximum_root_state_error",
+    "maximum_target_error",
+    "maximum_policy_error"
+  ],
+  "four_worker_seconds": 44.35899999999947,
+  "eight_worker_seconds": 30.375,
+  "observed_speed_ratio": 1.4603786008230277,
+  "interpretation": "Eight-worker two-generation audit agrees exactly on checked outputs. Timings are from different moments during live training; this is preliminary throughput evidence, not a controlled full-arm speedup. Current registered full audits retain four workers.",
+  "production_modified": false,
+  "full_arm_eight_worker_qualified": false
+}

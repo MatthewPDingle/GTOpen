@@ -1,0 +1,266 @@
+{
+  "id": "E084-resource",
+  "at": "2026-10-18T09:48:02.902923+00:00",
+  "status": "pass_compiled_first_card_total_prerequisites",
+  "protocol_sha256": "9faa124a6a6183c0b1f211c4aaddd256a6dc97cdbfd7632a643d818f4b36bc97",
+  "gates": {
+    "compute_120:other8entries_exact": true,
+    "compute_120:global27parameter_ABI_exact": true,
+    "compute_120:action_entry_changed": true,
+    "compute_75:other8entries_exact": true,
+    "compute_75:global27parameter_ABI_exact": true,
+    "compute_75:action_entry_changed": true,
+    "local_not_increased": true,
+    "static_shared_exact": true,
+    "dynamic_shared_exact": true,
+    "max_threads_not_reduced": true,
+    "all_fixed_thread_controls_legal": true,
+    "positive_all_fixed_occupancies": true,
+    "default_128_occupancy_not_reduced": true,
+    "both_fit_default_limits": true,
+    "no_stack_limit_increase": true
+  },
+  "baseline": {
+    "actual_block_threads": 128,
+    "context_stack_limit_after_load": 1024,
+    "context_stack_limit_before_load": 1024,
+    "dynamic_shared_bytes": 22600,
+    "fits_default_limits": true,
+    "kernel": "up_show",
+    "kernel_launches": 0,
+    "local_bytes_per_thread": 0,
+    "max_threads": 1024,
+    "occupancy_by_threads": [
+      [
+        64,
+        4
+      ],
+      [
+        128,
+        4
+      ],
+      [
+        256,
+        4
+      ]
+    ],
+    "performance_measurement": false,
+    "registers": 38,
+    "shape": "same128threads_max1326hands",
+    "stage": "resource",
+    "static_shared_bytes": 1040,
+    "variant": "baseline"
+  },
+  "candidate": {
+    "actual_block_threads": 128,
+    "context_stack_limit_after_load": 1024,
+    "context_stack_limit_before_load": 1024,
+    "dynamic_shared_bytes": 22600,
+    "fits_default_limits": true,
+    "kernel": "up_show",
+    "kernel_launches": 0,
+    "local_bytes_per_thread": 0,
+    "max_threads": 1024,
+    "occupancy_by_threads": [
+      [
+        64,
+        4
+      ],
+      [
+        128,
+        4
+      ],
+      [
+        256,
+        4
+      ]
+    ],
+    "performance_measurement": false,
+    "registers": 39,
+    "shape": "same128threads_max1326hands",
+    "stage": "resource",
+    "static_shared_bytes": 1040,
+    "variant": "candidate"
+  },
+  "other8entries": {
+    "compute_120": {
+      "copy_root": {
+        "normalized_exact": true,
+        "baseline_sha256": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+        "candidate_sha256": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc"
+      },
+      "down_action": {
+        "normalized_exact": true,
+        "baseline_sha256": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+        "candidate_sha256": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5"
+      },
+      "down_chance": {
+        "normalized_exact": true,
+        "baseline_sha256": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+        "candidate_sha256": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea"
+      },
+      "up_fold": {
+        "normalized_exact": true,
+        "baseline_sha256": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+        "candidate_sha256": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834"
+      },
+      "up_chance": {
+        "normalized_exact": true,
+        "baseline_sha256": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+        "candidate_sha256": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b"
+      },
+      "up_action": {
+        "normalized_exact": true,
+        "baseline_sha256": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+        "candidate_sha256": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472"
+      },
+      "copy_span": {
+        "normalized_exact": true,
+        "baseline_sha256": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+        "candidate_sha256": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76"
+      },
+      "up_action_eval": {
+        "normalized_exact": true,
+        "baseline_sha256": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06",
+        "candidate_sha256": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+      }
+    },
+    "compute_75": {
+      "copy_root": {
+        "normalized_exact": true,
+        "baseline_sha256": "9b5c147d0813ddc2c884dde0d71d69814e17c358f80342812fdfc4e824dc8288",
+        "candidate_sha256": "9b5c147d0813ddc2c884dde0d71d69814e17c358f80342812fdfc4e824dc8288"
+      },
+      "down_action": {
+        "normalized_exact": true,
+        "baseline_sha256": "1ea29f7ce9cb7d24fd50d538f3009e50678be50d5da78ad1c2fedef8d5d007d5",
+        "candidate_sha256": "1ea29f7ce9cb7d24fd50d538f3009e50678be50d5da78ad1c2fedef8d5d007d5"
+      },
+      "down_chance": {
+        "normalized_exact": true,
+        "baseline_sha256": "19311a8c0889b895ad01a020e1257f48cd3bec86fa474df7fffa14ca24e4df41",
+        "candidate_sha256": "19311a8c0889b895ad01a020e1257f48cd3bec86fa474df7fffa14ca24e4df41"
+      },
+      "up_fold": {
+        "normalized_exact": true,
+        "baseline_sha256": "d69e25c1be0cb07b33680eaa7de95948132eb7e5bfa1c63d664dc55e53c24726",
+        "candidate_sha256": "d69e25c1be0cb07b33680eaa7de95948132eb7e5bfa1c63d664dc55e53c24726"
+      },
+      "up_chance": {
+        "normalized_exact": true,
+        "baseline_sha256": "77a1249fc563c777cbdab6dab016a0f7859ab7eae36f4d405d4b9a5595b5985a",
+        "candidate_sha256": "77a1249fc563c777cbdab6dab016a0f7859ab7eae36f4d405d4b9a5595b5985a"
+      },
+      "up_action": {
+        "normalized_exact": true,
+        "baseline_sha256": "d278da60cc05f545b79df59e33b59fcd1454deac9f4558cbcc007fce7aaec07c",
+        "candidate_sha256": "d278da60cc05f545b79df59e33b59fcd1454deac9f4558cbcc007fce7aaec07c"
+      },
+      "copy_span": {
+        "normalized_exact": true,
+        "baseline_sha256": "5f18cd7c592957bd8da157619569ffb6786bced307cb2a94afd2c9fd9bfc1c6c",
+        "candidate_sha256": "5f18cd7c592957bd8da157619569ffb6786bced307cb2a94afd2c9fd9bfc1c6c"
+      },
+      "up_action_eval": {
+        "normalized_exact": true,
+        "baseline_sha256": "75c57558af5840d26f69f4e3689e4702144b698db3a6b0b6071a4a13b7769407",
+        "candidate_sha256": "75c57558af5840d26f69f4e3689e4702144b698db3a6b0b6071a4a13b7769407"
+      }
+    }
+  },
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 22600,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          4
+        ],
+        [
+          128,
+          4
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 22600,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          4
+        ],
+        [
+          128,
+          4
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 39,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "compile_variants": 4,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "resource_rows": 2,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "5087afbd703ec3f842dd938d3add835383618a661ac2465d3dc156491e5b5fa1",
+    "candidate-compute_75": "310c6c558ade4abfbdf496cbe9948aa14f8f760dae3270b77f4fa08ed116be7a"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "accepted_main_live_PTX_unchanged": true,
+  "limits": "Compiler/load resource feasibility only. PTX changes and theoretical occupancy do not establish ordered-card-sum/synchronization correctness, dynamic occupancy, GPU speed, actual whole CPU/memory/capacity costs or application behavior. Exact raw single/mixed-node and metadata controls plus complete performance qualification remain required."
+}

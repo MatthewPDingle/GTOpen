@@ -1,0 +1,88 @@
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:30:21
+   |
+30 | use solver::store::{Storage, Store};
+   |                     ^^^^^^^
+   |
+note: the name `Storage` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:30:21
+   |
+30 | use solver::store::{Storage, Store};
+   |                     ^^^^^^^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:14
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |              ^^^^^^^^^
+   |
+note: the name `Algorithm` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:14
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |              ^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:25
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                         ^^^^^^
+   |
+note: the name `Solver` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:25
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                         ^^^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:33
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                 ^^^^
+   |
+note: the name `Spot` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:33
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                 ^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:39
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                       ^^^^^^^^^^
+   |
+note: the name `SpotConfig` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe-r2.rs:31:39
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                       ^^^^^^^^^^
+
+warning: 5 warnings emitted
+

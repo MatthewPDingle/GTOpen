@@ -1,0 +1,20 @@
+{
+  "reviewer": "/root/model_evidence_review",
+  "reviewed_test_sha256": "cb672486733f2e51bd03f066abbd1620a1f1b173e8575d77383f3bf44d3945d1",
+  "verdict": "source pass; no actionable defect found",
+  "scope": "read-only source review; no build or GPU execution",
+  "checks": [
+    "Public API shapes and complete TreeConfig fields",
+    "Explicit restored algorithm and isomorphism settings",
+    "Single-lock save determinism",
+    "Canonical actual-tree paths and stable original-ID selection",
+    "Raw full q+scale fingerprints",
+    "Enforced >=4096 eligibility for both actors",
+    "Warm resume immediate graph capture"
+  ],
+  "unproven": [
+    "Fixture common wide river level for both isomorphism modes",
+    "Baseline equality of eager, captured and replayed evaluation"
+  ],
+  "limitation": "Snapshot saves after raw restoring sync. Saved inactive representation is raw, not the materialized query representation; this remains deterministic for active-state resume."
+}

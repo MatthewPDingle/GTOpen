@@ -1,0 +1,16 @@
+{
+  "id": "E032",
+  "scope": "Source-only cost inventory; no material-cost or compatibility acceptance claim",
+  "mechanism": "Copy exact prior reviewed E020-based host training terminal consolidation, including existing geometry/fallback unit and lifecycle schedule controls.",
+  "new_device_buffers": false,
+  "device_buffer_sizes_layouts_or_serialization_change": false,
+  "cuda_bytes_changed": false,
+  "new_persistent_host_state": "One u32 terminal_grid_limit field. Rust struct padding/size impact was not measured; no new source-level heap container.",
+  "constructor_cost": "One MAX_GRID_DIM_X device-attribute query before stream work. Error/nonpositive result chooses old schedule without a new construction error.",
+  "host_scheduling_cost": "Stack Option<[LevelSpan;2]> and once(None).chain(reverse levels) iterator, checked full lengths and branches; no source heap allocation added. Extra empty initial phase exists on fallback.",
+  "gpu_graph_and_locality_cost": "Terminal grid sizes, execution order and graph node counts change; block dimensions, shared bytes, kernel bodies and per-node CTA work remain exact. Actual graph/executable allocations, scheduling/locality effects and complete-cycle compatibility are not proven cost-free.",
+  "fallback": "Both terminal lengths must fit i32 and the positive queried grid limit; otherwise both preserve original per-level terminal schedule. Existing per-level bounds remain preexisting. No capability is inferred from earlier samples.",
+  "test_independence_limit": "The existing legacy_iteration forces terminal_grid_limit0 but shares dispatcher code. Immutable accepted E020 executable and later original controls remain the independent oracle.",
+  "required_before_adoption": "Fresh geometry/lifecycle/eager/profile/evaluation/standalone feature-continuation controls and actual consolidation/fallback/capacity behavior, including any material graph-memory change, plus fixed user1% confirmation/fixture/holdout/cumulative requirements.",
+  "compiler_native_gpu_executed": false
+}

@@ -1,0 +1,12 @@
+--- E020/kernels.cu
++++ E030/kernels.cu
+@@ -163,7 +163,8 @@
+     const float* ro = local_reach;
+     // Card lists preserve opponent hand order; all sums use the existing f32 precision.
+     // Each card has one writer, so no atomic order noise or contention.
+-    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
++    for (int task = threadIdx.x; task < 52; task += blockDim.x) {
++        u32 card = card_off[53 + task];
+         float sum = 0.0;
+         for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
+             sum += (float)ro[card_idx[k]];

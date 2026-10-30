@@ -1,0 +1,141 @@
+{
+  "id": "E029-direct",
+  "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+  "baseline": "Accepted E020 complete up_show",
+  "candidate": "Exact E029 complement-only up_show",
+  "baseline_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841",
+  "baseline_physical_threads": 128,
+  "candidate_physical_threads": 128,
+  "logical_scan_threads": 128,
+  "matrix": {
+    "valid_opponent_counts": [
+      0,
+      1,
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      1081
+    ],
+    "final_boards": [
+      "Ks7h2dQhTc",
+      "AsKsQsJsTs"
+    ],
+    "other_player_valid_count": 257,
+    "player_orientations": [
+      0,
+      1
+    ],
+    "reach_profiles": [
+      "all_zero",
+      "sparse_rounding_witness",
+      "seeded_ordinary",
+      "subnormal_mixed_scales"
+    ],
+    "regular_comparison_pairs": 148,
+    "zero_count_pairs": 4,
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "active_nodes_per_regular_launch": 2,
+    "node_payouts": [
+      [
+        5,
+        -5,
+        0
+      ],
+      [
+        4.5,
+        -5,
+        -0.25
+      ]
+    ],
+    "root_ranges": "Final-board-valid hands plus deterministic hands blocked only by the turn/river; empty valid range retains blocked root hands. Largest legal final-board range1081.",
+    "zero_count_matrix": "Both boards and orientations at m257, seeded ordinary profile, count0 and positive grid.",
+    "extra_full_own_pairs": 4,
+    "extra_full_own_cases": "Existing two boards and both labels at m257, seeded_ordinary; remove/reindex final-board-blocked own hands only."
+  },
+  "orientation_scope": "Inherited reversed-range orientation coverage plus four full-own cases; not a full crossing of every opponent count with both labels.",
+  "corpus_sha256": "a194947cc8bb0de8fb8da5c1908bb5c4312aec6ae00f4a58080a4b5871a6de42",
+  "corpus_bytes": 4752553,
+  "expected": {
+    "geometry_count": 40,
+    "regular_pairs": 148,
+    "zero_count_pairs": 4,
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "stdout_markers": 155,
+    "raw_result_records": 152,
+    "active_words_compared": 80952,
+    "output_guard_word_checks": 535072,
+    "device_input_buffer_checks": 6536,
+    "device_input_word_checks": 1512976,
+    "rounding_witness_checks": 2,
+    "input_buffers_per_arm": [
+      21,
+      22
+    ]
+  },
+  "source_compile_options": "arch=compute_120 only; other cudarc CompileOptions production defaults. Same context, separate full modules, root-only serialized execution.",
+  "resource_admission": "Before any launch require actual device/function128thread and dynamic+static shared allocations fit default limits. No register/local/occupancy nonregression or timing gate.",
+  "required_correctness": [
+    "Accepted Rust evaluate7 rechecks every inherited/generated rank before context creation; inherited148 cases retain exact active hand, reach, payout and bound values.",
+    "Dense slot0/slot1 p-valid and complement metadata replace old arbitrary prefix padding. Check both exact partitions and derived offset/count; preserve nonzero active slot/start, CFV/reach permutation, padding and excess blocks.",
+    "Baseline uses unchanged E020 ABI; candidate alone adds p_missing_idx immediately after p_idx. Both launch128threads with unchanged dynamic shared formula. Compare every output bit and read back all21/22 input buffers.",
+    "All empty/partial/full own sets covered, including positive root nh with empty valid own list. Nonempty complement tails remain poisoned; logically empty complement uses one unused zero u32 dummy as production. All active output spans start poisoned, absent own hands must become+0, padding/count0 outputs remain unchanged.",
+    "Retain all-zero, tail lengths, finite mixed scales, sparse two rounding witnesses and nonzero anti-vacuity. All observed output bits mandatory, including any nonfinite output; no NaN-input/payload generalization.",
+    "Explicit mismatch and guard-failure output arrays are retained before failure. Fixed corpus/order once only; no retries or outcome-driven exclusions.",
+    "Both full source modules compile with production options. Eight unaffected PTX entry bodies must match; changed up_show ABI is deliberate. No old D050/D051 numerical or PTX result is used as equivalence proof for E029."
+  ],
+  "raw_evidence": "Preserve original D051 corpus plus new dense corpus, both complete raw CFV output vectors for152cases, per-case guards/input counts, source/PTX/command/DLL/rlib/binary hashes and all failures.",
+  "stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "minimum_free_bytes": 53687091200,
+  "output_reservation_bytes": 1073741824,
+  "gpu_lock": "S:\\GTOpen-research\\postflop-gpu-20261016\\gpu-run.lock",
+  "live_solve_refusal": true,
+  "telemetry": "read-only pre/post only; no polling during native execution",
+  "preserve_failure_no_retry": true,
+  "candidate_variants": 1,
+  "outcome_triggered_extensions": false,
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "numerical_validation": "not executed",
+  "root_execution_requires": "Frozen independent E029 source and direct source/script review; all162 accepted E020 source identities; idle serialized slot. Preparer never compiles or launches kernels.",
+  "required_terminal_validation": {
+    "id": "E029-direct",
+    "verdict": "PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON",
+    "exactness_pass": true,
+    "numerical_validation": "executed",
+    "baseline_physical_threads": 128,
+    "candidate_physical_threads": 128,
+    "logical_scan_threads": 128,
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "performance_measurement": false,
+    "candidate_accepted": false
+  },
+  "terminal_validation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-direct-independent-review\\validation.json",
+  "later_gate": "Independent terminal exact PASS is required before E029 source activation/build. Fixed primary V029-unit,B095,E029R1,E029R2,B096,B097,E029R3 and all conditional broad/wide/cumulative gates remain unchanged.",
+  "metadata_contract": {
+    "slots": 2,
+    "own_valid_offsets": [
+      0,
+      "m_p"
+    ],
+    "own_valid_counts": [
+      "m_p",
+      "m_p"
+    ],
+    "missing_start": "slot*nh_p-p_off[slot]",
+    "missing_count": "nh_p-p_cnt[slot]",
+    "logical_empty_storage": "one unused zero u32; not a logical complement element",
+    "full_own_extra_cases": 4,
+    "inherited_case_records": 148,
+    "inherited_active_bits_preserved": true
+  }
+}

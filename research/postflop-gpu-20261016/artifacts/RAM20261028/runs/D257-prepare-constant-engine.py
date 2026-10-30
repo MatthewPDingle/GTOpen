@@ -1,0 +1,57 @@
+import ast,json,re,shutil,sys,urllib.request
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'epoch'));import common as h
+h.custody();h.ar.refuse_active(h.ar.live_status());assert not(ROOT/'gpu-run.lock').exists()and not(ROOT/'epoch-sequence.lock').exists();direct=ROOT/'comparisons/D256-stride-up-action-root-check/report.json';assert h.read(direct)['cases']==819 and h.read(ROOT/'runs/D256-constant-action-r2/execution/reader-complete.json')['all_owned_children_terminal']
+A=ROOT/'runs/D250-cluster-engine';S=ROOT/'runs/E112-source';R=ROOT/'runs/E112-resource';H=ROOT/'runs/D257-constant-engine';H.mkdir(exist_ok=False)
+old=(A/'gpu/mod.rs').read_bytes().decode();shim=old[old.index('pub mod plan {'):old.index('\nmod arena;')];suffix=old[old.index('\nimpl GpuSolver {\n    pub fn d150_validate'):old.index('\nimpl GpuSolver { pub fn d250_cluster_selected')];projection={}
+for arm in['baseline','candidate']:
+ d=H/arm;d.mkdir();prod=(S/(arm+'-mod.rs')).read_bytes().decode();src=prod.replace('pub mod plan;',shim,1).replace('plan.use_full_action_arenas(&solver.spot);','plan::full_arena_adapter(&mut plan, &solver.spot);',1)
+ for decl in['pub fn research_continuation_sweep(','fn research_continuation_sweep_impl(']:
+  needle='    #[cfg(feature = "preflop-research")]\n    '+decl;assert src.count(needle)==1;src=src.replace(needle,'    '+decl,1)
+ a=src.index('        static PTX:');b=src.index('            .clone()?;',a)+len('            .clone()?;');original=src[a:b];binding='        let ptx = crate::d257_ptx(arch);';src=src[:a]+binding+src[b:];back=src.replace(binding,original,1)
+ for decl in['pub fn research_continuation_sweep(','fn research_continuation_sweep_impl(']:back=back.replace('    '+decl,'    #[cfg(feature = "preflop-research")]\n    '+decl,1)
+ back=back.replace(shim,'pub mod plan;',1).replace('plan::full_arena_adapter(&mut plan, &solver.spot);','plan.use_full_action_arenas(&solver.spot);',1);assert back==prod
+ observed=suffix;replacements=[]
+ if arm=='candidate':
+  oldzero='        records.push(crate::capture_zero(&self.stream,"disc",&self.d_disc,&mut out));';newzero='        let mut discount_bytes=self.discount_symbol().unwrap();\n        let discount_view=unsafe{discount_bytes.transmute_mut::<f32>(3).unwrap()};\n        records.push(crate::capture_zero(&self.stream,"disc",&discount_view,&mut out));';assert observed.count(oldzero)==1;observed=observed.replace(oldzero,newzero,1);replacements.append((oldzero,newzero))
+  oldfield='        field!("d_disc", &self.d_disc);';newfield='        let mut discount_bytes=self.discount_symbol().unwrap();\n        let discount_view=unsafe{discount_bytes.transmute_mut::<f32>(3).unwrap()};\n        field!("d_disc", &discount_view);';assert observed.count(oldfield)==1;observed=observed.replace(oldfield,newfield,1);replacements.append((oldfield,newfield))
+ reverse=observed
+ for before,after in reversed(replacements):reverse=reverse.replace(after,before,1)
+ assert reverse==suffix
+ region='''
+impl GpuSolver { pub fn d257_discount_region(&self)->[u64;2] {
+'''
+ if arm=='candidate':region+='    let view=self.discount_symbol().unwrap();let(ptr,guard)=cudarc::driver::DevicePtr::device_ptr(&view,&self.stream);drop(guard);[ptr,view.len()as u64]\n'
+ else:region+='    let(ptr,guard)=cudarc::driver::DevicePtr::device_ptr(&self.d_disc,&self.stream);drop(guard);[ptr,(self.d_disc.len()*4)as u64]\n'
+ region+='} }\n';(d/'mod.rs').write_bytes((src+observed+region).encode());shutil.copyfile(h.REPO/'crates/solver/src/gpu/arena.rs',d/'arena.rs');shutil.copyfile(S/(arm+'-kernels.cu'),d/'kernels.cu');p=R/('baseline-compute_120.ptx'if arm=='baseline'else'execution/candidate-compute_120.ptx');shutil.copyfile(p,H/(arm+'.ptx'));projection[arm]={'frozen_host_sha256':h.sha(S/(arm+'-mod.rs')),'adapted_host_sha256':h.sha(d/'mod.rs'),'known_plan_cfg_sealed_PTX_adapters_reverse_exact':True,'observer_replacements':[{'old':a,'new':b}for a,b in replacements],'observer_full_reverse_to_original':True}
+shutil.copyfile(ROOT/'runs/D257-observed-wrapper.rs',H/'observed.rs');probe=(A/'probe.rs').read_bytes().decode().replace('D250','D257').replace('d250','d257');edits=[]
+def edit(old,new):
+ global probe
+ assert probe.count(old)==1,(old,probe.count(old));at=probe.index(old);probe=probe[:at]+new+probe[at+len(old):];edits.append((at,old,new))
+edit('#[path="gpu/mod.rs"]mod observed;','#[path="observed.rs"]mod observed;')
+edit('d:&CudaSlice<T>,expected:&[T]','d:&impl cudarc::driver::DevicePtr<T>,expected:&[T]')
+edit('d:&CudaSlice<f32>,out:&mut BufWriter<File>','d:&impl cudarc::driver::DevicePtr<f32>,out:&mut BufWriter<File>')
+edit('    assert_eq!(bi, gi);','    assert_eq!(bi["wrapper_bytes"],4448);assert_eq!(gi["wrapper_bytes"],4400);\n    let mut expected_info=bi.clone();expected_info["wrapper_bytes"]=json!(4400);assert_eq!(expected_info,gi);')
+edit('"info": bi, "all65other_device_arrays_exact": true','"info": bi, "candidate_info":gi, "all65other_device_arrays_exact": true')
+oldnew='assert_eq!(result.d257_cluster_selected(),arm==1,"actual constructor kernel selection");result';newnew='assert_eq!(result.d257_arm(),arm,"actual frozen host arm");let region=result.d257_discount_region();assert_eq!(region[1],12);println!("D257_DISCOUNT_BIND {}",json!({"arm":arm,"call":D257_BINDS[arm].load(std::sync::atomic::Ordering::SeqCst),"region":region,"space":if arm==0{"global_allocation"}else{"module_constant"}}));result';edit(oldnew,newnew)
+back=probe
+for at,before,after in reversed(edits):assert back[at:at+len(after)]==after;back=back[:at]+before+back[at+len(after):]
+assert back==(A/'probe.rs').read_bytes().decode().replace('D250','D257').replace('d250','d257');(H/'probe.rs').write_bytes(probe.encode())
+audit=(A/'audit.py').read_bytes().decode().replace('D250-cluster-engine','D257-constant-engine').replace("'id':'D250'","'id':'D257'").replace('pass_scoped_cluster_metadata_engine_raw_lifecycle_equivalence','pass_scoped_constant_engine_raw_lifecycle_equivalence').replace('sealedoriginal/metadata-sharingPTX','sealedoriginal/constantdiscountPTX')
+needle="        info = phase['info']\n        b = gpu";replacement="        info = phase['info'];candidate_info=phase['candidate_info'];req(info['wrapper_bytes']==4448 and candidate_info['wrapper_bytes']==4400,'actual declared wrapper sizes');req(candidate_info==dict(info,wrapper_bytes=4400),'all other metadata exact')\n        b = gpu";assert audit.count(needle)==1;audit=audit.replace(needle,replacement,1)
+extra='''
+import json
+bindings=[json.loads(l.split('D257_DISCOUNT_BIND ',1)[1])for l in(H/'execution/probe.stdout.log').read_text(encoding='utf-8').splitlines()if'D257_DISCOUNT_BIND 'in l]
+req(len(bindings)==144,'all constructor discount bindings')
+for i in range(0,144,2):
+ a,b=bindings[i:i+2];req(a['arm']==0 and b['arm']==1 and a['call']==b['call']==i//2+1,'actual constructor arm and order');req(a['space']=='global_allocation'and b['space']=='module_constant','explicit discount memory spaces');ap,az=a['region'];bp,bz=b['region'];req(az==bz==12 and ap>0 and bp>0 and(ap+az<=bp or bp+bz<=ap),'live originalglobal/candidateconstant regions disjoint')
+''';needle='h.custody()\nD =';assert audit.count(needle)==1;audit=audit.replace(needle,extra+'\nh.custody()\nD =',1);audit=audit.replace("'candidate_accepted':False","'actual_constructor_discount_bindings':144,'wrapper_size_change_checked':[4448,4400],'candidate_accepted':False");ast.parse(audit);(H/'audit.py').write_bytes(audit.encode())
+execute=(A/'execute.py').read_bytes().decode().replace('D250-cluster-engine','D257-constant-engine').replace('D250','D257').replace('metadata-sharing','constant-discount');ast.parse(execute);(H/'execute.py').write_bytes(execute.encode());review=h.read(A/'source-review.json');review.update(id='D257',at=h.now(),production_source_projection=projection,source='Two actual frozen Rust host types selected by a diagnostic enum that only forwards existing methods. Same original36cases/752phases and observer suffix, except candidate disc field read fromactual borrowed3floatmoduleview. Constructorcapture genericDevicePtr accepts both ownedglobal andborrowedconstant withoutchanging copiedwordcounts/oracles. Original8otherkernels/oldplan/cadence/quality unchanged. No diagnostic enum orsealedPTX shortcut entersproduction orspeed binaries.',scope='Originalfull36caseF32/compressed/DCFR/CFR+/iso/noiso/cold/warm/eager/graph/locks/save/resume/plaincontinuation raw corpus. All66semanticconstructor/devicefields retained; formerd_disc labelnowcandidateconstant3floatrawimage. Actualwrapper4448baseline/4400candidate checkedprospectively; everyothermetadata field mustexactlymatch. Bothinfos retained. All144actualconstructor discountregions/size/memoryspace/arms/calls retained; current pairregions disjoint. No numericaltolerance ordevicefieldomission. Fullcanonical/ordinary/material/performance gates remain.',failure=h.read(S/'source-review.json')['failure']);h.save(H/'source-review.json',review);h.save(H/'probe-adapter.json',{'at':h.now(),'original_probe_sha256':h.sha(A/'probe.rs'),'all_positioned_edits_reverse_to_original_after_namespace':True,'edits':[{'position':a,'old':b,'new':c}for a,b,c in edits]})
+oldp=h.read(A/'protocol.json');cmd=[x.replace(str(A),str(H))for x in oldp['rustc_command']];files=[Path(__file__),ROOT/'runs/D257-observed-wrapper.rs',A/'protocol.json',A/'source-review.json',A/'gpu/mod.rs',A/'probe.rs',A/'audit.py',A/'execute.py',S/'manifest.json',S/'source-review.json',R/'report-r2.json',direct,ROOT/'runs/D254-constant-host-operand/report-r2.json',ROOT/'epoch/common.py']+[p for p in H.rglob('*')if p.is_file()]+[p for p in(ROOT/'reference/accepted-e080-deps').iterdir()if p.is_file()]
+h.save(H/'protocol.json',{**{k:v for k,v in oldp.items()if k not in['id','at','status','rustc_command','input_sha256','scope','failure']},'id':'D257','at':h.now(),'status':'FROZEN_PRE_COMPILER_AND_CONSTANT_ENGINE_CFR_KERNELS','rustc_command':cmd,'input_sha256':{str(p):h.sha(p)for p in files},'scope':review['scope'],'failure':review['failure']})
+for name in['protocol.json','source-review.json','probe-adapter.json']:
+ p=H/name;dst=h.ar.DASHBOARD/'evidence'/H.name/name;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dst)
+ with urllib.request.urlopen(h.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+H.name+'/'+name,timeout=20)as z:assert z.read()==p.read_bytes()
+with h.ar.exclusive_lock(h.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=h.read(h.ar.STATUS);s['experiments'].append({'id':'D257','title':'Constant-discount solver engine raw lifecycle','kind':'diagnostic','status':'staged','accepted':False,'measurement_epoch':'RAM20261028','stage':'Original36cases/752phases frozen','reason':'Same full engine raw matrix, actual baseline/candidate host types, all66semanticfields andconstantwordimages. Actualwrapper4448/4400 explicitlychecked; allothermetadata exact. No speedclaim.','evidence':[{'label':n,'url':'evidence/'+H.name+'/'+n}for n in['protocol.json','source-review.json','probe-adapter.json']]});e=next(x for x in s['experiments']if x['id']=='E112');e.update(stage='Direct819cases passed; original full engine matrix frozen',correctness='direct_action_raw_exact_engine_pending');s.update(updated_at=h.now(),active_experiment='D257',stage='Constant discounts: full engine accuracy controls',activity='Validate original36case complete state/lifecycle matrix before timing. E080 remains live.');h.ar.atomic_json(h.ar.STATUS,s)
+print(h.sha(H/'protocol.json'),flush=True)

@@ -1,0 +1,65 @@
+{
+  "scope": "Parsing only; not Rust typechecking, CUDA compilation or tests.",
+  "checks": [
+    {
+      "path": "candidate/crates/solver/examples/continuation_storage_capacity.rs",
+      "sha256": "c2d7f36a175f518f7962ac21076a6f2f4cfd06e3af8e38a7d3faf49ada5f7442",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/examples/hu_context_capacity.rs",
+      "sha256": "2643457e1051544c8b25785d790e3ad7ab5d3528e16056ada322ff0d16fb960e",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/game.rs",
+      "sha256": "660363146a5ddd050277d4297efee92069b7bf5e1bba69b3ed881f7d382833d2",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/continuation_capacity.rs",
+      "sha256": "94d38bf7ed1241aa93c0fde614cdc9645a546206c522d4ce551ccf967735d966",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/continuation_host_paging_tests.rs",
+      "sha256": "eeab4c40bc07e7d33d36bafc0bc84b702e1f0c3227cf25621fbb00114acc98ee",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/continuation_paging.rs",
+      "sha256": "de02a25550e4167ebd9deb5f5d0a3b968325dce604920ec43e66e5f556cd7700",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/continuation_ssd_paging_tests.rs",
+      "sha256": "dd3315a9c1818f3051ac86a026556cbedaf43747ed19737a3a00b4f9f9046a3b",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/continuation_storage.rs",
+      "sha256": "16e966e7cea7e01213ba4a8cf24958c18369ac3d596b258e479a300893345312",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/mod.rs",
+      "sha256": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+      "exit_code": 0,
+      "stderr": ""
+    },
+    {
+      "path": "candidate/crates/solver/src/gpu/plan.rs",
+      "sha256": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+      "exit_code": 0,
+      "stderr": ""
+    }
+  ]
+}

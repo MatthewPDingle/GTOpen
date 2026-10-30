@@ -1,0 +1,43 @@
+{
+  "id": "D036-r2-numerical-provenance-supplement",
+  "created_at": "2026-10-16T10:07:43.080563+00:00",
+  "verdict": "PASS_SOURCE_PROTOCOL_ONLY; runtime validation remains unperformed",
+  "r2_prepared_manifest_sha256": "c23945d7afbf1364931047f58b41dc2b5460d854d39225fb3cbd86d4e298be18",
+  "r1_artifacts_unchanged": true,
+  "r2_all_prepared_artifacts_verified": true,
+  "shared_nonprobe_inputs_byte_identical_count": 15,
+  "sole_executable_source_delta": "Adds max_threads_per_block function-attribute query to existing full-kernel resource rows; deleting exact added line reproduces R1 bytes",
+  "numerical_checks_corpus_cuda_protocol_runner_unchanged": true,
+  "runtime_expected_matrix_unchanged": true,
+  "additional_runtime_resource_check": "Eight resource rows must report max_threads_per_block consistently for each variant, supporting all tested shapes through 256 threads; no value is assumed before execution",
+  "observed_execution": {
+    "status": "rustc_failed_before_native_probe",
+    "rustc_returncode": 1,
+    "e0277_errors": 62,
+    "cause": "Pinned cudarc DriverError and CompileError do not implement std::error::Error, so implicit conversion through ? to Box<dyn Error> fails",
+    "native_probe_binary_absent": true,
+    "native_numerical_cases_run": 0,
+    "no_favorable_sample_replacement": true,
+    "failure_evidence_preserved": true
+  },
+  "r3_requirement": "Review an additive error-wrapper-only repair against unchanged numerical/protocol/source inputs before root execution; R2 failed logs remain immutable",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe\\prepared-manifest.json": "aa00b819764e2693d5c37c63f0c668308851b249d130274b6ad567d325ebadfa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\prepared-manifest.json": "c23945d7afbf1364931047f58b41dc2b5460d854d39225fb3cbd86d4e298be18",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\probe.rs": "b22c6552a4dd0ff11c427a8199a9a098291086a5ee877a6deac81f0e02727e51",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\r1-to-r2.patch": "069de18433b67a85dffdd55f38602989399e29a8a29fa95e1c302e7c5f5b98c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\execution-started.json": "b6e22777bec62959fbf9547fe74d298cbaa00c65ba121c6855b5fc0ed96ff74f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\execution-manifest.json": "b28a1c0a8a72079f79f55c8a369f21cfc28f9f047c4936d17d00cdb913b8e7a5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\failure.json": "64cdf8dfebed3d458e9c4340a26f9a90d588e038ca78a2da2b814fd438267332",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.command.json": "e15aab2ddac3b9d26073c58d51433898706d72052372ba3c09deb20a847d27ad",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.stderr.log": "bf8f62bd85f64723ad4247d7bb4e1cdff724ffd7b6b9b80e6120cce2f6c9ec2c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\frozen-protocol-validation.json": "77ef8708090e3cdf5460025c78ba91bb579b4cf331bf50a6a5d249c2e8a36d3f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\runtime-expected-matrix.json": "68421e9a94be1e4184c554e1836b8b4243586631f7750aa56f5d2ab352b549b7"
+  },
+  "limits": [
+    "Prospective numerical protocol PASS is not compilation or runtime correctness",
+    "No timing or performance acceptance",
+    "No review build, GPU call, source or dashboard mutation"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "D183-late-history-addendum",
+  "at": "2026-10-28T19:48:21.353872+00:00",
+  "status": "phase_timings_excluded_from_candidate_or_headroom_admission",
+  "finding": "D110 was a prior failed internal planner observer. Its recorded closure prohibits finer/coarser marker or timing rescue. This match should have been found before D183.",
+  "correction": "Keep D183 full plan raw-byte equivalence and original observations. Do not use D183 phase medians, ratios or inferred removable cost to admit an optimizer or headroom claim. Do not repeat or retune the observer.",
+  "E099_dependency": "D184/E099 uses actual retained plan geometry and independent source alignment/ownership checks; no D183 phase timing was scored. E099 independent full raw and complete-cycle rejection stands.",
+  "original_artifacts_modified": false,
+  "native_or_compiler_repeats": 0,
+  "inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D110-plan-stage-root-check\\report.json": {
+      "sha256": "323c0bf147aef9578ec73f8c7c19abc466c438dfb2723d942ea6ba2379dc4785",
+      "bytes": 10977
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-terminal\\report.json": {
+      "sha256": "8642558ae43210f53020794ed7e375f8597cf34a8f3c58882295c0d74d34e552",
+      "bytes": 2032
+    }
+  }
+}

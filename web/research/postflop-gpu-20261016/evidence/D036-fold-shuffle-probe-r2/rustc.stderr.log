@@ -1,0 +1,907 @@
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:73:50
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+73 |     let d_data=stream.clone_htod(&floats(&input))?;
+   |                       ---------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                       |
+   |                       this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:74:46
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+74 |     let d_offsets=stream.clone_htod(&offsets)?; let d_lengths=stream.clone_htod(&lengths)?;
+   |                          --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                          |
+   |                          this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:74:90
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+74 |     let d_offsets=stream.clone_htod(&offsets)?; let d_lengths=stream.clone_htod(&lengths)?;
+   |                                                                      --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                      |
+   |                                                                      this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:81:52
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+81 |             let mut out=stream.clone_htod(&initial)?;
+   |                                --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                |
+   |                                this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:83:134
+   |
+66 | ...:fs::File>) -> Result<usize> {
+   |                   ------------- required `DriverError: std::error::Error` because of this
+...
+83 | ....arg(&mut out).launch(LaunchConfig { grid_dim:(count+2,1,1), block_dim:(block,1,1), shared_mem_bytes:0 })?; }
+   |                   ------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                   |
+   |                   this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:84:47
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+84 |             let actual=stream.clone_dtoh(&out)?;
+   |                               ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                               |
+   |                               this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:85:59
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+85 |             let unchanged=bits(&stream.clone_dtoh(&d_data)?);
+   |                                        -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                        |
+   |                                        this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:86:59
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+86 |             let read_offsets=stream.clone_dtoh(&d_offsets)?; let read_lengths=stream.clone_dtoh(&d_lengths)?;
+   |                                     ----------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                     |
+   |                                     this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:86:108
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+86 |             let read_offsets=stream.clone_dtoh(&d_offsets)?; let read_lengths=stream.clone_dtoh(&d_lengths)?;
+   |                                                                                      ----------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                      |
+   |                                                                                      this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> probe.rs:87:33
+   |
+66 |     raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+   |                                            ------------- required `DriverError: std::error::Error` because of this
+...
+87 |             stream.synchronize()?;
+   |                    -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                    |
+   |                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:133:46
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+133 |         let d_nodes=stream.clone_htod(&nodes)?; let d_owner=stream.clone_htod(&owner)?;
+    |                            ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                            |
+    |                            this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:133:86
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+133 |         let d_nodes=stream.clone_htod(&nodes)?; let d_owner=stream.clone_htod(&owner)?;
+    |                                                                    ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                    |
+    |                                                                    this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:134:53
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+134 |         let d_twin=stream.clone_htod(&floats(&twin))?; let d_tlose=stream.clone_htod(&floats(&tlose))?;
+    |                           --------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                           |
+    |                           this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:134:102
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+134 |         let d_twin=stream.clone_htod(&floats(&twin))?; let d_tlose=stream.clone_htod(&floats(&tlose))?;
+    |                                                                           ---------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                           |
+    |                                                                           this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:135:46
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+135 |         let d_rsrc0=stream.clone_htod(&rsrc0)?; let d_rsrc1=stream.clone_htod(&rsrc1)?;
+    |                            ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                            |
+    |                            this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:135:86
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+135 |         let d_rsrc0=stream.clone_htod(&rsrc0)?; let d_rsrc1=stream.clone_htod(&rsrc1)?;
+    |                                                                    ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                    |
+    |                                                                    this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:136:57
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+136 |         let d_reach0=stream.clone_htod(&floats(&reach0))?; let d_reach1=stream.clone_htod(&floats(&reach1))?;
+    |                             ----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                             |
+    |                             this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:136:108
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+136 |         let d_reach0=stream.clone_htod(&floats(&reach0))?; let d_reach1=stream.clone_htod(&floats(&reach1))?;
+    |                                                                                ----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                                |
+    |                                                                                this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:137:42
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+137 |         let d_pc1=stream.clone_htod(&pc1)?; let d_pc2=stream.clone_htod(&pc2)?;
+    |                          ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                          |
+    |                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:137:78
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+137 |         let d_pc1=stream.clone_htod(&pc1)?; let d_pc2=stream.clone_htod(&pc2)?;
+    |                                                              ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                              |
+    |                                                              this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:138:42
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+138 |         let d_off=stream.clone_htod(&off)?; let d_idx=stream.clone_htod(&idx)?;
+    |                          ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                          |
+    |                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:138:78
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+138 |         let d_off=stream.clone_htod(&off)?; let d_idx=stream.clone_htod(&idx)?;
+    |                                                              ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                              |
+    |                                                              this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:139:44
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+139 |         let d_same=stream.clone_htod(&same)?; let d_slots=stream.clone_htod(&slots)?;
+    |                           -----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                           |
+    |                           this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:139:84
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+139 |         let d_same=stream.clone_htod(&same)?; let d_slots=stream.clone_htod(&slots)?;
+    |                                                                  ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                  |
+    |                                                                  this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:156:71
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+156 |                     let mut d_out=stream.clone_htod(&floats(&initial))?;
+    |                                          -----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                          |
+    |                                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:161:138
+    |
+115 | ...ter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                           --------------------------- required `DriverError: std::error::Error` because of this
+...
+161 | ...    .launch(LaunchConfig {grid_dim:(actual_count as u32+2,1,1),block_dim:(block,1,1),shared_mem_bytes:nh_o as u32*4})?; }
+    |         ----------------------------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |         |
+    |         this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:163:60
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+163 |                     let out=bits(&stream.clone_dtoh(&d_out)?);
+    |                                          ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                          |
+    |                                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+169 |                     }; }
+170 |                     unchanged!(&nodes,&d_nodes,"nodes");
+    |                     ----------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:171:51
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+171 |                     if stream.clone_dtoh(&d_owner)?!=owner { return Err("owner input changed".into()); }
+    |                               --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                               |
+    |                               this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:172:66
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+172 |                     exact(&twin,&bits(&stream.clone_dtoh(&d_twin)?),"twin")?;
+    |                                               -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                               |
+    |                                               this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:173:68
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+173 |                     exact(&tlose,&bits(&stream.clone_dtoh(&d_tlose)?),"tlose")?;
+    |                                                --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                |
+    |                                                this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+174 |                     unchanged!(&rsrc0,&d_rsrc0,"rsrc0"); unchanged!(&rsrc1,&d_rsrc1,"rsrc1");
+    |                     ----------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+174 |                     unchanged!(&rsrc0,&d_rsrc0,"rsrc0"); unchanged!(&rsrc1,&d_rsrc1,"rsrc1");
+    |                                                          ----------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:175:70
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+175 |                     exact(&reach0,&bits(&stream.clone_dtoh(&d_reach0)?),"reach0")?;
+    |                                                 ---------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                 |
+    |                                                 this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:176:70
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+176 |                     exact(&reach1,&bits(&stream.clone_dtoh(&d_reach1)?),"reach1")?;
+    |                                                 ---------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                 |
+    |                                                 this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+177 |                     unchanged!(&pc1,&d_pc1,"pc1"); unchanged!(&pc2,&d_pc2,"pc2");
+    |                     ----------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+177 |                     unchanged!(&pc1,&d_pc1,"pc1"); unchanged!(&pc2,&d_pc2,"pc2");
+    |                                                    ----------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+178 |                     unchanged!(&off,&d_off,"card_off"); unchanged!(&idx,&d_idx,"card_idx");
+    |                     ---------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+178 |                     unchanged!(&off,&d_off,"card_off"); unchanged!(&idx,&d_idx,"card_idx");
+    |                                                         ---------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+179 |                     unchanged!(&same,&d_same,"same_p"); unchanged!(&slots,&d_slots,"cfv_slot");
+    |                     ---------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:168:64
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+168 |                         exact($host,&stream.clone_dtoh($device)?,$name)?;
+    |                                             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                             |
+    |                                             this has type `Result<_, DriverError>`
+...
+179 |                     unchanged!(&same,&d_same,"same_p"); unchanged!(&slots,&d_slots,"cfv_slot");
+    |                                                         -------------------------------------- in this macro invocation
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+    = note: this error originates in the macro `unchanged` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:180:41
+    |
+115 |     raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
+    |                                            --------------------------- required `DriverError: std::error::Error` because of this
+...
+180 |                     stream.synchronize()?;
+    |                            -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                            |
+    |                            this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:221:32
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+221 |     let ctx=CudaContext::new(0)?;
+    |             -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |             |
+    |             this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:222:32
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+222 |     let stream=ctx.new_stream()?;
+    |                    ------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                    |
+    |                    this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:223:26
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+223 |     let device=ctx.name()?; if device!="NVIDIA GeForce RTX 5090" {return Err(format!("wrong device {device}").into());}
+    |                    ------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                    |
+    |                    this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:224:47
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+224 |     let (major,minor)=ctx.compute_capability()?; if (major,minor)!=(12,0) {return Err("wrong architecture".into());}
+    |                           --------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                           |
+    |                           this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `cudarc::nvrtc::CompileError: std::error::Error` is not satisfied
+   --> probe.rs:228:100
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `cudarc::nvrtc::CompileError: std::error::Error` because of this
+...
+228 |         let ptx=compile_ptx_with_opts(source,CompileOptions {arch:Some(arch),..Default::default()})?;
+    |                 -----------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `cudarc::nvrtc::CompileError`
+    |                 |
+    |                 this has type `Result<_, cudarc::nvrtc::CompileError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<cudarc::nvrtc::CompileError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:231:40
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+231 |         let module=ctx.load_module(ptx)?;
+    |                        ----------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                        |
+    |                        this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:233:50
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+233 |             let f=module.load_function("up_fold")?;
+    |                          ------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                          |
+    |                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:238:45
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+238 |                     "registers":f.num_regs()?,"local_bytes_per_thread":f.local_size_bytes()?,"static_shared_bytes":f.shared_size_by...
+    |                                   ----------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                   |
+    |                                   this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:238:92
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+238 |                     "registers":f.num_regs()?,"local_bytes_per_thread":f.local_size_bytes()?,"static_shared_bytes":f.shared_size_by...
+    |                                                                          ------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                          |
+    |                                                                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:238:137
+    |
+213 | ...-> Result<()> {
+    |       ---------- required `DriverError: std::error::Error` because of this
+...
+238 | ...           "registers":f.num_regs()?,"local_bytes_per_thread":f.local_size_bytes()?,"static_shared_bytes":f.shared_size_bytes()?,
+    |                                                                                                                -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                                                                |
+    |                                                                                                                this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:239:70
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+239 |                     "max_threads_per_block":f.max_threads_per_block()?,
+    |                                               -----------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                               |
+    |                                               this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:241:127
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+241 |                     "occupancy_blocks_per_sm_128":f.occupancy_max_active_blocks_per_multiprocessor(128,(nh_o*4) as usize,None)?,
+    |                                                     --------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                     |
+    |                                                     this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:247:50
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+247 |     let full=[modules[0].load_function("up_fold")?,modules[1].load_function("up_fold")?];
+    |                          ------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                          |
+    |                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:247:87
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+247 |     let full=[modules[0].load_function("up_fold")?,modules[1].load_function("up_fold")?];
+    |                                                               ------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                               |
+    |                                                               this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:248:57
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+248 |     let raw_funcs=[modules[2].load_function("raw_total")?,modules[3].load_function("raw_total")?];
+    |                               --------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                               |
+    |                               this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:248:96
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+248 |     let raw_funcs=[modules[2].load_function("raw_total")?,modules[3].load_function("raw_total")?];
+    |                                                                      --------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                                                      |
+    |                                                                      this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:253:39
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+253 |     raw.flush()?; stream.synchronize()?; ctx.check_err()?;
+    |                          -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                          |
+    |                          this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:253:57
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+253 |     raw.flush()?; stream.synchronize()?; ctx.check_err()?;
+    |                                              -----------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                              |
+    |                                              this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:255:25
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+255 |     stream.synchronize()?; ctx.check_err()?;
+    |            -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |            |
+    |            this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+   --> probe.rs:255:43
+    |
+213 | fn run() -> Result<()> {
+    |             ---------- required `DriverError: std::error::Error` because of this
+...
+255 |     stream.synchronize()?; ctx.check_err()?;
+    |                                -----------^ the trait `std::error::Error` is not implemented for `DriverError`
+    |                                |
+    |                                this has type `Result<_, DriverError>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+    = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error: aborting due to 62 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

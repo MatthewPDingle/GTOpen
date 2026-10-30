@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "reviewer": "/root/menu_change_review",
+  "review_type": "Independent read-only review of the sealed extension protocol before execution",
+  "verdict": "PASS",
+  "actionable_findings": [],
+  "protocol": {
+    "path": "S:/GTOpen-research/postflop-gpu-20261016/runs/E016-extension/protocol.json",
+    "sha256": "dc8eacf39025fa8330a7aca35a32f75403aa2de0db6e8967e26569c89fae38f2",
+    "sealed_at": "2026-10-16T08:10:20Z",
+    "hash_verified": true
+  },
+  "checks": {
+    "referenced_artifact_hashes_checked": 13,
+    "referenced_artifact_hash_mismatches": [],
+    "current_source_hashes_checked": 162,
+    "current_source_hash_mismatches": [],
+    "earlier_pairs_retained": 3,
+    "new_pairs": 6,
+    "pooled_pairs": 9,
+    "unique_new_run_ids": 12,
+    "new_run_directories_existing_at_pre_execution_inspection": [],
+    "candidate_first_new_pairs": 3,
+    "baseline_first_new_pairs": 3,
+    "score": "Unchanged sum of per-fixture median complete-cycle times; at least 2 percent reduction independently required for new-six and pooled-nine cohorts",
+    "fixture_guard": "Unchanged AND rule: fixture median regression greater than 3 percent and paired regressions greater than 3 percent in a strict majority, minimum two; at least 4/6 new pairs or 5/9 pooled pairs",
+    "guard_implementation_checked": "X:/Dev/GTOpen-gpu-research-20261016/tools/postflop_compare.py::fixture_regression_guard",
+    "guard_matches_existing_implementation": true,
+    "initial_failed_cohort_keeps_failed_verdict": true,
+    "new_six_and_pooled_nine_must_both_qualify": true,
+    "initial_new_and_pooled_cohorts_reported_separately": true,
+    "all_complete_non_timing_results_must_be_exact": true,
+    "prior_primary_and_broader_correctness_checks_must_remain_passing": true,
+    "D028_remains_diagnostic_under_its_original_protocol": true,
+    "interim_acceptance_prohibited": true,
+    "further_sample_extension_prohibited": true,
+    "selective_rerun_exclusion_binary_edit_or_reclassification_to_rescue_candidate_prohibited": true,
+    "run_failure_stops_execution_and_leaves_qualification_incomplete": true,
+    "failure_of_either_cohort_gate_rejects_E016": true
+  },
+  "sealed_new_order": [
+    "E016C4", "B047", "B048", "E016C5", "E016C6", "B049",
+    "B050", "E016C7", "E016C8", "B051", "B052", "E016C9"
+  ],
+  "interpretation": {
+    "classification": "Outcome-triggered protocol amendment for a bounded engineering acceptance decision",
+    "rationale": "The written program specifies at least three repetitions, not a fixed maximum. D028 provides a measurement-instability rationale without erasing the original failed cumulative cohort. The sealed amendment requires corroboration in both the new and pooled cohorts and terminates after this extension.",
+    "statistical_significance_established": false,
+    "limitations": [
+      "The extension was chosen after observing the initial failure and favorable diagnostic evidence; it is not an untouched confirmatory trial.",
+      "Passing the engineering guard does not prove general absence of a real river regression.",
+      "This audit verifies the protocol and recorded inputs, not the execution or results of the subsequently launched runs.",
+      "No cold-start, arbitrary-tree, deployment or universal hardware performance claim follows from this protocol review.",
+      "The protocol script_sha256 field was not independently matched to an execution-script file in this audit. Execution conformance and script provenance remain for the terminal results audit."
+    ]
+  },
+  "actions": {
+    "gpu_work": false,
+    "builds": false,
+    "source_or_protocol_modification": false,
+    "existing_evidence_modified": false,
+    "artifact_preservation": "This new review file records the completed pre-execution audit; the 12 serial runs were already active when preservation was requested."
+  }
+}

@@ -1,0 +1,1103 @@
+{
+  "id": "small-gain-confirmation",
+  "at": "2026-10-16T22:47:09.243752+00:00",
+  "seed_hex": "68cd13104ac3393908b68612c912b09ccc2175af73009cab4e442ca705e9708b",
+  "draw_count": 16,
+  "redraws": 0,
+  "algorithm": "Python3.12 random.Random(int(seed_hex,16)); block1..4 then family order; independent randrange(6) rejection-sampled index into lexicographically sorted unique permutations of [BC,BC,CB,CB]. One OS-random256bit seed drawn once.",
+  "permutations": [
+    [
+      "BC",
+      "BC",
+      "CB",
+      "CB"
+    ],
+    [
+      "BC",
+      "CB",
+      "BC",
+      "CB"
+    ],
+    [
+      "BC",
+      "CB",
+      "CB",
+      "BC"
+    ],
+    [
+      "CB",
+      "BC",
+      "BC",
+      "CB"
+    ],
+    [
+      "CB",
+      "BC",
+      "CB",
+      "BC"
+    ],
+    [
+      "CB",
+      "CB",
+      "BC",
+      "BC"
+    ]
+  ],
+  "draws": [
+    {
+      "block": 1,
+      "candidate": "E007",
+      "choice": 3
+    },
+    {
+      "block": 1,
+      "candidate": "E008",
+      "choice": 4
+    },
+    {
+      "block": 1,
+      "candidate": "E032",
+      "choice": 4
+    },
+    {
+      "block": 1,
+      "candidate": "E036",
+      "choice": 3
+    },
+    {
+      "block": 2,
+      "candidate": "E007",
+      "choice": 0
+    },
+    {
+      "block": 2,
+      "candidate": "E008",
+      "choice": 0
+    },
+    {
+      "block": 2,
+      "candidate": "E032",
+      "choice": 2
+    },
+    {
+      "block": 2,
+      "candidate": "E036",
+      "choice": 4
+    },
+    {
+      "block": 3,
+      "candidate": "E007",
+      "choice": 5
+    },
+    {
+      "block": 3,
+      "candidate": "E008",
+      "choice": 1
+    },
+    {
+      "block": 3,
+      "candidate": "E032",
+      "choice": 0
+    },
+    {
+      "block": 3,
+      "candidate": "E036",
+      "choice": 0
+    },
+    {
+      "block": 4,
+      "candidate": "E007",
+      "choice": 1
+    },
+    {
+      "block": 4,
+      "candidate": "E008",
+      "choice": 1
+    },
+    {
+      "block": 4,
+      "candidate": "E032",
+      "choice": 3
+    },
+    {
+      "block": 4,
+      "candidate": "E036",
+      "choice": 4
+    }
+  ],
+  "family_interleaving": "for block0..3,round0..3, rotate [E007,E008,E032,E036] by (block+round)%4; each pair runs adjacently",
+  "pairs": [
+    {
+      "block": 1,
+      "round": 1,
+      "candidate": "E007",
+      "pair": 1,
+      "baseline": "SG-E007-B01",
+      "candidate_run": "SG-E007-C01",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C01",
+        "SG-E007-B01"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 1,
+      "candidate": "E008",
+      "pair": 1,
+      "baseline": "SG-E008-B01",
+      "candidate_run": "SG-E008-C01",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C01",
+        "SG-E008-B01"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 1,
+      "candidate": "E032",
+      "pair": 1,
+      "baseline": "SG-E032-B01",
+      "candidate_run": "SG-E032-C01",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C01",
+        "SG-E032-B01"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 1,
+      "candidate": "E036",
+      "pair": 1,
+      "baseline": "SG-E036-B01",
+      "candidate_run": "SG-E036-C01",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C01",
+        "SG-E036-B01"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 2,
+      "candidate": "E008",
+      "pair": 2,
+      "baseline": "SG-E008-B02",
+      "candidate_run": "SG-E008-C02",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B02",
+        "SG-E008-C02"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 2,
+      "candidate": "E032",
+      "pair": 2,
+      "baseline": "SG-E032-B02",
+      "candidate_run": "SG-E032-C02",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B02",
+        "SG-E032-C02"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 2,
+      "candidate": "E036",
+      "pair": 2,
+      "baseline": "SG-E036-B02",
+      "candidate_run": "SG-E036-C02",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B02",
+        "SG-E036-C02"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 2,
+      "candidate": "E007",
+      "pair": 2,
+      "baseline": "SG-E007-B02",
+      "candidate_run": "SG-E007-C02",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B02",
+        "SG-E007-C02"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 3,
+      "candidate": "E032",
+      "pair": 3,
+      "baseline": "SG-E032-B03",
+      "candidate_run": "SG-E032-C03",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C03",
+        "SG-E032-B03"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 3,
+      "candidate": "E036",
+      "pair": 3,
+      "baseline": "SG-E036-B03",
+      "candidate_run": "SG-E036-C03",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B03",
+        "SG-E036-C03"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 3,
+      "candidate": "E007",
+      "pair": 3,
+      "baseline": "SG-E007-B03",
+      "candidate_run": "SG-E007-C03",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B03",
+        "SG-E007-C03"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 3,
+      "candidate": "E008",
+      "pair": 3,
+      "baseline": "SG-E008-B03",
+      "candidate_run": "SG-E008-C03",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C03",
+        "SG-E008-B03"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 4,
+      "candidate": "E036",
+      "pair": 4,
+      "baseline": "SG-E036-B04",
+      "candidate_run": "SG-E036-C04",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C04",
+        "SG-E036-B04"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 4,
+      "candidate": "E007",
+      "pair": 4,
+      "baseline": "SG-E007-B04",
+      "candidate_run": "SG-E007-C04",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C04",
+        "SG-E007-B04"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 4,
+      "candidate": "E008",
+      "pair": 4,
+      "baseline": "SG-E008-B04",
+      "candidate_run": "SG-E008-C04",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B04",
+        "SG-E008-C04"
+      ]
+    },
+    {
+      "block": 1,
+      "round": 4,
+      "candidate": "E032",
+      "pair": 4,
+      "baseline": "SG-E032-B04",
+      "candidate_run": "SG-E032-C04",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B04",
+        "SG-E032-C04"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 1,
+      "candidate": "E008",
+      "pair": 5,
+      "baseline": "SG-E008-B05",
+      "candidate_run": "SG-E008-C05",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B05",
+        "SG-E008-C05"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 1,
+      "candidate": "E032",
+      "pair": 5,
+      "baseline": "SG-E032-B05",
+      "candidate_run": "SG-E032-C05",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B05",
+        "SG-E032-C05"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 1,
+      "candidate": "E036",
+      "pair": 5,
+      "baseline": "SG-E036-B05",
+      "candidate_run": "SG-E036-C05",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C05",
+        "SG-E036-B05"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 1,
+      "candidate": "E007",
+      "pair": 5,
+      "baseline": "SG-E007-B05",
+      "candidate_run": "SG-E007-C05",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B05",
+        "SG-E007-C05"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 2,
+      "candidate": "E032",
+      "pair": 6,
+      "baseline": "SG-E032-B06",
+      "candidate_run": "SG-E032-C06",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C06",
+        "SG-E032-B06"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 2,
+      "candidate": "E036",
+      "pair": 6,
+      "baseline": "SG-E036-B06",
+      "candidate_run": "SG-E036-C06",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B06",
+        "SG-E036-C06"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 2,
+      "candidate": "E007",
+      "pair": 6,
+      "baseline": "SG-E007-B06",
+      "candidate_run": "SG-E007-C06",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B06",
+        "SG-E007-C06"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 2,
+      "candidate": "E008",
+      "pair": 6,
+      "baseline": "SG-E008-B06",
+      "candidate_run": "SG-E008-C06",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B06",
+        "SG-E008-C06"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 3,
+      "candidate": "E036",
+      "pair": 7,
+      "baseline": "SG-E036-B07",
+      "candidate_run": "SG-E036-C07",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C07",
+        "SG-E036-B07"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 3,
+      "candidate": "E007",
+      "pair": 7,
+      "baseline": "SG-E007-B07",
+      "candidate_run": "SG-E007-C07",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C07",
+        "SG-E007-B07"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 3,
+      "candidate": "E008",
+      "pair": 7,
+      "baseline": "SG-E008-B07",
+      "candidate_run": "SG-E008-C07",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C07",
+        "SG-E008-B07"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 3,
+      "candidate": "E032",
+      "pair": 7,
+      "baseline": "SG-E032-B07",
+      "candidate_run": "SG-E032-C07",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C07",
+        "SG-E032-B07"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 4,
+      "candidate": "E007",
+      "pair": 8,
+      "baseline": "SG-E007-B08",
+      "candidate_run": "SG-E007-C08",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C08",
+        "SG-E007-B08"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 4,
+      "candidate": "E008",
+      "pair": 8,
+      "baseline": "SG-E008-B08",
+      "candidate_run": "SG-E008-C08",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C08",
+        "SG-E008-B08"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 4,
+      "candidate": "E032",
+      "pair": 8,
+      "baseline": "SG-E032-B08",
+      "candidate_run": "SG-E032-C08",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B08",
+        "SG-E032-C08"
+      ]
+    },
+    {
+      "block": 2,
+      "round": 4,
+      "candidate": "E036",
+      "pair": 8,
+      "baseline": "SG-E036-B08",
+      "candidate_run": "SG-E036-C08",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B08",
+        "SG-E036-C08"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 1,
+      "candidate": "E032",
+      "pair": 9,
+      "baseline": "SG-E032-B09",
+      "candidate_run": "SG-E032-C09",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B09",
+        "SG-E032-C09"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 1,
+      "candidate": "E036",
+      "pair": 9,
+      "baseline": "SG-E036-B09",
+      "candidate_run": "SG-E036-C09",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B09",
+        "SG-E036-C09"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 1,
+      "candidate": "E007",
+      "pair": 9,
+      "baseline": "SG-E007-B09",
+      "candidate_run": "SG-E007-C09",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C09",
+        "SG-E007-B09"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 1,
+      "candidate": "E008",
+      "pair": 9,
+      "baseline": "SG-E008-B09",
+      "candidate_run": "SG-E008-C09",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B09",
+        "SG-E008-C09"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 2,
+      "candidate": "E036",
+      "pair": 10,
+      "baseline": "SG-E036-B10",
+      "candidate_run": "SG-E036-C10",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B10",
+        "SG-E036-C10"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 2,
+      "candidate": "E007",
+      "pair": 10,
+      "baseline": "SG-E007-B10",
+      "candidate_run": "SG-E007-C10",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C10",
+        "SG-E007-B10"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 2,
+      "candidate": "E008",
+      "pair": 10,
+      "baseline": "SG-E008-B10",
+      "candidate_run": "SG-E008-C10",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C10",
+        "SG-E008-B10"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 2,
+      "candidate": "E032",
+      "pair": 10,
+      "baseline": "SG-E032-B10",
+      "candidate_run": "SG-E032-C10",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B10",
+        "SG-E032-C10"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 3,
+      "candidate": "E007",
+      "pair": 11,
+      "baseline": "SG-E007-B11",
+      "candidate_run": "SG-E007-C11",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B11",
+        "SG-E007-C11"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 3,
+      "candidate": "E008",
+      "pair": 11,
+      "baseline": "SG-E008-B11",
+      "candidate_run": "SG-E008-C11",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B11",
+        "SG-E008-C11"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 3,
+      "candidate": "E032",
+      "pair": 11,
+      "baseline": "SG-E032-B11",
+      "candidate_run": "SG-E032-C11",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C11",
+        "SG-E032-B11"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 3,
+      "candidate": "E036",
+      "pair": 11,
+      "baseline": "SG-E036-B11",
+      "candidate_run": "SG-E036-C11",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C11",
+        "SG-E036-B11"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 4,
+      "candidate": "E008",
+      "pair": 12,
+      "baseline": "SG-E008-B12",
+      "candidate_run": "SG-E008-C12",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C12",
+        "SG-E008-B12"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 4,
+      "candidate": "E032",
+      "pair": 12,
+      "baseline": "SG-E032-B12",
+      "candidate_run": "SG-E032-C12",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C12",
+        "SG-E032-B12"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 4,
+      "candidate": "E036",
+      "pair": 12,
+      "baseline": "SG-E036-B12",
+      "candidate_run": "SG-E036-C12",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C12",
+        "SG-E036-B12"
+      ]
+    },
+    {
+      "block": 3,
+      "round": 4,
+      "candidate": "E007",
+      "pair": 12,
+      "baseline": "SG-E007-B12",
+      "candidate_run": "SG-E007-C12",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B12",
+        "SG-E007-C12"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 1,
+      "candidate": "E036",
+      "pair": 13,
+      "baseline": "SG-E036-B13",
+      "candidate_run": "SG-E036-C13",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C13",
+        "SG-E036-B13"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 1,
+      "candidate": "E007",
+      "pair": 13,
+      "baseline": "SG-E007-B13",
+      "candidate_run": "SG-E007-C13",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B13",
+        "SG-E007-C13"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 1,
+      "candidate": "E008",
+      "pair": 13,
+      "baseline": "SG-E008-B13",
+      "candidate_run": "SG-E008-C13",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B13",
+        "SG-E008-C13"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 1,
+      "candidate": "E032",
+      "pair": 13,
+      "baseline": "SG-E032-B13",
+      "candidate_run": "SG-E032-C13",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C13",
+        "SG-E032-B13"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 2,
+      "candidate": "E007",
+      "pair": 14,
+      "baseline": "SG-E007-B14",
+      "candidate_run": "SG-E007-C14",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C14",
+        "SG-E007-B14"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 2,
+      "candidate": "E008",
+      "pair": 14,
+      "baseline": "SG-E008-B14",
+      "candidate_run": "SG-E008-C14",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C14",
+        "SG-E008-B14"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 2,
+      "candidate": "E032",
+      "pair": 14,
+      "baseline": "SG-E032-B14",
+      "candidate_run": "SG-E032-C14",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B14",
+        "SG-E032-C14"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 2,
+      "candidate": "E036",
+      "pair": 14,
+      "baseline": "SG-E036-B14",
+      "candidate_run": "SG-E036-C14",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B14",
+        "SG-E036-C14"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 3,
+      "candidate": "E008",
+      "pair": 15,
+      "baseline": "SG-E008-B15",
+      "candidate_run": "SG-E008-C15",
+      "orientation": "BC",
+      "order": [
+        "SG-E008-B15",
+        "SG-E008-C15"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 3,
+      "candidate": "E032",
+      "pair": 15,
+      "baseline": "SG-E032-B15",
+      "candidate_run": "SG-E032-C15",
+      "orientation": "BC",
+      "order": [
+        "SG-E032-B15",
+        "SG-E032-C15"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 3,
+      "candidate": "E036",
+      "pair": 15,
+      "baseline": "SG-E036-B15",
+      "candidate_run": "SG-E036-C15",
+      "orientation": "CB",
+      "order": [
+        "SG-E036-C15",
+        "SG-E036-B15"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 3,
+      "candidate": "E007",
+      "pair": 15,
+      "baseline": "SG-E007-B15",
+      "candidate_run": "SG-E007-C15",
+      "orientation": "BC",
+      "order": [
+        "SG-E007-B15",
+        "SG-E007-C15"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 4,
+      "candidate": "E032",
+      "pair": 16,
+      "baseline": "SG-E032-B16",
+      "candidate_run": "SG-E032-C16",
+      "orientation": "CB",
+      "order": [
+        "SG-E032-C16",
+        "SG-E032-B16"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 4,
+      "candidate": "E036",
+      "pair": 16,
+      "baseline": "SG-E036-B16",
+      "candidate_run": "SG-E036-C16",
+      "orientation": "BC",
+      "order": [
+        "SG-E036-B16",
+        "SG-E036-C16"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 4,
+      "candidate": "E007",
+      "pair": 16,
+      "baseline": "SG-E007-B16",
+      "candidate_run": "SG-E007-C16",
+      "orientation": "CB",
+      "order": [
+        "SG-E007-C16",
+        "SG-E007-B16"
+      ]
+    },
+    {
+      "block": 4,
+      "round": 4,
+      "candidate": "E008",
+      "pair": 16,
+      "baseline": "SG-E008-B16",
+      "candidate_run": "SG-E008-C16",
+      "orientation": "CB",
+      "order": [
+        "SG-E008-C16",
+        "SG-E008-B16"
+      ]
+    }
+  ],
+  "measurement_order": [
+    "SG-E007-C01",
+    "SG-E007-B01",
+    "SG-E008-C01",
+    "SG-E008-B01",
+    "SG-E032-C01",
+    "SG-E032-B01",
+    "SG-E036-C01",
+    "SG-E036-B01",
+    "SG-E008-B02",
+    "SG-E008-C02",
+    "SG-E032-B02",
+    "SG-E032-C02",
+    "SG-E036-B02",
+    "SG-E036-C02",
+    "SG-E007-B02",
+    "SG-E007-C02",
+    "SG-E032-C03",
+    "SG-E032-B03",
+    "SG-E036-B03",
+    "SG-E036-C03",
+    "SG-E007-B03",
+    "SG-E007-C03",
+    "SG-E008-C03",
+    "SG-E008-B03",
+    "SG-E036-C04",
+    "SG-E036-B04",
+    "SG-E007-C04",
+    "SG-E007-B04",
+    "SG-E008-B04",
+    "SG-E008-C04",
+    "SG-E032-B04",
+    "SG-E032-C04",
+    "SG-E008-B05",
+    "SG-E008-C05",
+    "SG-E032-B05",
+    "SG-E032-C05",
+    "SG-E036-C05",
+    "SG-E036-B05",
+    "SG-E007-B05",
+    "SG-E007-C05",
+    "SG-E032-C06",
+    "SG-E032-B06",
+    "SG-E036-B06",
+    "SG-E036-C06",
+    "SG-E007-B06",
+    "SG-E007-C06",
+    "SG-E008-B06",
+    "SG-E008-C06",
+    "SG-E036-C07",
+    "SG-E036-B07",
+    "SG-E007-C07",
+    "SG-E007-B07",
+    "SG-E008-C07",
+    "SG-E008-B07",
+    "SG-E032-C07",
+    "SG-E032-B07",
+    "SG-E007-C08",
+    "SG-E007-B08",
+    "SG-E008-C08",
+    "SG-E008-B08",
+    "SG-E032-B08",
+    "SG-E032-C08",
+    "SG-E036-B08",
+    "SG-E036-C08",
+    "SG-E032-B09",
+    "SG-E032-C09",
+    "SG-E036-B09",
+    "SG-E036-C09",
+    "SG-E007-C09",
+    "SG-E007-B09",
+    "SG-E008-B09",
+    "SG-E008-C09",
+    "SG-E036-B10",
+    "SG-E036-C10",
+    "SG-E007-C10",
+    "SG-E007-B10",
+    "SG-E008-C10",
+    "SG-E008-B10",
+    "SG-E032-B10",
+    "SG-E032-C10",
+    "SG-E007-B11",
+    "SG-E007-C11",
+    "SG-E008-B11",
+    "SG-E008-C11",
+    "SG-E032-C11",
+    "SG-E032-B11",
+    "SG-E036-C11",
+    "SG-E036-B11",
+    "SG-E008-C12",
+    "SG-E008-B12",
+    "SG-E032-C12",
+    "SG-E032-B12",
+    "SG-E036-C12",
+    "SG-E036-B12",
+    "SG-E007-B12",
+    "SG-E007-C12",
+    "SG-E036-C13",
+    "SG-E036-B13",
+    "SG-E007-B13",
+    "SG-E007-C13",
+    "SG-E008-B13",
+    "SG-E008-C13",
+    "SG-E032-C13",
+    "SG-E032-B13",
+    "SG-E007-C14",
+    "SG-E007-B14",
+    "SG-E008-C14",
+    "SG-E008-B14",
+    "SG-E032-B14",
+    "SG-E032-C14",
+    "SG-E036-B14",
+    "SG-E036-C14",
+    "SG-E008-B15",
+    "SG-E008-C15",
+    "SG-E032-B15",
+    "SG-E032-C15",
+    "SG-E036-C15",
+    "SG-E036-B15",
+    "SG-E007-B15",
+    "SG-E007-C15",
+    "SG-E032-C16",
+    "SG-E032-B16",
+    "SG-E036-B16",
+    "SG-E036-C16",
+    "SG-E007-C16",
+    "SG-E007-B16",
+    "SG-E008-C16",
+    "SG-E008-B16"
+  ],
+  "comparison_pairs": 64,
+  "evaluator_processes": 128,
+  "unit_order": [
+    "SG-E020-unit",
+    "SG-E007-unit",
+    "SG-E008-unit",
+    "SG-E032-unit",
+    "SG-E036-unit"
+  ],
+  "no_adaptive_extension": true
+}

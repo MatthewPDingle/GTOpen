@@ -1,0 +1,17 @@
+{
+  "id": "E088",
+  "at": "2026-10-18T12:00:48.583382+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E088-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E088-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "75f6609c66184971de08f7d2175b478a7196ffaca1c3a3733a539e1d2f8c4d6a"
+  },
+  "scope": "Only up_action_impl cache predicate changes from na<=8 to compile-time NA!=0. Common2/3/4 instantiations retain original caches; arbitrary-menu generic uses existing uncached memory-read branches. No arithmetic/expression/order/address/threshold/lock/opponent/down/eval/host/layout/ABI/graph/precision/quality/save change.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

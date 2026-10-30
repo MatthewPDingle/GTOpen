@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-28T23:34:56.019750+00:00",
+  "status": "withdrawn_preparation_line_endings_before_any_compiler_or_native",
+  "failure": "baseline.cu sha mismatch after read_text/write_text normalized CRLF to LF",
+  "expected_SHA256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "actual_draft_SHA256": "9fe18b3227943f90df87c641cfc07b58bbf0ef350fe448c1e1eb9a6b4b8e36e4",
+  "preparer_SHA256": "337b99be564db7baafec13617144664aaa220dfc5b4e4fb18420593aeb92dfd2",
+  "preserved_files_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\baseline-mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\baseline.cu": "9fe18b3227943f90df87c641cfc07b58bbf0ef350fe448c1e1eb9a6b4b8e36e4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\candidate-mod.rs": "389d0758b865a7b4e4088f47d06753de090d82b13c1c7485811035d9858e85c7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\candidate.cu": "b93889e74f341ab24a21a48a5e52b79703a02de15c5dbaee611be0c074e5412a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\mod.rs.patch": "945b6588034fa2665aea4168f8f0c589514980004234ca1142e642488bed99b9"
+  },
+  "compiler_native_or_GPU_runs": 0,
+  "candidate_source_activated": false,
+  "correction": "Use byte reads/decode and byte writes in a new separately retained source folder. No numerical/optimizer intent changed."
+}

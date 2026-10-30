@@ -1,0 +1,45 @@
+{
+  "id": "D190-inline-tree-root-check",
+  "at": "2026-10-28T20:05:23.876772+00:00",
+  "status": "pass_component_admission_replay",
+  "component_passed": false,
+  "checks": 201948045,
+  "protocol_sha256": "f13ca9b505078cdb527f5c47adef02863d0567235ef55e413800f71956477160",
+  "native_report_sha256": "672b1017a2b5d0c37e2ba9d436b9e82fdd5ee34536a507d2542719549f9af867",
+  "total_raw_bytes": 2470234362,
+  "raw_nodes_compared": 10822609,
+  "raw_child_slots_compared": 10901576,
+  "raw_actions_compared": 9532832,
+  "raw_typed_words_compared": 159838548,
+  "native_error_equalities": 10,
+  "baseline_component_median_sum_ms": 94.08370000000001,
+  "candidate_component_median_sum_ms": 76.51950000000001,
+  "component_saving_ms": 17.564200000000003,
+  "required_component_saving_ms": 95.086109,
+  "component_guards": [
+    {
+      "id": 0,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 1,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 2,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    }
+  ],
+  "all_source_main_live_ptx_unchanged": true,
+  "production_source_activated": false,
+  "GPU_executions": 0,
+  "full_cycle_performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root raw paired fields/capacity/config/structure and timing arithmetic replay, not external independent audit. Error equality is nativeasserted; both raw error strings were not separately saved. Per-sample full fingerprints asserted natively; all final/control successful trees retained raw. BudgetN-1success preserves original builder boundary behavior; no stricter cap assertion imposed. Timed wrapper includes same fixed TreeConfig clone/deserialization, as clarified before native. Current-RAM separate matched complete-cycle reference is admission proxy only, not a measured full-cycle gain."
+}

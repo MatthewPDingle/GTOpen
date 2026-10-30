@@ -1,0 +1,130 @@
+{
+  "id": "D138-transfer-model",
+  "at": "2026-10-18T10:51:05.527034+00:00",
+  "status": "pass_scoped_CPU_layout_and_codec_equivalence",
+  "checks": 42291249,
+  "layouts": 12,
+  "original_nodes_read": 10774636,
+  "complete_active_blocks": 4059144,
+  "transfer_groups": 175,
+  "codec_cases": 216,
+  "full_codec_store_words": 91519695,
+  "full_upload_words": 36593856,
+  "unowned_guard_words": 5535,
+  "invalid_controls_rejected": 6,
+  "layout_allocation_requests": [
+    {
+      "id": 0,
+      "fixture": "rainbow",
+      "iso_requested": false,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 740688652,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 1,
+      "fixture": "rainbow",
+      "iso_requested": false,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 740688652,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 2,
+      "fixture": "rainbow",
+      "iso_requested": true,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 740688652,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 3,
+      "fixture": "rainbow",
+      "iso_requested": true,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 740688652,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 4,
+      "fixture": "two-tone",
+      "iso_requested": false,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 743010560,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 5,
+      "fixture": "two-tone",
+      "iso_requested": false,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 743010560,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 6,
+      "fixture": "two-tone",
+      "iso_requested": true,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 442981120,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 7,
+      "fixture": "two-tone",
+      "iso_requested": true,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 743010560,
+      "proposed_pinned_request_bytes": 67108864
+    },
+    {
+      "id": 8,
+      "fixture": "river",
+      "iso_requested": false,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 17920,
+      "proposed_pinned_request_bytes": 17920
+    },
+    {
+      "id": 9,
+      "fixture": "river",
+      "iso_requested": false,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 17920,
+      "proposed_pinned_request_bytes": 17920
+    },
+    {
+      "id": 10,
+      "fixture": "river",
+      "iso_requested": true,
+      "force_full": false,
+      "baseline_pinned_request_bytes": 17920,
+      "proposed_pinned_request_bytes": 17920
+    },
+    {
+      "id": 11,
+      "fixture": "river",
+      "iso_requested": true,
+      "force_full": true,
+      "baseline_pinned_request_bytes": 17920,
+      "proposed_pinned_request_bytes": 17920
+    }
+  ],
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D138-transfer-model\\output\\codecs.bin": "36aa205d31b4bbfd2a7bcbcde0bf119f80c3cfa21d6c51b36377037f7d6b8179",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D138-transfer-model\\output\\groups.bin": "eb83078a192a931e2fb4608472eb7e76f002a4a26ccdd9871478a4f096e8f115",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D138-transfer-model\\output\\metadata.json": "d4cec94515ed64db4034dc4015a81f177803d4b049b0b15f72ee6b3d99113a2c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D138-transfer-model\\output\\nodes.bin": "a2b08e5f386141292dc664112f536377934fb9a81c3eef4e12003f941a699c39"
+  },
+  "all_complete_original_node_fields_read": true,
+  "no_complete_node_split": true,
+  "full_source_store_upload_store_output_images_exact": true,
+  "GPU_contexts": 0,
+  "GPU_kernels": 0,
+  "solver_iterations": 0,
+  "performance_measurement": false,
+  "production_source_activated": false,
+  "candidate_accepted": false,
+  "root_reader_only": true,
+  "limits": "CPU interval model and unchanged Store codec calls only, not an implemented bounded GPU transfer, actual pinned allocation/process footprint, driver/error behavior, GPU numerical or complete-cycle speed proof. Diagnostic vectors are not a production allocation design. No source adoption."
+}

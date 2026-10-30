@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-29T18:20:40.537882+00:00",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 217
+    }
+  ],
+  "unique_CUDA_hashes": 139,
+  "local_all_ref_revisions": 28,
+  "retained_matches": [],
+  "local_matches": [],
+  "regex": "(?:card_pos_sh\\s*\\[\\s*(?:dst|write|out|packed|nz)\\w*\\s*\\]|(?:sparse|compact|nonzero|zero_skip)\\w*card|card\\w*(?:compact|nonzero|sparse))",
+  "limits": "Bounded literal/local scan, not exhaustive semantic or remote novelty proof. E036/E037 wholezero-row/outputshortcut,E066 sharedoffsetcache,E068 bit-selected rankaccumulation,E077 prefixdemand,E084 firstcardfloatcache and E118 zero-tie payout omission remain closed. None of those hunks composed. New mechanism stably filters positivezero opponent reach positions inside existing per-card shared list intervals; full original prefix, allownoutputs and complete three-term payout remain."
+}

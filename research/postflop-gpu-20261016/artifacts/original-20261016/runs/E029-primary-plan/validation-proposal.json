@@ -1,0 +1,71 @@
+{
+  "id": "E029-validation-execution-proposal",
+  "at": "2026-10-16T17:06:09.080276+00:00",
+  "status": "DRAFT_REQUIRES_ROOT_AND_INDEPENDENT_REVIEW",
+  "baseline": "immutable accepted E020",
+  "candidate": "E029 complement-only up_show zeroing; source bytes pending freeze",
+  "owned_sources": [
+    "crates/solver/src/game.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "auxiliary_sources": [],
+  "expected_unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "direct_prerequisite": {
+    "reuse": "D051-show-physical256-exact complete-kernel machinery; old numerical results do not validate E029",
+    "physical_threads": [
+      128,
+      128
+    ],
+    "inherited_comparison_pairs": 148,
+    "additional_full_own_pairs": 4,
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "fixed_extra_cases": "Existing two boards and both orientation labels at m257, seeded_ordinary only; own root range excludes all final-board-blocked hands so missing complement is empty. Reindex own metadata/guards consistently. No extra profiles or timing.",
+    "metadata_adaptation": "Replace D051 arbitrary p-valid prefix with dense slot0+slot1 valid-index/bound rows. For each slot independently verify present and missing indices are disjoint, unique, in range and cover0..nh_p. Derived missing start=slot*nh_p-p_off[slot] and count=nh_p-p_cnt[slot] must select exactly that slot complement. Keep nonzero slot/start, nonzero missing offsets for partial/empty, reordered CFV/reach rows and output padding.",
+    "inherited_case_bits": "Preserve all148 inherited active hands, reaches and payouts; only p-list/bounds prefix positions adapt to the dense contract. New complement buffer is additional immutable candidate metadata.",
+    "input_buffers_per_arm": [
+      21,
+      22
+    ],
+    "oracle": "Launch complete byte-pinned immutable E020 up_show versus exact E029 up_show, each with its actual ABI. Candidate alone receives p_missing_idx immediately after p_idx. Compare every output u32 including logical hands/padding/guards; missing hands +0, present-hand original arithmetic untouched. Read back all immutable input buffers.",
+    "anti_vacuity": "Retain stale output overwrite, nonzero cases, accepted evaluate7 rank oracle, sparse rounding witnesses and host verifier failure injections; all observed bits mandatory, no NaN-input payload generalization.",
+    "counts": "Freeze all derived output/input/guard counts and full case order before execution. Do not copy D051 totals after new buffer/four cases.",
+    "capacity": "Check actual function/device launch and shared-memory legality only. No arbitrary register/local/occupancy or timing gate.",
+    "changed_harness_files": [
+      "prepare_corpus.py",
+      "check_corpus.py",
+      "probe.rs",
+      "run.py",
+      "protocol.json and manifests/README bindings"
+    ],
+    "unchanged_support": [
+      "accepted-evaluator.rs",
+      "runner-primitives-source.py"
+    ],
+    "candidate_accepted": false,
+    "performance_measurement": false,
+    "implementation_authorized": false
+  },
+  "execution_sequence": [
+    "Root-approved off-tree direct package preparation and independent review",
+    "One serialized direct execution; independent terminal exact PASS required before source activation",
+    "Root activates exact five source files after source/script review and immutable authorization",
+    "Separate fresh feature target: cargo test --release --locked --offline -p solver --features preflop-research --lib --no-run --message-format=json; preserve linked feature test artifact, do not run it",
+    "Separate fresh GPU-only primary target: existing frozen evaluator and ordinary library test compilation; all compiler children terminal before timing",
+    "V029-unit then B095,E029R1,E029R2,B096,B097,E029R3 exactly once",
+    "Assess all18 complete non-timing results and138 exact convergence checks; sum fixture medians gain>=2% and existing strict-majority repeated>3% fixture regression guard",
+    "Primary failure ends candidate with all evidence preserved and five source files restored. No extension/rescue/broader work",
+    "Primary success requires independently reviewed original full-state/menu/resume/F32/GPU/continuation metadata/admission controls, fixed wide-turn holdout and fresh-original cumulative qualification before adoption"
+  ],
+  "compile_only_examples": false,
+  "examples_reason": "No changed examples or public workspace-component schema; immutable metadata payload changes are checked by the feature-enabled library compile and conditional native capacity checks.",
+  "no_primary_workload_change": true,
+  "build_native_gpu_executions": 0,
+  "production_status_edits": 0
+}

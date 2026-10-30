@@ -1,0 +1,47 @@
+{
+  "argv": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_profile_resource_check_v1.py",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-published-controls-v1\\resource-cancellation\\artifacts"
+  ],
+  "child_pid": 119236,
+  "exit_code": 0,
+  "label": "resource-cancellation",
+  "payload": {
+    "cancellation_cleanup_seconds": 6.110000000044238,
+    "cancellation_outcomes": [
+      "InterruptedError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError",
+      "CancelledError"
+    ],
+    "normal_child_pid": 115536,
+    "passed": true,
+    "refused": [
+      "expired",
+      "future",
+      "over-cap",
+      "incomplete",
+      "wrong-root",
+      "incorrect-total",
+      "not-read-only",
+      "changed-recorded-identity",
+      "wrong-gpu",
+      "unknown-telemetry",
+      "multiple-gpus"
+    ],
+    "scope": "Synthetic resource gates and actual spawned software jobs; no native poker or GPU fit",
+    "seconds": 9.39100000000326
+  },
+  "seconds": 12.753902196884155,
+  "source_sha256": "b0ae06b6d1ac842afd2d7d0a57771df054ca946ba21ea46e79ba66299d8b7dd1",
+  "started_unix": 1790922550.5103393,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_sha256": "7465760ec0bd9f2725eb6193b9bc0d800b54ba0d796e1c71f6cfc417a64b77ab"
+}

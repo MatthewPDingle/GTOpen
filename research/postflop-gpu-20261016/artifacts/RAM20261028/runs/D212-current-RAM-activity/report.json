@@ -1,0 +1,712 @@
+{
+  "id": "D212",
+  "at": "2026-10-28T23:21:50.897369+00:00",
+  "status": "pass_scoped_current_RAM_activity_diagnostic",
+  "protocol_sha256": "fd18354aa7d1f665142c17e8098d948594d34300f7165f1387ddb3d92bb17c81",
+  "pairs": [
+    {
+      "baseline": "D212B1",
+      "trace": "D212P1",
+      "observer_change_pct": {
+        "suite": -2.4358105738738534,
+        "native_lifetime": -1.5960455043787736,
+        "parent_wall": -1.4274888655337548,
+        "rainbow": -3.164328631778468,
+        "two-tone": -1.6102764616492737,
+        "river": 7.562654782003708
+      },
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D212B2",
+      "trace": "D212P2",
+      "observer_change_pct": {
+        "suite": -2.6536493239514014,
+        "native_lifetime": -1.4797677725318037,
+        "parent_wall": -1.4307186781976733,
+        "rainbow": -2.609241909954574,
+        "two-tone": -2.72718806225809,
+        "river": -2.302390233433327
+      },
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D212B3",
+      "trace": "D212P3",
+      "observer_change_pct": {
+        "suite": 2.540173459883377,
+        "native_lifetime": 2.1882685531100954,
+        "parent_wall": 2.1874581782334257,
+        "rainbow": 0.30105314184736276,
+        "two-tone": 5.937652511106184,
+        "river": 0.27164317827885753
+      },
+      "usefulness_pass": true
+    }
+  ],
+  "traces": {
+    "D212P1": {
+      "fixtures": {
+        "rainbow": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3780,
+            "up_action_eval": 260
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.5406,
+              "union_ms": 0.5406
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 842.186382,
+              "union_ms": 842.147887
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 127.817275,
+              "union_ms": 127.817275
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 415.641958,
+              "union_ms": 415.641958
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 1440.259946,
+              "union_ms": 1440.259946
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 1724.467036,
+              "union_ms": 1724.466939
+            },
+            "up_chance": {
+              "count": 3780,
+              "summed_ms": 272.943738,
+              "union_ms": 272.943738
+            },
+            "up_action_eval": {
+              "count": 260,
+              "summed_ms": 31.38434,
+              "union_ms": 31.38434
+            }
+          },
+          "kernel_union_ms": 4854.145543,
+          "summed_kernel_ms": 4855.241275,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 4869.2055
+        },
+        "two-tone": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3960,
+            "up_action_eval": 520
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.535371,
+              "union_ms": 0.535371
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 502.034246,
+              "union_ms": 501.99396
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 75.624862,
+              "union_ms": 75.624862
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 261.304679,
+              "union_ms": 261.304679
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 884.280173,
+              "union_ms": 884.280173
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 974.170082,
+              "union_ms": 974.170082
+            },
+            "up_chance": {
+              "count": 3960,
+              "summed_ms": 266.011145,
+              "union_ms": 266.011145
+            },
+            "up_action_eval": {
+              "count": 520,
+              "summed_ms": 45.499051,
+              "union_ms": 45.499051
+            }
+          },
+          "kernel_union_ms": 3008.54544,
+          "summed_kernel_ms": 3009.459609,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 3023.5213
+        },
+        "river": {
+          "kernel_family_counts": {
+            "copy_root": 123,
+            "down_action": 861,
+            "up_fold": 756,
+            "up_show": 756,
+            "up_action": 840,
+            "up_action_eval": 84
+          },
+          "families": {
+            "copy_root": {
+              "count": 123,
+              "summed_ms": 0.116732,
+              "union_ms": 0.116732
+            },
+            "down_action": {
+              "count": 861,
+              "summed_ms": 2.481511,
+              "union_ms": 2.481511
+            },
+            "up_fold": {
+              "count": 756,
+              "summed_ms": 2.651425,
+              "union_ms": 2.651425
+            },
+            "up_show": {
+              "count": 756,
+              "summed_ms": 5.981664,
+              "union_ms": 5.981664
+            },
+            "up_action": {
+              "count": 840,
+              "summed_ms": 2.319407,
+              "union_ms": 2.319407
+            },
+            "up_action_eval": {
+              "count": 84,
+              "summed_ms": 0.231326,
+              "union_ms": 0.231326
+            }
+          },
+          "kernel_union_ms": 13.782065,
+          "summed_kernel_ms": 13.782065,
+          "graph_repeats": [
+            2,
+            59,
+            59
+          ],
+          "graph_launch_API_calls": 120,
+          "solve_span_ms": 19.484
+        }
+      },
+      "collector": {
+        "event": "complete",
+        "records": 63568,
+        "kernels": 56320,
+        "memcopies": 728,
+        "memsets": 27,
+        "driver_api_records": 6493,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "whole_raw_trace_sha256": "f829ca0a5ac4c5c7bdebb8b921a22acada805fa421b716f756ea2967aaff105f",
+      "metadata_sha256": "946738bbc5dfaa6daaa3225975633852fe3cfaf013bd3d47ba11a541733ff357",
+      "all_original_kernel_API_correlations_exact": true
+    },
+    "D212P2": {
+      "fixtures": {
+        "rainbow": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3780,
+            "up_action_eval": 260
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.535905,
+              "union_ms": 0.535905
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 835.106032,
+              "union_ms": 835.069419
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 128.890129,
+              "union_ms": 128.890129
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 407.920464,
+              "union_ms": 407.920464
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 1450.542501,
+              "union_ms": 1450.542501
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 1705.293318,
+              "union_ms": 1705.29319
+            },
+            "up_chance": {
+              "count": 3780,
+              "summed_ms": 268.792886,
+              "union_ms": 268.792886
+            },
+            "up_action_eval": {
+              "count": 260,
+              "summed_ms": 31.078568,
+              "union_ms": 31.078568
+            }
+          },
+          "kernel_union_ms": 4827.117776,
+          "summed_kernel_ms": 4828.159803,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 4841.4564
+        },
+        "two-tone": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3960,
+            "up_action_eval": 520
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.532147,
+              "union_ms": 0.532147
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 499.220364,
+              "union_ms": 499.186278
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 74.989176,
+              "union_ms": 74.989176
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 261.985854,
+              "union_ms": 261.985854
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 896.628363,
+              "union_ms": 896.628363
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 976.245427,
+              "union_ms": 976.245427
+            },
+            "up_chance": {
+              "count": 3960,
+              "summed_ms": 266.81523,
+              "union_ms": 266.81523
+            },
+            "up_action_eval": {
+              "count": 520,
+              "summed_ms": 47.38743,
+              "union_ms": 47.387334
+            }
+          },
+          "kernel_union_ms": 3022.881595,
+          "summed_kernel_ms": 3023.803991,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 3039.6238
+        },
+        "river": {
+          "kernel_family_counts": {
+            "copy_root": 123,
+            "down_action": 861,
+            "up_fold": 756,
+            "up_show": 756,
+            "up_action": 840,
+            "up_action_eval": 84
+          },
+          "families": {
+            "copy_root": {
+              "count": 123,
+              "summed_ms": 0.115555,
+              "union_ms": 0.115555
+            },
+            "down_action": {
+              "count": 861,
+              "summed_ms": 2.171754,
+              "union_ms": 2.171754
+            },
+            "up_fold": {
+              "count": 756,
+              "summed_ms": 2.653194,
+              "union_ms": 2.653194
+            },
+            "up_show": {
+              "count": 756,
+              "summed_ms": 5.76002,
+              "union_ms": 5.76002
+            },
+            "up_action": {
+              "count": 840,
+              "summed_ms": 2.317298,
+              "union_ms": 2.317298
+            },
+            "up_action_eval": {
+              "count": 84,
+              "summed_ms": 0.230881,
+              "union_ms": 0.230881
+            }
+          },
+          "kernel_union_ms": 13.248702,
+          "summed_kernel_ms": 13.248702,
+          "graph_repeats": [
+            2,
+            59,
+            59
+          ],
+          "graph_launch_API_calls": 120,
+          "solve_span_ms": 16.5726
+        }
+      },
+      "collector": {
+        "event": "complete",
+        "records": 63568,
+        "kernels": 56320,
+        "memcopies": 728,
+        "memsets": 27,
+        "driver_api_records": 6493,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "whole_raw_trace_sha256": "049d905a9a9b5dae7565cdefbda9201d1a97cee2848b6d06ba5084623c07e460",
+      "metadata_sha256": "874e7945ecfff5f37692809c106fae954f93469f6598b8492a24977cc2abbf27",
+      "all_original_kernel_API_correlations_exact": true
+    },
+    "D212P3": {
+      "fixtures": {
+        "rainbow": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3780,
+            "up_action_eval": 260
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.543971,
+              "union_ms": 0.543971
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 824.349521,
+              "union_ms": 824.317527
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 128.901429,
+              "union_ms": 128.901429
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 395.934988,
+              "union_ms": 395.934988
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 1416.04238,
+              "union_ms": 1416.04238
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 1695.349418,
+              "union_ms": 1695.349226
+            },
+            "up_chance": {
+              "count": 3780,
+              "summed_ms": 268.009972,
+              "union_ms": 268.009972
+            },
+            "up_action_eval": {
+              "count": 260,
+              "summed_ms": 28.669451,
+              "union_ms": 28.669451
+            }
+          },
+          "kernel_union_ms": 4756.802462,
+          "summed_kernel_ms": 4757.80113,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 4770.439
+        },
+        "two-tone": {
+          "kernel_family_counts": {
+            "copy_root": 410,
+            "down_action": 5330,
+            "down_chance": 3690,
+            "up_fold": 5040,
+            "up_show": 2520,
+            "up_action": 5200,
+            "up_chance": 3960,
+            "up_action_eval": 520
+          },
+          "families": {
+            "copy_root": {
+              "count": 410,
+              "summed_ms": 0.54493,
+              "union_ms": 0.54493
+            },
+            "down_action": {
+              "count": 5330,
+              "summed_ms": 521.64778,
+              "union_ms": 521.619342
+            },
+            "down_chance": {
+              "count": 3690,
+              "summed_ms": 75.619999,
+              "union_ms": 75.619999
+            },
+            "up_fold": {
+              "count": 5040,
+              "summed_ms": 273.349144,
+              "union_ms": 273.349144
+            },
+            "up_show": {
+              "count": 2520,
+              "summed_ms": 930.919633,
+              "union_ms": 930.919633
+            },
+            "up_action": {
+              "count": 5200,
+              "summed_ms": 1009.400781,
+              "union_ms": 1009.400781
+            },
+            "up_chance": {
+              "count": 3960,
+              "summed_ms": 272.753277,
+              "union_ms": 272.753277
+            },
+            "up_action_eval": {
+              "count": 520,
+              "summed_ms": 46.640067,
+              "union_ms": 46.639618
+            }
+          },
+          "kernel_union_ms": 3130.017398,
+          "summed_kernel_ms": 3130.875611,
+          "graph_repeats": [
+            9,
+            199,
+            199
+          ],
+          "graph_launch_API_calls": 407,
+          "solve_span_ms": 3152.1709
+        },
+        "river": {
+          "kernel_family_counts": {
+            "copy_root": 123,
+            "down_action": 861,
+            "up_fold": 756,
+            "up_show": 756,
+            "up_action": 840,
+            "up_action_eval": 84
+          },
+          "families": {
+            "copy_root": {
+              "count": 123,
+              "summed_ms": 0.11453,
+              "union_ms": 0.11453
+            },
+            "down_action": {
+              "count": 861,
+              "summed_ms": 2.425098,
+              "union_ms": 2.425098
+            },
+            "up_fold": {
+              "count": 756,
+              "summed_ms": 2.649415,
+              "union_ms": 2.649415
+            },
+            "up_show": {
+              "count": 756,
+              "summed_ms": 5.747018,
+              "union_ms": 5.747018
+            },
+            "up_action": {
+              "count": 840,
+              "summed_ms": 2.329837,
+              "union_ms": 2.329837
+            },
+            "up_action_eval": {
+              "count": 84,
+              "summed_ms": 0.232187,
+              "union_ms": 0.232187
+            }
+          },
+          "kernel_union_ms": 13.498085,
+          "summed_kernel_ms": 13.498085,
+          "graph_repeats": [
+            2,
+            59,
+            59
+          ],
+          "graph_launch_API_calls": 120,
+          "solve_span_ms": 17.0024
+        }
+      },
+      "collector": {
+        "event": "complete",
+        "records": 63568,
+        "kernels": 56320,
+        "memcopies": 728,
+        "memsets": 27,
+        "driver_api_records": 6493,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "whole_raw_trace_sha256": "7602d3f5e087c8863d7f8adeea08907f7108a257f4f205ace423c01d118a69b3",
+      "metadata_sha256": "18c0f55f36d7b54f8ee69587e6ddf8072ae4a4c58fc70ce68558603e8e506c53",
+      "all_original_kernel_API_correlations_exact": true
+    }
+  },
+  "family_fixture_median_summed_ms": {
+    "copy_root": {
+      "rainbow": 0.5406,
+      "two-tone": 0.535371,
+      "river": 0.115555
+    },
+    "down_action": {
+      "rainbow": 835.106032,
+      "two-tone": 502.034246,
+      "river": 2.425098
+    },
+    "down_chance": {
+      "rainbow": 128.890129,
+      "two-tone": 75.619999,
+      "river": 0
+    },
+    "up_action": {
+      "rainbow": 1705.293318,
+      "two-tone": 976.245427,
+      "river": 2.319407
+    },
+    "up_action_eval": {
+      "rainbow": 31.078568,
+      "two-tone": 46.640067,
+      "river": 0.231326
+    },
+    "up_chance": {
+      "rainbow": 268.792886,
+      "two-tone": 266.81523,
+      "river": 0
+    },
+    "up_fold": {
+      "rainbow": 407.920464,
+      "two-tone": 261.985854,
+      "river": 2.651425
+    },
+    "up_show": {
+      "rainbow": 1440.259946,
+      "two-tone": 896.628363,
+      "river": 5.76002
+    }
+  },
+  "observer_usefulness_pass": true,
+  "all18full_scientific_records_and138checkpoints_exact": true,
+  "all_original_graph_repeats_and_API_correlations_exact": true,
+  "all_family_counts_repeatable": true,
+  "no_collector_errors_drops_invalid_timestamps_or_outstanding_buffers": true,
+  "E105_target_budget": {
+    "passed": false,
+    "current_control_sum_fixture_median_ms": 10065.075200000001,
+    "planning_one_percent_ms": 100.65075200000001,
+    "target_sum_fixture_median_activity_ms": 77.949961,
+    "target_fraction_of_control_pct": 0.7744597973793578,
+    "historical_timings_scored": 0,
+    "scope": "Current observer durations versus fresh control medians are a budgeting proxy. They are not a proven removable saving, complete wall-time attribution, unbiased per-family bound or universal upper limit."
+  },
+  "reader_checks": 695857,
+  "raw_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P1\\trace.bin": "f829ca0a5ac4c5c7bdebb8b921a22acada805fa421b716f756ea2967aaff105f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P1\\collector.jsonl": "946738bbc5dfaa6daaa3225975633852fe3cfaf013bd3d47ba11a541733ff357",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P2\\trace.bin": "049d905a9a9b5dae7565cdefbda9201d1a97cee2848b6d06ba5084623c07e460",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P2\\collector.jsonl": "874e7945ecfff5f37692809c106fae954f93469f6598b8492a24977cc2abbf27",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P3\\trace.bin": "7602d3f5e087c8863d7f8adeea08907f7108a257f4f205ace423c01d118a69b3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P3\\collector.jsonl": "18c0f55f36d7b54f8ee69587e6ddf8072ae4a4c58fc70ce68558603e8e506c53"
+  },
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "performance_qualification_samples": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "all_native_processes_terminal": true,
+  "limits": "Finite current3fixture activity with original collector and exact E080. Baseline/trace original quality/cadence/cap/physics match. Observer +/-10% usefulness is coarse and cannot establish per-family bias, significance, causal attribution or actual optimization gain. D104 hardware counters remain closed; no counter APIs called. All source/main/live/PTX unchanged."
+}

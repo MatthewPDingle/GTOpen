@@ -1,0 +1,269 @@
+{
+  "id": "E106-engine-checkpoint",
+  "at": "2026-10-28T23:47:22.563069+00:00",
+  "status": "scoped_engine_equivalence_pass_direct_and_canonical_pending",
+  "actual_host_layout": {
+    "GPU_solver_constructor_calls": 0,
+    "baseline_wrapper_bytes": 4448,
+    "candidate": {
+      "argument_helper_bytes": 16,
+      "flag_offset": 4443,
+      "static_zero_word_bytes": 8,
+      "wrapper_bytes": 4448
+    },
+    "stage": "host_layout",
+    "wrapper_delta_bytes": 0
+  },
+  "resource_warnings": [
+    {
+      "entry": "down_action",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "registers": 48,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    },
+    {
+      "entry": "up_action",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 62,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 64,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    },
+    {
+      "entry": "up_action_eval",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action_eval",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action_eval",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "registers": 42,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "resource_report_sha256": "7fae834bb49521df089d402e4bf38c7e3847329229c99afcad6c5afecb72caa3",
+  "compiled_mechanism_report_sha256": "6741fd3fc62b44a67d7a259680179f50b42059b554c53e40e0d4da63da022366",
+  "engine_raw_report_sha256": "5ee726853991dc98915721a95155fd320f38fc1437eac0f5ad9d2260e01eb595",
+  "engine": {
+    "cases": 36,
+    "phase_pairs": 752,
+    "raw_frames": 3528,
+    "reader_checks": 575885,
+    "represented_raw_words": 1140455990,
+    "exploitability_pairs": 324,
+    "continuation_root_pairs": 32,
+    "actual_predicate_checks": 144,
+    "actual_argument_branch_observations": 11904,
+    "all65_other_device_arrays_and_host_scalars_exact": true,
+    "all66_constructor_images_match_CPU_reference": true,
+    "all_CPU_q_scales_queries_saves_resume_exact": true
+  },
+  "retained_preparation_failure": {
+    "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\preparation-r1.json",
+    "sha256": "65bcece7c9c04f7dc81f13e1bab2a3812da3a566846d535ee83024402b728907",
+    "description": "Initial byte guard caught CRLF-to-LF normalization before any compiler/native. Original preparer and partial artifacts retained untouched. Separate UTF8 byte-preserving source-r2 used thereafter; no algorithm or numerical observation changed/repeated."
+  },
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\probe.exit.json",
+      "sha256": "cfb6bffcc733f121a5d1fd0c224d4cc49a73b3fa43a02184f86100e4d9856cb4",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\rustc.exit.json",
+      "sha256": "c3a534ba1f5d9fff36fb74f14e3c1bb4a9cb80d9f99683524b3abb1f42316660",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\audit.exit.json",
+      "sha256": "80039239c2c3aee3c854a5fc31dcdd12b374c8f11e3e5d8f8127c32ab461d12a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\probe.exit.json",
+      "sha256": "85fdcaca7ad3c50b8ec159ef72fd98e8cb2e659eefcd241e9c22eac9e68d8fa3",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\rustc.exit.json",
+      "sha256": "c3ea71938e3d7d5448edc9fdefcd58be81d41024ab702feea6cbbcfdbe808b48",
+      "returncode": 0
+    }
+  ],
+  "all_owned_compilers_native_readers_terminal": true,
+  "locks_absent": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "E106_performance_samples": 0,
+  "new_gain_adopted_or_deployed": false,
+  "last_primary_baseline_id": "B319",
+  "original_RAM_baseline_ms": 10456.4109,
+  "all_new_bulk_output_root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028",
+  "X_free_bytes": 4126649520128,
+  "next_required_work": [
+    "Direct kernel full-buffer equivalence for all3changed entries: null vs original all-unlocked table and nonnull original pointer, generic arities, both players/modes/roles, nonfinite/subnormal/zero/overflow/tails/count0/excessgrid; all input/guard bytes retained. No shader/host/threshold/flag changes.",
+    "Actual constructor/update predicate checks for empty/nonempty maps and safe empty-lock/zero-hand boundary cases; preserve original upload failure propagation and graph invalidation contract.",
+    "Original full canonical same-quality CPU+all66device physical state/lifecycle controls before timing.",
+    "Fresh ordinary feature/primary builds with actual runtimeNVRTC,86ordinaryunits and fixed3pairs againstfreshE080,unrounded>=1%/strictfixtureguard.",
+    "Only after initial pass: fresh16,broaderF32/menu/locked performance/save/resume/paging/continuation,actualCPU/memory/capacity/resources/graph,holdout,fresh-originalcumulative,portable/application gates."
+  ],
+  "scope": "Finite original36case engine matrix only. Compiler resource and scoped static pointer bypass passed, but no universal numeric, direct exceptional/wide menu, fullcanonical, material neutrality, complete-cycle gain or adoption claim. Down_action/eval occupancy warnings remain real and cannot be dismissed by correctness. Exact form closes without source/helper/predicate/field/arity/entry/flags/quality/sample rescue after genuine failure.",
+  "goal_active": true
+}

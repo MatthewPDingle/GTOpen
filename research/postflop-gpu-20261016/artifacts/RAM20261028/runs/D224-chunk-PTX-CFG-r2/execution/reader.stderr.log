@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D224-PTX-chunk-CFG-r2.py", line 67, in <module>
+    traces={arm:parse(Path(p))for arm,p in P['PTX_entries'][arch].items()};counts={arm:collections.Counter()for arm in traces};widths={};digest=hashlib.sha256()
+                ^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D224-PTX-chunk-CFG-r2.py", line 34, in parse
+    loads=[x for x in lines[:start]if re.search(r'ld\.global(?:\.nc)?\.u32\s+'+re.escape(mreg)+r',',x)];assert len(loads)==1,loads
+                                                                                                               ^^^^^^^^^^^^^
+AssertionError: []

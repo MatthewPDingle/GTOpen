@@ -1,0 +1,90 @@
+{
+  "id": "D068",
+  "at": "2026-10-16T21:48:37Z",
+  "status": "pass",
+  "method": "Independent root sorted-key adjacent comparison from retained9-u32 maps; no candidate script imported.",
+  "checks": [
+    {
+      "fixture": "rainbow",
+      "traverser": 0,
+      "key": "owner_keys",
+      "unique": 472752
+    },
+    {
+      "fixture": "rainbow",
+      "traverser": 0,
+      "key": "payout_keys",
+      "unique": 472752
+    },
+    {
+      "fixture": "rainbow",
+      "traverser": 1,
+      "key": "owner_keys",
+      "unique": 472752
+    },
+    {
+      "fixture": "rainbow",
+      "traverser": 1,
+      "key": "payout_keys",
+      "unique": 472752
+    },
+    {
+      "fixture": "river",
+      "traverser": 0,
+      "key": "owner_keys",
+      "unique": 11
+    },
+    {
+      "fixture": "river",
+      "traverser": 0,
+      "key": "payout_keys",
+      "unique": 11
+    },
+    {
+      "fixture": "river",
+      "traverser": 1,
+      "key": "owner_keys",
+      "unique": 11
+    },
+    {
+      "fixture": "river",
+      "traverser": 1,
+      "key": "payout_keys",
+      "unique": 11
+    },
+    {
+      "fixture": "two-tone",
+      "traverser": 0,
+      "key": "owner_keys",
+      "unique": 287229
+    },
+    {
+      "fixture": "two-tone",
+      "traverser": 0,
+      "key": "payout_keys",
+      "unique": 287229
+    },
+    {
+      "fixture": "two-tone",
+      "traverser": 1,
+      "key": "owner_keys",
+      "unique": 287229
+    },
+    {
+      "fixture": "two-tone",
+      "traverser": 1,
+      "key": "payout_keys",
+      "unique": 287229
+    }
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D068-show-owner-scout\\report.json": "cda2f2155777b21de60ac7ed31ffbd4a6ccc66aa876560f07392e810efc11765",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping-artifacts.json": "72ce0a7e59999f8872b12d78df775d08bb772808f5b4916890e9cdf46e4c7476",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\rainbow-planned-show-mapping.u32le": "0da88cc7dd835769e1526e2c021ee483283be79c4cb7aae93562c8b387a4571b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\river-planned-show-mapping.u32le": "01e70648ddf3a2b1f93258d6caefc7e689b95ee7ba4983612ee6eadeb624ba09",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\two-tone-planned-show-mapping.u32le": "5090706e6e40d40361e36cb8f154341f8c456deaaff4174d7b96c4c05bcf7abc"
+  },
+  "conclusion": "All same-river/opponent-row identities are unique for each traverser in the three retained plans. No within-sweep identity reuse candidate justified. No content equality, dynamic, timing or output correctness claim.",
+  "native_or_gpu_executed": false,
+  "candidate_accepted": false
+}

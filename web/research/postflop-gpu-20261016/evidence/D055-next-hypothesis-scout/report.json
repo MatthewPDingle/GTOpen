@@ -1,0 +1,197 @@
+{
+  "id": "D055",
+  "created_at": "2026-10-16T17:28:42.711076+00:00",
+  "verdict": "SOURCE_FEASIBLE_SINGLE_INTEGER_SCHEDULING_HYPOTHESIS_UNMEASURED",
+  "recommendation": "One bounded stable descending card-list-length scheduling experiment may be considered; no2% headroom or gain is established. No candidate prepared.",
+  "accepted_base": "E020 archived bytes, independently of active E029 and its outcome",
+  "source_sites": {
+    "kernels.cu:163-169": "Independent card sums and unique s[card] writers",
+    "kernels.cu:170-189": "Original thread-index total reduction/barriers/output must remain unchanged",
+    "mod.rs:289-300": "Existing fold-card metadata construction",
+    "continuation_capacity.rs:37": "Planned53-offset payload would become105; observed actual lengths already general"
+  },
+  "representation": "Append52 verified card IDs to each existing53-u32 offset vector; original offset prefix and card-index lists unchanged; no new ABI or device allocation.",
+  "added_immutable_device_bytes": 416,
+  "new_mutable_workspace_bytes": 0,
+  "work_proxy_rows": [
+    {
+      "fixture_id": "rainbow",
+      "opponent_player": 0,
+      "hands": 257,
+      "current_per_warp_max_loop_counts": [
+        16,
+        19
+      ],
+      "descending_per_warp_max_loop_counts": [
+        19,
+        8
+      ],
+      "current_sum_of_warp_maxima": 35,
+      "descending_sum_of_warp_maxima": 27,
+      "same_total_scalar_card_loop_additions": 514,
+      "same_longest_single_card_loop": 19
+    },
+    {
+      "fixture_id": "rainbow",
+      "opponent_player": 1,
+      "hands": 319,
+      "current_per_warp_max_loop_counts": [
+        13,
+        32
+      ],
+      "descending_per_warp_max_loop_counts": [
+        32,
+        6
+      ],
+      "current_sum_of_warp_maxima": 45,
+      "descending_sum_of_warp_maxima": 38,
+      "same_total_scalar_card_loop_additions": 638,
+      "same_longest_single_card_loop": 32
+    },
+    {
+      "fixture_id": "two-tone",
+      "opponent_player": 0,
+      "hands": 258,
+      "current_per_warp_max_loop_counts": [
+        16,
+        19
+      ],
+      "descending_per_warp_max_loop_counts": [
+        19,
+        8
+      ],
+      "current_sum_of_warp_maxima": 35,
+      "descending_sum_of_warp_maxima": 27,
+      "same_total_scalar_card_loop_additions": 516,
+      "same_longest_single_card_loop": 19
+    },
+    {
+      "fixture_id": "two-tone",
+      "opponent_player": 1,
+      "hands": 320,
+      "current_per_warp_max_loop_counts": [
+        13,
+        32
+      ],
+      "descending_per_warp_max_loop_counts": [
+        32,
+        7
+      ],
+      "current_sum_of_warp_maxima": 45,
+      "descending_sum_of_warp_maxima": 39,
+      "same_total_scalar_card_loop_additions": 640,
+      "same_longest_single_card_loop": 32
+    },
+    {
+      "fixture_id": "river",
+      "opponent_player": 0,
+      "hands": 233,
+      "current_per_warp_max_loop_counts": [
+        16,
+        19
+      ],
+      "descending_per_warp_max_loop_counts": [
+        19,
+        7
+      ],
+      "current_sum_of_warp_maxima": 35,
+      "descending_sum_of_warp_maxima": 26,
+      "same_total_scalar_card_loop_additions": 466,
+      "same_longest_single_card_loop": 19
+    },
+    {
+      "fixture_id": "river",
+      "opponent_player": 1,
+      "hands": 280,
+      "current_per_warp_max_loop_counts": [
+        13,
+        30
+      ],
+      "descending_per_warp_max_loop_counts": [
+        30,
+        5
+      ],
+      "current_sum_of_warp_maxima": 43,
+      "descending_sum_of_warp_maxima": 35,
+      "same_total_scalar_card_loop_additions": 560,
+      "same_longest_single_card_loop": 30
+    },
+    {
+      "fixture_id": "synthetic_full_range_turn",
+      "opponent_player": null,
+      "hands": 1128,
+      "current_per_warp_max_loop_counts": [
+        47,
+        47
+      ],
+      "descending_per_warp_max_loop_counts": [
+        47,
+        47
+      ],
+      "current_sum_of_warp_maxima": 94,
+      "descending_sum_of_warp_maxima": 94,
+      "same_total_scalar_card_loop_additions": 2256,
+      "same_longest_single_card_loop": 47
+    }
+  ],
+  "timing_evidence": {
+    "D033_paired_up_fold_ms": {
+      "samples": [
+        3.421439968049526,
+        3.457407996058464,
+        3.6345599740743637
+      ],
+      "median": 3.457407996058464,
+      "min": 3.421439968049526,
+      "max": 3.6345599740743637
+    },
+    "D033_outer_device_perturbation_pct": {
+      "samples": [
+        68.91263242277867,
+        72.11994825902643,
+        71.03249405034194
+      ],
+      "median": 71.03249405034194,
+      "min": 68.91263242277867,
+      "max": 72.11994825902643
+    },
+    "limits": "Dense perturbed final replay only, not native share. D045 does not select fold. No card-loop timing or complete-cycle headroom."
+  },
+  "exactness_requirements": [
+    "Verified permutation of0..51",
+    "Unchanged each-card +0 initializer and ascending original hand-list additions",
+    "Unique unchanged s[card] destinations",
+    "Unchanged total partial distribution/reduction and all barriers",
+    "Correct opponent table at both training/eval sites",
+    "Exact actual-kernel outputs before native fullcycle qualification"
+  ],
+  "performance_risks": [
+    "Same scalar additions and longest card loop",
+    "Changed shared-bank behavior and scheduling",
+    "Extra mapping load, host sorting and416B upload",
+    "Full-range proxy unchanged",
+    "E019 fold barrier candidate failed fullcycle2%gate"
+  ],
+  "history_scope": "Current postflop ledger and bounded autoresearch Markdown search; no verified duplicate, not exhaustive. Inspected ledger archived.",
+  "official_source": {
+    "url": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-best-practices-guide/index.html#branching-and-divergence",
+    "use": "General warp control-flow motivation only, no quantitative hardware prediction"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\census.py": "540e12af3b6803b1904be6d9b513a306f3df37907cb051c1669c32ddfee6bd30",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\report.json": "551bb9eb039bbbefad0163f2175b64712c7976405e169fff92e1d50429332efd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-descriptive-analysis\\report.json": "f83c30be1a57631108623bf539bf4c8b9bcac35994dd6a31a35c81bf97974731",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E019-three-pair-comparison\\report.json": "f0ea456e81ab72c888e658290d24dfb51aaae449ab0adad14608305ecd4ceafb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\base\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_prepared": false,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false
+}

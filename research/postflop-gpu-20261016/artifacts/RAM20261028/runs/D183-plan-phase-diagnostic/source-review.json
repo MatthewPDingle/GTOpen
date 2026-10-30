@@ -1,0 +1,243 @@
+{
+  "id": "D183",
+  "at": "2026-10-28T18:08:05.817192+00:00",
+  "previous_goal_turn_classification": "progress: E098 completed both86unit suites,18exactscience/138checkpoints and fixed samequality speed screen; rejection and all terminal evidence published, changing next action.",
+  "scope": "Instrument exact original CPU GpuPlan build with14 phase marks only; compare every original plan field against original accepted E080 library. Six unchanged canonicalSpot cases (3fixtures x iso on/off),3fixed fresh-process BO/OB/BO paired observations. No production source changes/GPU calls/solves/optimizer/speed result.",
+  "phase_labels": [
+    "preamble",
+    "DFS_buffers",
+    "representative_DFS",
+    "CFV_width_count",
+    "CFV_slots",
+    "classify_nodes",
+    "flatten_node_lists",
+    "chance_edge_lists",
+    "river_slot_assignment",
+    "river_tables",
+    "scalar_arrays",
+    "full_or_compact_selection",
+    "hand_tables",
+    "reach_compaction"
+  ],
+  "all_public_fields": [
+    [
+      "num_levels",
+      "usize"
+    ],
+    [
+      "nh",
+      "[usize; 2]"
+    ],
+    [
+      "nh_max",
+      "usize"
+    ],
+    [
+      "num_nodes",
+      "usize"
+    ],
+    [
+      "iso_active",
+      "bool"
+    ],
+    [
+      "action_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "action_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "chance_parents",
+      "Vec<u32>"
+    ],
+    [
+      "chance_children",
+      "Vec<u32>"
+    ],
+    [
+      "chance_cards",
+      "Vec<u32>"
+    ],
+    [
+      "chance_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "chance_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "chance_node_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "fold_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "fold_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "show_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "show_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "cc_start",
+      "Vec<u32>"
+    ],
+    [
+      "cc_count",
+      "Vec<u32>"
+    ],
+    [
+      "cc_card",
+      "Vec<u32>"
+    ],
+    [
+      "cc_child",
+      "Vec<u32>"
+    ],
+    [
+      "cc_perm",
+      "Vec<u32>"
+    ],
+    [
+      "hand_perm_flat",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "node_player",
+      "Vec<i32>"
+    ],
+    [
+      "node_na",
+      "Vec<i32>"
+    ],
+    [
+      "node_data_off",
+      "Vec<u64>"
+    ],
+    [
+      "arena_elements",
+      "[usize; 2]"
+    ],
+    [
+      "node_children_start",
+      "Vec<u32>"
+    ],
+    [
+      "node_twin",
+      "Vec<f32>"
+    ],
+    [
+      "node_tlose",
+      "Vec<f32>"
+    ],
+    [
+      "node_ttie",
+      "Vec<f32>"
+    ],
+    [
+      "node_cdiv",
+      "Vec<f32>"
+    ],
+    [
+      "node_river_slot",
+      "Vec<i32>"
+    ],
+    [
+      "reach_src",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "reach_slot",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "reach_blocks",
+      "[usize; 2]"
+    ],
+    [
+      "cfv_slot",
+      "Vec<u32>"
+    ],
+    [
+      "cfv_blocks",
+      "usize"
+    ],
+    [
+      "hand_c1",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "hand_c2",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "hand_mask",
+      "[Vec<u64>; 2]"
+    ],
+    [
+      "same_combo",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "weights",
+      "[Vec<f32>; 2]"
+    ],
+    [
+      "num_slots",
+      "usize"
+    ],
+    [
+      "riv_off",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_cnt",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_sorted_idx",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_sorted_str",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_lower",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_upper",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_card_off",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_card_pos",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_max_cnt",
+      "[usize; 2]"
+    ]
+  ],
+  "byte_exact_original_reversal": true,
+  "base_plan_sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+  "observed_plan_sha256": "6abe162ce83c192386c1352e74b4e37bff67d4f373a48c719fb525a87bf51829",
+  "all_local_ref_plan_history": "8ff89f42 Optimize solver performance and GPU memory with validated research results\nd3ff6d69 research restore final retained source after postflop lifecycle control\ndfc1b376 research fresh pass-start postflop and memory control\na75c327c research restore final retained GPU implementation after fresh control\nc14e87c3 research fresh pass-start performance control\nbc699c71 experiment E026: reuse nonterminal CFV slots across disjoint tree levels\n28d36988 experiment E024F: prefer direct F32 transfers when budget permits and prove tight-budget equivalence\nffe12e97 experiment E024C: vectorizable exact zero detection for inactive snapshots\n1e6124f2 control B026: restore full postflop action arenas for host memory comparison\ne274391f experiment E024B: retain direct DMA when compact action savings are small\n20359dd6 experiment E024: compact visited postflop action arenas with exact inactive snapshots\ncd84600b research final comparisons: restore all retained implementations\n301a3540 research final controls: restore initial implementation with frozen workloads\nf28e16f4 Discard E018: precomputed CPU boundaries show no repeatable gain\n110e9648 research E018: precompute shared CPU and GPU showdown boundaries\necf7e1eb research E013: pack postflop CFV buffers by visited node\n4763e3ea research E009: restore compact reach candidate for paired repeat\nb6131a59 research B008: control with original postflop reach allocation\nd34779c5 research E009: compact postflop reach storage by distinct owner\na43b09a2 Preserve validated solver optimizations as autoresearch baseline\nb00d905a FREEPIO: GTO postflop solver (Rust core + CUDA + web UI)\n",
+  "historical_counterevidence": "D080 indexed river-slot lookup only4.7015ms observed isolated savings and declined; not reopened. E079 overlaps existing wholeplan/context and failed fixture tradeoff; E080 overlaps zero scans and staysaccepted. E095 earlierzero worker failed actual budget/errorCPUcost beforeGPU; closed. E098 hostznver3codegen rejected; defaulttarget/16workers retained. No ordering/fusion/planner candidate admitted by this diagnostic.",
+  "timing_limits": "CPU-only component clocks exclude Spot construction, serialization/comparison/destruction and all GPU init/solve/readback. Observer/cache/allocator effects assessed with full original outer-clock pair and ordered fresh processes. Components cannot establish complete-cycle savings/headroom, CPU integration cost or a >=1% gain. All future exactness/complete1%/strictfixture/fresh16/broad/material/holdout/cumulative/application gates unchanged.",
+  "raw_limits": "36wholeplan files <=2GiB each,<=72GiB raw+16GiB headroom. All fields include unreachable/default regions, float bit patterns, vector counts/order and spans. Independent entirebyte streamed reader, no field/precision/order exclusions. Every producer exit and compiler terminal required."
+}

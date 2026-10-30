@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_sampled_physical_hybrid_evaluation_20260922.py", line 229, in <module>
+    else: execute()
+          ^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_sampled_physical_hybrid_evaluation_20260922.py", line 197, in execute
+    assert child.returncode == 0, f'GPU evaluation worker failed: {child.returncode}'
+           ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: GPU evaluation worker failed: 1

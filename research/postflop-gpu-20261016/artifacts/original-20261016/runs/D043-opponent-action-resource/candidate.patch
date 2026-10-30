@@ -1,0 +1,45 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -513,3 +513,42 @@
+         }
+     }
+ }
++
++// D043 compiler-only candidate: caller supplies only nodes whose actor != p.
++// The normal down sweep already incorporates opponent locks into reach.
++// No host routing or kernel launch is implemented by this standalone probe.
++template<int NA>
++__device__ __forceinline__ void up_action_opponent_impl(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_na,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
++{
++    int b = blockIdx.x;
++    if (b >= count) return;
++    u32 n = nodes[start + b];
++    const int na = NA == 0 ? node_na[n] : NA;
++    u32 cs = node_children_start[n];
++        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++            float acc = 0.f;
++            for (int a = 0; a < na; a++)
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
++        }
++}
++
++extern "C" __global__ void up_action_opponent(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_na,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    if (na == 2) up_action_opponent_impl<2>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else if (na == 3) up_action_opponent_impl<3>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else if (na == 4) up_action_opponent_impl<4>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else up_action_opponent_impl<0>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++}

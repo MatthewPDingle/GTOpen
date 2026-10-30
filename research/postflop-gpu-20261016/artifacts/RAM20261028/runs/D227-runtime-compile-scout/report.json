@@ -1,0 +1,163 @@
+{
+  "id": "D227",
+  "at": "2026-10-29T01:46:59.677713+00:00",
+  "status": "declined_compile_latency_only_lead_at_recorded_cost_proxy",
+  "previous_goal_turn": "Progress: E108 all raw/fullcanonical/ordinary controls passed but fullcycle screen rejected -0.078422563959% observed gain and riverguard. Preserved all evidence, source/main/live/protectedPTX intact and all children terminal. No source/flag/width rescue.",
+  "hypothesis": "Consider one NVRTC12.9 fast-compile setting to reduce compile CPU latency within existing complete-cycle clocks. No level selected or compiled.",
+  "official_source": {
+    "url": "https://docs.nvidia.com/cuda/archive/12.9.0/nvrtc/index.html#supported-compile-options",
+    "accessed_at": "2026-10-29T01:46:59.677713+00:00",
+    "summary": "NVRTC12.9 documents Ofast-compile levels min,mid,max and disabled0/default. They exchange optimization work and possible device performance for compilation latency. This documentation is not a speed or exactness guarantee."
+  },
+  "bounded_history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "-G",
+        "Ofast-compile|CU_JIT_FAST_COMPILE",
+        "--",
+        "crates/solver/src/gpu/mod.rs"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "Ofast[-_]compile|--dopt\\b",
+        "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+        "-g",
+        "*.rs",
+        "-g",
+        "*source-review*.json"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "semantic_context": "E093 changed compiler/DLL version and remains closed. No alternate13level/source/loader/flag rescue. This is a separate12.9compile-latency hypothesis, declined before candidate preparation. Current staticPTXOnceLock compiles source only on first constructor in process. D173 is a whole-constructor observer with a coarse usefulness check; excluded internal planner phase timings D110/D183 are not used.",
+  "source_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+  "retained_evidence_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D173-constructor-diagnostic\\report.json": "be63449d00f5914bf95c129be6aa7e81125a183913757dbe919805aaf1c17981",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D173-root-review\\report.json": "7f38f9bbc41991f70776723707bfd978ce250a7650666cda2fbd2b8158adbded",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P1\\report.json": "494a71ec949b67f0db2ab5769a21c13d61cfbea866480009d83dbbdc1d326af6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P1\\stdout.log": "f633376e122c0bae30505d3ce8093342bb6acfec93ad3defcb822eaad3492568",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P2\\report.json": "095f4ed32706d2a233e299a4cd0ed07aec0008d6050c98dc896d6ce87243fa27",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P2\\stdout.log": "10fc41087d029c4452bb111a7ffeb16676ad019117baf78ef4f5a5b6bafb7be2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P3\\report.json": "625c272d9e21f8432d1acf623c5e68d053a6257b009219cf747ee64b85a80c9a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P3\\stdout.log": "fdc5d5aa924b9a69a98d774991bc6e6bc99f3e40ff9ed0a317cc7c7fedf6e966"
+  },
+  "retained_timeline_rows": [
+    {
+      "run": "D173P1",
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "setup_to_PTX_ready_ms": 64.0248,
+      "setup_end_ns": 439670600,
+      "checks_end_ns": 538839700,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P1",
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "setup_to_PTX_ready_ms": 0.0312,
+      "setup_end_ns": 318540600,
+      "checks_end_ns": 375783500,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P1",
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "setup_to_PTX_ready_ms": 0.0219,
+      "setup_end_ns": 86556400,
+      "checks_end_ns": 86557400,
+      "actual_overlap": false,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P2",
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "setup_to_PTX_ready_ms": 66.9446,
+      "setup_end_ns": 399058900,
+      "checks_end_ns": 485437100,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P2",
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "setup_to_PTX_ready_ms": 0.0318,
+      "setup_end_ns": 293592100,
+      "checks_end_ns": 363213700,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P2",
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "setup_to_PTX_ready_ms": 0.0638,
+      "setup_end_ns": 85776600,
+      "checks_end_ns": 85777800,
+      "actual_overlap": false,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P3",
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "setup_to_PTX_ready_ms": 69.9089,
+      "setup_end_ns": 411082300,
+      "checks_end_ns": 492508500,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P3",
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "setup_to_PTX_ready_ms": 0.0216,
+      "setup_end_ns": 238332900,
+      "checks_end_ns": 298475800,
+      "actual_overlap": true,
+      "PTX_prefix_before_checks_finish": true
+    },
+    {
+      "run": "D173P3",
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "setup_to_PTX_ready_ms": 0.0253,
+      "setup_end_ns": 78937100,
+      "checks_end_ns": 78938100,
+      "actual_overlap": false,
+      "PTX_prefix_before_checks_finish": true
+    }
+  ],
+  "fixture_median_setup_to_PTX_ready_ms": [
+    66.9446,
+    0.0312,
+    0.0253
+  ],
+  "sum_recorded_prefix_medians_ms": 67.0011,
+  "samecohort_reference_ms": 10063.315799999998,
+  "prospective_effort_proxy_ms": 100.63315799999998,
+  "recorded_prefix_fraction_pct": 0.6657954627638736,
+  "decision": "Decline the compile-latency-only optimization before new compiler/context/device/candidate runs: its recorded prefix is below1%of samecohort control, and source/cache/overlap provide counterevidence. Do not sweep optimization levels or reinterpret this as a global compiler-improvement trial. No E109source or optimizer created for this lead.",
+  "limits": "Recorded setup-to-PTX envelope includes more than NVRTC and is observer/scheduling dependent, not a mathematical current-time upper bound, per-component error bound or proof that every compiler setting could never change runtime. Concurrent checks can hide setup, but no counterfactual saving is inferred. This is a planning effort filter, not a complete-solve candidate measurement or new gain.",
+  "new_compilers_CUDA_contexts_kernels_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "goal_active": true
+}

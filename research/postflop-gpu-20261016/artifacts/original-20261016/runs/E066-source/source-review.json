@@ -1,0 +1,27 @@
+{
+  "id": "E066",
+  "at": "2026-10-17T11:07:56.836071+00:00",
+  "original_form": "E031",
+  "original_candidate_full_sha256": "75defdd19a144924e41d1ca36e166161c2e097ec22843905444376e9a561079b",
+  "original_baseline_full_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "accepted_base": "E051",
+  "accepted_cuda_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_cuda_sha256": "c3a58840aab1f69ad5c7e730ae4394f858a88c231b14cccdbd1fec12afacfaa2",
+  "original_current_baseline_up_show_exact": true,
+  "original_new_candidate_up_show_exact": true,
+  "normalized_candidate_entry_sha256": "64b10499a986998f150613e458c39bdc5246511cd57d86bea314c278fb371ea2",
+  "outside_up_show_exact": true,
+  "host_global_dynamic_launch_payload_unchanged": true,
+  "mechanism": "Exact original53u32static shared table, block-stride preload before original first barrier; original absolute card_base and two per-card offset reads replaced by table reads. Every float expression/order, barrier, buffer, ABI and launch/caller unchanged. No cache-size/placement/map variant or composition.",
+  "source_contract": "53valid absolute offsets per river slot including empty arrays; each card0..51 plus1 is in range. Every positive block width covers all53words. Inputs are immutable separately allocated; consumers follow existing barrier; no floating reorder. Fresh numerical tests still required.",
+  "history_inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-design\\manifest.json": "88fd1fdca4a1eba7deffb3563540b35d46a87f42d9485774c25a05de29c47662",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-design\\source-checks.json": "5bffcc9ed22941d923485bb9c33a4493c0b03b614e20d453ec7b11b28c943797",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E031-source-review\\report.json": "6860b52400025410b56c1611e56c222c6fd7ecc638823c5a655eb3c708450108",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E031-resource-review\\manifest.json": "5dfdd038727fae4c2e93bfacb64ffef181096572902d75a25b31588d3b77bd79",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D108-resource-feasibility-audit\\report.json": "8bc418acaa4567329ce531d651a5d2fe75dfb543da279e0facd1bcf5308b977a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D108-resource-feasibility-audit\\docket.json": "0def2122ffe79f1600d893c2f3b9cbb555b4355bbebb767e762e7a0d1c36d506",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D108-resource-feasibility-audit\\commit.json": "d4315cc9931fea0aaf4d6c67a54c22c5148a4d8ae2995baedbc00e30ad21e3ea"
+  },
+  "no_claim": "Root source ancestry/safety review; no new native execution, speed gain or no-material-cost conclusion."
+}

@@ -1,0 +1,68 @@
+{
+  "id": "E037-policy-1pct",
+  "status": "FROZEN_PROSPECTIVE_POLICY_NOT_EXECUTED",
+  "at": "2026-10-16T22:24:18.377235+00:00",
+  "candidate": "E037",
+  "user_instruction": "yea make the cutoff 1% if there's no tradeofffs",
+  "root_decision": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-root-decisions\\user-policy-1pct.json",
+    "sha256": "1127d11e472842cfd9d6ebafbb3408a06fca14de1c1b718ae3757517ba9c3a5c"
+  },
+  "supersedes": "Only E037 primary aggregate cutoff and repeated fixture slowdown threshold; adopted on explicit user instruction before any native measurement. Historical decisions and sealed original files remain unchanged.",
+  "required_gain_pct": 1.0,
+  "fixture_slowdown_threshold_pct": 0.0,
+  "fixture_repeat_rule": "median slowdown >0 AND strict majority (minimum2) of paired slowdowns >0 rejects; unrounded values and no epsilon",
+  "original_protocol": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\protocol.json",
+    "sha256": "48e8c20d6e9744e6397274596979ac69ff94d6d57a6d7d13a726ae9a16910c86"
+  },
+  "original_scripts_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\scripts-manifest.json",
+    "sha256": "6f00150b84498fc9c9572b07b546f6e01c110d618b22ab9973749b42d53f8540"
+  },
+  "original_authorization": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\authorization.json",
+    "sha256": "03b36389ca3864e8bfc550c0dcceb724a1b486cf46a9950dc3293a6beaf219dc"
+  },
+  "order": [
+    "V037-unit",
+    "B116",
+    "E037R1",
+    "E037R2",
+    "B117",
+    "B118",
+    "E037R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B116",
+      "candidate": "E037R1"
+    },
+    {
+      "baseline": "B117",
+      "candidate": "E037R2"
+    },
+    {
+      "baseline": "B118",
+      "candidate": "E037R3"
+    }
+  ],
+  "unchanged": "Source/binaries/build scripts, seven run identities/order, evaluator/environment, complete-cycle boundaries,85/4 unit inventory,34/68 focused GPU control,18 full non-timing objects and138 convergence checks",
+  "original_assessor_prohibited": true,
+  "primary_pass_is_preliminary": true,
+  "adoption_requirements": [
+    "Fresh fixed16 balanced pairs, separately frozen before execution: aggregate>=1%, paired median>0,13/16 positive pairs,positive block/order medians and no repeatable measured fixture slowdown; no old-sample pooling/extensions",
+    "Independent full raw exactness/F32/state/menu/resume/continuation and fixed wide-turn holdout/fresh-original cumulative qualification",
+    "Independent source/resource/compatibility evidence establishing no material memory, behavior or compatibility cost before adoption"
+  ],
+  "source_cost_evidence": {
+    "source_review": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E037-source-review\\report.json",
+    "source_review_sha256": "c2ef72a605327a37f15ef84817fb15957f9f3cbd7cc666312df2c84b0711c17f",
+    "no_new_host_or_device_buffers": true,
+    "unchanged_shared_bytes_abi_launches_and_host_production": true,
+    "compiled_register_local_and_instruction_costs": "Not inferred from source; unresolved until separately inspected before adoption",
+    "universal_no_slowdown_claim": false
+  },
+  "candidate_accepted": false,
+  "runtime_authority": "Separate root policy authorization plus original build authorization; no automatic runtime or adoption"
+}

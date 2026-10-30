@@ -1,0 +1,57 @@
+--- retained-control/probe.rs
++++ E084-control/probe.rs
+@@ -1,4 +1,4 @@
+-//! E077: originalu32/privateu16boundaries, same full raw controls; no timing.
++//! E084: original/shared-producer versus first-card-total-cache, full raw controls; no timing.
+ use cudarc::{driver::{CudaContext, CudaFunction, CudaSlice, CudaStream, LaunchConfig, PushKernelArg},
+     nvrtc::{compile_ptx_with_opts, CompileOptions}};
+ use serde_json::{json,Value};
+@@ -26,7 +26,7 @@
+ fn bits(v:&[f32])->Vec<u32>{v.iter().map(|v|v.to_bits()).collect()}
+ fn floats(v:&[u32])->Vec<f32>{v.iter().copied().map(f32::from_bits).collect()}
+ fn n(v:&Value,k:&str)->usize {usize::try_from(v[k].as_u64().unwrap()).unwrap()}
+-fn emit(v:Value)->Result<()> {let mut out=std::io::stdout().lock();writeln!(out,"E077_EXACT {v}")?;out.flush()?;Ok(())}
++fn emit(v:Value)->Result<()> {let mut out=std::io::stdout().lock();writeln!(out,"E084_EXACT {v}")?;out.flush()?;Ok(())}
+ fn save(v:&Value,file:&mut BufWriter<std::fs::File>)->Result<()> {serde_json::to_writer(&mut *file,v)?;file.write_all(b"\n")?;file.flush()?;Ok(())}
+ fn exact(a:&[u32],b:&[u32],label:&str)->Result<()> {if a.len()!=b.len(){return Err(format!("{label}:length").into());}if let Some(i)=a.iter().zip(b).position(|(a,b)|a!=b){return Err(format!("{label}:{i}:{:08x}!={:08x}",a[i],b[i]).into());}Ok(())}
+ fn guards(initial:&[u32],out:&[u32],active:&[bool])->Result<()> {if initial.len()!=out.len()||out.len()!=active.len(){return Err("guard length".into());}for i in 0..out.len(){if !active[i]&&out[i]!=initial[i]{return Err(format!("output guard {i}").into());}}Ok(())}
+@@ -61,26 +61,8 @@
+ }
+ fn upload_u32(s:&Arc<CudaStream>,a:&Value,key:&str)->Result<(Vec<u32>,CudaSlice<u32>)>{let h=words(&a[key]);let d=s.clone_htod(&h)?;Ok((h,d))}
+ fn upload_f32(s:&Arc<CudaStream>,a:&Value,key:&str)->Result<(Vec<f32>,CudaSlice<f32>)>{let h=floats(&words(&a[key]));let d=s.clone_htod(&h)?;Ok((h,d))}
+-fn tag_indices(g:&Value,a:&mut Value) {
+- const FLAG:u32=0x8000_0000;
+- let mut pi=words(&a["p_idx"]);let mut oi=words(&a["o_idx"]);
+- let pb=words(&a["p_off"])[1] as usize;let ob=words(&a["o_off"])[1] as usize;
+- let mp=n(g,"m_p");let mo=n(g,"m_o");let lower=words(&a["p_lower"]);let upper=words(&a["p_upper"]);
+- let ps=words(&g["strengths_p"]);let os=words(&g["strengths_o"]);
+- let sorted_p:Vec<u32>=pi[pb..pb+mp].iter().map(|&i|ps[i as usize]).collect();
+- let mut needed_p=std::collections::BTreeSet::new();let mut needed_o=std::collections::BTreeSet::new();
+- if mp>0 {needed_p.insert(mp-1);}if mo>0 {needed_o.insert(mo-1);}
+- for i in pb..pb+mp {for &v in [&lower[i],&upper[i]] {if v>0 {needed_o.insert(v as usize-1);}}}
+- for &i in &oi[ob..ob+mo] {
+-  let strength=os[i as usize];let lb=sorted_p.partition_point(|&s|s<strength);let ub=sorted_p.partition_point(|&s|s<=strength);
+-  if lb>0 {needed_p.insert(lb-1);}if ub>0 {needed_p.insert(ub-1);}
+- }
+- for k in needed_p {pi[pb+k]|=FLAG;}for k in needed_o {oi[ob+k]|=FLAG;}
+- a["p_idx"]=json!(pi);a["o_idx"]=json!(oi);
+-}
+-fn run_variant(s:&Arc<CudaStream>,f:&CudaFunction,g:&Value,c:&Value,width:u32,active:&[bool],tagged:bool)->Result<(Vec<u32>,usize,usize,Vec<Value>)> {
+- let mut arrays=g["arrays"].clone();if tagged {tag_indices(g,&mut arrays);}
+- let a=&arrays;
++fn run_variant(s:&Arc<CudaStream>,f:&CudaFunction,g:&Value,c:&Value,width:u32,active:&[bool])->Result<(Vec<u32>,usize,usize,Vec<Value>)> {
++ let a=&g["arrays"];
+  let (nodes,d_nodes)=upload_u32(s,a,"nodes")?;
+  let (win,d_win)=upload_f32(s,a,"node_twin")?;let (lose,d_lose)=upload_f32(s,a,"node_tlose")?;let (tie,d_tie)=upload_f32(s,a,"node_ttie")?;
+  let (river,d_river)=upload_u32(s,a,"node_river_slot")?;let (rsrc,d_rsrc)=upload_u32(s,a,"rsrc_o")?;
+@@ -129,8 +111,8 @@
+  for width in [1u32,32,64,128,256] {for c in cs {
+   let g=gs.iter().find(|g|g["id"]==c["geometry"]).unwrap();let count=n(c,"count");assert!(count==0||count==2);
+   let active:Vec<bool>=g["output_active"].as_array().unwrap().iter().map(|v|count>0&&v.as_bool().unwrap()).collect();
+-  let (before,bc,bw,bs)=run_variant(&s,&bf,g,c,width,&active,false)?;launches+=1;
+-  let (after,cc,cw,csnap)=run_variant(&s,&cf,g,c,width,&active,true)?;launches+=1;
++  let (before,bc,bw,bs)=run_variant(&s,&bf,g,c,width,&active)?;launches+=1;
++  let (after,cc,cw,csnap)=run_variant(&s,&cf,g,c,width,&active)?;launches+=1;
+   exact(&before,&after,c["id"].as_str().unwrap())?;
+   let actual:Vec<u32>=before.iter().zip(&active).filter(|(_,a)|**a).map(|(v,_)|*v).collect();let changed=actual.iter().filter(|v|**v!=GUARD).count();assert_eq!(changed,actual.len(),"active stale guard remains");
+   if c["profile"]=="all_zero"||n(g,"m_p")==0||n(g,"m_o")==0 {assert!(actual.iter().all(|v|*v==0),"expected zero CFV");}

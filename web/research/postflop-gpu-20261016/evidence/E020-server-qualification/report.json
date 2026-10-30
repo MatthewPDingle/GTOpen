@@ -1,0 +1,70 @@
+{
+  "id": "E020-server-qualification",
+  "candidate_id": "E020",
+  "status": "pass",
+  "at": "2026-10-16T11:56:34.177935+00:00",
+  "scope": "Isolated server integration only; no performance, deployment or universal accuracy claim",
+  "acceptance_sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+  "prepared_manifest_sha256": "99ded8f3ce4f3c0671e0b405c7fcd3f256133825e863dcc4788c91ad99ee7e5b",
+  "source_files_verified": 168,
+  "binaries": {
+    "E020-gto-server": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gto-server.exe",
+      "sha256": "7c90005b3a74a7e46d0ea5a57b0fb20e1ab1278916f0c89e9435dbbca989a742",
+      "manifest_sha256": "8c91f3a593d12dc57da01bce35c982dde5b49a218d6a4b88b350345c395690c5",
+      "embedded_cuda": {
+        "E015": 0,
+        "E020": 1
+      }
+    },
+    "E020-server-tests": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe",
+      "sha256": "6ab4e0fd2d3ed47b0ce68fa591b48be1847ea9ab48148d8e7a6601cedb59a1b0",
+      "manifest_sha256": "9cef5908ac46bc45bf5e5ad176ad7d94daa8b76a561dc550d8bac294a48e8181",
+      "embedded_cuda": {
+        "E015": 0,
+        "E020": 1
+      }
+    }
+  },
+  "unit_tests": {
+    "passed": 20,
+    "failed": 0,
+    "ignored": 1,
+    "measured": 0,
+    "filtered_out": 0,
+    "inventory_exact": true
+  },
+  "smoke": {
+    "iterations": 100,
+    "gpu": true,
+    "root_checks": {
+      "acting_hands_checked": 27,
+      "max_strategy_sum_error": 5.060000007883758e-08,
+      "actions": [
+        "Check",
+        "Bet 10 (50%)"
+      ],
+      "player": 0
+    },
+    "child_checks": {
+      "acting_hands_checked": 27,
+      "max_strategy_sum_error": 2.422000000557034e-08,
+      "actions": [
+        "Check",
+        "Bet 10 (50%)"
+      ],
+      "player": 1
+    },
+    "owned_pid": 52732,
+    "owned_process_stopped": true,
+    "test_port_released": true,
+    "live_unchanged": true
+  },
+  "deployment_changed": false,
+  "deployed": false,
+  "live_deployment_remains_blocked": true,
+  "prerequisite_for_next_research_candidate": true,
+  "inputs_sha256": "9933fea6e0bb5f88a539c6ab4fe19eaf6db6065541c6b57f3299ce9662342804",
+  "audit_source_sha256": "3aaae971a18b1847921600845448315b6516315429dccf7bcdec663f323b0359"
+}

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "diagnostic_passes": 720,
+  "summary": {
+    "ram": {
+      "checkpoints_exact": true,
+      "seconds": 36.9866821,
+      "strategy_transfer_bytes": 82564661760,
+      "old_strategy_transfer_bytes": 110086215680,
+      "transfer_fraction": 0.75
+    },
+    "ssd": {
+      "checkpoints_exact": true,
+      "seconds": 193.0590675,
+      "strategy_transfer_bytes": 82564661760,
+      "old_strategy_transfer_bytes": 110086215680,
+      "transfer_fraction": 0.75
+    }
+  },
+  "production_ready": false,
+  "longer_trajectory_qualified": false,
+  "timing_claim": false,
+  "scope": "Owner-only download preserves full device state and 20-iteration changing-range outputs. Both RAM and complete-generation SSD modes checked. Three development boards only.",
+  "result_sha256": {
+    "ram": "51b18432629fe34a2128d2bac8b776e237ed5ebc31f21da8b42c27f27b041870",
+    "ssd": "e0e6ddd61bc09a681a336b9f6163d79c056a55b58b2ec3782a5b5a4f6476afdc"
+  },
+  "log_sha256": "0f93d6d2013808ac11b325567c9b2e634ccfa7c77148edf72698afb4b39e5f80"
+}

@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-17T04:35:20.436072+00:00",
+  "status": "prepared_no_behavior_or_evidence_change",
+  "same_exact_tested_crlf_bytes": true,
+  "reason": "Recognize CR at line endings only for whitespace check; no source byte normalization. Per-command core.autocrlf=false preserves tested bytes in commit. No global Git setting changes.",
+  "normalized_diff": "--- acceptedE020\n+++ testedE051\n@@ -377,6 +377,7 @@\n                 sum += r > 0.f ? r : 0.f;\n             }\n             float uni = 1.f / (float)na;\n+            float reach = rp[i];\n             float out = 0.f;\n             for (int a = 0; a < na; a++) {\n                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];\n@@ -384,16 +385,17 @@\n                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];\n                 if (small) vc[a] = v;\n                 out += sig * v;\n-            }\n-            float reach = rp[i];\n+                // Independent of the completed node value: use this action's\n+                // original sigma while it is already available.\n+                u64 idx = doff + (u64)a * nh_p + i;\n+                strat_p[idx] = strat_p[idx] * ds + reach * sig;\n+            }\n             for (int a = 0; a < na; a++) {\n                 u64 idx = doff + (u64)a * nh_p + i;\n                 float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];\n                 float r = small ? rc[a] : regrets_p[idx];\n-                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;\n                 float d = r > 0.f ? pos : neg;\n                 regrets_p[idx] = r * d + (val - out);\n-                strat_p[idx] = strat_p[idx] * ds + reach * sig;\n             }\n             cfv[(u64)cfv_slot[n] * nh_max + i] = out;\n         }\n",
+  "new_script": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-qualify-and-integrate-r2.py",
+  "new_script_sha256": "c472b80c203b4b273cae730a5f93985324277ac4dfb6e8f53fd775eacfea6d68",
+  "original_script_sha256": "27b6909c3729df09a7c7d4830754a0463f8e8558ffa62646cee06e25da6c3961"
+}

@@ -1,0 +1,1300 @@
+{
+  "id": "D283",
+  "at": "2026-10-29T16:11:16.115358+00:00",
+  "status": "pass_scoped_native_zero_tie_prefix_bypass_and_payout_chain",
+  "reader_protocol_sha256": "97487b65b34acba59b3232ceea7c2579e23c9976b460d3da56e9c40ca1de79cb",
+  "capture_report_sha256": "44bd16cd12c60a99869e1ea071dfc0a90f31bd5684abba58d7931aaf60f990a2",
+  "witness": {
+    "exact_witness_instructions": [
+      {
+        "pc": "0x360",
+        "instruction": "LDG.E.CONSTANT R8, desc[UR14][R8.64]"
+      },
+      {
+        "pc": "0x3a0",
+        "instruction": "STS [R11], R8"
+      },
+      {
+        "pc": "0x3b0",
+        "instruction": "ISETP.GT.U32.AND P0, PT, R8, 0x67800000, PT"
+      },
+      {
+        "pc": "0x3c0",
+        "instruction": "SEL R17, RZ, 0x1, !P0"
+      },
+      {
+        "pc": "0x3d0",
+        "instruction": "LOP3.LUT R12, R12, R17, RZ, 0xfc, !PT"
+      },
+      {
+        "pc": "0x570",
+        "instruction": "ISETP.NE.U32.AND P0, PT, R12, RZ, PT"
+      },
+      {
+        "pc": "0x580",
+        "instruction": "BAR.RED.OR.DEFER_BLOCKING 0x0, P0"
+      },
+      {
+        "pc": "0x590",
+        "instruction": "B2R.RESULT RZ, P0"
+      },
+      {
+        "pc": "0x1940",
+        "instruction": "LDCU.128 UR20, c[0x0][0x390]"
+      },
+      {
+        "pc": "0x1950",
+        "instruction": "LDCU.64 UR4, c[0x0][0x3a0]"
+      },
+      {
+        "pc": "0x1970",
+        "instruction": "IADD.64 R20, R6.reuse, UR22"
+      },
+      {
+        "pc": "0x1980",
+        "instruction": "IADD.64 R18, R6.reuse, UR20"
+      },
+      {
+        "pc": "0x1990",
+        "instruction": "IADD.64 R6, R6, UR4"
+      },
+      {
+        "pc": "0x19a0",
+        "instruction": "LDG.E.CONSTANT R14, desc[UR14][R20.64]"
+      },
+      {
+        "pc": "0x19b0",
+        "instruction": "LDG.E.CONSTANT R13, desc[UR14][R18.64]"
+      },
+      {
+        "pc": "0x19c0",
+        "instruction": "LDG.E.CONSTANT R12, desc[UR14][R6.64]"
+      },
+      {
+        "pc": "0x3610",
+        "instruction": "FMUL R8, R14, R27"
+      },
+      {
+        "pc": "0x3620",
+        "instruction": "FFMA R17, R13, R26, R8"
+      },
+      {
+        "pc": "0x3630",
+        "instruction": "LOP3.LUT R8, R17, 0x7fffffff, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3640",
+        "instruction": "IADD R8, R8, -0x1"
+      },
+      {
+        "pc": "0x3650",
+        "instruction": "ISETP.GE.U32.AND P2, PT, R8, 0x7f7fffff, PT"
+      },
+      {
+        "pc": "0x3660",
+        "instruction": "@!P2 BRA `(.L_x_248)"
+      },
+      {
+        "pc": "0x47a0",
+        "instruction": "FFMA R17, R12, R17, R9"
+      },
+      {
+        "pc": "0x4840",
+        "instruction": "STG.E desc[UR14][R8.64], R17"
+      }
+    ],
+    "first_barrier_reduction_and_four_syncs": [
+      {
+        "pc": "0x580",
+        "instruction": "BAR.RED.OR.DEFER_BLOCKING 0x0, P0"
+      },
+      {
+        "pc": "0x8a0",
+        "instruction": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0xd60",
+        "instruction": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x16c0",
+        "instruction": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x1a60",
+        "instruction": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      }
+    ],
+    "original_27param_payout_pointers": {
+      "win_constant_offset": "0x390 viaUR20/21 thenR18/19,valueR13",
+      "lose_constant_offset": "0x398 viaUR22/23 thenR20/21,valueR14",
+      "tie_constant_offset": "0x3a0 viaUR4/5 thenR6/7,valueR12"
+    },
+    "native_prefix": "FMUL(lose,higher) ->FFMA(win,lower,product), same explicit RN instruction sequence as sealed baseline prefix; source/PTX define rounding/FTZ contract.",
+    "prefix_guard": "Masksign ->minus1 ->unsigned>=0x7f7fffff badpredicate;branchon!bad jumps0x3660to0x47b0,thenprefixR17store0x4840withnointerveningFP/load/prefixoverwrite.",
+    "skipped_replay_same_and_final_tie_region": [
+      {
+        "pc": "0x3670",
+        "instruction": "BSSY.RECONVERGENT B1, `(.L_x_249)"
+      },
+      {
+        "pc": "0x3680",
+        "instruction": "HFMA2 R9, -RZ, RZ, 0, 0"
+      },
+      {
+        "pc": "0x3690",
+        "instruction": "@P0 BRA `(.L_x_250)"
+      },
+      {
+        "pc": "0x36a0",
+        "instruction": "IADD R8, R18.reuse, -R19.reuse"
+      },
+      {
+        "pc": "0x36b0",
+        "instruction": "IADD R18, -R18, R19"
+      },
+      {
+        "pc": "0x36c0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_251)"
+      },
+      {
+        "pc": "0x36d0",
+        "instruction": "MOV R9, RZ"
+      },
+      {
+        "pc": "0x36e0",
+        "instruction": "LOP3.LUT R32, R8, 0x7, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x36f0",
+        "instruction": "ISETP.GT.U32.AND P0, PT, R18, -0x8, PT"
+      },
+      {
+        "pc": "0x3700",
+        "instruction": "ISETP.NE.AND P2, PT, R32, RZ, PT"
+      },
+      {
+        "pc": "0x3710",
+        "instruction": "@P0 BRA `(.L_x_252)"
+      },
+      {
+        "pc": "0x3720",
+        "instruction": "HFMA2 R9, -RZ, RZ, 0, 0"
+      },
+      {
+        "pc": "0x3730",
+        "instruction": "LOP3.LUT R17, R8, 0xfffffff8, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3740",
+        "instruction": "MOV R18, RZ"
+      },
+      {
+        "pc": "0x3750",
+        "instruction": "IADD R22, -R15, R19"
+      },
+      {
+        "pc": "0x3760",
+        "instruction": "IADD R18, R18, 0x8"
+      },
+      {
+        "pc": "0x3770",
+        "instruction": "IADD R19, R19, 0x8"
+      },
+      {
+        "pc": "0x3780",
+        "instruction": "IADD R24, R22.reuse, 0x1"
+      },
+      {
+        "pc": "0x3790",
+        "instruction": "LEA R25, R22.reuse, UR13, 0x2"
+      },
+      {
+        "pc": "0x37a0",
+        "instruction": "IADD R28, R22.reuse, 0x2"
+      },
+      {
+        "pc": "0x37b0",
+        "instruction": "IADD R29, R22, 0x3"
+      },
+      {
+        "pc": "0x37c0",
+        "instruction": "LEA R24, R24, UR13, 0x2"
+      },
+      {
+        "pc": "0x37d0",
+        "instruction": "LDS R25, [R25]"
+      },
+      {
+        "pc": "0x37e0",
+        "instruction": "LEA R33, R28, UR13, 0x2"
+      },
+      {
+        "pc": "0x37f0",
+        "instruction": "LEA R31, R29, UR13, 0x2"
+      },
+      {
+        "pc": "0x3800",
+        "instruction": "LDS R28, [R24]"
+      },
+      {
+        "pc": "0x3810",
+        "instruction": "IADD R29, R22.reuse, 0x4"
+      },
+      {
+        "pc": "0x3820",
+        "instruction": "IADD R34, R22.reuse, 0x5"
+      },
+      {
+        "pc": "0x3830",
+        "instruction": "IADD R35, R22, 0x7"
+      },
+      {
+        "pc": "0x3840",
+        "instruction": "LDS R33, [R33]"
+      },
+      {
+        "pc": "0x3850",
+        "instruction": "ISETP.NE.AND P0, PT, R18, R17, PT"
+      },
+      {
+        "pc": "0x3860",
+        "instruction": "LEA R30, R29, UR13, 0x2"
+      },
+      {
+        "pc": "0x3870",
+        "instruction": "LDS R31, [R31]"
+      },
+      {
+        "pc": "0x3880",
+        "instruction": "LEA R29, R34, UR13, 0x2"
+      },
+      {
+        "pc": "0x3890",
+        "instruction": "IADD R34, R22, 0x6"
+      },
+      {
+        "pc": "0x38a0",
+        "instruction": "LDS R30, [R30]"
+      },
+      {
+        "pc": "0x38b0",
+        "instruction": "LEA R24, R35, UR13, 0x2"
+      },
+      {
+        "pc": "0x38c0",
+        "instruction": "LEA R22, R34, UR13, 0x2"
+      },
+      {
+        "pc": "0x38d0",
+        "instruction": "LDS R29, [R29]"
+      },
+      {
+        "pc": "0x38e0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x38f0",
+        "instruction": "LDS R22, [R22]"
+      },
+      {
+        "pc": "0x3900",
+        "instruction": "LEA R34, R25, UR7, 0x2"
+      },
+      {
+        "pc": "0x3910",
+        "instruction": "LEA R25, R28, UR7, 0x2"
+      },
+      {
+        "pc": "0x3920",
+        "instruction": "LDS R28, [R34]"
+      },
+      {
+        "pc": "0x3930",
+        "instruction": "LEA R35, R33, UR7, 0x2"
+      },
+      {
+        "pc": "0x3940",
+        "instruction": "LDS R25, [R25]"
+      },
+      {
+        "pc": "0x3950",
+        "instruction": "LEA R36, R31, UR7, 0x2"
+      },
+      {
+        "pc": "0x3960",
+        "instruction": "LDS R31, [R35]"
+      },
+      {
+        "pc": "0x3970",
+        "instruction": "LEA R37, R30, UR7, 0x2"
+      },
+      {
+        "pc": "0x3980",
+        "instruction": "LDS R30, [R36]"
+      },
+      {
+        "pc": "0x3990",
+        "instruction": "LEA R33, R29, UR7, 0x2"
+      },
+      {
+        "pc": "0x39a0",
+        "instruction": "LDS R29, [R37]"
+      },
+      {
+        "pc": "0x39b0",
+        "instruction": "LEA R24, R24, UR7, 0x2"
+      },
+      {
+        "pc": "0x39c0",
+        "instruction": "LEA R34, R22, UR7, 0x2"
+      },
+      {
+        "pc": "0x39d0",
+        "instruction": "LDS R22, [R33]"
+      },
+      {
+        "pc": "0x39e0",
+        "instruction": "LDS R33, [R34]"
+      },
+      {
+        "pc": "0x39f0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x3a00",
+        "instruction": "FADD R28, R28, R9"
+      },
+      {
+        "pc": "0x3a10",
+        "instruction": "FADD R28, R28, R25"
+      },
+      {
+        "pc": "0x3a20",
+        "instruction": "FADD R31, R28, R31"
+      },
+      {
+        "pc": "0x3a30",
+        "instruction": "FADD R30, R31, R30"
+      },
+      {
+        "pc": "0x3a40",
+        "instruction": "FADD R29, R30, R29"
+      },
+      {
+        "pc": "0x3a50",
+        "instruction": "FADD R22, R29, R22"
+      },
+      {
+        "pc": "0x3a60",
+        "instruction": "FADD R33, R22, R33"
+      },
+      {
+        "pc": "0x3a70",
+        "instruction": "FADD R9, R33, R24"
+      },
+      {
+        "pc": "0x3a80",
+        "instruction": "@P0 BRA `(.L_x_253)"
+      },
+      {
+        "pc": "0x3a90",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x3aa0",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x3ab0",
+        "instruction": "@!P2 BRA `(.L_x_250)"
+      },
+      {
+        "pc": "0x3ac0",
+        "instruction": "ISETP.GE.U32.AND P0, PT, R32, 0x4, PT"
+      },
+      {
+        "pc": "0x3ad0",
+        "instruction": "LOP3.LUT R28, R8, 0x3, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3ae0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_254)"
+      },
+      {
+        "pc": "0x3af0",
+        "instruction": "ISETP.NE.AND P2, PT, R28, RZ, PT"
+      },
+      {
+        "pc": "0x3b00",
+        "instruction": "@!P0 BRA `(.L_x_255)"
+      },
+      {
+        "pc": "0x3b10",
+        "instruction": "IADD R17, -R15, R19"
+      },
+      {
+        "pc": "0x3b20",
+        "instruction": "IADD R19, R19, 0x4"
+      },
+      {
+        "pc": "0x3b30",
+        "instruction": "IADD R22, R17.reuse, 0x1"
+      },
+      {
+        "pc": "0x3b40",
+        "instruction": "LEA R18, R17.reuse, UR13, 0x2"
+      },
+      {
+        "pc": "0x3b50",
+        "instruction": "IADD R25, R17.reuse, 0x2"
+      },
+      {
+        "pc": "0x3b60",
+        "instruction": "IADD R17, R17, 0x3"
+      },
+      {
+        "pc": "0x3b70",
+        "instruction": "LEA R24, R22, UR13, 0x2"
+      },
+      {
+        "pc": "0x3b80",
+        "instruction": "LDS R18, [R18]"
+      },
+      {
+        "pc": "0x3b90",
+        "instruction": "LEA R29, R25, UR13, 0x2"
+      },
+      {
+        "pc": "0x3ba0",
+        "instruction": "LEA R32, R17, UR13, 0x2"
+      },
+      {
+        "pc": "0x3bb0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x3bc0",
+        "instruction": "LDS R29, [R29]"
+      },
+      {
+        "pc": "0x3bd0",
+        "instruction": "LDS R32, [R32]"
+      },
+      {
+        "pc": "0x3be0",
+        "instruction": "LEA R17, R18, UR7, 0x2"
+      },
+      {
+        "pc": "0x3bf0",
+        "instruction": "LEA R25, R24, UR7, 0x2"
+      },
+      {
+        "pc": "0x3c00",
+        "instruction": "LDS R22, [R17]"
+      },
+      {
+        "pc": "0x3c10",
+        "instruction": "LEA R30, R29, UR7, 0x2"
+      },
+      {
+        "pc": "0x3c20",
+        "instruction": "LDS R25, [R25]"
+      },
+      {
+        "pc": "0x3c30",
+        "instruction": "LEA R18, R32, UR7, 0x2"
+      },
+      {
+        "pc": "0x3c40",
+        "instruction": "LDS R31, [R30]"
+      },
+      {
+        "pc": "0x3c50",
+        "instruction": "LDS R33, [R18]"
+      },
+      {
+        "pc": "0x3c60",
+        "instruction": "FADD R22, R9, R22"
+      },
+      {
+        "pc": "0x3c70",
+        "instruction": "FADD R22, R22, R25"
+      },
+      {
+        "pc": "0x3c80",
+        "instruction": "FADD R22, R22, R31"
+      },
+      {
+        "pc": "0x3c90",
+        "instruction": "FADD R9, R22, R33"
+      },
+      {
+        "pc": "0x3ca0",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x3cb0",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x3cc0",
+        "instruction": "@!P2 BRA `(.L_x_250)"
+      },
+      {
+        "pc": "0x3cd0",
+        "instruction": "ISETP.NE.AND P0, PT, R28, 0x1, PT"
+      },
+      {
+        "pc": "0x3ce0",
+        "instruction": "LOP3.LUT R8, R8, 0x1, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3cf0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_256)"
+      },
+      {
+        "pc": "0x3d00",
+        "instruction": "ISETP.NE.U32.AND P2, PT, R8, 0x1, PT"
+      },
+      {
+        "pc": "0x3d10",
+        "instruction": "@!P0 BRA `(.L_x_257)"
+      },
+      {
+        "pc": "0x3d20",
+        "instruction": "IADD R8, -R15, R19"
+      },
+      {
+        "pc": "0x3d30",
+        "instruction": "IADD R19, R19, 0x2"
+      },
+      {
+        "pc": "0x3d40",
+        "instruction": "IADD R17, R8.reuse, 0x1"
+      },
+      {
+        "pc": "0x3d50",
+        "instruction": "LEA R8, R8, UR13, 0x2"
+      },
+      {
+        "pc": "0x3d60",
+        "instruction": "LEA R22, R17, UR13, 0x2"
+      },
+      {
+        "pc": "0x3d70",
+        "instruction": "LDS R8, [R8]"
+      },
+      {
+        "pc": "0x3d80",
+        "instruction": "LDS R22, [R22]"
+      },
+      {
+        "pc": "0x3d90",
+        "instruction": "LEA R17, R8, UR7, 0x2"
+      },
+      {
+        "pc": "0x3da0",
+        "instruction": "LEA R24, R22, UR7, 0x2"
+      },
+      {
+        "pc": "0x3db0",
+        "instruction": "LDS R18, [R17]"
+      },
+      {
+        "pc": "0x3dc0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x3dd0",
+        "instruction": "FADD R9, R9, R18"
+      },
+      {
+        "pc": "0x3de0",
+        "instruction": "FADD R9, R9, R24"
+      },
+      {
+        "pc": "0x3df0",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x3e00",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x3e10",
+        "instruction": "@!P2 IADD R19, -R15, R19"
+      },
+      {
+        "pc": "0x3e20",
+        "instruction": "@!P2 LEA R19, R19, UR13, 0x2"
+      },
+      {
+        "pc": "0x3e30",
+        "instruction": "@!P2 LDS R19, [R19]"
+      },
+      {
+        "pc": "0x3e40",
+        "instruction": "@!P2 LEA R8, R19, UR7, 0x2"
+      },
+      {
+        "pc": "0x3e50",
+        "instruction": "@!P2 LDS R8, [R8]"
+      },
+      {
+        "pc": "0x3e60",
+        "instruction": "@!P2 FADD R9, R9, R8"
+      },
+      {
+        "pc": "0x3e70",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x3e80",
+        "instruction": "BSYNC.RECONVERGENT B1"
+      },
+      {
+        "pc": "0x3e90",
+        "instruction": "BSSY.RECONVERGENT B1, `(.L_x_258)"
+      },
+      {
+        "pc": "0x3ea0",
+        "instruction": "@P1 BRA `(.L_x_259)"
+      },
+      {
+        "pc": "0x3eb0",
+        "instruction": "IADD R8, R23.reuse, -R20.reuse"
+      },
+      {
+        "pc": "0x3ec0",
+        "instruction": "IADD R23, -R23, R20"
+      },
+      {
+        "pc": "0x3ed0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_260)"
+      },
+      {
+        "pc": "0x3ee0",
+        "instruction": "LOP3.LUT R31, R8, 0x7, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3ef0",
+        "instruction": "ISETP.GT.U32.AND P0, PT, R23, -0x8, PT"
+      },
+      {
+        "pc": "0x3f00",
+        "instruction": "ISETP.NE.AND P1, PT, R31, RZ, PT"
+      },
+      {
+        "pc": "0x3f10",
+        "instruction": "@P0 BRA `(.L_x_261)"
+      },
+      {
+        "pc": "0x3f20",
+        "instruction": "LOP3.LUT R18, R8, 0xfffffff8, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x3f30",
+        "instruction": "MOV R17, RZ"
+      },
+      {
+        "pc": "0x3f40",
+        "instruction": "IADD R19, -R15, R20"
+      },
+      {
+        "pc": "0x3f50",
+        "instruction": "IADD R17, R17, 0x8"
+      },
+      {
+        "pc": "0x3f60",
+        "instruction": "IADD R20, R20, 0x8"
+      },
+      {
+        "pc": "0x3f70",
+        "instruction": "IADD R22, R19.reuse, 0x1"
+      },
+      {
+        "pc": "0x3f80",
+        "instruction": "LEA R24, R19.reuse, UR13, 0x2"
+      },
+      {
+        "pc": "0x3f90",
+        "instruction": "IADD R23, R19.reuse, 0x2"
+      },
+      {
+        "pc": "0x3fa0",
+        "instruction": "IADD R25, R19, 0x3"
+      },
+      {
+        "pc": "0x3fb0",
+        "instruction": "LEA R22, R22, UR13, 0x2"
+      },
+      {
+        "pc": "0x3fc0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x3fd0",
+        "instruction": "LEA R29, R23, UR13, 0x2"
+      },
+      {
+        "pc": "0x3fe0",
+        "instruction": "IADD R23, R19, 0x4"
+      },
+      {
+        "pc": "0x3ff0",
+        "instruction": "LDS R28, [R22]"
+      },
+      {
+        "pc": "0x4000",
+        "instruction": "LEA R30, R25, UR13, 0x2"
+      },
+      {
+        "pc": "0x4010",
+        "instruction": "IADD R32, R19, 0x5"
+      },
+      {
+        "pc": "0x4020",
+        "instruction": "LDS R29, [R29]"
+      },
+      {
+        "pc": "0x4030",
+        "instruction": "LEA R25, R23, UR13, 0x2"
+      },
+      {
+        "pc": "0x4040",
+        "instruction": "IADD R33, R19.reuse, 0x6"
+      },
+      {
+        "pc": "0x4050",
+        "instruction": "LDS R30, [R30]"
+      },
+      {
+        "pc": "0x4060",
+        "instruction": "LEA R23, R32, UR13, 0x2"
+      },
+      {
+        "pc": "0x4070",
+        "instruction": "IADD R19, R19, 0x7"
+      },
+      {
+        "pc": "0x4080",
+        "instruction": "LDS R25, [R25]"
+      },
+      {
+        "pc": "0x4090",
+        "instruction": "LEA R22, R33, UR13, 0x2"
+      },
+      {
+        "pc": "0x40a0",
+        "instruction": "ISETP.NE.AND P0, PT, R17, R18, PT"
+      },
+      {
+        "pc": "0x40b0",
+        "instruction": "LDS R23, [R23]"
+      },
+      {
+        "pc": "0x40c0",
+        "instruction": "LEA R19, R19, UR13, 0x2"
+      },
+      {
+        "pc": "0x40d0",
+        "instruction": "LDS R22, [R22]"
+      },
+      {
+        "pc": "0x40e0",
+        "instruction": "LDS R19, [R19]"
+      },
+      {
+        "pc": "0x40f0",
+        "instruction": "LEA R24, R24, UR7, 0x2"
+      },
+      {
+        "pc": "0x4100",
+        "instruction": "LEA R28, R28, UR7, 0x2"
+      },
+      {
+        "pc": "0x4110",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x4120",
+        "instruction": "LEA R29, R29, UR7, 0x2"
+      },
+      {
+        "pc": "0x4130",
+        "instruction": "LDS R28, [R28]"
+      },
+      {
+        "pc": "0x4140",
+        "instruction": "LEA R32, R30, UR7, 0x2"
+      },
+      {
+        "pc": "0x4150",
+        "instruction": "LDS R29, [R29]"
+      },
+      {
+        "pc": "0x4160",
+        "instruction": "LEA R33, R25, UR7, 0x2"
+      },
+      {
+        "pc": "0x4170",
+        "instruction": "LDS R25, [R32]"
+      },
+      {
+        "pc": "0x4180",
+        "instruction": "LEA R34, R23, UR7, 0x2"
+      },
+      {
+        "pc": "0x4190",
+        "instruction": "LDS R23, [R33]"
+      },
+      {
+        "pc": "0x41a0",
+        "instruction": "LEA R30, R22, UR7, 0x2"
+      },
+      {
+        "pc": "0x41b0",
+        "instruction": "LDS R22, [R34]"
+      },
+      {
+        "pc": "0x41c0",
+        "instruction": "LEA R19, R19, UR7, 0x2"
+      },
+      {
+        "pc": "0x41d0",
+        "instruction": "LDS R30, [R30]"
+      },
+      {
+        "pc": "0x41e0",
+        "instruction": "LDS R19, [R19]"
+      },
+      {
+        "pc": "0x41f0",
+        "instruction": "FADD R9, R24, R9"
+      },
+      {
+        "pc": "0x4200",
+        "instruction": "FADD R28, R9, R28"
+      },
+      {
+        "pc": "0x4210",
+        "instruction": "FADD R28, R28, R29"
+      },
+      {
+        "pc": "0x4220",
+        "instruction": "FADD R28, R28, R25"
+      },
+      {
+        "pc": "0x4230",
+        "instruction": "FADD R23, R28, R23"
+      },
+      {
+        "pc": "0x4240",
+        "instruction": "FADD R23, R23, R22"
+      },
+      {
+        "pc": "0x4250",
+        "instruction": "FADD R22, R23, R30"
+      },
+      {
+        "pc": "0x4260",
+        "instruction": "FADD R9, R22, R19"
+      },
+      {
+        "pc": "0x4270",
+        "instruction": "@P0 BRA `(.L_x_262)"
+      },
+      {
+        "pc": "0x4280",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x4290",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x42a0",
+        "instruction": "@!P1 BRA `(.L_x_259)"
+      },
+      {
+        "pc": "0x42b0",
+        "instruction": "ISETP.GE.U32.AND P0, PT, R31, 0x4, PT"
+      },
+      {
+        "pc": "0x42c0",
+        "instruction": "LOP3.LUT R25, R8, 0x3, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x42d0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_263)"
+      },
+      {
+        "pc": "0x42e0",
+        "instruction": "ISETP.NE.AND P1, PT, R25, RZ, PT"
+      },
+      {
+        "pc": "0x42f0",
+        "instruction": "@!P0 BRA `(.L_x_264)"
+      },
+      {
+        "pc": "0x4300",
+        "instruction": "IADD R17, -R15, R20"
+      },
+      {
+        "pc": "0x4310",
+        "instruction": "IADD R20, R20, 0x4"
+      },
+      {
+        "pc": "0x4320",
+        "instruction": "IADD R19, R17.reuse, 0x1"
+      },
+      {
+        "pc": "0x4330",
+        "instruction": "LEA R18, R17.reuse, UR13, 0x2"
+      },
+      {
+        "pc": "0x4340",
+        "instruction": "IADD R22, R17.reuse, 0x2"
+      },
+      {
+        "pc": "0x4350",
+        "instruction": "IADD R17, R17, 0x3"
+      },
+      {
+        "pc": "0x4360",
+        "instruction": "LEA R19, R19, UR13, 0x2"
+      },
+      {
+        "pc": "0x4370",
+        "instruction": "LDS R18, [R18]"
+      },
+      {
+        "pc": "0x4380",
+        "instruction": "LEA R24, R22, UR13, 0x2"
+      },
+      {
+        "pc": "0x4390",
+        "instruction": "LEA R30, R17, UR13, 0x2"
+      },
+      {
+        "pc": "0x43a0",
+        "instruction": "LDS R19, [R19]"
+      },
+      {
+        "pc": "0x43b0",
+        "instruction": "LDS R24, [R24]"
+      },
+      {
+        "pc": "0x43c0",
+        "instruction": "LDS R30, [R30]"
+      },
+      {
+        "pc": "0x43d0",
+        "instruction": "LEA R17, R18, UR7, 0x2"
+      },
+      {
+        "pc": "0x43e0",
+        "instruction": "LEA R23, R19, UR7, 0x2"
+      },
+      {
+        "pc": "0x43f0",
+        "instruction": "LDS R22, [R17]"
+      },
+      {
+        "pc": "0x4400",
+        "instruction": "LEA R28, R24, UR7, 0x2"
+      },
+      {
+        "pc": "0x4410",
+        "instruction": "LDS R23, [R23]"
+      },
+      {
+        "pc": "0x4420",
+        "instruction": "LEA R18, R30, UR7, 0x2"
+      },
+      {
+        "pc": "0x4430",
+        "instruction": "LDS R29, [R28]"
+      },
+      {
+        "pc": "0x4440",
+        "instruction": "LDS R19, [R18]"
+      },
+      {
+        "pc": "0x4450",
+        "instruction": "FADD R22, R9, R22"
+      },
+      {
+        "pc": "0x4460",
+        "instruction": "FADD R22, R22, R23"
+      },
+      {
+        "pc": "0x4470",
+        "instruction": "FADD R22, R22, R29"
+      },
+      {
+        "pc": "0x4480",
+        "instruction": "FADD R9, R22, R19"
+      },
+      {
+        "pc": "0x4490",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x44a0",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x44b0",
+        "instruction": "@!P1 BRA `(.L_x_259)"
+      },
+      {
+        "pc": "0x44c0",
+        "instruction": "ISETP.NE.AND P0, PT, R25, 0x1, PT"
+      },
+      {
+        "pc": "0x44d0",
+        "instruction": "LOP3.LUT R8, R8, 0x1, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x44e0",
+        "instruction": "BSSY.RECONVERGENT B2, `(.L_x_265)"
+      },
+      {
+        "pc": "0x44f0",
+        "instruction": "ISETP.NE.U32.AND P1, PT, R8, 0x1, PT"
+      },
+      {
+        "pc": "0x4500",
+        "instruction": "@!P0 BRA `(.L_x_266)"
+      },
+      {
+        "pc": "0x4510",
+        "instruction": "IADD R8, -R15, R20"
+      },
+      {
+        "pc": "0x4520",
+        "instruction": "IADD R20, R20, 0x2"
+      },
+      {
+        "pc": "0x4530",
+        "instruction": "IADD R17, R8.reuse, 0x1"
+      },
+      {
+        "pc": "0x4540",
+        "instruction": "LEA R8, R8, UR13, 0x2"
+      },
+      {
+        "pc": "0x4550",
+        "instruction": "LEA R19, R17, UR13, 0x2"
+      },
+      {
+        "pc": "0x4560",
+        "instruction": "LDS R8, [R8]"
+      },
+      {
+        "pc": "0x4570",
+        "instruction": "LDS R19, [R19]"
+      },
+      {
+        "pc": "0x4580",
+        "instruction": "LEA R17, R8, UR7, 0x2"
+      },
+      {
+        "pc": "0x4590",
+        "instruction": "LEA R22, R19, UR7, 0x2"
+      },
+      {
+        "pc": "0x45a0",
+        "instruction": "LDS R18, [R17]"
+      },
+      {
+        "pc": "0x45b0",
+        "instruction": "LDS R22, [R22]"
+      },
+      {
+        "pc": "0x45c0",
+        "instruction": "FADD R9, R9, R18"
+      },
+      {
+        "pc": "0x45d0",
+        "instruction": "FADD R9, R9, R22"
+      },
+      {
+        "pc": "0x45e0",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x45f0",
+        "instruction": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "pc": "0x4600",
+        "instruction": "@!P1 IADD R20, -R15, R20"
+      },
+      {
+        "pc": "0x4610",
+        "instruction": "@!P1 LEA R20, R20, UR13, 0x2"
+      },
+      {
+        "pc": "0x4620",
+        "instruction": "@!P1 LDS R20, [R20]"
+      },
+      {
+        "pc": "0x4630",
+        "instruction": "@!P1 LEA R8, R20, UR7, 0x2"
+      },
+      {
+        "pc": "0x4640",
+        "instruction": "@!P1 LDS R8, [R8]"
+      },
+      {
+        "pc": "0x4650",
+        "instruction": "@!P1 FADD R9, R9, R8"
+      },
+      {
+        "pc": "0x4660",
+        "instruction": "NOP"
+      },
+      {
+        "pc": "0x4670",
+        "instruction": "BSYNC.RECONVERGENT B1"
+      },
+      {
+        "pc": "0x4680",
+        "instruction": "LDCU.64 UR4, c[0x0][0x410]"
+      },
+      {
+        "pc": "0x4690",
+        "instruction": "LEA R18, P0, R4, UR4, 0x2"
+      },
+      {
+        "pc": "0x46a0",
+        "instruction": "LEA.HI.X R19, R4, UR5, RZ, 0x2, P0"
+      },
+      {
+        "pc": "0x46b0",
+        "instruction": "LDG.E.CONSTANT R18, desc[UR14][R18.64]"
+      },
+      {
+        "pc": "0x46c0",
+        "instruction": "FADD R9, -R9, R0"
+      },
+      {
+        "pc": "0x46d0",
+        "instruction": "ISETP.NE.AND P0, PT, R18, -0x1, PT"
+      },
+      {
+        "pc": "0x46e0",
+        "instruction": "@P0 S2R R17, SR_CgaCtaId"
+      },
+      {
+        "pc": "0x46f0",
+        "instruction": "@P0 MOV R8, 0x400"
+      },
+      {
+        "pc": "0x4700",
+        "instruction": "@P0 IADD R8, R8, 0x410"
+      },
+      {
+        "pc": "0x4710",
+        "instruction": "@P0 LEA R17, R17, R8, 0x18"
+      },
+      {
+        "pc": "0x4720",
+        "instruction": "HFMA2 R8, -RZ, RZ, 0, 0"
+      },
+      {
+        "pc": "0x4730",
+        "instruction": "@P0 IMAD R20, R18, 0x4, R17"
+      },
+      {
+        "pc": "0x4740",
+        "instruction": "FMUL R18, R14, R27"
+      },
+      {
+        "pc": "0x4750",
+        "instruction": "@P0 LDS R8, [R20]"
+      },
+      {
+        "pc": "0x4760",
+        "instruction": "FADD R9, R9, R8"
+      },
+      {
+        "pc": "0x4770",
+        "instruction": "FADD R8, -R26, R9"
+      },
+      {
+        "pc": "0x4780",
+        "instruction": "FFMA R9, R13, R26, R18"
+      },
+      {
+        "pc": "0x4790",
+        "instruction": "FADD R17, -R27, R8"
+      },
+      {
+        "pc": "0x47a0",
+        "instruction": "FFMA R17, R12, R17, R9"
+      }
+    ],
+    "static_uniform_guard_window": [
+      {
+        "pc": "0x1aa0",
+        "instruction": "ISETP.GT.U32.OR P0, PT, R6, 0x52d, P0"
+      },
+      {
+        "pc": "0x1ab0",
+        "instruction": "@P1 LDS R0, [UR4]"
+      },
+      {
+        "pc": "0x1ac0",
+        "instruction": "FSETP.LEU.OR P0, PT, R0, RZ, P0"
+      },
+      {
+        "pc": "0x1ad0",
+        "instruction": "FSETP.NE.AND P2, PT, |R14|, +INF , PT"
+      },
+      {
+        "pc": "0x1ae0",
+        "instruction": "FSETP.EQU.OR P2, PT, |R13|, +INF , !P2"
+      },
+      {
+        "pc": "0x1af0",
+        "instruction": "LOP3.LUT P1, RZ, R12, 0x7fffffff, RZ, 0xc0, !PT"
+      },
+      {
+        "pc": "0x1b00",
+        "instruction": "PLOP3.LUT P0, PT, P0, P2, P1, 0xfe, 0x0"
+      },
+      {
+        "pc": "0x1b10",
+        "instruction": "@P0 BRA `(.L_x_228)"
+      }
+    ],
+    "noneligible_fallback_pc": "0x4870",
+    "limits": "Fixed-driver exactinstruction/overwrite/branch witness, not arbitrarySASSsimulator/dynamiccounter/latency/universalIEEEproof. D282PTXestablishes2orderedfastcorrectionadds/wordand1replayadd. No applicationkernel/solver/speed yet."
+  },
+  "negative_reader_fixtures": [
+    {
+      "fixture": "bad_reach_bound",
+      "rejected": true
+    },
+    {
+      "fixture": "wrong_prefix_product",
+      "rejected": true
+    },
+    {
+      "fixture": "wrong_guard_polarity",
+      "rejected": true
+    },
+    {
+      "fixture": "wrong_prefix_store",
+      "rejected": true
+    }
+  ],
+  "all_owned_module_disassembly_children_terminal": true,
+  "application_kernels_solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Fixed-driver exactinstruction/overwrite/branch witness, not arbitrarySASSsimulator/dynamiccounter/latency/universalIEEEproof. D282PTXestablishes2orderedfastcorrectionadds/wordand1replayadd. No applicationkernel/solver/speed yet."
+}

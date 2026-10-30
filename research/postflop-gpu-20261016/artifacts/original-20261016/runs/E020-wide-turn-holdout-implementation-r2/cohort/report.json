@@ -1,0 +1,42 @@
+{
+  "status": "pass",
+  "at": "2026-10-16T11:22:52.653149+00:00",
+  "scope": "one prospective broad-turn holdout, not primary score",
+  "correctness": "all6 full compressed CPU stores byte-identical and every non-timing result/check exact",
+  "baseline_full_cycle_ms": [
+    924.2086,
+    925.9948,
+    920.7117000000001
+  ],
+  "candidate_full_cycle_ms": [
+    905.1226999999999,
+    907.929,
+    915.4238
+  ],
+  "baseline_median_ms": 924.2086,
+  "candidate_median_ms": 907.929,
+  "median_slowdown_pct": -1.7614638080623912,
+  "paired_slowdown_pct": [
+    -2.065107379437947,
+    -1.950961279696184,
+    -0.57432744690874
+  ],
+  "pairs_over_3pct": 0,
+  "repeatable_regression": false,
+  "resource_report_sha256": "84bf3edfdfd8645e2dbf882a6b14c6ce7f88b4a68ebb5fdc5caa429518e9ab4d",
+  "all_builds_ready": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-plan-r3\\all-builds-ready.json",
+    "sha256": "4c53c85b4d7e83915ce31ec93d13a0dc916d8aca5c722441152e10886a6fdda0"
+  },
+  "run_report_sha256": {
+    "B1": "224b9a32e394d635aaa697316ad97f7439b6542a973e0346ada821a80c8bf3c3",
+    "C1": "b4333325a8b86cb1eaa82f673c78c6b2371d3434791dcfea98c705ee0316aab9",
+    "C2": "13570b02015040593533043376f3e49bab298d0a25c8e540c1cc8afbb8dc1138",
+    "B2": "7c234e5d6e1d4842d3544e54f49d58c3cc999fdbfb25c6a840b7273e7abf760c",
+    "B3": "59c34fec412eb5e2c71940cc670641925ea4d1bd5408d26ceef3bf6dd829e259",
+    "C3": "35b9e994fd3135f891279b7912bb7d59ae5943f237b0ea69e638f0729d533184"
+  },
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510"
+}

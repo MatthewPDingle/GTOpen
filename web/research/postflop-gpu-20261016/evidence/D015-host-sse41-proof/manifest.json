@@ -1,0 +1,54 @@
+{
+  "diagnostic": "D015-host-sse41-proof",
+  "oracle": {
+    "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs",
+    "source_sha256": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "start_byte": 5404,
+    "end_byte_exclusive": 6773,
+    "output": "baseline.rs",
+    "output_sha256": "909b60ec9b6fc97be0200c044b36e4ddd3249589b1cfdfa06478d1112571ed9f",
+    "bytes": 1369
+  },
+  "corpus": {
+    "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_quantization_proof.rs",
+    "source_sha256": "5e3f1bf10a9a70a48343f46ca3e0ad08f3417cc8d69089c4bd39d3f523eeb343",
+    "start_byte": 1773,
+    "end_byte_exclusive": 6055,
+    "output": "corpus.rs",
+    "output_sha256": "b3a2d9e81cb27040c1fbda3a756c57943512e60a63f8b0506c36e8c479938dcc",
+    "bytes": 4282
+  },
+  "corpus_constants": {
+    "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_quantization_proof.rs",
+    "source_sha256": "5e3f1bf10a9a70a48343f46ca3e0ad08f3417cc8d69089c4bd39d3f523eeb343",
+    "start_byte": 586,
+    "end_byte_exclusive": 857,
+    "output": "corpus_constants.rs",
+    "output_sha256": "696e0cf591bf5b713a6d41c828df099bb32460bf9162f4396cee3e8efb07cd1f",
+    "bytes": 271
+  },
+  "repo_head": "cca80ad0ee264bfb991a3dcf2ad61bbb28c2784e",
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "compile_flags": [
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin"
+  ],
+  "scope": "CPU encoder diagnostic only; no end-to-end performance claim",
+  "candidate.rs_sha256": "45cdd1c55a7fd8765cb7322ab026f724aff1b2dcde36e9f7d445491ca2b8fc00",
+  "prototype.rs_sha256": "71f10462d323419710fb6700b2416abe541fd2e2c78fdc92f91506dd6666898f",
+  "parent_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof",
+  "parent_report_sha256": "1456b47c12f4295cb7aedaad46d2f0ff1e02b1c86a0316da297613cc13b7458e",
+  "candidate_hypothesis": "SSE4.1 target-feature wrapper around original encoders only; runtime detected; no global target feature or math change",
+  "cpu_target": "default x86_64-pc-windows-msvc; candidate function only +sse4.1",
+  "reserved_output_bytes": 104857600,
+  "oracle_full_snapshot": "source-store.rs",
+  "corpus_full_snapshot": "source-proof.rs",
+  "baseline.rs_sha256": "909b60ec9b6fc97be0200c044b36e4ddd3249589b1cfdfa06478d1112571ed9f",
+  "corpus.rs_sha256": "b3a2d9e81cb27040c1fbda3a756c57943512e60a63f8b0506c36e8c479938dcc",
+  "corpus_constants.rs_sha256": "696e0cf591bf5b713a6d41c828df099bb32460bf9162f4396cee3e8efb07cd1f"
+}

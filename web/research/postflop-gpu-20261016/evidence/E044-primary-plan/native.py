@@ -1,0 +1,50 @@
+"""E044 ordinary units then one fixed3-pair complete-cycle screen; no adoption."""
+import json,re,sys
+from pathlib import Path
+HERE=Path(__file__).resolve().parent
+sys.path.insert(0,str(HERE.parent/'small-gain-confirmation-plan'));import common as old
+ar=old.ar
+read,sha,pin,save,now,child=old.read,old.sha,old.pin,old.save,old.now,old.child
+assert len(sys.argv)==2;pin(HERE/'protocol.json',sys.argv[1]);P=read(HERE/'protocol.json')
+ROOT=ar.RESEARCH;OUT=ROOT/'runs/E044-native-execution';BASE=read(P['baseline']['path'])['source_sha256']
+def verify():
+ pin(HERE/'protocol.json',sys.argv[1])
+ for p,h in P['input_sha256'].items():pin(p,h)
+ old.custody()
+def binary(stem):
+ path=ROOT/'binaries'/(stem+'.exe');mp=path.with_suffix('.manifest.json');m=read(mp)
+ pin(path,m['binary_sha256']);assert m['build_protocol_sha256']==P['build_protocol_sha256']
+ assert m['source_sha256']==BASE|P['candidate_owned_sha256']
+ return {'path':str(path),'sha256':sha(path),'manifest':str(mp),'manifest_sha256':sha(mp),'data':m}
+verify();assert not (ROOT/'gpu-run.lock').exists()
+built=read(ROOT/'runs/E044-final-build/complete.json');assert built['all_compilers_terminal'] and built['build_protocol_sha256']==P['build_protocol_sha256']
+for p,h in built['evidence_sha256'].items():pin(p,h)
+control=read(P['gpu_control_report']['path']);assert control['status']=='pass_scoped_discount_gpu_lifecycle' and control['raw_pairs']==308 and control['raw_files']==630 and control['ordinary_tests_passed']==84
+assert not OUT.exists();OUT.mkdir()
+status=read(ar.STATUS)
+for identity in P['control_ids']+P['measurement_order']:
+ assert not (ROOT/'runs'/identity).exists() and not any(e['id']==identity for e in status['experiments'])
+save(OUT/'invocation.json',{'at':now(),'protocol_sha256':sys.argv[1],'build_complete_sha256':sha(ROOT/'runs/E044-final-build/complete.json'),'gpu_control_report_sha256':sha(Path(P['gpu_control_report']['path'])),'all_ids_previously_absent':True,'all_compilers_terminal':True})
+def run_one(identity,b,ordinary=False):
+ verify();pin(b['path'],b['sha256']);pin(b['manifest'],b['manifest_sha256'])
+ command=[sys.executable,'-B','tools/postflop_autoresearch.py','--id',identity,'--title','E044 '+identity,'--kind','validation' if ordinary else ('baseline' if identity.startswith('B') else 'candidate'),'--binary',b['path'],'--build-manifest',b['manifest'],'--test','*' if ordinary else 'postflop_complete_cycle']
+ if ordinary:command.append('--not-ignored')
+ e=old.env();e.pop('E044_CONTROL_DIR',None)
+ child(command,OUT,identity,e,1200)
+ verify();r=read(ROOT/'runs'/identity/'report.json');pin(ROOT/'runs'/identity/'stdout.log',r['stdout_sha256'])
+ assert r['returncode']==0 and r['status']=='measured' and r['binary_sha256']==b['sha256']
+ assert r['provenance']['source_sha256']==BASE and r['binary_build_manifest']['sha256']==b['manifest_sha256']
+ assert r['binary_build_manifest']['binary_hash_verified'] and r['binary_build_manifest']['data']==b['data']
+ print('Completed',identity,flush=True)
+ return r,(ROOT/'runs'/identity/'stdout.log').read_text(encoding='utf-8')
+assert read(P['control_complete_path'])['unit_passed']==84
+save(OUT/'controls-complete.json',{'at':now(),'already_passed_controls_sha256':sha(P['control_complete_path']),'gpu_control_sha256':sha(P['gpu_control_report']['path']),'no_control_reexecution':True})
+baseline=P['baseline_binary'];baseline['data']=read(Path(baseline['manifest']));assert baseline['data']['source_sha256']==BASE
+candidate=binary('E044-postflop_autoresearch');anchor=old.exact_raw('E020C1');environment=None;gpu=None
+for identity in P['measurement_order']:
+ r,_=run_one(identity,baseline if identity.startswith('B') else candidate)
+ old.compare.validate_run(r,{});assert old.exact_raw(identity)==anchor
+ if environment is None:environment=r['environment'];gpu=old.compare.gpu_identity(r)
+ assert r['environment']==environment and old.compare.gpu_identity(r)==gpu
+save(OUT/'complete.json',{'at':now(),'protocol_sha256':sys.argv[1],'measurement_order':P['measurement_order'],'all_samples_retained':True,'fixture_results':18,'convergence_records':138,'controls_complete_sha256':sha(OUT/'controls-complete.json'),'candidate_accepted':False})
+print('E044 fixed primary complete; assess before any confirmation.',flush=True)

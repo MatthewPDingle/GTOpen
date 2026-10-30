@@ -1,0 +1,19 @@
+{
+  "id": "E026-cleanup-independent-supplement",
+  "at": "2026-10-16T15:51:15.516435+00:00",
+  "status": "PASS",
+  "cleanup_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-source\\cleanup.json",
+  "cleanup_sha256": "9d92ebabb199f0f6ab06602646651efb83b561522ae8ffd4f7fd344d87e49953",
+  "source_custody_sha256": "2806f9130d0943d6e95c08315120ee8c4e54627a8181ebfd2e5f4e8ef102e5e2",
+  "candidate_before_matches_custody": true,
+  "all162_current_sources_match_accepted_E020": true,
+  "restored_owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "root_cleanup_live_executable_sha256": "b7b808b8baff6b3a92c4f3cc8c54ee74ee2c0bb079a8ca68be4da9703f6b84bd",
+  "root_cleanup_live_executable_unchanged": true,
+  "broader_holdout_cumulative_executions": 0,
+  "extension_or_rescue": false,
+  "reviewer_source_edits": 0
+}

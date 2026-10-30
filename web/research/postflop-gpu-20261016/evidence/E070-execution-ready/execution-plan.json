@@ -1,0 +1,829 @@
+{
+  "id": "E070-seven-entry-native-execution-plan",
+  "at": "2026-10-17T23:24:13.311494+00:00",
+  "native_archive": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls",
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "archive_inputs": [
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\audit.py",
+      "archive_relative": "inputs/up-action/audit.py",
+      "sha256": "c6cdc78eea3a2f67242cbe4384430ec5bfbe2d599d10b48a5cfbd50332ec3694",
+      "bytes": 6289
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\baseline.ptx",
+      "archive_relative": "inputs/up-action/baseline.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+      "bytes": 232925
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\candidate.ptx",
+      "archive_relative": "inputs/up-action/candidate.ptx",
+      "sha256": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+      "bytes": 233530
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\corpus.json",
+      "archive_relative": "inputs/up-action/corpus.json",
+      "sha256": "4884ed2abc0557641be4a1ad1e5e52d47a42548f159d8c3668ef7d04b85d3ff7",
+      "bytes": 401450
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\discounts.rs",
+      "archive_relative": "inputs/up-action/discounts.rs",
+      "sha256": "ebd9caba01145065cdf77ac363bc2b0d5fef0334ecc3e75ffc62d64e75f2c94f",
+      "bytes": 893
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.rs",
+      "archive_relative": "inputs/up-action/probe.rs",
+      "sha256": "422b89e3ebc4f4fa1fa31e9248eed6865fbaef2e59a49d8ba65d624c60941e8e",
+      "bytes": 10997
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\preparation.json",
+      "archive_relative": "inputs/up-action/preparation.json",
+      "sha256": "4a09b3343736ee2f173064eb7ecbbff26a6d18dbd66f46bbf0d4018d52162112",
+      "bytes": 2066
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\rustc-exit.json",
+      "archive_relative": "inputs/up-action/rustc-exit.json",
+      "sha256": "524c4bacd3121c222ad75d964752cabf2319230e1c8eee3f2d18249f2f3737ba",
+      "bytes": 1130
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.exe",
+      "archive_relative": "inputs/up-action/probe.exe",
+      "sha256": "15cc3fdfc99cd43a18bb6b05ca18aa8a00d8224f456f1f75c5aeefb05382d85d",
+      "bytes": 848896
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\rustc.stdout.log",
+      "archive_relative": "inputs/up-action/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\rustc.stderr.log",
+      "archive_relative": "inputs/up-action/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\baseline.ptx",
+      "archive_relative": "inputs/down-action/baseline.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+      "bytes": 232925
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\candidate.ptx",
+      "archive_relative": "inputs/down-action/candidate.ptx",
+      "sha256": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+      "bytes": 233530
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\corpus.json",
+      "archive_relative": "inputs/down-action/corpus.json",
+      "sha256": "32ea0a19c4dd7ca4841c35cc1812aab0b4c847804d67f34b40c14b3cdafd6850",
+      "bytes": 311798
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\probe.rs",
+      "archive_relative": "inputs/down-action/probe.rs",
+      "sha256": "45a3d60661a45d1393d5b2165c8974b02b8f7d762a7f38e9156726edb91b1954",
+      "bytes": 9448
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\preparation.json",
+      "archive_relative": "inputs/down-action/preparation.json",
+      "sha256": "3423df7f4ca836148f7ffbee7b0273e9fa7ab03f4392b509f82cf923c37f0ed5",
+      "bytes": 1728
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\rustc-exit.json",
+      "archive_relative": "inputs/down-action/rustc-exit.json",
+      "sha256": "3056dda5e14ceac6c07c255cd3eef1ef3cf2d5cb24ec8fb54ca5cfd9159278dc",
+      "bytes": 1334
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\probe.exe",
+      "archive_relative": "inputs/down-action/probe.exe",
+      "sha256": "e0b8662351aff3d50ec1a9f144df8064acad7985f56bde4bd2bbace624cb11d5",
+      "bytes": 1172480
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\rustc.stdout.log",
+      "archive_relative": "inputs/down-action/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\rustc.stderr.log",
+      "archive_relative": "inputs/down-action/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\audit.py",
+      "archive_relative": "inputs/up-action-eval/audit.py",
+      "sha256": "692588eda636cc4ab2415c275ccbec739c291af42abe7d05c289023dde556229",
+      "bytes": 6303
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\baseline.ptx",
+      "archive_relative": "inputs/up-action-eval/baseline.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+      "bytes": 232925
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\candidate.ptx",
+      "archive_relative": "inputs/up-action-eval/candidate.ptx",
+      "sha256": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+      "bytes": 233530
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\corpus.json",
+      "archive_relative": "inputs/up-action-eval/corpus.json",
+      "sha256": "895cda8641964f5d34343e99c9ba95f063c18e342d804cd2a4c4fc371f696867",
+      "bytes": 941039
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\discounts.rs",
+      "archive_relative": "inputs/up-action-eval/discounts.rs",
+      "sha256": "ebd9caba01145065cdf77ac363bc2b0d5fef0334ecc3e75ffc62d64e75f2c94f",
+      "bytes": 893
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\probe.rs",
+      "archive_relative": "inputs/up-action-eval/probe.rs",
+      "sha256": "4a3a1da5de02895b490bafa93551320379a521fd323aa551996ac1ebeb153362",
+      "bytes": 11120
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\preparation.json",
+      "archive_relative": "inputs/up-action-eval/preparation.json",
+      "sha256": "ee53e096bc88eff163cef2643f69e8fd6799c9170aae645b9e06dd8463ae1f90",
+      "bytes": 1958
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\rustc-exit.json",
+      "archive_relative": "inputs/up-action-eval/rustc-exit.json",
+      "sha256": "0d6bef17c4806e05e569ee3914b7d62159cdd8717eaa61e39fc8f15742d84935",
+      "bytes": 1346
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\probe.exe",
+      "archive_relative": "inputs/up-action-eval/probe.exe",
+      "sha256": "0e178f9d56e7ca4b015954b86072ef6653be1304514951aebf0a78beb43842ef",
+      "bytes": 848896
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\rustc.stdout.log",
+      "archive_relative": "inputs/up-action-eval/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\rustc.stderr.log",
+      "archive_relative": "inputs/up-action-eval/rustc.stderr.log",
+      "sha256": "758e636dc2507953d45854decdb6ee52488c395bf4e413554523c59eee29b956",
+      "bytes": 977
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\baseline.ptx",
+      "archive_relative": "inputs/up-fold/baseline.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+      "bytes": 232925
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\candidate.ptx",
+      "archive_relative": "inputs/up-fold/candidate.ptx",
+      "sha256": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+      "bytes": 233530
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\corpus.json",
+      "archive_relative": "inputs/up-fold/corpus.json",
+      "sha256": "1fe56ff1533696e99bca511dd75cd92957e7fa3d308a9758199675d7342ae53f",
+      "bytes": 16188144
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\probe.rs",
+      "archive_relative": "inputs/up-fold/probe.rs",
+      "sha256": "2353c2630101e260de462de98bd20b631aaee2f2380df765340201158dba99e6",
+      "bytes": 8805
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\preparation.json",
+      "archive_relative": "inputs/up-fold/preparation.json",
+      "sha256": "b2ed2c321c39a8bfb8fd1c5c7d2ea40c14dd72237ed8eee44ccf6188ca3f9390",
+      "bytes": 1714
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\rustc-exit.json",
+      "archive_relative": "inputs/up-fold/rustc-exit.json",
+      "sha256": "1e2e53de3343680d8415fe8b08da3930b88c383b78d821512bd26191671a6eac",
+      "bytes": 1317
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\probe.exe",
+      "archive_relative": "inputs/up-fold/probe.exe",
+      "sha256": "17bbdc11eb6c80df710cbc12e0d67eb2fb59723bff06e059bacdfa0d098aec89",
+      "bytes": 17036288
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\rustc.stdout.log",
+      "archive_relative": "inputs/up-fold/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\rustc.stderr.log",
+      "archive_relative": "inputs/up-fold/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\corpus.json",
+      "archive_relative": "inputs/continuation-raw/corpus.json",
+      "sha256": "d50cde98adc72e7782fcae4a2e7b4658f78b1c1df68de50676c2d5a2f4f6be41",
+      "bytes": 874467
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\probe.rs",
+      "archive_relative": "inputs/continuation-raw/probe.rs",
+      "sha256": "7ead914ec71301607e6ae2010cc775665432638020844674d272c193abee7622",
+      "bytes": 11183
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\preparation.json",
+      "archive_relative": "inputs/continuation-raw/preparation.json",
+      "sha256": "10825e5cae1606554e5d7add25eaaee64685b916c381147ce12e2a9717b873e4",
+      "bytes": 2819
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\rustc-exit.json",
+      "archive_relative": "inputs/continuation-raw/rustc-exit.json",
+      "sha256": "20f3f7d6d4fa5e2537ca7eb0709b718f8ddc07320f753bfb2ee4b1189f55db60",
+      "bytes": 410
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\probe.exe",
+      "archive_relative": "inputs/continuation-raw/probe.exe",
+      "sha256": "b94f3493cf0cea685d67c291bab8c94e4c2b04ac93fbf06c919e2244c8c473f8",
+      "bytes": 1297920
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\rustc.stdout.log",
+      "archive_relative": "inputs/continuation-raw/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\rustc.stderr.log",
+      "archive_relative": "inputs/continuation-raw/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\baseline-projection.cu",
+      "archive_relative": "inputs/continuation-resources/baseline-projection.cu",
+      "sha256": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+      "bytes": 2696
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\baseline-storage-copy.cu",
+      "archive_relative": "inputs/continuation-resources/baseline-storage-copy.cu",
+      "sha256": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+      "bytes": 1089
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\candidate-projection.cu",
+      "archive_relative": "inputs/continuation-resources/candidate-projection.cu",
+      "sha256": "3cf76f4ce9dcc56da58642ea8a922a402f555f25fb98b9f8deffff34b68e25d5",
+      "bytes": 2765
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\candidate-storage-copy.cu",
+      "archive_relative": "inputs/continuation-resources/candidate-storage-copy.cu",
+      "sha256": "61c655562fe407e3239e9c09384225e18c21e79c4e81620e435f62c2ba8dc5da",
+      "bytes": 1089
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\probe.rs",
+      "archive_relative": "inputs/continuation-resources/probe.rs",
+      "sha256": "f31931ca89745f925cd596b0b6f7e70b141c0de5bf5ad6f63076e240e18beb6c",
+      "bytes": 3194
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\preparation.json",
+      "archive_relative": "inputs/continuation-resources/preparation.json",
+      "sha256": "b0a77c8cbb286e51c4335d44260c598b174f312de074ef6697d383e610b18c27",
+      "bytes": 2785
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\rustc-exit.json",
+      "archive_relative": "inputs/continuation-resources/rustc-exit.json",
+      "sha256": "f07791344adeeb184a2d5ff42bf17c79e813b72a35df004dd1fd4171f6ece6d9",
+      "bytes": 410
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\probe.exe",
+      "archive_relative": "inputs/continuation-resources/probe.exe",
+      "sha256": "16e53a37a989ed0307ef318d517882750adcd6c6caa9be881bff0f292bf0c2b9",
+      "bytes": 291328
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\rustc.stdout.log",
+      "archive_relative": "inputs/continuation-resources/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\rustc.stderr.log",
+      "archive_relative": "inputs/continuation-resources/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\run_sealed_controls.py",
+      "archive_relative": "scripts/run_sealed_controls.py",
+      "sha256": "d679c3d09c395b16ce8d2caa51163ac4efa7330a74674858852368d57190c64c",
+      "bytes": 14811
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\audit_helper_resources.py",
+      "archive_relative": "scripts/audit_helper_resources.py",
+      "sha256": "f7da109066b413c00aa3b31ff5a00eea7d9f7e5f3153811027ca10d4431464f2",
+      "bytes": 7873
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\audit_raw.py",
+      "archive_relative": "scripts/audit_raw.py",
+      "sha256": "06ae77b3d85bdbfc8721b6e458a591ddc53b93dea5177a2907ecec45c6a16aaf",
+      "bytes": 13883
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\helper_raw_audit.py",
+      "archive_relative": "scripts/helper_raw_audit.py",
+      "sha256": "be9e9ca762dc00c83efc7faf417eb34116fbd50661e655089cc93dc59fcffd24",
+      "bytes": 12953
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\abi-source-audit.json",
+      "archive_relative": "host-integration/abi-source-audit.json",
+      "sha256": "eb92aba9688e74eabfc2a678ea1132b686d353a04e116c627103857b194db4bb",
+      "bytes": 4472
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\continuation.rs",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/continuation.rs",
+      "sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+      "bytes": 14687
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/continuation_capacity.rs",
+      "sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "bytes": 5515
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\continuation_projection.cu",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/continuation_projection.cu",
+      "sha256": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+      "bytes": 2696
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\continuation_storage.rs",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/continuation_storage.rs",
+      "sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+      "bytes": 19541
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\continuation_storage_copy.cu",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/continuation_storage_copy.cu",
+      "sha256": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+      "bytes": 1089
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\kernels.cu",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/kernels.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "bytes": 23514
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\baseline\\crates\\solver\\src\\gpu\\mod.rs",
+      "archive_relative": "host-integration/baseline/crates/solver/src/gpu/mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "bytes": 66225
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation.rs",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/continuation.rs",
+      "sha256": "68df35ad03dc38d7a6fecbc59e39aa94d1b412b1c2a4b76fee8ae2ef8c6ad463",
+      "bytes": 14372
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/continuation_capacity.rs",
+      "sha256": "8a07855c5058673d55c71d921c6d52e6e461011670d362ea41b1d1db9d06856f",
+      "bytes": 5534
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_projection.cu",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/continuation_projection.cu",
+      "sha256": "3cf76f4ce9dcc56da58642ea8a922a402f555f25fb98b9f8deffff34b68e25d5",
+      "bytes": 2765
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_storage.rs",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/continuation_storage.rs",
+      "sha256": "c85f03297ba6af551a1b5a1a44971906e5d3e0934dc2f6a5bcf32f1aae36c693",
+      "bytes": 19146
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_storage_copy.cu",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/continuation_storage_copy.cu",
+      "sha256": "61c655562fe407e3239e9c09384225e18c21e79c4e81620e435f62c2ba8dc5da",
+      "bytes": 1089
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\kernels.cu",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/kernels.cu",
+      "sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+      "bytes": 23453
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "archive_relative": "host-integration/candidate/crates/solver/src/gpu/mod.rs",
+      "sha256": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+      "bytes": 66363
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate.patch",
+      "archive_relative": "host-integration/candidate.patch",
+      "sha256": "09c1d119f9ca00371334d4f648d83199fd33d6d1237e4c7fd1bb5ba272156e50",
+      "bytes": 20649
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\checkpoint.json",
+      "archive_relative": "host-integration/checkpoint.json",
+      "sha256": "26fff1cabe8d9991a11dc3d4557b3a9ee44e9df167b5ca14f6b2e5799620023a",
+      "bytes": 3234
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\dashboard-publication.json",
+      "archive_relative": "host-integration/dashboard-publication.json",
+      "sha256": "04743216e852c9cb3bb01bfbb0606d70b708614535ffbd075d7e03ded5c0ee6a",
+      "bytes": 326
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\manifest.json",
+      "archive_relative": "host-integration/manifest.json",
+      "sha256": "b5c61824e571dcd48db0b94b36747925d692a6aa727c9d52fa78893c697685d0",
+      "bytes": 5097
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-cpu.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-cpu.receipt.json",
+      "sha256": "f912838600b5aedfd1aaccf2dc707731076f1d94834c6627764637af4d09efa2",
+      "bytes": 367
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-cpu.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-cpu.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-cpu.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-cpu.stdout.log",
+      "sha256": "c16365b3f786bc7a0fcbdafc2fdda22f894dc48cc600b3729f187f1a5aa03019",
+      "bytes": 56
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-rustc.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-rustc.receipt.json",
+      "sha256": "ff93de2a0fed2a8f3ef90f1f0a71ddd0ffc7b45436c3f335bbe302c6a141a0ce",
+      "bytes": 587
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-rustc.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack-rustc.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack-rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack.exe",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack.exe",
+      "sha256": "ce4e5102142d35b7fe4c16deef35aa2ae1f2c6625eef65c73ed89b486b85f9ff",
+      "bytes": 133120
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack.rs",
+      "archive_relative": "host-integration/syntax-and-integer-checks/host-pack.rs",
+      "sha256": "ea661cdafab39aff462df875d1c6fe417d1fc13980d2041ee7f25dea803b4c4d",
+      "bytes": 864
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation.receipt.json",
+      "sha256": "ae731da43beabd36c6f8c2e43779364052f4b58493e78fadaec40a44fbe3a3f2",
+      "bytes": 500
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation.stdout.log",
+      "sha256": "de9f1fd066bf9a667b9a5ea590e7a31593f3063d3ca0433668f94f60816cf159",
+      "bytes": 18880
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_capacity.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_capacity.receipt.json",
+      "sha256": "330f2e0291e13d4b57e956ad2d74d1be475b26efc4e5713b6bf9efadbbc737a5",
+      "bytes": 509
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_capacity.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_capacity.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_capacity.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_capacity.stdout.log",
+      "sha256": "4be01d6fb6ab1d2a18d674cc877819f34b15609288532bf7a223fe87863491d3",
+      "bytes": 6466
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_storage.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_storage.receipt.json",
+      "sha256": "8594163de6734185a28b269649057aa3229fe063ee6b58f425a4ff5758dc3062",
+      "bytes": 508
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_storage.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_storage.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-continuation_storage.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-continuation_storage.stdout.log",
+      "sha256": "75ec2755d81900ed5f518acafde96bf21185dad5d266e637f91435dfdcb8a27a",
+      "bytes": 23290
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-mod.receipt.json",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-mod.receipt.json",
+      "sha256": "4d38c740c6a181dd01bc40b71fec70abfe26d0c91996f94588f933ef6c35a177",
+      "bytes": 489
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-mod.stderr.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-mod.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\parse-mod.stdout.log",
+      "archive_relative": "host-integration/syntax-and-integer-checks/parse-mod.stdout.log",
+      "sha256": "1a3ba9ed415a1244ae0f933fd31c4e36c3df231df8568a612642b7d365ca7107",
+      "bytes": 71219
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-report.json",
+      "archive_relative": "host-integration/syntax-and-integer-report.json",
+      "sha256": "092d6f085b22f847083e80d9e12b10e62de7ac29872339d594058825c364ff61",
+      "bytes": 4516
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\audit_helper_resources-parser-error.py",
+      "archive_relative": "preparation/audit_helper_resources-parser-error.py",
+      "sha256": "4b50853baaf4e7f8a51acefe9056d257b83c498e121230718cf9ab662c8be875",
+      "bytes": 7521
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\audit_host_abi-parser-error.py",
+      "archive_relative": "preparation/audit_host_abi-parser-error.py",
+      "sha256": "e8c77ef9b23f89f2de91caa5f01d792fcf8caeba82da92722683dabc42353f34",
+      "bytes": 6102
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\audit_host_abi.py",
+      "archive_relative": "preparation/audit_host_abi.py",
+      "sha256": "56e7e55f57059e70e2d9083bec620f584fb2cbb37a3ce7ab43446d47d90c370e",
+      "bytes": 6168
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\compile_controls.py",
+      "archive_relative": "preparation/compile_controls.py",
+      "sha256": "03b929213a3c1d745e6c166e493d8123ae33ad97637450147f50ff717bad00fd",
+      "bytes": 3206
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\compiler-preparation-manifest.json",
+      "archive_relative": "preparation/compiler-preparation-manifest.json",
+      "sha256": "f79c0ffcb0f04306def41ca9debe9d519469b66724c634e4b2a200eb473e8616",
+      "bytes": 7613
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\dashboard-publication.json",
+      "archive_relative": "preparation/dashboard-publication.json",
+      "sha256": "2663f201783ee37c792a71de63ad0a8d54f2706f83b3f9598401b55e2d82f23a",
+      "bytes": 450
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\fold_probe_template.rs",
+      "archive_relative": "preparation/fold_probe_template.rs",
+      "sha256": "2353c2630101e260de462de98bd20b631aaee2f2380df765340201158dba99e6",
+      "bytes": 8805
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\helper-resource-parser-error.json",
+      "archive_relative": "preparation/helper-resource-parser-error.json",
+      "sha256": "02ecc237aa10f4e7ef1bffa679193ec28765453d255f38cd1737f4cf4b266d51",
+      "bytes": 559
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\helper_raw_probe.rs",
+      "archive_relative": "preparation/helper_raw_probe.rs",
+      "sha256": "7ead914ec71301607e6ae2010cc775665432638020844674d272c193abee7622",
+      "bytes": 11183
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\helper_resource_probe.rs",
+      "archive_relative": "preparation/helper_resource_probe.rs",
+      "sha256": "f31931ca89745f925cd596b0b6f7e70b141c0de5bf5ad6f63076e240e18beb6c",
+      "bytes": 3194
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-abi-parser-error.json",
+      "archive_relative": "preparation/host-abi-parser-error.json",
+      "sha256": "27c4d46bb5a6d32708ac31f69bb333f5b333c8365554ed73478e657cb7d5f288",
+      "bytes": 431
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-preparation-newline-error.json",
+      "archive_relative": "preparation/host-preparation-newline-error.json",
+      "sha256": "261188ccb3efc1e2078047c6e1dc1dee9bbbd69f7e28b8d6a70373c8cb4ac525",
+      "bytes": 534
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\native-plan-preparation-path-error.json",
+      "archive_relative": "preparation/native-plan-preparation-path-error.json",
+      "sha256": "3177df98db07475da3b8caaab85ac58994f58967639faeb78ca9fda0d748e782",
+      "bytes": 455
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_fold_control.py",
+      "archive_relative": "preparation/prepare_fold_control.py",
+      "sha256": "aea44fa8196106f745a27b476f69e91f28731db7674ccdd141579466211b8a6c",
+      "bytes": 1874
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_helper_raw.py",
+      "archive_relative": "preparation/prepare_helper_raw.py",
+      "sha256": "b99b4198f679967ee3369f496b19a433b508993e64d7d88a440ce4604131ecac",
+      "bytes": 8094
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_helper_resource.py",
+      "archive_relative": "preparation/prepare_helper_resource.py",
+      "sha256": "0fd5188dcccf7dea22b380031b0e7236b9d3652466961766143d283ca6bde874",
+      "bytes": 4742
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_host_integration-newline-error.py",
+      "archive_relative": "preparation/prepare_host_integration-newline-error.py",
+      "sha256": "1578d458a4fe4a11d7e2f6dc698ff8e0b59179f20f916a37f2dfa5fe3e781aba",
+      "bytes": 8413
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_host_integration.py",
+      "archive_relative": "preparation/prepare_host_integration.py",
+      "sha256": "c3555d9cf851b34266e13c0830726c38d58566208c940c7ad13e105cdf038903",
+      "bytes": 8639
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_remaining_controls.py",
+      "archive_relative": "preparation/prepare_remaining_controls.py",
+      "sha256": "e339801e53ab0a108fb4fd759d4fe86691a257820bdce8c368dba90796d0a9ad",
+      "bytes": 9132
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\prepare_up_control.py",
+      "archive_relative": "preparation/prepare_up_control.py",
+      "sha256": "dc5d300d46e1f0ab34e157201a32cf1b527e920183949bcf3e567983d9e07bcd",
+      "bytes": 5734
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\publication-preparation-error.json",
+      "archive_relative": "preparation/publication-preparation-error.json",
+      "sha256": "b9b16f688b7b1863579532220ecee6558a2b50cda25b5d223f7950c3cfc5bd9f",
+      "bytes": 571
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\publish_helper_checkpoint.py",
+      "archive_relative": "preparation/publish_helper_checkpoint.py",
+      "sha256": "1d1f89f7d2477c465884af569adff1f83c0337fe4a8cb9941b08f1f9d4c3734b",
+      "bytes": 8297
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\publish_host_checkpoint.py",
+      "archive_relative": "preparation/publish_host_checkpoint.py",
+      "sha256": "14b90b6dfb9caa7694151de4a0a97b01afbf04b3ee32c543fa085b9d991e7bea",
+      "bytes": 7846
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\publish_preparation-schema-error.py",
+      "archive_relative": "preparation/publish_preparation-schema-error.py",
+      "sha256": "5fa53003f7dcabd8d46e589a874c2d5f4cede2e1504ed367aad5fcd75d319d60",
+      "bytes": 8893
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\publish_preparation.py",
+      "archive_relative": "preparation/publish_preparation.py",
+      "sha256": "94a46b94bafffe92a46d5edeeddd32e657e21b24c7bc6afe9193dee797fc91e5",
+      "bytes": 9141
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\seal_native_plan-path-error.py",
+      "archive_relative": "preparation/seal_native_plan-path-error.py",
+      "sha256": "bf1122a4d1941804f29f2bf78cd7664b7d4f305ca8d84c344ab561e57f6f69a8",
+      "bytes": 6397
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\seal_native_plan.py",
+      "archive_relative": "preparation/seal_native_plan.py",
+      "sha256": "39e61f51cecc88f70b4980b2031782aaf7fbe1e0a4242354c2c82645acce0761",
+      "bytes": 6434
+    },
+    {
+      "source": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\verify_host_preparation.py",
+      "archive_relative": "preparation/verify_host_preparation.py",
+      "sha256": "c6fb30728e0f636e2f0ec1ed5bf979a898b743b367185bed0c10bc358e173ba2",
+      "bytes": 5287
+    }
+  ],
+  "existing_scientific_inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-source\\candidate.cu": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-source\\manifest.json": "a02c1843ad4148973757e4388a46f4b1cce2368b01d6ae3058aa5a2b0b54f5f8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\report.json": "a9452fad3b7a5d4da8fe7915c5c7b5a7a74df1c166f48ca663f0e2d79cc19b8c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\protocol.json": "fefbf83108af747226ad0052bd4cd50c755f34eb4bc3aeba77142f4d2d26bbca",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D114-node-metadata\\report.json": "ff2da1281efc7bda8b9eda60cfa931758b543d6118a98290502092e004badd56",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D114-node-metadata\\root-raw-replay.json": "90ab1d67dae8d8688f98e82434da5ffe8316948456a91389ad58d38663e4a2b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\protected-main.json": "29b1dc9072f7efae3640a0e8e4160eeabd710636284a52a136efc099bd41b73b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\preexisting-target-artifacts.json": "b744638e13f0d5fe57512555605142d7e03c8cd46483e8e4fa86040cf49b017b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\resource-feasibility-policy-20261017.md": "eaa3f168c57a1f390510ac21454fcce3ac0bc454e1ef9a49f73876ec9cda393c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\execution\\baseline-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\execution\\candidate-compute_120.ptx": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-resource\\execution\\candidate-compute_75.ptx": "34c711b7619d41635791ea430c25e39f443c5e807cf10a44b48ee8b428a62dc9"
+  },
+  "declared_cases": 5953,
+  "planned_application_kernel_launches": 11906,
+  "native_resource_processes": 1,
+  "helper_NVRTC_compilations": 8,
+  "native_numerical_processes": 5,
+  "root_raw_replays": 5,
+  "native_resource_timeout_seconds": 180,
+  "numerical_process_timeout_seconds": 1800,
+  "root_replay_timeout_seconds": 1800,
+  "component_order": [
+    "helper resource/ABI/driver gates",
+    "up-action819",
+    "down-action1196",
+    "up-action-eval1638",
+    "up-fold180",
+    "continuation2120"
+  ],
+  "unrounded_complete_solve_acceptance_cutoff_pct": 1,
+  "sampling": "Exactly one frozen helper resource process and one paired numerical process per listed component. No timing samples, automatic retries, exclusions, extra cases, compiler-option/source rescue or pooled samples.",
+  "admission": "Actual runtime permission to write S and read localhost; no permission edits or alternate executors. Verify source/Git/live/protected-PTX custody, idle app sessions, GPU UUID and S reserve. Checksum-copy all frozen inputs before any compiler/device work, hold existing exclusive GPU lock, seal generated helper PTX SHA256 before application kernel work.",
+  "GPU_UUID": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "minimum_free_before_admission_bytes": 70866960384,
+  "minimum_free_during_controls_bytes": 62277025792,
+  "peak_output_reservation_bytes": 8589934592,
+  "conservative_full_raw_bytes": 4041845680,
+  "frozen_input_archive_bytes": 42941657,
+  "limits": "Scoped correctness/resource campaign only. No solver activation, integrated build, complete-solver accuracy, material-tradeoff qualification or speed acceptance. A later integrated-source protocol must pass all existing qualification gates.",
+  "native_execution_performed": false,
+  "GPUexecutions": 0,
+  "executor_sha256": "d679c3d09c395b16ce8d2caa51163ac4efa7330a74674858852368d57190c64c"
+}

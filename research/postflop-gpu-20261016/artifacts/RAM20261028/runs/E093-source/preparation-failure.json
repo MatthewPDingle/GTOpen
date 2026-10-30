@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-28T14:27:43.314468+00:00",
+  "status": "invalid_source_packager_line_ending_normalization_preserved",
+  "observed_exec_returncode": 1,
+  "script_sha256": "9d76d5a7fb08a14f3afea6509b61e8a848d4ab7cdd2cf94002a88f58dae097d3",
+  "error": "AssertionError at E093-prepare-source-build.py:21,exact reversal check",
+  "cause": "Existing solverCargo.toml has203CRLFand30LF lines. Wholefile newline normalization was rejected by byteexact reversal check. CargoLockpart prepared butno fullcandidate manifest/buildprotocol/sourceactivation/compiler/native execution existed.",
+  "original_tracked_manifest_sha256": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+  "CRLF_lines": 203,
+  "LF_only_lines": 30,
+  "partial_source_files_preserved": true,
+  "solver_helper_or_math_changed": false
+}

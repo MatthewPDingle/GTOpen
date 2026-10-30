@@ -1,0 +1,32 @@
+{
+  "id": "E068-kernel-control-root-check",
+  "at": "2026-10-17T11:46:44.147643+00:00",
+  "status": "pass_scoped_up_chance_full_raw_equivalence",
+  "checks": 3771697,
+  "cases": 1688,
+  "kernel_launches": 3376,
+  "full_output_words_both_arms": 35904112,
+  "full_actual_device_input_words_both_arms": 9083648,
+  "guard_word_checks_both_arms": 34875264,
+  "all_full_outputs_inputs_guards_exact": true,
+  "resource_and_raw_ptx_byte_identical": true,
+  "native_concretely_prechecked_read_addresses": 10938464,
+  "root_factored_read_address_coverage": 10938464,
+  "root_actual_permutation_words": 2063888,
+  "independent_cpu_canonical_card_relations_both_arms": 137904,
+  "independent_cpu_allblocked_or_empty_signedzero_relations_both_arms": 126840,
+  "all52cards_full1326hands": true,
+  "allblocked_cases": 240,
+  "allunblocked_cases": 240,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E068-kernel-control\\evidence\\baseline.bin": "c9949a3fd6170a2f00af7d52b32802ba06aee47375b612a51cdcc2fcd8fdf6e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E068-kernel-control\\evidence\\candidate.bin": "c9949a3fd6170a2f00af7d52b32802ba06aee47375b612a51cdcc2fcd8fdf6e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E068-kernel-control\\evidence\\inputs.bin": "93e8f7f36b6186dd6cc5b6e8a54191ebba8e878f9075e46263ed5ecbb6fb7d9b"
+  },
+  "raw_total_bytes": 270595034,
+  "corpus_sha256": "86609a58fbb637c7c1d6e46f86c7e98a90e8beed3dbfdd2f6eda5763366e7ba5",
+  "source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root fullraw parser independently checks actual metadata, total mappings, bound/disjoint child rows, every raw output/input/guard and canonical finite product/signedzero relations. Address coverage is factored by table totality/rowgeometry; native enumerated eachactual address beforelaunch. Not external independent review or fullsolver/graphs/material/holdout/speed/otherGPU proof. Syntheticduplicatehands/width>52 remain raw stress only."
+}

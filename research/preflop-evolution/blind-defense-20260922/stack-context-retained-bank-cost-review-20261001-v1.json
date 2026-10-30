@@ -1,0 +1,105 @@
+{
+  "format": 1,
+  "observed_unix": 1790851133.2778554,
+  "kind": "existing retained control and source review",
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_played_bank_v1.py": "054a6ab6698cda562ed45a1c7bc2beb185582094a83d980750840a341111ae37",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_current_policy_v1.py": "aa37124ba88afe181ad486a1f02f12b2bea6d6ac84959a24ca449c2652a66c26",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py": "4369c43c746003a04fdc24c76689879ac7605f075efafaf6c056588174345d39",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_preflop_table_v1.py": "e73d9bda51fc79caa1d1430694b9376fdf58efe8b6eec67d42147a830d6d6dea",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py": "92fa28ad542be557200740bce739f1a0208259a4f8a215cee7fdfb6ff52c832d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py": "e7a438df1f36e7697050cb2e598fae1a21cc831639e4179085044098c55e9089",
+    "T:\\Dev\\GTOpen\\tools\\research\\crossed_complete_policy_batch_v1.py": "fec167ee1dd980b6a5a46b3d704c28742cd8899005dfe0e7aa0fab236b4adf66",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_current_policy_routed_v1.py": "821a397a6baf453754f167fb0664b4fdd57614760d788566b77b0d76c58031e0",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_current_policy_batched_v2.py": "fb9ece0d58774e129926f6bff21c4f0fd2edbd674506b1b044a4d208907c409f",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\STACK-CONTEXT-ROUTED-POLICY-CANDIDATE.md": "6e9e98faf9b9d2cf495fe7e88d4cba010f61553bcdbff85ca7188982ac9a89a9",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\STACK-CONTEXT-BATCHED-POLICY-CANDIDATE.md": "9018ff6ff6d699f62974e4e718da1d2b5b3b732c182e871ea1a7f6bfd368ede4",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-context-final-bank-throughput-v4-result.json": "d1046fdfb09d17f4441d994b8ea88f150b5c54af4ff8028f46f949298bd665c8"
+  },
+  "document": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\STACK-CONTEXT-RETAINED-BANK-COST-REVIEW-20261001.md",
+  "document_sha256": "8d53cb604f4bbe2fa696ab0eee41bdbf1af1e23e422dfe86bbbee4e223ef7e2f",
+  "retained_gate_records": [
+    {
+      "depth": 20,
+      "split": "fit",
+      "retained_deals": 32,
+      "query_rows": 4720,
+      "load_seconds": 79.63999999995576,
+      "four_bank_average_seconds": 32.34299999999348,
+      "median_bank_average_seconds": 7.80449999999837,
+      "maximum_reserved_bytes": 171966464
+    },
+    {
+      "depth": 40,
+      "split": "fit",
+      "retained_deals": 32,
+      "query_rows": 8400,
+      "load_seconds": 73.39100000000326,
+      "four_bank_average_seconds": 56.54599999997299,
+      "median_bank_average_seconds": 14.303999999974621,
+      "maximum_reserved_bytes": 186646528
+    },
+    {
+      "depth": 60,
+      "split": "held-out fit",
+      "retained_deals": 32,
+      "query_rows": 9936,
+      "load_seconds": 70.09399999998277,
+      "four_bank_average_seconds": 12.01500000001397,
+      "median_bank_average_seconds": 2.9765000000188593,
+      "maximum_reserved_bytes": 188743680
+    },
+    {
+      "depth": 100,
+      "split": "fit",
+      "retained_deals": 32,
+      "query_rows": 12752,
+      "load_seconds": 81.375,
+      "four_bank_average_seconds": 87.90600000001723,
+      "median_bank_average_seconds": 21.91400000001886,
+      "maximum_reserved_bytes": 211812352
+    },
+    {
+      "depth": 150,
+      "split": "held-out fit",
+      "retained_deals": 32,
+      "query_rows": 13520,
+      "load_seconds": 79.17200000002049,
+      "four_bank_average_seconds": 15.78200000000652,
+      "median_bank_average_seconds": 3.930000000022119,
+      "maximum_reserved_bytes": 216006656
+    },
+    {
+      "depth": 200,
+      "split": "fit",
+      "retained_deals": 32,
+      "query_rows": 14544,
+      "load_seconds": 82.51600000000326,
+      "four_bank_average_seconds": 100.85899999999674,
+      "median_bank_average_seconds": 25.54649999999674,
+      "maximum_reserved_bytes": 218103808
+    },
+    {
+      "depth": 400,
+      "split": "fit",
+      "retained_deals": 32,
+      "query_rows": 16464,
+      "load_seconds": 81.32800000003772,
+      "four_bank_average_seconds": 109.39100000000326,
+      "median_bank_average_seconds": 27.38300000000163,
+      "maximum_reserved_bytes": 224395264
+    }
+  ],
+  "interim_scientific_estimates_inspected": false,
+  "range_probabilities_inspected": false,
+  "new_benchmark": false,
+  "new_scientific_deals": false,
+  "fitting": false,
+  "native_execution": false,
+  "gpu_used": false,
+  "study_modified": false,
+  "production_modified": false,
+  "causal_component_timing_measured": false,
+  "full_evaluation_runtime_estimated": false,
+  "accuracy_qualified": false
+}

@@ -1,0 +1,5902 @@
+{
+  "id": "D206",
+  "at": "2026-10-28T22:13:06.702979+00:00",
+  "status": "pass_scoped_full_original_phase_ownership_model",
+  "protocol_sha256": "d6087f0a79ab05efb0c4020b4ec60a60565129d3868c7161ef0077cebb611031",
+  "checks": 3795605,
+  "cases": [
+    {
+      "id": "rainbow-iso-on",
+      "node_count": 1346813,
+      "levels": 14,
+      "hands": [
+        257,
+        319
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 141120,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 274801,
+          "arena_words": 156020845,
+          "owned_words": 152860002,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 248732,
+          "arena_words": 185172163,
+          "owned_words": 181420723,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 98,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 98,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 9,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 98,
+              "output_slots": 196,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 3,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 205,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 150,
+              "output_slots": 156,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 98,
+              "output_slots": 490,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 646,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 343,
+              "output_slots": 882,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 150,
+              "output_slots": 302,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 9555,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 9555,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 493,
+              "output_rows": 493,
+              "input_rows": 1184,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 9704,
+              "output_slots": 19408,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 343,
+              "output_slots": 1323,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 16611,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 16611,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 10194,
+              "output_rows": 10194,
+              "input_rows": 20731,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 17052,
+              "output_slots": 25039,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9702,
+              "output_slots": 47775,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 33026,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 492,
+              "output_rows": 492,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 688,
+              "output_rows": 688,
+              "input_rows": 33026,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 36162,
+              "output_rows": 36162,
+              "input_rows": 72814,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49686,
+              "output_slots": 111230,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 16905,
+              "output_slots": 55272,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 42336,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 10045,
+              "output_rows": 10045,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 21168,
+              "output_rows": 21168,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 882,
+              "output_rows": 882,
+              "input_rows": 42336,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 73745,
+              "output_rows": 73745,
+              "input_rows": 166502,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 54292,
+              "output_slots": 115640,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 49490,
+              "output_slots": 174244,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 39984,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 26607,
+              "output_rows": 26607,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 54096,
+              "output_rows": 54096,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 833,
+              "output_rows": 833,
+              "input_rows": 39984,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 127302,
+              "output_rows": 127302,
+              "input_rows": 289884,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 72912,
+              "output_slots": 171696,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 54096,
+              "output_slots": 155232,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 14112,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 66150,
+              "output_rows": 66150,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 122304,
+              "output_rows": 122304,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 294,
+              "output_rows": 294,
+              "input_rows": 14112,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 326928,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49392,
+              "output_slots": 108192,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 44688,
+              "output_slots": 115248,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 96432,
+              "output_rows": 96432,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 223440,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 21168,
+              "output_slots": 42336,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9408,
+              "output_slots": 18816,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 89376,
+              "output_rows": 89376,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 61152,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "down_chance",
+          2,
+          0,
+          98
+        ],
+        [
+          "down_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "down_chance",
+          3,
+          98,
+          147
+        ],
+        [
+          "down_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "down_chance",
+          4,
+          245,
+          147
+        ],
+        [
+          "down_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "down_chance",
+          5,
+          392,
+          9555
+        ],
+        [
+          "down_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "down_chance",
+          6,
+          9947,
+          16611
+        ],
+        [
+          "down_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "down_chance",
+          7,
+          26558,
+          33026
+        ],
+        [
+          "down_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "down_chance",
+          8,
+          59584,
+          42336
+        ],
+        [
+          "down_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "down_chance",
+          9,
+          101920,
+          39984
+        ],
+        [
+          "down_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "down_chance",
+          10,
+          141904,
+          14112
+        ],
+        [
+          "down_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "down_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          13,
+          289409,
+          30576
+        ],
+        [
+          "up_show",
+          13,
+          442176,
+          30576
+        ],
+        [
+          "up_fold",
+          12,
+          200033,
+          89376
+        ],
+        [
+          "up_show",
+          12,
+          338688,
+          103488
+        ],
+        [
+          "up_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          11,
+          103601,
+          96432
+        ],
+        [
+          "up_show",
+          11,
+          197568,
+          141120
+        ],
+        [
+          "up_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "up_fold",
+          10,
+          37451,
+          66150
+        ],
+        [
+          "up_show",
+          10,
+          75264,
+          122304
+        ],
+        [
+          "up_chance",
+          10,
+          2956,
+          294
+        ],
+        [
+          "up_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "up_fold",
+          9,
+          10844,
+          26607
+        ],
+        [
+          "up_show",
+          9,
+          21168,
+          54096
+        ],
+        [
+          "up_chance",
+          9,
+          2123,
+          833
+        ],
+        [
+          "up_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "up_fold",
+          8,
+          799,
+          10045
+        ],
+        [
+          "up_show",
+          8,
+          0,
+          21168
+        ],
+        [
+          "up_chance",
+          8,
+          1241,
+          882
+        ],
+        [
+          "up_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "up_fold",
+          7,
+          307,
+          492
+        ],
+        [
+          "up_chance",
+          7,
+          553,
+          688
+        ],
+        [
+          "up_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "up_fold",
+          6,
+          108,
+          199
+        ],
+        [
+          "up_chance",
+          6,
+          207,
+          346
+        ],
+        [
+          "up_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "up_fold",
+          5,
+          7,
+          101
+        ],
+        [
+          "up_chance",
+          5,
+          8,
+          199
+        ],
+        [
+          "up_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "up_fold",
+          4,
+          4,
+          3
+        ],
+        [
+          "up_chance",
+          4,
+          5,
+          3
+        ],
+        [
+          "up_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          3
+        ],
+        [
+          "up_chance",
+          3,
+          2,
+          3
+        ],
+        [
+          "up_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_chance",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "structural_checks_pass": true
+    },
+    {
+      "id": "two-tone-iso-on",
+      "node_count": 1346813,
+      "levels": 14,
+      "hands": [
+        258,
+        320
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 85740,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 167213,
+          "arena_words": 93381294,
+          "owned_words": 93381294,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 151349,
+          "arena_words": 110745280,
+          "owned_words": 110745280,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 72,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 98,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 9,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 72,
+              "output_slots": 144,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 3,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 108,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 75,
+              "output_rows": 75,
+              "input_rows": 153,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 111,
+              "output_slots": 117,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 72,
+              "output_slots": 360,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 108,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 255,
+              "output_rows": 255,
+              "input_rows": 477,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 252,
+              "output_slots": 648,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 111,
+              "output_slots": 224,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 5824,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 75,
+              "output_rows": 75,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 147,
+              "output_rows": 147,
+              "input_rows": 7059,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 363,
+              "output_rows": 363,
+              "input_rows": 872,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 5934,
+              "output_slots": 11868,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 252,
+              "output_slots": 972,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 10111,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 147,
+              "output_rows": 147,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 255,
+              "output_rows": 255,
+              "input_rows": 12243,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 6294,
+              "output_rows": 6294,
+              "input_rows": 12840,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 10435,
+              "output_slots": 15406,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 5932,
+              "output_slots": 29120,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 20078,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 362,
+              "output_rows": 362,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 506,
+              "output_rows": 506,
+              "input_rows": 24290,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 22083,
+              "output_rows": 22083,
+              "input_rows": 44526,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 30225,
+              "output_slots": 67667,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 10327,
+              "output_slots": 33731,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 25722,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 6184,
+              "output_rows": 6184,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 12861,
+              "output_rows": 12861,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 648,
+              "output_rows": 648,
+              "input_rows": 31104,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 44911,
+              "output_rows": 44911,
+              "input_rows": 101398,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 33011,
+              "output_slots": 70309,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 30081,
+              "output_slots": 105890,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 24293,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 16259,
+              "output_rows": 16259,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 32867,
+              "output_rows": 32867,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 612,
+              "output_rows": 612,
+              "input_rows": 29376,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 77382,
+              "output_rows": 77382,
+              "input_rows": 176199,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 44299,
+              "output_slots": 104317,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 32867,
+              "output_slots": 94314,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 8574,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 40228,
+              "output_rows": 40228,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 74308,
+              "output_rows": 74308,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 216,
+              "output_rows": 216,
+              "input_rows": 10368,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 85740,
+              "output_rows": 85740,
+              "input_rows": 198631,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 30009,
+              "output_slots": 65734,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 27151,
+              "output_slots": 70021,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 58589,
+              "output_rows": 58589,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 85740,
+              "output_rows": 85740,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 62876,
+              "output_rows": 62876,
+              "input_rows": 135755,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 12861,
+              "output_slots": 25722,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 5716,
+              "output_slots": 11432,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 54302,
+              "output_rows": 54302,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 62876,
+              "output_rows": 62876,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 18577,
+              "output_rows": 18577,
+              "input_rows": 37154,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 18577,
+              "output_rows": 18577,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 18577,
+              "output_rows": 18577,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "down_chance",
+          2,
+          0,
+          72
+        ],
+        [
+          "down_action",
+          3,
+          6,
+          75
+        ],
+        [
+          "down_chance",
+          3,
+          72,
+          108
+        ],
+        [
+          "down_action",
+          4,
+          81,
+          255
+        ],
+        [
+          "down_chance",
+          4,
+          180,
+          108
+        ],
+        [
+          "down_action",
+          5,
+          336,
+          363
+        ],
+        [
+          "down_chance",
+          5,
+          288,
+          5824
+        ],
+        [
+          "down_action",
+          6,
+          699,
+          6294
+        ],
+        [
+          "down_chance",
+          6,
+          6112,
+          10111
+        ],
+        [
+          "down_action",
+          7,
+          6993,
+          22083
+        ],
+        [
+          "down_chance",
+          7,
+          16223,
+          20078
+        ],
+        [
+          "down_action",
+          8,
+          29076,
+          44911
+        ],
+        [
+          "down_chance",
+          8,
+          36301,
+          25722
+        ],
+        [
+          "down_action",
+          9,
+          73987,
+          77382
+        ],
+        [
+          "down_chance",
+          9,
+          62023,
+          24293
+        ],
+        [
+          "down_action",
+          10,
+          151369,
+          85740
+        ],
+        [
+          "down_chance",
+          10,
+          86316,
+          8574
+        ],
+        [
+          "down_action",
+          11,
+          237109,
+          62876
+        ],
+        [
+          "down_action",
+          12,
+          299985,
+          18577
+        ],
+        [
+          "up_fold",
+          13,
+          176153,
+          18577
+        ],
+        [
+          "up_show",
+          13,
+          268652,
+          18577
+        ],
+        [
+          "up_fold",
+          12,
+          121851,
+          54302
+        ],
+        [
+          "up_show",
+          12,
+          205776,
+          62876
+        ],
+        [
+          "up_action",
+          12,
+          299985,
+          18577
+        ],
+        [
+          "up_fold",
+          11,
+          63262,
+          58589
+        ],
+        [
+          "up_show",
+          11,
+          120036,
+          85740
+        ],
+        [
+          "up_action",
+          11,
+          237109,
+          62876
+        ],
+        [
+          "up_fold",
+          10,
+          23034,
+          40228
+        ],
+        [
+          "up_show",
+          10,
+          45728,
+          74308
+        ],
+        [
+          "up_chance",
+          10,
+          2176,
+          216
+        ],
+        [
+          "up_action",
+          10,
+          151369,
+          85740
+        ],
+        [
+          "up_fold",
+          9,
+          6775,
+          16259
+        ],
+        [
+          "up_show",
+          9,
+          12861,
+          32867
+        ],
+        [
+          "up_chance",
+          9,
+          1564,
+          612
+        ],
+        [
+          "up_action",
+          9,
+          73987,
+          77382
+        ],
+        [
+          "up_fold",
+          8,
+          591,
+          6184
+        ],
+        [
+          "up_show",
+          8,
+          0,
+          12861
+        ],
+        [
+          "up_chance",
+          8,
+          916,
+          648
+        ],
+        [
+          "up_action",
+          8,
+          29076,
+          44911
+        ],
+        [
+          "up_fold",
+          7,
+          229,
+          362
+        ],
+        [
+          "up_chance",
+          7,
+          410,
+          506
+        ],
+        [
+          "up_action",
+          7,
+          6993,
+          22083
+        ],
+        [
+          "up_fold",
+          6,
+          82,
+          147
+        ],
+        [
+          "up_chance",
+          6,
+          155,
+          255
+        ],
+        [
+          "up_action",
+          6,
+          699,
+          6294
+        ],
+        [
+          "up_fold",
+          5,
+          7,
+          75
+        ],
+        [
+          "up_chance",
+          5,
+          8,
+          147
+        ],
+        [
+          "up_action",
+          5,
+          336,
+          363
+        ],
+        [
+          "up_fold",
+          4,
+          4,
+          3
+        ],
+        [
+          "up_chance",
+          4,
+          5,
+          3
+        ],
+        [
+          "up_action",
+          4,
+          81,
+          255
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          3
+        ],
+        [
+          "up_chance",
+          3,
+          2,
+          3
+        ],
+        [
+          "up_action",
+          3,
+          6,
+          75
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_chance",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "structural_checks_pass": true
+    },
+    {
+      "id": "river-iso-on",
+      "node_count": 33,
+      "levels": 8,
+      "hands": [
+        233,
+        280
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 2,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 6,
+          "arena_words": 3728,
+          "owned_words": 3728,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 6,
+          "arena_words": 4480,
+          "owned_words": 4480,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 5,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 5,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 2,
+              "output_slots": 5,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 5,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          2
+        ],
+        [
+          "down_action",
+          3,
+          5,
+          2
+        ],
+        [
+          "down_action",
+          4,
+          7,
+          2
+        ],
+        [
+          "down_action",
+          5,
+          9,
+          2
+        ],
+        [
+          "down_action",
+          6,
+          11,
+          1
+        ],
+        [
+          "up_fold",
+          7,
+          9,
+          1
+        ],
+        [
+          "up_show",
+          7,
+          10,
+          1
+        ],
+        [
+          "up_fold",
+          6,
+          7,
+          2
+        ],
+        [
+          "up_show",
+          6,
+          8,
+          2
+        ],
+        [
+          "up_action",
+          6,
+          11,
+          1
+        ],
+        [
+          "up_fold",
+          5,
+          5,
+          2
+        ],
+        [
+          "up_show",
+          5,
+          6,
+          2
+        ],
+        [
+          "up_action",
+          5,
+          9,
+          2
+        ],
+        [
+          "up_fold",
+          4,
+          3,
+          2
+        ],
+        [
+          "up_show",
+          4,
+          4,
+          2
+        ],
+        [
+          "up_action",
+          4,
+          7,
+          2
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          2
+        ],
+        [
+          "up_show",
+          3,
+          2,
+          2
+        ],
+        [
+          "up_action",
+          3,
+          5,
+          2
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_show",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          2
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "structural_checks_pass": true
+    },
+    {
+      "id": "rainbow-iso-off",
+      "node_count": 1346813,
+      "levels": 14,
+      "hands": [
+        257,
+        319
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 141120,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 274801,
+          "arena_words": 156020845,
+          "owned_words": 152860002,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 248732,
+          "arena_words": 185172163,
+          "owned_words": 181420723,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 98,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 98,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 9,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 98,
+              "output_slots": 196,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 3,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 205,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 150,
+              "output_slots": 156,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 98,
+              "output_slots": 490,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 646,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 343,
+              "output_slots": 882,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 150,
+              "output_slots": 302,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 9555,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 9555,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 493,
+              "output_rows": 493,
+              "input_rows": 1184,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 9704,
+              "output_slots": 19408,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 343,
+              "output_slots": 1323,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 16611,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 16611,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 10194,
+              "output_rows": 10194,
+              "input_rows": 20731,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 17052,
+              "output_slots": 25039,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9702,
+              "output_slots": 47775,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 33026,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 492,
+              "output_rows": 492,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 688,
+              "output_rows": 688,
+              "input_rows": 33026,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 36162,
+              "output_rows": 36162,
+              "input_rows": 72814,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49686,
+              "output_slots": 111230,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 16905,
+              "output_slots": 55272,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 42336,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 10045,
+              "output_rows": 10045,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 21168,
+              "output_rows": 21168,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 882,
+              "output_rows": 882,
+              "input_rows": 42336,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 73745,
+              "output_rows": 73745,
+              "input_rows": 166502,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 54292,
+              "output_slots": 115640,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 49490,
+              "output_slots": 174244,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 39984,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 26607,
+              "output_rows": 26607,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 54096,
+              "output_rows": 54096,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 833,
+              "output_rows": 833,
+              "input_rows": 39984,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 127302,
+              "output_rows": 127302,
+              "input_rows": 289884,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 72912,
+              "output_slots": 171696,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 54096,
+              "output_slots": 155232,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 14112,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 66150,
+              "output_rows": 66150,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 122304,
+              "output_rows": 122304,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 294,
+              "output_rows": 294,
+              "input_rows": 14112,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 326928,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49392,
+              "output_slots": 108192,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 44688,
+              "output_slots": 115248,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 96432,
+              "output_rows": 96432,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 223440,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 21168,
+              "output_slots": 42336,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9408,
+              "output_slots": 18816,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 89376,
+              "output_rows": 89376,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 61152,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "down_chance",
+          2,
+          0,
+          98
+        ],
+        [
+          "down_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "down_chance",
+          3,
+          98,
+          147
+        ],
+        [
+          "down_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "down_chance",
+          4,
+          245,
+          147
+        ],
+        [
+          "down_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "down_chance",
+          5,
+          392,
+          9555
+        ],
+        [
+          "down_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "down_chance",
+          6,
+          9947,
+          16611
+        ],
+        [
+          "down_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "down_chance",
+          7,
+          26558,
+          33026
+        ],
+        [
+          "down_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "down_chance",
+          8,
+          59584,
+          42336
+        ],
+        [
+          "down_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "down_chance",
+          9,
+          101920,
+          39984
+        ],
+        [
+          "down_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "down_chance",
+          10,
+          141904,
+          14112
+        ],
+        [
+          "down_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "down_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          13,
+          289409,
+          30576
+        ],
+        [
+          "up_show",
+          13,
+          442176,
+          30576
+        ],
+        [
+          "up_fold",
+          12,
+          200033,
+          89376
+        ],
+        [
+          "up_show",
+          12,
+          338688,
+          103488
+        ],
+        [
+          "up_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          11,
+          103601,
+          96432
+        ],
+        [
+          "up_show",
+          11,
+          197568,
+          141120
+        ],
+        [
+          "up_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "up_fold",
+          10,
+          37451,
+          66150
+        ],
+        [
+          "up_show",
+          10,
+          75264,
+          122304
+        ],
+        [
+          "up_chance",
+          10,
+          2956,
+          294
+        ],
+        [
+          "up_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "up_fold",
+          9,
+          10844,
+          26607
+        ],
+        [
+          "up_show",
+          9,
+          21168,
+          54096
+        ],
+        [
+          "up_chance",
+          9,
+          2123,
+          833
+        ],
+        [
+          "up_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "up_fold",
+          8,
+          799,
+          10045
+        ],
+        [
+          "up_show",
+          8,
+          0,
+          21168
+        ],
+        [
+          "up_chance",
+          8,
+          1241,
+          882
+        ],
+        [
+          "up_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "up_fold",
+          7,
+          307,
+          492
+        ],
+        [
+          "up_chance",
+          7,
+          553,
+          688
+        ],
+        [
+          "up_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "up_fold",
+          6,
+          108,
+          199
+        ],
+        [
+          "up_chance",
+          6,
+          207,
+          346
+        ],
+        [
+          "up_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "up_fold",
+          5,
+          7,
+          101
+        ],
+        [
+          "up_chance",
+          5,
+          8,
+          199
+        ],
+        [
+          "up_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "up_fold",
+          4,
+          4,
+          3
+        ],
+        [
+          "up_chance",
+          4,
+          5,
+          3
+        ],
+        [
+          "up_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          3
+        ],
+        [
+          "up_chance",
+          3,
+          2,
+          3
+        ],
+        [
+          "up_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_chance",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "structural_checks_pass": true
+    },
+    {
+      "id": "two-tone-iso-off",
+      "node_count": 1346813,
+      "levels": 14,
+      "hands": [
+        258,
+        320
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 141120,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 274801,
+          "arena_words": 156627930,
+          "owned_words": 153454788,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 248732,
+          "arena_words": 185752640,
+          "owned_words": 181989440,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 98,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 98,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 9,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 98,
+              "output_slots": 196,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 3,
+              "output_slots": 9,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 205,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 150,
+              "output_slots": 156,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 98,
+              "output_slots": 490,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 147,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 3,
+              "output_rows": 3,
+              "input_rows": 147,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 646,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 343,
+              "output_slots": 882,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 150,
+              "output_slots": 302,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 9555,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 101,
+              "output_rows": 101,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 9555,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 493,
+              "output_rows": 493,
+              "input_rows": 1184,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 9704,
+              "output_slots": 19408,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 343,
+              "output_slots": 1323,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 16611,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 199,
+              "output_rows": 199,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 346,
+              "output_rows": 346,
+              "input_rows": 16611,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 10194,
+              "output_rows": 10194,
+              "input_rows": 20731,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 17052,
+              "output_slots": 25039,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9702,
+              "output_slots": 47775,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 33026,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 492,
+              "output_rows": 492,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 688,
+              "output_rows": 688,
+              "input_rows": 33026,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 36162,
+              "output_rows": 36162,
+              "input_rows": 72814,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 8,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49686,
+              "output_slots": 111230,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 16905,
+              "output_slots": 55272,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 42336,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 10045,
+              "output_rows": 10045,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 21168,
+              "output_rows": 21168,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 882,
+              "output_rows": 882,
+              "input_rows": 42336,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 73745,
+              "output_rows": 73745,
+              "input_rows": 166502,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 9,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 54292,
+              "output_slots": 115640,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 49490,
+              "output_slots": 174244,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 39984,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 26607,
+              "output_rows": 26607,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 54096,
+              "output_rows": 54096,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 833,
+              "output_rows": 833,
+              "input_rows": 39984,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 127302,
+              "output_rows": 127302,
+              "input_rows": 289884,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 10,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 72912,
+              "output_slots": 171696,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 54096,
+              "output_slots": 155232,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 14112,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 66150,
+              "output_rows": 66150,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 122304,
+              "output_rows": 122304,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 294,
+              "output_rows": 294,
+              "input_rows": 14112,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 326928,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 11,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 49392,
+              "output_slots": 108192,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 44688,
+              "output_slots": 115248,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 96432,
+              "output_rows": 96432,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 141120,
+              "output_rows": 141120,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 223440,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 12,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 21168,
+              "output_slots": 42336,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 9408,
+              "output_slots": 18816,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 89376,
+              "output_rows": 89376,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 103488,
+              "output_rows": 103488,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 61152,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 13,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 30576,
+              "output_rows": 30576,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "down_chance",
+          2,
+          0,
+          98
+        ],
+        [
+          "down_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "down_chance",
+          3,
+          98,
+          147
+        ],
+        [
+          "down_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "down_chance",
+          4,
+          245,
+          147
+        ],
+        [
+          "down_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "down_chance",
+          5,
+          392,
+          9555
+        ],
+        [
+          "down_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "down_chance",
+          6,
+          9947,
+          16611
+        ],
+        [
+          "down_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "down_chance",
+          7,
+          26558,
+          33026
+        ],
+        [
+          "down_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "down_chance",
+          8,
+          59584,
+          42336
+        ],
+        [
+          "down_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "down_chance",
+          9,
+          101920,
+          39984
+        ],
+        [
+          "down_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "down_chance",
+          10,
+          141904,
+          14112
+        ],
+        [
+          "down_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "down_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          13,
+          289409,
+          30576
+        ],
+        [
+          "up_show",
+          13,
+          442176,
+          30576
+        ],
+        [
+          "up_fold",
+          12,
+          200033,
+          89376
+        ],
+        [
+          "up_show",
+          12,
+          338688,
+          103488
+        ],
+        [
+          "up_action",
+          12,
+          492957,
+          30576
+        ],
+        [
+          "up_fold",
+          11,
+          103601,
+          96432
+        ],
+        [
+          "up_show",
+          11,
+          197568,
+          141120
+        ],
+        [
+          "up_action",
+          11,
+          389469,
+          103488
+        ],
+        [
+          "up_fold",
+          10,
+          37451,
+          66150
+        ],
+        [
+          "up_show",
+          10,
+          75264,
+          122304
+        ],
+        [
+          "up_chance",
+          10,
+          2956,
+          294
+        ],
+        [
+          "up_action",
+          10,
+          248349,
+          141120
+        ],
+        [
+          "up_fold",
+          9,
+          10844,
+          26607
+        ],
+        [
+          "up_show",
+          9,
+          21168,
+          54096
+        ],
+        [
+          "up_chance",
+          9,
+          2123,
+          833
+        ],
+        [
+          "up_action",
+          9,
+          121047,
+          127302
+        ],
+        [
+          "up_fold",
+          8,
+          799,
+          10045
+        ],
+        [
+          "up_show",
+          8,
+          0,
+          21168
+        ],
+        [
+          "up_chance",
+          8,
+          1241,
+          882
+        ],
+        [
+          "up_action",
+          8,
+          47302,
+          73745
+        ],
+        [
+          "up_fold",
+          7,
+          307,
+          492
+        ],
+        [
+          "up_chance",
+          7,
+          553,
+          688
+        ],
+        [
+          "up_action",
+          7,
+          11140,
+          36162
+        ],
+        [
+          "up_fold",
+          6,
+          108,
+          199
+        ],
+        [
+          "up_chance",
+          6,
+          207,
+          346
+        ],
+        [
+          "up_action",
+          6,
+          946,
+          10194
+        ],
+        [
+          "up_fold",
+          5,
+          7,
+          101
+        ],
+        [
+          "up_chance",
+          5,
+          8,
+          199
+        ],
+        [
+          "up_action",
+          5,
+          453,
+          493
+        ],
+        [
+          "up_fold",
+          4,
+          4,
+          3
+        ],
+        [
+          "up_chance",
+          4,
+          5,
+          3
+        ],
+        [
+          "up_action",
+          4,
+          107,
+          346
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          3
+        ],
+        [
+          "up_chance",
+          3,
+          2,
+          3
+        ],
+        [
+          "up_action",
+          3,
+          6,
+          101
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_chance",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          3
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468",
+      "structural_checks_pass": true
+    },
+    {
+      "id": "river-iso-off",
+      "node_count": 33,
+      "levels": 8,
+      "hands": [
+        233,
+        280
+      ],
+      "within_proposed64level_frame": true,
+      "maximum_phase_work_items": 2,
+      "learning_interval_ownership": [
+        {
+          "player": 0,
+          "action_blocks": 6,
+          "arena_words": 3728,
+          "owned_words": 3728,
+          "all_intervals_disjoint": true
+        },
+        {
+          "player": 1,
+          "action_blocks": 6,
+          "arena_words": 4480,
+          "owned_words": 4480,
+          "all_intervals_disjoint": true
+        }
+      ],
+      "levels_detail": [
+        {
+          "level": 0,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 1,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 1,
+              "output_slots": 5,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 5,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 3,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 4,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 2,
+              "output_slots": 6,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 6,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 5,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 2,
+              "output_slots": 5,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 5,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 6,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 1,
+              "output_slots": 2,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 2,
+              "output_rows": 2,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 2,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        },
+        {
+          "level": 7,
+          "down_action_owners": [
+            {
+              "player": 0,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            },
+            {
+              "player": 1,
+              "input_slots": 0,
+              "output_slots": 0,
+              "all_output_owners_unique": true,
+              "phase_read_write_disjoint": true
+            }
+          ],
+          "down_chance_edges": 0,
+          "up_phases": [
+            {
+              "role": "fold",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "show",
+              "work_items": 1,
+              "output_rows": 1,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "chance",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            },
+            {
+              "role": "action",
+              "work_items": 0,
+              "output_rows": 0,
+              "input_rows": 0,
+              "all_outputs_unique": true,
+              "phase_input_output_disjoint": true
+            }
+          ]
+        }
+      ],
+      "unchanged_nonempty_phase_schedule": [
+        [
+          "down_action",
+          0,
+          0,
+          1
+        ],
+        [
+          "down_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "down_action",
+          2,
+          3,
+          2
+        ],
+        [
+          "down_action",
+          3,
+          5,
+          2
+        ],
+        [
+          "down_action",
+          4,
+          7,
+          2
+        ],
+        [
+          "down_action",
+          5,
+          9,
+          2
+        ],
+        [
+          "down_action",
+          6,
+          11,
+          1
+        ],
+        [
+          "up_fold",
+          7,
+          9,
+          1
+        ],
+        [
+          "up_show",
+          7,
+          10,
+          1
+        ],
+        [
+          "up_fold",
+          6,
+          7,
+          2
+        ],
+        [
+          "up_show",
+          6,
+          8,
+          2
+        ],
+        [
+          "up_action",
+          6,
+          11,
+          1
+        ],
+        [
+          "up_fold",
+          5,
+          5,
+          2
+        ],
+        [
+          "up_show",
+          5,
+          6,
+          2
+        ],
+        [
+          "up_action",
+          5,
+          9,
+          2
+        ],
+        [
+          "up_fold",
+          4,
+          3,
+          2
+        ],
+        [
+          "up_show",
+          4,
+          4,
+          2
+        ],
+        [
+          "up_action",
+          4,
+          7,
+          2
+        ],
+        [
+          "up_fold",
+          3,
+          1,
+          2
+        ],
+        [
+          "up_show",
+          3,
+          2,
+          2
+        ],
+        [
+          "up_action",
+          3,
+          5,
+          2
+        ],
+        [
+          "up_fold",
+          2,
+          0,
+          1
+        ],
+        [
+          "up_show",
+          2,
+          0,
+          2
+        ],
+        [
+          "up_action",
+          2,
+          3,
+          2
+        ],
+        [
+          "up_action",
+          1,
+          1,
+          2
+        ],
+        [
+          "up_action",
+          0,
+          0,
+          1
+        ]
+      ],
+      "input_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "structural_checks_pass": true
+    }
+  ],
+  "all6_original_plan_full_hashes_verified": true,
+  "all3_original_actual_GPU_geometry_frame_hashes_verified": true,
+  "D183_phase_timing_used": false,
+  "new_native_compiler_CUDA_or_solver_samples": 0,
+  "optimizer_or_gain_accepted": false,
+  "shared_scratch_lifetime_requirement": "Original helpers own fresh CTA shared/local lifetimes. Persistent wrapper must synchronize all128threads afterevery helper work item before reusing the CTA for another node, including up_fold/up_show dynamic/static shared arrays. Existing helperfirstbarrier alone is insufficient: nextnode writes can race priornode finalsharedreads. Allhelperreturns mustreturnonlyto wrapper, all128threadsreach after-item barrier; then allgridthreadsjoin phasegrid.sync.",
+  "scope": "Complete selected canonical iso on/off integer arrays and exact original GPU child geometry; preserves original per-phase input/output ownership, signed span domains and dependency order. Doesnotproveallotherplans/CUDAhelperprojection/FPmath/liveness/resources/barrierkernel/graph/quality/material/performance. Onefixedsource/resourceprototype still requires source projection and prospective costs; no speed/headroom from counts/timings."
+}

@@ -1,0 +1,116 @@
+{
+  "all_twelve_recommended_evidence_files_present": true,
+  "audit_source_sha256": "540ed94e3a8668f93e73332c4ab917bf7e99ca33cf957c165ed7aaef651b6004",
+  "checks": 7993,
+  "control_reruns": 0,
+  "copy_bytes": 9730865,
+  "copy_count": 775,
+  "exact_copy_and_source_review_passed": true,
+  "failures": [],
+  "files_hashed": 1604,
+  "findings_identity": {
+    "bytes": 4790,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\STACK-CONTEXT-COMPLETE-NATIVE-BOUNDS-20261003.md",
+    "sha256": "4a6515d44c2e7d60c2590939416f078e077fc95aad1802eeeef53a564f9c22fb"
+  },
+  "format": 1,
+  "imports_reexecuted": false,
+  "journal_before_identity": {
+    "bytes": 304514,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\RIVER-CONTINUATION-RUNNING.md",
+    "sha256": "7001693f2864e6bba120d6fa21d3cf76784f61bbc3b8d65516784f2104a75acd"
+  },
+  "journal_identity": {
+    "bytes": 307125,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\RIVER-CONTINUATION-RUNNING.md",
+    "sha256": "99061645cd9ffa6d0b9a9eec4379b776e3acf4ed90d04ce10df350dbcc65cffe"
+  },
+  "journal_original_prefix_exact": true,
+  "model_fits": 0,
+  "native_runs": 0,
+  "passed": false,
+  "prose_issues": [
+    {
+      "correction": "The successful river suite independently checks OS cmdline for its two bridge/trace children. The two history/selected transport children check arguments/payload without OS cmdline. The execution suite has a separate OS-attestation control.",
+      "evidence_source": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_river_workers_source_check_v2a.py",
+      "evidence_source_sha256": "9c5db5dbe7d8633ed2e0cf8f2138e3c4278084756527f1bbde4f0bd4257f3ffe",
+      "location": "findings paragraph on observed_argv",
+      "original_claim": "four small Python wiring controls separately checked OS command lines",
+      "severity": "prose precision"
+    }
+  ],
+  "prose_review_passed": false,
+  "publication_receipt": {
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\publication.json",
+    "sha256": "eadcf1572e967f8be6a2b323830b431d06df7f77d00e04675df7de5bfc416ec0"
+  },
+  "published_path_imports_not_reexecuted": true,
+  "qualification_identity": {
+    "bytes": 1362,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\published-path-qualification.json",
+    "sha256": "f24d319bbde918914c232339e68f1c238c314a9043312f8dcd07d7a143d29ffd"
+  },
+  "repo_writes": false,
+  "required_evidence_count": 9,
+  "retained_excluded_artifacts": 15,
+  "review": "native-bounds-publication-independent-review-v2",
+  "runtime_sources": [
+    {
+      "bytes": 19212,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_native_execution_v2.py",
+      "sha256": "1627430507472de471552ffca420b416a5ab0d6670b9ea8e5fb0e11b0da6699f"
+    },
+    {
+      "bytes": 15059,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_board_workers_v2.py",
+      "sha256": "d4f941fc7fcabb9197aa3cbea95698cbd78294e05ea21c47af5f00a7ea736b1d"
+    },
+    {
+      "bytes": 34650,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_river_workers_v2.py",
+      "sha256": "d34f4134c65adc8603882c4a6c2023b653dbdf27fd6f09794a2504c90f3d1fce"
+    },
+    {
+      "bytes": 7647,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_river_transport_v2.py",
+      "sha256": "2b1c8fbc5484af9288375ee7665e0e87d9ec0486a7c93c74d670063d21610ddc"
+    },
+    {
+      "bytes": 22459,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_training_pipeline_v2.py",
+      "sha256": "499a828901ed2a12b26680b1accfea73f4ca6eee527088ac9fb86a266ac3536d"
+    }
+  ],
+  "runtime_wiring_review_passed": true,
+  "rust_sources": [
+    {
+      "bytes": 2852,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\research_bounded_output_v1.rs",
+      "sha256": "dd61cf57460fbe409c199f48a1149610bebadf8aa97eb3b602c8add171e19da9"
+    },
+    {
+      "bytes": 3815,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs",
+      "sha256": "7eaa77dfaf433baa1ebcc48b067dab672a6a47faab623bd9feac70c916c6e0c5"
+    },
+    {
+      "bytes": 6989,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs",
+      "sha256": "18b1e6a7bb4137ee1db4f189871f1f8a84852a8c5dff0e01ea4aa43e12a432ee"
+    },
+    {
+      "bytes": 6066,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs",
+      "sha256": "550d3cb460552b9a1628cd44de7a997383e5c9b3bc30a86d72af6f015ac77daa"
+    },
+    {
+      "bytes": 13333,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs",
+      "sha256": "e3ff51bb28657327dea8303ce45a825cf0a5412ea68f745aea9dfc3f49b2d5ac"
+    }
+  ],
+  "scientific_runs": 0,
+  "static_runtime_wiring_verified": true,
+  "terminal_unix": 1790955522.0024905,
+  "unlisted_additive_files": []
+}

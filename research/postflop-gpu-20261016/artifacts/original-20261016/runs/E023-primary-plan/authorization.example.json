@@ -1,0 +1,59 @@
+{
+  "candidate": "E023",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_ACCEPTANCE_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E020_server_qualification": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_SERVER_QUALIFICATION_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E023_source_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E023_SOURCE_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E023_script_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E023_SCRIPT_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "D043_resource_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D043-independent-review\\validation.json",
+      "sha256": "7aefb6a4ab8c2021a87e78032777a3169fc9e1d247d5544335d696010ae7092f"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\kernels.cu",
+      "sha256": "2148b39d69e7267c03feec8a622e6f587f1b29da8f9aec49d58b3611bcf2abd4"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\continuation_capacity.rs",
+      "sha256": "7d7667119a76727cb9ae0da025319a10d94e1f1afce692d7729083d6fd04128f"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\game.rs",
+      "sha256": "4c9fd95709c048b9460886f412ebe81b580f45592e4e816a47b7be2483eb7b24"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-primary-plan\\scripts-manifest.json": "ROOT_FILL_AFTER_SOURCE_REVIEW",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-primary-plan\\protocol.json": "9e9dd8943acf6ae8a5ad55aeef61f13e9fbc993b5ec8ae1860a3bb7413116844",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\manifest.json": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+    "ROOT_FILL_ALL_PREREQUISITE_PATHS": "ROOT_FILL"
+  },
+  "scope": "Root supplies immutable authorization after E020 acceptance/server qualification, the independent D043 resource gate and independent E023 source/script reviews. Pin all prerequisite paths into evidence_sha256. False flags and placeholders do not authorize execution.",
+  "resource_probe_pass": false
+}

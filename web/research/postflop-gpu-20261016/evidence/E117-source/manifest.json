@@ -1,0 +1,26 @@
+{
+  "id": "E117",
+  "at": "2026-10-29T14:39:47.161270+00:00",
+  "status": "FROZEN_OFF_TREE_SOURCE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "e4e612b91cb58f5758f12c1c477e403837765c6623315eb2f72bffe2c433293d",
+  "source_scout_sha256": "6745594e7e1b8e7ebde0f595505dd716a1b6d390276f4c2b74380fc4641ffd4f",
+  "edits": [
+    {
+      "old": "                if (small) rc[a] = r;",
+      "new": "                if (small) {\r\n                    rc[a] = r;\r\n                    vc[a] = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];\r\n                }"
+    },
+    {
+      "old": "                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];\r\n                if (small) vc[a] = v;",
+      "new": "                float v = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];"
+    }
+  ],
+  "whole_CRLF_source_inverse_exact": true,
+  "changed_global_entry": "up_action",
+  "original_eight_other_entry_source_exact": true,
+  "scope": "Read original child CFVs into existing vc[a] alongside original register-regret scan only for unchanged small=na<=8 predicate. Original expectation reads cachedv, original update uses same cache. Generic>8 retains both original late reads, locked/opponent/NA dispatch/precision/f32expression+reduction+strategyplacement/host/wrapper/arrays/payload/ABI/launch/graphs/cadence/quality unchanged. Same number of global CFVreads for each original path; they move earlier forsmall only. No new storage or normalization/arithmetic transformation.",
+  "risks": "Earlier per-hand CFV values live longer through normalization and may increase register pressure/spills or supported-thread loss; compiler may emit no new earlier-load scheduling. Any genuine resource/mechanism/numerical/speed failure closes this exact form without placement/smallpredicate/arity/helper/width/flags/source/quality/sample rescue. No performance, accuracy or no-tradeoff qualification from source.",
+  "required_ownership": "Original full kernel/engine/canonical physicalCFV tests must confirm immutable child rows and distinct regret/strategy/CFV allocations. Original819+explicit witnesses/directIEEE/guard/menu/lock/tail/fallback corpus before engine and exact ordinary/fullcycle1%/strictfixture/fresh16/broad/material/holdout/freshoriginal/cumulative/app gates.",
+  "new_compilers_applicationkernels_solver_or_speed_samples": 0,
+  "source_activated": false
+}

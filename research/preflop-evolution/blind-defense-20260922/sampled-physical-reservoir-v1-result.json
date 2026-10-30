@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "inputs_verified": 7,
+  "advantage_visits_by_player": [
+    444,
+    32
+  ],
+  "streaming_summaries": [
+    {
+      "player": 0,
+      "capacity": 17,
+      "seen": 3108,
+      "retained": 17,
+      "allocated_payload_bytes": 2193,
+      "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+    },
+    {
+      "player": 1,
+      "capacity": 17,
+      "seen": 224,
+      "retained": 17,
+      "allocated_payload_bytes": 2193,
+      "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d"
+    }
+  ],
+  "exact_resume": true,
+  "full_vs_split_identical": true,
+  "independent_slot_oracle_identical": true,
+  "exhaustive_equal_probability_subsets": 10,
+  "outcomes_per_subset": 6,
+  "rejected_inputs": 7,
+  "rejection_preserved_rows_counters_and_rng": true,
+  "duplicate_visits_preserved": true,
+  "seconds": 0.8439999999827705,
+  "checkpoint_artifacts": {
+    "target/research-sampled/sampled-physical-reservoir-v1/player0.npz": "a06560b21d60bdfc6e1245e6b64ea60f3d5d910970822ed8be806cb4242eb76e",
+    "target/research-sampled/sampled-physical-reservoir-v1/player1.npz": "d6d40704a72798ba68b47b7232a3b146290f30b72eb48df46e02ec7298284c09"
+  },
+  "registration_sha256": "cc1b531182b1c98df9058ced1b19b925aa2738dbc86ff4a26c64febd1ead8f63",
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false
+}

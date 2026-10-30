@@ -1,0 +1,50 @@
+{
+  "id": "small-gain-confirmation-user-1pct-amendment",
+  "status": "DRAFT_PROPOSAL_NO_EXECUTION_OR_SCHEDULE_FREEZE",
+  "authority": "Root relayed explicit user instruction: yea make cutoff1% if there's no tradeoffs. This supersedes the earlier root no-magnitude proposal for the eventual effective design; neither earlier sealed artifact is edited.",
+  "family": [
+    "E007",
+    "E008",
+    "E032",
+    "E036"
+  ],
+  "baseline_and_outcome_hold": "Do not freeze a source/build package or execution schedule until E037 outcome and root's prospective baseline/applicability decision. A qualifying E037 three-pair screen is not adoption; it requires its own fresh fixed16-pair confirmation and broader qualification. If E037 is ultimately adopted, reconsider all four hypotheses on the new accepted base, particularly whether E036 is subsumed; never undo E037. If E037 fails and E020 remains accepted, the four separate E020 comparisons remain the proposal. No conditional combination is prepared.",
+  "fixed_counts": {
+    "pairs_per_candidate": 16,
+    "blocks": 4,
+    "pairs_per_candidate_per_block": 4,
+    "BC_per_candidate_per_block": 2,
+    "CB_per_candidate_per_block": 2,
+    "candidate_family": 4,
+    "benchmark_runs": 128,
+    "fixture_results": 384,
+    "convergence_records": 2944
+  },
+  "effective_gates": {
+    "aggregate": "G=100*(sum_f median_i(B_if)-sum_f median_i(C_if))/sum_f median_i(B_if); require G >= 1.0%, using all three complete-cycle fixtures and all16 pairs.",
+    "paired": "g_i=100*(sum_f B_if-sum_f C_if)/sum_f B_if; require median(g_1..g_16)>0, with no additional1% paired-median cutoff.",
+    "direction": "Require at least13/16 g_i>0. Exact ties are nonwins and remain in every metric. Use unrounded values without epsilon or display-rounding decisions.",
+    "blocks_and_order": "Require a strictly positive median g_i in every fixed four-pair block and in each eight-pair BC and CB stratum. No0.5% or1% stratum threshold.",
+    "fixture_tradeoff": "For each fixture f, d_f=100*(median_i(C_if)-median_i(B_if))/median_i(B_if), and d_if=100*(C_if-B_if)/B_if. Reject if d_f>0 AND at least9/16 d_if>0. Equality0 is not a slowdown; no3% allowance remains.",
+    "exactness": "All existing source/unit/custody/config/stopping/non-timing/fingerprint/convergence exactness requirements remain joint prerequisites. Never trade numerical correctness for speed.",
+    "memory_compatibility": "No material memory/capacity/compatibility cost is acceptable. Record changed allocations/resource/ABI/save/continuation/admission scope and validate relevant bounds and lifecycle behavior before adoption; do not infer absence of costs from passing the timing gate. No arbitrary non-regressing register/occupancy threshold is introduced.",
+    "joint": "All rules must pass. The four-hypothesis selection, no old-sample pooling, all-samples retention, no retry/replacement/extension and mandatory broader qualification remain unchanged."
+  },
+  "interpretation": "This is an operational confirmation screen for the user's1% aggregate cutoff, not calibrated statistical confidence. A true1% effect can still estimate below1% and fail; that is the explicit user decision, not a claim about the true effect. The paired/block/order rules check observed consistency and must not silently add another1% magnitude gate.",
+  "no_tradeoffs_limit": "The fixture guard operationalizes no observed repeatable slowdown on the registered fixtures. It can reject a favorable aggregate result due to tiny consistent slowdown or noise; it cannot prove no tradeoffs on all hardware, ranges or workloads. Broader exactness/memory/compatibility/holdout checks are still required. Unmeasured tradeoffs must be stated, not converted into a pass.",
+  "reporting": [
+    "Report all four outcomes, the aggregate gain in percent and milliseconds, all16 paired gains, win/tie/loss counts, all fixture raw durations and guard decisions, four block medians and both order medians.",
+    "Show min/max, median absolute deviation and block/order ranges as descriptive variability; do not label them confidence bounds.",
+    "Keep historical selection and family size4 explicit; no old samples enter confirmation metrics. Serial GPU dependence remains possible;13/16 and block consistency do not prove significance or familywise confidence."
+  ],
+  "ordering_recommendation": "After E037 resolution and independent review, recommend one recorded uniform draw from the six permutations of [BC,BC,CB,CB] per candidate/block. Retain v1 family interleaving and adjacent pair processes. Freeze the explicit64-pair schedule, seed and algorithm before runtime, with no reroll. No schedule is drawn or frozen by this amendment. Randomization may reduce deterministic alignment with drift but does not eliminate serial dependence or carryover.",
+  "qualification": "A passing confirmation still requires independently reviewed original controls, raw/F32/state/menu/resume/continuation and relevant kernel coverage, a fixed prospective holdout, memory/compatibility evidence, fresh-original cumulative qualification and explicit adoption decision. No additive or stacking inference.",
+  "precedence_for_future_finalization": "The later effective protocol must explicitly replace v1 effect/block/order and3%-fixture guard fields, and remove nominal-alpha fields from pass/fail logic. Do not let executable scripts read obsolete v1/no-magnitude gates. The new E037 three-pair policy is separately sealed; it is not silently modified by this draft.",
+  "executed": {
+    "candidate_source_preparation": false,
+    "runtime_harness_preparation": false,
+    "schedule_draw_or_freeze": false,
+    "compiler_native_gpu": false,
+    "production_status_dashboard_change": false
+  }
+}

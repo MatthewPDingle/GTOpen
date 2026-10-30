@@ -1,0 +1,25 @@
+{
+  "inputs": {
+    "target\\release\\examples\\hu_sampled_geometry_gpu.exe": "86a8ca4c913b12e97a12340888706690eaf4bd2724a1ab30e7d8a0a6c7027daa",
+    "crates\\solver\\examples\\research_sampled\\postflop_state_v1.cuh": "8710c2d892999e521c033901f96bd9cdec27687ca9083c3254a7e8a956c5e564",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_geometry_v1.cu": "9598a5fc6961d73da2abb03f2981364e050fe5ca1dfa59a3abb83b650023de84",
+    "crates\\solver\\examples\\research_sampled\\state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "tools\\research\\hu_sampled_geometry_gpu_run_20260922.py": "57ae2acd2fcc8711cae0a7d8b44530ea5b24e45330bf3d90dd778952b95ea7da",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-geometry-v1-registration.json": "e776d5a044b04944910e4dc64af8b36ab0aaca3986b406c18734c25e6ebad2da",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-geometry-v1-review.json": "ee07e0b141c7e33e204c428f9b699aaad629d993d4af6e29c6f32b6f26ecb2d0",
+    "crates\\solver\\examples\\hu_sampled_geometry_gpu.rs": "58c1a527899bf3157d1c47838ba7e64adc07710e1c880a45c51729218f2f2c45",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35"
+  },
+  "created_at_unix": 1790049841.8860714,
+  "maximum_seconds": 120,
+  "purpose": "Qualify actual GPU on-demand transitions for every betting-history template in all three BB continuations.",
+  "max_numeric_error": 1e-10,
+  "integer_fields_exact": true,
+  "repeat_bit_exact": true,
+  "no_automatic_retry": true,
+  "limits": "Card identities factored out only for transition testing. No policies merged; no training/equity/key implementation claim."
+}

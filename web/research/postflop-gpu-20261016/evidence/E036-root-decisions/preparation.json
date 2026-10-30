@@ -1,0 +1,46 @@
+{
+  "id": "E036",
+  "at": "2026-10-16T21:40:18Z",
+  "kind": "conditional off-tree source/test/script preparation only",
+  "condition": "D067 independent terminal audit must pass before activation/build/native/GPU execution; final independent candidate source/script review and separate root runtime decision required.",
+  "hypothesis": "Accepted up_show may bypass sorted gather, serial-prefix scan and card-removal walks when every logical opponent row word is exactly positive-zero and all three actual f32 payouts are finite. D067 observed nonzero sampled planned incidence; counts do not establish speed or sufficient headroom.",
+  "allowed_source_scope": [
+    "Only up_show in accepted kernels.cu; preserve all ABIs, launch shape/shared reservation, fallback arithmetic suffix and other eight kernels byte-exact.",
+    "Fuse an integer OR into the existing full logical row load, using the first publication collective for a uniform all-zero predicate; preserve card-position preload.",
+    "On the finite all-zero branch write explicit positive-zero to every logical own CFV, block barrier, then write the original three-term win/lose/tie expression with positive-zero masses to present p_idx hands, then uniformly return. No unconditional zero output substitution.",
+    "One compact meaningful GPU unit comparison against an embedded byte-exact original up_show; guard inputs/full output/padding and count0. Include both player orientations, full/partial/empty own/opponent sorted lists, signed-zero and mixed finite payoff signs, nonfinite f32 payout fallbacks, reach -0/nonzero/Inf/NaN including a tail lane, and cross-lane present-overwrite case. Reuse established direct-kernel test style, not a new framework."
+  ],
+  "qualification": "Use unchanged primary evaluator and fixed >=2% aggregate/no-repeatable->3%-fixture-regression gates, with exact full states/stops/checkpoints. One fixed cohort, no result-triggered repeats. Broader qualification only on passing primary.",
+  "reserved_ids": {
+    "unit": "V036-unit",
+    "primary_order": [
+      "B113",
+      "E036R1",
+      "E036R2",
+      "B114",
+      "B115",
+      "E036R3"
+    ]
+  },
+  "excluded": [
+    "E035 rescue or extra samples",
+    "new census",
+    "launch/precision/algorithm/stop/menu changes",
+    "host cache or framework",
+    "live deployment"
+  ],
+  "root_only": "Activation/compiler/native/GPU/restoration/publication; agents prepare off-tree only.",
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-planned-show-incidence\\report.json": "bc2abc4281d230d3e8348758bd12795c3ec5a8bf00d6a2c0ac074ba57f831c94",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-cleanup\\report.json": "3804b6c76687a39bd167788df3800c09c7c4186000b16c79501c1eadf1a3df62",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\report.json": "d48545168f79a1ad4d97d7402581ebf66aa757d762309e64c4d28b17c78d5202",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\source-locations.json": "29d9af7dd05a037d2c64727d69a112cf50a9516f995cc38b887cba3b24bb17f7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-source-review\\report.json": "c802efc3b9315490690db763485f69efeb83440047dbeeefb9478f25ab3f750d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-mapping-source-review\\report.json": "70228e0cc69178c7b556b7f7944a1246fa79f419ff69067a375ffffde2eabf65",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-script-review\\report.json": "85584c06408c743a37b698d78e5be85d1a30d9e80b05bf84d6cce245acd5c44e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E035-three-pair-comparison\\report.json": "1c919a8579ae12c109674a70e93564954eecfe007cabbce468aa7e020926201b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  },
+  "candidate_accepted": false,
+  "performance_claim": false
+}

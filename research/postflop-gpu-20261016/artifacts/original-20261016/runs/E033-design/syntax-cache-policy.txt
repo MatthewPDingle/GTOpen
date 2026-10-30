@@ -1,0 +1,349 @@
+\\?\S:\GTOpen-research\postflop-gpu-20261016\runs\E033-design\candidate\cache_policy.rs:
+
+//! Scoped persisting-L2 hint for one immutable, solver-owned allocation.
+//! Never changes the shared context reservation or resets another owner's cache.
+use super::*;
+use cudarc::driver::DevicePtr;
+
+const ATTR: sys::CUlaunchAttributeID =
+    sys::CUlaunchAttributeID::CU_LAUNCH_ATTRIBUTE_ACCESS_POLICY_WINDOW;
+const NORMAL: sys::CUaccessProperty = sys::CUaccessProperty::CU_ACCESS_PROPERTY_NORMAL;
+const PERSISTING: sys::CUaccessProperty = sys::CUaccessProperty::CU_ACCESS_PROPERTY_PERSISTING;
+const CLEANUP_SOURCE: &str = r#"
+#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ < 800
+#error Scoped priority cleanup requires SM80 or newer
+#endif
+extern "C" __global__ void normalize_owned_l2(const unsigned char* base, unsigned long long lines) {
+    unsigned long long i = (unsigned long long)blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned long long stride = (unsigned long long)gridDim.x * blockDim.x;
+    for (; i < lines; i += stride) {
+        const unsigned char* address = base + 128ull * i;
+        asm volatile("{ .reg .u64 g; cvta.to.global.u64 g, %0; "
+                     "applypriority.global.L2::evict_normal [g], 128; }" :: "l"(address) : "memory");
+    }
+}
+"#;
+
+fn checked(code: sys::CUresult, operation: &str) -> Result<(), String> {
+    if code == sys::CUresult::CUDA_SUCCESS {
+        Ok(())
+    } else {
+        Err(format!("{operation}: {code:?}"))
+    }
+}
+
+pub(super) fn prefix(base: u64, bytes: usize, limit: usize, maximum: usize) -> Option<usize> {
+    let n = bytes / 128 * 128;
+    if base % 128 != 0 || n == 0 || n > limit || n > maximum || base.checked_add(n as u64).is_none()
+    {
+        None
+    } else {
+        Some(n)
+    }
+}
+
+pub(super) fn window(stream: &CudaStream) -> Result<sys::CUaccessPolicyWindow, String> {
+    let mut value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
+    checked(
+        unsafe { sys::cuStreamGetAttribute(stream.cu_stream(), ATTR, &mut value) },
+        "get cache window",
+    )?;
+    Ok(unsafe { value.accessPolicyWindow })
+}
+
+fn matches(w: sys::CUaccessPolicyWindow, base: u64, bytes: usize) -> bool {
+    w.base_ptr as usize as u64 == base
+        && w.num_bytes == bytes
+        && w.hitRatio.to_bits() == 1.0f32.to_bits()
+        && w.hitProp == PERSISTING
+        && w.missProp == NORMAL
+}
+
+pub(super) struct CachePolicy {
+    base: u64,
+    bytes: usize,
+    cleanup: CudaFunction, // retains its separate module/context
+    armed: bool,
+    verified: bool,
+    dirty: bool,
+    #[cfg(test)]
+    pub(super) cleanups: usize,
+    #[cfg(test)]
+    pub(super) verified_graphs: usize,
+    #[cfg(test)]
+    pub(super) fail_before_cleanup: bool,
+    #[cfg(test)]
+    pub(super) fail_after_set: bool,
+}
+
+impl CachePolicy {
+    // All fallible preparation precedes the first stream policy mutation.
+    pub(super) fn prepare(
+        ctx: &Arc<CudaContext>,
+        stream: &Arc<CudaStream>,
+        data: &CudaSlice<u32>,
+        arch: &'static str,
+        major: i32,
+    ) -> Result<Option<Self>, String> {
+        if major < 8 {
+            return Ok(None);
+        }
+        let max = match ctx
+            .attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_ACCESS_POLICY_WINDOW_SIZE)
+        {
+            Ok(n) if n > 0 => n as usize,
+            _ => return Ok(None),
+        };
+        let limit = match ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE) {
+            Ok(n) if n > 0 => n,
+            _ => return Ok(None),
+        };
+        let (base, _read) = data.device_ptr(stream);
+        let bytes = data
+            .len()
+            .checked_mul(4)
+            .ok_or("cache byte count overflow")?;
+        let Some(bytes) = prefix(base, bytes, limit, max) else {
+            return Ok(None);
+        };
+        ctx.bind_to_thread().map_err(e)?;
+        // Unsupported pre-setup getter leaves the original unhinted path.
+        let initial = match window(stream) {
+            Ok(w) => w,
+            Err(_) => return Ok(None),
+        };
+        if initial.num_bytes != 0 {
+            return Err("new solver stream already has a cache window".into());
+        }
+        // GpuSolver uses device0 and the same process-fixed architecture as
+        // its existing numerical PTX cache. First compilation remains timed.
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+            std::sync::OnceLock::new();
+        let ptx = PTX
+            .get_or_init(|| {
+                cudarc::nvrtc::compile_ptx_with_opts(
+                    CLEANUP_SOURCE,
+                    cudarc::nvrtc::CompileOptions {
+                        arch: Some(arch),
+                        ..Default::default()
+                    },
+                )
+                .map_err(e)
+            })
+            .clone()?;
+        if !ptx
+            .to_src()
+            .contains("applypriority.global.L2::evict_normal")
+        {
+            return Err("cleanup PTX lacks explicit normalization instruction".into());
+        }
+        let cleanup = ctx
+            .load_module(ptx)
+            .map_err(e)?
+            .load_function("normalize_owned_l2")
+            .map_err(e)?;
+        Ok(Some(Self {
+            base,
+            bytes,
+            cleanup,
+            armed: false,
+            verified: false,
+            dirty: false,
+            #[cfg(test)]
+            cleanups: 0,
+            #[cfg(test)]
+            verified_graphs: 0,
+            #[cfg(test)]
+            fail_before_cleanup: false,
+            #[cfg(test)]
+            fail_after_set: false,
+        }))
+    }
+
+    pub(super) fn begin(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
+        // Preserve dirty state even if a setter, readback or later submission fails.
+        self.dirty = true;
+        if self.armed {
+            return if self.verified {
+                Ok(())
+            } else {
+                Err("cache setup requires cleanup after failure".into())
+            };
+        }
+        self.verified = false;
+        self.armed = true; // setter failure can leave unknown state; close must disable it
+        let mut value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
+        value.accessPolicyWindow = sys::CUaccessPolicyWindow {
+            base_ptr: self.base as usize as *mut _,
+            num_bytes: self.bytes,
+            hitRatio: 1.0,
+            hitProp: PERSISTING,
+            missProp: NORMAL,
+        };
+        checked(
+            unsafe { sys::cuStreamSetAttribute(stream.cu_stream(), ATTR, &value) },
+            "set cache window",
+        )?;
+        #[cfg(test)]
+        if self.fail_after_set {
+            return Err("injected readback boundary failure".into());
+        }
+        if !matches(window(stream)?, self.base, self.bytes) {
+            return Err("cache window readback differs from fully owned prefix".into());
+        }
+        self.verified = true;
+        Ok(())
+    }
+
+    // Called only on newly captured graphs, never in the replay hot path.
+    pub(super) fn verify_graph(&mut self, graph: &CudaGraph) -> Result<(), String> {
+        let mut count = 0;
+        checked(
+            unsafe { sys::cuGraphGetNodes(graph.cu_graph(), std::ptr::null_mut(), &mut count) },
+            "graph node count",
+        )?;
+        let mut nodes = vec![std::ptr::null_mut(); count];
+        checked(
+            unsafe { sys::cuGraphGetNodes(graph.cu_graph(), nodes.as_mut_ptr(), &mut count) },
+            "graph nodes",
+        )?;
+        nodes.truncate(count);
+        let mut kernels = 0;
+        for node in nodes {
+            let mut kind = sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_EMPTY;
+            checked(
+                unsafe { sys::cuGraphNodeGetType(node, &mut kind) },
+                "graph node type",
+            )?;
+            if kind == sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL {
+                let mut value: sys::CUkernelNodeAttrValue = unsafe { std::mem::zeroed() };
+                checked(
+                    unsafe { sys::cuGraphKernelNodeGetAttribute(node, ATTR, &mut value) },
+                    "graph cache window",
+                )?;
+                if !matches(unsafe { value.accessPolicyWindow }, self.base, self.bytes) {
+                    return Err("captured kernel cache window differs from owned prefix".into());
+                }
+                kernels += 1;
+            }
+        }
+        if kernels == 0 {
+            return Err("cache verification found no captured kernels".into());
+        }
+        #[cfg(test)]
+        {
+            self.verified_graphs += 1;
+        }
+        Ok(())
+    }
+
+    fn disable(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
+        if !self.armed {
+            return Ok(());
+        }
+        let value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
+        checked(
+            unsafe { sys::cuStreamSetAttribute(stream.cu_stream(), ATTR, &value) },
+            "disable cache window",
+        )?;
+        let w = window(stream)?;
+        if w.num_bytes != 0
+            || !w.base_ptr.is_null()
+            || w.hitRatio.to_bits() != 0
+            || w.hitProp != NORMAL
+            || w.missProp != NORMAL
+        {
+            return Err("cache window did not disable exactly".into());
+        }
+        self.armed = false;
+        self.verified = false;
+        Ok(())
+    }
+
+    pub(super) fn finish(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
+        // The caller has ended capture and bound the owning context.
+        self.disable(stream)?;
+        if !self.dirty {
+            return Ok(());
+        }
+        stream.synchronize().map_err(e)?;
+        #[cfg(test)]
+        if self.fail_before_cleanup {
+            return Err("injected pre-cleanup failure".into());
+        }
+        let lines = (self.bytes / 128) as u64;
+        let blocks = ((lines + 127) / 128).min(65535) as u32;
+        unsafe {
+            stream
+                .launch_builder(&self.cleanup)
+                .arg(&self.base)
+                .arg(&lines)
+                .launch(LaunchConfig {
+                    grid_dim: (blocks, 1, 1),
+                    block_dim: (128, 1, 1),
+                    shared_mem_bytes: 0,
+                })
+                .map_err(e)?;
+        }
+        stream.synchronize().map_err(e)?;
+        self.dirty = false;
+        #[cfg(test)]
+        {
+            self.cleanups += 1;
+        }
+        Ok(())
+    }
+
+    pub(super) fn clean(&self) -> bool {
+        !self.armed && !self.dirty
+    }
+    pub(super) fn bytes(&self) -> usize {
+        self.bytes
+    }
+}
+
+// Raw end_capture is intentional: aborting must not instantiate an executable.
+pub(super) fn end_abandoned_capture(stream: &Arc<CudaStream>) -> Result<(), String> {
+    if stream.capture_status().map_err(e)?
+        != sys::CUstreamCaptureStatus::CU_STREAM_CAPTURE_STATUS_NONE
+    {
+        let mut graph = std::ptr::null_mut();
+        let ended = unsafe { sys::cuStreamEndCapture(stream.cu_stream(), &mut graph) };
+        if !graph.is_null() {
+            checked(
+                unsafe { sys::cuGraphDestroy(graph) },
+                "destroy abandoned capture",
+            )?;
+        }
+        let status = stream.capture_status().map_err(e)?;
+        if status != sys::CUstreamCaptureStatus::CU_STREAM_CAPTURE_STATUS_NONE {
+            return Err(format!("capture not ended: {ended:?}, {status:?}"));
+        }
+        if ended != sys::CUresult::CUDA_SUCCESS
+            && ended != sys::CUresult::CUDA_ERROR_STREAM_CAPTURE_INVALIDATED
+        {
+            return Err(format!("end abandoned capture: {ended:?}"));
+        }
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn owned_prefix_geometry_is_bounded() {
+        assert_eq!(
+            prefix(256, 5387252, 18 * 1024 * 1024, 128 * 1024 * 1024),
+            Some(5387136)
+        );
+        assert_eq!(prefix(256, 132, 128, 128), Some(128));
+        for bytes in [0, 4, 127] {
+            assert_eq!(prefix(256, bytes, 4096, 4096), None);
+        }
+        assert_eq!(prefix(257, 256, 4096, 4096), None);
+        assert_eq!(prefix(256, 256, 128, 4096), None);
+        assert_eq!(prefix(256, 256, 4096, 128), None);
+        assert_eq!(prefix(u64::MAX - 127, 128, 4096, 4096), None);
+    }
+}

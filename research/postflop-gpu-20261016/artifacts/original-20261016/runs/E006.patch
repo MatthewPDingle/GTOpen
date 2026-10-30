@@ -1,0 +1,13 @@
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf4772..84fb28ff 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -403,7 +403,7 @@ __device__ __forceinline__ void up_action_impl(
+     }
+ }
+ 
+-extern "C" __global__ void up_action(
++extern "C" __global__ __launch_bounds__(128, 8) void up_action(
+     const u32* __restrict__ nodes, int start, int count, int p,
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+     const u64* __restrict__ node_data_off,

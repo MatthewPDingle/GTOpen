@@ -1,0 +1,12 @@
+{
+  "id": "E094",
+  "at": "2026-10-28T15:42:48.973211+00:00",
+  "status": "staged_for_separately_frozen_raw_controls",
+  "source_scope": "Three tracked Rust edits plus private offset enum and separate narrow shader source. Original kernels.cu/plan/arena/Store/precision/recurrences/launches/quality/save/source otherwise unchanged. Exact byte reverse of each tracked file.",
+  "fallback": "Plan selection after compact/full F32 decision; reserve u32::MAX sentinel, any other d>=u32::MAX uses original64 program/data. Two format-keyed PTX cache cells; constructor immutable enum owns exactly one matching typed device slice. Existing architecture cache assumption unchanged.",
+  "launch_ownership": "Custom lifetime-bound PushKernelArg delegates directly to matching original cudarc typed slice impl; no raw CUdeviceptr temporary/copy/event bypass. Packed host Vec lives through attempted synchronize including upload error, then drops; all construction/cost remains inside original clocks.",
+  "continuation": "SymmetricContinuationGpu single constructor forces original64, including explicit-reference, stored/paged/pooled users and custom projection/transport/copy kernels. No continuation shader format/ABI/physical payload change. Actual metadata byte accounting uses enum bytes; predicted continuation metadata remains64. This is source reviewed, still requires feature build/broad execution before adoption.",
+  "known_material_costs": "One fitting scan, one temporary u32 host Vec, one synchronization for narrow upload, enum/format branch/cache footprint, second embedded shader source. Actual CPU/peak/capacity/cleanup/fresh-original/server qualification mandatory; theoretical5.4MB metadata reduction alone is not no-tradeoff evidence.",
+  "next": "Full original canonical source-control/raw pair including actual narrow payload and exact logical decoded offset mapping, all other65 device buffers/physicalCFV/CPUq/scales/query/save/continued/locked/resumed states and original full science. Prebuilt PTX for diagnostic uses honest false compile-clock telemetry, no timing score. Raw reader must disclose offset dtype/physical extent and wrapper-size differences prospectively; no omitting changed payload. Actual compile/cost timings only in future fresh ordinary full builds.",
+  "candidate_accepted": false
+}

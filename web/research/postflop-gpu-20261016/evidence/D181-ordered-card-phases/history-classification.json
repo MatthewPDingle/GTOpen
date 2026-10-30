@@ -1,0 +1,30 @@
+{
+  "id": "D181",
+  "at": "2026-10-28T17:43:26.848159+00:00",
+  "status": "declined_duplicate_of_September_GPU_pass_E034",
+  "git_query": [
+    "git",
+    "log",
+    "--all",
+    "--oneline",
+    "-G",
+    "while.*(pos.*lb|pos.*ub)|for *\\(; *t *< *c1",
+    "--",
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "git_matches": "db5b25e1 experiment E035: halve reach-total threads while preserving the original reduction tree\n8e00a2ec experiment E034: process sorted showdown card entries in rank runs\n",
+  "original_commit": "8e00a2ec1b354fa3d7dcc1971a18de12b624f212",
+  "original_patch_sha256": "b62e162b5331e205d68e10886de78452250594df865a8abca8dafa69668debb4",
+  "original_measured_decision": {
+    "event": "decision",
+    "id": "E034",
+    "status": "discard",
+    "reason": "All24saved and112resume states exact, but sorted run loops regress rainbow51.84 to57.10ms and two-tone31.21 to37.24ms. More loop reconvergence outweighs fewer per-entry tests; retain original kernel.",
+    "utc": "2026-09-07T06:00:44+00:00"
+  },
+  "failed_preparer_sha256": "5e578195efb3ae80b2eac509e691e3cd4cbfe9b441bc118d6dded0b9fd9c87e2",
+  "preparation_failure": "All-local-ref history assertion caught an actual earlier sorted lower/tied/higher three-loop implementation before any proof claims, new candidate source, protocol, compiler or GPU work. Its source/decision were inspected; preserve this early stop and do not repair it into a fresh candidate.",
+  "classification": "Exact same monotone three-phase control algorithm. Shared position indices in current E020 do not make the old measured rank-run algorithm distinct. Earlier retained timing reported rainbow51.84->57.10ms and two-tone31.21->37.24ms; these are old RTX3090 component observations, not current RAM cycles and are not pooled/regraded. Form remains closed.",
+  "new_source_files_or_compilers_or_GPU_or_timing_runs": 0,
+  "new_gain_accepted": false
+}

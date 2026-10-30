@@ -1,0 +1,131 @@
+--- E028/audit-numerical.py
++++ E029/audit-numerical.py
+@@ -1,6 +1,7 @@
+ import pathlib,json,hashlib,datetime,statistics,math,re,csv,collections
+ ROOT=pathlib.Path(r'S:\GTOpen-research\postflop-gpu-20261016')
+-OUT=ROOT/'comparisons/E028-independent-review';PLAN=ROOT/'runs/E028-primary-plan';EX=ROOT/'runs/E028-primary-execution'
++OUT=ROOT/'comparisons/E029-independent-review';PLAN=ROOT/'runs/E029-primary-plan';EX=ROOT/'runs/E029-primary-execution'
++assert not (OUT/'validation.json').exists() and not (OUT/'summary.md').exists(), 'Preserve any prior audit result'
+ checks=collections.Counter();artifacts={}
+ def ck(b,label):
+     if not b:raise AssertionError(label)
+@@ -13,14 +14,14 @@
+ def norm(d,exclude):return {k:v for k,v in d.items() if k not in exclude}
+ def gain(b,c):return 100*(b-c)/b
+ def close(a,b,label):ck(math.isclose(a,b,rel_tol=1e-12,abs_tol=1e-9),label)
+-pin(PLAN/'protocol.json','d9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453')
+-pin(PLAN/'scripts-manifest.json','eff861ea7be802dbbfc07e2982a976757c9b4dbe2d60aa9c5dfaa90afdac48ac')
+-P=load(PLAN/'protocol.json');C=load(ROOT/'comparisons/E028-three-pair-comparison/report.json')
+-ck(P['order']==['V028-unit','B092','E028R1','E028R2','B093','B094','E028R3'],'fixed_seven_run_order')
+-ck(P['pairs']==[{'baseline':'B092','candidate':'E028R1'},{'baseline':'B093','candidate':'E028R2'},{'baseline':'B094','candidate':'E028R3'}],'fixed_pairing')
+-ck(P['expected_unit_passed']==85 and P['expected_unit_ignored']==4,'frozen_unit_counts')
+-BM={n:load(ROOT/'binaries'/(n+'.manifest.json')) for n in ['E020-postflop_autoresearch','E028-postflop_autoresearch','E028-solver']}
+-BE=load(ROOT/'runs/E028-build/exit.json');CK=load(ROOT/'runs/E028-compile-check/complete.json')
++pin(PLAN/'protocol.json','6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165')
++pin(PLAN/'scripts-manifest.json','a91d06103a2d60220e198fb97272aa6d8663adfc3526aec506eafed3ed4fcb1f')
++P=load(PLAN/'protocol.json');C=load(ROOT/'comparisons/E029-three-pair-comparison/report.json')
++ck(P['order']==['V029-unit','B095','E029R1','E029R2','B096','B097','E029R3'],'fixed_seven_run_order')
++ck(P['pairs']==[{'baseline':'B095','candidate':'E029R1'},{'baseline':'B096','candidate':'E029R2'},{'baseline':'B097','candidate':'E029R3'}],'fixed_pairing')
++ck(P['expected_unit_passed']==84 and P['expected_unit_ignored']==4,'frozen_unit_counts')
++BM={n:load(ROOT/'binaries'/(n+'.manifest.json')) for n in ['E020-postflop_autoresearch','E029-postflop_autoresearch','E029-solver']}
++BE=load(ROOT/'runs/E029-build/exit.json');CK=load(ROOT/'runs/E029-compile-check/complete.json')
+ ck(BE['returncode']==0 and CK['status']=='COMPILE_ONLY_CHECKS_PASSED' and CK['native_executions']==0,'terminal_build_stage_results')
+ ck(dt(CK['at'])<=dt(BE['at']),'separate_compile_before_primary_build')
+ INV=load(EX/'invocation.json');DONE=load(EX/'complete.json')
+@@ -31,7 +32,7 @@
+     ck(r['id']==identity and r['status']=='measured' and r['returncode']==0,'successful_physical_run')
+     pin(ROOT/f'runs/{identity}/stdout.log',r['stdout_sha256']);pin(r['command'][0],r['binary_sha256'])
+     bm=r['binary_build_manifest'];pin(bm['path'],bm['sha256']);ck(bm['data']==load(bm['path']) and bm['binary_hash_verified'] and bm['data']['binary_sha256']==r['binary_sha256'],'runtime_binary_manifest_link')
+-    which='E028-solver' if identity=='V028-unit' else ('E020-postflop_autoresearch' if identity.startswith('B') else 'E028-postflop_autoresearch')
++    which='E029-solver' if identity=='V029-unit' else ('E020-postflop_autoresearch' if identity.startswith('B') else 'E029-postflop_autoresearch')
+     ck(bm['data']==BM[which],'right_binary_for_run')
+     subinv=load(EX/f'{identity}.invocation.json');subexit=load(EX/f'{identity}.exit.json')
+     ck(subexit['returncode']==0 and dt(subinv['at'])<=dt(r['started_at'])<=dt(r['finished_at'])<=dt(subexit['at']),'wrapper_terminal_order')
+@@ -49,11 +50,11 @@
+     ck(rs==r['results'] and st==[x['data'] for x in r['stages']],'raw_json_exact_report')
+     rawstages[identity]=st;rawresults[identity]=rs
+     summary=re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out; finished in ([0-9.]+)s',text)
+-    expected=('85','0','4','0','0') if identity=='V028-unit' else ('1','0','0','0','0')
++    expected=('84','0','4','0','0') if identity=='V029-unit' else ('1','0','0','0','0')
+     ck(len(summary)==1 and tuple(summary[0][:5])==expected,'full_native_test_summary')
+     ck(r['test_pass_count']==int(expected[0]),'reported_pass_count')
+     summary_runtime[identity]=float(summary[0][-1])
+-    if identity=='V028-unit':unit_names=sorted(re.findall(r'^test (\S+) \.\.\.',text,re.M));continue
++    if identity=='V029-unit':unit_names=sorted(re.findall(r'^test (\S+) \.\.\.',text,re.M));continue
+     ck(r['command'][1:]==['postflop_complete_cycle','--nocapture','--test-threads=1','--ignored'],'fixed_native_invocation')
+     ck([x['fixture_id'] for x in rs]==['rainbow','two-tone','river'],'fixed_fixture_order')
+     ck(len(rs)==3 and [x['iteration'] for x in rs]==[200,200,60] and len([x for x in st if x['stage']=='convergence_check'])==23,'full_three_fixture23_check_completeness')
+@@ -67,10 +68,10 @@
+             if k!='stage':ck(z[k]==v,'raw_stage_final_result_agreement')
+ for a,b in zip(ids,ids[1:]):ck(dt(runs[a]['finished_at'])<=dt(runs[b]['started_at']),'serialized_chronology')
+ ck(dt(BE['at'])<dt(runs[ids[0]]['started_at']),'build_terminal_before_unit_and_primary')
+-priorunit=(ROOT/'runs/V020-unit/stdout.log').read_text(encoding='utf-8');ck(unit_names==sorted(re.findall(r'^test (\S+) \.\.\.',priorunit,re.M)+['gpu::tests::actor1_sigma_cache_production_and_lifetime']),'same_88_test_inventory_plus_cache_test')
++priorunit=(ROOT/'runs/V020-unit/stdout.log').read_text(encoding='utf-8');ck(unit_names==sorted(re.findall(r'^test (\S+) \.\.\.',priorunit,re.M)),'same_88_test_inventory')
+ EXCLUDE={'build_ms','init_ms','solve_ms','readback_ms','full_cycle_ms','fingerprint_ms_excluded'}
+ sexclude=EXCLUDE|{'solve_checks_elapsed_ms'}
+-ref=rawresults['B092'];refst=rawstages['B092'];trajectory=[]
++ref=rawresults['B095'];refst=rawstages['B095'];trajectory=[]
+ for identity in ids[1:]:
+     for a,b in zip(ref,rawresults[identity]):ck(norm(a,EXCLUDE)==norm(b,EXCLUDE),'complete_non_timing_result_exact')
+     ck([norm(x,sexclude) for x in refst]==[norm(x,sexclude) for x in rawstages[identity]],'complete_non_timing_stage_trajectory_exact')
+@@ -110,44 +111,41 @@
+     pairs.append({'baseline':b['id'],'candidate':c['id'],'baseline_sum_ms':pb,'candidate_sum_ms':pc,'gain_pct':gain(pb,pc),'component_sum_candidate_minus_baseline_ms':{k:sum(x[k] for x in c['results'])-sum(x[k] for x in b['results']) for k in components},'process_wall_ms':{'baseline':b['process_wall_ms'],'candidate':c['process_wall_ms']},'whole_test_seconds':{'baseline':summary_runtime[b['id']],'candidate':summary_runtime[c['id']]}})
+ chron=[{'id':i,'started_at':runs[i]['started_at'],'finished_at':runs[i]['finished_at']} for i in ids[1:]];ck(C['chronology']==chron,'published_chronology')
+ 
+-ck(len(unit_names)==89,'full_89_unit_inventory')
+-unitraw=(ROOT/'runs/V028-unit/stdout.log').read_text(encoding='utf8')
+-cache_block=re.search(r'^test gpu::tests::actor1_sigma_cache_production_and_lifetime \.\.\.(.*?)(?=^test |\Z)',unitraw,re.M|re.S)
+-ck(cache_block is not None and cache_block.group(1).strip().endswith('ok'),'specific_cache_lifecycle_passed')
++ck(len(unit_names)==88,'full_88_unit_inventory')
++unitraw=(ROOT/'runs/V029-unit/stdout.log').read_text(encoding='utf8')
++geometry_block=re.search(r'^test gpu::plan::tests::river_bounds_match_strength_comparisons \.\.\.(.*?)(?=^test |\Z)',unitraw,re.M|re.S)
++ck(geometry_block is not None and geometry_block.group(1).strip().endswith('ok'),'extended_geometry_test_passed')
+ ck(sum(t['count'] for t in trajectory)==138 and len(trajectory)==18,'all138_checkpoints_and18_records')
+ for report in C['input_reports']:pin(report['path'],report['sha256'])
+ for label in ['baseline','candidate']:
+     expected=[p[label] for p in P['pairs']]
+     ck(C['cohorts'][label]['run_ids']==expected and C['cohorts'][label]['count']==3,'all_three_samples_retained')
+-AI=load(ROOT/'runs/E028-assessment/invocation.json');AE=load(ROOT/'runs/E028-assessment/exit.json')
++AI=load(ROOT/'runs/E029-assessment/invocation.json');AE=load(ROOT/'runs/E029-assessment/exit.json')
+ ck(AE['returncode']==0 and AI['protocol_sha256']==sha(PLAN/'protocol.json'),'assessment_terminal_and_protocol')
+ ck(dt(DONE['at'])<=dt(AI['at']) and dt(AI['at'])<=dt(C['created_at']),'assessment_after_all_runs')
+-ck(AI['command'][-1]=='--reject' and not C['performance']['statistical_significance_established'],'rejection_no_significance_claim')
+-ck(failed and not aggregate_pass and not guardfail,'rejected_only_aggregate_gate')
++ck(('--reject' in AI['command'])==failed and not C['performance']['statistical_significance_established'],'decision_no_significance_claim')
+ sha(ROOT/'runs/V020-unit/stdout.log');sha(OUT/'audit-numerical.py')
+-result={'id':'E028-independent-numerical-review','at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'verdict':'CONFIRMED_REJECTED','numerical_audit_pass':True,
++result={'id':'E029-independent-numerical-review','at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'verdict':'CONFIRMED_REJECTED' if failed else 'PASS_PRIMARY_PROVISIONAL_ONLY','numerical_audit_pass':True,
+  'primary':{'baseline_sum_fixture_medians_ms':Bsum,'candidate_sum_fixture_medians_ms':Csum,'gain_pct':score,'minimum_pct':2,'aggregate_gate_met':aggregate_pass,'fixture_guard_failed':guardfail},
+  'all18_complete_non_timing_results_exact':True,'all138_convergence_checkpoints_exact':True,'all_complete_normalized_stage_trajectories_exact':True,'trajectories':trajectory,
+- 'unit_inventory':{'passed':85,'failed':0,'ignored':4,'measured':0,'filtered':0,'matches_E020_plus_cache_lifecycle':True,'cache_lifecycle_test_passed':True},
++ 'unit_inventory':{'passed':84,'failed':0,'ignored':4,'measured':0,'filtered':0,'matches_E020_inventory':True,'extended_geometry_test_passed':True},
+  'chronology_including_unit':[{'id':i,'started_at':runs[i]['started_at'],'finished_at':runs[i]['finished_at']} for i in ids], 'components':fixture_tables,'pairs':pairs,
+  'checks':dict(checks),'assertions':sum(checks.values()),'input_sha256':artifacts,
+  'scope':'File-only numerical/order/gate audit. Build/source/auxiliary custody and restoration are independently audited in source-custody.json; this report does not substitute for that audit.',
+- 'broader_qualification':'Not run; inapplicable after aggregate rejection. No extra timing, extension, fallback or rescue.',
+- 'limits':['Compressed full-state and convergence equality does not establish every possible raw F32/cache state.','Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.','Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.','No statistical significance, speedup, acceptance or deployment claim.'],
+- 'reviewer_preparation_note':'An exploratory read incorrectly sought runs/B092/invocation.json and stopped with FileNotFoundError before this audit script or numerical outputs existed. Correct wrapper records are runs/E028-primary-execution/B092.invocation.json. Prior parser adapted only for numerical scope, E028 IDs and85/4 inventory; no native rerun.',
++ 'broader_qualification':'Not run; inapplicable after primary rejection. No extension or rescue.' if failed else 'Not run; mandatory before acceptance, including metadata/admission/continuation, original controls, F32, holdout and cumulative.',
++ 'limits':['Compressed full-state and convergence equality does not establish every possible F32, metadata/admission or lifecycle state.','Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.','Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.','No statistical significance, speedup, acceptance or deployment claim.'],
++ 'reviewer_preparation_note':'Adapted file-only from the sealed E028 numerical parser before outcomes; E029 fixed IDs,84/4 inventory and extended existing geometry test. No candidate script, native solver or GPU work by reviewer.',
+  'native_or_gpu_executed_by_reviewer':False,'candidate_accepted':False,'deployment_changed':False}
+ (OUT/'validation.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')
+-summary=f"""# E028 independent numerical audit
++summary=f"""# E029 independent numerical audit
+ 
+-**CONFIRMED REJECTED.** The fixed sum of fixture medians is {Bsum:.4f} -> {Csum:.4f}ms, an observed {score:.10f}% gain (slower). The2% aggregate gate fails; no fixture satisfies both parts of the repeated-regression guard. All six measurements are retained.
++**{result['verdict']}.** Fixed sum of fixture medians: {Bsum:.4f} -> {Csum:.4f}ms; observed gain {score:.10f}%. Aggregate gate: {aggregate_pass}; repeated-fixture guard failure: {guardfail}. All six measurements retained.
+ 
+-All18 complete non-timing result objects, all138 convergence checkpoints and complete normalized stage trajectories match exactly. Fixed stopping iterations are200/200/60. Units report85 passed,0 failed,4 ignored,0 measured,0 filtered; the inventory equals the88 accepted E020 tests plus the passing actor1 cache lifecycle test. Seven runs occurred in their frozen order after separate compile-only and gpu-only builds completed.
++All18 complete non-timing result objects, all138 convergence checkpoints and complete normalized stage trajectories match exactly. Stops200/200/60. Units84passed,0failed,4ignored,0measured,0filtered; exact accepted E020 inventory and extended geometry test passed. All seven runs occurred in frozen order after separate feature compile-only and GPU-only builds.
+ 
+-Rainbow's median regression is2.9607885853%, while2/3 pairs exceed3%. Its guard does not fail because the required median>3% condition is false. This does not rescue the aggregate failure. Two-tone and river guards also do not fail.
++File-only numerical/order/gate audit passed {sum(checks.values())} assertions. Source/build custody and restoration are independently recorded. Broader qualification: {result['broader_qualification']}
+ 
+-This file-only audit passed {sum(checks.values())} assertions. Source/build/auxiliary custody and cleanup are a separate audit. No broader raw/cache, F32/state/menu/resume, continuation, holdout or cumulative qualification was executed after rejection. No extensions, exclusions, native reviewer execution, causal or statistical-significance claims.
+-
+-A reviewer-only exploratory wrong invocation path failed before the actual audit; its correction is recorded in validation.json. No measurement was retried.
++No extra measurements, exclusions, extension, native reviewer execution, causal or statistical-significance claims. No acceptance or deployment from this result.
+ """
+ (OUT/'summary.md').write_text(summary,encoding='utf8')
+ print(json.dumps({'verdict':result['verdict'],'primary':result['primary'],'assertions':sum(checks.values()),'validation_sha256':sha(OUT/'validation.json')},indent=2))

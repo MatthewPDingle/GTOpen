@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "purpose": "context geometry qualification only",
+  "original_strategy_and_reaches_exact": true,
+  "source_files_unchanged": true,
+  "contexts": [
+    {
+      "nodes": 12,
+      "terminals": {
+        "fold": 4,
+        "postflop": 2,
+        "showdown": 2
+      },
+      "positions": [
+        "UTG1",
+        "MP"
+      ],
+      "dead_money": 3.5,
+      "classes_at_current_entry_cutoff": [
+        56,
+        19
+      ]
+    },
+    {
+      "nodes": 15,
+      "terminals": {
+        "fold": 5,
+        "postflop": 3,
+        "showdown": 2
+      },
+      "positions": [
+        "BB",
+        "BTN"
+      ],
+      "dead_money": 0.5,
+      "classes_at_current_entry_cutoff": [
+        169,
+        96
+      ]
+    }
+  ],
+  "rejection_controls": [
+    "wrong_pot_offset",
+    "third_live_player",
+    "swapped_postflop_order",
+    "percent_as_fraction",
+    "wrong_remaining_stack",
+    "duplicate_child",
+    "unmatched_call"
+  ],
+  "inputs": {
+    "research\\preflop-evolution\\blind-defense-20260922\\original-context-reexport.json": "9fedf62f1816b1e76938c6e07cded4bdd5d36e18e2178f3261af491ce28dc761",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\blind-defense-20260922\\export-inputs-before.json": "7607a9404e5483b59d6e238077faf086a3092928e356915f4279b0034393e74e",
+    "tools\\research\\hu_context_audit_20260922.py": "0246c57f9fe1cd87fdbef92a99e2f00b794f09e5e04abda76bd7c0dd1f59f837",
+    "crates\\solver\\examples\\conditional_hu_context_export.rs": "4fd644725fe60ebe17809a51eb2dbf5d6c0ef9739c96d01950b6d9e5da792bfc",
+    "target\\release\\examples\\conditional_hu_context_export.exe": "cb92e2d3e0becaf3808074aa301b68ec80f6fd83fdc67b22145ab7faeaede8ca"
+  },
+  "ready_for_strategic_training": false,
+  "production_modified": false
+}

@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "physical_io_bytes_per_second": {
+    "read": 1484562312.5382848,
+    "write": 1488908884.1117673
+  },
+  "inclusive_bytes_per_second": {
+    "read": 935231107.2050214,
+    "write": 941369209.805266
+  },
+  "traffic_projections": [
+    {
+      "cold_state_decimal_gb": 10,
+      "iterations": 2000,
+      "read_decimal_tb": 40.0,
+      "write_decimal_tb": 40.0,
+      "idealized_io_hours": 14.947022007180088
+    },
+    {
+      "cold_state_decimal_gb": 20,
+      "iterations": 2000,
+      "read_decimal_tb": 80.0,
+      "write_decimal_tb": 80.0,
+      "idealized_io_hours": 29.894044014360176
+    },
+    {
+      "cold_state_decimal_gb": 40,
+      "iterations": 2000,
+      "read_decimal_tb": 160.0,
+      "write_decimal_tb": 160.0,
+      "idealized_io_hours": 59.78808802872035
+    },
+    {
+      "cold_state_decimal_gb": 89.481280128,
+      "iterations": 2000,
+      "read_decimal_tb": 357.925120512,
+      "write_decimal_tb": 357.925120512,
+      "idealized_io_hours": 133.74786633038624
+    }
+  ],
+  "caveat": "Two 16-GiB repetitions bypass Windows file cache, but not SSD internal caching. Projection assumes these short-test speeds persist and excludes solver work, packing, checksums, evaluation and contention. Not a drive endurance or full-run speed prediction.",
+  "source_sha256": "7a994e3d1d4fd2628a2a325694d737c43e660692a9436d9f32bffd8aca10de1c"
+}

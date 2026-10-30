@@ -1,0 +1,94 @@
+{
+  "id": "D174-root",
+  "at": "2026-10-28T16:36:54.575061+00:00",
+  "status": "pass_rejected_material_cost_replay",
+  "checks": 246,
+  "outcomes": [
+    {
+      "fixture": "rainbow",
+      "metrics": {
+        "wall_ms": {
+          "reference_ms": 115.333,
+          "candidate_ms": 140.6424,
+          "limit_ms": 117.48633,
+          "failed": true,
+          "slower_pairs": 3
+        },
+        "CPU_ms": {
+          "reference_ms": 109.375,
+          "candidate_ms": 218.75,
+          "limit_ms": 126.09375,
+          "failed": true,
+          "slower_pairs": 3
+        }
+      }
+    },
+    {
+      "fixture": "two-tone",
+      "metrics": {
+        "wall_ms": {
+          "reference_ms": 87.65259999999999,
+          "candidate_ms": 102.36439999999999,
+          "limit_ms": 89.52912599999999,
+          "failed": true,
+          "slower_pairs": 3
+        },
+        "CPU_ms": {
+          "reference_ms": 93.75,
+          "candidate_ms": 171.875,
+          "limit_ms": 110.3125,
+          "failed": true,
+          "slower_pairs": 3
+        }
+      }
+    },
+    {
+      "fixture": "river",
+      "metrics": {
+        "wall_ms": {
+          "reference_ms": 0.0303,
+          "candidate_ms": 0.021500000000000002,
+          "limit_ms": 1.030603,
+          "failed": false,
+          "slower_pairs": 0
+        },
+        "CPU_ms": {
+          "reference_ms": 0.0,
+          "candidate_ms": 0.0,
+          "limit_ms": 15.625,
+          "failed": false,
+          "slower_pairs": 0
+        }
+      }
+    }
+  ],
+  "source_form": "E095",
+  "source_form_closed": true,
+  "original_native_calls_retained": 20,
+  "original_coordinator_tests_passed": 2,
+  "actual_native_or_compiler_reruns": 0,
+  "original_reader_failure_preserved": true,
+  "mechanical_reader_repair_protocol_sha256": "8cb30507dc24f470066864e8ff47834bef3aef6242a04d3be6fcb4e9e0446468",
+  "original_assessment_expected_failure_exit": 1,
+  "all_owned_native_compiler_reader_children_terminal": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "successful_GPU_or_complete_speed_samples": 0,
+  "evidence_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\protocol.json": "6643800d278fd794bfcdf5383f2ec64b4e091e27870c4fbc6a374ed41afec4d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\protocol.json": "9a720b7177569e6c56f14939b5012dc90ddb18383563051be1b151524a605460",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-reader-repair\\protocol.json": "8cb30507dc24f470066864e8ff47834bef3aef6242a04d3be6fcb4e9e0446468",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\rustc.exit.json": "96f9a896f711a05ab9043de20acebb5a55168d622b51b688f5beffa6519b74f0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173B1.exit.json": "44663c8bcce3ac235fdaaed4dd5ec5088106c13a0171b1f4c16b1aaa967e61b8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173P1.exit.json": "0221795866456f7f875f29a6c3cef6909089f992996e3da711711aee241b236b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173P2.exit.json": "75fbebd984eb99578af5aeb4dc425510cac048fa1b40360ab5565a131ce610a9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173B2.exit.json": "1e5e48e5d92bb716ec64e3ab22e20f09672820c5101d7cf0d1ec5abb1bcc98d6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173B3.exit.json": "76072ec1fd4a87cafaa68bf64254254a815347122569dcc68d570ce186a336c8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\D173P3.exit.json": "bd24ee13e8b859220dbc5c08c6ff9919f589ac091a263153c6b67056557eb96c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\execution\\assessment.exit.json": "e0f07ea2c5838538ef22377237ba348c34073b74cc35b72f92f0e3f8fb2eb03a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\rustc.exit.json": "e789dee5e6934433323a6de9e94bf6dd7e1323b778312385d051cc380083a1e7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\coordinator-tests.exit.json": "9886824c6fbcbabd7f405369c69c146dfc0f316ae00da6972507c16ce12ba6c9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\budget-cost.exit.json": "a5cc6e7858753e76a7fed824505b43a882b6708aedb16485f47b7699aedfe337",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-reader-repair\\assessment-r3.exit.json": "1a3a1c2f3317fc08a91f92bc574811b2c24510576502d892db36c41de72ce25e"
+  },
+  "scope": "Independent rawstdout/sorted3pointmedian/absoluteCPUquantum+wallcostlimits/decision re-evaluation and successful terminal ownership. All20CPUfingerprints/noCUDA checks retained. No fullrawGPU/scientificstate/speedpass claimed for closed E095; source neveractivated in research/main."
+}

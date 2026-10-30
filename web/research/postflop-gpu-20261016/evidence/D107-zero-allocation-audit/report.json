@@ -1,0 +1,72 @@
+{
+  "id": "D107-zero-allocation-audit",
+  "at": "2026-10-17T10:57:02.500890+00:00",
+  "status": "closed_already_uses_zeroed_allocation",
+  "functions": {
+    "store_i16": {
+      "symbol": "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3i16",
+      "original_line": 255261,
+      "lines": 111,
+      "extracted_sha256": "26a990eaf414b0a8c4c6bf287e00a291d990d1e38e728f3c622068487c3e7253",
+      "calls": [
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned"
+      ],
+      "zeroed_allocator_calls": 2,
+      "explicit_fill_sites": 0
+    },
+    "store_u16": {
+      "symbol": "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3u16",
+      "original_line": 255452,
+      "lines": 111,
+      "extracted_sha256": "ce46a614556961f7eef10518911882a88936b80027d8f285965d4db480777ead",
+      "calls": [
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned"
+      ],
+      "zeroed_allocator_calls": 2,
+      "explicit_fill_sites": 0
+    },
+    "with_storage": {
+      "symbol": "_RNvMs1_NtCsifJ2Jc9XidW_6solver3cfrNtB5_6Solver12with_storage",
+      "original_line": 249897,
+      "lines": 317,
+      "extracted_sha256": "42dc8be1b45ef2a7fe70cdc003bdb559871eeffb86e127f7952f1eab30be4e07",
+      "calls": [
+        "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3i16",
+        "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3i16",
+        "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3u16",
+        "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store3u16",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "mi_zalloc_aligned",
+        "mi_zalloc_aligned",
+        "mi_zalloc_aligned",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error",
+        "*__imp_ProcessPrng(%rip)",
+        "_RNvNtCsfQUUnEvlYZE_5alloc7raw_vec12handle_error"
+      ],
+      "zeroed_allocator_calls": 4,
+      "explicit_fill_sites": 0
+    }
+  },
+  "original_assembly_sha256": "621ddbb10e5dd5b602ec7cc241aeebe5cf7891bf05ee38f740fe5a2ef93384cb",
+  "accepted162_source_map_exact": true,
+  "mimalloc_version": "0.1.52",
+  "mimalloc_source_checksum_matches_locked_package": true,
+  "global_allocator_source_is_MiMalloc": true,
+  "finding": "Signed/unsigned Storeconstructors each directly call mi_zalloc_aligned twice for q/scale; F32with_storage paths contain four direct zero-allocation calls. No separate memset/bzero/rep-stos fill appears in these inspected constructor functions. Rust zeroed-allocation shim and locked MiMallocalloc_zeroed map to the same API.",
+  "decision": "Do not implement/rebenchmark a typed-zero-constructor optimization; proposed emitted allocator path already exists. No inference that internal allocator/OSzeroing is free/removable.",
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "GPU_executions": 0,
+  "source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Final ThinLTO code from exact accepted E051 solver RLIB and unmodified evaluator. New analysis executable was not run and is not asserted byte-identical to timed E051binary. Baseline qscan is already vectorized; no scalar-to-SIMD claim. Constructor code evidence only; no current allocation timing, physical-commit/peak/CPU-responsiveness proof or speedup. No attempt to skip initialization/scans, change allocator/global settings or revive closed zero hints/OR/encoder forms."
+}

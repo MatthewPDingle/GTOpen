@@ -1,0 +1,61 @@
+{
+  "id": "E068-initial-screen",
+  "at": "2026-10-17T11:57:22.498217+00:00",
+  "decision": "advance_to_separately_frozen_fresh16_only",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 10330.650699999998,
+    "candidate_full_cycle_ms": 10073.8559,
+    "observed_gain_pct": 2.4857562941315776,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -2.7069191873748277,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -5.513484453041296,
+          -2.7069191873748277,
+          -2.71831358474418
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -2.255896668760628,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -5.390962505631209,
+          -1.649592732024143,
+          -2.818793319205893
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 0.34562311527394773,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -11.588382342356303,
+          -1.824418744398359,
+          3.858603470996265
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": true,
+    "statistical_significance_established": false
+  },
+  "exactness": {
+    "fixture_results": 18,
+    "convergence_records": 138,
+    "all_exact": true
+  },
+  "primary_report_sha256": "6dc6d0809cd3657414c7d9f9d24f3aaa8f2b8efb009cb0546bb68e8ed9865ba6",
+  "root_report_sha256": "60a4e2e39d118a3923b86e0ac1d444d4c12cb1e60e083ab7b08a9f43f50b4864",
+  "candidate_accepted": false,
+  "original_form": "E059",
+  "initial_samples_used_for_confirmation_score": 0,
+  "remaining": "Fresh16plusbroaderexactness/F32/state/menu/resume/continuation,actualmaterial/CPU-GPUpeak/responsiveness/capacity,fixedholdout,freshoriginalcumulative beforeadoption. No live deployment included.",
+  "limits": "Three-pair observed registered whole-cycle result, not statisticallyestablished/universal/no-tradeoff or cumulativeacceptedgain."
+}

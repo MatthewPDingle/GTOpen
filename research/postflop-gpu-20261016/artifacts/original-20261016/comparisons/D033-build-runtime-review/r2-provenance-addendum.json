@@ -1,0 +1,76 @@
+{
+  "id": "D033-r2-provenance-addendum",
+  "created_at": "2026-10-16T09:37:02.721878+00:00",
+  "status": "PASS_SOURCE_ONLY; R2 build in progress is not assessed as successful here",
+  "original_review_unchanged": true,
+  "script_delta_only_archive_and_output_paths": true,
+  "run_script_unchanged": true,
+  "source_delta_only_one_versioned_getter_identifier": true,
+  "original_mod_append_unchanged": true,
+  "r1_compiler_failure": {
+    "exit": {
+      "returncode": 101,
+      "at": "2026-10-16T09:28:23Z",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--features",
+        "gpu",
+        "--lib",
+        "--no-run",
+        "--message-format=json"
+      ]
+    },
+    "errors": [
+      {
+        "code": "E0425",
+        "message": "cannot find function `cuGraphKernelNodeGetParams` in module `sys`"
+      }
+    ],
+    "native_execution": false,
+    "evidence": "--no-run compile failed; D033R1 absent at this review"
+  },
+  "r2_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "crates/solver/src/gpu/graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75"
+  },
+  "r2_patch_sha256": "03ee2b153fbe508e1bd27ef24fa94a393d04df2b96eaae9ff7233c8bf93d93a4",
+  "protocol_or_workload_or_sampling_change": false,
+  "runtime_checklist_unchanged_sha256": "316b74d60bb9c0dab4a436c208cb9d0d159fa7878f0a997280fb86c448e3ddc6",
+  "runtime_run_id": "D033R1",
+  "pending": [
+    "R2 compilation terminal success and frozen binary/build manifest",
+    "One native run followed by independent raw-event/exactness/overhead audit"
+  ],
+  "r1_failure_preserved": true,
+  "verified_artifact_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-graph_device_events.rs": "98e9da085c98198bbcddb77756697b6b50a5042d305627dd46b9679d79879b4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate.patch": "144b2eee69a6c1ffd32d81453e7819f209b1174000ce6d44eddf5794137df355",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\manifest.json": "68ab7ea42b5d301ded632518cf28a858808b70f00cf1df3af8a6bcd6beb67c33",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\README.md": "fad0191f8d9bd7dadab9f18d21e75eec19737d3e4baefe44af074c5b12ca63dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-graph_device_events-r1.rs": "98e9da085c98198bbcddb77756697b6b50a5042d305627dd46b9679d79879b4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\binding-evidence.txt": "9a904c7c6c64f2a6cb32d35222f4f732cb3436f7c46916d1c5ad5f7861b6a1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate.patch": "03ee2b153fbe508e1bd27ef24fa94a393d04df2b96eaae9ff7233c8bf93d93a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\manifest.json": "a26b1fd9550099fe3ad2f9e833ce30fb1423a85a8c5be92c380f1337b57d3158",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\r1-to-r2.patch": "7481149c021257dce8ec2e0791ef28bff269095630e80b1192539b18aa20408e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\README.md": "83138a9e3f515bf86e7640227beba1e3293bb09188d536726b67f0ee60265402",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.jsonl": "098bea3b9252be562fe4357ab53774ba2fefbe23b87fe89ed9cc507077c6965f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.stderr.log": "83a09fe053c7f85cbe3b9d0be0b212ee6bdf7264e3d3fcb041821431982c6020",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\exit.json": "55e8ab788f3e5fb40a2dbe044cb750aa922c4c1f08126e045557c61a5a420fe6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build.py": "f424bdf2ed9a89639ffa0eef2750eaf91fc928928d737a82ece3307d4e39598c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2.py": "b6803c4f4b3d958b20b7fc3cd8e180fc997964240f840a524acab9a0b97b0d21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-run.py": "2ea93e970a655c0a640f2200d5a03e5a1af2937922037f60e95b9555f8d69022",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-source-review-r2\\manifest.json": "213f8c3e163f515b537d78dbbb685273c89697aafa00fe2808ca9842703eec42",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-source-review-r2\\review.md": "ab0e34c42b726cacf63eee04e225d810da31738f6b39ac4685c6795d735710d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-build-runtime-review\\runtime-checklist.json": "316b74d60bb9c0dab4a436c208cb9d0d159fa7878f0a997280fb86c448e3ddc6"
+  },
+  "reviewer_execution": "Only source/evidence reads and new additive review artifacts; no build/GPU or checkout/dashboard changes"
+}

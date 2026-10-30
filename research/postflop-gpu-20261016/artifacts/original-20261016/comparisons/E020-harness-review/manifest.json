@@ -1,0 +1,86 @@
+{
+  "at": "2026-10-16T10:30:55.374004+00:00",
+  "verdict": "PASS_SOURCE_ONLY_PENDING_FINAL_SEAL",
+  "actionable_findings": [],
+  "reviewed_script_sha256": {
+    "protocol.json": "b5fa09fac0e0e4b652fe1479e5749cc2b1bfd023fe9b30c923b0d79ea46d6b2b",
+    "build.py": "f5456ce85295b59f428e6da3e93451df1401793b5e72c537ec780bf57565af95",
+    "primary.py": "f6f3fa22d9347ebe8c4209b32cb2af57fe464b8005f1c4347195938431048d47",
+    "assess.py": "900786a0dbd4201685d54ee389b2c8290c2013f248bdfb78393c29017c6b40f4"
+  },
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\protocol.json",
+      "sha256": "b5fa09fac0e0e4b652fe1479e5749cc2b1bfd023fe9b30c923b0d79ea46d6b2b",
+      "bytes": 3998
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\build.py",
+      "sha256": "f5456ce85295b59f428e6da3e93451df1401793b5e72c537ec780bf57565af95",
+      "bytes": 8270
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\primary.py",
+      "sha256": "f6f3fa22d9347ebe8c4209b32cb2af57fe464b8005f1c4347195938431048d47",
+      "bytes": 6327
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\assess.py",
+      "sha256": "900786a0dbd4201685d54ee389b2c8290c2013f248bdfb78393c29017c6b40f4",
+      "bytes": 4613
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\README.md",
+      "sha256": "29a15040f0741bb5c15fa2031bf359d2832a5e1689745edf588fde4a081ab950",
+      "bytes": 4585
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\authorization.example.json",
+      "sha256": "4890e2ac24ff5662456a50f0bdd3cd7f85e8c9c24e3ae2c53541873734f2ef10",
+      "bytes": 889
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+      "sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+      "bytes": 26996
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+      "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+      "bytes": 2064896
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V019-unit\\stdout.log",
+      "sha256": "a7027ccd32b0e74b343ad187040fbdc28b44bd9c12d2359db10a44637b4c8b61",
+      "bytes": 22094
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py",
+      "sha256": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+      "bytes": 19713
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-candidate-source-review\\manifest.json",
+      "sha256": "d3a2601a509e8c6a1be338ea88aec49779bdb21d275cfb85a85f9ef0782cc3d5",
+      "bytes": 2795
+    }
+  ],
+  "review": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-harness-review\\review.md",
+    "sha256": "7291b3e04a27d31af282b4aa924b73eb2909b63f04af35371168a1796d234c76",
+    "bytes": 3402
+  },
+  "limits": [
+    "No compiler/GPU execution by reviewer",
+    "Final scripts-manifest must pin exactly the reviewed bytes before real authorization",
+    "Root owns execution and must observe successful terminal build"
+  ],
+  "reviewer_builds": 0,
+  "reviewer_gpu_calls": 0,
+  "reviewer_production_edits": 0
+}

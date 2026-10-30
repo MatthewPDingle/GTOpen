@@ -1,0 +1,33 @@
+{
+  "id": "D072-training-loop-source",
+  "at": "2026-10-17T01:27:17.637693+00:00",
+  "status": "go_no_launch_compiler_resource_probe_only",
+  "root_review_only": true,
+  "accepted_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "c26d01a5c0f728968aa5c912a015bedb6e117477b0f8cdae266f6b2657c160f6",
+  "hypothesis": "A single pragma unroll2 on the existing own-unlocked up_action hand-stride loop may reduce repeated loop/address overhead or improve instruction scheduling. No statement, expression, hand/child order, kernel, ABI, launch geometry or allocation changes.",
+  "distinct_scope": "No new specialized entry/list/graph nodes as in rejected E005/E014/E023. Locked/opponent hand loops and evaluation remain untouched. No source-loop unroll hint was recorded in prior ledger. The compiler may already perform equivalent work; require a real PTX change before further work.",
+  "source_reasoning": "Each hand iteration initializes its own sum/out, overwrites all used rc/vc entries before reading them, reads/writes only its own hand indices, and retains ascending action accumulation. CFV level-parity ownership prevents parent/child overwrite alias. This is source reasoning, not compiled numerical proof.",
+  "prior_evidence_limits": [
+    "D033 per-node events distorted envelopes by about69-72%; do not treat family intervals as native shares.",
+    "D057 two-event evaluation envelope passed its outer usefulness screen but excludes root transfers/reductions and supplies no per-family removable headroom.",
+    "E041 current solve_ms medians are much larger than readback; component medians are not additive causal shares."
+  ],
+  "resource_gate": [
+    "No kernel/solver launches. NVRTC/driver compile/load/query only on the current device.",
+    "Other8 PTX entry bodies byte-identical and up_action body actually different.",
+    "No increase in registers/local/static-shared bytes; no reduction of max supported threads.",
+    "Nondecreasing theoretical occupancy at64/128/256 threads, zero dynamic shared bytes; default limits fit.",
+    "Failure closes this exact variant; no unroll-factor sweep or same-cohort rescue."
+  ],
+  "pending_if_resources_pass": [
+    "Original/candidate direct raw GPU controls across actors/locks/algorithms/arities and hand tails, plus full state lifecycle.",
+    "Fresh feature/GPU builds and fixed new primary screen using current1%/no-tradeoff policy, then independent confirmation/broader/holdout/cumulative gates if advancing."
+  ],
+  "not_claimed": [
+    "measured training hotspot fraction",
+    "numerical equivalence",
+    "speedup",
+    "adoption"
+  ]
+}

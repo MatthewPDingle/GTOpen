@@ -1,0 +1,135 @@
+.visible .entry down_chance(
+	.param .u64 .ptr .align 1 down_chance_param_0,
+	.param .u64 .ptr .align 1 down_chance_param_1,
+	.param .u64 .ptr .align 1 down_chance_param_2,
+	.param .u32 down_chance_param_3,
+	.param .u32 down_chance_param_4,
+	.param .u64 .ptr .align 1 down_chance_param_5,
+	.param .u64 .ptr .align 1 down_chance_param_6,
+	.param .u64 .ptr .align 1 down_chance_param_7,
+	.param .u64 .ptr .align 1 down_chance_param_8,
+	.param .u64 .ptr .align 1 down_chance_param_9,
+	.param .u64 .ptr .align 1 down_chance_param_10,
+	.param .u32 down_chance_param_11,
+	.param .u32 down_chance_param_12
+)
+{
+	.reg .pred 	%p<8>;
+	.reg .b32 	%r<25>;
+	.reg .f32 	%f<9>;
+	.reg .b64 	%rd<65>;
+
+	ld.param.u64 	%rd17, [down_chance_param_0];
+	ld.param.u64 	%rd18, [down_chance_param_1];
+	ld.param.u64 	%rd19, [down_chance_param_2];
+	ld.param.u32 	%r9, [down_chance_param_3];
+	ld.param.u32 	%r12, [down_chance_param_4];
+	ld.param.u64 	%rd22, [down_chance_param_5];
+	ld.param.u64 	%rd23, [down_chance_param_6];
+	ld.param.u64 	%rd20, [down_chance_param_7];
+	ld.param.u64 	%rd21, [down_chance_param_8];
+	ld.param.u64 	%rd24, [down_chance_param_9];
+	ld.param.u64 	%rd25, [down_chance_param_10];
+	ld.param.u32 	%r10, [down_chance_param_11];
+	ld.param.u32 	%r11, [down_chance_param_12];
+	cvta.to.global.u64 	%rd1, %rd24;
+	cvta.to.global.u64 	%rd2, %rd25;
+	cvta.to.global.u64 	%rd3, %rd23;
+	cvta.to.global.u64 	%rd4, %rd22;
+	mov.u32 	%r1, %ctaid.x;
+	setp.ge.s32 	%p1, %r1, %r12;
+	@%p1 bra 	$L__BB2_11;
+	cvta.to.global.u64 	%rd26, %rd17;
+	cvta.to.global.u64 	%rd27, %rd18;
+	cvta.to.global.u64 	%rd28, %rd19;
+	add.s32 	%r13, %r9, %r1;
+	mul.wide.s32 	%rd29, %r13, 4;
+	add.s64 	%rd30, %rd26, %rd29;
+	ld.global.nc.u32 	%r14, [%rd30];
+	add.s64 	%rd31, %rd27, %rd29;
+	ld.global.nc.u32 	%r15, [%rd31];
+	cvt.u64.u32 	%rd5, %r15;
+	add.s64 	%rd32, %rd28, %rd29;
+	ld.global.nc.u32 	%r16, [%rd32];
+	mov.u64 	%rd33, 1;
+	shl.b64 	%rd6, %rd33, %r16;
+	mul.wide.u32 	%rd34, %r14, 4;
+	add.s64 	%rd35, %rd4, %rd34;
+	ld.global.nc.u32 	%r17, [%rd35];
+	cvt.u64.u32 	%rd7, %r17;
+	add.s64 	%rd36, %rd3, %rd34;
+	ld.global.nc.u32 	%r18, [%rd36];
+	cvt.u64.u32 	%rd8, %r18;
+	mov.u32 	%r24, %tid.x;
+	setp.ge.s32 	%p2, %r24, %r10;
+	@%p2 bra 	$L__BB2_6;
+	cvt.s64.s32 	%rd37, %r10;
+	shl.b64 	%rd38, %rd5, 2;
+	add.s64 	%rd39, %rd4, %rd38;
+	ld.global.nc.u32 	%r19, [%rd39];
+	cvt.u64.u32 	%rd40, %r19;
+	mul.lo.s64 	%rd9, %rd40, %rd37;
+	mov.u32 	%r3, %ntid.x;
+	cvta.to.global.u64 	%rd10, %rd20;
+	mul.lo.s64 	%rd11, %rd7, %rd37;
+	mov.u32 	%r23, %r24;
+$L__BB2_3:
+	cvt.s64.s32 	%rd15, %r23;
+	mul.wide.s32 	%rd41, %r23, 8;
+	add.s64 	%rd42, %rd10, %rd41;
+	ld.global.nc.u64 	%rd43, [%rd42];
+	and.b64  	%rd44, %rd43, %rd6;
+	setp.ne.s64 	%p3, %rd44, 0;
+	mov.f32 	%f7, 0f00000000;
+	@%p3 bra 	$L__BB2_5;
+	add.s64 	%rd45, %rd11, %rd15;
+	shl.b64 	%rd46, %rd45, 2;
+	add.s64 	%rd47, %rd1, %rd46;
+	ld.global.f32 	%f7, [%rd47];
+$L__BB2_5:
+	cvt.u32.u64 	%r20, %rd15;
+	add.s64 	%rd48, %rd9, %rd15;
+	shl.b64 	%rd49, %rd48, 2;
+	add.s64 	%rd50, %rd1, %rd49;
+	st.global.f32 	[%rd50], %f7;
+	add.s32 	%r23, %r20, %r3;
+	setp.lt.s32 	%p4, %r23, %r10;
+	@%p4 bra 	$L__BB2_3;
+$L__BB2_6:
+	setp.ge.s32 	%p5, %r24, %r11;
+	@%p5 bra 	$L__BB2_11;
+	cvt.s64.s32 	%rd51, %r11;
+	shl.b64 	%rd52, %rd5, 2;
+	add.s64 	%rd53, %rd3, %rd52;
+	ld.global.nc.u32 	%r21, [%rd53];
+	cvt.u64.u32 	%rd54, %r21;
+	mul.lo.s64 	%rd12, %rd54, %rd51;
+	mov.u32 	%r4, %ntid.x;
+	cvta.to.global.u64 	%rd13, %rd21;
+	mul.lo.s64 	%rd14, %rd8, %rd51;
+$L__BB2_8:
+	cvt.s64.s32 	%rd16, %r24;
+	mul.wide.s32 	%rd55, %r24, 8;
+	add.s64 	%rd56, %rd13, %rd55;
+	ld.global.nc.u64 	%rd57, [%rd56];
+	and.b64  	%rd58, %rd57, %rd6;
+	setp.ne.s64 	%p6, %rd58, 0;
+	mov.f32 	%f8, 0f00000000;
+	@%p6 bra 	$L__BB2_10;
+	add.s64 	%rd59, %rd14, %rd16;
+	shl.b64 	%rd60, %rd59, 2;
+	add.s64 	%rd61, %rd2, %rd60;
+	ld.global.f32 	%f8, [%rd61];
+$L__BB2_10:
+	cvt.u32.u64 	%r22, %rd16;
+	add.s64 	%rd62, %rd12, %rd16;
+	shl.b64 	%rd63, %rd62, 2;
+	add.s64 	%rd64, %rd2, %rd63;
+	st.global.f32 	[%rd64], %f8;
+	add.s32 	%r24, %r22, %r4;
+	setp.lt.s32 	%p7, %r24, %r11;
+	@%p7 bra 	$L__BB2_8;
+$L__BB2_11:
+	ret;
+
+}

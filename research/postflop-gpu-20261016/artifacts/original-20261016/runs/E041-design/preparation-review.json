@@ -1,0 +1,46 @@
+{
+  "id": "E041-preparation-review",
+  "at": "2026-10-17T01:14:47.001800+00:00",
+  "status": "OFF_TREE_DRAFT_ONLY_UNCOMPILED",
+  "root_review_only": true,
+  "source": "One arena.rs file on exact accepted E020, independent of closed E040.",
+  "scope": "Replace compressed inactive sentinel encoding with owned q fill0/node scale+0. Explicit snapshots retain Store.write_f32; F32 branch returns before helper. Active readback, uploads, constructor, sync/stream behavior and CUDA source unchanged.",
+  "source_checks": [
+    "Original compressed inactive closure occurs exactlyonce.",
+    "I16/U16 zero result matches existing encoders on positivezero input; lengthzero still resets only its node scale.",
+    "No allocation/field/CPU feature requirement introduced; original zeros buffer remains.",
+    "Private helper can only see compressed stores at current caller; both tests use raw Store outputs and guards."
+  ],
+  "cpu_test_plan": {
+    "zero_sentinel_cases": 52,
+    "explicit_snapshot_cases": 156,
+    "types": [
+      "I16",
+      "U16"
+    ],
+    "lengths": [
+      0,
+      1,
+      2,
+      7,
+      8,
+      15,
+      16,
+      17,
+      31,
+      32,
+      33,
+      1024,
+      7777
+    ],
+    "which": [
+      0,
+      1
+    ],
+    "reference": "Unchanged Store.write_f32, whole raw q and bitwise scales including unowned guards.",
+    "status": "written_not_compiled_or_executed"
+  },
+  "next_gpu_control": "Use preserved accepted-arena-write.rs as test-only old writer for old sync reference. Comparing new sync against an old sync body that calls the NEW ArenaLayout.write would not be an independent oracle. Exercise actual compact GPU readback with seeded zero/nonzero inactive snapshots, queries/saves/materialization/resync, raw GPU and CPU payloads; retain F32/full controls.",
+  "next_gate": "Final source and control review; separately frozen fresh builds/CPU+GPU controls before fixed new performance schedule. All1%/no-tradeoff confirmation, broader/holdout/cumulative obligations remain.",
+  "performance_claim": null
+}

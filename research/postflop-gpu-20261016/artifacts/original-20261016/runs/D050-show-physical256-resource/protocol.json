@@ -1,0 +1,85 @@
+{
+  "id": "D050",
+  "status": "prospective_before_execution",
+  "base": "Accepted E020",
+  "base_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558",
+  "source_delta": "Only up_show scan geometry: physical256 uses128 logical lanes. Guard local scan/chunk write and base-add to those128 lanes; all barriers and original floating expressions/full128 thread0 recurrence retained. Other valid1D widths retain original scan geometry. Independent staging/zeroing/output loops retain blockDim.x strides.",
+  "resource_cases": [
+    {
+      "id": "rainbow_p0",
+      "nh_o": 319,
+      "max_sorted_opponent_hands": 314,
+      "dynamic_shared_bytes": 6300,
+      "source": "fixed accepted E020 selected launch/allocation"
+    },
+    {
+      "id": "rainbow_p1",
+      "nh_o": 257,
+      "max_sorted_opponent_hands": 252,
+      "dynamic_shared_bytes": 5060,
+      "source": "fixed accepted E020 selected launch/allocation"
+    },
+    {
+      "id": "wide_turn_1128_1081",
+      "nh_o": 1128,
+      "max_sorted_opponent_hands": 1081,
+      "dynamic_shared_bytes": 21808,
+      "source": "frozen full-range turn holdout allocation"
+    },
+    {
+      "id": "valid_range_upper_bound1326",
+      "nh_o": 1326,
+      "max_sorted_opponent_hands": 1326,
+      "dynamic_shared_bytes": 26520,
+      "source": "conservative valid two-card range upper bound; not an actual fixed primary fixture"
+    }
+  ],
+  "source_variants": [
+    {
+      "id": "baseline",
+      "physical_threads": 128,
+      "logical_scan_threads": 128
+    },
+    {
+      "id": "candidate",
+      "physical_threads": 256,
+      "logical_scan_threads": 128
+    }
+  ],
+  "same_context": true,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "architecture": "compute_120",
+  "compile_options": "arch only; other cudarc CompileOptions default, matching accepted production",
+  "resource_rows": 8,
+  "expected_markers": 10,
+  "capacity_prerequisite": "Required physical thread count and static+dynamic shared bytes must fit queried default device/function limits with positive theoretical residency. No register/local/block/warp non-regression gate for differing physical widths.",
+  "required_independent_source_ptx_gate": "Original128 chunk bounds, +0 accumulation and128 chunk writes; unchanged full128 left-to-right += recurrence and base-add order; every physical thread reaches every barrier; upper128 threads never consume/write scan state. Unchanged function ABI/eight other PTX entries and original floating dependencies. Counts alone are insufficient.",
+  "empty_opponent_case": "All128 logical lanes publish+0 with empty local loops; thread0 still performs all128 recurrence additions. No total/prefix read when m_o=0.",
+  "host_change_anticipated_unimplemented": {
+    "file": "crates/solver/src/gpu/mod.rs",
+    "sites": [
+      "evaluation up_show launch at695",
+      "training up_show launch at925"
+    ],
+    "change": "Only both up_show block dimensions become(256,1,1); unchanged grid,shared reservation,arguments,graph/profile order. All other kernels retain original launch configuration.",
+    "implemented": false
+  },
+  "per_stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "minimum_free_bytes": 53687091200,
+  "output_reservation_bytes": 1073741824,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "preserve_failure_no_overwrite": true,
+  "other_eight_entries_must_have_byte_identical_extracted_ptx": true,
+  "entry_names_and_up_show_signature_unchanged": true,
+  "root_execution_requires": "Independent frozen source/script review, D049 terminal resource rejection, all162 accepted E020 identities restored and serialized idle slot. Root alone executes.",
+  "candidate_variants": 1,
+  "outcome_triggered_rescue": false,
+  "later_gate": "No native candidate is authorized here. A separately authorized baseline128/candidate256 exact complete up_show comparison and full raw/compressed/F32/evaluation/lock/resume plus complete-cycle qualification remain necessary if feasible."
+}

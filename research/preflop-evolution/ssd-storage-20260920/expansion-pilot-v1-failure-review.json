@@ -1,0 +1,29 @@
+{
+  "runtime_gate_passed": false,
+  "capacity_observed": true,
+  "all_224_continuations_constructed": true,
+  "seconds": 1804.3279999999795,
+  "completed_saved_checkpoints": [
+    1
+  ],
+  "target_iterations": 20,
+  "minimum_sampled_free_host_bytes": 25144324096,
+  "minimum_sampled_free_gpu_bytes": 12212764672,
+  "canonical_state_bytes": 61718272480,
+  "planned_ssd_state_writes": 0,
+  "allow_small_transfer_experiment": true,
+  "production_ready": false,
+  "accuracy_improvement_claim": false,
+  "conclusion": "Capacity worked; the 20-iteration runtime gate did not. Do not extend or repeat this unmodified large run.",
+  "limitation": "No per-iteration progress or phase timings between checkpoints. Cannot infer how many updates finished or separate final evaluation from training time.",
+  "next_action": "Separate owner-only transfer and allocation experiments retain their unchanged exactness gates. No broad training or promotion is approved by this failure review.",
+  "inputs_sha256": {
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-pilot-v1-freeze.json": "e0235e4dc3c7b5469cb2893d5fcf9266891de29ad51a48f1a054dd8ea26a6f8c",
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-pilot-v1-status.json": "cfd035c3b600301367714b8bc3618f3a445f9590e0b9dd26cd5bbabe8daa8c73",
+    "research\\preflop-evolution\\ssd-storage-20260920\\expansion-pilot-v1-result.json": "aafd4c70ec3f57ff13905475c836dc1cce2435f1d27ba1c1c6058231be804db4",
+    "research\\preflop-evolution\\representative-coverage-20260919\\expansion-pilot-v1-status.json": "31da097c8912e93ea372066e17c556a0fa757de265cd6b4f69223e676a8f45dc",
+    "research\\preflop-evolution\\representative-coverage-20260919\\expansion-pilot-v1.log": "7a822b5959341a8efab7c83a6fe4bd3b828640d60218fe6102bfbc1adc138f00",
+    "research\\preflop-evolution\\representative-coverage-20260919\\expansion-pilot-v1-resources.json": "ac0a17d7e9c631b86667cbd01dd1fb841cf07f7f2c4424eebe4a30414bff6bc9",
+    "tools\\research\\storage_expansion_failure_review_20260920.py": "6487377898975da99411dcdccbcb9266037adc6dc4351ce10368b131919bec99"
+  }
+}

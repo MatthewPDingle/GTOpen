@@ -1,0 +1,67 @@
+{
+  "id": "E080",
+  "at": "2026-10-18T06:52:32.394389+00:00",
+  "decision": "advance_to_separately_frozen_confirmation",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9874.4567,
+    "candidate_full_cycle_ms": 9629.2295,
+    "observed_gain_pct": 2.4834500514848696,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -2.095763965123287,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -2.095763965123287,
+          -3.401211392352693,
+          -1.5790070553010438
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -3.075433932203085,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -4.084947780105206,
+          1.8398403242102868,
+          -3.075433932203085
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -1.0971115958787971,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -4.79156977673009,
+          -1.0971115958787971,
+          13.709633828933296
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": true,
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 86,
+  "ignored_units": 4,
+  "exact_fixture_results": 18,
+  "exact_checkpoints": 138,
+  "component_full_layout_snapshots": 18,
+  "component_lifecycle_mocks": 12,
+  "component_predicates": 15,
+  "component_control_report_sha256": "535caf6224b536be96d4e5aeb9a11954faaba5af8922be1d6e586eb058a2520a",
+  "CUDA_source_unchanged": true,
+  "assessment_sha256": "cef6f336fb26f329f5de8616e99cd2571b1ac482a693f3e6e5114fca95f903bd",
+  "root_replay_sha256": "a37a0e5d0c231b570b9536bf37d82c038bbbf80f426b3f82880e98871140bd93",
+  "primary_whole_arena_fingerprints_exact": true,
+  "primary_raw_arena_bytes_independently_compared": false,
+  "source_adopted": false,
+  "accepted_and_live_source": "E051",
+  "fresh16_broad_material_holdout_cumulative_run": false,
+  "no_exclusions_extensions_pooling": true,
+  "reason": "Initial complete-solve gain 2.483450%. All 18 full non-timing results, 138 checkpoints and 86 ordinary tests passed. Initial gate passed. Separately frozen fresh16 confirmation, broad compatibility, actual CPU and memory costs, capacity, holdout and cumulative checks remain. Not accepted."
+}

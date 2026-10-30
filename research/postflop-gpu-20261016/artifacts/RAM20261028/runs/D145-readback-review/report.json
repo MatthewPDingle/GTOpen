@@ -1,0 +1,123 @@
+{
+  "id": "D145",
+  "at": "2026-10-28T09:31:50.652070+00:00",
+  "status": "source_and_retained_measurement_review_only",
+  "control_ids": [
+    "B296",
+    "B297",
+    "B298"
+  ],
+  "control_score_ms": 10181.2674,
+  "sum_independent_readback_medians_ms": 599.5192000000001,
+  "phase_observations": [
+    {
+      "fixture_id": "rainbow",
+      "phase_medians_ms": {
+        "build_ms": 86.8339,
+        "init_ms": 542.8165,
+        "solve_ms": 4975.5256,
+        "readback_ms": 346.6821,
+        "full_cycle_ms": 5948.0595
+      },
+      "raw_phase_samples": [
+        {
+          "build_ms": 86.8339,
+          "init_ms": 536.0934000000001,
+          "solve_ms": 4975.5256,
+          "readback_ms": 335.8005,
+          "full_cycle_ms": 5934.3098
+        },
+        {
+          "build_ms": 92.3793,
+          "init_ms": 546.5226,
+          "solve_ms": 4962.397,
+          "readback_ms": 346.6821,
+          "full_cycle_ms": 5948.0595
+        },
+        {
+          "build_ms": 79.176,
+          "init_ms": 542.8165,
+          "solve_ms": 4986.1092,
+          "readback_ms": 354.1142,
+          "full_cycle_ms": 5962.2679
+        }
+      ]
+    },
+    {
+      "fixture_id": "two-tone",
+      "phase_medians_ms": {
+        "build_ms": 360.6548,
+        "init_ms": 405.9388,
+        "solve_ms": 3083.3363,
+        "readback_ms": 251.99640000000002,
+        "full_cycle_ms": 4121.729700000001
+      },
+      "raw_phase_samples": [
+        {
+          "build_ms": 345.75660000000005,
+          "init_ms": 507.8715,
+          "solve_ms": 3085.5812,
+          "readback_ms": 246.6073,
+          "full_cycle_ms": 4185.8877999999995
+        },
+        {
+          "build_ms": 360.6548,
+          "init_ms": 405.9388,
+          "solve_ms": 3075.8853,
+          "readback_ms": 256.3878,
+          "full_cycle_ms": 4098.9407
+        },
+        {
+          "build_ms": 386.8716,
+          "init_ms": 399.4564,
+          "solve_ms": 3083.3363,
+          "readback_ms": 251.99640000000002,
+          "full_cycle_ms": 4121.729700000001
+        }
+      ]
+    },
+    {
+      "fixture_id": "river",
+      "phase_medians_ms": {
+        "build_ms": 0.2702,
+        "init_ms": 94.2748,
+        "solve_ms": 16.8184,
+        "readback_ms": 0.8407,
+        "full_cycle_ms": 111.4782
+      },
+      "raw_phase_samples": [
+        {
+          "build_ms": 0.4136,
+          "init_ms": 107.5563,
+          "solve_ms": 17.343500000000002,
+          "readback_ms": 0.9738,
+          "full_cycle_ms": 126.33050000000001
+        },
+        {
+          "build_ms": 0.2685,
+          "init_ms": 94.2748,
+          "solve_ms": 15.7425,
+          "readback_ms": 0.6997,
+          "full_cycle_ms": 111.0179
+        },
+        {
+          "build_ms": 0.2702,
+          "init_ms": 93.508,
+          "solve_ms": 16.8184,
+          "readback_ms": 0.8407,
+          "full_cycle_ms": 111.4782
+        }
+      ]
+    }
+  ],
+  "hypothetical_score_if_each_observed_readback_were_removed_ms": 9581.748200000002,
+  "hypothetical_fixed_other_work_removed_ms": 599.5191999999988,
+  "scope_of_hypothetical": "Algebra on each retained full cycle minus its own measured readback, then the same median aggregation. This is not achievable saving, causal speed, isolated transfer time or proof that other work stays fixed.",
+  "new_RAM_five_run_baseline_unchanged_ms": 10456.4109,
+  "historical_measurements_scored": 0,
+  "source_identity_matches_D065_sync_to_cpu": true,
+  "duplicate_lead_declined": "Pointer no-alias hints overlap the closed E003 mechanism (historical0.6185% under its original2% gate); no source or compiler variation created. This decline does not regrade or resample it.",
+  "E011_status": "Original direct inactive-zero restoration is an unimplemented design, not a passed or failed timed candidate. Not activated or admitted here. Fresh substage evidence would be needed before considering it under the current1% rule.",
+  "next_action": "Prepare and freeze a diagnostic-only fresh readback breakdown using the exact retained14-span host timer helper on accepted E080. Preserve all work/copies/waits and exact solve records; matched observer controls must bound overhead. No optimization is chosen from stage medians alone.",
+  "native_or_compiler_children_started": 0
+}

@@ -1,0 +1,32 @@
+{
+  "id": "E037-assessment-time-repair",
+  "at": "2026-10-16T22:35:00.498197+00:00",
+  "status": "PASS_SOURCE_ONLY_PREPARATION",
+  "ast_scripts": 3,
+  "unexpected_control_characters": false,
+  "original_sealed_policy_artifacts_unchanged": 8,
+  "complete_raw_18_results_138_checks_block_identical": true,
+  "all_non_main_comparison_functions_ast_identical": true,
+  "comparison_function_count": 11,
+  "timestamp_examples": [
+    {
+      "receipt": "2026-10-16T22:28:09.065020+00:00",
+      "reported_start": "2026-10-16T22:28:08+00:00",
+      "accepted": false
+    },
+    {
+      "receipt": "2026-10-16T22:28:09.065020+00:00",
+      "reported_start": "2026-10-16T22:28:09+00:00",
+      "accepted": true
+    },
+    {
+      "receipt": "2026-10-16T22:28:09.065020+00:00",
+      "reported_start": "2026-10-16T22:28:10+00:00",
+      "accepted": true
+    }
+  ],
+  "interval_semantics": "Whole-second run start denotes [s,s+1s); the coarsened timestamp check alone cannot establish intra-second order. Unchanged receipt-before-run wrapper sequencing and absent-directory evidence remain required.",
+  "outcomes_read": false,
+  "assessment_executed": false,
+  "native_or_compiler_or_gpu_executed": false
+}

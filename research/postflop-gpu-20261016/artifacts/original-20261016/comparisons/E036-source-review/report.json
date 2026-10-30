@@ -1,0 +1,270 @@
+{
+  "id": "E036",
+  "verdict": "PASS_SCOPED_SOURCE_REVIEW",
+  "independent_source_review_pass": true,
+  "source_manifest_sha256": "1252fa30431bdb567617577ca75812f48b7127f3cd8d8e6551a8afdbdf9b6bbe",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "crates/solver/src/gpu/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+  },
+  "findings": [],
+  "proofs": [
+    "Exact entry extraction verifies unchanged ABI and all CUDA bytes outside up_show. Its fallback suffix from const float* ro = ro_sh onward is identical. Removing the single test insertion recovers accepted mod.rs bytes exactly; production host, launch geometry, allocations, evaluator and continuation are unchanged.",
+    "The existing staging loop visits every logical opponent reach word once. Bitwise OR excludes negative zero, nonzero and nonfinite inputs. All surviving block threads reach the publication collective; count guard, all-zero result, three finite payout guards and early return are block-uniform.",
+    "For all-positive-zero reach, the original sorted sums, prefix scan, card sums and same-hand adjustment give positive-zero lower/higher/tied. The shortcut retains the exact three-term payout expression for present hands and explicit positive zero for absent hands. A mandatory block barrier separates full-row zeroing from differently owned sorted writes. Other rows and padding are untouched.",
+    "The focused unit compiles the actual accepted up_show fragment (entry rename only) and the candidate for the same real compute capability using default CompileOptions. Sixteen frozen bit-pattern cases, both257/129 orientations and two count-zero pairs total34 comparisons/68 launches. Actual evaluate7 sorted metadata, nonzero offsets, partial/full/empty lists, matched and unmatched hands, excluded logical tails and cross-lane ownership are checked.",
+    "Every observed output word is compared between the original and candidate; active overwrite, absent positive-zero, eligible present signed-zero, all padding/other rows and all21 read-only inputs are asserted after each arm. The active nonzero case requires a nonzero original output witness. No full accepted CUDA is embedded in the new test.",
+    "All18 source artifacts,9 references and162 accepted checkout files match their seals. Existing test declarations are unchanged plus one ordinary unit, so85 passed/4 ignored remains the prospective inventory."
+  ],
+  "case_bit_binding": [
+    {
+      "name": "zero_mixed",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_all_negative",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_positive_zero",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x00000000",
+        "0x00000000",
+        "0x00000000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_negative_zero",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x80000000",
+        "0x80000000",
+        "0x80000000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_full",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "full",
+      "opponent_list": "full",
+      "eligible": true
+    },
+    {
+      "name": "zero_empty_own",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "empty",
+      "opponent_list": "full",
+      "eligible": true
+    },
+    {
+      "name": "zero_empty_opponent",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "full",
+      "opponent_list": "empty",
+      "eligible": true
+    },
+    {
+      "name": "zero_both_empty",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "empty",
+      "opponent_list": "empty",
+      "eligible": true
+    },
+    {
+      "name": "zero_win_overflow",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x7f800000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "zero_lose_overflow",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xff800000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "zero_tie_nan",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x7fc12345"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "negative_zero_excluded_tail",
+      "reach_profile": "negative_zero_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "positive_nonzero_excluded_tail",
+      "reach_profile": "active_half_plus_excluded_tail_quarter",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "signed_cancellation",
+      "reach_profile": "two_active_words_plus_one_and_minus_one",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "infinite_excluded_tail",
+      "reach_profile": "positive_infinity_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "nan_excluded_tail",
+      "reach_profile": "qnan_7fc12345_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    }
+  ],
+  "focused_test": {
+    "name": "gpu::tests::show_positive_zero_matches_original_kernel",
+    "expected_marker": {
+      "prefix": "E036_SHOW_ZERO_TEST ",
+      "fields": {
+        "comparison_pairs": 34,
+        "kernel_launches": 68,
+        "threads": 128,
+        "exact": true,
+        "performance_measurement": false
+      }
+    },
+    "prospective_unit_inventory": {
+      "passed": 85,
+      "ignored": 4,
+      "total": 89
+    }
+  },
+  "limits": [
+    "Source review only; no typecheck, compiler, CUDA/native execution or speed measurement by this reviewer. The fixed original-GPU comparison must actually pass before timings.",
+    "Fallback source identity is not a universal NaN-payload or compiled exactness proof. The fixed nonfinite observed bits are a required runtime comparison.",
+    "D067 planned incidence establishes neither cost nor complete-cycle headroom. The extra predicate is paid by other CTAs. No adoption or expanded sampling follows from this review."
+  ],
+  "preserved_preparation_evidence": "Builder draft-r1 and its UTF-8 regeneration error record remain hash-pinned. Reviewer text display truncation was resolved using bounded reads; no candidate change or failed mechanical assertion occurred.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\manifest.json": "1252fa30431bdb567617577ca75812f48b7127f3cd8d8e6551a8afdbdf9b6bbe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate.patch": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\design-manifest.json": "425d0feded4d6fc9e26441670f9efa84c346a6fa07639956cfb519c07650f218",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\candidate\\kernels.cu": "522a42d2501712d998a1ab2fce5ba661ee171b18aa623793a05e4d4549ec4f62",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\candidate\\mod.rs": "2af876f4ba4d1555082200d308ac1549f161709ec16a5a6c4ab00ec7a18ba573",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\preparation-error.json": "3ee631b7b397caf9bc3883207539c99ff0c25016053cb9c1e729d47d914c900e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\test-insertion.rs": "ac8537f7c483e49aa026a9a5f255b712bb63fff213240e42b5a2108185116f91",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\README.md": "15563a452a44e876c84236198da589baa4c150b6c30a989cc213cb64872c8cf3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\source-checks.json": "f33f8404a63320343d1c74a6acbb8df6b1a01fa7ef08558b75ee38129d339b6b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\syntax-check.json": "253f5a8c697b72c71202e26c1b54b5d974896e3105b699f3a9232df45ef5f148",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\test-body.rs": "135b07cea14fbe758fcff79a72a1d3b5700a21658aac0974d41f0539c4cb927e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\test-insertion.rs": "ac8537f7c483e49aa026a9a5f255b712bb63fff213240e42b5a2108185116f91",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-root-decisions\\preparation.json": "ba9b74076bd0401aaa4ec27dccf156cbbed41e43be2f6ace36098cd0bf91e594",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\report.json": "1ecbdcd95211088d000e6ebbee566a1c3a0ab96c1e6e6ef6f69839950cc22cce",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\manifest.json": "073f3994873b5344a3dbe6fada218c4b5d45a655dc05d7ea8340e8ab5a707608",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-planned-show-incidence\\report.json": "bc2abc4281d230d3e8348758bd12795c3ec5a8bf00d6a2c0ac074ba57f831c94",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\report.json": "d48545168f79a1ad4d97d7402581ebf66aa757d762309e64c4d28b17c78d5202",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\source-locations.json": "29d9af7dd05a037d2c64727d69a112cf50a9516f995cc38b887cba3b24bb17f7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\manifest.json": "044151bbf7a9118b96d71ddf8d08d4ee2c36122d1a87ecd3ffa098591320d126",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\test-insertion.rs": "9081ea844547a61cf8484f936206abaa2dbd4c6d73790971b1c475df7e3d42cd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  },
+  "accepted_current_source_count": 162,
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false
+}

@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-28T23:27:17.629509+00:00",
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "locks_absent": true,
+  "all_owned_compiler_native_reader_children_terminal": true,
+  "GPU_identity_readonly": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version,memory.total",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607 MiB",
+    "stderr": ""
+  },
+  "X_free_bytes": 4131142500352,
+  "all_new_bulk_output_root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028",
+  "archive_S_access_readonly": true,
+  "T_accesses": 0,
+  "goal_active": true,
+  "last_primary_baseline": "B319",
+  "next_source_scout": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D213-lock-table-absence-scout\\source-review.json"
+}

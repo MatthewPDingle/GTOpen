@@ -1,0 +1,42 @@
+{
+  "at": "2026-10-29T15:40:16.508362+00:00",
+  "complete_prefix_bit_domain_partition": {
+    "high16_intervals": 65536,
+    "all_bit_patterns": 4294967296,
+    "nonzero_finite_accepted": 4278190078,
+    "signedzero_inf_nan_rejected": 16777218,
+    "predicate": "0 < (bits &0x7fffffff) <0x7f800000"
+  },
+  "guarded_reach_domain": "Every original opponent reach raw bitword <=0x67800000 (+2^80); excludes allnegativevalues,negativezero,NaNs,infinities,largerpositivevalues. m_o in1..1326 and total>0; tie raw magnitude0, finitewin/lose. Other inputs use byte-original fallback. No claim this static guard is taken on observed execution.",
+  "finite_tie_argument_proof": {
+    "max_two_card_list_terms_with_repeated_card_or_positions": 5304,
+    "nonnegative_word_upper_bound": "2^80",
+    "u_fraction": "1/16777216",
+    "gamma_fraction": "663/2096489",
+    "positive_sum_upper_bound_exclusive": "2^94",
+    "all_valid_lower_higher_tied_intermediates_absolute_bound_exclusive": "2^102",
+    "proof": "Each consumed card position lies inside 2*m_o shared words. Two card lists each length<=2*m_o, so<=4*m_oterms, including repeatedpositions/cardIDs. Positive original andblockedprefixordered sums have fewerroundings. Subnormalpositive additions are exact untilnormalrange; otherwiseRNrelativeerror<=u, Nu<1 givesgamma<1/1000 andstrict2^94bound byinductionbeforeoverflow. Conservative fl(a+/-b)<=2*(abs(a)+abs(b)) recurrenceskeepcorrection/valid/tiedintermediates<2^102, wellbelowfloatoverflow. Metadataextent/hand/scattervalidity remain original caller obligations."
+  },
+  "payout_prefix_compute120": {
+    "PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "role_mapping": "params3/4/5 directglobalFPloads f11/f12/f13 are win/lose/tie, provenbyliteralparameter/cvta/add/loadchains.",
+    "original_three_instructions": [
+      {
+        "line": 965,
+        "instruction": "mul.f32 \t%f334, %f12, %f331;"
+      },
+      {
+        "line": 966,
+        "instruction": "fma.rn.f32 \t%f335, %f11, %f329, %f334;"
+      },
+      {
+        "line": 967,
+        "instruction": "fma.rn.f32 \t%f336, %f13, %f333, %f335;"
+      }
+    ],
+    "required_explicit_prefix": "__fmaf_rn(win,lower,__fmul_rn(lose,higher))",
+    "zero_add_identity": "For either signedzero tie andfinite tied, exact product is signedzero. For anynonzerofinite prefix, the finaloriginal fma.rn( signedzero,finite,prefix ) returns identicalprefixbits, includingnonzero subnormals withFTZoff. Bothsignedzeros/nonfiniteprefixesdecline andexecuteoriginalcompletepayout. SourceproofdoesnotestablishGPUemission/nativebehavior.",
+    "scope": "Enablecandidatefastpathonly__CUDA_ARCH__==1200 matchingthisexactverifiedPTXordering;otherarchitecturesmustemitoriginalentirekernel. No borrowed/PTXmodifiedflags or FPprecision/FTZchanges."
+  },
+  "new_compilers_GPU_or_speed_samples": 0
+}

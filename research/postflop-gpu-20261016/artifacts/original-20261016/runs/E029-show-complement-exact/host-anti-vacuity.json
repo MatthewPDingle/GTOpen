@@ -1,0 +1,604 @@
+{
+  "id": "E029-direct-host-anti-vacuity",
+  "status": "pass",
+  "scope": "Host binary32 model used only to verify corpus has nonzero outputs and intended sparse witness, not a GPU comparison or numerical case pass; no FTZ/FMA claim.",
+  "corpus_sha256": "a194947cc8bb0de8fb8da5c1908bb5c4312aec6ae00f4a58080a4b5871a6de42",
+  "regular_cases": 148,
+  "all_nonzero_expected_profiles_have_nonzero_output": true,
+  "sparse_witness_own_cfv_minus_quarter": true,
+  "rows": [
+    {
+      "case_id": "Ks7h2dQhTc-m0-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m0-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 453
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 453
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 2
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 2
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 2
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 463
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 232
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 254
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m127-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 254
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 464
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 513
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 234
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 256
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m128-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 256
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 512
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 511
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 236
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 258
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m129-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 258
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 510
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 461
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 510
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m255-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 510
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 510
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 463
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 512
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m256-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 512
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 465
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 465
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 459
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 1973
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 2162
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m1081-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 2162
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m0-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 229
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 229
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 1
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 1
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 1
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 233
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 122
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 127
+    },
+    {
+      "case_id": "AsKsQsJsTs-m127-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 127
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 231
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 123
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 128
+    },
+    {
+      "case_id": "AsKsQsJsTs-m128-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 128
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 123
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 129
+    },
+    {
+      "case_id": "AsKsQsJsTs-m129-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 129
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 237
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 255
+    },
+    {
+      "case_id": "AsKsQsJsTs-m255-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 255
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 238
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 256
+    },
+    {
+      "case_id": "AsKsQsJsTs-m256-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 256
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 231
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 239
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p0-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p0-sparse_rounding_witness",
+      "nonzero_host_reference_words": 240
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p0-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p0-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p1-all_zero",
+      "nonzero_host_reference_words": 0
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p1-sparse_rounding_witness",
+      "nonzero_host_reference_words": 990
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p1-seeded_ordinary",
+      "nonzero_host_reference_words": 1081
+    },
+    {
+      "case_id": "AsKsQsJsTs-m1081-p1-subnormal_mixed_scales",
+      "nonzero_host_reference_words": 1081
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p0-full-own-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "Ks7h2dQhTc-m257-p1-full-own-seeded_ordinary",
+      "nonzero_host_reference_words": 514
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p0-full-own-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    },
+    {
+      "case_id": "AsKsQsJsTs-m257-p1-full-own-seeded_ordinary",
+      "nonzero_host_reference_words": 257
+    }
+  ],
+  "native_execution": false
+}

@@ -1,0 +1,10 @@
+--- r1/candidate-evaluation_device_events.rs
++++ r2/candidate-evaluation_device_events.rs
+@@ -352,6 +352,7 @@
+     let ctx=CudaContext::new(0).map_err(e)?;
+     let (free,total)=ctx.mem_get_info().map_err(e)?;
+     emit(json!({"stage":"admission","device_per_arm_payload_bytes":device_per_arm,
++        "device_arena_elements":plan.arena_elements,
+         "dual_device_required_with_reserve":dual_device,"device_reserve_bytes":2*GIB,
+         "device_free_bytes":free,"device_total_bytes":total,"host_free_before_spot":free_before_spot,
+         "host_free_after_spot_and_plan":ram,"host_additional_required":host_additional,

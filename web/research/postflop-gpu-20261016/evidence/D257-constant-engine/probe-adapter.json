@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-29T05:30:56.474668+00:00",
+  "original_probe_sha256": "7b13552705bdb7431e08408400272bd57d3853fa47db0bdf60e7246d5c0ca348",
+  "all_positioned_edits_reverse_to_original_after_namespace": true,
+  "edits": [
+    {
+      "position": 309,
+      "old": "#[path=\"gpu/mod.rs\"]mod observed;",
+      "new": "#[path=\"observed.rs\"]mod observed;"
+    },
+    {
+      "position": 1434,
+      "old": "d:&CudaSlice<T>,expected:&[T]",
+      "new": "d:&impl cudarc::driver::DevicePtr<T>,expected:&[T]"
+    },
+    {
+      "position": 1995,
+      "old": "d:&CudaSlice<f32>,out:&mut BufWriter<File>",
+      "new": "d:&impl cudarc::driver::DevicePtr<f32>,out:&mut BufWriter<File>"
+    },
+    {
+      "position": 7211,
+      "old": "    assert_eq!(bi, gi);",
+      "new": "    assert_eq!(bi[\"wrapper_bytes\"],4448);assert_eq!(gi[\"wrapper_bytes\"],4400);\n    let mut expected_info=bi.clone();expected_info[\"wrapper_bytes\"]=json!(4400);assert_eq!(expected_info,gi);"
+    },
+    {
+      "position": 7672,
+      "old": "\"info\": bi, \"all65other_device_arrays_exact\": true",
+      "new": "\"info\": bi, \"candidate_info\":gi, \"all65other_device_arrays_exact\": true"
+    },
+    {
+      "position": 18101,
+      "old": "assert_eq!(result.d257_cluster_selected(),arm==1,\"actual constructor kernel selection\");result",
+      "new": "assert_eq!(result.d257_arm(),arm,\"actual frozen host arm\");let region=result.d257_discount_region();assert_eq!(region[1],12);println!(\"D257_DISCOUNT_BIND {}\",json!({\"arm\":arm,\"call\":D257_BINDS[arm].load(std::sync::atomic::Ordering::SeqCst),\"region\":region,\"space\":if arm==0{\"global_allocation\"}else{\"module_constant\"}}));result"
+    }
+  ]
+}

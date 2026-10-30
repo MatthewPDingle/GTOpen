@@ -1,0 +1,81 @@
+.visible .entry copy_span(
+	.param .u64 .ptr .align 1 copy_span_param_0,
+	.param .u64 .ptr .align 1 copy_span_param_1,
+	.param .u32 copy_span_param_2
+)
+{
+	.reg .pred 	%p<7>;
+	.reg .b32 	%r<33>;
+	.reg .f32 	%f<6>;
+	.reg .b64 	%rd<18>;
+
+	ld.param.u64 	%rd3, [copy_span_param_0];
+	ld.param.u64 	%rd4, [copy_span_param_1];
+	ld.param.u32 	%r12, [copy_span_param_2];
+	cvta.to.global.u64 	%rd1, %rd4;
+	cvta.to.global.u64 	%rd2, %rd3;
+	mov.u32 	%r13, %ctaid.x;
+	mov.u32 	%r14, %ntid.x;
+	mov.u32 	%r15, %tid.x;
+	mad.lo.s32 	%r31, %r13, %r14, %r15;
+	mov.u32 	%r16, %nctaid.x;
+	mul.lo.s32 	%r2, %r16, %r14;
+	setp.ge.s32 	%p1, %r31, %r12;
+	@%p1 bra 	$L__BB7_7;
+	add.s32 	%r17, %r31, %r2;
+	max.s32 	%r18, %r12, %r17;
+	setp.lt.s32 	%p2, %r17, %r12;
+	selp.u32 	%r19, 1, 0, %p2;
+	add.s32 	%r20, %r17, %r19;
+	sub.s32 	%r21, %r18, %r20;
+	div.u32 	%r22, %r21, %r2;
+	add.s32 	%r3, %r22, %r19;
+	and.b32  	%r23, %r3, 3;
+	setp.eq.s32 	%p3, %r23, 3;
+	@%p3 bra 	$L__BB7_4;
+	add.s32 	%r24, %r3, 1;
+	and.b32  	%r25, %r24, 3;
+	neg.s32 	%r29, %r25;
+$L__BB7_3:
+	.pragma "nounroll";
+	mul.wide.s32 	%rd5, %r31, 4;
+	add.s64 	%rd6, %rd1, %rd5;
+	add.s64 	%rd7, %rd2, %rd5;
+	ld.global.nc.f32 	%f1, [%rd7];
+	st.global.f32 	[%rd6], %f1;
+	add.s32 	%r31, %r31, %r2;
+	add.s32 	%r29, %r29, 1;
+	setp.ne.s32 	%p4, %r29, 0;
+	@%p4 bra 	$L__BB7_3;
+$L__BB7_4:
+	setp.lt.u32 	%p5, %r3, 3;
+	@%p5 bra 	$L__BB7_7;
+	mul.wide.s32 	%rd11, %r2, 4;
+$L__BB7_6:
+	mul.wide.s32 	%rd8, %r31, 4;
+	add.s64 	%rd9, %rd2, %rd8;
+	ld.global.nc.f32 	%f2, [%rd9];
+	add.s64 	%rd10, %rd1, %rd8;
+	st.global.f32 	[%rd10], %f2;
+	add.s32 	%r26, %r31, %r2;
+	add.s64 	%rd12, %rd9, %rd11;
+	ld.global.nc.f32 	%f3, [%rd12];
+	add.s64 	%rd13, %rd10, %rd11;
+	st.global.f32 	[%rd13], %f3;
+	add.s32 	%r27, %r26, %r2;
+	add.s64 	%rd14, %rd12, %rd11;
+	ld.global.nc.f32 	%f4, [%rd14];
+	add.s64 	%rd15, %rd13, %rd11;
+	st.global.f32 	[%rd15], %f4;
+	add.s32 	%r28, %r27, %r2;
+	add.s64 	%rd16, %rd14, %rd11;
+	ld.global.nc.f32 	%f5, [%rd16];
+	add.s64 	%rd17, %rd15, %rd11;
+	st.global.f32 	[%rd17], %f5;
+	add.s32 	%r31, %r28, %r2;
+	setp.lt.s32 	%p6, %r31, %r12;
+	@%p6 bra 	$L__BB7_6;
+$L__BB7_7:
+	ret;
+
+}

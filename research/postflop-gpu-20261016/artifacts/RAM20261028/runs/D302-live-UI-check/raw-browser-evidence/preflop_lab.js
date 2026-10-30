@@ -1,0 +1,2503 @@
+// PREFLOP LAB — UI for the multiway preflop solver (equity-model postflop).
+// Build a game (any limps/sizes/players), solve it, walk the action tree with
+// an action ribbon, and export any heads-up flop node straight into
+// the postflop solver's SETUP.
+
+import { api } from './api.js';
+import { createPositionSizing } from './preflop_sizing.js';
+import { branchWarning } from './preflop_reach.js';
+import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
+import { cellInfo } from './cards.js';
+import { formatPreflopView } from './preflop_actions.js';
+import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
+import { renderModelEvidence } from './model_evidence.js';
+import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
+
+// Same key as the Browse matrix (browse.js): fold blue, check/call green,
+// raises in the postflop bet reds — small / medium / large by size rank,
+// jams in the overbet shade.
+const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
+const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
+const DEFAULT_REALIZATION = 'balanced';
+
+function positionsFor(nPlayers) {
+  const NAMED = {
+    2: ['SB', 'BB'], // HU: SB is the button, acts first pre
+    3: ['BTN', 'SB', 'BB'],
+    6: ['UTG', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    7: ['UTG', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    8: ['UTG', 'UTG1', 'MP', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+    9: ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'],
+  };
+  if (NAMED[nPlayers]) return NAMED[nPlayers];
+  const all = ['UTG', 'UTG1', 'MP', 'LJ', 'HJ', 'CO', 'BTN'];
+  return [...all.slice(7 - (nPlayers - 2)), 'SB', 'BB'];
+}
+
+const PRESETS = [
+  {
+    name: 'HU 10bb push/fold',
+    players: 2, stack: 10, opens: '', mult: '', maxRaises: 1,
+    limp: false, allin: true, ante: 0, rakePct: 0, rakeCap: 0,
+  },
+  {
+    name: 'HU 25bb: limp, raise, jam',
+    players: 2, stack: 25, opens: '2,2.5', mult: '3', maxRaises: 3,
+    limp: true, allin: true, ante: 0, rakePct: 0, rakeCap: 0,
+  },
+  {
+    name: '6-max 100bb low-stakes: limps + 5% rake',
+    players: 6, stack: 100, opens: '2.5,4', mult: '3', maxRaises: 3,
+    limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
+  },
+  {
+    name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake', smallBlind: 2, bigBlind: 2,
+    players: 8, stack: 150, opens: '7.5,10', mult: '2,4', maxRaises: 2,
+    limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 8.5,
+  },
+  {
+    name: '8-max 150bb $2/5: limps + 10%, 9 cap rake', smallBlind: 2, bigBlind: 5,
+    players: 8, stack: 150, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
+  },
+  {
+    name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake', smallBlind: 2, bigBlind: 5,
+    players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 2.2,
+  },
+];
+
+export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+  const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
+  const savedModelNote = document.createElement('div');
+  savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
+  savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
+  els.mult.closest('.pfl-grid2').after(savedModelNote);
+  const previewBanner = document.createElement('div');
+  previewBanner.id = 'pfl-publication';
+  previewBanner.className = 'pfl-preview-note hidden';
+  previewBanner.setAttribute('role', 'status');
+  // Publication owns a full row; actor and evidence keep their existing row.
+  els.nodeTitle.parentElement.before(previewBanner);
+  const previewOption = document.createElement('label');
+  previewOption.className = 'pfl-preview-option';
+  previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
+  previewOption.dataset.tip = 'Publish a real learned strategy after 2 iterations, then every 10. Early ranges are approximate; accuracy measurements and the convergence target remain unchanged.';
+  const previewCheck = previewOption.querySelector('input');
+  previewCheck.disabled = true;
+  els.solve.parentElement.after(previewOption);
+  const previewCapability = api.pfCapabilities().then(caps => {
+    const supported = supportsEarlyPreview(caps);
+    previewCheck.disabled = S.solveRunning || !supported;
+    return supported;
+  }).catch(() => false);
+  const reachWarning = document.createElement('div');
+  reachWarning.className = 'pfl-reach-warning hidden';
+  previewBanner.after(reachWarning);
+  const nodeEvidence = document.createElement('div');
+  nodeEvidence.id = 'pfl-node-evidence';
+  nodeEvidence.className = 'hidden';
+  els.nodeTitle.after(nodeEvidence);
+  const equityModelNote = document.createElement('div');
+  equityModelNote.id = 'pfl-equity-model';
+  equityModelNote.className = 'dim hidden';
+  equityModelNote.style.cssText = 'font-size:11px;margin-top:4px';
+  els.status.after(equityModelNote);
+  function renderEquityModel(model) {
+    const legacy = model === 'legacy_product';
+    const coupled = model === 'coupled_deck_v1';
+    equityModelNote.classList.toggle('hidden', !legacy && !coupled);
+    equityModelNote.textContent = legacy
+      ? 'Saved-game multiway estimate · rebuild the game to update'
+      : coupled ? 'Multiway equity · coupled-deck approximation' : '';
+    equityModelNote.dataset.tip = legacy
+      ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
+      : 'Pots with 3+ players use coupled hand-strength samples and showdown value after rake. These are approximate, not jointly dealt cards: overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged. This does not solve the full postflop tree.';
+  }
+  const S = {
+    built: false,
+    formCfg: null,  // visible settings at build/load; independent of saved model metadata
+    builtCfg: null, // actual engine config, including a loaded game's original model
+    gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
+    cursor: [],     // action indices to the node being VIEWED
+    lineP: [],      // the full line (cursor is always a prefix of it)
+    lineHist: null, // /api/preflop/node history for lineP (ribbon source)
+    view: null,
+    polling: null,
+    positions: [],
+    cells: [],      // persistent 13x13 cell divs (same markup as Browse)
+    colors: [],
+    rangeSeat: 0,   // whose arriving range the grid shows at terminals
+    lastState: null, // last solver state seen by poll (drives the progress bar)
+    gap0: null,      // first measured BR gap of the current run (progress scale)
+    runPct: 0,       // monotonic progress within the current run
+    model: null,     // per-seat {mode, profile, implied, label}; hero seat
+    applied: null,   // last model actually sent to the solver (drives 🔒)
+    appliedSeatsSig: '', // seat part of the model the solver actually has
+    appliedHero: null,   // hero seat the ENGINE actually has (null = off)
+    heroPending: false,  // hero chosen but deferred until a solve exists
+    postflopDirty: false, // tendencies edited since the last table push —
+                          // excluded from seatsSig (a postflop-only re-send
+                          // must not read as "table changed"), but SOLVE and
+                          // SAVE GAME re-send the table when set
+    engineFrozen: null,  // engine-truth frozen mask from /status, if reported
+    solveRunning: false, // mirrors status "running" (table changes refused)
+    runBase: null,   // solver iteration count when the current run started
+    runStart: null,  // wall-clock start of the current run (for the timer)
+    lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
+    editSeat: null,  // seat open in the profile editor
+    editBucket: 0,
+    paintAction: 'call',
+    paintWeight: 1.0,
+    painting: false,
+  };
+  let ARCHETYPES = [];
+  let SAVED_PROFILES = [];
+  api.pfArchetypes().then(a => { ARCHETYPES = a; renderModel(); }).catch(() => {});
+  api.pfProfiles().then(p => { SAVED_PROFILES = p; renderModel(); }).catch(() => {});
+
+  // escape user-supplied text (profile/saved-game names) before
+  // interpolating into innerHTML or attribute strings
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Model-library deletion is reversible and local to this browser. Keep the
+  // source templates/files and profiles embedded in games intact.
+  const deletedModelsKey = 'pfl-deleted-models-v1';
+  let deletedModels = new Set();
+  try {
+    const saved = JSON.parse(localStorage.getItem(deletedModelsKey) || '[]');
+    if (Array.isArray(saved)) deletedModels = new Set(saved.filter(x => typeof x === 'string'));
+  } catch {}
+  const managerButton = document.createElement('button');
+  managerButton.type = 'button';
+  managerButton.className = 'btn ghost xs pfl-model-manager-open';
+  managerButton.textContent = 'Manage models';
+  managerButton.setAttribute('aria-haspopup', 'dialog');
+  const manager = document.createElement('dialog');
+  manager.className = 'pfl-model-manager';
+  manager.setAttribute('aria-labelledby', 'pfl-model-manager-title');
+  manager.innerHTML = '<div class="pfl-model-manager-heading"><h2 id="pfl-model-manager-title">Manage models</h2><button type="button" class="btn ghost xs" data-close-manager aria-label="Close model manager">Close</button></div><p class="dim">Remove models from the menus in this browser. Existing games keep their profiles. Use Show removed to restore a model.</p>' +
+    '<input type="search" class="pfl-model-search" placeholder="Find a model…" aria-label="Find player models">' +
+    '<div class="pfl-model-manager-actions"><button type="button" class="btn primary xs" data-new-model>New model</button><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div><div class="pfl-model-manager-status dim" role="status" aria-live="polite"></div>';
+  const libraryPane = document.createElement('div');
+  libraryPane.className = 'pfl-model-library-pane';
+  [...manager.children].slice(1, -1).forEach(el => libraryPane.appendChild(el));
+  manager.querySelector('[role="status"]').before(libraryPane, els.editor);
+  manager.querySelector('[data-new-model]').addEventListener('click', () => openLibraryEditor(null));
+  els.modelBox.before(managerButton);
+  document.body.appendChild(manager);
+  managerButton.addEventListener('click', () => {
+    renderModelManager();
+    if (!manager.open) manager.showModal();
+    (manager.classList.contains('editing') ? els.editor : manager.querySelector('.pfl-model-search')).focus();
+  });
+  manager.querySelector('[data-close-manager]').addEventListener('click', () => manager.close());
+  manager.addEventListener('close', () => managerButton.focus());
+  manager.addEventListener('click', e => {
+    const r = manager.getBoundingClientRect();
+    if (e.target === manager && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) manager.close();
+  });
+  const managerList = manager.querySelector('.pfl-model-library');
+  manager.querySelector('.pfl-model-search').addEventListener('input', renderModelManager);
+  manager.querySelector('[data-show-deleted]').addEventListener('change', renderModelManager);
+  manager.querySelector('[data-clear-generated]').addEventListener('click', () => {
+    const keys = ARCHETYPES.filter(a => !a.name.startsWith('Data')).map(a => `arch:${a.name}`).filter(k => !deletedModels.has(k));
+    if (!keys.length) return;
+    updateDeletedModels(keys, true);
+  });
+  function updateDeletedModels(keys, remove) {
+    const next = new Set(deletedModels);
+    keys.forEach(key => remove ? next.add(key) : next.delete(key));
+    try { localStorage.setItem(deletedModelsKey, JSON.stringify([...next])); }
+    catch { manager.querySelector('[role="status"]').textContent = 'Could not save model-menu preferences in this browser.'; return; }
+    deletedModels = next;
+    renderModel();
+    const message = remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed. Use Show removed to restore.` : 'Model restored';
+    if (manager.open) manager.querySelector('[role="status"]').textContent = message;
+    else toast(message);
+  }
+  let managerSignature = '';
+  function archetypeGroups(entries) {
+    const groups = new Map();
+    // Keep the generated group first: its removal action is intentionally
+    // separate from every measured site/stake library.
+    groups.set('Generated archetypes', []);
+    for (const [a, k] of entries) {
+      const coin = /^Data · CoinPoker · (NL\d+) · /.exec(a.name);
+      const title = coin ? `CoinPoker · ${coin[1]} · measured` :
+        a.name.startsWith('Data · Ignition · ') ? 'Ignition · NL10 regular · measured openings' :
+        a.name.startsWith('Data') ? 'HandHQ · 25–50NL · measured (2009)' : 'Generated archetypes';
+      if (!groups.has(title)) groups.set(title, []);
+      groups.get(title).push([a, k]);
+    }
+    return [...groups];
+  }
+  const modelDisplayName = name => name.replace(/^Data · CoinPoker · /, 'CP ').replace(/^Data · Ignition · /, 'Ignition ');
+  function renderModelManager() {
+    const search = manager.querySelector('.pfl-model-search').value.trim().toLowerCase();
+    const showDeleted = manager.querySelector('[data-show-deleted]').checked;
+    const groups = [
+      ...archetypeGroups(ARCHETYPES.map((a,k) => [a,k])).map(([title, entries]) =>
+        [title, entries.map(([a]) => ({name:a.name, key:`arch:${a.name}`, note:a.note || ''}))]),
+      ['Saved profiles', SAVED_PROFILES.map(name => ({name, key:`saved:${name}`}))],
+    ];
+    const seats = (S.model?.seats || []).map((m, i) => ({ m, i })).filter(({m}) => m.mode === 'ruled');
+    const signature = JSON.stringify([groups, [...deletedModels], search, showDeleted, seats.map(({m,i}) => [i,m.label])]);
+    if (signature === managerSignature) return;
+    managerSignature = signature;
+    manager.querySelector('[data-clear-generated]').disabled = !groups[0][1].some(m => !deletedModels.has(m.key));
+    const currentRows = showDeleted ? [] : seats.filter(({m,i}) => `${S.positions[i]} ${m.label}`.toLowerCase().includes(search));
+    managerList.innerHTML = (currentRows.length ? '<h4>Current game</h4>' + currentRows.map(({m,i}) =>
+      `<div class="pfl-library-model"><span>${esc(S.positions[i])} · ${esc(m.label)}</span><button type="button" class="btn ghost xs" data-edit-seat="${i}">Edit seat</button></div>`).join('') : '') + groups.map(([title, models]) => {
+      const rows = models.filter(m => deletedModels.has(m.key) === showDeleted && m.name.toLowerCase().includes(search));
+      if (!rows.length) return '';
+      return `<h4>${title} <span class="dim">${rows.length}</span></h4>` + rows.map(m =>
+        `<div class="pfl-library-model"><span data-tip="${esc(m.note || m.name)}">${esc(modelDisplayName(m.name))}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
+    }).join('') || '<p class="dim">No matching models.</p>';
+    managerList.querySelectorAll('[data-edit-seat]').forEach(button => button.addEventListener('click', () => openEditor(+button.dataset.editSeat)));
+    managerList.querySelectorAll('[data-edit-model]').forEach(button => button.addEventListener('click', () => openLibraryEditor(button.dataset.editModel)));
+    managerList.querySelectorAll('[data-model-key]').forEach(button => button.addEventListener('click', () => {
+      const key = button.dataset.modelKey;
+      updateDeletedModels([key], !showDeleted);
+    }));
+  }
+
+  // The server refuses table/hero changes while a solve runs (HTTP 409); an
+  // empty 409 body surfaces from the API layer as the bare message "409".
+  const errText = e => e && e.message === '409'
+    ? 'a solve is running — STOP it or let it finish before changing the table'
+    : (e && e.message) || String(e);
+
+  // All hero calls go through here so poll() can tell when a /status
+  // response predates an in-flight (or just-landed) hero change and must
+  // not "resync" the dropdown back to the stale engine value.
+  let heroBusy = 0, heroEpoch = 0;
+  async function heroCall(seat) {
+    heroBusy++; heroEpoch++;
+    try { return await api.pfHero(seat); }
+    finally { heroBusy--; heroEpoch++; }
+  }
+
+  // Browse-identical matrix: same .cell markup/classes; each cell carries a
+  // data-tip with its exact numbers (the app tooltip system is delegated, so
+  // updating the attribute on repaint is all it takes).
+  (function buildGrid() {
+    const m = els.grid;
+    m.innerHTML = '';
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.innerHTML =
+          `<div class="bars"></div><div class="fill"></div>` +
+          `<div class="tag">${cellInfo(i, j).label}</div><div class="sub"></div>`;
+        m.appendChild(cell);
+        S.cells.push(cell);
+      }
+    }
+  })();
+
+  // ----- config -----
+  // Scenarios: the built-in PRESETS plus the user's saved ones
+  // (saves/scenarios/). A saved scenario with a built-in's name replaces it.
+  let SCENARIOS = [];   // [{...preset, mine: bool}]
+  const applyPreset = (p) => {
+    els.smallBlind.value = blindSizes(p).smallBlind;
+    els.bigBlind.value = blindSizes(p).bigBlind;
+    els.players.value = p.players;
+    els.straddleOn.checked = Number(p.straddle || 0) > 0;
+    els.straddle.value = p.straddle || 2;
+    syncStraddleControls();
+    els.stack.value = p.stack;
+    els.opens.value = p.opens;
+    els.mult.value = p.mult;
+    positionSizing.restore(p);
+    els.maxRaises.value = p.maxRaises;
+    els.limp.checked = p.limp;
+    els.allin.checked = p.allin;
+    els.ante.value = p.ante;
+    els.rakePct.value = p.rakePct;
+    els.rakeCap.value = p.rakeCap;
+    // Scenarios configure fresh games; old scenario model choices are retired.
+    // Explicitly choosing a preset also starts fresh when an older solve is loaded.
+    if (S.built && S.activeModel !== DEFAULT_REALIZATION) S.formCfg = null;
+  };
+  const currentScenario = () => ({
+    players: +els.players.value, stack: +els.stack.value,
+    smallBlind: +els.smallBlind.value, bigBlind: +els.bigBlind.value,
+    straddle: els.straddleOn.checked ? +els.straddle.value : 0,
+    opens: els.opens.value.trim(), mult: els.mult.value.trim(),
+    ...positionSizing.scenario(),
+    maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
+    ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
+  });
+  function syncScenarioSelection() {
+    const cur = currentScenario();
+    const same = s => Object.entries(cur).every(([k, v]) =>
+      k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
+      k === 'positionSizes' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
+      k === 'laterMult' ? String(s[k] || '') === String(v) :
+      k === 'straddle' ? Number(s.straddle || 0) === v :
+      k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
+    const idx = SCENARIOS.findIndex(same);
+    if (idx >= 0) {
+      els.preset.value = String(idx);
+      els.smallBlind.value = blindSizes(SCENARIOS[idx]).smallBlind;
+      els.bigBlind.value = blindSizes(SCENARIOS[idx]).bigBlind;
+    }
+    else {
+      if (!els.preset.querySelector('option[value="-1"]')) els.preset.add(new Option('Current game (custom settings)', '-1'));
+      els.preset.value = '-1';
+    }
+    if (els.scnDel) els.scnDel.classList.toggle('hidden', !(SCENARIOS[idx]?.mine));
+  }
+  function renderScenarios(selectName) {
+    const cur = selectName != null ? selectName
+      : (SCENARIOS[+els.preset.value] || {}).name;
+    els.preset.innerHTML = '';
+    const mine = SCENARIOS.filter(s => s.mine);
+    const builtin = SCENARIOS.filter(s => !s.mine);
+    const group = (label, list) => {
+      if (!list.length) return;
+      const g = document.createElement('optgroup');
+      g.label = label;
+      for (const s of list) {
+        const o = document.createElement('option');
+        o.value = SCENARIOS.indexOf(s);
+        o.textContent = s.name;
+        g.appendChild(o);
+      }
+      els.preset.appendChild(g);
+    };
+    group('my scenarios', mine);
+    group('built-in', builtin);
+    const idx = SCENARIOS.findIndex(s => s.name === cur);
+    els.preset.value = idx >= 0 ? idx : 0;
+    const sel = SCENARIOS[+els.preset.value];
+    if (els.scnDel) els.scnDel.classList.toggle('hidden', !(sel && sel.mine));
+  }
+  async function loadScenarios(selectName) {
+    let saved = [];
+    try { saved = await api.pfScenarios(); } catch { /* older server: built-ins only */ }
+    const byName = new Map(saved.map(s => [s.name, { ...s, mine: true }]));
+    SCENARIOS = [
+      ...saved.map(s => byName.get(s.name)),
+      ...PRESETS.filter(p => !byName.has(p.name)).map(p => ({ ...p, mine: false })),
+    ];
+    renderScenarios(selectName);
+    if (S.built) syncScenarioSelection();
+  }
+  els.preset.addEventListener('change', () => {
+    const s = SCENARIOS[+els.preset.value];
+    if (s) applyPreset(s);
+    if (els.scnDel) els.scnDel.classList.toggle('hidden', !(s && s.mine));
+    updateEstimate();
+  });
+  if (els.scnSave) els.scnSave.addEventListener('click', async () => {
+    const cur = SCENARIOS[+els.preset.value];
+    const name = (prompt('Save scenario as', cur ? cur.name : '') || '').trim();
+    if (!name) return;
+    try {
+      await api.pfScenarioSave(name, { ...currentScenario(), realization: DEFAULT_REALIZATION });
+      await loadScenarios(name);
+      toast(`scenario "${name}" saved`);
+    } catch (e) { toast(errText(e), true); }
+  });
+  if (els.scnDel) els.scnDel.addEventListener('click', async () => {
+    const cur = SCENARIOS[+els.preset.value];
+    if (!cur || !cur.mine) return;
+    if (!confirm(`Delete scenario "${cur.name}"?`)) return;
+    try {
+      await api.pfScenarioDelete(cur.name);
+      await loadScenarios(null);
+      const s = SCENARIOS[+els.preset.value];
+      if (s) applyPreset(s);
+      updateEstimate();
+      toast(`scenario "${cur.name}" deleted`);
+    } catch (e) { toast(errText(e), true); }
+  });
+  SCENARIOS = PRESETS.map(p => ({ ...p, mine: false }));
+  renderScenarios(PRESETS[0].name);
+  applyPreset(PRESETS[0]);
+  loadScenarios(PRESETS[0].name);
+
+  // ----- live tree-size estimate -----
+  let estSeq = 0;
+  async function updateEstimate() {
+    const seq = ++estSeq;
+    let e;
+    try { e = await api.pfEstimate(config()); }
+    catch (err) {
+      if (seq !== estSeq) return; // superseded by a newer request
+      els.estimate.textContent = `\u26a0 ${err.message}`;
+      els.estimate.classList.add('bad');
+      return;
+    }
+    if (seq !== estSeq) return; // stale response: a newer one is coming
+    const nodes = (+e.nodes).toLocaleString();
+    const mb = e.arena_mb < 1 ? e.arena_mb.toFixed(1) : e.arena_mb.toFixed(0);
+    const fmtBig = x => x >= 1e6 ? (x / 1e6).toFixed(1) + 'M'
+      : x >= 1e4 ? Math.round(x / 1e3) + 'k' : (+x).toLocaleString();
+    const caps = `this machine allows ${fmtBig(e.limit_nodes)} nodes / ` +
+      (e.limit_arena_mb >= 1000 ? (e.limit_arena_mb / 1000).toFixed(1) + ' GB' : e.limit_arena_mb.toFixed(0) + ' MB');
+    const borderline = e.ok &&
+      (e.nodes > 0.9 * e.limit_nodes || e.arena_mb > 0.9 * e.limit_arena_mb);
+    els.estimate.classList.toggle('warn', borderline);
+    const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
+      `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
+      `These are CPU arena limits, not a GPU-memory estimate. GPU fit is checked when solving. ` +
+      `Tree size multiplies: open sizes \u00d7 re-raises \u00d7 raise cap \u00d7 limps \u00d7 players.`;
+    const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
+    if (e.ok && borderline) {
+      els.estimate.classList.remove('bad');
+      els.estimate.innerHTML =
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits, <b>barely</b> \u26a0` +
+        dot(capsTip + ' With this little headroom the build may still refuse if memory tightens \u2014 close big apps or trim a size.');
+    } else if (e.ok) {
+      els.estimate.classList.remove('bad');
+      els.estimate.innerHTML =
+        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits \u2713` + dot(capsTip);
+    } else {
+      els.estimate.classList.add('bad');
+      els.estimate.innerHTML = (e.truncated
+        ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB CPU arenas \u2014 too big \u2717`
+        : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 too big \u2717`) +
+        dot((e.truncated ? 'Counting stopped early \u2014 hopelessly past the cap. ' : '') +
+          capsTip + ' Trim open sizes, re-raise multipliers, the raise cap, or limps.');
+    }
+  }
+  window.addEventListener('focus', () => estSoon());
+  let estT = null;
+  const estSoon = () => { clearTimeout(estT); estT = setTimeout(updateEstimate, 350); };
+  function syncStraddleControls() {
+    const n = +els.players.value;
+    els.straddleOn.disabled = n < 3;
+    if (n < 3) els.straddleOn.checked = false;
+    els.straddle.disabled = !els.straddleOn.checked;
+    els.straddleNote.hidden = !els.straddleOn.checked;
+    const amount = +els.straddle.value, positions = positionsFor(n);
+    els.straddleNote.textContent = `${positions[0]} posts ${amount} bb · ${positions[1]} acts first · minimum open ${2 * amount} bb. Stack and sizes stay in the original bb.`;
+  }
+  [els.players, els.straddleOn, els.straddle].forEach(el => el.addEventListener('change', syncStraddleControls));
+  els.straddle.addEventListener('input', syncStraddleControls);
+  syncStraddleControls();
+  [els.players, els.stack, els.smallBlind, els.bigBlind, els.straddleOn, els.straddle, els.opens, els.mult, els.maxRaises,
+   els.ante, els.limp, els.allin].forEach(el => {
+    el.addEventListener('input', estSoon);
+    el.addEventListener('change', estSoon);
+  });
+  updateEstimate();
+
+  function config() {
+    const n = +els.players.value;
+    const positions = positionsFor(n);
+    const posts = blindPosts(positions, currentScenario());
+    const nums = s => s.split(',').map(x => parseFloat(x)).filter(x => x > 0);
+    return {
+      positions,
+      stack: +els.stack.value || 100,
+      posts,
+      ...(els.straddleOn.checked ? { utg_straddle: true } : {}),
+      ante: +els.ante.value || 0,
+      limp: els.limp.checked,
+      open_raises: nums(els.opens.value),
+      raise_mults: nums(els.mult.value),
+      ...positionSizing.config(),
+      max_raises: +els.maxRaises.value || 1,
+      add_allin: els.allin.checked,
+      rake_pct: +els.rakePct.value || 0,
+      rake_cap: +els.rakeCap.value || 0,
+      no_flop_no_drop: true,
+      realization: DEFAULT_REALIZATION,
+    };
+  }
+
+  // ----- build / solve -----
+
+  // One progress bar serves both phases. Build progress is an estimate:
+  // expected node count from the size estimator divided by a build rate
+  // that self-calibrates from every real build (localStorage). Solve
+  // progress is real: iterations vs the requested maximum.
+  const SOLVE_ITERS = 3000;
+  const progFill = els.prog.querySelector('i');
+  const progLab = els.prog.querySelector('span');
+  function progressDock(afterEl) {
+    if (els.prog.previousElementSibling !== afterEl) {
+      afterEl.insertAdjacentElement('afterend', els.prog);
+    }
+  }
+  function progressSet(pct, label) {
+    els.prog.classList.remove('hidden');
+    progFill.style.width = `${Math.max(0, Math.min(100, pct)).toFixed(1)}%`;
+    progLab.textContent = label;
+  }
+  function progressHide() {
+    els.prog.classList.add('hidden');
+  }
+
+  async function buildGame() {
+    // pf_build stops-and-joins a running solve and replaces the session —
+    // mirror the LOAD guards (and the postflop BUILD) instead of destroying
+    // a solve without a word
+    if (S.solveRunning) {
+      if (!confirm('A solve is RUNNING — building a new game stops and discards it. Continue?')) return false;
+    } else if (S.built && lastIter > 0 && !S.gameSaved &&
+        !confirm('The current game has not been saved — building a new game discards its solve. Continue?')) {
+      return false;
+    }
+    let cfg;
+    try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
+    els.build.disabled = true;
+    els.solve.disabled = true;
+    els.buildInfo.textContent = '';
+    let expected = 0;
+    try { expected = (await api.pfEstimate(cfg)).nodes || 0; } catch { /* build reports errors */ }
+    const eqCold = !localStorage.getItem('pfl-eq-built');
+    const rate = +localStorage.getItem('pfl-build-rate') || 150000; // nodes/s
+    const t0 = performance.now();
+    progressDock(els.build); // building: the bar belongs to step 2
+    const tick = () => {
+      const secs = (performance.now() - t0) / 1000;
+      const pct = expected > 0 ? Math.min(94, (100 * secs * rate) / expected) : Math.min(94, secs * 12);
+      progressSet(pct, eqCold
+        ? 'building — loading the equity cache, or computing it if missing…'
+        : `building ${expected.toLocaleString()} nodes · ~${Math.round(pct)}%`);
+    };
+    tick();
+    const timer = setInterval(tick, 150);
+    try {
+      const info = await api.pfBuild(cfg);
+      renderEquityModel(info.multiway_equity_model);
+      const secs = (performance.now() - t0) / 1000;
+      if (info.nodes > 20000 && secs > 0.2) {
+        localStorage.setItem('pfl-build-rate', String(Math.round(info.nodes / secs)));
+      }
+      localStorage.setItem('pfl-eq-built', '1');
+      S.built = true;
+      S.activeModel = cfg.realization;
+      savedModelNote.hidden = true;
+      S.gameSaved = false; // fresh tree: nothing of it is on disk
+      S.builtCfg = JSON.stringify(cfg);
+      S.formCfg = JSON.stringify(cfg);
+      S.positions = cfg.positions;
+      S.cursor = [];
+      S.lineP = [];
+      S.model = {
+        seats: cfg.positions.map(() => ({ mode: 'live', profile: null, implied: null, label: 'Solver' })),
+        hero: null,
+      };
+      S.applied = null;
+      S.appliedSeatsSig = seatsSig();
+      S.appliedHero = null;
+      S.heroPending = false;
+      S.postflopDirty = false;
+      S.engineFrozen = null;
+      S.lastGaps = null;
+      closeEditor();
+      renderModel();
+      els.buildInfo.textContent =
+        `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB CPU arenas`;
+      progressSet(100, 'built ✓ — SOLVE to fill in the strategies');
+      setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
+      lastIter = 0;
+      clearRightPanel(); // uniform pre-solve strategies aren't worth showing
+      startPolling();
+      return true;
+    } catch (e) {
+      toast(e.message, true);
+      els.buildInfo.textContent = '';
+      progressHide();
+      updateEstimate(); // re-sync the size line with the caps that refused us
+      return false;
+    } finally {
+      clearInterval(timer);
+      els.build.disabled = false;
+      els.solve.disabled = false;
+    }
+  }
+  els.build.addEventListener('click', buildGame);
+
+  // SOLVE builds first when there's nothing built yet or the settings
+  // changed since the last build — one button does the right thing.
+  els.solve.addEventListener('click', async () => {
+    els.solve.disabled = true;
+    try {
+      if (!S.built || S.formCfg !== JSON.stringify(config())) {
+        if (!(await buildGame())) return;
+      }
+      // picking archetypes without APPLY MODEL then re-solving is the
+      // natural flow — make the button do the right thing, like auto-build.
+      // A deferred hero (pfHero refused pre-solve) also lands here: the
+      // table part no-ops and pfHero succeeds against the solved table.
+      // postflopDirty: tendencies edits don't count as "table changed" (no
+      // learning reset either side), but the engine's profile copy is stale
+      // until re-sent — push it so saves/exports carry the edited player.
+      if (S.model && (!modelSynced() || S.postflopDirty)) {
+        if (!(await applyModel())) return;
+      }
+      // every seat modeled/frozen and no hero = the solver has nothing to
+      // learn: the grids will just show the profiles. Say so — silently
+      // "converging" in 0 iterations reads like a broken solve.
+      if (S.model && S.model.hero == null && S.model.seats.every(m => m.mode !== 'live')) {
+        toast('Every seat is a profile or frozen and no HERO is set \u2014 there is nothing to solve, the grids will show the profiles as they are. Pick a HERO (your seat) and SOLVE to get your exploit strategy against this table.', true);
+      }
+      progressDock(els.stop); // solving: the bar belongs to step 3
+      progressSet(0, 'solving…');
+      const request = { iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 };
+      await api.pfSolve(earlyPreviewRequest(request, previewCheck.checked, await previewCapability));
+      S.gameSaved = false; // strategies are moving away from any on-disk copy
+      startPolling();
+    } catch (e) { toast(errText(e), true); progressHide(); }
+    finally { els.solve.disabled = false; }
+  });
+  els.stop.addEventListener('click', () => {
+    els.stop.disabled = true;
+    progLab.textContent = 'stopping…';
+    api.pfStop().catch(e => {
+      // a swallowed failure would leave the button dead at "stopping…"
+      els.stop.disabled = false;
+      toast(`stop failed — ${errText(e)}`, true);
+    });
+  });
+
+  // ----- saved games: full session snapshots on disk -----
+
+  // The server strips filename-hostile characters before writing (main.rs
+  // pf_game_path keeps letters/digits, space, - and _, then trims), so the
+  // overwrite check must compare the REAL on-disk name: 'f/o/o' saves as
+  // 'foo'. Replicated here; the server stays authoritative.
+  const sanitizeGameName = s => String(s).replace(/[^\p{L}\p{N} _-]/gu, '').trim();
+
+  let savedGameNames = []; // known on-disk names, for the overwrite confirm
+  async function refreshSavedGames() {
+    try {
+      const list = await api.pfSavedGames();
+      savedGameNames = list;
+      els.savedSel.innerHTML = '<option value="">load a saved game…</option>' +
+        list.map(n => `<option>${esc(n)}</option>`).join('');
+    } catch { /* server not up yet */ }
+  }
+  refreshSavedGames();
+
+  els.saveGame.addEventListener('click', async () => {
+    if (!S.built || lastIter < 1) return toast('solve something first — a save stores the solved strategies', true);
+    const def = `${S.positions.length}-max ${els.stack.value}bb iter${lastIter}`;
+    const raw = window.prompt('save game as…', def);
+    if (!raw || !raw.trim()) return;
+    const name = sanitizeGameName(raw);
+    if (!name) return toast('give the save a name (letters, digits, - _ space)', true);
+    els.saveGame.disabled = true;
+    try {
+      // overwrite check against the on-disk list, refreshed first so a save
+      // made elsewhere (other tab, earlier session) still gets a warning
+      await refreshSavedGames();
+      if (savedGameNames.includes(name) &&
+          !confirm(`"${name}" already exists — overwrite it?`)) return;
+      // tendencies edited since the last apply live only client-side; the
+      // save stores the SERVER's profiles — push them first (a postflop-only
+      // re-send is free: set_table strips postflop from its reset comparison)
+      if (S.postflopDirty && !(await applyModel())) return;
+      const out = await api.pfSaveGame(name);
+      S.gameSaved = true; // it IS the on-disk copy now
+      toast(`game saved — "${name}" (iter ${out.iteration})`);
+      refreshSavedGames();
+    } catch (e) { toast(e.message, true); }
+    finally { els.saveGame.disabled = false; }
+  });
+
+  els.savedSel.addEventListener('change', async () => {
+    const name = els.savedSel.value;
+    els.savedSel.value = '';
+    if (!name) return;
+    // pf_load_game silently stops-and-joins a running solve and replaces the
+    // session — mirror the postflop load guards before letting it
+    if (S.solveRunning) {
+      if (!confirm('A solve is RUNNING — loading a game stops and discards it. Continue?')) return;
+    } else if (S.built && lastIter > 0 && !S.gameSaved &&
+        !confirm('The current game has not been saved — loading discards its solve. Continue?')) {
+      return;
+    }
+    progressDock(els.build);
+    progressSet(40, `loading “${name}”…`);
+    try {
+      const out = await api.pfLoadGame(name);
+      await applyLoadedGame(name, out);
+      progressSet(100, 'loaded ✓');
+      setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
+    } catch (e) { progressHide(); toast(e.message, true); }
+  });
+
+  /** Restore the whole lab session from a loaded game: config form, built
+   *  state, seat models (profiles/frozen), and the solved tree view. */
+  async function applyLoadedGame(name, out, opts = {}) {
+    const cfg = out.config;
+    els.players.value = cfg.positions.length;
+    els.stack.value = cfg.stack;
+    els.smallBlind.value = cfg.posts[cfg.positions.indexOf('SB')] ?? 0.5;
+    els.bigBlind.value = cfg.posts[cfg.positions.indexOf('BB')] ?? 1;
+    els.straddleOn.checked = !!cfg.utg_straddle;
+    els.straddle.value = cfg.utg_straddle ? cfg.posts[0] : 2;
+    syncStraddleControls();
+    els.opens.value = (cfg.open_raises || []).join(',');
+    els.mult.value = (cfg.raise_mults || []).join(',');
+    positionSizing.load(cfg);
+    els.maxRaises.value = cfg.max_raises;
+    els.limp.checked = !!cfg.limp;
+    els.allin.checked = !!cfg.add_allin;
+    els.ante.value = cfg.ante || 0;
+    els.rakePct.value = cfg.rake_pct || 0;
+    els.rakeCap.value = cfg.rake_cap || 0;
+    S.activeModel = cfg.realization || 'static';
+    savedModelNote.hidden = S.activeModel === DEFAULT_REALIZATION;
+    S.built = true;
+    syncScenarioSelection();
+    S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
+    S.builtCfg = JSON.stringify(cfg);
+    S.formCfg = JSON.stringify(config());
+    S.positions = cfg.positions;
+    S.cursor = [];
+    S.lineP = [];
+    S.lineHist = null;
+    // A game saved in HERO mode stores the hero frozen mask (everyone but
+    // the hero), not the user's table model — materializing that mask as
+    // explicit Frozen seat models would diverge from the engine the moment
+    // hero turns off (the engine restores its pre-hero flags; the client
+    // would keep phantom Frozen rows). pf_load_game seeds /status with the
+    // loaded hero, so read it first: with hero ON, frozen flags are
+    // hero-induced, not seat models.
+    let hero = null;
+    try {
+      const hst = await api.pfStatus();
+      if (hst && hst.hero !== undefined) hero = hst.hero == null ? null : +hst.hero;
+    } catch { /* older server: no hero on /status — flags stay explicit */ }
+    S.model = {
+      seats: (out.seats || []).map(st => st.profile
+        // painted: any paint in a loaded profile happened in an earlier
+        // session, so treat its buckets as painted — a stat edit must not
+        // silently regenerate over them (GENERATE stays explicit)
+        ? { mode: 'ruled', profile: st.profile, implied: null, label: st.profile.name,
+            stats: st.profile.response?.source_stats || st.profile.stats || null,
+            postflop: st.profile.postflop || null, selValue: `saved:${st.profile.name}`,
+            painted: true }
+        : (st.frozen && hero == null)
+          ? { mode: 'frozen', profile: null, implied: null, label: 'Frozen', selValue: 'frozen' }
+          : { mode: 'live', profile: null, implied: null, label: 'Solver', selValue: 'live' }),
+      hero,
+    };
+    S.applied = S.model.seats.map(m => m.mode);
+    S.appliedSeatsSig = seatsSig();
+    S.appliedHero = hero; // adopted engine truth (frozen arrives via /status)
+    S.heroPending = false;
+    S.postflopDirty = false;
+    S.engineFrozen = null;
+    S.lastGaps = null;
+    closeEditor();
+    renderModel();
+    lastIter = out.iteration;
+    renderEquityModel(out.multiway_equity_model);
+    els.buildInfo.textContent =
+      `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
+    updateEstimate();
+    startPolling();
+    refresh();
+    if (!opts.quiet) toast(`loaded “${name}” — iter ${out.iteration}; RE-SOLVE continues converging`);
+  }
+
+  function startPolling() {
+    if (S.polling) clearInterval(S.polling);
+    S.polling = setInterval(poll, 1000);
+    poll();
+  }
+  let lastIter = -1;
+  let lastPublicationKey = '';
+  async function poll() {
+    const he = heroEpoch; // hero changes during this fetch make st.hero stale
+    let st;
+    try { st = await api.pfStatus(); } catch { return; }
+    if (!st.state) return;
+    if (st.multiway_equity_model !== undefined) renderEquityModel(st.multiway_equity_model);
+    // Engine truth: newer servers report "hero" (number|null) and "frozen"
+    // (bool array) on /status. Absent fields mean an older server — treat
+    // them as unknown, never as hero-off.
+    if (S.model && st.hero !== undefined && heroBusy === 0 && he === heroEpoch) {
+      const srvHero = st.hero == null ? null : +st.hero;
+      if (S.heroPending) {
+        // waiting for a deferred hero: clear the flag once the engine has it
+        if (srvHero === S.model.hero) { S.heroPending = false; S.appliedHero = srvHero; }
+      } else if (srvHero !== S.model.hero) {
+        S.model.hero = srvHero; // resync the dropdown with the engine
+        S.appliedHero = srvHero;
+      }
+    }
+    if (S.model && Array.isArray(st.frozen) && st.frozen.length === S.positions.length) {
+      S.engineFrozen = st.frozen; // engine-truth lock badges for the ribbon
+    }
+    const running = st.state === 'running';
+    if (running !== S.solveRunning) {
+      // the server refuses table/hero changes mid-solve (409) — mirror it
+      S.solveRunning = running;
+      els.applyBtn.disabled = running;
+      previewCheck.disabled = running;
+      if (!running) previewCapability.then(supported => { previewCheck.disabled = S.solveRunning || !supported; });
+    }
+    let gaps = '';
+    if (st.gaps && st.gaps.length) {
+      gaps = st.gaps.length <= 2
+        ? ` · BR gap ${st.gap_total.toFixed(4)} bb (${st.gaps.map(g => g.toFixed(3)).join(' / ')})`
+        : ` · BR gap ${st.gap_total.toFixed(4)} bb (worst seat ${Math.max(...st.gaps).toFixed(3)})`;
+      els.status.dataset.tip =
+        'Best-response gap: how much each seat could gain by deviating (bb). The total counts only the seats still learning — ' +
+        'a frozen or ruled seat’s gap is its BLEED against its pinned strategy and never converges. ' +
+        st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
+      S.lastGaps = st.gaps;
+    } else if (st.accuracy_iteration === null) {
+      S.lastGaps = null; // a changed model must not retain the old gap claim
+    }
+    renderModel(); // cheap: it skips unless its rendered state changed
+    const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
+    const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
+    const err = st.error ? ` \u00b7 ${st.error}` : ''; // a crashed worker is not a STOP
+    // the engine could not load the calibrated fit and priced with the static
+    // model: say so every time, and toast it once per session
+    // Keep fallback diagnostics without reintroducing retired model choices.
+    const realizationNote = (st.realization_note || '').replace(
+      'balanced uses raw equity; legacy calibrated uses positional values',
+      S.activeModel === DEFAULT_REALIZATION
+        ? 'using showdown-equity estimates until the fit is available'
+        : 'using the saved game’s fallback values until the fit is available');
+    const rnote = realizationNote ? ` \u00b7 ${realizationNote}` : '';
+    if (st.realization_note && S.lastRealizationNote !== st.realization_note) {
+      S.lastRealizationNote = st.realization_note;
+      toast(realizationNote, true);
+    }
+    const shown = publishedIteration(st);
+    const snapshot = st.published_iteration !== undefined ? ` · displayed ${shown}` : '';
+    const accuracyAt = st.accuracy_iteration != null ? ` · measured at ${st.accuracy_iteration}` : '';
+    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${snapshot}${gaps}${accuracyAt}${note}${err}${rnote}${st.preview_note ? ` · ${st.preview_note}` : ''}`;
+    els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
+    els.solve.classList.toggle('hidden', st.state === 'running');
+    els.stop.classList.toggle('hidden', st.state !== 'running');
+    // run timer: wall-clock since this run started (or since the page found
+    // it already running)
+    const secs = Math.max(0, Math.round((Date.now() - (S.runStart || Date.now())) / 1000));
+    const clock = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+    if (st.state === 'running') {
+      progressDock(els.stop); // covers resumed sessions discovering a live solve
+      if (S.lastState !== 'running') {
+        S.gap0 = null;
+        S.runPct = 0;
+        // st.iteration is the solver's CUMULATIVE counter (it survives
+        // resumes and save/load) — baseline it so the bar measures THIS run
+        S.runBase = st.iteration;
+        S.runStart = Date.now();
+      }
+      if (S.gap0 == null && st.gap_total > 0) S.gap0 = st.gap_total;
+      // Progress is convergence toward the 0.005 bb gap target (log scale),
+      // with the iteration cap as a floor; monotonic within a run. The 3000
+      // maximum is a safety net, not the destination — most solves stop at
+      // the target long before it.
+      const gapProg = S.gap0 > 0.005 && st.gap_total > 0
+        ? Math.log(S.gap0 / st.gap_total) / Math.log(S.gap0 / 0.005) : 0;
+      const runIter = Math.max(0, st.iteration - (S.runBase || 0));
+      S.runPct = Math.max(S.runPct,
+        100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
+      let label;
+      if (st.phase === 'publishing') {
+        label = `iter ${st.iteration} · ${clock} · publishing strategy preview…`;
+      } else if (st.phase === 'measuring') {
+        label = `iter ${st.iteration} · ${clock} · measuring accuracy…`;
+      } else if (st.gap_total > 0) {
+        label = `iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} → 0.0050 bb`;
+      } else {
+        label = `iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : previewCheck.checked ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
+      }
+      progressSet(S.runPct, label);
+    } else if (S.lastState === 'running') {
+      // a run just ended (target hit, max iterations, STOP — or a crash,
+      // which the engine reports in `error` and must not read as a STOP)
+      els.stop.disabled = false;
+      S.runBase = null;
+      S.runStart = null;
+      if (st.error) {
+        progressSet(100, `stopped — ${st.error}`);
+        toast(st.error, true);
+      } else {
+        progressSet(100, `${solveCompletionLabel(st)} · ${clock}`);
+      }
+      setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
+      if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
+        reapplyHero(); // deferred hero: the table now has a solve to freeze
+      }
+    }
+    S.lastState = st.state;
+    const nextPublicationKey = publicationKey(st);
+    if (nextPublicationKey !== lastPublicationKey && S.built) {
+      lastPublicationKey = nextPublicationKey;
+      lastIter = shown;
+      refresh(); // only a coherent published snapshot changed
+    }
+    if (st.state !== 'running' && S.polling && shown === lastIter) {
+      clearInterval(S.polling);
+      S.polling = null;
+    }
+  }
+
+  // ----- node navigation / rendering -----
+  let ribbonCursor = null;
+  let revealRibbonCursor = false;
+  function updateRibbonScroll() {
+    const el = els.ribbon;
+    const width = el.parentElement.clientWidth;
+    if (!width) return; // the lab tab is hidden
+    // Compare with the full wrapper, so showing the arrows cannot cause a
+    // resize/show/hide loop at the overflow threshold.
+    const overflow = el.scrollWidth > width + 2;
+    els.ribbonLeft.classList.toggle('hidden', !overflow);
+    els.ribbonRight.classList.toggle('hidden', !overflow);
+    if (revealRibbonCursor) {
+      const current = el.querySelector('.current');
+      if (current) {
+        const bounds = el.getBoundingClientRect(), selected = current.getBoundingClientRect();
+        if (selected.left < bounds.left) el.scrollLeft -= bounds.left - selected.left;
+        else if (selected.right > bounds.right) el.scrollLeft += selected.right - bounds.right;
+      }
+      revealRibbonCursor = false;
+    }
+    els.ribbonLeft.disabled = el.scrollLeft <= 1;
+    els.ribbonRight.disabled = el.scrollLeft >= el.scrollWidth - el.clientWidth - 1;
+  }
+  for (const [button, direction] of [[els.ribbonLeft, -1], [els.ribbonRight, 1]]) {
+    button.addEventListener('click', () => els.ribbon.scrollBy({
+      left: direction * Math.max(140, els.ribbon.clientWidth * .7),
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    }));
+  }
+  els.ribbon.addEventListener('scroll', updateRibbonScroll, { passive: true });
+  // Trackpads and the native scrollbar work directly. A vertical mouse wheel
+  // also moves a long ribbon, but still scrolls the page at either end.
+  els.ribbon.addEventListener('wheel', event => {
+    if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+    const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? els.ribbon.clientWidth : 1);
+    const max = els.ribbon.scrollWidth - els.ribbon.clientWidth;
+    if ((delta < 0 && els.ribbon.scrollLeft > 0) || (delta > 0 && els.ribbon.scrollLeft < max - 1)) {
+      els.ribbon.scrollLeft += delta;
+      event.preventDefault();
+    }
+  }, { passive: false });
+  new ResizeObserver(updateRibbonScroll).observe(els.ribbon);
+
+  function clearRightPanel() {
+    previewBanner.classList.add('hidden');
+    els.ribbon.innerHTML = '';
+    ribbonCursor = null;
+    updateRibbonScroll();
+    els.nodeTitle.textContent = '';
+    renderModelEvidence(nodeEvidence, null);
+    els.seats.innerHTML = '';
+    els.exportBtn.disabled = true;
+    hideGrid();
+  }
+
+  let refreshSeq = 0;
+  async function refresh() {
+    if (!S.built) return;
+    if (lastIter < 2) { clearRightPanel(); return; } // nothing meaningful before solving
+    // poll-driven and click-driven refreshes race each other: an older
+    // response resolving last must not repaint over the newer one
+    const seq = ++refreshSeq;
+    try {
+      const needLine = S.cursor.length !== S.lineP.length;
+      const [view, lineView] = await Promise.all([
+        api.pfNode(S.cursor),
+        needLine ? api.pfNode(S.lineP) : Promise.resolve(null),
+      ]);
+      if (seq !== refreshSeq) return; // stale: superseded while in flight
+      S.view = formatPreflopView(view, JSON.parse(S.builtCfg || '{}'));
+      S.lineHist = lineView ? formatPreflopView(lineView, JSON.parse(S.builtCfg || '{}')).history : S.view.history;
+    } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
+    renderRibbon();
+    renderNode();
+  }
+
+  /** Chosen steps of the line up to the cursor: [{pos, label, kind}]. */
+  function takenSteps(upTo) {
+    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    const out = cfg.utg_straddle ? [{pos: cfg.positions[0], label: `Straddle ${cfg.posts[0]} bb`, kind: 'straddle'}] : [];
+    (S.lineHist || []).slice(0, upTo).forEach(h => {
+      if (h.chosen != null && h.actions[h.chosen]) {
+        const a = h.actions[h.chosen];
+        out.push({ pos: h.actor_pos, label: a.label, kind: a.kind });
+      }
+    });
+    return out;
+  }
+
+  // Browse-style ribbon: one segment per decision along the FULL line, every
+  // available action as a chip with its frequency. Clicking the taken chip
+  // (or the segment) views that point without losing the line; clicking a
+  // different chip branches the line there.
+  function renderRibbon() {
+    syncModelColors();
+    const el = els.ribbon;
+    const scrollLeft = el.scrollLeft;
+    el.innerHTML = '';
+    const cfg = S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    if (cfg.utg_straddle) {
+      const post = document.createElement('div');
+      post.className = 'hist-seg pfl-straddle-post';
+      post.innerHTML = `<div class="hist-head"><span>${esc(cfg.positions[0])}</span></div><div class="hist-chip">Straddle ${cfg.posts[0]} bb</div>`;
+      post.dataset.tip = 'Live forced post. Preflop action starts at the next seat; postflop position is unchanged.';
+      el.appendChild(post);
+    }
+    const hist = S.lineHist || [];
+    const cursor = S.cursor.length;
+    hist.forEach((h, d) => {
+      const seg = document.createElement('div');
+      seg.className = 'hist-seg' + (d === cursor ? ' current' : '');
+      const head = document.createElement('div');
+      head.className = 'hist-head';
+      if (h.kind === 'action') {
+        const si = S.positions.indexOf(h.actor_pos);
+        // lock badge: what the client applied, plus engine-truth freezes
+        // (e.g. hero mode pins the other seats) when the server reports them
+        const locked = si >= 0 && ((S.applied && S.applied[si] !== 'live') ||
+          (S.engineFrozen && S.engineFrozen[si]));
+        const adaptive = S.model?.seats[si]?.profile?.response?.adaptive_from != null && !S.engineFrozen?.[si];
+        head.title = adaptive ? 'Modeled ordinary actions; adaptive large-bet responses' : '';
+        head.innerHTML = `<span>${adaptive ? '↔ ' : locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
+        const position = head.querySelector('span');
+        position.dataset.modelSeat = si;
+        position.style.color = seatModelColor(si);
+      } else {
+        head.innerHTML = h.kind === 'pot_share'
+          ? `<span>FLOP</span><b>${h.pot.toFixed(1)}</b>`
+          : `<span>END</span><b>${h.pot.toFixed(1)}</b>`;
+      }
+      seg.appendChild(head);
+      seg.dataset.tip = d === cursor
+        ? 'The point you are viewing.'
+        : 'Click to view this point (the line is kept).';
+      seg.addEventListener('click', () => {
+        if (d !== cursor) { S.cursor = S.lineP.slice(0, d); refresh(); }
+      });
+      if (h.kind === 'action') {
+        h.actions.forEach((a, k) => {
+          const chip = document.createElement('div');
+          chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
+          chip.classList.add('has-frequency');
+          const actionLabel = document.createElement('span');
+          actionLabel.textContent = a.label;
+          const frequency = document.createElement('span');
+          frequency.className = 'hist-frequency';
+          frequency.textContent = h.strategy_note ? "—" : `${(a.freq * 100).toFixed(0)}%`;
+          chip.append(actionLabel, frequency);
+          chip.dataset.tip = h.chosen === k
+            ? `${h.actor_pos} takes ${a.label} ${(a.freq * 100).toFixed(1)}% of the time here — the line follows this action. Click to view the moment just after it.`
+            : `${h.actor_pos}: ${a.label} ${(a.freq * 100).toFixed(1)}% of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
+          if (h.strategy_note) chip.dataset.tip = h.strategy_note;
+          else if (a.freq === 0) chip.dataset.tip += ' This action has exactly zero modeled frequency; its continuation may have no solved strategy.';
+          if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
+          chip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (h.chosen === k) {
+              S.cursor = S.lineP.slice(0, d + 1); // view after the taken action
+            } else {
+              S.lineP = [...S.lineP.slice(0, d), k]; // branch (or advance) here
+              S.cursor = S.lineP.slice();
+            }
+            refresh();
+          });
+          seg.appendChild(chip);
+        });
+      } else {
+        const chip = document.createElement('div');
+        chip.className = 'hist-chip taken';
+        chip.textContent = h.kind === 'pot_share' ? 'flop reached' : 'hand over';
+        seg.appendChild(chip);
+      }
+      el.appendChild(seg);
+    });
+    el.scrollLeft = scrollLeft;
+    const cursorKey = JSON.stringify(S.cursor);
+    revealRibbonCursor ||= cursorKey !== ribbonCursor;
+    ribbonCursor = cursorKey;
+    updateRibbonScroll();
+  }
+
+  function actionColors(actions) {
+    // raises darken with size rank (the tree lists them ascending); a jam
+    // always takes the overbet shade so it reads the same at every node
+    const raises = actions.filter(a => !COLORS[a.kind] && a.kind !== 'jam').length;
+    let r = 0;
+    return actions.map(a => {
+      if (COLORS[a.kind]) return COLORS[a.kind];
+      if (a.kind === 'jam') return RAISE_SHADES[3];
+      // 1 size -> small; 2 -> small, medium; 3+ -> small … large
+      const k = raises <= 1 ? 0 : Math.min(2, Math.round((r / (raises - 1)) * 2));
+      r += 1;
+      return RAISE_SHADES[k];
+    });
+  }
+
+  function renderNode() {
+    const v = S.view;
+    previewBanner.textContent = publicationLabel(v.publication);
+    reachWarning.replaceChildren();
+    const warning = branchWarning(v);
+    reachWarning.classList.toggle('hidden', !warning);
+    if (warning) { const note=document.createElement('span'); note.className='pfl-reach-note'; note.textContent=warning; reachWarning.append(note); }
+    previewBanner.classList.toggle('hidden', !v.publication);
+    previewBanner.classList.toggle('converged', !!v.publication?.converged);
+    els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
+    els.exportBtn.disabled = true;
+    renderModelEvidence(nodeEvidence, v.model_evidence);
+
+    // seats strip: only while there's action (the ribbon carries the rest)
+    els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
+      const dead = !v.live[i];
+      const cur = v.actor === i;
+      return `<span class="pfl-seat${dead ? ' dead' : ''}${cur ? ' cur' : ''}">${esc(p)} <small>${v.invested[i].toFixed(1)}</small></span>`;
+    }).join('');
+
+    if (v.strategy_note) {
+      hideGrid();
+      els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
+      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
+      return;
+    }
+    if (v.kind === 'action') {
+      const colors = actionColors(v.actions);
+      // headline: who acts, and what (if anything) they're facing
+      const past = takenSteps(S.cursor.length);
+      const lastAggr = [...past].reverse().find(s => s.kind === 'raise' || s.kind === 'jam');
+      const facing = lastAggr && lastAggr.pos !== v.actor_pos
+        ? ` — facing ${lastAggr.pos}'s ${lastAggr.label}`
+        : lastAggr && lastAggr.pos === v.actor_pos
+          ? '' // their own raise came back around (someone called/limped behind)
+          : past.length ? ' — unraised pot' : ' — first to act';
+      els.nodeTitle.textContent = `${v.actor_pos} to act${facing} · pick actions in the ribbon above`;
+      S.colors = colors;
+      els.rangeSeg.innerHTML = '';
+      els.grid.classList.remove('hidden');
+      els.fillSeg.classList.remove('hidden');
+      paintGrid();
+      renderLegend(v, colors);
+      els.gridCap.innerHTML =
+        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand AT THIS POINT. ` +
+        `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
+        `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
+        `(hover a cell for exact numbers).`;
+      if (v.contextual_prediction && !v.model_evidence) {
+        const model = v.contextual_prediction;
+        const note = document.createElement('div');
+        note.className = 'pfl-context-note';
+        note.textContent = `Contextual v1 · ${model.active ? 'using this situation' : 'fallback / override'}${model.nominal_price != null ? ` · call price ${(model.nominal_price * 100).toFixed(1)}%` : ''}. ${model.note}`;
+        els.gridCap.appendChild(note);
+      }
+    } else if (v.kind === 'fold_win') {
+      const wi = v.live.findIndex(x => x);
+      els.nodeTitle.textContent = `everyone folded — ${v.positions[wi]} takes ${v.pot.toFixed(1)} bb`;
+      // still worth seeing: the range the winner got through with
+      S.rangeSeat = wi;
+      els.rangeSeg.innerHTML = '';
+      els.grid.classList.remove('hidden');
+      els.fillSeg.classList.remove('hidden');
+      paintGrid();
+      els.legend.innerHTML =
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[wi])}'s range when everyone folds — bar height = share of combos</span>`;
+      els.gridCap.innerHTML = '';
+    } else {
+      const live = v.positions.filter((_, i) => v.live[i]);
+      els.nodeTitle.textContent =
+        `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb` +
+        (v.spr != null ? ` · SPR ${v.spr.toFixed(1)}` : '');
+      // keep the hand grid up: it shows each live player's arriving range
+      const liveSeats = v.positions.map((_, i) => i).filter(i => v.live[i]);
+      if (!liveSeats.includes(S.rangeSeat)) S.rangeSeat = liveSeats[0];
+      els.rangeSeg.innerHTML = '';
+      liveSeats.forEach(i => {
+        const b = document.createElement('button');
+        b.className = S.rangeSeat === i ? 'active' : '';
+        b.textContent = v.positions[i];
+        b.addEventListener('click', () => {
+          S.rangeSeat = i;
+          renderNode();
+        });
+        els.rangeSeg.appendChild(b);
+      });
+      els.grid.classList.remove('hidden');
+      els.fillSeg.classList.remove('hidden');
+      paintGrid();
+      els.legend.innerHTML =
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
+      els.gridCap.innerHTML = '';
+      if (v.exportable) {
+        els.exportBtn.disabled = false;
+        els.gridCap.innerHTML =
+          'The grid shows each player\u2019s arriving range \u2014 exactly the conditional ' +
+          'ranges that step 5 (SEND TO POSTFLOP SETUP) drops into SETUP, along with ' +
+          'this pot, stack and rake.';
+        if (v.continuation) {
+          const estimate = v.continuation;
+          const estimateNote = estimate.model === 'calibrated'
+            ? estimate.note.replace('The calibrated model', 'This saved game’s value model')
+            : estimate.note;
+          const detail = document.createElement('details');
+          detail.className = 'pfl-continuation';
+          const rows = [
+            ['Pot', estimate.pot_bb],
+            ...estimate.players.map(p => [`${p.position} estimated value`, p.value_bb]),
+            ['Combined value', estimate.total_value_bb],
+            ['Unallocated amount', estimate.unallocated_bb],
+          ];
+          detail.innerHTML = `<summary>Preflop continuation estimate</summary>` +
+            `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
+              `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
+            `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
+            `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
+            `<p>${esc(estimateNote)}</p></div></div>`;
+          els.gridCap.appendChild(detail);
+        }
+      } else {
+        // 3+ players see the flop: the postflop solver is heads-up only
+        els.gridCap.innerHTML =
+          `This line goes <b>${live.length}-way</b> to the flop, and the postflop solver ` +
+          `is heads-up only. Branch the ribbon above onto a line where exactly two ` +
+          `players see the flop (step 6 unlocks there), or set a spot up ` +
+          `manually with your own ranges in SETUP. `;
+        const b = document.createElement('button');
+        b.className = 'btn ghost';
+        b.textContent = 'GO TO SETUP →';
+        b.style.marginLeft = '6px';
+        b.addEventListener('click', gotoSetup);
+        els.gridCap.appendChild(b);
+      }
+    }
+  }
+
+  // ----- 4 · MODEL THE PLAYERS -----
+
+  const PCOLORS = { fold: '#4a78c8', call: '#5ca75f', raise: '#e8484c', jam: '#7d3ca3' };
+  const BUCKET_NAMES = ['UNOPENED', 'VS LIMPS', 'VS RAISE', 'SQUEEZE', 'VS 3-BET+'];
+  const BUCKET_TIPS = [
+    'Nobody has entered yet (first in, or only folds so far): open-limp, open-raise, or fold.',
+    'Facing limper(s), no raise: limp behind, raise, or fold.',
+    'Facing a single raise, no callers. One range for ALL open sizes \u2014 a modeled seat defends the same vs a small and a big open (solver-played seats stay size-aware).',
+    'Facing a raise PLUS caller(s) \u2014 the squeeze spot.',
+    'Facing a re-raise: use Situation to distinguish cold defense (no voluntary entry yet) from responses after limping, calling or raising. Measured models supply a separate cold policy; older generated profiles gate cold defense by their VS RAISE raising slice. After-entry frequencies are conditional on reaching the decision, and re-raise depths are pooled.',
+  ];
+
+  // Reuse a color for every seat using the same named model. Keep existing
+  // assignments when another seat changes, and recycle unused palette entries.
+  const modelPalette = ['#7dd3fc', '#fbbf75', '#c4a1ff', '#5ee0bc', '#f59fc4',
+    '#e3dc78', '#93b2ff', '#f28f83', '#c1dba0'];
+  const modelColors = new Map();
+  const modelKey = m => m?.mode === 'ruled' ? (m.label || m.profile?.name || 'Custom') : null;
+  function syncModelColors() {
+    const keys = new Set((S.model?.seats || []).map(modelKey).filter(Boolean));
+    for (const key of modelColors.keys()) if (!keys.has(key)) modelColors.delete(key);
+    for (const key of keys) {
+      if (!modelColors.has(key)) {
+        const used = new Set(modelColors.values());
+        modelColors.set(key, modelPalette.find(color => !used.has(color)));
+      }
+    }
+  }
+  const seatModelColor = i => modelColors.get(modelKey(S.model?.seats[i])) || '';
+  const modelStats = m => m.implied || m.profile?.response?.source_stats || m.stats || null;
+  let modelSigRendered = null;
+  function renderModel() {
+    if (!els.modelBox) return;
+    renderModelManager();
+    syncModelColors();
+    els.ribbon.querySelectorAll('[data-model-seat]').forEach(el => {
+      el.style.color = seatModelColor(Number(el.dataset.modelSeat));
+    });
+    // Rebuilding the <select>s closes any dropdown open under the cursor, so
+    // skip whenever nothing rendered here actually changed — poll() calls
+    // this every second during a solve.
+    const sig = JSON.stringify(!S.model ? null : {
+      pos: S.positions,
+      seats: S.model.seats.map((m, i) => [m.mode, m.selValue || '', m.label,
+        modelStats(m), seatModelColor(i), m.profile?.response?.adaptive_from]),
+      gaps: S.lastGaps ? S.lastGaps.map(g => g.toFixed(2)) : null,
+      applied: !!S.applied,
+      edit: S.editSeat,
+      arch: ARCHETYPES.map(a => a.name),
+      saved: SAVED_PROFILES,
+      deleted: [...deletedModels],
+      hero: S.model.hero,
+      pending: !!S.heroPending,
+      running: !!S.solveRunning,
+    });
+    if (sig === modelSigRendered) return;
+    modelSigRendered = sig;
+    els.modelBox.innerHTML = '';
+    if (!S.model) return;
+    S.model.seats.forEach((m, i) => {
+      const row = document.createElement('div');
+      row.className = 'pfl-seatrow';
+      const sel = document.createElement('select');
+      let html = `<option value="live">Solver</option><option value="frozen">Frozen (as solved)</option>`;
+      if (ARCHETYPES.length) {
+        const available = ARCHETYPES.map((a, k) => [a, k]).filter(([a]) => !deletedModels.has(`arch:${a.name}`));
+        for (const [title, entries] of archetypeGroups(available)) {
+          if (!entries.length) continue;
+          html += `<optgroup label="${esc(title)}">` +
+            entries.map(([a, k]) => `<option value="arch:${k}" title="${esc(a.note || '')}">${esc(modelDisplayName(a.name))}</option>`).join('') + '</optgroup>';
+        }
+      }
+      const availableSaved = SAVED_PROFILES.filter(n => !deletedModels.has(`saved:${n}`));
+      if (availableSaved.length) {
+        // "saved ·" prefix: a saved profile may share an archetype's name,
+        // and the CLOSED select shows only the option label
+        html += '<optgroup label="saved profiles">' +
+          availableSaved.map(n => `<option value="saved:${esc(n)}">saved · ${esc(n)}</option>`).join('') +
+          '</optgroup>';
+      }
+      sel.innerHTML = html;
+      sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) \u00b7 ' +
+        'Frozen = pinned to its current strategy (needs a solve first) \u00b7 ' +
+        'archetypes GENERATE a profile by distorting the current solve \u2014 set up every modeled seat ' +
+        'before applying, so they all distort the same baseline \u00b7 saved profiles reuse a player ' +
+        'from disk on any seat of any game.';
+      const want = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
+      if (!Array.from(sel.options).some(o => o.value === want)) {
+        // the seat's profile matches no option (e.g. a loaded game's
+        // archetype profile is not a disk file) — show its name, not blank
+        const o = document.createElement('option');
+        o.value = want;
+        o.disabled = true;
+        o.textContent = want.startsWith('custom:') ? m.label : `${m.label} (loaded)`;
+        sel.appendChild(o);
+      }
+      sel.value = want;
+      sel.title = sel.selectedOptions[0]?.textContent || m.label;
+      sel.disabled = !!S.solveRunning; // table changes are refused mid-solve
+      sel.addEventListener('change', () => seatSelect(i, sel));
+      const info = document.createElement('span');
+      info.className = 'pfl-seatinfo';
+      // Implied VPIP/PFR here are first-in rates, which do not exist for BB.
+      const useImplied = !!m.implied && i !== unraisedWinner(editorContextualConfig(), S.positions);
+      const stats = useImplied ? m.implied : m.profile?.response?.source_stats || m.stats || null;
+      info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
+        (useImplied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
+      info.textContent = m.mode === 'ruled' && stats &&
+        [stats.vpip, stats.pfr, stats.threebet].every(Number.isFinite)
+        ? `${stats.vpip.toFixed(0)}/${stats.pfr.toFixed(0)}/${stats.threebet.toFixed(1)}%` : '';
+      row.innerHTML = `<b>${esc(S.positions[i])}</b>`;
+      row.querySelector('b').style.color = seatModelColor(i);
+      row.appendChild(sel);
+      row.appendChild(info);
+      if (m.mode === 'ruled') {
+        const ed = document.createElement('button');
+        ed.dataset.tip = 'Open this profile\u2019s editor: HUD stats \u2192 GENERATE, per-bucket painting grid, postflop tendencies.';
+        ed.className = 'btn ghost xs';
+        ed.textContent = S.editSeat === i ? 'editing…' : 'edit';
+        ed.addEventListener('click', () => openEditor(i));
+        row.appendChild(ed);
+      }
+      els.modelBox.appendChild(row);
+    });
+    // hero options ("pending" = chosen, but the engine deferred it until a
+    // solve exists to freeze — it re-applies automatically after that pass)
+    const hero = els.hero;
+    const cur = S.model.hero == null ? '' : String(S.model.hero);
+    hero.innerHTML = '<option value="">off</option>' +
+      S.positions.map((p, i) => `<option value="${i}">${
+        S.heroPending && S.model.hero === i ? `${esc(p)} (pending)` : esc(p)
+      }</option>`).join('');
+    hero.value = cur;
+    hero.disabled = !!S.solveRunning; // hero changes are refused mid-solve
+  }
+
+  async function seatSelect(i, sel) {
+    const v = sel.value;
+    const m = S.model.seats[i];
+    // what the dropdown showed before this pick (renderModel's `want`
+    // derivation) — a blocked pick must restore model AND visual state
+    const prev = m.mode === 'live' ? 'live'
+      : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
+    m.selValue = v;
+    // staleness guard: rapid re-picks of the same seat race their async
+    // fetches — only the response for the NEWEST pick may land on the seat
+    const seq = (m.selSeq = (m.selSeq || 0) + 1);
+    const fresh = () => S.model && S.model.seats[i] === m && m.selSeq === seq;
+    try {
+      if (v === 'live') {
+        Object.assign(m, { mode: 'live', profile: null, implied: null, label: 'Solver' });
+      } else if (v === 'frozen') {
+        Object.assign(m, { mode: 'frozen', profile: null, implied: null, label: 'Frozen' });
+      } else if (v.startsWith('arch:')) {
+        if (lastIter < 1) {
+          toast('solve the unlocked game first — profiles distort that equilibrium', true);
+          // revert to what the seat actually still is: m.mode/profile were
+          // never touched, so showing 'live' here would claim Solver while
+          // APPLY/SOLVE still send the previous (e.g. ruled) model
+          m.selValue = prev;
+          sel.value = prev;
+          return;
+        }
+        const a = ARCHETYPES[+v.slice(5)];
+        const out = await api.pfGenerate(i, a.stats, a.name);
+        if (!fresh()) return;
+        Object.assign(m, { mode: 'ruled', profile: out.profile, implied: out.implied, label: a.name, stats: { ...a.stats },
+          postflop: a.postflop ? JSON.parse(JSON.stringify(a.postflop)) : null, painted: false, note: a.note || '' });
+      } else if (v.startsWith('saved:')) {
+        const prof = await api.pfProfileGet(v.slice(6));
+        if (!fresh()) return;
+        // painted: any paint in a saved profile happened in an earlier
+        // session — protect it from silent auto-GENERATE on stat edits
+        Object.assign(m, { mode: 'ruled', profile: prof, implied: null, label: prof.name,
+          stats: prof.response?.source_stats || (prof.stats ? { ...prof.stats } : null),
+          postflop: prof.postflop || null, painted: true });
+      }
+    } catch (e) {
+      if (!fresh()) return;
+      toast(errText(e), true);
+    }
+    if (S.editSeat === i && m.mode !== 'ruled') closeEditor();
+    renderModel();
+    if (S.editSeat === i) openEditor(i);
+  }
+
+  const seatsSig = () => S.model ? JSON.stringify(
+    S.model.seats.map(m => ({ mode: m.mode, profile: m.mode === 'ruled' ? m.profile : null }))) : '';
+  // In sync when the engine has both the seat models AND the hero choice —
+  // a deferred/failed hero leaves appliedHero behind, so the next SOLVE
+  // knows to re-apply it (the engine only accepts hero on a solved table).
+  const modelSynced = () => seatsSig() === S.appliedSeatsSig &&
+    (S.model ? S.model.hero : null) === S.appliedHero && !S.heroPending;
+
+  async function applyModel() {
+    if (!S.model) { toast('build a game first', true); return false; }
+    const seatsChanged = seatsSig() !== S.appliedSeatsSig;
+    // pfTable can mutate hero: a CHANGED table leaves hero mode server-side
+    // (an unchanged one keeps it), and the heroCall below re-applies it —
+    // a no-op when the engine still has it. Hold the hero epoch/busy guard across
+    // the WHOLE transaction so poll() can't adopt a /status response fetched
+    // mid-apply (it would resync the dropdown to the transiently-cleared
+    // hero, and the `S.model.hero != null` check below would then skip the
+    // re-apply — hero silently off).
+    heroBusy++; heroEpoch++;
+    let heroOn = false;
+    try {
+      try {
+        // postflop tendencies ride along on the profile, so SAVE GAME and
+        // exports keep the villain's whole player model, not just preflop
+        await api.pfTable(S.model.seats.map(m => ({
+          frozen: m.mode === 'frozen',
+          profile: m.mode === 'ruled' && m.profile
+            ? { ...m.profile, postflop: m.postflop || m.profile.postflop || null }
+            : null,
+        })));
+      } catch (e) { toast(errText(e), true); return false; }
+      S.applied = S.model.seats.map(m => m.mode);
+      S.appliedSeatsSig = seatsSig();
+      S.postflopDirty = false; // the push above carried the current tendencies
+      if (S.model.hero != null) {
+        try {
+          await heroCall(S.model.hero);
+          heroOn = true;
+          S.heroPending = false;
+          S.appliedHero = S.model.hero;
+        } catch (e) {
+          // The engine requires a solved table before hero can freeze the
+          // other seats (a changed table resets the solve, so this is the
+          // normal path). Defer: the coming solve runs the table first, then
+          // hero re-applies automatically (poll's run-end hook / next SOLVE).
+          S.heroPending = true;
+          S.appliedHero = null;
+          toast(`table applied, but hero ${S.positions[S.model.hero]} is NOT on yet — ` +
+            `${errText(e)} — hero re-applies automatically after the next solve`, true);
+        }
+      } else {
+        S.heroPending = false;
+        S.appliedHero = null;
+      }
+    } finally {
+      heroBusy--; heroEpoch++;
+    }
+    if (!S.heroPending) {
+      toast(seatsChanged
+        ? 'model applied — the table changed, so the next solve converges fresh' +
+          (heroOn ? ` (hero: ${S.positions[S.model.hero]} max-exploit)` : '')
+        : heroOn
+          ? `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`
+          : 'model applied');
+    }
+    renderModel();
+    refresh(); // ribbon gets its lock badges
+    return true;
+  }
+  els.applyBtn.addEventListener('click', applyModel);
+
+  /** Deferred-hero recovery: called when a run ends with hero still pending
+   *  (the engine refused it pre-solve because the table had no strategies to
+   *  freeze — now it does). */
+  async function reapplyHero() {
+    const h = S.model.hero;
+    try {
+      await heroCall(h);
+      S.heroPending = false;
+      S.appliedHero = h;
+      S.gameSaved = false; // the hero's block was just reset: not what's on disk
+      toast(`hero ${S.positions[h]} enabled — others frozen as solved; RE-SOLVE computes the max-exploit`);
+      startPolling(); // adopt the engine's reset iteration and repaint the grid
+    } catch (e) { toast(errText(e), true); }
+    renderModel();
+  }
+
+  els.hero.addEventListener('change', async () => {
+    if (!S.model) return;
+    const v = els.hero.value;
+    S.model.hero = v === '' ? null : +v;
+    try {
+      await heroCall(S.model.hero);
+      S.heroPending = false;
+      S.appliedHero = S.model.hero;
+      // hero on zeroes the hero's block (iteration 0); hero off restores the
+      // seat's pre-hero strategy and the table's iteration — either way the
+      // grid/ribbon and the iteration-keyed guards (SAVE, EXPORT) must follow
+      // the engine, not the strategies painted before the change
+      S.gameSaved = false;
+      toast(S.model.hero == null
+        ? 'hero off — all seats live again, back on the solved table strategies'
+        : `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`);
+      startPolling();
+    } catch (e) {
+      // not applied server-side: mark it pending (re-applies after a solve)
+      S.heroPending = S.model.hero != null;
+      S.appliedHero = null;
+      toast(errText(e) + (S.heroPending ? ' — hero re-applies automatically after the next solve' : ''), true);
+    }
+    renderModel();
+  });
+
+  // ----- profile editor (stats → generate → paint) -----
+
+  let editDraft = null;
+  let editorEpoch = 0;
+  let contextualPreview = null;
+  let contextualPreviewKey = '';
+  let contextualPreviewRequest = 0;
+  let evidencePreviewKey = '';
+  let evidencePreview = null;
+  let evidencePreviewRequest = 0;
+  let editorCleanup = () => {};
+  const editingModel = () => editDraft || S.model?.seats[S.editSeat];
+  const defaultModelStats = () => ({ vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' });
+  async function openLibraryEditor(key) {
+    const request = ++editorEpoch;
+    manager.querySelector('[role="status"]').textContent = 'Opening model…';
+    try {
+      let draft;
+      if (key?.startsWith('saved:')) {
+        const profile = await api.pfProfileGet(key.slice(6));
+        draft = { mode:'ruled', profile, label:profile.name, stats:profile.response?.source_stats || profile.stats || null, postflop:profile.postflop || null, painted:true };
+      } else {
+        const arch = key ? ARCHETYPES.find(a => `arch:${a.name}` === key) : null;
+        const stats = arch ? structuredClone(arch.stats) : defaultModelStats();
+        const label = arch ? `${arch.name} copy` : 'New player';
+        draft = { mode:'ruled', label, stats, postflop:arch?.postflop ? structuredClone(arch.postflop) : null, note:arch?.note || '', painted:false, needsGeneration:true,
+          profile:{ name:label, buckets:[], response:{adaptive_from:.25}, stats } };
+      }
+      if (request !== editorEpoch) return;
+      openEditor(0, draft);
+    } catch (e) { manager.querySelector('[role="status"]').textContent = e.message; }
+  }
+  function closeEditor() {
+    ++editorEpoch;
+    ++contextualPreviewRequest;
+    editorCleanup();
+    S.editSeat = null;
+    editDraft = null;
+    els.editor.classList.add('hidden');
+    els.editor.innerHTML = '';
+    manager.classList.remove('editing');
+    libraryPane.classList.remove('hidden');
+    manager.querySelector('[role="status"]').textContent = '';
+    renderModel();
+    if (manager.open) manager.querySelector('.pfl-model-search').focus();
+  }
+
+  function openEditor(i, draft = null) {
+    editorCleanup();
+    const epoch = ++editorEpoch;
+    editDraft = draft;
+    const m = draft || S.model?.seats[i];
+    if (!m) return;
+    if (m.mode !== 'ruled' || !m.profile) return;
+    const editorMessage = message => { manager.querySelector('[role="status"]').textContent = message; };
+    S.editSeat = draft ? null : i;
+    S.editBucket = 0;
+    S.editLimpContext = 0;
+    S.editReraiseContext = 'cold';
+    contextualPreview = null;
+    contextualPreviewKey = '';
+    evidencePreview = null;
+    evidencePreviewKey = '';
+    ++evidencePreviewRequest;
+    ++contextualPreviewRequest;
+    manager.classList.add('editing');
+    libraryPane.classList.add('hidden');
+    if (!manager.open) manager.showModal();
+    manager.querySelector('[role="status"]').textContent = draft ? 'Library draft — Save player makes it available in the seat menus.' : 'Editing this seat. Apply model or Re-solve to use the changes in the game.';
+    const st0 = m.stats || m.profile.response?.source_stats || { vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' };
+    const originalStats = structuredClone(st0);
+    const measuredBands = st0.cont_vs_raise_bands?.length > 2 ? structuredClone(st0.cont_vs_raise_bands) : null;
+    // measured archetypes carry f32 noise (57.299999...) — show one decimal
+    const st = Object.fromEntries(Object.entries(st0).map(([k, v]) => [k, typeof v === 'number' && k !== 'flatten' ? Math.round(v * 10) / 10 : v]));
+    els.editor.classList.remove('hidden');
+    els.editor.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <b style="font-size:12px">${draft ? 'Library model' : esc(S.positions[i])} — ${esc(m.label)}</b>
+        <button class="btn ghost xs" id="pfe-close">Back to models</button>
+      </div>
+      ${draft ? `<label class="pfe-preview-seat">Generate ranges for <select id="pfe-preview-seat">${S.positions.length ? S.positions.map((pos,k) => `<option value="${k}">${esc(pos)}</option>`).join('') : '<option value="0">Build a Preflop game first</option>'}</select></label>` : ''}
+      <div class="pfe-layout"><div class="pfe-settings">
+      ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
+      ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
+      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.response_policies?.length ? 'measured preflop ranges' : st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">Disabled fields show pooled source rates; the dataset supplies the corresponding hand policies. Each range tab identifies measured probabilities or an inferred fallback. Uncheck to edit those rates and generate reference-ordered ranges.</div>` : ''}
+      <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
+      <div class="field-grid" id="pfe-stats" style="margin:6px 0">
+        <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
+        <label data-tip="PFR: of all hands dealt, how often he raises at least once preflop (opening, isolating, or re-raising). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
+        <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Sets the raise slice of his first-in range directly. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
+        <label data-tip="Open-limp (first in): when it is folded to him, how often he limps. Blank = VPIP − PFR, which over-limps regs (a 17/12 TAG open-limps ~2%: his gap is calls and blind defence) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
+        <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
+        <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. With measured ranges enabled, the hand policies supply the responses instead of a uniform rate. Cold defense is separate; the Vs 3-bet+ Situation menu shows which policy you are inspecting.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
+        <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
+        <label data-tip="Fold vs raise (COLD): he has put nothing in yet and faces a single raise — how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little. Leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues).">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs raise AFTER LIMPING: he limped (first-in or behind) and a raise comes — how often he folds his limp range. This decides how much dead money a raise over limpers steals, so it drives the whole exploit in a limpy game. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold. Blank = use the cold number after limping too, which makes limpers far too foldy.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100" placeholder="blank = cold"></label>
+        <label data-tip="Iso-raise: facing one or more limpers with nothing invested yet, how often he raises. Blank = PFR.">iso-raise vs limpers % <input id="pfe-ir" type="number" value="${st.iso_raise != null ? st.iso_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
+        <label data-tip="Limp behind: facing limpers with nothing invested yet, how often he limps along. Blank = VPIP − PFR. Limpy live games hinge on this number: it is what builds the multiway pots.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
+        <label data-tip="Fold vs BIG raise: the same number when the raise he faces is TO at least the threshold on the right (bb). Real players fold more to big raises; without this every size gets the same fold rate and the exploit just picks the cheapest raise. Leave blank for size-blind.">fold vs big raise % <input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100" placeholder="blank = same"></label>
+        <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
+        <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested, how often he folds rather than calling or squeezing. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
+        <label data-tip="Fallback sizing for raises without a measured size distribution: smallest or largest. Measured non-jam size mixes take precedence; jam explicitly converts raising mass to all-in.">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
+      </div>
+      <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
+        <input id="pfe-adaptive" type="number" min="1" max="100" step="1" placeholder="blank = fixed" value="${m.profile.response?.adaptive_from != null ? m.profile.response.adaptive_from * 100 : ''}">
+      </label>
+      <div class="dim" style="font-size:10px;line-height:1.4">At or above this raise-to amount, opponents learn their responses. This is a modeling assumption for large bets, not measured behavior. Default: 25% of stack, including shoves. Leave HERO off and your seat on Solver. Blank retains fixed responses.</div>
+      <div class="pfl-step" style="margin-top:10px" data-tip="The same player after the flop. These numbers are only used when a spot is SENT TO POSTFLOP SETUP: there they become node locks across his whole postflop tree, bending the SOLVED strategy to the targets (his natural betting hands keep betting — never hand-blind). 'Initiative' below means he was the last player to bet or raise so far in the hand (the preflop raiser has it arriving at the flop; a check does not pass it on).">POSTFLOP TENDENCIES</div>
+      <div class="field-grid" id="pfe-pf" style="margin:6px 0">
+        <label data-tip="C-bet: on the flop, when he has the initiative (he was the preflop raiser), how often he bets when it is his turn to act and nobody has bet yet.">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
+        <label data-tip="Turn barrel: on the turn, when he STILL has the initiative, how often he bets into an unbet pot. That means: he bet the flop and got called (the classic double barrel) — or he was the preflop raiser and the flop checked through, since a check doesn't hand the initiative over (a delayed c-bet). It is NOT independent of the flop: if the opponent bet or raised the flop, the initiative is theirs and this number no longer applies to him.">turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
+        <label data-tip="River barrel: on the river, when he still has the initiative (he made the last bet or raise in the hand so far), how often he bets into an unbet pot — the triple barrel, or a delayed barrel after streets that checked through.">river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
+        <label data-tip="Fold vs bet, flop: when he faces a bet or raise on the flop, how often he folds — at every raise depth and (for now) regardless of the size faced. The rest of his hands continue (call, or raise per 'raise vs bet').">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
+        <label data-tip="Fold vs bet, turn: when he faces a bet or raise on the turn, how often he folds — any depth, any size.">fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
+        <label data-tip="Fold vs bet, river: when he faces a bet or raise on the river, how often he folds — any depth, any size.">fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
+        <label data-tip="Raise vs bet: when he faces a bet or raise (any street, any depth), how often he raises — a share of ALL the hands facing it, alongside the fold number (fold + raise + call = 100). His strongest continuing hands raise first.">raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
+        <label data-tip="Donk / stab: how often he bets into an unbet pot when he does NOT have the initiative — leading into the aggressor (a donk bet), or stabbing after the aggressor checked. One number for all streets.">donk / stab % <input id="pfe-donk" type="number" min="0" max="100"></label>
+        <label data-tip="Which size his postflop bets and raises use: the smallest or the largest of whatever the postflop tree offers at each node.">bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
+      </div>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn" id="pfe-gen" data-tip="Rebuild this seat's preflop ranges from the PREFLOP TENDENCIES above (cut from the GTO reference ordering, re-ordered toward card appeal by naiveté). Ranges already rebuild automatically as you edit the numbers; you only need this button after HAND-PAINTING, because a rebuild replaces painted edits — it lights up when stats and paint disagree.">GENERATE FROM STATS</button>
+        <button class="btn ghost" id="pfe-copyall" data-tip="Give EVERY other seat this player: both the PREFLOP and POSTFLOP tendencies above are copied to each seat and each seat's ranges are generated from them (each seat gets its own positional version — a 30/20 player opens tighter from UTG than from the BTN). Then set HERO if you want one and SOLVE. Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
+      </div>
+      <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the generated preflop ranges actually imply, measured from the ranges — sanity-check it against the HUD numbers you typed."></div>
+      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
+      <div id="pfe-rangenote"></div>
+      <div class="seg" id="pfe-buckets" style="margin-top:8px">${
+        BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
+      }</div>
+      <label id="pfe-limp-context-row" class="dim hidden" style="font-size:11px;margin-top:6px">Facing <select id="pfe-limp-context"></select></label>
+      <div id="pfe-reraise-context-row" class="pfe-response-context hidden">
+        <label>Situation <select id="pfe-reraise-context">
+          <option value="cold">Facing a re-raise cold</option>
+          <option value="entered">After already entering</option>
+        </select></label>
+        <p id="pfe-reraise-explanation"></p>
+        <div id="pfe-contextual-fields" class="hidden">
+          <div class="pfe-contextual-inputs">
+            <label>Facing <select id="pfe-context-depth"><option value="2">3-bet</option><option value="3">4-bet+</option></select></label>
+            <label>Already in (bb) <input id="pfe-context-invested" type="number" min="0" step="0.5"></label>
+            <label>Facing total (bb) <input id="pfe-context-to" type="number" min="0" step="0.5"></label>
+            <label>Pot before call (bb) <input id="pfe-context-pot" type="number" min="0" step="0.5"></label>
+          </div>
+          <p id="pfe-contextual-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+      <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
+        <div class="seg pfl-palette" id="pfe-palette">
+          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
+        </div>
+        <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
+      </div>
+      <div id="pfe-not-applicable" class="pfe-not-applicable hidden" role="status">
+        <strong>Not applicable — everyone folded; the last live blind wins</strong>
+        <p>The hand ends without a decision from the last live blind. There is no opening or calling range here.</p>
+        <p>Choose <b>Vs Limps</b> for checks and raises, or a defensive tab for responses to bets.</p>
+      </div>
+      <div id="pfl-paint" class="matrix browse"></div>
+      </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
+        <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved player (saving under an existing name replaces it).">
+        <button class="btn" id="pfe-save" data-tip="Store the whole player \u2014 the HUD stats and postflop tendencies exactly as entered, plus the generated / painted ranges \u2014 in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game; open its editor to see the numbers again or GENERATE FROM STATS to re-fit the ranges to a new game.">SAVE PLAYER</button>
+      </div>`;
+    document.getElementById('pfe-size').value = st.raise_size || 'min';
+    for (const id of ['pfe-context-invested','pfe-context-to','pfe-context-pot']) {
+      document.getElementById(id).addEventListener('input', () => {
+        refreshContextualPreview();
+      });
+    }
+    document.getElementById('pfe-context-depth').addEventListener('change', () => {
+      resetContextualAmounts();
+      refreshContextualPreview();
+    });
+    if (measuredBands) {
+      document.getElementById('pfe-fvrb').closest('label').classList.add('hidden');
+      document.getElementById('pfe-fvrthr').closest('label').classList.add('hidden');
+    }
+    const originalInputs = new Map([...document.querySelectorAll('#pfe-stats input, #pfe-stats select')].map(e => [e.id,e.value]));
+    const inputUnchanged = id => document.getElementById(id).value === originalInputs.get(id);
+    const pfDef = { cbet: [65, 55, 45], fold_to_bet: [45, 48, 52], raise_bet: 9, donk: 8, bet_size: 'min' };
+    const pf = m.postflop || pfDef;
+    if (hasContextualBetting(pf)) {
+      const legacy = document.getElementById('pfe-donk');
+      legacy.disabled = true;
+      legacy.closest('label').firstChild.textContent = 'legacy donk / stab % ';
+      legacy.closest('label').dataset.tip = 'Reference only. Contextual profiles use separate street and pot-type estimates; this pooled number does not set their betting targets.';
+      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'Preferred size for other profile bets and raises. Contextual betting without initiative retains the solved mix of available bet sizes.';
+      const note = document.createElement('div');
+      note.className = 'dim';
+      note.style.cssText = 'font-size:10px;line-height:1.4;margin:4px 0';
+      note.textContent = 'Betting without initiative: donks, bets after checks, later-street leads and probes are estimated separately by street and pot type. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection and size mix come from the solve; these safeguards are modeling assumptions.';
+      note.dataset.tip = pf.contextual_betting.source || '';
+      document.getElementById('pfe-pf').before(note);
+    }
+    [['pfe-cb0', pf.cbet[0]], ['pfe-cb1', pf.cbet[1]], ['pfe-cb2', pf.cbet[2]],
+     ['pfe-fb0', pf.fold_to_bet[0]], ['pfe-fb1', pf.fold_to_bet[1]], ['pfe-fb2', pf.fold_to_bet[2]],
+     ['pfe-rvb', pf.raise_bet], ['pfe-donk', pf.donk], ['pfe-bsz', pf.bet_size || 'min']]
+      .forEach(([id, v]) => { document.getElementById(id).value = typeof v === 'number' ? Math.round(v * 10) / 10 : v; });
+    const originalPfInputs = new Map([...document.querySelectorAll('#pfe-pf input')].map(e => [e.id,e.value]));
+    const pfValue = (id, original) => document.getElementById(id).value === originalPfInputs.get(id) ? original : +document.getElementById(id).value;
+    const collectPf = () => editPostflopStats(pf, {
+      cbet: pf.cbet.map((v,j) => pfValue(`pfe-cb${j}`,v)),
+      fold_to_bet: pf.fold_to_bet.map((v,j) => pfValue(`pfe-fb${j}`,v)),
+      raise_bet: pfValue('pfe-rvb',pf.raise_bet),
+      donk: pfValue('pfe-donk',pf.donk),
+      bet_size: document.getElementById('pfe-bsz').value,
+    });
+    document.getElementById('pfe-pf').addEventListener('input', () => {
+      m.postflop = collectPf();
+      // tendencies are outside seatsSig (deliberately: no learning-reset
+      // messaging) — flag them so SOLVE/SAVE re-send the table anyway
+      if (!draft) S.postflopDirty = true;
+    });
+    document.getElementById('pfe-close').addEventListener('click', closeEditor);
+    // Every HUD number the editor holds, on top of the seat's current stats
+    // (measured overrides the editor has no field for survive a nudge).
+    // Fold-vs-raise / big-raise / squeeze are entered as FOLD %, stored as
+    // the engine's continue % (blank = leave to the VPIP blend).
+    const collectStats = () => {
+      const prev = m.stats || {};
+      const num = id => { const v = document.getElementById(id).value; return v === '' ? null : +v; };
+      const threebet = +document.getElementById('pfe-3b').value;
+      const fvr = num('pfe-fvr');
+      const fvrb = num('pfe-fvrb');
+      const thr = num('pfe-fvrthr');
+      const fsq = num('pfe-fsq');
+      const fvrl = num('pfe-fvrl');
+      const firstIn = { open_raise: num('pfe-or'), open_limp: num('pfe-ol'), iso_raise: num('pfe-ir'), limp_behind: num('pfe-lb') };
+      const cont = f => Math.max(threebet, Math.min(100, 100 - f)); // engine requires continue >= 3-bet
+      const stats = {
+        ...prev,
+        vpip: +document.getElementById('pfe-vpip').value,
+        pfr: +document.getElementById('pfe-pfr').value,
+        threebet,
+        fold_to_3bet: +document.getElementById('pfe-f3b').value,
+        squeeze: +document.getElementById('pfe-sq').value,
+        fourbet: prev.fourbet != null ? prev.fourbet : null,
+        flatten: +document.getElementById('pfe-flat').value,
+        raise_size: document.getElementById('pfe-size').value,
+        cont_vs_raise: fvr != null ? cont(fvr) : null,
+        cont_vs_raise_bands: (fvr != null && fvrb != null && thr != null && thr > 0)
+          ? [[thr - 0.01, cont(fvr)], [999, cont(fvrb)]] : null,
+        cont_squeeze: fsq != null ? Math.max(+document.getElementById('pfe-sq').value, Math.min(100, 100 - fsq)) : null,
+        cont_vs_raise_limped: fvrl != null ? Math.max(0, Math.min(100, 100 - fvrl)) : null,
+        ...firstIn,
+      };
+      // Display rounding must not rewrite measured percentages just because a
+      // user previews or saves the model, or edits an unrelated field.
+      const fields = {vpip:'pfe-vpip',pfr:'pfe-pfr',threebet:'pfe-3b',fold_to_3bet:'pfe-f3b',squeeze:'pfe-sq',
+        flatten:'pfe-flat',raise_size:'pfe-size',cont_vs_raise:'pfe-fvr',cont_squeeze:'pfe-fsq',
+        cont_vs_raise_limped:'pfe-fvrl',open_raise:'pfe-or',open_limp:'pfe-ol',iso_raise:'pfe-ir',limp_behind:'pfe-lb'};
+      for (const [key,id] of Object.entries(fields)) {
+        if (inputUnchanged(id) && Object.hasOwn(originalStats,key)) stats[key] = originalStats[key];
+      }
+      if (measuredBands) {
+        stats.cont_vs_raise_bands = measuredBands.map(([bound,value],b) => [bound,
+          Math.max(stats.threebet, inputUnchanged(`pfe-band-${b}`) ? value : 100-num(`pfe-band-${b}`))]);
+      } else if (['pfe-fvr','pfe-fvrb','pfe-fvrthr'].every(inputUnchanged)) {
+        stats.cont_vs_raise_bands = originalStats.cont_vs_raise_bands?.map(([bound,value]) => [bound,Math.max(stats.threebet,value)]) ?? null;
+      }
+      if (stats.cont_vs_raise != null) stats.cont_vs_raise = Math.max(stats.threebet,stats.cont_vs_raise);
+      if (stats.cont_squeeze != null) stats.cont_squeeze = Math.max(stats.squeeze,stats.cont_squeeze);
+      stats.dataset = document.getElementById('pfe-dataset')?.checked ? originalStats.dataset : null;
+      return stats;
+    };
+    async function doGenerate(auto) {
+      if (epoch !== editorEpoch) return false;
+      if (!S.model || lastIter < 1) {
+        manager.querySelector('[role="status"]').textContent = 'Build and solve a Preflop game first to generate this model’s positional ranges.';
+        return false;
+      }
+      // Start from the seat's current stats so the measured overrides the
+      // editor has no fields for (cont_vs_raise, cont_squeeze,
+      // cont_vs_raise_bands, fourbet — the CoinPoker archetypes carry them)
+      // survive a stat nudge instead of silently reverting to the VPIP blend.
+      const stats = collectStats();
+      // staleness guard: a slow generate must not overwrite a newer one for
+      // THIS seat (or a seat that was reassigned while it was in flight).
+      // Per-seat (like m.selSeq): seat B generating in its own editor must
+      // NOT cancel seat A's in-flight generate — a global counter silently
+      // dropped A's stat edit.
+      const seq = (m.genSeq = (m.genSeq || 0) + 1);
+      try {
+        const adaptive = document.getElementById('pfe-adaptive').value;
+        const out = await api.pfGenerate(i, stats, m.label, adaptive === '' ? null : Number(adaptive) / 100);
+        if (epoch !== editorEpoch || seq !== m.genSeq || (!draft && S.model?.seats[i] !== m)) return false;
+        Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false, needsGeneration:false });
+        evidencePreviewKey = '';
+        evidencePreview = null;
+        ++evidencePreviewRequest;
+        updateRangeNote();
+        const impEl = document.getElementById('pfe-implied');
+        if (editingModel() === m && impEl) {
+          renderEditorImplied();
+          document.getElementById('pfe-gen').classList.remove('attn');
+          paintBucket();
+        }
+        renderModel();
+        return true;
+      } catch (e) {
+        if (epoch !== editorEpoch || seq !== m.genSeq) return false;
+        // auto-runs report quietly (e.g. "solve first" right after an apply)
+        const impEl = document.getElementById('pfe-implied');
+        if (impEl) impEl.textContent = e.message;
+        manager.querySelector('[role="status"]').textContent = e.message;
+        return false;
+      }
+    }
+    document.getElementById('pfe-gen').addEventListener('click', () => doGenerate(false));
+    document.getElementById('pfe-preview-seat')?.addEventListener('change', e => {
+      i = +e.target.value;
+      contextualPreviewKey = '';
+      resetContextualAmounts();
+      S.painting = false;
+      paintBucket();
+      updateRangeNote();
+      if (!m.painted) doGenerate(true);
+      else manager.querySelector('[role="status"]').textContent = 'Click Generate from stats to replace painted ranges for the selected position.';
+    });
+    document.getElementById('pfe-adaptive').addEventListener('change', () => {
+      const v = document.getElementById('pfe-adaptive').value;
+      const f = v === '' ? null : Number(v) / 100;
+      if (f !== null && (!Number.isFinite(f) || f <= 0 || f > 1)) return editorMessage('Use 1 to 100, or blank for fixed responses');
+      m.profile.response = { ...m.profile.response, adaptive_from: f };
+      paintBucket();
+      updateRangeNote();
+      renderModel();
+    });
+    // one set of numbers for the whole table: copy this seat's stats +
+    // postflop tendencies to every other seat and generate each seat's
+    // (positional) profile from them
+    document.getElementById('pfe-copyall').addEventListener('click', async () => {
+      if (lastIter < 1) return editorMessage('Build and solve a Preflop game first');
+      const stats = collectStats();
+      const pf = collectPf();
+      const label = m.label;
+      const adaptive = document.getElementById('pfe-adaptive').value;
+      const btn = document.getElementById('pfe-copyall');
+      btn.classList.add('busy');
+      let n = 0;
+      try {
+        for (let j = 0; j < S.model.seats.length; j++) {
+          if (!draft && j === i) continue;
+          const mj = S.model.seats[j];
+          try {
+            const out = await api.pfGenerate(j, stats, label, adaptive === '' ? null : Number(adaptive) / 100);
+            if (!S.model || S.model.seats[j] !== mj) continue;
+            Object.assign(mj, {
+              mode: 'ruled', profile: out.profile, implied: out.implied, label,
+              stats: { ...stats }, postflop: JSON.parse(JSON.stringify(pf)),
+              painted: false, selValue: `custom:${label}`,
+            });
+            n++;
+          } catch (e) { editorMessage(`${S.positions[j]}: ${errText(e)}`); }
+        }
+        m.stats = stats;
+        m.postflop = pf;
+        S.postflopDirty = true;
+        renderModel();
+        editorMessage(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'} — pick a HERO if you want one, then SOLVE`);
+      } finally {
+        btn.classList.remove('busy');
+      }
+    });
+    // Stat edits regenerate automatically — EXCEPT when the profile has
+    // hand-painted edits, which a rebuild would replace: then the button
+    // lights up and the user chooses.
+    let genTimer = null;
+    editorCleanup = () => { clearTimeout(genTimer); S.painting = false; };
+    const datasetToggle = document.getElementById('pfe-dataset');
+    const datasetFields = () => {
+      for (const id of ['pfe-or','pfe-ol','pfe-ir','pfe-lb']) document.getElementById(id).disabled = !!datasetToggle?.checked;
+      const responses = st0.dataset?.rows?.some(r => r.responses?.raise != null);
+      for (const id of ['pfe-3b','pfe-fvr','pfe-sq','pfe-fsq','pfe-f3b','pfe-fvrb','pfe-fvrthr',...(measuredBands || []).map((_,i)=>`pfe-band-${i}`)]) {
+        document.getElementById(id).disabled = !!datasetToggle?.checked && !!responses;
+      }
+    };
+    datasetFields();
+    datasetToggle?.addEventListener('change', () => {
+      datasetFields();
+      document.getElementById('pfe-stats').dispatchEvent(new Event('change'));
+    });
+    document.getElementById('pfe-stats').addEventListener('change', () => {
+      if (m.painted) {
+        document.getElementById('pfe-gen').classList.add('attn');
+        document.getElementById('pfe-implied').textContent =
+          'stats edited — GENERATE rebuilds the ranges (replaces your painted edits)';
+        return;
+      }
+      clearTimeout(genTimer);
+      genTimer = setTimeout(() => doGenerate(true), 400);
+    });
+    document.querySelectorAll('#pfe-buckets button').forEach(b =>
+      b.addEventListener('click', () => {
+        S.editBucket = +b.dataset.b;
+        document.querySelectorAll('#pfe-buckets button').forEach(x =>
+          x.classList.toggle('active', x === b));
+        paintBucket();
+        updateRangeNote();
+      }));
+    // the brush (S.paintAction / S.paintWeight) survives across editor
+    // sessions — sync the controls to it so they show what a click paints
+    document.querySelectorAll('#pfe-palette button').forEach(b => {
+      b.classList.toggle('active', b.dataset.a === S.paintAction);
+      b.addEventListener('click', () => {
+        S.paintAction = b.dataset.a;
+        document.querySelectorAll('#pfe-palette button').forEach(x =>
+          x.classList.toggle('active', x === b));
+      });
+    });
+    const w = document.getElementById('pfe-w');
+    w.value = Math.round(S.paintWeight * 100);
+    document.getElementById('pfe-wv').textContent = `${Math.round(S.paintWeight * 100)}%`;
+    w.addEventListener('input', () => {
+      S.paintWeight = +w.value / 100;
+      document.getElementById('pfe-wv').textContent = `${w.value}%`;
+    });
+    document.getElementById('pfe-save').addEventListener('click', async () => {
+      const name = document.getElementById('pfe-name').value.trim();
+      if (!name) return editorMessage('Give the model a name before saving');
+      const button = document.getElementById('pfe-save');
+      button.disabled = true;
+      try {
+        clearTimeout(genTimer);
+        if ((m.needsGeneration || !m.painted) && !await doGenerate(false)) return;
+        if (epoch !== editorEpoch) return;
+        m.profile.name = name;
+        m.label = name;
+        m.profile.postflop = m.postflop || collectPf();
+        // the numbers the ranges came from travel with the file, so the
+        // editor shows them again on reload (the engine ignores the key)
+        m.profile.stats = collectStats();
+        m.stats = { ...m.profile.stats };
+        await api.pfProfileSave(name, m.profile);
+        SAVED_PROFILES = await api.pfProfiles();
+        if (deletedModels.has(`saved:${name}`)) updateDeletedModels([`saved:${name}`], false);
+        editorMessage(`Model "${name}" saved — available under saved profiles in every seat menu`);
+        renderModel();
+      } catch (e) { manager.querySelector('[role="status"]').textContent = e.message; }
+      finally { button.disabled = false; }
+    });
+    buildPaintGrid();
+    updateRangeNote();
+    renderEditorImplied();
+    paintBucket();
+    els.editor.tabIndex = -1;
+    els.editor.scrollTop = 0;
+    els.editor.focus();
+    if (m.needsGeneration) doGenerate(true);
+  }
+
+  let paintCells = [];
+  function buildPaintGrid() {
+    const g = document.getElementById('pfl-paint');
+    g.innerHTML = '';
+    paintCells = [];
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.innerHTML = `<div class="bars"></div><div class="fill"></div><div class="tag">${cellInfo(i, j).label}</div><div class="sub"></div>`;
+        const idx = (12 - i) * 13 + (12 - j);
+        cell.addEventListener('mousedown', e => { e.preventDefault(); S.painting = true; paintClass(idx); });
+        cell.addEventListener('mouseenter', () => { if (S.painting) paintClass(idx); });
+        g.appendChild(cell);
+        paintCells.push(cell);
+      }
+    }
+    window.addEventListener('mouseup', () => { S.painting = false; }, { once: false });
+  }
+
+  function bucketPol(forPainting = false) {
+    const m = editingModel();
+    if (!m || !m.profile) return null;
+    if (S.editBucket === 4 && editorContextualVersion()) {
+      // A contextual grid is an inspection of one state, never a replacement
+      // for the model or a hand-paintable global re-raise policy.
+      if (!contextualPreview || contextualPreview.error) return null;
+      if (contextualPreview.policy) return contextualPreview.policy;
+    }
+    if (S.editBucket === 4 && editorColdReraise()) return m.profile.response.cold_reraise;
+    const contexts = m.profile.response?.limp_contexts;
+    if (S.editBucket === 1 && contexts?.length) {
+      const context = contexts[S.editLimpContext || 0] || contexts[0];
+      if (forPainting && !(S.editLimpContext || 0)) m.profile.buckets[1] = context.policy;
+      return context.policy;
+    }
+    let pol = m.profile.buckets[S.editBucket];
+    if (!pol && forPainting) {
+      // take over a solver-played bucket: start from all-fold
+      pol = {
+        call: new Array(169).fill(0),
+        raise: new Array(169).fill(0),
+        jam: new Array(169).fill(0),
+        raise_size: (m.stats && m.stats.raise_size) || 'min',
+      };
+      m.profile.buckets[S.editBucket] = pol;
+    }
+    return pol;
+  }
+
+  function editorWinsUnopened() {
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    return seat === unraisedWinner(editorContextualConfig(), S.positions);
+  }
+
+  function editorColdReraise() {
+    return S.editReraiseContext === 'cold' && !!editingModel()?.profile?.response?.cold_reraise;
+  }
+
+  function editorContextualVersion() {
+    return editingModel()?.profile?.response?.contextual_reraise || null;
+  }
+
+  function editorContextualConfig() {
+    // Preview the built game, even if the scenario form has unbuilt edits.
+    return S.builtCfg ? JSON.parse(S.builtCfg) : config();
+  }
+
+  function resetContextualAmounts() {
+    const cfg = editorContextualConfig();
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    const depth = Number(document.getElementById('pfe-context-depth')?.value || 2);
+    const post = cfg.posts[seat] || 0;
+    const available = cfg.stack - post;
+    const open = Math.min(2.5, Math.max(2, cfg.stack * .08));
+    const previous = depth === 2 ? open : open * 3;
+    const invested = S.editReraiseContext === 'cold' ? post
+      : Math.min(Math.max(previous, post + Math.min(.25, available / 4)), post + available * .6);
+    // Short stacks may necessarily cross the adaptive threshold. Keep a valid
+    // paid entry/call; the explanatory note makes that override visible.
+    const faced = Math.max(Math.min(depth === 2 ? open * 3.6 : open * 9.6, cfg.stack * .24),
+      invested + Math.min(1, (cfg.stack - invested) / 2));
+    document.getElementById('pfe-context-invested').value = Number(invested.toFixed(3));
+    document.getElementById('pfe-context-to').value = Number(faced.toFixed(3));
+    document.getElementById('pfe-context-pot').value = Number((faced + previous + invested + 1.5).toFixed(3));
+  }
+
+  async function refreshContextualPreview() {
+    const version = editorContextualVersion();
+    if (S.editBucket !== 4 || !version) return;
+    const epoch = editorEpoch;
+    const cfg = editorContextualConfig();
+    const seat = S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0);
+    const context = {
+      entry: S.editReraiseContext,
+      raises: Number(document.getElementById('pfe-context-depth').value),
+      invested: Number(document.getElementById('pfe-context-invested').value),
+      to_call: Number(document.getElementById('pfe-context-to').value),
+      pot: Number(document.getElementById('pfe-context-pot').value),
+    };
+    const key = JSON.stringify({version,cfg,seat,context});
+    if (key === contextualPreviewKey) return;
+    contextualPreviewKey = key;
+    contextualPreview = null;
+    const request = ++contextualPreviewRequest;
+    // Invalidate evidence immediately, before the frequency request finishes.
+    // It has its own key and stale-response guard for these same inputs.
+    updateRangeNote();
+    const status = document.getElementById('pfe-contextual-status');
+    status.textContent = 'Calculating contextual frequencies…';
+    document.getElementById('pfl-paint').classList.add('hidden');
+    try {
+      const out = await api.pfContextualPreview(version, cfg, seat, context);
+      if (epoch !== editorEpoch || request !== contextualPreviewRequest) return;
+      contextualPreview = out;
+    } catch (e) {
+      if (epoch !== editorEpoch || request !== contextualPreviewRequest) return;
+      contextualPreview = {error: e.message};
+    }
+    paintBucket();
+    updateRangeNote();
+  }
+
+  function renderReraiseContext() {
+    const row = document.getElementById('pfe-reraise-context-row');
+    row?.classList.toggle('hidden', S.editBucket !== 4);
+    if (S.editBucket !== 4) return;
+    const contextual = !!editorContextualVersion();
+    const hasCold = !!editingModel()?.profile?.response?.cold_reraise;
+    const select = document.getElementById('pfe-reraise-context');
+    if (select.dataset.contextual !== String(contextual)) {
+      select.dataset.contextual = String(contextual);
+      select.innerHTML = contextual
+        ? '<option value="cold">No voluntary entry yet</option><option value="called">Previously limped / called</option><option value="raised">Previously raised</option>'
+        : '<option value="cold">Facing a re-raise cold</option><option value="entered">After already entering</option>';
+      S.editReraiseContext = 'cold';
+      contextualPreviewKey = '';
+      resetContextualAmounts();
+    }
+    select.querySelector('[value="cold"]').disabled = !hasCold;
+    select.value = contextual ? S.editReraiseContext : editorColdReraise() ? 'cold' : 'entered';
+    select.onchange = () => {
+      S.painting = false;
+      S.editReraiseContext = select.value;
+      if (contextual) resetContextualAmounts();
+      paintBucket(); updateRangeNote();
+    };
+    document.getElementById('pfe-contextual-fields').classList.toggle('hidden', !contextual);
+    document.getElementById('pfe-reraise-explanation').textContent = contextual
+      ? `Contextual v1 · ${editorContextualConfig().stack}bb starting stack. Inspect a situation below; the game uses its actual history and amounts. Frequencies are conditional on arriving here, not the share of all dealt hands. This preview is read-only.`
+      : editorColdReraise()
+      ? 'No chips invested voluntarily yet: e.g. an open and a 3-bet before BB acts. This is the separate cold-response policy used in the game.'
+      : 'Conditional on having already limped, called or raised. A 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed. Use the game ribbon to see the actual arriving range.';
+    if (contextual) {
+      refreshContextualPreview();
+      if (contextualPreview) {
+        const out = contextualPreview;
+        const adaptive = editingModel()?.profile?.response?.adaptive_from;
+        const faced = Number(document.getElementById('pfe-context-to').value);
+        const learns = adaptive != null && faced >= editorContextualConfig().stack * adaptive;
+        document.getElementById('pfe-contextual-status').textContent = out.error ||
+          `${!out.policy && out.nominal_price != null ? `Call price ${(out.nominal_price * 100).toFixed(1)}% · ` : ''}${out.note}${learns ? ' In the game, this amount reaches the adaptive threshold: the solver learns the response instead of fixing these frequencies.' : ''}`;
+      }
+    }
+  }
+
+  function editorUnopenedNotApplicable() {
+    return S.editBucket === 0 && editorWinsUnopened();
+  }
+
+  function renderEditorImplied() {
+    const el = document.getElementById('pfe-implied');
+    if (!el) return;
+    el.classList.toggle('hidden', editorUnopenedNotApplicable());
+    const m = editingModel(), imp = m?.implied;
+    if (!imp) { el.textContent = ''; return; }
+    const prefix = editorWinsUnopened() ? '' : `first-in ${imp.vpip.toFixed(1)}% (raises ${imp.pfr.toFixed(1)}%) · `;
+    el.textContent = prefix + `3-bets ${imp.threebet.toFixed(1)}% · folds to a raise ${(100 - imp.cont_vs_raise).toFixed(0)}% cold` +
+      (m.stats?.cont_vs_raise_limped != null ? ` / ${(100 - m.stats.cont_vs_raise_limped).toFixed(0)}% after limping` : '') +
+      (editorContextualVersion() ? ' · re-raise responses vary with the situation' : editorWinsUnopened() ? '' : ` · folds to a 3-bet ${(100 - imp.cont_vs_3bet).toFixed(0)}% of its opens`);
+  }
+
+  /** Read-only provenance for this exact grid, with stale responses discarded. */
+  async function updateRangeNote() {
+    const el = document.getElementById('pfe-rangenote');
+    const pm = editingModel();
+    if (!el || !pm) return;
+    if (editorUnopenedNotApplicable()) {
+      ++evidencePreviewRequest;
+      evidencePreviewKey = '';
+      evidencePreview = null;
+      renderModelEvidence(el, null);
+      return;
+    }
+    if (pm.needsGeneration) {
+      ++evidencePreviewRequest;
+      evidencePreviewKey = '';
+      evidencePreview = null;
+      renderModelEvidence(el, {kind:'pending',label:'Ranges not generated',summary:'Generate from stats to create this model.',details:[]});
+      return;
+    }
+    const contextual = S.editBucket === 4 && !!editorContextualVersion();
+    const body = {
+      cfg: editorContextualConfig(),
+      seat: S.editSeat ?? Number(document.getElementById('pfe-preview-seat')?.value || 0),
+      profile: pm.profile,
+      bucket: S.editBucket,
+      cold: S.editBucket === 4 && editorColdReraise(),
+    };
+    const limp = pm.profile.response?.limp_contexts?.[S.editLimpContext || 0];
+    if (S.editBucket === 1 && limp) body.limp_context = {limpers:limp.limpers,free_check:limp.free_check};
+    if (contextual) body.context = {
+      entry: S.editReraiseContext,
+      raises: Number(document.getElementById('pfe-context-depth').value),
+      invested: Number(document.getElementById('pfe-context-invested').value),
+      to_call: Number(document.getElementById('pfe-context-to').value),
+      pot: Number(document.getElementById('pfe-context-pot').value),
+    };
+    const key = JSON.stringify(body);
+    if (key === evidencePreviewKey && evidencePreview) {
+      renderModelEvidence(el, evidencePreview);
+      return;
+    }
+    if (key === evidencePreviewKey) return;
+    evidencePreviewKey = key;
+    evidencePreview = null;
+    const request = ++evidencePreviewRequest;
+    const epoch = editorEpoch;
+    renderModelEvidence(el, {kind:'pending',label:'Checking source',summary:'Reading evidence for this situation…',details:[]});
+    // Drag-painting and rapid context changes need only the final source query.
+    await new Promise(resolve => setTimeout(resolve, 80));
+    if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+    try {
+      const out = await api.pfModelEvidence(body);
+      if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+      const generatedKey = body.cold ? 'cold_reraise' : ['unopened','limps','raise','squeeze','reraise'][body.bucket];
+      const generated = !pm.painted && pm.implied?.model_evidence?.[generatedKey];
+      evidencePreview = !contextual && out.kind === 'saved_policy' && generated?.kind === 'stat_derived' ? {...generated, sizing: out.sizing} : out;
+    } catch (e) {
+      if (epoch !== editorEpoch || request !== evidencePreviewRequest) return;
+      evidencePreview = {kind:'unavailable',label:'Evidence unavailable',summary:'The source could not be checked.',details:[e.message]};
+    }
+    renderModelEvidence(el, evidencePreview);
+  }
+
+  function paintClass(idx) {
+    if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration || (S.editBucket === 4 && editorContextualVersion())) return;
+    const pol = bucketPol(true);
+    if (!pol) return;
+    const pm = editingModel();
+    if (pm) pm.painted = true; // stat edits now need explicit GENERATE
+    pol.call[idx] = 0;
+    pol.raise[idx] = 0;
+    pol.jam[idx] = 0;
+    if (S.paintAction !== 'fold') pol[S.paintAction][idx] = S.paintWeight;
+    const freeLimp = S.editBucket === 1 && pm?.profile.response?.limp_contexts?.[S.editLimpContext || 0]?.free_check;
+    if (freeLimp) {
+      // There is no fold when checking is free. A partial check brush leaves
+      // the remainder raising, rather than drawing an impossible fold share.
+      if (S.paintAction === 'call') pol.raise[idx] = 1 - S.paintWeight;
+      pol.call[idx] = Math.max(0, 1 - pol.raise[idx] - pol.jam[idx]);
+    }
+    // A hand-painted cold response must reach the live size-band policies too.
+    if (S.editBucket === 2 && pm?.profile.vs_raise_bands) {
+      for (const [, band] of pm.profile.vs_raise_bands) {
+        for (const action of ['call','raise','jam']) band[action][idx] = pol[action][idx];
+      }
+    }
+    paintBucket();
+    updateRangeNote();
+  }
+
+  function paintBucket() {
+    renderReraiseContext();
+    const unavailable = editorUnopenedNotApplicable();
+    const contextual = S.editBucket === 4 && !!editorContextualVersion();
+    document.getElementById('pfe-not-applicable')?.classList.toggle('hidden', !unavailable);
+    document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable || contextual);
+    document.getElementById('pfl-paint')?.classList.toggle('hidden', unavailable || (contextual && (!contextualPreview || !!contextualPreview.error)));
+    renderEditorImplied();
+    if (unavailable) {
+      S.painting = false;
+      document.getElementById('pfe-limp-context-row')?.classList.add('hidden');
+      return;
+    }
+    const contexts = editingModel()?.profile?.response?.limp_contexts || [];
+    const select = document.getElementById('pfe-limp-context');
+    const row = document.getElementById('pfe-limp-context-row');
+    if (row) row.classList.toggle('hidden', S.editBucket !== 1 || !contexts.length);
+    if (select && contexts.length) {
+      select.innerHTML = contexts.map((c, i) => c.free_check === contexts[0].free_check
+        ? `<option value="${i}">${c.limpers === 3 ? '3+' : c.limpers} limper${c.limpers === 1 ? '' : 's'} · ${c.free_check ? 'check free' : 'call / complete'}</option>` : '').join('');
+      select.value = String(S.editLimpContext || 0);
+      select.onchange = () => { S.editLimpContext = +select.value; paintBucket(); updateRangeNote(); };
+    }
+    const pol = bucketPol();
+    const freeLimp = S.editBucket === 1 && contexts[S.editLimpContext || 0]?.free_check;
+    const foldBrush = document.querySelector('#pfe-palette [data-a="fold"]');
+    const callBrush = document.querySelector('#pfe-palette [data-a="call"]');
+    if (foldBrush) foldBrush.disabled = !!freeLimp;
+    if (callBrush) callBrush.textContent = freeLimp ? 'CHECK' : 'CALL';
+    if (!pol) {
+      // Inspecting a solver-managed bucket must not create an all-fold lock.
+      // Only an explicit brush action takes ownership of this bucket.
+      for (const cell of paintCells) {
+        cell.querySelector('.bars').replaceChildren();
+        cell.classList.add('empty');
+        cell.dataset.tip = 'Solver-managed range · paint a hand to create a fixed policy';
+      }
+      return;
+    }
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        const cell = paintCells[i * 13 + j];
+        const idx = (12 - i) * 13 + (12 - j);
+        const c = pol.call[idx] || 0, r = pol.raise[idx] || 0, jm = pol.jam[idx] || 0;
+        const f = Math.max(0, 1 - c - r - jm);
+        const bars = cell.querySelector('.bars');
+        bars.style.height = '100%';
+        bars.style.opacity = 1;
+        bars.innerHTML =
+          (r > 0.001 ? `<div style="width:${r * 100}%;background:${PCOLORS.raise}"></div>` : '') +
+          (jm > 0.001 ? `<div style="width:${jm * 100}%;background:${PCOLORS.jam}"></div>` : '') +
+          (c > 0.001 ? `<div style="width:${c * 100}%;background:${PCOLORS.call}"></div>` : '') +
+          (f > 0.001 ? `<div style="width:${f * 100}%;background:#20242a"></div>` : '');
+        cell.classList.toggle('empty', c + r + jm < 0.002);
+        cell.dataset.tip = `${cellInfo(i, j).label}: raise ${(r * 100).toFixed(0)}% · jam ${(jm * 100).toFixed(0)}% · ${freeLimp ? 'check' : 'call'} ${(c * 100).toFixed(0)}%${freeLimp ? '' : ` · fold ${(f * 100).toFixed(0)}%`}`;
+        if (S.editBucket === 4) cell.dataset.tip += editorColdReraise() ? ' · facing a re-raise cold' : ' · conditional on prior entry';
+      }
+    }
+  }
+
+  els.exportBtn.addEventListener('click', async () => {
+    if (lastIter < 2) {
+      return toast('Wait for a learned strategy snapshot before exporting ranges.', true);
+    }
+    try {
+      const ex = await api.pfExport(S.cursor);
+      const steps = takenSteps(S.cursor.length);
+      const lineText = steps.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
+      // ribbon segments for Browse: continuing actions only (folds are just
+      // dead money in the pot, same convention as the study module)
+      ex.segments = steps
+        .filter(st => st.kind !== 'fold')
+        .map(st => ({ pos: st.pos, label: st.label }));
+      // carry each flop player's postflop profile (if the seat is modeled)
+      // and who arrives with the initiative, for villain locks in Browse
+      const profFor = pos => {
+        const k = S.positions.indexOf(pos);
+        const sm = k >= 0 && S.model ? S.model.seats[k] : null;
+        return sm && sm.mode === 'ruled' && sm.postflop
+          ? { name: sm.label, stats: sm.postflop } : null;
+      };
+      ex.villains = { oop: profFor(ex.oop_pos), ip: profFor(ex.ip_pos) };
+      let lastAggr = null;
+      steps.forEach(st => { if (st.kind === 'raise' || st.kind === 'jam') lastAggr = st.pos; });
+      ex.aggressor = lastAggr === ex.oop_pos ? 0 : lastAggr === ex.ip_pos ? 1 : null;
+      onExport(ex, lineText);
+    } catch (e) { toast(e.message, true); }
+  });
+
+  function hideGrid() {
+    els.grid.classList.add('hidden');
+    els.fillSeg.classList.add('hidden');
+    els.rangeSeg.innerHTML = '';
+    els.legend.innerHTML = '';
+    els.gridCap.innerHTML = '';
+  }
+
+  /** Repaint the persistent cells from the current view (Browse STRAT style:
+   *  discrete action colors at full opacity, reach shown as bottom-anchored
+   *  bar height, empty cells dark with a dim label). */
+  function paintGrid() {
+    const v = S.view;
+    if (!v) return;
+    // action nodes paint the actor's strategy; flop terminals paint the
+    // selected live player's ARRIVING RANGE (single-color, reach heights)
+    let reachVec = null, na = 0;
+    if (v.kind === 'action') {
+      reachVec = v.reach;
+      na = v.actions.length;
+    } else if (v.kind === 'pot_share' || v.kind === 'fold_win') {
+      reachVec = (v.reaches_all || [])[S.rangeSeat] || null;
+    }
+    if (!reachVec) return;
+    const colors = S.colors;
+    // bar height = the actual fraction of the hand's combos still held here
+    const fillH = r => (r <= 1e-9 ? 0 : Math.min(1, r));
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        const cell = S.cells[i * 13 + j];
+        const idx = (12 - i) * 13 + (12 - j);
+        const reach = reachVec[idx] || 0;
+        const bars = cell.querySelector('.bars');
+        const segs = [];
+        let cont = 0; // how often the hand continues (everything but fold)
+        if (v.kind === 'action') {
+          // biggest action on the LEFT (jam / largest raise), fold on the
+          // right — the engine lists actions fold-first, so walk backwards
+          for (let a = na - 1; a >= 0; a--) {
+            const f = v.strategy[a * 169 + idx];
+            if (v.actions[a].kind !== 'fold') cont += f;
+            if (f > 0.001) {
+              segs.push(`<div style="width:${(f * 100).toFixed(1)}%;background:${colors[a]}"></div>`);
+            }
+          }
+        } else {
+          segs.push('<div style="width:100%;background:#f28c26"></div>');
+        }
+        bars.innerHTML = segs.join('');
+        bars.style.height = `${(fillH(reach) * 100).toFixed(1)}%`;
+        bars.style.opacity = reach > 1e-9 ? 1 : 0;
+        cell.classList.toggle('empty', reach < 0.002);
+        const lab = cellInfo(i, j).label;
+        if (v.kind === 'action') {
+          // plain text (one action per line) in data-tip; the aligned
+          // two-column table in data-tip-html for tooltip.js to prefer
+          const pct = k => `${(v.strategy[k * 169 + idx] * 100).toFixed(1)}%`;
+          const inRange = reach < 0.995 ? `${(reach * 100).toFixed(0)}% of combos still in range` : '';
+          if (reach < 0.002) {
+            cell.dataset.tip = `${lab} — ${v.actor_pos} almost never holds this here`;
+            cell.dataset.tipHtml = '';
+          } else {
+            cell.dataset.tip = lab + (inRange ? ` — ${inRange}` : '') + '\n' +
+              v.actions.map((a, k) => `${a.label}  ${pct(k)}`).join('\n');
+            cell.dataset.tipHtml = `<b>${lab}</b>` +
+              (inRange ? ` <span class="dim">${inRange}</span>` : '') +
+              `<div class="tip-rows">` + v.actions.map((a, k) =>
+                `<span>${esc(a.label)}</span><span>${pct(k)}</span>`).join('') +
+              `</div>`;
+          }
+        } else {
+          const pos = v.positions[S.rangeSeat];
+          cell.dataset.tip = reach < 0.002
+            ? `${lab} — not in ${pos}'s range here`
+            : `${lab} — ${(reach * 100).toFixed(0)}% of ${pos}'s combos still held here`;
+          cell.dataset.tipHtml = '';
+        }
+        // corner number, as in Browse: the continue frequency of a MIXED
+        // hand (pure folds / pure continues stay clean)
+        const mixed = v.kind === 'action' && reach >= 0.002 && cont >= 0.03 && cont <= 0.97;
+        cell.querySelector('.sub').textContent = mixed ? `${Math.round(cont * 100)}%` : '';
+      }
+    }
+  }
+
+
+  function renderLegend(v, colors) {
+    els.legend.innerHTML =
+      `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
+      [...v.actions.keys()].reverse().map(k =>
+        `<span class="key"><i style="background:${colors[k]}"></i>${esc(v.actions[k].label)}</span>`).join('') +
+      `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
+  }
+
+  // A reload must not hide a live or solved session: adopt the engine's
+  // current game (config, seat models, iteration) the way LOAD does, so
+  // SOLVE continues it instead of rebuilding over it — pf_build silently
+  // stops-and-joins a running solve — and a running solve shows its
+  // progress with STOP available instead of an empty lab.
+  (async () => {
+    let sess;
+    try { sess = await api.pfSession(); } catch { return; } // no session (or an older server)
+    if (!sess || !sess.config) return;
+    try {
+      await applyLoadedGame('current session', sess, { quiet: true, onDisk: false });
+      els.buildInfo.textContent =
+        `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB CPU arenas · session resumed at iter ${sess.iteration}`;
+      if (sess.state === 'running') { progressDock(els.stop); progressSet(0, 'solving…'); }
+    } catch (e) { console.warn('could not adopt the preflop session', e); }
+  })();
+
+  return { refresh };
+}

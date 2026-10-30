@@ -1,0 +1,64 @@
+{
+  "implementation_checks_passed": true,
+  "run_stopped_at_registered_time_cap": true,
+  "all_four_gpu_targets_passed": false,
+  "inputs_verified": 16,
+  "checkpoints_reconstructed": 42,
+  "maximum_gap_reconstruction_error": 0,
+  "elapsed_seconds": 14401.108999999997,
+  "registered_cap_seconds": 14400,
+  "registration_sha256": "864b423fcf83c709f8bc809e0b423512a7604ce5e207faa2631981c3e0f9311d",
+  "status_sha256": "5ddc24ecfec88095ac0fdce36470eb972c3f0c401c0bcdabbca331a72f663c96",
+  "resources_sha256": "c05fb2308aa283bc0d007702ad9549b0d04d4f681ec5f6b12bb3a7a45468be3e",
+  "minimum_free_host_bytes": 96536772608,
+  "minimum_free_gpu_bytes": 21939355648,
+  "runs": [
+    {
+      "case": 0,
+      "seed": 17,
+      "terminal": true,
+      "outcome": "missed target at iteration cap",
+      "last_saved_iteration": 2048,
+      "last_saved_gap": 0.010401701523463647,
+      "checkpoints": 11,
+      "case_sha256": "84c260fad610508643726a35a1e4ac1073bba6a8541268efbec7c6872e8ad99d",
+      "bank_sha256": "30fbf417f0ea3b8f8e60e05d04977074049b2e1d4317fd5338beefb24e66993a"
+    },
+    {
+      "case": 0,
+      "seed": 31,
+      "terminal": true,
+      "outcome": "passed",
+      "last_saved_iteration": 2048,
+      "last_saved_gap": 0.006533320934490897,
+      "checkpoints": 11,
+      "case_sha256": "27b20896ee11f723403bac8b4529c0b99ebc2015665be4fb35bc9b2453e135d8",
+      "bank_sha256": "becf7f029071f7b13e14d37d506d50c6d27fbea87f8b603e5bc25dcafc3238aa"
+    },
+    {
+      "case": 1,
+      "seed": 17,
+      "terminal": true,
+      "outcome": "passed",
+      "last_saved_iteration": 2048,
+      "last_saved_gap": 0.007768140652724845,
+      "checkpoints": 11,
+      "case_sha256": "444649e2b956dfd6569c8018cff80e13d6357f81305fa6c23c60d68bb0ba7ef3",
+      "bank_sha256": "b10d48097809aade7dffffca7a116bbcff433570fe97959f72a2d82866fe36db"
+    },
+    {
+      "case": 1,
+      "seed": 31,
+      "terminal": false,
+      "outcome": "incomplete at overall time cap",
+      "last_saved_iteration": 1024,
+      "last_saved_gap": 0.011312700479684416,
+      "checkpoints": 9,
+      "case_sha256": "1ea76fef8e5096aa4bca21b621769e31c2994c668e53ab1727eea26479154b59",
+      "bank_sha256": "3c7bbc5065dbe44c265c0c719deef5478abf0693c6cfe839f67f18d26e9f896e"
+    }
+  ],
+  "scope": "Independent reconstruction of stored exact finite policies and stopping; source/final bank hashes verified. Stored replay checks inspected, not rerun for every network. The unfinished case has no extrapolated final outcome.",
+  "physical_poker_convergence_qualified": false,
+  "production_modified": false
+}

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_visible_hybrid_completion_comparison_20260923.py", line 66, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_visible_hybrid_completion_comparison_20260923.py", line 27, in main
+    candidates[name]=read(prefix+'-evaluation-v1')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_sampled_physical_dense_comparison_20260922.py", line 17, in read
+    assert idle()
+           ^^^^^^
+AssertionError

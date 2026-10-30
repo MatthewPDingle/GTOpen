@@ -1,0 +1,81 @@
+{
+  "id": "D087-cohort",
+  "at": "2026-10-17T05:47:47.926136+00:00",
+  "status": "FROZEN_BEFORE_FULL_SOLVES",
+  "order": [
+    "D087B1",
+    "D087T1",
+    "D087T2",
+    "D087B2",
+    "D087B3",
+    "D087T3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D087B1",
+      "trace": "D087T1"
+    },
+    {
+      "baseline": "D087B2",
+      "trace": "D087T2"
+    },
+    {
+      "baseline": "D087B3",
+      "trace": "D087T3"
+    }
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+      "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+    },
+    "trace": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build\\postflop-trace.exe",
+      "sha256": "2cd5cfecb512917a46df86bfd7960bc14cddbcd93311c8be762c5509d97085de",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build\\postflop-trace.manifest.json",
+      "manifest_sha256": "2f4d3b89a719202c4240403a3953d4cae89278ac93f9569280c3787b823e830e"
+    }
+  },
+  "private_dll_dirs": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib"
+  ],
+  "driver_cbid_header": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h",
+  "fixture": "rainbow",
+  "storage": "compressed",
+  "profile_after_timing": "0",
+  "expected_stop": 200,
+  "expected_checkpoints_each": 10,
+  "expected_graph_kernel_node_repeat_counts": [
+    9,
+    199,
+    199
+  ],
+  "observer_usefulness_rule": "Absolute full-cycle,native-process,and complete runner wall change <=10%in every fixed pair; no confidence or unbiased per-family timing claim. No extension/exclusion/pooling.",
+  "trace_quality_rule": "Same full non-timing payload/checkpoints as accepted rainbow. No collector errors/drops/bad timestamps/outstanding buffers. Exactly3kernel graph groups with all node repeats9,199,199;407successfulGraphLaunchAPIrecords and exact correlation join for everykernel; six strictlyordered phase timestamps; identical kernel-family invocation counts across3traces. No unexpected application kernel names.",
+  "sampling_rule": "Fixed3pairs BC/CB/BC, six processes. All data retained. No optimization acceptance or1%performance claim from diagnostic.",
+  "scope": "Largest registered fixture only, to locate hostAPI/device overlap in init/solve/readback. Primary performance qualification remains unchanged all3fixtures/fresh16/broader/holdout/cumulative.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\run-cohort.py": "92189ab9d4526580c21e403e53bb8c5ccf33561627b78c822fe64f888bc88331",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\ability-report.json": "6e94da80bcabfce8240e13d168dd5e7617cf65262047dc0bd83852d1a808ff13",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\evaluator.rs": "1ad6d5f18827adbab16c3d61ed88e65f0587d772310dfb96c630c3311c623e0c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\evaluator.patch": "f9307d74a114918db5eb589be6b1a9c1ca82d001de76d0b5025eddfe7d97faa5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build-plan.json": "3127b65e1e609311896bd39a1042fe31023779f5c4c746d398415ed4d16d2e75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build\\complete.json": "907fafc8a710195381e778853bfbeec556eb1bc08b3cbe241dc0a3a6e35665df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.lib": "35a38ae508f0620673305a0a13f4f02afc0a122067823d10dbdbdf6751b4031d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\collector.cpp": "1fd93739e96458e18c1fdf5b7a56b98b73ae9158581bf26015966bc739ca3fb9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h": "87bda1c526285330d1837fbc08af504e4a69b247242f7dec3446b3e8237d051d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\proposal.json": "57e80b36bdb5bd3af52e47f663e7b390c49658b9374adba539d393aed6925c5b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\gap-census.json": "9817371096eeb587f7795479dcfff6cbde75db06a171b0c378c19e9a525464c3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-draft-r1\\failure.json": "f002827f73845a42cbe65890cba36420ba547a32d655d67a377bb2dff698092c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build\\postflop-trace.exe": "2cd5cfecb512917a46df86bfd7960bc14cddbcd93311c8be762c5509d97085de",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\diagnostic-build\\postflop-trace.manifest.json": "2f4d3b89a719202c4240403a3953d4cae89278ac93f9569280c3787b823e830e"
+  },
+  "accepted_source": "E051",
+  "candidate_accepted": false
+}

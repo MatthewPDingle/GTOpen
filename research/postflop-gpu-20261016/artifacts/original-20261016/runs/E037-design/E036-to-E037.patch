@@ -1,0 +1,23 @@
+--- E036/kernels.cu
++++ E037/kernels.cu
+@@ -240,6 +240,9 @@
+             && (__float_as_uint(tie) & 0x7f800000u) != 0x7f800000u) {
+             for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+                 cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
++            float lower = 0.f, higher = 0.f, tied = 0.f;
++            float zero_result = win * lower + lose * higher + tie * tied;
++            if (__float_as_uint(zero_result) == 0u) return;
+             // Sorted p_idx writes may belong to different lanes than full-row zeroing.
+             __syncthreads();
+             int m_p = p_cnt[slot];
+--- E036/mod.rs
++++ E037/mod.rs
+@@ -1420,7 +1420,7 @@
+         }}
+         stream.synchronize().unwrap();drop(reference);drop(candidate);ctx.check_err().unwrap();
+         assert_eq!((pairs,launches),(34,68));
+-        println!("E036_SHOW_ZERO_TEST {{\"comparison_pairs\":34,\"kernel_launches\":68,\"threads\":128,\"exact\":true,\"performance_measurement\":false}}");
++        println!("E037_SHOW_ZERO_TEST {{\"comparison_pairs\":34,\"kernel_launches\":68,\"threads\":128,\"exact\":true,\"performance_measurement\":false}}");
+     }
+ 
+     fn reach_reuse_solver(storage: crate::store::Storage, algo: Algorithm, compact: bool, menu: &str) -> Solver {

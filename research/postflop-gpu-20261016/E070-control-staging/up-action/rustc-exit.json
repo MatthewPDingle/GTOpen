@@ -1,0 +1,28 @@
+{
+  "returncode": 0,
+  "GPUexecutions": 0,
+  "command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.exe"
+  ],
+  "only_child_environment_overrides": {
+    "TMP": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\compiler-tmp",
+    "TEMP": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\compiler-tmp"
+  },
+  "binary_sha256": "15cc3fdfc99cd43a18bb6b05ca18aa8a00d8224f456f1f75c5aeefb05382d85d"
+}

@@ -1,0 +1,100 @@
+{
+  "id": "E030-source-review",
+  "at": "2026-10-16T17:41:24.059678+00:00",
+  "verdict": "PASS_SCOPED_SOURCE_ONLY",
+  "source_review_pass": true,
+  "independent_source_review_pass": true,
+  "findings": [],
+  "source_manifest_sha256": "0ad81cd54e33062d2cfc53dfebd3f0db60d3675b9d10458799e4f95aeb3f6681",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "5ee2ffbf0daeb7447d69584f2f64bd2c13733c7be028e580cc3fd95c7196f829",
+    "crates/solver/src/gpu/mod.rs": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+    "crates/solver/src/gpu/plan.rs": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+    "crates/solver/src/gpu/continuation_capacity.rs": "d6745c80d8985acf148654932d5c69272448a66fdc9b3cb011028717b119ee72",
+    "crates/solver/src/game.rs": "69d404740704e1187b90aaa0bd2ef38fcce1692d80714639ad904085b4981f6a"
+  },
+  "verified": {
+    "artifact_pins": 15,
+    "reference_pins": 10,
+    "accepted_source_map_matches_immutable_E020": true,
+    "current_checkout_exact_E020_entries": 162,
+    "owned_exact_bases": 5,
+    "cuda_change_exactly_reversible": true,
+    "other_eight_cuda_entries_and_ABIs_unchanged": true,
+    "floating_expression_order_total_reduction_and_barriers_unchanged": true,
+    "training_and_evaluation_opponent_selection_unchanged": true,
+    "additional_immutable_device_bytes": 416,
+    "new_device_allocations": 0,
+    "mutable_workspace_components_unchanged": 11,
+    "borrowed_mutable_buffers_unchanged": 7,
+    "prospective_unit_inventory": {
+      "passed": 85,
+      "ignored": 4,
+      "executed": false
+    }
+  },
+  "reasoning": [
+    "The immutable 52-card permutation maps each task to one unique card. The original 53 offsets and card_idx order remain unchanged, preserving each +0 initializer, ascending floating additions and s[card] destination. The thread-index total partial loop/reduction, all barriers, CFV output expressions, CUDA ABI and launch settings are exact. Widths below52 process multiple independent cards with the original task stride.",
+    "The private host helper sorts the fixed local array by descending list length and ascending card ID, appending after the original prefix before constructor field moves. Empty and full-range ties keep every card assigned. No new plan borrow after partial moves; the shared constant is CPU-feature-safe.",
+    "Each existing offset allocation grows by208 bytes,416 total. Plan staging admission, the separate public estimate and planned immutable metadata each include the delta once; observed capacity already reads actual lengths. All staging_bytes callers are budgets/estimates/logs, not mutable allocation geometry. Continuation storage/paging retains immutable ownership and unchanged seven-buffer/11-component workspace.",
+    "One added host unit has independently specified empty/full/asymmetric expected orders and prefix/permutation checks. Existing geometry tests add accounting assertions; no ignored tests or frozen evaluator inputs changed.85/4 is a prospective inventory, not a native result."
+  ],
+  "direct_scope_review": {
+    "manifest_sha256": "08aaca74881674278fd3a0dfaa709ba67a631418a792f8205daf6f4100550173",
+    "scope_pass": true,
+    "comparison_pairs": 180,
+    "kernel_launches": 360,
+    "production_width": 128,
+    "supplemental_widths": [
+      16,
+      32,
+      64,
+      256
+    ],
+    "same_shape_comparisons_only": true,
+    "all_overflow_bits_exact_required": true,
+    "full_device_input_and_output_guard_checks_required": true,
+    "new_matrix_or_raw_total_kernels": false,
+    "execution_package_review_pending": true
+  },
+  "limitations": [
+    "Source review is not Rust typecheck, compiled numerical equivalence, resource qualification or complete-cycle evidence. Root must separately authorize the reviewed direct execution package.",
+    "The scheduling proxy does not establish latency or2percent headroom; longest card loop and scalar work remain unchanged, and bank/gather/store/setup costs may worsen.",
+    "No broader qualification, performance acceptance or source activation is authorized by this report."
+  ],
+  "checked_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\manifest.json": "0ad81cd54e33062d2cfc53dfebd3f0db60d3675b9d10458799e4f95aeb3f6681",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\game.rs": "69d404740704e1187b90aaa0bd2ef38fcce1692d80714639ad904085b4981f6a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "d6745c80d8985acf148654932d5c69272448a66fdc9b3cb011028717b119ee72",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\kernels.cu": "5ee2ffbf0daeb7447d69584f2f64bd2c13733c7be028e580cc3fd95c7196f829",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate.patch": "0907da937ab8d0079897e5b4fd5d72935630d30f3767c94ecfe831f49091a10b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\prepare.py": "773e044eabce936b56e76fb6fe72b571da114520a45859b6687ba515a1df910a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\README.md": "5d58aad409cc3053a718b6d509312897446c35498c0567f513200e25478b6de5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\seal.py": "11401ded428112b4b1e4a389864437e633396344865ef2369866cc0e2cd5d9e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\source-checks.json": "500f5ed3b71b1d65d304810319c084acd4590dde0afcd10c452685b580657710",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\report.json": "def9606cf66cec46d11a8733a698933d7931319f0941a3c56a36f702f58d8901",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\manifest.json": "d07198635b73254747af5c99e36f94b4ad83d6a38eb53c40155b4ab46294f41a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\card-work-proxy.json": "e5de0aecf40cd762881303bc0d7030255956516ebf5e87fc83962421fda1cc5c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D055-independent-source-review\\report.json": "d21e552f17f1492ec6cced03406ab201c94fa539a57184f3bf3476b2b7a4fe3d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D055-independent-source-review\\manifest.json": "398825075fef9d4f5977c8918ba442e3446931eec72025f1c21f2a87d173df44",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-unit\\report.json": "f81cf88f3840b05be019c08a6b918848018af748415e0efa869b3ed774e34da4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-unit\\stdout.log": "a3c0c0e74c9565a57b31d4412ea629de149c496373227009dfa4173d1d6c8293",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\protocol.json": "8e89cc3ea42e74c081a0db3fedd4e249582aded031bd597dca575df0c1ece8a6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\corpus.json": "265f74834e8d0b3506abb0b7229308f732ca8405387958fb0ae79528c9a2a217",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-direct-feasibility-plan\\manifest.json": "08aaca74881674278fd3a0dfaa709ba67a631418a792f8205daf6f4100550173",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-direct-feasibility-plan\\plan.json": "8e61170c325d5f85bf8843d14e7b683047345870606ac5ab512d597138d88ed3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-direct-feasibility-plan\\coverage.json": "cfdad176a8e2ecace588f1703f968330d02a59aa2e00bc6f8d83f7ac3e6cd26f"
+  },
+  "compiler_native_gpu_executed": false,
+  "production_status_edits": false,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

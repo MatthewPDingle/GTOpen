@@ -1,0 +1,29 @@
+{
+  "id": "E043-resource-root-check",
+  "at": "2026-10-17T01:47:49.137592+00:00",
+  "status": "pass_rejection_crosscheck",
+  "root_cross_check_only": true,
+  "checks": 102,
+  "resource_report_sha256": "a396c3da4819d210b9abd10a4bb989d56e89922eec552725bc8c5851d9fbe6b8",
+  "protocol_sha256": "2d04978610fba5e4b85f5621be2c321b0f1535fc6e8fd4abeaf536d103455c51",
+  "observed_registers": [
+    40,
+    48
+  ],
+  "observed_local_bytes": [
+    32,
+    32
+  ],
+  "observed_128thread_blocks_per_sm": [
+    12,
+    10
+  ],
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_rejected": true,
+  "numeric_equivalence": "not_run",
+  "additional_common_arity_ptx_gate": "not_run_after_resource_failure",
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Actual resource markers and receipt/input pins, theoretical occupancy only; no measured speed or numerical equivalence. Root cross-check is not an external independent audit."
+}

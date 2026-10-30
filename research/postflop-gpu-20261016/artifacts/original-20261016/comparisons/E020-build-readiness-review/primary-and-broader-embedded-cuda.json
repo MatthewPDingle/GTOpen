@@ -1,0 +1,77 @@
+{
+  "id": "E020-primary-and-broader-linked-CUDA-check",
+  "at": "2026-10-16T11:13:48.152166+00:00",
+  "verdict": "PASS_EIGHT_EXECUTABLES",
+  "candidate_CUDA_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "E015_CUDA_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+  "binaries": [
+    {
+      "name": "E020-postflop_autoresearch",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.exe",
+      "binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+      "manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-postflop_action_menus",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_action_menus.exe",
+      "binary_sha256": "d086cceb1e0490ae23a16fe2b6fc739f4b21e4cb8993de6e5ef38d8dc946feb9",
+      "manifest_sha256": "a59ed1349cb6436cdb9f4de91897730eeac524cba036b57ad54e62f9f41bb84a",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-postflop_state_perf",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_state_perf.exe",
+      "binary_sha256": "a293634fa964a06e04209e54a5e7c0767bd380fc44e95ee83362a6e86a9d4d1c",
+      "manifest_sha256": "208fb434f5e04ac118c7eaacef16dc809fbd34c00f1686800b20c2260b8138ed",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-gpu",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gpu.exe",
+      "binary_sha256": "23a902540f6d868aaff64d5c4059c0eab454920a0e4bf2aea9441229d56f7148",
+      "manifest_sha256": "07c8a2254b479a9bde9476a9beff525499917e7df6f01250b2ee0ad2513bccdf",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-postflop_resume_state",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_resume_state.exe",
+      "binary_sha256": "5e174a9da989d03264fe731603ca12985b7d6bc7d0945ea73eb43d22e3bf697b",
+      "manifest_sha256": "97344099895a619b0b00a811d7586485d7115ab1845fb27395340da97448d0f6",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-continuation_paging",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_paging.exe",
+      "binary_sha256": "012790a236b2cdf95bb54fffc864677cad0931e04f180fb0e2a8e26a2e565049",
+      "manifest_sha256": "5ae9cab58c8c0d2050c38859d7febe14719f4515c6496c4621f180ecd3a1ee9f",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-continuation_symmetry",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_symmetry.exe",
+      "binary_sha256": "0a2d2403e6eb7ef1af2141da590a1da67c3d3269c66a77f7f1023e86b5cd2980",
+      "manifest_sha256": "bad6f8150040fcc287ed9f42ec7a3964019bab18476dcc1d88b6fedbe3345891",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    },
+    {
+      "name": "E020-continuation-tests",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation-tests.exe",
+      "binary_sha256": "21ad5267694c35d26ec8e018c0598f94c2f66216ef81d7ee4b90cb4eb6fcdc20",
+      "manifest_sha256": "188fa463158de5d2736a56bc64ba72c8cc55b03413cec166e901f1c050eec8f6",
+      "exact_candidate_CUDA_occurrences": 1,
+      "exact_E015_CUDA_occurrences": 0
+    }
+  ],
+  "scope": "Direct complete CUDA text identity in preserved linked executables, supplemental to existing compile/source/binary provenance. Does not prove host machine-code semantics or numerical performance. Invalid R1 holdout binaries are excluded and remain blocked.",
+  "builds": 0,
+  "gpu_jobs": 0,
+  "native_runs": 0
+}

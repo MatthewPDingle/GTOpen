@@ -1,0 +1,56 @@
+{
+  "checks_passed": true,
+  "results": [
+    {
+      "iteration": 500,
+      "result_sha256": "e722e81f10b9e22b25d4789f76332159baa7772f707d9d0991cd744eaf60c742",
+      "checks_passed": true,
+      "evaluation": {
+        "gap_total": 0.05779807852614338,
+        "root_frequencies": [
+          0.7525877443397614,
+          0.06638763211437554,
+          0.12366049511003253,
+          0.05736412843582978
+        ],
+        "ev": [
+          -3.224492167438678,
+          6.160254219928923
+        ],
+        "expected_rake": 0.5642377875818901,
+        "conservation_error": 1.5992786472907028e-07
+      },
+      "resource_minima": {
+        "free_host_bytes": 24397004800,
+        "free_gpu_bytes": 11869880320
+      }
+    },
+    {
+      "iteration": 1000,
+      "result_sha256": "d958eb2eaeee731b2020f56f5167d1b868fcf982ecdcb85c28a0c9063088535c",
+      "checks_passed": true,
+      "evaluation": {
+        "gap_total": 0.017228976476115765,
+        "root_frequencies": [
+          0.7547405200224434,
+          0.06345194072623253,
+          0.12431210890647415,
+          0.05749543034484977
+        ],
+        "ev": [
+          -3.226690068253369,
+          6.168400009730938
+        ],
+        "expected_rake": 0.5582900524016768,
+        "conservation_error": 6.120754125760186e-09
+      },
+      "resource_minima": {
+        "free_host_bytes": 24244817920,
+        "free_gpu_bytes": 12099518464
+      }
+    }
+  ],
+  "iteration500_restore_exact": true,
+  "accuracy_claim": false,
+  "production_ready": false
+}

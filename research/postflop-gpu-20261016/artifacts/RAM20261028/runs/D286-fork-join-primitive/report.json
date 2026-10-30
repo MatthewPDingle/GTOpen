@@ -1,0 +1,24 @@
+{
+  "id": "D286",
+  "at": "2026-10-29T16:58:46.201012+00:00",
+  "status": "pass_scoped_disjoint_buffer_fork_join_eager_capture_replay_primitive",
+  "protocol_sha256": "c25e0ded8a87fbc8467b318faf8fff72b5e0cf7932bb12974289c71699d3993c",
+  "raw_sha256": "0859f235b6ea5e3db5f22b0aabd7c589b8c0df8717778ac03ab4b271dcfcf36c",
+  "raw_bytes": 116640644,
+  "DAG_sha256": "7368fe5fd1ea6cef1b6562c63bce81f6df99b079a02a2f7e70a7c1ede72f15f7",
+  "all74_full_device_records_independent_integer_oracle_exact": true,
+  "all_device_words_decoded": 10856902,
+  "checks": 10859006,
+  "all15actual_graph_DAGs_and_parameters_checked": true,
+  "captured_kernel_nodes": 59,
+  "actual_application_kernel_executions": 291,
+  "negative_reader_fixtures": [
+    "changed_output_word",
+    "overlapping_device_allocations",
+    "serialized_fork_graph"
+  ],
+  "all_owned_streams_graphs_events_allocations_released": true,
+  "limits": "Unchanged accepted copy_span transport only; same physical destination allocation has disjoint producer ranges and joined dependent consumer. Eventtracking explicitlydisabled asproduction. Two deliberate host aborts verify normal eager/capture cleanup/recovery, not arbitraryCUDAfailure safety. No poker arithmetic/actualterminalkernel overlap/solver/optimizer/capacity/material/performance/adoption evidence. Device concurrency capability or independent graph branches do not prove simultaneous execution or speed.",
+  "CFR_solver_NVRTC_speed_samples": 0,
+  "candidate_accepted": false
+}

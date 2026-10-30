@@ -1,0 +1,80 @@
+template<int NA>
+__device__ __forceinline__ void up_action_impl(
+    const u32* __restrict__ nodes, int start, int count, int p,
+    const int* __restrict__ node_player, const int* __restrict__ node_na,
+    const u64* __restrict__ node_data_off,
+    const u32* __restrict__ node_children_start,
+    const u32* __restrict__ children,
+    float* regrets_p, float* strat_p,
+    const u32* __restrict__ rsrc_p,
+    const float* __restrict__ reach_p_buf,
+    const long long* __restrict__ lock_off,
+    const float* __restrict__ lock_sigma,
+    const u32* __restrict__ cfv_slot, float* cfv,
+    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                    // captured graphs stay iteration-invariant
+    int nh_p, int nh_max)
+{
+    float pos = disc[0], neg = disc[1], ds = disc[2];
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    const int na = NA == 0 ? node_na[n] : NA;
+    u32 cs = node_children_start[n];
+    if (node_player[n] == p) {
+        long long loff = lock_off[n];
+        if (loff >= 0) {
+            // locked: fixed sigma, no regret/strategy update
+            const float* sig = lock_sigma + loff;
+            for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+                float out = 0.f;
+                for (int a = 0; a < na; a++)
+                    out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+            }
+            return;
+        }
+        u64 doff = node_data_off[n];
+        const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
+        // register-cache regrets and child values for the common small-na case
+        float rc[8], vc[8];
+        bool small = na <= 8;
+        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+            float sum = 0.f;
+            for (int a = 0; a < na; a++) {
+                float r = regrets_p[doff + (u64)a * nh_p + i];
+                if (small) rc[a] = r;
+                sum += r > 0.f ? r : 0.f;
+            }
+            float uni = 1.f / (float)na;
+            float reach = rp[i];
+            float out = 0.f;
+            for (int a = 0; a < na; a++) {
+                float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+                float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                if (small) vc[a] = v;
+                out += sig * v;
+                // Independent of the completed node value: use this action's
+                // original sigma while it is already available.
+                u64 idx = doff + (u64)a * nh_p + i;
+                strat_p[idx] = strat_p[idx] * ds + reach * sig;
+            }
+            for (int a = 0; a < na; a++) {
+                u64 idx = doff + (u64)a * nh_p + i;
+                float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                float r = small ? rc[a] : regrets_p[idx];
+                float d = r > 0.f ? pos : neg;
+                regrets_p[idx] = r * d + (val - out);
+            }
+            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+        }
+    } else {
+        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+            float acc = 0.f;
+            for (int a = 0; a < na; a++)
+                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
+        }
+    }
+}

@@ -1,0 +1,97 @@
+{
+  "id": "E004",
+  "accepted_at": "2026-10-16T04:27:34Z",
+  "status": "validated",
+  "scope": "Three alternating baseline/candidate pairs; sum of per-fixture medians. Fresh compressed native solves, warm driver cache: tree construction, GPU initialization including runtime compilation, fixed-quality solving and full readback. Cargo build, fingerprinting, browser/API latency and disk saving excluded. Gain is in initialization; no claim of faster iterations or resumed/F32 solves.",
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 11773.545399999999,
+    "candidate_full_cycle_ms": 11139.7477,
+    "observed_gain_pct": 5.3832357074021155,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": true,
+    "fixture_median_regression_above_3pct": [],
+    "statistical_significance_established": false
+  },
+  "pairs": [
+    {
+      "baseline_id": "B007",
+      "candidate_id": "E004",
+      "order": [
+        "B007",
+        "E004"
+      ],
+      "baseline_full_cycle_ms": 11785.759300000002,
+      "candidate_full_cycle_ms": 11184.0054,
+      "observed_gain_pct": 5.1057711657152325,
+      "fixture_gain_pct": {
+        "rainbow": 4.844423978953253,
+        "two-tone": 5.4422988598951685,
+        "river": 7.254148301085844
+      }
+    },
+    {
+      "baseline_id": "B008",
+      "candidate_id": "E004R2",
+      "order": [
+        "E004R2",
+        "B008"
+      ],
+      "baseline_full_cycle_ms": 11748.565400000001,
+      "candidate_full_cycle_ms": 11052.6216,
+      "observed_gain_pct": 5.923649197203267,
+      "fixture_gain_pct": {
+        "rainbow": 4.805480662282525,
+        "two-tone": 7.597237349103143,
+        "river": 3.6583929398330204
+      }
+    },
+    {
+      "baseline_id": "B009",
+      "candidate_id": "E004R3",
+      "order": [
+        "B009",
+        "E004R3"
+      ],
+      "baseline_full_cycle_ms": 11821.020299999998,
+      "candidate_full_cycle_ms": 11220.384,
+      "observed_gain_pct": 5.081086782331288,
+      "fixture_gain_pct": {
+        "rainbow": 4.750781080174296,
+        "two-tone": 5.357205760515012,
+        "river": 12.84949252158338
+      }
+    }
+  ],
+  "controls_snapshots_each": 160,
+  "unit_tests_passed": 82,
+  "gpu_integration_tests_passed": 6,
+  "f32_whole_arena_exact": true,
+  "independent_source_review": "Pass: positive-zero proof, fallback cases, inactive snapshots and allocation lifetime reviewed; no actionable correctness findings.",
+  "research_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+  "arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "binary_sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8",
+  "evidence": [
+    {
+      "label": "Three paired timings",
+      "url": "evidence/E004-three-pair-comparison/report.json"
+    },
+    {
+      "label": "160 exact state snapshots",
+      "url": "evidence/E004-controls-comparison/report.json"
+    },
+    {
+      "label": "Full F32 exact comparison",
+      "url": "evidence/E004-f32-comparison/report.json"
+    },
+    {
+      "label": "82 solver unit tests",
+      "url": "evidence/V004-unit/stdout.log"
+    },
+    {
+      "label": "Six GPU integration tests",
+      "url": "evidence/V004-gpu/stdout.log"
+    }
+  ],
+  "deployment": "pending"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "D083-showdown-local-position-width",
+  "at": "2026-10-17T04:38:17.339869+00:00",
+  "root_source_review_only": true,
+  "proposal": "Only the per-CTA immutable position cache uses16bit unsigned elements; global u32metadata/ABI stay unchanged. Both existing host up_show shared reservations change16*m+4*nh to12*m+4*nh.",
+  "bound_proof": [
+    "cards::NUM_COMBOS is1326. Spot::new_impl enumerates exactly0..NUM_COMBOS, so hands contain at most1326unique combos.",
+    "RiverTable::new filters/enumerates existing hands; sorted slot has m<=nh<=1326. GpuPlan::build emits each enumerated pos asu32 into its two distinct card lists;0<=pos<m. Thus every copied position is0..1325, exactly representable in unsignedshort.",
+    "Cache starts at4*(nh_o+2*m_o), aligned for16bit access; length2*m_o consumes4*m_o bytes. Float regions end before it, unchanged. New bound4*nh_o+12*m_o covers all actual slots because host uses per-player maximum m. Empty list performs no cache access.",
+    "Every float value, operation order, predicate, sorted/card traversal, barrier, zeroing store, scan and payout expression remains byte-identical. Only implicit narrowing store and promoted unsigned16load differ."
+  ],
+  "risk": [
+    "Smaller cache can change shared bank access pattern and add integer conversions; no speed inference follows.",
+    "Logical register/local/static shared pressure must not increase, occupancy/maxthreads must not fall for all fixed shapes and64/128/256threads.",
+    "Source bounds do not prove actual GPU exactness. If resources pass, freeze direct full-raw comparisons including empty/full/tail/nonzero-base/guard/nonfinite cases before solver timing."
+  ],
+  "novelty": "Scoped current ledger and D037/D058 reference search found no local shared position-width candidate. This is independent of rejected E050 async staging: no async, copy-subset/zero-placement variant, factor sweep or fallback transformation. No revival of53offset cache or changed scan/arithmetic.",
+  "references": [
+    {
+      "title": "NVIDIA CUDA Best Practices Guide shared memory",
+      "url": "https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html?highlight=bank",
+      "use": "32-bit bank organization means smaller width alone does not establish faster access."
+    },
+    {
+      "title": "NVIDIA CUTLASS memory primitives",
+      "url": "https://github.com/NVIDIA/cutlass/blob/main/include/cutlass/arch/memory.h",
+      "use": "Official implementation includes shared16bit loads/stores; actual target PTX still inspected."
+    }
+  ],
+  "resource_gate": "One unchanged candidate only. Actual up_show PTX body changes; same27parameter ABI; other8entries exact oncompute120and75; expected shared16bit load/store emitted. No increased regs/local/staticshared; exact prescribed dynamic reduction; no maxthread/occupancy loss. If any gate fails, close without native numerical/solve work; no width variant rescue.",
+  "performance_gate": "Current1%policy: complete-cycle initial3pairs then separately frozen16confirmation, strict fixture guards, exact full states/checkpoints, broad/F32/save/resume/continuation/capacity/holdout and fresh-original cumulative before adoption. No narrowing of evaluator or accuracy.",
+  "owned_candidate_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "9690b3c9ed8bd78a57cde1301f36ea8c0b81795cf153ee7cb1c673695515e944",
+    "crates/solver/src/gpu/mod.rs": "545289f62dced21b46921a994d61fbe0ed213c62b8e994dd1dfcfab76a0ac1b3"
+  },
+  "candidate_accepted": false
+}

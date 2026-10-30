@@ -1,0 +1,2 @@
+import ctypes as c,json,os
+k=c.WinDLL('kernel32',use_last_error=True);k.GetCurrentProcess.restype=c.c_void_p;k.GetProcessAffinityMask.argtypes=[c.c_void_p,c.POINTER(c.c_size_t),c.POINTER(c.c_size_t)];p,s=c.c_size_t(),c.c_size_t();assert k.GetProcessAffinityMask(k.GetCurrentProcess(),c.byref(p),c.byref(s));print(json.dumps({'pid':os.getpid(),'process_mask':p.value,'system_mask':s.value}),flush=True)

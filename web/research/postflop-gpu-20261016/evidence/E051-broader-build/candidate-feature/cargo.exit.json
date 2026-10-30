@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-17T04:10:17.387384+00:00",
+  "finished_at": "2026-10-17T04:11:34.041429+00:00",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--test",
+    "continuation_paging",
+    "--test",
+    "continuation_symmetry",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

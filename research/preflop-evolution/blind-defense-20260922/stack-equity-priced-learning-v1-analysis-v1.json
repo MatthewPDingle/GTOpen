@@ -1,0 +1,5530 @@
+{
+  "independent_readback_passed": true,
+  "restricted_primary_comparison_passed": false,
+  "primary": [
+    {
+      "seed": 9297601,
+      "baseline": 0.0009415714677081177,
+      "candidate": 0.0009082727071750862,
+      "relative_reduction": 0.03536509088798545,
+      "absolute_gate": true,
+      "gpu_gate_passed": false,
+      "independently_qualified_pass": false,
+      "depths": [
+        {
+          "stack": 60,
+          "baseline_mean_bb": 0.06298130341971553,
+          "candidate_mean_bb": 0.05743202418237469,
+          "maximum_allowed_mean_bb": 0.06,
+          "baseline_p99_bb": 1.830562762183459,
+          "candidate_p99_bb": 2.155303030303031,
+          "baseline_maximum_bb": 24.811363636363637,
+          "candidate_maximum_bb": 40.58030303030303
+        },
+        {
+          "stack": 150,
+          "baseline_mean_bb": 0.12501818176314647,
+          "candidate_mean_bb": 0.12890175169658916,
+          "maximum_allowed_mean_bb": 0.15,
+          "baseline_p99_bb": 3.503030303030302,
+          "candidate_p99_bb": 4.224999999999994,
+          "baseline_maximum_bb": 47.874242424242425,
+          "candidate_maximum_bb": 92.87045454545455
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "baseline": 0.001218454128965296,
+      "candidate": 0.0007080016632290115,
+      "relative_reduction": 0.41893449544116834,
+      "absolute_gate": true,
+      "gpu_gate_passed": true,
+      "independently_qualified_pass": true,
+      "depths": [
+        {
+          "stack": 60,
+          "baseline_mean_bb": 0.07104156362195883,
+          "candidate_mean_bb": 0.04298382571478589,
+          "maximum_allowed_mean_bb": 0.06,
+          "baseline_p99_bb": 2.5575757575757567,
+          "candidate_p99_bb": 1.3671717171717184,
+          "baseline_maximum_bb": 26.28333333333333,
+          "candidate_maximum_bb": 14.098484848484848
+        },
+        {
+          "stack": 150,
+          "baseline_mean_bb": 0.18793232963469172,
+          "candidate_mean_bb": 0.10494093468173875,
+          "maximum_allowed_mean_bb": 0.15,
+          "baseline_p99_bb": 5.431060606060612,
+          "candidate_p99_bb": 3.037121212121207,
+          "baseline_maximum_bb": 64.1560606060606,
+          "candidate_maximum_bb": 39.88863636363635
+        }
+      ]
+    }
+  ],
+  "all_arm_summaries": [
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0007799011090997399,
+      "heldout_normalized_mean": 0.0009415714677081177
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "selected_step": 4096,
+      "selected_validation_normalized_mean": 0.0010587755075761552,
+      "heldout_normalized_mean": 0.0009082727071750862
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0009573223100419073,
+      "heldout_normalized_mean": 0.001218454128965296
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0006141001097490983,
+      "heldout_normalized_mean": 0.0007080016632290115
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0007799011090997399,
+      "heldout_normalized_mean": 0.009518988133331272
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "selected_step": 4096,
+      "selected_validation_normalized_mean": 0.0010587755075761552,
+      "heldout_normalized_mean": 0.012677069363751129
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0009573223100419073,
+      "heldout_normalized_mean": 0.00415157905446957
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "selected_step": 8192,
+      "selected_validation_normalized_mean": 0.0006141001097490983,
+      "heldout_normalized_mean": 0.011827743559426425
+    }
+  ],
+  "primary_partition_contributions": [
+    {
+      "seed": 9297601,
+      "partition": "seats",
+      "identity": {
+        "actor": 0
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0005335226612470966,
+        "equity_priced": 0.000454136353587543
+      },
+      "candidate_minus_baseline": -7.938630765955362e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "seats",
+      "identity": {
+        "actor": 1
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00040804880646102214,
+        "equity_priced": 0.000454136353587543
+      },
+      "candidate_minus_baseline": 4.608754712652084e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.0,
+        "maximum_equity": 0.1
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0001484416791417538,
+        "equity_priced": 0.00010059952622539341
+      },
+      "candidate_minus_baseline": -4.784215291636038e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.1,
+        "maximum_equity": 0.2
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00010701826726141098,
+        "equity_priced": 0.000152324908287882
+      },
+      "candidate_minus_baseline": 4.5306641026471e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.2,
+        "maximum_equity": 0.3
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0003519331696873471,
+        "equity_priced": 0.0003548837032151974
+      },
+      "candidate_minus_baseline": 2.9505335278503077e-06
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.3,
+        "maximum_equity": 0.4
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0003341783516176072,
+        "equity_priced": 0.00030046456944661303
+      },
+      "candidate_minus_baseline": -3.3713782170994146e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.4,
+        "maximum_equity": 0.5
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": 0.0
+    },
+    {
+      "seed": 9297601,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.5,
+        "maximum_equity": 1.01
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": 0.0
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "high_card"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00021996637141588233,
+        "equity_priced": 0.00023713550926947907
+      },
+      "candidate_minus_baseline": 1.716913785359674e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "pair"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0004846460186674934,
+        "equity_priced": 0.0004987850936449695
+      },
+      "candidate_minus_baseline": 1.4139074977476032e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "two_pair"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00021382120574554457,
+        "equity_priced": 0.0001415659152069277
+      },
+      "candidate_minus_baseline": -7.225529053861687e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "trips"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 9.270814967511784e-06,
+        "equity_priced": 3.078618905371031e-05
+      },
+      "candidate_minus_baseline": 2.1515374086198524e-05
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "straight"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 4.782736387964569e-06,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -4.782736387964569e-06
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "flush"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 2.6925488953998818e-06,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -2.6925488953998818e-06
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "full_house"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 6.3504344547321965e-06,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -6.3504344547321965e-06
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "quads"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 2.306976783658698e-08,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -2.306976783658698e-08
+    },
+    {
+      "seed": 9297601,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "straight_flush"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 1.8267405753085963e-08,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -1.8267405753085963e-08
+    },
+    {
+      "seed": 9297602,
+      "partition": "seats",
+      "identity": {
+        "actor": 0
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0006308319654744867,
+        "equity_priced": 0.00035400083161450527
+      },
+      "candidate_minus_baseline": -0.00027683113385998143
+    },
+    {
+      "seed": 9297602,
+      "partition": "seats",
+      "identity": {
+        "actor": 1
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0005876221634908089,
+        "equity_priced": 0.0003540008316145056
+      },
+      "candidate_minus_baseline": -0.00023362133187630329
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.0,
+        "maximum_equity": 0.1
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00011240042358948609,
+        "equity_priced": 6.801327746199396e-05
+      },
+      "candidate_minus_baseline": -4.4387146127492126e-05
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.1,
+        "maximum_equity": 0.2
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 9.617516941632662e-05,
+        "equity_priced": 6.942462935318882e-05
+      },
+      "candidate_minus_baseline": -2.6750540063137806e-05
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.2,
+        "maximum_equity": 0.3
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0005161417531594698,
+        "equity_priced": 0.00034093989434469017
+      },
+      "candidate_minus_baseline": -0.00017520185881477965
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.3,
+        "maximum_equity": 0.4
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0004937367828000128,
+        "equity_priced": 0.0002296238620691379
+      },
+      "candidate_minus_baseline": -0.0002641129207308749
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.4,
+        "maximum_equity": 0.5
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": 0.0
+    },
+    {
+      "seed": 9297602,
+      "partition": "price_bands",
+      "identity": {
+        "minimum_equity": 0.5,
+        "maximum_equity": 1.01
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": 0.0
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "high_card"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0003483484765113801,
+        "equity_priced": 0.000175932112553775
+      },
+      "candidate_minus_baseline": -0.0001724163639576051
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "pair"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.0007120143764177278,
+        "equity_priced": 0.0004017358037447289
+      },
+      "candidate_minus_baseline": -0.0003102785726729989
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "two_pair"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 0.00013017250759326024,
+        "equity_priced": 6.930455974540789e-05
+      },
+      "candidate_minus_baseline": -6.0867947847852356e-05
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "trips"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 2.2792032234210074e-05,
+        "equity_priced": 6.102918718509975e-05
+      },
+      "candidate_minus_baseline": 3.823715495088968e-05
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "straight"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 3.030197179041172e-06,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -3.030197179041172e-06
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "flush"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 6.912363033063608e-07,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -6.912363033063608e-07
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "full_house"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 1.3047928953609707e-06,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -1.3047928953609707e-06
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "quads"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 9.652344014346818e-08,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -9.652344014346818e-08
+    },
+    {
+      "seed": 9297602,
+      "partition": "hand_groups",
+      "identity": {
+        "name": "straight_flush"
+      },
+      "normalized_loss_contribution": {
+        "direct_value": 3.986390864927366e-09,
+        "equity_priced": 0.0
+      },
+      "candidate_minus_baseline": -3.986390864927366e-09
+    }
+  ],
+  "board_cell_summaries": [
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 1323144,
+          "mean_regret_bb": 0.01371085391013304,
+          "maximum_regret_bb": 3.6217098251581628
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 1167480,
+          "mean_regret_bb": 0.01784440811293818,
+          "maximum_regret_bb": 4.188888888888888
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.009299145055232369,
+          "maximum_regret_bb": 2.5445177441239313
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 1478808,
+          "mean_regret_bb": 0.010698230902715206,
+          "maximum_regret_bb": 2.2506818181818193
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 700488,
+          "mean_regret_bb": 0.027685409454269904,
+          "maximum_regret_bb": 3.122222222222222
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.007782407361711331,
+          "maximum_regret_bb": 1.2555555555555546
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 116748,
+          "mean_regret_bb": 0.050219174260076146,
+          "maximum_regret_bb": 3.5876379246956573
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.8399825118197616,
+          "maximum_regret_bb": 7.841666666666667
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.027374100691030637,
+          "maximum_regret_bb": 1.8916666666666666
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.0018300506667619108,
+          "maximum_regret_bb": 0.015052015536674901
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2572780,
+          "mean_regret_bb": 0.027623905229414693,
+          "maximum_regret_bb": 9.036868686868686
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2270100,
+          "mean_regret_bb": 0.03499893964413567,
+          "maximum_regret_bb": 12.134343434343435
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.01629276962352852,
+          "maximum_regret_bb": 4.5231139371524405
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 2875460,
+          "mean_regret_bb": 0.024546710634067933,
+          "maximum_regret_bb": 7.094191919191921
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1362060,
+          "mean_regret_bb": 0.06729560200656559,
+          "maximum_regret_bb": 6.816666666666666
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.019936704724884062,
+          "maximum_regret_bb": 3.0106060606060616
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 227010,
+          "mean_regret_bb": 0.0837491473815198,
+          "maximum_regret_bb": 8.407951325207211
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 1.48615858294763,
+          "maximum_regret_bb": 16.826515151515153
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.034962061345228,
+          "maximum_regret_bb": 3.393181818181818
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.011267981248281633,
+          "maximum_regret_bb": 2.697954545454545
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4042940,
+          "mean_regret_bb": 0.06487263133135081,
+          "maximum_regret_bb": 22.060466820171857
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3567300,
+          "mean_regret_bb": 0.08067821114270904,
+          "maximum_regret_bb": 32.09141414141415
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.06126753564815468,
+          "maximum_regret_bb": 9.033333333333331
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4518580,
+          "mean_regret_bb": 0.05404740611324809,
+          "maximum_regret_bb": 16.330555555555556
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2140380,
+          "mean_regret_bb": 0.06025048552538428,
+          "maximum_regret_bb": 21.467676767676764
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.05216160963348609,
+          "maximum_regret_bb": 10.215151515151511
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 356730,
+          "mean_regret_bb": 0.14661398381089513,
+          "maximum_regret_bb": 15.636940906275909
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 3.422231198467372,
+          "maximum_regret_bb": 32.78106060606061
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.11661656605922315,
+          "maximum_regret_bb": 9.337121212121211
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.04692087973600471,
+          "maximum_regret_bb": 8.29242424242424
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.15625809585405556,
+          "maximum_regret_bb": 43.73836023612506
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.1932706965023835,
+          "maximum_regret_bb": 64.13813131313131
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.18575909828880613,
+          "maximum_regret_bb": 21.28181818181818
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.10372142028763265,
+          "maximum_regret_bb": 32.05277777777778
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.11644606674904606,
+          "maximum_regret_bb": 43.53838383838384
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.1233178582573495,
+          "maximum_regret_bb": 19.775757575757567
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.31507440297684747,
+          "maximum_regret_bb": 25.223232323232324
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 4.272052933135209,
+          "maximum_regret_bb": 66.20530303030304
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.20063636045813305,
+          "maximum_regret_bb": 19.185606060606062
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.13918416967517483,
+          "maximum_regret_bb": 18.96969696969697
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 5219068,
+          "mean_regret_bb": 0.31727831342810886,
+          "maximum_regret_bb": 87.20470974365229
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 4605060,
+          "mean_regret_bb": 0.41703647514627534,
+          "maximum_regret_bb": 125.23914141414144
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.37453550967659205,
+          "maximum_regret_bb": 55.22095619133347
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 5833076,
+          "mean_regret_bb": 0.20681295895971913,
+          "maximum_regret_bb": 63.497222222222206
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2763036,
+          "mean_regret_bb": 0.29530049454163204,
+          "maximum_regret_bb": 72.80555555555557
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.2240248708851908,
+          "maximum_regret_bb": 38.89696969696968
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 460506,
+          "mean_regret_bb": 0.7754942015614374,
+          "maximum_regret_bb": 82.89312247315861
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 3.1551059235040912,
+          "maximum_regret_bb": 35.243434343434345
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.30262948274504625,
+          "maximum_regret_bb": 32.979040404040404
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.21826054812475193,
+          "maximum_regret_bb": 43.76010101010101
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2866812,
+          "mean_regret_bb": 0.048427656555278864,
+          "maximum_regret_bb": 14.00151515151515
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2529540,
+          "mean_regret_bb": 0.06129332628273216,
+          "maximum_regret_bb": 17.95757575757576
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.03199613414990819,
+          "maximum_regret_bb": 7.790731530682807
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 3204084,
+          "mean_regret_bb": 0.03193932031373957,
+          "maximum_regret_bb": 11.068939393939399
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1517724,
+          "mean_regret_bb": 0.059781894957708914,
+          "maximum_regret_bb": 10.233333333333334
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.040166246788867814,
+          "maximum_regret_bb": 5.00151515151515
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 252954,
+          "mean_regret_bb": 0.11431636644900166,
+          "maximum_regret_bb": 12.487728620739597
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 1.7923725228273137,
+          "maximum_regret_bb": 24.811363636363637
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.058560557178235495,
+          "maximum_regret_bb": 5.711363636363636
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.020453884909965008,
+          "maximum_regret_bb": 5.715151515151515
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.11612102973245474,
+          "maximum_regret_bb": 36.520717443858985
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.17899302470152503,
+          "maximum_regret_bb": 47.874242424242425
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.15832380310469008,
+          "maximum_regret_bb": 15.009090909090915
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.07626037360257343,
+          "maximum_regret_bb": 24.941666666666663
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.07938155848603085,
+          "maximum_regret_bb": 30.709090909090904
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.11186948884705651,
+          "maximum_regret_bb": 15.745454545454535
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.27533331495047064,
+          "maximum_regret_bb": 25.1963939025874
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 1.1178318567460277,
+          "maximum_regret_bb": 37.493181818181824
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.07853119293190967,
+          "maximum_regret_bb": 11.26136363636364
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.06510297760609583,
+          "maximum_regret_bb": 15.315681818181819
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 1323144,
+          "mean_regret_bb": 0.01255838126325012,
+          "maximum_regret_bb": 2.908333333333333
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 1167480,
+          "mean_regret_bb": 0.015464638980686365,
+          "maximum_regret_bb": 3.936111111111112
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.019801891356778806,
+          "maximum_regret_bb": 2.5777777777777775
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 1478808,
+          "mean_regret_bb": 0.01448136453635139,
+          "maximum_regret_bb": 3.2420454545454547
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 700488,
+          "mean_regret_bb": 0.034474410134164475,
+          "maximum_regret_bb": 3.122222222222222
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.04804166653688698,
+          "maximum_regret_bb": 2.082272727272727
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 116748,
+          "mean_regret_bb": 0.02029577562032079,
+          "maximum_regret_bb": 8.929090909090906
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.6887458652201944,
+          "maximum_regret_bb": 7.517045454545453
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.09721385532787012,
+          "maximum_regret_bb": 3.147222222222222
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2572780,
+          "mean_regret_bb": 0.026073419834112547,
+          "maximum_regret_bb": 8.243939393939396
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2270100,
+          "mean_regret_bb": 0.028918393729818335,
+          "maximum_regret_bb": 6.000505050505051
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.023618987549607347,
+          "maximum_regret_bb": 4.567676767676765
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 2875460,
+          "mean_regret_bb": 0.02933344512923607,
+          "maximum_regret_bb": 9.715909090909093
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1362060,
+          "mean_regret_bb": 0.08909697387958257,
+          "maximum_regret_bb": 7.332070707070706
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.09104322730409685,
+          "maximum_regret_bb": 6.578787878787878
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 227010,
+          "mean_regret_bb": 0.04489372514626909,
+          "maximum_regret_bb": 27.12070707070707
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 1.8610156841308554,
+          "maximum_regret_bb": 22.799242424242422
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.13454019713455426,
+          "maximum_regret_bb": 5.224999999999998
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4042940,
+          "mean_regret_bb": 0.06611394217169592,
+          "maximum_regret_bb": 18.256565656565655
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3567300,
+          "mean_regret_bb": 0.0561352014666328,
+          "maximum_regret_bb": 18.056060606060598
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.04694313669025636,
+          "maximum_regret_bb": 7.454545454545453
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4518580,
+          "mean_regret_bb": 0.07534825572716126,
+          "maximum_regret_bb": 22.363636363636374
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2140380,
+          "mean_regret_bb": 0.24447973955535698,
+          "maximum_regret_bb": 27.868686868686872
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.2369488136770955,
+          "maximum_regret_bb": 12.464646464646464
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 356730,
+          "mean_regret_bb": 0.1295705755449259,
+          "maximum_regret_bb": 49.515151515151516
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 3.8193123884543865,
+          "maximum_regret_bb": 26.781060606060613
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.43189373042509865,
+          "maximum_regret_bb": 15.337121212121211
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.14748839739995664,
+          "maximum_regret_bb": 39.382828282828285
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.11422986777045714,
+          "maximum_regret_bb": 36.98030303030302
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.14571141652179298,
+          "maximum_regret_bb": 34.279292929292936
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.15476662852617423,
+          "maximum_regret_bb": 45.68181818181819
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.35519516933200646,
+          "maximum_regret_bb": 56.34343434343434
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.440048983856977,
+          "maximum_regret_bb": 30.254040404040396
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.22378778006735495,
+          "maximum_regret_bb": 100.32424242424241
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 4.0943005982147005,
+          "maximum_regret_bb": 54.20530303030304
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.7924981375079759,
+          "maximum_regret_bb": 31.185606060606062
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 5219068,
+          "mean_regret_bb": 0.31050546393658135,
+          "maximum_regret_bb": 79.63535353535354
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 4605060,
+          "mean_regret_bb": 0.23527974962060838,
+          "maximum_regret_bb": 74.82878787878786
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.384692058103675,
+          "maximum_regret_bb": 67.96616161616163
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 5833076,
+          "mean_regret_bb": 0.26830968921669696,
+          "maximum_regret_bb": 63.81818181818181
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2763036,
+          "mean_regret_bb": 0.2971592184038928,
+          "maximum_regret_bb": 76.80555555555557
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.0455817086053827,
+          "maximum_regret_bb": 59.900505050505046
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 460506,
+          "mean_regret_bb": 0.4167967394408093,
+          "maximum_regret_bb": 139.84242424242427
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 3.062479202718906,
+          "maximum_regret_bb": 34.05378787878789
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.2630079156011382,
+          "maximum_regret_bb": 41.224999999999966
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2866812,
+          "mean_regret_bb": 0.03856579351783955,
+          "maximum_regret_bb": 12.804545454545455
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2529540,
+          "mean_regret_bb": 0.04836681275063945,
+          "maximum_regret_bb": 12.218939393939394
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.0511144354668869,
+          "maximum_regret_bb": 8.19848484848485
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 3204084,
+          "mean_regret_bb": 0.03869676733843685,
+          "maximum_regret_bb": 14.306818181818187
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1517724,
+          "mean_regret_bb": 0.07767172384039482,
+          "maximum_regret_bb": 17.87878787878788
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.1311483343120716,
+          "maximum_regret_bb": 7.00151515151515
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 252954,
+          "mean_regret_bb": 0.09272530247245016,
+          "maximum_regret_bb": 40.58030303030303
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.9029865023967706,
+          "maximum_regret_bb": 34.05681818181817
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.3570643656374461,
+          "maximum_regret_bb": 10.397727272727273
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.11783202829629576,
+          "maximum_regret_bb": 27.069696969696963
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.1066930103044694,
+          "maximum_regret_bb": 26.768181818181816
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.164635032334667,
+          "maximum_regret_bb": 13.413636363636371
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.10014535186707951,
+          "maximum_regret_bb": 42.21590909090909
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.15139598827594355,
+          "maximum_regret_bb": 30.709090909090904
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.3915520988590494,
+          "maximum_regret_bb": 22.760606060606065
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.12540625290519464,
+          "maximum_regret_bb": 92.87045454545455
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 1.539759150561099,
+          "maximum_regret_bb": 37.493181818181824
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.2895287455688605,
+          "maximum_regret_bb": 11.26136363636364
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 1323144,
+          "mean_regret_bb": 0.015443168612346956,
+          "maximum_regret_bb": 4.075
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 1167480,
+          "mean_regret_bb": 0.03071328588463153,
+          "maximum_regret_bb": 8.233333333333334
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.056538477033523424,
+          "maximum_regret_bb": 3.8999999999999995
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 1478808,
+          "mean_regret_bb": 0.011643888555779991,
+          "maximum_regret_bb": 3.8583333333333325
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 700488,
+          "mean_regret_bb": 0.02692098378046117,
+          "maximum_regret_bb": 3.122222222222222
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.06093247641054489,
+          "maximum_regret_bb": 3.740454545454546
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 116748,
+          "mean_regret_bb": 0.054614837204559175,
+          "maximum_regret_bb": 4.230555555555555
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.16826341149196244,
+          "maximum_regret_bb": 3.341666666666667
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.04891168633477964,
+          "maximum_regret_bb": 2.4061363636363646
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.00046270523318330084,
+          "maximum_regret_bb": 0.009826461862136426
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2572780,
+          "mean_regret_bb": 0.03337557068201207,
+          "maximum_regret_bb": 9.036868686868686
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2270100,
+          "mean_regret_bb": 0.06392597165477773,
+          "maximum_regret_bb": 16.229292929292928
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.12401274261039448,
+          "maximum_regret_bb": 10.820959595959597
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 2875460,
+          "mean_regret_bb": 0.02749622117958874,
+          "maximum_regret_bb": 8.804040404040407
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1362060,
+          "mean_regret_bb": 0.059833084975596515,
+          "maximum_regret_bb": 5.9891414141414145
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.1430940397558215,
+          "maximum_regret_bb": 9.036868686868686
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 227010,
+          "mean_regret_bb": 0.11379570319446253,
+          "maximum_regret_bb": 9.044392125499002
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.27190878886258835,
+          "maximum_regret_bb": 7.326515151515153
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.07369163572992407,
+          "maximum_regret_bb": 7.569949494949494
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.0008353547976056548,
+          "maximum_regret_bb": 0.02127378404158975
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4042940,
+          "mean_regret_bb": 0.07842794622909696,
+          "maximum_regret_bb": 21.142676767676768
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3567300,
+          "mean_regret_bb": 0.15506630733311835,
+          "maximum_regret_bb": 42.918686868686876
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.31067212575501435,
+          "maximum_regret_bb": 20.942171717171718
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4518580,
+          "mean_regret_bb": 0.051279211157474046,
+          "maximum_regret_bb": 31.646212121212116
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2140380,
+          "mean_regret_bb": 0.0954655596193866,
+          "maximum_regret_bb": 21.868686868686872
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.4868496737430148,
+          "maximum_regret_bb": 24.250505050505048
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 356730,
+          "mean_regret_bb": 0.269307518336998,
+          "maximum_regret_bb": 19.129545454545454
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.25217093648929534,
+          "maximum_regret_bb": 6.4181818181818215
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.2557730897654063,
+          "maximum_regret_bb": 24.347727272727273
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.002160972701574013,
+          "maximum_regret_bb": 0.08088877775156078
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.15119487654534675,
+          "maximum_regret_bb": 44.128535353535355
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.3524316260851714,
+          "maximum_regret_bb": 88.89343434343436
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.735665990261877,
+          "maximum_regret_bb": 45.55
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.1021124082867112,
+          "maximum_regret_bb": 32.05277777777778
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.17411934004279123,
+          "maximum_regret_bb": 44.34343434343434
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 1.0864192146127627,
+          "maximum_regret_bb": 47.95252525252525
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.523055491225543,
+          "maximum_regret_bb": 37.94772727272728
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.3538800703109791,
+          "maximum_regret_bb": 13.705303030303043
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.693507491383976,
+          "maximum_regret_bb": 48.43863636363636
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.009905732051012122,
+          "maximum_regret_bb": 16.65
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 5219068,
+          "mean_regret_bb": 0.29679929049306325,
+          "maximum_regret_bb": 87.69419191919192
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 4605060,
+          "mean_regret_bb": 0.749291111208181,
+          "maximum_regret_bb": 181.97070707070702
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.4368188987436283,
+          "maximum_regret_bb": 90.54999999999998
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 5833076,
+          "mean_regret_bb": 0.22303240463636675,
+          "maximum_regret_bb": 133.26136363636363
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2763036,
+          "mean_regret_bb": 0.313350294774986,
+          "maximum_regret_bb": 75.63535353535354
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 2.089064855167371,
+          "maximum_regret_bb": 95.35656565656566
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 460506,
+          "mean_regret_bb": 1.127650628701573,
+          "maximum_regret_bb": 107.79234177525537
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.954539598219192,
+          "maximum_regret_bb": 34.05378787878789
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.303263858232439,
+          "maximum_regret_bb": 48.979040404040404
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.04964191196818611,
+          "maximum_regret_bb": 48.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2866812,
+          "mean_regret_bb": 0.05040912573369755,
+          "maximum_regret_bb": 14.00151515151515
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2529540,
+          "mean_regret_bb": 0.10907130608557444,
+          "maximum_regret_bb": 26.28333333333333
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.2138915040522338,
+          "maximum_regret_bb": 16.69469696969697
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 3204084,
+          "mean_regret_bb": 0.03732753673508855,
+          "maximum_regret_bb": 13.252272727272725
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1517724,
+          "mean_regret_bb": 0.06725613364280987,
+          "maximum_regret_bb": 11.733333333333334
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.27340624948205144,
+          "maximum_regret_bb": 14.00151515151515
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 252954,
+          "mean_regret_bb": 0.1538994420204972,
+          "maximum_regret_bb": 14.517424242424244
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.34349172794151545,
+          "maximum_regret_bb": 8.311363636363637
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.18433658148302545,
+          "maximum_regret_bb": 11.787121212121214
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.0013894955735205786,
+          "maximum_regret_bb": 0.028370272427636678
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "test",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.1327755543031894,
+          "maximum_regret_bb": 36.17803030303031
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.33429826216778974,
+          "maximum_regret_bb": 64.1560606060606
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.7326881403979397,
+          "maximum_regret_bb": 36.55
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.08682714600388429,
+          "maximum_regret_bb": 47.88863636363635
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.11918251414596066,
+          "maximum_regret_bb": 30.10606060606061
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 1.1191650234882335,
+          "maximum_regret_bb": 36.85151515151515
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.5082489205186507,
+          "maximum_regret_bb": 30.062878787878788
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.3232680292126805,
+          "maximum_regret_bb": 36.43787878787879
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.36512262312933963,
+          "maximum_regret_bb": 23.51439393939394
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.002314101339344402,
+          "maximum_regret_bb": 16.65
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 1323144,
+          "mean_regret_bb": 0.008261054539396125,
+          "maximum_regret_bb": 2.908333333333333
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 1167480,
+          "mean_regret_bb": 0.011739582543840433,
+          "maximum_regret_bb": 3.1611111111111114
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.01654686706721859,
+          "maximum_regret_bb": 2.5777777777777775
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 1478808,
+          "mean_regret_bb": 0.012676172022304174,
+          "maximum_regret_bb": 2.9861111111111107
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 700488,
+          "mean_regret_bb": 0.029414126402961337,
+          "maximum_regret_bb": 2.466666666666667
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.0395048075575365,
+          "maximum_regret_bb": 2.082272727272727
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 116748,
+          "mean_regret_bb": 0.06682600796397178,
+          "maximum_regret_bb": 3.147222222222222
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.09078528111830607,
+          "maximum_regret_bb": 2.341666666666667
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.14427241761847065,
+          "maximum_regret_bb": 3.8583333333333325
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 38916,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2572780,
+          "mean_regret_bb": 0.019744086948826567,
+          "maximum_regret_bb": 7.847474747474745
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2270100,
+          "mean_regret_bb": 0.022027302917728447,
+          "maximum_regret_bb": 8.719696969696969
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.02099880128094743,
+          "maximum_regret_bb": 4.567676767676765
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 2875460,
+          "mean_regret_bb": 0.029122081037960587,
+          "maximum_regret_bb": 7.411363636363635
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1362060,
+          "mean_regret_bb": 0.07311162603970188,
+          "maximum_regret_bb": 5.542424242424243
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.05555505364201017,
+          "maximum_regret_bb": 6.578787878787878
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 227010,
+          "mean_regret_bb": 0.13026744138446272,
+          "maximum_regret_bb": 6.930050505050506
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.03533369908948076,
+          "maximum_regret_bb": 5.326515151515153
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.23009482762072964,
+          "maximum_regret_bb": 8.55530303030303
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 75670,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4042940,
+          "mean_regret_bb": 0.04785649064864437,
+          "maximum_regret_bb": 14.42575757575758
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3567300,
+          "mean_regret_bb": 0.06117455921873969,
+          "maximum_regret_bb": 22.0449494949495
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.0631835001261458,
+          "maximum_regret_bb": 10.549999999999997
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4518580,
+          "mean_regret_bb": 0.043560086622815394,
+          "maximum_regret_bb": 17.132575757575758
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2140380,
+          "mean_regret_bb": 0.04678884366421861,
+          "maximum_regret_bb": 19.868686868686872
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.1118093422663265,
+          "maximum_regret_bb": 16.430808080808077
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 356730,
+          "mean_regret_bb": 0.21328954968913763,
+          "maximum_regret_bb": 9.337121212121211
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.38803712849629907,
+          "maximum_regret_bb": 5.781060606060613
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.6082758401439334,
+          "maximum_regret_bb": 23.224999999999994
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 118910,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.108859301728338,
+          "maximum_regret_bb": 28.228787878787884
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.11706914880419088,
+          "maximum_regret_bb": 43.52474747474747
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.1483562755607629,
+          "maximum_regret_bb": 16.15303030303029
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.09048600369210869,
+          "maximum_regret_bb": 36.883080808080805
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.07105195910615796,
+          "maximum_regret_bb": 40.34343434343434
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.4069468608536326,
+          "maximum_regret_bb": 32.254040404040396
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.41063772838161766,
+          "maximum_regret_bb": 19.185606060606062
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.36606292467312534,
+          "maximum_regret_bb": 13.705303030303043
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.94314653892442,
+          "maximum_regret_bb": 31.185606060606062
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 5219068,
+          "mean_regret_bb": 0.1936780136479029,
+          "maximum_regret_bb": 55.83484848484849
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 4605060,
+          "mean_regret_bb": 0.25205160194449255,
+          "maximum_regret_bb": 86.48434343434343
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.365073554136563,
+          "maximum_regret_bb": 55.96616161616163
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 5833076,
+          "mean_regret_bb": 0.18117842750929736,
+          "maximum_regret_bb": 73.17601010101012
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2763036,
+          "mean_regret_bb": 0.14835829326943992,
+          "maximum_regret_bb": 46.19949494949495
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.0675105236677074,
+          "maximum_regret_bb": 63.900505050505046
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 460506,
+          "mean_regret_bb": 0.7292548426199782,
+          "maximum_regret_bb": 46.06439393939394
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 2.365533881110225,
+          "maximum_regret_bb": 34.05378787878789
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 1.6283765812152076,
+          "maximum_regret_bb": 75.10075757575754
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 153502,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 2866812,
+          "mean_regret_bb": 0.027794218135269447,
+          "maximum_regret_bb": 12.206060606060603
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 2529540,
+          "mean_regret_bb": 0.036524115915034815,
+          "maximum_regret_bb": 14.098484848484848
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.047163282292792,
+          "maximum_regret_bb": 8.19848484848485
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 3204084,
+          "mean_regret_bb": 0.03553458454518632,
+          "maximum_regret_bb": 10.111363636363635
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 1517724,
+          "mean_regret_bb": 0.04949092675824611,
+          "maximum_regret_bb": 7.300757575757576
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.14025567710119052,
+          "maximum_regret_bb": 10.29090909090909
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 252954,
+          "mean_regret_bb": 0.13191834675414693,
+          "maximum_regret_bb": 10.002272727272727
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.12426247819402304,
+          "maximum_regret_bb": 8.311363636363637
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.5126154252264334,
+          "maximum_regret_bb": 13.252272727272725
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 84318,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "test",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 34,
+          "rows": 4336972,
+          "mean_regret_bb": 0.08154587296800113,
+          "maximum_regret_bb": 26.077272727272728
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 30,
+          "rows": 3826740,
+          "mean_regret_bb": 0.13411343784035812,
+          "maximum_regret_bb": 32.710606060606054
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.23570426905027633,
+          "maximum_regret_bb": 15.549999999999997
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 38,
+          "rows": 4847204,
+          "mean_regret_bb": 0.06548848205516358,
+          "maximum_regret_bb": 26.529545454545456
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 18,
+          "rows": 2296044,
+          "mean_regret_bb": 0.08401250420816031,
+          "maximum_regret_bb": 30.10606060606061
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.31667589518794476,
+          "maximum_regret_bb": 25.092424242424244
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 3,
+          "rows": 382674,
+          "mean_regret_bb": 0.19765860851151476,
+          "maximum_regret_bb": 11.26136363636364
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.42835121468213794,
+          "maximum_regret_bb": 8.993181818181824
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 1.0619822248417472,
+          "maximum_regret_bb": 39.88863636363635
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 1,
+          "rows": 127558,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.015474796343670886,
+          "maximum_regret_bb": 1.8897033776062135
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.005683757651109452,
+          "maximum_regret_bb": 1.9527777777777775
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.021137447442075907,
+          "maximum_regret_bb": 2.75
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 2.01984655443047,
+          "maximum_regret_bb": 15.48409090909091
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.02174155830982881,
+          "maximum_regret_bb": 3.691666666666668
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.007988602426716934,
+          "maximum_regret_bb": 1.4420439658264343
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0482228124007178,
+          "maximum_regret_bb": 4.051363636363637
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.09595481975883063,
+          "maximum_regret_bb": 9.032727272727271
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.07681514820203278,
+          "maximum_regret_bb": 20.277777777777775
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.02800376201933231,
+          "maximum_regret_bb": 2.458333333333334
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.03055432052352036,
+          "maximum_regret_bb": 7.167272727272724
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.002110063430019648,
+          "maximum_regret_bb": 0.038944162018076156
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 155664,
+          "mean_regret_bb": 0.33962570580263396,
+          "maximum_regret_bb": 9.733333333333334
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.03218599736031846,
+          "maximum_regret_bb": 4.998912095875884
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.011056958938447986,
+          "maximum_regret_bb": 4.76010101010101
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.039367311921876626,
+          "maximum_regret_bb": 6.623181818181818
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 4.201789468710592,
+          "maximum_regret_bb": 47.18181818181819
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.048124927534825335,
+          "maximum_regret_bb": 9.398737373737376
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.011404846023564005,
+          "maximum_regret_bb": 3.379937952674539
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.09089581310068862,
+          "maximum_regret_bb": 10.146969696969698
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.18884276480135848,
+          "maximum_regret_bb": 27.437878787878788
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.14843824369732747,
+          "maximum_regret_bb": 41.858585858585855
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.03299532517396368,
+          "maximum_regret_bb": 5.700757575757578
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.04910516273158985,
+          "maximum_regret_bb": 21.490909090909092
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.006474605969366989,
+          "maximum_regret_bb": 2.4647727272727256
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 302680,
+          "mean_regret_bb": 0.7144799843598506,
+          "maximum_regret_bb": 24.657575757575756
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.051854325081791254,
+          "maximum_regret_bb": 11.662878787878789
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.028470612024092387,
+          "maximum_regret_bb": 15.214898989898998
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.09973712206903151,
+          "maximum_regret_bb": 19.46363636363637
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 9.471762052507348,
+          "maximum_regret_bb": 98.72727272727275
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.08551199814730275,
+          "maximum_regret_bb": 25.374494949494945
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.04021762154065812,
+          "maximum_regret_bb": 8.766689731674267
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.3470519195065575,
+          "maximum_regret_bb": 25.453535353535358
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.3858564058484349,
+          "maximum_regret_bb": 35.19924242424243
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.24455229979362278,
+          "maximum_regret_bb": 94.70505050505051
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.11083691077940173,
+          "maximum_regret_bb": 14.146212121212116
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.11802526326475385,
+          "maximum_regret_bb": 46.363636363636374
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.028696460572837888,
+          "maximum_regret_bb": 7.628787878787875
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 475640,
+          "mean_regret_bb": 2.0815965250422495,
+          "maximum_regret_bb": 55.93030303030303
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.09441602708978457,
+          "maximum_regret_bb": 25.22247474747475
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.07594791444538326,
+          "maximum_regret_bb": 21.06792929292928
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.28085147724052467,
+          "maximum_regret_bb": 43.45454545454547
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 14.945219681380946,
+          "maximum_regret_bb": 199.03838383838382
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.18926456106629164,
+          "maximum_regret_bb": 53.67247474747475
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.07780633525039032,
+          "maximum_regret_bb": 17.509595959595963
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.828804542680234,
+          "maximum_regret_bb": 50.36767676767677
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 1.0098154845963323,
+          "maximum_regret_bb": 73.39621212121213
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.5489114767942899,
+          "maximum_regret_bb": 192.22525252525253
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.23679186727450247,
+          "maximum_regret_bb": 29.1310606060606
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.2706502952516823,
+          "maximum_regret_bb": 93.9818181818182
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.13421765079703135,
+          "maximum_regret_bb": 17.515151515151516
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 5.266808114287185,
+          "maximum_regret_bb": 111.55151515151515
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.27893806836667323,
+          "maximum_regret_bb": 49.81843434343435
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.18419515143605844,
+          "maximum_regret_bb": 42.93661616161614
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.6675417817374918,
+          "maximum_regret_bb": 87.8020202020202
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 26.570025042963536,
+          "maximum_regret_bb": 277.6363636363636
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.32445948074906034,
+          "maximum_regret_bb": 108.26843434343436
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.16510077490722475,
+          "maximum_regret_bb": 38.20202020202021
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.743720724944238,
+          "maximum_regret_bb": 100.19595959595961
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 2.0758204865105463,
+          "maximum_regret_bb": 159.79015151515154
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.4904225513583003,
+          "maximum_regret_bb": 391.7656565656566
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.507280816803257,
+          "maximum_regret_bb": 59.10075757575754
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.6294077355653853,
+          "maximum_regret_bb": 132.37575757575758
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.32426062516523757,
+          "maximum_regret_bb": 48.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 614008,
+          "mean_regret_bb": 10.36082381910112,
+          "maximum_regret_bb": 222.7939393939394
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.03623663278564728,
+          "maximum_regret_bb": 7.705416746201273
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.030265116855871976,
+          "maximum_regret_bb": 9.040151515151514
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.06609486172344843,
+          "maximum_regret_bb": 13.620202020202022
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 4.808336837611053,
+          "maximum_regret_bb": 70.86363636363637
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.06131544073511981,
+          "maximum_regret_bb": 13.828030303030303
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.024647667078525982,
+          "maximum_regret_bb": 5.781136363636362
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.1966962346914905,
+          "maximum_regret_bb": 15.677272727272726
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.2928118481387751,
+          "maximum_regret_bb": 41.05909090909091
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.20866832639432145,
+          "maximum_regret_bb": 60.43939393939394
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.07373765395482326,
+          "maximum_regret_bb": 10.30378787878788
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.09152445408302495,
+          "maximum_regret_bb": 32.08181818181819
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.016791709912307676,
+          "maximum_regret_bb": 5.242424242424242
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 337272,
+          "mean_regret_bb": 1.3108720138007688,
+          "maximum_regret_bb": 37.58181818181818
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.09588432544439601,
+          "maximum_regret_bb": 17.23863636363636
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.06386186643311875,
+          "maximum_regret_bb": 23.194696969696977
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.19928062720057027,
+          "maximum_regret_bb": 28.563636363636363
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 12.487681991298677,
+          "maximum_regret_bb": 184.38030303030303
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.19487255356833166,
+          "maximum_regret_bb": 41.39166666666668
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.10334142510347404,
+          "maximum_regret_bb": 12.280808080808082
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.7393625729629835,
+          "maximum_regret_bb": 42.660606060606064
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.7358793868970526,
+          "maximum_regret_bb": 52.54772727272726
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.4778026964534032,
+          "maximum_regret_bb": 142.71515151515152
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.13884659071489835,
+          "maximum_regret_bb": 20.88863636363635
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.19331561060027147,
+          "maximum_regret_bb": 86.9909090909091
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.0625771395101074,
+          "maximum_regret_bb": 16.65
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.5883083228653145,
+          "maximum_regret_bb": 88.4909090909091
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.004169216058207732,
+          "maximum_regret_bb": 1.5194444444444448
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.006577703491903307,
+          "maximum_regret_bb": 1.9527777777777775
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.37737593739844744,
+          "maximum_regret_bb": 12.55
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 2.582567726291593,
+          "maximum_regret_bb": 17.56666666666667
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.01602925389157273,
+          "maximum_regret_bb": 2.516590909090908
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.006843958134121563,
+          "maximum_regret_bb": 1.5444444444444443
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.10180580551117092,
+          "maximum_regret_bb": 4.055555555555555
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.05422923136182464,
+          "maximum_regret_bb": 15.816666666666666
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.09782097285944032,
+          "maximum_regret_bb": 18.683333333333334
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0532731033741672,
+          "maximum_regret_bb": 3.147222222222222
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0871092583767576,
+          "maximum_regret_bb": 7.115454545454547
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 1.8143974434446204e-05,
+          "maximum_regret_bb": 1.7652272727272713
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 155664,
+          "mean_regret_bb": 0.32293997833717997,
+          "maximum_regret_bb": 9.733333333333334
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.012692929292929303,
+          "maximum_regret_bb": 2.5851010101010115
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.01597208813388277,
+          "maximum_regret_bb": 4.6699494949494955
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.7812777752415125,
+          "maximum_regret_bb": 26.277272727272724
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 5.01982133586426,
+          "maximum_regret_bb": 36.50606060606061
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.030005514374617074,
+          "maximum_regret_bb": 7.49570707070707
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.017254060093468047,
+          "maximum_regret_bb": 4.686616161616161
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.19118322086999234,
+          "maximum_regret_bb": 9.90909090909091
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.07878820342983156,
+          "maximum_regret_bb": 32.93787878787879
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.20918661132268898,
+          "maximum_regret_bb": 38.60757575757576
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.07720815169002036,
+          "maximum_regret_bb": 9.240151515151517
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.13329503385914118,
+          "maximum_regret_bb": 21.570202020202025
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.00011436861011329096,
+          "maximum_regret_bb": 7.337121212121211
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 302680,
+          "mean_regret_bb": 0.6531414465121681,
+          "maximum_regret_bb": 24.657575757575756
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.057971462331667535,
+          "maximum_regret_bb": 10.236363636363635
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.03321175109942244,
+          "maximum_regret_bb": 19.214898989898998
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 1.6164932493720314,
+          "maximum_regret_bb": 58.959090909090904
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 12.236746280227214,
+          "maximum_regret_bb": 102.32424242424244
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.10261304237395395,
+          "maximum_regret_bb": 15.898989898989896
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.07363779566754926,
+          "maximum_regret_bb": 7.733080808080807
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.4735684316039039,
+          "maximum_regret_bb": 25.453535353535358
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.18451890717790978,
+          "maximum_regret_bb": 93.30151515151513
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.4959300903238082,
+          "maximum_regret_bb": 102.07575757575756
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.15383152464855435,
+          "maximum_regret_bb": 20.42803030303031
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.29732735019864787,
+          "maximum_regret_bb": 46.363636363636374
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 5.938027996727849e-06,
+          "maximum_regret_bb": 1.7652272727272713
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 475640,
+          "mean_regret_bb": 1.8530103331269134,
+          "maximum_regret_bb": 55.93030303030303
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.09906440674798599,
+          "maximum_regret_bb": 23.28181818181818
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.05271223445036925,
+          "maximum_regret_bb": 40.67449494949494
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 3.085963947792575,
+          "maximum_regret_bb": 121.09545454545454
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 18.517206593601866,
+          "maximum_regret_bb": 207.52121212121216
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.19711913027957492,
+          "maximum_regret_bb": 32.67171717171718
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.12277134125240866,
+          "maximum_regret_bb": 16.083838383838383
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 1.174139036771706,
+          "maximum_regret_bb": 52.78282828282828
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.3928227746981726,
+          "maximum_regret_bb": 189.40757575757573
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.7915166795979994,
+          "maximum_regret_bb": 205.37878787878788
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.3691710036123794,
+          "maximum_regret_bb": 27.22247474747475
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.665454273524375,
+          "maximum_regret_bb": 63.118181818181824
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 5.535449827458164e-06,
+          "maximum_regret_bb": 1.7652272727272713
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.808468271949493,
+          "maximum_regret_bb": 111.55151515151515
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.15458441445635096,
+          "maximum_regret_bb": 59.372727272727275
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.09735248624405117,
+          "maximum_regret_bb": 82.44772727272732
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 6.453083880195554,
+          "maximum_regret_bb": 255.36818181818182
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 32.37781035248578,
+          "maximum_regret_bb": 422.4151515151516
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.4044429362220661,
+          "maximum_regret_bb": 50.195707070707044
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.1675691158697764,
+          "maximum_regret_bb": 31.949494949494976
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 2.5572046334012826,
+          "maximum_regret_bb": 105.03535353535352
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.5872273793951819,
+          "maximum_regret_bb": 380.119696969697
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.1947113680221848,
+          "maximum_regret_bb": 352.2439393939394
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.0301353921095227,
+          "maximum_regret_bb": 53.81843434343435
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.6415694939782317,
+          "maximum_regret_bb": 118.25202020202022
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 4.599880842535658e-06,
+          "maximum_regret_bb": 1.7652272727272713
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 614008,
+          "mean_regret_bb": 9.900472081994392,
+          "maximum_regret_bb": 222.7939393939394
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.011051900680947862,
+          "maximum_regret_bb": 3.0553030303030297
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.015852387941657133,
+          "maximum_regret_bb": 7.387121212121208
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.9704354338230378,
+          "maximum_regret_bb": 40.00454545454545
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 5.8555634606938955,
+          "maximum_regret_bb": 55.44545454545455
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.05292368405226869,
+          "maximum_regret_bb": 10.955303030303028
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.03832443460195541,
+          "maximum_regret_bb": 6.737121212121213
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.3708527958490956,
+          "maximum_regret_bb": 14.959090909090907
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.18050874766785965,
+          "maximum_regret_bb": 50.05909090909091
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.2552129740441489,
+          "maximum_regret_bb": 55.53181818181818
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.1603095943183825,
+          "maximum_regret_bb": 13.588636363636361
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.23916091535147965,
+          "maximum_regret_bb": 32.20151515151515
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.0009899396009479264,
+          "maximum_regret_bb": 10.715909090909086
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 337272,
+          "mean_regret_bb": 1.3007331597121146,
+          "maximum_regret_bb": 37.58181818181818
+        }
+      ]
+    },
+    {
+      "seed": 9297601,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.07202055377145919,
+          "maximum_regret_bb": 15.009090909090915
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.04767816240772072,
+          "maximum_regret_bb": 29.194696969696977
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 2.9993354907199277,
+          "maximum_regret_bb": 107.27727272727273
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 15.698867765441934,
+          "maximum_regret_bb": 154.1727272727273
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.15035534478987655,
+          "maximum_regret_bb": 30.15530303030303
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.1114025442337896,
+          "maximum_regret_bb": 14.778030303030292
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 1.1666309766632599,
+          "maximum_regret_bb": 42.660606060606064
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.27644012697887804,
+          "maximum_regret_bb": 140.60454545454544
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.6039161220540435,
+          "maximum_regret_bb": 153.72727272727272
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.4043435889967901,
+          "maximum_regret_bb": 31.03409090909092
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.6188737059362658,
+          "maximum_regret_bb": 86.9909090909091
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 5.535449827458164e-06,
+          "maximum_regret_bb": 1.7652272727272713
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.438305560465186,
+          "maximum_regret_bb": 88.4909090909091
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.014098500923729107,
+          "maximum_regret_bb": 1.6288636363636364
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.007235827824972822,
+          "maximum_regret_bb": 2.361136363636364
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0627880700265779,
+          "maximum_regret_bb": 4.628181818181817
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.18373613271139835,
+          "maximum_regret_bb": 6.919444444444444
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.006041914192690056,
+          "maximum_regret_bb": 1.9749999999999996
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.01208278233581098,
+          "maximum_regret_bb": 3.8194444444444446
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.1122224504405546,
+          "maximum_regret_bb": 4.288888888888889
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.05912275271361906,
+          "maximum_regret_bb": 3.6083333333333334
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.027010657570721422,
+          "maximum_regret_bb": 2.802777777777778
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.02605210126802476,
+          "maximum_regret_bb": 2.4061363636363646
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.030825538647179424,
+          "maximum_regret_bb": 7.167272727272724
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.001019805030624865,
+          "maximum_regret_bb": 0.017697667748889145
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 155664,
+          "mean_regret_bb": 0.3244275534934191,
+          "maximum_regret_bb": 9.733333333333334
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.02650950764550401,
+          "maximum_regret_bb": 5.191161616161615
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.017779392293818284,
+          "maximum_regret_bb": 7.49570707070707
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.11581091149183248,
+          "maximum_regret_bb": 10.172727272727272
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.31461420339923485,
+          "maximum_regret_bb": 16.624090909090906
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.015111153155331717,
+          "maximum_regret_bb": 3.5769554828796384
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.02331155778155226,
+          "maximum_regret_bb": 8.000252525252524
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.21160938416072125,
+          "maximum_regret_bb": 12.605050505050505
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.09332348610631803,
+          "maximum_regret_bb": 7.331668388600094
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.04440781214728136,
+          "maximum_regret_bb": 5.201767676767677
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.04255663136100829,
+          "maximum_regret_bb": 4.632323232323232
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.05525388041865335,
+          "maximum_regret_bb": 14.775757575757574
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.0017563657381626694,
+          "maximum_regret_bb": 0.24444295314211217
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 302680,
+          "mean_regret_bb": 0.6561731577424467,
+          "maximum_regret_bb": 24.657575757575756
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.03194852561158474,
+          "maximum_regret_bb": 9.959595959595958
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.03698099247711979,
+          "maximum_regret_bb": 24.171464646464656
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.2579586681926794,
+          "maximum_regret_bb": 30.597979797979804
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.8749990299936616,
+          "maximum_regret_bb": 69.8929292929293
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.0401248259159517,
+          "maximum_regret_bb": 11.651947864504045
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.06115980180384392,
+          "maximum_regret_bb": 30.24267676767677
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.5750159064571702,
+          "maximum_regret_bb": 27.859595959595957
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.3083001140866206,
+          "maximum_regret_bb": 24.89621212121212
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.14697383426362592,
+          "maximum_regret_bb": 25.74621212121212
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.07720088079382056,
+          "maximum_regret_bb": 14.433579827966332
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.13394553266681694,
+          "maximum_regret_bb": 46.363636363636374
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.003842053485558158,
+          "maximum_regret_bb": 2.503636363636364
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 475640,
+          "mean_regret_bb": 1.8682650894306894,
+          "maximum_regret_bb": 55.93030303030303
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.05835922815447622,
+          "maximum_regret_bb": 19.85042256426613
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.09522376229735374,
+          "maximum_regret_bb": 49.257323232323245
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.6613192181043039,
+          "maximum_regret_bb": 55.0949494949495
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 2.096967672373529,
+          "maximum_regret_bb": 105.83838383838383
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.06896320440767587,
+          "maximum_regret_bb": 22.88591166221284
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.12013400547273671,
+          "maximum_regret_bb": 57.58055555555555
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 1.4765315082046775,
+          "maximum_regret_bb": 55.1979797979798
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.5418324811138647,
+          "maximum_regret_bb": 48.43863636363636
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.2735901979268222,
+          "maximum_regret_bb": 47.432323232323235
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.20285087464427295,
+          "maximum_regret_bb": 27.22247474747475
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.2751579685247347,
+          "maximum_regret_bb": 93.9818181818182
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.00994675946238363,
+          "maximum_regret_bb": 16.65
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.898384750232069,
+          "maximum_regret_bb": 111.55151515151515
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.16486779537508908,
+          "maximum_regret_bb": 43.39500396455105
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.17434226753528606,
+          "maximum_regret_bb": 99.42904040404039
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.5485732713481524,
+          "maximum_regret_bb": 111.610101010101
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 6.124620256734868,
+          "maximum_regret_bb": 213.67474747474745
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.10072118547690499,
+          "maximum_regret_bb": 24.020959595959596
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.2958469199802811,
+          "maximum_regret_bb": 121.96944444444443
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 3.308825001570948,
+          "maximum_regret_bb": 109.87474747474747
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.0115513297130485,
+          "maximum_regret_bb": 95.35075757575758
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.6103488479731034,
+          "maximum_regret_bb": 61.07752525252525
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.7262634681768722,
+          "maximum_regret_bb": 53.81843434343435
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.508358463006781,
+          "maximum_regret_bb": 137.8060606060606
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.03438498800384983,
+          "maximum_regret_bb": 34.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 614008,
+          "mean_regret_bb": 10.267256080028424,
+          "maximum_regret_bb": 222.7939393939394
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.04041343503689121,
+          "maximum_regret_bb": 8.19621212121212
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.03340665273329238,
+          "maximum_regret_bb": 10.955303030303028
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.19738029636591994,
+          "maximum_regret_bb": 16.981818181818184
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.5522765365860901,
+          "maximum_regret_bb": 33.94747474747475
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.020651555751833774,
+          "maximum_regret_bb": 6.267757868591513
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.03326202937131816,
+          "maximum_regret_bb": 12.414393939393939
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.40487787161273886,
+          "maximum_regret_bb": 19.38787878787879
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.14295671883194583,
+          "maximum_regret_bb": 11.723169716244206
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.08741566490938829,
+          "maximum_regret_bb": 9.831060606060607
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.09535963978783428,
+          "maximum_regret_bb": 6.94318181818182
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.10157955423836813,
+          "maximum_regret_bb": 32.08181818181819
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.002576551320813486,
+          "maximum_regret_bb": 0.4527072024709966
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 337272,
+          "mean_regret_bb": 1.3062721282336929,
+          "maximum_regret_bb": 37.58181818181818
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "direct_value",
+      "split": "stress",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.06331021396775208,
+          "maximum_regret_bb": 18.087121212121218
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.08804281344624677,
+          "maximum_regret_bb": 35.96439393939394
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.5779547885664529,
+          "maximum_regret_bb": 53.63636363636364
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 2.364446270023585,
+          "maximum_regret_bb": 105.83838383838383
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.07384975270518956,
+          "maximum_regret_bb": 17.53535546895207
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.1363332272321504,
+          "maximum_regret_bb": 45.77803030303029
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 1.3176616200949407,
+          "maximum_regret_bb": 46.27878787878788
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.31236842324408814,
+          "maximum_regret_bb": 37.138636363636365
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.1929241807732719,
+          "maximum_regret_bb": 38.48863636363637
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.11852672736596549,
+          "maximum_regret_bb": 25.23863636363636
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.2163424418402136,
+          "maximum_regret_bb": 48.787878787878796
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.004712067592180849,
+          "maximum_regret_bb": 16.65
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.478319399347049,
+          "maximum_regret_bb": 88.4909090909091
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 20.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.011174050609912467,
+          "maximum_regret_bb": 1.3527777777777779
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.006745889359210359,
+          "maximum_regret_bb": 1.5472222222222216
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.02512813872095402,
+          "maximum_regret_bb": 4.266666666666666
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 2.8122439566805895,
+          "maximum_regret_bb": 22.06666666666667
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.00773196919342463,
+          "maximum_regret_bb": 1.9749999999999996
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.002004880753261882,
+          "maximum_regret_bb": 1.0138888888888893
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0347381679888618,
+          "maximum_regret_bb": 3.822222222222223
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.06945013398451572,
+          "maximum_regret_bb": 15.816666666666666
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.017891403759041746,
+          "maximum_regret_bb": 4.269444444444444
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.012200994683187088,
+          "maximum_regret_bb": 2.4061363636363646
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.06513116881633686,
+          "maximum_regret_bb": 8.702777777777778
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 194580,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 155664,
+          "mean_regret_bb": 0.32293997833717997,
+          "maximum_regret_bb": 9.733333333333334
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 40.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.0326367208493018,
+          "maximum_regret_bb": 2.5851010101010115
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.013079546622562348,
+          "maximum_regret_bb": 2.6247474747474744
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.046947276117858906,
+          "maximum_regret_bb": 9.387878787878787
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 5.6325449787954875,
+          "maximum_regret_bb": 45.50606060606061
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.023706697475615143,
+          "maximum_regret_bb": 3.3386363636363647
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.01972049849626168,
+          "maximum_regret_bb": 4.686616161616161
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.06293785803054998,
+          "maximum_regret_bb": 11.098484848484848
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.11895388268838776,
+          "maximum_regret_bb": 32.93787878787879
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.029152283372912424,
+          "maximum_regret_bb": 8.016919191919191
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.023048848068367045,
+          "maximum_regret_bb": 5.191161616161615
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.13163939674263447,
+          "maximum_regret_bb": 19.30530303030303
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 378350,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 302680,
+          "mean_regret_bb": 0.6531414465121681,
+          "maximum_regret_bb": 24.657575757575756
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 100.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.02062913518330221,
+          "maximum_regret_bb": 6.706313131313131
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.029002669874253425,
+          "maximum_regret_bb": 6.3974747474747495
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.11101958598685531,
+          "maximum_regret_bb": 24.73888888888888
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 11.371274249177501,
+          "maximum_regret_bb": 121.32424242424244
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.017445984867597845,
+          "maximum_regret_bb": 6.8507575757575765
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.047725833050885624,
+          "maximum_regret_bb": 7.733080808080807
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.2798692538028506,
+          "maximum_regret_bb": 25.453535353535358
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.2854140811019963,
+          "maximum_regret_bb": 89.30151515151513
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.04146998663788673,
+          "maximum_regret_bb": 18.548232323232323
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.07952576534837909,
+          "maximum_regret_bb": 12.868686868686872
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.30656895181739185,
+          "maximum_regret_bb": 50.616919191919195
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 594550,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 475640,
+          "mean_regret_bb": 1.8530103331269134,
+          "maximum_regret_bb": 55.93030303030303
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 200.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.04068885486990195,
+          "maximum_regret_bb": 16.236616161616162
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.03850170514629036,
+          "maximum_regret_bb": 12.387373737373736
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.25200016423505345,
+          "maximum_regret_bb": 35.357575757575745
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 16.679280686575378,
+          "maximum_regret_bb": 244.02121212121216
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.029236146567352767,
+          "maximum_regret_bb": 11.653787878787881
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.05274143400166072,
+          "maximum_regret_bb": 15.965404040404039
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.7029185205668375,
+          "maximum_regret_bb": 50.36767676767677
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.42887613414440434,
+          "maximum_regret_bb": 154.90757575757573
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.060440608043463205,
+          "maximum_regret_bb": 38.048737373737374
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.21863564358364374,
+          "maximum_regret_bb": 25.223232323232324
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.6459712224393545,
+          "maximum_regret_bb": 100.88459595959597
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.808468271949493,
+          "maximum_regret_bb": 111.55151515151515
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 400.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.09263009806472437,
+          "maximum_regret_bb": 32.979040404040404
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.05763395771897288,
+          "maximum_regret_bb": 36.9239898989899
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.5391592264319525,
+          "maximum_regret_bb": 83.56969696969696
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 39.6837832992404,
+          "maximum_regret_bb": 422.4151515151516
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.04215188681120072,
+          "maximum_regret_bb": 22.759848484848476
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.049540806298841986,
+          "maximum_regret_bb": 13.938888888888869
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.3189429324712514,
+          "maximum_regret_bb": 100.19595959595961
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.8162184633793471,
+          "maximum_regret_bb": 323.119696969697
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.12715508494016264,
+          "maximum_regret_bb": 93.47146464646465
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.4208160178612486,
+          "maximum_regret_bb": 48.979040404040404
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 1.3512851411536904,
+          "maximum_regret_bb": 201.4199494949495
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 767510,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 614008,
+          "mean_regret_bb": 9.900472081994392,
+          "maximum_regret_bb": 222.7939393939394
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 60.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.03176268077008134,
+          "maximum_regret_bb": 4.787121212121214
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.012009973786106996,
+          "maximum_regret_bb": 4.658333333333331
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.09253440714217773,
+          "maximum_regret_bb": 14.509090909090908
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 6.022552552494274,
+          "maximum_regret_bb": 65.94545454545455
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.032159999147048174,
+          "maximum_regret_bb": 4.702272727272728
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.01876551419937174,
+          "maximum_regret_bb": 6.737121212121213
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.16669502779401024,
+          "maximum_regret_bb": 16.754545454545454
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.16979692558785994,
+          "maximum_regret_bb": 50.05909090909091
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.0679681363793297,
+          "maximum_regret_bb": 13.76439393939394
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.042349252984313114,
+          "maximum_regret_bb": 8.19621212121212
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.21179970942135598,
+          "maximum_regret_bb": 29.502272727272725
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 421590,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 337272,
+          "mean_regret_bb": 1.3007331597121146,
+          "maximum_regret_bb": 37.58181818181818
+        }
+      ]
+    },
+    {
+      "seed": 9297602,
+      "arm": "equity_priced",
+      "split": "stress",
+      "stack": 150.0,
+      "cells": [
+        {
+          "cell": "1-1-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.02584638352670153,
+          "maximum_regret_bb": 10.468939393939394
+        },
+        {
+          "cell": "1-1-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.027299170383336017,
+          "maximum_regret_bb": 9.392424242424244
+        },
+        {
+          "cell": "1-1-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.3076193771072806,
+          "maximum_regret_bb": 37.516666666666666
+        },
+        {
+          "cell": "1-1-1-1-1|s5",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 19.69246453591877,
+          "maximum_regret_bb": 182.6727272727273
+        },
+        {
+          "cell": "2-1-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.040111928010248814,
+          "maximum_regret_bb": 10.002272727272725
+        },
+        {
+          "cell": "2-1-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.08188405892126553,
+          "maximum_regret_bb": 10.464393939393943
+        },
+        {
+          "cell": "2-1-1-1|s4",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.5998318549802895,
+          "maximum_regret_bb": 42.660606060606064
+        },
+        {
+          "cell": "2-2-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.43065403482131537,
+          "maximum_regret_bb": 134.60454545454544
+        },
+        {
+          "cell": "2-2-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.06042701945369757,
+          "maximum_regret_bb": 23.1280303030303
+        },
+        {
+          "cell": "3-1-1|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.15271631134404937,
+          "maximum_regret_bb": 23.51439393939394
+        },
+        {
+          "cell": "3-1-1|s3",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.6765843766693732,
+          "maximum_regret_bb": 80.50075757575758
+        },
+        {
+          "cell": "3-2|s2",
+          "boards": 5,
+          "rows": 637790,
+          "mean_regret_bb": 0.0,
+          "maximum_regret_bb": 0.0
+        },
+        {
+          "cell": "4-1|s2",
+          "boards": 4,
+          "rows": 510232,
+          "mean_regret_bb": 4.438305560465186,
+          "maximum_regret_bb": 88.4909090909091
+        }
+      ]
+    }
+  ],
+  "numeric_discrepancies": [],
+  "decision_rows_are_not_independent_samples": true,
+  "preflop_accuracy_qualified": false,
+  "new_inference": false,
+  "new_training": false,
+  "promotion": false,
+  "production_modified": false,
+  "main_seconds": 1008.0,
+  "readback_seconds": 1587.9690000000119,
+  "peak_cuda_reserved_bytes": 2153775104,
+  "inputs": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-equity-priced-learning-v1-registration.json": "41b5b799b7fb6cae773bf3358313959a691bef1c2c46af0ad701c5b8d89d66c8",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-equity-priced-learning-v1-result.json": "aa1127f5b3d0173e448eb97eac678f0c51d52a195fb487b8716da2312a29e2c4",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-equity-priced-learning-v1-readback-v1.json": "92dfda6f46ab9a4e16f2b3cac9aaca619fb64eda2cb23113f402a52800d8c6c8",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_equity_priced_analysis_v1.py": "eb85f6408a08a559fed7c0f04087b972ad50b006857665f73ce7273f57f2290c"
+  }
+}

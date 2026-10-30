@@ -1,0 +1,9 @@
+# Broader connected RAM pilot
+
+Run only after the 500-iteration exactness review passes and the registered capacity audit selects a panel. Use exactly that manifest and the retained connected-v2 stored executable, with original subtree and all-RAM parking. Recheck every capacity limit and live reserve immediately before launch. Refuse if no candidate passed; do not change ranks, ranges, stakes, tree menus, weights or the admission rule to make it run.
+
+Twenty learning iterations, checkpoints 1 and 20. Maximum 1,800 seconds, 20 GB free host and 3 GB free GPU reserves; stop only research if production becomes active. Budget 72 GB for state (selected total state plus metadata must already be <=72 GB), zero SSD strategy writes. Retain stdout, exact input and binary hashes, complete checkpoint outputs and resource samples. Production and user saves remain untouched.
+
+Tighten the constructor bound for the actual pot-then-board build order: require final steady device payload plus the largest single game's full/compact workspace to satisfy the same 18 GB cap and 3 GB live reserve. This conservative order-independent bound is at least the CPU audit's board-then-pot overlap estimate. It may reject a previously selected candidate, but cannot justify loosening admission or selecting a smaller panel without review.
+
+Success means the native terminal-probability, rake/conservation and nonnegative best-response-gap assertions pass; both complete checkpoints exist; all frequencies/policies are finite and normalized; canonical state and shared device workspace equal the capacity plan; every game is RAM backed and reports zero disk reads/writes. Inspect minimum measured host/GPU reserves and elapsed time. Do not describe a 20-iteration strategy as converged or improved. Use only throughput/resource evidence to plan the longer solve. Accuracy claims require later convergence and fresh reserved-board evaluation.

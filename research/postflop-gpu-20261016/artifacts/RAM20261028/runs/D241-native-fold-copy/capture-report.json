@@ -1,0 +1,185 @@
+{
+  "id": "D241",
+  "at": "2026-10-29T03:20:29.223283+00:00",
+  "status": "captured_fold_copy_partial_entry_native_review_pending",
+  "protocol_sha256": "8ffae27bacbd60568f070b3a42bb5c60388efb367946a09b462ffb582731d37a",
+  "candidate_CUBIN_sha256": "edcdc0c29e213531016579681a8518c3a7f0f9df50b814ccc706ca69b96de2db",
+  "candidate_SASS_sha256": "12f1c372f8b8fa677e7d6fcdd6fc367f2dabfd5f2c8f7982e3cba4dbca215860",
+  "candidate_markers": {
+    "D098_DEVICE": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "major": 12,
+        "minor": 0,
+        "driver_api_version": 13030
+      }
+    ],
+    "D098_KERNEL": [
+      {
+        "name": "copy_root",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_action",
+        "registers": 40,
+        "local": 32,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_fold",
+        "registers": 40,
+        "local": 0,
+        "shared": 1232,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_show",
+        "registers": 38,
+        "local": 0,
+        "shared": 1040,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action",
+        "registers": 62,
+        "local": 64,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          16,
+          8,
+          4
+        ]
+      },
+      {
+        "name": "copy_span",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action_eval",
+        "registers": 40,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      }
+    ],
+    "D098_MODULE": [
+      {
+        "index": 0,
+        "module_id": 21,
+        "bytes": 194808,
+        "same_owned_context": true,
+        "elf_magic": true
+      }
+    ],
+    "D098_COMPLETE": [
+      {
+        "callback_errors": 0,
+        "modules": 1,
+        "kernel_launches": 0,
+        "solver_executions": 0,
+        "performance_measured": false
+      }
+    ]
+  },
+  "baseline_code_capture_reused": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture-report.json",
+  "baseline_CUBIN_sha256": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47",
+  "baseline_SASS_sha256": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061",
+  "entry_sections": {
+    "baseline": {
+      "up_fold": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\execution\\baseline\\up_fold.sass.txt",
+        "sha256": "2b2d28ef742395f8bd93b6c13673d22cb5421b4f18e0c2a01f3722c0b9fbee43"
+      }
+    },
+    "candidate": {
+      "up_fold": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\execution\\candidate\\up_fold.sass.txt",
+        "sha256": "8e272cec8e4fb08c8f5e5618cecdf125e33a4cfcb9af5e26549a98c14c650240"
+      }
+    }
+  },
+  "all_owned_native_disassembly_children_terminal": true,
+  "new_compilers_NVRTC_applicationkernels_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Reuse exact accepted-source120PTX/current-driverCUBIN/SASS baseline capturedD225, verify sameGPU/driver query and candidateCUDAdevice/APIidentity. Existing checksum-bound generic D098resourcecallback executable and nvdisasm onX. Onecandidateownedprimarycontext/moduleload plusone disassembler, no newcompiler/NVRTC/baselinecapture/applicationkernels/counters/injection/solves/speed/sourceactivation. Extract the affectedfoldentry sections for separate operand-qualified native reader. Baselinecode reuse is not timing sample reuse."
+}

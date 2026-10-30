@@ -1,0 +1,24 @@
+{
+  "id": "E106",
+  "at": "2026-10-28T23:35:11.705082+00:00",
+  "CUDA_change": "Three lock-offset declarations alone become conditional pointer-or-original-sentinel bindings. Every other original CUDA byte, all floating statements/order, templates, mode/role/lock bodies and kernel names/ABIs remain exact.",
+  "Rust_change": "One derived bool field and constructor/successful lock-update assignments; four LockArg bindings; one inline delegating argument helper. Source reverses exactly to accepted E080. No additional dependency, device/pinned allocation, worklist, quality, graph shape, save format or CUDA option change.",
+  "contract_sha256": "7b14d89cf4015d16131b526292e10b390d1695241bc862ae6ba09e3d8223ae3a",
+  "resource_targets": {
+    "down_action": {
+      "parameter_count": 18,
+      "lock_pointer_parameter": 12
+    },
+    "up_action": {
+      "parameter_count": 20,
+      "lock_pointer_parameter": 13
+    },
+    "up_action_eval": {
+      "parameter_count": 17,
+      "lock_pointer_parameter": 11
+    }
+  },
+  "prospective_resource_gates": "Unchanged6PTXbodies/resources, exact modifiedABIs/no new barriers. No new local/spill/dynamic shared/maxthread/stack/defaultlimit/capacity loss; positive64/128/256occupancies. Registers/static/theoreticaloccupancy are disclosed D108 risks, not measured neutrality. Actual wrapper<=baseline+8B, helper16B/staticword8B reported before numerical outcomes.",
+  "failure": "Any genuine source-contract/compiled mechanism/ABI/resource/numerical/cost/speed failure closes exact form without pointer/helper/role/entrysubset/field/predicate/threshold/width/flags/quality/sample rescue. Mechanical preparation/compiler/observer/reader errors retained separately and no completed native cases repeated. Initial unrounded>=1%completecycle, strict fixture, fresh16,broad/material/locked-cost/capacity/holdout/cumulative/application gates unchanged.",
+  "candidate_accepted": false
+}

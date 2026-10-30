@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-16T10:40:54Z",
+  "candidate": "E020",
+  "resource_probe_pass": true,
+  "independent_source_review_pass": true,
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\kernels.cu",
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\prepared-manifest.json": "783bce1a84f29c90ef77175e9028898247e9ee4b7f9c8ec76da99c28e6eadf63",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\manifest.json": "0be733fa538bc03b97782f520b4eeb48a3dc10914882f977c90e1fc7ea2a7946",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-candidate-source-review\\review.md": "e71ba50de427ed136612e977f091cbc7e23098865ae3d5ae2acbfb8936af19dc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-candidate-source-review\\manifest.json": "d3a2601a509e8c6a1be338ea88aec49779bdb21d275cfb85a85f9ef0782cc3d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-resource-source-review\\review.md": "4bf91abe242eddb3b63e9931ef17c512a97263cac6020328fefff74c5f424641",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-resource-source-review\\manifest.json": "3b71ee49d0a47f3577b84f556a4de348fb270fb493668780c1841f9166e7bd7c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\protocol.json": "b5fa09fac0e0e4b652fe1479e5749cc2b1bfd023fe9b30c923b0d79ea46d6b2b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\scripts-manifest.json": "5ea29d0b2373a27dc255be6f437614e679f5f8b650e0fbc7f55768636f4b4d9e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-harness-review\\review.md": "7291b3e04a27d31af282b4aa924b73eb2909b63f04af35371168a1796d234c76",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-harness-review\\manifest.json": "a4705615f0efec1e8b7a2936b7df78f44f87439c2dc3d010149a0e5448aa013a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-independent-review\\validation.json": "15fe1e55029d8f0acf476d73879c8ed41d8800d4bde42002f1b8b1e763a0b825",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-independent-review\\summary.md": "43f77bfa6fa2f5106dc456f97af91f9d3090f0a695411240518d35ddb78f7e10",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D037-independent-review\\manifest.json": "8892c621ba8c139d5b47807993cd0086eee17ac45c12abf1a5e3e117e63ed099",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\report.json": "ce3b3ea70b7d91de23e555645feeba18d8df02d69d1456520dd948d7ef575543",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\execution-manifest.json": "18a16c5951e5d452cc0d5ffc0b7b3829a406c88d70ba926610c5af2ed08cf026"
+  },
+  "scope": "Frozen source and no-launch resource audit permit native build and fixed primary testing only; numerical equivalence and performance acceptance are pending.",
+  "resource_limit": "Queried rainbow/derived-river residency unchanged. Conservative 1326-hand residency falls from five to three blocks; a prospective wide-range holdout is required if primary passes before unconditional adoption."
+}

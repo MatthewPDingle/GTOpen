@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "checkpoint_iterations": [
+    1,
+    20,
+    100,
+    500,
+    2000
+  ],
+  "every_saved_scientific_field_identical": true,
+  "scientific_content_sha256": "890d93fb68ee7d0fe11f6685d1650f5da56838bed995cb53148f5f8956643ce1",
+  "arena_traffic_ratio": 0.8333333333333334,
+  "baseline_seconds": 1112.7495774,
+  "candidate_seconds": 1050.9351479,
+  "accounting": {
+    "baseline": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.3255486980566786e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 2.4882551397098496e-07
+    },
+    "candidate": {
+      "normalizer_relative_error": 7.746914221229417e-12,
+      "frequency_max_error": 2.3255486980566786e-09,
+      "hand_summary_max_error": 2.583957797730463e-09,
+      "terminal_probability_max_error": 1.2692549899995242e-08,
+      "cash_conservation_max_error": 2.4882551397098496e-07
+    }
+  },
+  "limitation": "Saved evaluations and preflop policies only. Separate GPU switching parity and source/resource qualification remain mandatory. Timing alone is not an uncontended performance comparison.",
+  "input_sha256": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\ownavg-fresh-baseline-result.json": "2fa34eeed823434a46f1a039c88eadca811466ed2b1b10e1682abfca8adceae1",
+    "T:\\Dev\\GTOpen-paging-research\\research\\preflop-evolution\\representative-coverage-20260919\\ownavg-two-result.json": "f997493e7bac0771f5ba217e6b2eee859de3d5f7a97500b6641801316357dc4b"
+  },
+  "order": "candidate switching test, candidate 2000-step run, fresh baseline 2000-step run",
+  "late_interval_seconds": {
+    "baseline": 823.5796513999999,
+    "candidate": 754.1097288
+  },
+  "timing_limitation": "One uncontended sequential pair; no repeated-run uncertainty estimate and no production speed claim."
+}

@@ -1,0 +1,10 @@
+--- accepted/kernels.cu
++++ E089/kernels.cu
+@@ -274,6 +274,7 @@
+         for (int x = 0; x < 2; x++) {
+             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+             u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
++            #pragma unroll 1
+             for (u32 t = c0; t < c1; t++) {
+                 u32 pos = card_pos_sh[t - card_base];
+                 float r = reach_sh[pos];

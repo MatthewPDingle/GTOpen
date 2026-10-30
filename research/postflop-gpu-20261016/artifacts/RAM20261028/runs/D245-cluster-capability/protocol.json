@@ -1,0 +1,21 @@
+{
+  "id": "D245",
+  "at": "2026-10-29T03:52:22.614439+00:00",
+  "status": "FROZEN_PRE_SERIAL_DRIVER_ATTRIBUTE_QUERY",
+  "GPU_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D245-cluster-capability.py": "4db3aca7dc1cf2a975e602d953e44d79fa3db3e96dccc63b4f997c69030f57bd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D245-cluster-capability\\source-review.json": "3d9558383c39da26e6a4d7967801b5670e1bc862f8a114d8ec77e670afa58e44",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-primary-checkpoint\\report.json": "66fc0000f393f1619a1614b023e612efcb499a6dd27f5e0c317bfec32ab4a8f1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "C:\\Windows\\System32\\nvcuda.dll": "83cb61c63706ead0c2938aa62f3c9abe6098362ec3fd2425b77b2b178d4ae052"
+  },
+  "attributes": {
+    "COMPUTE_CAPABILITY_MAJOR": 75,
+    "COMPUTE_CAPABILITY_MINOR": 76,
+    "CLUSTER_LAUNCH": 120
+  },
+  "scope": "OnefreshPythonchild directly bindsWindowsSystem32nvcuda read-onlydriver/deviceAPIs. cuInit,driverVersion,devicecount/name/UUID/threeattributes,currentcontextbefore/after. No contextcreate/retain,moduleload,allocation,CUDAcompiler,kernel,counter,solver,APIstatechange orspeed sample. Serialize underGPUlock andrefuselive solves;main/accepted/PTX unchanged."
+}

@@ -1,0 +1,53 @@
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -31,6 +31,24 @@
+     inactive: Vec<InactiveBlock>,
+     initial: [Vec<f32>; 2],
+     zeros: Vec<f32>,
++}
++
++// D042 temporary diagnostic only: stack fields, best-effort output, no new CUDA work.
++fn emit_zero_upload_profile(
++    store: &Store, p: usize, which: usize, device_elements: usize, zero: bool,
++    predicate_us: f64, alloc_us: f64, wait_us: f64,
++) {
++    use std::io::Write;
++    let (variant, q_words, scale_words) = match store {
++        Store::I16 { q, scale } => ("i16", q.len(), scale.len()),
++        Store::U16 { q, scale } => ("u16", q.len(), scale.len()),
++        Store::F32(_) => ("f32", 0, 0),
++    };
++    let mut log = std::io::stderr().lock();
++    let _ = writeln!(log,
++        r#"ZERO_UPLOAD_PROFILE {{"schema_version":1,"diagnostic_only":true,"player":{},"which":{},"variant":"{}","q_words":{},"q_bytes":{},"scale_words":{},"scale_bytes":{},"device_elements":{},"device_bytes":{},"zero":{},"zero_path_executed":{},"stage_us":{{"predicate":{},"alloc_zeros_host_call":{},"existing_stream_wait":{}}},"extra_cuda_synchronizations":0,"predicate_calls":1}}"#,
++        p, which, variant, q_words, q_words * 2, scale_words, scale_words * 4,
++        device_elements, device_elements * 4, zero, zero, predicate_us, alloc_us, wait_us);
+ }
+ 
+ impl ArenaLayout {
+@@ -104,13 +122,24 @@
+         staging: &mut [f32],
+     ) -> Result<CudaSlice<f32>, String> {
+         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+-        if self.can_upload_zeros(store, which) {
++        let proof_start = std::time::Instant::now();
++        let zero = self.can_upload_zeros(store, which);
++        let predicate_us = proof_start.elapsed().as_secs_f64() * 1e6;
++        if zero {
+             // Fresh compressed arenas need neither f32 host decoding nor a
+             // host-to-device copy. Inactive positive-zero sentinels stay intact.
++            let alloc_start = std::time::Instant::now();
+             let device = stream.alloc_zeros::<f32>(self.len).map_err(e)?;
++            let alloc_us = alloc_start.elapsed().as_secs_f64() * 1e6;
++            let wait_start = std::time::Instant::now();
+             stream.synchronize().map_err(e)?;
++            let wait_us = wait_start.elapsed().as_secs_f64() * 1e6;
++            emit_zero_upload_profile(store, p, which, self.len, true,
++                predicate_us, alloc_us, wait_us);
+             return Ok(device);
+         }
++        emit_zero_upload_profile(store, p, which, self.len, false,
++            predicate_us, 0.0, 0.0);
+         if !self.compact {
+             if let Store::F32(b) = store {
+                 return stream.clone_htod(b.as_slice()).map_err(e);

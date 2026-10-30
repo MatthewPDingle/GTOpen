@@ -1,0 +1,8 @@
+{
+  "scope": "Draft source review before final script freeze",
+  "finding": "build.py looked up candidate_owned_sha256 while frozen source manifest exposes candidate_sha256.",
+  "impact_if_executed": "Build preflight would raise KeyError before compiler launch.",
+  "resolution": "Final build.py uses candidate_sha256, verified against frozen source manifest and authorization example.",
+  "source_or_native_execution": false,
+  "reviewed_final_build_sha256": "c4554466d63078d5efe71abbc6ff7543a410d108d51ce9b72320b9f8fe65f69e"
+}

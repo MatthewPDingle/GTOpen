@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-18T01:17:42.630968+00:00",
+  "error": "The generic root decoder used arm==actor instead of the kernel/native harness predicate arm==(actor==0?0:1), mislabeling the nonzero sentinel2/255 child rows as unowned. Both complete baseline/candidate files compare byte-identical, and native complete guards passed.",
+  "original_sha256": "00e3c473e613bec9c8868e9ba7c7500f6a9e23139eaec174142e8ab688fa93ca",
+  "repaired_sha256": "fcf579400f8811063b8e0c2f7bf2b6070f03070ac645c0dba08160b90f87ef19",
+  "change": "Correct only root ownership predicate to the frozen source semantics. All GPU data/cases/candidate source retained; no GPU rerun."
+}

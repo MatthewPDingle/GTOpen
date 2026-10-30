@@ -1,0 +1,158 @@
+{
+  "at": "2026-10-18T05:23:18.817655+00:00",
+  "id": "D127B2",
+  "all_geometry_counter_original_predicate_invariants_pass": true,
+  "rows": [
+    {
+      "GPU_executions": 0,
+      "after": {
+        "commit_bytes": 1791021056,
+        "page_faults": 418928,
+        "peak_commit_bytes": 1791021056,
+        "peak_working_set_bytes": 1712115712,
+        "working_set_bytes": 1712115712
+      },
+      "all4_original_full_checks_pass": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "arm": "baseline",
+      "before": {
+        "commit_bytes": 1791021056,
+        "page_faults": 85713,
+        "peak_commit_bytes": 1791021056,
+        "peak_working_set_bytes": 347267072,
+        "working_set_bytes": 347267072
+      },
+      "board": "Ks7h2d",
+      "component_ms": 197.73489999999998,
+      "cpu_after_ticks100ns": 3906250,
+      "cpu_arena_bytes": 1386321040,
+      "cpu_before_ticks100ns": 2031250,
+      "fixture_index": 0,
+      "full_solve_performance_measured": false,
+      "mid": {
+        "commit_bytes": 1791021056,
+        "page_faults": 85714,
+        "peak_commit_bytes": 1791021056,
+        "peak_working_set_bytes": 347271168,
+        "working_set_bytes": 347271168
+      },
+      "nodes": 1346813,
+      "original_scan_page_fault_delta": 333214,
+      "page_size": 4096,
+      "plan_levels": 14,
+      "pre_scan_page_fault_delta": 1,
+      "process_cpu_ms": 187.5,
+      "process_page_fault_delta": 333215,
+      "q_bytes": 1364772032,
+      "rayon_threads": 16,
+      "stage": "CPU_zero_scan",
+      "touched_pages": 0,
+      "touched_q_bytes": 0
+    },
+    {
+      "GPU_executions": 0,
+      "after": {
+        "commit_bytes": 2255949824,
+        "page_faults": 534433,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 2184318976,
+        "working_set_bytes": 2184318976
+      },
+      "all4_original_full_checks_pass": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "arm": "baseline",
+      "before": {
+        "commit_bytes": 2255949824,
+        "page_faults": 443730,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 1812799488,
+        "working_set_bytes": 1812799488
+      },
+      "board": "Ks7s2d",
+      "component_ms": 93.32849999999999,
+      "cpu_after_ticks100ns": 7031250,
+      "cpu_arena_bytes": 1391071288,
+      "cpu_before_ticks100ns": 6093750,
+      "fixture_index": 1,
+      "full_solve_performance_measured": false,
+      "mid": {
+        "commit_bytes": 2255949824,
+        "page_faults": 443730,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 1812799488,
+        "working_set_bytes": 1812799488
+      },
+      "nodes": 1346813,
+      "original_scan_page_fault_delta": 90703,
+      "page_size": 4096,
+      "plan_levels": 14,
+      "pre_scan_page_fault_delta": 0,
+      "process_cpu_ms": 93.75,
+      "process_page_fault_delta": 90703,
+      "q_bytes": 1369522280,
+      "rayon_threads": 16,
+      "stage": "CPU_zero_scan",
+      "touched_pages": 0,
+      "touched_q_bytes": 0
+    },
+    {
+      "GPU_executions": 0,
+      "after": {
+        "commit_bytes": 2255949824,
+        "page_faults": 534434,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 2184323072,
+        "working_set_bytes": 2184323072
+      },
+      "all4_original_full_checks_pass": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "arm": "baseline",
+      "before": {
+        "commit_bytes": 2255949824,
+        "page_faults": 534434,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 2184323072,
+        "working_set_bytes": 2184323072
+      },
+      "board": "Ks7h2dQhTc",
+      "component_ms": 0.0015999999999999999,
+      "cpu_after_ticks100ns": 7031250,
+      "cpu_arena_bytes": 33360,
+      "cpu_before_ticks100ns": 7031250,
+      "fixture_index": 2,
+      "full_solve_performance_measured": false,
+      "mid": {
+        "commit_bytes": 2255949824,
+        "page_faults": 534434,
+        "peak_commit_bytes": 2255949824,
+        "peak_working_set_bytes": 2184323072,
+        "working_set_bytes": 2184323072
+      },
+      "nodes": 33,
+      "original_scan_page_fault_delta": 0,
+      "page_size": 4096,
+      "plan_levels": 8,
+      "pre_scan_page_fault_delta": 0,
+      "process_cpu_ms": 0.0,
+      "process_page_fault_delta": 0,
+      "q_bytes": 32832,
+      "rayon_threads": 16,
+      "stage": "CPU_zero_scan",
+      "touched_pages": 0,
+      "touched_q_bytes": 0
+    }
+  ],
+  "stdout_sha256": "e234392653b24cd2d8f2a4a0090c062e449b7c434611b2dd3bf88896c502a316"
+}

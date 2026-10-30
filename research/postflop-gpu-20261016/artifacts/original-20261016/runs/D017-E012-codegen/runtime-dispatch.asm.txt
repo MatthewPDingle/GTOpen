@@ -1,0 +1,70 @@
+; Original assembly lines 532180-532212
+532180: 	movq	%r9, 112(%rsp)
+532181: 	cmpb	$0, 152(%rcx)
+532182: 	je	.LBB910_1
+532183: 	testq	%r9, %r9
+532184: 	movl	$112, %eax
+532185: 	cmoveq	%r9, %rax
+532186: 	addq	%rax, %rsi
+532187: 	imulq	$56, %rdi, %rax
+532188: 	leaq	(%rsi,%rax), %rdi
+532189: 	cmpq	$0, (%rax,%rsi)
+532190: 	je	.LBB910_7
+532191: 	movq	_RNvNtNtCs1AxaXbpVqOn_10std_detect6detect5cache5CACHE(%rip), %rax
+532192: 	testq	%rax, %rax
+532193: 	je	.LBB910_10
+532194: .LBB910_11:
+532195: 	shrl	$10, %eax
+532196: 	andl	$1, %eax
+532197: 	leaq	_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode11write_sse41(%rip), %r9
+532198: 	leaq	_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store9write_f32(%rip), %r10
+532199: 	testb	%al, %al
+532200: 	cmovneq	%r9, %r10
+532201: 	movq	%r10, 144(%rsp)
+532202: 	movq	8(%rcx), %r12
+532203: 	movq	16(%rcx), %rsi
+532204: 	leaq	144(%rsp), %rbx
+532205: 	movq	%rbx, 64(%rsp)
+532206: 	movq	%rdi, 72(%rsp)
+532207: 	movq	%rdx, 80(%rsp)
+532208: 	movq	%r8, 88(%rsp)
+532209: 	movq	%rcx, %r15
+532210: 	callq	_RNvCs98fvGvYc57G_10rayon_core19current_num_threads
+532211: 	xorl	%r8d, %r8d
+532212: 	cmpq	$-1, %rsi
+; Original assembly lines 532244-532278
+532244: 	jmp	.LBB910_6
+532245: .LBB910_1:
+532246: 	testq	%r9, %r9
+532247: 	movq	%rdi, 120(%rsp)
+532248: 	movl	$112, %eax
+532249: 	cmoveq	%r9, %rax
+532250: 	addq	%rsi, %rax
+532251: 	imulq	$56, %rdi, %rcx
+532252: 	leaq	(%rax,%rcx), %rbx
+532253: 	cmpq	$0, (%rcx,%rax)
+532254: 	je	.LBB910_2
+532255: 	movq	_RNvNtNtCs1AxaXbpVqOn_10std_detect6detect5cache5CACHE(%rip), %rax
+532256: 	testq	%rax, %rax
+532257: 	je	.LBB910_4
+532258: .LBB910_5:
+532259: 	shrl	$10, %eax
+532260: 	andl	$1, %eax
+532261: 	leaq	_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode11write_sse41(%rip), %rcx
+532262: 	leaq	_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store9write_f32(%rip), %r9
+532263: 	testb	%al, %al
+532264: 	cmovneq	%rcx, %r9
+532265: 	movq	%r9, 128(%rsp)
+532266: 	movq	224(%rsi), %rax
+532267: 	leaq	(%rdi,%rdi,2), %rcx
+532268: 	movq	1184(%rax,%rcx,8), %rcx
+532269: 	movq	%rcx, 136(%rsp)
+532270: 	movq	1080(%rax), %rcx
+532271: 	movq	1088(%rax), %rsi
+532272: 	leaq	120(%rsp), %rax
+532273: 	movq	%rax, 64(%rsp)
+532274: 	leaq	136(%rsp), %rax
+532275: 	movq	%rax, 72(%rsp)
+532276: 	leaq	128(%rsp), %rax
+532277: 	movq	%rax, 80(%rsp)
+532278: 	movq	%rbx, 88(%rsp)

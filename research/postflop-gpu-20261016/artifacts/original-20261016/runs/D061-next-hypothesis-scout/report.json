@@ -1,0 +1,124 @@
+{
+  "id": "D061",
+  "created_at": "2026-10-16T19:20:39.308725+00:00",
+  "verdict": "CAPABILITY_QUERY_INFORMATIVE_IMPLEMENTATION_NOT_YET_JUSTIFIED",
+  "recommendation": "Separately authorize one getter-only Python ctypes driver query in an owned process. Do not prepare a production policy or performance cohort before actual support is known.",
+  "base": {
+    "accepted": "E020",
+    "git_head": "aceb56f30b0b74d4a742e52486d6342997005a93",
+    "git_status": "?? crates/solver/target/\n",
+    "accepted_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "accepted_source_entries_verified": 162,
+    "ledger_snapshot": "snapshots/research__postflop-gpu-20261016__experiments.md",
+    "E032": "Closed rejection retained in the immutable ledger snapshot and pinned independent audit; not rescued by this scout."
+  },
+  "installed_api": {
+    "cudarc": "0.19.7",
+    "active_cuda_feature": "cuda-12060",
+    "device_attributes": {
+      "L2_CACHE_SIZE": 38,
+      "COMPUTE_CAPABILITY_MAJOR": 75,
+      "COMPUTE_CAPABILITY_MINOR": 76,
+      "MAX_PERSISTING_L2_CACHE_SIZE": 108,
+      "MAX_ACCESS_POLICY_WINDOW_SIZE": 109
+    },
+    "context_limit": {
+      "PERSISTING_L2_CACHE_SIZE": 6
+    },
+    "source_refs": [
+      "Cargo.lock:117",
+      "crates/solver/Cargo.toml:11-16",
+      "cudarc src/driver/sys/mod.rs:2103-2215,3985-3995",
+      "cudarc src/driver/safe/core.rs:74-95,406-421",
+      "cudarc src/driver/safe/graph.rs:54-68"
+    ],
+    "binding_caveat": "Modern stream/kernel attribute value aliases use CUlaunchAttributeValue; do not copy the older CUDA11.4-only stream enum layout. The proposed getter-only query does not require these unions."
+  },
+  "plausible_window": {
+    "primary_discussion": "d_children: one immutable existing CudaSlice<u32>, uploaded once from tree.children, reused in action down/up and evaluation. No new device payload is needed merely to describe its address range. Exact full flop array length has not been established by the selected retained reports; action-edge census is not that length because the allocation includes chance slots/SENTINEL entries. Record actual len*4 before choosing any extent; do not infer it from active action edges.",
+    "source_refs": [
+      "gpu/mod.rs:125,345,578,741,809,974",
+      "gpu/kernels.cu:64-65,83-91,362,384,391,404",
+      "gpu/continuation_paging.rs:workspace swap",
+      "gpu/continuation_storage.rs:workspace swap"
+    ],
+    "lifetime": "Immutable metadata stays with its solver and is excluded from the seven mutable workspace swaps. Any window/graph referring to it must not survive that allocation; queued work must finish before cleanup/reuse of the address.",
+    "sized_alternative": {
+      "buffer": "d_cfv_slot",
+      "basis": "plan.rs230 allocates n u32 values; mod.rs369 uploads the complete vector. Archived D001 tree_nodes gives source-derived payload, not a new GPU observation. No winner selected.",
+      "bytes_by_fixture": {
+        "rainbow": 5387252,
+        "two-tone": 5387252,
+        "river": 132
+      },
+      "source_refs": [
+        "gpu/plan.rs:230-240",
+        "gpu/mod.rs:149,369",
+        "gpu/kernels.cu:323-325,362-405"
+      ]
+    },
+    "cost_limits": "Existing cache/coalescing/broadcast may already serve these reads. Whole windows can include cold/inactive entries. Reserving L2 can evict useful mutable data or compete with another solver. No miss-rate, bandwidth, residency, or >=2% headroom evidence exists here."
+  },
+  "lifecycle_and_graph_constraints": [
+    "GpuSolver constructor uses CudaContext::new(0), which retains the primary context. Per-solver save/set/restore of a context limit can overwrite another solver/library policy; reset is not per-buffer. Require a context-level ownership decision before setters are considered.",
+    "Training graphs and evaluation graphs must both receive the intended policy, as must eager/profile and standalone continuation paths. Setting only the graph-launch stream is not established to configure already-instantiated nodes.",
+    "cudarc end_capture immediately instantiates. Editing the retained graph after this cannot be assumed to change its executable. A later authorized implementation needs explicit node-policy verification before instantiation or a documented executable update path.",
+    "Locks invalidate graphs; warm constructors may capture on their first iterate. New capture, repeated solver construction/drop, shared context overlap, continuation board/workspace reuse and errors must all preserve attribute lifetime. Clearing a stream window does not by itself prove old persisting lines were normalized.",
+    "Do not reset the shared primary context. A cache-line reset or limit restoration, if ever used, must have separately justified ownership; simple per-solver RAII is insufficient for overlapping users."
+  ],
+  "minimum_next_observation": {
+    "proposed": "One no-kernel capability query, separately reviewed/authorized. ctypes avoids a Rust rebuild; explicitly type every ABI and pin nvcuda.dll identity.",
+    "getters": [
+      "driver version",
+      "device name/UUID/ordinal",
+      "compute capability",
+      "L2 bytes",
+      "maximum persisting bytes",
+      "maximum window bytes",
+      "current persisting-limit bytes in query process retained primary context"
+    ],
+    "context_management": "Retain, bind, query, unbind/restore prior current context, release in a finally path. No context reset. Report every CUresult and cleanup result; unsupported/error is not zero.",
+    "forbidden": [
+      "limit setters",
+      "stream attributes",
+      "cache reset",
+      "stream or graph creation/capture",
+      "allocation/upload",
+      "module/NVRTC/compiler",
+      "kernel/solver launch"
+    ],
+    "interpretation": "A positive capacity result permits further bounded design only. Zero maximum or unsupported API can stop this path. A zero current limit alone is not proof the hardware cannot support a separately configured policy. This query cannot establish graph inheritance, cache misses, or speed."
+  },
+  "later_validation_if_separately_authorized": "First prove window lifetime and actual captured-node attributes without assuming inheritance. Then exact raw/state/scale/root comparisons across eager, graphs, locks, warm state, evaluation and continuation/workspace paths; include shared-context ownership/error cleanup. Any performance candidate uses immutable E020 fixed complete-cycle three-pair gates and all construction/capture/readback costs, with broader and fresh original controls only if primary qualifies. No new threshold or outcome rescue.",
+  "history_and_measurement_limits": "Scoped current ledger has no executed persisting-L2 policy experiment. This differs from E031 shared-memory offset caching and E032 terminal scheduling; their failures remain closed. D045 selected perturbed training intervals and D057 scoped evaluation envelopes are not native full-cycle/family fractions or headroom bounds.",
+  "official_source_file": "official-sources.json",
+  "reference_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "5bf4833a28b8f759bf436b2959dacc7dd0e5594f56b56371acf32154c70df53f",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\graph.rs": "dfd8eae6e2cb21bdc9089dec4fb58d0fa9fe2f6c191e06ff994780df20dddb8e",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\result.rs": "096198a59cf9c551edcca167ebb26292149fae1a39fef6372cf3ebbef65966b2",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D001-action-census.log": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-independent-review\\manifest.json": "f47354a431be313d3f3e2fcad66bb6af6454c20c58a16bbab02337ec3e046a2e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-independent-review\\validation.json": "a24a8bacd868947eb27c0df9db45f5f84aaacb076d5ce6933e1dad7a485b62fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-evaluation-envelope-diagnostic\\report.json": "ac6f63332bb3d0c512a7096cb3c1c8fee8de138e6a0c5129c9e90e9c241be350"
+  },
+  "candidate_prepared": false,
+  "query_prepared": false,
+  "driver_query_executed": false,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "production_modified": false,
+  "status_modified": false,
+  "exploratory_read_note": "Read-only exploratory commands included Windows wildcard-path errors and a JSON tree_nodes KeyError on a non-census line; corrected by concrete paths and key filtering. No native command, GPU query, evidence overwrite or source mutation occurred."
+}

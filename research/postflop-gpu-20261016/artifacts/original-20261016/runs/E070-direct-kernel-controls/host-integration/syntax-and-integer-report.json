@@ -1,0 +1,126 @@
+{
+  "id": "E070-host-syntax-and-integer-pack",
+  "status": "pass_scoped_Rust_syntax_and_exhaustive_host_pack",
+  "Rust_files_parsed": 4,
+  "original_u8_pair_cases": 65536,
+  "exact_candidate_pack_expression": "let node_attrs: Vec<u16> = solver.spot.tree.nodes.iter()\n            .map(|node| ((node.player as u16) << 8) | node.num_children as u16)\n            .collect();",
+  "candidate_mod_sha256": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+  "probe_sha256": "ea661cdafab39aff462df875d1c6fe417d1fc13980d2041ee7f25dea803b4c4d",
+  "probe_binary_sha256": "ce4e5102142d35b7fe4c16deef35aa2ae1f2c6625eef65c73ed89b486b85f9ff",
+  "stdout": "E070_HOST_PACK_EXHAUSTIVE_PASS cases=65536 bytes=131072",
+  "processes": [
+    {
+      "command": [
+        "rustfmt",
+        "--emit",
+        "stdout",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\mod.rs"
+      ],
+      "started": "2026-10-17T23:08:47.844206+00:00",
+      "finished": "2026-10-17T23:08:47.971673+00:00",
+      "pid": 9576,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    },
+    {
+      "command": [
+        "rustfmt",
+        "--emit",
+        "stdout",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation.rs"
+      ],
+      "started": "2026-10-17T23:08:47.971673+00:00",
+      "finished": "2026-10-17T23:08:48.060604+00:00",
+      "pid": 223824,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    },
+    {
+      "command": [
+        "rustfmt",
+        "--emit",
+        "stdout",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_storage.rs"
+      ],
+      "started": "2026-10-17T23:08:48.061605+00:00",
+      "finished": "2026-10-17T23:08:48.136102+00:00",
+      "pid": 116992,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    },
+    {
+      "command": [
+        "rustfmt",
+        "--emit",
+        "stdout",
+        "--edition",
+        "2021",
+        "--config",
+        "skip_children=true",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs"
+      ],
+      "started": "2026-10-17T23:08:48.136102+00:00",
+      "finished": "2026-10-17T23:08:48.204712+00:00",
+      "pid": 101896,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    },
+    {
+      "command": [
+        "rustc",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack.rs",
+        "--edition=2021",
+        "-C",
+        "opt-level=3",
+        "-o",
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack.exe"
+      ],
+      "started": "2026-10-17T23:08:48.206296+00:00",
+      "finished": "2026-10-17T23:08:48.696445+00:00",
+      "pid": 253440,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    },
+    {
+      "command": [
+        "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\syntax-and-integer-checks\\host-pack.exe"
+      ],
+      "started": "2026-10-17T23:08:48.696445+00:00",
+      "finished": "2026-10-17T23:08:48.776736+00:00",
+      "pid": 221520,
+      "returncode": 0,
+      "error": null,
+      "terminal": true,
+      "GPUexecutions": 0
+    }
+  ],
+  "all_owned_handles_terminal": true,
+  "integrated_typecheck": false,
+  "NVRTC_processes": 0,
+  "GPUexecutions": 0,
+  "candidate_sources_unchanged": true,
+  "candidate_accepted": false,
+  "limits": "Syntax and integer representation checks only; no integrated Rust type/link check, GPU results, retained runtime allocation/host peak or speed evidence."
+}

@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-16T08:57:12Z",
+  "event": "Premature primary invocation refused while feature build still held gpu-run.lock",
+  "observed_error": "Refused: Lock exists: S:\\GTOpen-research\\postflop-gpu-20261016\\gpu-run.lock; inspect its owner before retrying",
+  "feature_build_owner_pid": 51528,
+  "primary_returncode": 1,
+  "evidence_origin": "Root exec tool output; no separate raw error transcript was saved",
+  "all_planned_run_directories_absent": [
+    "V018-unit",
+    "V018-capacity",
+    "B056",
+    "E018R1",
+    "E018R2",
+    "B057",
+    "B058",
+    "E018R3"
+  ],
+  "all_planned_dashboard_ids_absent": true,
+  "feature_build_completed": true,
+  "feature_binary_sha256": "85d93e1843b0d9a45c807bf37f89917d5046ed6211d9d828a9620a414f235da2",
+  "source_matches_primary_and_feature": true,
+  "native_launches": 0,
+  "timing_samples": 0,
+  "run_order_changes": [],
+  "next_action": "Execute unchanged E018-primary.py after build completion; no sample is replaced or excluded",
+  "primary_script_sha256": "3b2769e644b3292c0a96b5db34b81f0fbe8a2de51838c27af17fe745f0203c0b"
+}

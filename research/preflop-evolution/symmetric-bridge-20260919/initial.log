@@ -1,0 +1,20 @@
+
+running 2 tests
+test symmetric_continuation_matches_uncompressed_values_and_averages ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+KsQs2d: full arenas=38292320, compact arenas=22827200, sweep CFV=0.000117964795, immediate root=0.000000059604645, trajectory CFV=0.64467293, root drift=0.001126945, avg/BR=0.013799599
+
+thread 'symmetric_continuation_matches_uncompressed_values_and_averages' (5536) panicked at crates\solver\tests\continuation_symmetry.rs:67:9:
+independent-trajectory discrepancy
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test symmetric_continuation_rejects_unsupported_inputs_without_mutation ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+ok
+
+failures:
+
+failures:
+    symmetric_continuation_matches_uncompressed_values_and_averages
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.96s
+

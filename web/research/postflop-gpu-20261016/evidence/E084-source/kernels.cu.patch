@@ -1,0 +1,38 @@
+--- accepted/kernels.cu
++++ E084/kernels.cu
+@@ -259,6 +259,17 @@
+         for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
+     }
+     __syncthreads();
++    // The scan has retired all chunk_sum consumers. Reuse its first 52
++    // words for each card's original ordered sum, starting at positive zero.
++    for (int c = threadIdx.x; c < 52; c += blockDim.x) {
++        float acc = 0.f;
++        u32 c0 = o_card_off[(u64)slot * 53 + c];
++        u32 c1 = o_card_off[(u64)slot * 53 + c + 1];
++        for (u32 t = c0; t < c1; t++)
++            acc += reach_sh[card_pos_sh[t - card_base]];
++        chunk_sum[c] = acc;
++    }
++    __syncthreads();
+     float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
+     float win = node_twin[n], lose = node_tlose[n], tie = node_ttie[n];
+ 
+@@ -269,7 +280,7 @@
+         u32 lb = p_lower[pb + k], ub = p_upper[pb + k];
+         float lower = lb > 0 ? prefix[lb - 1] : 0.f;
+         float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);
+-        float tot_c = 0.f, lower_c = 0.f, higher_c = 0.f;
++        float tot_c = chunk_sum[pc1[i]], lower_c = 0.f, higher_c = 0.f;
+         u32 cc[2] = { pc1[i], pc2[i] };
+         for (int x = 0; x < 2; x++) {
+             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+@@ -277,7 +288,7 @@
+             for (u32 t = c0; t < c1; t++) {
+                 u32 pos = card_pos_sh[t - card_base];
+                 float r = reach_sh[pos];
+-                tot_c += r;
++                if (x != 0) tot_c += r;
+                 if (pos < lb) lower_c += r;
+                 else if (pos >= ub) higher_c += r;
+             }

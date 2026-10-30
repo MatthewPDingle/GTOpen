@@ -1,0 +1,61 @@
+"""Publish isolated software preparation; leave original studies untouched."""
+import hashlib
+import json
+from pathlib import Path
+import time
+
+STAGE = Path(__file__).parent
+ROOT = Path(r'T:\Dev\GTOpen')
+TOOLS = ROOT/'tools/research'
+OUT = ROOT/'research/preflop-evolution/blind-defense-20260922'
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    inputs = {str(Path(__file__)):sha(Path(__file__))}
+    planned = {}
+    for v in (1, 2):
+        result = STAGE/f'stack-context-preflop-expected-components-check-v{v}-result.json'
+        checked = json.loads(result.read_bytes())
+        assert checked['passed'] and checked['synthetic_policies_and_payoffs']
+        assert not any(checked[k] for k in ('native_execution', 'model_inference', 'gpu_used', 'training', 'new_scientific_deals', 'production_modified'))
+        for p, h in checked['inputs'].items():
+            assert sha(Path(p)) == h, p
+            inputs[p] = h
+        inputs[str(result)] = sha(result)
+        module = STAGE/f'stack_context_preflop_expected_components_v{v}.py'
+        control = STAGE/f'stack_context_preflop_expected_components_check_v{v}.py'
+        planned[TOOLS/module.name] = module.read_bytes()
+        source = control.read_text(encoding='utf-8')
+        old = f"destination = Path(__file__).with_name('stack-context-preflop-expected-components-check-v{v}-result.json')"
+        new = f"destination = Path(r'{OUT}')/'stack-context-preflop-expected-components-check-v{v}-result.json'"
+        assert source.count(old) == 1
+        planned[TOOLS/control.name] = source.replace(old, new).encode('utf-8')
+        planned[OUT/f'stack-context-preflop-expected-components-staging-check-v{v}-result.json'] = result.read_bytes()
+        planned[OUT/f'stack-context-preflop-expected-components-staging-control-v{v}-source.py.txt'] = control.read_bytes()
+    for p in (ROOT/'crates/solver/examples/hu_fixed_board_tree_v1.rs',
+              ROOT/'crates/solver/examples/research_sampled/state.rs',
+              TOOLS/'preflop_allin_matrix_v1.py'):
+        inputs[str(p)] = sha(p)
+    receipt = OUT/'stack-context-preflop-expected-components-publication-v1.json'
+    assert not receipt.exists()
+    assert all(not p.exists() for p in planned), 'Preserve published work; do not replace.'
+    for p, b in planned.items():
+        with p.open('xb') as f: f.write(b)
+    outputs = {str(p):sha(p) for p in planned}
+    assert all(outputs[str(p)] == hashlib.sha256(b).hexdigest() for p, b in planned.items())
+    result = dict(complete=True, unix=time.time(), inputs=inputs, outputs=outputs,
+        source_changes='Separate new research modules and CPU controls only.',
+        current_scientific_sources_changed=False, new_scientific_attempt=False,
+        final_published_controls_not_yet_run=True, production_modified=False,
+        published_control_change='Result destination only; numerical checks unchanged.')
+    with receipt.open('x', encoding='utf-8') as f:
+        json.dump(result, f, indent=2, allow_nan=False)
+    print(json.dumps(dict(saved_files=len(outputs), receipt=str(receipt))))
+
+
+if __name__ == '__main__':
+    main()

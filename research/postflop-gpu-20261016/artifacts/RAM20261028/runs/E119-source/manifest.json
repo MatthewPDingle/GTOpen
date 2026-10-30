@@ -1,0 +1,22 @@
+{
+  "id": "E119",
+  "at": "2026-10-29T17:52:17.803264+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "3afebc3eff36bad0d110e2697c8010f2e6c148242cfe9920b638cf225246e414",
+  "single_edit": {
+    "old": "    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {\r\n        if (threadIdx.x < (u32)step)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];\r\n        __syncthreads();\r\n    }",
+    "new": "#if __CUDA_ARCH__ == 1200\r\n    if (blockDim.x == 128) {\r\n        if (threadIdx.x < 64u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 64];\r\n        __syncthreads();\r\n        if (threadIdx.x < 32u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 32];\r\n        __syncthreads();\r\n        if (threadIdx.x < 16u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 16];\r\n        __syncthreads();\r\n        if (threadIdx.x < 8u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 8];\r\n        __syncthreads();\r\n        if (threadIdx.x < 4u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 4];\r\n        __syncthreads();\r\n        if (threadIdx.x < 2u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 2];\r\n        __syncthreads();\r\n        if (threadIdx.x < 1u)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + 1];\r\n        __syncthreads();\r\n    } else\r\n#endif\r\n    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {\r\n        if (threadIdx.x < (u32)step)\r\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];\r\n        __syncthreads();\r\n    }"
+  },
+  "entire_CRLF_source_inverse_exact": true,
+  "target": "up_fold only, compute120 actualblock128 only",
+  "all7originalsharedadds_andCTAbarriers_retained": true,
+  "original_generic_otherwidth_body_byte_exact": true,
+  "other_architectures_original_source_tokens": true,
+  "host_ABI_arrays_payload_grid_width_arithmetic_quality_unchanged": true,
+  "risks": "Extrauniformbranch/code, register allocation/scheduling/JIT effects maylose. No occupancy/speed/numerical/material claim. Exactsourcebound/width/ladder/fallback/helper/flags/quality/sample form closes after genuine failure.",
+  "history_and_dependency_sha256": {
+    "history.json": "84c84f18a8d1a6f2311ab2d99f2cbcf9b369b0e1d41f6e844580d72d995cbf85",
+    "dependency-model.json": "02f62b7c8ca6c9039d4bf169dc609bfa78d8ccddf204c8eddb318b4168efa42e"
+  }
+}

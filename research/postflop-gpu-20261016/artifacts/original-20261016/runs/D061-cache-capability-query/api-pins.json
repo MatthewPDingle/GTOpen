@@ -1,0 +1,30 @@
+{
+  "id": "D061",
+  "installed_cudarc_sys": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs",
+  "installed_cudarc_sys_sha256": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e",
+  "active_solver_feature": "cuda-12060",
+  "active_enum_source_lines": "2103-2215; CUlimit 3985-3995",
+  "enums": {
+    "CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE": 38,
+    "CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR": 75,
+    "CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR": 76,
+    "CU_DEVICE_ATTRIBUTE_MAX_PERSISTING_L2_CACHE_SIZE": 108,
+    "CU_DEVICE_ATTRIBUTE_MAX_ACCESS_POLICY_WINDOW_SIZE": 109,
+    "CU_LIMIT_PERSISTING_L2_CACHE_SIZE": 6
+  },
+  "abi": {
+    "CUresult": "32-bit signed int",
+    "CUdevice": "32-bit signed int",
+    "CUcontext": "void pointer",
+    "size_t": "ctypes.c_size_t (64-bit Windows)",
+    "CUuuid": "16 byte structure, copied using bytes(array), never NUL-terminated text",
+    "calling_convention": "ctypes.WinDLL (Windows x64 ABI)"
+  },
+  "official_documents": {
+    "types": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__TYPES.html",
+    "device": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__DEVICE.html",
+    "context": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__CTX.html",
+    "primary_context": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__PRIMARY__CTX.html"
+  },
+  "semantics": "Device getters do not need a current context. cuCtxGetLimit reads the current thread context; retain does not bind it, and release does not restore the previous binding. Restore then release only the query process owned reference. Never set limits or reset the primary context/cache."
+}

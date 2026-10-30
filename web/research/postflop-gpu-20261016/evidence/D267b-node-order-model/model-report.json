@@ -1,0 +1,4778 @@
+{
+  "id": "D267-model",
+  "at": "2026-10-29T07:30:26.398039+00:00",
+  "status": "pass_reversible_CPU_metadata_projection_only",
+  "protocol_sha256": "aa0dd7589a50c020663469ac6ca354476a5684977281e30ac1ece73f3cf65266",
+  "checks": 113066926,
+  "cases": [
+    {
+      "id": "rainbow-iso-on",
+      "fixture": "rainbow",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "inactive_tail_nodes": 27293,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 28733577,
+      "original_projected_payload_bytes": 114934308,
+      "proposal_projected_payload_bytes": 114934308,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\rainbow-iso-on.projection.bin",
+        "bytes": 114934990,
+        "sha256": "3e4d072d42b8ebefccf970046651986e9711a6da05233d2cdd6ac3ea77bcb300"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\rainbow-iso-on.maps.bin",
+        "bytes": 10774576,
+        "sha256": "d0efef1839da8af13f3f68bf2ef496de144b05e4c37dfcc020bbb0415d289fee"
+      },
+      "source_plan_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 44
+            },
+            "8": {
+              "old": 346,
+              "new": 87
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 493,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 493,
+              "new": 63
+            },
+            "8": {
+              "old": 493,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 10194,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10194,
+              "new": 1275
+            },
+            "8": {
+              "old": 10194,
+              "new": 2549
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 45
+            },
+            "8": {
+              "old": 346,
+              "new": 88
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 36162,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 36162,
+              "new": 4521
+            },
+            "8": {
+              "old": 36162,
+              "new": 9041
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 688,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 688,
+              "new": 87
+            },
+            "8": {
+              "old": 688,
+              "new": 173
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 492,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 492,
+              "new": 62
+            },
+            "8": {
+              "old": 492,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "action_nodes",
+          "nodes": 73745,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 73745,
+              "new": 9219
+            },
+            "8": {
+              "old": 73745,
+              "new": 18437
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "chance_nodes",
+          "nodes": 882,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 882,
+              "new": 112
+            },
+            "8": {
+              "old": 882,
+              "new": 222
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "fold_nodes",
+          "nodes": 10045,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10045,
+              "new": 1256
+            },
+            "8": {
+              "old": 10045,
+              "new": 2512
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "show_nodes",
+          "nodes": 21168,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 19123,
+              "new": 2647
+            },
+            "8": {
+              "old": 19428,
+              "new": 5293
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "action_nodes",
+          "nodes": 127302,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 114444,
+              "new": 15914
+            },
+            "8": {
+              "old": 127302,
+              "new": 31826
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "chance_nodes",
+          "nodes": 833,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 833,
+              "new": 105
+            },
+            "8": {
+              "old": 833,
+              "new": 209
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "fold_nodes",
+          "nodes": 26607,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 26607,
+              "new": 3327
+            },
+            "8": {
+              "old": 26607,
+              "new": 6652
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "show_nodes",
+          "nodes": 54096,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 43977,
+              "new": 6763
+            },
+            "8": {
+              "old": 45469,
+              "new": 13524
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "action_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 125113,
+              "new": 17641
+            },
+            "8": {
+              "old": 141120,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "chance_nodes",
+          "nodes": 294,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 294,
+              "new": 38
+            },
+            "8": {
+              "old": 294,
+              "new": 74
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "fold_nodes",
+          "nodes": 66150,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 66150,
+              "new": 8269
+            },
+            "8": {
+              "old": 66150,
+              "new": 16538
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "show_nodes",
+          "nodes": 122304,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89270,
+              "new": 15288
+            },
+            "8": {
+              "old": 101248,
+              "new": 30576
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "action_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89796,
+              "new": 12936
+            },
+            "8": {
+              "old": 103488,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "fold_nodes",
+          "nodes": 96432,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 93612,
+              "new": 12054
+            },
+            "8": {
+              "old": 96432,
+              "new": 24108
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "show_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 113679,
+              "new": 17640
+            },
+            "8": {
+              "old": 128568,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "action_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "fold_nodes",
+          "nodes": 89376,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 84864,
+              "new": 11172
+            },
+            "8": {
+              "old": 89376,
+              "new": 22344
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "show_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89809,
+              "new": 12936
+            },
+            "8": {
+              "old": 101232,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "fold_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "show_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "two-tone-iso-on",
+      "fixture": "two-tone",
+      "nodes": 1346813,
+      "visited_nodes": 802913,
+      "inactive_tail_nodes": 543900,
+      "changed_node_IDs": 1346809,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 28053534,
+      "original_projected_payload_bytes": 112214136,
+      "proposal_projected_payload_bytes": 112214136,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\two-tone-iso-on.projection.bin",
+        "bytes": 112214818,
+        "sha256": "e12866637bfcabd4f65b18b7ba924d353174e8558d101297581458bbd5bf1631"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\two-tone-iso-on.maps.bin",
+        "bytes": 10774576,
+        "sha256": "ccaeac585fa9fe7d08ed692a4bcd0e08daf72dc196eedef5c3747628d0bccce5"
+      },
+      "source_plan_sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 75,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 75,
+              "new": 10
+            },
+            "8": {
+              "old": 75,
+              "new": 19
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 255,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 255,
+              "new": 33
+            },
+            "8": {
+              "old": 255,
+              "new": 65
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 363,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 363,
+              "new": 47
+            },
+            "8": {
+              "old": 363,
+              "new": 92
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 147,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 147,
+              "new": 19
+            },
+            "8": {
+              "old": 147,
+              "new": 38
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 75,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 75,
+              "new": 10
+            },
+            "8": {
+              "old": 75,
+              "new": 19
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 6294,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 6294,
+              "new": 787
+            },
+            "8": {
+              "old": 6294,
+              "new": 1574
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 255,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 255,
+              "new": 33
+            },
+            "8": {
+              "old": 255,
+              "new": 65
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 147,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 147,
+              "new": 19
+            },
+            "8": {
+              "old": 147,
+              "new": 37
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 22083,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 22083,
+              "new": 2761
+            },
+            "8": {
+              "old": 22083,
+              "new": 5521
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 506,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 506,
+              "new": 64
+            },
+            "8": {
+              "old": 506,
+              "new": 128
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 362,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 362,
+              "new": 46
+            },
+            "8": {
+              "old": 362,
+              "new": 91
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "action_nodes",
+          "nodes": 44911,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 44911,
+              "new": 5615
+            },
+            "8": {
+              "old": 44911,
+              "new": 11229
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "chance_nodes",
+          "nodes": 648,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 648,
+              "new": 82
+            },
+            "8": {
+              "old": 648,
+              "new": 163
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "fold_nodes",
+          "nodes": 6184,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 6184,
+              "new": 774
+            },
+            "8": {
+              "old": 6184,
+              "new": 1547
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "show_nodes",
+          "nodes": 12861,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 11668,
+              "new": 1609
+            },
+            "8": {
+              "old": 11888,
+              "new": 3216
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "action_nodes",
+          "nodes": 77382,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 70785,
+              "new": 9674
+            },
+            "8": {
+              "old": 77382,
+              "new": 19347
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "chance_nodes",
+          "nodes": 612,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 612,
+              "new": 77
+            },
+            "8": {
+              "old": 612,
+              "new": 154
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "fold_nodes",
+          "nodes": 16259,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 16259,
+              "new": 2033
+            },
+            "8": {
+              "old": 16259,
+              "new": 4065
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "show_nodes",
+          "nodes": 32867,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 26945,
+              "new": 4109
+            },
+            "8": {
+              "old": 28035,
+              "new": 8217
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "action_nodes",
+          "nodes": 85740,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 77659,
+              "new": 10718
+            },
+            "8": {
+              "old": 85740,
+              "new": 21436
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "chance_nodes",
+          "nodes": 216,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 216,
+              "new": 28
+            },
+            "8": {
+              "old": 216,
+              "new": 55
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "fold_nodes",
+          "nodes": 40228,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 40228,
+              "new": 5030
+            },
+            "8": {
+              "old": 40228,
+              "new": 10058
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "show_nodes",
+          "nodes": 74308,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 55748,
+              "new": 9289
+            },
+            "8": {
+              "old": 62665,
+              "new": 18578
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "action_nodes",
+          "nodes": 62876,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 56078,
+              "new": 7861
+            },
+            "8": {
+              "old": 62876,
+              "new": 15720
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "fold_nodes",
+          "nodes": 58589,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 57296,
+              "new": 7324
+            },
+            "8": {
+              "old": 58589,
+              "new": 14648
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "show_nodes",
+          "nodes": 85740,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 71103,
+              "new": 10718
+            },
+            "8": {
+              "old": 78865,
+              "new": 21435
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "action_nodes",
+          "nodes": 18577,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 18029,
+              "new": 2323
+            },
+            "8": {
+              "old": 18577,
+              "new": 4645
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "fold_nodes",
+          "nodes": 54302,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 52074,
+              "new": 6789
+            },
+            "8": {
+              "old": 54302,
+              "new": 13576
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "show_nodes",
+          "nodes": 62876,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 55912,
+              "new": 7860
+            },
+            "8": {
+              "old": 61778,
+              "new": 15720
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "fold_nodes",
+          "nodes": 18577,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 18041,
+              "new": 2323
+            },
+            "8": {
+              "old": 18577,
+              "new": 4645
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "show_nodes",
+          "nodes": 18577,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 18044,
+              "new": 2323
+            },
+            "8": {
+              "old": 18577,
+              "new": 4645
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "river-iso-on",
+      "fixture": "river",
+      "nodes": 33,
+      "visited_nodes": 33,
+      "inactive_tail_nodes": 0,
+      "changed_node_IDs": 30,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 692,
+      "original_projected_payload_bytes": 2768,
+      "proposal_projected_payload_bytes": 2768,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\river-iso-on.projection.bin",
+        "bytes": 3450,
+        "sha256": "9564c950b3f8a723045e50ae9b7d25b96c20fda20dad8a80f258619d74cc0680"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\river-iso-on.maps.bin",
+        "bytes": 336,
+        "sha256": "0d1207f2a2ab8643038e29c9bb7dacda46597ad15b5f01a9854ace3d96600cdd"
+      },
+      "source_plan_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "rainbow-iso-off",
+      "fixture": "rainbow",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "inactive_tail_nodes": 27293,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 28733577,
+      "original_projected_payload_bytes": 114934308,
+      "proposal_projected_payload_bytes": 114934308,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\rainbow-iso-off.projection.bin",
+        "bytes": 114934990,
+        "sha256": "3e4d072d42b8ebefccf970046651986e9711a6da05233d2cdd6ac3ea77bcb300"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\rainbow-iso-off.maps.bin",
+        "bytes": 10774576,
+        "sha256": "d0efef1839da8af13f3f68bf2ef496de144b05e4c37dfcc020bbb0415d289fee"
+      },
+      "source_plan_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 44
+            },
+            "8": {
+              "old": 346,
+              "new": 87
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 493,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 493,
+              "new": 63
+            },
+            "8": {
+              "old": 493,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 10194,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10194,
+              "new": 1275
+            },
+            "8": {
+              "old": 10194,
+              "new": 2549
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 45
+            },
+            "8": {
+              "old": 346,
+              "new": 88
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 36162,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 36162,
+              "new": 4521
+            },
+            "8": {
+              "old": 36162,
+              "new": 9041
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 688,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 688,
+              "new": 87
+            },
+            "8": {
+              "old": 688,
+              "new": 173
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 492,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 492,
+              "new": 62
+            },
+            "8": {
+              "old": 492,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "action_nodes",
+          "nodes": 73745,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 73745,
+              "new": 9219
+            },
+            "8": {
+              "old": 73745,
+              "new": 18437
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "chance_nodes",
+          "nodes": 882,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 882,
+              "new": 112
+            },
+            "8": {
+              "old": 882,
+              "new": 222
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "fold_nodes",
+          "nodes": 10045,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10045,
+              "new": 1256
+            },
+            "8": {
+              "old": 10045,
+              "new": 2512
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "show_nodes",
+          "nodes": 21168,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 19123,
+              "new": 2647
+            },
+            "8": {
+              "old": 19428,
+              "new": 5293
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "action_nodes",
+          "nodes": 127302,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 114444,
+              "new": 15914
+            },
+            "8": {
+              "old": 127302,
+              "new": 31826
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "chance_nodes",
+          "nodes": 833,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 833,
+              "new": 105
+            },
+            "8": {
+              "old": 833,
+              "new": 209
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "fold_nodes",
+          "nodes": 26607,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 26607,
+              "new": 3327
+            },
+            "8": {
+              "old": 26607,
+              "new": 6652
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "show_nodes",
+          "nodes": 54096,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 43977,
+              "new": 6763
+            },
+            "8": {
+              "old": 45469,
+              "new": 13524
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "action_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 125113,
+              "new": 17641
+            },
+            "8": {
+              "old": 141120,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "chance_nodes",
+          "nodes": 294,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 294,
+              "new": 38
+            },
+            "8": {
+              "old": 294,
+              "new": 74
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "fold_nodes",
+          "nodes": 66150,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 66150,
+              "new": 8269
+            },
+            "8": {
+              "old": 66150,
+              "new": 16538
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "show_nodes",
+          "nodes": 122304,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89270,
+              "new": 15288
+            },
+            "8": {
+              "old": 101248,
+              "new": 30576
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "action_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89796,
+              "new": 12936
+            },
+            "8": {
+              "old": 103488,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "fold_nodes",
+          "nodes": 96432,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 93612,
+              "new": 12054
+            },
+            "8": {
+              "old": 96432,
+              "new": 24108
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "show_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 113679,
+              "new": 17640
+            },
+            "8": {
+              "old": 128568,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "action_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "fold_nodes",
+          "nodes": 89376,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 84864,
+              "new": 11172
+            },
+            "8": {
+              "old": 89376,
+              "new": 22344
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "show_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89809,
+              "new": 12936
+            },
+            "8": {
+              "old": 101232,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "fold_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "show_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "two-tone-iso-off",
+      "fixture": "two-tone",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "inactive_tail_nodes": 27293,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 28733577,
+      "original_projected_payload_bytes": 114934308,
+      "proposal_projected_payload_bytes": 114934308,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\two-tone-iso-off.projection.bin",
+        "bytes": 114934990,
+        "sha256": "7ac30070f658766e6afbbec25e25b21dce401485603abf8836d06d546aeaa4d2"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\two-tone-iso-off.maps.bin",
+        "bytes": 10774576,
+        "sha256": "d0efef1839da8af13f3f68bf2ef496de144b05e4c37dfcc020bbb0415d289fee"
+      },
+      "source_plan_sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 44
+            },
+            "8": {
+              "old": 346,
+              "new": 87
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 2
+            },
+            "8": {
+              "old": 3,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 3,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 3,
+              "new": 1
+            },
+            "8": {
+              "old": 3,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 493,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 493,
+              "new": 63
+            },
+            "8": {
+              "old": 493,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 101,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 101,
+              "new": 13
+            },
+            "8": {
+              "old": 101,
+              "new": 26
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 10194,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10194,
+              "new": 1275
+            },
+            "8": {
+              "old": 10194,
+              "new": 2549
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 346,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 346,
+              "new": 45
+            },
+            "8": {
+              "old": 346,
+              "new": 88
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 199,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 199,
+              "new": 25
+            },
+            "8": {
+              "old": 199,
+              "new": 50
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 36162,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 36162,
+              "new": 4521
+            },
+            "8": {
+              "old": 36162,
+              "new": 9041
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 688,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 688,
+              "new": 87
+            },
+            "8": {
+              "old": 688,
+              "new": 173
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 492,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 492,
+              "new": 62
+            },
+            "8": {
+              "old": 492,
+              "new": 124
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "action_nodes",
+          "nodes": 73745,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 73745,
+              "new": 9219
+            },
+            "8": {
+              "old": 73745,
+              "new": 18437
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "chance_nodes",
+          "nodes": 882,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 882,
+              "new": 112
+            },
+            "8": {
+              "old": 882,
+              "new": 222
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "fold_nodes",
+          "nodes": 10045,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 10045,
+              "new": 1256
+            },
+            "8": {
+              "old": 10045,
+              "new": 2512
+            }
+          }
+        },
+        {
+          "level": 8,
+          "worklist": "show_nodes",
+          "nodes": 21168,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 19123,
+              "new": 2647
+            },
+            "8": {
+              "old": 19428,
+              "new": 5293
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "action_nodes",
+          "nodes": 127302,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 114444,
+              "new": 15914
+            },
+            "8": {
+              "old": 127302,
+              "new": 31826
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "chance_nodes",
+          "nodes": 833,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 833,
+              "new": 105
+            },
+            "8": {
+              "old": 833,
+              "new": 209
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "fold_nodes",
+          "nodes": 26607,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 26607,
+              "new": 3327
+            },
+            "8": {
+              "old": 26607,
+              "new": 6652
+            }
+          }
+        },
+        {
+          "level": 9,
+          "worklist": "show_nodes",
+          "nodes": 54096,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 43977,
+              "new": 6763
+            },
+            "8": {
+              "old": 45469,
+              "new": 13524
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "action_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 125113,
+              "new": 17641
+            },
+            "8": {
+              "old": 141120,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "chance_nodes",
+          "nodes": 294,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 294,
+              "new": 38
+            },
+            "8": {
+              "old": 294,
+              "new": 74
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "fold_nodes",
+          "nodes": 66150,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 66150,
+              "new": 8269
+            },
+            "8": {
+              "old": 66150,
+              "new": 16538
+            }
+          }
+        },
+        {
+          "level": 10,
+          "worklist": "show_nodes",
+          "nodes": 122304,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89270,
+              "new": 15288
+            },
+            "8": {
+              "old": 101248,
+              "new": 30576
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "action_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89796,
+              "new": 12936
+            },
+            "8": {
+              "old": 103488,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "fold_nodes",
+          "nodes": 96432,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 93612,
+              "new": 12054
+            },
+            "8": {
+              "old": 96432,
+              "new": 24108
+            }
+          }
+        },
+        {
+          "level": 11,
+          "worklist": "show_nodes",
+          "nodes": 141120,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 113679,
+              "new": 17640
+            },
+            "8": {
+              "old": 128568,
+              "new": 35280
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "action_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "fold_nodes",
+          "nodes": 89376,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 84864,
+              "new": 11172
+            },
+            "8": {
+              "old": 89376,
+              "new": 22344
+            }
+          }
+        },
+        {
+          "level": 12,
+          "worklist": "show_nodes",
+          "nodes": 103488,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 89809,
+              "new": 12936
+            },
+            "8": {
+              "old": 101232,
+              "new": 25872
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "fold_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        },
+        {
+          "level": 13,
+          "worklist": "show_nodes",
+          "nodes": 30576,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 29448,
+              "new": 3822
+            },
+            "8": {
+              "old": 30576,
+              "new": 7644
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "river-iso-off",
+      "fixture": "river",
+      "nodes": 33,
+      "visited_nodes": 33,
+      "inactive_tail_nodes": 0,
+      "changed_node_IDs": 30,
+      "projected_arrays": 24,
+      "node_indexed_arrays_including_actual_and_synthetic_locks": 16,
+      "exact_inverse_words": 692,
+      "original_projected_payload_bytes": 2768,
+      "proposal_projected_payload_bytes": 2768,
+      "projection": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\river-iso-off.projection.bin",
+        "bytes": 3450,
+        "sha256": "9564c950b3f8a723045e50ae9b7d25b96c20fda20dad8a80f258619d74cc0680"
+      },
+      "maps": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\output\\river-iso-off.maps.bin",
+        "bytes": 336,
+        "sha256": "0d1207f2a2ab8643038e29c9bb7dacda46597ad15b5f01a9854ace3d96600cdd"
+      },
+      "source_plan_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "footprints": [
+        {
+          "level": 0,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 0,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "fold_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 1,
+          "worklist": "show_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 2,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 4,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "action_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 5,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "action_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "fold_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 2
+            }
+          }
+        },
+        {
+          "level": 6,
+          "worklist": "show_nodes",
+          "nodes": 2,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 2,
+              "new": 1
+            },
+            "8": {
+              "old": 2,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "action_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "chance_nodes",
+          "nodes": 0,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 0,
+              "new": 0
+            },
+            "8": {
+              "old": 0,
+              "new": 0
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "fold_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        },
+        {
+          "level": 7,
+          "worklist": "show_nodes",
+          "nodes": 1,
+          "ordered_CPU_node_IDs_preserved": true,
+          "hypothetical_relative_32B_groups": {
+            "4": {
+              "old": 1,
+              "new": 1
+            },
+            "8": {
+              "old": 1,
+              "new": 1
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "raw_bytes": 500125664,
+  "candidate_created_or_activated": false,
+  "CUDA_or_kernel_or_solver_runs": 0,
+  "performance_samples": 0,
+  "limits": "Count distinct aligned32-byte relative address blocks for 4/8-byte node fields per full existing frontier. This is a descriptive across-CTA address footprint with assumed base residue0, not actual cache misses/transactions/scheduling/bandwidth/time. NVIDIA warp coalescing guidance does not prove across-CTA reuse. No speed proxy or acceptance threshold. Source-derived projection, not candidate GPU output, material neutrality or speed proof."
+}

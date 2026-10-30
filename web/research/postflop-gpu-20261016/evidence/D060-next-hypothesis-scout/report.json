@@ -1,0 +1,153 @@
+{
+  "id": "D060",
+  "created_at": "2026-10-16T18:55:00.200757+00:00",
+  "verdict": "SOURCE_FEASIBLE_FOR_INDEPENDENT_DESIGN_REVIEW_ONLY",
+  "recommendation": "One distinct mechanism: consolidate training fold/show terminal launches across levels into one whole-list launch per terminal kind before the existing reverse action/chance traversal. No implementation, probe, benchmark or acceptance is authorized by this report.",
+  "base": "accepted E020",
+  "source_scope_if_separately_authorized": "gpu/mod.rs paired_sweep only; CUDA, numerical settings, metadata, buffers, per-node arithmetic and evaluation scheduling remain unchanged.",
+  "concrete_dataflow": [
+    {
+      "citation": "plan.rs:214-241",
+      "finding": "Every reached terminal has a unique persistent CFV slot after the two parity scratch ranges. Moving terminal writes earlier cannot alias action/chance scratch or another terminal."
+    },
+    {
+      "citation": "plan.rs:244-277",
+      "finding": "The existing fold/show flat lists concatenate disjoint ascending-level spans and contain each reached representative terminal once. A whole-list launch visits the same node IDs exactly once; no repacking or new list is required."
+    },
+    {
+      "citation": "kernels.cu:139-190,195-293",
+      "finding": "Each fold/show CTA reads immutable tables, payouts and the completed opponent reach row and writes only its own terminal CFV row. Neither kernel reads regret/strategy/CFV results from the upward traversal. The only blockIdx use selects the node; the per-hand threadIdx layout and reduction order remain unchanged."
+    },
+    {
+      "citation": "mod.rs:763-852,853-990",
+      "finding": "All downward kernels queue before training terminal/upward work on one stream. The current reverse loop then launches fold/show separately at each level. Action/chance up writes CFVs and learning arenas, not reaches. Consolidation removes per-level terminal launch boundaries and interleaving, not terminal arithmetic or per-node memory traffic."
+    },
+    {
+      "citation": "mod.rs:400-432,440-448,759-770,171-193",
+      "finding": "The same paired_sweep serves ordinary eager/captured iterations, profiled iterations and standalone sweep. E015 first/second down-reach policy remains unchanged. Standalone continuation enters with full down refresh; no new validity flag or cross-iteration cache is introduced."
+    },
+    {
+      "citation": "continuation_paging.rs:88-111; continuation.rs:121-133; continuation_storage.rs:301-342",
+      "finding": "Paging/stored paths eventually call the shared standalone training sweep with their own current workspace. There is no new buffer or capacity accounting, but these paths are part of any later validation scope."
+    }
+  ],
+  "proposed_order": [
+    "Keep the complete existing down sweep including E015 reach reuse unchanged.",
+    "If the full fold list is nonempty and its total count fits both signed kernel count and CUDA grid-x limits, issue one existing up_fold launch with start0 and full length.",
+    "Likewise issue one existing up_show launch with start0, full length and exactly the existing per-player global show_shared bytes.",
+    "Retain the original reverse-level chance/action launch ordering and every argument/math operation.",
+    "Preserve empty-kind skip and profile buckets3/4. Do not insert a new synchronization in the normal path. Profile mode retains its documented eager synchronization semantics."
+  ],
+  "grid_count_constraint": "Do not blindly cast usize full-list lengths to i32/u32. A valid original set of per-level launches need not imply that one concatenated grid is legal. Check full length against i32 and device grid-x limits; retain the existing per-level schedule as a general legal fallback when consolidation is not representable. This is a correctness/launch-validity condition, not a fixture-specific or outcome-selected threshold.",
+  "existing_structural_evidence": [
+    {
+      "player_graph": 0,
+      "observed_original_kernel_nodes": 63,
+      "observed_terminal_launch_counts": {
+        "up_fold": 12,
+        "up_show": 6
+      },
+      "terminal_ctas_unchanged_in_proposal": {
+        "up_fold": 319985,
+        "up_show": 472752
+      },
+      "proposed_terminal_launches_if_nonempty": 2,
+      "proposed_total_kernel_nodes": 47,
+      "scope": "Structural arithmetic from preserved accepted graph descriptors; not execution time, occupancy or performance evidence."
+    },
+    {
+      "player_graph": 1,
+      "observed_original_kernel_nodes": 63,
+      "observed_terminal_launch_counts": {
+        "up_fold": 12,
+        "up_show": 6
+      },
+      "terminal_ctas_unchanged_in_proposal": {
+        "up_fold": 319985,
+        "up_show": 472752
+      },
+      "proposed_terminal_launches_if_nonempty": 2,
+      "proposed_total_kernel_nodes": 47,
+      "scope": "Structural arithmetic from preserved accepted graph descriptors; not execution time, occupancy or performance evidence."
+    }
+  ],
+  "performance_case_and_limits": [
+    "This removes repeated terminal launch/graph nodes across the training sweep, a broader scheduling change than one table load or branch. It does not reduce terminal CTA count, floating work, or logical per-node memory traffic.",
+    "D045 confirms actual accepted graph structure and selected event-perturbed training intervals only. Its selected intervals are not terminal-family totals, native graph-dispatch overhead or complete-cycle shares.",
+    "CUDA graphs already amortize host submission overhead. Fewer captured nodes may have little device scheduling benefit. No >=2% or any other speedup prediction is made.",
+    "Earlier production of all terminal rows can worsen terminal-parent/reach cache locality and memory scheduling. Larger grids can change scheduling without increasing useful occupancy.",
+    "Graph construction/capture/instantiate count changes remain inside the frozen complete-cycle timing. Extra compiler/resource probing is not informative for unchanged kernels; the actual fixed complete-cycle comparison would remain necessary after separate source authorization."
+  ],
+  "validation_if_separately_authorized": [
+    "Prove the full-list union/membership exactly matches old per-level spans and terminal slot uniqueness/disjointness, including empty kinds and a legal-count fallback. Do not change frozen fixtures or score gates.",
+    "Compare against an independent immutable original dispatch/binary: full compressed q/scales, exploit trajectories and F32 state. A reference helper calling the newly changed paired_sweep is not independent.",
+    "Cover ordinary eager then graph replay, warm nonzero construction, profiled/eager/graph transitions, both player locks and post-evaluation iteration. Preserve E015 reach reuse and all algorithm settings.",
+    "Use existing continuation, paging, stored workspace and wide-turn controls if a fixed primary qualifies. No new device-memory schema or buffer is proposed. Same-layout-only comparisons cannot replace original numerical controls.",
+    "Compare defined terminal CFV rows or full learning/reach outputs at agreed boundaries; do not require equality of unused parity scratch or padding. Kernel bytes and floating source expressions must remain exact."
+  ],
+  "bounded_history": {
+    "ledger_snapshot": "references/experiments-48d2c295.md",
+    "ledger_sha256": "fc858846f25c29895f8029827be29720536b5f3649aec773327d147f7962f57e",
+    "search_terms": [
+      "terminal consolidation",
+      "one/single launch",
+      "terminal batching across levels",
+      "terminal prepass",
+      "fold/show hoist"
+    ],
+    "scope": "Current E001-E031 ledger; scoped prior scout/design Markdown and report/protocol searches; older gpu-pass-milestones inspected. No equivalent terminal-list consolidation was found. This is scoped novelty, not an exhaustive claim about all unarchived branches.",
+    "distinction": "E019/E030 altered fold internals/order, E020/E021/E022/E026/E029/E031 altered showdown implementation/launch width, and E005/E014/E023 split action lists/dispatch. This proposal changes only inter-CTA terminal scheduling; none of those rejected variants is revived.",
+    "deprioritized_without_new_work": [
+      "E004 already removes fresh compressed host decode/upload, so that is not a new redundant-copy opportunity.",
+      "D055 already deferred repeated fold-statistic reuse for lack of a useful duplicate-owner census; this scout does not revive that cache idea.",
+      "Persisting-L2 policy was suggested by root but is unassessed here; it would require a separate official-doc/API/lifetime review and is not inferred from E031."
+    ]
+  },
+  "reference_sha256": {
+    "E020_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json",
+      "sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+    },
+    "accepted_kernels": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+    },
+    "accepted_host_dispatch": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+    },
+    "accepted_plan": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    "D045_scoped_graph_evidence": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json",
+      "sha256": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9"
+    },
+    "D055_prior_deferred_directions": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\README.md",
+      "sha256": "6c8bb5aa9540e0f37e1af064e60ad47167a20f3770c769bae48064107dea753a"
+    },
+    "D058_evaluation_no_go": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D058-next-hypothesis-scout\\report.json",
+      "sha256": "f0b1b60b60d67f1a2933c62c73daf6093efe294d962360af373daa98b1bc9fda"
+    },
+    "E031_closed_resource_screen": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\report.json",
+      "sha256": "275631d98386a203173dd1e49037cd18c385c5cefd2eb98c36a7b8d0abf22cda"
+    }
+  },
+  "continuation_source_snapshots_sha256": {
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+  },
+  "candidate_prepared": false,
+  "new_harness_prepared": false,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "production_modified": false,
+  "status_or_deployment_changed": false,
+  "exploratory_read_note": "One optional read used nonexistent comparisons/D029-independent-review/summary.md; no data was changed. The scheduling argument uses accepted source and the existing D045 descriptor report instead."
+}

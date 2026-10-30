@@ -1,0 +1,248 @@
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+index 90422043..fd6143d2 100644
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -389,6 +389,13 @@ impl Spot {
+         self.tree.bytes()
+     }
+ 
++    /// Physical GPU reach-row pitch in floats; logical hand counts stay unchanged.
++    /// Valid poker ranges have at most 1326 hands. Keep in sync with CUDA's
++    /// `(nh + 7) & ~7` reach addressing, including the zero-count down sweep.
++    pub(crate) fn gpu_reach_pitch(nh: usize) -> usize {
++        nh.div_ceil(8) * 8
++    }
++
+     /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging
+     /// buffers, f32 regret+strategy arenas, and slack for river/lock tables.
+     /// CPU-only (no CUDA), so the UI can show the estimate up front even
+@@ -416,7 +423,9 @@ impl Spot {
+                 _ => {}
+             }
+         }
+-        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
++        let pitch0 = Self::gpu_reach_pitch(self.hands[0].len()) as u64;
++        let pitch1 = Self::gpu_reach_pitch(self.hands[1].len()) as u64;
++        let staging = (reach_blocks[0] * pitch0 + reach_blocks[1] * pitch1 + n * nh_max) * 4;
+         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+         staging + arenas + 512 * 1024 * 1024
+     }
+diff --git a/crates/solver/src/gpu/continuation_capacity.rs b/crates/solver/src/gpu/continuation_capacity.rs
+index f6fd7afa..7de3e6e2 100644
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -64,7 +64,7 @@ pub fn stored_capacity_plan(s: &Spot) -> Value {
+     let mut work=[0u64;11];
+     for q in 0..2 {
+         work[q]=full.arena_elements[q] as u64*4;work[q+2]=work[q];
+-        work[q+4]=(full.reach_blocks[q]*full.nh[q]*4) as u64;
++        work[q+4]=full.reach_elements(q) as u64*4;
+         if compact.iso_active {work[q+7]=compact.arena_elements[q].max(1) as u64*4;work[q+9]=work[q+7];}
+     }
+     work[6]=(full.cfv_blocks*full.nh_max*4) as u64;
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 50beeffe..fe90abc3 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -1,8 +1,9 @@
+ // Level-synchronous vector CFR kernels.
+ //
+ // Conventions:
+-//  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical
+-//    slot of node n's nearest writing ancestor (see plan.rs).
++//  - reach0/reach1: physical row pitch is (nh + 7) & ~7 floats; logical
++//    hand counts remain nh. rsrc[p][n] is the physical row slot of node n's
++//    nearest writing ancestor (see plan.rs).
+ //  - cfv: counterfactual values for the current traverser p, packed by
+ //    cfv_slot[n]; only visited nodes have physical storage.
+ //  - Regret matching mirrors the CPU: sigma = max(r,0)/sum, uniform if sum<=1e-12.
+@@ -51,8 +52,9 @@ __device__ __forceinline__ void down_action_impl(
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+     float* reach_a = actor == 0 ? reach0 : reach1;
+     int nh_a = actor == 0 ? nh0 : nh1;
++    const int reach_pitch_a = (nh_a + 7) & ~7;
+     u32 src = actor == 0 ? rsrc0[n] : rsrc1[n];
+-    const float* parent_reach = reach_a + (u64)src * nh_a;
++    const float* parent_reach = reach_a + (u64)src * reach_pitch_a;
+ 
+     long long loff = lock_off[n];
+     if (loff >= 0) {
+@@ -62,7 +64,7 @@ __device__ __forceinline__ void down_action_impl(
+             float pr = parent_reach[i];
+             for (int a = 0; a < na; a++) {
+                 u32 child = children[cs + a];
+-                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr * sig[a * nh_a + i];
++                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * reach_pitch_a + i] = pr * sig[a * nh_a + i];
+             }
+         }
+         return;
+@@ -88,7 +90,7 @@ __device__ __forceinline__ void down_action_impl(
+             } else {
+                 v = uni;
+             }
+-            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
++            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * reach_pitch_a + i] = v;
+         }
+     }
+ }
+@@ -128,12 +130,14 @@ extern "C" __global__ void down_chance(
+     if (e >= count) return;
+     u32 pn = parents[start + e], cn = childs[start + e];
+     u64 cm = 1ull << cards[start + e];
+-    const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;
+-    const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;
++    const int reach_pitch0 = (nh0 + 7) & ~7;
++    const int reach_pitch1 = (nh1 + 7) & ~7;
++    const float* pr0 = reach0 + (u64)rsrc0[pn] * reach_pitch0;
++    const float* pr1 = reach1 + (u64)rsrc1[pn] * reach_pitch1;
+     for (int i = threadIdx.x; i < nh0; i += blockDim.x)
+-        reach0[(u64)rsrc0[cn] * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
++        reach0[(u64)rsrc0[cn] * reach_pitch0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
+     for (int j = threadIdx.x; j < nh1; j += blockDim.x)
+-        reach1[(u64)rsrc1[cn] * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
++        reach1[(u64)rsrc1[cn] * reach_pitch1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
+ }
+ 
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+@@ -155,8 +159,9 @@ extern "C" __global__ void up_fold(
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
++    const int reach_pitch_o = (nh_o + 7) & ~7;
+     const float* global_reach = (p == 0 ? reach1 : reach0)
+-        + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
++        + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * reach_pitch_o;
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+         local_reach[j] = global_reach[j];
+     __syncthreads();
+@@ -222,7 +227,8 @@ extern "C" __global__ void up_show(
+     float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
+     u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
+     u32 card_base = o_card_off[(u64)slot * 53];
+-    const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
++    const int reach_pitch_o = (nh_o + 7) & ~7;
++    const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * reach_pitch_o;
+ 
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+     for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+@@ -365,7 +371,8 @@ __device__ __forceinline__ void up_action_impl(
+             return;
+         }
+         u64 doff = node_data_off[n];
+-        const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
++        const int reach_pitch_p = (nh_p + 7) & ~7;
++        const float* rp = reach_p_buf + (u64)rsrc_p[n] * reach_pitch_p;
+         // register-cache regrets and child values for the common small-na case
+         float rc[8], vc[8];
+         bool small = na <= 8;
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 88a21c4c..b784c015 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -363,8 +363,8 @@ impl GpuSolver {
+             d_strat,
+             arena_layout,
+             d_reach: [
+-                stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+-                stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?,
++                stream.alloc_zeros::<f32>(plan.reach_elements(1)).map_err(e)?,
+             ],
+             d_cfv_slot: up32(&plan.cfv_slot)?,
+             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
+@@ -1460,6 +1460,10 @@ mod tests {
+                         "compact plan should admit trees the conservative estimate rejected");
+                 }
+                 let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
++                for p in 0..2 {
++                    assert_eq!(gpu.d_reach[p].len(), plan.reach_elements(p), "admitted reach payload");
++                }
++                assert_eq!(gpu.d_cfv.len(), plan.cfv_blocks * plan.nh_max);
+                 for _ in 0..40 { gpu.iterate().unwrap(); }
+                 let mut repeat = GpuSolver::new(&s).unwrap();
+                 for _ in 0..40 { repeat.iterate().unwrap(); }
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 8a98e494..fa8e7c8c 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -490,10 +490,20 @@ impl GpuPlan {
+         }
+     }
+ 
+-    /// Total bytes of GPU staging (reach + cfv) this plan needs.
++    /// Physical reach-row stride; hand loops and all other layouts still use `nh`.
++    pub fn reach_pitch(&self, p: usize) -> usize {
++        Spot::gpu_reach_pitch(self.nh[p])
++    }
++
++    /// Payload of one player's reach buffer, including row padding.
++    pub fn reach_elements(&self, p: usize) -> usize {
++        self.reach_blocks[p] * self.reach_pitch(p)
++    }
++
++    /// Total bytes of GPU staging (padded reach + cfv) this plan needs.
+     pub fn staging_bytes(&self) -> u64 {
+-        (self.reach_blocks[0] as u64 * self.nh[0] as u64
+-            + self.reach_blocks[1] as u64 * self.nh[1] as u64
++        (self.reach_blocks[0] as u64 * self.reach_pitch(0) as u64
++            + self.reach_blocks[1] as u64 * self.reach_pitch(1) as u64
+             + self.cfv_blocks as u64 * self.nh_max as u64) * 4
+     }
+ }
+@@ -505,6 +515,15 @@ mod tests {
+ 
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
++        // Covers zero-count reuse and every legal range width, including tails.
++        for nh in 0..=1326 {
++            let pitch = Spot::gpu_reach_pitch(nh);
++            assert_eq!(pitch % 8, 0);
++            assert!(pitch >= nh && pitch < nh + 8);
++            assert_eq!(pitch, (nh + 7) & !7usize, "CUDA address agreement");
++        }
++        assert_eq!(Spot::gpu_reach_pitch(0), 0);
++        let mut saw_padding = false;
+         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+             let sizing = || StreetSizing {
+                 bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+@@ -523,6 +542,13 @@ mod tests {
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
+                 assert_eq!(plan.cfv_slot[0], 0);
++                assert_eq!(plan.nh, [spot.hands[0].len(), spot.hands[1].len()]);
++                assert_eq!(plan.nh_max, plan.nh[0].max(plan.nh[1]));
++                let dense_reach = (0..2).map(|p| plan.reach_blocks[p] as u64 * plan.nh[p] as u64).sum::<u64>();
++                let padding = (0..2).map(|p| plan.reach_blocks[p] as u64 * (plan.reach_pitch(p) - plan.nh[p]) as u64).sum::<u64>();
++                assert_eq!(plan.staging_bytes(), (dense_reach + padding + (plan.cfv_blocks * plan.nh_max) as u64) * 4);
++                let full_arenas = spot.tree.data_size.iter().sum::<u64>() * 8;
++                assert!(spot.vram_estimate_bytes() >= plan.staging_bytes() + full_arenas + 512 * 1024 * 1024);
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();
+                 for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
+@@ -552,6 +578,19 @@ mod tests {
+                 }
+                 for p in 0..2 {
+                     assert_eq!(plan.reach_slot[p][0], 0);
++                    let pitch = plan.reach_pitch(p);
++                    saw_padding |= pitch > plan.nh[p];
++                    assert_eq!(pitch % 8, 0);
++                    assert!(plan.nh[p] <= pitch && pitch < plan.nh[p] + 8);
++                    assert_eq!(plan.reach_elements(p), plan.reach_blocks[p] * pitch);
++                    let mut previous_end = 0;
++                    for slot in 0..plan.reach_blocks[p] {
++                        let begin = slot * pitch;
++                        let end = begin + plan.nh[p];
++                        assert_eq!((begin * 4) % 32, 0);
++                        assert!(previous_end <= begin && end <= plan.reach_elements(p));
++                        previous_end = end;
++                    }
+                     let mut owner_for_slot = vec![u32::MAX; plan.reach_blocks[p]];
+                     let mut slot_for_owner = vec![u32::MAX; plan.num_nodes];
+                     for (&owner, &slot) in plan.reach_src[p].iter().zip(&plan.reach_slot[p]) {
+@@ -584,5 +623,6 @@ mod tests {
+                 }
+             }
+         }
++        assert!(saw_padding, "actual plans must exercise nonempty row padding");
+     }
+ }

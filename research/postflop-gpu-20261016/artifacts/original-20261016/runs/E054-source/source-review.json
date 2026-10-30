@@ -1,0 +1,28 @@
+{
+  "id": "D086-early-action-CFV-publication",
+  "at": "2026-10-17T05:29:57.437180+00:00",
+  "root_source_review_only": true,
+  "proposal": "In unlocked own-node up_action only, publish completed out to the original parent CFV row immediately before the unchanged regret-update loop. All expressions/within-out order, strategy scheduling and other branches stay unchanged.",
+  "measured_motivation": {
+    "D085_root_sha256": "d12b5ba24565d461a40a3f2ab349cbc93a8b0b035575dd759c90663c805d8a0c",
+    "median_share_of_traced_kernel_time_pct": 35.61788083102774,
+    "limits": "Measured rainbow diagnostic ranking, not a speed forecast or removable wall-time bound."
+  },
+  "source_proof": [
+    "GpuPlan::build assigns reachable action/chance scratch rows to disjoint even/odd level pools; unique current-level outputs cannot alias next-level child inputs. Cached fold/showdown terminal rows are allocated beyond both scratch pools.",
+    "Action edges advance the traversal level by one; every child of a queued reached action is reached and has a valid slot. Existing plan tests explicitly check unique same-level outputs, scratch/terminal separation and disjoint adjacent live levels.",
+    "All actual production CFVslot assignment sites found in the scoped gpuRust search are in GpuPlan::build. Continuation wrappers use that owned solver plan; no custom mutable CFV mapping is introduced.",
+    "Hence parent row store cannot change any later child value reload, including na>8uncached fallback. Same-level CUDA blocks also cannot overwrite each other's live inputs. Existing stream/graph dependencies make the earlier store invisible to later kernels until this launch completes.",
+    "Learning and CFV device allocations have separate owned CUDA buffers. No arithmetic, summation/reduction order, pointer qualifier, loop factor/arity, dtype, allocation, graph node, shared layout, quality or stopping change. Failed kernel updates have no rollback contract; valid ranges remain the scope."
+  ],
+  "potential_mechanism": "Releasing parent addressing inputs earlier may change live ranges/register scheduling before regret stores. Actual resources and timing must establish any benefit.",
+  "closed_evidence": "E006/E007 already tested occupancy/launch-bound register constraints; new family ranking does not reopen their failed cohorts. No maxnreg/launch-bound/arity-factor/alias/cache-width rescue is admitted. E051 strategy-store scheduling is retained; this separately moves the parent CFVstore under the explicit parent/child disjointness invariant.",
+  "novelty": "Scoped ledger/retained patches/source notes show no same early parent CFVstore transform. E018child-slot mapping, E023actor routing and E024cache removal are not composed.",
+  "resource_gate": "Actual up_action body must change; exact original ABI and eight other entries; no increased registers/local/static shared, reduced maxthreads or occupancy at64/128/256. No numeric/performance work if any gate fails; no store-location/factor variant rescue.",
+  "numerical_gate": "If admitted, use frozen whole-raw own/locked/opponent/arity/tail/nonfinite cases with production nonaliasing row contract; retain complete device state, immutable inputs, guards and source proof for ordinary/continuation callers before full timing.",
+  "performance_gate": "Current1%complete-cycle policy, strict fixture guards, separately frozen fresh16confirmation and broad/F32/save/resume/continuation/material/holdout/fresh-original cumulative qualification before adoption. No data pooling/extensions/exclusions.",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "8cc54e1aea504ec32ee2daff549a3118bb9601621f4a045ad03cef78d213b3d9"
+  },
+  "candidate_accepted": false
+}

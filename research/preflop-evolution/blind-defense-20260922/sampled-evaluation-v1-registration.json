@@ -1,0 +1,35 @@
+{
+  "inputs": {
+    "tools/research/hu_sampled_evaluation_control_20260922.py": "bea5e879d8b06f7b73d1d76daa6658e3c0078875d0e27527d715fd3ac1da292b",
+    "research/preflop-evolution/blind-defense-20260922/sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "target/release/examples/hu_sampled_payoff_bounds.exe": "7a5589062515c7411fe4eb3256598168cd6de40d34fc4522520a01103281e92d",
+    "research/preflop-evolution/blind-defense-20260922/bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "tools/research/sampled_evaluation_intervals_v1.py": "bc32655c0a0e3367a1ec510472ea030c2e15542451c32a84cabcca3f2a09943e",
+    "tools/research/hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools/research/hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools/research/loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "crates/solver/examples/hu_sampled_payoff_bounds.rs": "04cb67f515fb7c870a29feb6865a3ba59ae39467ceef38ca3353dc4a9297aab2",
+    "crates/solver/examples/research_sampled/state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates/solver/examples/research_sampled/poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488"
+  },
+  "seed": 2026092307,
+  "policy_seed": 172903,
+  "looks": [
+    8192,
+    32768
+  ],
+  "series": [
+    "case0-player0",
+    "case0-player1",
+    "case1-player0",
+    "case1-player1"
+  ],
+  "alpha": 0.05,
+  "method": "Two-sided Maurer-Pontil Theorem 4 plus union bound across registered looks and series.",
+  "source": "https://www.cs.mcgill.ca/~colt2009/papers/012.pdf",
+  "scope": "Finite-game IID deal-evaluation control and full physical public-tree payoff bounds. No learned physical-poker strength claim.",
+  "confidence_scope": "Fixed tested policy difference, conditional on frozen chance law; not a best-response upper bound.",
+  "maximum_seconds": 180,
+  "no_gpu": true,
+  "production_modified": false
+}

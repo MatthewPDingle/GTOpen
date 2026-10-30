@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-29T03:57:39.261132+00:00",
+  "scope": "Standalone integer-bit transport primitive only, no poker/CFR shader orsolver candidate. Eachfixed2blockcluster initializes own perblockshared words from disjoint immutableglobalinputs; afterclusterpublication barrier it readspeer(ownrank XOR1),writes own disjoint global span,thenclusterlifetime barrier beforeproducerexit. uinttransport includesallf32bitpayloads withoutfloatingarithmetic. Emptyloops stillparticipate bothbarriers. No globalgrid barrier/cooperativelaunch/residentgridform.",
+  "compiler": "ExactNVRTC12.9/privatealreadychecksumverifiedCUDA12.9runtime+CCCLheaders fromD203,defaultoptions andonecompute120target. No SDK/DLL/install/globalPATH/acceptedsource change. Primitive hardwarefeature only; no otherarchitecture correctness claimed.",
+  "resource_gate": "Requiredcluster2/1/1actualfunctionattrs; all8threads/shared combinations defaultfit, no localmemory,positiveactiveclusters,unchangedcontextstack. Resourcepass onlyadmitstheoriginal132case/eager+4graphreplay standalone transport controls. Intended mappedremote operand andbothclusterbarriers mustsurvivePTX beforeapplicationkernels.",
+  "failure": "Any realresource/intendedfeature/numerical/lifetime/graphfailurecloses thisfixedprimitive/lead withoutsource/width/flags/alternativeprimitive rescue. Mechanicalcompiler/binding/observer defects preserveoriginalsources/errors andcompletednativecases neverrepeat. No speed/optimizer gain fromfeatureproof."
+}

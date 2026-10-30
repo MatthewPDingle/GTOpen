@@ -1,0 +1,11 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -407,7 +407,7 @@
+     }
+ }
+ 
+-extern "C" __global__ void up_action(
++extern "C" __global__ __launch_bounds__(128, 9) void up_action(
+     const u32* __restrict__ nodes, int start, int count, int p,
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+     const u64* __restrict__ node_data_off,

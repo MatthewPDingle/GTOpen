@@ -1,0 +1,23 @@
+{
+  "id": "E066-resource-root-check",
+  "at": "2026-10-17T11:08:36.984739+00:00",
+  "status": "pass_feasibility_and_abi_only",
+  "resource_report_sha256": "ae81db1b7fc89d720f5f503db1d26f7ab638619a435b2b6919e4c1065d209ff1",
+  "actual_native_rows_match_report": true,
+  "registered_shapes": 10,
+  "rows": 20,
+  "all_supported_hand_counts_bounded_by1326_monotone_dynamic_formula": "4*nh_o+16*m_o<=26520; full bound actual queried, static1248 added fitsdefault",
+  "reported_registers": [
+    38,
+    39
+  ],
+  "static_shared_bytes": [
+    1040,
+    1248
+  ],
+  "warnings": "Two128thread shapes12to11theoretical residency; disclosed, not a measured capacity/speed result. No per-threadlocal or dynamic allocation increase.",
+  "kernel_launches": 0,
+  "new_native_executions": 0,
+  "candidate_accepted": false,
+  "limits": "Root replay, not external independent audit; compiled resources/positive theoretical occupancy do not establish numerical correctness, measured memory/CPU/responsiveness, speed or adoption."
+}

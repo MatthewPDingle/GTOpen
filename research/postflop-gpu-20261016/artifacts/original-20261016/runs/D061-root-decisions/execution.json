@@ -1,0 +1,19 @@
+{
+  "id": "D061",
+  "at": "2026-10-16T19:27:16Z",
+  "decision": "AUTHORIZE_ONE_GETTER_ONLY_QUERY",
+  "prepared_manifest_sha256": "59984e8827220646145d3422075616a1fb272ac078fb253c9fd9e7ac9a8898bf",
+  "query_review_sha256": "fa460802e80b47adea43b79af7a2cb9ac187036e57fa83b3d7eaa4c8505ed868",
+  "protocol_sha256": "9c4153a647764c728be2f4f3d62e6d57502d6269f961c77a14ed6e405a9f79d5",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-I",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\query.py",
+    "--getters-only"
+  ],
+  "timeout_seconds": 60,
+  "scope": "One owned Python process, getter-only APIs and owned primary-context bind/restore/release. No CUDA policy setting, source activation, compilation, stream/module/kernel or solver work. All results including unsupported/errors retained; no automatic retry.",
+  "production_policy_authorized": false,
+  "performance_claim": false
+}

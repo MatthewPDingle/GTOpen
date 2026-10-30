@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-29T20:32:08.878471+00:00",
+  "status": "FROZEN_PRE_ADDITIVE_LOCAL_CFG_GUARD_READER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D306-normal-division-PTX-v2.py": "f5d6a7def4206762c6d5b83e3b7d95f9344a9d06235303d6873cef1f17349ce4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D306-normal-division-PTX\\protocol.json": "a66f1b03f85ddf61c43607ef839c8afd1d5ee71a93585680dd630e2a8c685eaf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D306-normal-division-PTX\\reader-v1-failure.json": "4f033e77b485602f3fb24ebfbae90a985d8a4cd8379ca0a21bbd72b3da73541e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D306-normal-division-PTX.py": "4256e20df67208ba9765b14c1601cadb42dc854923ace397d6b259d7574352ae",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\protocol.json": "e67c1b4e8601e22d1922391bd65553523165f271ea3c2ddc4c719211fed6b03b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\report.json": "e8244d4cd001529c6295bba945369795e2885af76d7d4d5a9714626c03faa399",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-source\\manifest.json": "3f52b98cb8660e19a17bcf977f5841d7f84b03a35e3decfa865c5e8faaedc241",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D305-normal-division-scout\\range-contract.json": "a1b51f32a3f797f4cb271e6e496bdf331878d973f61870e5de7bad92494c164d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\candidate-compute_120-down_action.ptx.txt": "927b48055ef9db9bb6443c275927f9a4ac7d60b5be513c2a3aafcf517f78286b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\candidate-compute_120-up_action.ptx.txt": "64c55fe2bb06dc0f1540903f82589b523279f42be80b3a50b12e48191fe892f9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\candidate-compute_75-down_action.ptx.txt": "c23273d616af617934a3a6645bcd06f15677500d3c4bbe342f3040f2187a4124",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\candidate-compute_75-up_action.ptx.txt": "6c87946793fbd9029ed00c51909f549e3f0a87d8dec40127005cc25b9377d157"
+  },
+  "repair": "Original120sections passed;75 uses explicit fallback branch and duplicated identical max.f32 clamps. V2 tracks only identical max/mov expression aliases and fixed local control paths, retains every FTZsite/4sections/operands/guard/bounds/fallback/join and4negativefixtures. Original script/protocol/error retained; source/compiler/module/GPU unchanged, no repeats.",
+  "limits": "Local40instruction guard window,12step path/join walk,max/mov alias only; no fullCFG/address/FP interpreter. Unknown structure fails closed, no sites omitted."
+}

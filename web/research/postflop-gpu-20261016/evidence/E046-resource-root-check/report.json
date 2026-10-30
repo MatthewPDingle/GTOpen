@@ -1,0 +1,166 @@
+{
+  "id": "E046-resource-root-check",
+  "at": "2026-10-17T02:29:42.840055+00:00",
+  "status": "pass_rejected_resource",
+  "checks": 135,
+  "root_cross_check_only": true,
+  "resource_report_sha256": "2086fbb064b8956c300b28f562ef79751bdf8a3e1d59d7b1489c1272ef0504b6",
+  "abi_observer_correction": {
+    "cause": "Original regex did not allow .ptr .align1 between .u64 and parameter name; it captured only four scalar32bit parameters. Original report/source remain unchanged. Corrected decoder accepts the literal recorded pointer qualifier, checks every index/type/qualifier, and finds15 original/13 new expected parameters.",
+    "corrected_abi": {
+      "baseline": [
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 0
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 1
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 2
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 3
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 4
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 5
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 6
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 7
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 8
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 9
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 10
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 11
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 12
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 13
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 14
+        }
+      ],
+      "candidate": [
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 0
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 1
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 2
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 3
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 4
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 5
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 6
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 7
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 8
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 9
+        },
+        {
+          "type": "u64",
+          "pointer": true,
+          "index": 10
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 11
+        },
+        {
+          "type": "u32",
+          "pointer": false,
+          "index": 12
+        }
+      ]
+    },
+    "original_abi_false_gates_are_observer_errors": true,
+    "new_native_runs": 0
+  },
+  "decisive_failure": "Registers30 to40 violates predeclared no-increase gate. Theoretical occupancy is unchanged; this does not establish lower throughput.",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Source/resource/PTX and receipt verification by root, not external independent review. No numerical, capacity or speed qualification."
+}

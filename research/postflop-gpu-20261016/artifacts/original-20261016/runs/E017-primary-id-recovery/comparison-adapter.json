@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-16T08:33:19Z",
+  "candidate_label": "E017",
+  "actual_first_measured_run": "E017R1",
+  "patch_source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-build\\candidate.patch",
+  "patch_alias": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017R1.patch",
+  "patch_sha256": "32e0e331919261cb24b79372f02610a7cd6baa55558ac5e1768a1b40ae04a861",
+  "reason": "Comparison CLI requires candidate-id to name an actual run plus a matching runs/<id>.patch. The earlier dry runs failed on the logical dashboard-only E017 ID and then missing patch alias; no reports/status/measurements were changed by those dry runs. This exact alias preserves frozen build-patch identity."
+}

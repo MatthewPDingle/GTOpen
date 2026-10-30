@@ -1,0 +1,394 @@
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 8cce0279..95f6d2d6 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -71,6 +71,13 @@ fn e(err: impl std::fmt::Debug) -> String {
+     format!("cuda: {err:?}")
+ }
+ 
++#[derive(Clone, Copy)]
++enum DownReachReuse {
++    None,
++    Player0,
++    Player1,
++}
++
+ pub struct GpuSolver {
+     _ctx: Arc<CudaContext>,
+     stream: Arc<CudaStream>,
+@@ -152,8 +159,11 @@ pub struct GpuSolver {
+     eval_graphs: [Option<CudaGraph>; 2],
+     eval_warmed: [bool; 2],
+     d_disc: CudaSlice<f32>,
+-    /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
+-    graphs: Option<[CudaGraph; 2]>,
++    /// Full p0, reused-reach0 p0, and reused-reach1 p1; rebuilt if locks change.
++    graphs: Option<[CudaGraph; 3]>,
++    /// The last complete ordinary pair left reach0 current for the next p0.
++    /// This describes same-stream ordering, not completed GPU execution.
++    player0_reach_current: bool,
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
+     arena_layout: [ArenaLayout; 2],
+@@ -178,6 +188,8 @@ impl GpuSolver {
+     fn research_continuation_sweep_impl(
+         &mut self, p: usize, t: u32, own: &[f32], opponent: &[f32], allow_iso: bool,
+     ) -> Result<Vec<f32>, String> {
++        // Invalidate before validation/uploads, including partial upload errors.
++        self.player0_reach_current = false;
+         if p > 1 || t == 0 || (self.iso_active && !allow_iso) || self.algo != Algorithm::CfrPlus {
+             return Err("research continuation requires p=0/1, t>0, CFR+ and no isomorphism".into());
+         }
+@@ -373,6 +385,7 @@ impl GpuSolver {
+             eval_graphs: [None, None],
+             eval_warmed: [false; 2],
+             graphs: None,
++            player0_reach_current: false,
+             h_staging,
+             iteration: solver.iteration,
+             algo: solver.algo,
+@@ -391,6 +404,9 @@ impl GpuSolver {
+     }
+ 
+     pub fn iterate(&mut self) -> Result<(), String> {
++        // Any returned error leaves reuse disabled. This is not recovery from
++        // a partially applied learning update; such failures still propagate.
++        let reuse_player0 = std::mem::replace(&mut self.player0_reach_current, false);
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+         self.stream
+@@ -398,17 +414,18 @@ impl GpuSolver {
+             .map_err(e)?;
+         let _ = &disc;
+         if self.graphs.is_none() && self.iteration > 1 {
+-            // First iteration ran eagerly (JIT warm); capture the two sweeps
+-            // into CUDA graphs. Kernels read discounts from d_disc, so the
+-            // captured graphs stay valid for every later iteration.
+-            let mut captured = Vec::with_capacity(2);
+-            for p in 0..2 {
++            // Capture both p0 variants: evaluation/locks/continuation require
++            // a full refresh, while consecutive pairs can retain reach0.
++            // Kernels read discounts from d_disc for every later iteration.
++            let mut captured = Vec::with_capacity(3);
++            for (p, reuse) in [(0, DownReachReuse::None), (0, DownReachReuse::Player0),
++                (1, DownReachReuse::Player1)] {
+                 self.stream
+                     .begin_capture(
+                         sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
+                     )
+                     .map_err(e)?;
+-                let res = self.paired_sweep(p, None, p == 1);
++                let res = self.paired_sweep(p, None, reuse);
+                 let graph = self
+                     .stream
+                     .end_capture(
+@@ -419,18 +436,19 @@ impl GpuSolver {
+                 captured.push(graph.ok_or_else(|| "graph capture failed".to_string())?);
+             }
+             let g1 = captured.pop().unwrap();
++            let g0_reuse = captured.pop().unwrap();
+             let g0 = captured.pop().unwrap();
+-            self.graphs = Some([g0, g1]);
++            self.graphs = Some([g0, g0_reuse, g1]);
+         }
+         if let Some(graphs) = &self.graphs {
+-            for g in graphs {
+-                g.launch().map_err(e)?;
+-            }
++            graphs[usize::from(reuse_player0)].launch().map_err(e)?;
++            graphs[2].launch().map_err(e)?;
+         } else {
+-            for p in 0..2 {
+-                self.paired_sweep(p, None, p == 1)?;
+-            }
++            let reuse = if reuse_player0 { DownReachReuse::Player0 } else { DownReachReuse::None };
++            self.paired_sweep(0, None, reuse)?;
++            self.paired_sweep(1, None, DownReachReuse::Player1)?;
+         }
++        self.player0_reach_current = true;
+         Ok(())
+     }
+ 
+@@ -438,15 +456,17 @@ impl GpuSolver {
+     /// time per kernel kind. Sync overhead distorts absolute numbers, but the
+     /// proportions show where the time goes.
+     pub fn iterate_profiled(&mut self) -> Result<Profile, String> {
++        let reuse_player0 = std::mem::replace(&mut self.player0_reach_current, false);
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+         self.stream
+             .memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc)
+             .map_err(e)?;
+         let mut prof = Profile::default();
+-        for p in 0..2 {
+-            self.paired_sweep(p, Some(&mut prof), p == 1)?;
+-        }
++        let reuse = if reuse_player0 { DownReachReuse::Player0 } else { DownReachReuse::None };
++        self.paired_sweep(0, Some(&mut prof), reuse)?;
++        self.paired_sweep(1, Some(&mut prof), DownReachReuse::Player1)?;
++        self.player0_reach_current = true;
+         Ok(prof)
+     }
+ 
+@@ -454,6 +474,8 @@ impl GpuSolver {
+     /// the GPU (best-response and, with rake, average-EV sweeps). Mirrors
+     /// `Solver::exploitability`.
+     pub fn exploitability(&mut self, solver: &Solver) -> Result<f64, String> {
++        // Cached evaluation graphs bypass the host eval_down entrypoint.
++        self.player0_reach_current = false;
+         let denom = solver.pair_weight_sum();
+         if denom <= 0.0 {
+             return Ok(f64::NAN);
+@@ -543,6 +565,7 @@ impl GpuSolver {
+     }
+ 
+     fn eval_down(&mut self) -> Result<(), String> {
++        self.player0_reach_current = false;
+         let nh0 = self.nh[0];
+         let nh1 = self.nh[1];
+ 
+@@ -757,19 +780,25 @@ impl GpuSolver {
+     // Standalone/continuation calls may follow changed roots or a workspace
+     // swap, so even p=1 must refresh both players' reaches.
+     fn sweep(&mut self, p: usize, prof: Option<&mut Profile>) -> Result<(), String> {
+-        self.paired_sweep(p, prof, false)
++        self.player0_reach_current = false;
++        self.paired_sweep(p, prof, DownReachReuse::None)
+     }
+ 
+     fn paired_sweep(
+-        &mut self, p: usize, mut prof: Option<&mut Profile>, reuse_player1_reach: bool,
++        &mut self, p: usize, mut prof: Option<&mut Profile>, reuse: DownReachReuse,
+     ) -> Result<(), String> {
+-        debug_assert!(!reuse_player1_reach || p == 1);
++        debug_assert!(match reuse {
++            DownReachReuse::None => true,
++            DownReachReuse::Player0 => p == 0,
++            DownReachReuse::Player1 => p == 1,
++        });
+         let nh0 = self.nh[0];
+         let nh1 = self.nh[1];
+-        // Only the second sweep of an uninterrupted pair can reuse reach1:
+-        // p0 up updates player0 learning state and never writes either reach.
+-        // Every first sweep stays full, including after evaluation or resume.
+-        let down_nh1 = if reuse_player1_reach { 0 } else { nh1 };
++        // p1 up leaves reach0 and its inputs unchanged for the next p0;
++        // p0 up likewise leaves reach1 current for the following p1.
++        // Only ordinary paired callers establish these reuse preconditions.
++        let down_nh0 = if matches!(reuse, DownReachReuse::Player0) { 0 } else { nh0 };
++        let down_nh1 = if matches!(reuse, DownReachReuse::Player1) { 0 } else { nh1 };
+         let nh_p = self.nh[p];
+         let nh_o = self.nh[1 - p];
+         let nh_max = self.nh_max;
+@@ -783,7 +812,7 @@ impl GpuSolver {
+                 .arg(&self.d_weights[1])
+                 .arg(&mut *reach0)
+                 .arg(&mut *reach1)
+-                .arg(&nh0)
++                .arg(&down_nh0)
+                 .arg(&down_nh1)
+                 .launch(Self::cfg(4, 0))
+                 .map_err(e)?;
+@@ -815,7 +844,7 @@ impl GpuSolver {
+                         .arg(&self.d_lock_sigma)
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+-                        .arg(&nh0)
++                        .arg(&down_nh0)
+                         .arg(&down_nh1)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+@@ -841,7 +870,7 @@ impl GpuSolver {
+                         .arg(&self.d_hand_mask[1])
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+-                        .arg(&nh0)
++                        .arg(&down_nh0)
+                         .arg(&down_nh1)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+@@ -1044,6 +1073,7 @@ impl GpuSolver {
+ 
+     /// Re-upload the lock table after `solver.locks` changed.
+     pub fn update_locks(&mut self, solver: &Solver) -> Result<(), String> {
++        self.player0_reach_current = false;
+         // Drain in-flight kernels before the assignments below drop (free) the
+         // old device buffers. The server's mutex ordering already prevents an
+         // overlap, but the safety of a device free shouldn't depend on it.
+@@ -1208,6 +1238,7 @@ mod tests {
+                 ("regrets", &candidate.d_regrets[p], &reference.d_regrets[p]),
+                 ("strategy", &candidate.d_strat[p], &reference.d_strat[p]),
+                 ("reach", &candidate.d_reach[p], &reference.d_reach[p]),
++                ("root_weights", &candidate.d_weights[p], &reference.d_weights[p]),
+             ] {
+                 assert_device_bits(&device_bits(candidate, a), &device_bits(reference, b),
+                     &format!("{stage}/{name}/{p}"));
+@@ -1283,10 +1314,13 @@ mod tests {
+                         .map(|n| n.num_children));
+                     let mut candidate = reach_reuse_gpu(&s, compact);
+                     let mut reference = reach_reuse_gpu(&s, compact);
++                    assert!(!candidate.player0_reach_current);
+                     let case = format!("{algo:?}/{storage:?}/compact={compact}");
+                     for step in 1..=3 {
+                         candidate.iterate().unwrap();
+                         legacy_iteration(&mut reference);
++                        assert!(candidate.player0_reach_current);
++                        assert!(!reference.player0_reach_current);
+                         assert_eq!(candidate.graphs.is_some(), step > 1);
+                         assert!(reference.graphs.is_none());
+                         assert_reach_reuse_state(&candidate, &reference, &format!("{case}/iteration{step}"));
+@@ -1294,25 +1328,52 @@ mod tests {
+                     assert!(device_bits(&candidate, &candidate.d_strat[1]).iter().any(|&b| b != 0));
+                     // Evaluation overwrites reaches with average-strategy values.
+                     // The following p0 sweep must refresh both before any reuse.
+-                    for _ in 0..2 {
++                    // Each check starts with reusable reach0: eager evaluation,
++                    // capture, then cached replay must each invalidate it.
++                    for check in 0..3 {
++                        assert!(candidate.player0_reach_current);
+                         assert_eq!(candidate.exploitability(&s).unwrap().to_bits(),
+                             reference.exploitability(&s).unwrap().to_bits(), "{case}/evaluation");
++                        assert!(!candidate.player0_reach_current);
++                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/evaluated{check}"));
++                        candidate.iterate().unwrap();
++                        legacy_iteration(&mut reference);
++                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation{check}"));
+                     }
+-                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/evaluated"));
+-                    candidate.iterate().unwrap();
+-                    legacy_iteration(&mut reference);
+-                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation"));
+                     let profile = candidate.iterate_profiled().unwrap();
+                     assert_eq!(profile.launches[0], 2);
++                    assert!(candidate.player0_reach_current);
+                     legacy_iteration(&mut reference);
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled"));
++                    candidate.iterate().unwrap();
++                    legacy_iteration(&mut reference);
++                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/graph-after-profiled"));
++                    candidate.eval_down().unwrap();
++                    reference.eval_down().unwrap();
++                    assert!(!candidate.player0_reach_current);
++                    candidate.iterate_profiled().unwrap();
++                    legacy_iteration(&mut reference);
++                    assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled-after-direct-eval"));
++                    // In particular, standalone p0 updates regrets0 AFTER its
++                    // down sweep, so retaining a valid flag would be incorrect.
++                    for p in 0..2 {
++                        candidate.sweep(p, None).unwrap();
++                        reference.sweep(p, None).unwrap();
++                        assert!(!candidate.player0_reach_current);
++                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/standalone{p}"));
++                        candidate.iterate().unwrap();
++                        legacy_iteration(&mut reference);
++                        assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-standalone{p}"));
++                    }
+                     candidate.sync_to_cpu(&mut s).unwrap();
++                    assert!(candidate.player0_reach_current, "readback does not mutate device state");
+                     // Lock both actors, invalidate the captured pair, then recapture.
+                     s.lock_node(&[], LockMode::Freeze, "reach reuse OOP".into()).unwrap();
+                     s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze,
+                         "reach reuse IP".into()).unwrap();
+                     candidate.update_locks(&s).unwrap();
+                     reference.update_locks(&s).unwrap();
++                    assert!(!candidate.player0_reach_current);
+                     assert!(candidate.graphs.is_none());
+                     for _ in 0..2 {
+                         candidate.iterate().unwrap();
+@@ -1328,10 +1389,12 @@ mod tests {
+                     // re-encoding), with fresh zeroed reaches and no captured graph.
+                     let mut resumed = reach_reuse_gpu(&s, compact);
+                     let mut resumed_reference = reach_reuse_gpu(&s, compact);
++                    assert!(!resumed.player0_reach_current);
+                     for _ in 0..2 {
+                         resumed.iterate().unwrap();
+                         legacy_iteration(&mut resumed_reference);
+                         assert!(resumed.graphs.is_some(), "warm first call must capture");
++                        assert!(resumed.player0_reach_current);
+                         assert_reach_reuse_state(&resumed, &resumed_reference, &format!("{case}/warm"));
+                     }
+                 }
+@@ -1343,7 +1406,7 @@ mod tests {
+     }
+ 
+     #[test]
+-    fn paired_reach_reuse_preserves_raw_player1_and_standalone_refresh() {
++    fn paired_reach_reuse_preserves_both_raw_players_and_standalone_refresh() {
+         for compact in [false, true] {
+             let s = reach_reuse_solver(crate::store::Storage::F32, Algorithm::CfrPlus,
+                 compact, "25,50,75,100");
+@@ -1360,6 +1423,14 @@ mod tests {
+             assert_device_bits(&after_up0, &device_bits(&gpu, &gpu.d_reach[1]),
+                 "legacy p1 down repeats reach1 exactly");
+ 
++            let before_up1 = device_bits(&gpu, &gpu.d_reach[0]);
++            gpu.sweep(1, None).unwrap();
++            let after_up1 = device_bits(&gpu, &gpu.d_reach[0]);
++            assert_device_bits(&before_up1, &after_up1, "p1 up preserves reach0");
++            legacy_down(&mut gpu);
++            assert_device_bits(&after_up1, &device_bits(&gpu, &gpu.d_reach[0]),
++                "next legacy p0 down repeats reach0 exactly");
++
+             // Simulate externally changed roots/workspace contents without a p0
+             // predecessor. Arbitrary weights need not respect suit isomorphism:
+             // this checks dispatch refresh, not an isomorphic game solution.
+@@ -1384,6 +1455,7 @@ mod tests {
+             poison_reaches(&mut gpu);
+             // Same generic entrypoint used by continuation, including isolated p1.
+             gpu.sweep(1, None).unwrap();
++            assert!(!gpu.player0_reach_current);
+             for p in 0..2 {
+                 assert_device_bits(&expected[p], &device_bits(&gpu, &gpu.d_reach[p]),
+                     &format!("standalone p1 refreshes player{p}"));
+@@ -1391,6 +1463,51 @@ mod tests {
+         }
+     }
+ 
++    #[cfg(feature = "preflop-research")]
++    #[test]
++    fn paired_reach_reuse_continuation_invalidates_before_validation_and_changed_roots() {
++        let s = reach_reuse_solver(crate::store::Storage::F32, Algorithm::CfrPlus,
++            false, "25,75");
++        let mut candidate = reach_reuse_gpu(&s, false);
++        let mut reference = reach_reuse_gpu(&s, false);
++        // Validation failures must disable reuse before any upload, without
++        // modifying device arrays. No synthetic CUDA fault is injected.
++        for invalid in 0..3 {
++            candidate.iterate().unwrap();
++            legacy_iteration(&mut reference);
++            assert!(candidate.player0_reach_current);
++            let own = vec![1.0; candidate.nh[1] as usize];
++            let opponent = vec![1.0; candidate.nh[0] as usize];
++            let result = match invalid {
++                0 => candidate.research_continuation_sweep(2, 1, &own, &opponent),
++                1 => candidate.research_continuation_sweep(1, 0, &own, &opponent),
++                _ => candidate.research_continuation_sweep(1, 1, &[], &opponent),
++            };
++            assert!(result.is_err());
++            assert!(!candidate.player0_reach_current);
++            assert_reach_reuse_state(&candidate, &reference, "invalid continuation preserves device state");
++        }
++        for p in [0, 1] {
++            candidate.iterate().unwrap();
++            legacy_iteration(&mut reference);
++            assert!(candidate.player0_reach_current);
++            let own: Vec<f32> = (0..candidate.nh[p] as usize)
++                .map(|i| (i % 7 + 1) as f32 / 8.0).collect();
++            let opponent: Vec<f32> = (0..candidate.nh[1-p] as usize)
++                .map(|i| if i % 5 == 0 { -0.0 } else { (i % 11 + 1) as f32 / 16.0 }).collect();
++            let t = candidate.iteration + 1;
++            let actual = candidate.research_continuation_sweep(p, t, &own, &opponent).unwrap();
++            let expected = reference.research_continuation_sweep(p, t, &own, &opponent).unwrap();
++            assert_device_bits(&actual.into_iter().map(f32::to_bits).collect::<Vec<_>>(),
++                &expected.into_iter().map(f32::to_bits).collect::<Vec<_>>(), "continuation root CFVs");
++            assert!(!candidate.player0_reach_current);
++            assert_reach_reuse_state(&candidate, &reference, "changed-root continuation");
++            candidate.iterate().unwrap();
++            legacy_iteration(&mut reference);
++            assert_reach_reuse_state(&candidate, &reference, "first pair after changed-root continuation");
++        }
++    }
++
+     fn arenas(s: &Solver) -> Vec<Vec<f32>> {
+         s.regrets.iter().chain(&s.strat).map(|arena| match arena {
+             Store::F32(data) => data.as_slice().to_vec(),

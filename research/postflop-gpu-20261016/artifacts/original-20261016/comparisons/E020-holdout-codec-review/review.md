@@ -1,0 +1,11 @@
+# E020 fixed holdout: raw-state codec supplement
+
+PASS_FROZEN_CODEC_SOURCE_ONLY. This narrow review binds to prepared manifest cac3399c20ce42c85fd0f2074f41cbb93d790ebe345673808857f46892f43340, evaluator7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda and runnerc635188a2e4eb7bb17f6d7082047e9204d98871bd2fa0919465da42ef47c789a. The final primary fingerprint helper and solve/readback body remain byte-identical to the frozen evaluator.
+
+The Rust exporter uses create-new output and bounded buffered writes after timing and fingerprinting. It writes all four stores in fixed player/regret/strategy order with explicit type tags, little-endian lengths, every quantized word and each scale's exact f32 bits, followed by flush/sync. No dequantization or materialization is added. Algorithm/iteration/isomorphism/exploit bits are framed metadata. Root strategy remains in the separately exact full result JSON.
+
+The runner checks the 16-byte magic, metadata/result agreement, exactly ordered I16/U16 frames, result-bound entry/scale counts, full payload bounds and EOF. The raw completion marker is tied to file size. Every planned run compares complete result/check data and the entire raw file against B1 in bounded1MiB chunks, with length equality; hashes are provenance rather than the equality test. Nonzero native exit, incomplete/missing export, framing error or any differing byte prevents qualification.
+
+The draft parser's read(15) was a real defect for the16-byte magic. The builder corrected it to read(len(magic)) before freeze. This reviewer initially missed it in the draft note, then rechecked the correction. Preserved host-only checks demonstrate valid decoding/equal files, changed-word rejection and eight malformed/header/metadata cases. This is parser/comparator evidence, not a native Rust/CUDA test, and no native sample was failed or replaced.
+
+No remaining codec/comparison source defect found. Native Rust export, actual full-state equality, convergence and timing still require the fixed six-run holdout. This supplement does not replace the separate full workspace/build/runner review. No build, GPU action, native test or rerun was performed by this review; only reads, hash/arithmetic checks and additive review files.

@@ -1,0 +1,25 @@
+{
+  "id": "D092-action-arity-order",
+  "at": "2026-10-17T07:05:13.689605+00:00",
+  "status": "CPU_CONTROL_ONLY_NOT_COMPILED",
+  "prospective_candidate": "E056",
+  "hypothesis": "Group existing per-level action CTAs by actual arity with one CPU list permutation. Existing dispatchers, node IDs, child order, offsets, arenas, spans, CUDA source and launch structure stay unchanged. Possible inter-CTA instruction/data coherence is unproven; individual CTAs are already arity-uniform. No hardware cache bottleneck or speedup established. Sorting and locality costs remain inside future complete-cycle timing.",
+  "history_review": {
+    "E005": "Already reordered shared work lists with two-action prefixes plus new direct kernel, spans, dispatch and 4096 threshold.",
+    "E014": "Already reordered three-action prefixes plus direct3 launches/count metadata and 4096 threshold.",
+    "new_intervention": "Ordering alone across all actual arities using unchanged dispatch and one launch per span. No direct entrypoint, threshold, new metadata/span or scratch Vec. This decomposes earlier composites, not their retest or resource rescue. No key/arity/threshold sweep."
+  },
+  "source_review": [
+    "Block index selects node through nodes[start+blockIdx.x]. Persistent addressing uses node/child IDs or explicit slots.",
+    "Down action writes child actor reach. For every level, (actor,slot) writes must be unique and disjoint from all corresponding input rows. Player buffers are separate.",
+    "Up action/eval writes node CFV and reads child CFVs. All current-level writes must be unique and disjoint from child inputs, including terminal/parity caches.",
+    "Regret/strategy intervals use node_data_off,na,nh and must be disjoint per actor and within arena bounds.",
+    "Within-node FP order, child order, terminal/chance phases and stream boundaries are unchanged. Action kernels have no cross-node atomics."
+  ],
+  "controls": "12 separate CPU-only processes: 3 frozen primary configurations x iso off/on x compact/full arenas. Compile exact accepted/candidate Plan modules plus exact local game.rs, retaining crate-private RiverTable access without edits. Dump all fields/capacities/struct sizes, floats by bits; only action_nodes order may differ. Root replays complete raw fields and concrete ownership. Diagnostic CPU timings only.",
+  "future_acceptance": "Unrounded >=1% complete-cycle gain, exact full states/stops/checkpoints, no repeatable fixture slowdown, separate fresh16 confirmation and broader/capacity/F32/save/continuation/holdout/cumulative gates. No adoption from this CPU control.",
+  "reviewer": "Root source/history review; not external independent review",
+  "production_source_activated": false,
+  "gpu_executions": 0,
+  "optimization_accepted": false
+}

@@ -1,0 +1,35 @@
+{
+  "id": "D076-chance-record-source",
+  "at": "2026-10-17T02:25:47.256063+00:00",
+  "status": "source_only_feasible_pending_cost_and_compiler_proof",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "proposal": "Replace only GPU cc_card/cc_child/cc_perm buffers with one interleaved u32 array of [card, representative_child, permutation_index] triplets. Preserve CPU plan construction and exact ascending chance reduction arithmetic. No shared-memory cache, precomputed child-base cache or new dispatch.",
+  "novelty": "E039 cached expanded chance metadata in shared memory and failed a fixture gate. This would instead alter global metadata layout/ownership with unchanged12-byte record payload. Ledger has no earlier interleaved-record implementation; this limited text search is not an exhaustive repository-history proof.",
+  "observed_callers": {
+    "GpuSolver_fields": "mod.rs118-120",
+    "constructor": "mod.rs339-341",
+    "evaluation_launch": "mod.rs711-713",
+    "training_launch": "mod.rs943-945",
+    "feature_payload_accounting": "continuation_capacity.rs48"
+  },
+  "required_source_properties": [
+    "One packed device allocation replaces three; same exact12*N payload. Checked host3*N length and 64-bit device3*t indexing required, without narrowing valid offsets.",
+    "Both training/evaluation launch sites and feature observed_metadata must change consistently. Keep capacity vector indices/total payload unchanged; feature compilation is mandatory.",
+    "Host temporary packing can add12*N peak payload while the original CPU tables live. Quantify/bound it prospectively; do not claim no resource cost from device payload equality.",
+    "Queue/capture ordering, CFV addresses, card masks, identity/nonidentity permutation behavior and every float addition/multiply stay exact."
+  ],
+  "next_prerequisites": [
+    "Confirm constructor host temporary bound/ownership and complete-source novelty before implementation.",
+    "If one fixed layout is admitted, standalone resource/ABI probe before numerical or timing work: changed up_chance, other8 entries exact; non-worse registers/local/shared/thread limit/theoretical residency. No layout-width sweep after outcome.",
+    "Direct old/new GPU control across empty/all-blocked/repeated-card/permutation/hand-tail/nonzero-start and guard cases before full solver screen.",
+    "Current1%/strict fixture screen; fresh16pair/broader/holdout/cumulative and resource qualification before adoption."
+  ],
+  "limits": "Source-only scout. No candidate source, compiler/probe/kernel/solver execution, new performance observation or current headroom established. Not an adoption authorization.",
+  "candidate_accepted": false
+}

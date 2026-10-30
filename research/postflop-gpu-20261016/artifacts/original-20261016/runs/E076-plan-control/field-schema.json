@@ -1,0 +1,217 @@
+{
+  "fields": [
+    {
+      "name": "num_levels",
+      "type": "usize"
+    },
+    {
+      "name": "nh",
+      "type": "[usize; 2]"
+    },
+    {
+      "name": "nh_max",
+      "type": "usize"
+    },
+    {
+      "name": "num_nodes",
+      "type": "usize"
+    },
+    {
+      "name": "iso_active",
+      "type": "bool"
+    },
+    {
+      "name": "action_nodes",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "action_spans",
+      "type": "Vec<LevelSpan>"
+    },
+    {
+      "name": "chance_parents",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "chance_children",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "chance_cards",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "chance_spans",
+      "type": "Vec<LevelSpan>"
+    },
+    {
+      "name": "chance_nodes",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "chance_node_spans",
+      "type": "Vec<LevelSpan>"
+    },
+    {
+      "name": "fold_nodes",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "fold_spans",
+      "type": "Vec<LevelSpan>"
+    },
+    {
+      "name": "show_nodes",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "show_spans",
+      "type": "Vec<LevelSpan>"
+    },
+    {
+      "name": "cc_start",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "cc_count",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "cc_card",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "cc_child",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "cc_perm",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "hand_perm_flat",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "node_player",
+      "type": "Vec<i32>"
+    },
+    {
+      "name": "node_na",
+      "type": "Vec<i32>"
+    },
+    {
+      "name": "node_data_off",
+      "type": "Vec<u64>"
+    },
+    {
+      "name": "arena_elements",
+      "type": "[usize; 2]"
+    },
+    {
+      "name": "node_children_start",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "node_twin",
+      "type": "Vec<f32>"
+    },
+    {
+      "name": "node_tlose",
+      "type": "Vec<f32>"
+    },
+    {
+      "name": "node_ttie",
+      "type": "Vec<f32>"
+    },
+    {
+      "name": "node_cdiv",
+      "type": "Vec<f32>"
+    },
+    {
+      "name": "node_river_slot",
+      "type": "Vec<i32>"
+    },
+    {
+      "name": "reach_src",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "reach_slot",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "reach_blocks",
+      "type": "[usize; 2]"
+    },
+    {
+      "name": "cfv_slot",
+      "type": "Vec<u32>"
+    },
+    {
+      "name": "cfv_blocks",
+      "type": "usize"
+    },
+    {
+      "name": "hand_c1",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "hand_c2",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "hand_mask",
+      "type": "[Vec<u64>; 2]"
+    },
+    {
+      "name": "same_combo",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "weights",
+      "type": "[Vec<f32>; 2]"
+    },
+    {
+      "name": "num_slots",
+      "type": "usize"
+    },
+    {
+      "name": "riv_off",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_cnt",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_sorted_idx",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_sorted_str",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_lower",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_upper",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_card_off",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_card_pos",
+      "type": "[Vec<u32>; 2]"
+    },
+    {
+      "name": "riv_max_cnt",
+      "type": "[usize; 2]"
+    }
+  ],
+  "encoding": "Each primitive is one little-endian u64; f32 uses to_bits; i32 uses Rust as u64. Vec encodes length then items. Array encodes constant length then items. LevelSpan is start,count. Separate capacities encode Vec capacity and recursive array length. Four vectors per field: baseline capacities,candidate capacities,baseline words,candidate words. Final extras are length-prefixed encoded __node_kind and __children from shared immutable Spot."
+}

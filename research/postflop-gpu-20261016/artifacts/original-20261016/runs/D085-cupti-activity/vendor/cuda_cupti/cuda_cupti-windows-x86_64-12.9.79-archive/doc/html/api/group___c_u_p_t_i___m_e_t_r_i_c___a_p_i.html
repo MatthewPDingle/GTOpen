@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.5. CUPTI Metric API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.6. CUPTI PC Sampling API" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html" />
+    <link rel="prev" title="5.4. CUPTI Event API" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.5. CUPTI Metric API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.5.1. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.5.2. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.5.3. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.5. </span>CUPTI Metric API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-metric-api">
+<h1><span class="section-number">5.5. </span>CUPTI Metric API<a class="headerlink" href="#cupti-metric-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i">Functions, types, and enums that implement the CUPTI Metric API. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The CUPTI metric API from the header cupti_metrics.h is not supported on devices with compute capability 7.5 and higher (i.e. Turing and later GPU architectures). This API is deprecated in CUDA 12.8 release and will be removed in a future CUDA release. This is replaced by the host profiling API in the header cupti_profiler_host.h and target profiling API in the header cupti_range_profiler.h which are supported on devices with compute capability 7.0 and higher (i.e. Volta and later GPU architectures). </p>
+</div>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="union_c_upti___metric_value.html#union_c_upti___metric_value"><span class="std std-ref">CUpti_MetricValue</span></a></dt><dd><p>A metric value.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga66397dfdbcf6ebf23d8cdf656c35fd52"><span class="std std-ref">CUpti_MetricAttribute</span></a></dt><dd><p>Metric attributes.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga6394f0e2d13535f97bfba7554ffd3f83"><span class="std std-ref">CUpti_MetricCategory</span></a></dt><dd><p>A metric category.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga59396bc237d98ee0595e5743bde89b9d"><span class="std std-ref">CUpti_MetricEvaluationMode</span></a></dt><dd><p>A metric evaluation mode.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga8205fe38839f3804696bc7e68640cd95"><span class="std std-ref">CUpti_MetricPropertyDeviceClass</span></a></dt><dd><p>Device class.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga5bafb626ac31ac98400d9191316871f7"><span class="std std-ref">CUpti_MetricPropertyID</span></a></dt><dd><p>Metric device properties.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga7ed011480e0cfd81d50cb0e508f6cc16"><span class="std std-ref">CUpti_MetricValueKind</span></a></dt><dd><p>Kinds of metric values.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga60cd86ce5f31121816ea1e3f965ac669"><span class="std std-ref">CUpti_MetricValueUtilizationLevel</span></a></dt><dd><p>Enumeration of utilization levels for metrics values of kind CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVEL.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gab9b4e76fc9a5a7b53e201838a82cb01b"><span class="std std-ref">cuptiDeviceEnumMetrics</span></a>(CUdevice device, size_t *arraySizeBytes, CUpti_MetricID *metricArray)</dt><dd><p>Get the metrics for a device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga324da71188baec5939c57c1f24a8773b"><span class="std std-ref">cuptiDeviceGetNumMetrics</span></a>(CUdevice device, uint32_t *numMetrics)</dt><dd><p>Get the number of metrics for a device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga6edf9f093d3e05644821c0a1548ebe22"><span class="std std-ref">cuptiEnumMetrics</span></a>(size_t *arraySizeBytes, CUpti_MetricID *metricArray)</dt><dd><p>Get all the metrics available on any device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaa977bb7bfa362130f2aeb7bcdba57fe8"><span class="std std-ref">cuptiGetNumMetrics</span></a>(uint32_t *numMetrics)</dt><dd><p>Get the total number of metrics available on any device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaffab8f5a74b98e7680710203e3932450"><span class="std std-ref">cuptiMetricCreateEventGroupSets</span></a>(CUcontext context, size_t metricIdArraySizeBytes, CUpti_MetricID *metricIdArray, CUpti_EventGroupSets **eventGroupPasses)</dt><dd><p>For a set of metrics, get the grouping that indicates the number of passes and the event groups necessary to collect the events required for those metrics.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga7b6aa1f0bb09627f89bbbeb0300bc67a"><span class="std std-ref">cuptiMetricEnumEvents</span></a>(CUpti_MetricID metric, size_t *eventIdArraySizeBytes, CUpti_EventID *eventIdArray)</dt><dd><p>Get the events required to calculating a metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga5bbb72ce28d7f2a6cd02607379c72bc9"><span class="std std-ref">cuptiMetricEnumProperties</span></a>(CUpti_MetricID metric, size_t *propIdArraySizeBytes, CUpti_MetricPropertyID *propIdArray)</dt><dd><p>Get the properties required to calculating a metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaad77ae5441ca5c8cee0156b4ecc4d3f5"><span class="std std-ref">cuptiMetricGetAttribute</span></a>(CUpti_MetricID metric, CUpti_MetricAttribute attrib, size_t *valueSize, void *value)</dt><dd><p>Get a metric attribute.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga8f6838118a1782e1aec6c3ffae1df81d"><span class="std std-ref">cuptiMetricGetIdFromName</span></a>(CUdevice device, const char *metricName, CUpti_MetricID *metric)</dt><dd><p>Find an metric by name.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga2e278d4e7e4237f863ed70facfa9c771"><span class="std std-ref">cuptiMetricGetNumEvents</span></a>(CUpti_MetricID metric, uint32_t *numEvents)</dt><dd><p>Get number of events required to calculate a metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gabdf8e8a3c0e561e8d85604669682b4ed"><span class="std std-ref">cuptiMetricGetNumProperties</span></a>(CUpti_MetricID metric, uint32_t *numProp)</dt><dd><p>Get number of properties required to calculate a metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga831ee4cb8bd1756020d294c4740f5981"><span class="std std-ref">cuptiMetricGetRequiredEventGroupSets</span></a>(CUcontext context, CUpti_MetricID metric, CUpti_EventGroupSets **eventGroupSets)</dt><dd><p>For a metric get the groups of events that must be collected in the same pass.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"><span class="std std-ref">cuptiMetricGetValue</span></a>(CUdevice device, CUpti_MetricID metric, size_t eventIdArraySizeBytes, CUpti_EventID *eventIdArray, size_t eventValueArraySizeBytes, uint64_t *eventValueArray, uint64_t timeDuration, CUpti_MetricValue *metricValue)</dt><dd><p>Calculate the value for a metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gac3ec4701e9878845536282a14ed27245"><span class="std std-ref">cuptiMetricGetValue2</span></a>(CUpti_MetricID metric, size_t eventIdArraySizeBytes, CUpti_EventID *eventIdArray, size_t eventValueArraySizeBytes, uint64_t *eventValueArray, size_t propIdArraySizeBytes, CUpti_MetricPropertyID *propIdArray, size_t propValueArraySizeBytes, uint64_t *propValueArray, CUpti_MetricValue *metricValue)</dt><dd><p>Calculate the value for a metric.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga0d2977d7b73cd78f216d5526998a92d4"><span class="std std-ref">CUpti_MetricID</span></a></dt><dd><p>ID for a metric.</p>
+</dd>
+</dl>
+</div>
+<section id="enumerations">
+<h2><span class="section-number">5.5.1. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv421CUpti_MetricAttribute">
+<span id="_CPPv321CUpti_MetricAttribute"></span><span id="_CPPv221CUpti_MetricAttribute"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga66397dfdbcf6ebf23d8cdf656c35fd52"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricAttribute</span></span></span><a class="headerlink" href="#_CPPv421CUpti_MetricAttribute" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Metric attributes. </p>
+<p>Metric attributes describe properties of a metric. These attributes can be read using <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaad77ae5441ca5c8cee0156b4ecc4d3f5"><span class="std std-ref">cuptiMetricGetAttribute</span></a>. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute22CUPTI_METRIC_ATTR_NAMEE">
+<span id="_CPPv3N21CUpti_MetricAttribute22CUPTI_METRIC_ATTR_NAMEE"></span><span id="_CPPv2N21CUpti_MetricAttribute22CUPTI_METRIC_ATTR_NAMEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52a8fb716739d69666134870d79c4b42ecf"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_NAME</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute22CUPTI_METRIC_ATTR_NAMEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Metric name. </p>
+<p>Value is a null terminated const c-string. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute35CUPTI_METRIC_ATTR_SHORT_DESCRIPTIONE">
+<span id="_CPPv3N21CUpti_MetricAttribute35CUPTI_METRIC_ATTR_SHORT_DESCRIPTIONE"></span><span id="_CPPv2N21CUpti_MetricAttribute35CUPTI_METRIC_ATTR_SHORT_DESCRIPTIONE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52a955f07f56afa0873d04b6eaa80c1141a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_SHORT_DESCRIPTION</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute35CUPTI_METRIC_ATTR_SHORT_DESCRIPTIONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Short description of metric. </p>
+<p>Value is a null terminated const c-string. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute34CUPTI_METRIC_ATTR_LONG_DESCRIPTIONE">
+<span id="_CPPv3N21CUpti_MetricAttribute34CUPTI_METRIC_ATTR_LONG_DESCRIPTIONE"></span><span id="_CPPv2N21CUpti_MetricAttribute34CUPTI_METRIC_ATTR_LONG_DESCRIPTIONE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52acdf0d385cee6cdd967cfeeb6f9b14554"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_LONG_DESCRIPTION</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute34CUPTI_METRIC_ATTR_LONG_DESCRIPTIONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Long description of metric. </p>
+<p>Value is a null terminated const c-string. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute26CUPTI_METRIC_ATTR_CATEGORYE">
+<span id="_CPPv3N21CUpti_MetricAttribute26CUPTI_METRIC_ATTR_CATEGORYE"></span><span id="_CPPv2N21CUpti_MetricAttribute26CUPTI_METRIC_ATTR_CATEGORYE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52af108e9777e35a7a71d8e0ebd92917f58"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_CATEGORY</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute26CUPTI_METRIC_ATTR_CATEGORYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Category of the metric. </p>
+<p>Value is of type CUpti_MetricCategory. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute28CUPTI_METRIC_ATTR_VALUE_KINDE">
+<span id="_CPPv3N21CUpti_MetricAttribute28CUPTI_METRIC_ATTR_VALUE_KINDE"></span><span id="_CPPv2N21CUpti_MetricAttribute28CUPTI_METRIC_ATTR_VALUE_KINDE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52af08e7aaee1a2134a88039b85f113bf27"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_VALUE_KIND</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute28CUPTI_METRIC_ATTR_VALUE_KINDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Value type of the metric. </p>
+<p>Value is of type CUpti_MetricValueKind. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute33CUPTI_METRIC_ATTR_EVALUATION_MODEE">
+<span id="_CPPv3N21CUpti_MetricAttribute33CUPTI_METRIC_ATTR_EVALUATION_MODEE"></span><span id="_CPPv2N21CUpti_MetricAttribute33CUPTI_METRIC_ATTR_EVALUATION_MODEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52abd352ebdb48081e8cdeacb9038f2943e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_EVALUATION_MODE</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute33CUPTI_METRIC_ATTR_EVALUATION_MODEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Metric evaluation mode. </p>
+<p>Value is of type CUpti_MetricEvaluationMode. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricAttribute27CUPTI_METRIC_ATTR_FORCE_INTE">
+<span id="_CPPv3N21CUpti_MetricAttribute27CUPTI_METRIC_ATTR_FORCE_INTE"></span><span id="_CPPv2N21CUpti_MetricAttribute27CUPTI_METRIC_ATTR_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga66397dfdbcf6ebf23d8cdf656c35fd52a07abb2683d188c2ae10db1fce24e7efd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_ATTR_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricAttribute27CUPTI_METRIC_ATTR_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv420CUpti_MetricCategory">
+<span id="_CPPv320CUpti_MetricCategory"></span><span id="_CPPv220CUpti_MetricCategory"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga6394f0e2d13535f97bfba7554ffd3f83"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricCategory</span></span></span><a class="headerlink" href="#_CPPv420CUpti_MetricCategory" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A metric category. </p>
+<p>Each metric is assigned to a category that represents the general type of the metric. A metric’s category is accessed using <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaad77ae5441ca5c8cee0156b4ecc4d3f5"><span class="std std-ref">cuptiMetricGetAttribute</span></a> and the CUPTI_METRIC_ATTR_CATEGORY attribute. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_MEMORYE">
+<span id="_CPPv3N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_MEMORYE"></span><span id="_CPPv2N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_MEMORYE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83a31e7dce80562e54effa93e024650333a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_MEMORY</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_MEMORYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A memory related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory33CUPTI_METRIC_CATEGORY_INSTRUCTIONE">
+<span id="_CPPv3N20CUpti_MetricCategory33CUPTI_METRIC_CATEGORY_INSTRUCTIONE"></span><span id="_CPPv2N20CUpti_MetricCategory33CUPTI_METRIC_CATEGORY_INSTRUCTIONE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83ae0a1c9d57c720e8763e8fb234bfee604"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_INSTRUCTION</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory33CUPTI_METRIC_CATEGORY_INSTRUCTIONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An instruction related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory36CUPTI_METRIC_CATEGORY_MULTIPROCESSORE">
+<span id="_CPPv3N20CUpti_MetricCategory36CUPTI_METRIC_CATEGORY_MULTIPROCESSORE"></span><span id="_CPPv2N20CUpti_MetricCategory36CUPTI_METRIC_CATEGORY_MULTIPROCESSORE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83ac18381eaece17a3c297c6d47dc16fed1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_MULTIPROCESSOR</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory36CUPTI_METRIC_CATEGORY_MULTIPROCESSORE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A multiprocessor related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory27CUPTI_METRIC_CATEGORY_CACHEE">
+<span id="_CPPv3N20CUpti_MetricCategory27CUPTI_METRIC_CATEGORY_CACHEE"></span><span id="_CPPv2N20CUpti_MetricCategory27CUPTI_METRIC_CATEGORY_CACHEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83ac89334d790d1993f91f43b5d96c2b37c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_CACHE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory27CUPTI_METRIC_CATEGORY_CACHEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A cache related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory29CUPTI_METRIC_CATEGORY_TEXTUREE">
+<span id="_CPPv3N20CUpti_MetricCategory29CUPTI_METRIC_CATEGORY_TEXTUREE"></span><span id="_CPPv2N20CUpti_MetricCategory29CUPTI_METRIC_CATEGORY_TEXTUREE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83aafaa5e3c4f5ec0d1f828216fe3ca0963"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_TEXTURE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory29CUPTI_METRIC_CATEGORY_TEXTUREE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A texture related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_NVLINKE">
+<span id="_CPPv3N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_NVLINKE"></span><span id="_CPPv2N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_NVLINKE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83aa2b6ff156ee0c92acb10ec294fb5c747"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_NVLINK</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory28CUPTI_METRIC_CATEGORY_NVLINKE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A Nvlink related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory26CUPTI_METRIC_CATEGORY_PCIEE">
+<span id="_CPPv3N20CUpti_MetricCategory26CUPTI_METRIC_CATEGORY_PCIEE"></span><span id="_CPPv2N20CUpti_MetricCategory26CUPTI_METRIC_CATEGORY_PCIEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83a3002802a0fe1aa590c91d005ca2d49e8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_PCIE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory26CUPTI_METRIC_CATEGORY_PCIEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A PCIe related metric. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_MetricCategory31CUPTI_METRIC_CATEGORY_FORCE_INTE">
+<span id="_CPPv3N20CUpti_MetricCategory31CUPTI_METRIC_CATEGORY_FORCE_INTE"></span><span id="_CPPv2N20CUpti_MetricCategory31CUPTI_METRIC_CATEGORY_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga6394f0e2d13535f97bfba7554ffd3f83a12d99d66a2b2d10ebec4b9ffe5c03313"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_CATEGORY_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_MetricCategory31CUPTI_METRIC_CATEGORY_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv426CUpti_MetricEvaluationMode">
+<span id="_CPPv326CUpti_MetricEvaluationMode"></span><span id="_CPPv226CUpti_MetricEvaluationMode"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga59396bc237d98ee0595e5743bde89b9d"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricEvaluationMode</span></span></span><a class="headerlink" href="#_CPPv426CUpti_MetricEvaluationMode" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A metric evaluation mode. </p>
+<p>A metric can be evaluated per hardware instance to know the load balancing across instances of a domain or the metric can be evaluated in aggregate mode when the events involved in metric evaluation are from different event domains. It might be possible to evaluate some metrics in both modes for convenience. A metric’s evaluation mode is accessed using <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga59396bc237d98ee0595e5743bde89b9d"><span class="std std-ref">CUpti_MetricEvaluationMode</span></a> and the CUPTI_METRIC_ATTR_EVALUATION_MODE attribute. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N26CUpti_MetricEvaluationMode41CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCEE">
+<span id="_CPPv3N26CUpti_MetricEvaluationMode41CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCEE"></span><span id="_CPPv2N26CUpti_MetricEvaluationMode41CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga59396bc237d98ee0595e5743bde89b9dab67ce2cfb1b1f50bc30ef1aee9fa3de9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCE</span></span></span><a class="headerlink" href="#_CPPv4N26CUpti_MetricEvaluationMode41CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If this bit is set, the metric can be profiled for each instance of the domain. </p>
+<p>The event values passed to <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"><span class="std std-ref">cuptiMetricGetValue</span></a> can contain values for one instance of the domain. And <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"><span class="std std-ref">cuptiMetricGetValue</span></a> can be called for each instance. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_AGGREGATEE">
+<span id="_CPPv3N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_AGGREGATEE"></span><span id="_CPPv2N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_AGGREGATEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga59396bc237d98ee0595e5743bde89b9da4a02ff640639c45e9becfbf087b30bef"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_EVALUATION_MODE_AGGREGATE</span></span></span><a class="headerlink" href="#_CPPv4N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_AGGREGATEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>If this bit is set, the metric can be profiled over all instances. </p>
+<p>The event values passed to <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"><span class="std std-ref">cuptiMetricGetValue</span></a> can be aggregated values of events for all instances of the domain. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_FORCE_INTE">
+<span id="_CPPv3N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_FORCE_INTE"></span><span id="_CPPv2N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga59396bc237d98ee0595e5743bde89b9daa314dbb2a74db5628549f5718f9fac98"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_EVALUATION_MODE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N26CUpti_MetricEvaluationMode38CUPTI_METRIC_EVALUATION_MODE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv431CUpti_MetricPropertyDeviceClass">
+<span id="_CPPv331CUpti_MetricPropertyDeviceClass"></span><span id="_CPPv231CUpti_MetricPropertyDeviceClass"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga8205fe38839f3804696bc7e68640cd95"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricPropertyDeviceClass</span></span></span><a class="headerlink" href="#_CPPv431CUpti_MetricPropertyDeviceClass" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Device class. </p>
+<p>Enumeration of device classes for metric property CUPTI_METRIC_PROPERTY_DEVICE_CLASS. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TESLAE">
+<span id="_CPPv3N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TESLAE"></span><span id="_CPPv2N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TESLAE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga8205fe38839f3804696bc7e68640cd95a14ee538ee57fa205d29def4fac7d441d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TESLA</span></span></span><a class="headerlink" href="#_CPPv4N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TESLAE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N31CUpti_MetricPropertyDeviceClass41CUPTI_METRIC_PROPERTY_DEVICE_CLASS_QUADROE">
+<span id="_CPPv3N31CUpti_MetricPropertyDeviceClass41CUPTI_METRIC_PROPERTY_DEVICE_CLASS_QUADROE"></span><span id="_CPPv2N31CUpti_MetricPropertyDeviceClass41CUPTI_METRIC_PROPERTY_DEVICE_CLASS_QUADROE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga8205fe38839f3804696bc7e68640cd95abe0a51669fae9032dd59a942e6971cec"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_DEVICE_CLASS_QUADRO</span></span></span><a class="headerlink" href="#_CPPv4N31CUpti_MetricPropertyDeviceClass41CUPTI_METRIC_PROPERTY_DEVICE_CLASS_QUADROE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N31CUpti_MetricPropertyDeviceClass42CUPTI_METRIC_PROPERTY_DEVICE_CLASS_GEFORCEE">
+<span id="_CPPv3N31CUpti_MetricPropertyDeviceClass42CUPTI_METRIC_PROPERTY_DEVICE_CLASS_GEFORCEE"></span><span id="_CPPv2N31CUpti_MetricPropertyDeviceClass42CUPTI_METRIC_PROPERTY_DEVICE_CLASS_GEFORCEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga8205fe38839f3804696bc7e68640cd95a948710542482654f4efd3ca8be9e0f09"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_DEVICE_CLASS_GEFORCE</span></span></span><a class="headerlink" href="#_CPPv4N31CUpti_MetricPropertyDeviceClass42CUPTI_METRIC_PROPERTY_DEVICE_CLASS_GEFORCEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TEGRAE">
+<span id="_CPPv3N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TEGRAE"></span><span id="_CPPv2N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TEGRAE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga8205fe38839f3804696bc7e68640cd95ad516d14baa70459cf3904f473068ab70"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TEGRA</span></span></span><a class="headerlink" href="#_CPPv4N31CUpti_MetricPropertyDeviceClass40CUPTI_METRIC_PROPERTY_DEVICE_CLASS_TEGRAE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv422CUpti_MetricPropertyID">
+<span id="_CPPv322CUpti_MetricPropertyID"></span><span id="_CPPv222CUpti_MetricPropertyID"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga5bafb626ac31ac98400d9191316871f7"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricPropertyID</span></span></span><a class="headerlink" href="#_CPPv422CUpti_MetricPropertyID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Metric device properties. </p>
+<p>Metric device properties describe device properties which are needed for a metric. Some of these properties can be collected using cuDeviceGetAttribute. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID42CUPTI_METRIC_PROPERTY_MULTIPROCESSOR_COUNTE">
+<span id="_CPPv3N22CUpti_MetricPropertyID42CUPTI_METRIC_PROPERTY_MULTIPROCESSOR_COUNTE"></span><span id="_CPPv2N22CUpti_MetricPropertyID42CUPTI_METRIC_PROPERTY_MULTIPROCESSOR_COUNTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a7ac8c4409e772d4d9105e731c869335b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_MULTIPROCESSOR_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID42CUPTI_METRIC_PROPERTY_MULTIPROCESSOR_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_WARPS_PER_MULTIPROCESSORE">
+<span id="_CPPv3N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_WARPS_PER_MULTIPROCESSORE"></span><span id="_CPPv2N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_WARPS_PER_MULTIPROCESSORE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a2a7eed3bba35ba5bd2be621e4a00bde5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_WARPS_PER_MULTIPROCESSOR</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_WARPS_PER_MULTIPROCESSORE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_KERNEL_GPU_TIMEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_KERNEL_GPU_TIMEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_KERNEL_GPU_TIMEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7afe915ea7e93a46cbd319e6de8681bdcf"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_KERNEL_GPU_TIME</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_KERNEL_GPU_TIMEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID32CUPTI_METRIC_PROPERTY_CLOCK_RATEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID32CUPTI_METRIC_PROPERTY_CLOCK_RATEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID32CUPTI_METRIC_PROPERTY_CLOCK_RATEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a2ada8a8515ba9df07896c964746b2867"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_CLOCK_RATE</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID32CUPTI_METRIC_PROPERTY_CLOCK_RATEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID40CUPTI_METRIC_PROPERTY_FRAME_BUFFER_COUNTE">
+<span id="_CPPv3N22CUpti_MetricPropertyID40CUPTI_METRIC_PROPERTY_FRAME_BUFFER_COUNTE"></span><span id="_CPPv2N22CUpti_MetricPropertyID40CUPTI_METRIC_PROPERTY_FRAME_BUFFER_COUNTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a91c55045d7291a662611c57158166b85"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_FRAME_BUFFER_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID40CUPTI_METRIC_PROPERTY_FRAME_BUFFER_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID45CUPTI_METRIC_PROPERTY_GLOBAL_MEMORY_BANDWIDTHE">
+<span id="_CPPv3N22CUpti_MetricPropertyID45CUPTI_METRIC_PROPERTY_GLOBAL_MEMORY_BANDWIDTHE"></span><span id="_CPPv2N22CUpti_MetricPropertyID45CUPTI_METRIC_PROPERTY_GLOBAL_MEMORY_BANDWIDTHE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7af9a3608199c85fe4ec0bde11a3f4a392"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_GLOBAL_MEMORY_BANDWIDTH</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID45CUPTI_METRIC_PROPERTY_GLOBAL_MEMORY_BANDWIDTHE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID36CUPTI_METRIC_PROPERTY_PCIE_LINK_RATEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID36CUPTI_METRIC_PROPERTY_PCIE_LINK_RATEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID36CUPTI_METRIC_PROPERTY_PCIE_LINK_RATEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7aeb576abf847a6f847bb893d40b6d5659"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_PCIE_LINK_RATE</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID36CUPTI_METRIC_PROPERTY_PCIE_LINK_RATEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_PCIE_LINK_WIDTHE">
+<span id="_CPPv3N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_PCIE_LINK_WIDTHE"></span><span id="_CPPv2N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_PCIE_LINK_WIDTHE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a9993d03581fb880d2d1d6bd4d65036d7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_PCIE_LINK_WIDTH</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID37CUPTI_METRIC_PROPERTY_PCIE_LINK_WIDTHE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_PCIE_GENE">
+<span id="_CPPv3N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_PCIE_GENE"></span><span id="_CPPv2N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_PCIE_GENE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a109381b42cb1d53e7892087cd069affb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_PCIE_GEN</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_PCIE_GENE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID34CUPTI_METRIC_PROPERTY_DEVICE_CLASSE">
+<span id="_CPPv3N22CUpti_MetricPropertyID34CUPTI_METRIC_PROPERTY_DEVICE_CLASSE"></span><span id="_CPPv2N22CUpti_MetricPropertyID34CUPTI_METRIC_PROPERTY_DEVICE_CLASSE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a567b5fbe7e6960e53614f1717461e97c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_DEVICE_CLASS</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID34CUPTI_METRIC_PROPERTY_DEVICE_CLASSE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7aa97ab4010d034940cc6d79f744e04389"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLE</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a2dfbc7552e5aa6beb73696555f92ee29"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLE</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_L2_UNITSE">
+<span id="_CPPv3N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_L2_UNITSE"></span><span id="_CPPv2N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_L2_UNITSE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a373181b7cb1db967e901bda5da72f50c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_L2_UNITS</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID30CUPTI_METRIC_PROPERTY_L2_UNITSE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID33CUPTI_METRIC_PROPERTY_ECC_ENABLEDE">
+<span id="_CPPv3N22CUpti_MetricPropertyID33CUPTI_METRIC_PROPERTY_ECC_ENABLEDE"></span><span id="_CPPv2N22CUpti_MetricPropertyID33CUPTI_METRIC_PROPERTY_ECC_ENABLEDE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a7f9be6bf7c7d2c87c62c26bd0536485b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_ECC_ENABLED</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID33CUPTI_METRIC_PROPERTY_ECC_ENABLEDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_HP_PER_CYCLEE">
+<span id="_CPPv3N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_HP_PER_CYCLEE"></span><span id="_CPPv2N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_HP_PER_CYCLEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7ad4d97e2cd55137bd5bc658c5fdb94996"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_FLOP_HP_PER_CYCLE</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID39CUPTI_METRIC_PROPERTY_FLOP_HP_PER_CYCLEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_GPU_CPU_NVLINK_BANDWIDTHE">
+<span id="_CPPv3N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_GPU_CPU_NVLINK_BANDWIDTHE"></span><span id="_CPPv2N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_GPU_CPU_NVLINK_BANDWIDTHE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga5bafb626ac31ac98400d9191316871f7a88beb87158651d8ab2f84ea552e8d10e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_PROPERTY_GPU_CPU_NVLINK_BANDWIDTH</span></span></span><a class="headerlink" href="#_CPPv4N22CUpti_MetricPropertyID46CUPTI_METRIC_PROPERTY_GPU_CPU_NVLINK_BANDWIDTHE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv421CUpti_MetricValueKind">
+<span id="_CPPv321CUpti_MetricValueKind"></span><span id="_CPPv221CUpti_MetricValueKind"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga7ed011480e0cfd81d50cb0e508f6cc16"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricValueKind</span></span></span><a class="headerlink" href="#_CPPv421CUpti_MetricValueKind" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Kinds of metric values. </p>
+<p>Metric values can be one of several different kinds. Corresponding to each kind is a member of the <a class="reference internal" href="union_c_upti___metric_value.html#union_c_upti___metric_value"><span class="std std-ref">CUpti_MetricValue</span></a> union. The metric value returned by <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"><span class="std std-ref">cuptiMetricGetValue</span></a> should be accessed using the appropriate member of that union based on its value kind. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_DOUBLEE">
+<span id="_CPPv3N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_DOUBLEE"></span><span id="_CPPv2N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_DOUBLEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a3491fde36f93719b505716aa0cc2e1d4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_DOUBLE</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_DOUBLEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a 64-bit double. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_UINT64E">
+<span id="_CPPv3N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_UINT64E"></span><span id="_CPPv2N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_UINT64E"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a3f0def845685cfa02cff57a4bb113f9d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_UINT64</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind30CUPTI_METRIC_VALUE_KIND_UINT64E" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a 64-bit unsigned integer. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind31CUPTI_METRIC_VALUE_KIND_PERCENTE">
+<span id="_CPPv3N21CUpti_MetricValueKind31CUPTI_METRIC_VALUE_KIND_PERCENTE"></span><span id="_CPPv2N21CUpti_MetricValueKind31CUPTI_METRIC_VALUE_KIND_PERCENTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a9a67e0faf264af1142ec70cf447be1ee"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_PERCENT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind31CUPTI_METRIC_VALUE_KIND_PERCENTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a percentage represented by a 64-bit double. </p>
+<p>For example, 57.5% is represented by the value 57.5. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind34CUPTI_METRIC_VALUE_KIND_THROUGHPUTE">
+<span id="_CPPv3N21CUpti_MetricValueKind34CUPTI_METRIC_VALUE_KIND_THROUGHPUTE"></span><span id="_CPPv2N21CUpti_MetricValueKind34CUPTI_METRIC_VALUE_KIND_THROUGHPUTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a84aa43466bca21e23a61764456a163c0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_THROUGHPUT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind34CUPTI_METRIC_VALUE_KIND_THROUGHPUTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a throughput represented by a 64-bit integer. </p>
+<p>The unit for throughput values is bytes/second. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind29CUPTI_METRIC_VALUE_KIND_INT64E">
+<span id="_CPPv3N21CUpti_MetricValueKind29CUPTI_METRIC_VALUE_KIND_INT64E"></span><span id="_CPPv2N21CUpti_MetricValueKind29CUPTI_METRIC_VALUE_KIND_INT64E"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a87d2df4cc54ef0583de003bccd910d70"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_INT64</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind29CUPTI_METRIC_VALUE_KIND_INT64E" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a 64-bit signed integer. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind41CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVELE">
+<span id="_CPPv3N21CUpti_MetricValueKind41CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVELE"></span><span id="_CPPv2N21CUpti_MetricValueKind41CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVELE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a651fe23d5ebbee64b4c1d5a5a5268f81"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVEL</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind41CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVELE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric value is a utilization level, as represented by CUpti_MetricValueUtilizationLevel. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_MetricValueKind33CUPTI_METRIC_VALUE_KIND_FORCE_INTE">
+<span id="_CPPv3N21CUpti_MetricValueKind33CUPTI_METRIC_VALUE_KIND_FORCE_INTE"></span><span id="_CPPv2N21CUpti_MetricValueKind33CUPTI_METRIC_VALUE_KIND_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga7ed011480e0cfd81d50cb0e508f6cc16a1b1f0d1a7d54727a5a91bfa4f738b851"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_KIND_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_MetricValueKind33CUPTI_METRIC_VALUE_KIND_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv433CUpti_MetricValueUtilizationLevel">
+<span id="_CPPv333CUpti_MetricValueUtilizationLevel"></span><span id="_CPPv233CUpti_MetricValueUtilizationLevel"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga60cd86ce5f31121816ea1e3f965ac669"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricValueUtilizationLevel</span></span></span><a class="headerlink" href="#_CPPv433CUpti_MetricValueUtilizationLevel" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enumeration of utilization levels for metrics values of kind CUPTI_METRIC_VALUE_KIND_UTILIZATION_LEVEL. </p>
+<p>Utilization values can vary from IDLE (0) to MAX (10) but the enumeration only provides specific names for a few values. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_IDLEE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_IDLEE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_IDLEE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669a2c59dbc91ba30f8b994f9599bab48e3a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_IDLE</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_IDLEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_LOWE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_LOWE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_LOWE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669ac2fb3b2c9435f87fbbe87153e9246d7d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_LOW</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_LOWE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MIDE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MIDE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MIDE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669a596ae524056423a3ba490f5487245565"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_MID</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MIDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_HIGHE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_HIGHE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_HIGHE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669a5c70ebc78bec2424fcc160dccf48941f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_HIGH</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel35CUPTI_METRIC_VALUE_UTILIZATION_HIGHE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MAXE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MAXE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MAXE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669a59f6dfd494e5de12e1a539f1713dc7c2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_MAX</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel34CUPTI_METRIC_VALUE_UTILIZATION_MAXE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_MetricValueUtilizationLevel40CUPTI_METRIC_VALUE_UTILIZATION_FORCE_INTE">
+<span id="_CPPv3N33CUpti_MetricValueUtilizationLevel40CUPTI_METRIC_VALUE_UTILIZATION_FORCE_INTE"></span><span id="_CPPv2N33CUpti_MetricValueUtilizationLevel40CUPTI_METRIC_VALUE_UTILIZATION_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gga60cd86ce5f31121816ea1e3f965ac669a71da547aff9395e2a3a0fa44a1c4a187"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_VALUE_UTILIZATION_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_MetricValueUtilizationLevel40CUPTI_METRIC_VALUE_UTILIZATION_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.5.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiDeviceEnumMetrics8CUdeviceP6size_tP14CUpti_MetricID">
+<span id="_CPPv322cuptiDeviceEnumMetrics8CUdeviceP6size_tP14CUpti_MetricID"></span><span id="_CPPv222cuptiDeviceEnumMetrics8CUdeviceP6size_tP14CUpti_MetricID"></span><span id="cuptiDeviceEnumMetrics__CUdevice.sP.CUpti_MetricIDP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gab9b4e76fc9a5a7b53e201838a82cb01b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiDeviceEnumMetrics</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUdevice</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">device</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arraySizeBytes</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiDeviceEnumMetrics8CUdeviceP6size_tP14CUpti_MetricID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the metrics for a device. </p>
+<p>Returns the metric IDs in <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> for a device. The size of the <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> buffer is given by <code class="docutils literal notranslate"><span class="pre">*arraySizeBytes</span></code>. The size of the <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> buffer must be at least <code class="docutils literal notranslate"><span class="pre">numMetrics</span></code> * sizeof(CUpti_MetricID) or else all metric IDs will not be returned. The value returned in <code class="docutils literal notranslate"><span class="pre">*arraySizeBytes</span></code> contains the number of bytes returned in <code class="docutils literal notranslate"><span class="pre">metricArray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The CUDA device </p></li>
+<li><p><strong>arraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> in bytes, and returns the number of bytes written to <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> </p></li>
+<li><p><strong>metricArray</strong> – Returns the IDs of the metrics for the device</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_DEVICE</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">arraySizeBytes</span></code> or <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> are NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424cuptiDeviceGetNumMetrics8CUdeviceP8uint32_t">
+<span id="_CPPv324cuptiDeviceGetNumMetrics8CUdeviceP8uint32_t"></span><span id="_CPPv224cuptiDeviceGetNumMetrics8CUdeviceP8uint32_t"></span><span id="cuptiDeviceGetNumMetrics__CUdevice.uint32_tP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga324da71188baec5939c57c1f24a8773b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiDeviceGetNumMetrics</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUdevice</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">device</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">numMetrics</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424cuptiDeviceGetNumMetrics8CUdeviceP8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of metrics for a device. </p>
+<p>Returns the number of metrics available for a device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The CUDA device </p></li>
+<li><p><strong>numMetrics</strong> – Returns the number of metrics available for the device</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_DEVICE</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">numMetrics</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416cuptiEnumMetricsP6size_tP14CUpti_MetricID">
+<span id="_CPPv316cuptiEnumMetricsP6size_tP14CUpti_MetricID"></span><span id="_CPPv216cuptiEnumMetricsP6size_tP14CUpti_MetricID"></span><span id="cuptiEnumMetrics__sP.CUpti_MetricIDP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga6edf9f093d3e05644821c0a1548ebe22"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiEnumMetrics</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">arraySizeBytes</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416cuptiEnumMetricsP6size_tP14CUpti_MetricID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get all the metrics available on any device. </p>
+<p>Returns the metric IDs in <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> for all CUDA-capable devices. The size of the <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> buffer is given by <code class="docutils literal notranslate"><span class="pre">*arraySizeBytes</span></code>. The size of the <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> buffer must be at least <code class="docutils literal notranslate"><span class="pre">numMetrics</span></code> * sizeof(CUpti_MetricID) or all metric IDs will not be returned. The value returned in <code class="docutils literal notranslate"><span class="pre">*arraySizeBytes</span></code> contains the number of bytes returned in <code class="docutils literal notranslate"><span class="pre">metricArray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> in bytes, and returns the number of bytes written to <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> </p></li>
+<li><p><strong>metricArray</strong> – Returns the IDs of the metrics</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">arraySizeBytes</span></code> or <code class="docutils literal notranslate"><span class="pre">metricArray</span></code> are NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418cuptiGetNumMetricsP8uint32_t">
+<span id="_CPPv318cuptiGetNumMetricsP8uint32_t"></span><span id="_CPPv218cuptiGetNumMetricsP8uint32_t"></span><span id="cuptiGetNumMetrics__uint32_tP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaa977bb7bfa362130f2aeb7bcdba57fe8"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetNumMetrics</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">numMetrics</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418cuptiGetNumMetricsP8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the total number of metrics available on any device. </p>
+<p>Returns the total number of metrics available on any CUDA-capable devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>numMetrics</strong> – Returns the number of metrics</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">numMetrics</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiMetricCreateEventGroupSets9CUcontext6size_tP14CUpti_MetricIDPP20CUpti_EventGroupSets">
+<span id="_CPPv331cuptiMetricCreateEventGroupSets9CUcontext6size_tP14CUpti_MetricIDPP20CUpti_EventGroupSets"></span><span id="_CPPv231cuptiMetricCreateEventGroupSets9CUcontext6size_tP14CUpti_MetricIDPP20CUpti_EventGroupSets"></span><span id="cuptiMetricCreateEventGroupSets__CUcontext.s.CUpti_MetricIDP.CUpti_EventGroupSetsPP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaffab8f5a74b98e7680710203e3932450"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricCreateEventGroupSets</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUcontext</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">context</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">metricIdArraySizeBytes</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricIdArray</span></span>, <a class="reference internal" href="struct_c_upti___event_group_sets.html#_CPPv420CUpti_EventGroupSets" title="CUpti_EventGroupSets"><span class="n"><span class="pre">CUpti_EventGroupSets</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventGroupPasses</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiMetricCreateEventGroupSets9CUcontext6size_tP14CUpti_MetricIDPP20CUpti_EventGroupSets" title="Permalink to this definition"></a><br /></dt>
+<dd><p>For a set of metrics, get the grouping that indicates the number of passes and the event groups necessary to collect the events required for those metrics. </p>
+<p>For a set of metrics, get the grouping that indicates the number of passes and the event groups necessary to collect the events required for those metrics.</p>
+<p><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html#group___c_u_p_t_i___e_v_e_n_t___a_p_i_1ga0fd307d429d4e37f61f45472de069910"><span class="std std-ref">cuptiEventGroupSetsCreate</span></a> for details on event group set creation.</p>
+</div>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – The context for event collection </p></li>
+<li><p><strong>metricIdArraySizeBytes</strong> – Size of the metricIdArray in bytes </p></li>
+<li><p><strong>metricIdArray</strong> – Array of metric IDs </p></li>
+<li><p><strong>eventGroupPasses</strong> – Returns a <a class="reference internal" href="struct_c_upti___event_group_sets.html#struct_c_upti___event_group_sets"><span class="std std-ref">CUpti_EventGroupSets</span></a> object that indicates the number of passes required to collect the events and the events to collect on each pass</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">metricIdArray</span></code> or <code class="docutils literal notranslate"><span class="pre">eventGroupPasses</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiMetricEnumEvents14CUpti_MetricIDP6size_tP13CUpti_EventID">
+<span id="_CPPv321cuptiMetricEnumEvents14CUpti_MetricIDP6size_tP13CUpti_EventID"></span><span id="_CPPv221cuptiMetricEnumEvents14CUpti_MetricIDP6size_tP13CUpti_EventID"></span><span id="cuptiMetricEnumEvents__CUpti_MetricID.sP.CUpti_EventIDP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga7b6aa1f0bb09627f89bbbeb0300bc67a"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricEnumEvents</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventIdArraySizeBytes</span></span>, <a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html#_CPPv413CUpti_EventID" title="CUpti_EventID"><span class="n"><span class="pre">CUpti_EventID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventIdArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiMetricEnumEvents14CUpti_MetricIDP6size_tP13CUpti_EventID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the events required to calculating a metric. </p>
+<p>Gets the event IDs in <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> required to calculate a <code class="docutils literal notranslate"><span class="pre">metric</span></code>. The size of the <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> buffer is given by <code class="docutils literal notranslate"><span class="pre">*eventIdArraySizeBytes</span></code> and must be at least <code class="docutils literal notranslate"><span class="pre">numEvents</span></code> * sizeof(CUpti_EventID) or all events will not be returned. The value returned in <code class="docutils literal notranslate"><span class="pre">*eventIdArraySizeBytes</span></code> contains the number of bytes returned in <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – ID of the metric </p></li>
+<li><p><strong>eventIdArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> in bytes, and returns the number of bytes written to <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> </p></li>
+<li><p><strong>eventIdArray</strong> – Returns the IDs of the events required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">eventIdArraySizeBytes</span></code> or <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> are NULL. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiMetricEnumProperties14CUpti_MetricIDP6size_tP22CUpti_MetricPropertyID">
+<span id="_CPPv325cuptiMetricEnumProperties14CUpti_MetricIDP6size_tP22CUpti_MetricPropertyID"></span><span id="_CPPv225cuptiMetricEnumProperties14CUpti_MetricIDP6size_tP22CUpti_MetricPropertyID"></span><span id="cuptiMetricEnumProperties__CUpti_MetricID.sP.CUpti_MetricPropertyIDP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga5bbb72ce28d7f2a6cd02607379c72bc9"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricEnumProperties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">propIdArraySizeBytes</span></span>, <a class="reference internal" href="#_CPPv422CUpti_MetricPropertyID" title="CUpti_MetricPropertyID"><span class="n"><span class="pre">CUpti_MetricPropertyID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">propIdArray</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiMetricEnumProperties14CUpti_MetricIDP6size_tP22CUpti_MetricPropertyID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the properties required to calculating a metric. </p>
+<p>Gets the property IDs in <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> required to calculate a <code class="docutils literal notranslate"><span class="pre">metric</span></code>. The size of the <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> buffer is given by <code class="docutils literal notranslate"><span class="pre">*propIdArraySizeBytes</span></code> and must be at least <code class="docutils literal notranslate"><span class="pre">numProp</span></code> * sizeof(CUpti_DeviceAttribute) or all properties will not be returned. The value returned in <code class="docutils literal notranslate"><span class="pre">*propIdArraySizeBytes</span></code> contains the number of bytes returned in <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – ID of the metric </p></li>
+<li><p><strong>propIdArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> in bytes, and returns the number of bytes written to <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> </p></li>
+<li><p><strong>propIdArray</strong> – Returns the IDs of the properties required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code> </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">propIdArraySizeBytes</span></code> or <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> are NULL. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiMetricGetAttribute14CUpti_MetricID21CUpti_MetricAttributeP6size_tPv">
+<span id="_CPPv323cuptiMetricGetAttribute14CUpti_MetricID21CUpti_MetricAttributeP6size_tPv"></span><span id="_CPPv223cuptiMetricGetAttribute14CUpti_MetricID21CUpti_MetricAttributeP6size_tPv"></span><span id="cuptiMetricGetAttribute__CUpti_MetricID.CUpti_MetricAttribute.sP.voidP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaad77ae5441ca5c8cee0156b4ecc4d3f5"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetAttribute</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <a class="reference internal" href="#_CPPv421CUpti_MetricAttribute" title="CUpti_MetricAttribute"><span class="n"><span class="pre">CUpti_MetricAttribute</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">attrib</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">valueSize</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiMetricGetAttribute14CUpti_MetricID21CUpti_MetricAttributeP6size_tPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get a metric attribute. </p>
+<p>Returns a metric attribute in <code class="docutils literal notranslate"><span class="pre">*value</span></code>. The size of the <code class="docutils literal notranslate"><span class="pre">value</span></code> buffer is given by <code class="docutils literal notranslate"><span class="pre">*valueSize</span></code>. The value returned in <code class="docutils literal notranslate"><span class="pre">*valueSize</span></code> contains the number of bytes returned in <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+<p>If the attribute value is a c-string that is longer than <code class="docutils literal notranslate"><span class="pre">*valueSize</span></code>, then only the first <code class="docutils literal notranslate"><span class="pre">*valueSize</span></code> characters will be returned and there will be no terminating null byte.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – ID of the metric </p></li>
+<li><p><strong>attrib</strong> – The metric attribute to read </p></li>
+<li><p><strong>valueSize</strong> – The size of the <code class="docutils literal notranslate"><span class="pre">value</span></code> buffer in bytes, and returns the number of bytes written to <code class="docutils literal notranslate"><span class="pre">value</span></code> </p></li>
+<li><p><strong>value</strong> – Returns the attribute’s value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">valueSize</span></code> or <code class="docutils literal notranslate"><span class="pre">value</span></code> is NULL, or if <code class="docutils literal notranslate"><span class="pre">attrib</span></code> is not a metric attribute </p></li>
+<li><p><strong>CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENT</strong> – For non-c-string attribute values, indicates that the <code class="docutils literal notranslate"><span class="pre">value</span></code> buffer is too small to hold the attribute value. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424cuptiMetricGetIdFromName8CUdevicePKcP14CUpti_MetricID">
+<span id="_CPPv324cuptiMetricGetIdFromName8CUdevicePKcP14CUpti_MetricID"></span><span id="_CPPv224cuptiMetricGetIdFromName8CUdevicePKcP14CUpti_MetricID"></span><span id="cuptiMetricGetIdFromName__CUdevice.cCP.CUpti_MetricIDP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga8f6838118a1782e1aec6c3ffae1df81d"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetIdFromName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUdevice</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">device</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricName</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metric</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424cuptiMetricGetIdFromName8CUdevicePKcP14CUpti_MetricID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Find an metric by name. </p>
+<p>Find a metric by name and return the metric ID in <code class="docutils literal notranslate"><span class="pre">*metric</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The CUDA device </p></li>
+<li><p><strong>metricName</strong> – The name of metric to find </p></li>
+<li><p><strong>metric</strong> – Returns the ID of the found metric or undefined if unable to find the metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_DEVICE</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_NAME</strong> – if unable to find a metric with name <code class="docutils literal notranslate"><span class="pre">metricName</span></code>. In this case <code class="docutils literal notranslate"><span class="pre">*metric</span></code> is undefined </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">metricName</span></code> or <code class="docutils literal notranslate"><span class="pre">metric</span></code> are NULL. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiMetricGetNumEvents14CUpti_MetricIDP8uint32_t">
+<span id="_CPPv323cuptiMetricGetNumEvents14CUpti_MetricIDP8uint32_t"></span><span id="_CPPv223cuptiMetricGetNumEvents14CUpti_MetricIDP8uint32_t"></span><span id="cuptiMetricGetNumEvents__CUpti_MetricID.uint32_tP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga2e278d4e7e4237f863ed70facfa9c771"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetNumEvents</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">numEvents</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiMetricGetNumEvents14CUpti_MetricIDP8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get number of events required to calculate a metric. </p>
+<p>Returns the number of events in <code class="docutils literal notranslate"><span class="pre">numEvents</span></code> that are required to calculate a metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – ID of the metric </p></li>
+<li><p><strong>numEvents</strong> – Returns the number of events required for the metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">numEvents</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427cuptiMetricGetNumProperties14CUpti_MetricIDP8uint32_t">
+<span id="_CPPv327cuptiMetricGetNumProperties14CUpti_MetricIDP8uint32_t"></span><span id="_CPPv227cuptiMetricGetNumProperties14CUpti_MetricIDP8uint32_t"></span><span id="cuptiMetricGetNumProperties__CUpti_MetricID.uint32_tP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gabdf8e8a3c0e561e8d85604669682b4ed"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetNumProperties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">numProp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427cuptiMetricGetNumProperties14CUpti_MetricIDP8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get number of properties required to calculate a metric. </p>
+<p>Returns the number of properties in <code class="docutils literal notranslate"><span class="pre">numProp</span></code> that are required to calculate a metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – ID of the metric </p></li>
+<li><p><strong>numProp</strong> – Returns the number of properties required for the metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">numProp</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv436cuptiMetricGetRequiredEventGroupSets9CUcontext14CUpti_MetricIDPP20CUpti_EventGroupSets">
+<span id="_CPPv336cuptiMetricGetRequiredEventGroupSets9CUcontext14CUpti_MetricIDPP20CUpti_EventGroupSets"></span><span id="_CPPv236cuptiMetricGetRequiredEventGroupSets9CUcontext14CUpti_MetricIDPP20CUpti_EventGroupSets"></span><span id="cuptiMetricGetRequiredEventGroupSets__CUcontext.CUpti_MetricID.CUpti_EventGroupSetsPP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga831ee4cb8bd1756020d294c4740f5981"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetRequiredEventGroupSets</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUcontext</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">context</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <a class="reference internal" href="struct_c_upti___event_group_sets.html#_CPPv420CUpti_EventGroupSets" title="CUpti_EventGroupSets"><span class="n"><span class="pre">CUpti_EventGroupSets</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventGroupSets</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv436cuptiMetricGetRequiredEventGroupSets9CUcontext14CUpti_MetricIDPP20CUpti_EventGroupSets" title="Permalink to this definition"></a><br /></dt>
+<dd><p>For a metric get the groups of events that must be collected in the same pass. </p>
+<p>For a metric get the groups of events that must be collected in the same pass to ensure that the metric is calculated correctly. If the events are not collected as specified then the metric value may be inaccurate.</p>
+<p>The function returns NULL if a metric does not have any required event group. In this case the events needed for the metric can be grouped in any manner for collection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>context</strong> – The context for event collection </p></li>
+<li><p><strong>metric</strong> – The metric ID </p></li>
+<li><p><strong>eventGroupSets</strong> – Returns a <a class="reference internal" href="struct_c_upti___event_group_sets.html#struct_c_upti___event_group_sets"><span class="std std-ref">CUpti_EventGroupSets</span></a> object that indicates the events that must be collected in the same pass to ensure the metric is calculated correctly. Returns NULL if no grouping is required for metric </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419cuptiMetricGetValue8CUdevice14CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t8uint64_tP17CUpti_MetricValue">
+<span id="_CPPv319cuptiMetricGetValue8CUdevice14CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t8uint64_tP17CUpti_MetricValue"></span><span id="_CPPv219cuptiMetricGetValue8CUdevice14CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t8uint64_tP17CUpti_MetricValue"></span><span id="cuptiMetricGetValue__CUdevice.CUpti_MetricID.s.CUpti_EventIDP.s.uint64_tP.uint64_t.CUpti_MetricValueP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gaf42dcb1d349f91265e7809bbba2fc01e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetValue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">CUdevice</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">device</span></span>, <a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eventIdArraySizeBytes</span></span>, <a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html#_CPPv413CUpti_EventID" title="CUpti_EventID"><span class="n"><span class="pre">CUpti_EventID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventIdArray</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eventValueArraySizeBytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventValueArray</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeDuration</span></span>, <a class="reference internal" href="union_c_upti___metric_value.html#_CPPv417CUpti_MetricValue" title="CUpti_MetricValue"><span class="n"><span class="pre">CUpti_MetricValue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419cuptiMetricGetValue8CUdevice14CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t8uint64_tP17CUpti_MetricValue" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Calculate the value for a metric. </p>
+<p>Use the events collected for a metric to calculate the metric value. Metric value evaluation depends on the evaluation mode <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga59396bc237d98ee0595e5743bde89b9d"><span class="std std-ref">CUpti_MetricEvaluationMode</span></a> that the metric supports. If a metric has evaluation mode as CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCE, then it assumes that the input event value is for one domain instance. If a metric has evaluation mode as CUPTI_METRIC_EVALUATION_MODE_AGGREGATE, it assumes that input event values are normalized to represent all domain instances on a device. For the most accurate metric collection, the events required for the metric should be collected for all profiled domain instances. For example, to collect all instances of an event, set the CUPTI_EVENT_GROUP_ATTR_PROFILE_ALL_DOMAIN_INSTANCES attribute on the group containing the event to 1. The normalized value for the event is then: (<code class="docutils literal notranslate"><span class="pre">sum_event_values</span></code> * <code class="docutils literal notranslate"><span class="pre">totalInstanceCount</span></code>) / <code class="docutils literal notranslate"><span class="pre">instanceCount</span></code>, where <code class="docutils literal notranslate"><span class="pre">sum_event_values</span></code> is the summation of the event values across all profiled domain instances, <code class="docutils literal notranslate"><span class="pre">totalInstanceCount</span></code> is obtained from querying CUPTI_EVENT_DOMAIN_ATTR_TOTAL_INSTANCE_COUNT and <code class="docutils literal notranslate"><span class="pre">instanceCount</span></code> is obtained from querying CUPTI_EVENT_GROUP_ATTR_INSTANCE_COUNT (or CUPTI_EVENT_DOMAIN_ATTR_INSTANCE_COUNT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>device</strong> – The CUDA device that the metric is being calculated for </p></li>
+<li><p><strong>metric</strong> – The metric ID </p></li>
+<li><p><strong>eventIdArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> in bytes </p></li>
+<li><p><strong>eventIdArray</strong> – The event IDs required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code> </p></li>
+<li><p><strong>eventValueArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">eventValueArray</span></code> in bytes </p></li>
+<li><p><strong>eventValueArray</strong> – The normalized event values required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code>. The values must be order to match the order of events in <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> </p></li>
+<li><p><strong>timeDuration</strong> – The duration over which the events were collected, in ns </p></li>
+<li><p><strong>metricValue</strong> – Returns the value for the metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENT</strong> – if the eventIdArray does not contain all the events needed for metric </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_EVENT_VALUE</strong> – if any of the event values required for the metric is CUPTI_EVENT_OVERFLOW </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_VALUE</strong> – if the computed metric value cannot be represented in the metric’s value type. For example, if the metric value type is unsigned and the computed metric value is negative </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">metricValue</span></code>, <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> or <code class="docutils literal notranslate"><span class="pre">eventValueArray</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiMetricGetValue214CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t6size_tP22CUpti_MetricPropertyID6size_tP8uint64_tP17CUpti_MetricValue">
+<span id="_CPPv320cuptiMetricGetValue214CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t6size_tP22CUpti_MetricPropertyID6size_tP8uint64_tP17CUpti_MetricValue"></span><span id="_CPPv220cuptiMetricGetValue214CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t6size_tP22CUpti_MetricPropertyID6size_tP8uint64_tP17CUpti_MetricValue"></span><span id="cuptiMetricGetValue2__CUpti_MetricID.s.CUpti_EventIDP.s.uint64_tP.s.CUpti_MetricPropertyIDP.s.uint64_tP.CUpti_MetricValueP"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1gac3ec4701e9878845536282a14ed27245"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiMetricGetValue2</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv414CUpti_MetricID" title="CUpti_MetricID"><span class="n"><span class="pre">CUpti_MetricID</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">metric</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eventIdArraySizeBytes</span></span>, <a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html#_CPPv413CUpti_EventID" title="CUpti_EventID"><span class="n"><span class="pre">CUpti_EventID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventIdArray</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">eventValueArraySizeBytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">eventValueArray</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">propIdArraySizeBytes</span></span>, <a class="reference internal" href="#_CPPv422CUpti_MetricPropertyID" title="CUpti_MetricPropertyID"><span class="n"><span class="pre">CUpti_MetricPropertyID</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">propIdArray</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">propValueArraySizeBytes</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">propValueArray</span></span>, <a class="reference internal" href="union_c_upti___metric_value.html#_CPPv417CUpti_MetricValue" title="CUpti_MetricValue"><span class="n"><span class="pre">CUpti_MetricValue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">metricValue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiMetricGetValue214CUpti_MetricID6size_tP13CUpti_EventID6size_tP8uint64_t6size_tP22CUpti_MetricPropertyID6size_tP8uint64_tP17CUpti_MetricValue" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Calculate the value for a metric. </p>
+<p>Use the events and properties collected for a metric to calculate the metric value. Metric value evaluation depends on the evaluation mode <a class="reference internal" href="#group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga59396bc237d98ee0595e5743bde89b9d"><span class="std std-ref">CUpti_MetricEvaluationMode</span></a> that the metric supports. If a metric has evaluation mode as CUPTI_METRIC_EVALUATION_MODE_PER_INSTANCE, then it assumes that the input event value is for one domain instance. If a metric has evaluation mode as CUPTI_METRIC_EVALUATION_MODE_AGGREGATE, it assumes that input event values are normalized to represent all domain instances on a device. For the most accurate metric collection, the events required for the metric should be collected for all profiled domain instances. For example, to collect all instances of an event, set the CUPTI_EVENT_GROUP_ATTR_PROFILE_ALL_DOMAIN_INSTANCES attribute on the group containing the event to 1. The normalized value for the event is then: (<code class="docutils literal notranslate"><span class="pre">sum_event_values</span></code> * <code class="docutils literal notranslate"><span class="pre">totalInstanceCount</span></code>) / <code class="docutils literal notranslate"><span class="pre">instanceCount</span></code>, where <code class="docutils literal notranslate"><span class="pre">sum_event_values</span></code> is the summation of the event values across all profiled domain instances, <code class="docutils literal notranslate"><span class="pre">totalInstanceCount</span></code> is obtained from querying CUPTI_EVENT_DOMAIN_ATTR_TOTAL_INSTANCE_COUNT and <code class="docutils literal notranslate"><span class="pre">instanceCount</span></code> is obtained from querying CUPTI_EVENT_GROUP_ATTR_INSTANCE_COUNT (or CUPTI_EVENT_DOMAIN_ATTR_INSTANCE_COUNT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> – The metric ID </p></li>
+<li><p><strong>eventIdArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> in bytes </p></li>
+<li><p><strong>eventIdArray</strong> – The event IDs required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code> </p></li>
+<li><p><strong>eventValueArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">eventValueArray</span></code> in bytes </p></li>
+<li><p><strong>eventValueArray</strong> – The normalized event values required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code>. The values must be order to match the order of events in <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> </p></li>
+<li><p><strong>propIdArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> in bytes </p></li>
+<li><p><strong>propIdArray</strong> – The metric property IDs required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code> </p></li>
+<li><p><strong>propValueArraySizeBytes</strong> – The size of <code class="docutils literal notranslate"><span class="pre">propValueArray</span></code> in bytes </p></li>
+<li><p><strong>propValueArray</strong> – The metric property values required to calculate <code class="docutils literal notranslate"><span class="pre">metric</span></code>. The values must be order to match the order of metric properties in <code class="docutils literal notranslate"><span class="pre">propIdArray</span></code> </p></li>
+<li><p><strong>metricValue</strong> – Returns the value for the metric</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_ID</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENT</strong> – if the eventIdArray does not contain all the events needed for metric </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_EVENT_VALUE</strong> – if any of the event values required for the metric is CUPTI_EVENT_OVERFLOW </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_COMPATIBLE</strong> – if the computed metric value cannot be represented in the metric’s value type. For example, if the metric value type is unsigned and the computed metric value is negative </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">metricValue</span></code>, <code class="docutils literal notranslate"><span class="pre">eventIdArray</span></code> or <code class="docutils literal notranslate"><span class="pre">eventValueArray</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.5.3. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv414CUpti_MetricID">
+<span id="_CPPv314CUpti_MetricID"></span><span id="_CPPv214CUpti_MetricID"></span><span id="CUpti_MetricID"></span><span class="target" id="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i_1ga0d2977d7b73cd78f216d5526998a92d4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricID</span></span></span><a class="headerlink" href="#_CPPv414CUpti_MetricID" title="Permalink to this definition"></a><br /></dt>
+<dd><p>ID for a metric. </p>
+<p>A metric provides a measure of some aspect of the device. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

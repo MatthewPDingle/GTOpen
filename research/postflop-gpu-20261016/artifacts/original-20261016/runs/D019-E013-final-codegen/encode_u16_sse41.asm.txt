@@ -1,0 +1,238 @@
+_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41:
+.Lfunc_begin188:
+.seh_proc _RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41
+	pushq	%rsi
+	.seh_pushreg %rsi
+	subq	$96, %rsp
+	.seh_stackalloc 96
+	movaps	%xmm9, 80(%rsp)
+	.seh_savexmm %xmm9, 80
+	movaps	%xmm8, 64(%rsp)
+	.seh_savexmm %xmm8, 64
+	movdqa	%xmm7, 48(%rsp)
+	.seh_savexmm %xmm7, 48
+	movaps	%xmm6, 32(%rsp)
+	.seh_savexmm %xmm6, 32
+	.seh_endprologue
+	testq	%rdx, %rdx
+	je	.LBB188_1
+	leaq	(,%rdx,4), %r10
+	addq	$-4, %r10
+	xorps	%xmm1, %xmm1
+	movq	%rcx, %rax
+	cmpq	$28, %r10
+	jb	.LBB188_6
+	shrq	$2, %r10
+	incq	%r10
+	movq	%r10, %r11
+	andq	$-8, %r11
+	leaq	(%rcx,%r11,4), %rax
+	xorps	%xmm2, %xmm2
+	xorl	%esi, %esi
+	xorps	%xmm3, %xmm3
+	.p2align	4
+.LBB188_4:
+	movaps	%xmm3, %xmm1
+	movaps	%xmm2, %xmm4
+	movups	(%rcx,%rsi,4), %xmm0
+	movups	16(%rcx,%rsi,4), %xmm5
+	maxps	%xmm0, %xmm2
+	movaps	%xmm2, %xmm0
+	cmpunordps	%xmm2, %xmm0
+	blendvps	%xmm0, %xmm4, %xmm2
+	maxps	%xmm5, %xmm3
+	movaps	%xmm3, %xmm0
+	cmpunordps	%xmm3, %xmm0
+	blendvps	%xmm0, %xmm1, %xmm3
+	addq	$8, %rsi
+	cmpq	%rsi, %r11
+	jne	.LBB188_4
+	movaps	%xmm2, %xmm1
+	maxps	%xmm3, %xmm1
+	movaps	%xmm1, %xmm0
+	cmpunordps	%xmm1, %xmm0
+	blendvps	%xmm0, %xmm2, %xmm1
+	movaps	%xmm1, %xmm4
+	movaps	%xmm1, %xmm5
+	unpckhpd	%xmm1, %xmm5
+	movshdup	%xmm1, %xmm3
+	movaps	%xmm3, %xmm2
+	maxss	%xmm1, %xmm2
+	cmpunordss	%xmm1, %xmm1
+	movaps	%xmm1, %xmm0
+	blendvps	%xmm0, %xmm3, %xmm2
+	movaps	%xmm5, %xmm3
+	maxss	%xmm2, %xmm3
+	cmpunordss	%xmm2, %xmm2
+	movaps	%xmm2, %xmm0
+	blendvps	%xmm0, %xmm5, %xmm3
+	shufps	$255, %xmm4, %xmm4
+	movaps	%xmm4, %xmm1
+	maxss	%xmm3, %xmm1
+	cmpunordss	%xmm3, %xmm3
+	movaps	%xmm3, %xmm0
+	blendvps	%xmm0, %xmm4, %xmm1
+	cmpq	%r11, %r10
+	je	.LBB188_8
+.LBB188_6:
+	leaq	(%rcx,%rdx,4), %r10
+	movaps	%xmm1, %xmm2
+	.p2align	4
+.LBB188_7:
+	maxss	(%rax), %xmm1
+	addq	$4, %rax
+	movaps	%xmm1, %xmm0
+	cmpunordss	%xmm1, %xmm0
+	blendvps	%xmm0, %xmm2, %xmm1
+	movaps	%xmm1, %xmm2
+	cmpq	%r10, %rax
+	jne	.LBB188_7
+	jmp	.LBB188_8
+.LBB188_1:
+	xorps	%xmm1, %xmm1
+.LBB188_8:
+	movd	%xmm1, %eax
+	testl	%eax, %eax
+	setns	%r10b
+	movl	%eax, %r11d
+	andl	$2147483647, %r11d
+	addl	$-8388608, %r11d
+	cmpl	$2130706432, %r11d
+	setb	%r11b
+	andb	%r10b, %r11b
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%r11b, %al
+	je	.LBB188_9
+	cmpq	%r9, %rdx
+	cmovbq	%rdx, %r9
+	testq	%r9, %r9
+	je	.LBB188_18
+	movss	__real@477fff00(%rip), %xmm0
+	movaps	%xmm0, %xmm2
+	divss	%xmm1, %xmm2
+	cmpq	$8, %r9
+	jae	.LBB188_13
+	xorl	%eax, %eax
+	jmp	.LBB188_16
+.LBB188_9:
+	addq	%r9, %r9
+	movq	%r8, %rcx
+	xorl	%edx, %edx
+	movq	%r9, %r8
+	callq	memset
+	xorps	%xmm1, %xmm1
+	jmp	.LBB188_18
+.LBB188_13:
+	movabsq	$2305843009213693944, %rax
+	andq	%r9, %rax
+	movaps	%xmm2, %xmm3
+	shufps	$0, %xmm2, %xmm3
+	leaq	(%r9,%r9), %rdx
+	andq	$-16, %rdx
+	xorl	%r10d, %r10d
+	xorps	%xmm4, %xmm4
+	.p2align	4
+.LBB188_14:
+	movups	(%rcx,%r10,2), %xmm5
+	movups	16(%rcx,%r10,2), %xmm6
+	maxps	%xmm4, %xmm5
+	mulps	%xmm3, %xmm5
+	roundps	$4, %xmm5, %xmm7
+	movshdup	%xmm7, %xmm5
+	xorps	%xmm8, %xmm8
+	maxss	%xmm5, %xmm8
+	movaps	%xmm0, %xmm5
+	minss	%xmm8, %xmm5
+	cvttss2si	%xmm5, %r11d
+	maxps	%xmm4, %xmm6
+	xorps	%xmm5, %xmm5
+	maxss	%xmm7, %xmm5
+	movaps	%xmm0, %xmm8
+	minss	%xmm5, %xmm8
+	cvttss2si	%xmm8, %esi
+	movd	%esi, %xmm5
+	pinsrw	$1, %r11d, %xmm5
+	movaps	%xmm7, %xmm8
+	unpckhpd	%xmm7, %xmm8
+	xorps	%xmm9, %xmm9
+	maxss	%xmm8, %xmm9
+	movaps	%xmm0, %xmm8
+	minss	%xmm9, %xmm8
+	cvttss2si	%xmm8, %r11d
+	pinsrw	$2, %r11d, %xmm5
+	mulps	%xmm3, %xmm6
+	shufps	$255, %xmm7, %xmm7
+	xorps	%xmm8, %xmm8
+	maxss	%xmm7, %xmm8
+	movaps	%xmm0, %xmm7
+	minss	%xmm8, %xmm7
+	cvttss2si	%xmm7, %r11d
+	roundps	$4, %xmm6, %xmm6
+	pinsrw	$3, %r11d, %xmm5
+	movshdup	%xmm6, %xmm7
+	xorps	%xmm8, %xmm8
+	maxss	%xmm7, %xmm8
+	movaps	%xmm0, %xmm7
+	minss	%xmm8, %xmm7
+	cvttss2si	%xmm7, %r11d
+	xorps	%xmm7, %xmm7
+	maxss	%xmm6, %xmm7
+	movaps	%xmm0, %xmm8
+	minss	%xmm7, %xmm8
+	cvttss2si	%xmm8, %esi
+	movd	%esi, %xmm7
+	pinsrw	$1, %r11d, %xmm7
+	movaps	%xmm6, %xmm8
+	unpckhpd	%xmm6, %xmm8
+	xorps	%xmm9, %xmm9
+	maxss	%xmm8, %xmm9
+	movaps	%xmm0, %xmm8
+	minss	%xmm9, %xmm8
+	cvttss2si	%xmm8, %r11d
+	pinsrw	$2, %r11d, %xmm7
+	shufps	$255, %xmm6, %xmm6
+	xorps	%xmm8, %xmm8
+	maxss	%xmm6, %xmm8
+	movaps	%xmm0, %xmm6
+	minss	%xmm8, %xmm6
+	cvttss2si	%xmm6, %r11d
+	pinsrw	$3, %r11d, %xmm7
+	punpcklqdq	%xmm7, %xmm5
+	movdqu	%xmm5, (%r8,%r10)
+	addq	$16, %r10
+	cmpq	%r10, %rdx
+	jne	.LBB188_14
+	cmpq	%rax, %r9
+	je	.LBB188_18
+.LBB188_16:
+	xorps	%xmm3, %xmm3
+	.p2align	4
+.LBB188_17:
+	movss	(%rcx,%rax,4), %xmm4
+	maxss	%xmm3, %xmm4
+	mulss	%xmm2, %xmm4
+	roundss	$4, %xmm4, %xmm4
+	xorps	%xmm5, %xmm5
+	maxss	%xmm4, %xmm5
+	movaps	%xmm0, %xmm4
+	minss	%xmm5, %xmm4
+	cvttss2si	%xmm4, %edx
+	movw	%dx, (%r8,%rax,2)
+	incq	%rax
+	cmpq	%rax, %r9
+	jne	.LBB188_17
+.LBB188_18:
+	movaps	%xmm1, %xmm0
+	movaps	32(%rsp), %xmm6
+	movaps	48(%rsp), %xmm7
+	movaps	64(%rsp), %xmm8
+	movaps	80(%rsp), %xmm9
+	.seh_startepilogue
+	addq	$96, %rsp
+	popq	%rsi
+	.seh_endepilogue
+	retq
+.Lfunc_end188:
+	.seh_endproc

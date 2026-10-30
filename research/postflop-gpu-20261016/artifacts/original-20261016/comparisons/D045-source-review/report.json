@@ -1,0 +1,101 @@
+{
+  "id": "D045",
+  "verdict": "PASS_SOURCE_ONLY",
+  "at": "2026-10-16T13:45:21.632781+00:00",
+  "source_manifest_sha256": "0952fc2dde596ac297fd76398fa10e74ee00e46aa6f374359384046ceb3d15a8",
+  "candidate_sha256": {
+    "crates/solver/src/gpu/mod.rs": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5",
+    "crates/solver/src/gpu/graph_device_events.rs": "0604e7f694b3742dafaba5a9c9789b830c167474db50cc47d75bb02c0491a60d"
+  },
+  "patch_sha256": "f35dbdd11eedfa02d766e70084bcb4619c4411463f8648889ad7bb1dafe8cb4d",
+  "artifact_pins_verified": 8,
+  "reference_pins_verified": 5,
+  "accepted_source_entries_verified": 162,
+  "exact_test_only_append_bytes": 39,
+  "byte_identical_inherited_regions": [
+    {
+      "start": "fn planned_device_bytes",
+      "end": "#[derive(Clone",
+      "bytes": 1786,
+      "sha256": "b6fd17afcd606583e6c21014d99dc575316a9055004106e82a1eec33eac0510b"
+    },
+    {
+      "start": "fn describe_kernel",
+      "end": "struct TimedGraph",
+      "bytes": 3650,
+      "sha256": "70368b56c59225bc1a1c66d7ce2db31997dac592b1dd6741780151fe382cdb0e"
+    },
+    {
+      "start": "    fn close(&mut self)",
+      "end": "    fn new(gpu:",
+      "bytes": 1063,
+      "sha256": "2b04e10b721040238d2406688982f841d32f3a7540faf8bcea674faacbb86dcd"
+    },
+    {
+      "start": "struct Instrumented",
+      "end": "// Also drain ordinary",
+      "bytes": 1115,
+      "sha256": "5557184c0dbec1d8ef2d53b5049762c7b66b39d33efdde7cda670a73fcf75ff7"
+    },
+    {
+      "start": "fn compare_raw",
+      "end": "fn batch_instrumented",
+      "bytes": 4107,
+      "sha256": "4df9cc938ba9ce461912e4d97bbd3c08f7340d154e60e7f2319f0afd48cffaed"
+    },
+    {
+      "start": "// Frozen evaluator helpers",
+      "end": null,
+      "bytes": 12893,
+      "sha256": "d58e8f7d8a9b68c56d7ab3b49be21a38ee1c6aecebae333d5142f01ebf2fef33"
+    }
+  ],
+  "E020C1_full_config_and_state_anchor_exact": true,
+  "E020C1_convergence_anchors_exact": 10,
+  "selected_ordinals": [
+    19,
+    29,
+    34
+  ],
+  "boundaries": [
+    19,
+    20,
+    29,
+    30,
+    34,
+    35
+  ],
+  "per_graph": {
+    "original_kernels": 63,
+    "retained_edges": 62,
+    "event_nodes": 6,
+    "added_edges": 12,
+    "total_nodes": 69,
+    "total_edges": 74
+  },
+  "up_show_shared_bytes": [
+    6300,
+    5060
+  ],
+  "raw_and_compressed_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "samples": [
+    160,
+    180,
+    200
+  ],
+  "markers_expected": 22,
+  "selected_intervals_expected": 18,
+  "scope": "Fixed rainbow compressed selected captured training launches only; source review, not compiler/runtime/numerical or performance acceptance.",
+  "findings": [],
+  "reviewer_execution": {
+    "builds": 0,
+    "native_runs": 0,
+    "gpu_calls": 0,
+    "production_edits": 0
+  }
+}

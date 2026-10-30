@@ -1,0 +1,20 @@
+{
+  "id": "E051-raw-control-source-review",
+  "at": "2026-10-17T03:46:22.907219+00:00",
+  "root_review_only": true,
+  "resource_root_sha256": "bd9b8757d2c9e819623dba942d60aa793b4234f6cb6d4b4d3a4a4e01a3756d8f",
+  "cases": 819,
+  "launches": 1638,
+  "changed_path_cases": 264,
+  "scope": "Original/candidate full mutable output and actual immutable device images.3roles, bothactors/algorithms, arities1-17,tails0-1326,alternateblocks,signedzero/subnormal/quietNaN/infinity/finiteoverflow,count0.",
+  "native_reporting": "Summary counts derived from actual case vector, repairing inherited stale E047 summary before any native outcome. All actual arm mutable address/byte extents assert non-overlap and are retained/replayed.",
+  "caller_disjointness": "GpuSolver uses distinct owned CudaSlice allocations for four learning arenas and CFV, with private fields. Continuation methods pass those owners; paging swaps seven distinct owned allocations positionally and creates separately allocated dummies, retaining owners/lifetimes. Scoped GPU source search found no raw device-pointer owner construction/transmute. Host PinnedBuf unsafe raw slices are CPU-only. Supported callers have separate learning/CFV allocations; raw aliased argument experiments are outside supported kernel-call contract.",
+  "caller_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+  },
+  "limits": "Finite direct matrix and root source review only. Full solver, continuation/lifetime/F32/heldout/cumulative/performance qualification still pending. No external independent audit."
+}

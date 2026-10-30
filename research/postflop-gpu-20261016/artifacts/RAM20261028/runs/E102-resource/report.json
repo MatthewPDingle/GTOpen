@@ -1,0 +1,238 @@
+{
+  "id": "E102-resource",
+  "at": "2026-10-28T20:45:30.421607+00:00",
+  "status": "stage1_pass_parent_load_loop_review_required",
+  "protocol_sha256": "42b4f295abf004e35371dc18a4f96076056a68bf9e8e094b279fbbc61fdddc70",
+  "gates": {
+    "compute_120:original9_entries_and_ABIs_exact": true,
+    "compute_120:new16parameter_ABI": true,
+    "compute_120:no_barriers": true,
+    "compute_120:no_floating_arithmetic": true,
+    "compute_75:original9_entries_and_ABIs_exact": true,
+    "compute_75:new16parameter_ABI": true,
+    "compute_75:no_barriers": true,
+    "compute_75:no_floating_arithmetic": true,
+    "actual_original_down_chance_resource_rows_exact": true,
+    "no_new_local_spill": true,
+    "no_shared_growth": true,
+    "max_threads_not_lowered": true,
+    "positive_fixed_occupancies": true,
+    "both_fit_default_limits": true,
+    "no_default_stack_growth": true
+  },
+  "original9_entries": {
+    "compute_120": {
+      "copy_root": true,
+      "down_action": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "up_chance": true,
+      "up_action": true,
+      "copy_span": true,
+      "up_action_eval": true
+    },
+    "compute_75": {
+      "copy_root": true,
+      "down_action": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "up_chance": true,
+      "up_action": true,
+      "copy_span": true,
+      "up_action_eval": true
+    }
+  },
+  "new_entry_bodies": {
+    "compute_120": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-resource\\execution\\candidate-compute_120-down_chance_parent.ptx",
+      "sha256": "4ca9fadc2110b43103d7a01fa21b63cc65cdee24ad35619758c303bc4fcd3bba",
+      "f32_arithmetic": [],
+      "header": ".visible .entry down_chance_parent(\n\t.param .u64 .ptr .align 1 down_chance_parent_param_0,\n\t.param .u32 down_chance_parent_param_1,\n\t.param .u32 down_chance_parent_param_2,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_3,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_4,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_5,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_6,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_7,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_8,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_9,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_10,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_11,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_12,\n\t.param .u64 .ptr .align 1 down_chance_parent_param_13,\n\t.param .u32 down_chance_parent_param_14,\n\t.param .u32 down_chance_parent_param_15\n)\n",
+      "static_mechanism_review_required": true
+    },
+    "compute_75": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-resource\\execution\\candidate-compute_75-down_chance_parent.ptx",
+      "sha256": "ee95f711262be08a3a2515d9fbf93f4d4ac3b2615f814d86d243b27f0001f2b5",
+      "f32_arithmetic": [],
+      "header": ".visible .entry down_chance_parent(\n\t.param .u64 down_chance_parent_param_0,\n\t.param .u32 down_chance_parent_param_1,\n\t.param .u32 down_chance_parent_param_2,\n\t.param .u64 down_chance_parent_param_3,\n\t.param .u64 down_chance_parent_param_4,\n\t.param .u64 down_chance_parent_param_5,\n\t.param .u64 down_chance_parent_param_6,\n\t.param .u64 down_chance_parent_param_7,\n\t.param .u64 down_chance_parent_param_8,\n\t.param .u64 down_chance_parent_param_9,\n\t.param .u64 down_chance_parent_param_10,\n\t.param .u64 down_chance_parent_param_11,\n\t.param .u64 down_chance_parent_param_12,\n\t.param .u64 down_chance_parent_param_13,\n\t.param .u32 down_chance_parent_param_14,\n\t.param .u32 down_chance_parent_param_15\n)\n",
+      "static_mechanism_review_required": true
+    }
+  },
+  "resource_rows": [
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 30,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 30,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_chance_parent",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [
+    {
+      "baseline": {
+        "actual_block_threads": 128,
+        "context_stack_limit_after_load": 1024,
+        "context_stack_limit_before_load": 1024,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "down_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 30,
+        "shape": "same128threads_no_dynamic_shared",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "context_stack_limit_after_load": 1024,
+        "context_stack_limit_before_load": 1024,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "down_chance_parent",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "same128threads_no_dynamic_shared",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "b95364b9b3bd4a8873fc185afff9834028d817b5075ad9257386c015d51fdbef",
+    "candidate-compute_75": "78e72f89e4342e491bdd1230649189701b7cd666e169b0353f1a3cee5d69dfd8"
+  },
+  "all_owned_compiler_native_children_terminal": true,
+  "application_kernels": 0,
+  "solver_runs": 0,
+  "performance_samples": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "mechanism_proven": false,
+  "limits": "Compiler/ABI/resources/copy-only stage. Parent reach-load outside representative-card loops still needs static proof; no numerical/physical-liveness/full-solve/material/capacity or speed claim."
+}

@@ -1,0 +1,110 @@
+{
+  "at": "2026-10-17T18:03:00.965495+00:00",
+  "id": "D113",
+  "purpose": "Read-only diagnosis of policy rejection after reported approval; no denied command retried or executed.",
+  "thread_id": "01a142a6-a120-74a0-a528-6b72d1d18a6f",
+  "versions": {
+    "desktop_package": "26.1007.9446.0",
+    "desktop_internal": "26.1007.71326",
+    "codex_cli": "0.162.0-alpha.17.2"
+  },
+  "stored_thread_configuration": {
+    "id": "01a142a6-a120-74a0-a528-6b72d1d18a6f",
+    "cwd": "\\\\?\\X:\\Dev\\GTOpen",
+    "sandbox_policy": "{\"type\":\"disabled\"}",
+    "approval_mode": "never",
+    "cli_version": "0.162.0-alpha.17.2",
+    "originator": "Codex Desktop"
+  },
+  "current_saved_chat_permissions": {
+    "activePermissionProfile": {
+      "id": ":danger-full-access",
+      "extends": null
+    },
+    "approvalPolicy": "never",
+    "approvalsReviewer": "user",
+    "sandboxPolicy": {
+      "type": "dangerFullAccess"
+    }
+  },
+  "verified_failed_attempts": [
+    {
+      "call_id": "call_c790805494654872bde912206fff3d9e",
+      "timestamp_utc": "2026-10-17T12:31:13.820Z",
+      "turn_cwd": "X:\\Dev\\Ukraine RTS",
+      "approval_policy": "never",
+      "approvals_reviewer": "user",
+      "sandbox_policy": "danger-full-access"
+    },
+    {
+      "call_id": "call_b09137ba11584ae79e8ffaacb9702e1a",
+      "timestamp_utc": "2026-10-17T17:47:45.697Z",
+      "turn_cwd": "X:\\Dev\\GTOpen",
+      "approval_policy": "never",
+      "approvals_reviewer": "user",
+      "sandbox_policy": "danger-full-access"
+    }
+  ],
+  "executor_error": "CreateProcess rejected before PowerShell execution: blocked by policy",
+  "command_size_chars": 8177,
+  "command_size_alone_not_supported_as_cause": "Other same-thread PowerShell preparation commands of10819,12564,12785characters completed successfully.",
+  "native_override_evidence": {
+    "verified_user_event": "Answer to request_user_input_async arrived as ordinary TurnInput text: I approved the D112/E069 denial",
+    "log_record_id": 26186561,
+    "native_approval_override_event_found": false,
+    "scope": "Inspected recent current-thread operation logs and rollout. Absence does not establish activity outside those records."
+  },
+  "local_rule_sources": {
+    "user_rules_files": 0,
+    "loaded_exec_policy_files_reported": 0,
+    "loaded_rules_by_program": {},
+    "user_requirements_toml_present": false,
+    "user_managed_config_toml_present": false,
+    "programdata_requirements_toml_present": false,
+    "programdata_config_toml_present": false
+  },
+  "readonly_local_appserver_probe": {
+    "initialize_succeeded": true,
+    "methods": [
+      "config/read",
+      "configRequirements/read"
+    ],
+    "requirements": null,
+    "security_config_defaults": {
+      "approval_policy": null,
+      "approvals_reviewer": null,
+      "sandbox_mode": null,
+      "permissions": null
+    },
+    "threads_or_turns_started": false,
+    "writes_or_execution_requests_sent": false,
+    "process_exit_code": 0,
+    "scope": "Fresh owned local app-server using the installed binary/base config; does not prove absence of every remote executor or cloud-side guardrail."
+  },
+  "confirmed_correction": "Earlier claims that this was an automatic-review denial were not established. Both recorded failed turns used never/user, not an interactive auto_review policy. The chat question/answer was not itself a native permission grant.",
+  "unresolved": "The command-specific internal deny rule/rationale is not exposed in the tool error, inspected local execution-policy logs or available diagnostic RPCs. No guaranteed root-rule fix is claimed.",
+  "supported_next_step": {
+    "control": "Current chat permissions control below composer",
+    "select": "Ask for approval",
+    "verify_before_candidate_action": {
+      "approval_policy": "on-request",
+      "approvals_reviewer": "user"
+    },
+    "then": "Resume research and use the real native command-permission prompt for the research checkout and S output directory. No conversational multiple-choice answer is treated as a security grant.",
+    "if_immediate_rejection_persists": "Stop; retain exact error and report through /feedback with this sanitized report/thread ID. A hard command-policy denial can require OpenAI or the policy owner; no permission-profile change is promised to override it."
+  },
+  "official_sources": [
+    "https://learn.chatgpt.com/docs/permission-modes",
+    "https://learn.chatgpt.com/docs/sandboxing/auto-review",
+    "https://learn.chatgpt.com/docs/app-server",
+    "https://learn.chatgpt.com/docs/enterprise/managed-configuration",
+    "https://learn.chatgpt.com/docs/developer-commands"
+  ],
+  "research_state": {
+    "D112script_or_candidate_created": false,
+    "benchmarks_started": false,
+    "solver_main_live_protected_ptx_unchanged": true,
+    "accepted_cumulative_gain_pct": 12.4372274192464
+  },
+  "sensitive_data_handling": "No authentication files, tokens, credential values, complete databases, unrelated thread settings or complete application logs included."
+}

@@ -1,0 +1,731 @@
+{
+  "id": "D099",
+  "at": "2026-10-17T08:45:54.241371+00:00",
+  "status": "declined_component_admission",
+  "checks": 11112,
+  "protocol_sha256": "2197252ddf686f650beaea3c415dfef96b19dfbe3d34ca70bb0449f2acab2fc3",
+  "native_report_sha256": "bd2c3c2139557b318720ef6ceb69f9b1bf0fb21d7ae5cd14d1229ae55dd2e814",
+  "cases": [
+    {
+      "case": 0,
+      "baseline_median_plan_ms": 114.4208,
+      "prototype_median_plan_ms": 108.19810000000001,
+      "median_savings_ms": 6.222699999999989,
+      "slower_pairs": 1,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        110.2664,
+        115.9777,
+        132.4126,
+        115.31049999999999,
+        113.70479999999999,
+        113.4624,
+        114.4208,
+        115.5771,
+        112.0566
+      ],
+      "prototype_samples_ms": [
+        99.1602,
+        110.7878,
+        108.19810000000001,
+        108.0585,
+        110.9731,
+        112.9894,
+        130.01950000000002,
+        107.60459999999999,
+        105.6951
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 143856,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3696,
+          "baseline_peak_temporary_requested_capacity_bytes": 3984,
+          "membership_words": 555634,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 4016,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150255,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4432,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 689678,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "e94f23b1f63c839cdcf0b4d85271cc42a4a11931df2d8abb5fb7856b01f641c9",
+      "raw_bytes": 464407988,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 1,
+      "baseline_median_plan_ms": 118.55690000000001,
+      "prototype_median_plan_ms": 111.91329999999999,
+      "median_savings_ms": 6.643600000000021,
+      "slower_pairs": 0,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        119.8259,
+        118.55690000000001,
+        117.0595,
+        120.5329,
+        112.701,
+        113.5758,
+        130.24730000000002,
+        120.7917,
+        113.35919999999999
+      ],
+      "prototype_samples_ms": [
+        111.62950000000001,
+        114.3054,
+        112.5583,
+        111.91329999999999,
+        111.3219,
+        113.01809999999999,
+        112.2602,
+        110.9323,
+        110.5322
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 143856,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3696,
+          "baseline_peak_temporary_requested_capacity_bytes": 3984,
+          "membership_words": 555634,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 4016,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150255,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4432,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 689678,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "8d848a0dec958b1b4ea33c5f0260e87b1d6290f3cbb8ca1065a6c7d14154cd8e",
+      "raw_bytes": 464407988,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 2,
+      "baseline_median_plan_ms": 116.5443,
+      "prototype_median_plan_ms": 112.8373,
+      "median_savings_ms": 3.707000000000008,
+      "slower_pairs": 3,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        130.3943,
+        156.6948,
+        119.893,
+        111.35889999999999,
+        111.9869,
+        111.3742,
+        130.793,
+        116.5443,
+        112.4484
+      ],
+      "prototype_samples_ms": [
+        112.2884,
+        115.60900000000001,
+        108.0332,
+        113.79119999999999,
+        119.147,
+        110.6978,
+        112.5857,
+        112.8373,
+        117.3192
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 143856,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3696,
+          "baseline_peak_temporary_requested_capacity_bytes": 3984,
+          "membership_words": 555634,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 4016,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150255,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4432,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 689678,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "6ff6b410ce1aef5012008bb47bbc7f0000960c607253d21867123875dc40de27",
+      "raw_bytes": 464407988,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 3,
+      "baseline_median_plan_ms": 118.0426,
+      "prototype_median_plan_ms": 113.31739999999999,
+      "median_savings_ms": 4.725200000000001,
+      "slower_pairs": 0,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        119.0836,
+        128.4561,
+        115.476,
+        115.8763,
+        117.3166,
+        119.7219,
+        130.48960000000002,
+        118.0426,
+        116.0506
+      ],
+      "prototype_samples_ms": [
+        116.96249999999999,
+        116.72670000000001,
+        113.31739999999999,
+        113.8197,
+        109.7701,
+        114.663,
+        112.509,
+        111.1394,
+        110.9666
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 143856,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3696,
+          "baseline_peak_temporary_requested_capacity_bytes": 3984,
+          "membership_words": 555634,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 4016,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150255,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4432,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 689678,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "88ff167c45851392396b93dbd9504acc48033dafc6550c49af41e59b29940bf7",
+      "raw_bytes": 464407988,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 4,
+      "baseline_median_plan_ms": 111.9666,
+      "prototype_median_plan_ms": 107.7227,
+      "median_savings_ms": 4.2438999999999965,
+      "slower_pairs": 1,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        110.7994,
+        111.9666,
+        130.1603,
+        123.5988,
+        111.4234,
+        112.75150000000001,
+        108.7521,
+        113.1495,
+        110.5716
+      ],
+      "prototype_samples_ms": [
+        106.35409999999999,
+        108.81269999999999,
+        112.4379,
+        107.46350000000001,
+        107.5561,
+        106.8633,
+        136.2189,
+        109.1134,
+        107.7227
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 144279,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3680,
+          "baseline_peak_temporary_requested_capacity_bytes": 3952,
+          "membership_words": 557796,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 3984,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150075,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4416,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 691840,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "d497ed6d8627ccbbb87142a3fbefbfb3c3a1eb9a5f876e3ff8ebc2b674490b28",
+      "raw_bytes": 464624980,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 5,
+      "baseline_median_plan_ms": 122.089,
+      "prototype_median_plan_ms": 111.961,
+      "median_savings_ms": 10.128,
+      "slower_pairs": 0,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        117.3167,
+        134.47410000000002,
+        122.089,
+        131.62460000000002,
+        121.409,
+        116.0907,
+        133.6085,
+        124.86500000000001,
+        119.5447
+      ],
+      "prototype_samples_ms": [
+        113.3669,
+        113.49589999999999,
+        111.4903,
+        113.3802,
+        111.961,
+        107.8339,
+        109.5506,
+        109.5171,
+        113.7701
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 144279,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3680,
+          "baseline_peak_temporary_requested_capacity_bytes": 3952,
+          "membership_words": 557796,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 3984,
+          "slots": 1176
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 150075,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4416,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 691840,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 1176
+        }
+      ],
+      "raw_file_sha256": "d77dabaf9f1d67e3848644a0f5afe332e77e168f99f719824447c2464facacfc",
+      "raw_bytes": 464624980,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 6,
+      "baseline_median_plan_ms": 80.307,
+      "prototype_median_plan_ms": 78.8309,
+      "median_savings_ms": 1.4761000000000024,
+      "slower_pairs": 3,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        81.00110000000001,
+        79.2557,
+        78.1281,
+        93.98670000000001,
+        80.307,
+        79.0275,
+        80.50110000000001,
+        79.69569999999999,
+        80.4444
+      ],
+      "prototype_samples_ms": [
+        76.5145,
+        95.6103,
+        76.5826,
+        78.8309,
+        76.6144,
+        80.9622,
+        79.8858,
+        87.30690000000001,
+        77.14699999999999
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 98025,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3680,
+          "baseline_peak_temporary_requested_capacity_bytes": 3952,
+          "membership_words": 378986,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 3984,
+          "slots": 799
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 101957,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4416,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 470060,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 799
+        }
+      ],
+      "raw_file_sha256": "f7cb26abbff2a61c2b4d813e636633779a00e05f52ee7a671bd3a54a68098218",
+      "raw_bytes": 431556548,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 7,
+      "baseline_median_plan_ms": 85.8054,
+      "prototype_median_plan_ms": 80.7362,
+      "median_savings_ms": 5.069200000000009,
+      "slower_pairs": 0,
+      "component_guard_failed": false,
+      "baseline_samples_ms": [
+        81.13510000000001,
+        83.5553,
+        90.5925,
+        105.5749,
+        82.3291,
+        86.7784,
+        85.54159999999999,
+        85.8054,
+        93.8758
+      ],
+      "prototype_samples_ms": [
+        79.0745,
+        82.2362,
+        81.69,
+        80.11890000000001,
+        81.9464,
+        83.14290000000001,
+        80.7362,
+        79.9021,
+        80.2748
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 98025,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3680,
+          "baseline_peak_temporary_requested_capacity_bytes": 3952,
+          "membership_words": 378986,
+          "player": 0,
+          "reused_allocation_growth_events": 130,
+          "reused_peak_temporary_requested_capacity_bytes": 3984,
+          "slots": 799
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 101957,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4416,
+          "baseline_peak_temporary_requested_capacity_bytes": 4688,
+          "membership_words": 470060,
+          "player": 1,
+          "reused_allocation_growth_events": 134,
+          "reused_peak_temporary_requested_capacity_bytes": 4720,
+          "slots": 799
+        }
+      ],
+      "raw_file_sha256": "561ee7d59f55f5ec0ea5b03c5189fe82a688bcbe9120bfa9e98556b91435564b",
+      "raw_bytes": 431556548,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 8,
+      "baseline_median_plan_ms": 0.0222,
+      "prototype_median_plan_ms": 0.022500000000000003,
+      "median_savings_ms": -0.00030000000000000165,
+      "slower_pairs": 7,
+      "component_guard_failed": true,
+      "baseline_samples_ms": [
+        0.024,
+        0.022699999999999998,
+        0.0222,
+        0.022099999999999998,
+        0.0219,
+        0.09050000000000001,
+        0.022699999999999998,
+        0.022,
+        0.0218
+      ],
+      "prototype_samples_ms": [
+        0.0246,
+        0.022799999999999997,
+        0.0223,
+        0.022600000000000002,
+        0.022699999999999998,
+        0.0224,
+        0.022500000000000003,
+        0.0223,
+        0.0222
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 121,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3760,
+          "baseline_peak_temporary_requested_capacity_bytes": 3760,
+          "membership_words": 466,
+          "player": 0,
+          "reused_allocation_growth_events": 121,
+          "reused_peak_temporary_requested_capacity_bytes": 3760,
+          "slots": 1
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 126,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4464,
+          "baseline_peak_temporary_requested_capacity_bytes": 4464,
+          "membership_words": 560,
+          "player": 1,
+          "reused_allocation_growth_events": 126,
+          "reused_peak_temporary_requested_capacity_bytes": 4464,
+          "slots": 1
+        }
+      ],
+      "raw_file_sha256": "bc090a36f5d0459bc7ce421b19f223cf938e6f04786d1c571253d2a413a14c78",
+      "raw_bytes": 115764,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 9,
+      "baseline_median_plan_ms": 0.0161,
+      "prototype_median_plan_ms": 0.0162,
+      "median_savings_ms": -9.99999999999994e-05,
+      "slower_pairs": 7,
+      "component_guard_failed": true,
+      "baseline_samples_ms": [
+        0.0244,
+        0.0229,
+        0.022500000000000003,
+        0.0177,
+        0.0161,
+        0.0161,
+        0.0159,
+        0.0158,
+        0.0159
+      ],
+      "prototype_samples_ms": [
+        0.0245,
+        0.022799999999999997,
+        0.022699999999999998,
+        0.019700000000000002,
+        0.0161,
+        0.0162,
+        0.0161,
+        0.016,
+        0.016
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 121,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3760,
+          "baseline_peak_temporary_requested_capacity_bytes": 3760,
+          "membership_words": 466,
+          "player": 0,
+          "reused_allocation_growth_events": 121,
+          "reused_peak_temporary_requested_capacity_bytes": 3760,
+          "slots": 1
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 126,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4464,
+          "baseline_peak_temporary_requested_capacity_bytes": 4464,
+          "membership_words": 560,
+          "player": 1,
+          "reused_allocation_growth_events": 126,
+          "reused_peak_temporary_requested_capacity_bytes": 4464,
+          "slots": 1
+        }
+      ],
+      "raw_file_sha256": "5317c05d255b7d15f97c089021368bcc6832b2c4abe5bdb99b7f7bc7370b0145",
+      "raw_bytes": 115764,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 10,
+      "baseline_median_plan_ms": 0.0156,
+      "prototype_median_plan_ms": 0.016,
+      "median_savings_ms": -0.00040000000000000105,
+      "slower_pairs": 6,
+      "component_guard_failed": true,
+      "baseline_samples_ms": [
+        0.0167,
+        0.0188,
+        0.016399999999999998,
+        0.0157,
+        0.0155,
+        0.0155,
+        0.0156,
+        0.0156,
+        0.0155
+      ],
+      "prototype_samples_ms": [
+        0.0183,
+        0.018000000000000002,
+        0.016,
+        0.0161,
+        0.0157,
+        0.016,
+        0.0157,
+        0.0156,
+        0.0157
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 121,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3760,
+          "baseline_peak_temporary_requested_capacity_bytes": 3760,
+          "membership_words": 466,
+          "player": 0,
+          "reused_allocation_growth_events": 121,
+          "reused_peak_temporary_requested_capacity_bytes": 3760,
+          "slots": 1
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 126,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4464,
+          "baseline_peak_temporary_requested_capacity_bytes": 4464,
+          "membership_words": 560,
+          "player": 1,
+          "reused_allocation_growth_events": 126,
+          "reused_peak_temporary_requested_capacity_bytes": 4464,
+          "slots": 1
+        }
+      ],
+      "raw_file_sha256": "f52f82747bc8cfc0cc395d9c19a2f0002b27cacadd333c3d4bb18667b4c03393",
+      "raw_bytes": 115764,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    },
+    {
+      "case": 11,
+      "baseline_median_plan_ms": 0.0157,
+      "prototype_median_plan_ms": 0.016,
+      "median_savings_ms": -0.00030000000000000165,
+      "slower_pairs": 7,
+      "component_guard_failed": true,
+      "baseline_samples_ms": [
+        0.0167,
+        0.016,
+        0.0157,
+        0.0156,
+        0.016399999999999998,
+        0.016,
+        0.0157,
+        0.0156,
+        0.0155
+      ],
+      "prototype_samples_ms": [
+        0.0171,
+        0.0161,
+        0.0159,
+        0.0161,
+        0.016,
+        0.0158,
+        0.0159,
+        0.0157,
+        0.016
+      ],
+      "posting_mechanism": [
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 121,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 3760,
+          "baseline_peak_temporary_requested_capacity_bytes": 3760,
+          "membership_words": 466,
+          "player": 0,
+          "reused_allocation_growth_events": 121,
+          "reused_peak_temporary_requested_capacity_bytes": 3760,
+          "slots": 1
+        },
+        {
+          "all_card_posting_values_and_order_exact": true,
+          "baseline_allocation_growth_events": 126,
+          "baseline_last_slot_temporary_requested_capacity_bytes": 4464,
+          "baseline_peak_temporary_requested_capacity_bytes": 4464,
+          "membership_words": 560,
+          "player": 1,
+          "reused_allocation_growth_events": 126,
+          "reused_peak_temporary_requested_capacity_bytes": 4464,
+          "slots": 1
+        }
+      ],
+      "raw_file_sha256": "3b450a9828d82320ecde1c9b15acbb815886dad03db45177ac791e0d8319d4c2",
+      "raw_bytes": 115764,
+      "all53_fields_and_capacities_exact": true,
+      "baseline_matches_retained_D092_accepted_fields": true
+    }
+  ],
+  "all12cases_53fields_and_capacities_exact": true,
+  "all_encoded_baseline_words_compared": 217337566,
+  "raw_bytes": 3650458064,
+  "source_mechanism": "Stable reuse of temporary per-card vectors only; same accepted solver/mimalloc and local exact game source. No returned fields, capacities, metadata order, CUDA or quality changed.",
+  "canonical_cases": [
+    2,
+    6,
+    10
+  ],
+  "canonical_component_savings_ms": 5.18270000000001,
+  "frozen_prior_full_cycle_reference_ms": 9802.7425,
+  "frozen_component_minimum_savings_ms": 98.02742500000001,
+  "reference_proxy_pct": 0.05286989839833098,
+  "screen_pass": false,
+  "limits": "Only CPU full-plan component clocks with explicit warmup and separate unscored output proof plans. Reference ratio is a prospective research-selection proxy, not measured/bounded complete-cycle gain. Requested temporary capacities and Vec growth events are not OS allocator calls/RSS or GPU capacity observations. Root replay is not external independent review.",
+  "all_owned_children_terminal": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "source_activated": false,
+  "gpu_executions": 0,
+  "whole_solver_executions": 0,
+  "full_cycle_performance_measured": false,
+  "optimization_accepted": false,
+  "no_scratch_guard_scope_or_allocation_variant_rescue": true,
+  "accepted_source": "E051"
+}

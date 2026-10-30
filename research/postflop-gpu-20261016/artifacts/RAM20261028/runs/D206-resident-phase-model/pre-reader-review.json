@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-28T22:12:47.317147+00:00",
+  "status": "mechanical_typed_span_parser_fix_before_any_model_or_input_read",
+  "finding": "Original generic Vec<u32> parser checks payload element count==lengthprefix. Vec<LevelSpan> lengthprefix counts structs of two u32, so must check8+count*8 andreshape(count,2). Original schema explicitly distinguishes this type. Caught in pre-execution source review; no raw model/physics/benchmark outcome observed.",
+  "change": "Dedicated complete LevelSpan parser, all counts/bytes andallnumeric/ownershipgates retained. Original model/protocol kept; corrected reader/protocol separate. No compiler/CUDA/solver/native observation or repeateddata sample.",
+  "original_model_sha256": "8887831617b499de5322ab269f8efebf2ab22adc38f784fdebd153f033e6b1e2",
+  "corrected_model_sha256": "559b51fbeef444c2613b5b30e94ef2b2604631e68a76a5c64b3b2cb54edc148d"
+}

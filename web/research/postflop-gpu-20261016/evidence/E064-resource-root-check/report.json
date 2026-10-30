@@ -1,0 +1,39 @@
+{
+  "id": "E064-resource-root-check",
+  "at": "2026-10-17T10:25:29.535257+00:00",
+  "status": "pass_preserved_resource_rejection",
+  "checks": 65,
+  "resource_report_sha256": "74b77a810f29596c3428638d8ad09613b371ba04a254dbca9eee9ed89cbea827",
+  "integer_proof_sha256": "8af9c4159fe8f29eb554f3ab5dd29dd26b96069a805e2c1b1d2fc50fd66823cc",
+  "nominal_registers": [
+    62,
+    68
+  ],
+  "allocated_registers_per_warp": [
+    2048,
+    2304
+  ],
+  "allocated_registers_per128thread_CTA": [
+    8192,
+    9216
+  ],
+  "max_threads": [
+    1024,
+    896
+  ],
+  "theoretical128thread_blocks_perSM": [
+    8,
+    7
+  ],
+  "local_bytes_per_thread": [
+    64,
+    64
+  ],
+  "other8_entries_exact_actual_compute75": true,
+  "parameter_ABI_exact": true,
+  "application_kernel_launches": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "source_main_live_ptx_unchanged": true,
+  "limits": "Root source/transcript/allocation arithmetic, not external independent review. SDK rounded allocation and driver theoretical occupancy are not hardware counters or measured runtime slowdown. Actual machine/numerical/timing stages correctly not reached."
+}

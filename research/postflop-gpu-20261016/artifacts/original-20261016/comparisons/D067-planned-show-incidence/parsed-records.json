@@ -1,0 +1,497 @@
+[
+  {
+    "available_host_ram_bytes": 102070431744,
+    "cpu_only": true,
+    "fixtures": 3,
+    "gpu_calls": 0,
+    "required_available_host_ram_bytes": 17179869184,
+    "stage": "admission"
+  },
+  {
+    "cleanup_complete": true,
+    "fixture_id": "rainbow",
+    "fixture_index": 0,
+    "fold_ctas_per_traverser": 319985,
+    "fold_mapping": {
+      "bytes": 6399700,
+      "file": "rainbow-fold-mapping.u32le",
+      "fnv1a64": "35a9257cdf387a0e",
+      "record": "five little-endian u32: node,slot0,slot1,amount0bits,amount1bits"
+    },
+    "fold_mapping_exact": true,
+    "fold_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 1,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 3,
+        "level": 3,
+        "start": 1
+      },
+      {
+        "count": 3,
+        "level": 4,
+        "start": 4
+      },
+      {
+        "count": 101,
+        "level": 5,
+        "start": 7
+      },
+      {
+        "count": 199,
+        "level": 6,
+        "start": 108
+      },
+      {
+        "count": 492,
+        "level": 7,
+        "start": 307
+      },
+      {
+        "count": 10045,
+        "level": 8,
+        "start": 799
+      },
+      {
+        "count": 26607,
+        "level": 9,
+        "start": 10844
+      },
+      {
+        "count": 66150,
+        "level": 10,
+        "start": 37451
+      },
+      {
+        "count": 96432,
+        "level": 11,
+        "start": 103601
+      },
+      {
+        "count": 89376,
+        "level": 12,
+        "start": 200033
+      },
+      {
+        "count": 30576,
+        "level": 13,
+        "start": 289409
+      }
+    ],
+    "mapping": {
+      "bytes": 17019072,
+      "file": "rainbow-planned-show-mapping.u32le",
+      "fnv1a64": "7b29b08c60320814",
+      "record": "nine little-endian u32: node,slot0,slot1,river_slot,win_bits,lose_bits,tie_bits,m0,m1"
+    },
+    "new_show_upload_validation": false,
+    "nh": [
+      257,
+      319
+    ],
+    "nodes": 1346813,
+    "num_levels": 14,
+    "num_slots": 1176,
+    "planned_source_only": true,
+    "reach_blocks": [
+      750803,
+      724734
+    ],
+    "show_ctas_per_traverser": 472752,
+    "show_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 3,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 4,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 5,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 6,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 7,
+        "start": 0
+      },
+      {
+        "count": 21168,
+        "level": 8,
+        "start": 0
+      },
+      {
+        "count": 54096,
+        "level": 9,
+        "start": 21168
+      },
+      {
+        "count": 122304,
+        "level": 10,
+        "start": 75264
+      },
+      {
+        "count": 141120,
+        "level": 11,
+        "start": 197568
+      },
+      {
+        "count": 103488,
+        "level": 12,
+        "start": 338688
+      },
+      {
+        "count": 30576,
+        "level": 13,
+        "start": 442176
+      }
+    ],
+    "stage": "fixture_mapping"
+  },
+  {
+    "cleanup_complete": true,
+    "fixture_id": "two-tone",
+    "fixture_index": 1,
+    "fold_ctas_per_traverser": 194730,
+    "fold_mapping": {
+      "bytes": 3894600,
+      "file": "two-tone-fold-mapping.u32le",
+      "fnv1a64": "5fba17f827a8b8e0",
+      "record": "five little-endian u32: node,slot0,slot1,amount0bits,amount1bits"
+    },
+    "fold_mapping_exact": true,
+    "fold_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 1,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 3,
+        "level": 3,
+        "start": 1
+      },
+      {
+        "count": 3,
+        "level": 4,
+        "start": 4
+      },
+      {
+        "count": 75,
+        "level": 5,
+        "start": 7
+      },
+      {
+        "count": 147,
+        "level": 6,
+        "start": 82
+      },
+      {
+        "count": 362,
+        "level": 7,
+        "start": 229
+      },
+      {
+        "count": 6184,
+        "level": 8,
+        "start": 591
+      },
+      {
+        "count": 16259,
+        "level": 9,
+        "start": 6775
+      },
+      {
+        "count": 40228,
+        "level": 10,
+        "start": 23034
+      },
+      {
+        "count": 58589,
+        "level": 11,
+        "start": 63262
+      },
+      {
+        "count": 54302,
+        "level": 12,
+        "start": 121851
+      },
+      {
+        "count": 18577,
+        "level": 13,
+        "start": 176153
+      }
+    ],
+    "mapping": {
+      "bytes": 10340244,
+      "file": "two-tone-planned-show-mapping.u32le",
+      "fnv1a64": "bd26491115cf090a",
+      "record": "nine little-endian u32: node,slot0,slot1,river_slot,win_bits,lose_bits,tie_bits,m0,m1"
+    },
+    "new_show_upload_validation": false,
+    "nh": [
+      258,
+      320
+    ],
+    "nodes": 1346813,
+    "num_levels": 14,
+    "num_slots": 799,
+    "planned_source_only": true,
+    "reach_blocks": [
+      456834,
+      440970
+    ],
+    "show_ctas_per_traverser": 287229,
+    "show_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 3,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 4,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 5,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 6,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 7,
+        "start": 0
+      },
+      {
+        "count": 12861,
+        "level": 8,
+        "start": 0
+      },
+      {
+        "count": 32867,
+        "level": 9,
+        "start": 12861
+      },
+      {
+        "count": 74308,
+        "level": 10,
+        "start": 45728
+      },
+      {
+        "count": 85740,
+        "level": 11,
+        "start": 120036
+      },
+      {
+        "count": 62876,
+        "level": 12,
+        "start": 205776
+      },
+      {
+        "count": 18577,
+        "level": 13,
+        "start": 268652
+      }
+    ],
+    "stage": "fixture_mapping"
+  },
+  {
+    "cleanup_complete": true,
+    "fixture_id": "river",
+    "fixture_index": 2,
+    "fold_ctas_per_traverser": 10,
+    "fold_mapping": {
+      "bytes": 200,
+      "file": "river-fold-mapping.u32le",
+      "fnv1a64": "f259bb6479e3842d",
+      "record": "five little-endian u32: node,slot0,slot1,amount0bits,amount1bits"
+    },
+    "fold_mapping_exact": true,
+    "fold_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 1,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 2,
+        "level": 3,
+        "start": 1
+      },
+      {
+        "count": 2,
+        "level": 4,
+        "start": 3
+      },
+      {
+        "count": 2,
+        "level": 5,
+        "start": 5
+      },
+      {
+        "count": 2,
+        "level": 6,
+        "start": 7
+      },
+      {
+        "count": 1,
+        "level": 7,
+        "start": 9
+      }
+    ],
+    "mapping": {
+      "bytes": 396,
+      "file": "river-planned-show-mapping.u32le",
+      "fnv1a64": "72afd3f12ff0cd68",
+      "record": "nine little-endian u32: node,slot0,slot1,river_slot,win_bits,lose_bits,tie_bits,m0,m1"
+    },
+    "new_show_upload_validation": false,
+    "nh": [
+      233,
+      280
+    ],
+    "nodes": 33,
+    "num_levels": 8,
+    "num_slots": 1,
+    "planned_source_only": true,
+    "reach_blocks": [
+      17,
+      17
+    ],
+    "show_ctas_per_traverser": 11,
+    "show_spans": [
+      {
+        "count": 0,
+        "level": 0,
+        "start": 0
+      },
+      {
+        "count": 0,
+        "level": 1,
+        "start": 0
+      },
+      {
+        "count": 2,
+        "level": 2,
+        "start": 0
+      },
+      {
+        "count": 2,
+        "level": 3,
+        "start": 2
+      },
+      {
+        "count": 2,
+        "level": 4,
+        "start": 4
+      },
+      {
+        "count": 2,
+        "level": 5,
+        "start": 6
+      },
+      {
+        "count": 2,
+        "level": 6,
+        "start": 8
+      },
+      {
+        "count": 1,
+        "level": 7,
+        "start": 10
+      }
+    ],
+    "stage": "fixture_mapping"
+  },
+  {
+    "candidate_accepted": false,
+    "cpu_only": true,
+    "fixtures": 3,
+    "fold_mapping_checks": 3,
+    "fold_mapping_exact": true,
+    "gpu_calls": 0,
+    "new_show_upload_validation": false,
+    "performance_measurement": false,
+    "planned_show_mapping_files": 3,
+    "planned_source_only": true,
+    "stage": "complete"
+  }
+]

@@ -1,0 +1,98 @@
+{
+  "id": "E020-broader-build-component-review",
+  "at": "2026-10-16T11:05:44.604870+00:00",
+  "verdict": "BROADER_BUILDS_VERIFIED_READINESS_PENDING",
+  "seven_frozen_binaries_verified": true,
+  "two_Cargo_groups": [
+    {
+      "group": 1,
+      "invoked_at": "2026-10-16T11:00:47Z",
+      "terminal_at": "2026-10-16T11:01:06Z",
+      "returncode": 0,
+      "targets": [
+        "postflop_action_menus",
+        "postflop_state_perf",
+        "gpu",
+        "postflop_resume_state"
+      ],
+      "compiler_overrides_absent": true
+    },
+    {
+      "group": 2,
+      "invoked_at": "2026-10-16T11:01:07Z",
+      "terminal_at": "2026-10-16T11:03:14Z",
+      "returncode": 0,
+      "targets": [
+        "continuation_paging",
+        "continuation_symmetry",
+        "solver"
+      ],
+      "compiler_overrides_absent": true
+    }
+  ],
+  "source_map_entries": 162,
+  "source_map_matches_frozen_primary": true,
+  "binary_pins": {
+    "E020-postflop_action_menus": {
+      "binary_sha256": "d086cceb1e0490ae23a16fe2b6fc739f4b21e4cb8993de6e5ef38d8dc946feb9",
+      "manifest_sha256": "a59ed1349cb6436cdb9f4de91897730eeac524cba036b57ad54e62f9f41bb84a"
+    },
+    "E020-postflop_state_perf": {
+      "binary_sha256": "a293634fa964a06e04209e54a5e7c0767bd380fc44e95ee83362a6e86a9d4d1c",
+      "manifest_sha256": "208fb434f5e04ac118c7eaacef16dc809fbd34c00f1686800b20c2260b8138ed"
+    },
+    "E020-gpu": {
+      "binary_sha256": "23a902540f6d868aaff64d5c4059c0eab454920a0e4bf2aea9441229d56f7148",
+      "manifest_sha256": "07c8a2254b479a9bde9476a9beff525499917e7df6f01250b2ee0ad2513bccdf"
+    },
+    "E020-postflop_resume_state": {
+      "binary_sha256": "5e174a9da989d03264fe731603ca12985b7d6bc7d0945ea73eb43d22e3bf697b",
+      "manifest_sha256": "97344099895a619b0b00a811d7586485d7115ab1845fb27395340da97448d0f6"
+    },
+    "E020-continuation_paging": {
+      "binary_sha256": "012790a236b2cdf95bb54fffc864677cad0931e04f180fb0e2a8e26a2e565049",
+      "manifest_sha256": "5ae9cab58c8c0d2050c38859d7febe14719f4515c6496c4621f180ecd3a1ee9f"
+    },
+    "E020-continuation_symmetry": {
+      "binary_sha256": "0a2d2403e6eb7ef1af2141da590a1da67c3d3269c66a77f7f1023e86b5cd2980",
+      "manifest_sha256": "bad6f8150040fcc287ed9f42ec7a3964019bab18476dcc1d88b6fedbe3345891"
+    },
+    "E020-continuation-tests": {
+      "binary_sha256": "21ad5267694c35d26ec8e018c0598f94c2f66216ef81d7ee4b90cb4eb6fcdc20",
+      "manifest_sha256": "188fa463158de5d2736a56bc64ba72c8cc55b03413cec166e901f1c050eec8f6"
+    }
+  },
+  "verified_artifacts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\complete.json": "edd2a6ef6a0baf621553b6eb7039eebae7d41669d4a2b1a3ad659b286cad1ded",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-plan\\authorization.json": "364775cadca51f63136784e92ca013792d1ab23dc521be47ba8b9a93ecb54a4f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\source-before.json": "648d7cadffd6b8e5751579c667006e4338bac2a12ba71168832ee5cd3b30565a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\invocation.json": "21323f37c1bacfa05eab0fc70d6cbb13d018ea161a8cab0ba283fafb0630f9c8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\exit.json": "3b650f1313ad9266874c616cf314976f774b89858e91858b56c046ac3e5b6205",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\stdout.log": "41058267948cb9c0ea584c609c0d8cd17e6cb57cac18a899a20eaa93f51238c2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\stderr.log": "713349ac30e388a5fc09896886599de7fa9c6b39a0d84660082b90ad58f0a834",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\invocation.json": "5255d1d4a314831bf941d56a9361e4c07b8c146db1313d7bae02605dab3a22f2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\exit.json": "c40ad41566b3a5c1ada180d025f9261b72c436df41b0bd3c3df606b42636fc08",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\stdout.log": "f2f19f6d3868829df45842f2f05c7013a63471747ade7a739d8c6e079e55c08e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\stderr.log": "d6b38ff406a3e933917642b13aa3b87bdcdde82f86eca5c3ee3fc95de905cec0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_action_menus.exe": "d086cceb1e0490ae23a16fe2b6fc739f4b21e4cb8993de6e5ef38d8dc946feb9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_action_menus.manifest.json": "a59ed1349cb6436cdb9f4de91897730eeac524cba036b57ad54e62f9f41bb84a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_state_perf.exe": "a293634fa964a06e04209e54a5e7c0767bd380fc44e95ee83362a6e86a9d4d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_state_perf.manifest.json": "208fb434f5e04ac118c7eaacef16dc809fbd34c00f1686800b20c2260b8138ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gpu.exe": "23a902540f6d868aaff64d5c4059c0eab454920a0e4bf2aea9441229d56f7148",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gpu.manifest.json": "07c8a2254b479a9bde9476a9beff525499917e7df6f01250b2ee0ad2513bccdf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_resume_state.exe": "5e174a9da989d03264fe731603ca12985b7d6bc7d0945ea73eb43d22e3bf697b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_resume_state.manifest.json": "97344099895a619b0b00a811d7586485d7115ab1845fb27395340da97448d0f6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_paging.exe": "012790a236b2cdf95bb54fffc864677cad0931e04f180fb0e2a8e26a2e565049",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_paging.manifest.json": "5ae9cab58c8c0d2050c38859d7febe14719f4515c6496c4621f180ecd3a1ee9f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_symmetry.exe": "0a2d2403e6eb7ef1af2141da590a1da67c3d3269c66a77f7f1023e86b5cd2980",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_symmetry.manifest.json": "bad6f8150040fcc287ed9f42ec7a3964019bab18476dcc1d88b6fedbe3345891",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation-tests.exe": "21ad5267694c35d26ec8e018c0598f94c2f66216ef81d7ee4b90cb4eb6fcdc20",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation-tests.manifest.json": "188fa463158de5d2736a56bc64ba72c8cc55b03413cec166e901f1c050eec8f6"
+  },
+  "pending": [
+    "Root must observe holdout build terminal success and freeze its three binaries/manifests.",
+    "Verify root all-builds-ready actual record, ten executable/manifest identities, terminal chronology and independent holdout review before any native qualification process."
+  ],
+  "review_actions": "CPU-only reads/hashes; no builds/GPU/source/status edits",
+  "native_runs_reviewed": 0
+}

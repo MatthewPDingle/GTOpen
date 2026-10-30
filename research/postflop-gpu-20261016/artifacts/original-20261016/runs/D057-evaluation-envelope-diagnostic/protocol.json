@@ -1,0 +1,165 @@
+{
+  "id": "D057",
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "scope_plan_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\protocol.json",
+  "scope_plan_sha256": "e20f616bdd9abbb24981690150d09aa99456c7da91e5dbb60e73d703cf0a1130",
+  "fixture": "two-tone",
+  "board": "Ks7s2d",
+  "test_filter": "gpu::evaluation_device_events::captured_evaluation_envelope_diagnostic",
+  "marker": "D057_EVAL_DIAGNOSTIC ",
+  "actual_run": "D057R1",
+  "logical_dashboard_row": "D057",
+  "warm_checkpoints": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140
+  ],
+  "sample_checkpoints": [
+    160,
+    180,
+    200
+  ],
+  "post_evaluation_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "expected_test_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 88
+  },
+  "expected_stage_order": [
+    "admission",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "warm_check",
+    "raw_exact",
+    "checkpoint_exact",
+    "graph_metadata",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "batch",
+    "raw_exact",
+    "checkpoint_exact",
+    "final_anchor_exact",
+    "complete"
+  ],
+  "batch_arm_order": [
+    [
+      "ordinary",
+      "instrumented"
+    ],
+    [
+      "instrumented",
+      "ordinary"
+    ],
+    [
+      "ordinary",
+      "instrumented"
+    ]
+  ],
+  "events": {
+    "timing_handles": 2,
+    "records": 6,
+    "intervals": 3,
+    "placement": "same instrumented stream, immediately around existing already-captured raked evaluation graph launch; outside capture"
+  },
+  "usefulness": {
+    "quantity": "abs(instrumented_host_batch_ms / ordinary_host_batch_ms - 1) * 100",
+    "max_each_pct": 10.0,
+    "assess_after_all_samples": true,
+    "exceedance_disposition": "inconclusive",
+    "exclusions_or_extensions": false
+  },
+  "build": {
+    "target_dir": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d057-evaluation-envelope",
+    "output": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-build",
+    "binary": "D057-solver",
+    "features": [
+      "gpu"
+    ],
+    "timeout_seconds": 1800,
+    "fresh_target_required": true,
+    "compile_only": true
+  },
+  "execution": {
+    "output": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-execution",
+    "timeout_seconds": 900,
+    "invocations": 1,
+    "fixed_actual_run": "D057R1",
+    "one_ignored_test": true,
+    "threads": 1,
+    "RAYON_NUM_THREADS": "16",
+    "profile": "0",
+    "storage": "compressed"
+  },
+  "assessment_output": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-evaluation-envelope-diagnostic",
+  "registered_source_base_sha256": {
+    "gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "owned_sources": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/evaluation_device_events.rs"
+  ],
+  "source_total": 163,
+  "unchanged_production_methods": true,
+  "unchanged_CUDA": true,
+  "unchanged_frozen_evaluator": true,
+  "performance_acceptance": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "scope": "Event-perturbed captured evaluation-device envelope only; all three fixed samples retained. Not evaluation wall time, training/evaluation or kernel-family shares, native solve cost, removable headroom or a speedup.",
+  "cleanup": "Root restores only appended mod declaration/removes owned helper after custody; verify all162 accepted source identities and exact live desktop-runtime binary unchanged.",
+  "exactness": {
+    "anchor_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\anchors.json",
+    "all10_exploit_anchor_bits_both_arms": true,
+    "post_evaluation_checkpoints": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "raw_records_per_checkpoint": 12,
+    "raw_arrays": "regrets, strategy, reach, weights for both players and four logical evaluation roots",
+    "raw_compare_chunk_floats": 1048576,
+    "peak_pairwise_snapshot_bytes": 8388608,
+    "full_compressed_q_and_scales": true,
+    "complete_final_state_object": true,
+    "unknown_CFV_padding_compared": false,
+    "device_cpu_arena_geometry": "Full raw GPU arrays bind to actual finalized device_arena_elements reported in admission. Compact device arenas and full CPU q/scale stores have distinct lengths; compare each arm in its actual layout, never infer equal cross-layout lengths."
+  },
+  "graph_metadata": {
+    "checkpoint": 140,
+    "comparison": "node cardinality/kinds and sorted logical kernel launch descriptors per own module, no cross-arm pointer-bearing bytes",
+    "no_graph_edits_or_extra_replays": true
+  },
+  "native_log_contract": {
+    "path": "runs/D057R1/stdout.log",
+    "streams": "stdout and stderr merged by frozen postflop_autoresearch.py subprocess.STDOUT",
+    "cleanup_error_markers": [
+      "D057_EVENT_CLEANUP_ERROR",
+      "D057_SOLVER_CLEANUP_ERROR"
+    ],
+    "wrapper_stderr": "runs/D057-execution/stderr.log is separate orchestration evidence"
+  },
+  "source_archive": "source/r2",
+  "source_manifest_sha256": "2b761d68451d7e7d92f06fb06034466201f7554549420553f785511bf0eab5cd",
+  "source_output_schema_sha256": "ee9d310e31dd49351bea91845378d513e4f329ce514e82dc57db75e056cefdb7"
+}

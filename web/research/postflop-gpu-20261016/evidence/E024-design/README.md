@@ -1,0 +1,7 @@
+# E024 generic action-cache candidate
+
+Frozen outside-checkout preparation only. Exact D046 candidate CUDA changes one literal inside up_action_impl to `bool small = NA != 0 && na <= 8;`. Common compile-time NA2/3/4 caches and the separate down_action cache remain. All other source bytes, launch shapes/order, host allocations, graph lifecycle, evaluator and floating source operations/order remain unchanged.
+
+The generic path reloads each regret/child value in its existing loops. Regret elements are distinct across actions and written only in the last loop, child CFVs remain read-only during a parent CTA, and the parent CFV is written last. D046 observed explicit generic local storage64→0 with registers66 and theoretical128-thread blocks7 unchanged. This is not a measured speedup or runtime exactness proof; changed generic PTX loop unrolling additionally requires conditional native NA16/17 controls. Extra global reloads may regress generic action menus.
+
+Root activation/build requires independent D046 terminal/PTX PASS plus this candidate and primary-script review. The unchanged fixed three-pair complete-cycle screen can reject; a pass only qualifies for independent audit, existing broad controls, original-kernel generic NA5–8 and16/17 compressed/F32 controls, prospective unchanged wide-turn holdout and fresh original cumulative comparison. No extensions or adoption from the primary screen. No conditional execution machinery is prepared now.

@@ -1,0 +1,20 @@
+{
+  "candidate": "E026",
+  "status": "prospective_source_only",
+  "all162_accepted_sources_exact": true,
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "cuda_exact_D050": true,
+  "host_two_launch_overrides_only": true,
+  "host_exact_reverse": true,
+  "unchanged_shared_grid_args": true,
+  "evaluator_unchanged": true,
+  "unit_inventory_unchanged": "84 passed/4 ignored expected; not executed",
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "gpu_executions": 0,
+  "production_edits": 0,
+  "preparation_note": "Initial source-template read hit stdout cp1252 UnicodeEncodeError; no files changed. Re-read with explicit UTF-8 stdout; no candidate or judgment altered."
+}

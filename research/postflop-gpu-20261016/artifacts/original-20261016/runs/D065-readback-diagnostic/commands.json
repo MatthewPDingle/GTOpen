@@ -1,0 +1,28 @@
+{
+  "scope": "Root only after sealed reviews and explicit activation/execution authorization",
+  "sequence": [
+    {
+      "script": "build.py",
+      "arguments": [
+        "authorization.json SHA256"
+      ],
+      "effect": "fresh no-run diagnostic evaluator build"
+    },
+    {
+      "script": "cohort.py",
+      "arguments": [],
+      "effect": "fixed6 diagnostic/control solves, no unit or extra sample"
+    },
+    {
+      "script": "assess.py",
+      "arguments": [],
+      "effect": "exactness and diagnostic usefulness only"
+    }
+  ],
+  "python": "C:\\Program Files\\Python312\\python.exe",
+  "prefix": [
+    "-I",
+    "-B"
+  ],
+  "no_automatic_acceptance": true
+}

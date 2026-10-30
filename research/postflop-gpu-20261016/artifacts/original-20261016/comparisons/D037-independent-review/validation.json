@@ -1,0 +1,440 @@
+{
+  "id": "D037-independent-resource-review",
+  "at": "2026-10-16T10:39:42.093142+00:00",
+  "verdict": "PASS bounded no-launch resource/provenance diagnostic; numerical and performance tests remain pending",
+  "resource_probe_pass": true,
+  "prepared_manifest_sha256": "783bce1a84f29c90ef77175e9028898247e9ee4b7f9c8ec76da99c28e6eadf63",
+  "binary_sha256": "58240479ea1aade2c6fa38512406504ed2cd254dd847f075e4b955dbfa80c1ca",
+  "checks": {
+    "artifact_hash": 31,
+    "unchanged_all_input_hashes": 1,
+    "sealed_manifest_link": 3,
+    "no_failed_attempt": 1,
+    "empty_success_errorlogs": 3,
+    "commands_raw_report_equal": 1,
+    "one_compile_one_native_terminal_success": 1,
+    "exact_compiler_binary_invocations": 1,
+    "compile_terminal_before_native": 1,
+    "single_context": 1,
+    "no_launch_or_resource_mutation_api": 1,
+    "same_arch_only_nvrtc_options": 1,
+    "raw_marker_prefix": 16,
+    "raw_marker_report_equality": 1,
+    "exact16_marker_order": 1,
+    "terminal_complete": 1,
+    "actual_device_arch": 1,
+    "reported_device_limits": 1,
+    "same_prespecified_seven_shapes": 1,
+    "source_variant_identity": 2,
+    "fixed_shape_variant_order": 14,
+    "shape_input_counts": 14,
+    "independent_shared_formula": 14,
+    "static_dynamic_total": 14,
+    "function_resources": 14,
+    "reported_occupancy": 14,
+    "screened_resource_feasibility": 14,
+    "runtime_cuda_identity": 14,
+    "resource_only_scope": 14,
+    "report_no_numerical_performance_acceptance_claim": 1,
+    "river_anchor_counts_board": 1,
+    "rainbow_anchor_counts": 1,
+    "river_empty_extra_mask_invariant_source": 1,
+    "closed_D033_show_metadata_exact_extraction": 1,
+    "census_anchor_link": 1,
+    "observed_rainbow_allocation": 2,
+    "rainbow_max_count_derived_from_observed_bytes": 2,
+    "two_tone_not_claimed": 1,
+    "same_nine_ptx_entrypoints": 1,
+    "other_eight_ptx_entries_byte_exact": 8,
+    "up_show_entry_hash": 2,
+    "saved_entry_excerpt_exact": 2
+  },
+  "check_assertions": 220,
+  "resource_rows": [
+    {
+      "source_variant": "baseline",
+      "shape": "rainbow_p0",
+      "shape_scope": "observed accepted rainbow graph allocation",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 314,
+      "dynamic_shared_bytes": 3788,
+      "static_plus_dynamic_shared_bytes": 4828,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "rainbow_p1",
+      "shape_scope": "observed accepted rainbow graph allocation",
+      "nh_o": 257,
+      "max_valid_opponent_hands": 252,
+      "dynamic_shared_bytes": 3044,
+      "static_plus_dynamic_shared_bytes": 4084,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "river_p0",
+      "shape_scope": "derived final-board allocation from frozen hands and unchanged plan invariant",
+      "nh_o": 280,
+      "max_valid_opponent_hands": 280,
+      "dynamic_shared_bytes": 3360,
+      "static_plus_dynamic_shared_bytes": 4400,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "river_p1",
+      "shape_scope": "derived final-board allocation from frozen hands and unchanged plan invariant",
+      "nh_o": 233,
+      "max_valid_opponent_hands": 233,
+      "dynamic_shared_bytes": 2796,
+      "static_plus_dynamic_shared_bytes": 3836,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "full_hand_upper_bound",
+      "shape_scope": "conservative capacity bound, not a real river plan",
+      "nh_o": 1326,
+      "max_valid_opponent_hands": 1326,
+      "dynamic_shared_bytes": 15912,
+      "static_plus_dynamic_shared_bytes": 16952,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 5
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "empty_sorted_opponent",
+      "shape_scope": "synthetic resource edge, no numerical execution",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 0,
+      "dynamic_shared_bytes": 1276,
+      "static_plus_dynamic_shared_bytes": 2316,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "baseline",
+      "shape": "single_sorted_opponent",
+      "shape_scope": "synthetic asymmetric resource edge, no numerical execution",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 1,
+      "dynamic_shared_bytes": 1284,
+      "static_plus_dynamic_shared_bytes": 2324,
+      "registers": 40,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "rainbow_p0",
+      "shape_scope": "observed accepted rainbow graph allocation",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 314,
+      "dynamic_shared_bytes": 6300,
+      "static_plus_dynamic_shared_bytes": 7340,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "rainbow_p1",
+      "shape_scope": "observed accepted rainbow graph allocation",
+      "nh_o": 257,
+      "max_valid_opponent_hands": 252,
+      "dynamic_shared_bytes": 5060,
+      "static_plus_dynamic_shared_bytes": 6100,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "river_p0",
+      "shape_scope": "derived final-board allocation from frozen hands and unchanged plan invariant",
+      "nh_o": 280,
+      "max_valid_opponent_hands": 280,
+      "dynamic_shared_bytes": 5600,
+      "static_plus_dynamic_shared_bytes": 6640,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "river_p1",
+      "shape_scope": "derived final-board allocation from frozen hands and unchanged plan invariant",
+      "nh_o": 233,
+      "max_valid_opponent_hands": 233,
+      "dynamic_shared_bytes": 4660,
+      "static_plus_dynamic_shared_bytes": 5700,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "full_hand_upper_bound",
+      "shape_scope": "conservative capacity bound, not a real river plan",
+      "nh_o": 1326,
+      "max_valid_opponent_hands": 1326,
+      "dynamic_shared_bytes": 26520,
+      "static_plus_dynamic_shared_bytes": 27560,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 3
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "empty_sorted_opponent",
+      "shape_scope": "synthetic resource edge, no numerical execution",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 0,
+      "dynamic_shared_bytes": 1276,
+      "static_plus_dynamic_shared_bytes": 2316,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    },
+    {
+      "source_variant": "candidate",
+      "shape": "single_sorted_opponent",
+      "shape_scope": "synthetic asymmetric resource edge, no numerical execution",
+      "nh_o": 319,
+      "max_valid_opponent_hands": 1,
+      "dynamic_shared_bytes": 1292,
+      "static_plus_dynamic_shared_bytes": 2332,
+      "registers": 38,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12
+    }
+  ],
+  "raw_markers": 16,
+  "one_compile_one_native_terminal": true,
+  "zero_launch_source_confirmed": true,
+  "all8_other_ptx_entries_byte_identical": true,
+  "shape_provenance": "Rainbow from exact closed D033 graph-descriptor extraction and immutable hand counts; river from immutable final-board hands and empty-extra-mask invariant;1326 conservative bound and empty/single synthetic shapes. Two-tone-specific occupancy not queried.",
+  "wide_shape_risk": {
+    "shape": "full_hand_upper_bound",
+    "scope": "conservative1326-count capacity bound, not a real river plan",
+    "baseline_blocks_per_sm": 5,
+    "candidate_blocks_per_sm": 3,
+    "block_occupancy_drop_pct": 40.0,
+    "baseline_total_shared_bytes": 16952,
+    "candidate_total_shared_bytes": 27560,
+    "interpretation": "Material theoretical residency reduction to retain as a wide-range risk; neither a measured runtime regression nor grounds for a speed claim"
+  },
+  "screened_launch_limits": "All recorded128-thread shapes have positive theoretical occupancy and static+dynamic shared bytes below49152 default shared/block; no opt-in mutation needed for these shapes. No actual kernel launch has established runtime success.",
+  "source_custody": "All5 protected accepted checkout hashes remain unchanged at audit time; outside-checkout candidate retained separately",
+  "execution_durations_not_solver_performance": {
+    "rustc_seconds": 1.7970000000022992,
+    "probe_process_seconds": 1.8440000000009604
+  },
+  "limits": [
+    "No kernel launches, numerical comparisons, solver solves, speed measurements or acceptance",
+    "Static PTX/resources do not prove dynamic savings or unchanged floating-point outputs",
+    "Resource-feasible screened shapes permit considering separately reviewed E020 native validation; full correctness/performance and broader range risk remain open"
+  ],
+  "actions": "Read-only input analysis and new additive review files; no compiler/GPU/production/status edits",
+  "artifacts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\prepared-manifest.json": {
+      "sha256": "783bce1a84f29c90ef77175e9028898247e9ee4b7f9c8ec76da99c28e6eadf63",
+      "bytes": 4390
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\protocol.json": {
+      "sha256": "b01e259bec2381fa36f505044e1a80edf3d4761499ff1ef6f469bd86364c34a7",
+      "bytes": 2168
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\execution-manifest.json": {
+      "sha256": "18a16c5951e5d452cc0d5ffc0b7b3829a406c88d70ba926610c5af2ed08cf026",
+      "bytes": 3162
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\report.json": {
+      "sha256": "ce3b3ea70b7d91de23e555645feeba18d8df02d69d1456520dd948d7ef575543",
+      "bytes": 27017
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\allocation-provenance.json": {
+      "sha256": "39a7637528c3fc239db050fdeaec7a10bbd68acbfdd6d1f15b34dbdb3d82a438",
+      "bytes": 1794
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\baseline.cu": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\candidate.cu": {
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "bytes": 22878
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\preparation-checks.json": {
+      "sha256": "fa8699759c61b931dcc2526b3f752de9be68f6112779948b0f24e1430758daa0",
+      "bytes": 470
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.rs": {
+      "sha256": "7afba5dacb96db6ee860966dfd6e13f1e033e8a06aee4e7be5e0c4e46b891d08",
+      "bytes": 5367
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\README.md": {
+      "sha256": "808fa64177354aa90d4503915e8c209164ae71dcba915f90a65270c9a27d813b",
+      "bytes": 4190
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\run.py": {
+      "sha256": "1fa7b65d9205095292f68850ec51e20a13836745b343bd55e1f2f64ba0449fe3",
+      "bytes": 10367
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\runner-primitives-source.py": {
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-base-mod.rs": {
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "bytes": 66223
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-candidate-manifest.json": {
+      "sha256": "0be733fa538bc03b97782f520b4eeb48a3dc10914882f977c90e1fc7ea2a7946",
+      "bytes": 1196
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-candidate-mod.rs": {
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "bytes": 66225
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-candidate.patch": {
+      "sha256": "3d03b1588f7ab3021031c933cf4e37aca710fc03ed7f95d843780264fb3ea959",
+      "bytes": 2044
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-census-summary.json": {
+      "sha256": "b15a483c7b130b14cb4634882bf68adb60809b5640d77e4d1f355a7c937ad576",
+      "bytes": 3804
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-D033-show-launches.json": {
+      "sha256": "c4678ed622bf2bcdfefc68c42e17b5f5b325d80f0e394b5f5384e33e21a0d03d",
+      "bytes": 4730
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-game.rs": {
+      "sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+      "bytes": 25171
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": {
+      "sha256": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+      "bytes": 7170642
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": {
+      "sha256": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532",
+      "bytes": 2069500
+    },
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624
+    },
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": {
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "bytes": 66223
+    },
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": {
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "bytes": 25472
+    },
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": {
+      "sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "bytes": 5515
+    },
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": {
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858
+    },
+    "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin\\nvrtc-builtins64_129.dll": {
+      "sha256": "c405226b0b394ed8bdc593bb1419b94a989f93248ed2873e8f2e0e27c1688ca1",
+      "bytes": 7217664
+    },
+    "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin\\nvrtc64_120_0.alt.dll": {
+      "sha256": "ac56a4d3b5a99f294523abec28b8f648b96324a9277622a450ec20ddb9e2c47d",
+      "bytes": 89899520
+    },
+    "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin\\nvrtc64_120_0.dll": {
+      "sha256": "0cc63349fedffeec1660b30955e8028b6e4e4c26cf1e41c56dc4569fd5eca82c",
+      "bytes": 89832960
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\execution-started.json": {
+      "sha256": "7be94327a2e765e16e3374cf1518a155e63da08a053de40af0c56ba51536219c",
+      "bytes": 284
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.exe": {
+      "sha256": "58240479ea1aade2c6fa38512406504ed2cd254dd847f075e4b955dbfa80c1ca",
+      "bytes": 321024
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\rustc.command.json": {
+      "sha256": "18f15894cd1d4847f1f376a7ae9e9db280e00cd26cf16d717f4518bd1fe2841b",
+      "bytes": 790
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.command.json": {
+      "sha256": "c0eb6480bfd848b1a499a448ceb5fd8475c672581e7ba05e41699c38929f6e17",
+      "bytes": 364
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json": {
+      "sha256": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+      "bytes": 102134
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\report.json": {
+      "sha256": "04d04b5661f0bcc99f06ce4c706724b59db3b623d93241ccfe9b82bb8bd23766",
+      "bytes": 66436
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": {
+      "sha256": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+      "bytes": 70886
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\baseline-up_show.ptx": {
+      "sha256": "e8a71851abb097272db919d2ccb2e1b2582812eeb7685a0d2cb1d4a0a33fd8a1",
+      "bytes": 27814
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\baseline.ptx": {
+      "sha256": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+      "bytes": 230494
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\candidate-up_show.ptx": {
+      "sha256": "de20dd92cfe4ce74b39454315a11464d648d5f0de6b639fd7977b20b7bf56166",
+      "bytes": 30480
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\candidate.ptx": {
+      "sha256": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+      "bytes": 233160
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\launch-preflight.json": {
+      "sha256": "56fb2130e11991dea5e004944420387321501ae4425eea543ca3a1372019e02c",
+      "bytes": 837
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\preflight.json": {
+      "sha256": "2a6841bfb4e291b9d06476bf38072a44bb56948cab2fb437462de3fa56fc43d0",
+      "bytes": 4741
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.pdb": {
+      "sha256": "bead8ca80c495336fefafde77893c40ed17a28b9a6fb968e04bdaa386494d7ab",
+      "bytes": 1142784
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\probe.stdout.log": {
+      "sha256": "79d00af8a2c25d1fd76ee59ad4c51220f23d559e0b01f2ef3b735490eb9871d2",
+      "bytes": 13426
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\rustc.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\rustc.stdout.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}

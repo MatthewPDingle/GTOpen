@@ -1,0 +1,59 @@
+{
+  "candidate": "E027",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E027_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-r2-source-script-review\\report.json",
+      "sha256": "90516f568e3fef906e65de020384ebb164370dab137a63792b0b8e38014e5116"
+    },
+    "E027_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-r2-source-script-review\\report.json",
+      "sha256": "90516f568e3fef906e65de020384ebb164370dab137a63792b0b8e38014e5116"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\game.rs",
+      "sha256": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\continuation_capacity.rs",
+      "sha256": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208"
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\kernels.cu",
+      "sha256": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\mod.rs",
+      "sha256": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\plan.rs",
+      "sha256": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\scripts-manifest.json": "28d8d84dd6b10126ad756096310ce6078d6e4e52aa25b36e956d9ff0abd3066b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\protocol.json": "48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\manifest.json": "0401006b33a45ff9bdc2d2e9ef255285146a7538b4197f5bc130b6ac8f54e0b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\preserved-r1-evidence.json": "90f55b3023a98010ac131502fd9efdfd81ae825cc0da2b8103e1b4ef44b731ef",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-r2-source-script-review\\report.json": "90516f568e3fef906e65de020384ebb164370dab137a63792b0b8e38014e5116",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-r2-source-script-review\\manifest.json": "2bffb8246a1ee5d40e6e84b3a213e88be5348f98c4b156d050a82e2ffcafb1eb"
+  },
+  "scope": "Root authorizes reviewed E027 R2 ownership repair activation, fresh build and original untouched fixed unit/primary/assessment only. Preserve failed R1. Broader qualification requires primary pass. No adoption, live-server mutation or sample extension.",
+  "at": "2026-10-16T16:21:17Z"
+}

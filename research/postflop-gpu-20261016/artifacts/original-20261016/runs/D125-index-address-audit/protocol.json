@@ -1,0 +1,25 @@
+{
+  "id": "D125",
+  "at": "2026-10-18T04:29:43.186129+00:00",
+  "scope": "Read-only audit of exact existing E077 sources, four PTX files and resource rows; zero compiler/native/CUDA/GPU/solver/timing executions, no source/binary/flag/mask/width changes.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D125-index-address-audit.py": "37452ad2f246c26b448442aedaac034db6440c0c3a2edd7ee2c88ce1b13278de",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\protocol.json": "e4ac257e3accd80520585025ca19b198b01fa45c68e6007e36c0677f91e91a79",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\report.json": "ce887fc6e38eed7f42aa5fb4194baa500c1fb9494896054e8828d4961fa65991",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\execute.py": "f7c1fa0783cbc25c9628c69b7e3890be6600557122db751a59cd27130247026f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource-manager\\closure.json": "80924c98470f9baa547de3594d8e77674fc8974d18cbeb059f99aeade863f7cf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\manifest.json": "7ffd6d87097e18d11c08b78d46db0c3138e750a4ed4d54ee5442287cd6a91d48",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\source-review.json": "abd4702f49ccc775df70f46b5b0606e19b8157e2dfb66bb189a64b724a803e4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D124-prefix-liveness\\protocol.json": "7a34ae3afe8ffe2d07f521c24000de77c2840aea8b12a7f54614dee01f11ccba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D124-prefix-liveness\\report.json": "8cc24a7cfdc51266b1f8159c67e15311618a532a463b6bec82dc3178b8ca5fe3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\execution\\baseline-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\execution\\candidate-compute_120.ptx": "f81059cb00ef2f95598f108fecab140149bcde0a6186f88d414d4c1c22f0e1c5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-resource\\execution\\candidate-compute_75.ptx": "2536fffd45e967dc2accd517e92595bba92df2008501e81b26be42292f1842f2"
+  },
+  "original_failure": "The authored prerequisite counted >=2 literal32bit low31 masks. Actual compiler combines a low31 hand-index mask with multiplication by4 into a64bit byte-offset mask. The original literal-count rejection/report is immutable.",
+  "prospective_replacement_before_first_numerical_or_speed_run": "Replace the invalid static spelling/count proxy with source-parameter/address dataflow proving that every memory address derived from p_idx/o_idx clears bit31, recognizes only exact low31word or low33byte-offset masks after a zero-extended shift2, and has no unmasked or multiply-defined tagged-index path. Require both input parameters11/16 to reach masked address consumers, plus bitwise identity checks and all original ABI/other-entry/resource gates. This is validation repair, not a new source form or outcome-dependent timing rescue.",
+  "limits": "The dataflow verifier is deliberately restricted to this PTX integer subset and single-definition tagged-value slice. It proves tag stripping/address use, not full numerical semantics, active-store counts, dynamic traffic, universal compiler behavior or speed. Full compiled host tagging/GPU raw controls and all later gates remain."
+}

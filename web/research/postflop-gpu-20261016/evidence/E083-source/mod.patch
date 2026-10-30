@@ -1,0 +1,39 @@
+--- accepted/mod.patch
++++ E083/mod.patch
+@@ -293,12 +293,12 @@
+ 
+         let data_len = plan.arena_elements;
+         let d_regrets = [
+-            arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]))?,
+-            arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]))?,
++            arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]), true)?,
++            arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]), true)?,
+         ];
+         let d_strat = [
+-            arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
+-            arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
++            arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]), true)?,
++            arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]), true)?,
+         ];
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+@@ -327,7 +327,7 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
+-        Ok(GpuSolver {
++        let gpu = GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+@@ -407,7 +407,9 @@
+             _ctx: ctx,
+             stream,
+             _module: module,
+-        })
++        };
++        gpu.stream.synchronize().map_err(e)?;
++        Ok(gpu)
+     }
+ 
+     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {

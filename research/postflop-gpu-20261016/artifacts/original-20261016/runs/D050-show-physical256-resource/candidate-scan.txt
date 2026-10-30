@@ -1,0 +1,24 @@
+    {
+        const int scan_threads = blockDim.x == 256 ? 128 : (int)blockDim.x;
+        int chunk = (m_o + scan_threads - 1) / scan_threads;
+        int lo_k = threadIdx.x * chunk;
+        int hi_k = min(lo_k + chunk, m_o);
+        if (threadIdx.x < (u32)scan_threads) {
+            float acc = 0.f;
+            for (int k = lo_k; k < hi_k; k++) {
+                acc += reach_sh[k];
+                prefix[k] = acc;
+            }
+            chunk_sum[threadIdx.x + 1] = acc;
+        }
+        __syncthreads();
+        if (threadIdx.x == 0) {
+            chunk_sum[0] = 0.f;
+            for (int t = 1; t <= scan_threads; t++) chunk_sum[t] += chunk_sum[t - 1];
+        }
+        __syncthreads();
+        if (threadIdx.x < (u32)scan_threads) {
+            float base = chunk_sum[threadIdx.x];
+            for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
+        }
+    }

@@ -1,0 +1,31 @@
+{
+  "id": "E123",
+  "at": "2026-10-29T20:02:05.824148+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "f69977e537ecd93b659bceb395a119a5aa724feab3fdfe13caf76de62f4e5781",
+  "edits": [
+    {
+      "old": "// register-cache regrets and child values for the common small-na case",
+      "new": "// register-cache regrets; reload child values after the expectation"
+    },
+    {
+      "old": "float rc[8], vc[8];",
+      "new": "float rc[8];"
+    },
+    {
+      "old": "                if (small) vc[a] = v;\r\n",
+      "new": ""
+    },
+    {
+      "old": "float val = small ? vc[a] : cfv[",
+      "new": "float val = cfv["
+    }
+  ],
+  "whole_CRLF_source_inverse_exact": true,
+  "target": "training up_action helper all original template arities; only child-value cache removed, all rc regret caching retained",
+  "unchanged": "Original childCFV read in ordered expectation stays; late regret phase rereads identical immutable CFV words. No CFV writes until finalparentwrite; regret/strategy stores disjoint from CFV under original allocation/caller ownership. Same floating expressions/order/FMA opportunity, sigma/sum/discounts/locks/opponents/genericfallback,8otherentries/ABIs/host/globalarrays/launches/shared/quality/cadence/saves.",
+  "risks": "Compiler CSE may recreate original register cache; actual register reduction and changed native body required before numerical controls. Extra CFV traffic, scheduling and FMA/CSE changes need actual raw GPU tests; no source-only accuracy or speed proof.",
+  "history_report_sha256": "101b7e90b38a6782ec6290167f8da8b0fad1cb4980020b5b4d01857ae70f6706",
+  "failure": "Close single plain-source form without volatile/asm/restrict/arity subset/cache placement/flags/helper/width/source/quality/sample rescue. E024 genericcache removal and E117 earlier childloads remain closed."
+}

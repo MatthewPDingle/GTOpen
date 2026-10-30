@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-29T00:34:44.177225+00:00",
+  "stage": "source_history_preparation",
+  "returncode": 1,
+  "failure": "Scout counted only __syncthreads() and treated first nested declaration as unconditional. E036/E037 have a separate nested finite-zero shortcut payout read after __syncthreads_or, plus unchanged late fallback payout declaration. This is not the proposed unconditional declaration relocation.",
+  "original_script_sha256": "7fb6b1bcde71f54cda37869fb662cfc6a51f18275e106b111a455e756d56ce13",
+  "compiler_native_GPU_application_or_speed_runs": 0,
+  "evidence_reviewed": [
+    "E036-design/candidate/kernels.cu",
+    "E037-design/candidate/kernels.cu",
+    "experiments.md E036/E037 sections"
+  ],
+  "repair": "Keep nested-hit identities and scopes in inventory; distinguish depth1 unconditional declaration and all sync collective spellings. No candidate source or frozen protocol existed on failure."
+}

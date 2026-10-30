@@ -1,0 +1,87 @@
+{
+  "cpu": [
+    {
+      "Name": "AMD Ryzen 9 5950X 16-Core Processor            ",
+      "NumberOfCores": 16,
+      "NumberOfLogicalProcessors": 32,
+      "MaxClockSpeed": 3401
+    }
+  ],
+  "memory": [
+    {
+      "DeviceLocator": "DIMM 0",
+      "Capacity": 34359738368,
+      "Speed": 2933,
+      "ConfiguredClockSpeed": 2933,
+      "Manufacturer": "Unknown",
+      "PartNumber": "CMW128GX4M4E3200C16"
+    },
+    {
+      "DeviceLocator": "DIMM 1",
+      "Capacity": 34359738368,
+      "Speed": 2933,
+      "ConfiguredClockSpeed": 2933,
+      "Manufacturer": "Unknown",
+      "PartNumber": "CMW128GX4M4E3200C16"
+    },
+    {
+      "DeviceLocator": "DIMM 0",
+      "Capacity": 34359738368,
+      "Speed": 2933,
+      "ConfiguredClockSpeed": 2933,
+      "Manufacturer": "Unknown",
+      "PartNumber": "CMW128GX4M4E3200C16"
+    },
+    {
+      "DeviceLocator": "DIMM 1",
+      "Capacity": 34359738368,
+      "Speed": 2933,
+      "ConfiguredClockSpeed": 2933,
+      "Manufacturer": "Unknown",
+      "PartNumber": "CMW128GX4M4E3200C16"
+    }
+  ],
+  "os": [
+    {
+      "LastBootUpTime": "/Date(1793142779500)/",
+      "TotalVisibleMemorySize": 134135580,
+      "Version": "10.0.26100",
+      "BuildNumber": "26100"
+    }
+  ],
+  "output_volume": [
+    {
+      "DeviceID": "X:",
+      "VolumeName": "Biwin X570 Pro",
+      "VolumeSerialNumber": "B0F50BDF",
+      "FileSystem": "NTFS",
+      "Size": 8193497362432,
+      "FreeSpace": 5172406677504
+    }
+  ],
+  "at": "2026-10-28T08:05:45.084121+00:00",
+  "gpu": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version,memory.total",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607 MiB",
+    "stderr": ""
+  },
+  "user_reported_RAM_timings_changed": true,
+  "active_RAM_latency_timings": "Not exposed by standard Windows inventory; no inference from DIMM part number.",
+  "CPU_threads_used": 16,
+  "configuration": "Exact accepted E080 executable, GPU, compressed CPU storage",
+  "storage": "New outputs on physical X. Prior archive on S is read-only; no T dependency in new runtime.",
+  "current_rustc": {
+    "command": [
+      "rustc",
+      "-Vv"
+    ],
+    "returncode": 0,
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "stderr": ""
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "E047-direct-control-source-review",
+  "at": "2026-10-17T02:33:09.909336+00:00",
+  "status": "pass_to_one_fixed_raw_control",
+  "root_review_only": true,
+  "resource_root_check_sha256": "dc84f120d08e21dc36aaaff24a9caf6d8387841fe3957382f432bc7a01470c06",
+  "changed_source": "Only existing entry dispatch adds unchanged template<1>. No body arithmetic/host/plan/launch/ABI change.",
+  "corpus_review": "819 cases/1638 launches;138 NA1 cases. Prospectively extends previous fixed corpus to include NA1 in all tail/thread/signedzero/nonfinite/overflow/subnormal/count0 subsets before execution. Both actor orientations in main matrix, all3 roles and both algorithms.",
+  "raw_evidence": "Five full raw files: declared inputs, both complete output states and both actual device immutable-input images. No fingerprints substitute for raw equality.",
+  "source_reference": "Exact passed-resource original/candidate PTX loaded as separate modules; accepted CPU Discounts formula copied exactly.",
+  "limits": "No spans above2^32; finite declared corpus. No solver speed or universal payload semantics claim."
+}

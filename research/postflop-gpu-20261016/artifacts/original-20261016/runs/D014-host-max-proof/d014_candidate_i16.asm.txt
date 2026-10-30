@@ -1,0 +1,616 @@
+d014_candidate_i16:
+.Lfunc_begin27:
+.seh_proc d014_candidate_i16
+	pushq	%r15
+	.seh_pushreg %r15
+	pushq	%r14
+	.seh_pushreg %r14
+	pushq	%r12
+	.seh_pushreg %r12
+	pushq	%rsi
+	.seh_pushreg %rsi
+	pushq	%rdi
+	.seh_pushreg %rdi
+	pushq	%rbx
+	.seh_pushreg %rbx
+	subq	$264, %rsp
+	.seh_stackalloc 264
+	movaps	%xmm15, 240(%rsp)
+	.seh_savexmm %xmm15, 240
+	movaps	%xmm14, 224(%rsp)
+	.seh_savexmm %xmm14, 224
+	movaps	%xmm13, 208(%rsp)
+	.seh_savexmm %xmm13, 208
+	movaps	%xmm12, 192(%rsp)
+	.seh_savexmm %xmm12, 192
+	movaps	%xmm11, 176(%rsp)
+	.seh_savexmm %xmm11, 176
+	movaps	%xmm10, 160(%rsp)
+	.seh_savexmm %xmm10, 160
+	movaps	%xmm9, 144(%rsp)
+	.seh_savexmm %xmm9, 144
+	movaps	%xmm8, 128(%rsp)
+	.seh_savexmm %xmm8, 128
+	movaps	%xmm7, 112(%rsp)
+	.seh_savexmm %xmm7, 112
+	movaps	%xmm6, 96(%rsp)
+	.seh_savexmm %xmm6, 96
+	.seh_endprologue
+	movq	%r9, %rsi
+	movq	%r8, %rdi
+	movq	%rcx, %rbx
+	movabsq	$2305843009213693948, %r14
+	movq	%rdx, %rax
+	andq	%r14, %rax
+	je	.LBB27_1
+	leaq	-4(%rdx), %r9
+	xorps	%xmm0, %xmm0
+	movq	%rbx, %rcx
+	movq	%rax, %r8
+	cmpq	$28, %r9
+	jb	.LBB27_6
+	shrq	$2, %r9
+	incq	%r9
+	movq	%r9, %r10
+	andq	$-8, %r10
+	movq	%r10, %rcx
+	shlq	$4, %rcx
+	addq	%rbx, %rcx
+	leaq	(,%r10,4), %r11
+	movq	%rax, %r8
+	subq	%r11, %r8
+	leaq	64(%rbx), %r11
+	xorps	%xmm6, %xmm6
+	movq	%r10, %r15
+	xorps	%xmm8, %xmm8
+	xorps	%xmm4, %xmm4
+	xorps	%xmm5, %xmm5
+	xorps	%xmm13, %xmm13
+	movaps	%xmm0, 32(%rsp)
+	movaps	%xmm0, 64(%rsp)
+	movaps	%xmm0, 48(%rsp)
+	.p2align	4
+.LBB27_4:
+	movaps	%xmm4, 80(%rsp)
+	movups	-64(%r11), %xmm0
+	movups	-48(%r11), %xmm9
+	movups	-32(%r11), %xmm14
+	movups	-16(%r11), %xmm15
+	movups	32(%r11), %xmm11
+	movups	(%r11), %xmm2
+	movaps	__xmm@7fffffff7fffffff7fffffff7fffffff(%rip), %xmm3
+	andps	%xmm3, %xmm9
+	andps	%xmm3, %xmm0
+	andps	%xmm3, %xmm14
+	andps	%xmm3, %xmm15
+	movaps	%xmm15, %xmm7
+	movlhps	%xmm14, %xmm7
+	movaps	%xmm0, %xmm12
+	unpcklps	%xmm9, %xmm12
+	shufps	$36, %xmm7, %xmm12
+	movups	16(%r11), %xmm10
+	andps	%xmm3, %xmm10
+	andps	%xmm3, %xmm2
+	andps	%xmm3, %xmm11
+	movups	48(%r11), %xmm1
+	andps	%xmm3, %xmm1
+	movaps	%xmm1, %xmm7
+	movlhps	%xmm11, %xmm7
+	movaps	%xmm13, %xmm4
+	movaps	%xmm2, %xmm13
+	unpcklps	%xmm10, %xmm13
+	shufps	$36, %xmm7, %xmm13
+	movaps	64(%rsp), %xmm7
+	movaps	%xmm7, %xmm3
+	maxps	%xmm12, %xmm3
+	movaps	%xmm7, %xmm12
+	movaps	%xmm3, %xmm7
+	cmpunordps	%xmm3, %xmm7
+	andps	%xmm7, %xmm12
+	andnps	%xmm3, %xmm7
+	orps	%xmm12, %xmm7
+	movaps	%xmm7, 64(%rsp)
+	movaps	48(%rsp), %xmm7
+	movaps	%xmm7, %xmm3
+	maxps	%xmm13, %xmm3
+	movaps	%xmm3, %xmm12
+	cmpunordps	%xmm3, %xmm12
+	andps	%xmm12, %xmm7
+	andnps	%xmm3, %xmm12
+	orps	%xmm7, %xmm12
+	movaps	%xmm12, 48(%rsp)
+	movaps	%xmm14, %xmm3
+	unpcklps	%xmm15, %xmm3
+	movaps	%xmm9, %xmm7
+	shufps	$17, %xmm0, %xmm7
+	shufps	$226, %xmm3, %xmm7
+	movaps	%xmm11, %xmm3
+	unpcklps	%xmm1, %xmm3
+	movaps	%xmm10, %xmm12
+	shufps	$17, %xmm2, %xmm12
+	shufps	$226, %xmm3, %xmm12
+	movaps	%xmm4, %xmm3
+	maxps	%xmm7, %xmm3
+	movaps	%xmm3, %xmm13
+	cmpunordps	%xmm3, %xmm13
+	andps	%xmm13, %xmm4
+	andnps	%xmm3, %xmm13
+	orps	%xmm4, %xmm13
+	movaps	32(%rsp), %xmm7
+	movaps	%xmm7, %xmm3
+	maxps	%xmm12, %xmm3
+	movaps	%xmm3, %xmm12
+	cmpunordps	%xmm3, %xmm12
+	andps	%xmm12, %xmm7
+	andnps	%xmm3, %xmm12
+	orps	%xmm7, %xmm12
+	movaps	%xmm12, 32(%rsp)
+	movaps	%xmm15, %xmm3
+	unpckhpd	%xmm14, %xmm3
+	movaps	%xmm0, %xmm7
+	unpckhps	%xmm9, %xmm7
+	shufps	$36, %xmm3, %xmm7
+	movaps	%xmm1, %xmm3
+	unpckhpd	%xmm11, %xmm3
+	movaps	%xmm2, %xmm12
+	unpckhps	%xmm10, %xmm12
+	shufps	$36, %xmm3, %xmm12
+	movaps	80(%rsp), %xmm4
+	movaps	%xmm4, %xmm3
+	maxps	%xmm7, %xmm3
+	movaps	%xmm4, %xmm7
+	movaps	%xmm3, %xmm4
+	cmpunordps	%xmm3, %xmm4
+	andps	%xmm4, %xmm7
+	andnps	%xmm3, %xmm4
+	orps	%xmm7, %xmm4
+	movaps	%xmm5, %xmm3
+	maxps	%xmm12, %xmm3
+	movaps	%xmm5, %xmm7
+	movaps	%xmm3, %xmm5
+	cmpunordps	%xmm3, %xmm5
+	andps	%xmm5, %xmm7
+	andnps	%xmm3, %xmm5
+	orps	%xmm7, %xmm5
+	unpckhps	%xmm15, %xmm14
+	shufps	$51, %xmm0, %xmm9
+	shufps	$226, %xmm14, %xmm9
+	unpckhps	%xmm1, %xmm11
+	shufps	$51, %xmm2, %xmm10
+	shufps	$226, %xmm11, %xmm10
+	movaps	%xmm6, %xmm0
+	maxps	%xmm9, %xmm6
+	movaps	%xmm6, %xmm1
+	cmpunordps	%xmm6, %xmm1
+	andps	%xmm1, %xmm0
+	andnps	%xmm6, %xmm1
+	movaps	%xmm1, %xmm6
+	orps	%xmm0, %xmm6
+	movaps	%xmm8, %xmm0
+	maxps	%xmm10, %xmm8
+	movaps	%xmm8, %xmm1
+	cmpunordps	%xmm8, %xmm1
+	andps	%xmm1, %xmm0
+	andnps	%xmm8, %xmm1
+	movaps	%xmm1, %xmm8
+	orps	%xmm0, %xmm8
+	subq	$-128, %r11
+	addq	$-8, %r15
+	jne	.LBB27_4
+	movaps	%xmm6, %xmm0
+	maxps	%xmm8, %xmm0
+	movaps	%xmm0, %xmm1
+	cmpunordps	%xmm0, %xmm1
+	andps	%xmm1, %xmm6
+	andnps	%xmm0, %xmm1
+	orps	%xmm6, %xmm1
+	pshufd	$255, %xmm1, %xmm0
+	pshufd	$238, %xmm1, %xmm2
+	pshufd	$245, %xmm1, %xmm3
+	movaps	%xmm1, %xmm6
+	cmpunordss	%xmm1, %xmm6
+	movaps	%xmm6, %xmm7
+	andps	%xmm3, %xmm7
+	maxss	%xmm1, %xmm3
+	andnps	%xmm3, %xmm6
+	orps	%xmm7, %xmm6
+	movdqa	%xmm2, %xmm1
+	maxss	%xmm6, %xmm1
+	cmpunordss	%xmm6, %xmm6
+	movaps	%xmm6, %xmm3
+	andnps	%xmm1, %xmm3
+	andps	%xmm2, %xmm6
+	orps	%xmm3, %xmm6
+	movdqa	%xmm0, %xmm1
+	maxss	%xmm6, %xmm1
+	cmpunordss	%xmm6, %xmm6
+	movaps	%xmm6, %xmm2
+	andnps	%xmm1, %xmm2
+	andps	%xmm0, %xmm6
+	orps	%xmm2, %xmm6
+	movaps	%xmm4, %xmm0
+	maxps	%xmm5, %xmm0
+	movaps	%xmm0, %xmm1
+	cmpunordps	%xmm0, %xmm1
+	andps	%xmm1, %xmm4
+	andnps	%xmm0, %xmm1
+	orps	%xmm4, %xmm1
+	pshufd	$255, %xmm1, %xmm0
+	pshufd	$238, %xmm1, %xmm2
+	pshufd	$245, %xmm1, %xmm3
+	movaps	%xmm1, %xmm4
+	cmpunordss	%xmm1, %xmm4
+	movaps	%xmm4, %xmm5
+	andps	%xmm3, %xmm5
+	maxss	%xmm1, %xmm3
+	andnps	%xmm3, %xmm4
+	orps	%xmm5, %xmm4
+	movdqa	%xmm2, %xmm1
+	maxss	%xmm4, %xmm1
+	cmpunordss	%xmm4, %xmm4
+	movaps	%xmm4, %xmm3
+	andnps	%xmm1, %xmm3
+	andps	%xmm2, %xmm4
+	orps	%xmm3, %xmm4
+	movdqa	%xmm0, %xmm1
+	maxss	%xmm4, %xmm1
+	cmpunordss	%xmm4, %xmm4
+	movaps	%xmm4, %xmm2
+	andnps	%xmm1, %xmm2
+	andps	%xmm0, %xmm4
+	orps	%xmm2, %xmm4
+	unpcklps	%xmm6, %xmm4
+	movaps	%xmm13, %xmm0
+	maxps	32(%rsp), %xmm0
+	movaps	%xmm0, %xmm1
+	cmpunordps	%xmm0, %xmm1
+	andps	%xmm1, %xmm13
+	andnps	%xmm0, %xmm1
+	orps	%xmm13, %xmm1
+	pshufd	$255, %xmm1, %xmm0
+	pshufd	$238, %xmm1, %xmm3
+	pshufd	$245, %xmm1, %xmm5
+	movaps	%xmm1, %xmm2
+	cmpunordss	%xmm1, %xmm2
+	movaps	%xmm2, %xmm6
+	andps	%xmm5, %xmm6
+	maxss	%xmm1, %xmm5
+	andnps	%xmm5, %xmm2
+	orps	%xmm6, %xmm2
+	movdqa	%xmm3, %xmm1
+	maxss	%xmm2, %xmm1
+	cmpunordss	%xmm2, %xmm2
+	movaps	%xmm2, %xmm5
+	andnps	%xmm1, %xmm5
+	andps	%xmm3, %xmm2
+	orps	%xmm5, %xmm2
+	movdqa	%xmm0, %xmm1
+	maxss	%xmm2, %xmm1
+	cmpunordss	%xmm2, %xmm2
+	movaps	%xmm2, %xmm3
+	andnps	%xmm1, %xmm3
+	andps	%xmm0, %xmm2
+	orps	%xmm3, %xmm2
+	movaps	64(%rsp), %xmm3
+	movaps	%xmm3, %xmm0
+	maxps	48(%rsp), %xmm0
+	movaps	%xmm0, %xmm1
+	cmpunordps	%xmm0, %xmm1
+	andps	%xmm1, %xmm3
+	andnps	%xmm0, %xmm1
+	orps	%xmm3, %xmm1
+	pshufd	$255, %xmm1, %xmm3
+	pshufd	$238, %xmm1, %xmm5
+	pshufd	$245, %xmm1, %xmm6
+	movaps	%xmm1, %xmm0
+	cmpunordss	%xmm1, %xmm0
+	movaps	%xmm0, %xmm7
+	andps	%xmm6, %xmm7
+	maxss	%xmm1, %xmm6
+	andnps	%xmm6, %xmm0
+	orps	%xmm7, %xmm0
+	movdqa	%xmm5, %xmm1
+	maxss	%xmm0, %xmm1
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm6
+	andnps	%xmm1, %xmm6
+	andps	%xmm5, %xmm0
+	orps	%xmm6, %xmm0
+	movdqa	%xmm3, %xmm1
+	maxss	%xmm0, %xmm1
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm5
+	andnps	%xmm1, %xmm5
+	andps	%xmm3, %xmm0
+	orps	%xmm5, %xmm0
+	unpcklps	%xmm2, %xmm0
+	movlhps	%xmm4, %xmm0
+	cmpq	%r10, %r9
+	je	.LBB27_8
+.LBB27_6:
+	xorl	%r9d, %r9d
+	movaps	__xmm@7fffffff7fffffff7fffffff7fffffff(%rip), %xmm1
+	movaps	%xmm0, %xmm2
+	.p2align	4
+.LBB27_7:
+	movups	(%rcx,%r9,4), %xmm0
+	andps	%xmm1, %xmm0
+	movaps	%xmm2, %xmm3
+	maxps	%xmm0, %xmm3
+	movaps	%xmm3, %xmm0
+	cmpunordps	%xmm3, %xmm0
+	andps	%xmm0, %xmm2
+	andnps	%xmm3, %xmm0
+	orps	%xmm2, %xmm0
+	addq	$4, %r9
+	movaps	%xmm0, %xmm2
+	cmpq	%r9, %r8
+	jne	.LBB27_7
+.LBB27_8:
+	movshdup	%xmm0, %xmm1
+	movaps	%xmm0, %xmm2
+	maxss	%xmm1, %xmm2
+	movaps	%xmm2, %xmm1
+	cmpunordss	%xmm2, %xmm1
+	movaps	%xmm1, %xmm3
+	andnps	%xmm2, %xmm3
+	andps	%xmm0, %xmm1
+	orps	%xmm3, %xmm1
+	movaps	%xmm0, %xmm2
+	unpckhpd	%xmm0, %xmm2
+	movaps	%xmm1, %xmm3
+	maxss	%xmm2, %xmm3
+	movaps	%xmm3, %xmm2
+	cmpunordss	%xmm3, %xmm2
+	andps	%xmm2, %xmm1
+	andnps	%xmm3, %xmm2
+	orps	%xmm1, %xmm2
+	shufps	$255, %xmm0, %xmm0
+	movaps	%xmm2, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm1, %xmm0
+	cmpunordss	%xmm1, %xmm0
+	andps	%xmm0, %xmm2
+	andnps	%xmm1, %xmm0
+	orps	%xmm2, %xmm0
+	leal	(,%rdx,4), %r8d
+	andl	$12, %r8d
+	jne	.LBB27_10
+	jmp	.LBB27_17
+.LBB27_1:
+	xorps	%xmm0, %xmm0
+	leal	(,%rdx,4), %r8d
+	andl	$12, %r8d
+	je	.LBB27_17
+.LBB27_10:
+	leaq	(%rbx,%rax,4), %rax
+	leaq	-4(%r8), %r9
+	cmpq	$28, %r9
+	jae	.LBB27_12
+	movq	%rax, %rcx
+	jmp	.LBB27_15
+.LBB27_12:
+	shrq	$2, %r9
+	incq	%r9
+	movq	%r9, %r10
+	andq	$-8, %r10
+	leaq	(%rax,%r10,4), %rcx
+	shufps	$0, %xmm0, %xmm0
+	movq	%rdx, %r11
+	andq	$-4, %r11
+	leaq	(%rbx,%r11,4), %r11
+	addq	$16, %r11
+	xorl	%r15d, %r15d
+	movaps	__xmm@7fffffff7fffffff7fffffff7fffffff(%rip), %xmm1
+	movaps	%xmm0, %xmm2
+	.p2align	4
+.LBB27_13:
+	movups	-16(%r11,%r15,4), %xmm3
+	movups	(%r11,%r15,4), %xmm4
+	andps	%xmm1, %xmm3
+	andps	%xmm1, %xmm4
+	movaps	%xmm0, %xmm5
+	maxps	%xmm3, %xmm0
+	movaps	%xmm0, %xmm3
+	cmpunordps	%xmm0, %xmm3
+	andps	%xmm3, %xmm5
+	andnps	%xmm0, %xmm3
+	movaps	%xmm3, %xmm0
+	orps	%xmm5, %xmm0
+	movaps	%xmm2, %xmm3
+	maxps	%xmm4, %xmm2
+	movaps	%xmm2, %xmm4
+	cmpunordps	%xmm2, %xmm4
+	andps	%xmm4, %xmm3
+	andnps	%xmm2, %xmm4
+	movaps	%xmm4, %xmm2
+	orps	%xmm3, %xmm2
+	addq	$8, %r15
+	cmpq	%r15, %r10
+	jne	.LBB27_13
+	movaps	%xmm0, %xmm1
+	maxps	%xmm2, %xmm1
+	movaps	%xmm1, %xmm2
+	cmpunordps	%xmm1, %xmm2
+	andps	%xmm2, %xmm0
+	andnps	%xmm1, %xmm2
+	orps	%xmm0, %xmm2
+	pshufd	$255, %xmm2, %xmm1
+	pshufd	$238, %xmm2, %xmm3
+	pshufd	$245, %xmm2, %xmm4
+	movaps	%xmm2, %xmm0
+	cmpunordss	%xmm2, %xmm0
+	movaps	%xmm0, %xmm5
+	andps	%xmm4, %xmm5
+	maxss	%xmm2, %xmm4
+	andnps	%xmm4, %xmm0
+	orps	%xmm5, %xmm0
+	movdqa	%xmm3, %xmm2
+	maxss	%xmm0, %xmm2
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm4
+	andnps	%xmm2, %xmm4
+	andps	%xmm3, %xmm0
+	orps	%xmm4, %xmm0
+	movdqa	%xmm1, %xmm2
+	maxss	%xmm0, %xmm2
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm3
+	andnps	%xmm2, %xmm3
+	andps	%xmm1, %xmm0
+	orps	%xmm3, %xmm0
+	cmpq	%r10, %r9
+	je	.LBB27_17
+.LBB27_15:
+	addq	%r8, %rax
+	movaps	__xmm@7fffffff7fffffff7fffffff7fffffff(%rip), %xmm1
+	movaps	%xmm0, %xmm2
+	.p2align	4
+.LBB27_16:
+	movss	(%rcx), %xmm0
+	addq	$4, %rcx
+	andps	%xmm1, %xmm0
+	movaps	%xmm2, %xmm3
+	maxss	%xmm0, %xmm3
+	movaps	%xmm3, %xmm0
+	cmpunordss	%xmm3, %xmm0
+	movaps	%xmm0, %xmm4
+	andnps	%xmm3, %xmm4
+	andps	%xmm2, %xmm0
+	orps	%xmm4, %xmm0
+	movaps	%xmm0, %xmm2
+	cmpq	%rax, %rcx
+	jne	.LBB27_16
+.LBB27_17:
+	movd	%xmm0, %eax
+	testl	%eax, %eax
+	setns	%cl
+	movl	%eax, %r8d
+	andl	$2147483647, %r8d
+	addl	$-8388608, %r8d
+	cmpl	$2130706432, %r8d
+	setb	%r8b
+	andb	%cl, %r8b
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%r8b, %al
+	je	.LBB27_18
+	cmpq	%rsi, %rdx
+	cmovbq	%rdx, %rsi
+	testq	%rsi, %rsi
+	je	.LBB27_28
+	movss	__real@46fffe00(%rip), %xmm11
+	movaps	%xmm11, %xmm12
+	movaps	%xmm0, %xmm10
+	divss	%xmm0, %xmm12
+	cmpq	$4, %rsi
+	jae	.LBB27_24
+	xorl	%r14d, %r14d
+	jmp	.LBB27_22
+.LBB27_18:
+	addq	%rsi, %rsi
+	movq	%rdi, %rcx
+	xorl	%edx, %edx
+	movq	%rsi, %r8
+	callq	memset
+	xorps	%xmm0, %xmm0
+	jmp	.LBB27_28
+.LBB27_24:
+	andq	%rsi, %r14
+	movaps	%xmm12, %xmm13
+	shufps	$0, %xmm12, %xmm13
+	leaq	(%rsi,%rsi), %r15
+	andq	$-8, %r15
+	xorl	%r12d, %r12d
+	movss	__real@c7000000(%rip), %xmm14
+	.p2align	4
+.LBB27_25:
+	movups	(%rbx,%r12,2), %xmm7
+	mulps	%xmm13, %xmm7
+	movaps	%xmm7, %xmm0
+	shufps	$255, %xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm6
+	movaps	%xmm7, %xmm0
+	unpckhpd	%xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm8
+	unpcklps	%xmm6, %xmm8
+	movaps	%xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm9
+	movshdup	%xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm14, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm11, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	movaps	%xmm14, %xmm0
+	maxss	%xmm9, %xmm0
+	movaps	%xmm11, %xmm1
+	minss	%xmm0, %xmm1
+	cvttss2si	%xmm1, %ecx
+	movd	%ecx, %xmm0
+	pinsrw	$1, %eax, %xmm0
+	movaps	%xmm14, %xmm1
+	maxss	%xmm8, %xmm1
+	movaps	%xmm11, %xmm2
+	minss	%xmm1, %xmm2
+	cvttss2si	%xmm2, %eax
+	pinsrw	$2, %eax, %xmm0
+	movaps	%xmm14, %xmm1
+	maxss	%xmm6, %xmm1
+	movaps	%xmm11, %xmm2
+	minss	%xmm1, %xmm2
+	cvttss2si	%xmm2, %eax
+	pinsrw	$3, %eax, %xmm0
+	movq	%xmm0, (%rdi,%r12)
+	addq	$8, %r12
+	cmpq	%r12, %r15
+	jne	.LBB27_25
+	cmpq	%r14, %rsi
+	je	.LBB27_27
+.LBB27_22:
+	movss	__real@c7000000(%rip), %xmm6
+	.p2align	4
+.LBB27_23:
+	leaq	1(%r14), %r15
+	movss	(%rbx,%r14,4), %xmm0
+	mulss	%xmm12, %xmm0
+	callq	rintf
+	movaps	%xmm6, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm11, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	movw	%ax, (%rdi,%r14,2)
+	movq	%r15, %r14
+	cmpq	%r15, %rsi
+	jne	.LBB27_23
+.LBB27_27:
+	movaps	%xmm10, %xmm0
+.LBB27_28:
+	movaps	96(%rsp), %xmm6
+	movaps	112(%rsp), %xmm7
+	movaps	128(%rsp), %xmm8
+	movaps	144(%rsp), %xmm9
+	movaps	160(%rsp), %xmm10
+	movaps	176(%rsp), %xmm11
+	movaps	192(%rsp), %xmm12
+	movaps	208(%rsp), %xmm13
+	movaps	224(%rsp), %xmm14
+	movaps	240(%rsp), %xmm15
+	.seh_startepilogue
+	addq	$264, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r14
+	popq	%r15
+	.seh_endepilogue
+	retq
+.Lfunc_end27:
+	.seh_endproc

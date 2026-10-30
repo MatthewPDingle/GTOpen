@@ -1,0 +1,6 @@
+{
+  "url": "https://doc.rust-lang.org/std/primitive.slice.html#method.sort_unstable_by_key",
+  "retrieved_at": "2026-10-17T07:05:13.678266+00:00",
+  "excerpt": "id=\"method.sort_unstable_by_key\" class=\"method\"> 1.20.0 · Source pub fn sort_unstable_by_key <K, F>(&mut self, f: F) where F: FnMut ( &T ) -> K, K: Ord , Sorts the slice in ascending order with a key extraction function, without preserving the initial order of equal elements. This sort is unstable (i.e., may reorder equal elements), in-place (i.e., does not allocate), and O ( n * log( n )) worst-case. If the implementation of Ord for K does not implement a total order , the function may panic; even if the function exits normally, the resulting order of elements in the slice is unspecified. See also the note on panicking below. For example |a, b| (a - b).cmp(a) is a comparison function that is neither transitive nor reflexive nor total, a < b < c < a with a = 1, b = 2, c = 3 . For more information and examples see the Ord documentation. All original elements will remain in the slice and any possible modifications via interior mutability are observed in the input. Same is true if the implementation of Ord for K panics.",
+  "use": "In-place unstable sort may reorder equal keys. All per-level multisets and actual data ownership must be checked."
+}

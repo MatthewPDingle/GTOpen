@@ -1,0 +1,69 @@
+{
+  "id": "E034-primary-preparation",
+  "status": "PASS_HOST_SOURCE_CHECKS_ONLY",
+  "at": "2026-10-16T20:17:39.692912+00:00",
+  "parent_manifest_sha256": "09d71fb28ed17f672bf837bfbc16d02bbe31e55cb6057157bdad8034e3f95050",
+  "source_manifest_sha256": "882eadeae0c7615b041dfd635b148c484363689a6a901454f658534bab3224d8",
+  "protocol_sha256": "76ab3c0940fb85dbb94855ad28654239861d96a5f8016190c7ae3e13263d2241",
+  "accepted_entries_verified": 162,
+  "new_module_absent_before_activation": true,
+  "candidate_entries": 163,
+  "new_source_inventory_unchanged_from_E033": true,
+  "expected_gpu_units": {
+    "passed": 87,
+    "ignored": 4
+  },
+  "runtime_marker_parser_exact_E033": true,
+  "literal_runtime_marker_prefix": "E033_CACHE_POLICY ",
+  "literal_runtime_error_marker": "E033_CACHE_CLEANUP_ERROR",
+  "cleanup_source_and_private_module_exact_E033": true,
+  "only_test_eligibility_source_correction": "See frozen E034-design/test-eligibility.patch; no numerical/performance outcome existed.",
+  "fixed_order": [
+    "V034-unit",
+    "B107",
+    "E034R1",
+    "E034R2",
+    "B108",
+    "B109",
+    "E034R3"
+  ],
+  "all_reserved_paths_absent": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V034-unit",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B107",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034R1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034R2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B108",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B109",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034R3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e034-primary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e034-research",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-compile-check",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-primary-execution",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-assessment",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E034-three-pair-comparison",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E034-solver.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E034-solver.manifest.json",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E034-postflop_autoresearch.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E034-postflop_autoresearch.manifest.json"
+  ],
+  "reserved_ids_absent_from_dashboard": true,
+  "exact_two_preexisting_ptx_pins_verified": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "python_ast_parse": [
+    "compile_check.py",
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "compiler_native_gpu_executed": false,
+  "production_or_status_edits": false
+}

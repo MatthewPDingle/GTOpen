@@ -1,0 +1,28 @@
+{
+  "id": "D271-reader-repair",
+  "at": "2026-10-29T08:43:57.068675+00:00",
+  "status": "FROZEN_PRE_READ_ONLY_COMPLETE_REPLAY",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-prepare-reader-repair.py": "08a4345be80d82ef2a59bc74ee70df7e9339098ff76c63c1cda7965689a5e703",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-execute-reader-repair.py": "6194cf7842e3e27921de81220867b55f23400988fcb5c7e1fef37b26a2538ec7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\audit.py": "9b1fb23372dee672a317ca0b06a9e566ad883bd003b6da03e5c40496fef49761",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\audit-r2.py": "98a37f9784145dbd377fde5b36e10a6cf2639fbc4b839085fa14624def2d0a8c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\protocol.json": "482977b8c22479d9076359a8af6b3d0577e05a5ef87edb6b33278b8a0e01ab8e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\source-review.json": "a25f2be827cf821fa1c814877fac7baf504835b762abb0f3e18e101406b5a49a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\rustc.exit.json": "036291e1c081401c1955832154dd596bf784c1368f2d5708437fe17012d7a124",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\probe.exit.json": "b0073a528c04e31031cd344a8591e4e6912e6cc1a8111d136a5b560be43f6406",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\probe.stdout.log": "94037b6c53f4dcef714719b46ee6c993271dc9c6cd83fb824952efa91a590d5b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\audit.exit.json": "addbc28007949a56bdedd1ff4c9ce77e360790766b127c653ccf08b1c962b973",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\audit.stdout.log": "5202407f5768d9e7b4db8a9d596c8327bf6210be25c2d29d7859c42961c7ff2c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\audit.stderr.log": "83639c27cc32fa8b1d3c15275860d9a42287dcbf7f1fce6d8b4e7c10a9dba481",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\execution\\binary.json": "5eb1bfdbaf70539e5f690095bc701ffdfa7c0d1db7e1724ba58addf83732f61d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\output\\metadata.json": "59963f9153b6f0f3a6390d98818ac709a40a6772bc1e1e0ad4b6f99c48db3e58",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D271-metadata-engine\\output\\extra-metadata.json": "4e07c19dc0e80e21b35651f3abb22a74515c0b53764e049c74ea0eda84d2158b"
+  },
+  "original_protocol_sha256": "482977b8c22479d9076359a8af6b3d0577e05a5ef87edb6b33278b8a0e01ab8e",
+  "error_evidence": "All original36/752phases/324EV/32changingroots and all6extra/30phases/54EV actual native GPU cases completed exactly. Original reader independently replayed all156 maps/complete plans/kinds and all original3528raw frames before failing extra constructor field comparison. Its extra-directory path classifier erroneously applied candidate map to baseline files as well. Whole extra constructor byte inverse comparison already passed; field decoder baseline misclassification caused failure.",
+  "single_read_only_correction": "In extra directories, return candidate map only when actual filename starts clobbered-; baseline filenames remain literal original data. Core path logic unchanged. All arrays/header/fullbyte/physicalCFV/CPU/case/count/flag/category/graph/negativebit assertions retained, no tolerance/omission/threshold/count/source/fixture/predicate/CUDA/native output changes.",
+  "native_cases_repeated": 0,
+  "new_compiler_GPU_kernel_solver_speed_samples": 0,
+  "scope": "One repaired Python full reader, all original and extra raw files. Preserve original failed reader/log/exit. Source unchanged; no genuine numerical failure rescued. All original fullcanonical/ordinary/full1%/strictfixture/fresh16/broad/material/holdout/cumulative/app gates remain."
+}

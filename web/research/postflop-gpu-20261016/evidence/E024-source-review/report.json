@@ -1,0 +1,63 @@
+{
+  "id": "E024-source-review",
+  "at": "2026-10-16T14:17:47.226130+00:00",
+  "status": "PASS_SOURCE_ONLY",
+  "source_review_pass": true,
+  "scope": "Frozen one-line CUDA source archive plus current unchanged accepted E020 host/plan contracts. Independent primary script review belongs to model_evidence_review.",
+  "actionable_findings": [],
+  "source_manifest_sha256": "7dd34e086b9bdeaf20f687b64a86ac349df14e6f7edbe916a1b9554d4ebd250d",
+  "candidate_source_sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+  "conditional_design_sha256": "65c1ab35ccdc3af9feeb1e444b7da668df71233eb192cfadca7529d5a295c840",
+  "conditional_addendum_sha256": "cc43f2aa37cde4cca9720c55f861a621c1bd01632395ad935f0fdd9a3036a193",
+  "checks": {
+    "all5_source_artifact_pins_verified": true,
+    "all4_source_reference_pins_verified": true,
+    "all162_current_accepted_E020_source_entries_verified": true,
+    "one_literal_reversal_recovers_exact_baseline": true,
+    "candidate_bytes_equal_executed_D046_candidate": true,
+    "baseline_bytes_equal_D046_and_accepted_E020": true,
+    "changed_line": 371,
+    "unchanged": "All other CUDA bytes including down_action cache, training locks/opponent summation, specializedNA2/3/4 bodies, ABI and dispatch; every host/plan/evaluator byte and launch/graph/allocation path unchanged."
+  },
+  "reasoning": [
+    "The changed predicate disables only compile-timeNA0 rc/vc caching. Sum starts+0; source loops preserve increasing action order and original out/update operations. Dynamic NA1/5+ dispatch stays the same.",
+    "For one hand, the sum and complete out are computed before regret writes. Each final-loop action reload occurs before that distinct action/hand element is written. Other threads own different hands and node data offsets own distinct blocks, so no reload observes an earlier action's update.",
+    "Child CFVs remain stable through a parent update: plan.rs assigns distinct same-level scratch slots, opposite parity for the immediately following action/chance level, and separate persistent terminal slots. Parent output is stored only after all action updates. Unchanged stream-ordered level launches establish dependencies.",
+    "No new pointer, ownership, buffer, budget, capture, synchronization, profile bucket or continuation/storage route is introduced. Ordinary, captured and standalone paths still use the same up_action entry and exact launch arguments.",
+    "D046 independent PTX review supports unchanged arithmetic dependency order and no new FTZ, but also found generic sum unroll changing4-wide to16-wide. This requires actual numeric checks beyond source reasoning."
+  ],
+  "qualification_obligations": [
+    "Existing fixed primary and all complete-cycle gates remain unchanged. Resource local64->0 with registers66/occupancy7 unchanged is not a speed claim.",
+    "Before adoption, require separately frozen28-case E020-versus-E024 exact genericNA5,6,7,8,9,16,17 controls across both algorithms/storage, both actors, locks and save/warm graph lifecycle. Raw device floats precede quantization, followed by complete CPU q/scales/F32 state.",
+    "Existing NA1/11,160 original state/menu/resume snapshots,3 originalF32 fixtures,6 GPU integration,3 continuation controls, wide-turn holdout and fresh-original cumulative comparisons remain mandatory. The source verdict does not substitute for any numerical or performance gate."
+  ],
+  "limits": "No build, compiler, native test, GPU launch or candidate activation by this reviewer. Source/alias review is not a numerical proof for arbitrary input and makes no causal timing claim.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\candidate.patch": "e18d0274ddd87632809ab17d6dd9bba7db9ada56fe627ceb53977d84338d0181",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\README.md": "c7c95edbb41bbea55ddd516ac60119aec18ff2d06ab23134126a9732a494375e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\source-checks.json": "9490481edc369638750ca134736bd9d4a8d523beb2592f0f2f30221efa75a660",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\base\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\candidate\\kernels.cu": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\prepared-manifest.json": "8e8ec64a83b744eb75c60156e610b0dbc3185c5b9615759a8194ab1c465e1146",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\report.json": "a4dca68b1cf39e01356ec68cb00bdb0ad053f81d6feddebb241089dfd7983441",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\ptx-inspection.json": "40d9ba0e17ab00af27aadc020ce7a25b14ff9ebda2019729834bac58cfa55356",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\manifest.json": "7dd34e086b9bdeaf20f687b64a86ac349df14e6f7edbe916a1b9554d4ebd250d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\candidate.cu": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D046-independent-review\\summary.md": "2629150aa1d031302a1368acc828be79843141d77fa0fc216a4eead56bcc1217",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D046-independent-review\\validation.json": "d32e2c233a0bf5eda140f85d1ce8b5ca131b0887ad03e784b6d8300a32828fca",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D046-independent-review\\manifest.json": "ed48fa009c7d13fd71e52c7609f7f060833dc36d4bf3e3b07d0bf42a738f6a2c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\conditional-qualification-addendum.json": "cc43f2aa37cde4cca9720c55f861a621c1bd01632395ad935f0fdd9a3036a193",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-generic-validation-design\\design.json": "65c1ab35ccdc3af9feeb1e444b7da668df71233eb192cfadca7529d5a295c840",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-generic-validation-design\\manifest.json": "03d0982798514fe11dcc6b0b738b9f479c92063f3380b3529f2587fa86b334af",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+  },
+  "reviewer_execution_counts": {
+    "builds": 0,
+    "native_tests": 0,
+    "gpu_calls": 0,
+    "production_edits": 0
+  }
+}

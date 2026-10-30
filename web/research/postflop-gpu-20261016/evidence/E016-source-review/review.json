@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "id": "E016-source-review",
+  "created_utc": "2026-10-16T07:47:06.931522+00:00",
+  "status": "pass_source_only",
+  "actionable_findings": [],
+  "candidate_mod_sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+  "base_mod_sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+  "patch_sha256": "fccc3d2b8102cb113bbf701b74bf117caf02e4e2fd076569f86ce2578ee4c80d",
+  "only_tracked_change": "crates/solver/src/gpu/mod.rs",
+  "protected_inputs_verified": 10,
+  "independently_verified_unchanged_blocks": [
+    "training up dispatch",
+    "eval_up",
+    "readback"
+  ],
+  "tests": "Two gpu tests; third continuation test requires preflop-research. No test executed by reviewer.",
+  "review_file_sha256": "0750d9f74ad5bb0bde3d40151a73b4e2978698add2e8e78875f47ace9bcd98e1",
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\source-checks.json",
+      "bytes": 3525,
+      "sha256": "005cb7faddf42a1d6a7f64ac98b7021812de2abd652fffb1c116b4e136e15d1a"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\base-mod.rs",
+      "bytes": 66223,
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\candidate-mod.rs",
+      "bytes": 73402,
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "bytes": 73402,
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\cross-iteration-reach-reuse.patch",
+      "bytes": 20640,
+      "sha256": "fccc3d2b8102cb113bbf701b74bf117caf02e4e2fd076569f86ce2578ee4c80d"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+      "bytes": 22624,
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+      "bytes": 25472,
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs",
+      "bytes": 12436,
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs",
+      "bytes": 14687,
+      "sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs",
+      "bytes": 6240,
+      "sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs",
+      "bytes": 19541,
+      "sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "bytes": 5515,
+      "sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs",
+      "bytes": 8428,
+      "sha256": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+      "bytes": 12858,
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json",
+      "bytes": 928,
+      "sha256": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c"
+    }
+  ],
+  "performed": {
+    "production_edits": false,
+    "build": false,
+    "test": false,
+    "gpu": false
+  }
+}

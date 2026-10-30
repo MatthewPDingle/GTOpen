@@ -1,0 +1,48 @@
+{
+  "step": "stopped-for-review",
+  "pid": 85180,
+  "created": 1789874390.499306,
+  "parent_pid": 87740,
+  "parent_created": 1789874139.8486743,
+  "completed": [
+    {
+      "branch": "weighted",
+      "target": 500,
+      "review_sha256": "e9cc5d141b56ea13e594af0cd22f46ce16c7968d9712c4f4813ce5c505e2c322",
+      "result_sha256": "e722e81f10b9e22b25d4789f76332159baa7772f707d9d0991cd744eaf60c742"
+    },
+    {
+      "branch": "weighted",
+      "target": 1000,
+      "review_sha256": "f4ca348a5a5ebeb742c98a21b76694ef0ead42242e69074ed9cb624e3073727f",
+      "result_sha256": "d958eb2eaeee731b2020f56f5167d1b868fcf982ecdcb85c28a0c9063088535c"
+    },
+    {
+      "branch": "weighted",
+      "target": 1500,
+      "review_sha256": "ac2cbaabc08a09eb2ee908dd2c40f35a0003c77242da1897cb1e61aff0d5fde1",
+      "result_sha256": "4de654fc8ae395ccdde5738f2a1aa2776685dcf4b8c796e8069e29bad24dc6d9"
+    },
+    {
+      "branch": "weighted",
+      "target": 2000,
+      "review_sha256": "d06492fe1770ff6378810865171abdc54cb62e0028c06258ccd3dc480365144c",
+      "result_sha256": "87bfefc22d998ea39461a7e3b2a840182faf82275661b16c9eb1e9d339b22724"
+    },
+    {
+      "branch": "equal",
+      "target": 500,
+      "review_sha256": "26e3e04cdc8c23a5ad64c18d7a7e6d191a86d7679b5d8033875d1027cd3dd1f8",
+      "result_sha256": "71269d5d068f0ab7bb9da8079b269272ad457cc7cfbbca18ef4971c6bc65a8f0"
+    },
+    {
+      "branch": "equal",
+      "target": 1000,
+      "review_sha256": "5c08342f985485305c7206d37785d2bbd0746295019cab167029bd4b3be168e3",
+      "result_sha256": "c83f9bb1bec5d7fed032153917efab4c296208bc66452d4a712e7da0548407b2"
+    }
+  ],
+  "branch": "equal",
+  "target": 1500,
+  "error": "CalledProcessError(1, ['C:\\\\Program Files\\\\Python312\\\\python.exe', 'T:\\\\Dev\\\\GTOpen\\\\tools\\\\research\\\\storage_strategic_segment_20260920.py', 'equal', '1500'])"
+}

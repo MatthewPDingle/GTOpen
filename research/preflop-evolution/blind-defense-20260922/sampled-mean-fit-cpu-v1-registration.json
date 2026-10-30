@@ -1,0 +1,38 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_mean_fit_probe_20260922.py": "8590e97c28bf5d196aafb933e8bd6d610dc8f05988b99516f80fdd2bb69588c3",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-reservoir-capacity-v1-result.json": "eaf0db146e41e344f1d9e0ecbe058f81febb79b4e7230a2a7cea7f78b34aee0d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-large-fit-cpu-v1-result.json": "cfbf0eb2c73c629c75a6350c483d7703934e99e4b45c64b9fa62505e49bc5e99",
+    "target\\research-sampled\\sampled-reservoir-capacity-v1-case0-seed17-player0.npz": "8b57dacc4e524f8c354b2a05c3831c292f5dcd7f84b4786e2f8e9ba633428428",
+    "target\\research-sampled\\sampled-reservoir-capacity-v1-case0-seed17-player1.npz": "0c85f454e60342e782694cf19591c683e391449d6a90ae4487411ccc8cba3f81",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_neural_fallback_20260922.py": "cfbd9e1b79b716eb9df54d731fff2dd80fa280918120cc8d524cf82f284d401e",
+    "tools\\research\\hu_sampled_neural_table_control_20260922.py": "a48c12489cba5fed2348be12f0f837719fd8241c60cc162403ba55aaa60203d4",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2"
+  },
+  "maximum_seconds": 300,
+  "model_seeds": [
+    991,
+    20260922
+  ],
+  "steps": [
+    128,
+    512,
+    2048
+  ],
+  "architecture": [
+    28,
+    64,
+    64,
+    3
+  ],
+  "learning_rate": 0.003,
+  "scope": "Fixed-data CPU float32 fits; no strategic improvement or GPU timing claim.",
+  "objective": "Count-weighted empirical mean MSE. Equivalent gradient to full retained per-visit squared error; omitted variance is parameter independent.",
+  "representation": "Same observable features; repeated observations grouped only within the retained dataset, with exact multiplicities. No lookup embeddings or privileged inputs.",
+  "controls": "Full 262144-record versus grouped double-precision loss/gradient comparison for both players before fitting.",
+  "stopping": "All 12 fixed fits or guard/deadline; no outcome-based extension.",
+  "no_gpu": true,
+  "production_modified": false
+}

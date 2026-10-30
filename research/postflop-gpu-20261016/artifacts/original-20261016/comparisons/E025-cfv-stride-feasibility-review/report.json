@@ -1,0 +1,54 @@
+{
+  "id": "E025-CFV-stride-feasibility",
+  "at": "2026-10-16T14:36:22.558547+00:00",
+  "verdict": "GO_BOUNDED_TWO_FILE_CANDIDATE",
+  "scope": "Source/history feasibility only; no candidate implementation, build, native run or performance measurement",
+  "owned_production_proposal": [
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/game.rs"
+  ],
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "7f764f30f77f42a18971e7c75440e6c6a4659f4ea1f1dd05adfa652294186bb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\results.tsv": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9"
+  },
+  "fixed_fixture_evidence": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B080\\report.json",
+    "sha256": "50308d7e5ccb5c8de1e10b0200e379060e53d703b69ae193a891ce2a2c4e737e"
+  },
+  "strides": {
+    "rainbow": [
+      319,
+      320
+    ],
+    "two-tone": [
+      320,
+      320
+    ],
+    "river": [
+      280,
+      288
+    ],
+    "predeclared_wide_turn": [
+      1128,
+      1152
+    ]
+  },
+  "kernel_math_or_loop_change_required": false,
+  "allocation_note": "CFV storage adds 4*cfv_blocks*(new_stride-old_stride) bytes; four evaluation roots add16*(new_stride-old_stride). Existing plan staging/root offsets/continuation metadata and workspace sizes already consume nh_max. Spot VRAM estimate must pad its separate local maximum too.",
+  "novelty_limit": "No duplicate found in scoped current E001-E024 ledger/design/patch searches or historical postflop patch/results searches. Older CFV visited-node compaction and alternate-depth lifetime reuse are different. This is not an exhaustive repository-history proof.",
+  "accuracy_proof_limit": "Logical indices and arithmetic source remain unchanged; exact compiled execution must still be checked by existing fixed primary and conditional broader controls.",
+  "performance_limit": "128-byte row-start alignment is structural. No device-time share or >=2% benefit has been measured; two-tone is structurally unchanged.",
+  "execution_counts": {
+    "source_edits": 0,
+    "builds": 0,
+    "native_runs": 0,
+    "gpu_runs": 0
+  }
+}

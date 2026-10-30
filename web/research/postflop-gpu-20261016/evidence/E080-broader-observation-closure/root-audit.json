@@ -1,0 +1,327 @@
+{
+  "at": "2026-10-18T07:25:42.742843+00:00",
+  "status": "pass_record_parity_with_preserved_known_research_failures",
+  "checks": 72,
+  "root_cross_check_only": true,
+  "original_frozen_absolute_batch_pass": false,
+  "original_test_thresholds_preserved": true,
+  "all_18_original_rows_accounted_for": true,
+  "invalid_research_rows": 2,
+  "remaining_rows_not_resampled": true,
+  "records": [
+    {
+      "id": "V080-state-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "d6bcf1ac28579c9e98d169ea2873f942bdb5cad7674448eb947aee7f34cce2e8",
+      "stdout_sha256": "4fadf81deff1a5801f0ff21e0a088d6ca5269c30b728dbefa56683554458e0e2"
+    },
+    {
+      "id": "V080-state-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "f0bb6c07ecf05ae621ada52f07a6e9047347685a51818fa82af4e4d738615341",
+      "stdout_sha256": "bdf2f7224fae89b3be8d187ef324d3abe7b65a767fd0323dd9f85a71952468cd"
+    },
+    {
+      "id": "V080-menu-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "d0ffa41cbc3782f82ff027a2816574c47c157aa44497023f41026bd2ac5cfc82",
+      "stdout_sha256": "815cbb78eafbc9bda5424e1b078d1910d3299845fa67aef36fbcb830c7237c5f"
+    },
+    {
+      "id": "V080-menu-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "9a46ee446a80f6d1f90237289cc19b24f94bfc323839e56b20ef55461fe11259",
+      "stdout_sha256": "8932d3b03a081f8ad37e2a74cafdc57e5e2ea6655b036df007eaf4a84b25d2af"
+    },
+    {
+      "id": "V080-resume-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "beae989f7ca759d584f6d799356ae3568063a0fe8f265d0987cf9ba96d061944",
+      "stdout_sha256": "ff9dfb85e03f98dc0b901cbac3b0bd7940ecf1343402df07966ebbe91e3baf75"
+    },
+    {
+      "id": "V080-resume-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "44559b13812d87e0d8240401bccf9d637b89c0d75d6a34b68e08527fe6d47ded",
+      "stdout_sha256": "c5a94f8eb55d57592cde73208ebbddf204224c7f7053f2a6a1c7705914d820ec"
+    },
+    {
+      "id": "V080-gpu-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "6",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "6ebbbf359bf66a442fe42795d91a1152e119c46f9ecc495c3783d86985dca964",
+      "stdout_sha256": "13f40c6d82301befd446dd60a0538f1ef407102ced3e68d37ef75b0f29cfaff2"
+    },
+    {
+      "id": "V080-gpu-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "6",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "8409c1508a31213273d83a00069bcbcaaadb07330e0cc8469e54940ffeb31bbe",
+      "stdout_sha256": "bfd95e8cb7325320ab953f9dfb31489aefd8189829547534532675b945f65438"
+    },
+    {
+      "id": "V080-preflop_gpu-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "15",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "68acc70a6c5a28b399b762bc2f434cf02bfa8da9655baf0cab2e8240185d2ad2",
+      "stdout_sha256": "8129c4275dded6db53c0d5cbb247cd47f40afbf18dd9e978b25f1aed2e3138d8"
+    },
+    {
+      "id": "V080-preflop_gpu-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "15",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "1c0eb10ccc264334963836f30ee72276e45f2c21ab9091174b737479a4492ada",
+      "stdout_sha256": "62986e465192e4d142df7166c4a70c62105b1cb95cd0f8bbf4cdbd77e048f4e3"
+    },
+    {
+      "id": "V080-f32-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "8e1739b861abfc313af658513abfa4bcc6df1394ba86e8c4c77a473486dec3fa",
+      "stdout_sha256": "56e0e3f475c6894638a476d24c03d7565a2cd560317ed9f977172b6d3f76d8e6"
+    },
+    {
+      "id": "V080-f32-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "9ca78abe89a71512ff0be57acaf5849e31b57f94201846828c2e7760c8b1bbb1",
+      "stdout_sha256": "e2c6c31418505b0634f89c92c5547d2e6c931291b56de3d6af5ba4bcdef106c2"
+    },
+    {
+      "id": "V080-paging-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "a180f4e39c12a73a39173f27d7d757c6448581e8c3f6d240dd50ce67c001e836",
+      "stdout_sha256": "a06f3e254b3ef2dd1715625991410ee5d4827523bcfaeb53030d91af4f47916f"
+    },
+    {
+      "id": "V080-paging-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "953ae792b3e4ade14eae01fff088c2bc3d64b1001f0dd2ef117540c33fe30247",
+      "stdout_sha256": "113902fbe3dd7eb5dcac61dc3469a8ef3245d01c558d015bf9088bc68687ad03"
+    },
+    {
+      "id": "V080-symmetry-baseline",
+      "status": "invalid",
+      "native_returncode": 101,
+      "test_result": [
+        [
+          "FAILED",
+          "2",
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "f963da0719659786d12eb0cd338e0472a9b12b4b456a0d65a7a501651ac0ee6f",
+      "stdout_sha256": "7ff9a6a3bb558bd9b6452ba84fcbcabe913c19ec9751bf90962560d645ebcbae"
+    },
+    {
+      "id": "V080-symmetry-candidate",
+      "status": "invalid",
+      "native_returncode": 101,
+      "test_result": [
+        [
+          "FAILED",
+          "2",
+          "1",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "report_sha256": "107eb29839dd8814af6fe3dfaca9e91cfac693e75672823e2a8c707e2d7d8c02",
+      "stdout_sha256": "54affbb7b0094138b603aab8a588bf32827c038bf37153bba6d50e50743920d0"
+    },
+    {
+      "id": "V080-stored-baseline",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "199"
+        ]
+      ],
+      "report_sha256": "d479feabb4d7a919c77cc72df77825a5968163d1ce4e4f219c5e24798e2e01cd",
+      "stdout_sha256": "81507471aa968bc959d8dbc4e4bd2c95a8684c9d3ed3c3489ef3b23a5d164137"
+    },
+    {
+      "id": "V080-stored-candidate",
+      "status": "measured",
+      "native_returncode": 0,
+      "test_result": [
+        [
+          "ok",
+          "1",
+          "0",
+          "0",
+          "0",
+          "201"
+        ]
+      ],
+      "report_sha256": "1e96584c877877c58610dc91fa04b4e460212c0949913696a65c6ed459d7e28d",
+      "stdout_sha256": "e72e333604d91ee56dcfeeaca496015f49bd1089bfda566b6f27af7fd930696a"
+    }
+  ],
+  "state_menu_resume_snapshots_each": 160,
+  "large_warm_snapshots_each": 6,
+  "all_large_warm_raw_bytes_exact": true,
+  "broader_report_sha256": "2b44fb6db4000253c61e695746607dd9bf4e30cf31ea9e5ee21b56a70c5cbce3",
+  "known_failure_sha256": "1d97cb526f851f62692240b11f168fb544c81c496cac2cff864dadad82956ff4",
+  "large_warm_sha256": "8512a67cfc9930c54b3ec38b931facfebdd26d3882985c8e27a44b0f65f620bd",
+  "candidate_adopted": false,
+  "limits": "Root record/source/byte-evidence audit; not an external independent review. Original research test stays failed. A final source/scope and material-cost audit, fixed holdout and fresh-original cumulative qualification remain."
+}

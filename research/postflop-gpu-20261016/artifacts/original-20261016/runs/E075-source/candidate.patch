@@ -1,0 +1,95 @@
+--- E051/kernels.cu
++++ E075/kernels.cu
+@@ -326,6 +326,33 @@
+     }
+ }
+ 
++// Immutable node metadata: addresses depend only on the CTA's node.
++// No hand/action-indexed or mutable solver-state access uses these loads.
++__device__ __forceinline__ u32 uniform_node_u32(const u32* ptr) {
++    u32 value;
++    asm("{ .reg .u64 addr; cvta.to.global.u64 addr, %1; ldu.global.u32 %0, [addr]; }"
++        : "=r"(value) : "l"(ptr));
++    return value;
++}
++__device__ __forceinline__ int uniform_node_i32(const int* ptr) {
++    int value;
++    asm("{ .reg .u64 addr; cvta.to.global.u64 addr, %1; ldu.global.s32 %0, [addr]; }"
++        : "=r"(value) : "l"(ptr));
++    return value;
++}
++__device__ __forceinline__ u64 uniform_node_u64(const u64* ptr) {
++    u64 value;
++    asm("{ .reg .u64 addr; cvta.to.global.u64 addr, %1; ldu.global.u64 %0, [addr]; }"
++        : "=l"(value) : "l"(ptr));
++    return value;
++}
++__device__ __forceinline__ long long uniform_node_i64(const long long* ptr) {
++    long long value;
++    asm("{ .reg .u64 addr; cvta.to.global.u64 addr, %1; ldu.global.s64 %0, [addr]; }"
++        : "=l"(value) : "l"(ptr));
++    return value;
++}
++
+ // Up sweep, action nodes: traverser nodes combine children with the current
+ // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
+ template<int NA>
+@@ -348,11 +375,11 @@
+     float pos = disc[0], neg = disc[1], ds = disc[2];
+     int b = blockIdx.x;
+     if (b >= count) return;
+-    u32 n = nodes[start + b];
+-    const int na = NA == 0 ? node_na[n] : NA;
+-    u32 cs = node_children_start[n];
+-    if (node_player[n] == p) {
+-        long long loff = lock_off[n];
++    u32 n = uniform_node_u32(nodes + start + b);
++    const int na = NA == 0 ? uniform_node_i32(node_na + n) : NA;
++    u32 cs = uniform_node_u32(node_children_start + n);
++    if (uniform_node_i32(node_player + n) == p) {
++        long long loff = uniform_node_i64(lock_off + n);
+         if (loff >= 0) {
+             // locked: fixed sigma, no regret/strategy update
+             const float* sig = lock_sigma + loff;
+@@ -360,12 +387,12 @@
+                 float out = 0.f;
+                 for (int a = 0; a < na; a++)
+                     out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+-                cfv[(u64)cfv_slot[n] * nh_max + i] = out;
++                cfv[(u64)uniform_node_u32(cfv_slot + n) * nh_max + i] = out;
+             }
+             return;
+         }
+-        u64 doff = node_data_off[n];
+-        const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
++        u64 doff = uniform_node_u64(node_data_off + n);
++        const float* rp = reach_p_buf + (u64)uniform_node_u32(rsrc_p + n) * nh_p;
+         // register-cache regrets and child values for the common small-na case
+         float rc[8], vc[8];
+         bool small = na <= 8;
+@@ -397,14 +424,14 @@
+                 float d = r > 0.f ? pos : neg;
+                 regrets_p[idx] = r * d + (val - out);
+             }
+-            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
++            cfv[(u64)uniform_node_u32(cfv_slot + n) * nh_max + i] = out;
+         }
+     } else {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+                 acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+-            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
++            cfv[(u64)uniform_node_u32(cfv_slot + n) * nh_max + i] = acc;
+         }
+     }
+ }
+@@ -426,7 +453,7 @@
+     int nh_p, int nh_max)
+ {
+     if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
++    const int na = uniform_node_i32(node_na + uniform_node_u32(nodes + start + blockIdx.x));
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+     if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);

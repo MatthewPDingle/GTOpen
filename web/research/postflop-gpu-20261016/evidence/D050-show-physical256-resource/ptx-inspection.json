@@ -1,0 +1,180 @@
+{
+  "entry_names": {
+    "baseline": [
+      "copy_root",
+      "down_action",
+      "down_chance",
+      "up_fold",
+      "up_show",
+      "up_chance",
+      "up_action",
+      "copy_span",
+      "up_action_eval"
+    ],
+    "candidate": [
+      "copy_root",
+      "down_action",
+      "down_chance",
+      "up_fold",
+      "up_show",
+      "up_chance",
+      "up_action",
+      "copy_span",
+      "up_action_eval"
+    ]
+  },
+  "other_entry_ptx_byte_equality": {
+    "copy_root": true,
+    "down_action": true,
+    "down_chance": true,
+    "up_fold": true,
+    "up_chance": true,
+    "up_action": true,
+    "copy_span": true,
+    "up_action_eval": true
+  },
+  "up_show_signature_unchanged": true,
+  "entries": {
+    "baseline": {
+      "opcodes_static_only": {
+        "add.f32": 106,
+        "add.s32": 61,
+        "add.s64": 108,
+        "and.b32": 12,
+        "bar.sync": 5,
+        "cvt.s64.s32": 6,
+        "cvt.u64.u32": 5,
+        "cvta.to.global.u64": 22,
+        "div.u32": 1,
+        "fma.rn.f32": 2,
+        "ld.global.nc.f32": 4,
+        "ld.global.nc.u32": 22,
+        "ld.param.u32": 5,
+        "ld.param.u64": 22,
+        "ld.shared.f32": 53,
+        "ld.shared.u32": 30,
+        "min.s32": 1,
+        "mov.b32": 9,
+        "mov.f32": 14,
+        "mov.u32": 15,
+        "mov.u64": 8,
+        "mul.f32": 1,
+        "mul.lo.s32": 1,
+        "mul.lo.s64": 3,
+        "mul.wide.s32": 14,
+        "mul.wide.u32": 73,
+        "neg.s32": 2,
+        "not.pred": 2,
+        "selp.f32": 90,
+        "setp.eq.b32": 2,
+        "setp.eq.s32": 12,
+        "setp.ge.s32": 7,
+        "setp.ge.u32": 2,
+        "setp.gt.u32": 4,
+        "setp.lt.s32": 6,
+        "setp.lt.u32": 63,
+        "setp.ne.s32": 9,
+        "shl.b64": 8,
+        "st.global.f32": 1,
+        "st.global.u32": 1,
+        "st.shared.f32": 18,
+        "st.shared.u32": 2,
+        "sub.f32": 6,
+        "sub.s32": 15
+      },
+      "entry_sha256": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc"
+    },
+    "candidate": {
+      "opcodes_static_only": {
+        "add.f32": 106,
+        "add.s32": 61,
+        "add.s64": 108,
+        "and.b32": 12,
+        "bar.sync": 5,
+        "cvt.s64.s32": 6,
+        "cvt.u64.u32": 5,
+        "cvta.to.global.u64": 22,
+        "div.s32": 1,
+        "fma.rn.f32": 2,
+        "ld.global.nc.f32": 4,
+        "ld.global.nc.u32": 22,
+        "ld.param.u32": 5,
+        "ld.param.u64": 22,
+        "ld.shared.f32": 53,
+        "ld.shared.u32": 30,
+        "min.s32": 1,
+        "mov.b32": 9,
+        "mov.f32": 14,
+        "mov.u32": 15,
+        "mov.u64": 8,
+        "mul.f32": 1,
+        "mul.lo.s32": 1,
+        "mul.lo.s64": 3,
+        "mul.wide.s32": 14,
+        "mul.wide.u32": 73,
+        "neg.s32": 2,
+        "not.pred": 2,
+        "selp.b32": 1,
+        "selp.f32": 90,
+        "setp.eq.b32": 2,
+        "setp.eq.s32": 13,
+        "setp.ge.s32": 8,
+        "setp.ge.u32": 3,
+        "setp.gt.u32": 4,
+        "setp.lt.s32": 6,
+        "setp.lt.u32": 63,
+        "setp.ne.s32": 9,
+        "shl.b64": 8,
+        "st.global.f32": 1,
+        "st.global.u32": 1,
+        "st.shared.f32": 18,
+        "st.shared.u32": 2,
+        "sub.f32": 6,
+        "sub.s32": 15
+      },
+      "entry_sha256": "7904c9f33de5529a5e1c5149c01fb6a5413d5c72e11c2901ffd4c42d88afbc82"
+    }
+  },
+  "arithmetic_inspection": {
+    "baseline": {
+      "local_declarations": [],
+      "floating_typed_opcodes_static_only": {
+        "add.f32": 106,
+        "fma.rn.f32": 2,
+        "ld.global.nc.f32": 4,
+        "ld.shared.f32": 53,
+        "mov.f32": 14,
+        "mul.f32": 1,
+        "selp.f32": 90,
+        "st.global.f32": 1,
+        "st.shared.f32": 18,
+        "sub.f32": 6
+      },
+      "ftz_opcodes_static_only": {},
+      "barrier_opcodes_static_only": {
+        "bar.sync": 5
+      }
+    },
+    "candidate": {
+      "local_declarations": [],
+      "floating_typed_opcodes_static_only": {
+        "add.f32": 106,
+        "fma.rn.f32": 2,
+        "ld.global.nc.f32": 4,
+        "ld.shared.f32": 53,
+        "mov.f32": 14,
+        "mul.f32": 1,
+        "selp.f32": 90,
+        "st.global.f32": 1,
+        "st.shared.f32": 18,
+        "sub.f32": 6
+      },
+      "ftz_opcodes_static_only": {},
+      "barrier_opcodes_static_only": {
+        "bar.sync": 5
+      }
+    }
+  },
+  "source_ptx_review_status": "Pending independent scan/guard/float-dependency inspection; static counts alone cannot prove exactness.",
+  "required_review": "Physical256 must use the same128 logical chunks, +0 accumulators,128 chunk writes, full128 left-to-right recurrence and per-chunk base addition as accepted physical128. Every physical thread reaches all barriers; upper128 scan threads access no uninitialized chunk_sum. Other valid1D widths retain original geometry."
+}

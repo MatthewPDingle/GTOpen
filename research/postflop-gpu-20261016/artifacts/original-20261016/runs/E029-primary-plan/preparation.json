@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-16T17:17:42.226367+00:00",
+  "status": "HOST_SOURCE_CHECKS_PASS",
+  "ast_files": [
+    "compile_check.py",
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "canonical_direct_path_ast_exact": true,
+  "no_unintended_c0_control_characters": true,
+  "fixed_order": [
+    "V029-unit",
+    "B095",
+    "E029R1",
+    "E029R2",
+    "B096",
+    "B097",
+    "E029R3"
+  ],
+  "source_artifacts_checked": 18,
+  "accepted_source_entries_checked": 162,
+  "owned_source_entries": 5,
+  "auxiliary_entries": 0,
+  "expected_unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "compile_only_commands": [
+    [
+      "cargo",
+      "test",
+      "--release",
+      "--locked",
+      "--offline",
+      "-p",
+      "solver",
+      "--features",
+      "preflop-research",
+      "--lib",
+      "--no-run",
+      "--message-format=json"
+    ]
+  ],
+  "references_checked": 18,
+  "unused_paths_checked": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V029-unit",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B095",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B096",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B097",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e029-research",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-primary-e029",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-assessment",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-three-pair-comparison",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-solver.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-postflop_autoresearch.exe"
+  ],
+  "no_build_native_gpu_execution": true,
+  "production_status_edits": 0
+}

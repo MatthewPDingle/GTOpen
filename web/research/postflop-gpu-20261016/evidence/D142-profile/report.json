@@ -1,0 +1,168 @@
+{
+  "id": "D142",
+  "at": "2026-10-28T08:47:50.550671+00:00",
+  "status": "pass_finite_diagnostic",
+  "measurement_epoch": "RAM20261028",
+  "accepted_source": "E080",
+  "protocol_sha256": "19d14cd619b3f70298e6ccf80a3a1a03766afbe66371e4184222a4f7a0e4ed82",
+  "native_report_sha256": "082d1fbe2b0576d27cb40289a4683c8ecfe7cc0320a0259185317f926eec6e1c",
+  "raw_log_sha256": "c4ed30d19d14e954a9228579e404803669b1921b0334c40f5217bfe9d53e2e64",
+  "full_results_exact": 3,
+  "convergence_checkpoints_exact": 23,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "instrumented_iteration": 201,
+      "families": [
+        {
+          "name": "copy_root",
+          "wall_ms_including_sync": 0.08549999999999999,
+          "launches": 2,
+          "fraction_of_instrumented_wall": 0.0030963788663994
+        },
+        {
+          "name": "down_action",
+          "wall_ms_including_sync": 5.704699999999999,
+          "launches": 26,
+          "fraction_of_instrumented_wall": 0.2065954680602182
+        },
+        {
+          "name": "down_chance",
+          "wall_ms_including_sync": 1.7244000000000002,
+          "launches": 18,
+          "fraction_of_instrumented_wall": 0.062449072716013174
+        },
+        {
+          "name": "up_fold",
+          "wall_ms_including_sync": 2.2343,
+          "launches": 24,
+          "fraction_of_instrumented_wall": 0.08091507954615416
+        },
+        {
+          "name": "up_show",
+          "wall_ms_including_sync": 7.594600000000001,
+          "launches": 12,
+          "fraction_of_instrumented_wall": 0.27503811624277064
+        },
+        {
+          "name": "up_chance",
+          "wall_ms_including_sync": 1.493,
+          "launches": 18,
+          "fraction_of_instrumented_wall": 0.05406893155010883
+        },
+        {
+          "name": "up_action",
+          "wall_ms_including_sync": 8.7764,
+          "launches": 26,
+          "fraction_of_instrumented_wall": 0.31783695301833564
+        }
+      ],
+      "instrumented_wall_ms": 27.6129,
+      "total_launches": 126
+    },
+    {
+      "fixture_id": "two-tone",
+      "instrumented_iteration": 201,
+      "families": [
+        {
+          "name": "copy_root",
+          "wall_ms_including_sync": 0.0951,
+          "launches": 2,
+          "fraction_of_instrumented_wall": 0.005189886542858858
+        },
+        {
+          "name": "down_action",
+          "wall_ms_including_sync": 3.0098000000000007,
+          "launches": 26,
+          "fraction_of_instrumented_wall": 0.16425363319344471
+        },
+        {
+          "name": "down_chance",
+          "wall_ms_including_sync": 1.0395000000000003,
+          "launches": 18,
+          "fraction_of_instrumented_wall": 0.05672857057099668
+        },
+        {
+          "name": "up_fold",
+          "wall_ms_including_sync": 1.5776,
+          "launches": 24,
+          "fraction_of_instrumented_wall": 0.08609426929562705
+        },
+        {
+          "name": "up_show",
+          "wall_ms_including_sync": 4.4014,
+          "launches": 12,
+          "fraction_of_instrumented_wall": 0.2401973357490954
+        },
+        {
+          "name": "up_chance",
+          "wall_ms_including_sync": 1.7401000000000002,
+          "launches": 18,
+          "fraction_of_instrumented_wall": 0.0949623719582408
+        },
+        {
+          "name": "up_action",
+          "wall_ms_including_sync": 6.460600000000001,
+          "launches": 26,
+          "fraction_of_instrumented_wall": 0.3525739326897365
+        }
+      ],
+      "instrumented_wall_ms": 18.3241,
+      "total_launches": 126
+    },
+    {
+      "fixture_id": "river",
+      "instrumented_iteration": 61,
+      "families": [
+        {
+          "name": "copy_root",
+          "wall_ms_including_sync": 0.0874,
+          "launches": 2,
+          "fraction_of_instrumented_wall": 0.05257459095283928
+        },
+        {
+          "name": "down_action",
+          "wall_ms_including_sync": 0.4854,
+          "launches": 14,
+          "fraction_of_instrumented_wall": 0.29198748796920115
+        },
+        {
+          "name": "down_chance",
+          "wall_ms_including_sync": 0.0,
+          "launches": 0,
+          "fraction_of_instrumented_wall": 0.0
+        },
+        {
+          "name": "up_fold",
+          "wall_ms_including_sync": 0.30959999999999993,
+          "launches": 12,
+          "fraction_of_instrumented_wall": 0.18623676612127044
+        },
+        {
+          "name": "up_show",
+          "wall_ms_including_sync": 0.5206999999999999,
+          "launches": 12,
+          "fraction_of_instrumented_wall": 0.31322184793070257
+        },
+        {
+          "name": "up_chance",
+          "wall_ms_including_sync": 0.0,
+          "launches": 0,
+          "fraction_of_instrumented_wall": 0.0
+        },
+        {
+          "name": "up_action",
+          "wall_ms_including_sync": 0.25930000000000003,
+          "launches": 14,
+          "fraction_of_instrumented_wall": 0.15597930702598656
+        }
+      ],
+      "instrumented_wall_ms": 1.6623999999999999,
+      "total_launches": 54
+    }
+  ],
+  "candidate_source_changed": false,
+  "performance_gain_claimed": false,
+  "hardware_counters_used": false,
+  "scope": "One extra instrumented training iteration after each fully scored and fingerprinted solve. Wall times include synchronization after every family launch and omit normal captured-graph scheduling. No CUDA-event/device-only measurement, absolute speed, whole-cycle gain, evaluation-family attribution or statistical confidence claim. Family observations only guide source review; no reopening E090 or closed mechanisms."
+}

@@ -1,0 +1,74 @@
+
+running 2 tests
+test symmetric_continuation_matches_uncompressed_values_and_averages ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+KsQs2d: full arenas=38292320, compact arenas=22827200, sweep CFV=0.000011677966, replay GPU CFV=0.000003387406, immediate root=0.000000059604645, trajectory CFV=0.6446715, root drift=0.0011988282, avg/BR=0.036633886, same-policy quotient evaluation=0.000010268514, root policy asymmetry=0
+KsQs2d: all-node average/current stabilizer asymmetry (0.0, 0.0); projected-vs-raw root policy sensitivity=0.001987636
+gpu: 195813 nodes, 12 levels, staging+arenas 22.9 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+KsQs2s: full arenas=38292320, compact arenas=10815200, sweep CFV=0.000013505951, replay GPU CFV=0.0000061920896, immediate root=0.000000059604645, trajectory CFV=0.33063748, root drift=0.0017238855, avg/BR=0.021950234, same-policy quotient evaluation=0.0000012835643, root policy asymmetry=0
+KsQs2s: all-node average/current stabilizer asymmetry (0.0, 0.0); projected-vs-raw root policy sensitivity=0.0036302805
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+KsQh2d: full arenas=38988544, compact arenas=38988544, sweep CFV=0.000010787244, replay GPU CFV=0, immediate root=0.000000059604645, trajectory CFV=0, root drift=0, avg/BR=0, same-policy quotient evaluation=0, root policy asymmetry=0
+KsQh2d: all-node average/current stabilizer asymmetry (0.0, 0.0); projected-vs-raw root policy sensitivity=0
+
+thread 'symmetric_continuation_matches_uncompressed_values_and_averages' (71616) panicked at crates\solver\tests\continuation_symmetry.rs:115:5:
+Original equivalence gates failed on ["KsQs2d", "KsQs2s"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test symmetric_continuation_rejects_unsupported_inputs_without_mutation ... gpu: 195813 nodes, 12 levels, staging+arenas 48.3 MB
+ok
+
+failures:
+
+failures:
+    symmetric_continuation_matches_uncompressed_values_and_averages
+
+test result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.87s
+

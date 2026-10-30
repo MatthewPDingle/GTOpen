@@ -1,0 +1,23 @@
+{
+  "id": "D187",
+  "at": "2026-10-28T19:48:21.320293+00:00",
+  "status": "declined_closed_family_before_execution",
+  "proposal": "Per-function shared/L1 cache preference for showdown",
+  "closed_family": "D100 per-function cache configuration",
+  "original_result": "rejected_resource_prerequisite",
+  "original_all_occupancy_queries_lower": 216,
+  "original_no_alternate_preference_carveout_kernel_scope_sweep": true,
+  "decision": "Do not reopen via PREFER_SHARED, carveout or entry subset. No new source, compiler, CUDA query, application kernel or timing sample.",
+  "new_native_or_compiler_processes": 0,
+  "new_gain_accepted": false,
+  "inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D100-show-cache-configuration\\report.json": {
+      "sha256": "89ac5e5921c7a568e4c66aeb10c2e1d58f6a4298c51a43459ef69dbba7ed684a",
+      "bytes": 40122
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D100-cache-resource-root-check\\report.json": {
+      "sha256": "87911b54a3756009847f3978eca0c359dda4a3787f8074011c344a4bf24c6739",
+      "bytes": 37379
+    }
+  }
+}

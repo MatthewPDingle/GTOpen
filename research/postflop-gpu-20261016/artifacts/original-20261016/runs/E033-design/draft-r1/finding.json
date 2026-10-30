@@ -1,0 +1,5 @@
+{
+  "finding": "armed alone could bypass a partial setter/readback failure on retry",
+  "correction": "separate verified armed state plus solver fault flag; uncertain setter remains disable-required",
+  "scope": "draft-only; no compiler or native execution"
+}

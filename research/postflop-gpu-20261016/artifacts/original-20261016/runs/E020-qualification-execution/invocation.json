@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-16T11:23:43Z",
+  "authorization_sha256": "e935a6b3f29f4de2b44cb7724adc6499119b68afa1934265e218dd76f559c76f",
+  "all_builds_ready_sha256": "4c53c85b4d7e83915ce31ec93d13a0dc916d8aca5c722441152e10886a6fdda0",
+  "order": [
+    "V020-state",
+    "V020-menu",
+    "V020-resume",
+    "V020-gpu",
+    "V020-f32-original",
+    "V020-f32-candidate",
+    "V020-continuation-paging",
+    "V020-continuation-rejection",
+    "V020-continuation-stored"
+  ],
+  "binary_pins": {
+    "E020-postflop_state_perf": {
+      "binary_sha256": "a293634fa964a06e04209e54a5e7c0767bd380fc44e95ee83362a6e86a9d4d1c",
+      "manifest_sha256": "208fb434f5e04ac118c7eaacef16dc809fbd34c00f1686800b20c2260b8138ed"
+    },
+    "E020-postflop_resume_state": {
+      "binary_sha256": "5e174a9da989d03264fe731603ca12985b7d6bc7d0945ea73eb43d22e3bf697b",
+      "manifest_sha256": "97344099895a619b0b00a811d7586485d7115ab1845fb27395340da97448d0f6"
+    },
+    "E020-continuation-tests": {
+      "binary_sha256": "21ad5267694c35d26ec8e018c0598f94c2f66216ef81d7ee4b90cb4eb6fcdc20",
+      "manifest_sha256": "188fa463158de5d2736a56bc64ba72c8cc55b03413cec166e901f1c050eec8f6"
+    },
+    "E020-continuation_symmetry": {
+      "binary_sha256": "0a2d2403e6eb7ef1af2141da590a1da67c3d3269c66a77f7f1023e86b5cd2980",
+      "manifest_sha256": "bad6f8150040fcc287ed9f42ec7a3964019bab18476dcc1d88b6fedbe3345891"
+    },
+    "E020-continuation_paging": {
+      "binary_sha256": "012790a236b2cdf95bb54fffc864677cad0931e04f180fb0e2a8e26a2e565049",
+      "manifest_sha256": "5ae9cab58c8c0d2050c38859d7febe14719f4515c6496c4621f180ecd3a1ee9f"
+    },
+    "baseline-complete": {
+      "binary_sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+      "manifest_sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411"
+    },
+    "E020-postflop_action_menus": {
+      "binary_sha256": "d086cceb1e0490ae23a16fe2b6fc739f4b21e4cb8993de6e5ef38d8dc946feb9",
+      "manifest_sha256": "a59ed1349cb6436cdb9f4de91897730eeac524cba036b57ad54e62f9f41bb84a"
+    },
+    "E020-gpu": {
+      "binary_sha256": "23a902540f6d868aaff64d5c4059c0eab454920a0e4bf2aea9441229d56f7148",
+      "manifest_sha256": "07c8a2254b479a9bde9476a9beff525499917e7df6f01250b2ee0ad2513bccdf"
+    },
+    "E020-postflop_autoresearch": {
+      "binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+      "manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+    }
+  },
+  "GTO_SSD_STUDY_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-stored-state",
+  "storage_note": "Unlimited-RAM stored-state test, not forced SSD spill"
+}

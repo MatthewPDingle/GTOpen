@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-29T20:24:48.827455+00:00",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 243
+    }
+  ],
+  "unique_CUDA_hashes": 143,
+  "pattern": "div\\.rn\\.ftz\\.f32",
+  "retained_matches": [],
+  "all_local_ref_revisions": 28,
+  "local_matches": [],
+  "classification": "New concept uses per-quotient native div.rn.ftz under exact normal-input/output bounds; retains independent native division per action and original ordinary division fallback. E060 instead shares hand-coded reciprocal/refinement across actions; it remains closed with all guard/window/math/arity/scope variants of that sharing form. E101zero bypass/E116singlepositive bypass remainclosed; this concept skips no positive division and includes neither old helper nor shared reciprocal/FMA nor zero/one shortcut. D108 integerchunk quotient is unrelated.",
+  "counterevidence": "D098 original driver SASS already has ordinary reciprocal/FMA fast sequences and exceptional FCHK/CALL branches; ordinary values may already avoid slow work. FTZ may not shorten native ordinary path; added comparisons/branch/codesize/registers may make it worse. No missing generic fastpath, dynamic incidence, removable time or speed inferred.",
+  "limits": "Bounded literal/local-all-ref novelty review, not exhaustive semantic/remote search."
+}

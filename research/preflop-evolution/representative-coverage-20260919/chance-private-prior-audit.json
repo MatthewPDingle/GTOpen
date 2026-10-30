@@ -1,0 +1,211 @@
+{
+  "eligible_physical_flops": 21100,
+  "full_physical_flops": 22100,
+  "supported_private_combinations": [
+    322,
+    106
+  ],
+  "agreement_with_prior_dense_enumeration": {
+    "two": 1.457167719820518e-16,
+    "ten": 8.326672684688674e-17
+  },
+  "eligible_population_vs_full": {
+    "joint_tv": 0.00032691544598136685,
+    "seats": [
+      {
+        "tv": 0.0002385011432653459,
+        "maximum_share_error_pp": 0.006005072617380758
+      },
+      {
+        "tv": 0.0001473743330278428,
+        "maximum_share_error_pp": 0.011557218364480204
+      }
+    ],
+    "target_mass_absent": 0.0
+  },
+  "panels": [
+    {
+      "panel": "two",
+      "target": "full deck",
+      "canonical_boards": 2,
+      "normalizer": 8310.473234476487,
+      "versus_target": {
+        "joint_tv": 0.061277005595748044,
+        "seats": [
+          {
+            "tv": 0.04227258634617529,
+            "maximum_share_error_pp": 0.7532142207036109
+          },
+          {
+            "tv": 0.04483252276838992,
+            "maximum_share_error_pp": 1.3942065571492162
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "versus_full_deck": {
+        "joint_tv": 0.061277005595748044,
+        "seats": [
+          {
+            "tv": 0.04227258634617529,
+            "maximum_share_error_pp": 0.7532142207036109
+          },
+          {
+            "tv": 0.04483252276838992,
+            "maximum_share_error_pp": 1.3942065571492162
+          }
+        ],
+        "target_mass_absent": 0.0
+      }
+    },
+    {
+      "panel": "ten",
+      "target": "full deck",
+      "canonical_boards": 10,
+      "normalizer": 8395.728804452025,
+      "versus_target": {
+        "joint_tv": 0.03957349801557823,
+        "seats": [
+          {
+            "tv": 0.02239472161257059,
+            "maximum_share_error_pp": 0.7975413601455456
+          },
+          {
+            "tv": 0.021852650657851476,
+            "maximum_share_error_pp": 2.119792409903741
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "versus_full_deck": {
+        "joint_tv": 0.03957349801557823,
+        "seats": [
+          {
+            "tv": 0.02239472161257059,
+            "maximum_share_error_pp": 0.7975413601455456
+          },
+          {
+            "tv": 0.021852650657851476,
+            "maximum_share_error_pp": 2.119792409903741
+          }
+        ],
+        "target_mass_absent": 0.0
+      }
+    },
+    {
+      "panel": "report47",
+      "target": "full deck",
+      "canonical_boards": 47,
+      "normalizer": 8428.833489872199,
+      "versus_target": {
+        "joint_tv": 0.005414102225425367,
+        "seats": [
+          {
+            "tv": 0.003603059466347264,
+            "maximum_share_error_pp": 0.07657387785684339
+          },
+          {
+            "tv": 0.00323275708684952,
+            "maximum_share_error_pp": 0.16141493165355847
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "versus_full_deck": {
+        "joint_tv": 0.005414102225425367,
+        "seats": [
+          {
+            "tv": 0.003603059466347264,
+            "maximum_share_error_pp": 0.07657387785684339
+          },
+          {
+            "tv": 0.00323275708684952,
+            "maximum_share_error_pp": 0.16141493165355847
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "independent_runtime_normalizer_agrees": true
+    },
+    {
+      "panel": "reserved10",
+      "target": "full deck",
+      "canonical_boards": 10,
+      "normalizer": 9543.96158294791,
+      "versus_target": {
+        "joint_tv": 0.029103473373195802,
+        "seats": [
+          {
+            "tv": 0.02330327921337196,
+            "maximum_share_error_pp": 0.5686010460415163
+          },
+          {
+            "tv": 0.016867188932649255,
+            "maximum_share_error_pp": 0.6652059537996149
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "versus_full_deck": {
+        "joint_tv": 0.029103473373195802,
+        "seats": [
+          {
+            "tv": 0.02330327921337196,
+            "maximum_share_error_pp": 0.5686010460415163
+          },
+          {
+            "tv": 0.016867188932649255,
+            "maximum_share_error_pp": 0.6652059537996149
+          }
+        ],
+        "target_mass_absent": 0.0
+      }
+    },
+    {
+      "panel": "validation95",
+      "target": "eligible complement",
+      "canonical_boards": 95,
+      "normalizer": 8421.186402364008,
+      "versus_target": {
+        "joint_tv": 0.0046065227585539,
+        "seats": [
+          {
+            "tv": 0.0033443771187681407,
+            "maximum_share_error_pp": 0.10644487094750021
+          },
+          {
+            "tv": 0.0023524400264110963,
+            "maximum_share_error_pp": 0.1476989291550851
+          }
+        ],
+        "target_mass_absent": 0.0
+      },
+      "versus_full_deck": {
+        "joint_tv": 0.0046837831267638385,
+        "seats": [
+          {
+            "tv": 0.003388292865379665,
+            "maximum_share_error_pp": 0.10259496160337153
+          },
+          {
+            "tv": 0.002469097584920753,
+            "maximum_share_error_pp": 0.149616383868649
+          }
+        ],
+        "target_mass_absent": 0.0
+      }
+    }
+  ],
+  "note": "Chance-only exact enumeration over supported private pairs and all suit relabelings. No reserved strategy outcomes read. Total variation measures changed probability mass, not strategy error or EV loss. Small prior distortion cannot establish adequate rank, draw or value coverage.",
+  "inputs_sha256": {
+    "tools\\research\\chance_prior_audit.py": "3c36dfb922b907421922fe021130c79f4d8277de083c622e933b12aac13f812c",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\wizard-continuation-20260919\\fixtures.json": "59d061208da9a0bd6f705336b000b9a5c51435a0483413f39a4521b26e5d72fa",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\coverage-audit.json": "4e653b25a78706f5fb4268b53fad3ce26cd84f9e8a462e17cb2e0fb50e7ed3a5",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\old-two-orbits.json": "de1cb110641a6927840d53fc4bb9770b5939c1788be209952a6c8c9ef4427e34",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\panel-ab.json": "484e68783423fd489bf1de5c61a9dc2e2842bad59490dd33fecbe480c83a389c",
+    "research\\preflop-evolution\\representative-coverage-20260919\\report-47.json": "af716ffc26c42f642254e87ebf2fecc1e34798182e190567f8f7507609251e69",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\reserved.json": "4f1bfe6dba2d08e8c8b96ef78a887102a8ff1b3cc42d8471a4b86fb68ade4055",
+    "research\\preflop-evolution\\representative-coverage-20260919\\validation-95.json": "6a4eb399ebe27c3f4e4fbeb404182bfeb3452d289ae725d98d7f43b14af5c8cd"
+  }
+}

@@ -1,0 +1,812 @@
+{
+  "id": "D009-lifecycle-summary",
+  "created_at": "2026-10-16T05:04:46Z",
+  "diagnostic_only": true,
+  "accepted_gain": false,
+  "scope": "Conditional host wall timers around existing operation boundaries; no added CUDA synchronization. Timers and logging perturb measurements. Not a qualifying performance cohort. Transfer spans are host copy-call plus existing completion wait, not standalone device timing.",
+  "source_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D009\\report.json",
+  "source_report_sha256": "94203f5d4c219ab9780ca633fe233e7db9ed9ee0b0fd3813b48da7e8f9437b9c",
+  "source_stdout_sha256": "dd03590e4fcb53aff50c1158c09f3c698885602be778721cdc96c04fac1653f3",
+  "exact_compressed_state": [
+    {
+      "fixture_id": "rainbow",
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176,
+      "iteration": 200,
+      "exact_compressed_state": "pass"
+    },
+    {
+      "fixture_id": "two-tone",
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664,
+      "iteration": 200,
+      "exact_compressed_state": "pass"
+    },
+    {
+      "fixture_id": "river",
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360,
+      "iteration": 60,
+      "exact_compressed_state": "pass"
+    }
+  ],
+  "readback": [
+    {
+      "fixture_id": "rainbow",
+      "transfer_host_call_plus_existing_wait_ms": 111.78059999999999,
+      "cpu_encode_scatter_restore_ms": 241.01850000000002,
+      "trace_wall_ms_before_logging": 352.8043
+    },
+    {
+      "fixture_id": "two-tone",
+      "transfer_host_call_plus_existing_wait_ms": 77.2048,
+      "cpu_encode_scatter_restore_ms": 204.4361,
+      "trace_wall_ms_before_logging": 281.6519
+    },
+    {
+      "fixture_id": "river",
+      "transfer_host_call_plus_existing_wait_ms": 0.20600000000000002,
+      "cpu_encode_scatter_restore_ms": 0.8263,
+      "trace_wall_ms_before_logging": 1.0353999999999999
+    }
+  ],
+  "traces": [
+    {
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "init",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "plan_and_budget_cpu",
+          "wall_ms": 141.22889999999998
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "context_stream_and_device_info_host_calls",
+          "wall_ms": 131.4494
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "ptx_acquire_or_compile_cpu",
+          "wall_ms": 57.8602
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "module_load_host_call",
+          "wall_ms": 1.3477000000000001
+        },
+        {
+          "arena": null,
+          "bytes": 740688652,
+          "player": null,
+          "stage": "pinned_alloc_host_call",
+          "wall_ms": 60.8606
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "arena_layouts_cpu",
+          "wall_ms": 12.1206
+        },
+        {
+          "arena": null,
+          "bytes": 2729544064,
+          "player": null,
+          "stage": "arena_upload_calls_with_existing_waits",
+          "wall_ms": 239.8176
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "locks_and_fold_tables_cpu",
+          "wall_ms": 0.7573000000000001
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "function_lookup_metadata_upload_and_workbuffer_submit",
+          "wall_ms": 46.949200000000005
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 692.3919
+    },
+    {
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 16.7422
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 16.7427
+    },
+    {
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.014199999999999999
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.0144
+    },
+    {
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0039
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.045000000000000005
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 23.6099
+        },
+        {
+          "arena": "regrets",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 58.2211
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0739
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 24.160899999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 624083380,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 53.0216
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0617
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 27.699499999999997
+        },
+        {
+          "arena": "regrets",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 65.73740000000001
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0812
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 36.0485
+        },
+        {
+          "arena": "strat",
+          "bytes": 740688652,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 64.0384
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.00039999999999999996
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 352.8043
+    },
+    {
+      "fixture_id": "rainbow",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.0178
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.018000000000000002
+    },
+    {
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "init",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "plan_and_budget_cpu",
+          "wall_ms": 139.2466
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "context_stream_and_device_info_host_calls",
+          "wall_ms": 73.7473
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "ptx_acquire_or_compile_cpu",
+          "wall_ms": 0.0257
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "module_load_host_call",
+          "wall_ms": 1.3497999999999999
+        },
+        {
+          "arena": null,
+          "bytes": 442981120,
+          "player": null,
+          "stage": "pinned_alloc_host_call",
+          "wall_ms": 30.7582
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "arena_layouts_cpu",
+          "wall_ms": 21.5903
+        },
+        {
+          "arena": null,
+          "bytes": 1633012592,
+          "player": null,
+          "stage": "arena_upload_calls_with_existing_waits",
+          "wall_ms": 135.1911
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "locks_and_fold_tables_cpu",
+          "wall_ms": 1.7119
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "function_lookup_metadata_upload_and_workbuffer_submit",
+          "wall_ms": 31.251300000000004
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 434.8725
+    },
+    {
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 8.277899999999999
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 8.2781
+    },
+    {
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.0223
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.023200000000000002
+    },
+    {
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0103
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.06470000000000001
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 19.4064
+        },
+        {
+          "arena": "regrets",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 47.338699999999996
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0839
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 17.538999999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 373525176,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 51.0828
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.146
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 22.184800000000003
+        },
+        {
+          "arena": "regrets",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 54.4857
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0658
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 17.714199999999998
+        },
+        {
+          "arena": "strat",
+          "bytes": 442981120,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 51.5289
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.00039999999999999996
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 281.6519
+    },
+    {
+      "fixture_id": "two-tone",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.021500000000000002
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.0216
+    },
+    {
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "init",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "plan_and_budget_cpu",
+          "wall_ms": 0.0472
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "context_stream_and_device_info_host_calls",
+          "wall_ms": 91.2218
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "ptx_acquire_or_compile_cpu",
+          "wall_ms": 0.025400000000000002
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "module_load_host_call",
+          "wall_ms": 1.5146000000000002
+        },
+        {
+          "arena": null,
+          "bytes": 17920,
+          "player": null,
+          "stage": "pinned_alloc_host_call",
+          "wall_ms": 0.5327
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "arena_layouts_cpu",
+          "wall_ms": 0.0023
+        },
+        {
+          "arena": null,
+          "bytes": 65664,
+          "player": null,
+          "stage": "arena_upload_calls_with_existing_waits",
+          "wall_ms": 1.0632000000000001
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "locks_and_fold_tables_cpu",
+          "wall_ms": 0.053399999999999996
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "function_lookup_metadata_upload_and_workbuffer_submit",
+          "wall_ms": 0.8075
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 95.2682
+    },
+    {
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.0033
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.0034000000000000002
+    },
+    {
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.0058000000000000005
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.0059
+    },
+    {
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "full_readback",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "initial_stream_wait",
+          "wall_ms": 0.0028
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0205
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0129
+        },
+        {
+          "arena": "regrets",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.2359
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.028
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.0123
+        },
+        {
+          "arena": "strat",
+          "bytes": 14912,
+          "player": 0,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.1495
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0251
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.012799999999999999
+        },
+        {
+          "arena": "regrets",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.2231
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_host_call",
+          "wall_ms": 0.0584
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "dtoh_stream_wait",
+          "wall_ms": 0.036000000000000004
+        },
+        {
+          "arena": "strat",
+          "bytes": 17920,
+          "player": 1,
+          "stage": "encode_scatter_restore_cpu",
+          "wall_ms": 0.21780000000000002
+        },
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "publish_iteration_and_symmetry_flag_cpu",
+          "wall_ms": 0.00019999999999999998
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 1.0353999999999999
+    },
+    {
+      "fixture_id": "river",
+      "clock": "host_wall",
+      "completed": true,
+      "diagnostic_only": true,
+      "extra_cuda_synchronizations": 0,
+      "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification.",
+      "phase": "caller_synchronize",
+      "schema_version": 1,
+      "spans": [
+        {
+          "arena": null,
+          "bytes": null,
+          "player": null,
+          "stage": "existing_stream_wait",
+          "wall_ms": 0.0042
+        }
+      ],
+      "thread": "ThreadId(2)",
+      "wall_ms_before_logging": 0.0043
+    }
+  ],
+  "next_hypothesis": "Investigate exact GPU-side compression to reduce CPU encoding and DTOH traffic; no implementation or speed claim yet. Context-retention-only gains may overstate application benefits because the live server already retains the CUDA primary context."
+}

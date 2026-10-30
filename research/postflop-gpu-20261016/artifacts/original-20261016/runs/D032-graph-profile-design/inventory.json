@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-10-16T08:55:59.137897+00:00",
+  "mode": "read-only design; no profiler, GPU or build invocation",
+  "driver_registry": "610.88",
+  "nvcuda_dll": {
+    "path": "C:\\Windows\\System32\\nvcuda.dll",
+    "file_version": "32.0.16.1088"
+  },
+  "current_token_elevated_administrator": false,
+  "nvrtc_package_version": "12.9.86",
+  "nvrtc_directory": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+  "profiler_commands_on_PATH": [],
+  "profiler_or_cupti_files_found_in_scanned_roots": [],
+  "uninstall_registry_matches": [
+    "NVIDIA Graphics Driver610.88",
+    "NVIDIA PhysX System Software9.23.1019",
+    "NVIDIA Install Application2.1002.461.0"
+  ],
+  "scanned_roots": [
+    "C:\\Program Files",
+    "C:\\Program Files (x86)",
+    "C:\\Users\\there\\AppData\\Local\\Programs",
+    "X:\\Tools",
+    "S:\\Tools",
+    "C:\\Tools"
+  ],
+  "scan_patterns": [
+    "nsys.exe",
+    "ncu.exe",
+    "nvprof.exe",
+    "*cupti*.dll",
+    "*nvperf*.dll"
+  ],
+  "scan_limit": "Existing usual installation/tool roots only, not an exhaustive full-drive search. Inaccessible entries suppressed by read-only rg search; no installed profiler version inferred.",
+  "preserved_hardware_evidence": {
+    "source": "runs/D029/report.json telemetry_before.gpu",
+    "gpu_summary": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607, 2341, 29847, 0, 44, 73.24, 2542",
+    "report_sha256": "8f8a8c3e30d09a0547694d80f3e627c665fb5ca69a12c7a44a2593c804fc3cf0"
+  },
+  "accepted_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+    "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+    "build_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+    "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  },
+  "cudarc_source": "C:/Users/there/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cudarc-0.19.7/src/driver/safe/core.rs",
+  "new_execution": false
+}

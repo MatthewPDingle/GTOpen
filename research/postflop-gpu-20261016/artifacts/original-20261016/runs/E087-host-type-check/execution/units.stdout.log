@@ -1,0 +1,12 @@
+
+running 7 tests
+test gpu::arena::bounded_tests::compact_copy_spans_cover_exact_window_intersections ... ok
+test gpu::arena::bounded_tests::transfer_groups_keep_whole_nodes_and_reject_invalid_spans ... ok
+test gpu::arena::tests::scoped_zero_checks_reject_other_stores_and_preserve_all_guards_and_bits ... ok
+test gpu::arena::tests::zero_upload_accepts_only_positive_zero_compressed_sources ... ok
+test gpu::arena::tests::zero_upload_preserves_existing_inactive_snapshot_metadata ... ok
+test gpu::arena::tests::zero_upload_rejects_nonzero_quantized_values_with_zero_scale ... ok
+test gpu::arena::tests::zero_upload_rejects_signed_zero_nonzero_and_nonfinite_scales ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

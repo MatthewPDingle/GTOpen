@@ -1,0 +1,21 @@
+{
+  "exit_code": 0,
+  "error": null,
+  "seconds": 10.171000000002095,
+  "command": [
+    "cargo",
+    "test",
+    "--locked",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--test",
+    "continuation_host_orbit_large",
+    "--no-run",
+    "--message-format=json",
+    "--target-dir",
+    "target/storage-fixture-research"
+  ]
+}

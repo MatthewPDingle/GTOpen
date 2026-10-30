@@ -1,0 +1,20 @@
+{
+  "candidate": "E020",
+  "resource_probe_pass": false,
+  "independent_source_review_pass": false,
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "<absolute immutable candidate CUDA source path>",
+      "sha256": "<frozen candidate CUDA sha256>"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "<absolute immutable candidate Rust source path>",
+      "sha256": "<frozen candidate Rust sha256>"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-primary-plan\\scripts-manifest.json": "<final independent script seal sha256>",
+    "<absolute sealed resource/source review artifact path>": "<artifact sha256>"
+  },
+  "scope": "Example only; flags intentionally false. Root writes authorization.json after actual source/resource/script review. No numerical proof, acceptance or deployment is implied."
+}

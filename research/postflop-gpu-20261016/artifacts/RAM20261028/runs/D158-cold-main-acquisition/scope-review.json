@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-28T12:24:29.775181+00:00",
+  "E092_remains_closed_after_resource_failure": true,
+  "distinct_question": "Measure current first-process PTX acquisition only; existing process-local cache is already present. A possible source-bound prebuilt main PTX would remove cold compilation rather than add a duplicate warm cache. No optimizer or E093 created; do not infer a gain from this probe.",
+  "history_counterevidence": [
+    "D041/D109 record process-local OnceLock and historical PTX acquire about53-60ms,below current1% suite threshold. D109 module/function loads about1.46-1.98ms are also too small and context retention already exists. Old outcomes remain unchanged.",
+    "E080 overlaps zero scans with compiler/staging setup. Even a large raw compiler duration may be hidden by concurrent proof work. Any admitted standalone proxy still needs fresh actual critical-path evidence before source implementation.",
+    "E009/E010/E092 packed readback mechanisms remain closed. This probe changes no readback,arena,scratch,q/scale,allocation,context lifetime or solver source."
+  ],
+  "proxy_rule": "Three fresh source-bound CPU compilation processes,one acquisition each,exact PTX to retained accepted-source reference. Compare minimum raw acquisition duration to1% of current five-run baseline10456.4109ms. If below,decline for insufficient conservative standalone evidence; if at least,only admit actual overlap/critical-path diagnosis. This is an effort-selection heuristic,not a rigorous upper bound or causal future saving. GPU-context absence,CPU contention/scheduling/library initialization can differ in real solves.",
+  "scope": "One Rust compiler and three CPU-only NVRTC processes,all artifacts X. No solver,explicit GPU context/kernels or timings of an optimization. No compile/arch/source/gate/sample variants or extensions after actual failed identity/proxy result."
+}

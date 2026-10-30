@@ -1,0 +1,30 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -211,6 +211,7 @@
+     int nh_p, int nh_o, int nh_max)
+ {
+     extern __shared__ char shraw[];
++    __shared__ u32 card_off_sh[53];
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+@@ -227,6 +228,8 @@
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+     for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+         card_pos_sh[j] = o_card_pos[card_base + j];
++    for (int j = threadIdx.x; j < 53; j += blockDim.x)
++        card_off_sh[j] = o_card_off[(u64)slot * 53 + j];
+     __syncthreads();
+     const float* ro = ro_sh;
+     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+@@ -272,8 +275,8 @@
+         float tot_c = 0.f, lower_c = 0.f, higher_c = 0.f;
+         u32 cc[2] = { pc1[i], pc2[i] };
+         for (int x = 0; x < 2; x++) {
+-            u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+-            u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
++            u32 c0 = card_off_sh[cc[x]];
++            u32 c1 = card_off_sh[cc[x] + 1];
+             for (u32 t = c0; t < c1; t++) {
+                 u32 pos = card_pos_sh[t - card_base];
+                 float r = reach_sh[pos];

@@ -1,0 +1,56 @@
+{
+  "scope": "Host source/count extraction only; no native timing or compiler work",
+  "source_report": "runs/B068/report.json",
+  "counts": [
+    {
+      "fixture": "rainbow",
+      "arenas": 4,
+      "q_words": 682386016,
+      "q_bytes": 1364772032,
+      "scale_words": 5387252,
+      "scale_bytes": 21549008,
+      "logical_read_bytes_when_all_zero": 1386321040
+    },
+    {
+      "fixture": "two-tone",
+      "arenas": 4,
+      "q_words": 684761140,
+      "q_bytes": 1369522280,
+      "scale_words": 5387252,
+      "scale_bytes": 21549008,
+      "logical_read_bytes_when_all_zero": 1391071288
+    },
+    {
+      "fixture": "river",
+      "arenas": 4,
+      "q_words": 16416,
+      "q_bytes": 32832,
+      "scale_words": 132,
+      "scale_bytes": 528,
+      "logical_read_bytes_when_all_zero": 33360
+    }
+  ],
+  "q_bytes_total": 2734327144,
+  "scale_bytes_total": 43098544,
+  "logical_read_bytes_total": 2777425688,
+  "physical_DRAM_transactions_measured": false,
+  "E012_E013_zero_proof_identical": {
+    "E012-source": true,
+    "E013-source": true
+  },
+  "measured_current_zero_proof_ms": null,
+  "nonnegative_source_only_lower_time_bound_ms": 0,
+  "historical_upload_group_ms": 388.166,
+  "historical_condition_only_upper_zero_proof_ms": 388.166,
+  "historical_condition_only_upper_saving_ms": 388.166,
+  "recent_E020_two_percent_required_ms": 195.472462,
+  "if_other_costs_constant_required_scan_ms_gt": 195.472462,
+  "if_only_q_scan_changes_required_logical_q_GBps_below": 13.988298484724666,
+  "best_case_if_entire_historical_group_were_scan_required_speedup_gt": 2.0144214695980103,
+  "warnings": [
+    "Historical group is not a current E020 bound or direct scan measurement.",
+    "Logical bytes are not DRAM traffic; caches, demand-zero pages, CPU SIMD and scheduling matter.",
+    "Device allocation/memset/wait time is residual; no parallel scan can recover it automatically.",
+    "No implementation or threshold selected."
+  ]
+}

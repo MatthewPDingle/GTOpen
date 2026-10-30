@@ -1,0 +1,19 @@
+{
+  "id": "E112-ABI-reader-R2",
+  "at": "2026-10-29T05:07:53.178242+00:00",
+  "status": "FROZEN_PRE_CPU_HEADER_REASSESSMENT",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-ABI-reader-r2.py": "b6b7fbaeef4edb100e25e84fae75dd3cfbe0919a38cc1effdab405031b512e6b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\protocol.json": "b94bd564507f0a4497095b5002d69a4a77166cb64ccc11826dcf0531fb68c83a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\report.json": "c93a09a8ac29a41a8942d84d45760506b3bb8579230556b24f80120b41dbd99d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\probe.rs": "8e3d4ec861681d9204333a5ae1204b255648018c3de441df5a1faf88d5917b3f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\probe.exe": "457fbdfa37dcffabe4a613381a514cde4eebdd2a4bf18a828c399ec6c2a6b4b4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\candidate.cu": "e26f3964a5ba9c4490293fe4f8776df20cb26f0e40e6f09ac39ee4b9c66b7112",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\execution\\candidate-compute_120.ptx": "96b4fb621e085a8646fb5a38711f2bddede8dacefc964b0dde6280d9afbaeba7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\execution\\candidate-compute_75.ptx": "88ae5db1dfac708eb81913156194a36cb4d741cff01bb0ea879c248f04f2c763",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-resource\\execution\\complete.json": "f56721ea85d35f2fc0e7e9c47d66190a8eb07c337046430bec3ddf722f881fc2"
+  },
+  "cause": "Both actual20to19argument schemas already equal exact drop of parameter17. Original reader additionally demanded SM120 pointer qualifiers on the compatibility75header. Actual75source-matched pointer is .u64 without optional .ptr/.align qualifiers.",
+  "correction": "Accept only the two actually observed64bit pointer schemas at removedordinal17; preserve exact full attributes/order for every remainingparameter and allothergates. Width/count negativefixtures. Header alone doesnotprove semanticidentity; frozen source projection/caller binding remains a separate prerequisite.",
+  "completed_compiler_module_or_native_cases_repeated": 0
+}

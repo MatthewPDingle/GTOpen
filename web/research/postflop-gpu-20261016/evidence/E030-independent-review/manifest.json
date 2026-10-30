@@ -1,0 +1,24 @@
+{
+  "id": "E030-independent-review",
+  "at": "2026-10-16T18:01:25.896885+00:00",
+  "verdict": "CONFIRMED_REJECTED",
+  "numerical_audit_pass": true,
+  "source_build_direct_custody_pass": true,
+  "restoration_pass": true,
+  "numerical_assertions": 676,
+  "artifact_sha256": {
+    "adaptation.patch": "e15e1534aa8c26c5660314fc8723632c83c9c490ae30bb02f5163306d875581a",
+    "audit-exit.json": "a79fe87a473a6b1483aac1901fc9fb93af5f236faa59fffe0b63f7738d26ee7b",
+    "audit-invocation.json": "0ea5b4a085f537c47842e3de81c9769438b3ef4081cbc61fbccc63b45b4f3fa7",
+    "audit-numerical.py": "48c95b674a9efc4fad3538e220b2485704f4fdf3bb9ce0e48e7dc85f4748f5b7",
+    "audit-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit-stdout.log": "c4ba728fea759c6cce81bd78984e82c5697084096d77de7329ca1efd3194442b",
+    "preparation.json": "314a8640b76eb8ca071084853b82f98a0655b37d64dce8f136df41fe1a9ec977",
+    "summary.md": "a19ca7407867a23493742ae184922ac9933348617d0e12951d570ace81fabe2d",
+    "validation.json": "6ff37646fb638792888d53a43de03c4a1789ef523305cb761c46c91ae24a96ec",
+    "source-custody.json": "b21d6f625de5c929d3e8e986df0d638ca11b184da0cf8a0e99ab8cacd5b060d4"
+  },
+  "scope": "Two independently owned file-only audits: complete raw numerical/order/gate validation and source/build/direct-prerequisite/restoration custody. All six measurements retained. No acceptance, deployment, additional measurements or statistical significance claim.",
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

@@ -1,0 +1,41 @@
+{
+  "candidate": "E022",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E022_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E022-source-review\\report.json",
+      "sha256": "d008aaa35c5424611e56a72b9f7db2988bd6fb4e29d42726594c406e9fd6d441"
+    },
+    "E022_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E022-root-script-review\\report.json",
+      "sha256": "f81de4ad3690e771721179ac70e8af2eb6d7bed5ecd6c9e1a453be9a2acd80fa"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\candidate\\kernels.cu",
+      "sha256": "d961dc3717314e3eef5fa6ab19caf857048f8f35b1efee6ef0bdc5cbfc30b8f3"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E022-source-review\\report.json": "d008aaa35c5424611e56a72b9f7db2988bd6fb4e29d42726594c406e9fd6d441",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E022-root-script-review\\report.json": "f81de4ad3690e771721179ac70e8af2eb6d7bed5ecd6c9e1a453be9a2acd80fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-primary-plan\\scripts-manifest.json": "8663776389cb6e676dc66b2596a725f9257a698f1a7a99aaf22c7d5b65e1fcf7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-primary-plan\\protocol.json": "65e680ac9a02e09e37919ba854c3f6a1fbe7629ef586c896589567cb48acfec8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\manifest.json": "716d64aaec6a1bc8cc73bf1bfe70947248c5d388c872a7f03b69789e30ef434c"
+  },
+  "scope": "Root authorizes the reviewed CUDA-only E022 research build and fixed primary evaluation. No adoption, deployment or outcome-triggered extension."
+}

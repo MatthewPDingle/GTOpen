@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-17T08:09:18.820286+00:00",
+  "accepted_ptx_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "analysis": {
+    "mask_pointer_registers": [
+      "%rd157"
+    ],
+    "mask_load_instructions": [
+      "ld.global.nc.u64 \t%rd15, [%rd52];"
+    ],
+    "mask_value_tainted_registers": [
+      "%p11",
+      "%p14",
+      "%p16",
+      "%p18",
+      "%p20",
+      "%p5",
+      "%p8",
+      "%rd110",
+      "%rd111",
+      "%rd124",
+      "%rd125",
+      "%rd138",
+      "%rd139",
+      "%rd15",
+      "%rd53",
+      "%rd54",
+      "%rd67",
+      "%rd68",
+      "%rd81",
+      "%rd82",
+      "%rd96",
+      "%rd97"
+    ],
+    "mask_dependent_comparisons": [
+      "setp.eq.b64 \t%p5, %rd54, 1;",
+      "setp.eq.b64 \t%p8, %rd68, 1;",
+      "setp.eq.b64 \t%p11, %rd82, 1;",
+      "setp.eq.b64 \t%p14, %rd97, 1;",
+      "setp.eq.b64 \t%p16, %rd111, 1;",
+      "setp.eq.b64 \t%p18, %rd125, 1;",
+      "setp.eq.b64 \t%p20, %rd139, 1;"
+    ],
+    "mask_dependent_branches": [
+      "@%p5 bra \t$L__BB5_9;",
+      "@%p8 bra \t$L__BB5_14;",
+      "@%p11 bra \t$L__BB5_19;",
+      "@%p14 bra \t$L__BB5_25;",
+      "@%p16 bra \t$L__BB5_29;",
+      "@%p18 bra \t$L__BB5_33;",
+      "@%p20 bra \t$L__BB5_37;"
+    ],
+    "unknown_calls": [],
+    "fp_add_sites": 7,
+    "entry_instruction_count": 285,
+    "limits": "Conservative explicit register-data taint from loads through unchanged mask-pointer parameter9. No implicit control taint or final-SASS/dynamic divergence claim. Unsupported call-outs or missing mask loads cannot pass."
+  },
+  "candidate_compiles": 0,
+  "kernel_launches": 0
+}

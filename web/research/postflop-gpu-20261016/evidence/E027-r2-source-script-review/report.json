@@ -1,0 +1,59 @@
+{
+  "id": "E027-r2-source-script-review",
+  "at": "2026-10-16T16:20:37.094383+00:00",
+  "revision": 2,
+  "verdict": "PASS_NARROW_OWNERSHIP_AND_ROUTING_AMENDMENT",
+  "source_review_pass": true,
+  "script_review_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "scope": "Additive review of R2 only, incorporating unchanged R1 source/script scope by immutable pin. No repetition of closed feasibility or execution of candidate/build/primary/assess.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\manifest.json": "0401006b33a45ff9bdc2d2e9ef255285146a7538b4197f5bc130b6ac8f54e0b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\repair-r1-to-r2.patch": "9fa137a54d5bea67746e04e61231b919f2d590733f6e51f3a547558cba6d5ff2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\mod.rs": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\scripts-manifest.json": "28d8d84dd6b10126ad756096310ce6078d6e4e52aa25b36e956d9ff0abd3066b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\protocol.json": "48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\r1-to-r2-script.patch": "6a0a14ccfa4de4acf7c8a3f240147c8537c88e6d7a517f3122da74b020b7de4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\preserved-r1-evidence.json": "90f55b3023a98010ac131502fd9efdfd81ae825cc0da2b8103e1b4ef44b731ef",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-source-script-review\\report.json": "3d0e71f371808fad58cb7441ab6e7410e48c937d4a36ed8d65916fa8801f0205",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-failed-build-custody\\custody.json": "78ef5021a4b52e0ea2ecebb76c2e1808fd080c2f24d78797182d59f93bd217ca"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+    "crates/solver/src/gpu/mod.rs": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578",
+    "crates/solver/src/gpu/kernels.cu": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2",
+    "crates/solver/src/game.rs": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208"
+  },
+  "source_delta": "Exactly one let reach_len=[plan.reach_elements(0),plan.reach_elements(1)] before Ok(GpuSolver {, plus use reach_len[0/1] in the existing allocations. Whole-plan borrow finishes before any span fields move; subsequent scalar indexing borrows no plan. No allocation/launch/math/workload changes. CUDA and the other four candidate files are byte-identical to R1.",
+  "script_delta": "Exactly R2 source/manifest/protocol-hash and path routing: E027-design-r2, E027-primary-plan-r2, runs/E027-build-r2 and fresh build-primary-e027-r2. Build, primary and assess reverse-normalize byte-for-byte to R1. E027 binary names and all seven run IDs remain unused; order, gates, test inventory, evaluator and conditional qualification remain unchanged.",
+  "verified": {
+    "r2_source_artifacts": 15,
+    "r2_source_reference_pins": 15,
+    "r2_scripts_and_protocol": 4,
+    "r2_supporting_pins": 7,
+    "r2_script_reference_pins": 19,
+    "preserved_r1_input_pins": 47,
+    "unchanged_other_candidate_files": 4,
+    "accepted_checkout_entries": 162,
+    "python_ast_files": 3,
+    "fresh_target_and_output_paths_absent": true,
+    "all_seven_run_ids_unused": true,
+    "candidate_binary_names_unused": true
+  },
+  "compiler_discovered_limitation": "R1 compiler E0382 (exit101 before any native/timing run) exposed a partial-move ownership error missed by the original independent source review. Original R1 review, source, authorization, failed build and verified restoration/custody remain sealed. R2 fixes that source cause; only a subsequent successful root build can establish compilation.",
+  "limits": [
+    "No compiler/native/GPU work by reviewer. No numerical or performance result claimed.",
+    "Original primary and conditional raw logical-row/padding/workspace/F32/broader/holdout/cumulative obligations are unchanged.",
+    "Source/script PASS permits root to proceed within existing authorization; it is not candidate acceptance or deployment approval."
+  ],
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "gpu_executions": 0,
+  "production_edits": 0,
+  "status_edits": 0,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

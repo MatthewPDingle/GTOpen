@@ -1,0 +1,89 @@
+{
+  "status": "READ_ONLY_SOURCE_APPLICABILITY_CHECK",
+  "accepted_base": "E020",
+  "all162_current_exact": true,
+  "candidates": [
+    {
+      "historical_id": "E007",
+      "old_gain_pct": 1.2927989145770187,
+      "old_outcome": "rejected",
+      "old_compressed_screen": "pass",
+      "old_broader_validation": "not run",
+      "applicability": "source-compatible with accepted E020; compiler/numerical/performance validity must be freshly established",
+      "read_only_git_apply_check": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "patch_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E007.patch",
+      "patch_sha256": "8f7aec88dce41b68c19646d833c93c42ccae7d367a2dd42e6f6808c4a70936ed",
+      "scope": "One __launch_bounds__(128,9) attribute on up_action; accepted entry lacks the attribute, production host launch is128.",
+      "source_locations": [
+        "accepted kernels.cu:410",
+        "accepted gpu/mod.rs cfg block width128"
+      ],
+      "rebase": "Fresh E020 source archive required; old whole binary/source must not be copied. Target declaration matches exactly.",
+      "risks": "Compiler may trade registers/spills/instructions differently on current E020; no inferred occupancy or speed gain."
+    },
+    {
+      "historical_id": "E008",
+      "old_gain_pct": 1.6963097368022821,
+      "old_outcome": "rejected",
+      "old_compressed_screen": "pass",
+      "old_broader_validation": "not run",
+      "applicability": "source-compatible with accepted E020; compiler/numerical/performance validity must be freshly established",
+      "read_only_git_apply_check": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "patch_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E008.patch",
+      "patch_sha256": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+      "scope": "Keep original left-to-right chunk prefix carry in float register and store each result. No shortened bound or reassociation.",
+      "source_locations": [
+        "accepted kernels.cu:253-256"
+      ],
+      "rebase": "Fresh E020 source archive required; E020 shared card-position cache remains intact. Original recurrence snippet still exact.",
+      "risks": "Source arithmetic recurrence is preserved, but fresh exact-state and conditional chunk-boundary/F32/original-kernel checks remain required; old measured gain does not transfer."
+    },
+    {
+      "historical_id": "E032",
+      "old_gain_pct": 1.1460346635930425,
+      "old_outcome": "rejected",
+      "old_compressed_screen": "pass",
+      "old_broader_validation": "not run",
+      "applicability": "source-compatible with accepted E020; compiler/numerical/performance validity must be freshly established",
+      "read_only_git_apply_check": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "patch_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\candidate.patch",
+      "patch_sha256": "6885672b8c9db50f4b80767ee5448c0b4ae4d45d96457582d9cf072bd4bcada4",
+      "scope": "Whole training terminal consolidation with checked device-grid fallback",
+      "rebase": "Existing archive already based byte-exactly on current accepted E020; preserve exact candidate, including existing focused tests.",
+      "risks": "Schedule/device-grid capability and full standalone/evaluation/continuation checks remain required."
+    },
+    {
+      "historical_id": "E036",
+      "old_gain_pct": 1.1556152128749593,
+      "old_outcome": "rejected",
+      "old_compressed_screen": "pass",
+      "old_broader_validation": "not run",
+      "applicability": "source-compatible with accepted E020; compiler/numerical/performance validity must be freshly established",
+      "read_only_git_apply_check": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "patch_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate.patch",
+      "patch_sha256": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+      "scope": "Exact whole-row positive-zero showdown shortcut with full present-hand three-term expression and barrier",
+      "rebase": "Existing archive already based byte-exactly on current accepted E020; preserve exact candidate, including existing focused tests.",
+      "risks": "Predicate cost and zero-path rewrite/barrier remain unchanged; do not substitute E037 or any tuned successor."
+    }
+  ],
+  "obsolete_or_incompatible_candidates": [],
+  "no_candidate_source_created": true,
+  "compiler_native_gpu_executed": false
+}

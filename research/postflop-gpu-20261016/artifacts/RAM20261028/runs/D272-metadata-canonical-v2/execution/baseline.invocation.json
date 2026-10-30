@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-29T09:08:27.979201+00:00",
+  "command": [
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D272-metadata-canonical-v2\\baseline.exe",
+    "--exact",
+    "postflop_complete_cycle",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "output_env": {
+    "D156_OUTPUT": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D272-metadata-canonical-v2\\baseline-output"
+  },
+  "limits": {
+    "raw_reservation_bytes": 274877906944,
+    "disk_headroom_bytes": 68719476736,
+    "required_free_bytes": 343597383680,
+    "available_RAM_before_bytes": 68719476736,
+    "available_RAM_during_bytes": 34359738368,
+    "process_reported_peak_max_bytes": 34359738368,
+    "native_timeout_seconds": 1800,
+    "poll_interval_ms": 200
+  },
+  "global_memory_before": {
+    "length": 64,
+    "load": 23,
+    "total_physical": 137354833920,
+    "available_physical": 104705695744,
+    "total_pagefile": 158466031616,
+    "available_pagefile": 108536016896,
+    "total_virtual": 140737488224256,
+    "available_virtual": 140733034319872,
+    "available_extended_virtual": 0
+  }
+}

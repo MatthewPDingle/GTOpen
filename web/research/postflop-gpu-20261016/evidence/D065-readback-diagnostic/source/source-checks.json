@@ -1,0 +1,61 @@
+{
+  "id": "D065-source",
+  "at": "2026-10-16T20:28:59.284195+00:00",
+  "accepted_source_entries_verified": 162,
+  "full_method_equals_D009_uninstrumented_base": true,
+  "helper_byte_exact_D009_added_hunk": true,
+  "helper_sha256": "d71e41b88c8fbb3695ac1061d6cf57dd31dac28d09c7e4c4aee3da8e3facf994",
+  "full_readback_method_byte_exact_D009_candidate": true,
+  "removing_only_helper_and_readback_timer_lines_recovers_accepted_source": true,
+  "constructor_public_synchronize_and_all_other_source_bytes_unchanged": true,
+  "transfer_sync_allocation_encoding_call_counts": {
+    ".synchronize()": {
+      "before": 8,
+      "after": 8
+    },
+    ".memcpy_dtoh(": {
+      "before": 3,
+      "after": 3
+    },
+    ".memcpy_htod(": {
+      "before": 8,
+      "after": 8
+    },
+    ".clone_htod(": {
+      "before": 8,
+      "after": 8
+    },
+    ".alloc_zeros": {
+      "before": 5,
+      "after": 5
+    },
+    ".arena_layout[p].write(": {
+      "before": 3,
+      "after": 3
+    }
+  },
+  "ordered_runtime_spans": 14,
+  "full_readback_sites": 1,
+  "new_tests": 0,
+  "gpu_only_existing_unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "kernels_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "patch_check": {
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "--whitespace=error",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\candidate.patch"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "read_only": true
+  },
+  "compiler_native_gpu_executed": false
+}

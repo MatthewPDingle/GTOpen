@@ -1,0 +1,148 @@
+{
+  "id": "D172",
+  "at": "2026-10-28T16:01:08.814240+00:00",
+  "status": "source_history_and_removable_headroom_audit_not_admitted_to_native",
+  "accepted_control_stage_observations": {
+    "rainbow": {
+      "build_ms": {
+        "observations": [
+          85.0543,
+          77.8433,
+          83.7419
+        ],
+        "median": 83.7419
+      },
+      "init_ms": {
+        "observations": [
+          933.4812999999999,
+          610.4013,
+          573.5272
+        ],
+        "median": 610.4013
+      },
+      "solve_ms": {
+        "observations": [
+          4857.2105,
+          4840.576,
+          4837.3274
+        ],
+        "median": 4840.576
+      },
+      "readback_ms": {
+        "observations": [
+          372.52160000000003,
+          357.3327,
+          351.3015
+        ],
+        "median": 357.3327
+      },
+      "full_cycle_ms": {
+        "observations": [
+          6248.3346,
+          5886.2129,
+          5845.9535000000005
+        ],
+        "median": 5886.2129
+      }
+    },
+    "two-tone": {
+      "build_ms": {
+        "observations": [
+          426.74620000000004,
+          354.5494,
+          314.3775
+        ],
+        "median": 354.5494
+      },
+      "init_ms": {
+        "observations": [
+          447.2793,
+          387.3125,
+          343.4219
+        ],
+        "median": 387.3125
+      },
+      "solve_ms": {
+        "observations": [
+          2994.3327000000004,
+          2998.1315999999997,
+          2982.8703
+        ],
+        "median": 2994.3327000000004
+      },
+      "readback_ms": {
+        "observations": [
+          252.98080000000002,
+          253.96259999999998,
+          265.4773
+        ],
+        "median": 253.96259999999998
+      },
+      "full_cycle_ms": {
+        "observations": [
+          4121.4002,
+          3994.0502,
+          3906.2049
+        ],
+        "median": 3994.0502
+      }
+    },
+    "river": {
+      "build_ms": {
+        "observations": [
+          0.2087,
+          0.18939999999999999,
+          0.19110000000000002
+        ],
+        "median": 0.19110000000000002
+      },
+      "init_ms": {
+        "observations": [
+          87.3657,
+          90.9738,
+          82.9359
+        ],
+        "median": 87.3657
+      },
+      "solve_ms": {
+        "observations": [
+          15.713700000000001,
+          16.4816,
+          16.6328
+        ],
+        "median": 16.4816
+      },
+      "readback_ms": {
+        "observations": [
+          0.769,
+          0.8975,
+          0.5494
+        ],
+        "median": 0.769
+      },
+      "full_cycle_ms": {
+        "observations": [
+          104.0862,
+          108.5681,
+          100.3308
+        ],
+        "median": 104.0862
+      }
+    }
+  },
+  "accepted_control_reports": [
+    "B302",
+    "B303",
+    "B304"
+  ],
+  "timing_use": "Existing3samecohortcontrols only, all retained. Stage medians are descriptive and not additive native GPU fractions/removable headroom. No pooled RAM/historical timing or extra native sample.",
+  "lead": "Inspect original iterate host discount upload and two captured graph submissions. Determine whether a separately defined batch caller can remove measured host-control stalls while preserving original CPU Discounts bits, alternating sweeps/checkpoint cadence/public iteration/error/stop/lifetime behavior. Hypothesis only, not measured headroom or implemented source.",
+  "closed_families": "E044 pinned discount staging is measured/closed and cannot be revived under new names/slots/thresholds. Old D033/D041/D048 graph timestamp envelopes are intrusive diagnostics, not native headroom and are not credited. Current complete ledger and all-ref/retained-source audit must rule out equivalent batching forms before admission. If equivalent or no demonstrated >=1% removable cost, decline. E094 metadata width and all8/32 worker/count/affinity/local-pool rescue forms stay closed.",
+  "next_obligations": [
+    "Read current API caller stop/error/public-iteration contract and all pinned host submission/capture history. Avoid changing default user solve semantics.",
+    "Source-only novelty check precedes any fresh code/observer protocol. Need a bounded non-counter diagnostic that measures actually removable complete-cycle cost if a distinct form survives; do not retry hardware counters busy D104.",
+    "Original E080 source/binary/current RAM fixture/quality exactness and entire state, frozen1%/strict fixture, fresh16, broad material/capacity/holdout/fresh-original/application gates all remain. No native kernel/compile/timing or optimization admitted by this scope file."
+  ],
+  "native_or_extra_timing_runs": 0,
+  "new_gain_accepted": false
+}

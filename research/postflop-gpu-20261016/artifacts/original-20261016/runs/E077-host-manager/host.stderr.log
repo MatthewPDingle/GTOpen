@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\E077-plan-control\execute.py", line 21, in <module>
+    r=replay(raw,case,P['models'][case]['reference'],P['models'][case]['tags']);r['raw_sha256']=old.sha(raw);results.append(r);old.save(E/(label+'.replay.json'),r);print(json.dumps(r),flush=True)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "S:\GTOpen-research\postflop-gpu-20261016\runs\E077-plan-control\replay.py", line 14, in replay
+    original.append(n);original.extend(a);encoded.append(n);encoded.extend(b)
+                       ^^^^^^^^^^^^^^^^^^
+TypeError: can only extend with array of same kind

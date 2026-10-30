@@ -1,0 +1,12 @@
+{
+  "id": "D014-host-max-proof",
+  "decision": "rejected",
+  "at": "2026-10-16T06:16:48.383472+00:00",
+  "exact_output_screen": "pass",
+  "reason": "No promising gain in standalone CPU encoder screen; baseline already auto-vectorizes and manual four-lane reduction adds shuffle/spill overhead. No solver integration requested.",
+  "scope": "Standalone CPU diagnostic only; no end-to-end or statistical production regression claim.",
+  "production_changes": false,
+  "gpu_execution": false,
+  "report": "report.json",
+  "assembly_review": "assembly-review.json"
+}

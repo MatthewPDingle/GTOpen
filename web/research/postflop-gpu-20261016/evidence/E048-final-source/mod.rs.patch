@@ -1,0 +1,74 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -128,7 +128,6 @@
+     d_fold_card_idx: [CudaSlice<u32>; 2],
+     d_hand_c1: [CudaSlice<u32>; 2],
+     d_hand_c2: [CudaSlice<u32>; 2],
+-    d_hand_mask: [CudaSlice<u64>; 2],
+     d_same: [CudaSlice<u32>; 2],
+     d_weights: [CudaSlice<f32>; 2],
+     // device: river tables
+@@ -347,7 +346,6 @@
+             d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+             d_hand_c2: [up32(&plan.hand_c2[0])?, up32(&plan.hand_c2[1])?],
+-            d_hand_mask: [up64(&plan.hand_mask[0])?, up64(&plan.hand_mask[1])?],
+             d_same: [up32(&plan.same_combo[0])?, up32(&plan.same_combo[1])?],
+             d_weights: [upf(&plan.weights[0])?, upf(&plan.weights[1])?],
+             d_riv_off: [up32(&plan.riv_off[0])?, up32(&plan.riv_off[1])?],
+@@ -604,8 +602,10 @@
+                         .arg(&count)
+                         .arg(&self.d_rsrc[0])
+                         .arg(&self.d_rsrc[1])
+-                        .arg(&self.d_hand_mask[0])
+-                        .arg(&self.d_hand_mask[1])
++                        .arg(&self.d_hand_c1[0])
++                        .arg(&self.d_hand_c2[0])
++                        .arg(&self.d_hand_c1[1])
++                        .arg(&self.d_hand_c2[1])
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+@@ -712,7 +712,8 @@
+                         .arg(&self.d_cc_child)
+                         .arg(&self.d_cc_perm)
+                         .arg(&self.d_node_cdiv)
+-                        .arg(&self.d_hand_mask[p])
++                        .arg(&self.d_hand_c1[p])
++                        .arg(&self.d_hand_c2[p])
+                         .arg(&self.d_hand_perm[p])
+                         .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+@@ -837,8 +838,10 @@
+                         .arg(&count)
+                         .arg(&self.d_rsrc[0])
+                         .arg(&self.d_rsrc[1])
+-                        .arg(&self.d_hand_mask[0])
+-                        .arg(&self.d_hand_mask[1])
++                        .arg(&self.d_hand_c1[0])
++                        .arg(&self.d_hand_c2[0])
++                        .arg(&self.d_hand_c1[1])
++                        .arg(&self.d_hand_c2[1])
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+@@ -944,7 +947,8 @@
+                         .arg(&self.d_cc_child)
+                         .arg(&self.d_cc_perm)
+                         .arg(&self.d_node_cdiv)
+-                        .arg(&self.d_hand_mask[p])
++                        .arg(&self.d_hand_c1[p])
++                        .arg(&self.d_hand_c2[p])
+                         .arg(&self.d_hand_perm[p])
+                         .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+@@ -1262,7 +1266,8 @@
+                         .arg(&gpu.d_chance_parents).arg(&gpu.d_chance_children)
+                         .arg(&gpu.d_chance_cards).arg(&start).arg(&count)
+                         .arg(&gpu.d_rsrc[0]).arg(&gpu.d_rsrc[1])
+-                        .arg(&gpu.d_hand_mask[0]).arg(&gpu.d_hand_mask[1])
++                        .arg(&gpu.d_hand_c1[0]).arg(&gpu.d_hand_c2[0])
++                        .arg(&gpu.d_hand_c1[1]).arg(&gpu.d_hand_c2[1])
+                         .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                         .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
+                 }

@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-16T10:03:26Z",
+  "status": "source reviewed, not executed",
+  "candidate": "E019",
+  "revision": 2,
+  "script_sha256": {
+    "protocol.json": "c74dfd6cbd57804c1fd8e9bad65744a8ab2b525f3e6aa230b5ed46c6959b1fba",
+    "build.py": "9a70f07528879b6316c3cddf5ae3751696360946d64e96046ca1712110e85e25",
+    "primary.py": "993fcac3be703a7f003e4d9a424b880bb9a6da04e72e876dd33b4f6d1a422564"
+  },
+  "draft_r1_preserved": true,
+  "independent_review_source": "menu_change_review confirms R2 resolves compiler-child lifetime, candidate binary pinning and full unit-summary findings; formal review pending",
+  "prerequisite": "D036 numerical and compiler probe plus independent audit must pass before root creates authorization.json or changes production kernel source.",
+  "unit_reference_log_sha256": "1da455ad139691f875a85b5052acf46cbc001978db4383f5561203d805d844d0",
+  "unit_summary": [
+    "84",
+    "0",
+    "4",
+    "0",
+    "0"
+  ],
+  "execution_occurred": false
+}

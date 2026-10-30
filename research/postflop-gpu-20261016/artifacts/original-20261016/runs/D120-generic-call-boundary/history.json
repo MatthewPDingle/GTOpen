@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-18T03:02:06.642626+00:00",
+  "local_all_ref_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "__noinline__|noinline|up_action_generic|generic_up_action",
+    "--",
+    "crates/solver/src/gpu"
+  ],
+  "git_matches": [],
+  "retained_CUDA_files_scanned": 477,
+  "matching_sources": [],
+  "scope": "Bounded retained CUDA and local all-ref history, not exhaustive remote novelty.",
+  "distinct_from_closed_families": "E005/E014/E023altered global entries/host worklists/routing; E047addedarity1inline dispatch; E006/E007launch bounds and E064local integer narrowing. Here only genericNA0gets one private device call; same9globalentries/host dispatch/launches/buffers/float helper. No source family composed or rescued."
+}

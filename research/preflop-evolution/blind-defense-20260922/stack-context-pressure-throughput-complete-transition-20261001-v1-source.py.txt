@@ -1,0 +1,106 @@
+"""Independent terminal artifact/array review; no inference or scientific runs."""
+import hashlib
+import json
+from pathlib import Path
+import time
+import numpy as np
+import psutil
+
+ROOT = Path(r'T:\Dev\GTOpen')
+OUT = ROOT / 'research/preflop-evolution/blind-defense-20260922'
+STORE = Path(r'S:\GTOpen-research\stack-context-final-bank-throughput-v4')
+NAME = 'stack-context-pressure-throughput-complete-transition-20261001-v1'
+DEST = OUT / (NAME + '.json')
+def read(p): return json.loads(p.read_bytes())
+def sha(p):
+    h = hashlib.sha256()
+    with p.open('rb') as f:
+        for b in iter(lambda: f.read(1 << 20), b''): h.update(b)
+    return h.hexdigest()
+def identity(pid, created):
+    try:
+        p = psutil.Process(pid)
+        if abs(p.create_time() - created) >= .01:
+            return dict(pid=pid, expected_identity_live=False, reused=True)
+        return dict(pid=pid, created=p.create_time(), expected_identity_live=True,
+            parent=p.ppid(), command=p.cmdline())
+    except psutil.NoSuchProcess:
+        return dict(pid=pid, expected_identity_live=False, gone=True)
+
+assert not DEST.exists()
+gate_path = OUT / 'stack-context-final-bank-throughput-v4-result.json'
+reg_path = OUT / 'stack-context-final-bank-throughput-v4-registration.json'
+gate, reg = read(gate_path), read(reg_path)
+assert all(gate[k] is True for k in ['complete', 'passed', 'full_played_banks_64', 'cuda_passed', 'reference_agreement_passed'])
+assert all(gate[k] is False for k in ['new_scientific_deals', 'scientific_fits', 'accuracy_evidence', 'production_modified'])
+assert gate['registration_sha256'] == sha(reg_path)
+assert gate['bank_selection_sha256'] == reg['selection_sha256'] == '72098117db3359b06f4c6effffdbb50fdd85200c95372750ca07c8be1d56f0e7'
+assert gate['inputs'] == reg['inputs']
+assert gate['maximum_cuda_reserved_bytes'] <= reg['maximum_cuda_bytes'] == 2_000_000_000
+assert not reg['selection']['selection_uses_test_results']
+for path, expected in gate['artifacts'].items():
+    p = Path(path)
+    assert p.is_relative_to(STORE) and sha(p) == expected
+assert len(gate['records']) == 7
+assert [r['depth'] for r in gate['records']] == [20, 40, 60, 100, 150, 200, 400]
+records = []
+for r in gate['records']:
+    assert r['retained_distinct_deals'] == 32 and r['models_per_bank'] == 64 and r['simultaneous_loaded_banks'] == 4
+    folder = STORE / ('depth-' + str(r['depth']))
+    comparisons = []
+    for arm in ['A-baseline', 'A-relative', 'B-baseline', 'B-relative']:
+        p, s, q, t = [np.load(folder / (arm + suffix + '.npy'), allow_pickle=False)
+                     for suffix in ['-cuda-p', '-cuda-s', '-reference-p', '-reference-s']]
+        assert p.shape == q.shape == (r['query_rows'], 4)
+        assert s.shape == t.shape == (r['query_rows'],)
+        assert all(np.isfinite(a).all() and (a >= 0).all() for a in [p, s, q, t])
+        assert np.array_equal(s > 0, t > 0)
+        assert max(float(np.max(abs(p.sum(1)-1))), float(np.max(abs(q.sum(1)-1)))) < 1e-12
+        error, reach_error = float(np.max(abs(p-q))), float(np.max(abs(s-t)))
+        assert error < 1e-10 and reach_error < 1e-8
+        recorded = next(c for c in r['comparisons'] if c['arm'] == arm)
+        assert error == recorded['maximum_probability_error'] and reach_error == recorded['maximum_support_error']
+        assert int((s == 0).sum()) == recorded['zero_support_rows']
+        comparisons.append(dict(arm=arm, maximum_probability_error=error, maximum_support_error=reach_error))
+    records.append(dict(depth=r['depth'], query_rows=r['query_rows'], comparisons=comparisons,
+        peak_cuda_reserved_bytes=r['peak_cuda_reserved_bytes'], cuda_load_seconds=r['cuda_load_seconds'],
+        cuda_averaging=r['cuda_averaging']))
+finished_path = OUT / 'stack-context-pressure-evaluation-handoff-v1-001-throughput-finished.json'
+finished = read(finished_path)
+assert finished['exit_code'] == 0 and (finished['pid'], finished['created']) == (102756, 1790835059.3049355)
+prefix = OUT / 'stack-context-pressure-evaluation-handoff-v1-001-throughput'
+assert sha(Path(str(prefix)+'-stdout.log')) == finished['stdout_sha256']
+assert sha(Path(str(prefix)+'-stderr.log')) == finished['stderr_sha256']
+old = identity(102756, 1790835059.3049355)
+assert not old['expected_identity_live']
+started_path = OUT / 'stack-context-pressure-evaluation-handoff-v1-002-evaluation-started.json'
+started = read(started_path)
+helper = identity(101740, 1790820578.6834643)
+child = identity(started['pid'], started['created'])
+assert helper['expected_identity_live'] and child['expected_identity_live']
+assert child['parent'] == helper['pid'] and child['command'] == started['command']
+assert started['phase'] == 'evaluation' and started['index'] == 2
+failures = ['stack-context-final-bank-throughput-v4-failure.json', 'stack-context-matched-evaluation-v5-failure.json',
+            'stack-context-pressure-evaluation-handoff-v1-failure.json']
+assert not any((OUT / n).exists() for n in failures)
+ep = OUT / 'stack-context-matched-evaluation-v5-attempt.json'
+es = OUT / 'stack-context-matched-evaluation-v5-status.json'
+observation = dict(format=1, unix=time.time(), gate_result_sha256=sha(gate_path),
+    gate_registration_sha256=sha(reg_path), selected_bank_sha256=gate['bank_selection_sha256'],
+    authenticated_artifacts=len(gate['artifacts']), input_manifest_count=len(gate['inputs']),
+    full_input_files_independently_rehashed=False, array_comparisons_independently_recomputed=28,
+    records=records, gate_seconds=gate['seconds'], maximum_cuda_reserved_bytes=gate['maximum_cuda_reserved_bytes'],
+    gate_finished_sha256=sha(finished_path), gate_process=old, evaluation_started=started,
+    evaluation_started_sha256=sha(started_path), evaluation_helper=helper, evaluation_child=child,
+    scientific_evaluation_attempt_present=ep.exists(), scientific_evaluation_status=read(es) if es.exists() else None,
+    scientific_evaluation_result_present=(OUT / 'stack-context-matched-evaluation-v5-result.json').exists(),
+    actual_complete_bank_resource_reference_gate_passed=True, retained_deals_per_depth=32,
+    heldout_accuracy_evidence=False, new_scientific_trials_launched=0, inference_executed=False,
+    fits_launched=0, native_calls_launched=0, cuda_calls_launched=0, production_modified=False)
+with DEST.open('x', encoding='utf-8', newline='\n') as f:
+    json.dump(observation, f, separators=(',', ':'), allow_nan=False); f.write('\n')
+with (OUT / (NAME+'-source.py.txt')).open('xb') as f:
+    f.write(Path(__file__).read_bytes())
+print(json.dumps(dict(saved=str(DEST), sha256=sha(DEST), artifact_hashes_verified=133,
+    numerical_comparisons=28, maximum_cuda_bytes=gate['maximum_cuda_reserved_bytes'],
+    evaluation_child=child, evaluation_attempt_present=ep.exists(), evaluation_status=observation['scientific_evaluation_status'])))

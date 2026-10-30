@@ -1,0 +1,35 @@
+{
+  "candidate": "E020",
+  "phase": "smoke",
+  "independent_source_review_pass": true,
+  "live_deployment_authorized": false,
+  "prepared_manifest_sha256": "99ded8f3ce4f3c0671e0b405c7fcd3f256133825e863dcc4788c91ad99ee7e5b",
+  "acceptance": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+    "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+  },
+  "required_evidence": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-plan\\manifest.json",
+      "sha256": "dcfe8ad7d09b4dc613fa52120b39542174f10b1377ce5f4271208a750821c5f3"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-implementation\\root-source-review.json",
+      "sha256": "eaa5e718f25052ad38f29c4710547c2551518d43141b187dae16d5a2b0e3356b"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-build\\report.json",
+      "sha256": "4a05079754b034fcc79d254fa00bca0fd455276298e476278008b3101404e25c"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-build\\unit-inventory.json",
+      "sha256": "c726e8e905512d600af0c3218f9e17761edce8559b150279a47e05326c756f7a"
+    }
+  ],
+  "server_unit_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-server-unit\\report.json",
+    "sha256": "0e6f3bc03624f959667cf90eec112b05ccfbb251902abddb00388ebe9c428ca2"
+  },
+  "server_binary_sha256": "7c90005b3a74a7e46d0ea5a57b0fb20e1ab1278916f0c89e9435dbbca989a742",
+  "server_manifest_sha256": "8c91f3a593d12dc57da01bce35c982dde5b49a218d6a4b88b350345c395690c5"
+}

@@ -1,0 +1,152 @@
+{
+  "id": "D030",
+  "status": "source_only_design_no_experiment",
+  "accepted_commit": "e868cfbb125002216f25046af2d88b22a697b2fd",
+  "hypothesis": "precompute immutable training-up action-child CFV slots",
+  "minimum_next_step": "compiler/resource diagnostic only",
+  "production_edit_performed": false,
+  "build_performed": false,
+  "GPU_calls": 0,
+  "performance_measurement": false,
+  "expected_gain_claim": null,
+  "source_snapshots": {
+    "crates/solver/src/gpu/mod.rs": {
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "bytes": 66223,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\mod.rs"
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\kernels.cu"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "bytes": 25472,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\plan.rs"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "bytes": 5515,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\continuation_capacity.rs"
+    },
+    "research/autoresearch/gpu-pass.md": {
+      "sha256": "a52b91995c7ca5c57b6b56b489fbd00523e48c614d872e8b028fb8a2f77da19f",
+      "bytes": 10457,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\research\\autoresearch\\gpu-pass.md"
+    },
+    "research/autoresearch/gpu-pass-handoff.md": {
+      "sha256": "e854fbc0ac5ffa6a0c93ba32d48ad966b8bbc00064f6050d2ba5bb6145f99fb2",
+      "bytes": 2665,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\research\\autoresearch\\gpu-pass-handoff.md"
+    },
+    "research/autoresearch/gpu-pass-milestones.md": {
+      "sha256": "dbbc2641e3cc95a20e9597f0f4321c78e757984c354cccfac4baaeda4ed59e60",
+      "bytes": 7861,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\research\\autoresearch\\gpu-pass-milestones.md"
+    },
+    "research/autoresearch/results.tsv": {
+      "sha256": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9",
+      "bytes": 489678,
+      "saved": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\research\\autoresearch\\results.tsv"
+    }
+  },
+  "existing_profile_review": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D029-profile-review\\report.json",
+  "census_counts": [
+    {
+      "fixture_id": "rainbow",
+      "visited_action_nodes": 523533,
+      "visited_action_child_edges": 1163503,
+      "u32_slots_for_visited_edges_only_bytes": 4654012,
+      "scope": "Census derived count only. Proposed easiest cs-indexed table spans all tree.children, including chance/inactive entries, so this is not its exact allocation size."
+    },
+    {
+      "fixture_id": "two-tone",
+      "visited_action_nodes": 318562,
+      "visited_action_child_edges": 708022,
+      "u32_slots_for_visited_edges_only_bytes": 2832088,
+      "scope": "Census derived count only. Proposed easiest cs-indexed table spans all tree.children, including chance/inactive entries, so this is not its exact allocation size."
+    },
+    {
+      "fixture_id": "river",
+      "visited_action_nodes": 12,
+      "visited_action_child_edges": 32,
+      "u32_slots_for_visited_edges_only_bytes": 128,
+      "scope": "Census derived count only. Proposed easiest cs-indexed table spans all tree.children, including chance/inactive entries, so this is not its exact allocation size."
+    }
+  ],
+  "cuda_expression_occurrences_to_change": 4,
+  "source_references": {
+    "kernel_reads": [
+      358,
+      380,
+      387,
+      400
+    ],
+    "training_up_launch": [
+      965,
+      986
+    ],
+    "cfv_slot_assignment": [
+      214,
+      241
+    ],
+    "PTX_dependent_load_examples": [
+      [
+        119,
+        122
+      ],
+      [
+        277,
+        280
+      ],
+      [
+        352,
+        355
+      ]
+    ]
+  },
+  "historical_search_scope": [
+    "Accepted commit research/autoresearch/gpu-pass.md",
+    "gpu-pass-handoff.md",
+    "gpu-pass-milestones.md",
+    "results.tsv postflop experiment descriptions",
+    "current series rejected experiments and preserved E016 terminal audit"
+  ],
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D029-profile-review\\report.json",
+      "sha256": "0d06cd60083f173e2898b405035e23f6164c58e861c4e22fc6efaff777c24059",
+      "bytes": 19579
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\baseline-up_action.ptx",
+      "sha256": "78937bf1525a007ab6a864404c87d4b8486ae22578ecaacdd4f602dc1f69673a",
+      "bytes": 78229
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\manifest.json",
+      "sha256": "d712ff3c0619a5d88a2816c7d9d71ef0e078e7c0050b0a23a94e813cbdf78bcc",
+      "bytes": 1800
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\report.json",
+      "sha256": "74fe69537e0165e3544102c6cbe599f77fc7c6d9baaa03cd0e351f80f51aa57f",
+      "bytes": 12396
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D001-action-census.log",
+      "sha256": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e",
+      "bytes": 22176
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-extension-independent-review\\validation.json",
+      "sha256": "faac12001753790ae68b288398dc0f53755ea58c464e1dc643db14f11d230b33",
+      "bytes": 97483
+    }
+  ],
+  "artifact_sha256": {
+    "audit.md": "90d5f603f39a0359aeb8e2138f9c4290b3086040bceb91a5f891333298dafed4",
+    "baseline-up_action.ptx": "78937bf1525a007ab6a864404c87d4b8486ae22578ecaacdd4f602dc1f69673a"
+  }
+}

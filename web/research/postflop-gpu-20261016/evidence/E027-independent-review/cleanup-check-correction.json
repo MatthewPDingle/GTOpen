@@ -1,0 +1,17 @@
+{
+  "id": "E027-cleanup-reviewer-path-correction",
+  "initial_check": {
+    "tool_chunk": "f1cb23",
+    "returncode": 1,
+    "error": "AssertionError at line11",
+    "assumed_path": "X:/Dev/GTOpen/target/release/gto-server.exe",
+    "observed_sha256": "fad57242d0f52efb9843f97ad50eaa20f4bb551d054dc014d300872a306cd43c",
+    "expected_live_sha256": "b7b808b8baff6b3a92c4f3cc8c54ee74ee2c0bb079a8ca68be4da9703f6b84bd"
+  },
+  "cause": "Reviewer assumed the ordinary release path. Root confirmed running desktop binary uses target/desktop-runtime/release; ordinary release file is not the live desktop binary.",
+  "corrected_path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+  "corrected_sha256": "b7b808b8baff6b3a92c4f3cc8c54ee74ee2c0bb079a8ca68be4da9703f6b84bd",
+  "no_file_or_live_process_changed": true,
+  "no_native_measurement_repeated": true,
+  "original_terminal_audit_remains_single_successful_execution": true
+}

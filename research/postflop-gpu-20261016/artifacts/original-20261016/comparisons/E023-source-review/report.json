@@ -1,0 +1,69 @@
+{
+  "id": "E023-source-review",
+  "at": "2026-10-16T12:58:13.492794+00:00",
+  "status": "PASS_SOURCE_ONLY",
+  "findings": [],
+  "source_manifest_sha256": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/plan.rs": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+    "crates/solver/src/gpu/mod.rs": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+    "crates/solver/src/gpu/kernels.cu": "2148b39d69e7267c03feec8a622e6f587f1b29da8f9aec49d58b3611bcf2abd4",
+    "crates/solver/src/gpu/continuation_capacity.rs": "7d7667119a76727cb9ae0da025319a10d94e1f1afce692d7729083d6fd04128f",
+    "crates/solver/src/game.rs": "4c9fd95709c048b9460886f412ebe81b580f45592e4e816a47b7be2483eb7b24"
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\manifest.json": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\continuation_capacity.rs": "7d7667119a76727cb9ae0da025319a10d94e1f1afce692d7729083d6fd04128f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\game.rs": "4c9fd95709c048b9460886f412ebe81b580f45592e4e816a47b7be2483eb7b24",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\kernels.cu": "2148b39d69e7267c03feec8a622e6f587f1b29da8f9aec49d58b3611bcf2abd4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\mod.rs": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\plan.rs": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate.patch": "dd2d16bc306736de343d71393a44274ca41abf3de2411c2046ba2cc944a72851",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\mechanical-checks.json": "2c60a43c0db7703a35485c5dd1f5e9b752c6e2ccb8f4c06aed399bd8e505e406",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\README.md": "ace4536460981a69cd4c8457b98c0117740fb54c4d9c7cedce49cd4383014c55",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\staging-callers.json": "3d4af41de2d42c3944d443ddd92bda2f4b480628097a3d30c7cb00b31f529767",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D043-opponent-action-resource\\prepared-manifest.json": "12ffce1846947e3997f7e43edb2a2fb7161147516b161147c4f94cc874e01ac5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D043-opponent-action-resource\\report.json": "7c087a586a7480211a4220df5c37bab8273992e8b032f7b82613833797c582ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D043-independent-review\\manifest.json": "bc8c128a39c85dcd12debd8fc6101874abfe75afada485d2e2eecd6db13b3f08",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+  },
+  "checks": {
+    "artifact_pins_verified": 14,
+    "accepted_source_entries_verified": 162,
+    "exact_D043_kernel_and_accepted_prefix": true,
+    "original_nonascii_bytes_restored": true,
+    "actor_partition_stable_disjoint_complete": true,
+    "one_coordinate_system_per_plan": true,
+    "aggregate_down_and_evaluation_unchanged": true,
+    "traverser_hand_and_arena_selection_correct": true,
+    "both_sublaunches_profile_bucket6_and_graph_path": true,
+    "same_level_CFV_dependency_safe": true,
+    "all_16_live_staging_callers_compatible": true,
+    "ID_payload_counted_once_in_admission_and_separate_continuation_metadata": true,
+    "both_retained_host_span_capacities_counted": true,
+    "seven_buffer_storage_swaps_preserve_immutable_ID_owner": true,
+    "legacy_oracle_uses_original_aggregate_and_heavy_dispatch_only": true,
+    "full_F32_compressed_compact_lifecycle_matrix_and_arity_coverage_retained": true
+  },
+  "resolved_draft_finding": "Unrelated encoding replacements in mod.rs/game.rs removed before freeze; all original non-ASCII source lines now byte-identical. No production activation occurred.",
+  "limits": [
+    "Source review only; no compilation, native tests or GPU execution by reviewer.",
+    "86 passed/4 ignored is a prospective inventory, not a test result. The feature-only mixed/uniform capacity test must be explicitly executed if primary qualifies.",
+    "D043 compiler resources do not establish numerical exactness or speed. Extra mixed-level launches, constructor work and payload must remain inside complete-cycle measurement.",
+    "Raw-state lifecycle oracle excludes inactive CFV scratch; unchanged evaluation and full benchmark/exploit/saved-state controls cover meaningful outputs.",
+    "Conditional broader controls, fixed wide-turn holdout and fresh-original cumulative qualification remain required before acceptance."
+  ],
+  "execution": {
+    "production_edits": 0,
+    "builds": 0,
+    "native_runs": 0,
+    "gpu_runs": 0
+  }
+}

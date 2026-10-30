@@ -1,0 +1,32 @@
+{
+  "id": "D183-visibility-adapter",
+  "at": "2026-10-28T18:10:51.222732+00:00",
+  "status": "mechanical_pre_native_visibility_correction",
+  "original_protocol_sha256": "e4f9ccf0e63cb6b754630749bd3598b58da064c91a9f0728f021541961936be8",
+  "original_failed_compiler_receipt": {
+    "started_at": "2026-10-28T18:08:29.476106+00:00",
+    "finished_at": "2026-10-28T18:08:29.693108+00:00",
+    "returncode": 1,
+    "error": null,
+    "cleanup": null
+  },
+  "original_stderr_sha256": "84c2255522e4041a929fdb7843b41a2ae3e83fba2333d1f551b8afa08d7e030a",
+  "compiler_error": "Original standalone module cannot call crate-private RiverTable::key or read entries. No native measurements/outputs existed. Preserve original source/protocol/failure; this is not an optimization rescue.",
+  "exactly_two_replacements": [
+    [
+      "spot.river.key(&it.dealt)",
+      "d183_key(spot, &it.dealt)"
+    ],
+    [
+      "spot.river.entries[key].as_deref().expect(\"river eval\")",
+      "d183_eval(spot, key)"
+    ]
+  ],
+  "adapter_reversal_to_original_observed_source_byte_exact": true,
+  "original_phase_marker_reversal_to_accepted_plan_byte_exact": true,
+  "pure_key_inverse_domain_checks": 2705,
+  "original_game_source_sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+  "adapter_contract": "For supported root board lengths3/4/5, same min/max key expression. Decode each existing unique key into Dealt and call unchanged public RiverTable::get; get internally indexes original entries using original key. Entire all-field raw comparison against original library remains mandatory. No new numerical operation/order, config/field/phase/order/sample/clock/quality/gate.",
+  "timing_limits": "This necessary public adapter can alter instructions in representative_DFS/river_tables. Report those as adapted component spans with paired original outer observer difference; never assert exact production timings, causal removable headroom or a fullcycle gain. Other phases remain literal original operations plus marks.",
+  "new_optimizer_or_native_or_GPU_admitted": false
+}

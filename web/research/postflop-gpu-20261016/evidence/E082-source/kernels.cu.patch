@@ -1,0 +1,21 @@
+--- accepted/kernels.cu
++++ E082/kernels.cu
+@@ -250,12 +250,12 @@
+         }
+         chunk_sum[threadIdx.x + 1] = acc;
+         __syncthreads();
+-        if (threadIdx.x == 0) {
+-            chunk_sum[0] = 0.f;
+-            for (int t = 1; t <= (int)blockDim.x; t++) chunk_sum[t] += chunk_sum[t - 1];
+-        }
+-        __syncthreads();
+-        float base = chunk_sum[threadIdx.x];
++        // Read only raw chunk totals. Each consumer reproduces the original
++        // left-associated recurrence in its private accumulator; the operands
++        // remain chunk_sum[t] + prior_prefix, including the first +0.
++        float base = 0.f;
++        for (int t = 1; t <= (int)threadIdx.x; t++)
++            base = chunk_sum[t] + base;
+         for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
+     }
+     __syncthreads();

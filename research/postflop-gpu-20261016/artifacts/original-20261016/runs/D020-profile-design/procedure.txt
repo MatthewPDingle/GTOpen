@@ -1,0 +1,54 @@
+D020 planned execution; NOT executed by this design task.
+Run only after root finishes E013 builds/tests and releases the GPU.
+Use the existing runner so it owns gpu-run.lock, checks the live sessions via GET,
+checks binary provenance, captures telemetry/logs and refuses overwritten evidence.
+No source edits or new build are required. The IDs D020, D020R2 and D020R3 are reserved.
+
+PowerShell procedure (three sequential full compressed diagnostic suites):
+
+$researchRoot = 'S:\GTOpen-research\postflop-gpu-20261016'
+$probeBinary = Join-Path $researchRoot 'binaries\E004-postflop_autoresearch.exe'
+$probeManifest = Join-Path $researchRoot 'binaries\E004-postflop_autoresearch.manifest.json'
+$runner = 'X:\Dev\GTOpen-gpu-research-20261016\tools\postflop_autoresearch.py'
+if ((Get-FileHash -LiteralPath $probeBinary -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8') {
+    throw 'Frozen E004 binary identity mismatch'
+}
+$priorProfile = [Environment]::GetEnvironmentVariable('POSTFLOP_AUTORESEARCH_PROFILE', 'Process')
+$priorStorage = [Environment]::GetEnvironmentVariable('POSTFLOP_AUTORESEARCH_STORAGE', 'Process')
+try {
+    $env:POSTFLOP_AUTORESEARCH_PROFILE = '1'
+    $env:POSTFLOP_AUTORESEARCH_STORAGE = 'compressed'
+    foreach ($runId in @('D020','D020R2','D020R3')) {
+        python $runner --id $runId --title 'Frozen E004 synchronized late-state kernel diagnostic' --kind diagnostic --binary $probeBinary --build-manifest $probeManifest --test postflop_complete_cycle
+        if ($LASTEXITCODE -ne 0) { throw "Diagnostic $runId failed; preserve evidence and stop" }
+    }
+} finally {
+    [Environment]::SetEnvironmentVariable('POSTFLOP_AUTORESEARCH_PROFILE', $priorProfile, 'Process')
+    [Environment]::SetEnvironmentVariable('POSTFLOP_AUTORESEARCH_STORAGE', $priorStorage, 'Process')
+}
+
+The runner sets RAYON_NUM_THREADS=16 and NVRTC PATH, removes fixture filtering when
+--fixture is absent, records PROFILE=1, and releases the lock between processes.
+Do not run another GPU job between these sequential invocations. Stop if a live
+session is solving or any competing process appears; let the runner refuse it.
+Do not run this while root's E013 tests/builds are active.
+
+Post-run validation (read report.json/stages and stdout.log; do not alter evaluator):
+1. Each process exits 0 with 1 passed test, 3 fixture_complete results, 3 diagnostic_profile
+   stages and suite_complete. Environment PROFILE=1, storage compressed, no fixture filter.
+2. Compare each result's fingerprint, exploit_bits and iteration against audit.json.
+   Diagnostic iterations must be exactly scored iteration + 1: 201, 201, 61.
+3. Kernel names and seven-element ms/launch arrays must match. Times finite>=0;
+   counts integer>=0 and identical between repetitions for each fixture. Zero-count
+   bins have zero time; copy_root has 2 launches. Abort interpretation on mismatch.
+4. Summarize each fixture independently: median/range of per-kind summed ms,
+   stable launch count, ms/launch and rank across the 3 runs. Keep raw arrays.
+5. Treat close/noisy ranks as unresolved. Do not subtract copy_root cost as a fixed
+   overhead and do not label ratios as device-time or normal-solve-time shares.
+6. Keep kind=diagnostic, accepted=false; no gain/deployment decisions from any
+   full_cycle_ms embedded in these runs. Extra work after one fixture can alter
+   cache/thermal conditions of later fixtures even though it is outside each score.
+7. Use stable broad top kernels to choose one bounded hypothesis. If ranking is
+   close or concentrated in many tiny launches, obtain a graph-preserving event/
+   profiler diagnostic before changing kernels. No D016 direct-three implementation
+   is justified before this fresh evidence and separate correctness assessment.

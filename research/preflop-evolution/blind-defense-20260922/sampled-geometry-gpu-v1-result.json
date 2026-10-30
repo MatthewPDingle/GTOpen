@@ -1,0 +1,25 @@
+{
+  "branches": [
+    {
+      "betting_history_templates": 465,
+      "preflop_leaf": 2
+    },
+    {
+      "betting_history_templates": 409,
+      "preflop_leaf": 5
+    },
+    {
+      "betting_history_templates": 257,
+      "preflop_leaf": 8
+    }
+  ],
+  "integer_fields_exact": true,
+  "max_numeric_error": 0.0,
+  "maximum_depth": 14,
+  "passed": true,
+  "poker_trainer_qualified": false,
+  "production_modified": false,
+  "repeat_bit_exact": true,
+  "scope": "All distinct betting histories with chance-card identities factored out only for transition testing. 50% bet/donk, pot raise, max one raise, threshold .85. Not general menus, showdown ranking, private sampling, or training.",
+  "templates": 1131
+}

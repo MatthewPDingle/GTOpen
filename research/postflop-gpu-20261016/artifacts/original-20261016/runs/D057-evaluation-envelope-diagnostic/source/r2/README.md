@@ -1,0 +1,15 @@
+# D057 source preparation
+
+Off-tree ignored test only. Candidate mod is exact accepted E020 plus one cfg(test) declaration. The new helper copies the already-captured numeric evaluation branch with only two event records around the normal launch; production methods, CUDA and frozen evaluator remain unchanged. No compiler, native test or GPU execution occurred.
+
+D045 checked admission, bounded raw/full CPU comparison and fingerprint helpers are reused. Two solver states share one Spot. Both call production evaluation20..140, preserving eager20/capture40/replay cadence. Sample160/180/200 order is O-I/I-O/O-I. Each arm immediately evaluates after20 ordinary training iterations, without pre-eval sync/readback/logging/state checks. Two instrumented events bracket only the normal evaluation launch, end before normal root DTOH. Host wall brackets include training+complete check and exclude event query/logging/state comparisons.
+
+After BOTH evaluations, compare raw learning/post-evaluation reach/weight/discount bits and four defined logical root vectors, then every CPU q/scale bit. Unknown CFV scratch is excluded. Final complete state object also matches original/E015/E020. All samples remain even if the separate assessor's absolute10% host-batch usefulness guard fails. Event intervals do not establish check wall time, native fractions, kernel/family cost, removable headroom or speedup.
+
+Post140 metadata is node counts/kinds plus a sorted logical kernel name/grid/block/shared multiset; memcpy nodes remain represented by kind. Own borrowed module/function handles map known names only. There is no module unload, cross-arm pointer equality, argument dereference, edge inspection, graph clone/upload/edit or training instrumentation.
+
+Two raw event handles retain context/stream Arcs. Cleanup waits then attempts both destroys and propagates errors before completion; Drop is non-panicking. Root's caught early-return draft is preserved in draft-r1. The final close records a failed wait and still attempts both destroys under the successfully bound context. No numerical/scheduling change followed that correction.
+
+The full new module is in candidate.patch. Mechanical checks include accepted162 identities, exact module append, literal anchors, reused helpers/numeric expressions, parse-only rustfmt and read-only git apply check. Output-schema.json defines22 ordered markers. Prospective normal suite84passed/5ignored/89total; explicit ignored diagnostic expects1passed/88filtered. Actual compile/native results remain pending and root-owned. This seal grants no activation or execution authorization.
+
+R2 adds only the already-computed device_arena_elements admission field. Two-tone compact GPU arena lengths differ from full CPU stores; the assessor binds raw lengths to this field and still validates full CPU q/scales separately. R1 seal and all R1 artifacts remain immutable. The exact source delta is r1-to-r2.patch. No native sample ran or was replaced.

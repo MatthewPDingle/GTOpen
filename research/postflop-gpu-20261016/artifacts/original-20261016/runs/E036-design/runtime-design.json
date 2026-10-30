@@ -1,0 +1,255 @@
+{
+  "id": "E036",
+  "kind": "frozen prospective minimal source and focused GPU-reference test design",
+  "implementation_activation_or_execution_authorized": false,
+  "condition": "Independent D067 terminal audit and final source/script review plus root execution decision",
+  "base": "accepted E020",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "kernel_change": "up_show only: OR exact bits during existing logical opponent reach staging; retain card-position preload; replace first publication barrier with uniform syncthreads_or. Only all+0 plus finite win/lose/tie f32 enters shortcut. Write full own row +0, mandatory block barrier, then original three-term expression with +0 lower/higher/tied into present p_idx hands; uniform return. Preserve fallback suffix byte-exact from const float* ro=ro_sh onward.",
+  "unchanged": [
+    "kernel ABI",
+    "production128threads and dynamic shared bytes",
+    "all8otherkernels",
+    "host production",
+    "evaluator/workload/stop rules",
+    "continuation"
+  ],
+  "test_name": "gpu::tests::show_positive_zero_matches_original_kernel",
+  "test_reference": "Original accepted up_show-only fragment, exact except entry rename and type/constant preamble; same actual compute capability/default NVRTC CompileOptions as production. Full old CUDA not embedded.",
+  "geometry": {
+    "root_hand_sets": "Actual board-legal two-card combos on Ks7h2dQhTc; setA257, setB129 mixing matching and unmatched combos; orientations swap own/opponent",
+    "nh_max": 272,
+    "threads": 128,
+    "grid_blocks": 2,
+    "count": 1,
+    "extra_count0": "zero_mixed case in each orientation",
+    "worklist_start": 1,
+    "node": 2,
+    "river_slot": 1,
+    "reach_slot": "2 for orientation0,1 for orientation1",
+    "cfv_slot": 2,
+    "partial_own": "exclude logical indices divisible by5",
+    "partial_opponent": "exclude logical indices divisible by7 and final logical index; tail never appears in sorted subset",
+    "sorted_metadata": "Accepted evaluate7 on each actual seven-card hand; sort(rank,index), derive lower/upper and per-card sorted positions; samecombo by identical root hand",
+    "cross_lane": "Assert a present sorted entry has k%128 != logical_index%128 in partial cases; all-negative and negative-zero payouts require present -0 and absent +0",
+    "guards": "Every full output word checked, active logical words overwritten, other rows/padding unchanged; all21 readonly input buffers checked after each arm including prefix/suffix sentinels"
+  },
+  "cases": [
+    {
+      "name": "zero_mixed",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_all_negative",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_positive_zero",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x00000000",
+        "0x00000000",
+        "0x00000000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_negative_zero",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x80000000",
+        "0x80000000",
+        "0x80000000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": true
+    },
+    {
+      "name": "zero_full",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "full",
+      "opponent_list": "full",
+      "eligible": true
+    },
+    {
+      "name": "zero_empty_own",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "empty",
+      "opponent_list": "full",
+      "eligible": true
+    },
+    {
+      "name": "zero_empty_opponent",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "full",
+      "opponent_list": "empty",
+      "eligible": true
+    },
+    {
+      "name": "zero_both_empty",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0xc0200000",
+        "0xbfc00000",
+        "0xbf400000"
+      ],
+      "own_list": "empty",
+      "opponent_list": "empty",
+      "eligible": true
+    },
+    {
+      "name": "zero_win_overflow",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x7f800000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "zero_lose_overflow",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xff800000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "zero_tie_nan",
+      "reach_profile": "all_positive_zero",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x7fc12345"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "negative_zero_excluded_tail",
+      "reach_profile": "negative_zero_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "positive_nonzero_excluded_tail",
+      "reach_profile": "active_half_plus_excluded_tail_quarter",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "signed_cancellation",
+      "reach_profile": "two_active_words_plus_one_and_minus_one",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "infinite_excluded_tail",
+      "reach_profile": "positive_infinity_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    },
+    {
+      "name": "nan_excluded_tail",
+      "reach_profile": "qnan_7fc12345_at_last_logical_word",
+      "payout_bits": [
+        "0x40200000",
+        "0xc0200000",
+        "0x3f400000"
+      ],
+      "own_list": "partial",
+      "opponent_list": "partial",
+      "eligible": false
+    }
+  ],
+  "comparison_pairs": 34,
+  "kernel_launches": 68,
+  "all_observed_output_bits_exact": true,
+  "nonfinite_scope": "Excluded inputs/payouts exercise unchanged fallback; all observed NaN/Inf output bits must match original, no universal NaN-payload claim",
+  "test_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "new_unignored": 1,
+    "feature_only_additions": 0
+  },
+  "success_marker": {
+    "prefix": "E036_SHOW_ZERO_TEST ",
+    "fields": {
+      "comparison_pairs": 34,
+      "kernel_launches": 68,
+      "threads": 128,
+      "exact": true,
+      "performance_measurement": false
+    }
+  },
+  "claims": "Direct equality and source feasibility only. No speed inference from D067 incidence or E035 outcome. No arbitrary resource gate."
+}

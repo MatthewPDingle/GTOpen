@@ -1,0 +1,883 @@
+{
+  "id": "D310-reader",
+  "at": "2026-10-29T21:37:21.942082+00:00",
+  "status": "all90_full_raw_files_words_headers_and_guards_exact",
+  "cases": [
+    {
+      "fixture": "boundary-1",
+      "words": 1,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "boundary-2",
+      "words": 2,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "boundary-17",
+      "words": 17,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "boundary-1023",
+      "words": 1023,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "boundary-1024",
+      "words": 1024,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "boundary-1025",
+      "words": 1025,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "rainbow",
+      "words": 185172163,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "two-tone",
+      "words": 110745280,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    },
+    {
+      "fixture": "river",
+      "words": 4480,
+      "full_raw_files": 10,
+      "all_physical_before_after_and_logical_outputs_exact": true
+    }
+  ],
+  "negative_reader_fixtures_rejected": [
+    "one_payload_bit",
+    "left_guard_bit",
+    "right_guard_bit",
+    "swapped_regret_strategy_word"
+  ],
+  "files": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-baseline-0-stage0.bin",
+      "bytes": 580,
+      "sha256": "0ea930bf5647f2b5608d57aa453dac96daa5f3b946b184146b45d01d439574c9",
+      "whole_words_checked": 129,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-baseline-1-stage0.bin",
+      "bytes": 580,
+      "sha256": "8a225157045908d4dc22ae5cc57a94ee1b1377605276dc9ae84b704209bf6513",
+      "whole_words_checked": 129,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-interleaved-stage0.bin",
+      "bytes": 584,
+      "sha256": "9176b8303fb089e5897a0e2385cab6b77ebdb0ebe788cbdc029b16f9f27805ac",
+      "whole_words_checked": 130,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-baseline-0-stage2.bin",
+      "bytes": 580,
+      "sha256": "e1e44bd7a14e64356774c03c12e637321ca0d417b957bea84e926cf2f7c265e1",
+      "whole_words_checked": 129,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-baseline-1-stage2.bin",
+      "bytes": 580,
+      "sha256": "e7e444c977cfe5955cf1ef047a599d06283c8b6392118e856db52abe3fd36ed3",
+      "whole_words_checked": 129,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-physical-interleaved-stage2.bin",
+      "bytes": 584,
+      "sha256": "07e03bc0889378dfd7d8eff8582c21f24e06a1a68e557377bb9c4cbe5d5781b4",
+      "whole_words_checked": 130,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-output-arm0-field0.bin",
+      "bytes": 68,
+      "sha256": "bb4556981a6931c382ae46f4a1f6720f3536e7262d068767785e5d0671f7baa2",
+      "whole_words_checked": 1,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-output-arm0-field1.bin",
+      "bytes": 68,
+      "sha256": "548941519381d151962f79f0a1a581a39e5fed85c75f8d214dfd997e460e11d6",
+      "whole_words_checked": 1,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-output-arm1-field0.bin",
+      "bytes": 68,
+      "sha256": "bb4556981a6931c382ae46f4a1f6720f3536e7262d068767785e5d0671f7baa2",
+      "whole_words_checked": 1,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1-output-arm1-field1.bin",
+      "bytes": 68,
+      "sha256": "548941519381d151962f79f0a1a581a39e5fed85c75f8d214dfd997e460e11d6",
+      "whole_words_checked": 1,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-baseline-0-stage0.bin",
+      "bytes": 584,
+      "sha256": "a129ea1f82472c8e960b8be2b8bb3a24be92e86486a4434d49b1e3da904c4f64",
+      "whole_words_checked": 130,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-baseline-1-stage0.bin",
+      "bytes": 584,
+      "sha256": "7ae3ba180dfbff91b2276df052c70356da4f1eda3cc22b311106ae0c8c20980e",
+      "whole_words_checked": 130,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-interleaved-stage0.bin",
+      "bytes": 592,
+      "sha256": "a4dafaddc0fc6b0274e086b1b3ebe165264cf3e60269975889c78cdbdf11ff3c",
+      "whole_words_checked": 132,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-baseline-0-stage2.bin",
+      "bytes": 584,
+      "sha256": "2afe201b90a853b389c7df056e94fe34740885b4e70bf4011aff328ee7c1ca73",
+      "whole_words_checked": 130,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-baseline-1-stage2.bin",
+      "bytes": 584,
+      "sha256": "da1e14c94d215654c272b2fe1f2cd1f8823e5a65473128c83637a66b3baae47a",
+      "whole_words_checked": 130,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-physical-interleaved-stage2.bin",
+      "bytes": 592,
+      "sha256": "f2210080f6401ad62e619cdbfb6f49cfc10ece0a925bbde9429aa9e50c5ca293",
+      "whole_words_checked": 132,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-output-arm0-field0.bin",
+      "bytes": 72,
+      "sha256": "acdab7dce3726feba11700ee4f529bacd106f2e492f9b9d52ef85351990e1ab1",
+      "whole_words_checked": 2,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-output-arm0-field1.bin",
+      "bytes": 72,
+      "sha256": "9ffaa87f0ac5cf099d6361100550bd040ac73b9ee41365990f09826db7bce14b",
+      "whole_words_checked": 2,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-output-arm1-field0.bin",
+      "bytes": 72,
+      "sha256": "acdab7dce3726feba11700ee4f529bacd106f2e492f9b9d52ef85351990e1ab1",
+      "whole_words_checked": 2,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-2-output-arm1-field1.bin",
+      "bytes": 72,
+      "sha256": "9ffaa87f0ac5cf099d6361100550bd040ac73b9ee41365990f09826db7bce14b",
+      "whole_words_checked": 2,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-baseline-0-stage0.bin",
+      "bytes": 644,
+      "sha256": "398b4c65c7f2326d9297c90fd1c2b387f72e0489a66c666afb701f371e00e223",
+      "whole_words_checked": 145,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-baseline-1-stage0.bin",
+      "bytes": 644,
+      "sha256": "5ce1ff00eadc967e8350c3949f8d4b0a5c534cc511833cb419bbd03932e5106d",
+      "whole_words_checked": 145,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-interleaved-stage0.bin",
+      "bytes": 712,
+      "sha256": "e1b8a3af50968c4c74d18b4edffb8f6e10b319d042bf2839fecacd66f541d762",
+      "whole_words_checked": 162,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-baseline-0-stage2.bin",
+      "bytes": 644,
+      "sha256": "672d85a6cc05a458189aa0e5a4597afc925ab421f8abb1d95007fdd613902dc1",
+      "whole_words_checked": 145,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-baseline-1-stage2.bin",
+      "bytes": 644,
+      "sha256": "34f7d227923327b26cd280b45139322bebfb8a667a96600741444f9b73564381",
+      "whole_words_checked": 145,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-physical-interleaved-stage2.bin",
+      "bytes": 712,
+      "sha256": "5cc8be470172d1320edd16c2445835a067a79d0f5db13136a8283a7c03f1dcaa",
+      "whole_words_checked": 162,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-output-arm0-field0.bin",
+      "bytes": 132,
+      "sha256": "e05add146430a950dcd4a71d12a35ae7f190171ca0520befd75b21428bd1c3c3",
+      "whole_words_checked": 17,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-output-arm0-field1.bin",
+      "bytes": 132,
+      "sha256": "446349de1112f44c5d89ca944d8ab45beef32c9901b1dd4c347f7ad19625c083",
+      "whole_words_checked": 17,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-output-arm1-field0.bin",
+      "bytes": 132,
+      "sha256": "e05add146430a950dcd4a71d12a35ae7f190171ca0520befd75b21428bd1c3c3",
+      "whole_words_checked": 17,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-17-output-arm1-field1.bin",
+      "bytes": 132,
+      "sha256": "446349de1112f44c5d89ca944d8ab45beef32c9901b1dd4c347f7ad19625c083",
+      "whole_words_checked": 17,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-baseline-0-stage0.bin",
+      "bytes": 4668,
+      "sha256": "185668897929d6c8ec80feab24cfc87d16b105faa84da3edf76d3139fc4a2bf3",
+      "whole_words_checked": 1151,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-baseline-1-stage0.bin",
+      "bytes": 4668,
+      "sha256": "a4f89cc42599612d68acc59a4ea9e39304aa4626b44255888d6c00f7d0f1fd13",
+      "whole_words_checked": 1151,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-interleaved-stage0.bin",
+      "bytes": 8760,
+      "sha256": "b96795885b768c63f26f0218e80db664133813c90e5f81d84e1416002f021d7e",
+      "whole_words_checked": 2174,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-baseline-0-stage2.bin",
+      "bytes": 4668,
+      "sha256": "d578d0f3c2f2a8630833289cf869b63cb8e1dc822af7ecae98b329148ed2581e",
+      "whole_words_checked": 1151,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-baseline-1-stage2.bin",
+      "bytes": 4668,
+      "sha256": "8f2c25fba6963a6ad0193ca1a9b2dfeb82e1a5851db8f72fabe1ac6288a6e896",
+      "whole_words_checked": 1151,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-physical-interleaved-stage2.bin",
+      "bytes": 8760,
+      "sha256": "5c9588ba1705d1098b481abbfd5a5b0821c4e4dac9ad72a9f000b49e703910fa",
+      "whole_words_checked": 2174,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-output-arm0-field0.bin",
+      "bytes": 4156,
+      "sha256": "7be45aa9445d8c71d645174536136190d0659af797f159f967cc49760b8b3aaf",
+      "whole_words_checked": 1023,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-output-arm0-field1.bin",
+      "bytes": 4156,
+      "sha256": "2a7ce5f4d95c228c19b0d0988f0ca0fb78a20e8db5716a1f517376271311fb17",
+      "whole_words_checked": 1023,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-output-arm1-field0.bin",
+      "bytes": 4156,
+      "sha256": "7be45aa9445d8c71d645174536136190d0659af797f159f967cc49760b8b3aaf",
+      "whole_words_checked": 1023,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1023-output-arm1-field1.bin",
+      "bytes": 4156,
+      "sha256": "2a7ce5f4d95c228c19b0d0988f0ca0fb78a20e8db5716a1f517376271311fb17",
+      "whole_words_checked": 1023,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-baseline-0-stage0.bin",
+      "bytes": 4672,
+      "sha256": "18ea9c817d112f0c3be5397cabc04fc828a3fe71acd00e80053b099656f67e91",
+      "whole_words_checked": 1152,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-baseline-1-stage0.bin",
+      "bytes": 4672,
+      "sha256": "6e9c8d91d6d689067b7abd263c7651da6fe5a6a0a4ff098336651f7e2ae4f451",
+      "whole_words_checked": 1152,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-interleaved-stage0.bin",
+      "bytes": 8768,
+      "sha256": "e419b8111fe4066000300144844326b6c234d26fbd390710b6cc3fcdcce333aa",
+      "whole_words_checked": 2176,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-baseline-0-stage2.bin",
+      "bytes": 4672,
+      "sha256": "908cf3f3befdff144a1087df7a33f1e4d76907779e7f36c4eee5f356e1994c9c",
+      "whole_words_checked": 1152,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-baseline-1-stage2.bin",
+      "bytes": 4672,
+      "sha256": "9e85bb1d6ad27ed38442941730124ed91509215398ba4ace60ca68ac171105dc",
+      "whole_words_checked": 1152,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-physical-interleaved-stage2.bin",
+      "bytes": 8768,
+      "sha256": "a53d57daaee1210449953416d074b0b098d6775e5c83288b273439f79824bc67",
+      "whole_words_checked": 2176,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-output-arm0-field0.bin",
+      "bytes": 4160,
+      "sha256": "4df7f6400e52f31a5eaa6a8eb27819224577f5961f69b60ea718afbc171f41b3",
+      "whole_words_checked": 1024,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-output-arm0-field1.bin",
+      "bytes": 4160,
+      "sha256": "5e385e2b881cc846ff4c6cb05c24615aca7a2e1bcebe41fc7c50ad7df412d374",
+      "whole_words_checked": 1024,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-output-arm1-field0.bin",
+      "bytes": 4160,
+      "sha256": "4df7f6400e52f31a5eaa6a8eb27819224577f5961f69b60ea718afbc171f41b3",
+      "whole_words_checked": 1024,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1024-output-arm1-field1.bin",
+      "bytes": 4160,
+      "sha256": "5e385e2b881cc846ff4c6cb05c24615aca7a2e1bcebe41fc7c50ad7df412d374",
+      "whole_words_checked": 1024,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-baseline-0-stage0.bin",
+      "bytes": 4676,
+      "sha256": "9d845eca4a238a45467ac6f121507257e7c42e49a7c2e959d2ff50bffecd7875",
+      "whole_words_checked": 1153,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-baseline-1-stage0.bin",
+      "bytes": 4676,
+      "sha256": "9d71ff1303238a4b617c539be75ff0f89f618f64e1e41b9982f0675f60aac1c3",
+      "whole_words_checked": 1153,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-interleaved-stage0.bin",
+      "bytes": 8776,
+      "sha256": "4c7f2ada14371e6dfc7c187d2a6bae03b1b58c34f7eee922bf779ebd08729a4f",
+      "whole_words_checked": 2178,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-baseline-0-stage2.bin",
+      "bytes": 4676,
+      "sha256": "c42315c298533f3d6dcfa313e384f8ffdb82b0ca5926b820853338b3c3574e94",
+      "whole_words_checked": 1153,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-baseline-1-stage2.bin",
+      "bytes": 4676,
+      "sha256": "3e6179e1ae4e4d3301f362e8682b9a46ba452cc4a13499ef45a38b7c358d9dbe",
+      "whole_words_checked": 1153,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-physical-interleaved-stage2.bin",
+      "bytes": 8776,
+      "sha256": "462fd24d188cfbbc0d03c159544a17492d7142ce4f5838e8a20184a9c17d733a",
+      "whole_words_checked": 2178,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-output-arm0-field0.bin",
+      "bytes": 4164,
+      "sha256": "63758c86397279f62e06af6d5d9397055cc0101fe061be5c3d515e58b18c835f",
+      "whole_words_checked": 1025,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-output-arm0-field1.bin",
+      "bytes": 4164,
+      "sha256": "f9f32eb54b7dad76486b5bb852529c65cad7f6ca9b67e76871dc1687ead1bf59",
+      "whole_words_checked": 1025,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-output-arm1-field0.bin",
+      "bytes": 4164,
+      "sha256": "63758c86397279f62e06af6d5d9397055cc0101fe061be5c3d515e58b18c835f",
+      "whole_words_checked": 1025,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\boundary-1025-output-arm1-field1.bin",
+      "bytes": 4164,
+      "sha256": "f9f32eb54b7dad76486b5bb852529c65cad7f6ca9b67e76871dc1687ead1bf59",
+      "whole_words_checked": 1025,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-baseline-0-stage0.bin",
+      "bytes": 740689228,
+      "sha256": "9a654e74b359757384ee93536b6610ef2c7592d5be8b2164547d910e25f3a39c",
+      "whole_words_checked": 185172291,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-baseline-1-stage0.bin",
+      "bytes": 740689228,
+      "sha256": "763c654f3c72116b008651afcfbdaf95c21d35c315a25d0f516dcdf663163f06",
+      "whole_words_checked": 185172291,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-interleaved-stage0.bin",
+      "bytes": 1481377880,
+      "sha256": "615c32132840a03673fe7ab8031bf00158c3880beb9776aaf043aa6552fc8657",
+      "whole_words_checked": 370344454,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-baseline-0-stage2.bin",
+      "bytes": 740689228,
+      "sha256": "395f341296c7af537e56a1c418531c8b852d3212dd69995dca98fa9a16d2b24f",
+      "whole_words_checked": 185172291,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-baseline-1-stage2.bin",
+      "bytes": 740689228,
+      "sha256": "4b8e816e04b88c0909daefe98c21640c3326469cd285bc202b42831573d09fc0",
+      "whole_words_checked": 185172291,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-physical-interleaved-stage2.bin",
+      "bytes": 1481377880,
+      "sha256": "d0afe9f355ac038aaac113ec5c8860eaaeafd5776df1c2f9495b2fd0f52e44db",
+      "whole_words_checked": 370344454,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-output-arm0-field0.bin",
+      "bytes": 740688716,
+      "sha256": "db1480c9bbe850ea1b50a6042e8c6035fbb19ddc34181e94482bac3b2ba6745a",
+      "whole_words_checked": 185172163,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-output-arm0-field1.bin",
+      "bytes": 740688716,
+      "sha256": "f6a7871b435055bfeefce2c31347cd0a5497085adf9134183ae94dab76c9aa43",
+      "whole_words_checked": 185172163,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-output-arm1-field0.bin",
+      "bytes": 740688716,
+      "sha256": "db1480c9bbe850ea1b50a6042e8c6035fbb19ddc34181e94482bac3b2ba6745a",
+      "whole_words_checked": 185172163,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\rainbow-output-arm1-field1.bin",
+      "bytes": 740688716,
+      "sha256": "f6a7871b435055bfeefce2c31347cd0a5497085adf9134183ae94dab76c9aa43",
+      "whole_words_checked": 185172163,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-baseline-0-stage0.bin",
+      "bytes": 442981696,
+      "sha256": "355aaa8622751a20fbf31d183990445a3bda98900889f2826ace1aa384d5ebce",
+      "whole_words_checked": 110745408,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-baseline-1-stage0.bin",
+      "bytes": 442981696,
+      "sha256": "9f0b9b9d5b0869eb52fad00d23c157d5397aa5a48b40f813f458bbe3fc929aad",
+      "whole_words_checked": 110745408,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-interleaved-stage0.bin",
+      "bytes": 885962816,
+      "sha256": "c675e3d54821b5ced36036d2465f6d5717c28f8e996f2328621d5355331c41b1",
+      "whole_words_checked": 221490688,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-baseline-0-stage2.bin",
+      "bytes": 442981696,
+      "sha256": "c1566fca6160b1f3276cbc4aba1722fbe7d9093a6d5378d2be78e6daf2f4d1d3",
+      "whole_words_checked": 110745408,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-baseline-1-stage2.bin",
+      "bytes": 442981696,
+      "sha256": "06b8893f46507529aaa43d72f4be8bb17f9827dd452deea1e2b8e48b23dc730a",
+      "whole_words_checked": 110745408,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-physical-interleaved-stage2.bin",
+      "bytes": 885962816,
+      "sha256": "38cb7ced5bf19efaa90905753cec6ced07a2e9ded4c99b2e3f29e2d35dab9012",
+      "whole_words_checked": 221490688,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-output-arm0-field0.bin",
+      "bytes": 442981184,
+      "sha256": "83e2a36cdcbe85d05a1fdd6b0da77699099b79a83096da9ebe63ba70dfdb9f7c",
+      "whole_words_checked": 110745280,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-output-arm0-field1.bin",
+      "bytes": 442981184,
+      "sha256": "b1cbc90d3791051db9a5e8401d4b6bae342b6ec2a6188d6d6a8c1460d4c39626",
+      "whole_words_checked": 110745280,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-output-arm1-field0.bin",
+      "bytes": 442981184,
+      "sha256": "83e2a36cdcbe85d05a1fdd6b0da77699099b79a83096da9ebe63ba70dfdb9f7c",
+      "whole_words_checked": 110745280,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\two-tone-output-arm1-field1.bin",
+      "bytes": 442981184,
+      "sha256": "b1cbc90d3791051db9a5e8401d4b6bae342b6ec2a6188d6d6a8c1460d4c39626",
+      "whole_words_checked": 110745280,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-baseline-0-stage0.bin",
+      "bytes": 18496,
+      "sha256": "76b409b9a0f989dca640dedb3b6e3e6e80fcaa5f9c8dc983fe0b86a8e42c6f6c",
+      "whole_words_checked": 4608,
+      "kind": 1,
+      "field": 0,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-baseline-1-stage0.bin",
+      "bytes": 18496,
+      "sha256": "2722cf64f02ffb33b5b10ba688f81036bde8adfc05d68f003ba2326a2e24e630",
+      "whole_words_checked": 4608,
+      "kind": 1,
+      "field": 1,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-interleaved-stage0.bin",
+      "bytes": 36416,
+      "sha256": "a1546588acbc7f9bd8b14d1b636f86adb638404b73dc7e17412086cbfcb97236",
+      "whole_words_checked": 9088,
+      "kind": 2,
+      "field": 2,
+      "stage": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-baseline-0-stage2.bin",
+      "bytes": 18496,
+      "sha256": "9248a3ea0675fdfd210105161112d773c2795ecd93eaafc46664037e0c73e256",
+      "whole_words_checked": 4608,
+      "kind": 1,
+      "field": 0,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-baseline-1-stage2.bin",
+      "bytes": 18496,
+      "sha256": "538653c25dabeb8b29d6f849988ee989112b08174ad107ed1400ab2db7bb4fb4",
+      "whole_words_checked": 4608,
+      "kind": 1,
+      "field": 1,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-physical-interleaved-stage2.bin",
+      "bytes": 36416,
+      "sha256": "90eacfd84aae6576e6b0045540c0454e1f109c984bc107f7fc7799eaaa90a750",
+      "whole_words_checked": 9088,
+      "kind": 2,
+      "field": 2,
+      "stage": 2
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-output-arm0-field0.bin",
+      "bytes": 17984,
+      "sha256": "1246159323b23a557657659029730ea5c4b06b884eeb04dc1415f8efe8ec2ae4",
+      "whole_words_checked": 4480,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-output-arm0-field1.bin",
+      "bytes": 17984,
+      "sha256": "8bd0cffa629df2bad411a5b5c912440a8af658ad74ffd95e82b1360dea5a20c0",
+      "whole_words_checked": 4480,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-output-arm1-field0.bin",
+      "bytes": 17984,
+      "sha256": "1246159323b23a557657659029730ea5c4b06b884eeb04dc1415f8efe8ec2ae4",
+      "whole_words_checked": 4480,
+      "kind": 0,
+      "field": 0,
+      "stage": 1
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-output\\river-output-arm1-field1.bin",
+      "bytes": 17984,
+      "sha256": "8bd0cffa629df2bad411a5b5c912440a8af658ad74ffd95e82b1360dea5a20c0",
+      "whole_words_checked": 4480,
+      "kind": 0,
+      "field": 1,
+      "stage": 1
+    }
+  ],
+  "full_physical_and_output_words_checked": 3551107092,
+  "all_original_native_files_preserved": true,
+  "source_protocol_sha256": "64a6ce63e20b218ae46e7681221eec62f394b48ba8cadf3735b596729c38e292",
+  "scope": "Transport bitwise exactness only. No CFR kernel, solver, convergence, speed, CPU/GPU engine equivalence or adoption claim."
+}

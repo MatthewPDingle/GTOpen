@@ -1,0 +1,17 @@
+{
+  "id": "E089",
+  "at": "2026-10-18T12:05:03.823508+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "c36276770984e37aab23b4ad2f290ae82be82a08045fb0ff0064edd54d29fc15"
+  },
+  "scope": "Only #pragma unroll1 on existing up_show inner serial card-correction loop. Original two-card/ascending-position iterations, selected loads/predicates, all float expressions and accumulator order, prefix/card cache, barriers/shared/ABI/host/launch/graph/precision/quality/save unchanged.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

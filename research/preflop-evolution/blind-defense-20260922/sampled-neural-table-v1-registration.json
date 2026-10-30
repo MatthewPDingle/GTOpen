@@ -1,0 +1,46 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_neural_table_control_20260922.py": "a48c12489cba5fed2348be12f0f837719fd8241c60cc162403ba55aaa60203d4",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-v1-registration.json": "8ddd16ab02192229b584c027dd30255f1ba9bbfa6ce154b9e7e7d88b39ebef4e",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2"
+  },
+  "created_at_unix": 1790053459.8294723,
+  "config": {
+    "reservoir_capacity": 32768,
+    "traversals_per_player": 256,
+    "max_iterations": 256,
+    "advantage_train_steps": 128,
+    "strategy_train_steps": 512,
+    "checkpoints": [
+      1,
+      16,
+      32,
+      64,
+      128,
+      256
+    ],
+    "target_gap": 0.01,
+    "consecutive_checks": 2
+  },
+  "variants": [
+    "all_visits_tabular",
+    "bounded_reservoir_means"
+  ],
+  "cases": [
+    0,
+    1
+  ],
+  "seeds": [
+    17,
+    31
+  ],
+  "maximum_seconds": 300,
+  "purpose": "Matched finite sampler/budget ablation; not scalable poker implementation",
+  "stopping": "Same checkpoint target and iteration cap; preserve failed runs without retuning",
+  "no_gpu": true,
+  "production_modified": false
+}

@@ -1,0 +1,1419 @@
+{
+  "id": "D157",
+  "at": "2026-10-28T12:13:36.776006+00:00",
+  "status": "rejected_actual_resource_prerequisite",
+  "protocol_sha256": "fef74aebe00fe2d15c6decd4714b5cf0ca645a9a80d38a5863a8aa30de351377",
+  "gates": {
+    "B1:canonical_science_exact": true,
+    "B1:sampling_coverage": true,
+    "B1:valid_terminal_times": true,
+    "B1:version_identity": true,
+    "B1:rainbow:snapshot_order": true,
+    "B1:rainbow:plan_count": true,
+    "B1:rainbow:module_activation": true,
+    "B1:rainbow:device_payload_stable": true,
+    "B1:two-tone:snapshot_order": true,
+    "B1:two-tone:plan_count": true,
+    "B1:two-tone:module_activation": true,
+    "B1:two-tone:device_payload_stable": true,
+    "B1:river:snapshot_order": true,
+    "B1:river:plan_count": true,
+    "B1:river:module_activation": true,
+    "B1:river:device_payload_stable": true,
+    "C1:canonical_science_exact": true,
+    "C1:sampling_coverage": true,
+    "C1:valid_terminal_times": true,
+    "C1:version_identity": true,
+    "C1:rainbow:snapshot_order": true,
+    "C1:rainbow:plan_count": true,
+    "C1:rainbow:plan_geometry": true,
+    "C1:rainbow:module_activation": true,
+    "C1:rainbow:load_default_limits_unchanged": true,
+    "C1:rainbow:device_payload_stable": true,
+    "C1:two-tone:snapshot_order": true,
+    "C1:two-tone:plan_count": true,
+    "C1:two-tone:plan_geometry": true,
+    "C1:two-tone:module_activation": true,
+    "C1:two-tone:load_default_limits_unchanged": true,
+    "C1:two-tone:device_payload_stable": true,
+    "C1:river:snapshot_order": true,
+    "C1:river:plan_count": true,
+    "C1:river:module_activation": true,
+    "C1:river:device_payload_stable": true,
+    "C2:canonical_science_exact": true,
+    "C2:sampling_coverage": true,
+    "C2:valid_terminal_times": true,
+    "C2:version_identity": true,
+    "C2:rainbow:snapshot_order": true,
+    "C2:rainbow:plan_count": true,
+    "C2:rainbow:plan_geometry": true,
+    "C2:rainbow:module_activation": true,
+    "C2:rainbow:load_default_limits_unchanged": true,
+    "C2:rainbow:device_payload_stable": true,
+    "C2:two-tone:snapshot_order": true,
+    "C2:two-tone:plan_count": true,
+    "C2:two-tone:plan_geometry": true,
+    "C2:two-tone:module_activation": true,
+    "C2:two-tone:load_default_limits_unchanged": true,
+    "C2:two-tone:device_payload_stable": true,
+    "C2:river:snapshot_order": true,
+    "C2:river:plan_count": true,
+    "C2:river:module_activation": true,
+    "C2:river:device_payload_stable": true,
+    "B2:canonical_science_exact": true,
+    "B2:sampling_coverage": true,
+    "B2:valid_terminal_times": true,
+    "B2:version_identity": true,
+    "B2:rainbow:snapshot_order": true,
+    "B2:rainbow:plan_count": true,
+    "B2:rainbow:module_activation": true,
+    "B2:rainbow:device_payload_stable": true,
+    "B2:two-tone:snapshot_order": true,
+    "B2:two-tone:plan_count": true,
+    "B2:two-tone:module_activation": true,
+    "B2:two-tone:device_payload_stable": true,
+    "B2:river:snapshot_order": true,
+    "B2:river:plan_count": true,
+    "B2:river:module_activation": true,
+    "B2:river:device_payload_stable": true,
+    "B1:C1:rainbow:gpu_ready:explicit_device_payload_bytes": true,
+    "B1:C1:rainbow:gpu_ready:pinned_bytes": true,
+    "B1:C1:rainbow:gpu_ready:current_CFV_words": true,
+    "B1:C1:rainbow:gpu_ready:current_regret_words": true,
+    "B1:C1:rainbow:gpu_ready:current_strategy_words": true,
+    "B1:C1:rainbow:gpu_ready:graphs_present": true,
+    "B1:C1:rainbow:gpu_ready:eval_graphs_present": true,
+    "B1:C1:rainbow:gpu_ready:context_stack_limit": true,
+    "B1:C1:rainbow:gpu_ready:context_heap_limit": true,
+    "B1:C1:rainbow:gpu_ready:wrapper32": true,
+    "B1:C1:rainbow:readback_complete:explicit_device_payload_bytes": true,
+    "B1:C1:rainbow:readback_complete:pinned_bytes": true,
+    "B1:C1:rainbow:readback_complete:current_CFV_words": true,
+    "B1:C1:rainbow:readback_complete:current_regret_words": true,
+    "B1:C1:rainbow:readback_complete:current_strategy_words": true,
+    "B1:C1:rainbow:readback_complete:graphs_present": true,
+    "B1:C1:rainbow:readback_complete:eval_graphs_present": true,
+    "B1:C1:rainbow:readback_complete:context_stack_limit": true,
+    "B1:C1:rainbow:readback_complete:context_heap_limit": true,
+    "B1:C1:rainbow:readback_complete:wrapper32": true,
+    "B1:C1:two-tone:gpu_ready:explicit_device_payload_bytes": true,
+    "B1:C1:two-tone:gpu_ready:pinned_bytes": true,
+    "B1:C1:two-tone:gpu_ready:current_CFV_words": true,
+    "B1:C1:two-tone:gpu_ready:current_regret_words": true,
+    "B1:C1:two-tone:gpu_ready:current_strategy_words": true,
+    "B1:C1:two-tone:gpu_ready:graphs_present": true,
+    "B1:C1:two-tone:gpu_ready:eval_graphs_present": true,
+    "B1:C1:two-tone:gpu_ready:context_stack_limit": true,
+    "B1:C1:two-tone:gpu_ready:context_heap_limit": true,
+    "B1:C1:two-tone:gpu_ready:wrapper32": true,
+    "B1:C1:two-tone:readback_complete:explicit_device_payload_bytes": true,
+    "B1:C1:two-tone:readback_complete:pinned_bytes": true,
+    "B1:C1:two-tone:readback_complete:current_CFV_words": true,
+    "B1:C1:two-tone:readback_complete:current_regret_words": true,
+    "B1:C1:two-tone:readback_complete:current_strategy_words": true,
+    "B1:C1:two-tone:readback_complete:graphs_present": true,
+    "B1:C1:two-tone:readback_complete:eval_graphs_present": true,
+    "B1:C1:two-tone:readback_complete:context_stack_limit": true,
+    "B1:C1:two-tone:readback_complete:context_heap_limit": true,
+    "B1:C1:two-tone:readback_complete:wrapper32": true,
+    "B1:C1:river:gpu_ready:explicit_device_payload_bytes": true,
+    "B1:C1:river:gpu_ready:pinned_bytes": true,
+    "B1:C1:river:gpu_ready:current_CFV_words": true,
+    "B1:C1:river:gpu_ready:current_regret_words": true,
+    "B1:C1:river:gpu_ready:current_strategy_words": true,
+    "B1:C1:river:gpu_ready:graphs_present": true,
+    "B1:C1:river:gpu_ready:eval_graphs_present": true,
+    "B1:C1:river:gpu_ready:context_stack_limit": true,
+    "B1:C1:river:gpu_ready:context_heap_limit": true,
+    "B1:C1:river:gpu_ready:wrapper32": true,
+    "B1:C1:river:readback_complete:explicit_device_payload_bytes": true,
+    "B1:C1:river:readback_complete:pinned_bytes": true,
+    "B1:C1:river:readback_complete:current_CFV_words": true,
+    "B1:C1:river:readback_complete:current_regret_words": true,
+    "B1:C1:river:readback_complete:current_strategy_words": true,
+    "B1:C1:river:readback_complete:graphs_present": true,
+    "B1:C1:river:readback_complete:eval_graphs_present": true,
+    "B1:C1:river:readback_complete:context_stack_limit": true,
+    "B1:C1:river:readback_complete:context_heap_limit": true,
+    "B1:C1:river:readback_complete:wrapper32": true,
+    "B2:C2:rainbow:gpu_ready:explicit_device_payload_bytes": true,
+    "B2:C2:rainbow:gpu_ready:pinned_bytes": true,
+    "B2:C2:rainbow:gpu_ready:current_CFV_words": true,
+    "B2:C2:rainbow:gpu_ready:current_regret_words": true,
+    "B2:C2:rainbow:gpu_ready:current_strategy_words": true,
+    "B2:C2:rainbow:gpu_ready:graphs_present": true,
+    "B2:C2:rainbow:gpu_ready:eval_graphs_present": true,
+    "B2:C2:rainbow:gpu_ready:context_stack_limit": true,
+    "B2:C2:rainbow:gpu_ready:context_heap_limit": true,
+    "B2:C2:rainbow:gpu_ready:wrapper32": true,
+    "B2:C2:rainbow:readback_complete:explicit_device_payload_bytes": true,
+    "B2:C2:rainbow:readback_complete:pinned_bytes": true,
+    "B2:C2:rainbow:readback_complete:current_CFV_words": true,
+    "B2:C2:rainbow:readback_complete:current_regret_words": true,
+    "B2:C2:rainbow:readback_complete:current_strategy_words": true,
+    "B2:C2:rainbow:readback_complete:graphs_present": true,
+    "B2:C2:rainbow:readback_complete:eval_graphs_present": true,
+    "B2:C2:rainbow:readback_complete:context_stack_limit": true,
+    "B2:C2:rainbow:readback_complete:context_heap_limit": true,
+    "B2:C2:rainbow:readback_complete:wrapper32": true,
+    "B2:C2:two-tone:gpu_ready:explicit_device_payload_bytes": true,
+    "B2:C2:two-tone:gpu_ready:pinned_bytes": true,
+    "B2:C2:two-tone:gpu_ready:current_CFV_words": true,
+    "B2:C2:two-tone:gpu_ready:current_regret_words": true,
+    "B2:C2:two-tone:gpu_ready:current_strategy_words": true,
+    "B2:C2:two-tone:gpu_ready:graphs_present": true,
+    "B2:C2:two-tone:gpu_ready:eval_graphs_present": true,
+    "B2:C2:two-tone:gpu_ready:context_stack_limit": true,
+    "B2:C2:two-tone:gpu_ready:context_heap_limit": true,
+    "B2:C2:two-tone:gpu_ready:wrapper32": true,
+    "B2:C2:two-tone:readback_complete:explicit_device_payload_bytes": true,
+    "B2:C2:two-tone:readback_complete:pinned_bytes": true,
+    "B2:C2:two-tone:readback_complete:current_CFV_words": true,
+    "B2:C2:two-tone:readback_complete:current_regret_words": true,
+    "B2:C2:two-tone:readback_complete:current_strategy_words": true,
+    "B2:C2:two-tone:readback_complete:graphs_present": true,
+    "B2:C2:two-tone:readback_complete:eval_graphs_present": true,
+    "B2:C2:two-tone:readback_complete:context_stack_limit": true,
+    "B2:C2:two-tone:readback_complete:context_heap_limit": true,
+    "B2:C2:two-tone:readback_complete:wrapper32": true,
+    "B2:C2:river:gpu_ready:explicit_device_payload_bytes": true,
+    "B2:C2:river:gpu_ready:pinned_bytes": true,
+    "B2:C2:river:gpu_ready:current_CFV_words": true,
+    "B2:C2:river:gpu_ready:current_regret_words": true,
+    "B2:C2:river:gpu_ready:current_strategy_words": true,
+    "B2:C2:river:gpu_ready:graphs_present": true,
+    "B2:C2:river:gpu_ready:eval_graphs_present": true,
+    "B2:C2:river:gpu_ready:context_stack_limit": true,
+    "B2:C2:river:gpu_ready:context_heap_limit": true,
+    "B2:C2:river:gpu_ready:wrapper32": true,
+    "B2:C2:river:readback_complete:explicit_device_payload_bytes": true,
+    "B2:C2:river:readback_complete:pinned_bytes": true,
+    "B2:C2:river:readback_complete:current_CFV_words": true,
+    "B2:C2:river:readback_complete:current_regret_words": true,
+    "B2:C2:river:readback_complete:current_strategy_words": true,
+    "B2:C2:river:readback_complete:graphs_present": true,
+    "B2:C2:river:readback_complete:eval_graphs_present": true,
+    "B2:C2:river:readback_complete:context_stack_limit": true,
+    "B2:C2:river:readback_complete:context_heap_limit": true,
+    "B2:C2:river:readback_complete:wrapper32": true,
+    "reported_working_set_high_water_bytes:median_within_fixed_allowance": true,
+    "reported_working_set_high_water_bytes:max_within_fixed_allowance": true,
+    "reported_commit_high_water_bytes:median_within_fixed_allowance": true,
+    "reported_commit_high_water_bytes:max_within_fixed_allowance": true,
+    "sampled_global_GPU_used_max_bytes:median_within_fixed_allowance": true,
+    "sampled_global_GPU_used_max_bytes:max_within_fixed_allowance": true,
+    "CPU_ms:median_within_fixed_allowance": true,
+    "process_lifetime_ms:median_within_fixed_allowance": false
+  },
+  "failed_gates": [
+    "process_lifetime_ms:median_within_fixed_allowance"
+  ],
+  "resource_summary": {
+    "reported_working_set_high_water_bytes": {
+      "baseline": [
+        2613252096,
+        2611585024
+      ],
+      "candidate": [
+        2612908032,
+        2610987008
+      ],
+      "median_added": -471040.0,
+      "max_added": -344064,
+      "allowed_added_bytes": 67108864
+    },
+    "reported_commit_high_water_bytes": {
+      "baseline": [
+        9044639744,
+        9044533248
+      ],
+      "candidate": [
+        9044230144,
+        9044045824
+      ],
+      "median_added": -448512.0,
+      "max_added": -409600,
+      "allowed_added_bytes": 67108864
+    },
+    "sampled_global_GPU_used_max_bytes": {
+      "baseline": [
+        9248411648,
+        9248411648
+      ],
+      "candidate": [
+        9280655360,
+        9282490368
+      ],
+      "median_added": 33161216.0,
+      "max_added": 34078720,
+      "allowed_added_bytes": 67108864
+    },
+    "CPU_ms": {
+      "baseline": [
+        17031.25,
+        17062.5
+      ],
+      "candidate": [
+        16296.875,
+        16968.75
+      ],
+      "median_regression_pct": -2.4289642529789157,
+      "allowed_regression_pct": 1.0
+    },
+    "process_lifetime_ms": {
+      "baseline": [
+        12321.7314,
+        12242.3879
+      ],
+      "candidate": [
+        16806.5404,
+        16770.2715
+      ],
+      "median_regression_pct": 36.69047723603916,
+      "allowed_regression_pct": 1.0
+    }
+  },
+  "diagnostic_geometry_and_module_rows": {
+    "B1": {
+      "rainbow": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ],
+      "two-tone": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ],
+      "river": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": true,
+          "iteration": 60,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ]
+    },
+    "C1": {
+      "rainbow": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "block_bytes": 32,
+          "capacities": [
+            524288,
+            262144
+          ],
+          "capacity_bytes": 25165824,
+          "kind": "packet_plan",
+          "lengths": [
+            280485,
+            253877
+          ],
+          "source_bytes": 2729544064
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "module_before",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 740688652,
+          "stage": "module_after",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 740688652,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ],
+      "two-tone": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "block_bytes": 32,
+          "capacities": [
+            167213,
+            151349
+          ],
+          "capacity_bytes": 10193984,
+          "kind": "packet_plan",
+          "lengths": [
+            167213,
+            151349
+          ],
+          "source_bytes": 1633012592
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "module_before",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 442981120,
+          "stage": "module_after",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 442981120,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ],
+      "river": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": true,
+          "iteration": 60,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ]
+    },
+    "C2": {
+      "rainbow": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "block_bytes": 32,
+          "capacities": [
+            524288,
+            262144
+          ],
+          "capacity_bytes": 25165824,
+          "kind": "packet_plan",
+          "lengths": [
+            280485,
+            253877
+          ],
+          "source_bytes": 2729544064
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "module_before",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 740688652,
+          "stage": "module_after",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 740688652,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ],
+      "two-tone": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "block_bytes": 32,
+          "capacities": [
+            167213,
+            151349
+          ],
+          "capacity_bytes": 10193984,
+          "kind": "packet_plan",
+          "lengths": [
+            167213,
+            151349
+          ],
+          "source_bytes": 1633012592
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "module_before",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 442981120,
+          "stage": "module_after",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": true,
+          "pinned_bytes": 442981120,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ],
+      "river": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4480
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": true,
+          "iteration": 60,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4480
+        }
+      ]
+    },
+    "B2": {
+      "rainbow": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 338869234,
+          "current_regret_words": [
+            156020845,
+            185172163
+          ],
+          "current_strategy_words": [
+            156020845,
+            185172163
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 26590838784,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            true,
+            false
+          ],
+          "explicit_device_payload_bytes": 5900635904,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 740688652,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ],
+      "two-tone": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 206690880,
+          "current_regret_words": [
+            93381294,
+            110745280
+          ],
+          "current_strategy_words": [
+            93381294,
+            110745280
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 28872540160,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 3607278948,
+          "graphs_present": true,
+          "iteration": 200,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 442981120,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ],
+      "river": [
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            false
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": false,
+          "iteration": 0,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "gpu_ready",
+          "wrapper_bytes": 4448
+        },
+        {
+          "context_heap_limit": 8388608,
+          "context_stack_limit": 1024,
+          "current_CFV_words": 7000,
+          "current_regret_words": [
+            3728,
+            4480
+          ],
+          "current_strategy_words": [
+            3728,
+            4480
+          ],
+          "driver_accounting_scope": "current driver context/device query,not a private instantaneous peak",
+          "driver_free_bytes": 32462864384,
+          "driver_total_bytes": 34190458880,
+          "eval_graphs_present": [
+            false,
+            true
+          ],
+          "explicit_device_payload_bytes": 165140,
+          "graphs_present": true,
+          "iteration": 60,
+          "kind": "GPU_snapshot",
+          "packet_module_loaded": false,
+          "pinned_bytes": 17920,
+          "stage": "readback_complete",
+          "wrapper_bytes": 4448
+        }
+      ]
+    }
+  },
+  "actual_process_resources": {
+    "B1": {
+      "at": "2026-10-28T12:12:46.906266+00:00",
+      "pid": 23776,
+      "returncode": 0,
+      "terminal_process_times": {
+        "creation_FILETIME": 134376631545769407,
+        "exit_FILETIME": 134376631668986721,
+        "kernel_100ns": 13750000,
+        "user_100ns": 156562500,
+        "CPU_ms": 17031.25,
+        "lifetime_ms": 12321.7314
+      },
+      "parent_wall_ms": 12397.123000002466,
+      "NVML_versions": {
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "nvmlSystemGetDriverVersion": "610.88",
+        "nvmlSystemGetNVMLVersion": "13.610.88"
+      },
+      "NVML_before": {
+        "total": 34190917632,
+        "free": 31299723264,
+        "used": 2891194368
+      },
+      "NVML_after": {
+        "total": 34190917632,
+        "free": 31237005312,
+        "used": 2953912320
+      },
+      "sample_count": 199,
+      "max_sample_gap_ms": 64.14609999774257,
+      "reported_working_set_high_water_bytes": 2613252096,
+      "reported_commit_high_water_bytes": 9044639744,
+      "sampled_private_commit_max_bytes": 9044598784,
+      "sampled_global_GPU_used_max_bytes": 9248411648,
+      "sampled_global_GPU_increment_bytes": 6357217280,
+      "scope": "Reported Windows lifetime high-water counters observed while alive; late transient after final sample can be missed. CPU/lifetime terminal FILETIME covers all process execution/cleanup. NVML memory is sampled global device accounting under WDDM,not per-process allocations or a guaranteed instantaneous peak. Resource-only measurements,never performance-qualification samples."
+    },
+    "C1": {
+      "at": "2026-10-28T12:13:04.720318+00:00",
+      "pid": 41440,
+      "returncode": 0,
+      "terminal_process_times": {
+        "creation_FILETIME": 134376631679073855,
+        "exit_FILETIME": 134376631847139259,
+        "kernel_100ns": 19531250,
+        "user_100ns": 143437500,
+        "CPU_ms": 16296.875,
+        "lifetime_ms": 16806.5404
+      },
+      "parent_wall_ms": 16880.241799997748,
+      "NVML_versions": {
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "nvmlSystemGetDriverVersion": "610.88",
+        "nvmlSystemGetNVMLVersion": "13.610.88"
+      },
+      "NVML_before": {
+        "total": 34190917632,
+        "free": 31238578176,
+        "used": 2952339456
+      },
+      "NVML_after": {
+        "total": 34190917632,
+        "free": 31302541312,
+        "used": 2888376320
+      },
+      "sample_count": 271,
+      "max_sample_gap_ms": 64.48779999482213,
+      "reported_working_set_high_water_bytes": 2612908032,
+      "reported_commit_high_water_bytes": 9044230144,
+      "sampled_private_commit_max_bytes": 9044230144,
+      "sampled_global_GPU_used_max_bytes": 9280655360,
+      "sampled_global_GPU_increment_bytes": 6328315904,
+      "scope": "Reported Windows lifetime high-water counters observed while alive; late transient after final sample can be missed. CPU/lifetime terminal FILETIME covers all process execution/cleanup. NVML memory is sampled global device accounting under WDDM,not per-process allocations or a guaranteed instantaneous peak. Resource-only measurements,never performance-qualification samples."
+    },
+    "C2": {
+      "at": "2026-10-28T12:13:22.460502+00:00",
+      "pid": 9756,
+      "returncode": 0,
+      "terminal_process_times": {
+        "creation_FILETIME": 134376631856835267,
+        "exit_FILETIME": 134376632024537982,
+        "kernel_100ns": 19218750,
+        "user_100ns": 150468750,
+        "CPU_ms": 16968.75,
+        "lifetime_ms": 16770.2715
+      },
+      "parent_wall_ms": 16779.939399995783,
+      "NVML_versions": {
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "nvmlSystemGetDriverVersion": "610.88",
+        "nvmlSystemGetNVMLVersion": "13.610.88"
+      },
+      "NVML_before": {
+        "total": 34190917632,
+        "free": 31312371712,
+        "used": 2878545920
+      },
+      "NVML_after": {
+        "total": 34190917632,
+        "free": 31301296128,
+        "used": 2889621504
+      },
+      "sample_count": 270,
+      "max_sample_gap_ms": 64.14029999723425,
+      "reported_working_set_high_water_bytes": 2610987008,
+      "reported_commit_high_water_bytes": 9044045824,
+      "sampled_private_commit_max_bytes": 9044045824,
+      "sampled_global_GPU_used_max_bytes": 9282490368,
+      "sampled_global_GPU_increment_bytes": 6403944448,
+      "scope": "Reported Windows lifetime high-water counters observed while alive; late transient after final sample can be missed. CPU/lifetime terminal FILETIME covers all process execution/cleanup. NVML memory is sampled global device accounting under WDDM,not per-process allocations or a guaranteed instantaneous peak. Resource-only measurements,never performance-qualification samples."
+    },
+    "B2": {
+      "at": "2026-10-28T12:13:35.661858+00:00",
+      "pid": 49312,
+      "returncode": 0,
+      "terminal_process_times": {
+        "creation_FILETIME": 134376632034134613,
+        "exit_FILETIME": 134376632156558492,
+        "kernel_100ns": 13125000,
+        "user_100ns": 157500000,
+        "CPU_ms": 17062.5,
+        "lifetime_ms": 12242.3879
+      },
+      "parent_wall_ms": 12251.381299996865,
+      "NVML_versions": {
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "nvmlSystemGetDriverVersion": "610.88",
+        "nvmlSystemGetNVMLVersion": "13.610.88"
+      },
+      "NVML_before": {
+        "total": 34190917632,
+        "free": 31301492736,
+        "used": 2889424896
+      },
+      "NVML_after": {
+        "total": 34190917632,
+        "free": 31238184960,
+        "used": 2952732672
+      },
+      "sample_count": 197,
+      "max_sample_gap_ms": 64.3043999953079,
+      "reported_working_set_high_water_bytes": 2611585024,
+      "reported_commit_high_water_bytes": 9044533248,
+      "sampled_private_commit_max_bytes": 9044467712,
+      "sampled_global_GPU_used_max_bytes": 9248411648,
+      "sampled_global_GPU_increment_bytes": 6358986752,
+      "scope": "Reported Windows lifetime high-water counters observed while alive; late transient after final sample can be missed. CPU/lifetime terminal FILETIME covers all process execution/cleanup. NVML memory is sampled global device accounting under WDDM,not per-process allocations or a guaranteed instantaneous peak. Resource-only measurements,never performance-qualification samples."
+    }
+  },
+  "exact_full_scientific_records": 12,
+  "exact_checkpoints": 92,
+  "all_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "performance_qualification_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Fixed two resource pairs on original canonical workload history with small readonly driver/metadata observers and50ms parent Win32/NVML sampling. CPU and process wall cover termination including destructors. Reported host high-water counters may miss a late post-final-sample peak; device values are global sampled WDDM accounting. Fixed64MiB additive allowances and1% total CPU/lifetime regression are coarse feasibility filters,not universal no-cost/capacity guarantees or a speed score. Original D155coverage failure unchanged. Resource failure closes this E092 form without threshold/source/sample rescue."
+}

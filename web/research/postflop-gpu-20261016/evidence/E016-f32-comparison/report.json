@@ -1,0 +1,65 @@
+{
+  "status": "pass",
+  "created_at": "2026-10-16T07:53:43Z",
+  "scope": "Full F32 state/config/exploitability and stopping equivalence; no F32 performance qualification",
+  "baseline_run": "V016-f32-reference",
+  "candidate_run": "V016-f32-candidate",
+  "fixtures": [
+    {
+      "fixture": "rainbow",
+      "fingerprint": "1790d0881487f55f",
+      "iteration": 200,
+      "exploit_bits": 4595130701932466176,
+      "all_nontiming_fields_equal": true
+    },
+    {
+      "fixture": "two-tone",
+      "fingerprint": "d7667975766fe05f",
+      "iteration": 200,
+      "exploit_bits": 4594601713124613664,
+      "all_nontiming_fields_equal": true
+    },
+    {
+      "fixture": "river",
+      "fingerprint": "4297d9f69a89a7f0",
+      "iteration": 60,
+      "exploit_bits": 4595002455471455360,
+      "all_nontiming_fields_equal": true
+    }
+  ],
+  "verified_artifacts": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-reference\\report.json",
+      "sha256": "0fe834d254e71fe97116d4e31830ac0c1f77bf3a184254b6581260a9ff893341"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+      "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+      "sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-reference\\stdout.log",
+      "sha256": "d1fb468af09cbe3d4a95416cb51c0c1384714e61eec8d01e27e104a6c4059d30"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-candidate\\report.json",
+      "sha256": "3318a623e667e532c7622190654a036ee6cfa4594a15bd52cfcb52edfd7fff49"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.exe",
+      "sha256": "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.manifest.json",
+      "sha256": "fcf4fdaacbddc55154a79db7f2cad64b2c68190df5e096cc01148425ae541eee"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-candidate\\stdout.log",
+      "sha256": "f257f417a1b4aad80ef50e903b8b4ce100e707f00dbb77c563ac8804553b9a58"
+    }
+  ],
+  "performance_claim": false
+}

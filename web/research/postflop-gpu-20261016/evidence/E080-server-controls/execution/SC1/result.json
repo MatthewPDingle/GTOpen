@@ -1,0 +1,144 @@
+{
+  "id": "SC1",
+  "arm": "candidate",
+  "at": "2026-10-18T08:42:48.543942+00:00",
+  "passed": true,
+  "binary_sha256": "c3c88449297574df6eeb9cb3badf4a99b0802dc740fea0f9d8fee401c1c22a62",
+  "listener": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-gto-server.exe",
+    "pid": 208188,
+    "owners": [
+      208188
+    ],
+    "created": "2026-10-18T08:42:48.6751120Z"
+  },
+  "build_rounds": 3,
+  "solve_rounds": 81,
+  "science": {
+    "state": "done",
+    "gpu": true,
+    "gpu_note": "",
+    "iteration": 200,
+    "exploit_chips": 0.16549766118453135,
+    "exploit_pct": 0.2758294353075523,
+    "history": [
+      {
+        "iteration": 20,
+        "exploit_pct": 18.07067615636375
+      },
+      {
+        "iteration": 40,
+        "exploit_pct": 6.459966485266551
+      },
+      {
+        "iteration": 60,
+        "exploit_pct": 3.298712205044137
+      },
+      {
+        "iteration": 80,
+        "exploit_pct": 1.900018873339969
+      },
+      {
+        "iteration": 100,
+        "exploit_pct": 1.1983545749660667
+      },
+      {
+        "iteration": 120,
+        "exploit_pct": 0.8076179932327291
+      },
+      {
+        "iteration": 140,
+        "exploit_pct": 0.5912662075146979
+      },
+      {
+        "iteration": 160,
+        "exploit_pct": 0.44920715358987745
+      },
+      {
+        "iteration": 180,
+        "exploit_pct": 0.3472035365506798
+      },
+      {
+        "iteration": 200,
+        "exploit_pct": 0.2758294353075523
+      }
+    ],
+    "tree": {
+      "nodes": 1346813,
+      "action_nodes": 534362,
+      "arena_mb": 1386.32104,
+      "vram_mb": 6716.6347,
+      "gpu_cap_mb": 31984,
+      "gpu_available": true,
+      "hands_oop": 257,
+      "hands_ip": 319,
+      "board": "Ks7h2d"
+    },
+    "spot_request": {
+      "board": "Ks7h2d",
+      "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+      "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+      "starting_pot": 60.0,
+      "effective_stack": 970.0,
+      "rake_pct": 0.0,
+      "rake_cap": 0.0,
+      "allin_threshold": 85.0,
+      "add_allin": false,
+      "max_raises": 10,
+      "oop": [
+        {
+          "bet": "33",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "75",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "75",
+          "raise": "60",
+          "donk": ""
+        }
+      ],
+      "ip": [
+        {
+          "bet": "33,75",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "75",
+          "raise": "60",
+          "donk": ""
+        },
+        {
+          "bet": "75",
+          "raise": "60",
+          "donk": ""
+        }
+      ]
+    },
+    "error": ""
+  },
+  "tree": {
+    "nodes": 1346813,
+    "action_nodes": 534362,
+    "arena_mb": 1386.32104,
+    "vram_mb": 6716.6347,
+    "gpu_cap_mb": 31984,
+    "gpu_available": true,
+    "hands_oop": 257,
+    "hands_ip": 319,
+    "board": "Ks7h2d"
+  },
+  "node_sha256": {
+    "root": "1d2319ed61af107c8edd10dc82bd979c40e480d6b794adac3e15bade25a81540",
+    "child": "bfde349b0cbe507da9962cea348be78beb94c0b555428502d5c0261bd002b517"
+  },
+  "main_UI_bytes_exact": true,
+  "owned_process_stopped": true,
+  "owned_exit_code": 1,
+  "temporary_port_released": true
+}

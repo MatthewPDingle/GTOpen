@@ -1,0 +1,31 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -220,7 +220,7 @@
+     float* ro_sh = (float*)shraw; // nh_o entries, original hand order
+     float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
+     float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
+-    u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
++    unsigned short* card_pos_sh = (unsigned short*)(prefix + m_o); // 2*m_o positions, each <1326
+     u32 card_base = o_card_off[(u64)slot * 53];
+     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
+ 
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -624,7 +624,7 @@
+         let nh_o = self.nh[1 - p];
+         let nh_max = self.nh_max;
+         let pi = p as i32;
+-        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
++        let show_shared = (self.riv_max_cnt[1 - p] * 12 + nh_o as usize * 4) as u32;
+         for l in (0..self.num_levels).rev() {
+             let sp = self.fold_spans[l];
+             if terminals && sp.count > 0 {
+@@ -851,7 +851,7 @@
+         }
+ 
+         let pi = p as i32;
+-        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
++        let show_shared = (self.riv_max_cnt[1 - p] * 12 + nh_o as usize * 4) as u32;
+         for l in (0..self.num_levels).rev() {
+             let sp = self.fold_spans[l];
+             if sp.count > 0 {

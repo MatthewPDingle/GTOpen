@@ -1,0 +1,54 @@
+{
+  "id": "E023-independent-terminal-audit-checklist",
+  "prepared_at": "2026-10-16T13:11:11.131975+00:00",
+  "status": "prepared_not_executed",
+  "execution_gate": "Root confirms all seven primary/unit runs plus assessment terminal before this file-only audit executes.",
+  "base_audit": "comparisons/E022-independent-review/audit-primary-r2.py",
+  "base_audit_sha256": "9033e151fdde42393bafc8a7a2e47fb40423af0598c05a580569481b7b3b1215",
+  "protocol_sha256": "9e9dd8943acf6ae8a5ad55aeef61f13e9fbc993b5ec8ae1860a3bb7413116844",
+  "authorization_sha256": "4e54719bf2e5805c48e4419d469a944c5a71b1bc6c51b0d4f04d3d4f7e51352c",
+  "expected_order": [
+    "V023-unit",
+    "B074",
+    "E023R1",
+    "E023R2",
+    "B075",
+    "B076",
+    "E023R3"
+  ],
+  "expected_unit_summary": [
+    86,
+    0,
+    4,
+    0,
+    0
+  ],
+  "expected_source_entries": 162,
+  "expected_owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/game.rs"
+  ],
+  "expected_binaries": {
+    "E023-postflop_autoresearch": "c4422bdeedaa1eeaa7dadf2f1c865893a472e6e196b51313bf7ccb322443f0f8",
+    "E023-solver": "794df47d5b8b215d9131715bf51a9f24a71f1d54ace5e858dc86b6df86b1af60"
+  },
+  "checks": [
+    "Immutable E020/server/D043 resource and independent source/script prerequisites precede activation/build/native work.",
+    "Full162 source maps differ in exactly five reviewed files; all157 other entries and evaluator/workload are unchanged.",
+    "Fresh contained Cargo artifacts, terminal build and direct full-candidate CUDA plus unique opponent entry and exact accepted prefix. Opposite-source absence is intentionally inapplicable.",
+    "Unit86/4 equals original88-name inventory plus exactly2 named new ordinary plan tests; the feature capacity test is not claimed run.",
+    "Fixed seven-run order; complete18 non-timing result objects,138 checks and full stage trajectories match.",
+    "Recompute sum-of-fixture-medians >=2% and repeated>3% guard from all raw samples, plus descriptive paired/components.",
+    "Actual E023R1 patch alias, all binary/source/report/rawlog provenance and chronology exact.",
+    "Current candidate source custody before root restores; no broader/holdout/cumulative qualification after failed primary."
+  ],
+  "review_actions": {
+    "native_tests": 0,
+    "GPU_jobs": 0,
+    "builds": 0,
+    "source_edits": 0
+  }
+}

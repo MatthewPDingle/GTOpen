@@ -1,0 +1,43 @@
+{
+  "id": "E037-independent-review",
+  "at": "2026-10-16T22:41:24.537719+00:00",
+  "verdict": "PASS_AUDIT_REJECTED_PRIMARY",
+  "numerical_audit_pass": true,
+  "source_build_custody_pass": true,
+  "accepted_sources_restored": true,
+  "effective_minimum_gain_pct": 1,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "artifact_sha256": {
+    "audit-numerical-policy-1pct-r2.py": "9de451cf98457e6bc2a0cb2112bde76c94649368a4d192e59462e61ad58cad65",
+    "audit-numerical-policy-1pct.py": "d413f563e38ad3e4b79e4029c287f912627e2c27cffda97ca59568e6391a8cfc",
+    "audit-numerical.py": "c2b717b97e9c073047b090249d9aa58f9112e7f9313c092bca504f830103e032",
+    "combined-summary.md": "5a48f5c10dc078da2abcf32200ac70c111a460089d9213da7aedcc2f6c990989",
+    "custody-audit.py": "5241a7b291b8c2e3652100c6de110045048d8172178ca6a80e6515d3d2bcb39c",
+    "custody-policy-adaptation.json": "34e1e44562a380821ef708579451e79177253bb134aeafd2b779b1552b1e52ca",
+    "custody-preparation.json": "5c3c1de62699e5f1e331a55d9994a34233d936be088598030da14e1ec96c502a",
+    "custody-terminal-adaptation.json": "8b08a7fe06c40d5ec14c8774328583ffe9a28d6c0065d9afd1f756a9f9e7f046",
+    "custody-terminal-inputs.json": "2a7177ece6407aabba4fdef8bb7efea296c9d20ab0c2a37b71471edc9a5dfce0",
+    "custody-time-repair-adaptation.json": "25a9679551665a2017c5063f5a36b33a6b2b5de571359569dca2a8d5215b2f1b",
+    "numerical-policy-adaptation.patch": "f3c984a368c56d7ae5142e103a07f51d509236bb1f996f8bbd2fb7ec6be21af3",
+    "numerical-policy-preparation.json": "2cf62300cc56d562be2bdefd0075c81c8fe8dd0697cdace72378a73ad0f6d5a0",
+    "numerical-preparation.json": "65e796a18075d1df9ddaee56275c1d02ad71f708b031fb9b369c7da00102b520",
+    "numerical-timestamp-repair.json": "d2ff557fec543859fba896c49d1ce51d5e37c30b658cedda2952b194a3a22a29",
+    "numerical-timestamp-repair.patch": "e19bd11aae67db307226b8e6731ec943ee77d7507c8f117eb9267f6510b7b2dd",
+    "preparation-error.json": "0ba78eaa2e55f399b7146671a59b3521847492e3a9e277fae421ca21ea4fb4ca",
+    "prepared-before-policy-1pct/custody-audit.py": "829dd77b149670ffd6ec2ed4ec34ab71ebe911a7df97ee3f23c083e4831b1eb4",
+    "prepared-before-terminal-binding/custody-audit.py": "1599dd7fac93c32e4e9955676b6dfc8f562e2a76a8b3d39a0bab1b468a846c29",
+    "prepared-before-time-repair/custody-audit.py": "1eae06942bf678a63670991eec2871a372a11a37e17edf97d00cdc313e429189",
+    "source-custody.json": "0df12657a243a384f5b07cddcfcef1f00b76d58ddca7975f714b457a8b01840c",
+    "summary.md": "093e75c0d27732d654d7ff5427c4b24ad6aec6762fb228c929bec6a6c744d777",
+    "terminal-inputs-policy-1pct-r2.json": "251cff5422e92113d4c43995b1bc0a52bfdb03568d06a0f3a51c1e9127f6602c",
+    "validation.json": "b660161ec609ef85ba869a0912a9dfe4b24ba0626a96d97c4661870d41aaa6db"
+  },
+  "external_terminal_sha256": {
+    "comparisons/E037-three-pair-comparison/report.json": "5f6427c2e44f7e073ff25c96f7bff9ef740cdebd5b72dea4db10a44b7f3887ab",
+    "runs/E037-cleanup/report.json": "aa12d05b53b96a6429c70aeb6ebea0da2bbffc3bed18113e1b5ba5cd20905516",
+    "runs/E037-assessment-preparation-error/error.json": "b8ab72850519b9810cf0165cbcea499aed94c1cb8604868de6e03a1c88e959fe",
+    "runs/E037-assessment-time-repair/scripts-manifest.json": "505079cf57dfa3b5b3428d8acbfa2963f7f2b50a116fd9d7f64f5e0671597806"
+  },
+  "scope": "Independent file-only numerical and custody audit; no additional native samples, qualification or source changes."
+}

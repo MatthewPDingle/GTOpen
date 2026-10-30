@@ -1,0 +1,169 @@
+{
+  "at": "2026-10-29T22:28:49.618368+00:00",
+  "bounded_retained_literal_hits": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\baseline\\mod.rs",
+      "sha256": "c76fb667ec609400c01c81a8f3a7c19558ed5d4bf0d78539853d77727eaf93e0",
+      "matching_lines": [
+        "        println!(\"D186_PAIR_BIND {}\",serde_json::json!({\"arm\":\"baseline\",\"hands\":nh,\"paired\":false,\"down_name\":if false {\"down_action_pair2\"}else{\"down_action\"},\"up_name\":if false {\"up_action_pair2\"}else{\"up_action\"}}));"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\probe.rs",
+      "sha256": "c196a3c6f97a732edc7e3fdd0568e2db38a2804945088b00fb1b0c90255ef673",
+      "matching_lines": [
+        "fn d185_note_binding(nh:&[usize;2],paired:bool){let arm=D185_ARM.load(std::sync::atomic::Ordering::SeqCst);assert!(arm<2);assert_eq!(paired,arm==1&&nh.iter().all(|n|*n>0&&n%2==0));println!(\"D185_PAIR_BIND {}\",json!({\"arm\":arm,\"hands\":nh,\"paired\":paired,\"down_name\":if paired{\"down_action_pair2\"}else{\"down_action\"},\"up_name\":if paired{\"up_action_pair2\"}else{\"up_action\"}}));std::io::stdout().flush().unwrap();}"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\candidate\\mod.rs",
+      "sha256": "daae6d2b0034ff38b8ea144966baec101552340fbeb9f7ed18759487967e1f83",
+      "matching_lines": [
+        "        println!(\"D186_PAIR_BIND {}\",serde_json::json!({\"arm\":\"candidate\",\"hands\":nh,\"paired\":pair2,\"down_name\":if pair2 {\"down_action_pair2\"}else{\"down_action\"},\"up_name\":if pair2 {\"up_action_pair2\"}else{\"up_action\"}}));",
+        "            f_up_action: func(if pair2 { \"up_action_pair2\" } else { \"up_action\" })?,"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\candidate\\kernels.cu",
+      "sha256": "71f73b5f5b394e8649b4dad7d5b6ce4fb0cb4de839bf9e46b7506a85b16a67c1",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\gpu\\mod.rs",
+      "sha256": "eb9b5f2c8e4ebee1efa00e03e84d1b372150560ce08753d9b85abdf4c2c4d232",
+      "matching_lines": [
+        "            f_up_action: func(if pair2 { \"up_action_pair2\" } else { \"up_action\" })?,"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E065-source\\candidate-tree.rs",
+      "sha256": "f01643acc261efc11df7e5e9cffbb3977e9e67a01ad8ba2211414af5be3437b4",
+      "matching_lines": [
+        "        let action_start = self.actions.len();",
+        "        let action_end = action_start.checked_add(t.actions_len)?;",
+        "        let action_delta = u32::try_from(action_start.checked_sub(t.actions_start)?).ok()?;"
+      ],
+      "classification": "E065treecopyaction_start variable matched action_star prefix; no action-nodefusion."
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E065-tree-control\\candidate-tree.rs",
+      "sha256": "f01643acc261efc11df7e5e9cffbb3977e9e67a01ad8ba2211414af5be3437b4",
+      "matching_lines": [
+        "        let action_start = self.actions.len();",
+        "        let action_end = action_start.checked_add(t.actions_len)?;",
+        "        let action_delta = u32::try_from(action_start.checked_sub(t.actions_start)?).ok()?;"
+      ],
+      "classification": "E065treecopyaction_start variable matched action_star prefix; no action-nodefusion."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-source\\paired-fragment.cu",
+      "sha256": "9baf327052b2c8e88f31503b269630e5d4cf04f4f0391735d1831c6769a70e3c",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-source\\candidate.cu",
+      "sha256": "71f73b5f5b394e8649b4dad7d5b6ce4fb0cb4de839bf9e46b7506a85b16a67c1",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-source\\candidate-mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "matching_lines": [
+        "            f_up_action: func(if pair2 { \"up_action_pair2\" } else { \"up_action\" })?,"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-resource\\probe.rs",
+      "sha256": "41e4bdb123a2726ef05aba1b139fc5daae815df48fbfff262061067905ba356d",
+      "matching_lines": [
+        "    let kernels = if variant == \"baseline\" { vec![\"down_action\",\"up_action\"] } else { vec![\"down_action\",\"up_action\",\"down_action_pair2\",\"up_action_pair2\"] };"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-resource\\candidate.cu",
+      "sha256": "71f73b5f5b394e8649b4dad7d5b6ce4fb0cb4de839bf9e46b7506a85b16a67c1",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-pair2-fragment.cu",
+      "sha256": "8921904f040735831dc109abb3985b08095604af06f0659ba25c67cb75bc5d81",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl("
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\primary\\mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "matching_lines": [
+        "            f_up_action: func(if pair2 { \"up_action_pair2\" } else { \"up_action\" })?,"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\primary\\kernels.cu",
+      "sha256": "71f73b5f5b394e8649b4dad7d5b6ce4fb0cb4de839bf9e46b7506a85b16a67c1",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\feature\\mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "matching_lines": [
+        "            f_up_action: func(if pair2 { \"up_action_pair2\" } else { \"up_action\" })?,"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\feature\\kernels.cu",
+      "sha256": "71f73b5f5b394e8649b4dad7d5b6ce4fb0cb4de839bf9e46b7506a85b16a67c1",
+      "matching_lines": [
+        "__device__ __forceinline__ void up_action_pair2_impl(",
+        "extern \"C\" __global__ void up_action_pair2(",
+        "    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\probe.rs",
+      "sha256": "f0b460ed28eacc70e9cfcfeec934d21ebe5e781e9c121f458197c46d528007c5",
+      "matching_lines": [
+        " let bf=bm.load_function(\"up_action\").unwrap();let cf=cm.load_function(\"up_action_pair2\").unwrap();"
+      ],
+      "classification": "E099adjacentHANDfloat2up_action_pair2,notdifferentactionnodes/levels;closed/notcomposed."
+    }
+  ],
+  "recognized_action_star_form": false,
+  "scope": "RetainedX/Srs/cu literalstar/twolevel/actionpair/fusedactionmarkers pluscurrentledger/source review. HitsclassifiedasE099handpair2orE065action_startprefix. Notexhaustivesemantic/helper/remote noveltyproof.",
+  "closed_counterevidence": "E078foldterminalproducerfusion addssharedfoldscratch; E104persistentallphasescooperativegridbarriers; E076unaryCFVcoloringchangeslayout. Newaction-onlydisjointstars,originalCFVmap/noextrashared/noallgridbarrier; nonecomposed/reopened."
+}

@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-18T10:01:52.688715+00:00",
+  "scope": "Only unlocked own-node up_action strategy store uses st.global.cs.f32. Identical original expression computes its value at the same location; all regret/CFV stores, arithmetic/reduction order, locks/opponent paths, host/ABI/allocations/launch/graph/quality/save remain unchanged.",
+  "source_reverse_exact": true,
+  "value_and_ownership": "Original binary32 strategy expression and pointer offset preserved. Actual strategy buffers are separate CUDA global allocations, with disjoint owned node/action/hand words. No new memory operation or synchronization and no read of an uninitialized value. Inline value operand f and64bit pointer operand l; volatile and memory clobber expose hidden global write to the compiler.",
+  "reuse_hypothesis": "Strategies stream over the large action arenas on each iteration and are consumed by evaluation, next update and final readback. An evict-first hint may preserve metadata/reach/CFV lines with shorter reuse distances. Actual cache misses and benefits are unmeasured; the next iteration still needs every strategy value, so streaming can hurt.",
+  "risks": "Assembly memory clobber can alter compiler scheduling/register pressure; eviction may increase later reads. PTX hints can be ignored. No causal hint-only, no-tradeoff or speed claim. Actual resources, complete raw direct images and whole-solve checks required.",
+  "primary_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#cache-operators",
+      "paraphrase": "Cache operators are performance hints; consistency is unchanged. Streaming stores use evict-first to limit pollution."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.4.0/inline-ptx-assembly/index.html",
+      "paraphrase": "Use correctly typed operands, volatile and memory clobbers for hidden indirect memory side effects."
+    }
+  ],
+  "candidate_not_a_variant_rescue": "No early CFV publication, LDU load, context cache reservation, terminal cache, first-card sum or failed-node mapping change is included."
+}

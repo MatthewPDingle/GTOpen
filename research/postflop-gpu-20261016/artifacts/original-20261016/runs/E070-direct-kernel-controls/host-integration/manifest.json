@@ -1,0 +1,70 @@
+{
+  "id": "E070-complete-host-ABI-preparation",
+  "at": "2026-10-17T23:06:59.490700+00:00",
+  "status": "prepared_off_tree_source_only",
+  "files": 7,
+  "research_baseline_files_verified": 162,
+  "baseline_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/gpu/continuation_projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+    "crates/solver/src/gpu/continuation_storage_copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+    "crates/solver/src/gpu/kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+  },
+  "staged_baseline_sha256": {
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/gpu/continuation_projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+    "crates/solver/src/gpu/continuation_storage_copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+    "crates/solver/src/gpu/kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+  },
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+    "crates/solver/src/gpu/continuation.rs": "68df35ad03dc38d7a6fecbc59e39aa94d1b412b1c2a4b76fee8ae2ef8c6ad463",
+    "crates/solver/src/gpu/continuation_storage.rs": "c85f03297ba6af551a1b5a1a44971906e5d3e0934dc2f6a5bcf32f1aae36c693",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8a07855c5058673d55c71d921c6d52e6e461011670d362ea41b1d1db9d06856f",
+    "crates/solver/src/gpu/continuation_projection.cu": "3cf76f4ce9dcc56da58642ea8a922a402f555f25fb98b9f8deffff34b68e25d5",
+    "crates/solver/src/gpu/continuation_storage_copy.cu": "61c655562fe407e3239e9c09384225e18c21e79c4e81620e435f62c2ba8dc5da",
+    "crates/solver/src/gpu/kernels.cu": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8"
+  },
+  "patch_sha256": "09c1d119f9ca00371334d4f648d83199fd33d6d1237e4c7fd1bb5ba272156e50",
+  "helper_kernel_changes": [
+    {
+      "path": "crates/solver/src/gpu/continuation_projection.cu",
+      "entries": 2,
+      "players_loads_replaced": 2,
+      "arity_loads_replaced": 3,
+      "reverse_to_E051_source_exact": true,
+      "floating_expressions_and_loop_order_unchanged": true
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_storage_copy.cu",
+      "entries": 1,
+      "players_loads_replaced": 1,
+      "arity_loads_replaced": 1,
+      "reverse_to_E051_source_exact": true,
+      "floating_expressions_and_loop_order_unchanged": true
+    }
+  ],
+  "compatibility_discovery": "D114's host inventory found continuation.rs/storage.rs references, but mislabeled them as down-action callers. They launch continuation_project, continuation_transport and continuation_storage_copy from two other CUDA modules. Those three ABIs must also consume packed attrs; retaining both old buffers would defeat the2*N representation.",
+  "existing_four_kernel_cuda_unchanged": true,
+  "prior_GPU_floating_executions": 0,
+  "prior_E070_speed_samples": 0,
+  "host_pack": "One temporary Vec<u16>,2*Nbytes, directly from the original u8 Node.player/num_children. CPU GpuPlan vectors unchanged. Temporary remains in constructor scope as existing plan uploads do; no new stream synchronization or graph/launch order change.",
+  "metadata_accounting": "Private predicted/observed device payload replaces8*N by2*N. Public GPU budget estimates and CPU plan layouts remain unchanged. Existing capacity tests must verify observed payload after integration.",
+  "required_before_activation": [
+    "Prospectively seal the three helper ABI/resource/raw controls in addition to the existing four main-kernel controls.",
+    "Native prerequisite admission requires current runtime permissions and checksum-preserved S archive.",
+    "All seven kernel numerical controls pass before candidate solver activation.",
+    "Full host/caller type check and integrated ordinary/equivalence/continuation checks pass before timing qualification."
+  ],
+  "production_and_research_sources_modified": false,
+  "solver_builds": 0,
+  "NVRTC_processes": 0,
+  "GPUexecutions": 0,
+  "candidate_accepted": false
+}

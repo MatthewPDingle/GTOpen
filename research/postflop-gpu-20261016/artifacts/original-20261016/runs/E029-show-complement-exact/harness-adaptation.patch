@@ -1,0 +1,258 @@
+--- D051/probe.rs
++++ E029-direct/probe.rs
+@@ -1,4 +1,4 @@
+-//! D051: complete accepted128/candidate256 up_show differential; no timing.
++//! E029_DIRECT: complete accepted128/candidate128 complement-only up_show differential; no timing.
+ use cudarc::{driver::{CudaContext, CudaFunction, CudaSlice, CudaStream, LaunchConfig, PushKernelArg},
+     nvrtc::{compile_ptx_with_opts, CompileOptions}};
+ use serde_json::{json,Value};
+@@ -26,7 +26,7 @@
+ fn bits(v:&[f32])->Vec<u32>{v.iter().map(|v|v.to_bits()).collect()}
+ fn floats(v:&[u32])->Vec<f32>{v.iter().copied().map(f32::from_bits).collect()}
+ fn n(v:&Value,k:&str)->usize {usize::try_from(v[k].as_u64().unwrap()).unwrap()}
+-fn emit(v:Value)->Result<()> {let mut out=std::io::stdout().lock();writeln!(out,"D051_EXACT {v}")?;out.flush()?;Ok(())}
++fn emit(v:Value)->Result<()> {let mut out=std::io::stdout().lock();writeln!(out,"E029_DIRECT_EXACT {v}")?;out.flush()?;Ok(())}
+ fn save(v:&Value,file:&mut BufWriter<std::fs::File>)->Result<()> {serde_json::to_writer(&mut *file,v)?;file.write_all(b"\n")?;file.flush()?;Ok(())}
+ fn exact(a:&[u32],b:&[u32],label:&str)->Result<()> {if a.len()!=b.len(){return Err(format!("{label}:length").into());}if let Some(i)=a.iter().zip(b).position(|(a,b)|a!=b){return Err(format!("{label}:{i}:{:08x}!={:08x}",a[i],b[i]).into());}Ok(())}
+ fn guards(initial:&[u32],out:&[u32],active:&[bool])->Result<()> {if initial.len()!=out.len()||out.len()!=active.len(){return Err("guard length".into());}for i in 0..out.len(){if !active[i]&&out[i]!=initial[i]{return Err(format!("output guard {i}").into());}}Ok(())}
+@@ -46,6 +46,13 @@
+  let a=&g["arrays"];let sp=&sorted[0];let so=&sorted[1];assert_eq!(sp.len(),n(g,"m_p"));assert_eq!(so.len(),n(g,"m_o"));assert!(so.len()<=1081);
+  assert_eq!(hp.len(),n(g,"nh_p"));assert_eq!(ho.len(),n(g,"nh_o"));assert!(n(g,"nh_max")>hp.len().max(ho.len()));
+  let pb=words(&a["p_off"])[1] as usize;let ob=words(&a["o_off"])[1] as usize;let pi=words(&a["p_idx"]);let oi=words(&a["o_idx"]);let lo=words(&a["p_lower"]);let up=words(&a["p_upper"]);
++ let missing=words(&a["p_missing_idx"]);let po=words(&a["p_off"]);let pc=words(&a["p_cnt"]);
++ assert_eq!(po,vec![0,sp.len() as u32]);assert_eq!(pc,vec![sp.len() as u32;2]);
++ if hp.len()==sp.len(){assert_eq!(missing,vec![0]);}else{assert_eq!(missing.len(),2*(hp.len()-sp.len())+3);assert!(missing[missing.len()-3..].iter().all(|v|*v==u32::MAX));}
++ for slot in 0..2 {let off=po[slot] as usize;let count=pc[slot] as usize;let begin=slot*hp.len()-off;let end=begin+hp.len()-count;
++  let present=&pi[off..off+count];let absent=&missing[begin..end];let mut all=present.to_vec();all.extend_from_slice(absent);all.sort();assert_eq!(all,(0..hp.len() as u32).collect::<Vec<_>>());
++  assert_eq!(present,sp.iter().map(|x|x.1).collect::<Vec<_>>());assert!(absent.iter().all(|i|hp[*i as usize].iter().any(|c|board.contains(c))));
++ }
+  assert_eq!(&pi[pb..pb+sp.len()],sp.iter().map(|x|x.1).collect::<Vec<_>>());assert_eq!(&oi[ob..ob+so.len()],so.iter().map(|x|x.1).collect::<Vec<_>>());
+  for (k,(r,_)) in sp.iter().enumerate(){assert_eq!(lo[pb+k] as usize,so.partition_point(|x|x.0<*r));assert_eq!(up[pb+k] as usize,so.partition_point(|x|x.0<=*r));}
+  let co=words(&a["o_card_off"]);let cp=words(&a["o_card_pos"]);let base=co[53] as usize;assert!(base>0);assert_eq!(co[105] as usize-base,2*so.len());
+@@ -61,13 +68,14 @@
+ }
+ fn upload_u32(s:&Arc<CudaStream>,a:&Value,key:&str)->Result<(Vec<u32>,CudaSlice<u32>)>{let h=words(&a[key]);let d=s.clone_htod(&h)?;Ok((h,d))}
+ fn upload_f32(s:&Arc<CudaStream>,a:&Value,key:&str)->Result<(Vec<f32>,CudaSlice<f32>)>{let h=floats(&words(&a[key]));let d=s.clone_htod(&h)?;Ok((h,d))}
+-fn run_variant(s:&Arc<CudaStream>,f:&CudaFunction,g:&Value,c:&Value,width:u32,active:&[bool])->Result<(Vec<u32>,usize,usize)> {
++fn run_variant(s:&Arc<CudaStream>,f:&CudaFunction,g:&Value,c:&Value,width:u32,candidate:bool,active:&[bool])->Result<(Vec<u32>,usize,usize)> {
+  let a=&g["arrays"];
+  let (nodes,d_nodes)=upload_u32(s,a,"nodes")?;
+  let (win,d_win)=upload_f32(s,a,"node_twin")?;let (lose,d_lose)=upload_f32(s,a,"node_tlose")?;let (tie,d_tie)=upload_f32(s,a,"node_ttie")?;
+  let (river,d_river)=upload_u32(s,a,"node_river_slot")?;let (rsrc,d_rsrc)=upload_u32(s,a,"rsrc_o")?;
+  let reach=floats(&words(&c["reach_o_bits"]));let d_reach=s.clone_htod(&reach)?;
+  let (po,d_po)=upload_u32(s,a,"p_off")?;let (pc,d_pc)=upload_u32(s,a,"p_cnt")?;let (pi,d_pi)=upload_u32(s,a,"p_idx")?;
++ let missing=if candidate{Some(upload_u32(s,a,"p_missing_idx")?)}else{None};
+  let (pl,d_pl)=upload_u32(s,a,"p_lower")?;let (pu,d_pu)=upload_u32(s,a,"p_upper")?;
+  let (oo,d_oo)=upload_u32(s,a,"o_off")?;let (oc,d_oc)=upload_u32(s,a,"o_cnt")?;let (oi,d_oi)=upload_u32(s,a,"o_idx")?;
+  let (co,d_co)=upload_u32(s,a,"o_card_off")?;let (cp,d_cp)=upload_u32(s,a,"o_card_pos")?;
+@@ -76,41 +84,49 @@
+  let start=n(g,"start") as i32;let count=n(c,"count") as i32;let nhp=n(g,"nh_p") as i32;let nho=n(g,"nh_o") as i32;let nhmax=n(g,"nh_max") as i32;
+  let mut launch=s.launch_builder(f);
+  launch.arg(&d_nodes).arg(&start).arg(&count).arg(&d_win).arg(&d_lose).arg(&d_tie).arg(&d_river).arg(&d_rsrc).arg(&d_reach)
+- .arg(&d_po).arg(&d_pc).arg(&d_pi).arg(&d_pl).arg(&d_pu).arg(&d_oo).arg(&d_oc).arg(&d_oi).arg(&d_co).arg(&d_cp)
++ .arg(&d_po).arg(&d_pc).arg(&d_pi);
++ if let Some((_,d_missing))=&missing {launch.arg(d_missing);}
++ launch.arg(&d_pl).arg(&d_pu).arg(&d_oo).arg(&d_oc).arg(&d_oi).arg(&d_co).arg(&d_cp)
+  .arg(&d_same).arg(&d_c1).arg(&d_c2).arg(&d_slots).arg(&mut d_out).arg(&nhp).arg(&nho).arg(&nhmax);
+  unsafe{launch.launch(LaunchConfig{grid_dim:(n(g,"grid_blocks") as u32,1,1),block_dim:(width,1,1),shared_mem_bytes:n(g,"dynamic_shared_bytes") as u32})?;}
+  s.synchronize()?;
+- let out=bits(&s.clone_dtoh(&d_out)?);guards(&initial,&out,active)?;
++ let out=bits(&s.clone_dtoh(&d_out)?);
++ if let Err(error)=guards(&initial,&out,active){let mut file=OpenOptions::new().write(true).create_new(true).open(if candidate{"candidate-guard-failure.json"}else{"baseline-guard-failure.json"})?;serde_json::to_writer(&mut file,&json!({"case_id":c["id"],"initial":initial,"observed":out,"active":active}))?;file.flush()?;return Err(error);}
+  let mut checks=0;let mut input_words=0;
+  macro_rules! check_u {($h:ident,$d:ident)=>{{let got=s.clone_dtoh(&$d)?;exact(&$h,&got,stringify!($h))?;checks+=1;input_words+=$h.len();}}}
+  macro_rules! check_f {($h:ident,$d:ident)=>{{let got=s.clone_dtoh(&$d)?;exact(&bits(&$h),&bits(&got),stringify!($h))?;checks+=1;input_words+=$h.len();}}}
+  check_u!(nodes,d_nodes);check_f!(win,d_win);check_f!(lose,d_lose);check_f!(tie,d_tie);check_u!(river,d_river);check_u!(rsrc,d_rsrc);check_f!(reach,d_reach);
+  check_u!(po,d_po);check_u!(pc,d_pc);check_u!(pi,d_pi);check_u!(pl,d_pl);check_u!(pu,d_pu);check_u!(oo,d_oo);check_u!(oc,d_oc);check_u!(oi,d_oi);check_u!(co,d_co);check_u!(cp,d_cp);check_u!(same,d_same);check_u!(c1,d_c1);check_u!(c2,d_c2);check_u!(slots,d_slots);
+- assert_eq!(checks,21);s.synchronize()?;Ok((out,checks,input_words))
++ if let Some((h,d))=&missing {exact(h,&s.clone_dtoh(d)?,"missing")?;checks+=1;input_words+=h.len();}
++ assert_eq!(checks,if candidate{22}else{21});s.synchronize()?;Ok((out,checks,input_words))
+ }
+ fn run()->Result<()> {
+  // Host verifier injections are not GPU case passes.
+  assert!(exact(&[0],&[1],"injection").is_err());assert!(guards(&[GUARD],&[0],&[false]).is_err());
+- let corpus:Value=serde_json::from_str(CORPUS)?;let gs=corpus["geometries"].as_array().unwrap();let cs=corpus["cases"].as_array().unwrap();assert_eq!(gs.len(),36);assert_eq!(cs.len(),148);
++ let corpus:Value=serde_json::from_str(CORPUS)?;let gs=corpus["geometries"].as_array().unwrap();let cs=corpus["cases"].as_array().unwrap();assert_eq!(gs.len(),40);assert_eq!(cs.len(),152);
+  for g in gs{validate_geometry(g)?;}
+  for c in cs {for b in words(&c["reach_o_bits"]){let f=f32::from_bits(b);assert!(f.is_finite()&&f>=0.0);}}
+- emit(json!({"stage":"corpus_validated","geometries":36,"comparison_pairs":148,"accepted_rank_oracle":true,"host_verifier_injections_rejected":2,"host_injections_are_gpu_cases":false}))?;
++ emit(json!({"stage":"corpus_validated","geometries":40,"comparison_pairs":152,"accepted_rank_oracle":true,"host_verifier_injections_rejected":2,"host_injections_are_gpu_cases":false}))?;
+  let ctx=CudaContext::new(0)?;let s=ctx.default_stream();let major=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)?;let minor=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR)?;
+  let device=ctx.name()?;assert_eq!(device,"NVIDIA GeForce RTX 5090");let arch=format!("compute_{major}{minor}");assert_eq!(arch,"compute_120");
+  let compile=|src:&str,name:&str|->Result<_>{let ptx=compile_ptx_with_opts(src,CompileOptions{arch:Some("compute_120"),..Default::default()})?;let mut out=OpenOptions::new().write(true).create_new(true).open(format!("{name}.ptx"))?;out.write_all(ptx.to_src().as_bytes())?;out.flush()?;Ok(ctx.load_module(ptx)?)};
+  let bm=compile(BASELINE,"baseline")?;let cm=compile(CANDIDATE,"candidate")?;let bf=bm.load_function("up_show")?;let cf=cm.load_function("up_show")?;
+  let shared_limit=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK)?;
+  let thread_limit=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)?;
+- for (f,width) in [(&bf,128),(&cf,256)]{assert!(f.max_threads_per_block()?>=width&&thread_limit>=width);for g in gs{assert!(f.shared_size_bytes()? as usize+n(g,"dynamic_shared_bytes")<=shared_limit as usize);}}
+- emit(json!({"stage":"device","max_shared_bytes_per_block_default":shared_limit,"max_threads_per_block":thread_limit,"device":device,"architecture":arch,"baseline_source_fnv1a64":fnv(BASELINE.bytes()),"candidate_source_fnv1a64":fnv(CANDIDATE.bytes()),"baseline_physical_threads":128,"candidate_physical_threads":256,"logical_scan_threads":128,"compile_options":"arch only, all other production defaults"}))?;
++ for (f,width) in [(&bf,128),(&cf,128)]{assert!(f.max_threads_per_block()?>=width&&thread_limit>=width);for g in gs{assert!(f.shared_size_bytes()? as usize+n(g,"dynamic_shared_bytes")<=shared_limit as usize);}}
++ emit(json!({"stage":"device","max_shared_bytes_per_block_default":shared_limit,"max_threads_per_block":thread_limit,"device":device,"architecture":arch,"baseline_source_fnv1a64":fnv(BASELINE.bytes()),"candidate_source_fnv1a64":fnv(CANDIDATE.bytes()),"baseline_physical_threads":128,"candidate_physical_threads":128,"logical_scan_threads":128,"compile_options":"arch only, all other production defaults"}))?;
+  let mut file=BufWriter::new(OpenOptions::new().write(true).create_new(true).open("raw-results.jsonl")?);
+  let mut active_words=0;let mut guard_checks=0;let mut input_checks=0;let mut input_words=0;let mut overwritten=0;let mut nonzero=0;let mut launches=0;let mut nonfinite_words=0;let mut witness_checks=0;
+  for c in cs {
+   let g=gs.iter().find(|g|g["id"]==c["geometry"]).unwrap();let count=n(c,"count");assert!(count==0||count==2);
+   let active:Vec<bool>=g["output_active"].as_array().unwrap().iter().map(|v|count>0&&v.as_bool().unwrap()).collect();
+-  let (before,bc,bw)=run_variant(&s,&bf,g,c,128,&active)?;launches+=1;
+-  let (after,cc,cw)=run_variant(&s,&cf,g,c,256,&active)?;launches+=1;
++  let (before,bc,bw)=run_variant(&s,&bf,g,c,128,false,&active)?;launches+=1;
++  let (after,cc,cw)=run_variant(&s,&cf,g,c,128,true,&active)?;launches+=1;
++  if before!=after {let mut failure=OpenOptions::new().write(true).create_new(true).open("mismatch-outputs.json")?;serde_json::to_writer(&mut failure,&json!({"case_id":c["id"],"baseline_output_bits":before,"candidate_output_bits":after}))?;failure.flush()?;}
+   exact(&before,&after,c["id"].as_str().unwrap())?;
++  if count>0 {let nhp=n(g,"nh_p");let mp=n(g,"m_p");let missing=words(&g["arrays"]["p_missing_idx"]);let begin=nhp-mp;
++   for node in [2usize,5] {let base=words(&g["arrays"]["cfv_slot"])[node] as usize*n(g,"nh_max");for i in &missing[begin..begin+nhp-mp] {assert_eq!(before[base+*i as usize],0,"baseline absent own +0");assert_eq!(after[base+*i as usize],0,"candidate absent own +0");}}
++  }
+   let actual:Vec<u32>=before.iter().zip(&active).filter(|(_,a)|**a).map(|(v,_)|*v).collect();let changed=actual.iter().filter(|v|**v!=GUARD).count();assert_eq!(changed,actual.len(),"active stale guard remains");
+   if c["profile"]=="all_zero"||n(g,"m_p")==0||n(g,"m_o")==0 {assert!(actual.iter().all(|v|*v==0),"expected zero CFV");}
+   let nz=actual.iter().filter(|v|**v!=GUARD&&(**v&0x7fffffff)!=0).count();
+@@ -122,8 +138,8 @@
+   let row=json!({"stage":"full_show_exact","case_id":c["id"],"geometry":g["id"],"board":g["board_text"],"target_m":g["target_m"],"player":g["player"],"profile":c["profile"],"count":count,"m_p":g["m_p"],"m_o":g["m_o"],"nh_p":g["nh_p"],"nh_o":g["nh_o"],"dynamic_shared_bytes":g["dynamic_shared_bytes"],"active_words":ac,"guard_word_checks":gc,"device_input_buffer_checks":bc+cc,"device_input_word_checks":bw+cw,"active_overwritten_words":changed,"nonzero_active_words":nz,"all_output_bits_exact":true,"input_bits_unchanged":true,"nonfinite_active":nf,"baseline_output_fnv1a64":hash(&before),"candidate_output_fnv1a64":hash(&after)});
+   save(&json!({"record":row,"baseline_output_bits":before,"candidate_output_bits":after}),&mut file)?;emit(row)?;
+  }
+- assert_eq!(launches,296);assert_eq!(active_words,78896);assert_eq!(guard_checks,525400);assert_eq!(input_checks,6216);assert_eq!(witness_checks,2);assert!(overwritten>0&&nonzero>0);
++ assert_eq!(launches,304);assert_eq!(active_words,80952);assert_eq!(guard_checks,535072);assert_eq!(input_checks,6536);assert_eq!(witness_checks,2);assert_eq!(input_words,1512976);assert!(overwritten>0&&nonzero>0);
+  file.flush()?;file.get_ref().sync_all()?;s.synchronize()?;ctx.check_err()?;
+- emit(json!({"stage":"complete","comparison_pairs":148,"kernel_launches":launches,"active_words_compared":active_words,"output_guard_word_checks":guard_checks,"device_input_buffer_checks":input_checks,"device_input_word_checks":input_words,"active_overwritten_words":overwritten,"nonzero_active_words":nonzero,"nonfinite_active_words":nonfinite_words,"rounding_witness_checks":witness_checks,"all_output_bits_exact":true,"all_inputs_unchanged":true,"performance_measurement":false,"solver_executions":0,"candidate_accepted":false}))?;Ok(())
++ emit(json!({"stage":"complete","comparison_pairs":152,"kernel_launches":launches,"active_words_compared":active_words,"output_guard_word_checks":guard_checks,"device_input_buffer_checks":input_checks,"device_input_word_checks":input_words,"active_overwritten_words":overwritten,"nonzero_active_words":nonzero,"nonfinite_active_words":nonfinite_words,"rounding_witness_checks":witness_checks,"all_output_bits_exact":true,"all_inputs_unchanged":true,"performance_measurement":false,"solver_executions":0,"candidate_accepted":false}))?;Ok(())
+ }
+ fn main(){if let Err(error)=run(){let _=emit(json!({"stage":"invalid","error":error.to_string(),"candidate_accepted":false}));eprintln!("{error}");std::process::exit(1);}}
+--- D051/run.py
++++ E029-direct/run.py
+@@ -1,4 +1,4 @@
+-"""D051 one-shot complete-showdown exact-kernel probe; root executes in serialized slot."""
++"""E029_DIRECT one-shot complete-showdown exact-kernel probe; root executes in serialized slot."""
+ from pathlib import Path
+ import argparse, collections, datetime, hashlib, importlib.util, json, os, re, shutil, subprocess, sys, time, signal
+ 
+@@ -45,25 +45,24 @@
+     def verify():
+         for name,h in prepared['artifact_sha256'].items(): assert sha(HERE/name)==h,('Changed artifact',name)
+         for name,info in prepared['dependency_rlibs'].items():assert sha(info['path'])==info['sha256'],('Changed dependency',name)
+-        for name,h in prepared['protected_checkout_sha256'].items():assert sha(REPO/name)==h,('Accepted E020 source must be restored before D051',name)
++        for name,h in prepared['protected_checkout_sha256'].items():assert sha(REPO/name)==h,('Accepted E020 source must be restored before E029_DIRECT',name)
+         assert sha(HERE/'prepared-manifest.json')==args.prepared_manifest_sha256
+         for name,info in prepared['references'].items():assert sha(info['path'])==info['sha256'],('Reference changed',name)
+-        audit=json.loads(Path(prepared['references']['D050_terminal_review']['path']).read_text(encoding='utf-8'))
+-        assert audit['verdict']=='PASS_SCOPED_COMPILER_CAPACITY_AND_PTX'
+-        assert audit['capacity_prerequisite_pass'] and audit['source_ptx_prerequisite_pass']
++        source_review=json.loads(Path(prepared['references']['E029_source_review']['path']).read_text(encoding='utf-8'))
++        assert source_review['independent_source_review_pass'] is True
+     verify()
+     save('execution-started.json',{'at':now(),'prepared_manifest_sha256':sha(HERE/'prepared-manifest.json'),
+         'operator_obligation':'Root owns serialized build/GPU slot; no concurrent unrelated build/GPU job',
+         'per_stage_timeout_seconds':STAGE_TIMEOUT_SECONDS})
+-    spec=importlib.util.spec_from_file_location('d051_runner_primitives',HERE/'runner-primitives-source.py')
++    spec=importlib.util.spec_from_file_location('e029_direct_runner_primitives',HERE/'runner-primitives-source.py')
+     runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner);runner.REPO=REPO
+     commands=[]
+     def heartbeat(stage,elapsed=0):
+         with runner.exclusive_lock(STATUS.with_suffix('.lock'),timeout=3):
+             state=json.loads(STATUS.read_text(encoding='utf-8-sig'))
+             state['updated_at']=runner.now()
+-            state['stage']='D051 standalone fixed-logical128 physical256 showdown exact diagnostic'
+-            state['activity']=f'D051 {stage}; {elapsed:.0f}s elapsed. Fixed148 complete-kernel comparisons only; no performance claim; accepted E020 and deployment status unchanged.'
++            state['stage']='E029_DIRECT standalone complement-only showdown exact diagnostic'
++            state['activity']=f'E029_DIRECT {stage}; {elapsed:.0f}s elapsed. Fixed152 complete-kernel comparisons only; no performance claim; accepted E020 and deployment status unchanged.'
+             runner.atomic_json(STATUS,state)
+     def execute(args,name,env=None):
+         started=now(); before=time.monotonic(); proc=None; cleanup=None
+@@ -101,7 +100,7 @@
+             command=['rustc','probe.rs','--edition=2021','-C','opt-level=3','-C','codegen-units=1','-C','lto=thin',
+                 '-L','dependency='+str(DEPS),'--extern','cudarc='+deps['cudarc']['path'],
+                 '--extern','serde_json='+deps['serde_json']['path'],'-o','probe.exe']
+-            save('execution-manifest.json',{'id':'D051','prepared_manifest_sha256':sha(HERE/'prepared-manifest.json'),
++            save('execution-manifest.json',{'id':'E029-direct','prepared_manifest_sha256':sha(HERE/'prepared-manifest.json'),
+                 'input_sha256_before':prepared['artifact_sha256'],'rustc':runner.read_command(['rustc','-Vv']),
+                 'compile_command':command,'nvrtc_directory':str(runner.NVRTC),
+                 'nvrtc_dll_sha256':{p.name:sha(p) for p in sorted(Path(runner.NVRTC).glob('*.dll'))},
+@@ -119,16 +118,16 @@
+             verify()
+             assert runner.source_identity()['source_sha256']==prepared['protected_checkout_sha256'],'Checkout changed during probe'
+             telemetry_after=runner.telemetry()
+-            rows=[json.loads(line[len('D051_EXACT '):]) for line in (HERE/'probe.stdout.log').read_text(encoding='utf-8').splitlines() if line.startswith('D051_EXACT ')]
+-            assert [r['stage'] for r in rows]==['corpus_validated','device']+['full_show_exact']*148+['complete']
+-            assert rows[0]['geometries']==36 and rows[0]['comparison_pairs']==148 and rows[0]['accepted_rank_oracle'] is True
++            rows=[json.loads(line[len('E029_DIRECT_EXACT '):]) for line in (HERE/'probe.stdout.log').read_text(encoding='utf-8').splitlines() if line.startswith('E029_DIRECT_EXACT ')]
++            assert [r['stage'] for r in rows]==['corpus_validated','device']+['full_show_exact']*152+['complete']
++            assert rows[0]['geometries']==40 and rows[0]['comparison_pairs']==152 and rows[0]['accepted_rank_oracle'] is True
+             assert rows[0]['host_verifier_injections_rejected']==2 and rows[0]['host_injections_are_gpu_cases'] is False
+             device=rows[1];assert device['device']=='NVIDIA GeForce RTX 5090' and device['architecture']=='compute_120'
+-            assert device['baseline_physical_threads']==128 and device['candidate_physical_threads']==256 and device['logical_scan_threads']==128
++            assert device['baseline_physical_threads']==128 and device['candidate_physical_threads']==128 and device['logical_scan_threads']==128
+             for variant in ['baseline','candidate']:assert device[variant+'_source_fnv1a64']==prepared['source_variants'][variant]['fnv1a64']
+             corpus=json.loads((HERE/'corpus.json').read_text(encoding='utf-8'));cases=corpus['cases'];geometries={g['id']:g for g in corpus['geometries']}
+             raw=[json.loads(line) for line in (HERE/'raw-results.jsonl').read_text(encoding='utf-8').splitlines()]
+-            assert len(raw)==148 and [r['case_id'] for r in rows[2:-1]]==[c['id'] for c in cases]
++            assert len(raw)==152 and [r['case_id'] for r in rows[2:-1]]==[c['id'] for c in cases]
+             totals={'active_words':0,'guard_word_checks':0,'device_input_buffer_checks':0,'device_input_word_checks':0,'active_overwritten_words':0,'nonzero_active_words':0}
+             def words_hash(v):
+                 h=0xcbf29ce484222325
+@@ -143,11 +142,16 @@
+                 assert len(before)==len(after)==len(initial) and before==after
+                 assert all(type(x) is int and 0<=x<=0xffffffff for x in before+after)
+                 assert all(before[i]==initial[i] and after[i]==initial[i] for i,a in enumerate(active) if not a)
++                if case['count']:
++                    missing=g['arrays']['p_missing_idx'];begin=g['nh_p']-g['m_p']
++                    for node in [2,5]:
++                        base=g['arrays']['cfv_slot'][node]*g['nh_max']
++                        assert all(before[base+i]==after[base+i]==0 for i in missing[begin:begin+g['nh_p']-g['m_p']])
+                 ac=sum(active);gc=2*(len(active)-ac)
+                 assert row['count']==case['count'] and row['geometry']==g['id'] and row['profile']==case['profile']
+                 for key in ['m_p','m_o','nh_p','nh_o','dynamic_shared_bytes','target_m','player']:assert row[key]==g[key]
+-                assert row['active_words']==ac and row['guard_word_checks']==gc and row['device_input_buffer_checks']==42
+-                iw=2*(sum(len(v) for v in g['arrays'].values())+len(case['reach_o_bits']))
++                assert row['active_words']==ac and row['guard_word_checks']==gc and row['device_input_buffer_checks']==43
++                iw=2*(sum(len(v) for k,v in g['arrays'].items() if k!='p_missing_idx')+len(case['reach_o_bits']))+len(g['arrays']['p_missing_idx'])
+                 assert row['device_input_word_checks']==iw and row['all_output_bits_exact'] is True and row['input_bits_unchanged'] is True
+                 selected=[v for v,a in zip(before,active) if a]
+                 assert row['active_overwritten_words']==sum(v!=corpus['guard'] for v in selected)==ac
+@@ -159,11 +163,12 @@
+                 assert row['baseline_output_fnv1a64']==words_hash(before) and row['candidate_output_fnv1a64']==words_hash(after)
+                 for key in totals:totals[key]+=row[key]
+             complete=rows[-1]
+-            assert complete['comparison_pairs']==148 and complete['kernel_launches']==296 and complete['rounding_witness_checks']==2
+-            assert complete['active_words_compared']==totals['active_words']==78896
+-            assert complete['output_guard_word_checks']==totals['guard_word_checks']==525400
+-            assert complete['device_input_buffer_checks']==totals['device_input_buffer_checks']==6216
++            assert complete['comparison_pairs']==152 and complete['kernel_launches']==304 and complete['rounding_witness_checks']==2
++            assert complete['active_words_compared']==totals['active_words']==80952
++            assert complete['output_guard_word_checks']==totals['guard_word_checks']==535072
++            assert complete['device_input_buffer_checks']==totals['device_input_buffer_checks']==6536
+             for key in ['device_input_word_checks','active_overwritten_words','nonzero_active_words']:assert complete[key]==totals[key]
++            assert complete['device_input_word_checks']==1512976
+             assert complete['nonfinite_active_words']==nonfinite
+             assert complete['all_output_bits_exact'] is True and complete['all_inputs_unchanged'] is True
+             assert complete['performance_measurement'] is False and complete['solver_executions']==0 and complete['candidate_accepted'] is False
+@@ -172,28 +177,24 @@
+             assert names['baseline']==names['candidate'] and len(names['baseline'])==9
+             unchanged={name:entry(ptx['baseline'],name)==entry(ptx['candidate'],name) for name in names['baseline'] if name!='up_show'}
+             assert len(unchanged)==8 and all(unchanged.values())
+-            audited={}
+             for v in ['baseline','candidate']:
+-                old=Path(prepared['references']['D050_'+v+'_ptx']['path']).read_text(encoding='utf-8')
+-                audited[v]={name:entry(ptx[v],name)==entry(old,name) for name in names[v]}
+-                assert all(audited[v].values()),'Compiled entries differ from independently reviewed D050'
+                 bytes_new(v+'-up_show.ptx',(entry(ptx[v],'up_show')+'\n').encode())
+-            report={'id':'D051','status':'completed_exact_complete_up_show_comparison','verdict':'PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON',
++            report={'id':'E029-direct','status':'completed_exact_complete_up_show_comparison','verdict':'PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON',
+                 'exactness_pass':True,'numerical_validation':'executed','prepared_manifest_sha256':sha(HERE/'prepared-manifest.json'),
+                 'protocol_sha256':prepared['protocol_sha256'],'corpus_sha256':sha(HERE/'corpus.json'),
+                 'baseline_cuda_sha256':prepared['source_variants']['baseline']['sha256'],'candidate_cuda_sha256':prepared['source_variants']['candidate']['sha256'],
+-                'baseline_physical_threads':128,'candidate_physical_threads':256,'logical_scan_threads':128,'comparison_pairs':148,'kernel_launches':296,
+-                'complete':complete,'records':rows,'other_eight_entry_ptx_exact':unchanged,'all_entries_match_reviewed_D050':audited,
++                'baseline_physical_threads':128,'candidate_physical_threads':128,'logical_scan_threads':128,'comparison_pairs':152,'kernel_launches':304,
++                'complete':complete,'records':rows,'other_eight_entry_ptx_exact':unchanged,
+                 'commands':commands,'telemetry_after':telemetry_after,'binary_sha256':sha(HERE/'probe.exe'),'raw_results_sha256':sha(HERE/'raw-results.jsonl'),
+                 'input_sha256_after':{name:sha(HERE/name) for name in prepared['artifact_sha256']},
+                 'solver_executions':0,'performance_measurement':False,'candidate_accepted':False,'deployment_changed':False,
+                 'limits':['Fixed finite corpus only, all observed output bits required; no NaN-input/payload generalization.',
+                     'Reversed ranges exercise target counts as opponent for p0 and own for p1, not a full cross of every count with both orientations.',
+                     'Direct float kernel is storage-independent; full F32/compressed/training/evaluation lifecycle and complete-cycle gates remain.',
+-                    'No timing or performance acceptance. Independent terminal audit is required before E026 activation.']}
++                    'No timing or performance acceptance. Independent terminal audit is required before E029 activation.']}
+             save('report.json',report)
+             heartbeat('complete; independent numerical audit pending',0)
+-            print(json.dumps({'id':'D051','complete':complete,'report':str(HERE/'report.json')},indent=2))
++            print(json.dumps({'id':'E029-direct','complete':complete,'report':str(HERE/'report.json')},indent=2))
+     except BaseException as error:
+         save('failure.json',{'at':now(),'error':repr(error),'commands':commands,'instruction':'Preserve failure; no retry/overwrite in this directory.'})
+         try:heartbeat('invalid; evidence retained',0)

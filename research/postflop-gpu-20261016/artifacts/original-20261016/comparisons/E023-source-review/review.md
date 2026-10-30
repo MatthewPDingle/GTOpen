@@ -1,0 +1,11 @@
+# E023 independent source review
+
+PASS_SOURCE_ONLY. No remaining actionable source defect in the frozen five-file candidate.
+
+The optional list covers each original action exactly once, preserves per-actor order and uses one coordinate system across all levels. Uniform plans reuse aggregate coordinates without allocating the optional device list. Only training-up splits: traverser nodes use the unchanged heavy entry; opposite-actor nodes use exact D043 CUDA with the original positive-zero initializer and ascending child additions. Both use the traverser hand count and existing 128-thread launch. Locks still affect child reach through unchanged downward dispatch. Same-level CFV outputs are disjoint and their child inputs use next-level/terminal slots, so the actor ordering introduces no dependency hazard.
+
+All 16 current staging_bytes callers are admission/headroom/report totals, not mutable workspace dimensions. The new payload is included once there. Continuation capacity counts workspace arrays independently and adds the optional IDs once as metadata; both retained actor-span capacities are included. StoragePlan discards temporary partition data, and seven-buffer continuation swaps leave the solver-owned immutable list intact. Public VRAM estimation conservatively includes every action ID. The existing 512 MiB general reserve remains a reserve, not an exact total-allocation claim.
+
+The changed test-only legacy_iteration is an independent upward oracle: it temporarily selects original aggregate IDs, sends every original action through the unchanged heavy dispatcher for each player, suppresses the lightweight sublaunch and restores retained optional ownership. Its reference graph stays absent. Existing mixed full/compact, F32/compressed, DCFR/CFR+, lock, profile, evaluation and warm-resume coverage is preserved; the real-plan tests also cover uniform selection. Planned GPU-only inventory is 86 passed/4 ignored, with a separate feature-only capacity test.
+
+The early unrelated encoding edits were corrected before freeze; original non-ASCII lines now match. This review ran only reads, hashing and host source comparisons. Compilation, numerical exactness, performance and conditional broader qualification remain unproven by this review. Lower compiler resources are only a prerequisite for measurement.

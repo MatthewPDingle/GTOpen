@@ -1,0 +1,6 @@
+{
+  "error": "Publisher assumed all four compiler receipts had the newer terminal/PID fields. Earlier up-action receipt uses the original simpler schema with successful returncode0.",
+  "effect": "Publisher failed before any manifest, evidence-directory or status write. No GPU process or compiler repeated.",
+  "original_publisher_sha256": "5fa53003f7dcabd8d46e589a874c2d5f4cede2e1504ed367aad5fcd75d319d60",
+  "repair": "Read the original successful returncode as terminal evidence; preserve newer explicit terminal fields and available PIDs for the other three."
+}

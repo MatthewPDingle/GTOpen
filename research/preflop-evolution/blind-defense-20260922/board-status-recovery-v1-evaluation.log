@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\board_status_recovery_v1.py", line 171, in <module>
+    recovered_evaluation()
+  File "T:\Dev\GTOpen\tools\research\board_status_recovery_v1.py", line 92, in recovered_evaluation
+    wrapped('evaluation', run=True, resume=True, attempt=ATTEMPT)
+  File "T:\Dev\GTOpen\tools\research\board_evaluation_resource_wrapper_v1.py", line 68, in main
+    callback()
+  File "T:\Dev\GTOpen\tools\research\board_evaluation_resource_wrapper_v1.py", line 32, in <lambda>
+    callback = lambda: driver.run(resume=resume, execute=run)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\board_complete_evaluation_study_v1.py", line 110, in run
+    assert utilization < 10 and free > 6000
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

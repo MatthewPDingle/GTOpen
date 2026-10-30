@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-17T02:48:22.115066+00:00",
+  "status": "pass_to_one_frozen_two_entry_resource_probe",
+  "root_review_only": true,
+  "algebra_sha256": "9d4c6b8a07317a43bee870b41b48e37e814419e1a154cb7d20cd133699e02709",
+  "raw_algebra_records_independently_decoded": 140608,
+  "source_report_sha256": "e98aa91835793095695a6988f97ce81b7190467c20fd73df7ac2b6bbcdf09517",
+  "supported_domain": "Canonical card IDs and masks produced by the sole HandInfo factory in game.rs184-194; save.rs175 rebuilds through Spot::new_lenient. In-engine source search found no alternative HandInfo factory or mask mutation. Public manually inconsistent Rust structs remain outside this domain.",
+  "all_mask_uses_reviewed": "Only constructor, four training/evaluation chance launch sites, the full-down unit reference and feature capacity accounting. No continuation mask replacement; continuation uses the same GpuSolver methods.",
+  "future_host_integration": "Reuse d_hand_c1/d_hand_c2 in all5 caller sites, remove2 private mask allocations, retain CPU plan fields, remove original mask bytes from expected/observed GPU metadata accounting without changing component-vector indices. No host packing or added GPU buffers. Not implemented yet.",
+  "byte_exact_cuda_reversal": true,
+  "changed_entries": [
+    "down_chance",
+    "up_chance"
+  ],
+  "float_statement_order": "Reach-copy/zero, CFV additions, card order/permutation, inverse multiplication and all other expressions unchanged.",
+  "novelty_unique_against_preserved_cuda_files": 290,
+  "candidate_source_activated": false,
+  "compiler_gpu_solver_runs": 0,
+  "limits": "Boolean/source/caller reasoning, not compiled equivalence, speed or material-cost proof."
+}

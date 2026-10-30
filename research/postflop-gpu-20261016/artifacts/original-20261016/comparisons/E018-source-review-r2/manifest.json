@@ -1,0 +1,102 @@
+{
+  "created_at": "2026-10-16T08:54:24.613776+00:00",
+  "reviewer": "menu_change_review",
+  "verdict": "PASS_SOURCE_ONLY",
+  "actionable_findings": [],
+  "git_head_checked": "54cd923bf1f0e77b12b6df0c4e872d8cbc73e04b",
+  "production_edits": false,
+  "builds": false,
+  "test_execution": false,
+  "gpu_execution": false,
+  "live_server_actions": false,
+  "runtime_equivalence_claim": false,
+  "performance_claim": false,
+  "statistical_significance_claim": false,
+  "deployment_claim": false,
+  "id": "E018-source-review-r2",
+  "scope": "Additive game.rs estimator and five-file frozen identity verification; incorporates unchanged r1 review",
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "crates/solver/src/gpu/plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "crates/solver/src/gpu/kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "crates/solver/src/gpu/continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e",
+    "crates/solver/src/game.rs": "fc72c39cf5bf21b5ffdad51c0b58e68daefb5895878132c4aa154247f0dbaf8c"
+  },
+  "base_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "patch_sha256": "c094026376165de0d51071d8ea0c94457023565e8d77801d8a594e4e335b8213",
+  "review_sha256": "7e6f83c9bac40324176fe9ef61bc0cb564cde5c3dfed5b3501540cf0eab6f0bd",
+  "prior_review_manifest_sha256": "712c034b7b4155ec5212303e9314b1296cb1fc974187978f918ccac8fa577f3a",
+  "archive_verification": {
+    "E018-design": {
+      "entries_verified": 12,
+      "checksums_sha256": "56487b28ca95c85c4ca1e75e6edb0eca61eadf19ef2484722cf5f9c8bbbc6063"
+    },
+    "E018-design-r2": {
+      "entries_verified": 13,
+      "checksums_sha256": "1660f03b9dc1fb73a4f88ea09a8b7b9d46c5752c9d0060add2a191e4cc4a371e"
+    }
+  },
+  "checks": {
+    "all_five_current_sources_equal_archive": true,
+    "all_five_bases_equal_git_HEAD": true,
+    "original_four_candidate_hashes_unchanged": true,
+    "full_child_table_payload_explicitly_counted_once_in_public_estimate": true,
+    "constructor_plan_and_continuation_payload_accounting_separate_and_consistent": true,
+    "new_test_checks_three_unused_sentinels_add_twelve_bytes": true,
+    "exact_D031_candidate_and_independent_four_expression_two_parameter_four_forwarding_transform": true,
+    "protected_arena_store_frozen_evaluator_hashes_match": true
+  },
+  "limitations": [
+    "Prepared CPU test is source-reviewed only, not executed.",
+    "The public estimate remains rough/conservative and does not account exactly for all existing allocator/runtime overhead.",
+    "The lifecycle reference shares the changed training-up kernel; immutable original/candidate binary controls are required.",
+    "Source PASS does not satisfy performance, save compatibility, or deployment gates."
+  ],
+  "checked_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-hashes.json": "06c6978afdfb53b72c1e024fd0121b9481ec5ee90a0f35d2919e5c00b8f7fd4f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate.patch": "85246f6d6506350f9030374566bcf5ea4c93e57834bb94da57e3f8e0f4d4589e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\manifest.json": "52ab0237ac192b9b64087204750ade60c1ddb6babbe47f0c9457978f7f053c4b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\README.md": "403d0c907f2eaa74bacbbf3742d2e885ae41ae9637d339f959e54350a7c2e74c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\checksums.json": "56487b28ca95c85c4ca1e75e6edb0eca61eadf19ef2484722cf5f9c8bbbc6063",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-game.rs": "fc72c39cf5bf21b5ffdad51c0b58e68daefb5895878132c4aa154247f0dbaf8c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate.patch": "c094026376165de0d51071d8ea0c94457023565e8d77801d8a594e4e335b8213",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\manifest.json": "81e298aafa5c04d9630b61fdc83b6ed4235529a9b5acdba4a6959b36cc3d3d7d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\README.md": "ba7214054ddc247ad8762b87909da34297a4fb107694ddd991ab4fa940d46b45",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\checksums.json": "1660f03b9dc1fb73a4f88ea09a8b7b9d46c5752c9d0060add2a191e4cc4a371e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "fc72c39cf5bf21b5ffdad51c0b58e68daefb5895878132c4aa154247f0dbaf8c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D031-child-slot-probe\\candidate.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E018-source-review\\review.md": "a8e5023f38d0551ed0bbfd1634ef1050f6514d55602ab9f1a1b2b5fab3f13745",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E018-source-review-r2\\review.md": "7e6f83c9bac40324176fe9ef61bc0cb564cde5c3dfed5b3501540cf0eab6f0bd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E018-source-review\\manifest.json": "712c034b7b4155ec5212303e9314b1296cb1fc974187978f918ccac8fa577f3a"
+  }
+}

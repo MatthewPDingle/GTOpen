@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-16T10:05:10.196210+00:00",
+  "error": "RuntimeError('rustc exited 1; preserve logs')",
+  "commands": [
+    {
+      "args": [
+        "rustc",
+        "probe.rs",
+        "--edition=2021",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "lto=thin",
+        "-L",
+        "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+        "--extern",
+        "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+        "--extern",
+        "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+        "-o",
+        "probe.exe"
+      ],
+      "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2",
+      "started_at": "2026-10-16T10:05:09.646911+00:00",
+      "timeout_seconds": 600,
+      "error": "RuntimeError('rustc exited 1; preserve logs')",
+      "elapsed_seconds": 0.5630000000019209,
+      "returncode": 1,
+      "cleanup": null
+    }
+  ],
+  "instruction": "Preserve failure; no retry/overwrite in this directory."
+}

@@ -1,0 +1,259 @@
+{
+  "at": "2026-10-17T08:01:20.908160+00:00",
+  "status": "measured_scoped_two_tone_profile",
+  "cohort_protocol_sha256": "6fee5b99ca0ce5b5bdaf12bc800d64cf3be7ab428a8db0dab703619bdf5f3d32",
+  "cohort_report_sha256": "dd6138620937946038198086a25c337a04e76e93b481aa0a118925c660d4285a",
+  "root_report_sha256": "1c881c884c13e560f7cba76c175612027882a642313abfe49510bcc14832c75b",
+  "root_checks": 188,
+  "native_results_exact": 6,
+  "convergence_checkpoints_exact": 60,
+  "kernel_records_each_trace": 26670,
+  "kernel_graph_nodes_sorted": [
+    63,
+    63,
+    147
+  ],
+  "graph_launch_records_each_trace": 407,
+  "observer_cycle_changes_pct": [
+    1.1524109291843887,
+    0.4806356732040884,
+    -0.33940502825637875
+  ],
+  "all_three_clocks_in_every_pair_within10pct": true,
+  "families": [
+    {
+      "kernel": "up_action",
+      "calls_each_trace": 5200,
+      "median_summed_kernel_ms": 918.649512,
+      "median_share_of_summed_kernel_time_pct": 32.2512298223026
+    },
+    {
+      "kernel": "up_show",
+      "calls_each_trace": 2520,
+      "median_summed_kernel_ms": 841.300233,
+      "median_share_of_summed_kernel_time_pct": 29.546206510776663
+    },
+    {
+      "kernel": "down_action",
+      "calls_each_trace": 5330,
+      "median_summed_kernel_ms": 474.965224,
+      "median_share_of_summed_kernel_time_pct": 16.673672717371684
+    },
+    {
+      "kernel": "up_chance",
+      "calls_each_trace": 3960,
+      "median_summed_kernel_ms": 255.380216,
+      "median_share_of_summed_kernel_time_pct": 8.968228766083026
+    },
+    {
+      "kernel": "up_fold",
+      "calls_each_trace": 5040,
+      "median_summed_kernel_ms": 244.651361,
+      "median_share_of_summed_kernel_time_pct": 8.57855614453268
+    },
+    {
+      "kernel": "down_chance",
+      "calls_each_trace": 3690,
+      "median_summed_kernel_ms": 70.761724,
+      "median_share_of_summed_kernel_time_pct": 2.485130074084481
+    },
+    {
+      "kernel": "up_action_eval",
+      "calls_each_trace": 520,
+      "median_summed_kernel_ms": 41.777373,
+      "median_share_of_summed_kernel_time_pct": 1.4666873931731421
+    },
+    {
+      "kernel": "copy_root",
+      "calls_each_trace": 410,
+      "median_summed_kernel_ms": 0.534325,
+      "median_share_of_summed_kernel_time_pct": 0.018765330347734182
+    }
+  ],
+  "median_phase_intervals": {
+    "init": {
+      "span_ms": 597.3671,
+      "device_union_ms": 12.771059,
+      "api_union_ms": 187.2685,
+      "api_device_overlap_ms": 12.722328,
+      "device_uncovered_ms": 585.0674,
+      "uncovered_by_device_or_api_ms": 410.057859
+    },
+    "solve": {
+      "span_ms": 2861.0062,
+      "device_union_ms": 2847.652677,
+      "api_union_ms": 2859.766,
+      "api_device_overlap_ms": 2846.962827,
+      "device_uncovered_ms": 13.353523,
+      "uncovered_by_device_or_api_ms": 0.55035
+    },
+    "readback": {
+      "span_ms": 262.5734,
+      "device_union_ms": 64.669369,
+      "api_union_ms": 65.1076,
+      "api_device_overlap_ms": 64.669369,
+      "device_uncovered_ms": 197.904031,
+      "uncovered_by_device_or_api_ms": 197.4658
+    }
+  },
+  "graph_kernel_times": {
+    "D096T1": [
+      {
+        "graph_id": 2,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1449.494974,
+        "families": {
+          "copy_root": 0.303236,
+          "up_chance": 113.834653,
+          "down_chance": 43.957264,
+          "up_action": 476.179532,
+          "up_fold": 119.778075,
+          "down_action": 301.170542,
+          "up_show": 394.271672
+        }
+      },
+      {
+        "graph_id": 5,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1254.632952,
+        "families": {
+          "copy_root": 0.212249,
+          "up_chance": 117.34439,
+          "down_chance": 24.559665,
+          "up_action": 442.374002,
+          "up_fold": 111.699669,
+          "down_action": 157.107789,
+          "up_show": 401.335188
+        }
+      },
+      {
+        "graph_id": 8,
+        "role": "raked_evaluation",
+        "kernel_nodes": 147,
+        "kernel_records": 1323,
+        "summed_kernel_ms": 120.853841,
+        "families": {
+          "up_action_eval": 37.617699,
+          "copy_root": 0.01376,
+          "up_chance": 20.854949,
+          "down_chance": 2.142708,
+          "up_fold": 10.915611,
+          "down_action": 13.523598,
+          "up_show": 35.785516
+        }
+      }
+    ],
+    "D096T2": [
+      {
+        "graph_id": 2,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1445.1671,
+        "families": {
+          "copy_root": 0.303165,
+          "up_chance": 113.552231,
+          "down_chance": 44.065511,
+          "up_action": 472.829172,
+          "up_fold": 120.289388,
+          "down_action": 299.947703,
+          "up_show": 394.17993
+        }
+      },
+      {
+        "graph_id": 5,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1255.327262,
+        "families": {
+          "copy_root": 0.212857,
+          "up_chance": 118.118842,
+          "down_chance": 23.86273,
+          "up_action": 439.775723,
+          "up_fold": 114.266635,
+          "down_action": 155.822037,
+          "up_show": 403.268438
+        }
+      },
+      {
+        "graph_id": 8,
+        "role": "raked_evaluation",
+        "kernel_nodes": 147,
+        "kernel_records": 1323,
+        "summed_kernel_ms": 120.465214,
+        "families": {
+          "up_action_eval": 37.599447,
+          "copy_root": 0.0136,
+          "up_chance": 20.118796,
+          "down_chance": 2.278479,
+          "up_fold": 10.5207,
+          "down_action": 13.867497,
+          "up_show": 36.066695
+        }
+      }
+    ],
+    "D096T3": [
+      {
+        "graph_id": 2,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1447.007544,
+        "families": {
+          "copy_root": 0.304254,
+          "up_chance": 114.347352,
+          "down_chance": 44.262015,
+          "up_action": 471.042972,
+          "up_fold": 118.74877,
+          "down_action": 301.630912,
+          "up_show": 396.671269
+        }
+      },
+      {
+        "graph_id": 5,
+        "role": "training",
+        "kernel_nodes": 63,
+        "kernel_records": 12537,
+        "summed_kernel_ms": 1254.290413,
+        "families": {
+          "copy_root": 0.213755,
+          "up_chance": 118.246092,
+          "down_chance": 23.518091,
+          "up_action": 443.143048,
+          "up_fold": 111.937685,
+          "down_action": 155.776175,
+          "up_show": 401.455567
+        }
+      },
+      {
+        "graph_id": 8,
+        "role": "raked_evaluation",
+        "kernel_nodes": 147,
+        "kernel_records": 1323,
+        "summed_kernel_ms": 120.347099,
+        "families": {
+          "up_action_eval": 37.677814,
+          "copy_root": 0.013919,
+          "up_chance": 20.065027,
+          "down_chance": 1.931257,
+          "up_fold": 10.564579,
+          "down_action": 13.84344,
+          "up_show": 36.251063
+        }
+      }
+    ]
+  },
+  "first_pair_retained_unchanged": true,
+  "source_topology_repair_preserved": true,
+  "no_native_repeated_or_added": true,
+  "source_activated": false,
+  "optimization_accepted": false,
+  "new_performance_gain": false,
+  "accepted_source": "E051",
+  "limits": "Only filtered two-tone/RTX5090 with fresh-process initialization. Family durations are traced kernel sums, not uninstrumented complete-cycle shares, removable headroom, confidence or per-family bias bounds. API waits overlap device work. Component medians are not additive. Primary second-fixture initialization is different because in-process PTX/context state is already warm."
+}

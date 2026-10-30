@@ -1,6 +1,8 @@
 # Heads-up rake accounting and position sizes
 
-New UI scenarios use **Balanced (approx.)**. Existing saves keep the model that generated their regrets and strategy sums. To change an old game, select Balanced, **Build Game**, and solve afresh. Re-solve alone does not change its model.
+New games built in the UI use **Balanced (approx.)** automatically; the model selector has been removed. Scenario presets supply the game settings, and their historical model choices no longer affect fresh builds.
+
+Existing solved saves keep the model that generated their regrets and strategy sums. To update an old game, **Build Game** and solve afresh. Re-solve with unchanged settings continues the saved game under its original model. Changing game settings creates a fresh game when Solve is pressed; choosing a scenario also starts afresh if the loaded game uses an older model. Legacy calculations remain available internally for save compatibility and research. This UI simplification does not introduce a new or more accurate model.
 
 ## What changed
 

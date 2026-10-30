@@ -1,0 +1,27 @@
+--- E080/kernels.cu
++++ E110/kernels.cu
+@@ -157,8 +157,12 @@
+     u32 n = nodes[start + b];
+     const float* global_reach = (p == 0 ? reach1 : reach0)
+         + (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;
+-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+-        local_reach[j] = global_reach[j];
++    float partial = 0.0;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {
++        float value = global_reach[j];
++        local_reach[j] = value;
++        partial += (float)value;
++    }
+     __syncthreads();
+     const float* ro = local_reach;
+     // Card lists preserve opponent hand order; all sums use the existing f32 precision.
+@@ -169,9 +173,6 @@
+             sum += (float)ro[card_idx[k]];
+         s[card] = sum;
+     }
+-    float partial = 0.0;
+-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
+-        partial += (float)ro[j];
+     total_parts[threadIdx.x] = partial;
+     __syncthreads();
+     for (int step = blockDim.x >> 1; step > 0; step >>= 1) {

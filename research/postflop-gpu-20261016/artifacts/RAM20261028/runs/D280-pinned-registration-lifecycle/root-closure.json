@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-29T15:25:03.112481+00:00",
+  "status": "DECLINE_CLOSE_PINNED_REGISTRATION_ROUTE_AT_COMPONENT_GATE",
+  "report_sha256": "7b46da80f6d69fd5accbacf479a465254392a9a7ab7fb2e987004563ac2cd5ac",
+  "protocol_sha256": "91de8207be3415f4261e8d7ba7cdfa0438d567deb1bcd4b13e734fc0be5cd02d",
+  "all10child_receipts_terminal0": true,
+  "timings_recomputed_from_original_native_markers": [
+    {
+      "fixture": "rainbow",
+      "baseline_median_ms": 522.2151,
+      "candidate_median_ms": 511.0872,
+      "slower_pairs": 0,
+      "guard_failed": false
+    },
+    {
+      "fixture": "two-tone",
+      "baseline_median_ms": 282.1019,
+      "candidate_median_ms": 269.7337,
+      "slower_pairs": 1,
+      "guard_failed": false
+    },
+    {
+      "fixture": "river",
+      "baseline_median_ms": 1.9916,
+      "candidate_median_ms": 2.0203,
+      "slower_pairs": 3,
+      "guard_failed": true
+    }
+  ],
+  "baseline_sum_fixture_component_median_ms": 806.3086,
+  "candidate_sum_fixture_component_median_ms": 782.8412,
+  "saving_ms": 23.467399999999998,
+  "minimum_effort_constant_ms": 100.521554,
+  "failed_gates": [
+    "river:strict_fixture_clear",
+    "component_effort_saving"
+  ],
+  "all_full_raw_files": 64,
+  "all_literal_full_raw_pairs": 32,
+  "raw_bytes_retained": 18939054800,
+  "every_raw_word_independent_oracle_checks": 4734763060,
+  "explicit_failure_cleanup_witness": "Candidate warmup zero-byte registration rejected, owned ordinary reservation released, no unregister of unsuccessfully registered range. Successful route counts pair allregister/unregister andVMalloc/free calls, allhost/device/CUDAobjects dropped.",
+  "fixed_route_threshold_lifetime_API_source_closed_without_rescue": true,
+  "limits": "Puretransport/lifecyclecomponent, not actualGpuSolver/quantizer/criticalpath/fullsolveoraccuracyadoptionevidence. RetainedoutputwholebitproofcoversallnativeDMAmemorypatterns/guards/pagecontrols. Tinyriverusesoriginalallocationfallback;observedstrictguardfailurenotcausallyattributedtocandidatehelper. AllprocessCPU/lifetime/memoryadmissiongateobservationspassbutnotuniversalmaterialproof. NoAPI/threshold/predicate/placement/flag/helper/source/samplevariantorfullsolvetrialaftercomponentfailure.",
+  "new_CUDA_applicationkernels_NVRTC_CFR_solver_or_speed_samples": 0,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "goal_active": true
+}

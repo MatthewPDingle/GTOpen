@@ -1,0 +1,252 @@
+{
+  "entry_names": {
+    "baseline": [
+      "copy_root",
+      "down_action",
+      "down_chance",
+      "up_fold",
+      "up_show",
+      "up_chance",
+      "up_action",
+      "copy_span",
+      "up_action_eval"
+    ],
+    "candidate": [
+      "copy_root",
+      "down_action",
+      "down_chance",
+      "up_fold",
+      "up_show",
+      "up_chance",
+      "up_action",
+      "copy_span",
+      "up_action_eval"
+    ]
+  },
+  "other_entry_ptx_byte_equality": {
+    "copy_root": true,
+    "down_chance": true,
+    "up_fold": true,
+    "up_show": true,
+    "up_chance": true,
+    "up_action": true,
+    "copy_span": true,
+    "up_action_eval": true
+  },
+  "down_action_signature_unchanged": true,
+  "entries": {
+    "baseline-down_action": {
+      "opcodes_static_only": {
+        "add.f32": 13,
+        "add.s32": 68,
+        "add.s64": 285,
+        "add.u64": 1,
+        "and.b32": 4,
+        "bra.uni": 50,
+        "cvt.rn.f32.s32": 1,
+        "cvt.s64.s32": 26,
+        "cvt.u32.u64": 16,
+        "cvt.u64.u32": 71,
+        "cvta.to.global.u64": 14,
+        "div.rn.f32": 18,
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.global.nc.u32": 119,
+        "ld.global.nc.u64": 8,
+        "ld.local.f32": 7,
+        "ld.param.u32": 10,
+        "ld.param.u64": 14,
+        "mad.lo.s32": 1,
+        "max.f32": 23,
+        "mov.b32": 6,
+        "mov.f32": 11,
+        "mov.u32": 22,
+        "mov.u64": 1,
+        "mul.f32": 32,
+        "mul.lo.s32": 1,
+        "mul.lo.s64": 50,
+        "mul.wide.s32": 4,
+        "mul.wide.u32": 58,
+        "neg.s32": 1,
+        "selp.b32": 4,
+        "selp.b64": 8,
+        "selp.f32": 6,
+        "setp.eq.s32": 27,
+        "setp.ge.s32": 12,
+        "setp.ge.u32": 1,
+        "setp.gt.f32": 2,
+        "setp.gt.s32": 3,
+        "setp.leu.f32": 3,
+        "setp.lt.s32": 13,
+        "setp.lt.s64": 4,
+        "setp.lt.u32": 3,
+        "setp.ne.s32": 16,
+        "shl.b32": 1,
+        "shl.b64": 122,
+        "st.global.f32": 32,
+        "st.local.f32": 7
+      },
+      "entry_sha256": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5"
+    },
+    "candidate-down_action": {
+      "opcodes_static_only": {
+        "add.f32": 13,
+        "add.s32": 68,
+        "add.s64": 249,
+        "add.u64": 1,
+        "and.b32": 4,
+        "bra.uni": 14,
+        "cvt.rn.f32.s32": 1,
+        "cvt.s64.s32": 26,
+        "cvt.u32.u64": 25,
+        "cvt.u64.u32": 53,
+        "cvta.to.global.u64": 14,
+        "div.rn.f32": 18,
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.global.nc.u32": 83,
+        "ld.global.nc.u64": 8,
+        "ld.local.f32": 7,
+        "ld.param.u32": 10,
+        "ld.param.u64": 14,
+        "mad.lo.s32": 1,
+        "max.f32": 23,
+        "mov.b32": 6,
+        "mov.f32": 11,
+        "mov.u32": 22,
+        "mov.u64": 1,
+        "mul.f32": 32,
+        "mul.lo.s32": 1,
+        "mul.lo.s64": 50,
+        "mul.wide.s32": 4,
+        "mul.wide.u32": 72,
+        "neg.s32": 1,
+        "selp.b32": 4,
+        "selp.b64": 12,
+        "selp.f32": 6,
+        "setp.eq.s32": 15,
+        "setp.ge.s32": 12,
+        "setp.ge.u32": 1,
+        "setp.gt.f32": 2,
+        "setp.gt.s32": 3,
+        "setp.leu.f32": 3,
+        "setp.lt.s32": 12,
+        "setp.lt.s64": 4,
+        "setp.lt.u32": 3,
+        "setp.ne.s32": 4,
+        "shl.b32": 1,
+        "shl.b64": 82,
+        "st.global.f32": 32,
+        "st.local.f32": 7
+      },
+      "entry_sha256": "9aa9a892250a854bad46c733bbb734ff29ba2488dd39bd05be809e54666af464"
+    }
+  },
+  "arithmetic_inspection": {
+    "baseline": {
+      "local_declarations": [
+        ".local .align 16 .b8 \t__local_depot1[32];",
+        "st.local.f32 \t[%rd98], %f48;",
+        "st.local.f32 \t[%rd98+4], %f50;",
+        "st.local.f32 \t[%rd98+8], %f52;",
+        "st.local.f32 \t[%rd98+12], %f54;",
+        "st.local.f32 \t[%rd99], %f58;",
+        "st.local.f32 \t[%rd99+4], %f60;",
+        "st.local.f32 \t[%rd99+8], %f62;",
+        "ld.local.f32 \t%f180, [%rd104];",
+        "ld.local.f32 \t%f182, [%rd104+4];",
+        "ld.local.f32 \t%f184, [%rd104+8];",
+        "ld.local.f32 \t%f186, [%rd104+12];",
+        "ld.local.f32 \t%f188, [%rd110];",
+        "ld.local.f32 \t%f190, [%rd110+4];",
+        "ld.local.f32 \t%f192, [%rd110+8];"
+      ],
+      "local_opcodes_static_only": {
+        "ld.local.f32": 7,
+        "st.local.f32": 7
+      },
+      "floating_typed_opcodes_static_only": {
+        "add.f32": 13,
+        "cvt.rn.f32.s32": 1,
+        "div.rn.f32": 18,
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.local.f32": 7,
+        "max.f32": 23,
+        "mov.f32": 11,
+        "mul.f32": 32,
+        "selp.f32": 6,
+        "setp.gt.f32": 2,
+        "setp.leu.f32": 3,
+        "st.global.f32": 32,
+        "st.local.f32": 7
+      },
+      "ftz_opcodes_static_only": {},
+      "branch_opcodes_static_only": {
+        "bra.uni": 50
+      },
+      "global_load_opcodes_static_only": {
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.global.nc.u32": 119,
+        "ld.global.nc.u64": 8
+      }
+    },
+    "candidate": {
+      "local_declarations": [
+        ".local .align 16 .b8 \t__local_depot1[32];",
+        "st.local.f32 \t[%rd71], %f16;",
+        "st.local.f32 \t[%rd71+4], %f18;",
+        "st.local.f32 \t[%rd71+8], %f20;",
+        "st.local.f32 \t[%rd71+12], %f22;",
+        "st.local.f32 \t[%rd72], %f26;",
+        "st.local.f32 \t[%rd72+4], %f28;",
+        "st.local.f32 \t[%rd72+8], %f30;",
+        "ld.local.f32 \t%f180, [%rd76];",
+        "ld.local.f32 \t%f182, [%rd76+4];",
+        "ld.local.f32 \t%f184, [%rd76+8];",
+        "ld.local.f32 \t%f186, [%rd76+12];",
+        "ld.local.f32 \t%f188, [%rd78];",
+        "ld.local.f32 \t%f190, [%rd78+4];",
+        "ld.local.f32 \t%f192, [%rd78+8];"
+      ],
+      "local_opcodes_static_only": {
+        "ld.local.f32": 7,
+        "st.local.f32": 7
+      },
+      "floating_typed_opcodes_static_only": {
+        "add.f32": 13,
+        "cvt.rn.f32.s32": 1,
+        "div.rn.f32": 18,
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.local.f32": 7,
+        "max.f32": 23,
+        "mov.f32": 11,
+        "mul.f32": 32,
+        "selp.f32": 6,
+        "setp.gt.f32": 2,
+        "setp.leu.f32": 3,
+        "st.global.f32": 32,
+        "st.local.f32": 7
+      },
+      "ftz_opcodes_static_only": {},
+      "branch_opcodes_static_only": {
+        "bra.uni": 14
+      },
+      "global_load_opcodes_static_only": {
+        "ld.global.f32": 8,
+        "ld.global.nc.f32": 39,
+        "ld.global.nc.u32": 83,
+        "ld.global.nc.u64": 8
+      }
+    }
+  },
+  "arithmetic_review_status": "Pending independent source/PTX inspection; opcode counts are not runtime numerical proof.",
+  "required_common_arity_review": {
+    "arity2": "pending",
+    "arity3": "pending",
+    "arity4": "pending"
+  },
+  "controlflow_review_status": "Independent reviewer must locate actual actor-selection branch removal and/or selected slot-load hoisting in each common arity2/3/4 path, with unchanged floating dependencies and guards. Static total counts alone cannot pass this gate."
+}

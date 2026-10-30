@@ -1,0 +1,229 @@
+{
+  "id": "D200",
+  "at": "2026-10-28T21:27:23.897986+00:00",
+  "status": "pass_readonly_topology_candidate_fixed",
+  "protocol_sha256": "5e93c7c5f0b4ceb0078c2d1938bd03b0a07c46af9a390d63b1bb24892c6628d3",
+  "raw_topology_sha256": "9a96798c0cbf166249a2a25ddd0935851ae20c634279635cf5073d632fb865b4",
+  "raw_bytes": 768,
+  "cores": [
+    {
+      "core": 0,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 3,
+      "mask_hex": "0x3",
+      "logical_processors": [
+        0,
+        1
+      ],
+      "chosen_logical_processor": 0
+    },
+    {
+      "core": 1,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 12,
+      "mask_hex": "0xc",
+      "logical_processors": [
+        2,
+        3
+      ],
+      "chosen_logical_processor": 2
+    },
+    {
+      "core": 2,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 48,
+      "mask_hex": "0x30",
+      "logical_processors": [
+        4,
+        5
+      ],
+      "chosen_logical_processor": 4
+    },
+    {
+      "core": 3,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 192,
+      "mask_hex": "0xc0",
+      "logical_processors": [
+        6,
+        7
+      ],
+      "chosen_logical_processor": 6
+    },
+    {
+      "core": 4,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 768,
+      "mask_hex": "0x300",
+      "logical_processors": [
+        8,
+        9
+      ],
+      "chosen_logical_processor": 8
+    },
+    {
+      "core": 5,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 3072,
+      "mask_hex": "0xc00",
+      "logical_processors": [
+        10,
+        11
+      ],
+      "chosen_logical_processor": 10
+    },
+    {
+      "core": 6,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 12288,
+      "mask_hex": "0x3000",
+      "logical_processors": [
+        12,
+        13
+      ],
+      "chosen_logical_processor": 12
+    },
+    {
+      "core": 7,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 49152,
+      "mask_hex": "0xc000",
+      "logical_processors": [
+        14,
+        15
+      ],
+      "chosen_logical_processor": 14
+    },
+    {
+      "core": 8,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 196608,
+      "mask_hex": "0x30000",
+      "logical_processors": [
+        16,
+        17
+      ],
+      "chosen_logical_processor": 16
+    },
+    {
+      "core": 9,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 786432,
+      "mask_hex": "0xc0000",
+      "logical_processors": [
+        18,
+        19
+      ],
+      "chosen_logical_processor": 18
+    },
+    {
+      "core": 10,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 3145728,
+      "mask_hex": "0x300000",
+      "logical_processors": [
+        20,
+        21
+      ],
+      "chosen_logical_processor": 20
+    },
+    {
+      "core": 11,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 12582912,
+      "mask_hex": "0xc00000",
+      "logical_processors": [
+        22,
+        23
+      ],
+      "chosen_logical_processor": 22
+    },
+    {
+      "core": 12,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 50331648,
+      "mask_hex": "0x3000000",
+      "logical_processors": [
+        24,
+        25
+      ],
+      "chosen_logical_processor": 24
+    },
+    {
+      "core": 13,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 201326592,
+      "mask_hex": "0xc000000",
+      "logical_processors": [
+        26,
+        27
+      ],
+      "chosen_logical_processor": 26
+    },
+    {
+      "core": 14,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 805306368,
+      "mask_hex": "0x30000000",
+      "logical_processors": [
+        28,
+        29
+      ],
+      "chosen_logical_processor": 28
+    },
+    {
+      "core": 15,
+      "group": 0,
+      "SMT_flags": 1,
+      "efficiency_class": 0,
+      "mask": 3221225472,
+      "mask_hex": "0xc0000000",
+      "logical_processors": [
+        30,
+        31
+      ],
+      "chosen_logical_processor": 30
+    }
+  ],
+  "process_allowed_mask": 4294967295,
+  "system_mask": 4294967295,
+  "baseline_mask": 4294967295,
+  "candidate_mask": 1431655765,
+  "baseline_mask_hex": "0xffffffff",
+  "candidate_mask_hex": "0x55555555",
+  "workers_both_arms": 16,
+  "API_setting_calls": 0,
+  "CUDA_or_compiler_or_solver_runs": 0,
+  "new_gain_accepted": false,
+  "scope": "ExactcurrentCPUcoreaffinitytopology only. No setting/performance/accuracy/no-tradeoff proof. Maskfixed by physical-core least-significant-bitrule; do not choose siblingbits/CCDsubset/count/priority/OS/clock/source/sample rescue afterfailure."
+}

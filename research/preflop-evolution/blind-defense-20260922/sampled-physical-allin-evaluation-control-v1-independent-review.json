@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "source_result_sha256": "ff5dbc364f643bcbbcaae49b2b9f0f0d524598d961f411b091beeac74fbed4a1",
+  "registration_sha256": "8ecb49cd9adce066e135a8dec1e0aa04536b7f86b16ee4fda9f5703561b21278",
+  "reviewer_sha256": "a19cc7d949c882e992fe097aca18d41d9c457b2fbb5cbfc3649936d836ebab01",
+  "checked_file_count": 127,
+  "profile_deals_replayed": 1536,
+  "maximum_value_reconstruction_error_bb": 2.842170943040401e-14,
+  "variance_ratios": [
+    {
+      "profile": "uniform",
+      "ratio": 0.01211261039828263
+    },
+    {
+      "profile": "fold",
+      "ratio": null
+    },
+    {
+      "profile": "call",
+      "ratio": 1.0
+    },
+    {
+      "profile": "raise",
+      "ratio": 0.06501243587484679
+    },
+    {
+      "profile": "jam",
+      "ratio": 0.0
+    },
+    {
+      "profile": "hand-aware",
+      "ratio": 0.023151845972771007
+    }
+  ],
+  "seconds": 3.5160000000032596,
+  "scope": "Saved-artifact replay, source hashes, chance replay, path mass, cashflow corrections and fixture variances. Does not rerun native binaries or re-enumerate all-in boards; does not validate learned-policy strength or population precision.",
+  "production_modified": false
+}

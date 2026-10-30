@@ -1,0 +1,54 @@
+--- retained/probe.rs
++++ E086/probe.rs
+@@ -1,9 +1,9 @@
+-//! E048 original-mask/new-card direct GPU comparator, no timing score.
++//! E086 original-mask/bit-field direct GPU comparator, no timing score.
+ use cudarc::{driver::{CudaContext,CudaSlice,CudaStream,LaunchConfig,PushKernelArg},nvrtc::Ptx};
+ use serde_json::{json,Value};
+ use std::{fs::{File,OpenOptions},io::{BufWriter,Write},path::PathBuf,sync::Arc};
+ type Out=BufWriter<File>;
+-fn emit(v:Value){let mut o=std::io::stdout().lock();writeln!(o,"E048_CONTROL {v}").unwrap();o.flush().unwrap();}
++fn emit(v:Value){let mut o=std::io::stdout().lock();writeln!(o,"E086_CONTROL {v}").unwrap();o.flush().unwrap();}
+ fn file(p:PathBuf,magic:&[u8])->Out{let mut f=BufWriter::new(OpenOptions::new().create_new(true).write(true).open(p).unwrap());f.write_all(magic).unwrap();f}
+ fn u32w(f:&mut Out,v:u32){f.write_all(&v.to_le_bytes()).unwrap();}
+ fn vecw(f:&mut Out,v:&[u32]){f.write_all(&(v.len() as u64).to_le_bytes()).unwrap();for x in v{u32w(f,*x);}}
+@@ -35,13 +35,12 @@
+  }
+  fn inputs(&self)->Vec<Vec<u32>>{vec![self.parents.clone(),self.childs.clone(),self.cards.clone(),self.r0.clone(),self.r1.clone(),split(&self.m0),split(&self.m1),self.a0.clone(),self.b0.clone(),self.a1.clone(),self.b1.clone()]}
+  fn seeds(&self)->Vec<Vec<u32>>{vec![bits(&self.seed0),bits(&self.seed1)]}
+- fn run(&self,c:&Case,s:&Arc<CudaStream>,f:&cudarc::driver::CudaFunction,new:bool)->(Vec<Vec<u32>>,Vec<Vec<u32>>){
++ fn run(&self,c:&Case,s:&Arc<CudaStream>,f:&cudarc::driver::CudaFunction,_new:bool)->(Vec<Vec<u32>>,Vec<Vec<u32>>){
+   let parents=s.clone_htod(&self.parents).unwrap();let childs=s.clone_htod(&self.childs).unwrap();let cards=s.clone_htod(&self.cards).unwrap();let r0=s.clone_htod(&self.r0).unwrap();let r1=s.clone_htod(&self.r1).unwrap();
+   let m0=s.clone_htod(&self.m0).unwrap();let m1=s.clone_htod(&self.m1).unwrap();let a0=s.clone_htod(&self.a0).unwrap();let b0=s.clone_htod(&self.b0).unwrap();let a1=s.clone_htod(&self.a1).unwrap();let b1=s.clone_htod(&self.b1).unwrap();
+   let mut reach0=s.clone_htod(&self.seed0).unwrap();let mut reach1=s.clone_htod(&self.seed1).unwrap();let start=1i32;let count=if c.active(){c.width() as i32}else{0};let nh0=c.n0() as i32;let nh1=c.n1() as i32;
+   let cfg=LaunchConfig{grid_dim:((c.width()+2) as u32,1,1),block_dim:(c.threads(),1,1),shared_mem_bytes:0};
+-  unsafe{if new{s.launch_builder(f).arg(&parents).arg(&childs).arg(&cards).arg(&start).arg(&count).arg(&r0).arg(&r1).arg(&a0).arg(&b0).arg(&a1).arg(&b1).arg(&mut reach0).arg(&mut reach1).arg(&nh0).arg(&nh1).launch(cfg).unwrap();}
+-   else{s.launch_builder(f).arg(&parents).arg(&childs).arg(&cards).arg(&start).arg(&count).arg(&r0).arg(&r1).arg(&m0).arg(&m1).arg(&mut reach0).arg(&mut reach1).arg(&nh0).arg(&nh1).launch(cfg).unwrap();}}
++  unsafe{s.launch_builder(f).arg(&parents).arg(&childs).arg(&cards).arg(&start).arg(&count).arg(&r0).arg(&r1).arg(&m0).arg(&m1).arg(&mut reach0).arg(&mut reach1).arg(&nh0).arg(&nh1).launch(cfg).unwrap();}
+   s.synchronize().unwrap();let post=vec![du32(s,&parents),du32(s,&childs),du32(s,&cards),du32(s,&r0),du32(s,&r1),du64(s,&m0),du64(s,&m1),du32(s,&a0),du32(s,&b0),du32(s,&a1),du32(s,&b1)];let out=vec![df32(s,&reach0),df32(s,&reach1)];(post,out)
+  }
+  fn guards(&self,c:&Case,output:&[Vec<u32>])->u64{
+@@ -63,19 +62,18 @@
+  }
+  fn inputs(&self)->Vec<Vec<u32>>{vec![self.nodes.clone(),self.start.clone(),self.count.clone(),self.card.clone(),self.child.clone(),self.perm.clone(),bits(&self.inv),split(&self.mask),self.a.clone(),self.b.clone(),self.hp.clone(),self.slot.clone()]}
+  fn seeds(&self)->Vec<Vec<u32>>{vec![bits(&self.seed)]}
+- fn run(&self,c:&Case,s:&Arc<CudaStream>,f:&cudarc::driver::CudaFunction,new:bool)->(Vec<Vec<u32>>,Vec<Vec<u32>>){
++ fn run(&self,c:&Case,s:&Arc<CudaStream>,f:&cudarc::driver::CudaFunction,_new:bool)->(Vec<Vec<u32>>,Vec<Vec<u32>>){
+   let nodes=s.clone_htod(&self.nodes).unwrap();let cs=s.clone_htod(&self.start).unwrap();let cc=s.clone_htod(&self.count).unwrap();let card=s.clone_htod(&self.card).unwrap();let child=s.clone_htod(&self.child).unwrap();let perm=s.clone_htod(&self.perm).unwrap();let inv=s.clone_htod(&self.inv).unwrap();let mask=s.clone_htod(&self.mask).unwrap();let a=s.clone_htod(&self.a).unwrap();let b=s.clone_htod(&self.b).unwrap();let hp=s.clone_htod(&self.hp).unwrap();let slot=s.clone_htod(&self.slot).unwrap();let mut cfv=s.clone_htod(&self.seed).unwrap();
+   let start=1i32;let count=if c.active(){1i32}else{0};let nh=c.n0() as i32;let stride=nh+5;let cfg=LaunchConfig{grid_dim:(3,1,1),block_dim:(c.threads(),1,1),shared_mem_bytes:0};
+-  unsafe{if new{s.launch_builder(f).arg(&nodes).arg(&start).arg(&count).arg(&cs).arg(&cc).arg(&card).arg(&child).arg(&perm).arg(&inv).arg(&a).arg(&b).arg(&hp).arg(&slot).arg(&mut cfv).arg(&nh).arg(&stride).launch(cfg).unwrap();}
+-   else{s.launch_builder(f).arg(&nodes).arg(&start).arg(&count).arg(&cs).arg(&cc).arg(&card).arg(&child).arg(&perm).arg(&inv).arg(&mask).arg(&hp).arg(&slot).arg(&mut cfv).arg(&nh).arg(&stride).launch(cfg).unwrap();}}
++  unsafe{s.launch_builder(f).arg(&nodes).arg(&start).arg(&count).arg(&cs).arg(&cc).arg(&card).arg(&child).arg(&perm).arg(&inv).arg(&mask).arg(&hp).arg(&slot).arg(&mut cfv).arg(&nh).arg(&stride).launch(cfg).unwrap();}
+   s.synchronize().unwrap();let post=vec![du32(s,&nodes),du32(s,&cs),du32(s,&cc),du32(s,&card),du32(s,&child),du32(s,&perm),df32(s,&inv),du64(s,&mask),du32(s,&a),du32(s,&b),du32(s,&hp),du32(s,&slot)];let out=vec![df32(s,&cfv)];(post,out)
+  }
+  fn guards(&self,c:&Case,output:&[Vec<u32>])->u64{let seed=bits(&self.seed);let lo=2*(c.n0()+5);let hi=lo+if c.active(){c.n0()}else{0};let mut checked=0;for i in 0..seed.len(){if i<lo||i>=hi{assert_eq!(output[0][i],seed[i],"up guard{i}");checked+=1;}}checked}
+ }
+ fn main(){
+- let dir=PathBuf::from(std::env::var_os("E048_CONTROL_DIR").expect("fresh output required"));std::fs::create_dir(&dir).unwrap();
++ let dir=PathBuf::from(std::env::var_os("E086_CONTROL_DIR").expect("fresh output required"));std::fs::create_dir(&dir).unwrap();
+  let corpus:Value=serde_json::from_str(include_str!("corpus.json")).unwrap();let cases=corpus["cases"].as_array().unwrap();assert_eq!(cases.len(),corpus["case_count"].as_u64().unwrap() as usize);
+- let mut input=file(dir.join("inputs.bin"),b"E048_IN1");let mut baseline=file(dir.join("baseline.bin"),b"E048_OUT1");let mut candidate=file(dir.join("candidate.bin"),b"E048_OUT1");
++ let mut input=file(dir.join("inputs.bin"),b"E086_IN1");let mut baseline=file(dir.join("baseline.bin"),b"E086_OUT1");let mut candidate=file(dir.join("candidate.bin"),b"E086_OUT1");
+  let ctx=CudaContext::new(0).unwrap();assert_eq!(ctx.name().unwrap(),"NVIDIA GeForce RTX 5090");assert_eq!(ctx.compute_capability().unwrap(),(12,0));let stream=ctx.new_stream().unwrap();unsafe{ctx.disable_event_tracking();}
+  let bm=ctx.load_module(Ptx::from_src(include_str!("baseline.ptx"))).unwrap();let cm=ctx.load_module(Ptx::from_src(include_str!("candidate.ptx"))).unwrap();
+  let bf=[bm.load_function("down_chance").unwrap(),bm.load_function("up_chance").unwrap()];let cf=[cm.load_function("down_chance").unwrap(),cm.load_function("up_chance").unwrap()];

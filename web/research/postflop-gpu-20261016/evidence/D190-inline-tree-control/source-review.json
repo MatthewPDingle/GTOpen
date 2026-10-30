@@ -1,0 +1,16 @@
+{
+  "id": "D190/E100",
+  "at": "2026-10-28T20:04:23.638768+00:00",
+  "status": "one_exact_off_tree_CPU_form",
+  "mechanism": "Replace only legal_actions and candidate/to temporary vectors with SmallVec inline capacity 4; preserve child_indices Vec and all persistent Vec types, extension operations, capacities, numerical expressions, DFS/action/child order, budgets and error behavior.",
+  "mechanical_reverse_byte_exact": true,
+  "new_GPU_code_or_resource": false,
+  "capacity_basis": "Common existing NA2/3/4 paths; capacity 4 fixed before native evidence. Menus greater than 4 spill to heap. No inline capacity, container, source scope, threshold, helper, flags or sample rescue after real failure.",
+  "risks": "Larger CPU stack frames, branching/moves/spills and wide-menu allocations can cost more. Public APIs and output shapes alone do not establish exactness or material neutrality. CPU-only component screen cannot establish solve speed.",
+  "history": "Bounded local-all-ref tree and retained old-epoch source queries found no SmallVec form. Distinct from E065 subtree replication (no subtrees copied), D099 by-card scratch reuse (no planner scratch change), E092 GPU quantization and D160 arena allocation. All remain closed.",
+  "prior_counterevidence": "Old E065 full tree wrapper sum was about 101 ms, so a 95.086109 ms admission proxy is demanding. Do not label this a proven bound or predict a gain. D183 phase timings are excluded.",
+  "dependency": "Already locked/cached SmallVec 1.15.1, verified crate archive SHA. No package download or upgrade; standalone defaults, no optional features. Future production build would add direct solver dependency and solver lock edge only.",
+  "documentation_url": "https://github.com/servo/rust-smallvec/tree/v1.15.1",
+  "documentation_paraphrase": "Up to the inline capacity is stored within the container; excess elements spill to heap. Standard slice methods are available. This is an API/storage contract, not measured cost or safety evidence for this integration.",
+  "limits": "No production source activation, compiler, native tree, kernel or solve yet. If component fails, no GPU/speed qualification follows. Passing only permits separately frozen whole canonical state and ordinary complete-cycle 1%/strict-fixture/fresh16/broad/material/holdout/cumulative/application checks."
+}

@@ -1,0 +1,82 @@
+{
+  "at": "2026-10-16T11:22:43.786276+00:00",
+  "live": {
+    "/api/status": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "/api/preflop/status": {
+      "state": "",
+      "phase": "",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "published_iteration": 0,
+      "accuracy_iteration": null,
+      "target_gap": null,
+      "stop_reason": "",
+      "preview_note": "",
+      "gaps": [],
+      "gap_total": 0.0,
+      "evs": [],
+      "hero": null,
+      "frozen": [],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": ""
+    },
+    "/api/reports/status": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  },
+  "disk_free_bytes": 851245633536,
+  "host_available_bytes": 103116349440,
+  "telemetry": {
+    "at": "2026-10-16T11:22:43Z",
+    "gpu": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=name,uuid,driver_version,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw,clocks.sm",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607, 2268, 29920, 0, 36, 79.57, 2542",
+      "stderr": ""
+    },
+    "compute_processes": {
+      "command": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "stdout": "2288, [Insufficient Permissions], [N/A]\n10392, C:\\Windows\\System32\\ShellHost.exe, [N/A]\n10788, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe, [N/A]\n10288, C:\\Windows\\explorer.exe, [N/A]\n12148, C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe, [N/A]\n12124, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe, [N/A]\n14836, C:\\Windows\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe, [N/A]\n7904, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]\n17152, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe, [N/A]\n17120, C:\\Program Files\\WindowsApps\\Claude_2.42304.0.0_x64__pzs8sxrjxfjjc\\app\\claude.exe, [N/A]\n2280, C:\\Program Files (x86)\\Razer\\Razer Services\\Razer Central\\Razer Central.exe, [N/A]\n20644, C:\\Program Files\\WindowsApps\\Claude_2.42304.0.0_x64__pzs8sxrjxfjjc\\app\\claude.exe, [N/A]\n19832, C:\\Users\\there\\AppData\\Local\\Programs\\signal-desktop\\Signal.exe, [N/A]\n23060, C:\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe, [N/A]\n24640, C:\\Users\\there\\AppData\\Roaming\\Spotify\\Spotify.exe, [N/A]\n2540, C:\\Program Files\\Alienware\\Alienware Command Center\\Subsystems\\FX\\SubAgent\\AlienFXSubAgent.exe, [N/A]\n27408, C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe, [N/A]\n17264, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]\n29272, C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.1007.9446.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe, [N/A]\n28692, C:\\Program Files\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe, [N/A]\n29444, C:\\Program Files\\Epic Games\\Launcher\\Engine\\Binaries\\Win64\\EpicWebHelper.exe, [N/A]\n19640, C:\\Program Files (x86)\\Epic Games\\Epic Online Services\\managedArtifacts\\98bc04bc842e4906993fd6d6644ffb8d\\EOSOverlayRenderer-Win64-Shipping.exe, [N/A]\n32964, C:\\Users\\there\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\a9ba6825a525118c\\bin\\node_modules\\@oai\\sky\\bin\\windows\\swift\\x64\\codex-computer-use-swift.exe, [N/A]\n29360, [Insufficient Permissions], [N/A]\n25900, C:\\Windows\\System32\\ApplicationFrameHost.exe, [N/A]\n34972, C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe, [N/A]\n37948, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n26004, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n46984, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n34508, C:\\Users\\there\\AppData\\Local\\Programs\\signal-desktop\\Signal.exe, [N/A]\n47368, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]",
+      "stderr": ""
+    }
+  },
+  "device_admission": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=index,name,memory.total,memory.free",
+      "--format=csv,noheader,nounits"
+    ],
+    "returncode": 0,
+    "stdout": "0, NVIDIA GeForce RTX 5090, 32607, 29920",
+    "stderr": ""
+  }
+}

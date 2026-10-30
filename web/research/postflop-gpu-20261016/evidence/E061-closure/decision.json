@@ -1,0 +1,59 @@
+{
+  "id": "E061",
+  "at": "2026-10-17T09:23:12.784348+00:00",
+  "original_source_form": "E050",
+  "decision": "rejected_first_fresh_source_form_speed_qualification",
+  "aggregate_gain_pct": -0.7429590466110225,
+  "minimum_gain_pct": 1.0,
+  "fixture_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": -0.12353080356153785,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -0.23352638580187476,
+        -0.4006328678860939,
+        -0.12353080356153785
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 2.220005638902661,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        3.108011784554481,
+        3.2706649611498713,
+        -1.0948694093811904
+      ],
+      "failed": true
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": -6.046270851346225,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -6.046270851346225,
+        -5.346620260579996,
+        -4.817253705438869
+      ],
+      "failed": false
+    }
+  ],
+  "all18results_138checkpoints_exact": true,
+  "ordinary_gpu_units_passed": 84,
+  "fresh_direct_kernel_pairs": 364,
+  "fresh_direct_kernel_launches": 728,
+  "fresh_resource_gate_passed": true,
+  "source_restored_accepted_E051": true,
+  "primary_report_sha256": "43269177fb2348f679bda192cabf9ef76513d369682fd0f7c49d493d54338343",
+  "root_report_sha256": "c50705a7f16577592d9ea12a087e72eede883e5b2515ed87562e5febeacc4ad0",
+  "no_exclusions_pooling_extensions_or_source_variants": true,
+  "fresh16_broader_material_holdout_cumulative_not_run": true,
+  "historical_E050_decision_unchanged": true,
+  "alias_now_has_known_speed_outcome": true,
+  "not_eligible_for_future_never_timed_exception": true,
+  "candidate_accepted": false,
+  "goal_active": true,
+  "limits": "First three-pair observed complete-cycle qualification only; no significance/universal slowdown or component-cause claim. Whole-arena primary equality uses deterministic fingerprints plus raw root/EV/stops/checkpoints, supplemented by complete direct-kernel byte controls."
+}

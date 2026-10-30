@@ -1,0 +1,138 @@
+{
+  "registered_source_base_sha256": {
+    "gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+  },
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "snapshot_iterations": {
+    "rainbow": [
+      20,
+      200
+    ],
+    "two-tone": [
+      20,
+      200
+    ],
+    "river": [
+      20,
+      60
+    ]
+  },
+  "build_timeout_seconds": 1800,
+  "native_child_timeout_seconds": 900,
+  "build_free_disk_bytes": 57982058496,
+  "native_free_disk_bytes": 53687091200,
+  "preexisting_target_artifacts": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "id": "D067-planned-show-incidence",
+  "candidate": "D067",
+  "status": "UNSEALED_DRAFT",
+  "base": "accepted E020",
+  "actual_run": "D067R1",
+  "test_filter": "gpu::planned_show_incidence::planned_show_incidence_mapping",
+  "marker": "D067_PLANNED_SHOW_INCIDENCE ",
+  "expected_marker_count": 5,
+  "expected_stage_order": [
+    {
+      "stage": "admission"
+    },
+    {
+      "stage": "fixture_mapping",
+      "fixture_id": "rainbow"
+    },
+    {
+      "stage": "fixture_mapping",
+      "fixture_id": "two-tone"
+    },
+    {
+      "stage": "fixture_mapping",
+      "fixture_id": "river"
+    },
+    {
+      "stage": "complete"
+    }
+  ],
+  "expected_files": [
+    "rainbow-show-mapping.u32le",
+    "two-tone-show-mapping.u32le",
+    "river-show-mapping.u32le"
+  ],
+  "expected_native_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 88
+  },
+  "owned_sources": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/planned_show_incidence.rs"
+  ],
+  "source_entries": 163,
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\source-manifest.json",
+  "schema_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\output-schema.json",
+  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-root-decisions\\mapping-preparation.json",
+  "root_preparation_sha256": "88afb84fe53d352967515cdff6ee82f4838abbefc19fc9fadf077a1723d3211d",
+  "historical_anchors_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\design\\anchors.json",
+  "historical_catalog_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census-artifacts.json",
+  "historical_raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066R1\\stdout.log",
+  "historical_census_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census",
+  "mapping_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d067-planned-show-incidence",
+  "build_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-build",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D067-solver.exe",
+  "execution_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution",
+  "assessment_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-planned-show-incidence",
+  "performance_measurement": false,
+  "performance_acceptance": false,
+  "usefulness_threshold": null,
+  "incidence_threshold": null,
+  "outcome_triggered_extensions": false,
+  "deployment_changed": false,
+  "exclusions": [],
+  "prerequisite_reports": {
+    "D067_feasibility_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-source-review\\report.json",
+      "required_fields": {
+        "verdict": "PASS_SOURCE_ONLY_BOUNDED_PLANNED_MAPPING_PREPARATION",
+        "independent_source_feasibility_pass": true,
+        "planned_mapping_preparation_justified": true
+      }
+    },
+    "D066_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-independent-review\\report.json",
+      "required_fields": {
+        "id": "D066",
+        "verdict": "PASS_SCOPED_CENSUS_AUDIT",
+        "independent_terminal_audit_pass": true,
+        "exactness_pass": true,
+        "incidence_recomputation_pass": true,
+        "custody_and_cleanup_pass": true,
+        "performance_measurement": false,
+        "candidate_accepted": false
+      }
+    }
+  },
+  "runtime_scope": "One ignored GPU-feature library test whose selected body executes only accepted Spot/GpuPlan CPU construction. No Solver, CudaContext, device work, iterations, exploitability, raw float readback or new snapshot. Existing orchestration still serializes under the research lock and retains process wall time only for custody, not performance evidence.",
+  "historical_scope": "Six D066 pre-evaluation training boundaries and twelve whole-physical-row flag files are unchanged historical inputs. Their23 checkpoints/3fullstates were performed in D066 and are not rerun in D067. New output is planned-showdown incidence, not an observed show-metadata upload or all-iteration frequency.",
+  "mapping_contract": "Every new planned show record has nine little-endian u32 words: node,slot0,slot1,river_slot,win_bits,lose_bits,tie_bits,m0,m1. Require all3 complete D066 fold-map byte comparisons and recorded geometry/spans plus final complete marker before any flag join. One CTA per actual planned show entry per traverser q=1-p; no reach-owner deduplication.",
+  "eligibility": "flags[q][slot_q]==0 means every logical opponent row word was exact+0. Report separately all3 actual f32 payout bit patterns finite. Independent -0/finite/nonfinite flag categories may overlap. Preserve empty-own/opponent categories, no stores or output conclusions.",
+  "restore": "Root restores only append-only mod.rs and removes exact new helper after terminal custody; verify162 accepted entries and two preexisting PTX files. Preserve all outputs/failures; no automatic retry."
+}

@@ -1,0 +1,50 @@
+{
+  "id": "E044-controls",
+  "at": "2026-10-17T02:03:28.057067+00:00",
+  "status": "FROZEN_PRE_NATIVE_CONTROLS",
+  "source_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\manifest.json",
+  "build_protocol_sha256": "4226ac9a7a4185958e5844b563ee30780d2a44f143dbdceec4704825db241232",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E044-solver.exe",
+  "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E044-solver.manifest.json",
+  "unit_id": "V044-unit",
+  "gpu_id": "V044-discount-staging",
+  "test_filter": "gpu::e044_discount_control::exact_two_slot_discount_lifecycle",
+  "output_dir": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-control-raw",
+  "cases": [
+    "dcfr-compressed-full",
+    "dcfr-compressed-compact",
+    "dcfr-f32-full",
+    "dcfr-f32-iso-full",
+    "dcfr-f32-compact",
+    "dcfr-tiny-compressed",
+    "dcfr-tiny-f32",
+    "cfr-plus-compressed-full",
+    "cfr-plus-compressed-compact",
+    "cfr-plus-f32-full",
+    "cfr-plus-f32-iso-full",
+    "cfr-plus-f32-compact",
+    "cfr-plus-tiny-compressed",
+    "cfr-plus-tiny-f32"
+  ],
+  "inventory": {
+    "unit_passed": 84,
+    "unit_ignored": 5,
+    "gpu_selected_passed": 1,
+    "gpu_filtered": 88,
+    "raw_files": 630,
+    "raw_pairs": 308,
+    "drop_modes": 3
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-control-plan\\audit.py": "caa45a5a3deac3a16f2e225fe754ce12f08c1570d8a99255951f457ad41baf55",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-control-plan\\execute.py": "7f496b3400b75cddba6b4e5e2565f7a642c0a354fec7c68c8b64f26c9e63a2f1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\manifest.json": "6e99a2a1c82fc935b6a578ccb9ec5762160ad89b7fd0b91af3a340f5e56ccadb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\source-review.json": "d5e9c150d36d130f01704b5e7f6dee1b6627d6829d529d7148589ba3a71e033d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-build-plan\\build-protocol.json": "4226ac9a7a4185958e5844b563ee30780d2a44f143dbdceec4704825db241232",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+  },
+  "reference": "Exact accepted original iterate/profiled method bodies, same CUDA and unchanged other methods; original type declaration retained for size comparison.",
+  "failure_rule": "Preserve any failed attempt; no performance timing if controls fail. A correction needs a new recorded revision, not erasure or corpus exclusion.",
+  "runtime_authority": "Ongoing user-authorized local research; root source/control/script review only. No live deployment.",
+  "performance_measured": false
+}

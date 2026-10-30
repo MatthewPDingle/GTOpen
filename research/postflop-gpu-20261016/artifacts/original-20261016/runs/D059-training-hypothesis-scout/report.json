@@ -1,0 +1,162 @@
+{
+  "id": "D059",
+  "status": "GO_SOURCE_ONLY_TO_BOUNDED_RESOURCE_FEASIBILITY",
+  "baseline": "accepted E020",
+  "baseline_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "hypothesis": "Cache the53absolute opponent river-card offsets in fixed perCTA static shared memory; preserve the accepted card-position cache and every floating operation/order.",
+  "source_sites": {
+    "kernels.cu": "up_show207-292; global card_base223; first barrier230; offset reads276-277",
+    "plan.rs": "105-106,334-354:53valid absolute offsets per slot, including empty slots",
+    "mod.rs": "627/695 and854/925: existing training/evaluation launch sites; no host change"
+  },
+  "archived_ptx": {
+    "file": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\baseline-up_show.ptx",
+    "mapping": "up_show_param_17 -> rd41 -> rd60 + slot*212 -> rd7",
+    "offset_load_sites": [
+      414,
+      415,
+      687,
+      688
+    ],
+    "instruction": "ld.global.nc.u32",
+    "meaning": "Four retained static instruction sites per own-hand loop; not measured DRAM transactions"
+  },
+  "selected_training_intervals": [
+    {
+      "graph": 0,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 6300
+      },
+      "samples": [
+        1.003424048423767,
+        0.997376024723053,
+        1.5431360006332397
+      ],
+      "median": 1.003424048423767,
+      "min": 0.997376024723053,
+      "max": 1.5431360006332397
+    },
+    {
+      "graph": 1,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 5060
+      },
+      "samples": [
+        1.0593600273132324,
+        1.02128005027771,
+        1.0255039930343628
+      ],
+      "median": 1.0255039930343628,
+      "min": 1.02128005027771,
+      "max": 1.0593600273132324
+    }
+  ],
+  "D045_outer_device_perturbation_pct": [
+    5.160593517304335,
+    5.642748889568727,
+    5.309473465930559
+  ],
+  "timing_limit": "Selected event-perturbed training launches only; neither D045 nor strongly perturbed D033 measures offset-load cost, complete-solve shares, removable headroom or predicted gain.",
+  "scalar_proxy": [
+    {
+      "p": 0,
+      "valid_own_hands": {
+        "min": 219,
+        "median": 236.0,
+        "max": 252
+      },
+      "original_global_offset_reads": {
+        "min": 876,
+        "median": 944.0,
+        "max": 1008
+      },
+      "new_global_preload_words": 53,
+      "new_shared_store_words": 53,
+      "new_shared_lookup_words": "4*m_p"
+    },
+    {
+      "p": 1,
+      "valid_own_hands": {
+        "min": 256,
+        "median": 294.0,
+        "max": 314
+      },
+      "original_global_offset_reads": {
+        "min": 1024,
+        "median": 1176.0,
+        "max": 1256
+      },
+      "new_global_preload_words": 53,
+      "new_shared_store_words": 53,
+      "new_shared_lookup_words": "4*m_p"
+    }
+  ],
+  "proxy_scope": "Unweighted1176rainbow runouts from preserved D037 census; scalar logical reads only, not transactions/cache misses or timing.",
+  "history": {
+    "ledger_snapshot": "references/experiments-27b94ffe.md",
+    "ledger_commit": "27b94ffe1be91f82272f4a0127941cf4159859e1",
+    "scope": "Bounded E001-E030 ledger plus D037/D038/D039 source notes and accepted PTX, not exhaustive global history",
+    "finding": "D037 explicitly deferred a separately authorized53-offset cache. It was not implemented by E020, which cached only positions. No same closed experiment found. Previously proposed but untested; not claimed as new invention.",
+    "counterevidence": "Rejected E021 reach staging, E022 prefix tail, E026 width, E029 complement zeroing and E030 fold order show source-work reductions are insufficient. These changes and E028 sigma caching remain absent."
+  },
+  "exactness": [
+    "Block-stride preload covers53words before unchanged first barrier.",
+    "Keep global card_base needed by earlier position copy and absolute offsets/t-card_base unchanged.",
+    "Card IDs0..51 constrain c+1<=52; empty slots still have53equal valid offsets. Empty own lists have no consumers.",
+    "All card-loop order, strength predicates, floats, prefix recurrence, CFV zeroing/output and5barriers unchanged.",
+    "PerCTA static storage only: no ABI, dynamic reservation, persistent allocation, graph/lifetime or workspace/accounting change; evaluation shares this entry."
+  ],
+  "countercosts": [
+    "53extra global loads/shared stores perCTA even with short/empty own ranges. Existing read-only loads may already be cheap.",
+    "Nominal212Bstaticshared increase may align upward or reduce occupancy; query actual allocation.",
+    "Shared-bank behavior, register lifetime, NVRTC/JIT/code size and whole-cycle constructor/solve costs can erase gains."
+  ],
+  "recommendation": "One minimal off-tree candidate then same-options compiler/resource feasibility only; no automatic primary or acceptance. Root owns every execution decision.",
+  "minimum_missing_evidence": "Actual128thread resource/occupancy and offset-load placement, unchanged other8entryPTX/ABI and FP dependencies. Any later direct exact and immutable-old full-solve controls remain separately authorized; reuse existing harness, no new broad framework.",
+  "performance_measurement": false,
+  "numerical_validation": "not executed",
+  "candidate_accepted": false,
+  "production_source_modified": false,
+  "compiler_or_gpu_execution": false,
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\README.md": "37c28a9b14ab49a3f7e7d78621ed3d845a890dc7ed3bac52515c623eb3c35fc2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\census-summary.json": "b15a483c7b130b14cb4634882bf68adb60809b5640d77e4d1f355a7c937ad576",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\report.json": "51498c9737462de0d01cb081e0ecbc15e4eba0099caef7c2a2747842311be55d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\baseline-up_show.ptx": "de20dd92cfe4ce74b39454315a11464d648d5f0de6b639fd7977b20b7bf56166",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D038-next-hypothesis-source\\README.md": "e7e4b1725ba17c811f13799f474509e98cc0c16379cd4e76daf091359b2edcab",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D039-showdown-cache-composition\\README.md": "75b30e4450d61d6ca3e91f60381bae35ea43d1e0c2ad372e00e4b6ae5fd38118",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-descriptive-analysis\\report.json": "f83c30be1a57631108623bf539bf4c8b9bcac35994dd6a31a35c81bf97974731",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-three-pair-comparison\\report.json": "8f64f4ee7bc0ef77a8dafc46a735abfc1200afece194aad838bb40d76ddb6387",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-root-decisions\\preparation.json": "aa106b33d678610c24a8c684451b506736bcccd33540ccdd47f88218a332e9b0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "D057-graph-descriptor-scope-clarification",
+  "at": "2026-10-16T18:06:25.051807+00:00",
+  "status": "ADDITIVE_PLAN_INTERPRETATION_ONLY",
+  "parent_report_sha256": "8159f46a1941329f6c39afe60faa64a8ffbb5a22ee57c7b53e8aeeb087285188",
+  "plan_protocol_sha256": "e20f616bdd9abbb24981690150d09aa99456c7da91e5dbb60e73d703cf0a1130",
+  "scope": "Meaning of same logical graph/kernel descriptors at140; no frozen plan edits or added execution.",
+  "rule": "The two independently constructed solvers have separate buffer, module/function, graph and event handles. Raw descriptor or pointer-byte equality across arms is invalid.",
+  "bounded_check": [
+    "Use reusable node cardinality/kind comparison and kernel grid/block/shared-memory launch shapes.",
+    "Resolve each arm's function handle only against its own already-known kernel-function handles, then compare the resulting logical kernel identities.",
+    "Do not compare cross-arm handle values, CUDA_KERNEL_NODE_PARAMS pointer-bearing struct bytes, raw argument storage or unknown-size pointed memory. No new general pointer-normalization framework.",
+    "Perform any descriptor inspection at the post-completion140 checkpoint, outside sampled batch scheduling; no graph edits, extra replay, warm or capture."
+  ],
+  "primary_evidence": "Byte-unchanged production queue/evaluation code, normal warm/capture cadence, immutable exploit anchors and matched defined post-evaluation state remain the primary equivalence evidence. Metadata inspection is a bounded secondary check.",
+  "changed_numerical_conditions": false,
+  "changed_samples_or_gates": false,
+  "implementation_authorized": false,
+  "execution_authorized": false
+}

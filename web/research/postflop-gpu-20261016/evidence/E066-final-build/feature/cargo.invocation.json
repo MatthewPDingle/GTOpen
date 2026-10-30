@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T11:09:21.220121+00:00",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "solver",
+    "--features",
+    "preflop-research",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ]
+}

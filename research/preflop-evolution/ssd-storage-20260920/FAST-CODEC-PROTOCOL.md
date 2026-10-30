@@ -1,0 +1,7 @@
+# Fast lossless codec screening
+
+The zero-word estimate saved only 2.9% on the six small 60-iteration states. Zlib level 1 reduced those same bytes to 42.4%, but encoding took 1.73 seconds for 113 MB in Python. Screen native LZ4 block compression on the identical immutable files before choosing an implementation. No solver source or scientific parameters change during the connected comparison.
+
+Use the isolated Python dependency under target/ssd-codec-python; installation report pins version 4.4.5 and wheel SHA256. Official API reference: https://python-lz4.readthedocs.io/en/stable/lz4.block.html . Test default mode and fast mode acceleration 4. Use independent 4-MiB blocks and known bounded uncompressed sizes. For every array, decompress and compare every byte; report total bytes and encode/decode wall time, with raw-block fallback when compression expands. Preserve IEEE float bits. Include per-block length metadata in reported stored size (16 bytes per block).
+
+Repeat screening on the larger connected 20-iteration state only after its SSD writer has exited. These snapshots are early training state and do not prove mature or worst-case memory savings. Python allocation, block copying and background CPU activity limit timing interpretation. Native solver integration needs separate exactness and runtime checks. This screening may reject the approach; no performance or full-panel fit claim is preselected.

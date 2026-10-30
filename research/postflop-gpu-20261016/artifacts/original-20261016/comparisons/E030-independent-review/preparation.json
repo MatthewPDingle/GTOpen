@@ -1,0 +1,33 @@
+{
+  "id": "E030-independent-numerical-audit-preparation",
+  "at": "2026-10-16T17:58:19.508046+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "parent_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-independent-review\\audit-numerical.py": "b98a3a22cf680aeb500edd6eb4b8db90a884ba6b5ffc0119ea95b083d72ba0a8"
+  },
+  "artifact_sha256": {
+    "audit-numerical.py": "48c95b674a9efc4fad3538e220b2485704f4fdf3bb9ce0e48e7dc85f4748f5b7",
+    "adaptation.patch": "e15e1534aa8c26c5660314fc8723632c83c9c490ae30bb02f5163306d875581a"
+  },
+  "protocol_sha256": "9fab8ec1104ebe797dc2c56c9d17293dc82914f0d6b7b968540454b21dd3a0ac",
+  "scripts_manifest_sha256": "9ae9bd1ee20f44d2fcaaf8d77fa0e0e85c718d555f5006640ee7d09e44873cd2",
+  "source_test_name_verified": "gpu::tests::fold_card_order_preserves_offsets_and_permutation",
+  "fixed_order": [
+    "V030-unit",
+    "B098",
+    "E030R1",
+    "E030R2",
+    "B099",
+    "B100",
+    "E030R3"
+  ],
+  "expected_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "numerical_evidence_read": false,
+  "candidate_scripts_executed": false,
+  "native_or_gpu_executed": false,
+  "scope": "File-only E029 audit adaptation; do not execute until root announces all E030 primary and assessment work terminal."
+}

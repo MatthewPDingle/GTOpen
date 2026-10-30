@@ -1,0 +1,55 @@
+{
+  "id": "E022-source-review",
+  "at": "2026-10-16T12:11:11.134928+00:00",
+  "status": "PASS_SOURCE_ONLY",
+  "candidate": "E022",
+  "base": "accepted E020",
+  "candidate_cuda_sha256": "d961dc3717314e3eef5fa6ab19caf857048f8f35b1efee6ef0bdc5cbfc30b8f3",
+  "production_delta": "One thread0 integer bound plus replacement of serial loop upper bound; exact inverse recovers entire accepted E020 CUDA source",
+  "checks": {
+    "sealed_artifact_hashes": true,
+    "current_checkout_cuda_is_accepted_E020": true,
+    "integer_boundary_shapes": 339712,
+    "m_range_inclusive": [
+      0,
+      1326
+    ],
+    "block_range_inclusive": [
+      1,
+      256
+    ],
+    "all_consumed_recurrence_dependencies_preserved": true,
+    "m0_division_avoided": true,
+    "every_existing_barrier_unchanged": true,
+    "shared_layout_and_reservation_unchanged": true,
+    "all_other_CUDA_bytes_unchanged": true,
+    "existing_E008_patch_has_distinct_register_carried_recurrence": true
+  },
+  "findings": [],
+  "preserved_correction": "Original D040 README said13 omitted additions at m236; correct value11 is preserved additively in README-r2.md, original files retained.",
+  "limits": [
+    "No compiler or GPU execution; source/index proof is not compiled floating-point equivalence.",
+    "Unchanged recurrence covers consumed source operands/order including signed-zero, subnormal and nonfinite inputs; native exactness still must pass registered controls.",
+    "Variable integer division and code generation may outweigh the deleted shared-memory tail; no speed estimate or native device-share claim.",
+    "Existing primary, broader exactness, broad-range holdout and original cumulative gates remain required; no extra sampling or workload adjustment is justified by this source review."
+  ],
+  "execution": {
+    "production_edits": 0,
+    "builds": 0,
+    "gpu_runs": 0,
+    "native_solver_runs": 0
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\manifest.json": "716d64aaec6a1bc8cc73bf1bfe70947248c5d388c872a7f03b69789e30ef434c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\candidate.patch": "c8e64dd8a48b2da98c2063a838fb6ffcd45df78f1068b9ccb350440a36e3a010",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\README.md": "2baa3ab65855d9185eedf0e2e9e4e5bbc89257e67f2f20d0c7b222c0485f4c36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\source-checks.json": "7e5f209314a4b603871dad28d958291b3f304fe8a7baf2460f7af3e3ebd9a870",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\base\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\candidate\\kernels.cu": "d961dc3717314e3eef5fa6ab19caf857048f8f35b1efee6ef0bdc5cbfc30b8f3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D040-next-hypothesis-source\\manifest-r2.json": "394ca6bf3855f7204df94a4fdb753ddc5d506cecca27d4677cb4d31ebd3c021f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D040-next-hypothesis-source\\README-r2.md": "1e8787d159acd9dec5cdc7229d2c2cc4e294d486007ffad1f359e59cb0b24ff5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D040-next-hypothesis-source\\source-checks.json": "194d5101e04c16ba86fae82284159857dd8461cbd6c416b6637b771db3bf9542",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D040-next-hypothesis-source\\README.md": "891dbb411707cf85594a89f1b36dbbefe99ad44da8007368cc428c6dc2a46075",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D040-next-hypothesis-source\\manifest.json": "92a2def7e36a29a21e87c27c45076447f82cee72246687e48ef967caeb8a92a4"
+  }
+}

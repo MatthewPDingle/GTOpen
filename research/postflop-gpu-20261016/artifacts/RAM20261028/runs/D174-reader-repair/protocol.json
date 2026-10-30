@@ -1,0 +1,20 @@
+{
+  "id": "D174-reader-repair",
+  "at": "2026-10-28T16:31:31.139013+00:00",
+  "status": "FROZEN_READ_ONLY_REPLAY",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-repair-reader.py": "9f8a193bfc43b35f1b6a7164f833a706479cdde0688113e75ca39e6b91c5e6cc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-assess-r2.py": "ed0559ce103fb9c3b53a2e0fc2093aae70da39e08da0a032bf2a75df9ee507f6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-assess-r3.py": "5a82e8dffa78c247c40edaf37939d00ce0a79f3be039a71abbf6f4b5c0fe65dc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\protocol.json": "9a720b7177569e6c56f14939b5012dc90ddb18383563051be1b151524a605460",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\native-complete.json": "f68e9a9363a1ccd8d9822fe99acbf49d07c5728beb946f0f87b6a354c03c68e0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\budget-cost.stdout.log": "e751b864003b98787ae542778db13dcd2da611d4dda19051d2278eef2d7223f6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\budget-cost.exit.json": "a5cc6e7858753e76a7fed824505b43a882b6708aedb16485f47b7699aedfe337",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\assessment.stderr.log": "7d4f6c776882b27ebfccd07a29d5ec0911271da73258757f2e0ef35c475fbb85",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\execution\\assessment.exit.json": "58e36c27a78df6c38d74cbea0c62462b65ca16644d18eb33c5aa4d808bbb5b46"
+  },
+  "original_result_count": 17,
+  "intended_and_retained_result_count": 18,
+  "change": "Recognize same D174_RESULT substring after libtest prefix on first JSON line. Same18rows/schedule/fields/error/state/thread/CPU/wallgates, no exclusions/criterion/source/binary/numerical/timing changes. Original parser failure retained.",
+  "native_or_compiler_reruns": 0
+}

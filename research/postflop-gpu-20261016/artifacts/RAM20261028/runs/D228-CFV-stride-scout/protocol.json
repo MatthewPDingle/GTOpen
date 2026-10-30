@@ -1,0 +1,61 @@
+{
+  "id": "D228-address-algebra",
+  "at": "2026-10-29T01:52:51.264294+00:00",
+  "status": "FROZEN_PRE_CPU_ONLY_ADDRESS_MODEL",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D228-prepare-stride.py": "05378ab920e736a9a653f768cf6acc7432527dc13d5f8e28a9e408adc937d58a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D228-stride-proof.py": "081507f71c95eccc6ea6ce6028886e8fb97511b6525ef3167e651a16adc71180",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D228-CFV-stride-scout\\source-review.json": "f51dd29ace1af44eec016414cb42feaa2811a0641a2b1b9b658cf89ac4203fc8",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\up_show.sass.txt": "5eb84080af5a339f8ac1da16b4a5aa8093c54f52e0e087a1643ba25f3ebb65ca",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture-report.json": "24749648fdca4961d191b1db86142af6c1c5c85dd112893873b65e136dc87e63",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-checkpoint\\report.json": "397f928e60de33f866fbb35a24249165680303cf0e228dfd90431eca6e155d27",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "stride_definition": "every0..1344 plus bitboundaries2^11..2^30-1/0/+1 andi32MAX; nonnegativei32only",
+  "slot_values": [
+    0,
+    1,
+    2,
+    31,
+    32,
+    65535,
+    65536,
+    16777215,
+    16777216,
+    2147483647,
+    2147483648,
+    4294967294,
+    4294967295
+  ],
+  "hand_index_i32_values": [
+    -2147483648,
+    -1,
+    0,
+    1,
+    31,
+    32,
+    127,
+    128,
+    255,
+    256,
+    1325,
+    1326,
+    2147483647
+  ],
+  "base_u64_values": [
+    0,
+    1,
+    4096,
+    4294963200,
+    281474976710656,
+    18446744073709547520,
+    18446744073709551615
+  ],
+  "record": "<IIIQQ: stridebits,slot,handindexbits,oldwordoffset,newwordoffset",
+  "rules": "Both interpretations of nonnegativesigned32 andunsigned32stride produce sameu64word/byte/base sums. Retain full records and stream independentreader. Require many >u32products and detect intentional32bit-product truncation. Algebra explains whole nonnegativei32 domain; sampled boundaries are regression evidence, not exhaustive2^31x2^32 enumeration or pointer-dereference proof.",
+  "new_CUDA_or_compiler_or_solver_or_performance_runs": 0
+}

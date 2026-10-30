@@ -1,0 +1,66 @@
+{
+  "candidate": "E030",
+  "at": "2026-10-16T17:52:57Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "direct_up_fold_exact_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E030_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-source-review\\report.json",
+      "sha256": "7a6b0dde5e1f00214f3dfe7beb081eb3dc49c5706f9165d8cd361edaeb3ac6e1"
+    },
+    "E030_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-script-review\\report.json",
+      "sha256": "63a5dd08302dea87c6bca3cd69d2ed52a337afda08a051cfec9320e9b779ff43"
+    },
+    "direct_up_fold_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-direct-independent-review\\validation.json",
+      "sha256": "8a979f1d1d8c6a5bd5d7694b9d799fbe7e43d7da719620d249c42647c64742e0"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "5ee2ffbf0daeb7447d69584f2f64bd2c13733c7be028e580cc3fd95c7196f829"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "sha256": "d6745c80d8985acf148654932d5c69272448a66fdc9b3cb011028717b119ee72"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\game.rs",
+      "sha256": "69d404740704e1187b90aaa0bd2ef38fcce1692d80714639ad904085b4981f6a"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-primary-plan\\scripts-manifest.json": "9ae9bd1ee20f44d2fcaaf8d77fa0e0e85c718d555f5006640ee7d09e44873cd2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-primary-plan\\protocol.json": "9fab8ec1104ebe797dc2c56c9d17293dc82914f0d6b7b968540454b21dd3a0ac",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\manifest.json": "0ad81cd54e33062d2cfc53dfebd3f0db60d3675b9d10458799e4f95aeb3f6681",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-fold-card-order-exact\\prepared-manifest.json": "cb0cd4ca8b23c2b35781be5d41e320ccad9914f9b9b1ef92766fcee3bc3bacf9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-source-review\\report.json": "7a6b0dde5e1f00214f3dfe7beb081eb3dc49c5706f9165d8cd361edaeb3ac6e1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-script-review\\report.json": "63a5dd08302dea87c6bca3cd69d2ed52a337afda08a051cfec9320e9b779ff43",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-direct-independent-review\\validation.json": "8a979f1d1d8c6a5bd5d7694b9d799fbe7e43d7da719620d249c42647c64742e0"
+  },
+  "scope": "Root separately authorizes exact five-source research activation, one fresh feature-library compile-only check, one separate fresh GPU-only build, then fixed V030-unit/B098/E030R1/E030R2/B099/B100/E030R3 and unchanged assessment. No extra samples, retuned order, live deployment or acceptance from primary alone.",
+  "decision_reason": "Audited complete up_fold direct comparisons found no numerical blocker; all original arithmetic, barriers and ABIs remain exact. The fixed immutable ordering may reduce divergent warp work, but no measured headroom or >=2percent gain is claimed. One predeclared complete-cycle cohort is the bounded test of that distinct hypothesis; failure closes it without rescue. All conditional broader gates remain required before adoption."
+}

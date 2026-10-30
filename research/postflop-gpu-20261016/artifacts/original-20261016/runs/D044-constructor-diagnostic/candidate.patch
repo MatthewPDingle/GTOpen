@@ -1,0 +1,50 @@
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -136,6 +136,7 @@
+         max_nodes: Option<usize>,
+         strictness: Strictness,
+     ) -> Result<Spot, String> {
++        let d044_constructor_start = std::time::Instant::now();
+         // Record the tree shape explicitly: every new build (and therefore
+         // every new save header) says Some(false); only the save loaders
+         // turn an ABSENT value into Some(true) for pre-fix files.
+@@ -251,6 +252,7 @@
+             hands[1].iter().map(|h| h.weight).collect::<Vec<f32>>(),
+         ];
+ 
++        let d044_tree_start = std::time::Instant::now();
+         let tree = TreeBuilder::build_with_options(
+             &config.tree,
+             &board,
+@@ -258,7 +260,12 @@
+             max_nodes,
+             strictness,
+         )?;
++        let d044_tree_us = d044_tree_start.elapsed().as_secs_f64() * 1e6;
++        let d044_river_start = std::time::Instant::now();
+         let river = build_river_table(&board, board_mask, &hands);
++
++        let d044_river_us = d044_river_start.elapsed().as_secs_f64() * 1e6;
++        let d044_symmetry_start = std::time::Instant::now();
+ 
+         // Suit symmetry group: permutations fixing the board pointwise and
+         // leaving both ranges invariant (equal weights for permuted combos).
+@@ -319,6 +326,18 @@
+             hand_perm[1].swap(0, id);
+         }
+ 
++        let d044_symmetry_us = d044_symmetry_start.elapsed().as_secs_f64() * 1e6;
++        let d044_constructor_us = d044_constructor_start.elapsed().as_secs_f64() * 1e6;
++        // D044 temporary host diagnostic: no new solver work; output failure is ignored.
++        {
++            use std::io::Write;
++            let mut d044_log = std::io::stderr().lock();
++            let _ = writeln!(d044_log,
++                r#"SPOT_CONSTRUCTOR_PROFILE {{"schema_version":1,"diagnostic_only":true,"instrumentation":"D044_unconditional_source_only","board_mask":{},"board_cards":{},"hands":[{},{}],"node_count":{},"suit_permutations":{},"stage_us":{{"tree_build":{},"river_table":{},"suit_symmetry":{}}},"constructor_us_before_logging":{},"extra_cuda_synchronizations":0}}"#,
++                board_mask, board.len(), hands[0].len(), hands[1].len(), tree.nodes.len(), suit_perms.len(),
++                d044_tree_us, d044_river_us, d044_symmetry_us, d044_constructor_us);
++        }
++
+         Ok(Spot {
+             config,
+             board,

@@ -1,0 +1,254 @@
+diff --git a/crates/solver/src/gpu/continuation_capacity.rs b/crates/solver/src/gpu/continuation_capacity.rs
+index f6fd7afa..edfb24a9 100644
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -71,7 +71,7 @@ pub fn stored_capacity_plan(s: &Spot) -> Value {
+     let state=if compact.iso_active {(compact.arena_elements[0]+compact.arena_elements[1]) as u64*8}
+         else {(s.tree.data_size[0]+s.tree.data_size[1])*8};
+     let plan_host=owned(&compact.action_nodes)+owned(&compact.node_data_off);
+-    let spans=owned(&full.action_spans)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans);
++    let spans=owned(&full.action_spans)+owned(&full.action_direct3_counts)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans);
+     let host=spot_owned(s)+plan_host+spans+4; // one-float pinned staging; full ArenaLayouts have no heap
+     json!({"canonical_state_bytes":state,"explicit_state_bytes":(s.tree.data_size[0]+s.tree.data_size[1])*8,
+         "base_gpu_metadata_bytes":base,"wrapper_gpu_metadata_bytes":wrapper,"retained_gpu_payload_bytes":base+wrapper,
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf4772..87c73147 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -509,3 +509,24 @@ extern "C" __global__ void up_action_eval(
+         }
+     }
+ }
++
++// D021 resource-only entry point; original implementation above is unchanged.
++extern "C" __global__ void up_action_3(
++    const u32* __restrict__ nodes, int start, int count, int p,
++    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    float* regrets_p, float* strat_p,
++    const u32* __restrict__ rsrc_p,
++    const float* __restrict__ reach_p_buf,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    const u32* __restrict__ cfv_slot, float* cfv,
++    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
++                                    // captured graphs stay iteration-invariant
++    int nh_p, int nh_max)
++{
++    if (blockIdx.x >= (u32)count) return;
++    up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++}
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index b5f7166c..37a631ec 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -82,6 +82,7 @@ pub struct GpuSolver {
+     f_up_show: CudaFunction,
+     f_up_chance: CudaFunction,
+     f_up_action: CudaFunction,
++    f_up_action_3: CudaFunction,
+     f_up_action_eval: CudaFunction,
+ 
+     // plan metadata kept host-side
+@@ -89,6 +90,7 @@ pub struct GpuSolver {
+     nh: [i32; 2],
+     nh_max: i32,
+     action_spans: Vec<LevelSpan>,
++    action_direct3_counts: Vec<u32>,
+     chance_spans: Vec<LevelSpan>,
+     chance_node_spans: Vec<LevelSpan>,
+     fold_spans: Vec<LevelSpan>,
+@@ -307,11 +309,13 @@ impl GpuSolver {
+             f_up_show: func("up_show")?,
+             f_up_chance: func("up_chance")?,
+             f_up_action: func("up_action")?,
++            f_up_action_3: func("up_action_3")?,
+             f_up_action_eval: func("up_action_eval")?,
+             num_levels: plan.num_levels,
+             nh: [nh[0] as i32, nh[1] as i32],
+             nh_max: plan.nh_max as i32,
+             action_spans: plan.action_spans,
++            action_direct3_counts: plan.action_direct3_counts,
+             chance_spans: plan.chance_spans,
+             chance_node_spans: plan.chance_node_spans,
+             fold_spans: plan.fold_spans,
+@@ -943,13 +947,19 @@ impl GpuSolver {
+                 prof_acc(&self.stream, &mut prof, 5, t0)?;
+             }
+             let sp = self.action_spans[l];
+-            if sp.count > 0 {
+-                let start = sp.start as i32;
+-                let count = sp.count as i32;
++            let direct3 = self.action_direct3_counts[l];
++            for (start, count, function) in [
++                (sp.start, direct3, &self.f_up_action_3),
++                (sp.start + direct3, sp.count - direct3, &self.f_up_action),
++            ] {
++                if count == 0 { continue; }
++                let blocks = count;
++                let start = start as i32;
++                let count = count as i32;
+                 let t0 = profq(&prof);
+                 unsafe {
+                     self.stream
+-                        .launch_builder(&self.f_up_action)
++                        .launch_builder(function)
+                         .arg(&self.d_action_nodes)
+                         .arg(&start)
+                         .arg(&count)
+@@ -970,7 +980,7 @@ impl GpuSolver {
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::cfg(blocks, 0))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 6, t0)?;
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 8a98e494..e0f27d14 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -26,6 +26,32 @@ pub struct LevelSpan {
+     pub count: u32,
+ }
+ 
++const MIN_DIRECT3_ACTION_SPAN: u32 = 4096;
++
++// Same-level nodes are independent. Preserve each bin's original order and
++// the aggregate spans; only training-up uses the three-action prefix counts.
++fn partition_direct3_actions(
++    nodes: &mut [u32], spans: &[LevelSpan], has_three_actions: impl Fn(u32) -> bool,
++) -> Vec<u32> {
++    let mut counts = Vec::with_capacity(spans.len());
++    let mut scratch = Vec::new();
++    for &span in spans {
++        let mut count = 0;
++        if span.count >= MIN_DIRECT3_ACTION_SPAN {
++            let level = &mut nodes[span.start as usize..(span.start + span.count) as usize];
++            scratch.clear();
++            scratch.extend(level.iter().copied().filter(|&node| has_three_actions(node)));
++            count = scratch.len() as u32;
++            if count > 0 && count < span.count {
++                scratch.extend(level.iter().copied().filter(|&node| !has_three_actions(node)));
++                level.copy_from_slice(&scratch);
++            }
++        }
++        counts.push(count);
++    }
++    counts
++}
++
+ pub struct GpuPlan {
+     pub num_levels: usize,
+     pub nh: [usize; 2],
+@@ -37,6 +63,8 @@ pub struct GpuPlan {
+     // Level-ordered work lists (flat arrays + one span per level).
+     pub action_nodes: Vec<u32>,
+     pub action_spans: Vec<LevelSpan>,
++    /// Three-action prefix length per level; start comes from action_spans.
++    pub action_direct3_counts: Vec<u32>,
+     pub chance_parents: Vec<u32>,
+     pub chance_children: Vec<u32>,
+     pub chance_cards: Vec<u32>,
+@@ -272,7 +300,11 @@ impl GpuPlan {
+             }
+             (flat, spans)
+         };
+-        let (action_nodes, action_spans) = flatten_nodes(action_by_level);
++        let (mut action_nodes, action_spans) = flatten_nodes(action_by_level);
++        let action_direct3_counts = partition_direct3_actions(
++            &mut action_nodes, &action_spans,
++            |node| spot.tree.nodes[node as usize].num_children == 3,
++        );
+         let (fold_nodes, fold_spans) = flatten_nodes(fold_by_level);
+         let (show_nodes, show_spans) = flatten_nodes(show_by_level);
+         let (chance_nodes, chance_node_spans) = flatten_nodes(cnode_by_level);
+@@ -433,6 +465,7 @@ impl GpuPlan {
+             iso_active,
+             action_nodes,
+             action_spans,
++            action_direct3_counts,
+             chance_parents,
+             chance_children,
+             chance_cards,
+@@ -503,6 +536,58 @@ mod tests {
+     use super::*;
+     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+ 
++    #[test]
++    fn direct3_partition_preserves_levels_membership_and_stable_bins() {
++        let mut end = 2;
++        let mut spans = Vec::new();
++        for count in [0, 1, MIN_DIRECT3_ACTION_SPAN - 1,
++            MIN_DIRECT3_ACTION_SPAN, MIN_DIRECT3_ACTION_SPAN + 1] {
++            spans.push(LevelSpan { start: end, count });
++            end += count;
++        }
++        let original: Vec<u32> = (0..end + 3).rev().collect();
++        let mut nodes = original.clone();
++        let is_three = |node: u32| [1, 2, 3, 4, 5, 11][node as usize % 6] == 3;
++        let counts = partition_direct3_actions(&mut nodes, &spans, is_three);
++        assert_eq!(counts.len(), spans.len());
++        assert_eq!(&nodes[..2], &original[..2]);
++        assert_eq!(&nodes[end as usize..], &original[end as usize..]);
++        for (span, count) in spans.iter().zip(counts) {
++            let range = span.start as usize..(span.start + span.count) as usize;
++            let old = &original[range.clone()];
++            let new = &nodes[range];
++            if span.count < MIN_DIRECT3_ACTION_SPAN {
++                assert_eq!(count, 0);
++                assert_eq!(new, old, "small levels keep their launch order");
++            } else {
++                let expected_three: Vec<_> = old.iter().copied().filter(|&n| is_three(n)).collect();
++                let expected_rest: Vec<_> = old.iter().copied().filter(|&n| !is_three(n)).collect();
++                let (three, rest) = new.split_at(count as usize);
++                assert!(!three.is_empty() && !rest.is_empty());
++                assert_eq!(three, expected_three.as_slice());
++                assert_eq!(rest, expected_rest.as_slice());
++                let mut membership = new.to_vec();
++                let mut expected = old.to_vec();
++                membership.sort_unstable(); expected.sort_unstable();
++                assert_eq!(membership, expected, "no missing, duplicate, or cross-level nodes");
++            }
++        }
++    }
++
++    #[test]
++    fn direct3_partition_keeps_homogeneous_levels_in_one_launch() {
++        for size in [MIN_DIRECT3_ACTION_SPAN - 1, MIN_DIRECT3_ACTION_SPAN] {
++            let span = LevelSpan { start: 0, count: size };
++            let original: Vec<u32> = (0..size).rev().collect();
++            for three in [false, true] {
++                let mut nodes = original.clone();
++                let counts = partition_direct3_actions(&mut nodes, &[span], |_| three);
++                assert_eq!(nodes, original);
++                assert_eq!(counts, vec![if three && size >= MIN_DIRECT3_ACTION_SPAN { size } else { 0 }]);
++            }
++        }
++    }
++
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
+         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+@@ -523,6 +608,18 @@ mod tests {
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
+                 assert_eq!(plan.cfv_slot[0], 0);
++                assert_eq!(plan.action_direct3_counts.len(), plan.num_levels);
++                for (&span, &count) in plan.action_spans.iter().zip(&plan.action_direct3_counts) {
++                    let level = &plan.action_nodes[span.start as usize..(span.start + span.count) as usize];
++                    let (three, rest) = level.split_at(count as usize);
++                    assert!(three.iter().all(|&n| plan.node_na[n as usize] == 3));
++                    if span.count < MIN_DIRECT3_ACTION_SPAN {
++                        assert_eq!(count, 0);
++                    } else {
++                        assert!(rest.iter().all(|&n| plan.node_na[n as usize] != 3));
++                    }
++                    assert!(three.windows(2).chain(rest.windows(2)).all(|w| w[0] < w[1]));
++                }
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();
+                 for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {

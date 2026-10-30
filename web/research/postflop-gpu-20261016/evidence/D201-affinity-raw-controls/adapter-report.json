@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-28T21:29:35.435770+00:00",
+  "status": "pass_child_inheritance_and_parent_restoration",
+  "adapter_protocol_sha256": "a0671eb850cf377be33ac6379715f45b1393ecc7bd4f43ede9bef220e8b884c3",
+  "witnesses": [
+    {
+      "pid": 31412,
+      "original_parent": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "selected_parent_before_spawn": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "restored_parent_after_spawn": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "actual_child_at_spawn": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "child_inherits_mask_before_native_start": true
+    },
+    {
+      "pid": 32272,
+      "original_parent": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "selected_parent_before_spawn": {
+        "process_mask": 1431655765,
+        "system_mask": 4294967295
+      },
+      "restored_parent_after_spawn": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "actual_child_at_spawn": {
+        "process_mask": 1431655765,
+        "system_mask": 4294967295
+      },
+      "child_inherits_mask_before_native_start": true
+    }
+  ],
+  "parent_final": {
+    "process_mask": 4294967295,
+    "system_mask": 4294967295
+  },
+  "CUDA_or_native_solver_processes": 0
+}

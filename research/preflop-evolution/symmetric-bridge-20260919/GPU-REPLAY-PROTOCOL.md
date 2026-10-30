@@ -1,0 +1,11 @@
+# Single-update GPU replay diagnostic
+
+Registered 20 September 2026 after the zero-opponent update diagnostic confirmed a CPU/GPU averaging mismatch. This test does not change solver behavior or replace the failed independent-trajectory gates.
+
+Use the same six coherent-range cases: abrupt and smooth pairs on KsQs2d, KsQs2s, KsQh2d; same ranges, menu, rake, pot and stack as the earlier test. Train the compact bridge for 100 iterations. Before each player's pass at iterations 1, 2, 16, 17, 50, 100, expand its host state and upload it into a separate explicit GPU bridge using that bridge's normal arena layouts. Verify all four uploaded arrays bitwise equal on readback. Never feed the replay result back into the compact training sequence.
+
+Apply exactly one matching pass in both bridges. Both use the GPU update rule plus their existing suit-policy projection/transport. Compare pre-update counterfactual values, post-update root probabilities, and average/best-response values of the resulting states using the SAME full CPU evaluator, with the earlier positive evaluation range (seed 777). Divide values by opposing reach mass as before. Preserve the original 0.002 bb value and 0.002 root probability tolerances. Zero-opponent returned values must remain exactly zero. Print all 72 sampled passes before a final assertion. No threshold is relaxed after seeing outcomes.
+
+Passing would narrow the discrepancy toward accumulation during separate training rather than a large local error on these sampled states. It would not prove numerical rounding is the only cause, qualify long trajectories, validate every node or input, or clear the compact bridge. Failure should retain the complete observations and identify its first sampled location.
+
+Implementation is test-only: `crates/solver/src/gpu/continuation_replay_tests.rs`, included under `cfg(test)`. The only edit in the bridge source is this test-module inclusion. No new production state-loading API. Compile with two workers only after the timing pair is terminal. Guard execution with production-idle checks, a 15-minute limit, and the existing absolute 09:00 Adelaide deadline. Retain source/build/executable hashes and all output.

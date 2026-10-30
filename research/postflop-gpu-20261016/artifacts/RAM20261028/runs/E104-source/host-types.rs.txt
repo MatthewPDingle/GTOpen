@@ -1,0 +1,95 @@
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+struct ResidentArgs {
+    action_nodes: u64,
+    chance_parents: u64,
+    chance_children: u64,
+    chance_cards: u64,
+    chance_nodes: u64,
+    fold_nodes: u64,
+    show_nodes: u64,
+    node_player: u64,
+    node_na: u64,
+    node_data_off: u64,
+    node_children_start: u64,
+    children: u64,
+    node_twin: u64,
+    node_tlose: u64,
+    node_ttie: u64,
+    node_cdiv: u64,
+    node_river_slot: u64,
+    reach0: u64,
+    reach1: u64,
+    rsrc0: u64,
+    rsrc1: u64,
+    regrets0: u64,
+    regrets1: u64,
+    strat_p: u64,
+    lock_off: u64,
+    lock_sigma: u64,
+    cfv_slot: u64,
+    cfv: u64,
+    disc: u64,
+    mask0: u64,
+    mask1: u64,
+    hand_perm: u64,
+    pc1: u64,
+    pc2: u64,
+    same: u64,
+    fold_card_off: u64,
+    fold_card_idx: u64,
+    p_off: u64,
+    p_cnt: u64,
+    p_idx: u64,
+    p_lower: u64,
+    p_upper: u64,
+    o_off: u64,
+    o_cnt: u64,
+    o_idx: u64,
+    o_card_off: u64,
+    o_card_pos: u64,
+    cc_start: u64,
+    cc_count: u64,
+    cc_card: u64,
+    cc_child: u64,
+    cc_perm: u64,
+    num_levels: i32,
+    p: i32,
+    nh0: i32,
+    down_nh1: i32,
+    nh_p: i32,
+    nh_o: i32,
+    nh_max: i32,
+    spans: [[[u32; 2]; 64]; 5],
+    // Explicitly initialize the CUDA ABI's final four alignment bytes.
+    _reserved: u32,
+}
+unsafe impl cudarc::driver::DeviceRepr for ResidentArgs {}
+
+#[derive(Default)]
+struct ResidentState {
+    function: Option<CudaFunction>,
+    blocks: u32,
+    shared: u32,
+}
+impl ResidentState {
+    fn from_plan(ctx: &Arc<CudaContext>, module: &Arc<CudaModule>, plan: &GpuPlan) -> Self {
+        if plan.num_levels == 0 || plan.num_levels > 64 { return Self::default(); }
+        let spans = [&plan.action_spans, &plan.chance_spans, &plan.fold_spans, &plan.show_spans, &plan.chance_node_spans];
+        let largest = spans.iter().flat_map(|v| v.iter()).map(|s| s.count).max().unwrap_or(0);
+        if spans.iter().flat_map(|v| v.iter()).any(|s| s.start > i32::MAX as u32 || s.count > i32::MAX as u32) { return Self::default(); }
+        let sm = match ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT) { Ok(n) if n > 0 => n as u32, _ => return Self::default() };
+        if largest < sm || ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COOPERATIVE_LAUNCH).ok() != Some(1) { return Self::default(); }
+        let required = (0..2).map(|p| plan.nh[p].checked_mul(4).and_then(|n| plan.riv_max_cnt[p].checked_mul(16).and_then(|m| n.checked_add(m)))).collect::<Option<Vec<_>>>();
+        let Some(required) = required.and_then(|v| v.into_iter().max()) else { return Self::default(); };
+        let Ok(shared) = u32::try_from(required) else { return Self::default(); };
+        let Ok(f) = module.load_function("e104_train") else { return Self::default(); };
+        let Ok(static_shared) = f.shared_size_bytes() else { return Self::default(); };
+        let Ok(limit) = ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK) else { return Self::default(); };
+        if static_shared < 0 || static_shared as u64 + shared as u64 > limit as u64 || f.local_size_bytes().ok().filter(|n| *n <= 64).is_none() || f.max_threads_per_block().ok().filter(|n| *n >= BLOCK as i32).is_none() { return Self::default(); }
+        let Ok(resident) = f.occupancy_max_active_blocks_per_multiprocessor(BLOCK, shared as usize, None) else { return Self::default(); };
+        let Some(blocks) = resident.checked_mul(sm).filter(|n| *n > 0) else { return Self::default(); };
+        Self { function: Some(f), blocks, shared }
+    }
+}

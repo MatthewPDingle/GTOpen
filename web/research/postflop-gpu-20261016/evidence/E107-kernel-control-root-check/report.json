@@ -1,0 +1,34 @@
+{
+  "id": "E107-kernel-control",
+  "at": "2026-10-29T00:40:37.868488+00:00",
+  "status": "pass_scoped_full_early_payout_raw_equivalence",
+  "checks": 221571,
+  "root_cross_check_only": true,
+  "inventory": {
+    "device_input_word_checks": 34965220,
+    "device_input_buffer_checks": 160440,
+    "active_words_compared": 2018600,
+    "output_guard_word_checks": 16703320,
+    "full_output_words_both_arms": 20740520,
+    "comparison_pairs": 3820,
+    "rounding_witness_checks": 2
+  },
+  "kernel_launches": 7640,
+  "tested_block_widths": [
+    1,
+    32,
+    64,
+    128,
+    256
+  ],
+  "whole_physical_outputs_bitwise_equal": true,
+  "all_actual_inputs_match_exact_expected": true,
+  "all21_input_buffers_identical": true,
+  "raw_sha256": "3eac1b93a9e631ced955a76d9d9852e56d0051db53d011062a0bfaf6ff76d69e",
+  "raw_bytes": 466348162,
+  "protocol_sha256": "30e6ddeb719bf07fc2f7905164f0f268bb1a9f7bbac911587322e53026f7b918",
+  "source_main_live_PTX_custody_pass": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared3820pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; all21metadata inputs byte-identical and every complete input image checked against the original explicit expected bits. Full solver/state/save/resume/material/speed qualification remains."
+}

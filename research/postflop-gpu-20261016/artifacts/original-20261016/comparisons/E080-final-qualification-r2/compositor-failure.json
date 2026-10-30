@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-18T08:44:39.342137+00:00",
+  "script_sha256": "506af95312006cb6085f80fa74c11aeaae7371b1533db81d5122758c325fbd75",
+  "failed_receipt_sha256": "800d2f064620839330be1f4b6ac3c4be7211c8de36b7a921d582dde06d3d03b2",
+  "cause": "Manifest path has suffixes .manifest.json; with_suffix(.exe) produced .manifest.exe. Correct binary basename is n+.exe. This same bookkeeping pitfall is preserved in older build preparation history.",
+  "repair": "Use the explicit frozen binary basename; no guard, source, sample or native observation changes. All earlier gates passed before the path lookup.",
+  "native_processes_reexecuted": 0
+}

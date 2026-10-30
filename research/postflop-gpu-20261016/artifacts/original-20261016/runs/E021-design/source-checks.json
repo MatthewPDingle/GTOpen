@@ -1,0 +1,22 @@
+{
+  "status": "source_only_prepared",
+  "base": "exact E020",
+  "base_sha256": {
+    "kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "candidate_sha256": {
+    "kernels.cu": "6a46b62309c4814a77900000687ef487cb4664be93dfc159ecbce1d2f4dcfeee",
+    "mod.rs": "b4e543c96efab1e82b964042974ed9e2fe069671123b4335af353fe310dab939"
+  },
+  "up_show_barriers_before": 5,
+  "up_show_barriers_after": 4,
+  "other_kernel_source_byte_equal": true,
+  "host_source_recovered_by_reversing_exact_two_size_expressions": true,
+  "dynamic_shared_formula": "16 * riv_max_cnt[1-p]",
+  "static_scan_shared_unchanged": true,
+  "kernel_ABI_loop_float_arithmetic_unchanged": true,
+  "production_edits": 0,
+  "compiler_executions": 0,
+  "GPU_executions": 0
+}

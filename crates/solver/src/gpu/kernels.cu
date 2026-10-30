@@ -220,9 +220,13 @@ extern "C" __global__ void up_show(
     float* ro_sh = (float*)shraw; // nh_o entries, original hand order
     float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
     float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
+    u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
+    u32 card_base = o_card_off[(u64)slot * 53];
     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
 
     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+    for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+        card_pos_sh[j] = o_card_pos[card_base + j];
     __syncthreads();
     const float* ro = ro_sh;
     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
@@ -271,7 +275,7 @@ extern "C" __global__ void up_show(
             u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
             u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
             for (u32 t = c0; t < c1; t++) {
-                u32 pos = o_card_pos[t];
+                u32 pos = card_pos_sh[t - card_base];
                 float r = reach_sh[pos];
                 tot_c += r;
                 if (pos < lb) lower_c += r;
@@ -373,6 +377,7 @@ __device__ __forceinline__ void up_action_impl(
                 sum += r > 0.f ? r : 0.f;
             }
             float uni = 1.f / (float)na;
+            float reach = rp[i];
             float out = 0.f;
             for (int a = 0; a < na; a++) {
                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
@@ -380,16 +385,17 @@ __device__ __forceinline__ void up_action_impl(
                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
                 if (small) vc[a] = v;
                 out += sig * v;
+                // Independent of the completed node value: use this action's
+                // original sigma while it is already available.
+                u64 idx = doff + (u64)a * nh_p + i;
+                strat_p[idx] = strat_p[idx] * ds + reach * sig;
             }
-            float reach = rp[i];
             for (int a = 0; a < na; a++) {
                 u64 idx = doff + (u64)a * nh_p + i;
                 float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
                 float r = small ? rc[a] : regrets_p[idx];
-                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
                 float d = r > 0.f ? pos : neg;
                 regrets_p[idx] = r * d + (val - out);
-                strat_p[idx] = strat_p[idx] * ds + reach * sig;
             }
             cfv[(u64)cfv_slot[n] * nh_max + i] = out;
         }

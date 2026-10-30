@@ -1,0 +1,766 @@
+{
+  "id": "E125-resource",
+  "at": "2026-10-29T21:41:39.956364+00:00",
+  "status": "rejected_closed_resource_or_emitted_load_gate",
+  "protocol_sha256": "f99f8b019436fe6e670bc6958ff16700234d9f6c99ecfa7be692d51af112ccda",
+  "gates": {
+    "compute_120:copy_root:header_exact": true,
+    "compute_120:copy_root:untargeted_exact": true,
+    "compute_120:down_action:header_exact": true,
+    "compute_120:down_action:untargeted_exact": true,
+    "compute_120:down_chance:header_exact": true,
+    "compute_120:down_chance:untargeted_exact": true,
+    "compute_120:up_fold:header_exact": true,
+    "compute_120:up_fold:untargeted_exact": true,
+    "compute_120:up_show:header_exact": true,
+    "compute_120:up_show:untargeted_exact": true,
+    "compute_120:up_chance:header_exact": true,
+    "compute_120:up_chance:body_changed": true,
+    "compute_120:up_chance:barriers_same": true,
+    "compute_120:one_u16_load_instead_of_u32": false,
+    "compute_120:up_action:header_exact": true,
+    "compute_120:up_action:untargeted_exact": true,
+    "compute_120:copy_span:header_exact": true,
+    "compute_120:copy_span:untargeted_exact": true,
+    "compute_120:up_action_eval:header_exact": true,
+    "compute_120:up_action_eval:untargeted_exact": true,
+    "compute_75:copy_root:header_exact": true,
+    "compute_75:copy_root:untargeted_exact": true,
+    "compute_75:down_action:header_exact": true,
+    "compute_75:down_action:untargeted_exact": true,
+    "compute_75:down_chance:header_exact": true,
+    "compute_75:down_chance:untargeted_exact": true,
+    "compute_75:up_fold:header_exact": true,
+    "compute_75:up_fold:untargeted_exact": true,
+    "compute_75:up_show:header_exact": true,
+    "compute_75:up_show:untargeted_exact": true,
+    "compute_75:up_chance:header_exact": true,
+    "compute_75:up_chance:body_changed": true,
+    "compute_75:up_chance:barriers_same": true,
+    "compute_75:one_u16_load_instead_of_u32": false,
+    "compute_75:up_action:header_exact": true,
+    "compute_75:up_action:untargeted_exact": true,
+    "compute_75:copy_span:header_exact": true,
+    "compute_75:copy_span:untargeted_exact": true,
+    "compute_75:up_action_eval:header_exact": true,
+    "compute_75:up_action_eval:untargeted_exact": true,
+    "copy_root:actual_resources_exact": true,
+    "down_action:actual_resources_exact": true,
+    "down_chance:actual_resources_exact": true,
+    "up_fold:actual_resources_exact": true,
+    "up_show:actual_resources_exact": true,
+    "up_chance:no_new_local": true,
+    "up_chance:no_constant_growth": true,
+    "up_chance:no_dynamic_growth": true,
+    "up_chance:no_maxthread_loss": true,
+    "up_chance:positive_occupancies": true,
+    "up_chance:defaultlimits_fit": true,
+    "up_chance:no_stack_growth": true,
+    "up_action:actual_resources_exact": true,
+    "copy_span:actual_resources_exact": true,
+    "up_action_eval:actual_resources_exact": true
+  },
+  "entry_tables": {
+    "compute_120": {
+      "copy_root": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_action": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_chance": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_fold": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_show": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_chance": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": false,
+        "baseline_global_u32_load_sites": 39,
+        "candidate_global_u32_load_sites": 32,
+        "candidate_global_u16_load_sites": 7
+      },
+      "up_action": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "copy_span": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action_eval": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      }
+    },
+    "compute_75": {
+      "copy_root": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_action": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_chance": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_fold": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_show": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_chance": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": false,
+        "baseline_global_u32_load_sites": 39,
+        "candidate_global_u32_load_sites": 32,
+        "candidate_global_u16_load_sites": 7
+      },
+      "up_action": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "copy_span": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action_eval": {
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      }
+    }
+  },
+  "resource_rows": [
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [
+    {
+      "entry": "up_chance",
+      "baseline": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_chance",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 30,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_chance",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "PTX_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "c3011e3697c477be903001fcea100fcfa6c71c57e150a7e43c09e2d3a9e8d5eb",
+    "candidate-compute_75": "6f3e9f0332a9b5b0f1eb9c35b39cd1322168541b2840c25cbea4dc9e9eb866a6"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "source_activated": false,
+  "solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Typedreadonlyu16load/resource/ABIgate only. ActualfullGPUword/CPUplan/upload/capacity/broad/solverquality/completecyclespeed notyettested. No newgain."
+}

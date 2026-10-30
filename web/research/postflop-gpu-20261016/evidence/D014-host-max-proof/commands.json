@@ -1,0 +1,46 @@
+[
+  {
+    "args": [
+      "rustc",
+      "prototype.rs",
+      "--edition=2021",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "codegen-units=1",
+      "-C",
+      "lto=thin",
+      "--emit=link=prototype.exe,asm=prototype.s"
+    ],
+    "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof",
+    "started_at": "2026-10-16T06:14:05.982436+00:00",
+    "elapsed_seconds": 2.367140100001052,
+    "returncode": 0,
+    "stdout": "compile.stdout.log",
+    "stderr": "compile.stderr.log"
+  },
+  {
+    "args": [
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof\\prototype.exe",
+      "--inject-failure",
+      "--proof-only"
+    ],
+    "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof",
+    "started_at": "2026-10-16T06:14:08.349598+00:00",
+    "elapsed_seconds": 0.08327680000002147,
+    "returncode": 101,
+    "stdout": "injected-failure.stdout.log",
+    "stderr": "injected-failure.stderr.log"
+  },
+  {
+    "args": [
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof\\prototype.exe"
+    ],
+    "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D014-host-max-proof",
+    "started_at": "2026-10-16T06:14:08.433087+00:00",
+    "elapsed_seconds": 2.239179199999853,
+    "returncode": 0,
+    "stdout": "stdout.jsonl",
+    "stderr": "stderr.log"
+  }
+]

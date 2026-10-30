@@ -1,0 +1,22 @@
+{
+  "id": "E081",
+  "at": "2026-10-18T08:56:00.065822+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\candidate.cu"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\baseline-mod.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\candidate-mod.rs"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "ee979c2dbd4cfd71c14176203a41338ac9160d8d6790ffd173f42f8e668a623b",
+    "crates/solver/src/gpu/mod.rs": "595667ff58625e24b17ef67c203eaeb76c515c9c30a36560e8ebf550f4da508a"
+  },
+  "scope": "Only training up_action assigns one independent action node to each physical warp; four nodes share the unchanged128thread CTA. Each lane processes its own hand indices with width32 (or last-partial-warp width for direct unusual launch controls). Every original per-hand ascending-action floating expression and mutable write is retained exactly. One host training launch uses ceil(nodecount/4) blocks. Node lists/order, buffers, CFV layout, all other kernels/evaluation launches, ABI, shared memory, math, quality, precision, saves and E080 setup remain unchanged. No warp collectives, implicit inter-thread synchronization or shared scratch.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

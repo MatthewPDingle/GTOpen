@@ -1,0 +1,83 @@
+{
+  "at": "2026-10-16T10:20:24.593698+00:00",
+  "status": "NOT_EXECUTED_INAPPLICABLE_AFTER_PRIMARY_REJECTION",
+  "reason": "Parent reported terminal primary E019 gain0.7171656%, below the fixed2%gate; broader qualification must not execute. The prospective plan is retained as a reference, never as passed qualification.",
+  "broader_builds_executed_by_this_plan": 0,
+  "broader_gpu_runs_executed_by_this_plan": 0,
+  "run_ids_reserved": false,
+  "qualification_passed": false,
+  "parent_reported": {
+    "baseline_full_cycle_ms": 9981.6832,
+    "candidate_full_cycle_ms": 9910.098,
+    "gain_pct": 0.7171656,
+    "compressed_exact_screens": 18,
+    "fixture_guard_failed": false
+  },
+  "original_plan_manifest_sha256": "3f64661dffdb6c1f7a40a3028348ba513f224348476f553120e33a8b979c191f",
+  "primary_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E019-three-pair-comparison\\report.json",
+    "sha256": "f0ea456e81ab72c888e658290d24dfb51aaae449ab0adad14608305ecd4ceafb",
+    "decision": "rejected",
+    "performance": {
+      "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+      "baseline_full_cycle_ms": 9981.683200000001,
+      "candidate_full_cycle_ms": 9910.098,
+      "observed_gain_pct": 0.7171656179190433,
+      "required_gain_pct": 2.0,
+      "aggregate_gate_met": false,
+      "fixture_median_regression_above_3pct": [],
+      "fixture_regression_guard": {
+        "threshold_pct": 3.0,
+        "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+        "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+        "fixtures": [
+          {
+            "fixture_id": "rainbow",
+            "median_regression_pct": -0.5482177693598896,
+            "paired_regression_pct": [
+              -0.40250689112176136,
+              -0.024001103989626515,
+              -0.6435031055605269
+            ],
+            "repetitions_above_3pct": 0,
+            "paired_repetitions": 3,
+            "required_repetitions": 2,
+            "repeatable_material_regression": false,
+            "reason": "rainbow: median regression -0.5482%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+          },
+          {
+            "fixture_id": "two-tone",
+            "median_regression_pct": -0.7371305256915444,
+            "paired_regression_pct": [
+              0.31319905771927975,
+              -0.7371305256915444,
+              -0.009465856460208935
+            ],
+            "repetitions_above_3pct": 0,
+            "paired_repetitions": 3,
+            "required_repetitions": 2,
+            "repeatable_material_regression": false,
+            "reason": "two-tone: median regression -0.7371%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+          },
+          {
+            "fixture_id": "river",
+            "median_regression_pct": -8.747636544940324,
+            "paired_regression_pct": [
+              -0.3040342540642433,
+              -8.747636544940324,
+              -4.238109345285305
+            ],
+            "repetitions_above_3pct": 0,
+            "paired_repetitions": 3,
+            "required_repetitions": 2,
+            "repeatable_material_regression": false,
+            "reason": "river: median regression -8.7476%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+          }
+        ],
+        "affected_fixtures": [],
+        "failed": false
+      },
+      "statistical_significance_established": false
+    }
+  }
+}

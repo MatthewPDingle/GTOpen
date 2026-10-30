@@ -1,0 +1,91 @@
+{
+  "id": "D160",
+  "at": "2026-10-28T13:22:47.389747+00:00",
+  "status": "FROZEN_PRE_COMPILER_AND_COMPONENT_EXECUTION",
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-A",
+    "dead_code",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+    "--extern",
+    "mimalloc=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rlib",
+    "--extern",
+    "serde=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rlib",
+    "--extern",
+    "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "rayon=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\probe.exe"
+  ],
+  "sequence": [
+    {
+      "id": "B1",
+      "arm": "baseline"
+    },
+    {
+      "id": "C1",
+      "arm": "candidate"
+    },
+    {
+      "id": "C2",
+      "arm": "candidate"
+    },
+    {
+      "id": "B2",
+      "arm": "baseline"
+    },
+    {
+      "id": "B3",
+      "arm": "baseline"
+    },
+    {
+      "id": "C3",
+      "arm": "candidate"
+    }
+  ],
+  "fixture_order": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "dense_write_full_validation_rounds": 2,
+  "VM_min_bytes": 67108864,
+  "threads": 16,
+  "minimum_component_saving_ms": 104.564109,
+  "effort_rule": "Sum of baseline fixture medians minus candidate fixture medians must reach1% current E080 suite baseline. Heuristic only,not actual removable/full-solve time. No variants/extensions/resampling after actual failure.",
+  "strict_fixture_slowdown": "Any median delta>0 and majority of3matched fixture pairs slower declines.",
+  "process_CPU_or_lifetime_max_regression_pct": 1.0,
+  "reported_memory_max_added_bytes": 67108864,
+  "minimum_process_samples": 2,
+  "max_sample_gap_ms": 500,
+  "required_free_bytes": 8589934592,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-prepare.py": "cfcb4f2b3f5d1770d72882b731b0b3648a7b0ab93fbae239f5a6be55930507a3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\execution\\B1.stdout.log": "8b512a608661d79d0129955c7712fbeef393c1c80d62e32f55066d3eac6863c5",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-sampler-calibration\\report.json": "62d1713641ad05aed75f8aecf42c4b12f7ed79ba6d9b45a01a113f02519b9155",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\execute.py": "bb98fadc8b535ec18ec4ecff887e1953caa3157f1d8042556394cb47b181870a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\fixtures.json": "dcfb7549df6eb393548b961cc75707d019135aa3fb19126134c9e8a0a9880d4f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\history-at-freeze.txt": "1030b7f93a92d581ed82c73ff031b60bb79af82dc51be2b0feae7146e387269f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\probe.rs": "e585bfbb274e83680fc89c4f2800986dcb7cb676294200522cee77929341d83f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\sampler.py": "0cd4ff305843c96321b6d331997f2b014067df13a61f27b458436873b6cf7d8c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\source-review.json": "55f234803b165efdc48c484e6d9a2448f26f1cddf419185a047fcb777009ac31",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-arena-lifecycle\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rlib": "3fb4e5350de37c8791f50e84864068a1a5da078677e43dd28b3ec8c727763c0c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rlib": "1aff1aee92c314f890733948cdccf675c28f83ca0b7a9851af888372de797974",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib": "1198bd7f593e9c60787894d6c5dc4c3b6308f2f98edfcab5ad8dba9320ee116d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib": "2a1339eeec5fa4417ba824dd425f52ae1aebaa4d06e488f3273f2b8769473be9"
+  },
+  "scope": "Six original fresh CPU-only processes,each canonical arena allocation order/bytes,full positive-zero scans,two complete dense16thread write/serial all-element validation rounds,and deallocation. No solver/GPU calls,new production source or qualification samples. Resource sampler includes process cleanup; global NVML observations incidental,not a GPUpeak claim."
+}

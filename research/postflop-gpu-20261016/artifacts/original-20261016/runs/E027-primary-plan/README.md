@@ -1,0 +1,15 @@
+# E027 fixed primary: eight-float physical reach-row pitch
+
+Preparation only. The reference is the immutable accepted E020 executable. The candidate owns plan.rs, mod.rs, kernels.cu, game.rs and continuation_capacity.rs, and pads physical reach rows to eight floats while retaining logical hand bounds, floating arithmetic/order and launch shapes. All157 unowned source identities and the evaluator/workload remain fixed.
+
+Root must pin accepted E020/server qualification and independent E027 source/script reviews in immutable authorization.json before activation or build. There is no activation helper in this package. D050/D051 showdown prerequisites do not apply. No arbitrary register/spill/occupancy nonregression gate is introduced.
+
+The unused build-primary-e027 target, absent compiler overrides, fresh solver/test Cargo artifacts, expected package/source paths and all162 source identities are checked. Both executables must contain the complete candidate CUDA and exclude the complete E020 CUDA. Build and owned-child cleanup remain under the shared GPU lock; root observes terminal completion before starting native work.
+
+The fixed order is V027-unit, B089/E027R1, E027R2/B090, B091/E027R3. The frozen source adds no test declarations: ordinary units must report84 passed,4 ignored. All18 complete non-timing results and138 convergence records must match the unchanged compressed evaluator, with stops200/200/60. Qualification requires at least2% improvement in the sum of fixture medians and no fixture with median regression>3% plus a strict majority/minimum2 paired regressions>3%. All samples remain; no exclusions, extensions, retuning or rescue. A failed screen stops without broader/holdout/cumulative work.
+
+Primary success alone is provisional. Before acceptance, immutable-original state/menu/resume, fullF32, GPU and continuation/paging/stored controls remain required. In addition, a small separately frozen old-E020/new-E027 comparison must inspect raw logical reach rows by row/hand for both players, before compression, with padding/outer guards and relevant matched lifecycle checkpoints. Same-layout candidate equality is insufficient. Actual full/compact workspace lengths must match padded plan/admission/estimate accounting, including tight budgets and continuation board/workspace swaps. No conditional harness is implemented or executed now.
+
+The unchanged wide-turn fixture, quality settings,2GiB constructor budget and regression guard are prescribed in protocol.json. Its runtime must use unused per-arm build targets and account for padded reach capacity without budget relaxation. Fresh-original cumulative three pairs under the existing gates remain required after all correctness/holdout gates. Freeze all needed builds before timed work.
+
+Draft-r1 is preserved with intentionally unresolved source/protocol placeholders. Final preparation only parses and hashes source/scripts; it does not import execution helpers, compile, run tests, launch CUDA, modify checkout/status or claim acceptance.

@@ -1,0 +1,22 @@
+{
+  "id": "E063-kernel-control-root-check",
+  "at": "2026-10-17T09:56:00.336701+00:00",
+  "status": "pass_scoped_show_raw_equivalence",
+  "checks": 649017,
+  "cases": 364,
+  "kernel_launches": 728,
+  "full_output_words_both_arms": 1687304,
+  "full_actual_device_input_words_both_arms": 3065944,
+  "guard_word_checks_both_arms": 1292824,
+  "all_full_outputs_inputs_guards_exact": true,
+  "resource_and_raw_ptx_byte_identical": true,
+  "raw_sha256": "a2204b5913adb3dfe1f4d4c02c307f6599125a23169512c13aa9ad00bf186b64",
+  "corpus_sha256": "deb50c86b75a1c2ad8e13c1cd431f755d5e389a6ceac346f7f29d34ffaf9f22b",
+  "resource_report_sha256": "6cd5037ae4c12b14289ab8a35214230e088e699b9c38d929f1cc66e66a8e55d6",
+  "current_source_candidate": "E063",
+  "packed_boundary_representation_independently_validated": true,
+  "source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Full raw direct-kernel bytes, actual post-device immutable inputs, and guard ranges. Retained corpus reused with fresh outputs. Not complete solver state/graph/behavior/material/holdout or speed qualification. Root replay is not external independent review. Candidate boundary words intentionally differ; root bisect reconstruction verifies all actual words, raw executor separately used linear classification. Other19buffers exact across arms. Retained corpus protocol is provenance only."
+}

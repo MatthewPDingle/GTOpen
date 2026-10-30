@@ -1,0 +1,41 @@
+{
+  "candidate": "D042",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D042_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D042-source-script-review\\report.json",
+      "sha256": "920c3d5ef0369119c363dc19b86ff8d8131fb439ec51169eb3c0e05f9aea2eab"
+    },
+    "D042_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D042-source-script-review\\report.json",
+      "sha256": "920c3d5ef0369119c363dc19b86ff8d8131fb439ec51169eb3c0e05f9aea2eab"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/arena.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\candidate\\arena.rs",
+      "sha256": "88ea21b2522102fdbcacd867b2460f97d862fc0b9dd840ba381283362fd6fcd2"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\scripts-manifest.json": "b7721a495e97489fbb9bb1825f63c28b08c94e390e8b1c1aa8ea55df2164deb2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\protocol.json": "3ff2d365177915d851fca29e6d54e3472dc743dffd1d30ff5b64d74cf54e657c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\source-manifest.json": "6e44699394b00b81d426cf88ffc21f7eb1437fb916cb53dd0e1957fd21919fbc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D042-source-script-review\\report.json": "920c3d5ef0369119c363dc19b86ff8d8131fb439ec51169eb3c0e05f9aea2eab"
+  },
+  "scope": "Root executes the user-authorized research diagnostic after independent review. No performance acceptance, live-server mutation or replacement.",
+  "at": "2026-10-16T12:34:39Z"
+}

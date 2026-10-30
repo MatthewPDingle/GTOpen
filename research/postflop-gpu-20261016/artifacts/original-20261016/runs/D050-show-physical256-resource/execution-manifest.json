@@ -1,0 +1,61 @@
+{
+  "id": "D050",
+  "prepared_manifest_sha256": "ba3b390ffbff4f5080cfc07de713665a720c3a63c050341db312486269f04472",
+  "input_sha256_before": {
+    "README.md": "258a20f2038ec62250ee93d1a6459442df6f093477c7a6547f3225fd0ce513f2",
+    "baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate.cu": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558",
+    "baseline-scan.txt": "a94dc47ef7a00c2c4c7b4fd341a9d4c912d3513c80e6c5f8d885c1685762c2ad",
+    "candidate-scan.txt": "e2f3759e407106f11f8ac273d4d02f9b93d8eaa02da9f142d6019bbee7ca91a7",
+    "candidate.patch": "e199c8c9a142b91eed15b929879af2c12ddda56d93894b478f8d01cb675b8758",
+    "commands.json": "2e7efe9a9d01e4d5b7f46ead0c03a1d9e1c78f38987c91ee0a06ea856d29a4a0",
+    "preparation-checks.json": "fe9fb81504d9e78e7e78dc85c0f673fef2e7ef0b51dda9888a88b2b9f33e9bef",
+    "probe.rs": "d44e3e74e2e41fab063b354f38ccef4adc072ec0306826757b6ef78f763d3a3c",
+    "protocol.json": "4e00c0819eb76df4c48e26a7231242ae2c7d8655b765b18d3ed2cc820f3b27bd",
+    "run.py": "9c9b5c10bf05f7c8b1ba09a0fb0ee5e5a6c277a9843a0d2c9bde252c568fd281",
+    "runner-primitives-source.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+  },
+  "rustc": {
+    "command": [
+      "rustc",
+      "-Vv"
+    ],
+    "returncode": 0,
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "stderr": ""
+  },
+  "compile_command": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "nvrtc_directory": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+  "nvrtc_dll_sha256": {
+    "nvrtc-builtins64_129.dll": "c405226b0b394ed8bdc593bb1419b94a989f93248ed2873e8f2e0e27c1688ca1",
+    "nvrtc64_120_0.alt.dll": "ac56a4d3b5a99f294523abec28b8f648b96324a9277622a450ec20ddb9e2c47d",
+    "nvrtc64_120_0.dll": "0cc63349fedffeec1660b30955e8028b6e4e4c26cf1e41c56dc4569fd5eca82c"
+  },
+  "gpu_device_ordinal": 0,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "expected_architecture": "compute_120",
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "requested_cuda_module_loading": null,
+  "rustc_executable": "C:\\Users\\there\\.cargo\\bin\\rustc.EXE",
+  "rustc_executable_sha256": "6f4bef66261261fcb43131be8720bab817d403a09edec7455c371974b90bdb7e",
+  "source": "Sealed outside-checkout inputs only; accepted E020 source restored"
+}

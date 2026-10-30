@@ -1,0 +1,17 @@
+{
+  "id": "E073-host-accounting",
+  "at": "2026-10-18T02:52:06.476289+00:00",
+  "status": "pass_prebuild_accounting_completion",
+  "prior_manifest_sha256": "a028e6d8fd4ddeb587dcf93de37b0b3b54bb438d007586c75ae6eae58650dde8",
+  "final_manifest_sha256": "746fd49045939be0a7c1a235cec7d4332b7a88598a36a0a8a93f3643d5f2bdb0",
+  "reason": "continuation_storage.rs:223requires planned base GPUmetadata equal observed actual payload, not a conservative CPU-vector estimate. Initial staged candidate narrowed observed bytes only. Complete the planner bytes to2for these private buffers before first integrated build. Public GpuPlan vectors and ordinary conservative game budget remain unchanged.",
+  "candidate_CUDA_unchanged": true,
+  "candidate_upload_unchanged": true,
+  "direct_control_report_sha256": "3c4623d4d1e04993ea301824f7e7bc3ff2e503db1a6a7eb0f2af8faf6b9649ec",
+  "only_delta_from_prior_stage": "metadata()accounts riv_lower/riv_upper lengths at2bytes each, matching already-updated observed_metadata(). No CUDA, upload, data, graph, numeric, quality or primary GPUfeature executable code changed.",
+  "original_incomplete_stage_preserved": true,
+  "no_numeric_or_performance_failure_to_rescue": true,
+  "compilers_or_solver_executions_before_completion": 0,
+  "full_feature_capacity_control_still_required": true,
+  "candidate_accepted": false
+}

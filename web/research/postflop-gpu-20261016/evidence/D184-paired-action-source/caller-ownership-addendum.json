@@ -1,0 +1,50 @@
+{
+  "id": "D184-caller-addendum",
+  "at": "2026-10-28T18:27:55.392432+00:00",
+  "status": "source_caller_ownership_review_complete_before_candidate_source",
+  "input_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "crates/solver/src/cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638"
+  },
+  "source_scope_sha256": "cdcfbc76ddd34a1d2bc2cf42c192d14a655243899d75296e5afc9e284bdbf8c1",
+  "caller_inventory": [
+    {
+      "site": "eval_down",
+      "kernel_field": "f_down_action",
+      "arguments": "d_strat[0/1] passed as regret-match inputs; actual nh0/nh1, original locks and reaches. Paired arithmetic affects average/BR evaluation downward reach propagation too; it is not training-only. Upward evaluation f_up_action_eval remains original.",
+      "required": "Exact full EV/exploitability/average-mode/F32/lock/raw state and immutable input controls; matched states at every original convergence check."
+    },
+    {
+      "site": "paired_sweep used by ordinary/eager/profiled/captured and research sweep",
+      "kernel_field": "f_down_action",
+      "arguments": "Regret arrays. Uninterruptedp1reuse explicitly passes down_nh1=0; actor1mustwrite/readzero hands while actor0usesrealnh0. This0count is part of existing accepted E015; never replace by stored nh1.",
+      "required": "Pair mapping permits0hands; original scalar fallback also legal. Validate no actor1reach write, retained actor1reach exact, full sweep/eval/lock/resume boundaries."
+    },
+    {
+      "site": "paired_sweep upward",
+      "kernel_field": "f_up_action",
+      "arguments": "Per-player regrets/strat, own reach, CFV scratch, per-iteration original discounts, nh_p and original nh_max. Both original roles/locks/arities retained.",
+      "required": "Each hand independently preserves ordered f32sigma/expectation/strategy/regret operations. Two-hand vector words mustremain within same logical row; no cross-row reads/stores or FP reassociation."
+    },
+    {
+      "site": "legacy_iteration test control",
+      "kernel_field": "gpu.f_down_action",
+      "arguments": "Same function object but full nh0/nh1. A test comparing paired reach reuse to legacy traversal will exercise new backend in both arms if both counts even.",
+      "required": "Those unit tests alone cannot prove old-vs-new kernel equality; retain actual sealed original PTX controls and original source science anchor."
+    }
+  ],
+  "constructor_binding": "Single GpuSolver initializer obtains CudaFunction fields. Proposed integration replaces just two lookups with new-entry names under both actual construction-hand-counts positive/even. Fields retain same types/count; same source kernel module extended by2entries, no new buffers/payload/allocation/quality/format. Existing original9entry names/bodies retained. No host implementation or source activation yet.",
+  "physical_alignment": "Original full action offsets are per-actor prefix sums na*nh (tree.rs); packed plan offsets are same prefix over reached nodes (plan.rs); use_full_action_arenas restores original offsets. Each is even when both nh even. Reaches address physicalslot*nh, CFV uses physicalslot*nh_max; those products are even. Locked sigma concatenates legal na*nh blocks; new wrapper additionally checks nonnegative lockoff parity and dataoff parity. Base CudaSlice allocations are256aligned by CUDA contract. Every float2 is same row i/i+1; no extra global bytes. Must capture actual device addresses and prove raw extents in native controls.",
+  "ownership": "Regret/strategy/reach/CFV are distinct owned CUDA allocations. Existing per-node action blocks/active CFV rows and unique hand ownership remain. Pair iteration groups two independently owned adjacent hands, no shared memory/collective/extra stores. Require original CFV liveness/poison and every physical state control before speed; source invariants are not numerical evidence.",
+  "continuation_and_paging": "Stored/Symmetric continuation instantiate GpuSolver::new_with_budget and use ordinary research sweep; paged continuation instantiates its own GpuSolver and swaps7entire owned CUDA allocations after checking lengths. It does not mutate nh, node metadata, function objects or allocation base offsets. Constructor binding stays valid pergame; allocations may be larger than required, same base alignment. New wrapper defensive parity guards still cover malformed/odd synthetic control metadata, actual0reuse counts and futurebinding changes. Stored/paged/budget/full/compact/changing-root raw controls mandatory.",
+  "required_direct_corpus": "Retain every original direct control unchanged, including original odd dimension/odd offset cases via explicit scalarfallback. Append fixed prospective aligned even-hand cases that prove new vector branch exercised forna2, bothroles/players/locks/algorithms, bothcomponents withdistinct rounding/nonfinite/signedzero patterns, count0/tails/multinode, widths1/32/64/128/256 and maxima1326; scalarfallbackallother arities/shapes. Capture actual pointeralignment/allocated extents/whole immutable/device/output/guards. Do not reinterpret original old-vs-old unit traversal test as a kernel oracle.",
+  "compiler_gate": "Before any application launch freeze one exact two-file source form and compiler/resource protocol. Need intended v2/64bit loads and stores in neweligible branches actual120/compat75, original9entries alphaexact, same18/20ABI andlaunchshapes, no spill/local/dynamic/maxthread/capacity regression, defaultfixedwidth fit. Disclose registers/occupancy. No vector-width/arity/helper/guard/flags/registercap/launchbound variant after genuine failure.",
+  "new_source_or_compiler_or_GPU_or_speed_runs": 0,
+  "new_gain_accepted": false
+}

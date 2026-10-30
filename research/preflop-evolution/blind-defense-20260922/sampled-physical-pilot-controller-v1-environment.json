@@ -1,0 +1,30 @@
+{
+  "max_iterations": 2,
+  "deals_per_iteration": 2,
+  "query_limit": 100000,
+  "fit_steps": 8,
+  "fit_seed_base": 29301,
+  "reservoir_capacity": 32,
+  "sampler_seed": 27301,
+  "action_seed": 28301,
+  "reservoir_seeds": [
+    28302,
+    28303
+  ],
+  "chance": "full_deck",
+  "device": "cpu",
+  "threads": 2,
+  "tf32": false,
+  "architecture": [
+    269,
+    64,
+    64,
+    4
+  ],
+  "chunk_size": 31,
+  "learning_rate": 0.003,
+  "iteration_weights": "equal",
+  "torch_version": "2.6.0+cu126",
+  "numpy_version": "1.26.4",
+  "device_name": "cpu"
+}

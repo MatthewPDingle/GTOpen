@@ -1,0 +1,26 @@
+{
+  "id": "down-up-sigma-feasibility-review",
+  "at": "2026-10-16T14:57:59.046534+00:00",
+  "verdict": "NO_GO_IMMEDIATE_IMPLEMENTATION",
+  "source_feasible_with_explicit_producer_lifetime": true,
+  "distinct_from_D038_intra_up_cache": true,
+  "native_numerical_or_performance_proof": false,
+  "reason": "Large allocation/global-traffic tradeoff and continuation integration scope lack measured complete-cycle headroom; source feasibility alone is insufficient prioritization evidence.",
+  "source_and_evidence_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\results.tsv": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "f12010c72cb800aeab37d73af6a5e257f1c5213d0f43b2ad5164804b509e536b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D038-next-hypothesis-source\\README.md": "e7e4b1725ba17c811f13799f474509e98cc0c16379cd4e76daf091359b2edcab",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B083\\report.json": "dde8d23f2bbd0778f537b427c2ddd20203a07e17325c5430838e2c67854ae9ca",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D001-action-census.log": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e"
+  },
+  "review_sha256": "e18cf8935f7ab529b3b84021d3856063bfc1ca97074c699686fb3bd2fa203250",
+  "actions": "Source/history reads and additive review only; no production changes, build, native execution, GPU work or timing."
+}

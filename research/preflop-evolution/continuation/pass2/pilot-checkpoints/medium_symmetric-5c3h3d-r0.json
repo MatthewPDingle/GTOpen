@@ -1,0 +1,182 @@
+{
+  "arena_bytes": 578802672,
+  "build_seconds": 0.0286896,
+  "compatible_pair_mass": 52100.0,
+  "convergence": [
+    {
+      "gap_pct_pot": 6.827004396801032,
+      "iteration": 25,
+      "seconds": 8.5421165
+    },
+    {
+      "gap_pct_pot": 2.1678887094508665,
+      "iteration": 50,
+      "seconds": 18.0225028
+    },
+    {
+      "gap_pct_pot": 1.0654627640736996,
+      "iteration": 75,
+      "seconds": 27.5437278
+    },
+    {
+      "gap_pct_pot": 0.6246079069639124,
+      "iteration": 100,
+      "seconds": 37.0283619
+    },
+    {
+      "gap_pct_pot": 0.41194022209767867,
+      "iteration": 125,
+      "seconds": 46.3246186
+    },
+    {
+      "gap_pct_pot": 0.2934189750686031,
+      "iteration": 150,
+      "seconds": 55.6854037
+    }
+  ],
+  "gap_pct_pot": 0.2934189750686031,
+  "iterations": 150,
+  "job": {
+    "board": "5c3h3d",
+    "case": "medium_symmetric",
+    "config": {
+      "board": "5c3h3d",
+      "range_ip": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+      "range_oop": "22+,A2s+,K9s+,QTs+,JTs,T9s,98s,87s,76s,ATo+,KJo+,QJo",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "effective_stack": 80,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "max_raises": 1,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 50
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 100
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3,
+        "rake_pct": 0.0,
+        "starting_pot": 20
+      }
+    },
+    "cv_fold": 0,
+    "id": "medium_symmetric-5c3h3d-r0",
+    "inclusion_probability": 0.01680672268907563,
+    "iso_weight": 12,
+    "partition": "fit",
+    "population_in_stratum": 119,
+    "rake_pct": 0,
+    "sampled_in_partition": 2,
+    "stratum": "9-low/paired"
+  },
+  "manifest_id": "c69bb142ab1bd4155552d4b001141b33fc360bb9dfb2fee8c6d0d320ccac0fc7",
+  "nodes": 341202,
+  "preflop_leaf": {
+    "calibrated_bb": [
+      7.895448090764711,
+      8.553401975774948
+    ],
+    "equity": [
+      0.5000202902335299,
+      0.5000202902335299
+    ],
+    "raw_bb": [
+      10.0004058046706,
+      10.0004058046706
+    ],
+    "static_bb": [
+      9.600389357898345,
+      10.400421655372217
+    ]
+  },
+  "query_seconds": 0.3395075,
+  "reference_equity": [
+    0.49999999934846745,
+    0.49999999934846745
+  ],
+  "reference_ev_bb": [
+    8.9778594489633,
+    11.022140516237197
+  ],
+  "reference_expected_rake_bb": 3.47995019467362e-8,
+  "schema": 1,
+  "solve_seconds": 55.6854042,
+  "target_met": true,
+  "tree_bytes": 27976184
+}

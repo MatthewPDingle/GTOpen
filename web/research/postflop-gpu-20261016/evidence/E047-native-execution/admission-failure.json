@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T02:39:31.481333+00:00",
+  "status": "caller_used_stale_validation_id",
+  "wrapper_returncode": 1,
+  "planned_unit": "V047-unit",
+  "actual_refused_unit": "V042-unit",
+  "cause": "Replacing E042 did not replace V042 in two caller literals. ar rejected the already-recorded validation ID before native launch; planned IDs were unused.",
+  "old_V042_artifacts_still_exact": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V042-unit\\report.json": "8af5a9df85312e3d64e507dea584553abbc8edeb726cefc194a9c94b388d945f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V042-unit\\stdout.log": "bc749ee74b41582f942110f3fdf1366f8a55388bd7898e08d9303bd32c5b7caf"
+  },
+  "protocol_sha256": "d0fe083c9717032043c6473b4e41920376626111d96087501e539544dc4d6a9f",
+  "native_script_sha256": "5a1390ffb49495143fe6180a8845a8df53ddc7a6096f8603aa87535e7bff7a49",
+  "new_unit_or_benchmark_executions": 0,
+  "source_binary_controls_unchanged": true,
+  "repair": "Read the sole control ID from protocol data, use a new output directory and re-freeze before any test. Same candidate/binaries and six still-unused measurement IDs."
+}

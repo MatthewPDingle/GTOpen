@@ -1,0 +1,83 @@
+{
+  "version": "1",
+  "pip_version": "25.0.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/a5/0b/a54cd7406995ab097fceb907c7eb13a6ddd49e0b231e448f1a81a50af65c/lz4-4.4.5-cp312-cp312-win_amd64.whl",
+        "archive_info": {
+          "hash": "sha256=713a777de88a73425cf08eb11f742cd2c98628e79a8673d6a52e3c5f0c116f33",
+          "hashes": {
+            "sha256": "713a777de88a73425cf08eb11f742cd2c98628e79a8673d6a52e3c5f0c116f33"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "lz4",
+        "version": "4.4.5",
+        "dynamic": [
+          "author",
+          "author-email",
+          "classifier",
+          "description",
+          "home-page",
+          "license-file",
+          "provides-extra",
+          "requires-python",
+          "summary"
+        ],
+        "summary": "LZ4 Bindings for Python",
+        "description": "==========\r\npython-lz4\r\n==========\r\n\r\nStatus\r\n======\r\n\r\n.. image:: https://github.com/python-lz4/python-lz4/actions/workflows/build_dist.yml/badge.svg\r\n   :target: https://github.com/python-lz4/python-lz4/actions/workflows/build_dist.yml\r\n   :alt: Build Status\r\n\r\n.. image:: https://readthedocs.org/projects/python-lz4/badge/?version=stable\r\n   :target: https://readthedocs.org/projects/python-lz4/\r\n   :alt: Documentation\r\n\r\n.. image:: https://codecov.io/gh/python-lz4/python-lz4/branch/codecov/graph/badge.svg\r\n   :target: https://codecov.io/gh/python-lz4/python-lz4\r\n   :alt: CodeCov\r\n\r\n\r\nIntroduction\r\n============\r\nThis package provides python bindings for the `LZ4 compression library\r\n<https://lz4.github.io/lz4/>`_.\r\n\r\nThe production ready bindings provided in this package cover the `frame format\r\n<https://github.com/lz4/lz4/blob/master/doc/lz4_Frame_format.md>`_, and the\r\n`block format <https://github.com/lz4/lz4/blob/dev/doc/lz4_Block_format.md>`_\r\nspecifications. The frame format bindings are the recommended ones to use, as\r\nthis guarantees interoperability with other implementations and language\r\nbindings.\r\n\r\nExperimental bindings for the the `streaming format\r\n<https://github.com/lz4/lz4/blob/master/examples/streaming_api_basics.md>`_\r\nspecification are also included, but further work on those is required.\r\n\r\nThe API provided by the frame format bindings follows that of the LZMA, zlib,\r\ngzip and bzip2 compression libraries which are provided with the Python standard\r\nlibrary. As such, these LZ4 bindings should provide a drop-in alternative to the\r\ncompression libraries shipped with Python. The package provides context managers\r\nand file handler support.\r\n\r\nThe bindings drop the GIL when calling in to the underlying LZ4 library, and is\r\nthread safe. An extensive test suite is included.\r\n\r\nDocumentation\r\n=============\r\n\r\n.. image:: https://readthedocs.org/projects/python-lz4/badge/?version=stable\r\n   :target: https://readthedocs.org/projects/python-lz4/\r\n   :alt: Documentation\r\n\r\nFull documentation is included with the project. The documentation is\r\ngenerated using Sphinx. Documentation is also hosted on readthedocs.\r\n\r\n:master: http://python-lz4.readthedocs.io/en/stable/\r\n:development: http://python-lz4.readthedocs.io/en/latest/\r\n\r\nHomepage\r\n========\r\n\r\nThe `project homepage <https://www.github.com/python-lz4/python-lz4>`_ is hosted\r\non Github. Please report any issues you find using the `issue tracker\r\n<https://github.com/python-lz4/python-lz4/issues>`_.\r\n\r\nLicensing\r\n=========\r\nCode specific to this project is covered by the `BSD 3-Clause License\r\n<http://opensource.org/licenses/BSD-3-Clause>`_\r\n\r\n",
+        "home_page": "https://github.com/python-lz4/python-lz4",
+        "author": "Jonathan Underwood",
+        "author_email": "jonathan.underwood@gmail.com",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "License :: OSI Approved :: BSD License",
+          "Intended Audience :: Developers",
+          "Programming Language :: C",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13"
+        ],
+        "requires_dist": [
+          "pytest!=3.3.0; extra == \"tests\"",
+          "psutil; extra == \"tests\"",
+          "pytest-cov; extra == \"tests\"",
+          "sphinx>=1.6.0; extra == \"docs\"",
+          "sphinx_bootstrap_theme; extra == \"docs\"",
+          "flake8; extra == \"flake8\""
+        ],
+        "requires_python": ">=3.9",
+        "provides_extra": [
+          "tests",
+          "docs",
+          "flake8"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.5",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26100",
+    "python_full_version": "3.12.5",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "win32"
+  }
+}

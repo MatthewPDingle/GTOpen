@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-29T03:22:20.465946+00:00",
+  "status": "FROZEN_PRE_STATIC_NATIVE_READER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-audit-native-fold.py": "545619e2e50946a156dcc7daea6d60b9a144f80586e0d88202cbe7dd2938f44d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\protocol.json": "8ffae27bacbd60568f070b3a42bb5c60388efb367946a09b462ffb582731d37a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\capture-report.json": "4d160feffe7514323fffe3c5c9e30dfaef1e81d2eb53da5667bbf28fffd0d937",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D240-fold-copy-PTX\\report.json": "a5a7f425fd0cabd0392fbf809f47b0e7d1afefd666945d4575332ba7b754e70f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-source\\source-review.json": "60779daaf4d738f46a91556cf8864316cd9386683068a3e8c372333cdf99b24b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\execution\\baseline\\up_fold.sass.txt": "2b2d28ef742395f8bd93b6c13673d22cb5421b4f18e0c2a01f3722c0b9fbee43",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy\\execution\\candidate\\up_fold.sass.txt": "8e272cec8e4fb08c8f5e5618cecdf125e33a4cfcb9af5e26549a98c14c650240"
+  },
+  "gate": "Candidate beforefirstbarrier actualglobalLDG scalar isalsoSTSsource andselfFADDoperand; zero-seededpartial hasno scalar/vector writer throughcardstage tooriginaltotalpartsstore. Baseline totalpartsstore feedsfromlaterLDS/selfFADDloop, no prefirstbarrierFADD. All3barriers same. Scalar/vector overwrite negativefixture andactualwrongoperand fixture required. PTXparam19induction andsource-reversal separately frozen.",
+  "limits": "Source/PTX-linked local native operand/schedule witness, not fullSASS CFG/FP execution, latency/bottleneck or speed proof. Native FADD operandordering maycommute; rawGPU NaN/Inf/subnormal/zero exactness still mandatory. No newcapture/nativeappkernels orcounters."
+}

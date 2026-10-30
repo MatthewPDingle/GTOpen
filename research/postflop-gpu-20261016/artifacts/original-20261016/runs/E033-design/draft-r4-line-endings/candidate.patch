@@ -1,0 +1,626 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -7,6 +7,7 @@
+ 
+ pub mod plan;
+ mod arena;
++mod cache_policy;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+ #[cfg(feature = "preflop-research")]
+@@ -75,6 +76,9 @@
+     _ctx: Arc<CudaContext>,
+     stream: Arc<CudaStream>,
+     _module: Arc<CudaModule>,
++    cache_policy: Option<cache_policy::CachePolicy>,
++    cache_closed: bool,
++    cache_faulted: bool,
+     f_copy_root: CudaFunction,
+     f_down_action: CudaFunction,
+     f_down_chance: CudaFunction,
+@@ -185,6 +189,7 @@
+             || own.iter().chain(opponent).any(|x| !x.is_finite() || *x < 0.) {
+             return Err("invalid continuation reaches".into());
+         }
++        self.begin_cache_epoch()?;
+         self.stream.memcpy_htod(own, &mut self.d_weights[p]).map_err(e)?;
+         self.stream.memcpy_htod(opponent, &mut self.d_weights[1-p]).map_err(e)?;
+         self.iteration = t;
+@@ -201,6 +206,10 @@
+     /// Check the configured traversal's compact buffers before device allocation.
+     /// Build the plan once and reuse it for both the budget check and upload.
+     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
++        Self::new_with_budget_cache(solver, budget_bytes, true)
++    }
++
++    fn new_with_budget_cache(solver: &Solver, budget_bytes: u64, use_cache: bool) -> Result<GpuSolver, String> {
+         if solver.algo == Algorithm::PcfrPlus {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+@@ -299,7 +308,10 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
+-        Ok(GpuSolver {
++        let mut gpu = GpuSolver {
++            cache_policy: None,
++            cache_closed: false,
++            cache_faulted: false,
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+@@ -379,7 +391,89 @@
+             _ctx: ctx,
+             stream,
+             _module: module,
+-        })
++        };
++        // Complete ownership before any cache policy is installed. An error
++        // below drops a complete solver while its allocation is still live.
++        if use_cache {
++            gpu.cache_policy = cache_policy::CachePolicy::prepare(&gpu._ctx, &gpu.stream,
++                &gpu.d_cfv_slot, arch, cc_maj)?;
++            gpu.begin_cache_epoch()?;
++            gpu.cache_marker("enabled", 0)?;
++        }
++        Ok(gpu)
++    }
++
++    /// Whether this solver is configured for scoped L2 hints (including clean epochs).
++    /// Qualification must require this to be true instead of accepting fallback.
++    pub fn uses_persisting_l2(&self) -> bool { self.cache_policy.is_some() && !self.cache_closed && !self.cache_faulted }
++
++    fn cache_marker(&self, stage: &str, normalized_lines: usize) -> Result<(), String> {
++        use std::io::Write;
++        let bytes = self.cache_policy.as_ref().map_or(0, |p| p.bytes());
++        let complete = self.cache_policy.as_ref().is_some_and(|p| p.clean());
++        writeln!(std::io::stderr().lock(), "E033_CACHE_POLICY {}", serde_json::json!({
++            "stage":stage, "enabled":self.uses_persisting_l2(),
++            "owned_bytes":self.d_cfv_slot.len()*4, "window_bytes":bytes,
++            "normalized_lines":normalized_lines,
++            "cleanup_complete":stage == "clean" && complete, "errors":false
++        })).map_err(|e| format!("cache evidence write: {e}"))
++    }
++
++    fn begin_cache_epoch(&mut self) -> Result<(), String> {
++        if self.cache_closed { return Err("GPU solver has been closed".into()); }
++        if self.cache_faulted { return Err("cache policy requires successful cleanup after failure".into()); }
++        if let Some(policy) = &mut self.cache_policy {
++            self._ctx.bind_to_thread().map_err(e)?;
++            if let Err(error) = policy.begin(&self.stream) {
++                self.cache_faulted = true;
++                return Err(error);
++            }
++        }
++        Ok(())
++    }
++
++    fn verify_cache_graph(&mut self, graph: &CudaGraph) -> Result<(), String> {
++        if let Some(policy) = &mut self.cache_policy {
++            if let Err(error) = policy.verify_graph(graph) { self.cache_faulted = true; return Err(error); }
++        }
++        Ok(())
++    }
++
++    fn finish_cache_epoch(&mut self) -> Result<(), String> {
++        let result = (|| {
++            if let Some(policy) = &mut self.cache_policy {
++                self._ctx.bind_to_thread().map_err(e)?;
++                cache_policy::end_abandoned_capture(&self.stream)?;
++                policy.finish(&self.stream)?;
++            }
++            Ok(())
++        })();
++        self.cache_faulted = result.is_err();
++        result
++    }
++
++    // Capture errors must exit capture without instantiating a partial graph.
++    fn abort_cache_capture(&self, original: String) -> String {
++        match cache_policy::end_abandoned_capture(&self.stream) {
++            Ok(()) => original,
++            Err(cleanup) => format!("{original}; capture cleanup: {cleanup}"),
++        }
++    }
++
++    /// Stop future submissions and finish scoped cleanup while ownership is live.
++    /// Idempotent after success; a failed cleanup remains dirty and can be retried.
++    pub fn close(&mut self) -> Result<(), String> {
++        self.cache_closed = true;
++        let result = self.finish_cache_epoch();
++        // No further replay is permitted, including after an error.
++        self.graphs = None;
++        self.eval_graphs = [None, None];
++        let destroyed = self._ctx.check_err().map_err(e);
++        match (result, destroyed) {
++            (Ok(()), Ok(())) => Ok(()),
++            (Err(error), Ok(())) | (Ok(()), Err(error)) => Err(error),
++            (Err(error), Err(destroy)) => Err(format!("{error}; graph teardown: {destroy}")),
++        }
+     }
+ 
+     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {
+@@ -391,6 +485,7 @@
+     }
+ 
+     pub fn iterate(&mut self) -> Result<(), String> {
++        self.begin_cache_epoch()?;
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+         self.stream
+@@ -408,15 +503,18 @@
+                         sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
+                     )
+                     .map_err(e)?;
+-                let res = self.paired_sweep(p, None, p == 1);
++                if let Err(error) = self.paired_sweep(p, None, p == 1) {
++                    return Err(self.abort_cache_capture(error));
++                }
+                 let graph = self
+                     .stream
+                     .end_capture(
+                         sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
+                     )
+                     .map_err(e)?;
+-                res?; // surface sweep errors only after capture mode is exited
+-                captured.push(graph.ok_or_else(|| "graph capture failed".to_string())?);
++                let graph = graph.ok_or_else(|| "graph capture failed".to_string())?;
++                self.verify_cache_graph(&graph)?;
++                captured.push(graph);
+             }
+             let g1 = captured.pop().unwrap();
+             let g0 = captured.pop().unwrap();
+@@ -438,6 +536,7 @@
+     /// time per kernel kind. Sync overhead distorts absolute numbers, but the
+     /// proportions show where the time goes.
+     pub fn iterate_profiled(&mut self) -> Result<Profile, String> {
++        self.begin_cache_epoch()?;
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+         self.stream
+@@ -458,6 +557,7 @@
+         if denom <= 0.0 {
+             return Ok(f64::NAN);
+         }
++        self.begin_cache_epoch()?;
+         let dot = |cfv: &[f32], p: usize| -> f64 {
+             solver.spot.weights[p]
+                 .iter()
+@@ -490,12 +590,15 @@
+                 self.stream.begin_capture(
+                     sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
+                 ).map_err(e)?;
+-                let result = self.queue_evaluation(raked);
++                if let Err(error) = self.queue_evaluation(raked) {
++                    return Err(self.abort_cache_capture(error));
++                }
+                 let graph = self.stream.end_capture(
+                     sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH,
+                 ).map_err(e)?;
+-                result?;
+-                self.eval_graphs[key] = Some(graph.ok_or_else(|| "evaluation graph capture failed".to_string())?);
++                let graph = graph.ok_or_else(|| "evaluation graph capture failed".to_string())?;
++                self.verify_cache_graph(&graph)?;
++                self.eval_graphs[key] = Some(graph);
+             }
+             self.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
+             self.stream.clone_dtoh(&self.d_eval_roots).map_err(e)?
+@@ -1015,6 +1118,11 @@
+             // re-materialize siblings via Solver::ensure_symmetric
+             solver.mark_sym_dirty();
+         }
++        // Included in the frozen evaluator's full readback / complete-cycle time.
++        // Graphs remain reusable in the next deliberate dirty epoch.
++        let normalized_lines = self.cache_policy.as_ref().map_or(0, |p| if p.clean() { 0 } else { p.bytes()/128 });
++        self.finish_cache_epoch()?;
++        if self.cache_policy.is_some() { self.cache_marker("clean", normalized_lines)?; }
+         Ok(())
+     }
+ 
+@@ -1056,6 +1164,18 @@
+         self.eval_graphs = [None, None];
+         self.eval_warmed = [false; 2];
+         Ok(())
++    }
++}
++
++impl Drop for GpuSolver {
++    fn drop(&mut self) {
++        if self.cache_policy.is_some() {
++            if let Err(error) = self.close() {
++                // Never panic during teardown or misreport unsuccessful cleanup.
++                use std::io::Write;
++                let _ = writeln!(std::io::stderr().lock(), "E033_CACHE_CLEANUP_ERROR {error}");
++            }
++        }
+     }
+ }
+ 
+@@ -1217,6 +1337,7 @@
+     }
+ 
+     fn legacy_iteration(gpu: &mut GpuSolver) {
++        gpu.begin_cache_epoch().unwrap();
+         gpu.iteration += 1;
+         let d = Discounts::for_iteration(gpu.algo, gpu.iteration);
+         gpu.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut gpu.d_disc).unwrap();
+@@ -1227,6 +1348,7 @@
+     // Test-only copy of the original full-down dispatch. This deliberately
+     // does not call paired_sweep or share its hand-count override.
+     fn legacy_down(gpu: &mut GpuSolver) {
++        gpu.begin_cache_epoch().unwrap();
+         let [reach0, reach1] = &mut gpu.d_reach;
+         let nh0 = gpu.nh[0];
+         let nh1 = gpu.nh[1];
+@@ -1409,6 +1531,7 @@
+             let dot = |v: Vec<f32>| -> f64 {
+                 s.spot.weights[p].iter().zip(v).map(|(&w, v)| w as f64 * v as f64).sum::<f64>() / denom
+             };
++            gpu.begin_cache_epoch().unwrap();
+             // Independent full traversals, with no reach or terminal reuse.
+             gpu.eval_down().unwrap();
+             br[p] = dot(gpu.eval_root_cfv(p, 0, true).unwrap());
+@@ -1460,6 +1583,7 @@
+                         "compact plan should admit trees the conservative estimate rejected");
+                 }
+                 let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
++                assert!(gpu.uses_persisting_l2(), "evaluation qualification requires enabled policy");
+                 for _ in 0..40 { gpu.iterate().unwrap(); }
+                 let mut repeat = GpuSolver::new(&s).unwrap();
+                 for _ in 0..40 { repeat.iterate().unwrap(); }
+@@ -1516,4 +1640,146 @@
+         }
+     }
+ 
++
++    fn assert_cache_stores(a: &Solver, b: &Solver) {
++        fn bits(a: &[f32]) -> Vec<u32> { a.iter().map(|x|x.to_bits()).collect() }
++        for (a,b) in a.regrets.iter().chain(&a.strat).zip(b.regrets.iter().chain(&b.strat)) {
++            match (a,b) {
++                (Store::F32(a), Store::F32(b)) => assert_eq!(bits(a.as_slice()), bits(b.as_slice())),
++                (Store::I16{q:a,scale:sa}, Store::I16{q:b,scale:sb}) => {
++                    assert_eq!(a.as_slice(),b.as_slice()); assert_eq!(bits(sa.as_slice()),bits(sb.as_slice()));
++                },
++                (Store::U16{q:a,scale:sa}, Store::U16{q:b,scale:sb}) => {
++                    assert_eq!(a.as_slice(),b.as_slice()); assert_eq!(bits(sa.as_slice()),bits(sb.as_slice()));
++                },
++                _ => panic!("different store types"),
++            }
++        }
++    }
++
++    #[test]
++    fn persisting_l2_matches_unhinted_solver_lifecycle() {
++        for (storage,algo,compact) in [
++            (crate::store::Storage::F32,Algorithm::CfrPlus,false),
++            (crate::store::Storage::Compressed,Algorithm::Dcfr,true),
++        ] {
++            let mut h=reach_reuse_solver(storage,algo,compact,"50");
++            let mut r=reach_reuse_solver(storage,algo,compact,"50");
++            let mut a=GpuSolver::new_with_budget_cache(&h,u64::MAX,true).unwrap();
++            let mut b=GpuSolver::new_with_budget_cache(&r,u64::MAX,false).unwrap();
++            assert!(a.uses_persisting_l2(),"qualification requires actual enabled policy");
++            assert!(!b.uses_persisting_l2());
++            let metadata=a.stream.clone_dtoh(&a.d_cfv_slot).unwrap();
++            let limit=a._ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE).unwrap();
++            for _ in 0..3 { a.iterate().unwrap(); b.iterate().unwrap(); }
++            assert_eq!(a.cache_policy.as_ref().unwrap().verified_graphs,2);
++            for _ in 0..3 { assert_eq!(a.exploitability(&h).unwrap().to_bits(),b.exploitability(&r).unwrap().to_bits()); }
++            assert_eq!(a.cache_policy.as_ref().unwrap().verified_graphs,3);
++            assert_reach_reuse_state(&a,&b,"hinted graph/eval");
++            let graph=a.graphs.as_ref().unwrap()[0].cu_graph_exec();
++            a.sync_to_cpu(&mut h).unwrap(); b.sync_to_cpu(&mut r).unwrap();
++            assert!(a.cache_policy.as_ref().unwrap().clean()); assert_cache_stores(&h,&r);
++            let cleanups=a.cache_policy.as_ref().unwrap().cleanups;
++            a.sync_to_cpu(&mut h).unwrap();
++            assert_eq!(a.cache_policy.as_ref().unwrap().cleanups,cleanups);
++            a.iterate_profiled().unwrap(); b.iterate_profiled().unwrap();
++            a.iterate().unwrap(); b.iterate().unwrap();
++            assert_eq!(a.graphs.as_ref().unwrap()[0].cu_graph_exec(),graph);
++            assert_reach_reuse_state(&a,&b,"hinted rearm/profile/replay");
++            a.sync_to_cpu(&mut h).unwrap(); b.sync_to_cpu(&mut r).unwrap(); assert_cache_stores(&h,&r);
++            for host in [&mut h,&mut r] {
++                host.lock_node(&[],LockMode::Freeze,"L2 OOP".into()).unwrap();
++                host.lock_node(&[PathStep::Action{index:0}],LockMode::Freeze,"L2 IP".into()).unwrap();
++            }
++            a.update_locks(&h).unwrap(); b.update_locks(&r).unwrap();
++            a.iterate().unwrap(); b.iterate().unwrap();
++            for _ in 0..2 { assert_eq!(a.exploitability(&h).unwrap().to_bits(),b.exploitability(&r).unwrap().to_bits()); }
++            assert_reach_reuse_state(&a,&b,"hinted lock recapture");
++            a.sync_to_cpu(&mut h).unwrap(); b.sync_to_cpu(&mut r).unwrap(); assert_cache_stores(&h,&r);
++            assert_eq!(a.stream.clone_dtoh(&a.d_cfv_slot).unwrap(),metadata);
++            assert_eq!(a._ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE).unwrap(),limit);
++            a.close().unwrap(); a.close().unwrap(); assert!(a.iterate().is_err()); b.close().unwrap();
++            let mut warm=GpuSolver::new_with_budget_cache(&h,u64::MAX,true).unwrap();
++            let mut reference=GpuSolver::new_with_budget_cache(&r,u64::MAX,false).unwrap();
++            assert!(warm.uses_persisting_l2());
++            warm.iterate().unwrap(); reference.iterate().unwrap(); assert!(warm.graphs.is_some());
++            assert_reach_reuse_state(&warm,&reference,"hinted warm");
++            warm.sync_to_cpu(&mut h).unwrap(); reference.sync_to_cpu(&mut r).unwrap(); assert_cache_stores(&h,&r);
++            warm.close().unwrap(); reference.close().unwrap();
++        }
++    }
++
++    #[test]
++    fn persisting_l2_cleanup_ownership_and_errors() {
++        let mut host=reach_reuse_solver(crate::store::Storage::F32,Algorithm::CfrPlus,false,"50");
++        let mut a=GpuSolver::new(&host).unwrap(); let mut peer=GpuSolver::new(&host).unwrap();
++        assert!(a.uses_persisting_l2() && peer.uses_persisting_l2());
++        let ctx=a._ctx.clone(); let stream=a.stream.clone();
++        let peer_window=cache_policy::window(&peer.stream).unwrap();
++        let limit=ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE).unwrap();
++        a.iterate().unwrap(); peer.iterate().unwrap();
++        a.cache_policy.as_mut().unwrap().fail_before_cleanup=true;
++        assert!(a.sync_to_cpu(&mut host).is_err());
++        assert!(a.cache_faulted && !a.cache_policy.as_ref().unwrap().clean());
++        assert!(a.iterate().is_err());
++        a.cache_policy.as_mut().unwrap().fail_before_cleanup=false;
++        a.sync_to_cpu(&mut host).unwrap(); assert!(!a.cache_faulted && a.cache_policy.as_ref().unwrap().clean());
++        assert_eq!(cache_policy::window(&peer.stream).unwrap(),peer_window);
++        // Raw abort exits capture without instantiating a partial executable.
++        a.begin_cache_epoch().unwrap();
++        a.stream.begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL).unwrap();
++        assert_eq!(a.abort_cache_capture("injected queue failure".into()),"injected queue failure");
++        assert_eq!(a.stream.capture_status().unwrap(),sys::CUstreamCaptureStatus::CU_STREAM_CAPTURE_STATUS_NONE);
++        a.sync_to_cpu(&mut host).unwrap();
++        // The setter succeeds but verification fails: uncertainty cannot be
++        // bypassed by the next begin, and explicit cleanup restores eligibility.
++        a.cache_policy.as_mut().unwrap().fail_after_set=true;
++        assert!(a.begin_cache_epoch().is_err());
++        assert!(a.cache_faulted && !a.cache_policy.as_ref().unwrap().clean());
++        assert!(a.begin_cache_epoch().is_err());
++        a.cache_policy.as_mut().unwrap().fail_after_set=false;
++        a.sync_to_cpu(&mut host).unwrap();
++        assert!(a.cache_policy.as_ref().unwrap().clean() && !a.cache_faulted);
++        a.begin_cache_epoch().unwrap(); a.sync_to_cpu(&mut host).unwrap();
++        // Exercise the same production cleaner on guarded finite-width words.
++        // Full readback includes the last unhinted word and both sentinel ends.
++        let words:Vec<u32>=(0..97).map(|i|0x7fc12345u32.wrapping_add(i*7919)).collect();
++        let data=stream.clone_htod(&words).unwrap();
++        let (major,minor)=ctx.compute_capability().unwrap();
++        let arch:&'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
++        let mut policy=cache_policy::CachePolicy::prepare(&ctx,&stream,&data,arch,major).unwrap().unwrap();
++        assert_eq!(policy.bytes(),384);
++        for _ in 0..2 {
++            policy.begin(&stream).unwrap(); policy.finish(&stream).unwrap();
++            assert!(policy.clean()); assert_eq!(stream.clone_dtoh(&data).unwrap(),words);
++        }
++        drop(policy); drop(data);
++        // A dirty Drop runs before its metadata allocation is freed.
++        a.iterate().unwrap(); drop(a);
++        assert_eq!(cache_policy::window(&stream).unwrap().num_bytes,0); ctx.check_err().unwrap();
++        assert_eq!(cache_policy::window(&peer.stream).unwrap(),peer_window);
++        assert_eq!(ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE).unwrap(),limit);
++        peer.iterate().unwrap(); peer.sync_to_cpu(&mut host).unwrap(); peer.close().unwrap();
++    }
++
++    #[cfg(feature="preflop-research")]
++    #[test]
++    fn persisting_l2_continuation_rearms_after_readback() {
++        let mut h=reach_reuse_solver(crate::store::Storage::F32,Algorithm::CfrPlus,false,"50");
++        let mut r=reach_reuse_solver(crate::store::Storage::F32,Algorithm::CfrPlus,false,"50");
++        let mut a=GpuSolver::new_with_budget_cache(&h,u64::MAX,true).unwrap();
++        let mut b=GpuSolver::new_with_budget_cache(&r,u64::MAX,false).unwrap();
++        assert!(a.uses_persisting_l2());
++        for p in [1usize,0] {
++            let own:Vec<f32>=(0..a.nh[p]).map(|i|(i%7) as f32/8.).collect();
++            let opp:Vec<f32>=(0..a.nh[1-p]).map(|i|(i%11) as f32/16.).collect();
++            let x=a.research_continuation_sweep(p,1,&own,&opp).unwrap();
++            let y=b.research_continuation_sweep(p,1,&own,&opp).unwrap();
++            assert_eq!(x.iter().map(|v|v.to_bits()).collect::<Vec<_>>(),y.iter().map(|v|v.to_bits()).collect::<Vec<_>>());
++            assert_reach_reuse_state(&a,&b,"hinted continuation");
++            a.sync_to_cpu(&mut h).unwrap(); b.sync_to_cpu(&mut r).unwrap(); assert_cache_stores(&h,&r);
++            assert!(a.cache_policy.as_ref().unwrap().clean());
++        }
++        a.close().unwrap(); b.close().unwrap();
++    }
+ }
+--- /dev/null
++++ b/crates/solver/src/gpu/cache_policy.rs
+@@ -0,0 +1,206 @@
++//! Scoped persisting-L2 hint for one immutable, solver-owned allocation.
++//! Never changes the shared context reservation or resets another owner's cache.
++use super::*;
++use cudarc::driver::DevicePtr;
++
++const ATTR: sys::CUlaunchAttributeID =
++    sys::CUlaunchAttributeID::CU_LAUNCH_ATTRIBUTE_ACCESS_POLICY_WINDOW;
++const NORMAL: sys::CUaccessProperty = sys::CUaccessProperty::CU_ACCESS_PROPERTY_NORMAL;
++const PERSISTING: sys::CUaccessProperty = sys::CUaccessProperty::CU_ACCESS_PROPERTY_PERSISTING;
++const CLEANUP_SOURCE: &str = r#"
++#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ < 800
++#error Scoped priority cleanup requires SM80 or newer
++#endif
++extern "C" __global__ void normalize_owned_l2(const unsigned char* base, unsigned long long lines) {
++    unsigned long long i = (unsigned long long)blockIdx.x * blockDim.x + threadIdx.x;
++    unsigned long long stride = (unsigned long long)gridDim.x * blockDim.x;
++    for (; i < lines; i += stride) {
++        const unsigned char* address = base + 128ull * i;
++        asm volatile("{ .reg .u64 g; cvta.to.global.u64 g, %0; "
++                     "applypriority.global.L2::evict_normal [g], 128; }" :: "l"(address) : "memory");
++    }
++}
++"#;
++
++fn checked(code: sys::CUresult, operation: &str) -> Result<(), String> {
++    if code == sys::CUresult::CUDA_SUCCESS { Ok(()) }
++    else { Err(format!("{operation}: {code:?}")) }
++}
++
++pub(super) fn prefix(base: u64, bytes: usize, limit: usize, maximum: usize) -> Option<usize> {
++    let n = bytes / 128 * 128;
++    if base % 128 != 0 || n == 0 || n > limit || n > maximum
++        || base.checked_add(n as u64).is_none() { None } else { Some(n) }
++}
++
++pub(super) fn window(stream: &CudaStream) -> Result<sys::CUaccessPolicyWindow, String> {
++    let mut value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
++    checked(unsafe { sys::cuStreamGetAttribute(stream.cu_stream(), ATTR, &mut value) },
++        "get cache window")?;
++    Ok(unsafe { value.accessPolicyWindow })
++}
++
++fn matches(w: sys::CUaccessPolicyWindow, base: u64, bytes: usize) -> bool {
++    w.base_ptr as usize as u64 == base && w.num_bytes == bytes
++        && w.hitRatio.to_bits() == 1.0f32.to_bits() && w.hitProp == PERSISTING && w.missProp == NORMAL
++}
++
++pub(super) struct CachePolicy {
++    base: u64,
++    bytes: usize,
++    cleanup: CudaFunction, // retains its separate module/context
++    armed: bool,
++    verified: bool,
++    dirty: bool,
++    #[cfg(test)] pub(super) cleanups: usize,
++    #[cfg(test)] pub(super) verified_graphs: usize,
++    #[cfg(test)] pub(super) fail_before_cleanup: bool,
++    #[cfg(test)] pub(super) fail_after_set: bool,
++}
++
++impl CachePolicy {
++    // All fallible preparation precedes the first stream policy mutation.
++    pub(super) fn prepare(ctx: &Arc<CudaContext>, stream: &Arc<CudaStream>,
++        data: &CudaSlice<u32>, arch: &'static str, major: i32) -> Result<Option<Self>, String> {
++        if major < 8 { return Ok(None); }
++        let max = match ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_ACCESS_POLICY_WINDOW_SIZE) {
++            Ok(n) if n > 0 => n as usize, _ => return Ok(None),
++        };
++        let limit = match ctx.get_limit(sys::CUlimit::CU_LIMIT_PERSISTING_L2_CACHE_SIZE) {
++            Ok(n) if n > 0 => n, _ => return Ok(None),
++        };
++        let (base, _read) = data.device_ptr(stream);
++        let bytes = data.len().checked_mul(4).ok_or("cache byte count overflow")?;
++        let Some(bytes) = prefix(base, bytes, limit, max) else { return Ok(None); };
++        ctx.bind_to_thread().map_err(e)?;
++        // Unsupported pre-setup getter leaves the original unhinted path.
++        let initial = match window(stream) { Ok(w) => w, Err(_) => return Ok(None) };
++        if initial.num_bytes != 0 { return Err("new solver stream already has a cache window".into()); }
++        // GpuSolver uses device0 and the same process-fixed architecture as
++        // its existing numerical PTX cache. First compilation remains timed.
++        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> = std::sync::OnceLock::new();
++        let ptx = PTX.get_or_init(|| cudarc::nvrtc::compile_ptx_with_opts(CLEANUP_SOURCE,
++            cudarc::nvrtc::CompileOptions { arch: Some(arch), ..Default::default() }).map_err(e)).clone()?;
++        if !ptx.to_src().contains("applypriority.global.L2::evict_normal") {
++            return Err("cleanup PTX lacks explicit normalization instruction".into());
++        }
++        let cleanup = ctx.load_module(ptx).map_err(e)?.load_function("normalize_owned_l2").map_err(e)?;
++        Ok(Some(Self { base, bytes, cleanup, armed: false, verified: false, dirty: false,
++            #[cfg(test)] cleanups: 0, #[cfg(test)] verified_graphs: 0,
++            #[cfg(test)] fail_before_cleanup: false, #[cfg(test)] fail_after_set: false }))
++    }
++
++    pub(super) fn begin(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
++        // Preserve dirty state even if a setter, readback or later submission fails.
++        self.dirty = true;
++        if self.armed {
++            return if self.verified { Ok(()) } else { Err("cache setup requires cleanup after failure".into()) };
++        }
++        self.verified = false;
++        self.armed = true; // setter failure can leave unknown state; close must disable it
++        let mut value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
++        value.accessPolicyWindow = sys::CUaccessPolicyWindow {
++            base_ptr: self.base as usize as *mut _, num_bytes: self.bytes,
++            hitRatio: 1.0, hitProp: PERSISTING, missProp: NORMAL,
++        };
++        checked(unsafe { sys::cuStreamSetAttribute(stream.cu_stream(), ATTR, &value) }, "set cache window")?;
++        #[cfg(test)] if self.fail_after_set { return Err("injected readback boundary failure".into()); }
++        if !matches(window(stream)?, self.base, self.bytes) {
++            return Err("cache window readback differs from fully owned prefix".into());
++        }
++        self.verified = true;
++        Ok(())
++    }
++
++    // Called only on newly captured graphs, never in the replay hot path.
++    pub(super) fn verify_graph(&mut self, graph: &CudaGraph) -> Result<(), String> {
++        let mut count = 0;
++        checked(unsafe { sys::cuGraphGetNodes(graph.cu_graph(), std::ptr::null_mut(), &mut count) }, "graph node count")?;
++        let mut nodes = vec![std::ptr::null_mut(); count];
++        checked(unsafe { sys::cuGraphGetNodes(graph.cu_graph(), nodes.as_mut_ptr(), &mut count) }, "graph nodes")?;
++        nodes.truncate(count);
++        let mut kernels = 0;
++        for node in nodes {
++            let mut kind = sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_EMPTY;
++            checked(unsafe { sys::cuGraphNodeGetType(node, &mut kind) }, "graph node type")?;
++            if kind == sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL {
++                let mut value: sys::CUkernelNodeAttrValue = unsafe { std::mem::zeroed() };
++                checked(unsafe { sys::cuGraphKernelNodeGetAttribute(node, ATTR, &mut value) }, "graph cache window")?;
++                if !matches(unsafe { value.accessPolicyWindow }, self.base, self.bytes) {
++                    return Err("captured kernel cache window differs from owned prefix".into());
++                }
++                kernels += 1;
++            }
++        }
++        if kernels == 0 { return Err("cache verification found no captured kernels".into()); }
++        #[cfg(test)] { self.verified_graphs += 1; }
++        Ok(())
++    }
++
++    fn disable(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
++        if !self.armed { return Ok(()); }
++        let value: sys::CUstreamAttrValue = unsafe { std::mem::zeroed() };
++        checked(unsafe { sys::cuStreamSetAttribute(stream.cu_stream(), ATTR, &value) }, "disable cache window")?;
++        let w = window(stream)?;
++        if w.num_bytes != 0 || !w.base_ptr.is_null() || w.hitRatio.to_bits() != 0
++            || w.hitProp != NORMAL || w.missProp != NORMAL {
++            return Err("cache window did not disable exactly".into());
++        }
++        self.armed = false;
++        self.verified = false;
++        Ok(())
++    }
++
++    pub(super) fn finish(&mut self, stream: &Arc<CudaStream>) -> Result<(), String> {
++        // The caller has ended capture and bound the owning context.
++        self.disable(stream)?;
++        if !self.dirty { return Ok(()); }
++        stream.synchronize().map_err(e)?;
++        #[cfg(test)] if self.fail_before_cleanup { return Err("injected pre-cleanup failure".into()); }
++        let lines = (self.bytes / 128) as u64;
++        let blocks = ((lines + 127) / 128).min(65535) as u32;
++        unsafe {
++            stream.launch_builder(&self.cleanup).arg(&self.base).arg(&lines)
++                .launch(LaunchConfig { grid_dim: (blocks, 1, 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 })
++                .map_err(e)?;
++        }
++        stream.synchronize().map_err(e)?;
++        self.dirty = false;
++        #[cfg(test)] { self.cleanups += 1; }
++        Ok(())
++    }
++
++    pub(super) fn clean(&self) -> bool { !self.armed && !self.dirty }
++    pub(super) fn bytes(&self) -> usize { self.bytes }
++}
++
++// Raw end_capture is intentional: aborting must not instantiate an executable.
++pub(super) fn end_abandoned_capture(stream: &Arc<CudaStream>) -> Result<(), String> {
++    if stream.capture_status().map_err(e)? != sys::CUstreamCaptureStatus::CU_STREAM_CAPTURE_STATUS_NONE {
++        let mut graph = std::ptr::null_mut();
++        let ended = unsafe { sys::cuStreamEndCapture(stream.cu_stream(), &mut graph) };
++        if !graph.is_null() { checked(unsafe { sys::cuGraphDestroy(graph) }, "destroy abandoned capture")?; }
++        let status = stream.capture_status().map_err(e)?;
++        if status != sys::CUstreamCaptureStatus::CU_STREAM_CAPTURE_STATUS_NONE {
++            return Err(format!("capture not ended: {ended:?}, {status:?}"));
++        }
++        if ended != sys::CUresult::CUDA_SUCCESS
++            && ended != sys::CUresult::CUDA_ERROR_STREAM_CAPTURE_INVALIDATED {
++            return Err(format!("end abandoned capture: {ended:?}"));
++        }
++    }
++    Ok(())
++}
++
++#[cfg(test)] mod tests {
++    use super::*;
++    #[test] fn owned_prefix_geometry_is_bounded() {
++        assert_eq!(prefix(256, 5387252, 18*1024*1024, 128*1024*1024), Some(5387136));
++        assert_eq!(prefix(256, 132, 128, 128), Some(128));
++        for bytes in [0, 4, 127] { assert_eq!(prefix(256, bytes, 4096, 4096), None); }
++        assert_eq!(prefix(257, 256, 4096, 4096), None);
++        assert_eq!(prefix(256, 256, 128, 4096), None);
++        assert_eq!(prefix(256, 256, 4096, 128), None);
++        assert_eq!(prefix(u64::MAX-127, 128, 4096, 4096), None);
++    }
++}

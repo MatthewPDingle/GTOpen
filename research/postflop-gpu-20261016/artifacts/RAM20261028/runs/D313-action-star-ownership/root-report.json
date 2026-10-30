@@ -1,0 +1,85 @@
+{
+  "id": "D313-root",
+  "at": "2026-10-29T22:23:27.055155+00:00",
+  "status": "pass_all_selected_stars_and_all_original_writer_classes",
+  "model_report_sha256": "501a93c66ebc4e9beec6440d55e8a88efd8db14e4aa620909d469601b38e765e",
+  "checks": 686163,
+  "cases": [
+    {
+      "fixture": "rainbow",
+      "constructor": "initial",
+      "all_selected_stars_replayed": 106592,
+      "all_original_writer_nodes_including_chance_and_terminals": 1319520,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    },
+    {
+      "fixture": "rainbow",
+      "constructor": "resumed",
+      "all_selected_stars_replayed": 106592,
+      "all_original_writer_nodes_including_chance_and_terminals": 1319520,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    },
+    {
+      "fixture": "two-tone",
+      "constructor": "initial",
+      "all_selected_stars_replayed": 64844,
+      "all_original_writer_nodes_including_chance_and_terminals": 802913,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    },
+    {
+      "fixture": "two-tone",
+      "constructor": "resumed",
+      "all_selected_stars_replayed": 64844,
+      "all_original_writer_nodes_including_chance_and_terminals": 802913,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    },
+    {
+      "fixture": "river",
+      "constructor": "initial",
+      "all_selected_stars_replayed": 5,
+      "all_original_writer_nodes_including_chance_and_terminals": 33,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    },
+    {
+      "fixture": "river",
+      "constructor": "resumed",
+      "all_selected_stars_replayed": 5,
+      "all_original_writer_nodes_including_chance_and_terminals": 33,
+      "every_next_phase_foreign_reader_rule_pass": true,
+      "every_action_updated_once": true,
+      "all_physical_last_writers_unchanged": true,
+      "same_phase_writes_disjoint": true,
+      "all_learning_update_intervals_disjoint": true
+    }
+  ],
+  "negative_corruption_controls_rejected": [
+    "foreign_reader_injected",
+    "wrong_parent_phase",
+    "duplicate_action_execution",
+    "wrong_child_order_or_identity"
+  ],
+  "scope_correction": "Firstmodel last-writer check covered actionwrites only. This additive reader includes every original action/chance/fold/show writer and independently replays everyselectedstar and physicalrowlastwriter, same-phase disjointwrites and all learning intervals. Source/model/selection/inputs unchanged; no model/native/compiler/GPU repeats.",
+  "limitations": "Finiteoriginal6CPUplans,nomemoryvisibility/devicefloat/controlflow/resource/material/capacity/speedproof. Countsnotremovabletimebound. No shader/hostcandidateadmittedyet.",
+  "new_compilers_native_GPU_CFR_solver_or_speed_samples": 0,
+  "all_new_bulk_X_S_readonly_no_T": true
+}

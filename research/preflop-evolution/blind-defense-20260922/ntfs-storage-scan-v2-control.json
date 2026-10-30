@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "root": "T:\\GTOpen-research\\weighted-stratified-study-v1\\9266201-stratified",
+  "completed_generation": 78,
+  "runs": [
+    {
+      "method": "original-before",
+      "seconds": 5.656999999999243,
+      "value": {
+        "logical_bytes": 25175268045,
+        "allocated_file_bytes": 7971052688,
+        "files": 7415,
+        "compressed_files": 7415,
+        "note": "File allocation only; free-volume guard separately includes directory and filesystem overhead."
+      }
+    },
+    {
+      "method": "cached-scandir",
+      "seconds": 1.2960000000002765,
+      "value": {
+        "logical_bytes": 25175268045,
+        "allocated_file_bytes": 7971052688,
+        "files": 7415,
+        "compressed_files": 7415,
+        "note": "File allocation only; free-volume guard separately includes directory and filesystem overhead."
+      }
+    },
+    {
+      "method": "original-after",
+      "seconds": 6.985000000000582,
+      "value": {
+        "logical_bytes": 25175268045,
+        "allocated_file_bytes": 7971052688,
+        "files": 7415,
+        "compressed_files": 7415,
+        "note": "File allocation only; free-volume guard separately includes directory and filesystem overhead."
+      }
+    }
+  ],
+  "rejected_roots": [
+    "T:/GTOpen-research",
+    "T:/Dev/GTOpen"
+  ],
+  "inputs": {
+    "tools\\research\\ntfs_research_storage_v1.py": "084acf830bf1ecc1c141818fc8b049a6c4d9967c2a45cd23f579cbec2d3dadc4",
+    "tools\\research\\ntfs_research_storage_v2.py": "fa7344f34936d0786ffa0cc47e75eaeb17a29e8e98ca6521d61c257791bdbb17"
+  },
+  "live_trainer_unchanged": true,
+  "gpu_used": false,
+  "production_modified": false,
+  "scope": "Read-only scans of the same completed arm during other live work. Identical logical/allocated/file/compression totals in original-new-original order. No training speedup has been measured."
+}

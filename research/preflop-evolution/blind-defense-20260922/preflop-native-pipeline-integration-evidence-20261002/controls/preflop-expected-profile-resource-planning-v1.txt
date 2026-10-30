@@ -1,0 +1,164 @@
+Resource planning from the retained 20bb native software profile
+
+Scope: measured file/receipt timing and resource arithmetic only. No new poker
+export, training, workload, filesystem compression, hardlink, or historical-file
+mutation was performed. All GB quantities below are decimal. This is not a
+correctness, strategy-accuracy, convergence, or throughput qualification.
+
+Evidence: preflop-expected-profile-resource-analysis-v1.json and
+preflop-expected-profile-storage-options-analysis-v1.json in this staging folder.
+Those reports pin the source, profile result/registration/metrics, static five
+context/public manifests and storage helper sources by SHA256. The second report
+supersedes the first report's unused postflop_configuration_bytes placeholder;
+that old placeholder measured absent config fields and must not support a
+projection. Neither report changes original evidence.
+
+Measured baseline
+
+One 20bb cycle,169 deals,13 subbatches,K2,posterior64,F4,3 physical CPU workers,
+2 board CPU workers:91.531s;809 files;1,278,992,546 logical/file-allocation bytes.
+GetCompressedFileSizeW matches the allocation metric of the current inventory;
+it does not account for directory/MFT/cluster rounding overhead. No file had the
+NTFS compressed attribute; no repeated file IDs were found. S: is NTFS with
+4096-byte clusters. Its volume free space was285.4GB at the read-only probe;
+the800GB research allocation ceiling, rather than volume capacity, constrains
+this plan. Prior registered inventory778,101,470,861 plus this profile leaves
+20,619,536,593 bytes under the ceiling; refresh inventory before admission.
+
+River exports dominate storage:588,895,857 bytes of process stdout plus76
+separate byte-identical native.json copies of those bytes. Every pair was
+checked for equal size and SHA. Together they are92.09% of retained storage.
+The duplicate copy alone is46.04%. Board tree stdout is71,291,827 bytes (5.57%);
+all remaining artifacts total29,909,005 bytes (2.34%). Same-footprint new20bb
+artifacts would need690,096,689 unique bytes if these copies were qualified
+hardlinks. This saving was not applied to the original profile.
+
+The physical collection path took67.625s after staging. The subsequent board
+completion/readback/evidence phase took9.484s; board jobs had already run in
+parallel, so this interval is not their native compute duration. Two CUDA fits
+sum3.063s. Peak allocated CUDA tensors28,576,768 bytes and minimum sampled free
+RAM86,686,003,200 bytes describe this baseline only.
+
+Process-bound export receipt wall brackets, summed over concurrent jobs:
+river-history38:24.588s;selected38:7.556s;board trees2:2.961s;
+action traces13:.972s;query bridges13:.959s;verify bridges13:.851s.
+These sums are not CPU time or end-to-end elapsed time. The river-target worker
+phase sums137.140s versus32.144s of river export brackets. The remaining phase
+time includes policy inference/posterior/evaluation, JSON/NPZ and hashing/evidence
+work; the available timings cannot separately attribute those components.
+Source: worker complete's river-targets timer, transport.generate, and pipeline
+collect's asynchronous board submission, ordered physical consume and final
+board verify/evidence loop.
+
+Predetermined in-memory zlib(level6) samples
+
+Selection was sorted76 river exports indices0,38,75 and both2 board stdout files
+before compression. Five below-normal-priority threads,CPU20.35%,freeRAM90.30GB;
+.384s sample wall. Exact decompression, raw SHA and original stat/SHA recheck
+passed. No compressed bytes were saved and no original file was modified.
+
+river-first batch000/chunk000/history:13,649,684 ->767,889 bytes,.120s compress;
+river-middle batch006/chunk001/history:14,104,587 ->781,088 bytes,.122s;
+river-last batch012/chunk002/selected:399,471 ->22,123 bytes,.00382s;
+board000:35,575,642 ->785,342 bytes,.216s;
+board001:35,716,185 ->992,213 bytes,.247s.
+
+These are indicative zlib ratios, not NTFS/WOF ratios or admission credits.
+Small selected-export and history samples are not a statistical corpus estimate.
+
+Prospective storage qualification, before a larger profile
+
+Prefer ordinary inherited NTFS compression on a NEW, declared S: research
+directory. Microsoft documents transparent lossless reads and compact /C
+directory inheritance. Current ntfs_research_storage_v1.py already uses this
+pattern but hardcodes T:/GTOpen-research, so it cannot be reused unmodified for
+S:. A separately pinned helper should accept only the declared new descendant,
+refuse existing targets/redirected parents, confirm the compressed directory
+attribute and nested-file inheritance, and retain all control artifacts.
+
+Use a small NEW control namespace (e.g.1GB allocated,.5GB logical,15min) to
+copy the predetermined samples plus a fixed software stdin/stdout fixture.
+Compare ordinary file reads, full and chunked SHA, JSON parse, size, native
+execution receipt verification before/after representation change, and actual
+GetCompressedFileSizeW allocation. A genuine tiny owned software child can
+qualify the same authenticated stdout/receipt path without poker exports/fits.
+Keep receipt filenames, original raw SHA and semantic native-process provenance.
+Measure write/read overhead, cancellation during active software output, and
+zero-byte/incompressible files. No historical path may be a mutation target.
+
+WOF is a later alternative for closed immutable new raw exports. compact /EXE
+does not inherit to future files; XPRESS4K favors access speed, LZX compactness.
+Qualify it in a separate NEW subtree with the same raw SHA/receipt controls,
+known WOF reparse tag only, and explicit allocation/backing-stream accounting.
+The old stable_file inventory admits WOF tag0x80000017, but that fact alone does
+not prove a new accounting path is complete or authorize blanket reparse tags.
+Ordinary inherited NTFS avoids an extra post-close conversion step initially.
+
+Hardlinking exact new stdout/native.json pairs is another lossless option, after
+stdout closes and authentication succeeds. Limit aliases to one NEW profile on
+one volume, verify same file ID/size/SHA, keep both named artifact refs/receipts,
+and never reopen either name for writing. Microsoft notes that writes through
+one alias affect all aliases. Current global inventory sums each name's allocated
+size and therefore double-counts hardlinks; require a new qualified unique-ID
+counter across all declared roots before any hardlink budget credit. Until then
+the conservative named allocation is the budget metric. Do not link source,
+receipts, mutable status, or historical artifacts.
+
+Full-five-depth representative profile proposal (not admitted or executed)
+
+Fitted depths20,40,100,200,400; one complete joint cycle,169deals/context
+(845 total),13subbatches/context (65total),K2/context (10boards),posterior64,
+F4 per actor,512postflop reservoir slots/player/context,3 physical and2 board
+CPU workers at1 thread each, existing CUDA fit sharing/production guards.
+Keep exact current model/resource/native identities and independently declared
+new source/recipe identities; do not change poker sampling or mathematics to
+fit a budget. Refresh inventory and separately register this profile.
+
+Static public/river-state counts are20:148/92;40:263/178;100:399/298;
+200:455/346;400:515/402. Totals1780/1316 imply12.027x public and14.304x
+river geometry versus20bb. A deliberately rough raw-storage proxy is18.065GB
+with duplicate copies,9.641GB with qualified unique hardlinks. Naive5x would
+predict6.395GB and ignores deeper public geometry. Actual visited histories,
+native subtrees, policy generation and menus can invalidate linear scaling.
+The timing proxy is roughly18-22min from the same geometry, with wide uncertainty;
+retain an explicit1h deadline rather than treating this as a measured forecast.
+Preserved river limits remain32 target keys/export,64,000,000 raw stdout bytes,
+64KiB request and60s/export. Deeper histories/subtrees are unmeasured and may
+stop the bounded attempt at those limits. Compression does not relax any raw
+per-export limit; changed grouping/budgets require separate source/recipe
+qualification and must never be an implicit increase.
+
+After transparent compression software qualification, a useful bounded attempt
+would separate a24GB logical artifact cap from a10GB allocated-file cap. A
+nominal4.2GB monitored-output reserve (2board jobs at2GB each plus3river jobs at
+64MB) and2GB filesystem/metadata margin gives16.2GB, leaving roughly4.42GB at
+this snapshot before qualification/control artifacts. This is an initial budget
+proposal, not sufficient final admission evidence. run_native polls stdout and
+stderr limits about every.1s, so they are not strict filesystem quotas; the
+bridge/query/trace executables also write directly to output-path arguments,
+outside that stdout/stderr cap. Derive and qualify direct-file/polling-overshoot
+bounds or add exact prospective sink controls before spending this reserve.
+Refresh the real inventory. The allocated guard must poll during every native loop,
+stop cooperative pools on breach and include all prospective files. A logical
+cap by itself receives no compression credit. The existing20bb runner only
+counts logical bytes and reserves MAX_BYTES at admission; a distinct prospective
+runner/accounting contract is required, with software refusal controls, before
+using this split. Output-cap overshoot reasoning must include concurrent native
+jobs and final publication overhead. Success is not guaranteed within these
+bounds; a stopped attempt retains all artifacts.
+
+Stability: after one all-five checkpoint, independently restore it, compare the
+complete cumulative states/model/reservoir/sampler RNG/source identities, and
+retain source-only refusal/restart controls. Then refresh actual retained bytes
+and runtime before separately admitting a second all-five cycle. The raw
+hardlink proxy for two cycles19.282GB leaves too little room for metadata,
+in-flight output and policy/geometry uncertainty; do not reserve two unmeasured
+full cycles from the current20.6GB headroom. No accuracy claim follows from any
+software/resource profile.
+
+Official sources
+https://learn.microsoft.com/en-us/windows/win32/fileio/file-compression-and-decompression
+https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/compact
+https://learn.microsoft.com/en-us/windows/win32/api/wofapi/ns-wofapi-wof_file_compression_info_v1
+https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions
+https://learn.microsoft.com/windows/win32/api/fileapi/nf-fileapi-getcompressedfilesizew

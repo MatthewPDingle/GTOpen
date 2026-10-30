@@ -1,0 +1,67 @@
+{
+  "id": "D053-capacity-compatibility-addendum",
+  "created_at": "2026-10-16T16:36:19.688358+00:00",
+  "scope": "Source-only clarification; parent audit and all historical evidence remain byte-identical. No implementation authorized or prepared.",
+  "parent_manifest_sha256": "9fc7c8c6275b38d70dafb1a4d938f43c8f7d419911f285d088a404f41e4a8f03",
+  "parent_report_sha256": "07fc3d1dc6307bb0df07d29e715c19ff5557df2447cd795243c43ac84e24c60f",
+  "recommendation_unchanged": "One actor1-only cache, fully integrated as transient shared scratch; no continuation opt-out.",
+  "published_component_contract": {
+    "length": 12,
+    "indices_0_through_6": "Preserve existing full traversal regrets0/1, strategy0/1, reach0/1, CFV components.",
+    "indices_7_through_10": "Preserve existing compact state regrets0/1 and strategy0/1 components.",
+    "index_11": "Append finalized full GPU actor1 sigma scratch bytes, 4*A1.",
+    "runtime_mapping": "The new eighth runtime mutable buffer may occupy runtime index7. Map it explicitly to published component11; do not concatenate runtime8+compact4 and shift published compact indices.",
+    "pooling": "Take independent maxima per component across boards, then sum. Never combine reach+cache within one component: max(reach+cache) can undercount max(reach)+max(cache).",
+    "dummy_and_metadata": "Parked scratch placeholders change7*4 to8*4 bytes; observed wrapper+28 becomes+32. Real cache is workspace, not retained metadata/canonical state."
+  },
+  "current_source_compatibility": [
+    {
+      "path": "crates/solver/examples/continuation_storage_capacity.rs",
+      "lines": "22,39-42",
+      "required": "Change work length11 to12 and add explicit components.len()==work.len() before zip so omitted cache cannot silently pass."
+    },
+    {
+      "path": "crates/solver/examples/hu_context_capacity.rs",
+      "lines": "29,50-53",
+      "required": "Change workspace length11 to12; retain exact length assertion and independent maxima."
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_host_paging_tests.rs",
+      "lines": "130-158,173,208",
+      "required": "Include eighth scratch in take/swap/workspace/individual max, preserve stream drains."
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_ssd_paging_tests.rs",
+      "lines": "130-158,184,220",
+      "required": "Include eighth scratch in take/swap/workspace/individual max, preserve stream drains."
+    }
+  ],
+  "historical_reviewers": [
+    {
+      "path": "tools/research/storage_capacity_review_20260920.py",
+      "lines": "36-38",
+      "decision": "Preserve historical script/datasets/binaries unchanged; never use its range(11) aggregation as new12-component qualification. A positive omitted cache normally causes total mismatch, but zero cache can evade this check, so it does not universally reject the new schema."
+    },
+    {
+      "path": "tools/research/hu_context_capacity_review_20260922.py",
+      "lines": "16,25-28",
+      "decision": "Preserve historical script/datasets/binaries unchanged. Its explicit length11 assertion intentionally rejects new12-component rows. Any future reusable new-schema aggregator must be versioned separately and require exactly12 components before max/sum."
+    }
+  ],
+  "provenance_scope": {
+    "accepted_map_entries": 162,
+    "map_scope": "crates/solver/src and tests; the two examples and historical Python reviewers are outside this map.",
+    "future_candidate": "Pin both examples as auxiliary_source_sha256 with byte-exact bases/candidates and include them in complete activation/restoration scope. Do not claim the162 map covers them. Keep frozen evaluator/runner unchanged.",
+    "compile_plan_only": "If candidate authorized, a separate-target pre-primary preflop-research lib/test plus both example compilation checks gated integration. Root alone executes it; primary stays unchanged gpu-only binary."
+  },
+  "auxiliary_inspected_base_sha256": {
+    "crates/solver/examples/continuation_storage_capacity.rs": "7bda2f3077f32385e7df2aca224dd1a19a69257104dca2b041629118cf04f490",
+    "crates/solver/examples/hu_context_capacity.rs": "b91af213353164de7313c425a692d9c01fb40b1733532dd0213df58400e83512",
+    "tools/research/storage_capacity_review_20260920.py": "28aa63c0612337da62ea137029b466574a4bb464f2b721f863cbade2efb6c53a",
+    "tools/research/hu_context_capacity_review_20260922.py": "8868b6ec377f6ea3638d35091a1c763bfc441e6093dfae04a01d0ac3cc202c3d"
+  },
+  "source_implementation_changes": false,
+  "compiler_native_gpu_executed": false,
+  "performance_claim": false,
+  "all162_accepted_sources_exact": true
+}

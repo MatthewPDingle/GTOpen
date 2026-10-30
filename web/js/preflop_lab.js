@@ -18,6 +18,7 @@ import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 // jams in the overbet shade.
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
+const DEFAULT_REALIZATION = 'balanced';
 
 function positionsFor(nPlayers) {
   const NAMED = {
@@ -68,10 +69,10 @@ const PRESETS = [
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
-  const legacyModelNote = document.createElement('div');
-  legacyModelNote.className = 'pfl-legacy-value-note'; legacyModelNote.hidden = true;
-  legacyModelNote.textContent = 'This saved solve uses legacy calibration with embedded rake. Select Balanced and Build Game for the corrected rake model; Re-solve preserves the saved model.';
-  els.realization.closest('.pfl-grid2').after(legacyModelNote);
+  const savedModelNote = document.createElement('div');
+  savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
+  savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
+  els.mult.closest('.pfl-grid2').after(savedModelNote);
   const previewBanner = document.createElement('div');
   previewBanner.id = 'pfl-publication';
   previewBanner.className = 'pfl-preview-note hidden';
@@ -107,7 +108,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const coupled = model === 'coupled_deck_v1';
     equityModelNote.classList.toggle('hidden', !legacy && !coupled);
     equityModelNote.textContent = legacy
-      ? 'Legacy multiway equity · rebuild the game to update'
+      ? 'Saved-game multiway estimate · rebuild the game to update'
       : coupled ? 'Multiway equity · coupled-deck approximation' : '';
     equityModelNote.dataset.tip = legacy
       ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
@@ -115,6 +116,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
   const S = {
     built: false,
+    formCfg: null,  // visible settings at build/load; independent of saved model metadata
+    builtCfg: null, // actual engine config, including a loaded game's original model
     gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
     cursor: [],     // action indices to the node being VIEWED
     lineP: [],      // the full line (cursor is always a prefix of it)
@@ -316,7 +319,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.ante.value = p.ante;
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
-    if (els.realization) els.realization.value = p.realization === "calibrated" ? "balanced" : (p.realization || "balanced");
+    // Scenarios configure fresh games; old scenario model choices are retired.
+    // Explicitly choosing a preset also starts fresh when an older solve is loaded.
+    if (S.built && S.activeModel !== DEFAULT_REALIZATION) S.formCfg = null;
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
@@ -326,7 +331,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ...positionSizing.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
-    realization: els.realization ? els.realization.value : undefined,
   });
   function syncScenarioSelection() {
     const cur = currentScenario();
@@ -395,7 +399,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const name = (prompt('Save scenario as', cur ? cur.name : '') || '').trim();
     if (!name) return;
     try {
-      await api.pfScenarioSave(name, currentScenario());
+      await api.pfScenarioSave(name, { ...currentScenario(), realization: DEFAULT_REALIZATION });
       await loadScenarios(name);
       toast(`scenario "${name}" saved`);
     } catch (e) { toast(errText(e), true); }
@@ -505,7 +509,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rake_pct: +els.rakePct.value || 0,
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
-      realization: els.realization.value,
+      realization: DEFAULT_REALIZATION,
     };
   }
 
@@ -572,8 +576,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       localStorage.setItem('pfl-eq-built', '1');
       S.built = true;
       S.activeModel = cfg.realization;
+      savedModelNote.hidden = true;
       S.gameSaved = false; // fresh tree: nothing of it is on disk
       S.builtCfg = JSON.stringify(cfg);
+      S.formCfg = JSON.stringify(cfg);
       S.positions = cfg.positions;
       S.cursor = [];
       S.lineP = [];
@@ -617,7 +623,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.solve.addEventListener('click', async () => {
     els.solve.disabled = true;
     try {
-      if (!S.built || S.builtCfg !== JSON.stringify(config())) {
+      if (!S.built || S.formCfg !== JSON.stringify(config())) {
         if (!(await buildGame())) return;
       }
       // picking archetypes without APPLY MODEL then re-solving is the
@@ -742,12 +748,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.ante.value = cfg.ante || 0;
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
-    els.realization.value = cfg.realization || 'static';
-    S.activeModel = cfg.realization;
+    S.activeModel = cfg.realization || 'static';
+    savedModelNote.hidden = S.activeModel === DEFAULT_REALIZATION;
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
-    S.builtCfg = JSON.stringify(config());
+    S.builtCfg = JSON.stringify(cfg);
+    S.formCfg = JSON.stringify(config());
     S.positions = cfg.positions;
     S.cursor = [];
     S.lineP = [];
@@ -853,10 +860,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const err = st.error ? ` \u00b7 ${st.error}` : ''; // a crashed worker is not a STOP
     // the engine could not load the calibrated fit and priced with the static
     // model: say so every time, and toast it once per session
-    const rnote = st.realization_note ? ` \u00b7 ${st.realization_note}` : '';
+    // Keep fallback diagnostics without reintroducing retired model choices.
+    const realizationNote = (st.realization_note || '').replace(
+      'balanced uses raw equity; legacy calibrated uses positional values',
+      S.activeModel === DEFAULT_REALIZATION
+        ? 'using showdown-equity estimates until the fit is available'
+        : 'using the saved game’s fallback values until the fit is available');
+    const rnote = realizationNote ? ` \u00b7 ${realizationNote}` : '';
     if (st.realization_note && S.lastRealizationNote !== st.realization_note) {
       S.lastRealizationNote = st.realization_note;
-      toast(st.realization_note, true);
+      toast(realizationNote, true);
     }
     const shown = publishedIteration(st);
     const snapshot = st.published_iteration !== undefined ? ` · displayed ${shown}` : '';
@@ -1129,7 +1142,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderNode() {
     const v = S.view;
-    legacyModelNote.hidden = S.activeModel !== 'calibrated';
     previewBanner.textContent = publicationLabel(v.publication);
     reachWarning.replaceChildren();
     const warning = branchWarning(v);
@@ -1228,7 +1240,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           'this pot, stack and rake.';
         if (v.continuation) {
           const estimate = v.continuation;
-          const names = {calibrated:'Calibrated',static:'Static',raw:'Raw equity',all_in_equity:'All-in equity'};
+          const estimateNote = estimate.model === 'calibrated'
+            ? estimate.note.replace('The calibrated model', 'This saved game’s value model')
+            : estimate.note;
           const detail = document.createElement('details');
           detail.className = 'pfl-continuation';
           const rows = [
@@ -1237,12 +1251,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
             ['Combined value', estimate.total_value_bb],
             ['Unallocated amount', estimate.unallocated_bb],
           ];
-          detail.innerHTML = `<summary>Preflop continuation estimate · ${esc(names[estimate.model] || estimate.model)}</summary>` +
+          detail.innerHTML = `<summary>Preflop continuation estimate</summary>` +
             `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
               `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
             `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
             `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
-            `<p>${esc(estimate.note)}</p></div></div>`;
+            `<p>${esc(estimateNote)}</p></div></div>`;
           els.gridCap.appendChild(detail);
         }
       } else {

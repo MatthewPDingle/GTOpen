@@ -1,0 +1,38 @@
+{
+  "id": "E109-direct-batch",
+  "at": "2026-10-29T02:42:07.480317+00:00",
+  "status": "FROZEN_PRE_FIRST_CATEGORY_COMPILER_NATIVE",
+  "stages": [
+    {
+      "id": "D233",
+      "folder": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action",
+      "protocol_sha256": "f5f72c4c04a3cae69c29e3c1162a910712b9404c01bd3c453bad061d04805883"
+    },
+    {
+      "id": "D234",
+      "folder": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D234-stride-chance",
+      "protocol_sha256": "8adbfc17de30eceb703c9498ef1f798b4a4d3e6f4562ccd7d3c826148b0a51f0"
+    },
+    {
+      "id": "D235",
+      "folder": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D235-stride-fold",
+      "protocol_sha256": "6d5c71f01522c0ca7393c978b7b33c2d62d34be8411b79717f95a54f08264d3c"
+    }
+  ],
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E109-prepare-direct-batch.py": "311859a31f628462794332ed5ecc7068ceb0ba9469eb5a69b64716563e23c13b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E109-run-direct-batch.py": "b20dc18a1cb304ead34e10a7b46e09176f6fc5085290fb96fd5e4763b93ceea4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E109-source\\manifest.json": "44309fc1f79b5eaed0392a7646f9e622b714d51e4d7130cb96ad7836316eedbf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E109-resource\\report.json": "2c023d7742a3cd712f16f502f689317d1efcac96703926a6c1fc5c0eaa6fb3f8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D230-native-stride\\report.json": "89184d5ebf5d851bf7dfb9d06a311c5bf09b5e2138640279e43b1c4bc78d579f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D231-stride-engine-control\\report.json": "6f6315e495d331bd709496aef0e2a97a267939af3f7bb57419a3ee99e3af7dba",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D232-kernel-control-root-check\\report.json": "e1523180d8f3427f8ed11748e86fb6b9f4562f9412a021ae621d314f0c35b887",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\protocol.json": "f5f72c4c04a3cae69c29e3c1162a910712b9404c01bd3c453bad061d04805883",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D234-stride-chance\\protocol.json": "8adbfc17de30eceb703c9498ef1f798b4a4d3e6f4562ccd7d3c826148b0a51f0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D235-stride-fold\\protocol.json": "6d5c71f01522c0ca7393c978b7b33c2d62d34be8411b79717f95a54f08264d3c"
+  },
+  "expected_cases": 1604,
+  "expected_kernel_launches": 3208,
+  "scope": "Three independentlyfrozen complete original uptraining819/chance425/fold360corpora,serialized compiler/native/whole rawreader each. Any genuine failure stops wholecandidate, notsubset rescue. No repeats/exclusions/variants/nativeperformances. BR/avg-specific directcontrols andfullcanonical/ordinary/primary/fresh16/broad/material/holdout/cumulative/app stillrequired."
+}

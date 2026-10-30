@@ -1,0 +1,632 @@
+error[E0425]: cannot find function `cuGraphKernelNodeGetParams` in module `sys`
+     --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:39:275
+      |
+   39 | ..._PARAMS=unsafe{std::mem::zeroed()};cu(unsafe{sys::cuGraphKernelNodeGetParams(*node,&mut p)})?;assert!(!p.kernelParams.is_null(...
+      |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      |
+     ::: C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cudarc-0.19.7\src\driver\sys\mod.rs:10294:1
+      |
+10294 | pub unsafe fn cuGraphKernelNodeGetParams_v2(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+      | --------------------------------------------------------------------------------------------------------------------- similarly named function `cuGraphKernelNodeGetParams_v2` defined here
+      |
+note: found an item that was configured out
+     --> C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cudarc-0.19.7\src\driver\sys\mod.rs:10277:15
+      |
+10276 | #[cfg(any(feature = "cuda-11040", feature = "cuda-11050", feature = "cuda-11060", feature = "cuda-11070", feature = "cuda-11080"))]
+      |          ------------------------------------------------------------------------------------------------------------------------ the item is gated here
+10277 | pub unsafe fn cuGraphKernelNodeGetParams(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: a function with a similar name exists
+      |
+   39 |  for node in &nodes{let mut ty=sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_EMPTY;cu(unsafe{sys::cuGraphNodeGetType(*node,&mut ty)})?;assert_eq!(ty,sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL);let mut p:sys::CUDA_KERNEL_NODE_PARAMS=unsafe{std::mem::zeroed()};cu(unsafe{sys::cuGraphKernelNodeGetParams_v2(*node,&mut p)})?;assert!(!p.kernelParams.is_null());let src=unsafe{*(p.kernelParams.add(0).read()as*const u64)};let dst=unsafe{*(p.kernelParams.add(1).read()as*const u64)};let n=unsafe{*(p.kernelParams.add(2).read()as*const i32)};
+      |                                                                                                                                                                                                                                                                                                             +++
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:13:263
+   |
+13 | ...)->Result<()>{let n=i32::try_from(n)?;unsafe{s.launch_builder(f).arg(&src).arg(&dst).arg(&n).launch(LaunchConfig{grid_dim:(((n as u32+127)/128).max(1),1,1),block_dim:(128,1,1),shared_mem_bytes:0})?;}O...
+   |       ----------                                                                                -------------------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |       |                                                                                         |
+   |       required `DriverError: std::error::Error` because of this                                 this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:16:115
+   |
+16 | ...Self{n,total,a:s.clone_htod(&vec![0f32;n+6])?,b:s.clone_htod(&vec![0f32;n+10])?,init:s.clone_htod(&vec![0f32;total])?,cfv:s.clone...
+   |                     ---------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                     |
+   |                     this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:16:149
+   |
+16 | ...0f32;n+6])?,b:s.clone_htod(&vec![0f32;n+10])?,init:s.clone_htod(&vec![0f32;total])?,cfv:s.clone_htod(&vec![0f32;total])?,out:s.cl...
+   |                    ----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                    |
+   |                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:16:187
+   |
+16 | ...;n+10])?,init:s.clone_htod(&vec![0f32;total])?,cfv:s.clone_htod(&vec![0f32;total])?,out:s.clone_htod(&vec![0f32;total])?})}
+   |                    -----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                    |
+   |                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:16:224
+   |
+16 | ...;total])?,cfv:s.clone_htod(&vec![0f32;total])?,out:s.clone_htod(&vec![0f32;total])?})}
+   |                    -----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                    |
+   |                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:16:261
+   |
+16 | ...;total])?,out:s.clone_htod(&vec![0f32;total])?})}
+   |                    -----------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                    |
+   |                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:17:127
+   |
+17 | ...epoch:u32)->Result<()>{s.memcpy_htod(&floats(&pattern(self.n+6,epoch*10+1)),&mut self.a)?;s.memcpy_htod(&floats(&pattern(self.n+1...
+   |                             ---------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                             |
+   |                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:17:195
+   |
+17 | ...h*10+1)),&mut self.a)?;s.memcpy_htod(&floats(&pattern(self.n+10,epoch*10+2)),&mut self.b)?;s.memcpy_htod(&floats(&pattern(self.to...
+   |                             ----------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                             |
+   |                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:17:267
+   |
+17 | ...10+2)),&mut self.b)?;s.memcpy_htod(&floats(&pattern(self.total,epoch*10+3)),&mut self.init)?;s.memcpy_htod(&floats(&vec![0x4b1234...
+   |                           --------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                           |
+   |                           this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:17:335
+   |
+17 | ...0+3)),&mut self.init)?;s.memcpy_htod(&floats(&vec![0x4b123456;self.total]),&mut self.cfv)?;s.memcpy_htod(&floats(&vec![0x4b654321...
+   |                             ----------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                             |
+   |                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:17:403
+   |
+17 | ...otal]),&mut self.cfv)?;s.memcpy_htod(&floats(&vec![0x4b654321;self.total]),&mut self.out)?;Ok(())}
+   |                             ----------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                             |
+   |                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:21:26
+   |
+21 |   if fork{start.record(s)?;side.wait(start)?;}
+   |                 ---------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                 |
+   |                 this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:21:44
+   |
+21 |   if fork{start.record(s)?;side.wait(start)?;}
+   |                                 -----------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                 |
+   |                                 this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:24:28
+   |
+24 |   if fork{done.record(side)?;s.wait(done)?;}
+   |                ------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                |
+   |                this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:24:42
+   |
+24 |   if fork{done.record(side)?;s.wait(done)?;}
+   |                                ----------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                |
+   |                                this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:18
+   |
+29 |   s.synchronize()?;let a=bits(&s.clone_dtoh(&self.a)?);let b=bits(&s.clone_dtoh(&self.b)?);let init=bits(&s.clone_dtoh(&self.init)?)...
+   |     -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |     |
+   |     this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:53
+   |
+29 |   s.synchronize()?;let a=bits(&s.clone_dtoh(&self.a)?);let b=bits(&s.clone_dtoh(&self.b)?);let init=bits(&s.clone_dtoh(&self.init)?)...
+   |                                  -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                  |
+   |                                  this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:89
+   |
+29 | ...f.a)?);let b=bits(&s.clone_dtoh(&self.b)?);let init=bits(&s.clone_dtoh(&self.init)?);let cfv=bits(&s.clone_dtoh(&self.cfv)?);let ...
+   |                         -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                         |
+   |                         this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:131
+   |
+29 | ...);let init=bits(&s.clone_dtoh(&self.init)?);let cfv=bits(&s.clone_dtoh(&self.cfv)?);let out=bits(&s.clone_dtoh(&self.out)?);
+   |                       ----------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                       |
+   |                       this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:171
+   |
+29 | ...)?);let cfv=bits(&s.clone_dtoh(&self.cfv)?);let out=bits(&s.clone_dtoh(&self.out)?);
+   |                        ---------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                        |
+   |                        this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:29:211
+   |
+29 | ...)?);let out=bits(&s.clone_dtoh(&self.out)?);
+   |                        ---------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                        |
+   |                        this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:49:29
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+   |          -------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |          |
+   |          this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:49:52
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+   |                                              ------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                              |
+   |                                              this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:49:176
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+49 | ...x=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)?,12...
+   |                                                                                            --------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                            |
+   |                                                                                            this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:49:277
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+49 | ...x=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)?,12);assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR)?,0)...
+   |                                                                                                                                                                                                 --------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                                                                 |
+   |                                                                                                                                                                                                 this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:24
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+50 |  let s=ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load...
+   |            ------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |            |
+   |            this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:51
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+50 |  let s=ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load...
+   |                                       ------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                       |
+   |                                       this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:82
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+50 |  let s=ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load...
+   |                                                                   ---------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                   |
+   |                                                                   this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:112
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+49 |  let ctx=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU...
+50 |  let s=ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load...
+   |                                                                                                 ---------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                 |
+   |                                                                                                 this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:200
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+49 | ...x=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)?,12);assert_eq!(ctx.attribu...
+50 | ...ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load_module(cudarc::nvrtc::Ptx::from_src(include_str!("baseline.ptx")))?;le...
+   |                                                                                                                             -----------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                             |
+   |                                                                                                                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:50:241
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+49 | ...x=CudaContext::new(0)?;assert_eq!(ctx.name()?,"NVIDIA GeForce RTX 5090");assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR)?,12);assert_eq!(ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATT...
+50 | ...ctx.new_stream()?;let side=ctx.new_stream()?;let start=ctx.new_event(None)?;let done=ctx.new_event(None)?;let module=ctx.load_module(cudarc::nvrtc::Ptx::from_src(include_str!("baseline.ptx")))?;let f=module.load_function("copy_span")?;
+   |                                                                                                                                                                                                                   --------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                                                                                   |
+   |                                                                                                                                                                                                                   this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:51:48
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+51 |  emit(json!({"stage":"device","name":ctx.name()?,"uuid":format!("{:?}",ctx.uuid()?),"concurrent_kernels":ctx.attribute(sys::CUdevice...
+   |                                          ------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                          |
+   |                                          this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:51:82
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+51 |  emit(json!({"stage":"device","name":ctx.name()?,"uuid":format!("{:?}",ctx.uuid()?),"concurrent_kernels":ctx.attribute(sys::CUdevice...
+   |                                                                            ------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                            |
+   |                                                                            this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:51:184
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+51 | ...son!({"stage":"device","name":ctx.name()?,"uuid":format!("{:?}",ctx.uuid()?),"concurrent_kernels":ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS)?,"e...
+   |                                                                                                          --------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                          |
+   |                                                                                                          this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:56:82
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+56 |    s.begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)?;let result=d.queue(&s,&side,&f,&start,&done,fork,...
+   |      ----------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |      |
+   |      this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:56:243
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+56 | ...gin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)?;let result=d.queue(&s,&side,&f,&start,&done,fork,false);let graph=s.end_capture(sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH)?.ok...
+   |                                                                                                                                                    -------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                    |
+   |                                                                                                                                                    this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:57:55
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+57 |    for epoch in 1..=4{d.fill(&s,epoch)?;graph.launch()?;d.snapshot(&s,epoch,arm,"graph_replay","outputs",&mut file)?;snapshots+=1;}s...
+   |                                               --------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                               |
+   |                                               this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:57:147
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+57 | ...epoch in 1..=4{d.fill(&s,epoch)?;graph.launch()?;d.snapshot(&s,epoch,arm,"graph_replay","outputs",&mut file)?;snapshots+=1;}s.synchronize()?;si...
+   |                                                                                                                                  -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                  |
+   |                                                                                                                                  this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:57:167
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+57 | ...epoch in 1..=4{d.fill(&s,epoch)?;graph.launch()?;d.snapshot(&s,epoch,arm,"graph_replay","outputs",&mut file)?;snapshots+=1;}s.synchronize()?;side.synchronize()?;dr...
+   |                                                                                                                                                      -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                      |
+   |                                                                                                                                                      this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:58:19
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+58 |   }s.synchronize()?;side.synchronize()?;drop(d);
+   |      -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |      |
+   |      this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:58:39
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+58 |   }s.synchronize()?;side.synchronize()?;drop(d);
+   |                          -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                          |
+   |                          this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:61:95
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+61 |  d.fill(&s,12)?;s.begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)?;let result=d.queue(&s,&side,&f,&star...
+   |                   ----------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                   |
+   |                   this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:61:255
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+61 | ...(&s,12)?;s.begin_capture(sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL)?;let result=d.queue(&s,&side,&f,&start,&done,true,true);let graph=s.end_capture(sys::CUgraphInstantiate_flags::CUDA_GRAPH_INSTANTIATE_FLAG_AUTO_FREE_ON_LAUNCH)?.ok...
+   |                                                                                                                                                                -------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                                |
+   |                                                                                                                                                                this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:62:70
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+62 |  assert_eq!(snapshots,74);assert_eq!(graphs.len(),15);s.synchronize()?;side.synchronize()?;drop(d);drop(f);drop(module);drop(start);...
+   |                                                         -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                         |
+   |                                                         this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:62:90
+   |
+48 | fn run()->Result<()>{
+   |           ---------- required `DriverError: std::error::Error` because of this
+...
+62 |  assert_eq!(snapshots,74);assert_eq!(graphs.len(),15);s.synchronize()?;side.synchronize()?;drop(d);drop(f);drop(module);drop(start);...
+   |                                                                             -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                             |
+   |                                                                             this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:62:159
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+62 | ..._eq!(snapshots,74);assert_eq!(graphs.len(),15);s.synchronize()?;side.synchronize()?;drop(d);drop(f);drop(module);drop(start);drop(done);s.synchronize()?;si...
+   |                                                                                                                                              -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                              |
+   |                                                                                                                                              this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:62:179
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+62 | ..._eq!(snapshots,74);assert_eq!(graphs.len(),15);s.synchronize()?;side.synchronize()?;drop(d);drop(f);drop(module);drop(start);drop(done);s.synchronize()?;side.synchronize()?;dr...
+   |                                                                                                                                                                  -------------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                                  |
+   |                                                                                                                                                                  this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error[E0277]: `?` couldn't convert the error: `DriverError: std::error::Error` is not satisfied
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D286-fork-join-primitive\probe.rs:62:215
+   |
+48 | ...)->Result<()>{
+   |       ---------- required `DriverError: std::error::Error` because of this
+...
+62 | ..._eq!(snapshots,74);assert_eq!(graphs.len(),15);s.synchronize()?;side.synchronize()?;drop(d);drop(f);drop(module);drop(start);drop(done);s.synchronize()?;side.synchronize()?;drop(side);drop(s);ctx.check_err()?;dr...
+   |                                                                                                                                                                                                        -----------^ the trait `std::error::Error` is not implemented for `DriverError`
+   |                                                                                                                                                                                                        |
+   |                                                                                                                                                                                                        this has type `Result<_, DriverError>`
+   |
+   = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+   = note: required for `Box<dyn std::error::Error>` to implement `From<DriverError>`
+
+error: aborting due to 49 previous errors
+
+Some errors have detailed explanations: E0277, E0425.
+For more information about an error, try `rustc --explain E0277`.

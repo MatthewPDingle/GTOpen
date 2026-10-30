@@ -1,0 +1,19 @@
+{
+  "id": "D180",
+  "at": "2026-10-28T17:35:29.427707+00:00",
+  "status": "source_history_dependency_and_resource_design_only_not_admitted",
+  "lead": "Investigate logical warp-per-node aggregation for independent training up_action updates on sufficiently large level spans, with original global entry preserved for small spans. Existing handwise action arithmetic has no CTA reduction/barrier. One prospective physical128-thread block could hold4independent32-thread logical node groups, preserving every per-hand action/reduction order and original node-list order. No implementation/threshold/source/compile/native work admitted.",
+  "first_gates": [
+    "Inspect exact closed E007 launch widths and E081 warp/nodepacking source first; if this is an equivalent mapping/entry-subset/shape rescue, decline without code. Different labels alone are not novelty. Read original dependency/CFVslot/disjoint-action ownership proofs and every actual training launch/caller/continuation path.",
+    "Prove that each hand is mapped once, different node groups cannot race on parent/child CFV or regret/strategy ranges, partially active groups do not violate barriers, and locks/roles/generic menus/empty counts remain exact. All CUDA source, host ABI, node order, precision and public stop/iteration semantics require review before any native admission.",
+    "If distinct, design a separate private packed entry and hardware-resource-derived occupancy eligibility while retaining byte-equivalent original entry/fallback; choose one formula before observations, not a threshold/count/shape sweep. Original small level behavior and existing supported entry shapes must remain. Disclose extra module/host/graph/resource costs; do not infer no tradeoffs from payload equality.",
+    "Require intended compiled mapping, unchanged original entry/other kernels, actual resource/capacity/graph/CPU costs and complete exact state with simultaneous heterogeneous logical groups before frozen same-quality complete-cycle timing. All1%/strictfixture/fresh16/broad/material/holdout/freshoriginal/application gates remain. No candidate admitted by this scope."
+  ],
+  "known_counterevidence": "D179 padding/XOR bank-remapping and E022 unusedchunk trimming are closed/declined; no such hunks. E096 cache hints are closed and absent. Root/small-span latency can worsen when reducing threads/node, so preserve and verify original entry before any packed dispatch source; this is prospective design, not permission to rescue a failed packed form.",
+  "accepted_source_sha256": {
+    "kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "gpu_mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1"
+  },
+  "compiler_native_or_extra_timing_runs": 0,
+  "new_gain_accepted": false
+}

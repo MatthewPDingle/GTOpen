@@ -1,0 +1,145 @@
+{
+  "at": "2026-10-18T12:14:21.671860+00:00",
+  "status": "pass_checkpoint",
+  "goal_status": "active",
+  "previous_goal_turn": "progress: completed E087 correctness/build/primary and rejected fixture tradeoffs",
+  "this_turn": "progress: declined duplicate E088 before execution, then compiled and numerically tested new E089, completed fresh full builds and fixed whole-solve comparison, rejected below 1%",
+  "all_owned_native_compiler_processes_terminal": true,
+  "tool_sessions_completed": [
+    9669,
+    74978,
+    55803
+  ],
+  "terminal_receipts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-resource\\execution\\probe.exit.json": {
+      "sha256": "23b918f14002fbdc2dc466e3a6a94bd96393761045ffa8d6b2280b6fe51630d0",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-resource\\execution\\rustc.exit.json": {
+      "sha256": "5ae74cf1c109dc0ff3dd99527e0e5541cff29778c5eab88b994f2a3d8f712b24",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-kernel-control\\execution\\probe.exit.json": {
+      "sha256": "7fdd3d07e3213449a278620cb9468fe6b9e3588cd6f60f94e0f995833a549b91",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-kernel-control\\execution\\rustc.exit.json": {
+      "sha256": "028c672c25ce4e7cb19721445986a17aa63e4a38528e8f3d2232f83eca0c088a",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-direct-audit\\audit.exit.json": {
+      "sha256": "3108fb9664ea03f7f1217869328ade7ac21b6d1faa024d33a4813d7fee5cfd20",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-final-build\\feature\\cargo.exit.json": {
+      "sha256": "a1ebacd1c3f113fdc54343c93ddf4d876b5e2c2636283ac1f22ab2daf82f4c86",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-final-build\\primary\\cargo.exit.json": {
+      "sha256": "47d452b0a53d1abab2bbf0f9d645bac8b288aeba6de83dd19cc253666b394794",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-primary-wrapper\\assessment.exit.json": {
+      "sha256": "3731a2d964cda65fa927e1004dbbe378a51c3cb3d76f5e7342b3b5defb842de6",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-primary-wrapper\\native.exit.json": {
+      "sha256": "e828c712fd0a3fc0ea83005b52e208e40939b45a1185470674d82e99f0dc2c88",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-primary-wrapper\\root-replay.exit.json": {
+      "sha256": "197875f27ce3fafb2d0f2ea6cde77cb6dcb0fc9840ef47d10308c5077c47f1f7",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\B290.exit.json": {
+      "sha256": "6667197d1bd9de21a65cd2360ff41244fa71111e85740cf30cc08929b2a7857a",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\B291.exit.json": {
+      "sha256": "fd9502bffc0975b28902d6efcee4e93abab13ca984a636247ec46741a4cbf025",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\B292.exit.json": {
+      "sha256": "f0e23a26000fc0aeb9903ea620a516c17cf563ab8cf3d7c7072b8b9ec76ca435",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\E089R1.exit.json": {
+      "sha256": "db2ac633d5930f21004941b04ae30c1cc0108438c52ffee5add76bd2130d4dd0",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\E089R2.exit.json": {
+      "sha256": "96bb0753a942729e28112b68672f14c1bb0c46b453c0b7a97178ad337c2add8d",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\E089R3.exit.json": {
+      "sha256": "c1a7527aeaed99185479ea8cf383fe3566bc9caa117045319bc7e89d14f6ba71",
+      "returncode": 0
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E089-native-execution\\V089-unit.exit.json": {
+      "sha256": "a2b7f182a26fe62c6c2a26c09a4629ff9c2d3e96cb81cc04616b2195b39797f6",
+      "returncode": 0
+    }
+  },
+  "GPU_lock_absent": true,
+  "source_main_live_protected_PTX_custody_pass": true,
+  "accepted_live_candidate": "E080",
+  "accepted_cumulative_gain_pct": 14.741418835370924,
+  "E088_decision": "duplicate; no compiler or GPU execution",
+  "E089_decision": "rejected",
+  "E089_gain_pct": 0.4581100426997217,
+  "E089_guard_failures": [],
+  "decision_sha256": "35fa5f4a80d419f25f5947b4f063ab1ccf8bc40a5981021fdcb083bf7c12b524",
+  "live_status": {
+    "/api/status": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "/api/preflop/status": {
+      "state": "",
+      "phase": "",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "published_iteration": 0,
+      "accuracy_iteration": null,
+      "target_gap": null,
+      "stop_reason": "",
+      "preview_note": "",
+      "gaps": [],
+      "gap_total": 0.0,
+      "evs": [],
+      "hero": null,
+      "frozen": [],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": ""
+    },
+    "/api/reports/status": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  },
+  "free_bytes": {
+    "S": 758759411712,
+    "T": 1304034357248
+  },
+  "last_primary_baseline": "B292",
+  "source_adopted": false,
+  "pushes": 0,
+  "live_restarts": 0,
+  "next": "Scout an independent bottleneck from accepted E080. E089 exact form and variants remain closed."
+}

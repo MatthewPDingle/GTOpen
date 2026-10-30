@@ -1,4 +1,4 @@
-# Flexible preflop modeling — development passes 1–3
+# Flexible preflop modeling — research
 
 Started 9 September 2026. This program separates behavior prediction, continuation
 valuation and runtime cost so improvements in one are not mistaken for proof
@@ -13,6 +13,35 @@ but show substantial sensitivity to sparse rank and suit coverage. These
 remain offline experiments, not ranges validated against GTO Wizard or
 changes to the ordinary app. Earlier learned-predictor and GPU investigations
 remain preserved under `continuation/`.
+
+The [broader overnight study](representative-coverage-20260919/RESULTS.md)
+completed the 47-flop reference, reserved-board evaluation and combined
+164-board comparison. Broader training substantially reduced measured
+deviation gains on the tested panels, but did not establish full-deck accuracy
+or resolve the concern about very small calling ranges. Its
+[chance-only audit](representative-coverage-20260919/PRIVATE-PRIOR-AUDIT.md)
+separates distortion of entering hand weights from missing postflop opportunities.
+
+The [20 September storage and coverage study](ssd-storage-20260920/RESULTS.md)
+uses the desktop's confirmed 128 GB RAM to make broader connected training
+possible. A 112-board forest fit, but missed its registered runtime limit.
+An exact storage change subsequently reduced strategy-transfer bytes by 25%
+and matched the original 500-iteration trajectory. With allocation reuse,
+four fresh comparison runs confirmed 43.6% less time over the measured interval
+on the small development fixture, with exact scientific outputs. The larger
+forest's throughput was subsequently measured in completed training. The
+[independent 190-flop confirmation](ssd-storage-20260920/STRATEGIC-CONFIRM190-RESULT.md)
+completed all 570 evaluations: weighted training had a 19.4% lower full deviation
+gain than equal weighting on that panel, with the ordering preserved under each
+single-board omission. This remains one restricted preflop context, with
+substantial unseen-board error; no production continuation model has been replaced.
+
+The [BB-defense transfer study](blind-defense-20260922/README.md) has qualified
+its game export and chip accounting. Full-support memory planning rejects the
+previous resident-forest implementation for this wider situation. Exact
+full-support recovery passed. A full-panel census found 99.43% of reachable
+stored state on the river, motivating a decomposition feasibility study before
+any new strategic comparison. Nothing from this phase is deployed.
 
 | Research path | First deliverable | Evidence |
 |---|---|---|

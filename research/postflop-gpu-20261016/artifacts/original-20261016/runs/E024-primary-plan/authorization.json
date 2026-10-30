@@ -1,0 +1,51 @@
+{
+  "candidate": "E024",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "D046_terminal_ptx_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D046_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D046-independent-review\\validation.json",
+      "sha256": "d32e2c233a0bf5eda140f85d1ce8b5ca131b0887ad03e784b6d8300a32828fca"
+    },
+    "E024_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-source-review\\report.json",
+      "sha256": "85fa1b974ed3855d4d27fd6520fa6eb8c7bf93904973cab541ceff048393ecf0"
+    },
+    "E024_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-script-review\\report.json",
+      "sha256": "6a2d9712ced1d624ed917f09b8e78bc0a696bf6577daf7df81dbcb333fd078b5"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\candidate\\kernels.cu",
+      "sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D046-independent-review\\validation.json": "d32e2c233a0bf5eda140f85d1ce8b5ca131b0887ad03e784b6d8300a32828fca",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-source-review\\report.json": "85fa1b974ed3855d4d27fd6520fa6eb8c7bf93904973cab541ceff048393ecf0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-script-review\\report.json": "6a2d9712ced1d624ed917f09b8e78bc0a696bf6577daf7df81dbcb333fd078b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\scripts-manifest.json": "bf92f79e85fc3c0afe315b39893defe34e41296c73982a30ddae6bcf8289397f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\protocol.json": "39fb1748192c01f5cf190e31edbc5d6cf4282966c798b44fd196fe8e04fde62e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\manifest.json": "7dd34e086b9bdeaf20f687b64a86ac349df14e6f7edbe916a1b9554d4ebd250d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\conditional-qualification-addendum.json": "cc43f2aa37cde4cca9720c55f861a621c1bd01632395ad935f0fdd9a3036a193",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-generic-validation-design\\design.json": "65c1ab35ccdc3af9feeb1e444b7da668df71233eb192cfadca7529d5a295c840",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-generic-validation-design\\manifest.json": "03d0982798514fe11dcc6b0b738b9f479c92063f3380b3529f2587fa86b334af"
+  },
+  "authorized_at": "2026-10-16T14:21:04Z",
+  "scope": "Root authorizes only frozen E024 isolated build, unit screen and complete fixed primary cohort/assessment. Conditional broad/generic/holdout/cumulative qualification remains mandatory before adoption. No extensions, performance acceptance or live deployment."
+}

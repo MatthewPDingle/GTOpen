@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-29T17:52:17.727244+00:00",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 212
+    }
+  ],
+  "unique_CUDA_hashes": 138,
+  "local_all_ref_CUDA_revisions": 28,
+  "static_offset_hits": [],
+  "local_static_offset_hits": [],
+  "semantic_classification": "Existing E019 is a fewer-barrier warp-shuffle tail, including original64/32sharedsteps; it removes4CTAbarriers. Proposed form keepsall7CTAbarriers andall7sharedmemoryadds, changesonly dynamicstep loopcontrol into fixed128step ladder. No shuffle,warp-tail cut,partialcopy fusion or sharedlayout hunk. E108 changes showdownceil division, notthisfoldreduction. D062 identity-key foldreuse declined again withoutcensus because unchanged action-alternation/reach-owner source proves no duplicates. Bounded literal/local history is not exhaustive remote/semantic novelty proof."
+}

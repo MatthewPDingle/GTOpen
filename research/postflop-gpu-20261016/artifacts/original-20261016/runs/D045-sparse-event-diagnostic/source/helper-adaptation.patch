@@ -1,0 +1,232 @@
+--- D033-r2/graph_device_events.rs
++++ D045/graph_device_events.rs
+@@ -1,11 +1,11 @@
+-//! Temporary D033 diagnostic. Never a performance acceptance test.
+-//! Clone E015's real captured graphs; preserve every original kernel and edge.
++//! Temporary D045 sparse diagnostic. Never a performance acceptance test.
++//! Clone E020's real captured graphs; preserve every original kernel and edge.
+ use super::*;
+ use crate::{Spot, SpotConfig};
+ use crate::store::Storage;
+ use cudarc::driver::CudaEvent;
+ use serde_json::{json, Value};
+-use std::collections::{BTreeMap, HashMap, HashSet};
++use std::collections::{HashMap, HashSet};
+ use std::ffi::CStr;
+ use std::io::{self, Write};
+ use std::ptr;
+@@ -14,11 +14,44 @@
+ type DiagResult<T> = Result<T, String>;
+ const CHUNK: usize = 1_048_576;
+ const GIB: u64 = 1 << 30;
++// Fixed D035 metadata-only selectors, rebound to accepted E020 shared-memory sizes.
++const SELECTED: [(usize, &str); 3] = [(19, "down_action"), (29, "up_show"), (34, "up_action")];
++const EVENT_BOUNDARIES: [usize; 6] = [19, 20, 29, 30, 34, 35];
++
++fn validate_selected(descriptions: &[KernelDescription], graph: usize) -> DiagResult<()> {
++    if graph >= 2 || descriptions.len() != 63 {
++        return Err("registered graph index or kernel count differs".into());
++    }
++    for &(ordinal, family) in &SELECTED {
++        let desc = &descriptions[ordinal];
++        let expected_shared = if family == "up_show" { [6300, 5060][graph] } else { 0 };
++        if desc.name != family || desc.grid != [141120, 1, 1]
++            || desc.block != [128, 1, 1] || desc.shared != expected_shared {
++            return Err(format!("graph{graph} registered selector{ordinal} descriptor differs"));
++        }
++        // Largest CTA count, first ordinal on ties; never select from observed timings.
++        let mut selected = None;
++        let mut largest = 0u128;
++        for (i, candidate) in descriptions.iter().enumerate() {
++            if candidate.name == family {
++                let count = candidate.grid.iter().fold(1u128, |a, &b| a * b as u128);
++                if selected.is_none() || count > largest {
++                    selected = Some(i);
++                    largest = count;
++                }
++            }
++        }
++        if selected != Some(ordinal) {
++            return Err(format!("graph{graph} registered metadata selector differs for {family}"));
++        }
++    }
++    Ok(())
++}
+ 
+ fn emit(value: Value) -> DiagResult<()> {
+     let stdout=io::stdout();
+     let mut output=stdout.lock();
+-    writeln!(output,"D033_EVENT_DIAGNOSTIC {value}").map_err(e)?;
++    writeln!(output,"D045_EVENT_DIAGNOSTIC {value}").map_err(e)?;
+     output.flush().map_err(e)
+ }
+ 
+@@ -50,9 +83,9 @@
+ }
+ 
+ #[cfg(not(windows))]
+-fn available_ram() -> DiagResult<u64> { Err("D033 admission is registered for Windows only".into()) }
+-
+-// Count every actual E015 device payload; private admission only, no production changes.
++fn available_ram() -> DiagResult<u64> { Err("D045 admission is registered for Windows only".into()) }
++
++// Count every actual E020 device payload; private admission only, no production changes.
+ fn planned_device_bytes(spot: &Spot, plan: &GpuPlan) -> DiagResult<u64> {
+     let mut sizes = Vec::new();
+     macro_rules! push { ($($v:expr),+ $(,)?) => { $(sizes.push(bytes(&$v)?);)+ }; }
+@@ -188,6 +221,7 @@
+         gpu._ctx.bind_to_thread().map_err(e)?;
+         let original = chain(source.cu_graph())?;
+         let descriptions = original.iter().map(|&n| describe_kernel(n)).collect::<DiagResult<Vec<_>>>()?;
++        validate_selected(&descriptions, graph_index)?;
+         let mut result = Self { ctx: gpu._ctx.clone(), stream: gpu.stream.clone(),
+             graph: ptr::null_mut(), exec: ptr::null_mut(), events: vec![], descriptions, topology: Value::Null };
+         unsafe { cu(sys::cuGraphClone(&mut result.graph, source.cu_graph()))?; }
+@@ -202,24 +236,21 @@
+         }
+         if chain(result.graph)? != mapped { return Err("clone changed original ordering".into()); }
+         let mut expected: HashSet<_> = graph_edges(result.graph)?.into_iter().collect();
+-        let mut event_nodes = Vec::new();
+-        for i in 0..=mapped.len() {
++        for (event_index, &boundary) in EVENT_BOUNDARIES.iter().enumerate() {
+             result.events.push(gpu._ctx.new_event(Some(sys::CUevent_flags::CU_EVENT_DEFAULT)).map_err(e)?);
+             let mut event_node = ptr::null_mut();
+-            let (deps, count) = if i == 0 { (ptr::null(), 0) } else { (&mapped[i - 1] as *const _, 1) };
+-            unsafe { cu(sys::cuGraphAddEventRecordNode(&mut event_node, result.graph, deps, count,
+-                result.events[i].cu_event()))?; }
+-            if i > 0 { expected.insert((mapped[i - 1] as usize, event_node as usize)); }
+-            if i < mapped.len() {
+-                unsafe { cu(sys::cuGraphAddDependencies(result.graph, &event_node, &mapped[i], 1))?; }
+-                expected.insert((event_node as usize, mapped[i] as usize));
+-            }
+-            event_nodes.push(event_node);
++            // Keep every source edge; each timestamp is ordered between its two neighbors.
++            unsafe { cu(sys::cuGraphAddEventRecordNode(&mut event_node, result.graph,
++                &mapped[boundary - 1], 1, result.events[event_index].cu_event()))?; }
++            expected.insert((mapped[boundary - 1] as usize, event_node as usize));
++            unsafe { cu(sys::cuGraphAddDependencies(result.graph, &event_node, &mapped[boundary], 1))?; }
++            expected.insert((event_node as usize, mapped[boundary] as usize));
+         }
+         let edges = graph_edges(result.graph)?;
+-        if graph_nodes(result.graph)?.len() != mapped.len() * 2 + 1 || edges.len() != expected.len()
++        if graph_nodes(result.graph)?.len() != 69 || edges.len() != 74
++            || result.events.len() != 6 || edges.len() != expected.len()
+             || edges.iter().copied().collect::<HashSet<_>>() != expected {
+-            return Err("instrumented graph topology differs from registered boundaries".into());
++            return Err("instrumented graph topology differs from registered sparse boundaries".into());
+         }
+         for (i, &node) in mapped.iter().enumerate() {
+             if describe_kernel(node)? != result.descriptions[i] || describe_kernel(original[i])? != result.descriptions[i] {
+@@ -228,10 +259,14 @@
+         }
+         if chain(source.cu_graph())? != original { return Err("source graph changed".into()); }
+         let stable_edges: Vec<_> = (0..mapped.len() - 1).map(|i| json!([format!("K{i}"), format!("K{}", i+1)])).collect();
+-        let boundaries: Vec<_> = (0..mapped.len()).flat_map(|i|
+-            [json!([format!("E{i}"), format!("K{i}")]), json!([format!("K{i}"), format!("E{}", i+1)])]).collect();
++        let boundaries: Vec<_> = EVENT_BOUNDARIES.iter().flat_map(|&b|
++            [json!([format!("K{}", b-1), format!("E{b}")]),
++             json!([format!("E{b}"), format!("K{b}")])]).collect();
+         result.topology = json!({"graph": graph_index, "original_kernel_nodes": mapped.len(),
+-            "event_nodes": result.events.len(), "original_edges": stable_edges, "added_edges": boundaries,
++            "event_nodes": result.events.len(), "event_boundaries": EVENT_BOUNDARIES,
++            "selected_ordinals": SELECTED.iter().map(|x| x.0).collect::<Vec<_>>(),
++            "total_nodes": 69, "total_edges": edges.len(),
++            "original_edges": stable_edges, "added_edges": boundaries,
+             "kernel_descriptors": result.descriptions.iter().enumerate().map(|(i,d)| json!({
+                 "ordinal":i,"logical":d.logical(),"run_local_function":format!("0x{:x}",d.function)
+             })).collect::<Vec<_>>(), "kernel_argument_setter_calls":0,
+@@ -252,19 +287,20 @@
+     }
+ 
+     fn sample(&self, graph: usize, iteration: u32) -> DiagResult<Value> {
+-        // Caller has completed the whole batch. No host wait occurs between kernels/replays.
++        // Caller completed the whole batch. Each event holds only its final replay timestamp.
+         let mut nodes = Vec::new();
+-        let mut families = BTreeMap::<String, f64>::new();
+-        for (i, desc) in self.descriptions.iter().enumerate() {
+-            let ms = self.events[i].elapsed_ms(&self.events[i+1]).map_err(e)?;
+-            if !ms.is_finite() || ms < 0.0 { return Err("invalid device interval".into()); }
+-            *families.entry(desc.name.clone()).or_default() += ms as f64;
+-            nodes.push(json!({"ordinal":i,"kernel":desc.name,"ms":ms,"near_resolution":ms<=0.0005}));
+-        }
+-        let envelope = self.events[0].elapsed_ms(self.events.last().unwrap()).map_err(e)?;
+-        if !envelope.is_finite() || envelope < 0.0 { return Err("invalid graph envelope".into()); }
+-        Ok(json!({"graph":graph,"iteration":iteration,"scope":"final replay only; event-perturbed intervals",
+-            "nodes":nodes,"family_ms":families,"graph_envelope_ms":envelope}))
++        for &(ordinal, _) in &SELECTED {
++            let begin = EVENT_BOUNDARIES.iter().position(|&b| b == ordinal).ok_or("missing start boundary")?;
++            let end = EVENT_BOUNDARIES.iter().position(|&b| b == ordinal + 1).ok_or("missing end boundary")?;
++            let ms = self.events[begin].elapsed_ms(&self.events[end]).map_err(e)?;
++            if !ms.is_finite() || ms < 0.0 { return Err("invalid selected device interval".into()); }
++            let desc = &self.descriptions[ordinal];
++            nodes.push(json!({"ordinal":ordinal,"kernel":desc.name,"logical":desc.logical(),
++                "start_boundary":ordinal,"end_boundary":ordinal+1,"ms":ms,"near_resolution":ms<=0.0005}));
++        }
++        Ok(json!({"graph":graph,"iteration":iteration,
++            "scope":"selected original kernels, final replay only; event-perturbed intervals",
++            "nodes":nodes}))
+     }
+ }
+ 
+@@ -272,7 +308,7 @@
+     fn drop(&mut self) {
+         // Context/stream Arcs and the enclosing solver borrow keep all references alive.
+         if let Err(error) = self.close() {
+-            let _ = writeln!(io::stderr().lock(), "D033_CLEANUP_ERROR {error}");
++            let _ = writeln!(io::stderr().lock(), "D045_CLEANUP_ERROR {error}");
+         }
+     }
+ }
+@@ -310,7 +346,7 @@
+ impl Drop for SolverGuard {
+     fn drop(&mut self) {
+         if let Err(error)=self.0.synchronize() {
+-            let _=writeln!(io::stderr().lock(),"D033_SOLVER_CLEANUP_ERROR {error}");
++            let _=writeln!(io::stderr().lock(),"D045_SOLVER_CLEANUP_ERROR {error}");
+         }
+     }
+ }
+@@ -399,11 +435,10 @@
+     arm.gpu.synchronize()?;
+     let wall_ms=wall.elapsed().as_secs_f64()*1000.;
+     let ms=start.elapsed_ms(&end).map_err(e)?;
+-    let gap=arm.graphs[0].events.last().unwrap().elapsed_ms(&arm.graphs[1].events[0]).map_err(e)?;
+-    if !ms.is_finite() || ms<0. || !gap.is_finite() || gap<0. { return Err("invalid instrumented interval".into()); }
++    if !ms.is_finite() || ms<0. { return Err("invalid instrumented interval".into()); }
+     let samples=arm.graphs.iter().enumerate().map(|(i,g)|g.sample(i,arm.gpu.iteration)).collect::<DiagResult<Vec<_>>>()?;
+     Ok(json!({"arm":"instrumented","end_iteration":arm.gpu.iteration,"iterations":20,
+-        "device_batch_ms":ms,"host_batch_ms":wall_ms,"final_replay_inter_graph_gap_ms":gap,
++        "device_batch_ms":ms,"host_batch_ms":wall_ms,
+         "final_replay_only":samples,"setup_upload_wait_excluded":true}))
+ }
+ 
+@@ -498,7 +533,8 @@
+             let first=state_fingerprint(&host_a,exploit);
+             let second=state_fingerprint(&host_b,other);
+             if first!=anchor["state_fingerprint"] || second!=first { return Err("immutable E015/original full-state anchor mismatch".into()); }
+-            emit(json!({"stage":"final_anchor_exact","state_fingerprint":first,"original_run":"B038","accepted_run":"E015C1"}))?;
++            emit(json!({"stage":"final_anchor_exact","state_fingerprint":first,"original_run":"B038",
++                "accepted_run":"E020C1","historical_anchor_run":"E015C1"}))?;
+         }
+     }
+     native.synchronize()?; instrumented.gpu.synchronize()?;
+@@ -507,15 +543,16 @@
+     instrumented.gpu._ctx.check_err().map_err(e)?;
+     drop(instrumented); // cloned execs/graphs/events finish before candidate module/buffers.
+     emit(json!({"stage":"complete","checkpoints":[140,160,180,200],"node_samples":[160,180,200],
+-        "accepted_performance_claim":false,"scope":"rainbow compressed captured training graphs only"}))
++        "selected_intervals_per_graph_per_checkpoint":3,"total_selected_intervals":18,
++        "accepted_performance_claim":false,"scope":"rainbow compressed selected captured training kernels only"}))
+ }
+ 
+ #[test]
+-#[ignore = "manual D033 captured-graph device event diagnostic; serialized GPU execution only"]
++#[ignore = "manual D045 captured-graph device event diagnostic; serialized GPU execution only"]
+ fn captured_graph_device_event_diagnostic() {
+     if let Err(error)=diagnostic() {
+         let _=emit(json!({"stage":"invalid","error":error}));
+-        panic!("D033 invalid diagnostic: {error}");
++        panic!("D045 invalid diagnostic: {error}");
+     }
+ }
+ 

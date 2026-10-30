@@ -1,0 +1,9 @@
+{
+  "kind": "Reviewer-only exploratory file read",
+  "error": "IndexError: list index out of range",
+  "cause": "E020 report stages were initially treated as flat rather than wrapped in data; empty exploratory filter indexed at zero.",
+  "correction": "Read report stages[*].data; all10 embedded convergence entries verified against E020C1.",
+  "source_or_native_failure": false,
+  "builds": 0,
+  "native_runs": 0
+}

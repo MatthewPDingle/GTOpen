@@ -1,0 +1,23 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -229,9 +229,6 @@
+         card_pos_sh[j] = o_card_pos[card_base + j];
+     __syncthreads();
+     const float* ro = ro_sh;
+-    for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+-        reach_sh[k] = ro[o_idx[ob + k]];
+-    }
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+         cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
+@@ -245,7 +242,9 @@
+         int hi_k = min(lo_k + chunk, m_o);
+         float acc = 0.f;
+         for (int k = lo_k; k < hi_k; k++) {
+-            acc += reach_sh[k];
++            float value = ro[o_idx[ob + k]];
++            reach_sh[k] = value;
++            acc += value;
+             prefix[k] = acc;
+         }
+         chunk_sum[threadIdx.x + 1] = acc;

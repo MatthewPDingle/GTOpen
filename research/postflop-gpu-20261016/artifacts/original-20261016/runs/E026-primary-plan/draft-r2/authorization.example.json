@@ -1,0 +1,53 @@
+{
+  "candidate": "E026",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "D050_terminal_ptx_pass": false,
+  "direct_up_show_exact_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D050_terminal_review": {
+      "path": "ROOT_FILL_IMMUTABLE_D050_TERMINAL_REVIEW",
+      "sha256": "ROOT_FILL"
+    },
+    "direct_up_show_terminal_review": {
+      "path": "ROOT_FILL_IMMUTABLE_DIRECT_UP_SHOW_TERMINAL_REVIEW",
+      "sha256": "ROOT_FILL"
+    },
+    "E026_source_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E026_SOURCE_REVIEW",
+      "sha256": "ROOT_FILL"
+    },
+    "E026_script_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E026_SCRIPT_REVIEW",
+      "sha256": "ROOT_FILL"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-design\\candidate\\kernels.cu",
+      "sha256": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-design\\candidate\\mod.rs",
+      "sha256": "8ee3d99b999fded8b11dff5507958fa0c8f2bbd8bf054b96cfa32cda78eeffd8"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-primary-plan\\scripts-manifest.json": "ROOT_FILL_FROZEN_SEAL",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-primary-plan\\protocol.json": "PENDING_FINAL_CONTRACT_PROTOCOL",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-design\\manifest.json": "d74b90eb938b12aed3032ec0a1b404b09c108b417a2683c71a39f52a666eb09e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+  },
+  "scope": "Example only. Root creates immutable authorization.json after every terminal prerequisite and independent review. Every role path/hash must also be in evidence_sha256; placeholders/false fields never authorize execution."
+}

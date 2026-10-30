@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-17T22:28:32.089130+00:00",
+  "git_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "(node_attrs|packed_node|node_packed|action_meta|packed_actor|actor_arity)",
+    "--",
+    "crates/solver/src/gpu"
+  ],
+  "local_all_ref_matches": [],
+  "scope": "Bounded current ledger/preserved CUDA source and local all-ref postflop GPU history; not exhaustive remote novelty.",
+  "excluded_closed_families": [
+    "E003mutable noalias",
+    "E046chance-record interleaving",
+    "E048card-identity membership",
+    "E052show shared-position narrowing",
+    "E056action arity order",
+    "E069show work order"
+  ]
+}

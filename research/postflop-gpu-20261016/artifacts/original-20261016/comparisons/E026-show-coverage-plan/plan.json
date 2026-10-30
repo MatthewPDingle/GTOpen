@@ -1,0 +1,88 @@
+{
+  "id": "E026-show-coverage-plan",
+  "status": "FROZEN_PROSPECTIVE_SOURCE_AUDIT",
+  "diagnostic_id": "D051",
+  "base": "Accepted E020",
+  "baseline_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558",
+  "baseline_physical_threads": 128,
+  "candidate_physical_threads": 256,
+  "logical_scan_threads": 128,
+  "matrix": {
+    "valid_opponent_counts": [
+      0,
+      1,
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      1081
+    ],
+    "final_boards": [
+      "Ks7h2dQhTc",
+      "AsKsQsJsTs"
+    ],
+    "other_player_valid_count": 257,
+    "player_orientations": [
+      0,
+      1
+    ],
+    "reach_profiles": [
+      "all_zero",
+      "sparse_rounding_witness",
+      "seeded_ordinary",
+      "subnormal_mixed_scales"
+    ],
+    "regular_comparison_pairs": 144,
+    "zero_count_pairs": 4,
+    "comparison_pairs": 148,
+    "kernel_launches": 296,
+    "active_nodes_per_regular_launch": 2,
+    "node_payouts": [
+      [
+        5,
+        -5,
+        0
+      ],
+      [
+        4.5,
+        -5,
+        -0.25
+      ]
+    ],
+    "root_ranges": "Final-board-valid hands plus deterministic hands blocked only by the turn/river; empty valid range retains blocked root hands. Largest legal final-board range1081.",
+    "zero_count_matrix": "Both boards and orientations at m257, seeded ordinary profile, count0 and positive grid."
+  },
+  "corpus_requirements": [
+    "Freeze every board, root hand, actual rank, sorted order, lower/upper bound, card-list position, same-hand map and f32 input bit before native execution.",
+    "Nonzero slot/list offsets, original-order reaches with permuted nonzero reach/CFV slots, nonzero start, count2, excess grid blocks, padded CFV rows.",
+    "Verify actual same-hand present/sentinel, blockers and compatible hands, lower/upper bounds, all-tie board and mixed-strength inequalities; missing root hands must be zeroed.",
+    "Sparse witness in sorted positions0..3 is [1,2^-24,2^-24,2^-24]; include a blocker-free own hand at m257 so raked tie output depends on that total.",
+    "All finite-input output bits must match even if nonfinite output unexpectedly occurs; report nonfinite output bits explicitly. No NaN/Inf input or payload generalization."
+  ],
+  "oracle": "Complete separately compiled immutable E020 up_show128 versus exact D050 up_show256; every raw CFV word and all device inputs read back after each variant. No handwritten reduction reference and no candidate-versus-itself oracle.",
+  "guards": "Output starts stale; all active root-hand spans compared bitwise, absent-from-river hands must become+0, all padding/outside spans unchanged. count0 changes no outputs. m_p0 with positive root nh still zeros that active root span as existing kernel specifies.",
+  "anti_vacuity": "Require active outputs overwrite guards, and nonzero mixed-board/raked-tie outputs; host injected expected-bit/guard verifier failures separately labelled, not numerical cases.",
+  "numerical_validation": "not executed",
+  "implementation": "Root authorized off-tree preparation only; no build or GPU by preparer.",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "terminal_report": "runs/D051-show-physical256-exact/report.json",
+  "independent_terminal_validation": "comparisons/D051-independent-review/validation.json",
+  "required_terminal_fields": {
+    "id": "D051",
+    "verdict": "PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON",
+    "exactness_pass": true,
+    "numerical_validation": "executed",
+    "baseline_physical_threads": 128,
+    "candidate_physical_threads": 256,
+    "logical_scan_threads": 128,
+    "comparison_pairs": 148,
+    "kernel_launches": 296,
+    "performance_measurement": false,
+    "candidate_accepted": false
+  },
+  "later_full_cycle": "Unchanged fixed primary3pairs/all18states/138checks,84passed4ignored units,>=2%gain and repeated fixture guard, no extensions. Passing primary is not acceptance: original160 controls,fullF32,6GPU,continuation/budget/warm,unchanged wide-turn guard vsE020 and fresh-original cumulative remain required."
+}

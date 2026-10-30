@@ -1,0 +1,50 @@
+{
+  "id": "E090",
+  "at": "2026-10-28T08:45:07.312382+00:00",
+  "measurement_epoch": "RAM20261028",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 10524.784200000002,
+    "candidate_full_cycle_ms": 10443.051099999999,
+    "observed_gain_pct": 0.7765774427945334,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.5721462052060392,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -1.3146815661881353,
+        "slower_pairs": 0,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 7.8425659586234095,
+        "slower_pairs": 3,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "all18_scientific_records_and138_checkpoints_exact": true,
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "raw_GPU_control_cases": 32,
+  "raw_GPU_snapshot_pairs": 288,
+  "assessment_sha256": "eb5a6e9b54032b522feab48cf836a630ed469ff55836b711852171d2de178534",
+  "root_replay_sha256": "c11f17284bb1c80341bd37a7db979325926038e66ba202dfe98e070f789048cf",
+  "primary_raw_arena_bytes_independently_compared": false,
+  "primary_whole_arena_fingerprints_exact": true,
+  "source_adopted": false,
+  "live_source": "E080",
+  "historical_or_RAM_baseline_samples_scored": 0,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "reason": "The fixed complete-solve screen with the current RAM settings measured 0.776577% aggregate improvement. All 18 scientific results, 138 convergence checkpoints, 86 ordinary units and the raw engine controls (32 cases, 288 snapshots) passed. Rejected: below the unrounded1% cutoff; repeatable slowdown: river. The exact per-player scratch-stride form is closed; no width/alignment/fixture/source variant or extra-sample rescue."
+}

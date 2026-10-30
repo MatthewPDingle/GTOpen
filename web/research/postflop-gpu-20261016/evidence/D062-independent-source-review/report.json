@@ -1,0 +1,51 @@
+{
+  "id": "D062-independent-source-review",
+  "created_at": "2026-10-16T19:27:24.245419+00:00",
+  "verdict": "PASS_SCOPED_NO_GO_FOR_IDENTICAL_REACH_OWNER_REUSE",
+  "no_actionable_factual_gap": true,
+  "scope": "Valid current TreeBuilder-produced trees and their reached GpuPlan fold list, fixed opponent q, fixed plan and one completed downward generation. Not arbitrary user-mutated Tree graphs.",
+  "findings": [
+    {
+      "claim": "A q-action creates a fresh q owner at each child; a chance edge creates fresh owners for both players. Other-player action edges alone preserve q owner.",
+      "source": "gpu/plan.rs:145-165,168-205"
+    },
+    {
+      "claim": "After an owner is created, a p=1-q decision can contribute at most one p-fold with that owner. Its other branches lead to q decisions, terminal showdowns, or chance; reaching another p decision first crosses a q edge or chance edge, changing owner. A q-fold creates its own terminal owner and cannot have descendants. Thus same-owner paths cannot supply two folds, including across sibling branches.",
+      "source": "tree.rs:463-466,557-595,602-671,693-747"
+    },
+    {
+      "claim": "The builder appends new nodes rather than sharing child subgraphs. The public build and lenient-load routes use the same action transitions; menu validation differences do not introduce consecutive same-player action decisions.",
+      "source": "tree.rs:282-315,393-429,557-595,654-671"
+    },
+    {
+      "claim": "Chance isomorphism filters traversal to representative children; fold_nodes includes only reached nodes. Dense reach-slot assignment maps distinct owner IDs to distinct storage slots, unlike CFV parity scratch reuse. Default owner zero on inactive nodes does not add inactive folds or collapse distinct active owners.",
+      "source": "gpu/plan.rs:175-205,244-277,412-425"
+    },
+    {
+      "claim": "The fold kernel actually selects the fixed opponent row by reach_slot at the terminal. The identity result therefore applies to the proposed per-row total/card-sum reuse key. Equal values in different rows are a separate question.",
+      "source": "gpu/kernels.cu:158-188"
+    }
+  ],
+  "conclusion": "No within-sweep duplicate owner groups exist for this scoped constructor, so this identity-key cache removes no duplicate fold reductions. A CPU census would confirm examples without changing the source deduction and is not needed now.",
+  "limits": [
+    "This does not rule out equal-content rows with distinct owners, cross-iteration reuse, or all other fold optimizations.",
+    "Slot numbers must not be equated across players, allocations, generations or paging/workspace swaps.",
+    "An arbitrary public Tree mutation with consecutive same-player decisions or shared descendants is outside the proof; no generic graph theorem is claimed.",
+    "No measured timing, device speed, complete-cycle gain, numerical execution or future acceptance is claimed."
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\report.json": "44cb58607c318a02c7dedc4ad5793d3e5ce321e0b359c044acb5e2b73ec29185",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\manifest.json": "8bb6cc2fa447b5512257f42abd398537b5ebb11911467690d35f64b635a41c8c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\source\\crates__solver__src__tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\source\\crates__solver__src__gpu__plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\source\\crates__solver__src__gpu__kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+  },
+  "preserved_scout_artifacts_verified": 8,
+  "cpu_census_executed": false,
+  "solver_or_plan_executed": false,
+  "compiler_native_gpu_executed": false,
+  "candidate_prepared": false,
+  "production_modified": false,
+  "status_modified": false,
+  "reviewer_failures": []
+}

@@ -1,0 +1,30 @@
+{
+  "id": "E085-kernel-control",
+  "at": "2026-10-18T10:04:26.217795+00:00",
+  "status": "pass_scoped_up_action_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 63899,
+  "cases": 819,
+  "kernel_launches": 1638,
+  "output_words_both_arms": 12375858,
+  "immutable_words_both_arms": 5199114,
+  "guard_words_both_arms": 10240828,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-kernel-control\\evidence\\baseline-inputs.bin": "55bb81e2b1d287270eaed7d96e4a4c6679af0da5da95528f3b20ca2e4a5f55ac",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-kernel-control\\evidence\\baseline.bin": "bd021ed784a4c9883f3728a9e7cdb64a3d1716d7768ad2449777619c4ce59c23",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-kernel-control\\evidence\\candidate-inputs.bin": "55bb81e2b1d287270eaed7d96e4a4c6679af0da5da95528f3b20ca2e4a5f55ac",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-kernel-control\\evidence\\candidate.bin": "bd021ed784a4c9883f3728a9e7cdb64a3d1716d7768ad2449777619c4ce59c23",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-kernel-control\\evidence\\inputs.bin": "b145451ac72a0603275c2952044a4c35605edbf7d2e85fcd3d48020736ee3e0c"
+  },
+  "protocol_sha256": "8d71f0d216c0b08e0a83dbe858de036ff6862ec97eb0f7a1c87fbf7584091b37",
+  "corpus_sha256": "b0e82dca741b3435c775baeeaddc177a78080234430c873492c48d6283d8252a",
+  "complete_sha256": "d94c39302da26292b37daf1adae785584a1ace6fd1880963638910ce1c8f3df7",
+  "audit_script_sha256": "83dccbf2f54450c2a71f3f54304c847a563e9f45f50f2e6530f90168340fed47",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "all_parent_child_cfv_rows_disjoint": true,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

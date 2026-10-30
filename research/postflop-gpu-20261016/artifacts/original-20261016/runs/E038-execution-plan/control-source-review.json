@@ -1,0 +1,21 @@
+{
+  "id": "E038-root-control-source-review",
+  "at": "2026-10-17T00:04:47.639138+00:00",
+  "reviewer": "root; independent of the attachment builder",
+  "attachment_sha256": "47e77c2321a7cfb09a1522b075e0a0fed8f53c4ea4f7a044d771dc26880d93b1",
+  "verdict": "PASS_SOURCE_REVIEW_PENDING_COMPILE_AND_RUNTIME",
+  "findings": [],
+  "review": [
+    "Both arms attach the same ignored test to independently pinned original and candidate arena sources; the actual constructor and readback methods exercise the production upload/write code.",
+    "The seeded nonzero U16 words at +0 scales demonstrate why CPU queries and raw host words must be preserved. Raw arrays, query bytes and current save serialization are observed before and after upload.",
+    "Actual full/compact geometry, device sizes and compact inactive snapshot metadata are asserted. Distinct finite signed regret blocks provide an observable inactive materialization/resync witness.",
+    "Five complete compressed host images and four raw GPU images per layout are retained. Raw words/scales are compared without numerical tolerance; no production algorithm is reimplemented.",
+    "The fixed node/data/output bounds and no-solve-iterations scope are adequate for a focused control. The node cap also bounds the signed regret seed conversion.",
+    "Drop synchronization and an owner-context error check cover normal cleanup. A cleanup marker or nonzero native result must stop the parent.",
+    "A full qualified test filter plus successful one-test inventory will bind selection because the existing runner does not expose Rust --exact. No shared runner change is needed."
+  ],
+  "limits": [
+    "No compiler or native/GPU execution in this review. Geometry/data/output and the materialization witness are runtime assertions, not established facts.",
+    "This control does not replace the separate whole-solve screen, broader state/F32/compatibility qualification or fixed confirmation before adoption."
+  ]
+}

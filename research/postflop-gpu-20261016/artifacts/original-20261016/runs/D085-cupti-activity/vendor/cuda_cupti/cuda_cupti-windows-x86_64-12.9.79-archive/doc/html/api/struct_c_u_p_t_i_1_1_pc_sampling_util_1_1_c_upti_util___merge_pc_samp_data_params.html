@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.1.1.5. CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.1.1.6. CUPTI::PcSamplingUtil::CUptiUtil_PutPcSampDataParams" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___put_pc_samp_data_params.html" />
+    <link rel="prev" title="7.1.1.4. CUPTI::PcSamplingUtil::CUptiUtil_GetPcSampDataParams" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_pc_samp_data_params.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="namespaces.html">7. Namespaces</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="namespace_c_u_p_t_i.html">7.1. CUPTI</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html">7.1.1. PcSamplingUtil</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info.html">7.1.1.1. BufferInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_buffer_info_params.html">7.1.1.2. CUptiUtil_GetBufferInfoParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_header_data_params.html">7.1.1.3. CUptiUtil_GetHeaderDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_pc_samp_data_params.html">7.1.1.4. CUptiUtil_GetPcSampDataParams</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">7.1.1.5. CUptiUtil_MergePcSampDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___put_pc_samp_data_params.html">7.1.1.6. CUptiUtil_PutPcSampDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_header.html">7.1.1.7. Header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_pc_sampling_stall_reasons.html">7.1.1.8. PcSamplingStallReasons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html#enumerations">7.1.1.9. Enumerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html#functions">7.1.1.10. Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_n_v.html">7.2. NV</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="namespaces.html"><span class="section-number">7. </span>Namespaces</a> &raquo;</li>
+    <li><a href="namespace_c_u_p_t_i.html"><span class="section-number">7.1. </span>CUPTI</a> &raquo;</li>
+    <li><a href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html"><span class="section-number">7.1.1. </span>CUPTI::PcSamplingUtil</a> &raquo;</li>
+<li><span class="section-number">7.1.1.5. </span>CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-pcsamplingutil-cuptiutil-mergepcsampdataparams">
+<h1><span class="section-number">7.1.1.5. </span>CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams<a class="headerlink" href="#cupti-pcsamplingutil-cuptiutil-mergepcsampdataparams" title="Permalink to this headline"></a></h1>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParamsE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParamsE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParamsE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUptiUtil_MergePcSampDataParams</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParamsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Params for <a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y_1ga4987e223c4132503d622f29ce5a9546e"><span class="std std-ref">CuptiUtilMergePcSampData</span></a>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric-h3 rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams4sizeE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams4sizeE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams4sizeE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams::size__s"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params_1a808596a0967b302067db7339c8edc097"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams4sizeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Size of the data structure i.e. </p>
+<p>CUpti_PCSamplingDisableParamsSize CUPTI client should set the size of the structure. It will be used in CUPTI to check what fields are available in the structure. Used to preserve backward compatibility. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numberOfBuffersE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numberOfBuffersE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numberOfBuffersE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams::numberOfBuffers__s"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params_1ac29d94c02d27b7e7564512afbb89776b"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numberOfBuffers</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numberOfBuffersE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of buffers to merge. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams16PcSampDataBufferE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams16PcSampDataBufferE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams16PcSampDataBufferE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams::PcSampDataBuffer__CUpti_PCSamplingDataP"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params_1a17737240fde681d90ca46f3e2162a279"></span><a class="reference internal" href="struct_c_upti___p_c_sampling_data.html#_CPPv420CUpti_PCSamplingData" title="CUpti_PCSamplingData"><span class="n"><span class="pre">CUpti_PCSamplingData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PcSampDataBuffer</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams16PcSampDataBufferE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Pointer to array of buffers to merge. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams23MergedPcSampDataBuffersE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams23MergedPcSampDataBuffersE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams23MergedPcSampDataBuffersE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams::MergedPcSampDataBuffers__CUpti_PCSamplingDataPP"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params_1aa959dc172662357324cc09d3be1e914b"></span><a class="reference internal" href="struct_c_upti___p_c_sampling_data.html#_CPPv420CUpti_PCSamplingData" title="CUpti_PCSamplingData"><span class="n"><span class="pre">CUpti_PCSamplingData</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">MergedPcSampDataBuffers</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams23MergedPcSampDataBuffersE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Pointer to array of merged buffers as per the range id. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numMergedBufferE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numMergedBufferE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numMergedBufferE"></span><span id="CUPTI::PcSamplingUtil::CUptiUtil_MergePcSampDataParams::numMergedBuffer__sP"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params_1ae079332020b290e992840b0f60b00cd0"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">numMergedBuffer</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil31CUptiUtil_MergePcSampDataParams15numMergedBufferE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Number of merged buffers. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

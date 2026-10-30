@@ -1,0 +1,28 @@
+PP
+	movq	24(%rbp), %r13
+	movq	32(%rbp), %rdi
+	movq	%r13, %rcx
+	movq	%rdi, %rdx
+	callq	_RNvCsluSbfOPdzkh_10d090_probe12portable_i16
+	movw	%ax, 124(%rbp)
+	movq	40(%rbp), %rsi
+	movq	48(%rbp), %r12
+	movq	%rsi, %rcx
+	movq	%r12, %rdx
+	callq	_RNvCsluSbfOPdzkh_10d090_probe12portable_i16
+	movw	%ax, 126(%rbp)
+	movq	%r13, %rcx
+	movq	%rdi, %rdx
+	callq	_RNvCsluSbfOPdzkh_10d090_probe8wide_i16
+	movl	%eax, %r13d
+	movq	%rsi, %rcx
+	movq	%r12, %rdx
+	callq	_RNvCsluSbfOPdzkh_10d090_probe8wide_i16
+	cmpw	%r14w, 124(%rbp)
+	jne	.LBB48_69
+	cmpw	%r14w, 126(%rbp)
+	jne	.LBB48_69
+	cmpw	%r14w, %r13w
+	jne	.LBB48_69
+	cmpw	%r14w, %ax
+	jne	.LBB48_69

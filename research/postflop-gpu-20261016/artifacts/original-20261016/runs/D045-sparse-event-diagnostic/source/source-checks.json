@@ -1,0 +1,60 @@
+{
+  "id": "D045",
+  "scope": "Source/host evidence checks only, not compilation or GPU execution",
+  "append_only_test_wiring": true,
+  "unchanged_frozen_helper_and_literal_anchor_suffix": true,
+  "unchanged_regions": [
+    "fn planned_device_bytes(",
+    "fn describe_kernel(",
+    "    fn close(&mut self)",
+    "    fn upload(&self)",
+    "struct Instrumented<'a>",
+    "struct SolverGuard",
+    "fn compare_raw("
+  ],
+  "unchanged_diagnostic_workload_control_flow_except_output_provenance": true,
+  "unchanged_explicit_synchronization_call_count": 15,
+  "v2_conditional_cuda_getter_retained": true,
+  "original_cuda_and_evaluator_unchanged": true,
+  "all_162_current_E020_inputs_exact": true,
+  "E020C1_raw_results_equal_report": true,
+  "E020C1_raw_stdout_hash_exact": true,
+  "E020C1_full_rainbow_non_timing_anchor_exact": true,
+  "E020C1_all_10_convergence_anchors_raw_report_literal_exact": true,
+  "historical_E015_literal_provenance_unchanged": true,
+  "sparse_topology_host_algebra": {
+    "nodes": 69,
+    "edges": 74,
+    "retained_edges": 62,
+    "added_edges": 12,
+    "events": 6,
+    "selected_nodes": [
+      19,
+      29,
+      34
+    ],
+    "boundaries": [
+      19,
+      20,
+      29,
+      30,
+      34,
+      35
+    ]
+  },
+  "syntax_parse_only": {
+    "command": "rustfmt --edition 2021 --emit stdout --config skip_children=true candidate-graph_device_events.rs",
+    "exit_code": 0,
+    "files_modified": false
+  },
+  "patch_check_only": {
+    "command": "git apply --check --whitespace=error-all candidate.patch",
+    "exit_code": 0,
+    "patch_applied": false
+  },
+  "preseal_tooling_note": "One functions.exec submission failed JavaScript parsing before execution due to unescaped README backticks; no files or native work were affected. Resubmitted with plain prose.",
+  "builds": 0,
+  "native_runs": 0,
+  "GPU_execution": false,
+  "source_activated": false
+}

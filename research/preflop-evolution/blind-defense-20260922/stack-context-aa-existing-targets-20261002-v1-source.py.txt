@@ -1,0 +1,132 @@
+"""Descriptive read of all frozen played-model AA tables; no model inference."""
+from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import csv
+import hashlib
+import json
+import math
+import time
+
+OUT = Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+STORE = Path('S:/GTOpen-research/stack-context-matched-learning-v1')
+NAME = 'stack-context-aa-existing-targets-20261002-v1'
+ARMS = ('A-baseline','A-relative','B-baseline','B-relative')
+
+
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def load(path):
+    raw=Path(path).read_bytes()
+    return json.loads(raw),sha(raw)
+
+
+def score_policy(row):
+    values=row['mean_regret'][:row['n']]
+    assert all(math.isfinite(x) for x in values)
+    positive=[max(0.,x) for x in values]
+    mass=sum(positive)
+    return [v/mass for v in positive] if mass else [float(i==max(range(len(values)),key=values.__getitem__)) for i in range(len(values))]
+
+
+targets=[OUT/(NAME+s) for s in ('.json','.csv','-source.py.txt')]
+assert not any(p.exists() for p in targets)
+audit,audit_sha=load(OUT/'stack-context-matched-readback-v7-result.json')
+assert audit['passed'] and audit['independent_readback_complete']
+bindings={str(Path(k)).lower():v for k,v in audit['inputs'].items()}
+bank,bank_sha=load(Path('S:/GTOpen-research/stack-context-matched-evaluation-v5/bank-identities.json'))
+assert bindings[str(Path('S:/GTOpen-research/stack-context-matched-evaluation-v5/bank-identities.json')).lower()]==bank_sha
+prepared,prepared_sha=load(OUT/'stack-context-population-v1-result.json')
+summaries,summary_sha=load(OUT/'stack-context-final-range-summary-v1.json')
+depths=(20,40,100,200,400)
+contexts={}
+for depth in depths:
+    record=next(r for r in prepared['contexts'].values() if r['depth']==depth)
+    context,h=load(record['context_path']);assert h==record['context_sha256']
+    nodes=next(d for d in summaries['descriptions'] if d['depth']==depth and d['arm']=='A-baseline')['nodes']
+    node=next(n for n in nodes if n['player']=='BB' and len(n['history'])==2
+              and n['history'][0]['action']['kind']=='raise' and n['history'][0]['action']['to']==6
+              and n['history'][1]['action']['kind'] in ('raise','jam'))
+    assert [a['kind'] for a in node['actions']]==['fold','call']
+    contexts[depth]=(h,node['node']+1)
+tasks=[]
+for arm in ARMS:
+    selection=bank['selection']['arms'][arm]
+    assert len(selection['played'])==64
+    for generation,ref in enumerate(selection['played']):
+        assert ref['generation']==generation
+        path=STORE/arm/'objects'/ref['file']
+        assert bindings[str(path).lower()]==ref['sha256']
+        tasks.append((arm,generation,path,ref['sha256']))
+
+
+def inspect(task):
+    arm,g,path,expected=task
+    model,h=load(path);assert h==expected and model['generation']==g
+    assert model['override_order']==['shared_network','weighted_preflop','exact_btn','board_root']
+    result=[]
+    for depth,(key,hi) in contexts.items():
+        state=model['local_states'][key]['board_root_state']
+        assert state['completed_updates']==g
+        regrets=state['regret_sums'][168]
+        if not g:root_raise=.25
+        else:
+            positive=[max(0.,v) for v in regrets];mass=sum(positive)
+            root_raise=positive[2]/mass if mass else float(2==max(range(4),key=regrets.__getitem__))
+        table=model['shared']['preflop_tables'][key][0]
+        if table is None:
+            assert g==0
+            rows=[]
+        else:
+            rows=[r for r in table['rows'] if int(r['hi'])==hi
+                  and (int(r['lo'])&63)//4==((int(r['lo'])>>6)&63)//4==12]
+        assert len(rows)<=1
+        row=rows[0] if rows else None
+        policy=score_policy(row) if row else None
+        result.append(dict(arm=arm,generation=g,depth=depth,context_sha256=key,node=hi-1,
+            model_sha256=h,table_row_present=bool(row),root_AA_raise_probability=root_raise,
+            own_history_weight=(g+1)*root_raise,actual_retained_visit_count=row['count'] if row else 0,
+            importance_mass=row['importance_mass'] if row else None,
+            fold_mean_advantage_bb=row['mean_regret'][0] if row else None,
+            call_mean_advantage_bb=row['mean_regret'][1] if row else None,
+            table_fold_probability=policy[0] if row else None,
+            table_call_probability=policy[1] if row else None,
+            missing_row_means='Initial uniform at generation 0; otherwise neural fallback, not inferred here.' if not row else None))
+    return result
+
+
+began=time.monotonic()
+with ThreadPoolExecutor(max_workers=8) as pool:
+    rows=[r for group in pool.map(inspect,tasks) for r in group]
+assert len(rows)==4*64*5
+coverage=[]
+for arm in ARMS:
+    for depth in depths:
+        group=[r for r in rows if r['arm']==arm and r['depth']==depth]
+        present=[r for r in group if r['table_row_present']]
+        weight=sum(r['own_history_weight'] for r in group)
+        table_weight=sum(r['own_history_weight'] for r in present)
+        coverage.append(dict(arm=arm,depth=depth,table_generations=len(present),
+            first_present_generation=present[0]['generation'] if present else None,
+            maximum_retained_visits=max((r['actual_retained_visit_count'] for r in present),default=0),
+            maximum_generation_row_is_not_latest_checkpoint=True,
+            own_history_weight=weight,table_owned_weight=table_weight,
+            unanalysed_neural_fallback_weight=weight-table_weight-group[0]['own_history_weight'],
+            weighted_table_call_numerator=sum(r['own_history_weight']*r['table_call_probability'] for r in present)))
+payload=dict(complete=True,descriptive_only=True,all_played_models=256,played_generations=list(range(64)),
+    excluded_unplayed_generation=64,records=rows,coverage=coverage,read_workers=8,
+    seconds=time.monotonic()-began,model_inference=False,fitting=False,new_scientific_deals=False,
+    native_execution=False,gpu_used=False,production_modified=False,accuracy_qualified=False,
+    scope='Existing fitted-depth AA preflop lookup rows only; advantages are not action EVs. No new trial, model selection, or policy change.',
+    input_shas=dict(audit=audit_sha,bank=bank_sha,prepared=prepared_sha,range_summary=summary_sha),
+    source_identities={str(p):sha(p.read_bytes()) for p in (
+        Path('T:/Dev/GTOpen/tools/research/weighted_preflop_table_v1.py'),
+        Path('T:/Dev/GTOpen/tools/research/sampled_physical_preflop_table_v1.py'),
+        Path('T:/Dev/GTOpen/tools/research/board_root_accumulator_v1.py'),
+        Path('T:/Dev/GTOpen/tools/research/stack_context_full_policy_v1.py'))})
+targets[0].write_text(json.dumps(payload,indent=2,sort_keys=True,allow_nan=False)+'\n',encoding='utf-8')
+with targets[1].open('w',newline='',encoding='utf-8') as f:
+    w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+targets[2].write_bytes(Path(__file__).read_bytes())
+print(json.dumps(dict(records=len(rows),seconds=payload['seconds'],coverage=coverage),sort_keys=True))

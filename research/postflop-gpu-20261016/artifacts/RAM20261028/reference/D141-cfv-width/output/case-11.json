@@ -1,0 +1,43 @@
+{
+  "case": 11,
+  "board": "Ks7h2dQhTc",
+  "iso_requested": true,
+  "full_arenas": true,
+  "nodes": 33,
+  "CFV_rows": 25,
+  "full_producer_writes": 33,
+  "retained_terminal_mode_writes": 12,
+  "actual_child_dependency_reads_checked": 64,
+  "all_producer_dependencies_exact": true,
+  "all_rows_independent_of_incoming_CFV_bytes": true,
+  "players": [
+    {
+      "p": 0,
+      "logical_hands": 233,
+      "old_stride_words": 280,
+      "proposed_stride_words": 233,
+      "allocation_words_unchanged": 7000,
+      "old_address_envelope_words": 6953,
+      "proposed_address_envelope_words": 5825,
+      "row_intervals_checked": 25,
+      "actual_hand_permutations_checked": 233
+    },
+    {
+      "p": 1,
+      "logical_hands": 280,
+      "old_stride_words": 280,
+      "proposed_stride_words": 280,
+      "allocation_words_unchanged": 7000,
+      "old_address_envelope_words": 7000,
+      "proposed_address_envelope_words": 7000,
+      "row_intervals_checked": 25,
+      "actual_hand_permutations_checked": 280
+    }
+  ],
+  "row_writer_file": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D141-cfv-width\\output\\case-11-last-writers.bin",
+  "row_writer_sha256": "6d6d09ade75ebe4e7a1192132a6ec2eedc7dae1297211eef523895cd6032778d",
+  "accepted_raw_sha256": "0dbf07d2007db5e9c5c0505b7806318cd7c202e9865a4deb18c43c67325fe61e",
+  "checks": 1516,
+  "GPU_executions": 0,
+  "performance_measurement": false
+}

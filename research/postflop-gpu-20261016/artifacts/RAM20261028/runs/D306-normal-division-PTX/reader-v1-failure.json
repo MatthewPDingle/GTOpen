@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-29T20:29:36.756596+00:00",
+  "script_sha256": "4256e20df67208ba9765b14c1601cadb42dc854923ace397d6b259d7574352ae",
+  "protocol_sha256": "a66f1b03f85ddf61c43607ef839c8afd1d5ee71a93585680dd630e2a8c685eaf",
+  "failures": [
+    {
+      "section": "compute_75:down_action",
+      "reader_line": 48,
+      "error": "AssertionError()",
+      "item_index": 613,
+      "context": [
+        "@%p9 bra \t$L__BB1_12;",
+        "setp.le.f32 \t%p10, %f9, 0f5F000000;",
+        "setp.ge.f32 \t%p11, %f2, 0f20000000;",
+        "and.pred  \t%p12, %p10, %p11;",
+        "setp.le.f32 \t%p13, %f2, %f9;",
+        "and.pred  \t%p14, %p13, %p12;",
+        "@%p14 bra \t$L__BB1_11;",
+        "bra.uni \t$L__BB1_10;",
+        "$L__BB1_11:",
+        "div.rn.ftz.f32 %f339, %f2, %f9;",
+        "bra.uni \t$L__BB1_12;",
+        "$L__BB1_10:",
+        "div.rn.f32 \t%f339, %f2, %f9;",
+        "$L__BB1_12:",
+        "ld.global.nc.u32 \t%r110, [%rd28];",
+        "cvt.u64.u32 \t%rd139, %r110;"
+      ]
+    },
+    {
+      "section": "compute_75:up_action",
+      "reader_line": 59,
+      "error": "AssertionError()",
+      "item_index": 959,
+      "context": [
+        "setp.le.f32 \t%p12, %f12, 0f5F000000;",
+        "setp.ge.f32 \t%p13, %f614, 0f20000000;",
+        "and.pred  \t%p14, %p12, %p13;",
+        "setp.le.f32 \t%p15, %f614, %f12;",
+        "and.pred  \t%p16, %p15, %p14;",
+        "@%p16 bra \t$L__BB6_15;",
+        "bra.uni \t$L__BB6_14;",
+        "$L__BB6_15:",
+        "max.f32 \t%f616, %f4, 0f00000000;",
+        "div.rn.ftz.f32 %f626, %f616, %f12;",
+        "bra.uni \t$L__BB6_16;",
+        "$L__BB6_14:",
+        "max.f32 \t%f615, %f4, 0f00000000;",
+        "div.rn.f32 \t%f626, %f615, %f12;",
+        "$L__BB6_16:",
+        "ld.global.nc.u32 \t%r141, [%rd23];"
+      ]
+    }
+  ],
+  "new_compiler_GPU_module_kernel_solver_or_speed_samples": 0
+}

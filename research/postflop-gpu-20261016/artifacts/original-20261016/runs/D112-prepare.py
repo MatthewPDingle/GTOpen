@@ -1,0 +1,39 @@
+"""D112/E069: freeze one showdown-by-board plan permutation and CPU controls."""
+import sys,json,difflib,shutil,subprocess
+from pathlib import Path
+ROOT=Path(r'S:\GTOpen-research\postflop-gpu-20261016');sys.path.insert(0,str(ROOT/'runs/accepted-E051'));import common_e051 as old
+old.custody();assert not (ROOT/'gpu-run.lock').exists();assert shutil.disk_usage(ROOT).free>82*1024**3
+A=ROOT/'runs/D111-showdown-order-audit';a=old.read(A/'report.json');assert a['status']=='structural_ordering_hypothesis_supported' and a['new_timing_samples']==0
+H=ROOT/'runs/D112-showdown-order-control';H.mkdir();S=ROOT/'runs/E069-source';S.mkdir();prior=ROOT/'runs/D099-plan-posting-scratch'
+base=(old.REPO/'crates/solver/src/gpu/plan.rs').read_bytes();text=base.decode().replace('\r\n','\n');candidate=text
+needle='        let (show_nodes, show_spans) = flatten_nodes(show_by_level);';assert candidate.count(needle)==1;candidate=candidate.replace(needle,needle.replace('(show_nodes,','(mut show_nodes,'))
+insertion='''        // Group independent showdown blocks by immutable river lookup tables.
+        // Node ID is a deterministic tie-breaker; level spans remain unchanged.
+        for span in &show_spans {
+            let start = span.start as usize;
+            let end = start + span.count as usize;
+            show_nodes[start..end].sort_unstable_by_key(|&node| {
+                (node_river_slot[node as usize], node)
+            });
+        }
+'''
+marker='        let num_slots = slots.len();';assert candidate.count(marker)==1;candidate=candidate.replace(marker,insertion+marker)
+reverse=candidate.replace(insertion,'',1).replace(needle.replace('(show_nodes,','(mut show_nodes,'),needle,1);assert reverse==text
+encoded=candidate.replace('\n','\r\n' if b'\r\n' in base else '\n').encode();(S/'baseline.rs').write_bytes(base);(S/'candidate.rs').write_bytes(encoded)
+(S/'candidate.patch').write_text(''.join(difflib.unified_diff(base.decode().splitlines(True),encoded.decode().splitlines(True),fromfile='accepted-E051/plan.rs',tofile='E069/plan.rs')),encoding='utf-8',newline='')
+old.save(S/'source-review.json',{'id':'E069','at':old.now(),'status':'pass_root_scoped_show_order_design','owned_source':'crates/solver/src/gpu/plan.rs','candidate_sha256':old.sha(S/'candidate.rs'),'transform':'One in-place tuple (river_slot,node_id) sort within each existing show span after slot assignment. No threshold/key/order/scope variants.','mechanical_reverse_equals_accepted':True,'immutable_inputs':'node_river_slot derived from original DFS/key assignment; sorting mutates only show_nodes, not slots/maps/hand tables/CFV maps.','dependencies':'Same show node multisets in each existing launch; current up_show reads immutable tables and completed reach buffers, writes separate persistent CFV rows, never reads CFV. Same inter-kernel stream order and per-node float operands/order.','risks':'CPU sort cost and different reach/output locality may outweigh table locality. Tuple keys have total integer order; source no panic/quality/cache benefit assumed. Actual graph/CPU/peak/responsiveness/capacity/compatibility checks required before adoption.','not_composed':'Not E056action arity order, E032terminal consolidation, E063cutoff, cache policy, E068 arithmetic or failed D110 observation. All old failures retained.','bounded_history_review':'Current ledger, preserved Rust plan sources and local all-ref plan history searches returned no show-by-river sort match. Not exhaustive remote history.','canonical_structural_transitions':{str(c['id']):[c['before_slot_transitions'],c['after_slot_transitions']] for c in a['cases'] if c['id'] in [2,6,10]},'source_census_sha256':old.sha(A/'report.json'),'resource_scope':'CUDA bytes/entry ABI/host launch/config/shared reservations/counts/buffer lengths/physical maps unchanged. CPU metadata full raw controls next; CUDA resource recompile/single-node raw kernel controls do not test this ordering-only mechanism.','sort_documentation':'https://doc.rust-lang.org/std/primitive.slice.html#method.sort_unstable_by_key','official_doc_paraphrase':'The standard library documents this as an in-place sort without allocation. That is not measured process peak/CPU cost.','external_independent_review':False,'optimization_accepted':False})
+for src,dst in [(S/'baseline.rs',H/'accepted-plan.rs'),(S/'candidate.rs',H/'candidate-plan.rs')]:shutil.copyfile(src,dst)
+for name in ['game.rs','field-schema.json','fixture-0.json','fixture-1.json','fixture-2.json']:shutil.copyfile(prior/name,H/name)
+probe=(prior/'probe-r2.rs').read_text().replace('D099','D112')
+needle='field(&mut f,15,"show_nodes",&a.show_nodes,&b.show_nodes,false)';assert probe.count(needle)==1;probe=probe.replace(needle,needle.replace(',false)',',true)'))
+start=probe.index('// Separate untimed allocator-mechanism audit');end=probe.index('let v=serde_json::json!(',start);probe=probe[:start]+probe[end:]
+probe=probe.replace(',"posting_mechanism":mechanism','').replace('"all53fields_bitwise_equal":true','"all52nonorder_fields_bitwise_equal":true')
+assert 'mechanism' not in probe and probe.count('a.show_nodes,&b.show_nodes,true')==1
+(H/'probe.rs').write_text(probe,encoding='utf-8',newline='\n')
+command=old.read(prior/'protocol-r2.json')['command'];command=[str(H/'probe.rs') if x==str(prior/'probe-r2.rs') else ('d112_probe' if x=='d099_probe' else (str(H/'build/probe.exe') if x==str(prior/'build/probe.exe') else x)) for x in command]
+inputs={str(p):old.sha(p) for p in [*H.iterdir(),*S.iterdir(),A/'report.json',A/'protocol.json',Path(__file__),old.REPO/'crates/solver/src/gpu/plan.rs',old.REPO/'crates/solver/src/gpu/mod.rs',old.REPO/'crates/solver/src/gpu/kernels.cu'] if p.is_file()}
+for path,h in old.read(prior/'protocol-r2.json')['input_sha256'].items():
+ if '\\build-e051-final-primary\\' in path:old.pin(path,h);inputs[path]=h
+old.save(H/'protocol.json',{'id':'D112','at':old.now(),'status':'frozen_precompile_and_native','command':command,'cases':list(range(12)),'input_sha256':inputs,'accepted_source':old.BASE,'candidate_owned_sha256':{'crates/solver/src/gpu/plan.rs':old.sha(S/'candidate.rs')},'warmup_pairs':2,'measured_pairs':9,'pair_order':['BC','CB','BC','CB','BC','CB','BC','CB','BC'],'untimed_raw_pairs':1,'correctness_rule':'All52other full fields/f32bits/capacities and struct size equal accepted and retained D092. Same per-level node sets with unique/disjoint persistent CFV outputs. Candidate show list equals independently derived D111tuple order.','timing_scope':'Warmed uninstrumented CPU component only, held Spot, excludes destructor and raw recording; measure all added sort work. No full-cycle or GPU cost attribution.','timing_admission':'No CPU timing used as speedup acceptance or complete-solve bound. Retain every pair and report added component costs; full-cycle 1%/fixture/fresh16 and actual material CPU/peak/responsiveness/capacity gates remain required.','sampling_rule':'Exactly fixed12processes and9pairs; no exclusions/extensions/variants/retiming rescue.','next_if_exact':'Freeze integrated feature/primary build and initial3paired complete-solve screen on E051, including all sort/init costs. Broad/material/holdout/cumulative only after fresh16 passes.','reserve_bytes':66*1024**3,'expected_max_raw_bytes':6*1024**3,'external_independent_review':False})
+old.save(S/'manifest.json',{'id':'E069','at':old.now(),'accepted_source':'E051','candidate_owned_sha256':{'crates/solver/src/gpu/plan.rs':old.sha(S/'candidate.rs')},'cpu_control_protocol_sha256':old.sha(H/'protocol.json'),'source_activated':False,'native_solver_executions':0})
+print(json.dumps({'cpu_protocol_sha256':old.sha(H/'protocol.json'),'candidate_plan_sha256':old.sha(S/'candidate.rs'),'free_GiB':shutil.disk_usage(ROOT).free/1024**3}),flush=True)

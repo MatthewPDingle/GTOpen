@@ -1,0 +1,19 @@
+"""One off-tree all-writable-formal promise; byte-exact inverse, no activation."""
+import hashlib,re,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'epoch'));import common as h
+h.custody();h.ar.refuse_active(h.ar.live_status());assert not(ROOT/'gpu-run.lock').exists();D=ROOT/'runs/D259-writable-alias-scout/report.json';d=h.read(D);assert d['status']=='novel_writable_formal_contract_source_design_only'and not d['matching_previous_original_action_writable_restrictions']
+path=h.REPO/'crates/solver/src/gpu/kernels.cu';base=path.read_bytes();h.pin(path,d['current_CUDA_sha256']);changes=[];parts=[];cursor=0
+for m in re.finditer(rb'(?:__global__|__device__)[^{};]*?\bvoid\s+(\w+)\s*\((.*?)\)\s*\{',base,re.S):
+ name=m.group(1).decode();a,b=m.span(2);original=base[a:b];after,n=re.subn(rb'(?<!const )\bfloat\*(?!\s*__restrict__)\s+(\w+)',rb'float* __restrict__ \1',original)
+ if n:parts.extend([base[cursor:a],after]);cursor=b;changes.append({'function':name,'writable_qualifiers_added':n,'original_arguments_sha256':hashlib.sha256(original).hexdigest(),'candidate_arguments_sha256':hashlib.sha256(after).hexdigest(),'byte_range':[a,b]})
+parts.append(base[cursor:]);candidate=b''.join(parts);assert sum(x['writable_qualifiers_added']for x in changes)==19 and len(changes)==11
+assert candidate.count(b'__restrict__')==base.count(b'__restrict__')+19;assert candidate.count(b'\r\n')==base.count(b'\r\n')and candidate.count(b'\n')==base.count(b'\n')
+# Exact-position reversal avoids ambiguous original restricted qualifiers.
+rebuilt=[];cursor=0;shift=0
+for c in changes:
+ a,b=c['byte_range'];n=c['writable_qualifiers_added'];ca,cb=a+shift,b+shift+n*13;replacement=candidate[ca:cb];assert re.sub(rb'(?<!const )\bfloat\* __restrict__ (\w+)',rb'float* \1',replacement)==base[a:b];rebuilt.extend([candidate[cursor:ca],base[a:b]]);cursor=cb;shift+=n*13
+rebuilt.append(candidate[cursor:]);assert b''.join(rebuilt)==base
+O=ROOT/'runs/E113-source';O.mkdir(exist_ok=False);(O/'baseline-kernels.cu').write_bytes(base);(O/'candidate-kernels.cu').write_bytes(candidate);name='crates/solver/src/gpu/kernels.cu';base_hash=h.sha(O/'baseline-kernels.cu');candidate_hash=h.sha(O/'candidate-kernels.cu')
+h.save(O/'manifest.json',{'id':'E113','at':h.now(),'accepted_source':'E080','accepted_source_sha256':h.custody(),'candidate_owned_sha256':{name:candidate_hash},'owned':{name:{'base':str(O/'baseline-kernels.cu'),'base_sha256':base_hash,'candidate':str(O/'candidate-kernels.cu'),'candidate_sha256':candidate_hash}},'source_only':True,'source_activated':False,'source_statements_changed':False,'float_operations_changed':False,'fixed_form':'All19 mutable float formals, all9 entries+2 existing inline helpers; qualifier only. No source/qualifier-subset/entry-subset/scope/flags/sample rescue after genuine failure.'})
+h.save(O/'source-review.json',{'at':h.now(),'history_scout_sha256':h.sha(D),'source_generator_sha256':h.sha(__file__),'changes':changes,'qualifiers_added':19,'changed_function_signatures':11,'all_function_bodies_byte_exact':True,'ABI_parameter_types_order_counts_unchanged':True,'source_CRLF_preserved':True,'reverse_byte_exact':True,'host_source_flags_allocations_graphs_and_storage_unchanged':True,'caller_contract_design':d['caller_ownership_review'],'outstanding':['Emitted hot-action mechanism plus original ABI/resource gates, then actual caller/address-extent and full direct/canonical numerical proof.','Fixed ordinary complete-solve >=1%, strict fixture guards, fresh16 and all broad/material/holdout/fresh-original/temporary app gates.'],'source_activated':False,'compiler_or_kernel_runs':0,'candidate_accepted':False,'limits':'Source promise and static caller design only; no executed numerical or speed claim.'});h.custody();print(candidate_hash,flush=True)

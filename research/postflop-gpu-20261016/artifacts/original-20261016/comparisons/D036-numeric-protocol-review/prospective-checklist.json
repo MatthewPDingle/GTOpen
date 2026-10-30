@@ -1,0 +1,110 @@
+{
+  "id": "D036-design-derived-numerical-runtime-checklist",
+  "created_at": "2026-10-16T09:51:08.210597+00:00",
+  "status": "Prospective review checklist; frozen standalone probe protocol/source still awaited",
+  "design_sha256": "6f0fffa9a2fb052f6dbb839087417a272d84a22bd1589c4f9b9f5fd743076014",
+  "design_manifest_sha256": "9385c78f6856cb28ebc10bf44f3f749f8a27ce4bd7e72ea495e130fca90d5097",
+  "accepted_cuda_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+  "scope": "Standalone compiler and numerical differential probe only. No solver integration, GPU/build by reviewer, timing acceptance or performance claim.",
+  "expected_marker_prefix": "D036_PROBE ",
+  "planned_markers_from_builder": [
+    "resource",
+    "raw_total_exact",
+    "full_fold_exact",
+    "complete"
+  ],
+  "numeric_requirements": [
+    {
+      "id": "two_oracles",
+      "check": "Compare the actual complete baseline/candidate up_fold entry points, plus a separately labeled raw-total partial/reduction wrapper. Neither narrow total equality nor resource/PTX equality alone establishes full-kernel equivalence."
+    },
+    {
+      "id": "frozen_corpus",
+      "check": "Before native launch, freeze serialized input f32 bit patterns, case IDs/order, RNG algorithm and seed, checksums, and exact expected coverage counts. Record full input/output hashes and nonfinite output counts per case/shape. No regenerate-on-failure or data-dependent favorable filtering."
+    },
+    {
+      "id": "required_lengths",
+      "values": [
+        0,
+        1,
+        31,
+        32,
+        33,
+        63,
+        64,
+        65,
+        127,
+        128,
+        129,
+        255,
+        256,
+        257,
+        319,
+        1326
+      ]
+    },
+    {
+      "id": "launch_shapes",
+      "specialized": [
+        128,
+        1,
+        1
+      ],
+      "fallback_unit_dimension_x": [
+        16,
+        32,
+        64,
+        256
+      ],
+      "check": "Each candidate is compared against baseline with the same shape and source inputs. Fallback cases are not compared against128, since the original partial tree differs. No unsupported multidimensional or >256x shape is silently treated as a supported original kernel."
+    },
+    {
+      "id": "finite_values",
+      "check": "Cover realistic nonnegative reaches/zeros, deterministic random exponents, rounding boundaries, both zero signs, subnormals, tiny/large finite mixtures and finite cancellation. Full-fold all-zero/empty reaches with positive win and negative loss amounts exercise signed-zero CFVs. Include nonzero compatible outputs so equality is not vacuous."
+    },
+    {
+      "id": "full_kernel_semantics",
+      "check": "Both traversers; both terminal-owner outcomes and multiple amounts/pots; asymmetric player/opponent hands; identical-hand correction present and absent; valid per-card opponent lists in original hand order; remapped reach/CFV slots; nonzero start and excess launch blocks; output padding/gaps/guards remain untouched. At minimum the fixed production128 shape exercises the complete kernel."
+    },
+    {
+      "id": "bitwise_comparison",
+      "check": "Every required output word is compared by bits without tolerance, including signed zeros and any generated nonfinite outputs. Guard words are checked by bits. Hashes support custody but do not substitute for direct comparison."
+    },
+    {
+      "id": "input_immutability",
+      "check": "Read back and compare every device input and metadata buffer against its original bits, including reach, card/hand lists, slot maps and payouts. Unchanged host-side vectors alone do not prove device-input immutability."
+    },
+    {
+      "id": "nonfinite_boundary",
+      "check": "Required input domain is finite. Explicitly report Inf/NaN outputs caused by finite overflow/cancellation; retain exact comparisons for observed cases. Do not generalize to NaN-input/payload equivalence, and do not drop nonfinite results after observing them."
+    },
+    {
+      "id": "negative_validator",
+      "check": "Prespecify an expected-output-bit mismatch and a guard mismatch injection to exercise the same checker failure path. Report these as verifier self-tests or separately expected-failure runs, not numerical equality cases. Every unexpected real mismatch terminates and preserves raw evidence."
+    }
+  ],
+  "provenance_and_runtime_requirements": [
+    {
+      "id": "source_boundary",
+      "check": "Accepted full CUDA source hash exact. Candidate changes only the specified up_fold reduction block, with original fallback loop retained. Narrow oracle code has explicit provenance to those exact partial/reduction statements; it is a separate diagnostic entry point, not a replacement for full up_fold."
+    },
+    {
+      "id": "flags_and_abi",
+      "check": "Same context/device/architecture, same production CompileOptions defaults, no fast-math/FTZ/precision/FMA override, baseline/candidate separate modules, exact kernel argument order and allocation bounds. Preserve source/PTX/binary/rlib/DLL/compiler command hashes and all build logs."
+    },
+    {
+      "id": "resources",
+      "check": "Report actual up_fold registers/local/static shared and theoretical occupancy at block128 using nh_o*4 dynamic bytes for257/319/max1326. PTX branch/barrier/shuffle inspection describes codegen; static opcode counts are not elapsed performance or a dynamic barrier count measurement."
+    },
+    {
+      "id": "execution",
+      "check": "Existing serialized GPU lock/live-solve preflight and terminal exit evidence; one prespecified corpus; all planned shape/player/case counts present; no tolerance, fallback workload, resampling or silent omission. Preserve failed build/run/validator evidence additively."
+    },
+    {
+      "id": "interpretation",
+      "check": "Passing the probe supplies bounded numerical/codegen evidence only. No actual kernel timing or complete-cycle claim is authorized. Production integration, exact original-state controls, frozen suite timings and broader lifecycle controls remain separate future gates."
+    }
+  ],
+  "design_source_reasoning": "For128, original shared reductions64/32 leave32 values. Full warp participation in shuffles16/8/4/2/1 with guarded additions preserves each contributing pair and requires one final block barrier. This supports finite arithmetic equivalence but cannot by itself establish compiler behavior or NaN payload equivalence.",
+  "reviewer_actions": "Read source/design and send pre-freeze concerns to builder only; no build/GPU/solver edits."
+}

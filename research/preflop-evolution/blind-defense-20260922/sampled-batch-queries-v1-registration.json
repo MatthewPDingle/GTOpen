@@ -1,0 +1,27 @@
+{
+  "inputs": {
+    "tools/research/hu_sampled_batch_queries_control_20260922.py": "40bd833f51ec79a0a77980db978f98c3a024d78e1d16cbd2e2ef728287a568cd",
+    "target/release/examples/hu_sampled_batch_queries_control.exe": "7865e8cef273689a7d7cb3a54b43211370d69b78853e79731b152f56b62babe1",
+    "research/preflop-evolution/blind-defense-20260922/bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research/preflop-evolution/blind-defense-20260922/sampled-poker-v1-fixture.json": "8667a8d6b5b68a8a2145bc196b0e983bd0d03815fc6671295a007731737b8312",
+    "research/preflop-evolution/blind-defense-20260922/sampled-network-adapter-v1-fixture.json": "d6ae24df62e0c606fc367447a30254159bb1d7987bffbd9758cec3c91aec8594",
+    "research/preflop-evolution/blind-defense-20260922/sampled-physical-gpu-v1-weights.json": "3b26f55732f7d25db6fe9499d76d1dce171e929da789377986d38c69b945aa34",
+    "research/preflop-evolution/blind-defense-20260922/sampled-physical-gpu-v1-review.json": "af702fe2993c56816b8cf98d728125bd2b8a3cc85ad4e13b24e4401749f1b83b",
+    "tools/research/loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "crates/solver/examples/hu_sampled_batch_queries_control.rs": "c1aae04a42e3741a4d45d5411b6f286113e421658207f35803cc61f8b393c7e3",
+    "crates/solver/examples/research_sampled/state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates/solver/examples/research_sampled/poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates/solver/examples/research_sampled/observation_v1.rs": "21daf72a7bebf5fecea59b6f7edf3af84e4992d9a0ca872daebb1b14632cd717",
+    "crates/solver/examples/research_sampled/network_v1.rs": "ff03f76af382da16a6f4f41046bf593680913fe25fc879a21c8e0577c581dccc",
+    "crates/solver/examples/research_sampled/policy_walk_v1.rs": "e7764b8ca0b064dc144a6f590fb931f1e4090c6a0399259a54ebcff9ad8c731b",
+    "crates/solver/examples/research_sampled/batch_queries_v1.rs": "57caa3ca2a30ea1d1927510ad8d218c5914a5916ffde54574961dccf90a72233"
+  },
+  "maximum_seconds": 180,
+  "maximum_raw_queries": 100000,
+  "no_gpu": true,
+  "production_modified": false,
+  "scope": "16 frozen physical deals, all legal public decision histories for each deal. Bounded per-batch observable queries, not a persistent strategy forest.",
+  "controls": "Cached and direct policies/records must be exactly equal for both synthetic and fixed-data-fitted networks and four legal regret-matching variants.",
+  "negative_controls": "Query budget, empty batch, duplicate physical card, missing query; cache cannot silently return uniform play.",
+  "caveat": "Global suit canonicalization requires this registered symmetric context. This is neither new strategic evidence nor a GPU performance benchmark."
+}

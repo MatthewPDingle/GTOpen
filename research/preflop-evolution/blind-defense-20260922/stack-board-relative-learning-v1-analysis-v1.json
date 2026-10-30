@@ -1,0 +1,636 @@
+{
+  "format": 1,
+  "created_utc": "2026-09-29T01:56:11.324181+00:00",
+  "kind": "Analysis of completed registered results; no new experiment",
+  "source_sha256": "6a4b089d9714917dbe8d869bd9c1c3a66fa117f107f7f1e86290c76557990de4",
+  "inputs": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-relative-learning-v1-result.json": "4bcd1948186032f550c0001ba534e6941c35888577b5abfe54e876e47978810f",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-relative-learning-v1-readback-v1.json": "d3e2a7076b695c48ddc03cf4769024ba75c2d1006ff68411fc70adcfa81cabc6",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\stack-board-relative-learning-v1-registration.json": "76db90e3643939b0fc6e263edddf5ccdad44c65bea4a7e4fdbf685b2620074a4"
+  },
+  "experiment_completed": true,
+  "independent_readback_passed": true,
+  "both_relative_improvement_gates_passed": true,
+  "absolute_accuracy_gate_passed": false,
+  "diagnostic_gate_passed": false,
+  "seeds": [
+    {
+      "seed": 9296901,
+      "gate": {
+        "seed": 9296901,
+        "baseline": 0.002856382494583547,
+        "candidate": 0.0015393879183826873,
+        "relative_reduction": 0.46107080501236375,
+        "absolute_gate": false,
+        "passed": false
+      },
+      "heldout_depths": [
+        {
+          "stack": 60,
+          "baseline_mean_bb": 0.15898065354613966,
+          "candidate_mean_bb": 0.09453057713871306,
+          "required_maximum_bb": 0.06,
+          "baseline_p99_bb": 4.582575757575757,
+          "candidate_p99_bb": 3.4871212121212123,
+          "baseline_maximum_bb": 51.282575757575756,
+          "candidate_maximum_bb": 27.706818181818182
+        },
+        {
+          "stack": 150,
+          "baseline_mean_bb": 0.459463114509715,
+          "candidate_mean_bb": 0.22548993266802358,
+          "required_maximum_bb": 0.15,
+          "baseline_p99_bb": 13.580808080808083,
+          "candidate_p99_bb": 6.721969696969694,
+          "baseline_maximum_bb": 139.39848484848483,
+          "candidate_maximum_bb": 63.61590909090909
+        }
+      ],
+      "partitions": {
+        "hand_groups": [
+          {
+            "identity": {
+              "name": "high_card"
+            },
+            "measures": {
+              "362": {
+                "rows": 2248316,
+                "contribution_to_equal_depth_normalized_mean": 0.0005946385414465048
+              },
+              "387": {
+                "rows": 2248316,
+                "contribution_to_equal_depth_normalized_mean": 0.00037952858739483266
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "pair"
+            },
+            "measures": {
+              "362": {
+                "rows": 5909596,
+                "contribution_to_equal_depth_normalized_mean": 0.0013081509940237623
+              },
+              "387": {
+                "rows": 5909596,
+                "contribution_to_equal_depth_normalized_mean": 0.0007409126435991965
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "two_pair"
+            },
+            "measures": {
+              "362": {
+                "rows": 3365908,
+                "contribution_to_equal_depth_normalized_mean": 0.000846293914997062
+              },
+              "387": {
+                "rows": 3365908,
+                "contribution_to_equal_depth_normalized_mean": 0.00037637273747222644
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "trips"
+            },
+            "measures": {
+              "362": {
+                "rows": 612108,
+                "contribution_to_equal_depth_normalized_mean": 4.4263308116536916e-05
+              },
+              "387": {
+                "rows": 612108,
+                "contribution_to_equal_depth_normalized_mean": 2.325010157853147e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "straight"
+            },
+            "measures": {
+              "362": {
+                "rows": 415912,
+                "contribution_to_equal_depth_normalized_mean": 1.9910129837353065e-05
+              },
+              "387": {
+                "rows": 415912,
+                "contribution_to_equal_depth_normalized_mean": 5.909587863765458e-06
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "flush"
+            },
+            "measures": {
+              "362": {
+                "rows": 646604,
+                "contribution_to_equal_depth_normalized_mean": 2.2196517881343643e-05
+              },
+              "387": {
+                "rows": 646604,
+                "contribution_to_equal_depth_normalized_mean": 1.0250486790922701e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "full_house"
+            },
+            "measures": {
+              "362": {
+                "rows": 344960,
+                "contribution_to_equal_depth_normalized_mean": 1.9048426982849212e-05
+              },
+              "387": {
+                "rows": 344960,
+                "contribution_to_equal_depth_normalized_mean": 3.0850120501722463e-06
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "quads"
+            },
+            "measures": {
+              "362": {
+                "rows": 15876,
+                "contribution_to_equal_depth_normalized_mean": 1.7723850789163796e-06
+              },
+              "387": {
+                "rows": 15876,
+                "contribution_to_equal_depth_normalized_mean": 5.6123317748382445e-08
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "straight_flush"
+            },
+            "measures": {
+              "362": {
+                "rows": 784,
+                "contribution_to_equal_depth_normalized_mean": 1.0827621921910599e-07
+              },
+              "387": {
+                "rows": 784,
+                "contribution_to_equal_depth_normalized_mean": 2.2638315292227748e-08
+              }
+            }
+          }
+        ],
+        "seats": [
+          {
+            "identity": {
+              "actor": 0
+            },
+            "measures": {
+              "362": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0012495820807833717
+              },
+              "387": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.000583832276776681
+              }
+            }
+          },
+          {
+            "identity": {
+              "actor": 1
+            },
+            "measures": {
+              "362": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0016068004138001758
+              },
+              "387": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0009555556416060072
+              }
+            }
+          }
+        ],
+        "price_bands": [
+          {
+            "identity": {
+              "minimum_equity": 0.0,
+              "maximum_equity": 0.1
+            },
+            "measures": {
+              "362": {
+                "rows": 1660416,
+                "contribution_to_equal_depth_normalized_mean": 0.0002265601132371192
+              },
+              "387": {
+                "rows": 1660416,
+                "contribution_to_equal_depth_normalized_mean": 0.00012988938590588592
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.1,
+              "maximum_equity": 0.2
+            },
+            "measures": {
+              "362": {
+                "rows": 1106944,
+                "contribution_to_equal_depth_normalized_mean": 0.00019472870776223597
+              },
+              "387": {
+                "rows": 1106944,
+                "contribution_to_equal_depth_normalized_mean": 0.00012488111817807608
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.2,
+              "maximum_equity": 0.3
+            },
+            "measures": {
+              "362": {
+                "rows": 5119616,
+                "contribution_to_equal_depth_normalized_mean": 0.0010632265244201414
+              },
+              "387": {
+                "rows": 5119616,
+                "contribution_to_equal_depth_normalized_mean": 0.0006381080944356688
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.3,
+              "maximum_equity": 0.4
+            },
+            "measures": {
+              "362": {
+                "rows": 5673088,
+                "contribution_to_equal_depth_normalized_mean": 0.0013718671491640523
+              },
+              "387": {
+                "rows": 5673088,
+                "contribution_to_equal_depth_normalized_mean": 0.0006465093198630575
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.4,
+              "maximum_equity": 0.5
+            },
+            "measures": {
+              "362": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              },
+              "387": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.5,
+              "maximum_equity": 1.01
+            },
+            "measures": {
+              "362": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              },
+              "387": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "seed": 9296902,
+      "gate": {
+        "seed": 9296902,
+        "baseline": 0.002544998930322607,
+        "candidate": 0.001937431528788708,
+        "relative_reduction": 0.23872992412491223,
+        "absolute_gate": false,
+        "passed": false
+      },
+      "heldout_depths": [
+        {
+          "stack": 60,
+          "baseline_mean_bb": 0.1472780596502997,
+          "candidate_mean_bb": 0.1162933352176727,
+          "required_maximum_bb": 0.06,
+          "baseline_p99_bb": 4.737319461496345,
+          "candidate_p99_bb": 3.5272675817176995,
+          "baseline_maximum_bb": 49.10151515151516,
+          "candidate_maximum_bb": 40.58030303030303
+        },
+        {
+          "stack": 150,
+          "baseline_mean_bb": 0.39530452997103277,
+          "candidate_mean_bb": 0.29049612059243063,
+          "required_maximum_bb": 0.15,
+          "baseline_p99_bb": 11.330016081545626,
+          "candidate_p99_bb": 8.420454545454533,
+          "baseline_maximum_bb": 138.19242424242427,
+          "candidate_maximum_bb": 42.733333333333334
+        }
+      ],
+      "partitions": {
+        "hand_groups": [
+          {
+            "identity": {
+              "name": "high_card"
+            },
+            "measures": {
+              "362": {
+                "rows": 2248316,
+                "contribution_to_equal_depth_normalized_mean": 0.0005128258055929249
+              },
+              "387": {
+                "rows": 2248316,
+                "contribution_to_equal_depth_normalized_mean": 0.0005143757684376657
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "pair"
+            },
+            "measures": {
+              "362": {
+                "rows": 5909596,
+                "contribution_to_equal_depth_normalized_mean": 0.0013753663378260914
+              },
+              "387": {
+                "rows": 5909596,
+                "contribution_to_equal_depth_normalized_mean": 0.000961584834810441
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "two_pair"
+            },
+            "measures": {
+              "362": {
+                "rows": 3365908,
+                "contribution_to_equal_depth_normalized_mean": 0.0005726198288274593
+              },
+              "387": {
+                "rows": 3365908,
+                "contribution_to_equal_depth_normalized_mean": 0.0003511571251614416
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "trips"
+            },
+            "measures": {
+              "362": {
+                "rows": 612108,
+                "contribution_to_equal_depth_normalized_mean": 5.567645590612964e-05
+              },
+              "387": {
+                "rows": 612108,
+                "contribution_to_equal_depth_normalized_mean": 5.761729126075392e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "straight"
+            },
+            "measures": {
+              "362": {
+                "rows": 415912,
+                "contribution_to_equal_depth_normalized_mean": 7.254681870710994e-06
+              },
+              "387": {
+                "rows": 415912,
+                "contribution_to_equal_depth_normalized_mean": 1.4695824694844205e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "flush"
+            },
+            "measures": {
+              "362": {
+                "rows": 646604,
+                "contribution_to_equal_depth_normalized_mean": 1.216179244180711e-05
+              },
+              "387": {
+                "rows": 646604,
+                "contribution_to_equal_depth_normalized_mean": 2.512603655212583e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "full_house"
+            },
+            "measures": {
+              "362": {
+                "rows": 344960,
+                "contribution_to_equal_depth_normalized_mean": 8.735784610060584e-06
+              },
+              "387": {
+                "rows": 344960,
+                "contribution_to_equal_depth_normalized_mean": 1.2426752957507241e-05
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "quads"
+            },
+            "measures": {
+              "362": {
+                "rows": 15876,
+                "contribution_to_equal_depth_normalized_mean": 3.298546370867839e-07
+              },
+              "387": {
+                "rows": 15876,
+                "contribution_to_equal_depth_normalized_mean": 4.3503064782042575e-07
+              }
+            }
+          },
+          {
+            "identity": {
+              "name": "straight_flush"
+            },
+            "measures": {
+              "362": {
+                "rows": 784,
+                "contribution_to_equal_depth_normalized_mean": 2.8388610333545006e-08
+              },
+              "387": {
+                "rows": 784,
+                "contribution_to_equal_depth_normalized_mean": 1.286426610777466e-08
+              }
+            }
+          }
+        ],
+        "seats": [
+          {
+            "identity": {
+              "actor": 0
+            },
+            "measures": {
+              "362": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0011617782003728117
+              },
+              "387": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0010841001980838858
+              }
+            }
+          },
+          {
+            "identity": {
+              "actor": 1
+            },
+            "measures": {
+              "362": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0013832207299497921
+              },
+              "387": {
+                "rows": 6780032,
+                "contribution_to_equal_depth_normalized_mean": 0.0008533313307048224
+              }
+            }
+          }
+        ],
+        "price_bands": [
+          {
+            "identity": {
+              "minimum_equity": 0.0,
+              "maximum_equity": 0.1
+            },
+            "measures": {
+              "362": {
+                "rows": 1660416,
+                "contribution_to_equal_depth_normalized_mean": 0.0002267445961685161
+              },
+              "387": {
+                "rows": 1660416,
+                "contribution_to_equal_depth_normalized_mean": 0.00021971403616846276
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.1,
+              "maximum_equity": 0.2
+            },
+            "measures": {
+              "362": {
+                "rows": 1106944,
+                "contribution_to_equal_depth_normalized_mean": 0.00021425412557039825
+              },
+              "387": {
+                "rows": 1106944,
+                "contribution_to_equal_depth_normalized_mean": 0.0001764815999936098
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.2,
+              "maximum_equity": 0.3
+            },
+            "measures": {
+              "362": {
+                "rows": 5119616,
+                "contribution_to_equal_depth_normalized_mean": 0.0010296128396732104
+              },
+              "387": {
+                "rows": 5119616,
+                "contribution_to_equal_depth_normalized_mean": 0.0007924689815448642
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.3,
+              "maximum_equity": 0.4
+            },
+            "measures": {
+              "362": {
+                "rows": 5673088,
+                "contribution_to_equal_depth_normalized_mean": 0.001074387368910479
+              },
+              "387": {
+                "rows": 5673088,
+                "contribution_to_equal_depth_normalized_mean": 0.0007487669110817707
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.4,
+              "maximum_equity": 0.5
+            },
+            "measures": {
+              "362": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              },
+              "387": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              }
+            }
+          },
+          {
+            "identity": {
+              "minimum_equity": 0.5,
+              "maximum_equity": 1.01
+            },
+            "measures": {
+              "362": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              },
+              "387": {
+                "rows": 0,
+                "contribution_to_equal_depth_normalized_mean": 0.0
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "baseline_fit_seconds": 137.64000000001397,
+  "candidate_fit_seconds": 161.5,
+  "candidate_fit_cost_ratio": 1.1733507701248447,
+  "timing_limitation": "Sequential single runs including validation/checkpoints, not a speed benchmark",
+  "rows_replayed": 185966592,
+  "verified_files": 1419,
+  "maximum_cpu_cuda_mean_error_bb": 1.1939673952854335e-06,
+  "scope": "Terminal river Fold/Call against a uniform legal opponent; not an all-street or preflop accuracy test",
+  "full_preflop_accuracy_qualified": false,
+  "new_training": false,
+  "new_test_data": false,
+  "production_modified": false,
+  "promotion": false,
+  "next_experiment_launched": false
+}

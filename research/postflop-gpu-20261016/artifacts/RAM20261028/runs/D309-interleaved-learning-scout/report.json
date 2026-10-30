@@ -1,0 +1,57 @@
+{
+  "id": "D309",
+  "at": "2026-10-29T21:32:03.248074+00:00",
+  "status": "source_history_and_CPU_address_contract_pass_transport_prerequisite_only",
+  "history_sha256": "7a194d635a3393e4c58bf5e787be5626b6928eab0eab9da65d00aecd3efd768a",
+  "CPU_unique_address_checks": 1051650,
+  "address_contract": "For any n>0,fieldf in{0,1}, rowi address=8*i+4*f, exactly original logical fieldi at physicalu32[2*i+f]; twofieldimages biject2*n words withsamepayloadbytes. Checkedallsmalln1..1025; checkedusize arithmetic required before descriptor construction.",
+  "copy_route": "cuMemcpy2DAsync_v2 width4/heightL/pitcheshost4,device8/deviceXfield*4, sameownedstream, cachedcuMemHostAlloc flags0 max(L,128diagnosticminimum)u32words. Onecachedpinnedallocation perfixture, explicit drainbeforeCPUreuse/free. No extra pinnedbuffer/gather/scratch/kernel/FPprocessing.",
+  "descriptor_ABI": "ActualcudarcCUDA_MEMCPY2D_v2 usesusize fields. Structliteral populatesvalidHOST/DEVICEenums; nozeroedRustenum. Native128byte/align8/11offset assertions before copies. Documentation inline legacyunsignedint example is not used asABI.",
+  "API_url": "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__MEM.html",
+  "fixtures_source_sha256": "99801b72847a3c9043f155135b603d41f592ac802668998c629581e6fa9d781a",
+  "cases": [
+    {
+      "fixture": "boundary-1",
+      "words": 1
+    },
+    {
+      "fixture": "boundary-2",
+      "words": 2
+    },
+    {
+      "fixture": "boundary-17",
+      "words": 17
+    },
+    {
+      "fixture": "boundary-1023",
+      "words": 1023
+    },
+    {
+      "fixture": "boundary-1024",
+      "words": 1024
+    },
+    {
+      "fixture": "boundary-1025",
+      "words": 1025
+    },
+    {
+      "fixture": "rainbow",
+      "words": 185172163
+    },
+    {
+      "fixture": "two-tone",
+      "words": 110745280
+    },
+    {
+      "fixture": "river",
+      "words": 4480
+    }
+  ],
+  "raw_reserved_bytes": 14204434128,
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "new_native_or_GPU_or_solver_samples": 0,
+  "full_solver_candidate_admitted": false,
+  "next_unused_candidate": "E125",
+  "open_costs": "Copyengine rowcost, kernelcoalescing/readonlyfieldtransactionfootprint, resource/ABI/driverallocation/capacity/hostwrapper/JIT/module effects unproven. Layout could regress. No speed/headroom/adoption claim.",
+  "later_requirements": "Full sourceownership/ABI/physicalrawallwords/CPUstoragecodec/F32/locks/query/save/resume/symmetric/paged/stored/fallback audit, ordinaryunits then3pairfullcycle/fresh16/broad/material/capacity/holdout/freshoriginalcumulative/realtempapp. No closedform rescue."
+}

@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-18T09:01:58.301511+00:00",
+  "status": "pass_symbolic_FP_tree_and_prefix_ownership",
+  "checks": 1716,
+  "thread_widths": [
+    1,
+    2,
+    3,
+    7,
+    16,
+    31,
+    32,
+    33,
+    63,
+    64,
+    65,
+    96,
+    127,
+    128,
+    129,
+    192,
+    255,
+    256
+  ],
+  "opponent_sorted_counts": [
+    0,
+    1,
+    2,
+    31,
+    32,
+    33,
+    127,
+    128,
+    129,
+    257,
+    319,
+    1081
+  ],
+  "kernel_launches": 0,
+  "limits": "Checks exact ordered symbolic addition trees and existing disjoint prefix ownership only. No compiled/GPU NaN, numerical, synchronization, resource or speed proof."
+}

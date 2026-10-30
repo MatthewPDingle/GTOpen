@@ -1,0 +1,1564 @@
+{
+  "format": 1,
+  "passed": true,
+  "started_unix": 1790612519.370553,
+  "scope": "First two chunks of first batch of archived A-river update 79; descriptive cProfile timings under concurrent load.",
+  "fixture": "S:\\GTOpen-research\\weighted-complete-river-training-pilot-v1\\A-river\\generation-0079-bb713ca9",
+  "metrics_sha256": "6dbaecaaf825f95e48a5379e74de9d2acd0efde3b37ae0220aa1158b86abcfa5",
+  "native_sha256": "8dc03e7dd21cbcfc6ed1fd8f7c068137e0fbcb6eebfc9de329744165f79bba62",
+  "model_sha256": "aabf004b9c5a6d66ac7f8cba899b87cbcdc055de3efa8be029a06597723b8d9e",
+  "context_sha256": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+  "sources": {
+    "T:\\Dev\\GTOpen\\tools\\research\\river_query_cpu_profile_v1.py": "50c8bdf37b19cb2f53c1f356d15292ca0e9c6f4456cf68515afa046ba5edd962",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_query_reuse_audit_v1.py": "e66a7937e6001afe28092ef80c133cf805c319298983a1b506a69269998b041a",
+    "T:\\Dev\\GTOpen\\tools\\research\\wizard_continuation_study.py": "b0954c499cdbf8ec5cb9f0f1640c511a7f94033bc2b62ca6ddb2b1f83255f55d",
+    "T:\\Dev\\GTOpen\\tools\\research\\integrated_coverage.py": "b7afcaff80474eecdb0a2d41e68bebf10698a699b5360afb332868d3690f5f82",
+    "T:\\Dev\\GTOpen\\tools\\research\\integrated_coverage_queue.py": "d16bdcb7445819b79790152f2d43a2cdec688d05a295f07bffd6f4037522f5d8",
+    "T:\\Dev\\GTOpen\\tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35",
+    "T:\\Dev\\GTOpen\\tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_owner_review_20260920.py": "b3a3f1ce0044eb41fe8d496b525ed929221587adad812d23c43b3af0709e8a14",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_phase_run_20260920.py": "15ab756539bd2c3ea15b495ef93bddbae3c8ecd4aa9161a8b70744d97622715a",
+    "T:\\Dev\\GTOpen\\tools\\research\\storage_strategic_common_prior_20260920.py": "582c7efa556cdfcf21313e104fb7c27511b89ef618e8917aa29c0c97016a86cb",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_deals_v1.py": "38b855209faffecfa500cb4b501b955c57ab5bfae5c9255d4a0607c7ff659a1a",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_reservoir_v1.py": "0c0269e6f67d4333e321124a1c0e171cf6b63488beb4df7d872f148c0d4d1691",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_fit_v1.py": "6a8df2df73d383bbfc6493517cfa3f750d6e4be3e7c7257e3115979c2a314614",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_batch_model_v1.py": "a7bdb1b31bacf18013b3046a63dae56976ac1d691cbb20a2f95c6c25451945fc",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py": "bc40de9ed67ecefc8379fd4bf7d00499c7c8f2006b8afebf319de2ae5711113f",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py": "4369c43c746003a04fdc24c76689879ac7605f075efafaf6c056588174345d39",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_poker_features_v1.py": "235591b9201e177417d580cf0d607863a33b514f6122ae32e493a688ce156ed2",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_hybrid_checkpoint_v1.py": "f71b201aa33a35b9a3722f25aa9e1a221c215ac4216b92a040e43100fa38497c",
+    "T:\\Dev\\GTOpen\\tools\\research\\class_stratified_physical_deals_v1.py": "0093adf2684fb1d15477afa552beed1888fdf36eb243df0d548ee6e2a1798aee",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_physical_reservoir_v1.py": "b0305349ce5ee6330ec96f1ea10e72b40afa6b06843d3a928a0d6de7f9b48e11",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_visible_features_bulk_v1.py": "8475eb497deff517703b858d447e7f9444527fdca464401e1db17342632afec2",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_visible_objective_v1.py": "3f837f4b1296fe16222ae977db61366603fc348b6103822e7c7c8ecf56568fc3",
+    "T:\\Dev\\GTOpen\\tools\\research\\weighted_preflop_table_v1.py": "e73d9bda51fc79caa1d1430694b9376fdf58efe8b6eec67d42147a830d6d6dea",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_root_accumulator_v1.py": "86660ab126624f711bb690ee4a3cd3e8474b96ed6dd0cc77e782c1ae1d628180",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_regret_accumulator_v1.py": "73af20a4e09f34a172c98ac4a3c1aad0cc09623ebf71f4ecc6ace5838c79bce5",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_batch_protocol_v2.py": "b9c22f7db8e0ad7024f4a091df70ca225f20dd1912e82fceb28d80a7f2a0ef8d",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_checkpoint_v1.py": "efc8d5e53eeae7151f2d7a40baf3154fb8835a3e0080ee2517d6af0e86ec7375",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_root_deviation_v1.py": "b500b3d743e177d707530baf50856376cdbe2fb343351a990a945e7141217cc2",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_evaluation_intervals_v1.py": "bc32655c0a0e3367a1ec510472ea030c2e15542451c32a84cabcca3f2a09943e",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_root_evaluation_v1.py": "2ac092bfb66fd2c1c488a345d62a3b65b725d4d98b0384dd0f0511fcf0b9151d",
+    "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py": "92fa28ad542be557200740bce739f1a0208259a4f8a215cee7fdfb6ff52c832d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_checkpoint_v1.py": "8c70db2b331576d1fbfcae7bb5a69a188e26d37f125396b905420afe5a39a61d",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py": "e7a438df1f36e7697050cb2e598fae1a21cc831639e4179085044098c55e9089",
+    "T:\\Dev\\GTOpen\\tools\\research\\shared_visible_query_arrays_v1.py": "3e7ec60c7477416d49eef05b774b793b8abd8b3d5c35b0902e112936ace2cc78",
+    "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py": "fa3f15b7ea246da8dfb31cc907b1aa89d4ce403ac02c7e0f99c69b0d43e2163d",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py": "f89a626c7d242bf8e35bf45bbd797c411eaa3f2668c6f68b341aad323ddd7874",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_river_bounds_math_v1.py": "7275cf131346eddb0bb8658584ceeaf403185565610c2c3e35e386470de61040",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py": "7381fb0c305a8456686a5a6c2a60d73791658c816aa1bb826f1ee85652babda2",
+    "T:\\Dev\\GTOpen\\tools\\research\\bounded_parallel_evaluation_archive_v2.py": "0080bfcf12b42acd4cdffb233398341549acbdfcbbc513cc0220fc7339384bff",
+    "T:\\Dev\\GTOpen\\tools\\research\\sampled_allin_protocol_v3.py": "0b7c6228461aa9a8773766bb65eb3e029e1c718732988d035d0e55009c44a1c1",
+    "T:\\Dev\\GTOpen\\tools\\research\\finite_btn_response_v1.py": "3ed0498e19cfbf48cbe4b176207ccf2e8d88251e01b6d84cf45feb35f3fafc87",
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_allin_matrix_v1.py": "5f518a3cdad0cc8b16657b47decb09f14c8eee05c566b850d887d73d9cce0ccd"
+  },
+  "gpu_used": false,
+  "fitting_run": false,
+  "new_deals": 0,
+  "active_training_changed": false,
+  "cases": [
+    {
+      "name": "chunk-000-history",
+      "observations": 47467,
+      "export_seconds": 1.1409999999887077,
+      "decode_seconds": 0.4370000000053551,
+      "profiled_prepare_seconds": 3.125,
+      "profiled_infer_seconds": 0.21799999999348074,
+      "exact_policy_bytes": true,
+      "maximum_policy_error": 0.0,
+      "exact_policy_support": true,
+      "top_self": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.3945544,
+          "cumulative_seconds": 2.1545452000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.388927,
+          "cumulative_seconds": 0.9052029
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 355344,
+          "calls": 355344,
+          "self_seconds": 0.367661,
+          "cumulative_seconds": 0.367661
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 136304,
+          "calls": 183771,
+          "self_seconds": 0.3185363,
+          "cumulative_seconds": 1.2761491
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 1756279,
+          "calls": 1756279,
+          "self_seconds": 0.2819391,
+          "cumulative_seconds": 0.2819391
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 1756279,
+          "calls": 1756279,
+          "self_seconds": 0.2806985,
+          "cumulative_seconds": 0.2806985
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 189927,
+          "calls": 189927,
+          "self_seconds": 0.25871360000000004,
+          "cumulative_seconds": 0.25871360000000004
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.20869790000000002,
+          "cumulative_seconds": 0.2171945
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.1785939,
+          "cumulative_seconds": 0.6290409
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 189900,
+          "calls": 189900,
+          "self_seconds": 0.1332931,
+          "cumulative_seconds": 0.40507210000000005
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 189885,
+          "calls": 189885,
+          "self_seconds": 0.0800421,
+          "cumulative_seconds": 0.48489020000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.06438050000000001,
+          "cumulative_seconds": 0.06438050000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.056872200000000005,
+          "cumulative_seconds": 0.6447904
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.0532011,
+          "cumulative_seconds": 0.0532011
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 91,
+          "function": "validate_queries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0365383,
+          "cumulative_seconds": 0.0365383
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+          "primitive_calls": 2,
+          "calls": 2,
+          "self_seconds": 0.026689800000000003,
+          "cumulative_seconds": 0.026689800000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 322138,
+          "calls": 322138,
+          "self_seconds": 0.0258244,
+          "cumulative_seconds": 0.0258244
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "primitive_calls": 173422,
+          "calls": 173422,
+          "self_seconds": 0.0215696,
+          "cumulative_seconds": 0.0215696
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'items' of 'dict' objects>",
+          "primitive_calls": 189900,
+          "calls": 189900,
+          "self_seconds": 0.0203588,
+          "cumulative_seconds": 0.0203588
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.015480700000000002,
+          "cumulative_seconds": 0.23240860000000002
+        }
+      ],
+      "top_cumulative": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 23,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 1.9200000000000003e-05,
+          "cumulative_seconds": 3.1291083000000004
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.014759800000000002,
+          "cumulative_seconds": 3.1290891000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.3945544,
+          "cumulative_seconds": 2.1545452000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 136304,
+          "calls": 183771,
+          "self_seconds": 0.3185363,
+          "cumulative_seconds": 1.2761491
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.388927,
+          "cumulative_seconds": 0.9052029
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.056872200000000005,
+          "cumulative_seconds": 0.6447904
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.1785939,
+          "cumulative_seconds": 0.6290409
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 189885,
+          "calls": 189885,
+          "self_seconds": 0.0800421,
+          "cumulative_seconds": 0.48489020000000005
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 189900,
+          "calls": 189900,
+          "self_seconds": 0.1332931,
+          "cumulative_seconds": 0.40507210000000005
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 355344,
+          "calls": 355344,
+          "self_seconds": 0.367661,
+          "cumulative_seconds": 0.367661
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 84,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 1.91e-05,
+          "cumulative_seconds": 0.28214910000000004
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 1756279,
+          "calls": 1756279,
+          "self_seconds": 0.2819391,
+          "cumulative_seconds": 0.2819391
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 1756279,
+          "calls": 1756279,
+          "self_seconds": 0.2806985,
+          "cumulative_seconds": 0.2806985
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 189927,
+          "calls": 189927,
+          "self_seconds": 0.25871360000000004,
+          "cumulative_seconds": 0.25871360000000004
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.015480700000000002,
+          "cumulative_seconds": 0.23240860000000002
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.20869790000000002,
+          "cumulative_seconds": 0.2171945
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.06438050000000001,
+          "cumulative_seconds": 0.06438050000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.0532011,
+          "cumulative_seconds": 0.0532011
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 91,
+          "function": "validate_queries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0365383,
+          "cumulative_seconds": 0.0365383
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 13,
+          "function": "summaries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.015470800000000002,
+          "cumulative_seconds": 0.035942100000000005
+        }
+      ]
+    },
+    {
+      "name": "chunk-000-selected",
+      "observations": 5636,
+      "export_seconds": 0.2649999999994179,
+      "decode_seconds": 0.09400000001187436,
+      "profiled_prepare_seconds": 0.40600000000267755,
+      "profiled_infer_seconds": 0.03199999999196734,
+      "exact_policy_bytes": true,
+      "maximum_policy_error": 0.0,
+      "exact_policy_support": true,
+      "top_self": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 46104,
+          "calls": 46104,
+          "self_seconds": 0.057615700000000006,
+          "cumulative_seconds": 0.057615700000000006
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.0497439,
+          "cumulative_seconds": 0.11372080000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.045528200000000005,
+          "cumulative_seconds": 0.27301020000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 17163,
+          "calls": 22799,
+          "self_seconds": 0.0383864,
+          "cumulative_seconds": 0.1663609
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 208532,
+          "calls": 208532,
+          "self_seconds": 0.0335009,
+          "cumulative_seconds": 0.0335009
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 208532,
+          "calls": 208532,
+          "self_seconds": 0.033491,
+          "cumulative_seconds": 0.033491
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 22603,
+          "calls": 22603,
+          "self_seconds": 0.0316446,
+          "cumulative_seconds": 0.0316446
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0252713,
+          "cumulative_seconds": 0.026666600000000002
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0242791,
+          "cumulative_seconds": 0.09305440000000001
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 22576,
+          "calls": 22576,
+          "self_seconds": 0.0158032,
+          "cumulative_seconds": 0.0486716
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 22561,
+          "calls": 22561,
+          "self_seconds": 0.0097853,
+          "cumulative_seconds": 0.058353300000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.0078206,
+          "cumulative_seconds": 0.0078206
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0056086,
+          "cumulative_seconds": 0.0774447
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 91,
+          "function": "validate_queries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0047742,
+          "cumulative_seconds": 0.0047742
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.004366500000000001,
+          "cumulative_seconds": 0.004366500000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0034871000000000004,
+          "cumulative_seconds": 0.034664900000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 40473,
+          "calls": 40473,
+          "self_seconds": 0.0033363000000000004,
+          "cumulative_seconds": 0.0033363000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "primitive_calls": 25915,
+          "calls": 25915,
+          "self_seconds": 0.0033212000000000003,
+          "cumulative_seconds": 0.0033212000000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.002951,
+          "cumulative_seconds": 0.3984283
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 13,
+          "function": "summaries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0025055000000000003,
+          "cumulative_seconds": 0.0069516000000000005
+        }
+      ],
+      "top_cumulative": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 23,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 7.5e-06,
+          "cumulative_seconds": 0.3984358
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.002951,
+          "cumulative_seconds": 0.3984283
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.045528200000000005,
+          "cumulative_seconds": 0.27301020000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 17163,
+          "calls": 22799,
+          "self_seconds": 0.0383864,
+          "cumulative_seconds": 0.1663609
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.0497439,
+          "cumulative_seconds": 0.11372080000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0242791,
+          "cumulative_seconds": 0.09305440000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0056086,
+          "cumulative_seconds": 0.0774447
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 22561,
+          "calls": 22561,
+          "self_seconds": 0.0097853,
+          "cumulative_seconds": 0.058353300000000004
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 46104,
+          "calls": 46104,
+          "self_seconds": 0.057615700000000006,
+          "cumulative_seconds": 0.057615700000000006
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 22576,
+          "calls": 22576,
+          "self_seconds": 0.0158032,
+          "cumulative_seconds": 0.0486716
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0034871000000000004,
+          "cumulative_seconds": 0.034664900000000005
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 208532,
+          "calls": 208532,
+          "self_seconds": 0.0335009,
+          "cumulative_seconds": 0.0335009
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 208532,
+          "calls": 208532,
+          "self_seconds": 0.033491,
+          "cumulative_seconds": 0.033491
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 22603,
+          "calls": 22603,
+          "self_seconds": 0.0316446,
+          "cumulative_seconds": 0.0316446
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 84,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 1.43e-05,
+          "cumulative_seconds": 0.030462600000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0252713,
+          "cumulative_seconds": 0.026666600000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.0078206,
+          "cumulative_seconds": 0.0078206
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 13,
+          "function": "summaries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0025055000000000003,
+          "cumulative_seconds": 0.0069516000000000005
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 91,
+          "function": "validate_queries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0047742,
+          "cumulative_seconds": 0.0047742
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.004366500000000001,
+          "cumulative_seconds": 0.004366500000000001
+        }
+      ]
+    },
+    {
+      "name": "chunk-001-history",
+      "observations": 42367,
+      "export_seconds": 0.9839999999967404,
+      "decode_seconds": 0.4379999999946449,
+      "profiled_prepare_seconds": 3.125,
+      "profiled_infer_seconds": 0.21900000001187436,
+      "exact_policy_bytes": true,
+      "maximum_policy_error": 0.0,
+      "exact_policy_support": true,
+      "top_self": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 327616,
+          "calls": 327616,
+          "self_seconds": 0.5242,
+          "cumulative_seconds": 0.5242
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.3731679,
+          "cumulative_seconds": 2.2168054
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.36860010000000004,
+          "cumulative_seconds": 0.8379316
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 124272,
+          "calls": 166639,
+          "self_seconds": 0.2965203,
+          "cumulative_seconds": 1.3732306
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 1567579,
+          "calls": 1567579,
+          "self_seconds": 0.2659134,
+          "cumulative_seconds": 0.2659134
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 1567579,
+          "calls": 1567579,
+          "self_seconds": 0.2595599,
+          "cumulative_seconds": 0.2595599
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 169527,
+          "calls": 169527,
+          "self_seconds": 0.23829630000000002,
+          "cumulative_seconds": 0.23829630000000002
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.2141768,
+          "cumulative_seconds": 0.22292740000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.1561988,
+          "cumulative_seconds": 0.7587811000000001
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 169500,
+          "calls": 169500,
+          "self_seconds": 0.12037060000000001,
+          "cumulative_seconds": 0.369943
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.07693720000000001,
+          "cumulative_seconds": 0.07693720000000001
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 169485,
+          "calls": 169485,
+          "self_seconds": 0.0732609,
+          "cumulative_seconds": 0.44296430000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0559967,
+          "cumulative_seconds": 0.6283928000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.046948500000000004,
+          "cumulative_seconds": 0.046948500000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+          "primitive_calls": 2,
+          "calls": 2,
+          "self_seconds": 0.038824500000000005,
+          "cumulative_seconds": 0.038824500000000005
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0289727,
+          "cumulative_seconds": 0.2349021
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 292302,
+          "calls": 292302,
+          "self_seconds": 0.024380500000000003,
+          "cumulative_seconds": 0.024380500000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0190646,
+          "cumulative_seconds": 3.1249324
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 91,
+          "function": "validate_queries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0189313,
+          "cumulative_seconds": 0.0189313
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "primitive_calls": 149208,
+          "calls": 149208,
+          "self_seconds": 0.018889200000000002,
+          "cumulative_seconds": 0.018889200000000002
+        }
+      ],
+      "top_cumulative": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 23,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 9.800000000000001e-06,
+          "cumulative_seconds": 3.1249422
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0190646,
+          "cumulative_seconds": 3.1249324
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.3731679,
+          "cumulative_seconds": 2.2168054
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 124272,
+          "calls": 166639,
+          "self_seconds": 0.2965203,
+          "cumulative_seconds": 1.3732306
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.36860010000000004,
+          "cumulative_seconds": 0.8379316
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.1561988,
+          "cumulative_seconds": 0.7587811000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0559967,
+          "cumulative_seconds": 0.6283928000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 327616,
+          "calls": 327616,
+          "self_seconds": 0.5242,
+          "cumulative_seconds": 0.5242
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 169485,
+          "calls": 169485,
+          "self_seconds": 0.0732609,
+          "cumulative_seconds": 0.44296430000000003
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 169500,
+          "calls": 169500,
+          "self_seconds": 0.12037060000000001,
+          "cumulative_seconds": 0.369943
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 1567579,
+          "calls": 1567579,
+          "self_seconds": 0.2659134,
+          "cumulative_seconds": 0.2659134
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 1567579,
+          "calls": 1567579,
+          "self_seconds": 0.2595599,
+          "cumulative_seconds": 0.2595599
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 169527,
+          "calls": 169527,
+          "self_seconds": 0.23829630000000002,
+          "cumulative_seconds": 0.23829630000000002
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0289727,
+          "cumulative_seconds": 0.2349021
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.2141768,
+          "cumulative_seconds": 0.22292740000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 84,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 6.900000000000001e-06,
+          "cumulative_seconds": 0.2122147
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.07693720000000001,
+          "cumulative_seconds": 0.07693720000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.046948500000000004,
+          "cumulative_seconds": 0.046948500000000004
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\lib\\arraysetops.py",
+          "line": 138,
+          "function": "unique",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.00021600000000000002,
+          "cumulative_seconds": 0.0434726
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\lib\\arraysetops.py",
+          "line": 323,
+          "function": "_unique1d",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0030889000000000003,
+          "cumulative_seconds": 0.043069800000000005
+        }
+      ]
+    },
+    {
+      "name": "chunk-001-selected",
+      "observations": 5129,
+      "export_seconds": 0.26600000000325963,
+      "decode_seconds": 0.046999999991385266,
+      "profiled_prepare_seconds": 0.3279999999940628,
+      "profiled_infer_seconds": 0.01600000000325963,
+      "exact_policy_bytes": true,
+      "maximum_policy_error": 0.0,
+      "exact_policy_support": true,
+      "top_self": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.040980100000000005,
+          "cumulative_seconds": 0.2202184
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.038568000000000005,
+          "cumulative_seconds": 0.09381350000000001
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 16002,
+          "calls": 21131,
+          "self_seconds": 0.0342202,
+          "cumulative_seconds": 0.1240571
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 189773,
+          "calls": 189773,
+          "self_seconds": 0.0309631,
+          "cumulative_seconds": 0.0309631
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 189773,
+          "calls": 189773,
+          "self_seconds": 0.029888400000000002,
+          "cumulative_seconds": 0.029888400000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 20575,
+          "calls": 20575,
+          "self_seconds": 0.027043200000000003,
+          "cumulative_seconds": 0.027043200000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 43488,
+          "calls": 43488,
+          "self_seconds": 0.025735800000000003,
+          "cumulative_seconds": 0.025735800000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0171816,
+          "cumulative_seconds": 0.052352100000000006
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0160343,
+          "cumulative_seconds": 0.016999
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 20548,
+          "calls": 20548,
+          "self_seconds": 0.0144621,
+          "cumulative_seconds": 0.0426126
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 20533,
+          "calls": 20533,
+          "self_seconds": 0.008423100000000001,
+          "cumulative_seconds": 0.050909300000000005
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.008269700000000001,
+          "cumulative_seconds": 0.008269700000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0067101,
+          "cumulative_seconds": 0.0747897
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.0052548000000000004,
+          "cumulative_seconds": 0.0052548000000000004
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.len>",
+          "primitive_calls": 37504,
+          "calls": 37504,
+          "self_seconds": 0.0029237,
+          "cumulative_seconds": 0.0029237
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0028908000000000002,
+          "cumulative_seconds": 0.026954400000000003
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'append' of 'list' objects>",
+          "primitive_calls": 22217,
+          "calls": 22217,
+          "self_seconds": 0.0025671,
+          "cumulative_seconds": 0.0025671
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 13,
+          "function": "summaries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0024193,
+          "cumulative_seconds": 0.0070019
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+          "primitive_calls": 2,
+          "calls": 2,
+          "self_seconds": 0.0021692,
+          "cumulative_seconds": 0.0021692
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'items' of 'dict' objects>",
+          "primitive_calls": 20548,
+          "calls": 20548,
+          "self_seconds": 0.0021485000000000002,
+          "cumulative_seconds": 0.0021485000000000002
+        }
+      ],
+      "top_cumulative": [
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 23,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 5.3e-06,
+          "cumulative_seconds": 0.3209282
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 26,
+          "function": "prepare",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0015722000000000002,
+          "cumulative_seconds": 0.3209229
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 8,
+          "function": "arrays",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.040980100000000005,
+          "cumulative_seconds": 0.2202184
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method builtins.any>",
+          "primitive_calls": 16002,
+          "calls": 21131,
+          "self_seconds": 0.0342202,
+          "cumulative_seconds": 0.1240571
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_preflop_table_v1.py",
+          "line": 82,
+          "function": "apply",
+          "primitive_calls": 4,
+          "calls": 4,
+          "self_seconds": 0.038568000000000005,
+          "cumulative_seconds": 0.09381350000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 67,
+          "function": "features",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0067101,
+          "cumulative_seconds": 0.0747897
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 6,
+          "function": "histories",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0171816,
+          "cumulative_seconds": 0.052352100000000006
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 2322,
+          "function": "any",
+          "primitive_calls": 20533,
+          "calls": 20533,
+          "self_seconds": 0.008423100000000001,
+          "cumulative_seconds": 0.050909300000000005
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\core\\fromnumeric.py",
+          "line": 71,
+          "function": "_wrapreduction",
+          "primitive_calls": 20548,
+          "calls": 20548,
+          "self_seconds": 0.0144621,
+          "cumulative_seconds": 0.0426126
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 72,
+          "function": "<genexpr>",
+          "primitive_calls": 189773,
+          "calls": 189773,
+          "self_seconds": 0.0309631,
+          "cumulative_seconds": 0.0309631
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_query_preparation_vector_v1.py",
+          "line": 17,
+          "function": "<genexpr>",
+          "primitive_calls": 189773,
+          "calls": 189773,
+          "self_seconds": 0.029888400000000002,
+          "cumulative_seconds": 0.029888400000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+          "primitive_calls": 20575,
+          "calls": 20575,
+          "self_seconds": 0.027043200000000003,
+          "cumulative_seconds": 0.027043200000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\board_training_policy_v1.py",
+          "line": 32,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0028908000000000002,
+          "cumulative_seconds": 0.026954400000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\sampled_physical_bank_v1.py",
+          "line": 11,
+          "function": "<genexpr>",
+          "primitive_calls": 43488,
+          "calls": 43488,
+          "self_seconds": 0.025735800000000003,
+          "cumulative_seconds": 0.025735800000000003
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\exact_btn_policy_table_v1.py",
+          "line": 84,
+          "function": "apply",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 5.7000000000000005e-06,
+          "cumulative_seconds": 0.0256598
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\river_policy_batch_v1.py",
+          "line": 25,
+          "function": "infer",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0160343,
+          "cumulative_seconds": 0.016999
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<built-in method numpy.asarray>",
+          "primitive_calls": 17,
+          "calls": 17,
+          "self_seconds": 0.008269700000000001,
+          "cumulative_seconds": 0.008269700000000001
+        },
+        {
+          "file": "T:\\Dev\\GTOpen\\tools\\research\\visible_summaries_vector_v1.py",
+          "line": 13,
+          "function": "summaries",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 0.0024193,
+          "cumulative_seconds": 0.0070019
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'astype' of 'numpy.ndarray' objects>",
+          "primitive_calls": 10,
+          "calls": 10,
+          "self_seconds": 0.0052548000000000004,
+          "cumulative_seconds": 0.0052548000000000004
+        },
+        {
+          "file": "C:\\Users\\there\\AppData\\Roaming\\Python\\Python312\\site-packages\\numpy\\lib\\arraysetops.py",
+          "line": 138,
+          "function": "unique",
+          "primitive_calls": 1,
+          "calls": 1,
+          "self_seconds": 5.47e-05,
+          "cumulative_seconds": 0.0029317
+        }
+      ]
+    }
+  ],
+  "seconds": 13.76600000000326,
+  "finished_unix": 1790612532.7555676,
+  "peak_python_rss_bytes": 165728256
+}

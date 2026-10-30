@@ -1,0 +1,25 @@
+{
+  "id": "D084-sorted-reach-prefix-fusion",
+  "at": "2026-10-17T04:51:54.534981+00:00",
+  "root_source_review_only": true,
+  "prior_direction_closed": "Readback encoder SSE4.1/vectorization already tested byD015/E012/E013 and final-codegenD019. E013 complete-cycle0.3285%slower; observed19.154msreadback reduction did not qualify whole solves. No SIMD/ISA/encoder variant is admitted here.",
+  "proposal": "Remove separate strided reach_sh fill. In the existing per-thread contiguous prefix chunk, load the same ro[o_idx[ob+k]], store reach_sh[k], and add that exact value to acc before the original prefix[k] store.",
+  "correctness_proof": [
+    "Chunk partition unchanged: chunk=ceil(m/block),lo=tid*chunk,hi=min(lo+chunk,m). Every valid sorted k has exactly one producer; enumerate allm0..1326andblocks1..256 before GPU control if resources pass.",
+    "The unchanged first block barrier publishes ro_sh and integer card cache. Zero-CFV pass and its barrier remain at the original location. No consumer reads reach_sh before the existing chunk-total/serial-carry/final block barriers.",
+    "Each chunk adds values for the same ascending k in the same accumulator recurrence and stores the same reach_sh/prefix values. All serial chunk sums, carry additions, card corrections, payout expressions and loop predicates remain unchanged.",
+    "All original barriers, global ABI, host launch shape128threads, dynamic/static shared layout, graph topology, plan, arrays, metadata, allocation, encoding and quality remain unchanged. Source is acceptedE051; no rejectedE052width code or host12*mreservation is composed."
+  ],
+  "risk": [
+    "Prefix chunk now performs indirect shared gather instead of consuming the strided producer output; changed coalescing/bank mapping and register lifetime may offset saved pass/shared reads.",
+    "No speed headroom or unique cause follows from source/pass counts. Actual register/local/shared/occupancy feasibility, exact raw controls and complete-cycle data are required."
+  ],
+  "novelty": "Scoped current ledger and retained patch search finds E021direct-global-gather/removal of ro_sh/barrier, E008serial carry, E022tail bounds, E050async, E05216bit width and E036zero fastpath. This candidate retains ro_sh, u32cache, every barrier and entire scan recurrence; only sorted producer and local scan consumer are fused. No matching fused producer/consumer transform found in scoped sources.",
+  "resource_gate": "One candidate only; actual up_show body changes, same27parameter ABI, other8entries byte-exact oncompute120and75. No register/local/static/dynamic increase, maxthread/occupancy loss at same10shapes and64/128/256threads. Static instruction sites descriptive only. Any failed fixed gate closes without variant rescue.",
+  "numerical_gate": "Before timing, preserve full raw outputs, actual immutable device inputs and guards over valid geometries plus signedzero/nonfinite/extreme/tail/empty/nonzero-offset cases; same128threads both arms. Float order/quality never relaxed.",
+  "performance_gate": "Current1%policy; fixed3paired complete cycles then separately frozen16confirmation and applicable broad/F32/state/resume/continuation/material/holdout/fresh-original cumulative gates. No pooling/exclusion/extension or accuracy tradeoff.",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "39041f04f2e91840b9fd2837fabd72f126498f3681c5627d78157acd53cea7c4"
+  },
+  "candidate_accepted": false
+}

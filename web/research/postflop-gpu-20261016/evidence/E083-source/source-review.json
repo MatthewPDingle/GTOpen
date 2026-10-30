@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T09:34:15.379513+00:00",
+  "scope": "Only four proven-positive-zero action-arena uploads in GpuSolver construction defer their per-arena stream waits. All allocations and every zero fill remain; add one final initialization stream wait before returning the fully owned GpuSolver. Ordinary ArenaLayout::upload keeps defer=false, and every F32/nonzero/staging upload keeps its original wait. No new buffers, graph/capture/launch, CPU helper/thread, kernel/math/precision, skipped predicate/initialization, layout, payload, save or quality changes. E080 full zero predicates and borrowed-token guards remain unchanged.",
+  "production_source_reverse_exact": true,
+  "zero_eligibility_predicates_unchanged": true,
+  "normal_upload_for_other_callers_retains_original_sync": true,
+  "final_constructor_fence": "All allocations/copies/zeroing queued on the original one stream; final synchronize occurs before return and before original local host inputs drop. Deferred asynchronous errors still surface before returning this constructor. No forced driver/allocation failure injection or universal error-text equivalence claim.",
+  "references": [
+    "https://docs.nvidia.com/cuda/cuda-driver-api/cuda_driver_api/group__CUDA__MALLOC__ASYNC.html",
+    "https://docs.nvidia.com/cuda/cuda-driver-api/cuda_driver_api/group__CUDA__STREAM.html"
+  ],
+  "counterevidence": "Pageable copies may themselves serialize pending work; batching may save little. Added final wait also applies to already-synchronous warm/F32 constructor paths. Small-case and actual material/compatibility guards remain mandatory. Closed GPU quantization/readback overlap, zero-scan omission/provenance and context/plan worker forms are not reused.",
+  "component_limits": "Copied exact constructor with only public accepted-GpuPlan import adapter and post-timing device-validation methods. Component clock is full GPU initialization plus required readiness, not complete solve. Shader kernels never launch in component tests. Same source fields and every device byte checked after the clock."
+}

@@ -1,0 +1,20 @@
+{
+  "reason": "v1 incorrectly required stored CFR+ regrets nonnegative, rejecting finite signed state. No solver or checkpoint change.",
+  "first_record": "iteration-0004.bin",
+  "array_negative_counts": [
+    97588034,
+    41574312,
+    0,
+    0
+  ],
+  "array_nonfinite_counts": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "kernel": "crates/solver/src/gpu/kernels.cu:391",
+  "discount": "crates/solver/src/cfr.rs:57",
+  "v1_sha256": "577c637e61f5ef791fb0b56a2cff371381fd695ae101805ac6577110acba4e95",
+  "time_unix": 1790046521.2262454
+}

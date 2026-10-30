@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-18T02:41:47.626744+00:00",
+  "git_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "(riv_lower|riv_upper|p_lower|p_upper).*u16|u16.*(riv_lower|riv_upper|p_lower|p_upper)|unsigned short.*p_lower",
+    "--",
+    "crates/solver/src/gpu"
+  ],
+  "local_all_ref_matches": [],
+  "retained_CUDA_files_scanned": 459,
+  "matching_boundary_pointer_sources": [],
+  "scope": "Bounded retained CUDA and local all-ref source history, not exhaustive remote novelty.",
+  "declined_source_leads": [
+    "Chance child-to-CFV pre-resolution overlaps E018dependent-child mapping and E039child-base cache; no candidate created.",
+    "NVRTC-only overlap lacks demonstrated1% headroom: D088first compile/module envelope53.2587ms, PTX already process-cached, not a removable global bound.",
+    "Fold copy/reduction fusion resembles closed E053copy/prefix fusion; no candidate created."
+  ]
+}

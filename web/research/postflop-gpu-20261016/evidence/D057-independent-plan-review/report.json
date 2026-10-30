@@ -1,0 +1,65 @@
+{
+  "id": "D057-independent-plan-review",
+  "at": "2026-10-16T18:05:41.515061+00:00",
+  "verdict": "PASS_SCOPED_PROSPECTIVE_PLAN_ONLY",
+  "independent_plan_review_pass": true,
+  "findings": [],
+  "plan_protocol_sha256": "e20f616bdd9abbb24981690150d09aa99456c7da91e5dbb60e73d703cf0a1130",
+  "plan_manifest_sha256": "9102f5fc90ded78c914740908023472f3a21a4242f20869f4f376b896e79f42a",
+  "anchors_sha256": "b63e5855c82d5418769967aafcaf35e5e3a9b5a5b15dade08e0c6cc599317145",
+  "checks": [
+    "All four plan artifacts and13 references match the frozen manifest.",
+    "Anchors independently match B038/E015C1/E020C1: complete configuration, all10 convergence objects, final full state_fingerprint and fingerprint; actual arena byte sum1391071288 per arm.",
+    "Accepted E020 exploitability lines474-501 preserve eager check20, capture+launch40 and later captured replay. Both arms use that production method through140; sampled160/180/200 must reject an absent/wrong warm graph rather than warm or replay extra work.",
+    "Two timing-enabled event handles belong only to the instrumented stream, outside capture. Start precedes the existing evaluation graph launch; end precedes normal root DTOH; elapsed query occurs only after both normal host completions and before handle reuse. No pre-evaluation wait, readback, event query or logging.",
+    "Fixed three matched arm batches retain20 ordinary iterates followed by one normal evaluation, in control/instrumented, instrumented/control, control/instrumented order. No overlapping arms or extra graph replay.",
+    "Host usefulness brackets include complete20-iterate/evaluation call through ordinary root download and CPU reduction, exclude timestamp readout/logging/state checks, and add no outer device events. Each absolute paired batch difference must be<=10%; every sample retained without extension.",
+    "Raw comparisons occur only after both evaluations at140/160/180/200: initialized learning/reach/weight/discount arrays, defined four evaluation root vectors, then every compressed q word/scale bit. CFV scratch is excluded; post-evaluation reaches are not mislabeled as pre-evaluation training state.",
+    "Dual-state admission derives actual two-tone plan payload and retains reserve/lifetime ownership; bounded1M-float pairwise reads add no device snapshots. Future implementation must preserve ordinary event/context cleanup and CUDA-error propagation.",
+    "Future source scope is test-only: one cfg(test) module declaration and an ignored helper; copied captured numeric branch must be mechanically checked, with accepted production methods/CUDA/evaluator unchanged."
+  ],
+  "source_pointers": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "lines": "453-518",
+      "meaning": "CPU normalization, normal eager/captured evaluation path, launch500 and DTOH501, root dot reductions."
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "lines": "521-532",
+      "meaning": "Captured device envelope includes one eval_down, per-player BR/average eval_up and logical root device copies."
+    }
+  ],
+  "limits": [
+    "Plan review only. No implementation, compiler, native test or GPU execution has been reviewed or performed for D057.",
+    "The device interval excludes host normalization, root DTOH and CPU dot work; it is not evaluation-check wall time or full-solve share.",
+    "The host whole-batch10% screen does not bound event-interval bias. Post-check comparisons add inter-batch idle work; matched placement does not establish production-native scheduling.",
+    "Three samples of one raked fixture cannot identify a kernel/family bottleneck, removable headroom, expected speedup or acceptance. No outcome-triggered exclusions or extensions.",
+    "Any later implementation and execution need separate root authorization and frozen source/script review; this plan PASS grants neither."
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\manifest.json": "9102f5fc90ded78c914740908023472f3a21a4242f20869f4f376b896e79f42a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\anchors.json": "b63e5855c82d5418769967aafcaf35e5e3a9b5a5b15dade08e0c6cc599317145",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\preparation-checks.json": "3a539c306b454de4be35e0944d05b4acaaedae3c41925214df314bcee97a1616",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\protocol.json": "e20f616bdd9abbb24981690150d09aa99456c7da91e5dbb60e73d703cf0a1130",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\README.md": "11ded3bf04401ab8e4c5e0016969d92693f9a67a6c5f14a7a50510eb770dc53d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\protocol.json": "7b5d249b65c4dcaefb13fa6e928b445ede1f0f5228d4931f57f7c2ecdf6ab0b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\source-manifest.json": "0952fc2dde596ac297fd76398fa10e74ee00e46aa6f374359384046ceb3d15a8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-graph_device_events.rs": "0604e7f694b3742dafaba5a9c9789b830c167474db50cc47d75bb02c0491a60d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D056-next-hypothesis-scout\\manifest.json": "8002ba15bd17224352f2a301437b9cb689aa291f0e1b89d5a5b9452ba3b60837",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D056-next-hypothesis-scout\\report.json": "71d4fb1ca0c4e3d62240fd241dbda1443795c35648ff4c04d6fc6fc8890f95dc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D056-independent-source-review\\report.json": "ac2a2a6ac72668e82af21c37b3aaeb704cc6fe1bb677df7b0ee63458856af9cb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\report.json": "87694ef4d7cef44ee3632f303c3b9250205e6c39ade0ad8f54744270172e9044",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\report.json": "9a1ccb80a329b52fee7123ef5f0795348b0017df673b526569ad5cf10b319e88",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\report.json": "551bb9eb039bbbefad0163f2175b64712c7976405e169fff92e1d50429332efd"
+  },
+  "implementation_prepared_by_reviewer": false,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "production_status_deployment_changed": false
+}

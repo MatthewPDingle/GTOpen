@@ -1,0 +1,74 @@
+{
+  "id": "D060-independent-source-review",
+  "created_at": "2026-10-16T18:59:49.071272+00:00",
+  "verdict": "PASS_SOURCE_FEASIBILITY_ONLY",
+  "source_feasibility_pass": true,
+  "findings": [],
+  "recommendation": "The fixed terminal consolidation is a distinct, source-feasible host scheduling hypothesis. No measured gain, implementation validation, or execution authorization follows from this review.",
+  "checked_invariants": [
+    {
+      "source": "accepted plan.rs:214-241,244-277",
+      "finding": "Reached fold/show terminals each own a unique persistent CFV slot beyond both parity scratch ranges. Flattened per-level lists visit each reached representative once. Full-list union is exact and no list or slot repacking is needed."
+    },
+    {
+      "source": "accepted kernels.cu:139-190,195-293",
+      "finding": "Each terminal CTA reads completed opponent reaches, immutable metadata and payout, and writes only its own logical CFV row. It reads no upward CFV or learning result. Changing block ordinal only changes the selected node; original block width, shared reservation, per-node FP order and padding behavior can remain exact."
+    },
+    {
+      "source": "accepted mod.rs:759-990",
+      "finding": "All downward launches precede upward work on one stream. E015 second-pass reuse leaves the needed reaches valid because upward work does not change reaches. Standalone sweep requests full refresh. Hoisting terminal launches before reverse chance/action traversal therefore preserves data dependencies; the chance/action reverse order must remain unchanged."
+    },
+    {
+      "source": "accepted mod.rs:393-448,521-757; archived continuation.rs:121-136, continuation_paging.rs:88-115, continuation_storage.rs:301-342",
+      "finding": "Ordinary eager/captured and profiled training share paired_sweep. Continuation, paging and stored workspaces enter standalone refreshed sweeps. There is no new cache owner, device allocation, capacity payload or storage format. Evaluation scheduling stays separate. Preserve empty skips and profile buckets 3/4 without adding normal-path synchronization."
+    }
+  ],
+  "additive_host_limit_clarification": {
+    "reason": "A portable 65,535 cutoff is safe but would fall back for both preserved rainbow full terminal lists (319,985 fold and 472,752 show), leaving that workload unchanged.",
+    "root_selected_scope": "Permit one early constructor MAX_GRID_DIM_X query and a stored host limit in gpu/mod.rs in addition to paired_sweep. No CUDA, device metadata, arithmetic or buffer change.",
+    "safety": "Query before queued uploads/work when query failure deliberately selects the original schedule. Accept only a positive Result<i32> value; check full usize counts before conversion and clamp to the signed kernel count range. Unknown/invalid limit or excessive full count retains original legal per-level dispatch. Do not query within capture or a sweep. Preserve exact fallback interleaving; test that selection explicitly.",
+    "api_source": "cudarc safe/core.rs:361-365: CudaContext::attribute returns Result<i32, DriverError> and first calls check_err.",
+    "timing_scope": "The one-time query and host field setup remain inside constructor/complete-cycle timing. No measured gain is inferred.",
+    "documentation": "NVIDIA CUDA Programming Guide documents x-grid limits separately from 65,535 y/z limits; current supported architectures allow 2^31-1 in x. The actual queried device limit avoids relying on that portability assumption.",
+    "documentation_url": "https://docs.nvidia.com/cuda/archive/12.4.1/pdf/CUDA_C_Programming_Guide.pdf"
+  },
+  "structural_evidence": {
+    "graphs_checked": 2,
+    "original_kernel_nodes_each": 63,
+    "fold_launches_each": 12,
+    "show_launches_each": 6,
+    "fold_ctas_each": 319985,
+    "show_ctas_each": 472752,
+    "proposed_kernel_nodes_each": 47,
+    "interpretation": "Independent recomputation from D045 preserved descriptors only; CTA count and per-node work unchanged. Not native time, family share, or headroom."
+  },
+  "strongest_counterargument": "CUDA graphs already amortize host submission. Consolidation removes nodes but no terminal CTAs or arithmetic. Producing every terminal row earlier can worsen terminal-parent/reach cache locality; larger grids can alter scheduling adversely. Neither the source proof nor D045 selected event intervals establishes a complete-cycle benefit.",
+  "history_scope": "No equivalent terminal-list prepass/consolidation found in the pinned E001-E031 ledger and cited scoped scout history. Distinct from fold reduction/card scheduling, showdown table/width changes and action partition experiments. This is not an exhaustive claim about unarchived history.",
+  "future_validation_limits": "If separately implemented, verify whole-list/slot invariants, empty/invalid-limit fallback and profile/capture behavior, then compare immutable original dispatch outputs. Existing full compressed/F32, locks, warm/post-evaluation and conditional continuation/paging/stored/wide-turn controls remain appropriate. Do not treat two helpers calling changed paired_sweep as independent or compare undefined scratch/padding. No new harness is prepared here.",
+  "current_accepted_source_entries_verified": 162,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\manifest.json": "3dc5ac7e3898c279ed87325b3ec1cf52681b885919eeb102272c22bc911b8db8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\README.md": "326ee2359db0613a76db51c6a782067eb71b60aab7944a66e0e762fa3331b912",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\report.json": "721fd478f276d4b09bf7b9dc664f6f7120d0fe756f9cc809a029c36d4750691e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\references\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\references\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\references\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\references\\experiments-48d2c295.md": "fc858846f25c29895f8029827be29720536b5f3649aec773327d147f7962f57e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\README.md": "6c8bb5aa9540e0f37e1af064e60ad47167a20f3770c769bae48064107dea753a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D058-next-hypothesis-scout\\report.json": "f0b1b60b60d67f1a2933c62c73daf6093efe294d962360af373daa98b1bc9fda",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\report.json": "275631d98386a203173dd1e49037cd18c385c5cefd2eb98c36a7b8d0abf22cda",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b"
+  },
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_prepared": false,
+  "candidate_accepted": false,
+  "production_modified": false,
+  "status_or_deployment_changed": false,
+  "reviewer_read_note": "One earlier optional rg search supplied a Windows wildcard path that rg rejected; the bounded read was corrected. No source or evidence changed."
+}

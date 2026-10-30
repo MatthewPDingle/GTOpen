@@ -1,0 +1,16 @@
+{
+  "id": "E068",
+  "at": "2026-10-17T11:40:01.408745+00:00",
+  "original_form": "E059",
+  "accepted_base": "E051",
+  "entire_original_current_baseline_cuda_exact": true,
+  "entire_original_new_candidate_cuda_exact": true,
+  "original_candidate_sha256": "479d18af23b0666278bb751df4e0169edd001f88404a0ab0ff369c119c9e5c1e",
+  "candidate_sha256": "479d18af23b0666278bb751df4e0169edd001f88404a0ab0ff369c119c9e5c1e",
+  "outside_up_chance_exact": true,
+  "address_binding_sha256": "7bc5644d5ea7856aff0c4680e22879c0965e2b6ed645304075dd851da8ec15b9",
+  "mechanism": "Exact original64bit blocker predicate and orderedtloop. Compute original nextacc addition unconditionally; retain every32prioracc bits ifblocked via allonesu32mask, otherwise exactnewsum bits. Finalacc*inv unchanged. No addzero/reciprocal/precision/reduction reordering, guard/width/mask/table/source variant or composition.",
+  "source_contract": "Every ignored child/permutation read valid initialized and disjoint current-level writes; original producer proofs/12metadata bindings exact. CUDAfloatingexceptionstatus has no supported observable interface in this solver. No malformed raw pointers or out-of-range synthetic plans admitted. Fresh numerical tests still required.",
+  "scope": "ActualRTX5090compute120only for mechanism/numerical/performance. Supplementarycompute75compile/ABI/unchangedentry inspection only; do not require branchfullegacybaseline or claim legacyperformance.",
+  "no_claim": "Root source review only; no new applicationkernel, solver, speed or no-material-cost proof."
+}

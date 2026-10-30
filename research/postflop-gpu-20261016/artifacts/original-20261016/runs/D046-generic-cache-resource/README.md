@@ -1,0 +1,19 @@
+# D046 generic action-cache compiler probe
+
+Prepared only. Root executes once after independent source/script review; no compiler, native process, GPU call or checkout edit was performed during preparation. The accepted E020 CUDA baseline is byte-exact. Candidate CUDA changes only `bool small = na <= 8;` inside `up_action_impl` to `bool small = NA != 0 && na <= 8;`. The independent `down_action` occurrence stays unchanged.
+
+The generic NA=0 path declares dynamically indexed `rc[8]`/`vc[8]` arrays. D043 baseline PTX shows its64 bytes of explicit local storage; this is not evidence that the compiler spilled64 bytes of registers. The proposal retains common compile-time NA2/3/4 caches and the existing arithmetic and ascending action order. Generic1/5–8 actions reload regret/child values; generic>8 already used that path. Within one hand/action iteration the reloaded regret is not overwritten until its update, other action indices are distinct, child CFVs remain read-only, and the parent CFV write is last. Locks, opponent sums, reach, launches, graph topology and host metadata are unchanged. Source reasoning is not native numerical validation.
+
+The falsifiable mechanism is eliminating the generic explicit local arrays from the shared dispatcher entry. The tradeoff is more generic global loads; local storage removal or theoretical residency can fail to improve the complete cycle. D045's selected up_action intervals motivate inspection only: they are event-perturbed selected training launches, not complete-solve or family shares. No closed candidate is reopened. In the scoped E001–E023 review, E005/E014 specialized arity entries, E006/E007 limited registers through launch bounds, E018 changed child addressing, and D043/E023 separated opponent work; none is this generic-cache literal change. This is a bounded history statement, not an exhaustive claim about all historical/preflop experiments.
+
+`run.py` reuses D043's standalone rustc/pinned-cudarc-rlib path, GPU lock, read-only live-idle refusal,50GiB free reserve plus1GiB output reservation, ten-second dashboard heartbeat, owned-child cleanup,600s per-stage timeout and immutable one-shot outputs. It verifies all162 restored E020 source identities and the D045 terminal evidence. It uses one context and identical architecture-only NVRTC options for baseline/candidate, writes both full PTX files, and queries exactly two up_action resource rows at128threads/zero dynamic shared. It contains no launch, solver or numerical corpus path.
+
+The prospective resource prerequisite is candidate local bytes=0, registers≤baseline and active128-thread blocks/SM≥baseline, with128-thread support. Both variants retain the same nine entry names and up_action ABI; the other eight entry PTX bodies must be byte-identical. The runner preserves both complete up_action entries, their diff, local declarations/operations, floating-typed/FTZ static opcode counts and resource attributes. Independent inspection of that PTX/arithmetic/load evidence remains required; static counts are not an arithmetic equivalence proof. The resource result never accepts a solver change, predicts speed or alters deployment. Any later native candidate would require original broad/raw/menu controls and unchanged complete-cycle gates, including generic action counts.
+
+Root command, after replacing the placeholder with the sealed prepared-manifest hash:
+
+```powershell
+& 'C:\Program Files\Python312\python.exe' -B 'S:\GTOpen-research\postflop-gpu-20261016\runs\D046-generic-cache-resource\run.py' --execute --prepared-manifest-sha256 'PREPARED_MANIFEST_SHA256'
+```
+
+`commands.json` contains the exact prospective rustc/probe commands. No outputs may be overwritten; any failed execution remains terminal in this directory. Original D043/D045 evidence stays immutable. Root alone decides execution, independent terminal review and whether the resource prerequisite justifies further work.

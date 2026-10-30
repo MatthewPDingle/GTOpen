@@ -1,0 +1,355 @@
+{
+  "id": "D045",
+  "verdict": "PASS_SCOPED_DIAGNOSTIC",
+  "source_entries": 163,
+  "native_invocations": 1,
+  "native_tests_passed": 1,
+  "native_tests_filtered": 88,
+  "markers": 22,
+  "selected_interval_count": 18,
+  "raw_words_compared": 4426132436,
+  "raw_checkpoint_records_equal_immutable_D033": true,
+  "raw_and_compressed_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "all10_exploit_anchors_exact": true,
+  "full_state_fingerprint": "65fb2853a11f3acc",
+  "full_state_exploit_bits": 4595130701932466176,
+  "source_custody": "92079bb9213fd91362b7e9a9075066c62b7acfb19fa2d64bb1e5d477c6532eda",
+  "binary_sha256": "7c8e2c45f9e2e28bca2bd0c8d9233ef80725525c72395c5e8c3c9b08485845a3",
+  "auth_to_terminal_chronology": [
+    "2026-10-16T13:50:30Z",
+    "2026-10-16T13:50:31Z",
+    "2026-10-16T13:51:52Z",
+    "2026-10-16T13:52:03Z",
+    "2026-10-16T13:52:04Z",
+    "2026-10-16T13:52:40Z",
+    "2026-10-16T13:52:40Z"
+  ],
+  "outer_batches": [
+    {
+      "checkpoint": 160,
+      "order": [
+        "native",
+        "instrumented"
+      ],
+      "native_device_batch_ms": 448.8992004394531,
+      "instrumented_device_batch_ms": 472.0650634765625,
+      "native_host_batch_ms": 448.9535,
+      "instrumented_host_batch_ms": 472.0957,
+      "device_change_pct": 5.160593517304335,
+      "abs_device_change_pct": 5.160593517304335,
+      "within_10pct": true
+    },
+    {
+      "checkpoint": 180,
+      "order": [
+        "instrumented",
+        "native"
+      ],
+      "native_device_batch_ms": 450.28924560546875,
+      "instrumented_device_batch_ms": 475.69793701171875,
+      "native_host_batch_ms": 450.3326,
+      "instrumented_host_batch_ms": 475.7495,
+      "device_change_pct": 5.642748889568727,
+      "abs_device_change_pct": 5.642748889568727,
+      "within_10pct": true
+    },
+    {
+      "checkpoint": 200,
+      "order": [
+        "native",
+        "instrumented"
+      ],
+      "native_device_batch_ms": 452.0992431640625,
+      "instrumented_device_batch_ms": 476.10333251953125,
+      "native_host_batch_ms": 452.1598,
+      "instrumented_host_batch_ms": 476.14849999999996,
+      "device_change_pct": 5.309473465930559,
+      "abs_device_change_pct": 5.309473465930559,
+      "within_10pct": true
+    }
+  ],
+  "selected_launch_samples": [
+    {
+      "graph": 0,
+      "ordinal": 19,
+      "kernel": "down_action",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      },
+      "samples": [
+        0.743008017539978,
+        0.7545920014381409,
+        0.7568640112876892
+      ],
+      "median": 0.7545920014381409,
+      "min": 0.743008017539978,
+      "max": 0.7568640112876892
+    },
+    {
+      "graph": 0,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 6300
+      },
+      "samples": [
+        1.003424048423767,
+        0.997376024723053,
+        1.5431360006332397
+      ],
+      "median": 1.003424048423767,
+      "min": 0.997376024723053,
+      "max": 1.5431360006332397
+    },
+    {
+      "graph": 0,
+      "ordinal": 34,
+      "kernel": "up_action",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      },
+      "samples": [
+        1.1906239986419678,
+        1.189471960067749,
+        1.185215950012207
+      ],
+      "median": 1.189471960067749,
+      "min": 1.185215950012207,
+      "max": 1.1906239986419678
+    },
+    {
+      "graph": 1,
+      "ordinal": 19,
+      "kernel": "down_action",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      },
+      "samples": [
+        0.4182719886302948,
+        0.4131839871406555,
+        0.4047360122203827
+      ],
+      "median": 0.4131839871406555,
+      "min": 0.4047360122203827,
+      "max": 0.4182719886302948
+    },
+    {
+      "graph": 1,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 5060
+      },
+      "samples": [
+        1.0593600273132324,
+        1.02128005027771,
+        1.0255039930343628
+      ],
+      "median": 1.0255039930343628,
+      "min": 1.02128005027771,
+      "max": 1.0593600273132324
+    },
+    {
+      "graph": 1,
+      "ordinal": 34,
+      "kernel": "up_action",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      },
+      "samples": [
+        1.302880048751831,
+        1.3070720434188843,
+        1.3487999439239502
+      ],
+      "median": 1.3070720434188843,
+      "min": 1.302880048751831,
+      "max": 1.3487999439239502
+    }
+  ],
+  "candidate_accepted": false,
+  "scope": "Six selected training launches at three final replays, not native family/fullsolve shares or speedup proof.",
+  "limitations": [
+    "The10%outer guard does not bound individual-node bias.",
+    "Graph0 up_show sample200 is1.543136ms and exceeds that sampled up_action; retain it, do not describe uniform per-sample rank.",
+    "Samples are final replays at distinct iterations, not20-replay means or independent repeated benchmark trials.",
+    "CFV scratch excluded; full raw bytes compared by native test in bounded buffers, not persisted.",
+    "Full compressed equality140 is inherited source-enforced before graph setup, without separate marker."
+  ],
+  "artifact_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\scripts-manifest.json": "66bc61035bbee5308e7cc34281ffeb86d41f7ec4157a308b6d76741068d97e74",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\protocol.json": "7b5d249b65c4dcaefb13fa6e928b445ede1f0f5228d4931f57f7c2ecdf6ab0b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\build.py": "c4554466d63078d5efe71abbc6ff7543a410d108d51ce9b72320b9f8fe65f69e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\run.py": "81c0b583a8161b24edd36d1206d4e06dbb85f1e685d09a2b22524b9d5ac0a350",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\assess.py": "64bcfaaa71aae84bdfc3f204a52d11e1582b5b475eeec045a07a4418ad2202eb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\README.md": "4e39a634d79561a8f487ef12312ff3820fc394dac243fa10f2fc3d3392ae27cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\authorization.example.json": "45ddd1231b31ae9e67aec12b2f89540acf8e623868b94df4500639de476b8970",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\preparation-checks.json": "7d94f3f40b555c0c42ea9f56840b286265c55785dfd4cf8c4981d1d21813c50f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\authorization.json": "b1af7e7ae55efa0888db00323a9b34fc4b7060107f46a6aa82bbb9cc5d20f5d4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-source-review\\report.json": "c068b245683e20383e6e1184e863630566ee2871e33f7b315c9ee5da7fe1acc3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-script-review\\report.json": "ab802e5f7c97093190328349b2cb9063ff26950556b24538912812f7458d5296",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\source-manifest.json": "0952fc2dde596ac297fd76398fa10e74ee00e46aa6f374359384046ceb3d15a8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\cleanup.json": "f0f958cd6359ba7d928ad707967634ba0ac7fabd770eae505fc331ca95d5d88b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\activation.json": "3274663acff6824594fe5e25e1b0c11112a1426ed4a4f074a70fa3799ed57a07",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\base-graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\base-mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-graph_device_events.rs": "0604e7f694b3742dafaba5a9c9789b830c167474db50cc47d75bb02c0491a60d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-mod.rs": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate.patch": "f35dbdd11eedfa02d766e70084bcb4619c4411463f8648889ad7bb1dafe8cb4d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\helper-adaptation.patch": "51b6da5db3f236bc85707d60bea192f206de1aed60fc11f9cf3cd78f4315e0d6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\README.md": "80b7e9c6f346462bffb9df3cd913f5ae264428118cea78361f82e08d495052c8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\source-checks.json": "bd67c990bc4f6b014e667ac7cf6b8e5f1b39fdf2ad243503d5f1c7085abfd314",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D045-solver.manifest.json": "b7262adf2a0318c5549adb8a72c833f4dfc88e4240091fa596232f42cc76af66",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D045-solver.exe": "7c8e2c45f9e2e28bca2bd0c8d9233ef80725525c72395c5e8c3c9b08485845a3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-independent-review\\source-custody.json": "92079bb9213fd91362b7e9a9075066c62b7acfb19fa2d64bb1e5d477c6532eda",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\source-before.json": "41f289f61387dbc75b0158a4ba252c1d7a3bba5adc6327f586eb2b5d48f1de60",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\candidate-mod.rs": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\candidate-graph_device_events.rs": "0604e7f694b3742dafaba5a9c9789b830c167474db50cc47d75bb02c0491a60d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libwindows_link-b52ec09ce44eaf82.rlib": "1edf850d4debee91f4e612ba0a85f79cc4e3a54dd5a809bd5fed06ae133c8573",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libwindows_link-b52ec09ce44eaf82.rmeta": "2d60884cdfadf66cc567b208c2c20b4b681bcc93d1beb3364292bbecfca85ed3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libunicode_ident-0252c41d2e9f2d1c.rlib": "0590f88bebe92bc8e1aca05748b8799755cd0e6050ac75167159606cd1ee81fb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libunicode_ident-0252c41d2e9f2d1c.rmeta": "34aa0023afc9819f9e7f0098fb3306ce9c1a2e03e78728f412adb22dac3e4f8a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libitoa-74a051154152f23d.rlib": "d2633a672f7ec1f86c34dfc1ef08eb09d803c689e00c54a4a31c99163ffdcce6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libitoa-74a051154152f23d.rmeta": "ab45a2874f069f7c310ae2bc1fd6e6f354e854650f3f2ae58ee99b9265b93bba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libeither-4baf58b0742f8bd6.rlib": "4ef82757c3fe5d6efd6c88c18a38e0753c63a483c97f4831a335c619bd50caa6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libeither-4baf58b0742f8bd6.rmeta": "7214a79c32423e3fc8f3b8b65c35865a84b320f16ca02c6200af0762a29975a3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\liblibloading-8d2068e2bf38a2f1.rlib": "f0ec6e05540ac2927203e498facedafbf2cc9bb4d3cceae3e992fd600863bb1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\liblibloading-8d2068e2bf38a2f1.rmeta": "0b9168eb9f2bb482ab192a2696834fc892666d8b893e389582421b1dd7f24d11",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libshlex-f6524cb5e4bd3a31.rlib": "909159493a963a321926084dde05a3456a865c5b7929f021c738bde4c3168a9d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libshlex-f6524cb5e4bd3a31.rmeta": "24adb849c458c23b29d18bd37dbe438c1bc602226268f8021c83333e01409337",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libmemchr-863cd9a4723da2aa.rlib": "75e2fd3759fc303aa73149097286c98d3964ba6201948fee3e01bd116ce27095",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libmemchr-863cd9a4723da2aa.rmeta": "0d58be3c92eb0e6ab92fd5f21dca37f5e507e8f6ceae8008c9195544a914b566",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libzmij-421e3e50aa0a9d3e.rlib": "0de97588e6b6e787650894c7225ea73be63e51bc8df82fcc84a9dd1cd9d9c0c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libzmij-421e3e50aa0a9d3e.rmeta": "be8a98261370be72c006200123ec2b4494d6f1c47dc9dc906992c65b22663327",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_utils-f12feddf568a8de6.rlib": "0213e1cbca469f6c77fda43a8dc46733a88c9f76dabd99c757731ed281bf8ee6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_utils-f12feddf568a8de6.rmeta": "03d6fd2d0e13b12e57e41ad688b31fced1f8032cd684ebb9b54cebb7228a0a56",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_epoch-83f0dcc2dba25447.rlib": "8be3fb3a0fa036b3083b1a2b822437488fab54ffda1390cc0c90ac4346ed82a6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_epoch-83f0dcc2dba25447.rmeta": "8318a01427f6b99a9bb34b5f8cf3944b9ba58953efe6474dba7afd049028b765",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_deque-1a1d6578b74865e7.rlib": "d02166d41f1d7e94dc5645eedaf57de820e18b17572022e0c5a7bee63cd20b51",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcrossbeam_deque-1a1d6578b74865e7.rmeta": "2763faa92da796539b65f88959c539feede4207b9419331e09cea7e5bf369f22",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libfind_msvc_tools-50bafbacf9e2acf8.rlib": "e8a198265161b5e388d38e996374fccd256b6b914a4015e816a137a99e101af4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libfind_msvc_tools-50bafbacf9e2acf8.rmeta": "11b8e5288ec8ae6dc9e448a60f4bfe2cf578974b41aea31cf25ca39293e22912",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libquote-fe2f21b86a966e3a.rlib": "40e648f79c4578ee719cb9a30b578450f54ac8739308b3bd079dab809f5add81",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libquote-fe2f21b86a966e3a.rmeta": "078a7c44f5f9700b113cfb7bbf427b7fa0f5c29855977bf0657b97e6011ed23a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libproc_macro2-270112166e35f5e1.rlib": "6649f7c16910d0f34543ee996315458613995f68eb8dca728acbc82d51e41cde",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libproc_macro2-270112166e35f5e1.rmeta": "0a583bdedeff64075a65f1a6159d135db3dba4876b6af086ba5c44a24fbd3523",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\librayon_core-0787e97421794457.rlib": "3411c2b88e10b4bc416f8140695ba5c7e55683f3f3fcb10e62a7ca710e75c30b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\librayon_core-0787e97421794457.rmeta": "520a1b7da8946d9c45cb1c62f64888c69f6b7ff809b94fa1cf8149af4a6a031b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde_core-94e9cc654b950df9.rlib": "1f4715c9b85b94a0423930dcdf62111cabf8b27ccc325ee17462af0d07ea00a1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde_core-94e9cc654b950df9.rmeta": "525ee13ea4721821fca4f78d1317028be6544e228822c429472d3ddbf75720b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcc-47cbe2715a82d6dc.rlib": "2177f3eb37d163800753bf8e4bb5cf6a3cd5dd045e168356234ba18f92e6f7da",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcc-47cbe2715a82d6dc.rmeta": "63c89db00004e27e20ea7f51bc7a1a6c765cc6a827d5a991c7bd320b5e22a6f5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\librayon-8ab48cfec9cf00f9.rlib": "2a1339eeec5fa4417ba824dd425f52ae1aebaa4d06e488f3273f2b8769473be9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\librayon-8ab48cfec9cf00f9.rmeta": "af841bb76869e24769e23dbc8c9ad0f727555d549a1c2f1435ec6a04865c7e75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libsyn-10acf42acce28688.rlib": "f6c7ff103d5ee103160d1b86ba780a30b6e9a1a14242a3bc91a1e9e4e1d1500c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libsyn-10acf42acce28688.rmeta": "8a7767d82d58f1e1cbd2c0f0df946c6f528885afc62a0e4cc88c488173e7ebc8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": "8a23a32c6406785f72e8d895e5e67ab1fde68f5927e65cfb3635f4c99981390d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde_json-83a0670a02a34a4d.rmeta": "6abf1345521c4c8e6a73652bd926dde6853514eae4ef7d860d18fa1ff2056b4d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rlib": "3f8ec98923d7cb143b6226ae7ed7e71b4b370d9a7be669e74a01cfd7894f945f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rmeta": "d90c8cc2cd4c931a469b3304f1fcd8b38a3f95f1f8f205043fa8427efe4c9f60",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libmimalloc-d1aa14d2a520d303.rlib": "3fb4e5350de37c8791f50e84864068a1a5da078677e43dd28b3ec8c727763c0c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libmimalloc-d1aa14d2a520d303.rmeta": "2b2a09abca5f11fb0d0f47dfbbc7fe8be1d242eab3cc8dc7fb5c91d88926727b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\serde_derive-1314214cb8b4b16d.dll": "0ed2f3a0e2d025cee66a1ed5de91622e2beede03453e27d304f52ea35532fb90",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\serde_derive-1314214cb8b4b16d.dll.lib": "cb8f063fa47f1eaa262b8afbdd9339467bd13d6c8575893350defa4819e77b21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde-47b4d5f55b04d3b5.rlib": "3da213a6005c6ec80fa572f8dd801aa29cadf31ebf14e388209c75c236e3ed25",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libserde-47b4d5f55b04d3b5.rmeta": "a69ae6ed0707c756859d1475db41ee6a141747913644556b7cd8dbe05b5f745b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d045-sparse-events\\release\\deps\\libcudarc-ba3140064b5903a3.rmeta": "c130b3e383dfb24adcd58ca8e92d476c52251af8452ada1a9a46b3dc312b5224",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\build.jsonl": "ab98947cacc0461c708a392d913d9b1372d7a48fd1eb35139ea0a9139ea1e864",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\build.stderr.log": "b05edae6cc56a53f7aee72ddfb80d6120b5155ebe3ecaf9d925927e774dc8e31",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\candidate.patch": "f35dbdd11eedfa02d766e70084bcb4619c4411463f8648889ad7bb1dafe8cb4d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\exit.json": "b90ff20741e7555a9fb9871ce8bd8e4b115741e49eb06a2a9c74dcb26fe6be21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\build-environment.json": "f9add01d96c060f073665662bbea4f16a988e8ba44c0a9baf36a0671a82329bb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-execution\\invocation.json": "ca005da4235a4afa22b5d1429b59175d9354251ef277a9080327ee78d65f0d60",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-execution\\exit.json": "19848f455f4dbcc940855b41e29b1f8ad752194e8595e0c2440c2734c24d1588",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-execution\\complete.json": "895ec62099a077296ba32fb9b6eee5580d1245575fa954c09c6d57f1a1701543",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045R1\\report.json": "5522ba4c42069a362a2e7293d7c720394a8971a349a595773bb68db4f637a02c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-execution\\stdout.log": "fdffb41e78a01f09a0e313e103ebf43a09438d217dc0c154bedce33d9828deb1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-execution\\stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045R1\\stdout.log": "cdcf61c9b82188dbe3692f9155da8fc9dbe1530d60b0289d216d6d2f05229802",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\parsed-records.json": "fcafde425792f4cbad7dc5bdd844f2d0426bb4445d36c3c65fedf92f400ee51d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\report.json": "04d04b5661f0bcc99f06ce4c706724b59db3b623d93241ccfe9b82bb8bd23766",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\report.json": "87694ef4d7cef44ee3632f303c3b9250205e6c39ade0ad8f54744270172e9044",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\report.json": "9a1ccb80a329b52fee7123ef5f0795348b0017df673b526569ad5cf10b319e88",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\report.json": "551bb9eb039bbbefad0163f2175b64712c7976405e169fff92e1d50429332efd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\manifest.json": "ea3be1c767ba785dc6e3619e882dc8be511a1b95385eed15ea3e364ba29f8692",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\assessor.py": "64bcfaaa71aae84bdfc3f204a52d11e1582b5b475eeec045a07a4418ad2202eb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\summary.md": "b97f5b9f8e6e14ed054f901cfa7c68cebed34f821bcfb3785bd965bd515427c0"
+  }
+}

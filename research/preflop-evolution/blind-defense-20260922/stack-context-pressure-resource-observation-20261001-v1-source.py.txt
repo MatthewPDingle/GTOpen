@@ -1,0 +1,59 @@
+"""Bounded read-only observation of the already-running two-arm study."""
+import os
+os.environ.update(PYTHONDONTWRITEBYTECODE='1',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
+import json
+from pathlib import Path
+import subprocess
+import sys
+import time
+import psutil
+
+sys.path.insert(0,'T:/Dev/GTOpen/tools/research')
+import stack_context_pressure_evaluation_handoff_v1 as h
+
+duration=300
+output=Path(__file__).parent/('pressure-resource-observation-'+str(time.time_ns())+'.json')
+samples=[];cpu_last={};last_time=None;began=time.monotonic()
+psutil.Process().nice(psutil.BELOW_NORMAL_PRIORITY_CLASS)
+psutil.cpu_percent(None)
+try:
+ while True:
+  now=time.monotonic();s=h.read(h.STATUS);t=h.read(h.pressure.coordinator.STATUS)
+  identities=[]
+  for pid,created,script in ((*h.INITIAL,h.TRAIN_SCRIPT),(101740,1790820578.6834643,'stack_context_pressure_evaluation_handoff_v1.py')):
+   alive=h.process_alive(pid,created,script)
+   identities.append(dict(pid=pid,created=created,alive=alive))
+  cpu_current={};rss=0;processes=[]
+  if identities[0]['alive']:
+   parent=psutil.Process(h.INITIAL[0])
+   for p in [parent,*parent.children(recursive=True)]:
+    try:
+     identity=(p.pid,p.create_time());c=p.cpu_times();cpu_current[identity]=c.user+c.system
+     m=p.memory_info();rss+=m.rss
+     processes.append(dict(pid=p.pid,created=identity[1],parent=p.ppid(),rss_bytes=m.rss))
+    except (psutil.NoSuchProcess,psutil.AccessDenied):pass
+  paired_delta=sum(max(0,v-cpu_last[k]) for k,v in cpu_current.items() if k in cpu_last)
+  seen_cpu_machine_percent=None if last_time is None else 100*paired_delta/((now-last_time)*psutil.cpu_count())
+  done=subprocess.run(['nvidia-smi','--query-gpu=utilization.gpu,memory.used,memory.free','--format=csv,noheader,nounits'],
+   capture_output=True,text=True,timeout=10,creationflags=subprocess.CREATE_NO_WINDOW)
+  gpu={}
+  if done.returncode==0:
+   vals=done.stdout.strip().split(',');gpu=dict(utilization_percent=float(vals[0]),used_MiB=float(vals[1]),free_MiB=float(vals[2]))
+  else:gpu=dict(error=done.stderr[-300:])
+  record=dict(unix=time.time(),elapsed=now-began,verified_identities=identities,
+   machine_cpu_percent=psutil.cpu_percent(None),surviving_observed_study_cpu_machine_percent=seen_cpu_machine_percent,
+   observed_study_rss_sum_bytes=rss,ram_available_bytes=psutil.virtual_memory().available,gpu=gpu,
+   training_stage=t['stage'],training_status_age=time.time()-t['unix'],counts=t.get('counts'),logical_bytes=t.get('logical_bytes'),
+   active=t.get('active'),handoff_stage=s['stage'],handoff_status_age=time.time()-s['unix'],processes=processes,
+   current_training_failure=h.pressure.FAILURE.exists(),current_handoff_failure=h.FAILED.exists())
+  samples.append(record);cpu_last=cpu_current;last_time=now
+  if record['current_training_failure'] or record['current_handoff_failure'] or not all(x['alive'] for x in identities):break
+  if now-began>=duration:break
+  time.sleep(min(30,max(0,duration-(time.monotonic()-began))))
+finally:
+ answer=dict(complete=True,read_only_observation=True,samples=samples,duration_seconds=time.monotonic()-began,
+  source=str(Path(__file__).resolve()),source_sha256=h.sha(__file__),production_modified=False,new_scientific_trial=False,
+  training_modified=False,native_scientific_calls=0,fits=0,
+  scope='Whole-machine GPU/CPU are descriptive samples. Study CPU uses only surviving sampled identities and omits exited/transient workers. RSS may double-count shared pages. Not an isolated speedup benchmark or utilization guarantee.')
+ with output.open('xb') as f:f.write(h.encoded(answer));f.flush();os.fsync(f.fileno())
+ print(json.dumps(dict(output=str(output),samples=len(samples),seconds=answer['duration_seconds'],last=samples[-1] if samples else None)),flush=True)

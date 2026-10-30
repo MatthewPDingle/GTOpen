@@ -1,0 +1,32 @@
+{
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9158.0047,
+    "candidate_full_cycle_ms": 9199.0021,
+    "observed_gain_pct": -0.44766738326745126,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.06742144692493106,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 1.2221653603574147,
+        "slower_pairs": 2,
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -0.033435776513889036,
+        "slower_pairs": 2,
+        "failed": false
+      }
+    ],
+    "statistical_significance_established": false
+  }
+}

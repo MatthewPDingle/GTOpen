@@ -1,0 +1,219 @@
+{
+  "id": "E020-build-readiness-r1-invalid",
+  "at": "2026-10-16T11:10:54.961345+00:00",
+  "verdict": "BLOCKED_WRONG_ARM_LINKED_EXECUTABLE",
+  "all_builds_ready_sha256": "122ce989d6ffcc6fa83a99b15943e4e89aeac3d04e7dde654f7a970e82894982",
+  "all_listed_artifact_hashes_verified": true,
+  "verified_artifacts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-plan\\all-builds-ready.json": "122ce989d6ffcc6fa83a99b15943e4e89aeac3d04e7dde654f7a970e82894982",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_action_menus.exe": "d086cceb1e0490ae23a16fe2b6fc739f4b21e4cb8993de6e5ef38d8dc946feb9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_action_menus.manifest.json": "a59ed1349cb6436cdb9f4de91897730eeac524cba036b57ad54e62f9f41bb84a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_state_perf.exe": "a293634fa964a06e04209e54a5e7c0767bd380fc44e95ee83362a6e86a9d4d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_state_perf.manifest.json": "208fb434f5e04ac118c7eaacef16dc809fbd34c00f1686800b20c2260b8138ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gpu.exe": "23a902540f6d868aaff64d5c4059c0eab454920a0e4bf2aea9441229d56f7148",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gpu.manifest.json": "07c8a2254b479a9bde9476a9beff525499917e7df6f01250b2ee0ad2513bccdf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_resume_state.exe": "5e174a9da989d03264fe731603ca12985b7d6bc7d0945ea73eb43d22e3bf697b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_resume_state.manifest.json": "97344099895a619b0b00a811d7586485d7115ab1845fb27395340da97448d0f6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_paging.exe": "012790a236b2cdf95bb54fffc864677cad0931e04f180fb0e2a8e26a2e565049",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_paging.manifest.json": "5ae9cab58c8c0d2050c38859d7febe14719f4515c6496c4621f180ecd3a1ee9f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_symmetry.exe": "0a2d2403e6eb7ef1af2141da590a1da67c3d3269c66a77f7f1023e86b5cd2980",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation_symmetry.manifest.json": "bad6f8150040fcc287ed9f42ec7a3964019bab18476dcc1d88b6fedbe3345891",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation-tests.exe": "21ad5267694c35d26ec8e018c0598f94c2f66216ef81d7ee4b90cb4eb6fcdc20",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-continuation-tests.manifest.json": "188fa463158de5d2736a56bc64ba72c8cc55b03413cec166e901f1c050eec8f6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E015-holdout.exe": "d9cc5d1168b89c1753690467d94e63997cc40fabc312332e8ae3db9356f0def9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E015-holdout.manifest.json": "a8d24c717269dd0410e57d43a5c6d5c62c33215e42405ee410c0f2ce8952f048",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E020-holdout.exe": "d9cc5d1168b89c1753690467d94e63997cc40fabc312332e8ae3db9356f0def9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E020-holdout.manifest.json": "8d98271f4cd10359b10a5d27039e195a375035542b9d5049adb8606fd411307b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E015-resource.exe": "22aada297bd1998bf44bfe0240bc660554e5a0c96db0b74237dea5a84ba33575",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E015-resource.manifest.json": "9716174c338771ca09147005e8c89c3515e9a1a8936c5946b68f636227740ea2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\invocation.json": "21323f37c1bacfa05eab0fc70d6cbb13d018ea161a8cab0ba283fafb0630f9c8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\exit.json": "3b650f1313ad9266874c616cf314976f774b89858e91858b56c046ac3e5b6205",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\stdout.log": "41058267948cb9c0ea584c609c0d8cd17e6cb57cac18a899a20eaa93f51238c2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-1\\stderr.log": "713349ac30e388a5fc09896886599de7fa9c6b39a0d84660082b90ad58f0a834",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\invocation.json": "5255d1d4a314831bf941d56a9361e4c07b8c146db1313d7bae02605dab3a22f2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\exit.json": "c40ad41566b3a5c1ada180d025f9261b72c436df41b0bd3c3df606b42636fc08",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\stdout.log": "f2f19f6d3868829df45842f2f05c7013a63471747ade7a739d8c6e079e55c08e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\cargo-2\\stderr.log": "d6b38ff406a3e933917642b13aa3b87bdcdde82f86eca5c3ee3fc95de905cec0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E015\\invocation.json": "8aecc378161e2c2370d97d74469f0be3c99f61150f94147ab55cd0227a0f35a0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E015\\exit.json": "9952633898a8ee9c094c3220dd5dc1a3382972751b2ca26028afd692dd1d345b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E015\\stdout.log": "09c2f243733cee74f3e8bcb1ab4612dc5e9037ba27f5b8208a9f1f71b3d50e4f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E015\\stderr.log": "6987e8f1340a8cf35bccff940c36bbd633b3e4e988b8a0e5fbe05452b7dae1f3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E020\\invocation.json": "8510a199852d59b92acd228b3deeb4e3a6438754e20d7d7c2a50696c5a250dc3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E020\\exit.json": "628c8c7773f68119fa2b4252ab23e27654c6b477e2ffff34412158773ba6f713",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E020\\stdout.log": "915872c9b01227a994116dce3e573e817f9eafdfe212daec5ad3545718bfac8e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\E020\\stderr.log": "85c8dbac64ed6a362d668bf3988686e26e947620bb15cfdbe2e999a0ff8261b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-build\\complete.json": "edd2a6ef6a0baf621553b6eb7039eebae7d41669d4a2b1a3ad659b286cad1ded",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\report.json": "eb7f46542875e5ab5626c8a3eb788327e2fa28852bf4367cc03d68bc6714d3b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\started.json": "ff02d3273d25cd684357421ed46177905728d12ead0ba991ef53597a849df557",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build-authorization.json": "8bdd6c6306f63e53b87bda7eca2bb7f8aa690e09e21657f08b3747165366d5ef",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-plan\\authorization.json": "364775cadca51f63136784e92ca013792d1ab23dc521be47ba8b9a93ecb54a4f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-holdout-source-review\\manifest.json": "6a0b54474f31239146e9ff266869573e99266a7616089cf4f05314c03301a2cd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-build-readiness-review\\broader-build-validation.json": "12398cb27f487fa2c7388e155e681b0bef706b11ed497059e013863edc0e55ea"
+  },
+  "proof": [
+    {
+      "role": "E015",
+      "binary_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E015-holdout.exe",
+      "binary_sha256": "d9cc5d1168b89c1753690467d94e63997cc40fabc312332e8ae3db9356f0def9",
+      "complete_cuda_text_present": {
+        "E015": true,
+        "E020": false
+      },
+      "workspace_kernel_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "workspace_mod_sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "compiler_artifact_rows": [
+        {
+          "package_id": "path+file:///S:/GTOpen-research/postflop-gpu-20261016/runs/E020-wide-turn-holdout-implementation/workspaces/E015/crates/solver#0.1.0",
+          "manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\Cargo.toml",
+          "target": {
+            "kind": [
+              "lib"
+            ],
+            "crate_types": [
+              "lib"
+            ],
+            "name": "solver",
+            "src_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\src\\lib.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": true,
+            "test": true
+          },
+          "features": [
+            "gpu"
+          ],
+          "filenames": [
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\libsolver-e2d3113d740308c1.rmeta"
+          ],
+          "executable": null,
+          "fresh": false
+        },
+        {
+          "package_id": "path+file:///S:/GTOpen-research/postflop-gpu-20261016/runs/E020-wide-turn-holdout-implementation/workspaces/E015/crates/solver#0.1.0",
+          "manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\Cargo.toml",
+          "target": {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "postflop_wide_turn_holdout",
+            "src_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\..\\..\\..\\..\\evaluator.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          "features": [
+            "gpu"
+          ],
+          "filenames": [
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.exe",
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.pdb"
+          ],
+          "executable": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.exe",
+          "fresh": false
+        }
+      ],
+      "exit": {
+        "at": "2026-10-16T11:06:41.983180+00:00",
+        "returncode": 0,
+        "process_wall_ms": 59812.99999999828,
+        "error": null,
+        "cleanup": null
+      },
+      "manifest_claimed_role": "E015"
+    },
+    {
+      "role": "E020",
+      "binary_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\build\\binaries\\E020-holdout.exe",
+      "binary_sha256": "d9cc5d1168b89c1753690467d94e63997cc40fabc312332e8ae3db9356f0def9",
+      "complete_cuda_text_present": {
+        "E015": true,
+        "E020": false
+      },
+      "workspace_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "workspace_mod_sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "compiler_artifact_rows": [
+        {
+          "package_id": "path+file:///S:/GTOpen-research/postflop-gpu-20261016/runs/E020-wide-turn-holdout-implementation/workspaces/E020/crates/solver#0.1.0",
+          "manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\Cargo.toml",
+          "target": {
+            "kind": [
+              "lib"
+            ],
+            "crate_types": [
+              "lib"
+            ],
+            "name": "solver",
+            "src_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\lib.rs",
+            "edition": "2021",
+            "doc": true,
+            "doctest": true,
+            "test": true
+          },
+          "features": [
+            "gpu"
+          ],
+          "filenames": [
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\libsolver-e2d3113d740308c1.rmeta"
+          ],
+          "executable": null,
+          "fresh": true
+        },
+        {
+          "package_id": "path+file:///S:/GTOpen-research/postflop-gpu-20261016/runs/E020-wide-turn-holdout-implementation/workspaces/E020/crates/solver#0.1.0",
+          "manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\Cargo.toml",
+          "target": {
+            "kind": [
+              "test"
+            ],
+            "crate_types": [
+              "bin"
+            ],
+            "name": "postflop_wide_turn_holdout",
+            "src_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\..\\..\\..\\..\\evaluator.rs",
+            "edition": "2021",
+            "doc": false,
+            "doctest": false,
+            "test": true
+          },
+          "features": [
+            "gpu"
+          ],
+          "filenames": [
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.exe",
+            "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.pdb"
+          ],
+          "executable": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-holdout-e020\\release\\deps\\postflop_wide_turn_holdout-8e90a743dc7a6a5c.exe",
+          "fresh": true
+        }
+      ],
+      "exit": {
+        "at": "2026-10-16T11:06:43.689442+00:00",
+        "returncode": 0,
+        "process_wall_ms": 250.0,
+        "error": null,
+        "cleanup": null
+      },
+      "manifest_claimed_role": "E020"
+    }
+  ],
+  "conclusion": "The candidate-labelled holdout executable is byte-identical to baseline, includes the exact E015 CUDA source, excludes the intended E020 CUDA source, and Cargo reports its solver/test artifacts fresh at the same shared target paths. Workspace source hashes differ correctly, so source-map metadata alone did not establish candidate-linked identity.",
+  "mechanism_limit": "Raw evidence establishes Cargo artifact reuse and wrong-arm executable; exact internal Cargo freshness rationale was not instrumented.",
+  "readiness_scope": "Successful compiler exit alone is insufficient. Existing all-builds-ready is preserved but invalid for native authorization. Seven broader binaries remain separately verified.",
+  "native_holdout_runs": 0,
+  "resource_native_runs": 0,
+  "no_performance_outcome": "No failed or replaced native sample; primary E020 screen and its verdict are unchanged. This is a build-provenance failure.",
+  "required_repair": "Additive reviewed build-only R2 with distinct newly created target directories per arm; preserve R1. Verify actual Cargo target/source identity and expected complete embedded CUDA text/opposite absence, plus distinct linked holdout hashes before new readiness. Resource binary deliberately embeds both CUDA variants. No evaluator/fixture/score/order/count changes.",
+  "review_actions": {
+    "builds": 0,
+    "gpu_jobs": 0,
+    "native_runs": 0,
+    "production_edits": 0,
+    "dashboard_edits": 0
+  }
+}

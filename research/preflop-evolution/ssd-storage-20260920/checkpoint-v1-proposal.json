@@ -1,0 +1,26 @@
+{
+  "disk": {
+    "source": "crates/solver/src/gpu/continuation_disk_state_tests.rs",
+    "source_sha256": "ae0ba357ccd478ddf035e8a94dda67550a31bfe5a0758136fc11872bff0bcfcd",
+    "candidate": "research\\preflop-evolution\\ssd-storage-20260920\\checkpoint-v1-disk-proposal.rs",
+    "candidate_sha256": "82a1293b9205cc37743574ee58e3efadb314a89fcfa21dc2f802a9057d5cb1e0"
+  },
+  "storage": {
+    "source": "crates/solver/src/gpu/continuation_storage.rs",
+    "source_sha256": "41cde3bb42dc56da7b2f7eede2a2f8a5dd197d10611f67a6ae5bc93940996700",
+    "candidate": "research\\preflop-evolution\\ssd-storage-20260920\\checkpoint-v1-storage-proposal.rs",
+    "candidate_sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+  },
+  "example": {
+    "source": "crates/solver/examples/integrated_continuation_stored.rs",
+    "source_sha256": "d180390022f7b3525061dd26caf161f4b9586cc41f9f5bbc2ab30536ad61385f",
+    "candidate": "research\\preflop-evolution\\ssd-storage-20260920\\checkpoint-v1-example-proposal.rs",
+    "candidate_sha256": "9646fcf2e0fc4e51cbac353a7f50c7a2e042247f32f68bbbf74c24aa7aa74ee2"
+  },
+  "helper": {
+    "source": "crates/solver/examples/support/stored_checkpoint.rs",
+    "candidate": "research\\preflop-evolution\\ssd-storage-20260920\\checkpoint-v1-helper-proposal.rs",
+    "candidate_sha256": "c78c1e49e38cbbac37a9468d89ede891881c2d5cb9f275dc5544cb379a76ecd2"
+  },
+  "scope": "Unapplied RAM-study checkpoint API proposal, not compiled or qualified. SSD parking remains unchanged."
+}

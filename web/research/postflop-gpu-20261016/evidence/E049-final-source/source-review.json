@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-17T03:19:08.340347+00:00",
+  "root_review_only": true,
+  "invalidation_before": [
+    "slice",
+    "write_at",
+    "as_slice",
+    "as_mut_slice"
+  ],
+  "by_value_and_metadata_only": [
+    "read_at",
+    "len",
+    "is_empty"
+  ],
+  "concurrency": "Sticky relaxed atomic. Existing exclusive upload / disjoint mutation contracts govern data. First exposure may redundantly store false; never reset true.",
+  "generic_limit": "No inference from arbitrary T default. can_upload_zeros concretely matches i16/u16; f32 is false. size gate eliminates F32 expose work.",
+  "extra_costs_pending": [
+    "GPU-feature ArenaBuf metadata size",
+    "Compressed CPU accessor loads/branches",
+    "warm constructor/full-process/page first-touch"
+  ],
+  "controls": "candidate before original on same owner; witness remains pristine after fast predicate, nonzero q forces fallback false; 5600 full predicate comparisons plus access/move/concurrency tests",
+  "acceptance": "1% full cycle, strict fixture guard; fresh16 and broader/resource/CPU/whole-process qualification before adoption",
+  "source_sha256": {
+    "crates/solver/src/store.rs": "7036e2d7b7e1202c3b8dadc66bf164800ddf1d45ad0d808800177bd188310342",
+    "crates/solver/src/gpu/arena.rs": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1"
+  }
+}

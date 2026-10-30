@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-18T07:25:42.729960+00:00",
+  "command": [
+    "cargo",
+    "tree",
+    "--locked",
+    "--offline",
+    "-p",
+    "server",
+    "--features",
+    "gpu",
+    "-e",
+    "features",
+    "-i",
+    "solver",
+    "--prefix",
+    "none"
+  ],
+  "cwd": "X:\\Dev\\GTOpen",
+  "stdout": "solver v0.1.0 (X:\\Dev\\GTOpen\\crates\\solver)\nsolver feature \"default\"\nserver v0.1.0 (X:\\Dev\\GTOpen\\crates\\server)\nserver feature \"default\" (command-line)\nserver feature \"gpu\" (command-line)\nsolver feature \"gpu\"\nserver feature \"gpu\" (command-line)\n",
+  "stderr": "",
+  "server_Cargo_sha256": "39ab6768d3cf4f1b23d9f4a31efc53029182ded3cf25d70f6d291936b3a89d3b",
+  "solver_Cargo_sha256": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+  "research_API_feature_selected": false,
+  "research_module_guard_in_source": "#[cfg(feature = \"preflop-research\")] mod continuation;",
+  "historical_failure_document": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\preflop-evolution\\symmetric-bridge-20260919\\DIAGNOSTICS.md",
+  "historical_failure_document_sha256": "7dfb5fca6967ea93ae627883359e1441e18bdfde56885064035449d854d30e98",
+  "research_equivalence_cleared": false,
+  "limits": "Feature selection and pre-existing failure scope only. This does not change the failed test, clear experimental trajectories, or prove final adoption requirements."
+}

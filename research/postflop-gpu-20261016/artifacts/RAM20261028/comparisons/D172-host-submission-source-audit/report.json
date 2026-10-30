@@ -1,0 +1,20 @@
+{
+  "id": "D172",
+  "at": "2026-10-28T16:12:32.569495+00:00",
+  "previous_goal_turn_classification": "progress",
+  "status": "source_audit_complete_no_host_batch_candidate_admitted",
+  "evidence": {
+    "server_source_sha256": "1029ba654b95b72eced812ab79fc930f0a1591013d5941c9ba7cf1b655749ea8",
+    "GPU_source_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "ledger_sha256_at_review": "670cc834af8fd7900aeeb3cc1166fc682e60bef1c5ee1b23452832884da9a417"
+  },
+  "findings": [
+    "gpu_solve_inner checks stop and lock generation before each iterate, then applies per-run iteration budget/check cadence. report_solve also checks stop each iteration. A batch API needs caller/stop/lock/error contracts and cannot silently replace this behavior or modify frozen benchmark to manufacture a gain.",
+    "E044 already tested pinned3-float discounts in two existing staging slots, with exact14case lifecycles. Its primary aggregate was1.6823245572% slower and all3fixture guards failed; no slot/threshold/staging rescue.",
+    "Single-pair graph fusion has only old perturbed D0550.000576ms gap, not current native headroom. No candidate admitted from it.",
+    "Plan/context overlap is actual closed E079, with2.9718558844% aggregate gain but river34.3185952486% slower and3/3slowpairs. It must not be rediscovered/retried as new startup overlap."
+  ],
+  "next": "New diagnostic measures current unmodified accepted E080 constructor and accepted zero-validation overlap timeline. Does not implement plan/context overlap, earlier placement, host batching or a source candidate. Need demonstrated removable cost before any separate source admission.",
+  "compilers_or_native_or_extra_timing_runs": 0,
+  "candidate_accepted": false
+}

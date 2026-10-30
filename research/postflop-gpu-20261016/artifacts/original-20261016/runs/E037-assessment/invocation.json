@@ -1,0 +1,80 @@
+{
+  "at": "2026-10-16T22:36:00Z",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-assessment-time-repair\\compare_policy.py",
+    "--id",
+    "E037-three-pair-comparison",
+    "--candidate-id",
+    "E037R1",
+    "--baseline-runs",
+    "B116",
+    "B117",
+    "B118",
+    "--candidate-runs",
+    "E037R1",
+    "E037R2",
+    "E037R3",
+    "--warm-cache-cohort",
+    "--policy-authorization-sha256",
+    "df9e39cc5ad89c9eb9c9133b2205acd706926343c67c6d3ee1d326a38c4b9da3",
+    "--repair-manifest-sha256",
+    "505079cf57dfa3b5b3428d8acbfa2963f7f2b50a116fd9d7f64f5e0671597806",
+    "--reject"
+  ],
+  "decision_gate_failures": [
+    "Below the registered 1% aggregate gate; no reproducible aggregate benefit established."
+  ],
+  "script_sha256": "e371dcbcc718aeb3dc39424bb60ed37b38191a61925ec75c18d9da1a3e33adf4",
+  "protocol_sha256": "48e8c20d6e9744e6397274596979ac69ff94d6d57a6d7d13a726ae9a16910c86",
+  "effective_policy": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\policy.json",
+    "sha256": "f2eaef2759f628db85a414e5496f7dec89be1e398f7d00d8d068d1db74be55d4",
+    "policy_manifest_sha256": "bf84a6f7f685d42ee3fbcf7aed5737a073b8acbf9401544ddaa03c9cc1b4d37a",
+    "policy_authorization_sha256": "df9e39cc5ad89c9eb9c9133b2205acd706926343c67c6d3ee1d326a38c4b9da3",
+    "original_protocol_sha256": "48e8c20d6e9744e6397274596979ac69ff94d6d57a6d7d13a726ae9a16910c86",
+    "original_authorization_sha256": "03b36389ca3864e8bfc550c0dcceb724a1b486cf46a9950dc3293a6beaf219dc",
+    "root_user_decision": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-root-decisions\\user-policy-1pct.json",
+      "sha256": "1127d11e472842cfd9d6ebafbb3408a06fca14de1c1b718ae3757517ba9c3a5c"
+    },
+    "pre_primary_receipt": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-execution\\pre-primary.json",
+      "sha256": "a670456c07274d9707d079d78fcee24b8948a634240c328ec38c9a744d217b09"
+    },
+    "changed_before_any_native_timing": true,
+    "supersedes": "Only E037 primary aggregate cutoff and repeated fixture slowdown threshold; adopted on explicit user instruction before any native measurement. Historical decisions and sealed original files remain unchanged.",
+    "primary_pass_is_preliminary": true,
+    "adoption_requirements": [
+      "Fresh fixed16 balanced pairs, separately frozen before execution: aggregate>=1%, paired median>0,13/16 positive pairs,positive block/order medians and no repeatable measured fixture slowdown; no old-sample pooling/extensions",
+      "Independent full raw exactness/F32/state/menu/resume/continuation and fixed wide-turn holdout/fresh-original cumulative qualification",
+      "Independent source/resource/compatibility evidence establishing no material memory, behavior or compatibility cost before adoption"
+    ],
+    "no_material_cost_validation": {
+      "status": "pending_resource_and_broader_qualification",
+      "source_evidence": {
+        "source_review": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E037-source-review\\report.json",
+        "source_review_sha256": "c2ef72a605327a37f15ef84817fb15957f9f3cbd7cc666312df2c84b0711c17f",
+        "no_new_host_or_device_buffers": true,
+        "unchanged_shared_bytes_abi_launches_and_host_production": true,
+        "compiled_register_local_and_instruction_costs": "Not inferred from source; unresolved until separately inspected before adoption",
+        "universal_no_slowdown_claim": false
+      }
+    },
+    "candidate_accepted": false,
+    "assessment_timestamp_repair": {
+      "manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-assessment-time-repair\\scripts-manifest.json",
+      "manifest_sha256": "505079cf57dfa3b5b3428d8acbfa2963f7f2b50a116fd9d7f64f5e0671597806",
+      "policy_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-assessment-time-repair\\repair-policy.json",
+      "policy_sha256": "3d85bc13ceb813670c7ad0f36bcb4d3351b248a012ce6c85bb765f1ec1994650",
+      "preserved_failure": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-assessment-preparation-error\\error.json",
+        "sha256": "b8ab72850519b9810cf0165cbcea499aed94c1cb8604868de6e03a1c88e959fe"
+      },
+      "run_timestamp_semantics": "[reported second, reported second+1s)",
+      "intra_second_order_evidence": "Unchanged wrapper writes receipt and checks all seven run directories absent before invoking original primary; rounded timestamps alone do not prove subsecond order",
+      "gates_or_measurements_changed": false
+    }
+  }
+}

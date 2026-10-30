@@ -1,0 +1,65 @@
+--- audit-numerical-policy-1pct.py
++++ audit-numerical-policy-1pct-r2.py
+@@ -2,7 +2,7 @@
+ ROOT=pathlib.Path(r'S:\GTOpen-research\postflop-gpu-20261016')
+ OUT=ROOT/'comparisons/E037-independent-review';PLAN=ROOT/'runs/E037-primary-plan';EX=ROOT/'runs/E037-primary-execution'
+ assert not (OUT/'validation.json').exists() and not (OUT/'summary.md').exists(), 'Preserve any prior audit result'
+-terminal=json.loads((OUT/'terminal-inputs-policy-1pct.json').read_text(encoding='utf-8'))
++terminal=json.loads((OUT/'terminal-inputs-policy-1pct-r2.json').read_text(encoding='utf-8'))
+ assert terminal['id']=='E037' and terminal['root_all_stages_terminal'] is True
+ checks=collections.Counter();artifacts={}
+ def ck(b,label):
+@@ -42,6 +42,15 @@
+ ck(EP['original_protocol_sha256']==sha(PLAN/'protocol.json') and EP['original_authorization_sha256']==sha(PLAN/'authorization.json') and EP['root_user_decision']==POL['root_decision'],'comparison_original_authority_pins')
+ ck(EP['pre_primary_receipt']=={'path':str(ROOT/'runs/E037-policy-execution/pre-primary.json'),'sha256':sha(ROOT/'runs/E037-policy-execution/pre-primary.json')} and EP['changed_before_any_native_timing'] and EP['primary_pass_is_preliminary'] and not EP['candidate_accepted'],'comparison_receipt_and_preliminary_scope')
+ ck(EP['adoption_requirements']==POL['adoption_requirements'] and EP['no_material_cost_validation']['status']=='pending_resource_and_broader_qualification','confirmation_and_tradeoffs_still_pending')
++REPAIR=ROOT/'runs/E037-assessment-time-repair'
++pin(REPAIR/'scripts-manifest.json','505079cf57dfa3b5b3428d8acbfa2963f7f2b50a116fd9d7f64f5e0671597806')
++pin(ROOT/'comparisons/E037-assessment-time-repair-review/report.json','164190b3538be578fd2e62597d7ea14205731b6e7d78e89089cbbc23d277c63f')
++RM=load(REPAIR/'scripts-manifest.json');RP=load(REPAIR/'repair-policy.json')
++for name,h in RM['script_sha256'].items():pin(REPAIR/name,h)
++pin(RP['preserved_failure']['path'],RP['preserved_failure']['sha256'])
++RT=EP['assessment_timestamp_repair']
++ck(RT['manifest_path']==str(REPAIR/'scripts-manifest.json') and RT['manifest_sha256']==sha(REPAIR/'scripts-manifest.json') and RT['policy_path']==str(REPAIR/'repair-policy.json') and RT['policy_sha256']==sha(REPAIR/'repair-policy.json'),'reviewed_assessment_repair_binding')
++ck(RT['preserved_failure']==RP['preserved_failure'] and RT['gates_or_measurements_changed'] is False and RT['run_timestamp_semantics']=='[reported second, reported second+1s)','precision_only_failure_preserved')
+ ck(P['order']==['V037-unit','B116','E037R1','E037R2','B117','B118','E037R3'],'fixed_seven_run_order')
+ ck(P['pairs']==[{'baseline':'B116','candidate':'E037R1'},{'baseline':'B117','candidate':'E037R2'},{'baseline':'B118','candidate':'E037R3'}],'fixed_pairing')
+ ck(P['expected_unit_passed']==85 and P['expected_unit_ignored']==4,'frozen_unit_counts')
+@@ -92,7 +101,10 @@
+         for k,v in timing.items():
+             if k!='stage':ck(z[k]==v,'raw_stage_final_result_agreement')
+ for a,b in zip(ids,ids[1:]):ck(dt(runs[a]['finished_at'])<=dt(runs[b]['started_at']),'serialized_chronology')
+-for identity in ids:ck(dt(RECEIPT['at'])<=dt(runs[identity]['started_at'])<=dt(runs[identity]['finished_at'])<=dt(PE['at']),'all_runs_after_policy_receipt_before_wrapper_exit')
++for identity in ids:
++    run_start=dt(runs[identity]['started_at'])
++    ck(run_start.microsecond==0,'run_start_has_recorded_second_precision')
++    ck(dt(RECEIPT['at']).replace(microsecond=0)<=run_start<=dt(runs[identity]['finished_at'])<=dt(PE['at']),'policy_receipt_interval_and_wrapper_sequence')
+ ck(dt(BE['at'])<dt(runs[ids[0]]['started_at']),'build_terminal_before_unit_and_primary')
+ priorunit=(ROOT/'runs/V020-unit/stdout.log').read_text(encoding='utf-8')
+ prior_names=re.findall(r'^test (\S+) \.\.\.',priorunit,re.M)
+@@ -156,13 +168,13 @@
+     ck(C['cohorts'][label]['run_ids']==expected and C['cohorts'][label]['count']==3,'all_three_samples_retained')
+ AI=load(ROOT/'runs/E037-assessment/invocation.json');AE=load(ROOT/'runs/E037-assessment/exit.json')
+ ck(AE['returncode']==0 and AI['protocol_sha256']==sha(PLAN/'protocol.json'),'assessment_terminal_and_protocol')
+-ck(AI['script_sha256']==sha(POLICY/'assess.py') and AI['effective_policy']==EP and str(POLICY/'compare_policy.py') in AI['command'] and '--policy-authorization-sha256' in AI['command'] and sha(POLICY/'authorization.json') in AI['command'],'only_effective_policy_assessment')
++ck(AI['script_sha256']==sha(REPAIR/'assess.py') and AI['effective_policy']==EP and str(REPAIR/'compare_policy.py') in AI['command'] and '--policy-authorization-sha256' in AI['command'] and sha(POLICY/'authorization.json') in AI['command'] and '--repair-manifest-sha256' in AI['command'] and sha(REPAIR/'scripts-manifest.json') in AI['command'],'only_reviewed_repaired_effective_policy_assessment')
+ ck(dt(PE['at'])<=dt(AI['at']),'effective_wrapper_terminal_before_assessment')
+ ck(dt(DONE['at'])<=dt(AI['at']) and dt(AI['at'])<=dt(C['created_at']),'assessment_after_all_runs')
+ ck(('--reject' in AI['command'])==failed and not C['performance']['statistical_significance_established'],'decision_no_significance_claim')
+-sha(ROOT/'runs/V020-unit/stdout.log');sha(OUT/'audit-numerical-policy-1pct.py');sha(OUT/'terminal-inputs-policy-1pct.json')
++sha(ROOT/'runs/V020-unit/stdout.log');sha(OUT/'audit-numerical-policy-1pct-r2.py');sha(OUT/'terminal-inputs-policy-1pct-r2.json')
+ result={'id':'E037-independent-numerical-review','at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'verdict':'CONFIRMED_REJECTED' if failed else 'PASS_PRIMARY_PROVISIONAL_ONLY','numerical_audit_pass':True,
+- 'effective_policy':EP,'primary':{'baseline_sum_fixture_medians_ms':Bsum,'candidate_sum_fixture_medians_ms':Csum,'gain_pct':score,'minimum_pct':1,'aggregate_gate_met':aggregate_pass,'fixture_guard_failed':guardfail},
++ 'timestamp_precision_note':'Run starts record whole seconds and represent [s,s+1s). Receipt is compared at that precision; intra-second order is established by the pinned wrapper receipt/absence check before unchanged runner invocation, not the rounded timestamps alone. Reviewed repair preserved the prior assessment-preparation failure and changed no data or gate.','effective_policy':EP,'primary':{'baseline_sum_fixture_medians_ms':Bsum,'candidate_sum_fixture_medians_ms':Csum,'gain_pct':score,'minimum_pct':1,'aggregate_gate_met':aggregate_pass,'fixture_guard_failed':guardfail},
+  'all18_complete_non_timing_results_exact':True,'all138_convergence_checkpoints_exact':True,'all_complete_normalized_stage_trajectories_exact':True,'trajectories':trajectory,
+  'unit_inventory':{'passed':85,'failed':0,'ignored':4,'measured':0,'filtered':0,'matches_E020_inventory_plus_one_show_test':True,'focused_original_kernel_test_passed':True},'focused_unit_records':focused_records,
+  'chronology_including_unit':[{'id':i,'started_at':runs[i]['started_at'],'finished_at':runs[i]['finished_at']} for i in ids], 'components':fixture_tables,'pairs':pairs,
+@@ -170,7 +182,7 @@
+  'scope':'File-only numerical/order/gate audit. Build/source/prerequisite custody and restoration are independently audited in source-custody.json; this report does not substitute for that audit.',
+  'broader_qualification':'Not run; inapplicable after primary rejection. No extension or rescue.' if failed else 'Not run; fresh fixed16-pair confirmation under the user1%/no-repeatable-slowdown policy is mandatory, then raw old/new show/state validation, original controls, F32, holdout, cumulative and material memory/resource/compatibility evidence before acceptance.',
+  'limits':['Compressed full-state and convergence equality does not establish every possible F32, nonfinite or zero-row lifecycle state.','Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.','Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.','No statistical significance, speedup, acceptance or deployment claim.'],
+- 'reviewer_preparation_note':'Adapted file-only from the preserved E037 prepared audit after the independently reviewed user1% policy was frozen before native timing. Original numerical18/138 block and85/4 plus34/68 marker checks remain exact; only effective policy/receipt checks and timing-gate semantics change. No candidate script, native solver or GPU work by reviewer.',
++ 'reviewer_preparation_note':'Adapted file-only from the preserved E037 prepared audit after the independently reviewed user1% policy was frozen before native timing. Original numerical18/138 block and85/4 plus34/68 marker checks remain exact; only effective policy/receipt checks and timing-gate semantics change. Additive r2 applies the independently reviewed timestamp-precision repair and assessor path/pins without changing the raw numerical or timing calculations. No candidate script, native solver or GPU work by reviewer.',
+  'native_or_gpu_executed_by_reviewer':False,'candidate_accepted':False,'deployment_changed':False}
+ (OUT/'validation.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')
+ summary=f"""# E037 independent numerical audit

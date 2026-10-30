@@ -1,0 +1,46 @@
+{
+  "id": "E044-source-review",
+  "at": "2026-10-17T01:59:38.277039+00:00",
+  "status": "pass_for_frozen_compile_and_controls",
+  "root_review_only": true,
+  "guard_first_declared_field": true,
+  "selected_disjoint_window_only": true,
+  "slot_reserved_before_copy": true,
+  "fixed_slots": 2,
+  "slot_words": 3,
+  "tiny_fallback_words_less_than": 6,
+  "original_discount_math_unchanged": true,
+  "cuda_plan_store_unchanged": true,
+  "new_pinned_device_event_stream_allocations": 0,
+  "cpu_control_struct_expected_max_extra_bytes": 32,
+  "reference": "Exact accepted original iterate and profiled iterate plus accepted struct type for size comparison. The same CUDA is used by both objects; original references never enter the new upload helper.",
+  "prospective_controls": {
+    "algorithm_storage_layout_cases": 14,
+    "raw_files_per_case": 45,
+    "raw_pairs_per_case": 22,
+    "max_case_bytes": 67108864,
+    "drop_modes": [
+      "normal_pending_two",
+      "injected_error_after_queue",
+      "unwind_pending_two"
+    ],
+    "ordinary_tests_passed_expected": 84,
+    "ordinary_ignored_expected": 5,
+    "selected_control_passed_expected": 1,
+    "selected_filtered_expected": 88
+  },
+  "source_checks": [
+    "Constructor-time or synchronized continuation staging replacements verified; continuation discount upload stays original.",
+    "No GpuSolver Drop impl added; first field guard owns same stream and drains before every other field release.",
+    "Both readback entries drain before resetting slot ownership and writing staging.",
+    "Only selected3float mutable windows borrow GPU in-flight memory; every-two synchronization completes both earlier source lifetimes.",
+    "Private failure/trace hooks are cfg(test), absent from performance library."
+  ],
+  "pending": [
+    "Compilation",
+    "Raw paired GPU/CPU lifecycle and drop controls",
+    "Fixed full-cycle screen",
+    "Fresh16-pair confirmation/broader/holdout/cumulative/resource/stop-and-process-wall checks before adoption"
+  ],
+  "limits": "No speed or native correctness result yet. Pageable synchronization is allowed behavior, not measured baseline idle time."
+}

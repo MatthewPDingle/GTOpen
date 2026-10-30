@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-28T11:07:44.135709+00:00",
+  "status": "prospective_new_correctness_cohort_only",
+  "D149_remains_closed_invalid": true,
+  "evidence_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D149-review-invalid-fixture.py": "3b2d6a179c799333388cabe86b34f50dd70a5b7d08ba85447fe7a935c280d07a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D149-invalid-fixture\\report.json": "e031906e7bfee0a9dc275529f35b85f0e0e83231617e563c3c6c7d15ee769237"
+  },
+  "interpretation": "The rejection is a test-fixture setup defect, not a failed equivalence assertion or failed performance screen. The no-variant rule continues to prohibit changing production/numerical source, shader, gates or case matrix to rescue a scientific failure. A separately named full correctness cohort may explicitly restore the originally declared algorithm/iso fixture flags after load. Preserve D149 and never relabel its partial output as a pass; do not pool it. No optimization candidate exists to rescue.",
+  "bounded_repair": "Keep accepted application source exact, all36 cases/752 clobbers and all original word-level gates. Only set the two fixture controls on both loaded CPU solvers before GPU construction, and assert defaults/actual configured algorithm and noiso state. Add metadata for that setup. New native cohort remains correctness only, with no timing result."
+}

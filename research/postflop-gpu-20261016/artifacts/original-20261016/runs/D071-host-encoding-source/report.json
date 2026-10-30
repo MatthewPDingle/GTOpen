@@ -1,0 +1,39 @@
+{
+  "id": "D071-host-encoding-source",
+  "at": "2026-10-17T01:13:45.375654+00:00",
+  "status": "go_minimal_off_tree_zero_restore_preparation_only",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E011-zero-design\\README.md": "8389fc5c00247b5933f094b71c48222be864f590d4855298e93ebff83bf0999b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E013-three-pair-comparison\\report.json": "1ab16791f8105058192547bd62db9a6649d44a4db5569d5a0ced4099af3dc9b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D019-E013-final-codegen\\review.md": "31e84d18882650bddcd8912c7e2b7f7e1c31b83ad615d50b6eb189bdc638436f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D065-readback-diagnostic\\report.json": "cabd563a79e08cf98d5d22fb9f508afbc55f2efde55d14f98aa22dfad87069ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E040-three-pair-comparison\\report.json": "9d5f80c1b7db068f03292592d80504468afcc784c70cf5c11f682b94cb7144c7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E040-root-crosscheck\\report.json": "b6d166449343df3dab200a7555c7cba05b7039dd7ab40d6093517e155fc9d7e7"
+  },
+  "prior_counterevidence": [
+    "D014 max-reduction prototype lost55/56 standalone timing groups. Do not repeat that hypothesis.",
+    "D015 standalone SSE4.1 wins did not translate into E012/E013 complete-cycle gains. D019 later corrected library-stage assembly scope and confirmed final typed-helper vectorization; no missing-vectorization claim is supported.",
+    "E013 summed readback median improvement19.154ms was only0.1743% of its historical whole-cycle baseline. Explicit AVX2 is not yet supported as the next candidate.",
+    "E040 overlap was0.8159275581% slower and is closed; no new chunk policy or rescue timing is proposed."
+  ],
+  "distinct_unimplemented_hypothesis": "Historical E011 proposed direct restoration of positive-zero sentinel inactive compressed blocks, but stopped before implementation because its whole affected-stage ceiling was below the old2% cutoff. The new1% rule makes a bounded implementation worth screening; it supplies no achievable-speed guarantee.",
+  "exactness_basis": "Only ArenaLayout.inactive blocks with initial[which]==usize::MAX denote all positive-zero decoded inputs. Existing encode_i16/encode_u16 on that input return allzero q and positivezero node scale. Fill exactly the owned q range and scale for I16/U16; keep explicit snapshots on original Store.write_f32. F32, active nodes, layouts/uploads/constructors, CUDA and sync scheduling stay unchanged.",
+  "cost_scope": "No new fields/buffers/allocations/CPU dispatch feature requirements proposed. Existing zeros array retained. Runtime and compatibility evidence still required.",
+  "proposed_control_scope": [
+    "CPU exact raw q/scales, unowned guards, empty/tail lengths, both which indices; reference calls original Store.write_f32.",
+    "Explicit finite/signed-zero/nonfinite snapshots remain on original encoder; compare full raw arrays/scales.",
+    "Actual compact GPU readback/materialization/query/save/resync against accepted serial reference, both compressed stores, seeded nonzero destinations and snapshots.",
+    "Ordinary suite and fresh fixed complete-cycle screen on accepted E020;1% minimum/no repeated fixture slowdown. Further confirmation/broader gates before adoption."
+  ],
+  "not_performed": [
+    "candidate compilation",
+    "native tests",
+    "GPU work",
+    "timing",
+    "adoption"
+  ],
+  "limits": "Historical affected-stage and grouped timings are upper-envelope motivation, not current zero-restore-only timings or measured savings. A cheap source edit still needs complete-cycle evidence."
+}

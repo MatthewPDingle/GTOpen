@@ -1,0 +1,65 @@
+{
+  "candidate": "E030",
+  "at": "ROOT_FILL_TIMESTAMP",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "direct_up_fold_exact_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E030_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-source-review\\report.json",
+      "sha256": "7a6b0dde5e1f00214f3dfe7beb081eb3dc49c5706f9165d8cd361edaeb3ac6e1"
+    },
+    "E030_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-script-review\\report.json",
+      "sha256": "ROOT_FILL_E030_SCRIPT_REVIEW_SHA256"
+    },
+    "direct_up_fold_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-direct-independent-review\\validation.json",
+      "sha256": "ROOT_FILL_INDEPENDENT_DIRECT_TERMINAL_SHA256"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "5ee2ffbf0daeb7447d69584f2f64bd2c13733c7be028e580cc3fd95c7196f829"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "sha256": "d6745c80d8985acf148654932d5c69272448a66fdc9b3cb011028717b119ee72"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\game.rs",
+      "sha256": "69d404740704e1187b90aaa0bd2ef38fcce1692d80714639ad904085b4981f6a"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-primary-plan\\scripts-manifest.json": "ROOT_FILL_FROZEN_SCRIPT_SEAL",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-primary-plan\\protocol.json": "9fab8ec1104ebe797dc2c56c9d17293dc82914f0d6b7b968540454b21dd3a0ac",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\manifest.json": "0ad81cd54e33062d2cfc53dfebd3f0db60d3675b9d10458799e4f95aeb3f6681",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-fold-card-order-exact\\prepared-manifest.json": "ROOT_FILL_DIRECT_PREPARED_MANIFEST_SHA256",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-source-review\\report.json": "7a6b0dde5e1f00214f3dfe7beb081eb3dc49c5706f9165d8cd361edaeb3ac6e1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-script-review\\report.json": "ROOT_FILL_E030_SCRIPT_REVIEW_SHA256",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-direct-independent-review\\validation.json": "ROOT_FILL_INDEPENDENT_DIRECT_TERMINAL_SHA256"
+  },
+  "scope": "Example only. Root creates immutable authorization after source/script review and terminal exact/compiler direct feasibility, then separately decides to activate/build. False fields/placeholders never authorize execution. Five sources, no auxiliaries."
+}

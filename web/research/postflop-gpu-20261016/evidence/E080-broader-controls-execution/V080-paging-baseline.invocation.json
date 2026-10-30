@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-18T07:16:30.988767+00:00",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "tools/postflop_autoresearch.py",
+    "--id",
+    "V080-paging-baseline",
+    "--title",
+    "E080 broader V080-paging-baseline",
+    "--kind",
+    "validation",
+    "--binary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-broader-continuation_paging.exe",
+    "--build-manifest",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-broader-continuation_paging.manifest.json",
+    "--test",
+    "paging_preserves_resident_trajectories_and_rejects_invalid_inputs",
+    "--not-ignored"
+  ]
+}

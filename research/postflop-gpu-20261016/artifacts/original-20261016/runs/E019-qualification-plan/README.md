@@ -1,0 +1,20 @@
+# E019 broader qualification — prospective only
+
+Execute only if the sealed E019 primary three-pair comparison qualifies. This artifact prepares follow-up work; it executes nothing, reserves no run IDs, edits no production source, and accepts/deploys nothing. The root owns serialization and the final pre-execution bindings manifest.
+
+`protocol.json` provides exact argument arrays, fixed order, environment, gates and placeholders. `${...}` tokens are symbolic roles, not runnable IDs. `id-observation.json` is a read-only snapshot of current used IDs and the separately declared primary sequence. Bind unused IDs once, before execution; never reuse the logical E019 dashboard row as a native measurement ID.
+
+1. Verify terminal primary pass and source/binary/probe identities. Build and freeze the four gpu-only controls, then the feature-gated library/paging/symmetry targets. The original primary benchmark executable stays unchanged.
+2. Run state, menu, resume, six GPU integration tests, fresh original F32 then candidate F32, paging, rejection-invariance, and stored-state controls in that order. Stop on any failure.
+3. Compare the 160 ordered snapshots against the preserved original controls (24 state +24 menu +112 resume), not against a regenerated candidate oracle. Compare all three F32 fixtures with the immutable original baseline. No non-timing field exclusions; only the six explicit duration fields differ.
+4. Run six fresh compressed benchmark invocations in B/C, C/B, B/C order, using the original baseline executable and the unchanged gpu-only E019 primary executable. Score all three pairs using the fixed sum-of-fixture-medians and >=2%/repeatable>3% guards. No exclusions or outcome-triggered extension.
+5. Independent raw-log/provenance/correctness/gate audit closes qualification. Main integration and any deployment are separate steps.
+
+The minimum selected continuation set is three tests, all under `preflop-research`: paging160 exact arbitrary-player/board sweeps with changing and zero root weights; symmetric unsupported-input invariance; stored720 exact value/device-array/restored-array passes across six spots and shared workspace reuse. The stored test requires an explicitly recorded unique S: GTO_SSD_STUDY_DIR; it uses u64::MAX remaining RAM, so this is not forced SSD-spill coverage. These tests share the new kernel on both paths and supplement original-baseline equivalence. The E016-specific validity-cache test is absent from E015 and not needed.
+
+Single-kernel lifecycle review: gpu/mod.rs loads one up_fold function used by the training sweep (around863) and eval_up (around635), with the same128x1x1 launch shape and nh_o*4 dynamic shared bytes. Ordinary captured graphs and eager sweeps, evaluation, locks and recreation after warm save/resume all use that function. E019 changes no parameter ABI, launch topology, memory ownership, graph state, persistence format, plan or budget. Existing84-library tests (including paired raw lifecycle and shared evaluation), frozen resume snapshots, GPU integration, and D036 full-kernel/fallback guards cover those exposures. No additional custom lifecycle harness is justified for this delta.
+
+Keep exactness language scoped: the six GPU integration tests include existing CPU/GPU tolerances; original F32 and160 saved/menu/resume records provide exact historical comparisons. D036 proves its fixed corpus only, not arbitrary NaN payload semantics. Timings for controls, F32 or components are not accepted performance scores. Complete-cycle scope retains construction/allocation, runtime NVRTC/JIT initialization, fixed-quality solve/checks and full readback; Cargo, final hashing/destruction, browser/API and disk saving are excluded. Three-pair passage does not establish statistical significance or cold-start performance.
+
+No build, native/GPU execution or source mutation was performed while preparing this plan. The independent evidence critic confirmed that the selected continuation checks are adequate supplemental integration coverage.
+

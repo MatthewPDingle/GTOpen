@@ -1,0 +1,142 @@
+{
+  "id": "D249-operand",
+  "at": "2026-10-29T04:27:43.651629+00:00",
+  "protocol_sha256": "8a4f7fa458700d07505a6859edd626d5b65ec3379ee879c145ce27f9d8567cbd",
+  "result": {
+    "matched_copy_and_map_share_same_predicate": true,
+    "all_generic_card_position_load_sites": 30,
+    "mapped_pointer_definitions": [
+      "add.s64 %rd302, %rd84, %rd85;",
+      "mapa.u64 %rd302, %rd302, %r102;"
+    ],
+    "read_sites": [
+      [
+        "add.s64 %rd154, %rd302, %rd153;",
+        "ld.u32 %r134, [%rd154];"
+      ],
+      [
+        "add.s64 %rd158, %rd302, %rd157;",
+        "ld.u32 %r137, [%rd158];"
+      ],
+      [
+        "add.s64 %rd162, %rd302, %rd161;",
+        "ld.u32 %r140, [%rd162];"
+      ],
+      [
+        "add.s64 %rd166, %rd302, %rd165;",
+        "ld.u32 %r143, [%rd166];"
+      ],
+      [
+        "add.s64 %rd170, %rd302, %rd169;",
+        "ld.u32 %r146, [%rd170];"
+      ],
+      [
+        "add.s64 %rd174, %rd302, %rd173;",
+        "ld.u32 %r149, [%rd174];"
+      ],
+      [
+        "add.s64 %rd178, %rd302, %rd177;",
+        "ld.u32 %r152, [%rd178];"
+      ],
+      [
+        "add.s64 %rd182, %rd302, %rd181;",
+        "ld.u32 %r155, [%rd182];"
+      ],
+      [
+        "add.s64 %rd186, %rd302, %rd185;",
+        "ld.u32 %r160, [%rd186];"
+      ],
+      [
+        "add.s64 %rd190, %rd302, %rd189;",
+        "ld.u32 %r163, [%rd190];"
+      ],
+      [
+        "add.s64 %rd194, %rd302, %rd193;",
+        "ld.u32 %r166, [%rd194];"
+      ],
+      [
+        "add.s64 %rd198, %rd302, %rd197;",
+        "ld.u32 %r169, [%rd198];"
+      ],
+      [
+        "add.s64 %rd202, %rd302, %rd201;",
+        "ld.u32 %r174, [%rd202];"
+      ],
+      [
+        "add.s64 %rd206, %rd302, %rd205;",
+        "ld.u32 %r177, [%rd206];"
+      ],
+      [
+        "add.s64 %rd210, %rd302, %rd209;",
+        "ld.u32 %r181, [%rd210];"
+      ],
+      [
+        "add.s64 %rd216, %rd302, %rd215;",
+        "ld.u32 %r186, [%rd216];"
+      ],
+      [
+        "add.s64 %rd220, %rd302, %rd219;",
+        "ld.u32 %r189, [%rd220];"
+      ],
+      [
+        "add.s64 %rd224, %rd302, %rd223;",
+        "ld.u32 %r192, [%rd224];"
+      ],
+      [
+        "add.s64 %rd228, %rd302, %rd227;",
+        "ld.u32 %r195, [%rd228];"
+      ],
+      [
+        "add.s64 %rd232, %rd302, %rd231;",
+        "ld.u32 %r198, [%rd232];"
+      ],
+      [
+        "add.s64 %rd236, %rd302, %rd235;",
+        "ld.u32 %r201, [%rd236];"
+      ],
+      [
+        "add.s64 %rd240, %rd302, %rd239;",
+        "ld.u32 %r204, [%rd240];"
+      ],
+      [
+        "add.s64 %rd244, %rd302, %rd243;",
+        "ld.u32 %r207, [%rd244];"
+      ],
+      [
+        "add.s64 %rd248, %rd302, %rd247;",
+        "ld.u32 %r213, [%rd248];"
+      ],
+      [
+        "add.s64 %rd252, %rd302, %rd251;",
+        "ld.u32 %r216, [%rd252];"
+      ],
+      [
+        "add.s64 %rd256, %rd302, %rd255;",
+        "ld.u32 %r219, [%rd256];"
+      ],
+      [
+        "add.s64 %rd260, %rd302, %rd259;",
+        "ld.u32 %r222, [%rd260];"
+      ],
+      [
+        "add.s64 %rd264, %rd302, %rd263;",
+        "ld.u32 %r227, [%rd264];"
+      ],
+      [
+        "add.s64 %rd268, %rd302, %rd267;",
+        "ld.u32 %r230, [%rd268];"
+      ],
+      [
+        "add.s64 %rd272, %rd302, %rd271;",
+        "ld.u32 %r234, [%rd272];"
+      ]
+    ],
+    "bounds_before_peer_data_read": true,
+    "inactive_two_phase_lifetime_path": true,
+    "card_buffer_offset_bytes": "4*nh_o + 8*m_o, identical in producer and consumer when same slot",
+    "local_scan_or_reach_buffers_mapped": false,
+    "limits": "Exact current emitted local operand/branch witnesses plus source projection, not complete CFG/loop/IEEE/native liveness or runtime proof."
+  },
+  "three_negative_fixtures_caught": true,
+  "new_GPU_or_speed_samples": 0
+}

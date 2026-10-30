@@ -1,0 +1,59 @@
+{
+  "id": "D199",
+  "at": "2026-10-28T21:23:27.840647+00:00",
+  "status": "declined_existing_compiled_mechanism_before_candidate",
+  "proposal": "Spell positive-regret clamp using fmaxf instead of original positive ternary.",
+  "observation": "Accepted baseline actual compute120PTX already contains84positivezero max.f32 sites across originaldown_action/up_action/up_action_eval. Merely spelling the same max operation has no demonstrated absent compiled mechanism; do not admit a candidate or search alternative syntax/flags here.",
+  "entry_inventory": {
+    "copy_root": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "down_action": {
+      "positive_zero_max_f32_sites": 23,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "down_chance": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "up_fold": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "up_show": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "up_chance": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "up_action": {
+      "positive_zero_max_f32_sites": 23,
+      "positive_zero_setp_gt_f32_sites": 16
+    },
+    "copy_span": {
+      "positive_zero_max_f32_sites": 0,
+      "positive_zero_setp_gt_f32_sites": 0
+    },
+    "up_action_eval": {
+      "positive_zero_max_f32_sites": 38,
+      "positive_zero_setp_gt_f32_sites": 0
+    }
+  },
+  "source_positive_r_ternary_occurrences": 4,
+  "setp_caution": "Remaining16up_action zero comparisons include original sign-dependent discount selection; not counted as missing clamp max or removed by this proposal. No blanket equivalence or instruction-removal claim.",
+  "new_source_variants": 0,
+  "new_compilers": 0,
+  "new_CUDA_queries_or_kernels": 0,
+  "new_solve_or_speed_samples": 0,
+  "new_gain_accepted": false,
+  "limits": "Read-only PTX/source scout, not finalSASS/dynamic instruction timing, all-float mathematical proof or a speed bound. No candidate compiled or measured.",
+  "inputs": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D199-existing-max-scout.py": "75512de1a588530624a354699a7c0759310e02332fba54fdeb1c75c3abe30abf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-source\\baseline-kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-terminal-checkpoint\\report.json": "79569ea5a05fa184484c859a1c60365cfee967113f40df954534875e6dbe4507"
+  }
+}

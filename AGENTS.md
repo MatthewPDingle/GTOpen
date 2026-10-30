@@ -7,6 +7,25 @@ quickstart. Recent study outputs and a findings summary live in
 `C:\Storage\dev\coinpoker\gtopen-studies\` (Windows) — read `FINDINGS.md` there
 before redoing analysis that already exists.
 
+## Current workspace (user cleanup, 2026-10-30)
+
+- Keep one working checkout at `X:\Dev\GTOpen` and one local research data folder
+  at `X:\Dev\GTOpen-research`. The running app uses the main checkout.
+- Useful source, benchmark tools, the dashboard and bounded reports belong in Git.
+  Raw dumps, saved research fixtures, build outputs and preserved checkout files
+  stay in the research data folder. Do not upload raw dumps or commit runtime caches.
+- The previous `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts were
+  preserved on GitHub before retirement. The unfinished adaptive-HERO changes
+  are archived at `archive/unfinished-hero-fix-20261030`; they are not an accepted
+  application fix. The active local and GitHub branch is `master`.
+- Read `research/postflop-gpu-20261016/workspace-layout.json` before continuing
+  GPU research. Historical inputs, hashes and absolute paths remain immutable.
+  Do not rewrite frozen custody records to make an old run appear current.
+- New bulk output goes to X:. Keep the old S: archive read-only and do not
+  access the retired T: drive. These current rules supersede the historical
+  storage and old desktop-path notes below. Research is stopped after E127;
+  workspace cleanup does not resume experiments or change the accepted E080 solver.
+
 ## Build / run / test
 
 ```bash
@@ -16,7 +35,7 @@ cargo test --release -p solver                   # full suite; keep green
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1   # GPU equivalence suites
 ```
 
-- Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 64 GB,
+- Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 128 GB,
   RTX 3090 (24 GB). Repo at `T:\Dev\GTOpen`; nvrtc DLLs in `.cuda-nvrtc/`
   (pip wheel, gitignored). Everything runs on the GPU: postflop solves,
   reports, the Preflop Lab with calibrated realization, profiles/locks/hero.
@@ -147,3 +166,22 @@ profiles learn responses from 25% of stack, so keep HERO off for joint solves.
 Adaptive-seat gaps respect their fixed actions; fully fixed/frozen gaps remain
 bleed. Historical fully fixed results and old saves keep their original model.
 See `docs/preflop_modeling_fix.md`; the Data sample is online, not live casino.
+
+
+## Research storage
+
+- Research storage (user, 2026-10-03): keep at least 50 GiB
+  (53,687,091,200 bytes) free on T:. Prefer `S:\GTOpen-research` for new
+  bulk research output. Check actual free space and conservative peak output
+  reservations before admitting work; defer writes that would breach the T:
+  reserve. Keep useful research and verify full copies before retiring the T:
+  copies. Preserve frozen scientific inputs and record any relocation explicitly.
+
+
+- Research relocation (user, 2026-10-05): all remaining T:\GTOpen-research
+  data was checksum verified and relocated to S:\GTOpen-research. T:\GTOpen-research
+  is now a compatibility junction; keep bulk research physically on S. Inventory
+  S once, avoiding double counting through the T alias. Relocation identities
+  are recorded in S:\GTOpen-research\T-TO-S-RELOCATION-20261005.json; strict
+  frozen identity checks must handle them explicitly before future admission.
+  This storage-only request does not authorize resuming stopped research.

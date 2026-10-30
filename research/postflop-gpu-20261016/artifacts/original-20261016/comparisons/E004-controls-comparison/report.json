@@ -1,0 +1,1820 @@
+{
+  "schema_version": 1,
+  "id": "E004-controls-comparison",
+  "created_at": "2026-10-16T04:20:46Z",
+  "status": "pass",
+  "scope": "Exact ordered saved-state, action-menu and resume controls only; no performance or full validation claim",
+  "baseline_runs": [
+    "V000-state-baseline",
+    "V000-menu-baseline",
+    "V000-resume-baseline-r"
+  ],
+  "candidate_runs": [
+    "V004-state",
+    "V004-menu",
+    "V004-resume"
+  ],
+  "ignored_fields": [],
+  "metrics_policy": "Every metrics object must be explicitly empty; all other fields compare exactly",
+  "qualification": "pending",
+  "accepted": false,
+  "deployed": false,
+  "input_evidence": [
+    {
+      "id": "V000-state-baseline",
+      "suite": "state",
+      "binary_sha256": "07e0fb213cb4f23e88cce2dc907164992058bec6b498e94113cd0ceb651fe2ae",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-state-baseline\\report.json",
+        "sha256": "a8294aa2439d98bf78fa8fb5271ed0548a933030e4a38795d643aee76756dbfc"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-state-baseline\\stdout.log",
+          "sha256": "8694946f2d380067b25ea05b09b7ccf18d8a0aba433e9a6c2e4d974ba42d63ca"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_state_perf.exe",
+          "sha256": "07e0fb213cb4f23e88cce2dc907164992058bec6b498e94113cd0ceb651fe2ae"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_state_perf.manifest.json",
+          "sha256": "729526f85bf0a77b3e8785a91d26f725ec07a456782c2a53f753432760bddb5c"
+        }
+      ],
+      "started_at": "2026-10-16T04:12:06Z",
+      "finished_at": "2026-10-16T04:12:10Z"
+    },
+    {
+      "id": "V000-menu-baseline",
+      "suite": "menu",
+      "binary_sha256": "ffa15c2034442cb9a53294abae1e45a6c71e95571b0817c7110a0647eb836803",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-menu-baseline\\report.json",
+        "sha256": "c883e3d7c3c5423ec2427587858bd5771a265c3b704a39246c145788fd91f8f8"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-menu-baseline\\stdout.log",
+          "sha256": "cad6b37d3dd3c6ff417a00fd99eb927e8bd3dddb384061a28ac02b7ccd377fdb"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_action_menus.exe",
+          "sha256": "ffa15c2034442cb9a53294abae1e45a6c71e95571b0817c7110a0647eb836803"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_action_menus.manifest.json",
+          "sha256": "8e6ca994e5eccc06056aa759e2cbdd764c0ede2415f06aebca01905350aa55e3"
+        }
+      ],
+      "started_at": "2026-10-16T04:12:25Z",
+      "finished_at": "2026-10-16T04:12:27Z"
+    },
+    {
+      "id": "V000-resume-baseline-r",
+      "suite": "resume",
+      "binary_sha256": "6152e695854219411f81b84200e5ad3ee196189ed51002bd5b615baba2e76b9d",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-resume-baseline-r\\report.json",
+        "sha256": "5ea2ae3dcc44c165db2484de505b6ed646fedf6159e27fa54e58b57b4bd79eec"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V000-resume-baseline-r\\stdout.log",
+          "sha256": "2579b16b397f438af20fb50a44ad42f43ff0ed37d381f3db50094886e57acd58"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_resume_state.exe",
+          "sha256": "6152e695854219411f81b84200e5ad3ee196189ed51002bd5b615baba2e76b9d"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-postflop_resume_state.manifest.json",
+          "sha256": "c1b1478427d7e775d961b8b95e59f1e403c0db0d43388c1a075060c2b88d8589"
+        }
+      ],
+      "started_at": "2026-10-16T04:12:43Z",
+      "finished_at": "2026-10-16T04:12:56Z"
+    },
+    {
+      "id": "V004-state",
+      "suite": "state",
+      "binary_sha256": "e163fa4c9d5bd168aaa334d429191a6ce4dd28a1536dba3eb43a19e8af3dc2c7",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-state\\report.json",
+        "sha256": "135b005a0381e7e16f6c2025f519275ceb6aeac691a00ad931d3b4964f9bfcf8"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-state\\stdout.log",
+          "sha256": "fa36f36d26771a32e118c1fd6de16f901444d792d8cd4283b946f84f66f68fee"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_state_perf.exe",
+          "sha256": "e163fa4c9d5bd168aaa334d429191a6ce4dd28a1536dba3eb43a19e8af3dc2c7"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_state_perf.manifest.json",
+          "sha256": "d917e83e4bce7a74654623582a58d6aeb4ccfce6c458df4951731cb4f4231ebd"
+        }
+      ],
+      "started_at": "2026-10-16T04:20:10Z",
+      "finished_at": "2026-10-16T04:20:14Z"
+    },
+    {
+      "id": "V004-menu",
+      "suite": "menu",
+      "binary_sha256": "6fcfc92e329b534f6bd4d6fa2da550147de9acee6017550f76619b3f2d350b42",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-menu\\report.json",
+        "sha256": "2ccd3256aff9e6fade0830fd31cfe55467298bf86f3ee881b5ca0d86ea179185"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-menu\\stdout.log",
+          "sha256": "d9bb89d09e364a2d703ffa7216539ef078856b72c0cec784347012baf95da567"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_action_menus.exe",
+          "sha256": "6fcfc92e329b534f6bd4d6fa2da550147de9acee6017550f76619b3f2d350b42"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_action_menus.manifest.json",
+          "sha256": "43b492afc37cf19852545c6a4f0bb98f6d1121f0b4e7a5121c7f07831e7d33c3"
+        }
+      ],
+      "started_at": "2026-10-16T04:20:15Z",
+      "finished_at": "2026-10-16T04:20:17Z"
+    },
+    {
+      "id": "V004-resume",
+      "suite": "resume",
+      "binary_sha256": "e23deb333dab5ff1b8e6832a1e7afa180a75e9a0b8a7549b515f8a3d479121da",
+      "report": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-resume\\report.json",
+        "sha256": "908e7a7964e54e82d04e7d8ec19fb0acde7bf1416796a9f7f888b5f973222469"
+      },
+      "artifacts": [
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-resume\\stdout.log",
+          "sha256": "c788448e655e067ba73c1f7a96efa4aa51a97bcca5542f3b6799871867f8835f"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_resume_state.exe",
+          "sha256": "e23deb333dab5ff1b8e6832a1e7afa180a75e9a0b8a7549b515f8a3d479121da"
+        },
+        {
+          "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_resume_state.manifest.json",
+          "sha256": "c1a0a7e6b3d8a2947e3037f37da915404a269113d61157cc4e9520c13854d581"
+        }
+      ],
+      "started_at": "2026-10-16T04:20:18Z",
+      "finished_at": "2026-10-16T04:20:31Z"
+    }
+  ],
+  "suites": [
+    {
+      "suite": "state",
+      "status": "pass",
+      "baseline_id": "V000-state-baseline",
+      "candidate_id": "V004-state",
+      "record_count_each": 12,
+      "snapshot_count_each": 24,
+      "ordered_records_sha256": "356da364704000891ce8cfc79f0f4b851d10ceae4fc8b2a71f601d90069a2845",
+      "matched_records": [
+        {
+          "board": "KsQs2d",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4587303795425830328,
+              "hash": "ced25cd534160a7a",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4581640868563274656,
+              "hash": "8729320849b9d33c",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "KsQs2d",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4587469623950769688,
+              "hash": "dce9b2717e0df16e",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4581722223845122880,
+              "hash": "99111fb9c8ec709b",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "KsQs2d",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4587284094896033288,
+              "hash": "f28b67b0f43f8498",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4581629036489079792,
+              "hash": "52fbd9a266ab35c1",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "KsQs2d",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4587467559043767640,
+              "hash": "7abb90d6fa5ac2fc",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4581695983154347840,
+              "hash": "b529102cce25dc39",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "Qs7h2dKh",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4582461738720506392,
+              "hash": "816eeeb55df5fe5c",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4576041536399700112,
+              "hash": "202311fe47670cc0",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "Qs7h2dKh",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4583407264393491801,
+              "hash": "ed2549bfcfbc34f1",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4576219535588436580,
+              "hash": "8217b6d74d4da526",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "Qs7h2dKh",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4582461738720506392,
+              "hash": "816eeeb55df5fe5c",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4576041536399700112,
+              "hash": "202311fe47670cc0",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "Qs7h2dKh",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4583407264393491801,
+              "hash": "ed2549bfcfbc34f1",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4576219535588436580,
+              "hash": "8217b6d74d4da526",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "AsKsQsJsTs",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4554443791804951647,
+              "hash": "7f53c8ac5434860d",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4545576682231338880,
+              "hash": "409995a6b2afc105",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "AsKsQsJsTs",
+          "iso": false,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4566905886187841344,
+              "hash": "af8ff4550d82f9ef",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4558330255933400576,
+              "hash": "db670420a8559b3f",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "AsKsQsJsTs",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.0,
+          "states": [
+            {
+              "exploit_bits": 4554443791804951647,
+              "hash": "7f53c8ac5434860d",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4545576682231338880,
+              "hash": "409995a6b2afc105",
+              "locked": true
+            }
+          ]
+        },
+        {
+          "board": "AsKsQsJsTs",
+          "iso": true,
+          "metrics": {},
+          "rake": 0.05,
+          "states": [
+            {
+              "exploit_bits": 4566905886187841344,
+              "hash": "af8ff4550d82f9ef",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4558330255933400576,
+              "hash": "db670420a8559b3f",
+              "locked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "suite": "menu",
+      "status": "pass",
+      "baseline_id": "V000-menu-baseline",
+      "candidate_id": "V004-menu",
+      "record_count_each": 12,
+      "snapshot_count_each": 24,
+      "ordered_records_sha256": "1df0fe009bc6dc089d427c2acb1d065879c5e93128f56eb416a02f4f03341e51",
+      "matched_records": [
+        {
+          "algorithm": "Dcfr",
+          "bets": "",
+          "menu_states": [
+            {
+              "exploit_bits": 0,
+              "hash": "4f030aa0fe9deb5f",
+              "locked": false
+            },
+            {
+              "exploit_bits": 0,
+              "hash": "8e5d7a73c6fc124e",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 1
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "",
+          "menu_states": [
+            {
+              "exploit_bits": 0,
+              "hash": "4f030aa0fe9deb5f",
+              "locked": false
+            },
+            {
+              "exploit_bits": 0,
+              "hash": "8e5d7a73c6fc124e",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 1
+        },
+        {
+          "algorithm": "Dcfr",
+          "bets": "50",
+          "menu_states": [
+            {
+              "exploit_bits": 4573123367441913472,
+              "hash": "28e830748f7862f9",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4565846421063463936,
+              "hash": "32e870d727e15e5f",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 2
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "50",
+          "menu_states": [
+            {
+              "exploit_bits": 4575373351273120128,
+              "hash": "416e7f8a4ac7c606",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4567243943030646784,
+              "hash": "8069c4264711efae",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 2
+        },
+        {
+          "algorithm": "Dcfr",
+          "bets": "33 75",
+          "menu_states": [
+            {
+              "exploit_bits": 4575084589291749568,
+              "hash": "ae061a57520656fe",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4567293853705376896,
+              "hash": "97518332785a83cd",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 3
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "33 75",
+          "menu_states": [
+            {
+              "exploit_bits": 4577085624307641248,
+              "hash": "195630b94c45e510",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4569213372567492352,
+              "hash": "0d0282705a8c51f8",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 3
+        },
+        {
+          "algorithm": "Dcfr",
+          "bets": "25 50 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4576662650375970560,
+              "hash": "91e4a6d2278b5be4",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4568167495878385472,
+              "hash": "a574b116361c3282",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 4
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "25 50 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4578098029924519584,
+              "hash": "f4efe3ba80456c06",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4570670884258282048,
+              "hash": "e6b3b44c5bc12b96",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 4
+        },
+        {
+          "algorithm": "Dcfr",
+          "bets": "20 40 60 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4578393802013603200,
+              "hash": "3e71e04bcdc2e331",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4568168038134907328,
+              "hash": "39f6f84bb1cf1880",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 5
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "20 40 60 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4577566401053905312,
+              "hash": "a91a7f665d7b4f5c",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4569007400465854784,
+              "hash": "6ae19fa9468f87df",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 5
+        },
+        {
+          "algorithm": "Dcfr",
+          "bets": "10 20 30 40 50 60 70 80 90 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4585573299270657502,
+              "hash": "1231d62f4e5b8eb2",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4573412747826466240,
+              "hash": "cb4ff418bc95b1ee",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 11
+        },
+        {
+          "algorithm": "CfrPlus",
+          "bets": "10 20 30 40 50 60 70 80 90 100",
+          "menu_states": [
+            {
+              "exploit_bits": 4585724609751663300,
+              "hash": "eb415ad20798bb2f",
+              "locked": false
+            },
+            {
+              "exploit_bits": 4573816642404738784,
+              "hash": "df982bf6925ef500",
+              "locked": true
+            }
+          ],
+          "metrics": {},
+          "root_actions": 11
+        }
+      ]
+    },
+    {
+      "suite": "resume",
+      "status": "pass",
+      "baseline_id": "V000-resume-baseline-r",
+      "candidate_id": "V004-resume",
+      "record_count_each": 16,
+      "snapshot_count_each": 112,
+      "ordered_records_sha256": "1357baead29b8897770e6ad79a3fae8e3050839a6b8742e1f6c43764586bda40",
+      "matched_records": [
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4602578713680545664,
+          "inactive": 1421,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "e2c492c87cf6e4be",
+            "f8f2089e2e434f23"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "6efe33310c55f1a5",
+              "save_hash": "6a075d97c7c6db7d",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "48660e632ad5b879",
+              "save_hash": "0cad57bbdb96d314",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "48660e632ad5b879",
+              "save_hash": "0cad57bbdb96d314",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "48660e632ad5b879",
+              "save_hash": "0cad57bbdb96d314",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "48660e632ad5b879",
+              "save_hash": "0cad57bbdb96d314",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "4af1446f1da731d4",
+              "save_hash": "f49ee8e1043ada28",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "44a3c523163fe3dd",
+              "save_hash": "ed5bbdcbc4ea1e77",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4599028146264155440,
+          "storage": "F32",
+          "warm": false
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4599332415581787700,
+          "inactive": 1421,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "11e25aea6c80dcbd",
+            "c4cc76aafe4a8729"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "9ee052d258356aaa",
+              "save_hash": "d1c47c4996956c82",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "b7e1741412e607b7",
+              "save_hash": "334acc8fa7b11d9b",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "b7e1741412e607b7",
+              "save_hash": "334acc8fa7b11d9b",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "b7e1741412e607b7",
+              "save_hash": "334acc8fa7b11d9b",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "b7e1741412e607b7",
+              "save_hash": "334acc8fa7b11d9b",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "ae2d52b96cc8effa",
+              "save_hash": "a9ada8b1b42fb75a",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "90336a88c26f3a01",
+              "save_hash": "0c13e01724fbecaa",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4596408297456974656,
+          "storage": "F32",
+          "warm": true
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4602587915789417860,
+          "inactive": 28331,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "1409097d1e006bbf",
+            "545f76eb89bd277c"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "a35d4b23e4e67da5",
+              "save_hash": "ed177c389687447d",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "51c9980460428ee6",
+              "save_hash": "21d622302bba980f",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "4669959a131153b3",
+              "save_hash": "01e3df03e2f7b052",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "0581d09dbd38e210",
+              "save_hash": "44976d3782490831",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "51c9980460428ee6",
+              "save_hash": "21d622302bba980f",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "63567463789d999e",
+              "save_hash": "09faa84d107d5dc4",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "4ddc8c2d9ffb194c",
+              "save_hash": "a9fb3e03bbdfcf20",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4599029879454001440,
+          "storage": "F32",
+          "warm": false
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4599385826049268552,
+          "inactive": 28331,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "01bd2f5d8365263f",
+            "2d419480c54838a7"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "9ee052d258356aaa",
+              "save_hash": "d1c47c4996956c82",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "78fdb1fff07eae56",
+              "save_hash": "884e678fb2d9ef72",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "16ba5bef99aa75cd",
+              "save_hash": "2244f4b62540d555",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "d698cd79726c2e38",
+              "save_hash": "722833541a695f70",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "78fdb1fff07eae56",
+              "save_hash": "884e678fb2d9ef72",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "9d1f4ecc8bdaa2e4",
+              "save_hash": "477b20cd0b34e90b",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "5712eb06a899e447",
+              "save_hash": "c02051e5a0073d05",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4596475378414907108,
+          "storage": "F32",
+          "warm": true
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4602579154013779002,
+          "inactive": 1421,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "d17f0834eb2e81d4",
+            "03faa827ff2fdb7d"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "fcad077cf7d2dde5",
+              "save_hash": "3e1697b3c7ce477d",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "e25b4b9cf3826400",
+              "save_hash": "e1a67592e0a8ab71",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "e25b4b9cf3826400",
+              "save_hash": "e1a67592e0a8ab71",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "e25b4b9cf3826400",
+              "save_hash": "e1a67592e0a8ab71",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "e25b4b9cf3826400",
+              "save_hash": "e1a67592e0a8ab71",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "d2ce843f596cfdbe",
+              "save_hash": "6b22f606eeffb249",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "1500af0975bcd083",
+              "save_hash": "6d9d58fa1fa2cb5c",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4599027087966486304,
+          "storage": "Compressed",
+          "warm": false
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4599389224566682102,
+          "inactive": 1421,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "93430df5071b4389",
+            "0e13065304e61e27"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "91333e7e3524d601",
+              "save_hash": "a3d4302dbe04bce2",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "56a1dd2ad2e719ed",
+              "save_hash": "1154f1894b6d8887",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "56a1dd2ad2e719ed",
+              "save_hash": "1154f1894b6d8887",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "56a1dd2ad2e719ed",
+              "save_hash": "1154f1894b6d8887",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "56a1dd2ad2e719ed",
+              "save_hash": "1154f1894b6d8887",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "42c9df1515cbd777",
+              "save_hash": "129eac2ca2931680",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "b0267981dd6a131e",
+              "save_hash": "aabeeb67bf029fb2",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4596450857652247244,
+          "storage": "Compressed",
+          "warm": true
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4602587911898015366,
+          "inactive": 28331,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "f79152071c7ca9ea",
+            "e370f15c3d98e2d6"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "fcad077cf7d2dde5",
+              "save_hash": "3e1697b3c7ce477d",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "9ec7e4f00bb9770b",
+              "save_hash": "3f7c03894afd13ec",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "0b7f7d46823ab408",
+              "save_hash": "5682308c2a3f638e",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "8054c275c542593c",
+              "save_hash": "d41ecc7643faf1e4",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "9ec7e4f00bb9770b",
+              "save_hash": "3f7c03894afd13ec",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "10d79a3701a97adb",
+              "save_hash": "c4884f24205d712b",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "0491ff2e49a7d96d",
+              "save_hash": "5a0bc7ebce515364",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4599028044336379776,
+          "storage": "Compressed",
+          "warm": false
+        },
+        {
+          "board": "KsQs2d",
+          "exploit_bits": 4599327386543095910,
+          "inactive": 28331,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "1aa8706d72bc7e42",
+            "9b6f9fdb16d579f4"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "91333e7e3524d601",
+              "save_hash": "a3d4302dbe04bce2",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "69446a2f27ef2ca8",
+              "save_hash": "2cdc5c02057a6e49",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "deef52b36293d720",
+              "save_hash": "94652fb67a1b53ae",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "e49482b897b878de",
+              "save_hash": "7e27024ea493da0b",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "69446a2f27ef2ca8",
+              "save_hash": "2cdc5c02057a6e49",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "2c77b0579713148c",
+              "save_hash": "0e4c7ea2f16e958c",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "a6d057434936e258",
+              "save_hash": "5f5a1718e9e95665",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4596461339885700988,
+          "storage": "Compressed",
+          "warm": true
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4593492244551533040,
+          "inactive": 0,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "bcc3ea1b1db11956",
+            "fe959fc894b96bf5"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "3b418c5d262f0425",
+              "save_hash": "f2a87b9043356263",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "57d14afcdfc69503",
+              "save_hash": "8a4e696c929f26d0",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "57d14afcdfc69503",
+              "save_hash": "8a4e696c929f26d0",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "57d14afcdfc69503",
+              "save_hash": "8a4e696c929f26d0",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "57d14afcdfc69503",
+              "save_hash": "8a4e696c929f26d0",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "bdc5323e2ca4239f",
+              "save_hash": "d1a1d8133afb4cae",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "49d30427d3f47b78",
+              "save_hash": "d28aa1da24c4563f",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4591609752914400816,
+          "storage": "F32",
+          "warm": false
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4590986155395317520,
+          "inactive": 0,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "0be619db35cb9c88",
+            "534952df123a2be5"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "3f4ef7e0b5ec8a7f",
+              "save_hash": "41be08502bd010e9",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "444db559076f6311",
+              "save_hash": "460c1fa9e858caa3",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "444db559076f6311",
+              "save_hash": "460c1fa9e858caa3",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "444db559076f6311",
+              "save_hash": "460c1fa9e858caa3",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "444db559076f6311",
+              "save_hash": "460c1fa9e858caa3",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "bb9dfc0577d0a07b",
+              "save_hash": "9d0f1545a802642f",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "595a618710730c5c",
+              "save_hash": "adb01e5ad7dfbc39",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4588498413657077568,
+          "storage": "F32",
+          "warm": true
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4593492233496039344,
+          "inactive": 143,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "60d3fb51a06bbfe4",
+            "b2a4ac9204a12b33"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "72feef5d6ce18425",
+              "save_hash": "3880cc2e74974b63",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "c906d028d0faedff",
+              "save_hash": "bf8dc4771bd0db60",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "53485ed98975d374",
+              "save_hash": "50f12a193bea99a7",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "4f875f4df4e47480",
+              "save_hash": "b01d2da08f9c2873",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "c906d028d0faedff",
+              "save_hash": "bf8dc4771bd0db60",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "40efd4506f7f51a6",
+              "save_hash": "f90cca928973cbda",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "879a9dc7c48f3e53",
+              "save_hash": "a52b4ff311d86509",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4591609747553279968,
+          "storage": "F32",
+          "warm": false
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4590986159761108784,
+          "inactive": 143,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "e38df16b8f265de6",
+            "a92bc718e97d3ba1"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "3f4ef7e0b5ec8a7f",
+              "save_hash": "41be08502bd010e9",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "aec46fe5c1c16589",
+              "save_hash": "296b4009ac43bc9b",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "6d3c14cc47893c62",
+              "save_hash": "5231a7d6d9e39758",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "9855d73d796d10b2",
+              "save_hash": "ccba5e2a9fa09bbc",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "aec46fe5c1c16589",
+              "save_hash": "296b4009ac43bc9b",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "d492cc5c4652daa1",
+              "save_hash": "44ddb51e96134046",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "8f2808888b479085",
+              "save_hash": "5306e548327c2255",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4588498429120730400,
+          "storage": "F32",
+          "warm": true
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4593492238403760368,
+          "inactive": 0,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "0cd252590a9a37aa",
+            "faecdad76212acdb"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "97e039b245303ee5",
+              "save_hash": "f2a87b9043356263",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "973504273a198267",
+              "save_hash": "ff4dac964152d398",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "973504273a198267",
+              "save_hash": "ff4dac964152d398",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "973504273a198267",
+              "save_hash": "ff4dac964152d398",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "973504273a198267",
+              "save_hash": "ff4dac964152d398",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "89efa049a0e34bea",
+              "save_hash": "22454accb0bc8860",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "cacb24b87e68f724",
+              "save_hash": "3776f79766e08b81",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4591609527632236640,
+          "storage": "Compressed",
+          "warm": false
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4590984449755165376,
+          "inactive": 0,
+          "iso": false,
+          "metrics": {},
+          "queries": [
+            "147f8c9488b28c24",
+            "1a5930f9bacb59d4"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "a92f40021629abcd",
+              "save_hash": "66bf2aa5c76fbd64",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "6a6d53ff51916ca8",
+              "save_hash": "3b157891fd45a30d",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "6a6d53ff51916ca8",
+              "save_hash": "3b157891fd45a30d",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "6a6d53ff51916ca8",
+              "save_hash": "3b157891fd45a30d",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "6a6d53ff51916ca8",
+              "save_hash": "3b157891fd45a30d",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "418219a239f405de",
+              "save_hash": "7d5bded75cdda31b",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "89d74319503bea6e",
+              "save_hash": "fe70acf639c094e6",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4588496636820507168,
+          "storage": "Compressed",
+          "warm": true
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4593492236549690256,
+          "inactive": 143,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "4e365f6f7fd4bdbb",
+            "faecdad76212acdb"
+          ],
+          "resume_states": [
+            {
+              "iteration": 0,
+              "raw_hash": "97e039b245303ee5",
+              "save_hash": "f2a87b9043356263",
+              "stage": "initial"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "27360131f26c3267",
+              "save_hash": "429fe5ee3234555f",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "a2388db5f52ca89d",
+              "save_hash": "08303f696219804e",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "cba0664fb381faa4",
+              "save_hash": "e410feb429d914a5",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 7,
+              "raw_hash": "27360131f26c3267",
+              "save_hash": "429fe5ee3234555f",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 16,
+              "raw_hash": "587e44993f75a3d6",
+              "save_hash": "67826c92a89626c4",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 21,
+              "raw_hash": "5674f609be8065d5",
+              "save_hash": "733f2924d483e9b9",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4591609471434689008,
+          "storage": "Compressed",
+          "warm": false
+        },
+        {
+          "board": "KsQs2dJd",
+          "exploit_bits": 4590984433867833488,
+          "inactive": 143,
+          "iso": true,
+          "metrics": {},
+          "queries": [
+            "147f8c9488b28c24",
+            "1a5930f9bacb59d4"
+          ],
+          "resume_states": [
+            {
+              "iteration": 4,
+              "raw_hash": "a92f40021629abcd",
+              "save_hash": "66bf2aa5c76fbd64",
+              "stage": "initial"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "2cbc7eefffc0e858",
+              "save_hash": "d5d623284f27d9dc",
+              "stage": "first_sync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "f8c0805d7c8f179d",
+              "save_hash": "9f0c5c7b6e62acca",
+              "stage": "materialized"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "cb23b1995f492414",
+              "save_hash": "f60054fb7eb57f40",
+              "stage": "strategy_resync"
+            },
+            {
+              "iteration": 11,
+              "raw_hash": "2cbc7eefffc0e858",
+              "save_hash": "d5d623284f27d9dc",
+              "stage": "full_resync"
+            },
+            {
+              "iteration": 20,
+              "raw_hash": "16b99d557322da33",
+              "save_hash": "f9c2968f43314e15",
+              "stage": "locked_sync"
+            },
+            {
+              "iteration": 25,
+              "raw_hash": "4210ee1d40d2cc27",
+              "save_hash": "c8af4ba60984cde1",
+              "stage": "resumed"
+            }
+          ],
+          "resumed_exploit_bits": 4588496515980919360,
+          "storage": "Compressed",
+          "warm": true
+        }
+      ]
+    }
+  ],
+  "total_snapshots_each": 160,
+  "environment": {
+    "RAYON_NUM_THREADS": "16",
+    "nvrtc_path": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": null,
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0"
+  },
+  "cohorts": [
+    {
+      "name": "baseline",
+      "source_sha256": {
+        "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+        "Cargo.toml": "7c4852f25afca57450c13de5ab336c28ba70d9405c16cfc1bbccee361d10c0ca",
+        "crates/solver/Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+        "crates/solver/src/best_response.rs": "aba52276862b0bd93f4d096be091848181d32321c7dc6024cd755fd694e34c43",
+        "crates/solver/src/bin/solve_cli.rs": "8973db5c2c6e175a74a6e9c6b290136d0b4bb3768ce0049732293d84f5f9bb9a",
+        "crates/solver/src/cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+        "crates/solver/src/cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+        "crates/solver/src/contextual_postflop.rs": "ad993587e85bb7416eeb4416d9178372cb391954e6d287f0084c54922c17e371",
+        "crates/solver/src/evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+        "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+        "crates/solver/src/gpu/arena.rs": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+        "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+        "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+        "crates/solver/src/gpu/continuation_disk_state_tests.rs": "82a1293b9205cc37743574ee58e3efadb314a89fcfa21dc2f802a9057d5cb1e0",
+        "crates/solver/src/gpu/continuation_host_paging_tests.rs": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9",
+        "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+        "crates/solver/src/gpu/continuation_projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+        "crates/solver/src/gpu/continuation_replay_tests.rs": "6333065a4a2b4eccfdcf342b325e67b50a12c3dd2b4085b23f49739e59b2b54c",
+        "crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6",
+        "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+        "crates/solver/src/gpu/continuation_storage_copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+        "crates/solver/src/gpu/continuation_stored_device_tests.rs": "13562eab10ae01c5743f7d424a52389b16595fd534782ae30b9b0699cf0a2fc2",
+        "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+        "crates/solver/src/gpu/mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+        "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+        "crates/solver/src/lib.rs": "28cb0e238056e6f22790b797b918114a66ba772fd67bc651834501266561ed95",
+        "crates/solver/src/preflop/checkpoint_tests.rs": "b21af68e8f4e96e6d0a3ba7a7e35551267b575a7608abd5cb9b5ab45b530b67c",
+        "crates/solver/src/preflop/contextual.rs": "9a33fe8e32eeaa97a3538a92452bc7ef714b872e499aca47efe1f3864abe86b2",
+        "crates/solver/src/preflop/continuation.rs": "45e172268160514c0d0f7e0e1ece7f699b57b0da9654e4513182c840ef6c7b8d",
+        "crates/solver/src/preflop/convergence_behavioral_transition.rs": "2fcd2231f2314286f34a7d693198f625c81fbfcf77a993086056eb7644f7c3bc",
+        "crates/solver/src/preflop/convergence_fixed_units.rs": "3d86a9960015a67e681c81e395f3b19de0715cd2e92d36414ce1141b5994d87c",
+        "crates/solver/src/preflop/convergence_policy_repair.rs": "76611a0b900ed9aeee71ba3ded2aacc55653cba41dbcc6fcc7dc6a27bce0237a",
+        "crates/solver/src/preflop/convergence_quality.rs": "a1f0f74c28c0de0ca749f889134f52da47199a89d7e4029dfd192eedff06759b",
+        "crates/solver/src/preflop/convergence_refine.rs": "475311e065688c0f18c711a924e776b278540161c2ad9a5c75a620741760db19",
+        "crates/solver/src/preflop/convergence_refine_gpu.rs": "6b163a186876d9b87eceba378b41aa5dd582fa9356596161faaa2dd657eb0ec5",
+        "crates/solver/src/preflop/convergence_research.rs": "582636c6eac42142fe60ec8f607dcbefc2a509b61397937278f04efa0af0afef",
+        "crates/solver/src/preflop/dataset.rs": "b3663e09a46a7150eb83ce866f84155447833a22aee57cc2e6440e3f8af9845e",
+        "crates/solver/src/preflop/equity.rs": "45caf75d3d7dbf0a123ed602b5697381ac2ac3420223c25136191571da2acc3a",
+        "crates/solver/src/preflop/evidence.rs": "90e65fd59c2e402f6fb29043b49c655febe396677d6cf8ed729200d0cfdf1210",
+        "crates/solver/src/preflop/gpu/adaptive_throughput/allocation_recovery.rs": "ce427677f7e35781531f40cc9121fa62725f9bbe3e2b5c62687aef4770b689d0",
+        "crates/solver/src/preflop/gpu/adaptive_throughput.rs": "004b4725fedfcc23cac22c9db65c9a8a07c67e3a71e5f347ef9f654092cdac0f",
+        "crates/solver/src/preflop/gpu/average_opponents.cu": "54b3f9f81eaa3b0d9e74633d0b902e0408f681b5235e63b642e869052ed86d0d",
+        "crates/solver/src/preflop/gpu/average_opponents.rs": "c43779236ffcd4d064cfb2ec8d41c78f378e969c68fc4995282da206a65d6da3",
+        "crates/solver/src/preflop/gpu/behavioral.cu": "4ffacfdb6f9bf25cdb5587a0b5f2480d665a160f7897698022ddcb2255607ddd",
+        "crates/solver/src/preflop/gpu/behavioral.rs": "a864b82b26ff7a61483fa81c2c3b50993c934778338138ac6e31c1d2debc6d04",
+        "crates/solver/src/preflop/gpu/behavioral_tests.rs": "f03b4167c5188ad1f122ad88c3db3589774f117ec7ad65086594f489247bf3f5",
+        "crates/solver/src/preflop/gpu/cdf_interleave.rs": "91f1222e001bf1bea33e0be66142cf4e7e08f0814f181d1dbec09c034b1a076b",
+        "crates/solver/src/preflop/gpu/cdf_zero.rs": "47a59fa48bbf81aeab55360a10d9563474add8e26519e244414394edf9e9b3bf",
+        "crates/solver/src/preflop/gpu/cdf_zero_predicate.rs": "1f43882d5feee69b1f63a53ea299a474eff6f2928444a2e981cd7db40aa1ae09",
+        "crates/solver/src/preflop/gpu/cohort_reuse/tests.rs": "3f8c334857701dbbe3409aaf3ca5a8c4bd8f1d0e93d8c7ea8e0363cb9f4f703a",
+        "crates/solver/src/preflop/gpu/cohort_reuse.rs": "ec67d00856b2f4de0618a31235768db613f23f845337d6f8760d8cfe76b2b860",
+        "crates/solver/src/preflop/gpu/conditional_sampling.rs": "8e8ad206c7281df11d33b28622ea69dca2e19ee85618bf170df0522272f847a2",
+        "crates/solver/src/preflop/gpu/cross_player_inventory/cohorts.rs": "feb604536684032be60272990ba8b60e226f461e8963b2fa3f3b4b8a5e795b44",
+        "crates/solver/src/preflop/gpu/cross_player_inventory.rs": "f9ecc5f1e5fee8c589d15f201f4cf21fffdb6de3e23671cfd3b6bdb0e4915eaa",
+        "crates/solver/src/preflop/gpu/cv_research.cu": "4f7e0ab28e42138160084cf91b4820eb257b8936493e19a3901f43e6571f7171",
+        "crates/solver/src/preflop/gpu/cv_research.rs": "597879fef7aff8bcca793b7e6b8672c72b0a292d24ec74c48e72368a523d3c37",
+        "crates/solver/src/preflop/gpu/cv_shared.cu": "f7b837f87b232ecd4a16cba85af954498f9e267704858593cb24cb7ae70a0d91",
+        "crates/solver/src/preflop/gpu/cv_shared.rs": "bbf1ac28d47bc75cb635c22534f192c8c2eb96c97739a1dc85f85b08794412bf",
+        "crates/solver/src/preflop/gpu/cv_shared_tests.rs": "1ac9764222b64c30fb96e24c061227b1f7bbb3966ee84fe0764cd1a641f1e05d",
+        "crates/solver/src/preflop/gpu/exact_reuse/tests.rs": "6262870f2eae7f8e70ddced38fdd4b6d0274430ff83a3d3f57eb9c6b81e6d5d9",
+        "crates/solver/src/preflop/gpu/exact_reuse.cu": "ff7475ba8f59953d8bc19d54bb30fac7a93ab49e5cb1e6e80eb201223918ed95",
+        "crates/solver/src/preflop/gpu/exact_reuse.rs": "f388c72101b76c655a0ec889b0e4d51983f2493b7197c4b4f7c0dd5141e67b9a",
+        "crates/solver/src/preflop/gpu/exact_reuse_inventory.rs": "923de6d7990befbd3e7e65ac20869618c216579b0bfcad1be817c8a0c2cafd95",
+        "crates/solver/src/preflop/gpu/exploration.cu": "bfe91a6d77042c629744468c4e88ae8c13dc980269edba5721e3729865ed2efe",
+        "crates/solver/src/preflop/gpu/exploration.rs": "2d9201332cd2428e3824162063411e3d02c7712704dec2b8eeffd628b25297ab",
+        "crates/solver/src/preflop/gpu/fixed_history_units.cu": "aed3d003457d923058c9398ceba325249a31e3ea019e54e71a4107d8e6a87173",
+        "crates/solver/src/preflop/gpu/fixed_history_units.rs": "2c18f55114191a817650bd7b7a27343ece7fbd51f238f34a534d9ca34a06eb53",
+        "crates/solver/src/preflop/gpu/frontier_research.rs": "0ba1609ae0dd71e56c8d32dbe8bb44df85939467dc031113d601c00174ddb568",
+        "crates/solver/src/preflop/gpu/history_units.rs": "72e1ba4af3604a491da0faf426599608c0844c283cfa181000e66303f3cd6339",
+        "crates/solver/src/preflop/gpu/learned.rs": "a4a0c521ef77eebe57f5e354373c9e59133e64ae0d2d12d06ced0bfdc2f6e793",
+        "crates/solver/src/preflop/gpu/learned_interface.rs": "f84cb5fbc1b0f562e50369025cd9f8eea967df3b983fc75b32e4dc840502376a",
+        "crates/solver/src/preflop/gpu/narrow_cdf.rs": "f4d54e8ef15defab67d4368c759e49d0f4684702a20ad4ebfb896c4347b56f29",
+        "crates/solver/src/preflop/gpu/narrow_offsets/tests.rs": "e7136705d69149d92f0add1709ff5fb00e6e10ffc9a4412b269b2f676096010d",
+        "crates/solver/src/preflop/gpu/narrow_offsets.rs": "3b34cf8bdaf97770cbfd117c8945becf6ce3f8f63f8729476bd2d188c8342188",
+        "crates/solver/src/preflop/gpu/normalized_regret.cu": "702206b486857a5efbc9347d17fd281a2e8c14cc687b348ebba9d0bd377cda56",
+        "crates/solver/src/preflop/gpu/normalized_regret.rs": "6f9513a1735fec3ac3edf9a9d1c655b5b1d023e7ad93b86b7fce855407822476",
+        "crates/solver/src/preflop/gpu/pair_control.cu": "33ff564e9be1d5988616968ccf43220ead4e54d17d1e0f9239eb384f320c97c8",
+        "crates/solver/src/preflop/gpu/pair_control.rs": "346225da2dadb8a49d8f6ba69e42b4a414677070a0c62af0fcec92e4a66d2607",
+        "crates/solver/src/preflop/gpu/predictive.cu": "99312cc884f17a3ecf45404182d88dc4b223fe7483645428434bf23ee57b8716",
+        "crates/solver/src/preflop/gpu/predictive.rs": "65b2afbbd4ee40921195605c4392bd810d1df0795871cd146b013de003b73778",
+        "crates/solver/src/preflop/gpu/predictive_tests.rs": "45eaf555e6899b0a873a82e89bb6c3cc7ea0e621ee0a34dd0500dd459881b359",
+        "crates/solver/src/preflop/gpu/rank_pipeline.cu": "22229c08a3b09a856deaf80e6e2d8e955a2049d4882adc35139716925eac7f57",
+        "crates/solver/src/preflop/gpu/rank_pipeline.rs": "6465532a77468adf757f5c36acd4e02904afe27cc4b56cbd1475f7ba357a575d",
+        "crates/solver/src/preflop/gpu/rm_plus.cu": "f7ad161c09c102fcf1ef6f10631efc347259a90c62b59d28a00ac1e66c9937ab",
+        "crates/solver/src/preflop/gpu/rm_plus.rs": "5f6ee6cbd9319a0f1277c85fabc56f92d81e00bdc3a6d8965c67b5d656980742",
+        "crates/solver/src/preflop/gpu/static_cdf/ordinary/tests.rs": "b5d97b97ef3df24d7d4110e3d1cc4065c3ab3e765f31634d58d947d29728c721",
+        "crates/solver/src/preflop/gpu/static_cdf/ordinary.rs": "935ae4ff8f439aa7d4effb3b451f44103e96b17968c1ff554cd3671f868f9c5c",
+        "crates/solver/src/preflop/gpu/static_cdf.rs": "e43c6f92bd4a51b69159703ab7447e12874a25920f87f436372e92855e574fdf",
+        "crates/solver/src/preflop/gpu/terminal_locality.rs": "48423b13335e113bb71575c8d377492b1386213190774f8b2c9e1ff2292b0528",
+        "crates/solver/src/preflop/gpu/terminal_tiles.rs": "9371ae27394813156afaca326e32b7807d260332696bdd66c8403de76a59b249",
+        "crates/solver/src/preflop/gpu/terminal_unroll/tests.rs": "4ad9239ceed43acb68ec9358369b6a5ac4ddc0e6ba9e60fb6901a016cef4bc04",
+        "crates/solver/src/preflop/gpu/terminal_unroll.rs": "8308e010ea9001277b3a7bf955d959a9eb20f0d2ecee64f84d541a50ac708d78",
+        "crates/solver/src/preflop/gpu.rs": "d9437765ff49d6120fcda7e0978e72891862708282e5930fe15791cc0daa6129",
+        "crates/solver/src/preflop/kernels.cu": "3f612dc174d3442d343256dd1695f0b910603d8e61b18ff375697106d69d2e59",
+        "crates/solver/src/preflop/mod.rs": "1eec9f30c2e52db59c5debcbf8fefe1743949b30d1f17e453cf8e2c9734712e1",
+        "crates/solver/src/preflop/multiway.rs": "f7c49073aa46e467171a8798f1d53dca3e6703da6d11ce236bda8bfe271326a4",
+        "crates/solver/src/preflop/particle_batches_research.rs": "02e2be73caa77fe43fdc36eee5a5681cd54bc4a27e1cd0abf03be684b3a54c0f",
+        "crates/solver/src/preflop/reference.rs": "0e64245491dc46a6f7d0d5e23e13fbe4da933c5576e5317015ed2c2e1fe83b48",
+        "crates/solver/src/preflop/save.rs": "e26e7de4f558266672816590bec2977c6b41701b36ac85af29846142f0897b5b",
+        "crates/solver/src/query.rs": "7657757f84ed6f40e9b3b6bed767c186ffa00e45b2e1dd42fef65f8f21811c1a",
+        "crates/solver/src/range.rs": "56c4f1eb2b9e0dc325c1da07a73ec2b94c5ee4812b4f91384d6ac3fbc2844cab",
+        "crates/solver/src/report.rs": "9204542730769dc1945aefe12d81b5a9d60d3aadc5f5bcdf69a80045c08adb47",
+        "crates/solver/src/save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+        "crates/solver/src/scratch.rs": "218858b35faa00183032a25ee5f3b5130b1b6d3b00b576fdc040da4d9c778fda",
+        "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+        "crates/solver/src/sysmem.rs": "c83d0cf765cf40711f1f62e52af997c6ba45f6c67cf22afea819a83070f79978",
+        "crates/solver/src/tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761"
+      },
+      "run_ids": [
+        "V000-state-baseline",
+        "V000-menu-baseline",
+        "V000-resume-baseline-r"
+      ]
+    },
+    {
+      "name": "candidate",
+      "source_sha256": {
+        "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+        "Cargo.toml": "7c4852f25afca57450c13de5ab336c28ba70d9405c16cfc1bbccee361d10c0ca",
+        "crates/solver/Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+        "crates/solver/src/best_response.rs": "aba52276862b0bd93f4d096be091848181d32321c7dc6024cd755fd694e34c43",
+        "crates/solver/src/bin/solve_cli.rs": "8973db5c2c6e175a74a6e9c6b290136d0b4bb3768ce0049732293d84f5f9bb9a",
+        "crates/solver/src/cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+        "crates/solver/src/cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+        "crates/solver/src/contextual_postflop.rs": "ad993587e85bb7416eeb4416d9178372cb391954e6d287f0084c54922c17e371",
+        "crates/solver/src/evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+        "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+        "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+        "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+        "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+        "crates/solver/src/gpu/continuation_disk_state_tests.rs": "82a1293b9205cc37743574ee58e3efadb314a89fcfa21dc2f802a9057d5cb1e0",
+        "crates/solver/src/gpu/continuation_host_paging_tests.rs": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9",
+        "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+        "crates/solver/src/gpu/continuation_projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+        "crates/solver/src/gpu/continuation_replay_tests.rs": "6333065a4a2b4eccfdcf342b325e67b50a12c3dd2b4085b23f49739e59b2b54c",
+        "crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6",
+        "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+        "crates/solver/src/gpu/continuation_storage_copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+        "crates/solver/src/gpu/continuation_stored_device_tests.rs": "13562eab10ae01c5743f7d424a52389b16595fd534782ae30b9b0699cf0a2fc2",
+        "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+        "crates/solver/src/gpu/mod.rs": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+        "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+        "crates/solver/src/lib.rs": "28cb0e238056e6f22790b797b918114a66ba772fd67bc651834501266561ed95",
+        "crates/solver/src/preflop/checkpoint_tests.rs": "b21af68e8f4e96e6d0a3ba7a7e35551267b575a7608abd5cb9b5ab45b530b67c",
+        "crates/solver/src/preflop/contextual.rs": "9a33fe8e32eeaa97a3538a92452bc7ef714b872e499aca47efe1f3864abe86b2",
+        "crates/solver/src/preflop/continuation.rs": "45e172268160514c0d0f7e0e1ece7f699b57b0da9654e4513182c840ef6c7b8d",
+        "crates/solver/src/preflop/convergence_behavioral_transition.rs": "2fcd2231f2314286f34a7d693198f625c81fbfcf77a993086056eb7644f7c3bc",
+        "crates/solver/src/preflop/convergence_fixed_units.rs": "3d86a9960015a67e681c81e395f3b19de0715cd2e92d36414ce1141b5994d87c",
+        "crates/solver/src/preflop/convergence_policy_repair.rs": "76611a0b900ed9aeee71ba3ded2aacc55653cba41dbcc6fcc7dc6a27bce0237a",
+        "crates/solver/src/preflop/convergence_quality.rs": "a1f0f74c28c0de0ca749f889134f52da47199a89d7e4029dfd192eedff06759b",
+        "crates/solver/src/preflop/convergence_refine.rs": "475311e065688c0f18c711a924e776b278540161c2ad9a5c75a620741760db19",
+        "crates/solver/src/preflop/convergence_refine_gpu.rs": "6b163a186876d9b87eceba378b41aa5dd582fa9356596161faaa2dd657eb0ec5",
+        "crates/solver/src/preflop/convergence_research.rs": "582636c6eac42142fe60ec8f607dcbefc2a509b61397937278f04efa0af0afef",
+        "crates/solver/src/preflop/dataset.rs": "b3663e09a46a7150eb83ce866f84155447833a22aee57cc2e6440e3f8af9845e",
+        "crates/solver/src/preflop/equity.rs": "45caf75d3d7dbf0a123ed602b5697381ac2ac3420223c25136191571da2acc3a",
+        "crates/solver/src/preflop/evidence.rs": "90e65fd59c2e402f6fb29043b49c655febe396677d6cf8ed729200d0cfdf1210",
+        "crates/solver/src/preflop/gpu/adaptive_throughput/allocation_recovery.rs": "ce427677f7e35781531f40cc9121fa62725f9bbe3e2b5c62687aef4770b689d0",
+        "crates/solver/src/preflop/gpu/adaptive_throughput.rs": "004b4725fedfcc23cac22c9db65c9a8a07c67e3a71e5f347ef9f654092cdac0f",
+        "crates/solver/src/preflop/gpu/average_opponents.cu": "54b3f9f81eaa3b0d9e74633d0b902e0408f681b5235e63b642e869052ed86d0d",
+        "crates/solver/src/preflop/gpu/average_opponents.rs": "c43779236ffcd4d064cfb2ec8d41c78f378e969c68fc4995282da206a65d6da3",
+        "crates/solver/src/preflop/gpu/behavioral.cu": "4ffacfdb6f9bf25cdb5587a0b5f2480d665a160f7897698022ddcb2255607ddd",
+        "crates/solver/src/preflop/gpu/behavioral.rs": "a864b82b26ff7a61483fa81c2c3b50993c934778338138ac6e31c1d2debc6d04",
+        "crates/solver/src/preflop/gpu/behavioral_tests.rs": "f03b4167c5188ad1f122ad88c3db3589774f117ec7ad65086594f489247bf3f5",
+        "crates/solver/src/preflop/gpu/cdf_interleave.rs": "91f1222e001bf1bea33e0be66142cf4e7e08f0814f181d1dbec09c034b1a076b",
+        "crates/solver/src/preflop/gpu/cdf_zero.rs": "47a59fa48bbf81aeab55360a10d9563474add8e26519e244414394edf9e9b3bf",
+        "crates/solver/src/preflop/gpu/cdf_zero_predicate.rs": "1f43882d5feee69b1f63a53ea299a474eff6f2928444a2e981cd7db40aa1ae09",
+        "crates/solver/src/preflop/gpu/cohort_reuse/tests.rs": "3f8c334857701dbbe3409aaf3ca5a8c4bd8f1d0e93d8c7ea8e0363cb9f4f703a",
+        "crates/solver/src/preflop/gpu/cohort_reuse.rs": "ec67d00856b2f4de0618a31235768db613f23f845337d6f8760d8cfe76b2b860",
+        "crates/solver/src/preflop/gpu/conditional_sampling.rs": "8e8ad206c7281df11d33b28622ea69dca2e19ee85618bf170df0522272f847a2",
+        "crates/solver/src/preflop/gpu/cross_player_inventory/cohorts.rs": "feb604536684032be60272990ba8b60e226f461e8963b2fa3f3b4b8a5e795b44",
+        "crates/solver/src/preflop/gpu/cross_player_inventory.rs": "f9ecc5f1e5fee8c589d15f201f4cf21fffdb6de3e23671cfd3b6bdb0e4915eaa",
+        "crates/solver/src/preflop/gpu/cv_research.cu": "4f7e0ab28e42138160084cf91b4820eb257b8936493e19a3901f43e6571f7171",
+        "crates/solver/src/preflop/gpu/cv_research.rs": "597879fef7aff8bcca793b7e6b8672c72b0a292d24ec74c48e72368a523d3c37",
+        "crates/solver/src/preflop/gpu/cv_shared.cu": "f7b837f87b232ecd4a16cba85af954498f9e267704858593cb24cb7ae70a0d91",
+        "crates/solver/src/preflop/gpu/cv_shared.rs": "bbf1ac28d47bc75cb635c22534f192c8c2eb96c97739a1dc85f85b08794412bf",
+        "crates/solver/src/preflop/gpu/cv_shared_tests.rs": "1ac9764222b64c30fb96e24c061227b1f7bbb3966ee84fe0764cd1a641f1e05d",
+        "crates/solver/src/preflop/gpu/exact_reuse/tests.rs": "6262870f2eae7f8e70ddced38fdd4b6d0274430ff83a3d3f57eb9c6b81e6d5d9",
+        "crates/solver/src/preflop/gpu/exact_reuse.cu": "ff7475ba8f59953d8bc19d54bb30fac7a93ab49e5cb1e6e80eb201223918ed95",
+        "crates/solver/src/preflop/gpu/exact_reuse.rs": "f388c72101b76c655a0ec889b0e4d51983f2493b7197c4b4f7c0dd5141e67b9a",
+        "crates/solver/src/preflop/gpu/exact_reuse_inventory.rs": "923de6d7990befbd3e7e65ac20869618c216579b0bfcad1be817c8a0c2cafd95",
+        "crates/solver/src/preflop/gpu/exploration.cu": "bfe91a6d77042c629744468c4e88ae8c13dc980269edba5721e3729865ed2efe",
+        "crates/solver/src/preflop/gpu/exploration.rs": "2d9201332cd2428e3824162063411e3d02c7712704dec2b8eeffd628b25297ab",
+        "crates/solver/src/preflop/gpu/fixed_history_units.cu": "aed3d003457d923058c9398ceba325249a31e3ea019e54e71a4107d8e6a87173",
+        "crates/solver/src/preflop/gpu/fixed_history_units.rs": "2c18f55114191a817650bd7b7a27343ece7fbd51f238f34a534d9ca34a06eb53",
+        "crates/solver/src/preflop/gpu/frontier_research.rs": "0ba1609ae0dd71e56c8d32dbe8bb44df85939467dc031113d601c00174ddb568",
+        "crates/solver/src/preflop/gpu/history_units.rs": "72e1ba4af3604a491da0faf426599608c0844c283cfa181000e66303f3cd6339",
+        "crates/solver/src/preflop/gpu/learned.rs": "a4a0c521ef77eebe57f5e354373c9e59133e64ae0d2d12d06ced0bfdc2f6e793",
+        "crates/solver/src/preflop/gpu/learned_interface.rs": "f84cb5fbc1b0f562e50369025cd9f8eea967df3b983fc75b32e4dc840502376a",
+        "crates/solver/src/preflop/gpu/narrow_cdf.rs": "f4d54e8ef15defab67d4368c759e49d0f4684702a20ad4ebfb896c4347b56f29",
+        "crates/solver/src/preflop/gpu/narrow_offsets/tests.rs": "e7136705d69149d92f0add1709ff5fb00e6e10ffc9a4412b269b2f676096010d",
+        "crates/solver/src/preflop/gpu/narrow_offsets.rs": "3b34cf8bdaf97770cbfd117c8945becf6ce3f8f63f8729476bd2d188c8342188",
+        "crates/solver/src/preflop/gpu/normalized_regret.cu": "702206b486857a5efbc9347d17fd281a2e8c14cc687b348ebba9d0bd377cda56",
+        "crates/solver/src/preflop/gpu/normalized_regret.rs": "6f9513a1735fec3ac3edf9a9d1c655b5b1d023e7ad93b86b7fce855407822476",
+        "crates/solver/src/preflop/gpu/pair_control.cu": "33ff564e9be1d5988616968ccf43220ead4e54d17d1e0f9239eb384f320c97c8",
+        "crates/solver/src/preflop/gpu/pair_control.rs": "346225da2dadb8a49d8f6ba69e42b4a414677070a0c62af0fcec92e4a66d2607",
+        "crates/solver/src/preflop/gpu/predictive.cu": "99312cc884f17a3ecf45404182d88dc4b223fe7483645428434bf23ee57b8716",
+        "crates/solver/src/preflop/gpu/predictive.rs": "65b2afbbd4ee40921195605c4392bd810d1df0795871cd146b013de003b73778",
+        "crates/solver/src/preflop/gpu/predictive_tests.rs": "45eaf555e6899b0a873a82e89bb6c3cc7ea0e621ee0a34dd0500dd459881b359",
+        "crates/solver/src/preflop/gpu/rank_pipeline.cu": "22229c08a3b09a856deaf80e6e2d8e955a2049d4882adc35139716925eac7f57",
+        "crates/solver/src/preflop/gpu/rank_pipeline.rs": "6465532a77468adf757f5c36acd4e02904afe27cc4b56cbd1475f7ba357a575d",
+        "crates/solver/src/preflop/gpu/rm_plus.cu": "f7ad161c09c102fcf1ef6f10631efc347259a90c62b59d28a00ac1e66c9937ab",
+        "crates/solver/src/preflop/gpu/rm_plus.rs": "5f6ee6cbd9319a0f1277c85fabc56f92d81e00bdc3a6d8965c67b5d656980742",
+        "crates/solver/src/preflop/gpu/static_cdf/ordinary/tests.rs": "b5d97b97ef3df24d7d4110e3d1cc4065c3ab3e765f31634d58d947d29728c721",
+        "crates/solver/src/preflop/gpu/static_cdf/ordinary.rs": "935ae4ff8f439aa7d4effb3b451f44103e96b17968c1ff554cd3671f868f9c5c",
+        "crates/solver/src/preflop/gpu/static_cdf.rs": "e43c6f92bd4a51b69159703ab7447e12874a25920f87f436372e92855e574fdf",
+        "crates/solver/src/preflop/gpu/terminal_locality.rs": "48423b13335e113bb71575c8d377492b1386213190774f8b2c9e1ff2292b0528",
+        "crates/solver/src/preflop/gpu/terminal_tiles.rs": "9371ae27394813156afaca326e32b7807d260332696bdd66c8403de76a59b249",
+        "crates/solver/src/preflop/gpu/terminal_unroll/tests.rs": "4ad9239ceed43acb68ec9358369b6a5ac4ddc0e6ba9e60fb6901a016cef4bc04",
+        "crates/solver/src/preflop/gpu/terminal_unroll.rs": "8308e010ea9001277b3a7bf955d959a9eb20f0d2ecee64f84d541a50ac708d78",
+        "crates/solver/src/preflop/gpu.rs": "d9437765ff49d6120fcda7e0978e72891862708282e5930fe15791cc0daa6129",
+        "crates/solver/src/preflop/kernels.cu": "3f612dc174d3442d343256dd1695f0b910603d8e61b18ff375697106d69d2e59",
+        "crates/solver/src/preflop/mod.rs": "1eec9f30c2e52db59c5debcbf8fefe1743949b30d1f17e453cf8e2c9734712e1",
+        "crates/solver/src/preflop/multiway.rs": "f7c49073aa46e467171a8798f1d53dca3e6703da6d11ce236bda8bfe271326a4",
+        "crates/solver/src/preflop/particle_batches_research.rs": "02e2be73caa77fe43fdc36eee5a5681cd54bc4a27e1cd0abf03be684b3a54c0f",
+        "crates/solver/src/preflop/reference.rs": "0e64245491dc46a6f7d0d5e23e13fbe4da933c5576e5317015ed2c2e1fe83b48",
+        "crates/solver/src/preflop/save.rs": "e26e7de4f558266672816590bec2977c6b41701b36ac85af29846142f0897b5b",
+        "crates/solver/src/query.rs": "7657757f84ed6f40e9b3b6bed767c186ffa00e45b2e1dd42fef65f8f21811c1a",
+        "crates/solver/src/range.rs": "56c4f1eb2b9e0dc325c1da07a73ec2b94c5ee4812b4f91384d6ac3fbc2844cab",
+        "crates/solver/src/report.rs": "9204542730769dc1945aefe12d81b5a9d60d3aadc5f5bcdf69a80045c08adb47",
+        "crates/solver/src/save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+        "crates/solver/src/scratch.rs": "218858b35faa00183032a25ee5f3b5130b1b6d3b00b576fdc040da4d9c778fda",
+        "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+        "crates/solver/src/sysmem.rs": "c83d0cf765cf40711f1f62e52af997c6ba45f6c67cf22afea819a83070f79978",
+        "crates/solver/src/tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761"
+      },
+      "run_ids": [
+        "V004-state",
+        "V004-menu",
+        "V004-resume"
+      ]
+    }
+  ],
+  "source_changes": [
+    {
+      "path": "crates/solver/src/gpu/arena.rs",
+      "baseline": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "candidate": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "E042-kernel-control",
+  "at": "2026-10-17T01:36:02.476307+00:00",
+  "status": "pass_scoped_up_action_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 49489,
+  "cases": 717,
+  "kernel_launches": 1434,
+  "output_words_both_arms": 11531766,
+  "immutable_words_both_arms": 4766322,
+  "guard_words_both_arms": 9492606,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-kernel-control\\evidence\\baseline-inputs.bin": "b68960401673f37935bee6b89c0a06ae980d8b93ac6b2408286e95506fee30bd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-kernel-control\\evidence\\baseline.bin": "4be1ea12dcd78bd130f4e39fca74ef6ddb0680c2c2e68772f6176bc1eb5bb2e5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-kernel-control\\evidence\\candidate-inputs.bin": "b68960401673f37935bee6b89c0a06ae980d8b93ac6b2408286e95506fee30bd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-kernel-control\\evidence\\candidate.bin": "4be1ea12dcd78bd130f4e39fca74ef6ddb0680c2c2e68772f6176bc1eb5bb2e5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-kernel-control\\evidence\\inputs.bin": "ac191c3f65e06e80e5f7d16c40335a64dac5df262a8ab3f8dd6f36959112b2f4"
+  },
+  "protocol_sha256": "df6465d1338881ac23278a29bc65ab548ec8fc50011b67087aa122ab753945f1",
+  "corpus_sha256": "c14b765696d22ebdbcd30aad4e85d6ef78ac686861b40f47580fd3f03e851096",
+  "complete_sha256": "797ae4d6f8163ee43428de024395a822d1469e20f82b3cd588343c89f6e2a53a",
+  "audit_script_sha256": "64cb7db0c6666fd2691477bdbfce05d831bb06e409fe3e6d4373ad7f2c113469",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-29T04:00:07.562743+00:00",
+  "status": "FROZEN_PRE_READ_ONLY_MAPPING_DECODER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-mapping-reader-r2.py": "70989c45bba9e8234c4beedfc8ec1f5b4199244d65cea10fab2e59901dc3f3e6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\protocol.json": "2e386649254206bb5e9aa67a277d863166730124f67dc8efcaf0f56d14f7f781",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\report.json": "5389123254aaf199f94da2e7fdc2c58fd1f58546b2f08036132c310d8c2672bb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\primitive.cu": "ba66f093634decf7d6e4d08bc60ec52477c751ccedd55150aa7c77131f420f88",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\execution\\primitive-compute_120.ptx": "f7361ee06b02ccbaff4af0ab3b6e2bebbe1840b93ef30239b0b88978a50bcfcc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\execution\\rustc.exit.json": "2cd533ff98cb40b67976f210f61f9be559c4c8de122573b55385040f9751f303",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D246-cluster-resource\\execution\\probe.exit.json": "fabd3f9e94271897a8c1f94618d623ccab3204f81db6882ee8f897feba2f4ad0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "original_failure": "Literalmapa.shared::cluster recognizer rejects emitted documentedgenericaddress mapa.u64; all40resourcegates andbarrierspassed, no appkernels yet.",
+  "unchanged_intended_gate": "Actual peer-rank XOR1 maps sharedscratch pointer andresultaddresses actualgenericremoteu32load feedingunchangedglobalstore, boundedstridedwordcount. Both clusterpublication/lifetime barriersremain.",
+  "official_source": "https://docs.nvidia.com/cuda/archive/12.9.0/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-mapa",
+  "correction_scope": "PTX8.8 documents optionalspace qualifier, genericshared-pointer mapa.u64 legal. Preserve originalfailedreport/protocol/source/binary/PTX. No compiler/module/native repetition orshader/flags/feature/resource/numericalgate change. Wrongrank/removedlifetimebarrier fixtures testactualreader."
+}

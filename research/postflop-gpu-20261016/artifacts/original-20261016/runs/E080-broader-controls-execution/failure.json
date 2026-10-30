@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-18T07:17:26.949972+00:00",
+  "error": "AssertionError(('V080-symmetry-baseline', ''))",
+  "completed_rows": [
+    {
+      "id": "V080-state-baseline",
+      "arm": "baseline",
+      "suite": "state",
+      "passed": 1,
+      "report_sha256": "d6bcf1ac28579c9e98d169ea2873f942bdb5cad7674448eb947aee7f34cce2e8",
+      "stdout_sha256": "4fadf81deff1a5801f0ff21e0a088d6ca5269c30b728dbefa56683554458e0e2"
+    },
+    {
+      "id": "V080-state-candidate",
+      "arm": "candidate",
+      "suite": "state",
+      "passed": 1,
+      "report_sha256": "f0bb6c07ecf05ae621ada52f07a6e9047347685a51818fa82af4e4d738615341",
+      "stdout_sha256": "bdf2f7224fae89b3be8d187ef324d3abe7b65a767fd0323dd9f85a71952468cd"
+    },
+    {
+      "id": "V080-menu-baseline",
+      "arm": "baseline",
+      "suite": "menu",
+      "passed": 1,
+      "report_sha256": "d0ffa41cbc3782f82ff027a2816574c47c157aa44497023f41026bd2ac5cfc82",
+      "stdout_sha256": "815cbb78eafbc9bda5424e1b078d1910d3299845fa67aef36fbcb830c7237c5f"
+    },
+    {
+      "id": "V080-menu-candidate",
+      "arm": "candidate",
+      "suite": "menu",
+      "passed": 1,
+      "report_sha256": "9a46ee446a80f6d1f90237289cc19b24f94bfc323839e56b20ef55461fe11259",
+      "stdout_sha256": "8932d3b03a081f8ad37e2a74cafdc57e5e2ea6655b036df007eaf4a84b25d2af"
+    },
+    {
+      "id": "V080-resume-baseline",
+      "arm": "baseline",
+      "suite": "resume",
+      "passed": 1,
+      "report_sha256": "beae989f7ca759d584f6d799356ae3568063a0fe8f265d0987cf9ba96d061944",
+      "stdout_sha256": "ff9dfb85e03f98dc0b901cbac3b0bd7940ecf1343402df07966ebbe91e3baf75"
+    },
+    {
+      "id": "V080-resume-candidate",
+      "arm": "candidate",
+      "suite": "resume",
+      "passed": 1,
+      "report_sha256": "44559b13812d87e0d8240401bccf9d637b89c0d75d6a34b68e08527fe6d47ded",
+      "stdout_sha256": "c5a94f8eb55d57592cde73208ebbddf204224c7f7053f2a6a1c7705914d820ec"
+    },
+    {
+      "id": "V080-gpu-baseline",
+      "arm": "baseline",
+      "suite": "gpu",
+      "passed": 6,
+      "report_sha256": "6ebbbf359bf66a442fe42795d91a1152e119c46f9ecc495c3783d86985dca964",
+      "stdout_sha256": "13f40c6d82301befd446dd60a0538f1ef407102ced3e68d37ef75b0f29cfaff2"
+    },
+    {
+      "id": "V080-gpu-candidate",
+      "arm": "candidate",
+      "suite": "gpu",
+      "passed": 6,
+      "report_sha256": "8409c1508a31213273d83a00069bcbcaaadb07330e0cc8469e54940ffeb31bbe",
+      "stdout_sha256": "bfd95e8cb7325320ab953f9dfb31489aefd8189829547534532675b945f65438"
+    },
+    {
+      "id": "V080-preflop_gpu-baseline",
+      "arm": "baseline",
+      "suite": "preflop_gpu",
+      "passed": 15,
+      "report_sha256": "68acc70a6c5a28b399b762bc2f434cf02bfa8da9655baf0cab2e8240185d2ad2",
+      "stdout_sha256": "8129c4275dded6db53c0d5cbb247cd47f40afbf18dd9e978b25f1aed2e3138d8"
+    },
+    {
+      "id": "V080-preflop_gpu-candidate",
+      "arm": "candidate",
+      "suite": "preflop_gpu",
+      "passed": 15,
+      "report_sha256": "1c0eb10ccc264334963836f30ee72276e45f2c21ab9091174b737479a4492ada",
+      "stdout_sha256": "62986e465192e4d142df7166c4a70c62105b1cb95cd0f8bbf4cdbd77e048f4e3"
+    },
+    {
+      "id": "V080-f32-baseline",
+      "arm": "baseline",
+      "suite": "f32",
+      "passed": 1,
+      "report_sha256": "8e1739b861abfc313af658513abfa4bcc6df1394ba86e8c4c77a473486dec3fa",
+      "stdout_sha256": "56e0e3f475c6894638a476d24c03d7565a2cd560317ed9f977172b6d3f76d8e6"
+    },
+    {
+      "id": "V080-f32-candidate",
+      "arm": "candidate",
+      "suite": "f32",
+      "passed": 1,
+      "report_sha256": "9ca78abe89a71512ff0be57acaf5849e31b57f94201846828c2e7760c8b1bbb1",
+      "stdout_sha256": "e2c6c31418505b0634f89c92c5547d2e6c931291b56de3d6af5ba4bcdef106c2"
+    },
+    {
+      "id": "V080-paging-baseline",
+      "arm": "baseline",
+      "suite": "paging",
+      "passed": 1,
+      "report_sha256": "a180f4e39c12a73a39173f27d7d757c6448581e8c3f6d240dd50ce67c001e836",
+      "stdout_sha256": "a06f3e254b3ef2dd1715625991410ee5d4827523bcfaeb53030d91af4f47916f"
+    },
+    {
+      "id": "V080-paging-candidate",
+      "arm": "candidate",
+      "suite": "paging",
+      "passed": 1,
+      "report_sha256": "953ae792b3e4ade14eae01fff088c2bc3d64b1001f0dd2ef117540c33fe30247",
+      "stdout_sha256": "113902fbe3dd7eb5dcac61dc3469a8ef3245d01c558d015bf9088bc68687ad03"
+    }
+  ],
+  "candidate_accepted": false
+}

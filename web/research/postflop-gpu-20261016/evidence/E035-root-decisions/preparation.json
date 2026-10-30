@@ -1,0 +1,16 @@
+{
+  "id": "E035",
+  "at": "2026-10-16T21:02:22Z",
+  "scope": "Off-tree preparation of one minimal up_fold all-positive-zero opponent row fast path, conditional on D066 independent terminal audit. Use bitwise row predicate fused into the existing shared-memory load and a block-uniform reduction at the existing first barrier. Only exact all+0 rows with finite selected f32 payout can enter; write every logical output with the original amount*positivezero sign behavior. All other rows retain exact original reductions and expression order. No up_show or continuation changes.",
+  "rationale": "D066 sampled roughly 2.9-13.9% eligible fold CTAs per traverser on the two flop fixtures. This establishes nonzero incidence only; no dynamic time share or predicted gain. A minimal shortcut may save reductions/barriers but all other rows pay predicate overhead, so complete-cycle measurement decides.",
+  "requirements": "Independent source review; minimal meaningful GPU correctness tests covering positive/negative finite payout and rejected negative-zero/nonfinite/nonzero inputs; frozen primary evaluator and established 2%/fixture gates. Preserve every draft and outcome. No widened or extra timing samples. Source-only preparation now; separate root activation/build/native decision after reviews.",
+  "exclusions": "No checkout activation, compiler, native/GPU execution, launch tuning, new framework, broader model work or live deployment. Do not mutate D066 evidence.",
+  "compiler_native_gpu_authorized": false,
+  "checkout_activation_authorized": false,
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-fold-zero-census\\report.json": "240336229464e41c57267bc3b4ae72ff4618ce668bb7c70ba07b079a04b59642",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-cleanup\\report.json": "8cffa9d23959698669b3dcee204385366c2567b5c0563a1ea81a8fc6db625fa2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\source-manifest.json": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  }
+}

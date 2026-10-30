@@ -1,0 +1,6839 @@
+{
+  "id": "E048-canonical-chance-corpus",
+  "at": "2026-10-17T02:53:52.891987+00:00",
+  "status": "FROZEN_PRE_NATIVE",
+  "case_count": 425,
+  "kernel_launches": 850,
+  "families": {
+    "0": "down_chance",
+    "1": "up_chance"
+  },
+  "family_case_counts": {
+    "0": 157,
+    "1": 268
+  },
+  "descriptor": [
+    "family",
+    "nh0_or_up_nh",
+    "nh1_or_zero",
+    "threads",
+    "active_count_flag",
+    "float_mode",
+    "permutation_mode",
+    "width",
+    "card_pattern",
+    "salt"
+  ],
+  "float_modes": {
+    "0": "all positive finite; membership observable individually",
+    "1": "signedzero/subnormal/quietNaN/infinities/mixed finite",
+    "2": "finite overflow stress and tiny finite"
+  },
+  "cases": [
+    {
+      "id": 0,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        1,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 1,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        1,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 2,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        1,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 3,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        32,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 4,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        32,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 5,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        32,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 6,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        64,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 7,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        64,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 8,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        64,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 9,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        128,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 10,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        128,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 11,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        128,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 12,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        256,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 13,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        256,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 14,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        256,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "down_full_canonical"
+    },
+    {
+      "id": 15,
+      "descriptor": [
+        0,
+        0,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 16,
+      "descriptor": [
+        0,
+        0,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 17,
+      "descriptor": [
+        0,
+        0,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 18,
+      "descriptor": [
+        0,
+        1,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 19,
+      "descriptor": [
+        0,
+        1,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 20,
+      "descriptor": [
+        0,
+        1,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 21,
+      "descriptor": [
+        0,
+        0,
+        1,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 22,
+      "descriptor": [
+        0,
+        0,
+        1,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 23,
+      "descriptor": [
+        0,
+        0,
+        1,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 24,
+      "descriptor": [
+        0,
+        2,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 25,
+      "descriptor": [
+        0,
+        2,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 26,
+      "descriptor": [
+        0,
+        2,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 27,
+      "descriptor": [
+        0,
+        0,
+        2,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 28,
+      "descriptor": [
+        0,
+        0,
+        2,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 29,
+      "descriptor": [
+        0,
+        0,
+        2,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 30,
+      "descriptor": [
+        0,
+        31,
+        28,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 31,
+      "descriptor": [
+        0,
+        31,
+        28,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 32,
+      "descriptor": [
+        0,
+        31,
+        28,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 33,
+      "descriptor": [
+        0,
+        28,
+        31,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 34,
+      "descriptor": [
+        0,
+        28,
+        31,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 35,
+      "descriptor": [
+        0,
+        28,
+        31,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 36,
+      "descriptor": [
+        0,
+        32,
+        29,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 37,
+      "descriptor": [
+        0,
+        32,
+        29,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 38,
+      "descriptor": [
+        0,
+        32,
+        29,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 39,
+      "descriptor": [
+        0,
+        29,
+        32,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 40,
+      "descriptor": [
+        0,
+        29,
+        32,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 41,
+      "descriptor": [
+        0,
+        29,
+        32,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 42,
+      "descriptor": [
+        0,
+        33,
+        30,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 43,
+      "descriptor": [
+        0,
+        33,
+        30,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 44,
+      "descriptor": [
+        0,
+        33,
+        30,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 45,
+      "descriptor": [
+        0,
+        30,
+        33,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 46,
+      "descriptor": [
+        0,
+        30,
+        33,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 47,
+      "descriptor": [
+        0,
+        30,
+        33,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 48,
+      "descriptor": [
+        0,
+        63,
+        60,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 49,
+      "descriptor": [
+        0,
+        63,
+        60,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 50,
+      "descriptor": [
+        0,
+        63,
+        60,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 51,
+      "descriptor": [
+        0,
+        60,
+        63,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 52,
+      "descriptor": [
+        0,
+        60,
+        63,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 53,
+      "descriptor": [
+        0,
+        60,
+        63,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 54,
+      "descriptor": [
+        0,
+        64,
+        61,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 55,
+      "descriptor": [
+        0,
+        64,
+        61,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 56,
+      "descriptor": [
+        0,
+        64,
+        61,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 57,
+      "descriptor": [
+        0,
+        61,
+        64,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 58,
+      "descriptor": [
+        0,
+        61,
+        64,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 59,
+      "descriptor": [
+        0,
+        61,
+        64,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 60,
+      "descriptor": [
+        0,
+        65,
+        62,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 61,
+      "descriptor": [
+        0,
+        65,
+        62,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 62,
+      "descriptor": [
+        0,
+        65,
+        62,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 63,
+      "descriptor": [
+        0,
+        62,
+        65,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 64,
+      "descriptor": [
+        0,
+        62,
+        65,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 65,
+      "descriptor": [
+        0,
+        62,
+        65,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 66,
+      "descriptor": [
+        0,
+        127,
+        124,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 67,
+      "descriptor": [
+        0,
+        127,
+        124,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 68,
+      "descriptor": [
+        0,
+        127,
+        124,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 69,
+      "descriptor": [
+        0,
+        124,
+        127,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 70,
+      "descriptor": [
+        0,
+        124,
+        127,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 71,
+      "descriptor": [
+        0,
+        124,
+        127,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 72,
+      "descriptor": [
+        0,
+        128,
+        125,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 73,
+      "descriptor": [
+        0,
+        128,
+        125,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 74,
+      "descriptor": [
+        0,
+        128,
+        125,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 75,
+      "descriptor": [
+        0,
+        125,
+        128,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 76,
+      "descriptor": [
+        0,
+        125,
+        128,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 77,
+      "descriptor": [
+        0,
+        125,
+        128,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 78,
+      "descriptor": [
+        0,
+        129,
+        126,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 79,
+      "descriptor": [
+        0,
+        129,
+        126,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 80,
+      "descriptor": [
+        0,
+        129,
+        126,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 81,
+      "descriptor": [
+        0,
+        126,
+        129,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 82,
+      "descriptor": [
+        0,
+        126,
+        129,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 83,
+      "descriptor": [
+        0,
+        126,
+        129,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 84,
+      "descriptor": [
+        0,
+        255,
+        252,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 85,
+      "descriptor": [
+        0,
+        255,
+        252,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 86,
+      "descriptor": [
+        0,
+        255,
+        252,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 87,
+      "descriptor": [
+        0,
+        252,
+        255,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 88,
+      "descriptor": [
+        0,
+        252,
+        255,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 89,
+      "descriptor": [
+        0,
+        252,
+        255,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 90,
+      "descriptor": [
+        0,
+        256,
+        253,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 91,
+      "descriptor": [
+        0,
+        256,
+        253,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 92,
+      "descriptor": [
+        0,
+        256,
+        253,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 93,
+      "descriptor": [
+        0,
+        253,
+        256,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 94,
+      "descriptor": [
+        0,
+        253,
+        256,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 95,
+      "descriptor": [
+        0,
+        253,
+        256,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 96,
+      "descriptor": [
+        0,
+        257,
+        254,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 97,
+      "descriptor": [
+        0,
+        257,
+        254,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 98,
+      "descriptor": [
+        0,
+        257,
+        254,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 99,
+      "descriptor": [
+        0,
+        254,
+        257,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 100,
+      "descriptor": [
+        0,
+        254,
+        257,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 101,
+      "descriptor": [
+        0,
+        254,
+        257,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 102,
+      "descriptor": [
+        0,
+        511,
+        508,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 103,
+      "descriptor": [
+        0,
+        511,
+        508,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 104,
+      "descriptor": [
+        0,
+        511,
+        508,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 105,
+      "descriptor": [
+        0,
+        508,
+        511,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 106,
+      "descriptor": [
+        0,
+        508,
+        511,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 107,
+      "descriptor": [
+        0,
+        508,
+        511,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 108,
+      "descriptor": [
+        0,
+        512,
+        509,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 109,
+      "descriptor": [
+        0,
+        512,
+        509,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 110,
+      "descriptor": [
+        0,
+        512,
+        509,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 111,
+      "descriptor": [
+        0,
+        509,
+        512,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 112,
+      "descriptor": [
+        0,
+        509,
+        512,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 113,
+      "descriptor": [
+        0,
+        509,
+        512,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 114,
+      "descriptor": [
+        0,
+        513,
+        510,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 115,
+      "descriptor": [
+        0,
+        513,
+        510,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 116,
+      "descriptor": [
+        0,
+        513,
+        510,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 117,
+      "descriptor": [
+        0,
+        510,
+        513,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 118,
+      "descriptor": [
+        0,
+        510,
+        513,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 119,
+      "descriptor": [
+        0,
+        510,
+        513,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 120,
+      "descriptor": [
+        0,
+        1023,
+        1020,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 121,
+      "descriptor": [
+        0,
+        1023,
+        1020,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 122,
+      "descriptor": [
+        0,
+        1023,
+        1020,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 123,
+      "descriptor": [
+        0,
+        1020,
+        1023,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 124,
+      "descriptor": [
+        0,
+        1020,
+        1023,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 125,
+      "descriptor": [
+        0,
+        1020,
+        1023,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 126,
+      "descriptor": [
+        0,
+        1024,
+        1021,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 127,
+      "descriptor": [
+        0,
+        1024,
+        1021,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 128,
+      "descriptor": [
+        0,
+        1024,
+        1021,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 129,
+      "descriptor": [
+        0,
+        1021,
+        1024,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 130,
+      "descriptor": [
+        0,
+        1021,
+        1024,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 131,
+      "descriptor": [
+        0,
+        1021,
+        1024,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 132,
+      "descriptor": [
+        0,
+        1325,
+        1322,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 133,
+      "descriptor": [
+        0,
+        1325,
+        1322,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 134,
+      "descriptor": [
+        0,
+        1325,
+        1322,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 135,
+      "descriptor": [
+        0,
+        1322,
+        1325,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 136,
+      "descriptor": [
+        0,
+        1322,
+        1325,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 137,
+      "descriptor": [
+        0,
+        1322,
+        1325,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 138,
+      "descriptor": [
+        0,
+        1326,
+        1323,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 139,
+      "descriptor": [
+        0,
+        1326,
+        1323,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 140,
+      "descriptor": [
+        0,
+        1326,
+        1323,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 141,
+      "descriptor": [
+        0,
+        1323,
+        1326,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 142,
+      "descriptor": [
+        0,
+        1323,
+        1326,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 143,
+      "descriptor": [
+        0,
+        1323,
+        1326,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        17
+      ],
+      "group": "down_tails"
+    },
+    {
+      "id": 144,
+      "descriptor": [
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        3
+      ],
+      "group": "down_count_zero"
+    },
+    {
+      "id": 145,
+      "descriptor": [
+        0,
+        17,
+        17,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        3
+      ],
+      "group": "down_count_zero"
+    },
+    {
+      "id": 146,
+      "descriptor": [
+        0,
+        1326,
+        1326,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        3
+      ],
+      "group": "down_count_zero"
+    },
+    {
+      "id": 147,
+      "descriptor": [
+        0,
+        33,
+        17,
+        128,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "group": "down_empty_edges"
+    },
+    {
+      "id": 148,
+      "descriptor": [
+        0,
+        0,
+        1326,
+        128,
+        1,
+        0,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 149,
+      "descriptor": [
+        0,
+        0,
+        1326,
+        128,
+        1,
+        1,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 150,
+      "descriptor": [
+        0,
+        0,
+        1326,
+        128,
+        1,
+        2,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 151,
+      "descriptor": [
+        0,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 152,
+      "descriptor": [
+        0,
+        1326,
+        0,
+        128,
+        1,
+        1,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 153,
+      "descriptor": [
+        0,
+        1326,
+        0,
+        128,
+        1,
+        2,
+        0,
+        52,
+        0,
+        5
+      ],
+      "group": "down_one_player_zero"
+    },
+    {
+      "id": 154,
+      "descriptor": [
+        0,
+        17,
+        129,
+        128,
+        1,
+        0,
+        0,
+        7,
+        2,
+        7
+      ],
+      "group": "down_scattered_cards"
+    },
+    {
+      "id": 155,
+      "descriptor": [
+        0,
+        17,
+        129,
+        128,
+        1,
+        1,
+        0,
+        7,
+        2,
+        7
+      ],
+      "group": "down_scattered_cards"
+    },
+    {
+      "id": 156,
+      "descriptor": [
+        0,
+        17,
+        129,
+        128,
+        1,
+        2,
+        0,
+        7,
+        2,
+        7
+      ],
+      "group": "down_scattered_cards"
+    },
+    {
+      "id": 157,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        0
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 158,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        1
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 159,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        2
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 160,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        3
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 161,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        4
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 162,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        5
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 163,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        6
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 164,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        7
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 165,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        8
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 166,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        9
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 167,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        10
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 168,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        11
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 169,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        12
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 170,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        13
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 171,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        14
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 172,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        15
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 173,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        16
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 174,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        17
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 175,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        18
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 176,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        19
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 177,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        20
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 178,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        21
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 179,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        22
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 180,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        23
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 181,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        24
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 182,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        25
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 183,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        26
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 184,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        27
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 185,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        28
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 186,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        29
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 187,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        30
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 188,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        31
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 189,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        32
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 190,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        33
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 191,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        34
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 192,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        35
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 193,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        36
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 194,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        37
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 195,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        38
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 196,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        39
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 197,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        40
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 198,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        41
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 199,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        42
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 200,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        43
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 201,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        44
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 202,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        45
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 203,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        46
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 204,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        47
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 205,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        48
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 206,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        49
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 207,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        50
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 208,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        3,
+        51
+      ],
+      "group": "up_each_card_canonical"
+    },
+    {
+      "id": 209,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 210,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        0,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 211,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 212,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        1,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 213,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 214,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        1,
+        1,
+        2,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 215,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 216,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        0,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 217,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 218,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        1,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 219,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 220,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        32,
+        1,
+        2,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 221,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 222,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        0,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 223,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 224,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        1,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 225,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 226,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        64,
+        1,
+        2,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 227,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 228,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 229,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 230,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        1,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 231,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 232,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        2,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 233,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        0,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 234,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        0,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 235,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        1,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 236,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        1,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 237,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        2,
+        0,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 238,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        256,
+        1,
+        2,
+        1,
+        52,
+        0,
+        0
+      ],
+      "group": "up_full_canonical"
+    },
+    {
+      "id": 239,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 240,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 241,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 242,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 243,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 244,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 245,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 246,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 247,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 248,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 249,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 250,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 251,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 252,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 253,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 254,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 255,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 256,
+      "descriptor": [
+        1,
+        2,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 257,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 258,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 259,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 260,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 261,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 262,
+      "descriptor": [
+        1,
+        31,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 263,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 264,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 265,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 266,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 267,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 268,
+      "descriptor": [
+        1,
+        32,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 269,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 270,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 271,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 272,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 273,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 274,
+      "descriptor": [
+        1,
+        33,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 275,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 276,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 277,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 278,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 279,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 280,
+      "descriptor": [
+        1,
+        63,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 281,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 282,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 283,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 284,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 285,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 286,
+      "descriptor": [
+        1,
+        64,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 287,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 288,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 289,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 290,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 291,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 292,
+      "descriptor": [
+        1,
+        65,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 293,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 294,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 295,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 296,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 297,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 298,
+      "descriptor": [
+        1,
+        127,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 299,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 300,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 301,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 302,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 303,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 304,
+      "descriptor": [
+        1,
+        128,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 305,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 306,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 307,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 308,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 309,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 310,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 311,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 312,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 313,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 314,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 315,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 316,
+      "descriptor": [
+        1,
+        255,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 317,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 318,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 319,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 320,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 321,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 322,
+      "descriptor": [
+        1,
+        256,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 323,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 324,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 325,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 326,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 327,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 328,
+      "descriptor": [
+        1,
+        257,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 329,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 330,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 331,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 332,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 333,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 334,
+      "descriptor": [
+        1,
+        511,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 335,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 336,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 337,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 338,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 339,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 340,
+      "descriptor": [
+        1,
+        512,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 341,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 342,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 343,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 344,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 345,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 346,
+      "descriptor": [
+        1,
+        513,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 347,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 348,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 349,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 350,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 351,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 352,
+      "descriptor": [
+        1,
+        1023,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 353,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 354,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 355,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 356,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 357,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 358,
+      "descriptor": [
+        1,
+        1024,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 359,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 360,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 361,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 362,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 363,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 364,
+      "descriptor": [
+        1,
+        1325,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 365,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 366,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        1,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 367,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        2,
+        0,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 368,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        0,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 369,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        1,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 370,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        1,
+        2,
+        1,
+        3,
+        1,
+        19
+      ],
+      "group": "up_tails"
+    },
+    {
+      "id": 371,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 372,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 373,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 374,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 375,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 376,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        0,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 377,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 378,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 379,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 380,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 381,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 382,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        1,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 383,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 384,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 385,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 386,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 387,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 388,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        2,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 389,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 390,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 391,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 392,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 393,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 394,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        47,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 395,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        0,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 396,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        0,
+        1,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 397,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        0,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 398,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        1,
+        1,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 399,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        0,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 400,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        1,
+        2,
+        1,
+        52,
+        2,
+        5
+      ],
+      "group": "up_widths"
+    },
+    {
+      "id": 401,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 402,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        1,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 403,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        2,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 404,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        0,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 405,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        1,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 406,
+      "descriptor": [
+        1,
+        0,
+        0,
+        128,
+        0,
+        2,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 407,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 408,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        1,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 409,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        2,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 410,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        0,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 411,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        1,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 412,
+      "descriptor": [
+        1,
+        1,
+        0,
+        128,
+        0,
+        2,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 413,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 414,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        1,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 415,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        2,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 416,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        0,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 417,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        1,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 418,
+      "descriptor": [
+        1,
+        129,
+        0,
+        128,
+        0,
+        2,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 419,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        0,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 420,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        1,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 421,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        2,
+        0,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 422,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        0,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 423,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        1,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    },
+    {
+      "id": 424,
+      "descriptor": [
+        1,
+        1326,
+        0,
+        128,
+        0,
+        2,
+        1,
+        52,
+        0,
+        11
+      ],
+      "group": "up_count_zero"
+    }
+  ],
+  "raw_schema": "inputs:E048_IN1 then idu32,descriptor vec(lengthu64,u32 words),immutable vec-list(countu32,each vec),seed output vec-list. baseline/candidate:E048_OUT1 then id,actual immutable vec-list,full output vec-list. U64 masks split low/high u32, f32 values raw bits. Little endian.",
+  "coverage": "Both kernels, both player orientations/down hand asymmetry, every1326 canonical hand versus each52cards individually, zero counts/empty lists, tails, identity/nonidentity permutation tables, extra grids, float stress. No malformed inconsistent masks or >2^32 physical spans claim.",
+  "max_raw_bytes": 1073741824,
+  "max_case_array_words": 1000000,
+  "deduplication": "Identical prospective descriptors deduplicated deterministically before any execution; no observed-case exclusion."
+}

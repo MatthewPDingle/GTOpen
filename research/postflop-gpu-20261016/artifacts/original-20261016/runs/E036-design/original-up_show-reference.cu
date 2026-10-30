@@ -1,0 +1,103 @@
+typedef unsigned int u32;
+typedef unsigned long long u64;
+#define SENTINEL 0xFFFFFFFFu
+
+extern "C" __global__ void up_show_reference(
+    const u32* __restrict__ nodes, int start, int count,
+    const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
+    const float* __restrict__ node_ttie,
+    const int* __restrict__ node_river_slot,
+    const u32* __restrict__ rsrc_o,
+    const float* __restrict__ reach_o_buf,
+    const u32* __restrict__ p_off, const u32* __restrict__ p_cnt,
+    const u32* __restrict__ p_idx,
+    const u32* __restrict__ p_lower, const u32* __restrict__ p_upper,
+    const u32* __restrict__ o_off, const u32* __restrict__ o_cnt,
+    const u32* __restrict__ o_idx,
+    const u32* __restrict__ o_card_off, const u32* __restrict__ o_card_pos,
+    const u32* __restrict__ same_p,
+    const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+    const u32* __restrict__ cfv_slot, float* cfv,
+    int nh_p, int nh_o, int nh_max)
+{
+    extern __shared__ char shraw[];
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    int slot = node_river_slot[n];
+    int m_o = o_cnt[slot];
+    u32 ob = o_off[slot];
+    float* ro_sh = (float*)shraw; // nh_o entries, original hand order
+    float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
+    float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
+    u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
+    u32 card_base = o_card_off[(u64)slot * 53];
+    const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
+
+    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+    for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+        card_pos_sh[j] = o_card_pos[card_base + j];
+    __syncthreads();
+    const float* ro = ro_sh;
+    for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+        reach_sh[k] = ro[o_idx[ob + k]];
+    }
+    // zero my full cfv span (hands missing from this river's sorted list stay 0)
+    for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+        cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
+    __syncthreads();
+    // Blocked inclusive scan: per-thread chunk scan, thread-0 scans chunk
+    // totals, then chunk offsets are added back.
+    __shared__ float chunk_sum[257];
+    {
+        int chunk = (m_o + blockDim.x - 1) / blockDim.x;
+        int lo_k = threadIdx.x * chunk;
+        int hi_k = min(lo_k + chunk, m_o);
+        float acc = 0.f;
+        for (int k = lo_k; k < hi_k; k++) {
+            acc += reach_sh[k];
+            prefix[k] = acc;
+        }
+        chunk_sum[threadIdx.x + 1] = acc;
+        __syncthreads();
+        if (threadIdx.x == 0) {
+            chunk_sum[0] = 0.f;
+            for (int t = 1; t <= (int)blockDim.x; t++) chunk_sum[t] += chunk_sum[t - 1];
+        }
+        __syncthreads();
+        float base = chunk_sum[threadIdx.x];
+        for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
+    }
+    __syncthreads();
+    float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
+    float win = node_twin[n], lose = node_tlose[n], tie = node_ttie[n];
+
+    int m_p = p_cnt[slot];
+    u32 pb = p_off[slot];
+    for (int k = threadIdx.x; k < m_p; k += blockDim.x) {
+        u32 i = p_idx[pb + k];
+        u32 lb = p_lower[pb + k], ub = p_upper[pb + k];
+        float lower = lb > 0 ? prefix[lb - 1] : 0.f;
+        float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);
+        float tot_c = 0.f, lower_c = 0.f, higher_c = 0.f;
+        u32 cc[2] = { pc1[i], pc2[i] };
+        for (int x = 0; x < 2; x++) {
+            u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];
+            u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];
+            for (u32 t = c0; t < c1; t++) {
+                u32 pos = card_pos_sh[t - card_base];
+                float r = reach_sh[pos];
+                tot_c += r;
+                if (pos < lb) lower_c += r;
+                else if (pos >= ub) higher_c += r;
+            }
+        }
+        u32 sc = same_p[i];
+        float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+        float valid = total - tot_c + same_r;
+        lower -= lower_c;
+        higher -= higher_c;
+        float tied = valid - lower - higher;
+        cfv[(u64)cfv_slot[n] * nh_max + i] = win * lower + lose * higher + tie * tied;
+    }
+}

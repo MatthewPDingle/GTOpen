@@ -1,0 +1,65 @@
+{
+  "candidate": "E029",
+  "at": "ROOT_FILL_TIMESTAMP",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "direct_up_show_exact_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E029_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-source-review\\report.json",
+      "sha256": "d4c1ba121c7c1494a3ac4c927369ea01674c455cf2383c61e379f8dbc5d4a4eb"
+    },
+    "E029_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-script-review\\report.json",
+      "sha256": "ROOT_FILL_INDEPENDENT_SCRIPT_REVIEW_SHA256"
+    },
+    "direct_up_show_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-direct-independent-review\\validation.json",
+      "sha256": "ROOT_FILL_INDEPENDENT_DIRECT_TERMINAL_SHA256"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "sha256": "52bd8ffd92438111c58572499461315af8b0bd14bc8b5bf27bbfa1ac33e2ba65"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\game.rs",
+      "sha256": "1cb99500c81fc16be85ef3d84bfff48a95ddc2f5b81e59ffc7f1530c5b992f8b"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-plan\\scripts-manifest.json": "ROOT_FILL_FROZEN_SCRIPT_SEAL",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-plan\\protocol.json": "6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\manifest.json": "ba67dff90d2c2735cfe7acae8792ebf7ce111f9c93d4f513d994aed169bf4e0d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-show-complement-exact\\prepared-manifest.json": "cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-source-review\\report.json": "d4c1ba121c7c1494a3ac4c927369ea01674c455cf2383c61e379f8dbc5d4a4eb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-script-review\\report.json": "ROOT_FILL_INDEPENDENT_SCRIPT_REVIEW_SHA256",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-direct-independent-review\\validation.json": "ROOT_FILL_INDEPENDENT_DIRECT_TERMINAL_SHA256"
+  },
+  "scope": "Example only. Root creates immutable authorization after independent source/script review and independent terminal direct exact PASS. No false field or placeholder authorizes execution. Five candidate files, no auxiliaries."
+}

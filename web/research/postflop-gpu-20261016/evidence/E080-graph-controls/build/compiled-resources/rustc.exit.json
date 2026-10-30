@@ -1,0 +1,32 @@
+{
+  "started_at": "2026-10-18T08:30:37.386571+00:00",
+  "finished_at": "2026-10-18T08:30:39.074988+00:00",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-graph-controls\\resources.rs",
+    "--crate-name",
+    "e080_compiled_resources",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--extern",
+    "solver=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-final-primary\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-final-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-final-primary\\release\\deps",
+    "-L",
+    "native=S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-graph-controls\\build\\compiled-resources.exe"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

@@ -1,0 +1,103 @@
+{
+  "id": "D151",
+  "at": "2026-10-28T11:12:12.564786+00:00",
+  "status": "pass_scoped_auxiliary_compile_load_resources",
+  "protocol_sha256": "a37f7b3c5a73822d291175b0aae4984c2f93f78483e780f6235cc852c8c8633e",
+  "gates": {
+    "compute_120:two_expected_entries": true,
+    "compute_120:64bit_address": true,
+    "compute_120:three_parameter_ABI": true,
+    "compute_75:two_expected_entries": true,
+    "compute_75:64bit_address": true,
+    "compute_75:three_parameter_ABI": true,
+    "packet_quantize_i16:shared_exact512": true,
+    "packet_quantize_i16:local_and_dynamic_zero": true,
+    "packet_quantize_i16:fixed128_legal": true,
+    "packet_quantize_i16:occupancy_positive": true,
+    "packet_quantize_i16:default_limits_unchanged": true,
+    "packet_quantize_i16:no_launch_or_NVRTC_in_load": true,
+    "packet_quantize_u16:shared_exact512": true,
+    "packet_quantize_u16:local_and_dynamic_zero": true,
+    "packet_quantize_u16:fixed128_legal": true,
+    "packet_quantize_u16:occupancy_positive": true,
+    "packet_quantize_u16:default_limits_unchanged": true,
+    "packet_quantize_u16:no_launch_or_NVRTC_in_load": true
+  },
+  "raw_resource_rows": [
+    {
+      "NVRTC_compilations_in_load_process": 0,
+      "actual_block_threads": 128,
+      "context_heap_after": 8388608,
+      "context_heap_before": 8388608,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "packet_quantize_i16",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_128_threads": 12,
+      "performance_measurement": false,
+      "registers": 38,
+      "static_shared_bytes": 512
+    },
+    {
+      "NVRTC_compilations_in_load_process": 0,
+      "actual_block_threads": 128,
+      "context_heap_after": 8388608,
+      "context_heap_before": 8388608,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "packet_quantize_u16",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_128_threads": 12,
+      "performance_measurement": false,
+      "registers": 38,
+      "static_shared_bytes": 512
+    }
+  ],
+  "offline_compile_rows": [
+    {
+      "GPU_context_created": false,
+      "PTX_bytes": 29556,
+      "arch": "compute_120",
+      "compile_flags": {
+        "fast_math": false,
+        "ftz": false,
+        "prec_div": true
+      },
+      "kernel_launches": 0
+    },
+    {
+      "GPU_context_created": false,
+      "PTX_bytes": 27274,
+      "arch": "compute_75",
+      "compile_flags": {
+        "fast_math": false,
+        "ftz": false,
+        "prec_div": true
+      },
+      "kernel_launches": 0
+    }
+  ],
+  "PTX_sha256": {
+    "compute_120": "579e3c44469c9c8052097970f7bb37cb307e2bb18ded5aed15aed40f47e19292",
+    "compute_75": "18b294200948dd3fb56582aa166d0f3151deb239d9386fbd7dd14e49bbbe556f"
+  },
+  "source_sha256": "f0d9672a359ebe589de887095ad9dadcf7086d98d19010d79091bac6837dc905",
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "scope": "Two auxiliary PTX targets compiled and actual compute120 module loaded/dropped in a separate process with bounded driver resource/default-limit checks. No numerical data executed, no resource equivalence to an integrated solver and no speed, actual memory/capacity or compatibility guarantee. Exact CPU-oracle packet controls required before any integration."
+}

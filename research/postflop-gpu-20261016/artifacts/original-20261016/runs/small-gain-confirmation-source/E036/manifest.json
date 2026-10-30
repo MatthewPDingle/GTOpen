@@ -1,0 +1,64 @@
+{
+  "id": "E036",
+  "kind": "Independent fresh-confirmation source archive only",
+  "baseline": "accepted E020",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "crates/solver/src/gpu/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+  },
+  "artifact_sha256": {
+    "candidate.patch": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+    "historical.patch": "d3d3f84513841b320858ed25baeb04f9c0aa724e3d73e4360041ccd5c5935896",
+    "original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2",
+    "runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "source-checks.json": "5e05743b982ecfc12c7a47e1655e156ceec6a60b695996f2f012435fab8ac460",
+    "source-cost-review.json": "e5b2102ac76eb98da561e5faccf59b06520ff629fad1f6295e1ab19ccff61b25",
+    "base/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "base/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "candidate/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "candidate/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\preparation.json": "8f447dfb8ad7f0598ae6ee886453d3b73dbc89182f20b5dcdfcf988961cb23c6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\applicability.json": "063268a5052840fbf59f83d59f1a835edaf910acae97add659ccfdc0f56cbdea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\accepted-source-map.json": "8e9aeadd572e6dd7365129929b8b786abc5906508f4e39aba534b5a0d965808b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\manifest.json": "1252fa30431bdb567617577ca75812f48b7127f3cd8d8e6551a8afdbdf9b6bbe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\source-checks.json": "f33f8404a63320343d1c74a6acbb8df6b1a01fa7ef08558b75ee38129d339b6b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-source-review\\report.json": "b0f7a1896a2e5f5aefacf23b37dabdbd50ad19a1e0c3560aa08c4a6facf4035b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-independent-review\\manifest.json": "5d7b485af23e781d511a9d4403e2eb38be09a4ff898d4d66cab5c557432bcfd0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-three-pair-comparison\\report.json": "e45f16a4d7ee724bca3791f4d759fcc27a8049e14b9c99b19ccc89ffa27cce7e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\original-up_show-reference.cu": "1cfb04a2fde59873c67c5ebf4ede311b50712c9140a7eaa98385edbe3b0825a2"
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "focused_tests": [
+    "gpu::tests::show_positive_zero_matches_original_kernel"
+  ],
+  "test_marker": {
+    "prefix": "E036_SHOW_ZERO_TEST ",
+    "fields": {
+      "comparison_pairs": 34,
+      "kernel_launches": 68,
+      "threads": 128,
+      "exact": true,
+      "performance_measurement": false
+    }
+  },
+  "auxiliary_sources": [],
+  "fresh_execution": false,
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false
+}

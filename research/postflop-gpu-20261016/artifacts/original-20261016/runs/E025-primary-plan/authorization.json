@@ -1,0 +1,50 @@
+{
+  "candidate": "E025",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E025_cfv_stride_feasibility": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-cfv-stride-feasibility-review\\report.json",
+      "sha256": "6b7d362e2a2d2a416f370c3f6836798eaec47591987699dc6b9a3261d18185bb"
+    },
+    "E025_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-source-script-review\\report.json",
+      "sha256": "b790a49c7bfbf1bae194a046be01d2ee5c8431cbdf2807beab787a8501d64dfa"
+    },
+    "E025_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-source-script-review\\report.json",
+      "sha256": "b790a49c7bfbf1bae194a046be01d2ee5c8431cbdf2807beab787a8501d64dfa"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-design\\candidate\\plan.rs",
+      "sha256": "a4dc7787346e130d691189964a7d43d2348dbcf96c0682f99d79aab9bb460f87"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-design\\candidate\\game.rs",
+      "sha256": "dce07877708bd3b93919c1bfe1c3528bd5f785a30703ef829462189b5f09ce38"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-primary-plan\\scripts-manifest.json": "c276190d4f1282198e729ad9f5bbfa89c05ad5f2b16900f272bf7fe4a9ee293e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-primary-plan\\protocol.json": "9cadcf6dd20f1ccb16a061bcc5707a506bdc7a058435b4d3b7de58ff8d02e937",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-design\\manifest.json": "84f3d6c43af847475c29dd41e4fe608f1d2991dd866ea056cfc37e943de74ab3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-cfv-stride-feasibility-review\\report.json": "6b7d362e2a2d2a416f370c3f6836798eaec47591987699dc6b9a3261d18185bb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-source-script-review\\report.json": "b790a49c7bfbf1bae194a046be01d2ee5c8431cbdf2807beab787a8501d64dfa"
+  },
+  "scope": "Root authorizes only the independently reviewed E025 two-file research build, fixed unit/primary cohort and assessment. No adoption, deployment or outcome-triggered extension.",
+  "at": "2026-10-16T14:47:21Z"
+}

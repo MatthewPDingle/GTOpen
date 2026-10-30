@@ -1,0 +1,60 @@
+{
+  "id": "D201",
+  "at": "2026-10-28T21:29:35.460217+00:00",
+  "status": "FROZEN_PRE_FULL_CANONICAL_AFFINITY_GPU_CONTROLS",
+  "binary": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\probe.exe",
+  "binary_sha256": "69336edb3761d951c5feb7e6e5d9ccb7f23fdfbe835594363c1ad709375502c2",
+  "sequence": [
+    "baseline",
+    "candidate"
+  ],
+  "masks": {
+    "baseline": 4294967295,
+    "candidate": 1431655765
+  },
+  "workers": 16,
+  "limits": {
+    "raw_reservation_bytes": 274877906944,
+    "disk_headroom_bytes": 68719476736,
+    "required_free_bytes": 343597383680,
+    "available_RAM_before_bytes": 68719476736,
+    "available_RAM_during_bytes": 34359738368,
+    "process_reported_peak_max_bytes": 34359738368,
+    "native_timeout_seconds": 1800,
+    "poll_interval_ms": 200
+  },
+  "lifecycle_stages": [
+    "converged",
+    "continued",
+    "locked",
+    "resumed"
+  ],
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-prepare.py": "87c120a45ac162b1cc29796cd8d0a9acfe813c32b4ccaf4eb7e436aba7ff61aa",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity.py": "6ffbf1c730d00d5de26f393644508e81f1342a3046f248ebb82b4ba181a5d891",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D200-affinity-scope\\report.json": "cd32dcda7c4f0ef99b0d64a4da1433c573e2a1ec1ad2ab24b151b5990b55c5d0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D200-affinity-scope\\protocol.json": "5e93c7c5f0b4ceb0078c2d1938bd03b0a07c46af9a390d63b1bb24892c6628d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\protocol.json": "cb1a5555b598ea4297529eec7d64e071ecc48c8145970892c19926cb86d4de77",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\source-review.json": "830491885968ce307a53d290a85a44b18e404a970be9148bcc095b1e386475ad",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\execution\\binary.json": "279de05bc4a93707b7a971d206e40a93da65ceea81e5e587cc8ccd30f1d16624",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\probe.exe": "69336edb3761d951c5feb7e6e5d9ccb7f23fdfbe835594363c1ad709375502c2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\audit.py": "a7daadfbb62666e15734f5661c899b1d09f98d33de33601a0c02f259ffcf3f9e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\exact-anchor.json": "f37067f252068f7094196e3ff0a6e77c4ffe45a9bfc98fc399cde07622936245",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-0.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-0.stdout.log": "4ef1fb9198b05ae3174d21caef239967c2655f9762d300b7e40554a576301920",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-1.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-1.stdout.log": "7f68cd0c6f40adf315a08ba5941bfaed43afe6d1011ca8b1e701655646b2a350",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-protocol.json": "a0671eb850cf377be33ac6379715f45b1393ecc7bd4f43ede9bef220e8b884c3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\adapter-report.json": "266036abf1147a134c52ce89c5a721a6d159bf60860f4aeb597a46cb90801a68",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\affinity.py": "6ffbf1c730d00d5de26f393644508e81f1342a3046f248ebb82b4ba181a5d891",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\audit.py": "ac05f348b0665d39e6d57a9d42ad8908a51eeba275aa075939d44930c106e8f1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\bounded_child.py": "8750dda526bb04282a4547aaaed87a7d9ba2df16deba248b258d3e3ca2c17fad",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\execute.py": "357ead0f394e802be7988b137fc416bdfdea3ca593cc50378db10f3db2a491df",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\inheritance-test.py": "69e4d6b946a0a73b733516717d02b403c71ddc653d53157603f57281f5a09fa1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\sampler.py": "0cd4ff305843c96321b6d331997f2b014067df13a61f27b458436873b6cf7d8c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\source-review.json": "a29648943c621e4f458d8f9a72cbd24a9a685d22c97f57de20f5d7f42da2c2f0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\__pycache__\\affinity.cpython-312.pyc": "c66cfe97751ca4cb50354f41c99a31fc57bd54256c0a7ee02e371b81afdaa959"
+  },
+  "scope": "Exactly2fresh GPUprocesses sameacceptedE080nativebinary/sealedPTX, onefullretainedrawreader, zeroRust/Cargo/NVRTCcompilers. Fullcanonicalscience/quality/cadence/stops andallphysicalCPU/GPUstate mustexact; source/field/type/wrapperexception none. HonestprebuiltPTX clocksunscored. Onlyfixedchildaffinitymaskvaries, actualinherited/live mask+post-suiteRayon16 andcontrollerrestoration required. No live/main/globalsettings.256GiBraw+64headroom/32GiBprocess/64before32duringRAM guards retained. All speed/broad/material/adoption gatesremain."
+}

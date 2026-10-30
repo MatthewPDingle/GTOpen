@@ -1,0 +1,59 @@
+{
+  "at": "2026-10-17T00:23:36.913465+00:00",
+  "records": [
+    {
+      "architecture": "compute_120",
+      "block_thread_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "performance_measurement": false,
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "theoretical_blocks_per_sm": 12,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "performance_measurement": false,
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 1248,
+      "theoretical_blocks_per_sm": 12,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "source162_unchanged": true,
+  "main_live_ptx_unchanged": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "original_ptx_equal": true,
+  "binary_sha256": "1968b743bf7d4fadcc1fd4c44a3d1cde115f743da307e71121b064225d46ae3b",
+  "stdout_sha256": "b964b249e4df47ab76210ca9095a63bc88c0eb6c87154d25b58f985abfb5628b",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

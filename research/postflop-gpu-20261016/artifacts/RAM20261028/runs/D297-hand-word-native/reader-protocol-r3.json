@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-29T18:57:55.754565+00:00",
+  "status": "FROZEN_READ_ONLY_NEGATIVE_FIXTURE_SCOPE_REPAIR_R3",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native-reader.py": "15556948a96e5e9b48c76fb09b397f855e3ad680a7f16092e1b772ea3967f4c7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\protocol.json": "40ab3b76c2a9862af1ed8b5011062c52a8549dd190467623eb8e704d9bbeec18",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\capture-report.json": "ad269643d4946d16b03c481509d9444d8f5e100a5732583c29953d7d8af5d476",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D296-hand-word-PTX\\report.json": "c18c67c31d90b01e56c5db78067f77bd5a9b86f3084130924cc2018dad02ce28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\baseline\\up_fold.sass.txt": "2b2d28ef742395f8bd93b6c13673d22cb5421b4f18e0c2a01f3722c0b9fbee43",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\baseline\\up_show.sass.txt": "5eb84080af5a339f8ac1da16b4a5aa8093c54f52e0e087a1643ba25f3ebb65ca",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\candidate\\up_fold.sass.txt": "8bf5054cb0321c30e66f07fe172d9376b27f23b295e3d0ff7dd64903c301ffe5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\candidate\\up_show.sass.txt": "b15589e42f04513358bef35297bba557d19f9760e40faef4e2992ba0937ff2a9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native-reader-r2.py": "9df7aa9983ffc3f889020c62ab662a8192327dc17c02e13af485a5a23f522411",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-protocol.json": "d36ff47794544aaa0bf7683c4566ec8e69732dc9b24b991862455aba44cd039c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native-reader-r3.py": "698f8110f312d82270f87ffa1e2ad102a8fc0856288e393988a844a0352a97a6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-protocol-r2.json": "81182e5596ecdd883864001e5baa93e77f2df178c5ab8334d5d98422a135193a"
+  },
+  "requirements": "Both entry word-pointer/load/cardbytefields/index12/sentinel2047/selected original consumers. Legacy card argument ranges absent from every parsed constant read including128-bit overlapping ranges. Native floating-op/barrier inventory unchanged. Negative sentinel/cardmask/word-load/pointer-range fixtures. Full raw GPU and original-value metadata decode remain mandatory.",
+  "repair": "R2 passed scoped fold positive witness and first2negativefixtures, then negative wrong_word_load accepted because unscoped first string hit changed unrelated earlier reach-copy LDG, leaving actual terminalword PC1530 unchanged. Anchor mutation to required word-load PC1530/1b50. Same positive reader and8negative requirements; no gate/source/native/disassembly/output/speed change, no capture rerun. Original/R2readers/protocols retained."
+}

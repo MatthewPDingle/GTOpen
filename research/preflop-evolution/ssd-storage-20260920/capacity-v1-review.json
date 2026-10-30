@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "scope": "Device-validated allocation formulas for six constructor fixtures; CPU-only payload projection for 328 games.",
+  "device_totals": {
+    "canonical_state_bytes": 1376077696,
+    "constructor_gpu_payload_upper_bytes": 3264158320,
+    "host_retained_payload_bytes": 229111082,
+    "max_canonical_state_bytes": 565676720,
+    "max_constructor_pinned_bytes": 215568696,
+    "max_explicit_state_bytes": 567205576,
+    "ram_payload_total_bytes": 1605188778,
+    "retained_gpu_payload_bytes": 214135592,
+    "shared_gpu_workspace_bytes": 1661170368,
+    "steady_gpu_payload_bytes": 1875305960
+  },
+  "full_totals": {
+    "canonical_state_bytes": 89481280128,
+    "constructor_gpu_payload_upper_bytes": 15293737188,
+    "host_retained_payload_bytes": 12569959472,
+    "max_canonical_state_bytes": 640590664,
+    "max_constructor_pinned_bytes": 239265964,
+    "max_explicit_state_bytes": 640590664,
+    "ram_payload_total_bytes": 102051239600,
+    "retained_gpu_payload_bytes": 11815898960,
+    "shared_gpu_workspace_bytes": 1864583208,
+    "steady_gpu_payload_bytes": 13680482168
+  },
+  "limitations": "No solves or strategy changes. CPU mode never allocates CUDA. One spot planned at a time; totals project simultaneous retention. Payload excludes driver, allocator and process overhead, temporary CPU plans and evaluation scratch. Construction can hold two GPU workspaces. Reserve memory beyond totals; no assertion that the forest fits.",
+  "production_ready": false,
+  "full_forest_device_allocated": false,
+  "inputs_sha256": {
+    "research\\preflop-evolution\\ssd-storage-20260920\\capacity-v1-device.json": "6ed39bee5dc6aa4366f4e10f6c4008f2151bc3c03f17150cebe34883654d032c",
+    "research\\preflop-evolution\\ssd-storage-20260920\\capacity-v1-cpu.json": "53bac005c53a3688a3a654b6a11b72f16d02509a26c10fae11f2c596cb7ecf18",
+    "research\\preflop-evolution\\representative-coverage-20260919\\population164-memory-plan.json": "5b1850b9331ac323a91104783dac12b4ad4c1aa9b94dae7a3cfc0d35e37e27cf"
+  }
+}

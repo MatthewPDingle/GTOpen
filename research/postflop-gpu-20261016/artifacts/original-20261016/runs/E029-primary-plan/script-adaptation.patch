@@ -1,0 +1,595 @@
+--- E028/compile_check.py
++++ E029/compile_check.py
+@@ -1,4 +1,4 @@
+-"""Root-only compile checks; never run the feature tests or capacity examples."""
++"""Root-only feature library compile check; never run the feature tests."""
+ import json, os, shutil, signal, subprocess, sys, time
+ from pathlib import Path
+ 
+@@ -11,23 +11,36 @@
+ authorization_path = here / 'authorization.json'
+ assert ar.sha256(authorization_path) == sys.argv[1]
+ authorization = json.loads(authorization_path.read_text(encoding='utf-8'))
+-assert authorization['candidate'] == 'E028' and authorization['E020_accepted'] is True
++
++assert authorization['direct_up_show_exact_pass'] is True
++_direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
++_direct_path=Path(_direct_pin['path'])
++assert _direct_path.resolve()==Path(r'S:\GTOpen-research\postflop-gpu-20261016\comparisons\E029-direct-independent-review\validation.json').resolve()
++assert authorization['evidence_sha256'][str(_direct_path)]==_direct_pin['sha256']
++assert __import__('hashlib').sha256(_direct_path.read_bytes()).hexdigest()==_direct_pin['sha256']
++_direct=json.loads(_direct_path.read_text(encoding='utf-8'))
++assert _direct['id']=='E029-direct' and _direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
++assert _direct['exactness_pass'] is True and _direct['numerical_validation']=='executed'
++assert _direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
++assert _direct['candidate_cuda_sha256']=='bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841'
++assert _direct['prepared_manifest_sha256']=='cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8'
++assert (_direct['baseline_physical_threads'],_direct['candidate_physical_threads'],_direct['logical_scan_threads'])==(128,128,128)
++assert _direct['comparison_pairs']==152 and _direct['kernel_launches']==304
++assert _direct['performance_measurement'] is False and _direct['candidate_accepted'] is False
++assert authorization['candidate'] == 'E029' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E028_source_review', 'E028_script_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'E029_source_review', 'E029_script_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/continuation_host_paging_tests.rs', 'crates/solver/src/gpu/continuation_paging.rs', 'crates/solver/src/gpu/continuation_ssd_paging_tests.rs', 'crates/solver/src/gpu/continuation_storage.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
+-auxiliary = ('crates/solver/examples/continuation_storage_capacity.rs', 'crates/solver/examples/hu_context_capacity.rs')
+-all_owned = owned + auxiliary
++owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
++all_owned = owned
+ assert set(authorization["candidate_sources"]) == set(owned)
+-assert set(authorization["auxiliary_sources"]) == set(auxiliary)
+-def auxiliary_identity(): return {name: ar.sha256(repo/name) for name in auxiliary}
+-protocol_hash = 'd9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453'
+-out = ar.RESEARCH / 'runs/E028-compile-check'
+-target = ar.RESEARCH / 'build-check-e028-research'
++protocol_hash = '6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165'
++out = ar.RESEARCH / 'runs/E029-compile-check'
++target = ar.RESEARCH / 'build-check-e029-research'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -45,16 +58,15 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/E028-design'
++    design=ar.RESEARCH/'runs/E029-design'
+     assert ar.sha256(design/'manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+-    for name, candidate in {**authorization['candidate_sources'], **authorization['auxiliary_sources']}.items():
++    for name, candidate in authorization['candidate_sources'].items():
+         assert set(candidate) == {'path', 'sha256'}
+         assert ar.sha256(Path(candidate['path'])) == candidate['sha256'], name
+         assert ar.sha256(repo / name) == candidate['sha256'], name
+-        expected_map = 'candidate_owned_sha256' if name in owned else 'candidate_auxiliary_sha256'
+-        assert candidate['sha256'] == json.loads((here/'protocol.json').read_text(encoding='utf-8'))[expected_map][name]
++        assert candidate['sha256'] == json.loads((here/'protocol.json').read_text(encoding='utf-8'))['candidate_owned_sha256'][name]
+     accepted_path = ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json'
+     assert ar.sha256(accepted_path) == '37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768'
+     accepted = json.loads(accepted_path.read_text(encoding='utf-8'))['source_sha256']
+@@ -65,13 +77,7 @@
+             assert current[name] == expected, name
+     expected_owned = json.loads((here / 'protocol.json').read_text(encoding='utf-8'))['accepted_owned_sha256']
+     assert {name: accepted[name] for name in owned} == expected_owned
+-    assert all(current[name] != accepted[name] for name in owned), 'All nine reviewed accepted-map source files must change'
+-    protocol = json.loads((here/'protocol.json').read_text(encoding='utf-8'))
+-    assert auxiliary_identity() == protocol['candidate_auxiliary_sha256']
+-    assert set(protocol['accepted_auxiliary_sha256']) == set(auxiliary)
+-    for name in auxiliary:
+-        assert ar.sha256(design/'base'/name) == protocol['accepted_auxiliary_sha256'][name]
+-        assert protocol['candidate_auxiliary_sha256'][name] != protocol['accepted_auxiliary_sha256'][name]
++    assert all(current[name] != accepted[name] for name in owned), 'All five reviewed accepted-map source files must change'
+     changed = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+     assert changed == sorted(all_owned), changed
+ 
+@@ -80,8 +86,8 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Compile-checking E028 research paths and capacity examples', active_experiment='E028',
+-                          activity='Compile-only research library tests and two capacity examples; no native test or example is executed. Fresh GPU-only build and fixed primary remain pending.')
++            status.update(updated_at=ar.now(), stage='Compile-checking E029 research library paths', active_experiment='E029',
++                          activity='Compile-only research library tests; no native test is executed. Fresh GPU-only build and fixed primary remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+         # Dashboard trouble must never release the GPU lock around a live compiler.
+@@ -114,7 +120,6 @@
+     assert code==0,err.read_text(encoding='utf-8',errors='replace')[-8000:]
+     verify()
+     assert before['source_sha256']==ar.source_identity()['source_sha256']
+-    assert before['auxiliary_source_sha256']==auxiliary_identity()
+     records=[json.loads(line) for line in log.read_text(encoding='utf-8').splitlines()]
+     assert any(x.get('reason')=='build-finished' and x.get('success') is True for x in records)
+     for item in records:
+@@ -130,9 +135,9 @@
+     assert not target.exists(), 'Fresh compile-check target required'
+     verify()
+     protocol=json.loads((here/'protocol.json').read_text(encoding='utf-8'))
+-    assert len(protocol['compile_only_commands'])==2
++    assert len(protocol['compile_only_commands'])==1
+     out.mkdir(exist_ok=False);target.mkdir()
+-    before=ar.source_identity();before['auxiliary_source_sha256']=auxiliary_identity()
++    before=ar.source_identity()
+     ar.atomic_json(out/'source-before.json',before)
+     source_copies={}
+     for name in all_owned:
+@@ -151,43 +156,31 @@
+     test_records,test_exit=compile_one('lib-tests',protocol['compile_only_commands'][0],env)
+     tests=[x for x in test_records if x.get('reason')=='compiler-artifact' and x['target']['name']=='solver' and x['target']['kind']==['lib'] and x.get('profile',{}).get('test') and x.get('executable')]
+     assert len(tests)==1 and tests[0]['fresh'] is False
+-    example_records,example_exit=compile_one('capacity-examples',protocol['compile_only_commands'][1],env)
+-    examples=[x for x in example_records if x.get('reason')=='compiler-artifact' and x['target']['kind']==['example'] and x.get('executable')]
+-    assert len(examples)==2 and {x['target']['name'] for x in examples}=={'continuation_storage_capacity','hu_context_capacity'}
+-    solver_lib=[x for x in example_records if x.get('reason')=='compiler-artifact' and x['target']['name']=='solver' and x['target']['kind']==['lib'] and not x.get('profile',{}).get('test')]
+-    assert len(solver_lib)==1
+-    # The second command may reuse this same fresh target's first-command library.
+-    earlier_fresh=[x for x in test_records if x.get('reason')=='compiler-artifact' and x['target']['name']=='solver' and x['target']['kind']==['lib'] and not x.get('profile',{}).get('test') and x['fresh'] is False]
+-    assert solver_lib[0]['fresh'] is False or any(x['filenames']==solver_lib[0]['filenames'] and x['target']['src_path']==solver_lib[0]['target']['src_path'] for x in earlier_fresh)
+-    assert {'gpu','preflop-research'}.issubset(solver_lib[0]['features'])
+-    assert Path(solver_lib[0]['target']['src_path']).resolve()==(repo/'crates/solver/src/lib.rs').resolve()
+-    assert Path(solver_lib[0]['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+     artifacts=out/'artifacts';artifacts.mkdir()
+     artifact_sha256={};artifact_records=[]
+-    for item in tests+examples:
+-        name=item['target']['name']
+-        assert item['fresh'] is False and {'gpu','preflop-research'}.issubset(item['features'])
++    for item in tests:
++        name=item['target']['name'];assert name=='solver'
++        assert item['fresh'] is False and item['features']==['gpu','preflop-research']
+         assert Path(item['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+-        expected=repo/('crates/solver/src/lib.rs' if name=='solver' else 'crates/solver/examples/'+name+'.rs')
++        expected=repo/'crates/solver/src/lib.rs'
+         assert Path(item['target']['src_path']).resolve()==expected.resolve()
+         assert item['profile']['test'] is (name=='solver')
+-        binary=Path(item['executable']);destination=artifacts/('E028-research-'+name+'.exe')
++        binary=Path(item['executable']);destination=artifacts/('E029-research-'+name+'.exe')
+         shutil.copyfile(binary,destination)
+         assert ar.sha256(destination)==ar.sha256(binary)
+         if name=='solver':
+             data=destination.read_bytes()
+             candidate_cuda=Path(authorization['candidate_sources']['crates/solver/src/gpu/kernels.cu']['path']).read_bytes()
+-            accepted_cuda=(ar.RESEARCH/'runs/E028-design/base/crates/solver/src/gpu/kernels.cu').read_bytes()
++            accepted_cuda=(ar.RESEARCH/'runs/E029-design/base/crates/solver/src/gpu/kernels.cu').read_bytes()
+             assert candidate_cuda in data and accepted_cuda not in data,'Wrong embedded research unit CUDA'
+         artifact_sha256[str(destination)]=ar.sha256(destination)
+         artifact_records.append({'path':str(destination),'sha256':ar.sha256(destination),'cargo_artifact':item})
+     verify()
+     assert before['source_sha256']==ar.source_identity()['source_sha256']
+-    assert before['auxiliary_source_sha256']==auxiliary_identity()
+     evidence={str(path):ar.sha256(path) for path in out.iterdir() if path.is_file()}
+-    record={**before,'candidate':'E028','status':'COMPILE_ONLY_CHECKS_PASSED','at':ar.now(),'authorization_sha256':sys.argv[1],
+-        'protocol_sha256':protocol_hash,'script_sha256':ar.sha256(Path(__file__)),'commands':[test_exit,example_exit],
++    record={**before,'candidate':'E029','status':'COMPILE_ONLY_CHECKS_PASSED','at':ar.now(),'authorization_sha256':sys.argv[1],
++        'protocol_sha256':protocol_hash,'script_sha256':ar.sha256(Path(__file__)),'commands':[test_exit],
+         'target_dir':str(target),'source_copies':source_copies,'patch_sha256':ar.sha256(patch),'artifact_sha256':artifact_sha256,
+-        'artifacts':artifact_records,'solver_artifact':solver_lib[0],'evidence_sha256':evidence,'native_executions':0}
++        'artifacts':artifact_records,'evidence_sha256':evidence,'native_executions':0}
+     ar.atomic_json(out/'complete.json',record)
+-    print('E028 feature compile checks terminal success; no native feature test or example run.',flush=True)
++    print('E029 feature compile checks terminal success; no native feature test run.',flush=True)
+--- E028/build.py
++++ E029/build.py
+@@ -1,4 +1,4 @@
+-"""Root-only build after accepted E020 server qualification and frozen E028 review."""
++"""Root-only build after accepted E020 server qualification and frozen E029 review."""
+ import json, os, shutil, signal, subprocess, sys, time
+ from pathlib import Path
+ 
+@@ -11,23 +11,35 @@
+ authorization_path = here / 'authorization.json'
+ assert ar.sha256(authorization_path) == sys.argv[1]
+ authorization = json.loads(authorization_path.read_text(encoding='utf-8'))
+-assert authorization['candidate'] == 'E028' and authorization['E020_accepted'] is True
++
++assert authorization['direct_up_show_exact_pass'] is True
++_direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
++_direct_path=Path(_direct_pin['path'])
++assert _direct_path.resolve()==Path(r'S:\GTOpen-research\postflop-gpu-20261016\comparisons\E029-direct-independent-review\validation.json').resolve()
++assert authorization['evidence_sha256'][str(_direct_path)]==_direct_pin['sha256']
++assert __import__('hashlib').sha256(_direct_path.read_bytes()).hexdigest()==_direct_pin['sha256']
++_direct=json.loads(_direct_path.read_text(encoding='utf-8'))
++assert _direct['id']=='E029-direct' and _direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
++assert _direct['exactness_pass'] is True and _direct['numerical_validation']=='executed'
++assert _direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
++assert _direct['candidate_cuda_sha256']=='bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841'
++assert _direct['prepared_manifest_sha256']=='cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8'
++assert (_direct['baseline_physical_threads'],_direct['candidate_physical_threads'],_direct['logical_scan_threads'])==(128,128,128)
++assert _direct['comparison_pairs']==152 and _direct['kernel_launches']==304
++assert _direct['performance_measurement'] is False and _direct['candidate_accepted'] is False
++assert authorization['candidate'] == 'E029' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E028_source_review', 'E028_script_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'E029_source_review', 'E029_script_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/continuation_host_paging_tests.rs', 'crates/solver/src/gpu/continuation_paging.rs', 'crates/solver/src/gpu/continuation_ssd_paging_tests.rs', 'crates/solver/src/gpu/continuation_storage.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
+-auxiliary = ('crates/solver/examples/continuation_storage_capacity.rs', 'crates/solver/examples/hu_context_capacity.rs')
+-all_owned = owned + auxiliary
+-assert set(authorization["candidate_sources"]) == set(owned)
+-assert set(authorization["auxiliary_sources"]) == set(auxiliary)
+-def auxiliary_identity(): return {name: ar.sha256(repo/name) for name in auxiliary}
+-protocol_hash = 'd9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453'
+-out = ar.RESEARCH / 'runs/E028-build'
+-target = ar.RESEARCH / 'build-primary-e028'
++owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
++assert set(authorization['candidate_sources']) == set(owned)
++protocol_hash = '6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165'
++out = ar.RESEARCH / 'runs/E029-build'
++target = ar.RESEARCH / 'build-primary-e029'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -45,16 +57,15 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/E028-design'
++    design=ar.RESEARCH/'runs/E029-design'
+     assert ar.sha256(design/'manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+-    for name, candidate in {**authorization['candidate_sources'], **authorization['auxiliary_sources']}.items():
++    for name, candidate in authorization['candidate_sources'].items():
+         assert set(candidate) == {'path', 'sha256'}
+         assert ar.sha256(Path(candidate['path'])) == candidate['sha256'], name
+         assert ar.sha256(repo / name) == candidate['sha256'], name
+-        expected_map = 'candidate_owned_sha256' if name in owned else 'candidate_auxiliary_sha256'
+-        assert candidate['sha256'] == json.loads((here/'protocol.json').read_text(encoding='utf-8'))[expected_map][name]
++        assert candidate['sha256'] == json.loads((here/'protocol.json').read_text(encoding='utf-8'))['candidate_owned_sha256'][name]
+     accepted_path = ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json'
+     assert ar.sha256(accepted_path) == '37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768'
+     accepted = json.loads(accepted_path.read_text(encoding='utf-8'))['source_sha256']
+@@ -65,23 +76,17 @@
+             assert current[name] == expected, name
+     expected_owned = json.loads((here / 'protocol.json').read_text(encoding='utf-8'))['accepted_owned_sha256']
+     assert {name: accepted[name] for name in owned} == expected_owned
+-    assert all(current[name] != accepted[name] for name in owned), 'All nine reviewed accepted-map source files must change'
+-    protocol = json.loads((here/'protocol.json').read_text(encoding='utf-8'))
+-    assert auxiliary_identity() == protocol['candidate_auxiliary_sha256']
+-    assert set(protocol['accepted_auxiliary_sha256']) == set(auxiliary)
+-    for name in auxiliary:
+-        assert ar.sha256(design/'base'/name) == protocol['accepted_auxiliary_sha256'][name]
+-        assert protocol['candidate_auxiliary_sha256'][name] != protocol['accepted_auxiliary_sha256'][name]
++    assert all(current[name] != accepted[name] for name in owned), 'All five reviewed complement-zeroing source files must change'
+     changed = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+-    assert changed == sorted(all_owned), changed
++    assert changed == sorted(owned), changed
+ 
+ 
+ def heartbeat():
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen E028 actor1 sigma-cache candidate', active_experiment='E028',
+-                          activity='Accepted E020 server qualification and source/script review passed. Building the nine-file sigma-cache with two auxiliary examples candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
++            status.update(updated_at=ar.now(), stage='Building frozen E029 complement-only showdown zeroing candidate', active_experiment='E029',
++                          activity='Accepted E020 server qualification and source/script review passed. Building the five-file complement-zeroing candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+         # Dashboard trouble must never release the GPU lock around a live compiler.
+@@ -93,43 +98,42 @@
+ 
+ 
+ def verify_compile_check():
+-    check = ar.RESEARCH/'runs/E028-compile-check'
++    check = ar.RESEARCH/'runs/E029-compile-check'
+     record = json.loads((check/'complete.json').read_text(encoding='utf-8'))
+     assert record['status'] == 'COMPILE_ONLY_CHECKS_PASSED'
+     assert record['authorization_sha256'] == sys.argv[1]
+     assert record['protocol_sha256'] == protocol_hash
+     assert record['script_sha256'] == ar.sha256(here/'compile_check.py')
+     assert record['source_sha256'] == ar.source_identity()['source_sha256']
+-    assert record['auxiliary_source_sha256'] == auxiliary_identity()
+     assert record['native_executions'] == 0
+     for name,h in record['artifact_sha256'].items(): assert ar.sha256(Path(name)) == h,name
+     for name,h in record['evidence_sha256'].items(): assert ar.sha256(Path(name)) == h,name
+-    assert [r['returncode'] for r in record['commands']] == [0,0]
++    assert [r['returncode'] for r in record['commands']] == [0]
+     assert [r['command'] for r in record['commands']] == json.loads((here/'protocol.json').read_text(encoding='utf-8'))['compile_only_commands']
+     return ar.sha256(check/'complete.json')
++
+ 
+ 
+ with ar.exclusive_lock(ar.RESEARCH / 'gpu-run.lock'):
+     ar.refuse_active(ar.live_status())
+     assert shutil.disk_usage(ar.RESEARCH).free >= 54 * 1024**3
+-    assert not target.exists(), 'Fresh E028 target required; no clean/reuse workaround'
++    assert not target.exists(), 'Fresh E029 target required; no clean/reuse workaround'
+     verify()
+     compile_check_sha256 = verify_compile_check()
+-    for name in ('E028-solver', 'E028-postflop_autoresearch'):
++    for name in ('E029-solver', 'E029-postflop_autoresearch'):
+         assert not (ar.RESEARCH / 'binaries' / (name + '.exe')).exists()
+         assert not (ar.RESEARCH / 'binaries' / (name + '.manifest.json')).exists()
+     out.mkdir(exist_ok=False)
+     target.mkdir()
+     before = ar.source_identity()
+-    before['auxiliary_source_sha256'] = auxiliary_identity()
+     ar.atomic_json(out / 'source-before.json', before)
+     source_copies = {}
+-    for name in all_owned:
++    for name in owned:
+         destination = out / ('candidate-' + Path(name).name)
+         shutil.copyfile(repo / name, destination)
+         source_copies[name] = {'path': str(destination), 'sha256': ar.sha256(destination)}
+     patch = out / 'candidate.patch'
+-    patch.write_bytes(subprocess.check_output(['git', 'diff', '--binary', 'HEAD', '--', *all_owned], cwd=repo))
++    patch.write_bytes(subprocess.check_output(['git', 'diff', '--binary', 'HEAD', '--', *owned], cwd=repo))
+     command = ['cargo', 'test', '--release', '--locked', '--offline', '-p', 'solver', '--features', 'gpu', '--lib', '--test', 'postflop_autoresearch', '--no-run', '--message-format=json']
+     env = os.environ.copy()
+     override_keys={'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_RUSTFLAGS','CARGO_BUILD_RUSTC','CARGO_BUILD_RUSTC_WRAPPER','CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_TARGET'}
+@@ -140,7 +144,7 @@
+     ar.atomic_json(out/'build-environment.json',{'target_dir':str(target),'target_previously_absent':True,'compiler_override_absence':overrides,'RAYON_NUM_THREADS':'16','rustc':ar.read_command(['rustc','-Vv']),'cargo':ar.read_command(['cargo','-V'])})
+     log, err = out / 'build.jsonl', out / 'build.stderr.log'
+     heartbeat()
+-    print('Building source-frozen E028; no GPU tests run in this step.', flush=True)
++    print('Building source-frozen E029; no GPU tests run in this step.', flush=True)
+     process = None
+     started=time.monotonic()
+     fault = None
+@@ -165,7 +169,6 @@
+     assert code == 0, err.read_text(encoding='utf-8', errors='replace')[-8000:]
+     verify()
+     assert before['source_sha256'] == ar.source_identity()['source_sha256']
+-    assert before['auxiliary_source_sha256'] == auxiliary_identity()
+     records=[json.loads(line) for line in log.read_text(encoding='utf-8').splitlines()]
+     assert any(x.get('reason')=='build-finished' and x.get('success') is True for x in records)
+     for item in records:
+@@ -174,6 +177,7 @@
+                 assert Path(filename).resolve().is_relative_to(target.resolve()), filename
+     solver_lib=[x for x in records if x.get('reason')=='compiler-artifact' and x['target']['name']=='solver' and x['target']['kind']==['lib'] and not x.get('profile',{}).get('test')]
+     assert len(solver_lib)==1 and solver_lib[0]['fresh'] is False
++    assert solver_lib[0]['features']==['gpu']
+     assert Path(solver_lib[0]['target']['src_path']).resolve()==(repo/'crates/solver/src/lib.rs').resolve()
+     assert Path(solver_lib[0]['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+     dependencies={f:ar.sha256(Path(f)) for x in records if x.get('reason')=='compiler-artifact' for f in x.get('filenames',[]) if Path(f).is_file() and Path(f).suffix in {'.rlib','.rmeta','.lib','.dll'}}
+@@ -185,28 +189,27 @@
+     assert len(artifacts) == 2 and {a['target']['name'] for a in artifacts} == {'solver', 'postflop_autoresearch'}
+     for item in artifacts:
+         name = item['target']['name']
+-        assert item['fresh'] is False
++        assert item['fresh'] is False and item['features']==['gpu']
+         assert Path(item['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+         expected_src=repo/('crates/solver/src/lib.rs' if name=='solver' else 'crates/solver/tests/postflop_autoresearch.rs')
+         assert Path(item['target']['src_path']).resolve()==expected_src.resolve()
+-        destination = ar.RESEARCH / 'binaries' / ('E028-' + name + '.exe')
++        destination = ar.RESEARCH / 'binaries' / ('E029-' + name + '.exe')
+         assert not destination.exists()
+         shutil.copyfile(item['executable'], destination)
+         data=destination.read_bytes()
+         candidate_cuda=Path(authorization['candidate_sources']['crates/solver/src/gpu/kernels.cu']['path']).read_bytes()
+-        accepted_cuda=(ar.RESEARCH/'runs/E028-design/base/crates/solver/src/gpu/kernels.cu').read_bytes()
++        accepted_cuda=(ar.RESEARCH/'runs/E029-design/base/crates/solver/src/gpu/kernels.cu').read_bytes()
+         assert candidate_cuda in data and accepted_cuda not in data, 'Wrong embedded CUDA variant'
+         assert ar.sha256(destination)!=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['reference_binary_sha256']
+-        manifest = {**before, 'candidate': 'E028', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
++        manifest = {**before, 'candidate': 'E029', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
+                     'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'expected_cuda_present':True,'accepted_cuda_absent':True, 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
+                     'build_stderr_log': str(err), 'build_stderr_sha256': ar.sha256(err),
+                     'patch': str(patch), 'patch_sha256': ar.sha256(patch), 'source_matches_prebuild': True,
+-                    'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash,
+-                    'compile_check_sha256': compile_check_sha256,
++                    'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash, 'compile_check_sha256': compile_check_sha256,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+-                    'candidate_sources': authorization['candidate_sources'], 'auxiliary_sources': authorization['auxiliary_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020/server qualification and independent E028 source/script review; full-solver and independent old/new raw sigma-cache qualification remain pending',
+-                    'change': 'Actor1-only down-to-up sigma cache with complete shared scratch and capacity accounting. Actor0 normalization, uniform reach arithmetic, floating order, launch shapes and frozen evaluator remain unchanged.'}
++                    'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
++                    'prerequisite_scope': 'Accepted E020/server qualification and independent E029 source/script review; full-solver and metadata/admission qualification remain pending',
++                    'change': 'Complement-only initial showdown zero stores with immutable missing-index metadata and matching admission/capacity accounting. Logical hand bounds, floating arithmetic, launch shapes and frozen evaluator remain unchanged.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+-    print('E028 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
++    print('E029 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
+--- E028/primary.py
++++ E029/primary.py
+@@ -1,4 +1,4 @@
+-"""Run the predeclared E028 unit screen and all six primary solves once, serially."""
++"""Run the predeclared E029 unit screen and all six primary solves once, serially."""
+ import json, os, re, shutil, signal, subprocess, sys
+ from pathlib import Path
+ 
+@@ -8,9 +8,25 @@
+ 
+ here = Path(__file__).resolve().parent
+ protocol_path = here / 'protocol.json'
+-assert ar.sha256(protocol_path) == 'd9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453'
++assert ar.sha256(protocol_path) == '6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
++
++assert authorization['direct_up_show_exact_pass'] is True
++_direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
++_direct_path=Path(_direct_pin['path'])
++assert _direct_path.resolve()==Path(r'S:\GTOpen-research\postflop-gpu-20261016\comparisons\E029-direct-independent-review\validation.json').resolve()
++assert authorization['evidence_sha256'][str(_direct_path)]==_direct_pin['sha256']
++assert __import__('hashlib').sha256(_direct_path.read_bytes()).hexdigest()==_direct_pin['sha256']
++_direct=json.loads(_direct_path.read_text(encoding='utf-8'))
++assert _direct['id']=='E029-direct' and _direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
++assert _direct['exactness_pass'] is True and _direct['numerical_validation']=='executed'
++assert _direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
++assert _direct['candidate_cuda_sha256']=='bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841'
++assert _direct['prepared_manifest_sha256']=='cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8'
++assert (_direct['baseline_physical_threads'],_direct['candidate_physical_threads'],_direct['logical_scan_threads'])==(128,128,128)
++assert _direct['comparison_pairs']==152 and _direct['kernel_launches']==304
++assert _direct['performance_measurement'] is False and _direct['candidate_accepted'] is False
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_source_review_pass'] is True and authorization['independent_script_review_pass'] is True
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==ar.sha256(here/'scripts-manifest.json')
+@@ -24,31 +40,26 @@
+     assert ar.sha256(here / name) == expected, name
+ for path, expected in script_seal['reference_sha256'].items():
+     assert ar.sha256(Path(path)) == expected, path
+-assert protocol['order'] == ['V028-unit', 'B092', 'E028R1', 'E028R2', 'B093', 'B094', 'E028R3']
++assert protocol['order'] == ['V029-unit', 'B095', 'E029R1', 'E029R2', 'B096', 'B097', 'E029R3']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+ assert not (ar.RESEARCH / 'gpu-run.lock').exists(), 'Build or GPU work is still active'
+-assert json.loads((ar.RESEARCH / 'runs/E028-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
++assert json.loads((ar.RESEARCH / 'runs/E029-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
+ current = ar.source_identity()['source_sha256']
+-auxiliary = protocol['auxiliary_sources']
+-def auxiliary_identity(): return {name: ar.sha256(repo/name) for name in auxiliary}
+-current_auxiliary = auxiliary_identity()
+-assert current_auxiliary == protocol['candidate_auxiliary_sha256']
+-compile_check = json.loads((ar.RESEARCH/'runs/E028-compile-check/complete.json').read_text(encoding='utf-8'))
++compile_check = json.loads((ar.RESEARCH/'runs/E029-compile-check/complete.json').read_text(encoding='utf-8'))
+ assert compile_check['status'] == 'COMPILE_ONLY_CHECKS_PASSED' and compile_check['native_executions'] == 0
+-assert compile_check['source_sha256'] == current and compile_check['auxiliary_source_sha256'] == current_auxiliary
++assert compile_check['source_sha256'] == current
+ assert compile_check['authorization_sha256'] == ar.sha256(here/'authorization.json')
+ assert compile_check['protocol_sha256'] == ar.sha256(protocol_path)
+-assert [r['returncode'] for r in compile_check['commands']] == [0,0]
++assert [r['returncode'] for r in compile_check['commands']] == [0]
+ for path,h in {**compile_check['evidence_sha256'], **compile_check['artifact_sha256']}.items(): assert ar.sha256(Path(path)) == h
+ binary_pins = {}
+-for name in ('E028-solver', 'E028-postflop_autoresearch'):
++for name in ('E029-solver', 'E029-postflop_autoresearch'):
+     manifest_path = ar.RESEARCH / 'binaries' / (name + '.manifest.json')
+     binary_path = ar.RESEARCH / 'binaries' / (name + '.exe')
+     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+     assert manifest['source_sha256'] == current
+-    assert manifest['auxiliary_source_sha256'] == current_auxiliary
+-    assert manifest['compile_check_sha256'] == ar.sha256(ar.RESEARCH/'runs/E028-compile-check/complete.json')
++    assert manifest['compile_check_sha256'] == ar.sha256(ar.RESEARCH/'runs/E029-compile-check/complete.json')
+     assert manifest['primary_protocol_sha256'] == ar.sha256(protocol_path)
+     assert manifest['probe_authorization_sha256'] == ar.sha256(here / 'authorization.json')
+     assert manifest['build_script_sha256'] == ar.sha256(here / 'build.py')
+@@ -61,19 +72,18 @@
+ for identity in protocol['order']:
+     assert not (ar.RESEARCH / 'runs' / identity).exists(), identity
+     assert not any(row['id'] == identity for row in status['experiments']), identity
+-out = ar.RESEARCH / 'runs/E028-primary-execution'
++out = ar.RESEARCH / 'runs/E029-primary-execution'
+ out.mkdir(exist_ok=False)
+ env = os.environ.copy()
+ env.pop('POSTFLOP_AUTORESEARCH_FIXTURE',None)
+ env.update(POSTFLOP_AUTORESEARCH_PROFILE='0', POSTFLOP_AUTORESEARCH_STORAGE='compressed', RAYON_NUM_THREADS='16')
+ ar.atomic_json(out / 'invocation.json', {'at': ar.now(), 'primary_protocol_sha256': ar.sha256(protocol_path),
+-    'script_sha256': ar.sha256(Path(__file__)), 'order': protocol['order'], 'source_sha256': current, 'auxiliary_source_sha256': current_auxiliary, 'candidate_binary_pins': binary_pins,
++    'script_sha256': ar.sha256(Path(__file__)), 'order': protocol['order'], 'source_sha256': current, 'candidate_binary_pins': binary_pins,
+     'build_terminal_before_launch': True, 'accepted_performance_claim': False})
+ 
+ 
+ def run(identity, binary, kind, test, ordinary=False):
+     assert ar.source_identity()['source_sha256'] == current, 'Source drift before run'
+-    assert auxiliary_identity() == current_auxiliary, 'Auxiliary source drift before run'
+     for path,h in authorization['evidence_sha256'].items(): assert ar.sha256(Path(path))==h
+     assert shutil.disk_usage(ar.RESEARCH).free>=50*1024**3
+     def verify_binary():
+@@ -93,7 +103,7 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'E028 actor1 normalized sigma-cache candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E028 GPU solver unit screen'),
++               'E029 showdown complement-only zeroing candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E029 GPU solver unit screen'),
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+@@ -119,12 +129,11 @@
+         assert summaries == [(str(protocol['expected_unit_passed']), '0', str(protocol['expected_unit_ignored']), '0', '0')], summaries
+     verify_binary()
+     assert ar.source_identity()['source_sha256'] == current, 'Source drift during run'
+-    assert auxiliary_identity() == current_auxiliary, 'Auxiliary source drift during run'
+     print('Completed', identity, flush=True)
+ 
+ 
+-run('V028-unit', 'E028-solver', 'validation', '*', True)
+-for identity, candidate in [('B092', False), ('E028R1', True), ('E028R2', True), ('B093', False), ('B094', False), ('E028R3', True)]:
+-    run(identity, 'E028-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'candidate' if candidate else 'baseline', 'postflop_complete_cycle')
++run('V029-unit', 'E029-solver', 'validation', '*', True)
++for identity, candidate in [('B095', False), ('E029R1', True), ('E029R2', True), ('B096', False), ('B097', False), ('E029R3', True)]:
++    run(identity, 'E029-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'candidate' if candidate else 'baseline', 'postflop_complete_cycle')
+ ar.atomic_json(out / 'complete.json', {'at': ar.now(), 'order': protocol['order'], 'accepted_performance_claim': False})
+-print('All predeclared E028 primary runs complete; independent comparison remains required.', flush=True)
++print('All predeclared E029 primary runs complete; independent comparison remains required.', flush=True)
+--- E028/assess.py
++++ E029/assess.py
+@@ -5,6 +5,22 @@
+ here=Path(__file__).resolve().parent
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
++
++assert authorization['direct_up_show_exact_pass'] is True
++_direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
++_direct_path=Path(_direct_pin['path'])
++assert _direct_path.resolve()==Path(r'S:\GTOpen-research\postflop-gpu-20261016\comparisons\E029-direct-independent-review\validation.json').resolve()
++assert authorization['evidence_sha256'][str(_direct_path)]==_direct_pin['sha256']
++assert __import__('hashlib').sha256(_direct_path.read_bytes()).hexdigest()==_direct_pin['sha256']
++_direct=json.loads(_direct_path.read_text(encoding='utf-8'))
++assert _direct['id']=='E029-direct' and _direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
++assert _direct['exactness_pass'] is True and _direct['numerical_validation']=='executed'
++assert _direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
++assert _direct['candidate_cuda_sha256']=='bf865236270454e13fb7dd2deaf85146310aa364abbc47e00df47bcb0a391841'
++assert _direct['prepared_manifest_sha256']=='cedcda1d63a2ebf6bbefa166a4de17cbcc5a7500acc1dbc602339ba967e46ec8'
++assert (_direct['baseline_physical_threads'],_direct['candidate_physical_threads'],_direct['logical_scan_threads'])==(128,128,128)
++assert _direct['comparison_pairs']==152 and _direct['kernel_launches']==304
++assert _direct['performance_measurement'] is False and _direct['candidate_accepted'] is False
+ def pinned_sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==pinned_sha(here/'scripts-manifest.json')
+ for name,h in seal['script_sha256'].items():assert pinned_sha(here/name)==h,name
+@@ -15,8 +31,8 @@
+ import postflop_compare as compare
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+-protocol = base / 'runs/E028-primary-plan/protocol.json'
+-assert ar.sha256(protocol) == 'd9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453'
++protocol = base / 'runs/E029-primary-plan/protocol.json'
++assert ar.sha256(protocol) == '6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165'
+ plan = json.loads(protocol.read_text(encoding='utf-8'))
+ here=protocol.parent
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+@@ -24,7 +40,7 @@
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ for name,h in seal['script_sha256'].items(): assert ar.sha256(here/name)==h,name
+ for path,h in seal['reference_sha256'].items(): assert ar.sha256(Path(path))==h,path
+-completed = json.loads((base / 'runs/E028-primary-execution/complete.json').read_text(encoding='utf-8'))
++completed = json.loads((base / 'runs/E029-primary-execution/complete.json').read_text(encoding='utf-8'))
+ assert completed['order'] == plan['order']
+ baseline_ids = [p['baseline'] for p in plan['pairs']]
+ candidate_ids = [p['candidate'] for p in plan['pairs']]
+@@ -51,20 +67,20 @@
+     assert [{k:v for k,v in result.items() if k not in excluded_timing} for result in results] == reference, run['id']
+ assessment = compare.summarize(baseline, candidate, compare.source_hashes(frozen))
+ failures = compare.rejection_reasons(assessment['performance'])
+-out = base / 'runs/E028-assessment'
++out = base / 'runs/E029-assessment'
+ out.mkdir(exist_ok=False)
+-source = base / 'runs/E028-build/candidate.patch'
+-target = base / 'runs/E028R1.patch'
++source = base / 'runs/E029-build/candidate.patch'
++target = base / 'runs/E029R1.patch'
+ assert not target.exists()
+ shutil.copyfile(source, target)
+ assert ar.sha256(target) == ar.sha256(source)
+ ar.atomic_json(out / 'logical-run-link.json', {
+-    'at': ar.now(), 'logical_candidate':'E028', 'actual_first_run':'E028R1',
++    'at': ar.now(), 'logical_candidate':'E029', 'actual_first_run':'E029R1',
+     'actual_run_ids':candidate_ids, 'synthesized_measurement':False,
+     'patch_alias':str(target), 'source_patch':str(source), 'patch_sha256':ar.sha256(source),
+     'reason':'Existing comparison helper consumes a physical run ID; logical display row mirrors its outcome only.'})
+-command = [sys.executable,'-B','tools/postflop_compare.py','--id','E028-three-pair-comparison',
+-           '--candidate-id','E028R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort']
++command = [sys.executable,'-B','tools/postflop_compare.py','--id','E029-three-pair-comparison',
++           '--candidate-id','E029R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort']
+ if failures: command.append('--reject')
+ ar.atomic_json(out / 'invocation.json', {'at':ar.now(),'command':command,'decision_gate_failures':failures,
+     'script_sha256':ar.sha256(Path(__file__)),'protocol_sha256':ar.sha256(protocol)})
+@@ -72,7 +88,7 @@
+     result = subprocess.run(command,cwd=repo,stdout=stdout,stderr=stderr)
+ ar.atomic_json(out / 'exit.json', {'at':ar.now(),'returncode':result.returncode})
+ assert result.returncode == 0, (out / 'stderr.log').read_text(encoding='utf-8')
+-report = json.loads((base / 'comparisons/E028-three-pair-comparison/report.json').read_text(encoding='utf-8'))
++report = json.loads((base / 'comparisons/E029-three-pair-comparison/report.json').read_text(encoding='utf-8'))
+ assert report['performance'] == assessment['performance']
+ assert report['decision'] == ('rejected' if failures else 'qualifying')
+ print(json.dumps({'decision':report['decision'],'performance':report['performance'],'candidate_accepted':False,'deployment_changed':False},indent=2))

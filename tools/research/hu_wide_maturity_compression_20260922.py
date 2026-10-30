@@ -1,0 +1,88 @@
+"""Lossless full-record compression of all registered wide-state milestones."""
+import hashlib
+import json
+from pathlib import Path
+import struct
+import sys
+import time
+import numpy as np
+import psutil
+
+ROOT=Path(__file__).resolve().parents[2]
+OUT=ROOT/'research/preflop-evolution/blind-defense-20260922'
+sys.path.insert(0,'S:/GTOpen-research/python-codecs-20260922')
+import zstandard as zstd
+
+
+def sha(p):
+    with p.open('rb') as f:return hashlib.file_digest(f,'sha256').hexdigest()
+
+
+def main():
+    review_path=OUT/'wide-maturity-v1-review.json'
+    review=json.loads(review_path.read_text());assert review['passed'] is True
+    registration=OUT/'wide-maturity-compression-v2-registration.json'
+    result_path=OUT/'wide-maturity-compression-v2-result.json'
+    assert not registration.exists() and not result_path.exists()
+    assert psutil.virtual_memory().available>20*2**30
+    record={'input_review_sha256':sha(review_path),'sources':review['snapshots'],'script_sha256':sha(Path(__file__)),
+        'created_at_unix':time.time(),'zstandard_version':zstd.__version__,'codec_levels':[1,3],
+        'chunk_bytes':1024*1024,'framing_allowance_per_chunk_bytes':64,'source_header_bytes':72,
+        'selection':'All four registered snapshots, all arrays, all payload bytes; no ratio-based selection',
+        'revision_reason':'Stored CFR+ regrets are signed between updates; kernels use their positive parts and discard old negative regrets. Preserve all signed bytes. Require strategy sums nonnegative and all arrays finite.',
+        'prior_script_sha256':sha(OUT/'wide-maturity-compression-v1.py.txt'),
+        'compression_is_lossless':True,'compressed_files_written':False,
+        'limits':'One full-support board/branch and deterministic changing reaches; no forest admission or equilibrium claim'}
+    with registration.open('x') as f:json.dump(record,f,indent=2)
+    encoders={level:zstd.ZstdCompressor(level=level,write_checksum=True) for level in [1,3]}
+    decoder=zstd.ZstdDecompressor()
+    rows=[];began=time.monotonic()
+    for name,expected in record['sources'].items():
+        path=Path(name);assert sha(path)==expected
+        metrics={level:{'raw_bytes':0,'encoded_bytes':0,'chunks':0,'encode_seconds':0.,'decode_seconds':0.} for level in encoders}
+        array_stats=[];digest=hashlib.sha256()
+        with path.open('rb') as f:
+            header=f.read(72);digest.update(header);h=struct.unpack('<9Q',header)
+            assert h[0]==0x47544f5353440001
+            assert path.stat().st_size==72+4*sum(h[4:8])
+            for k,length in enumerate(h[4:8]):
+                remaining=length*4;zeros=0;negatives=0;lowest=float('inf');largest=-float('inf');smallest=float('inf')
+                while remaining:
+                    data=f.read(min(1024*1024,remaining));assert data and len(data)%4==0
+                    remaining-=len(data);digest.update(data)
+                    values=np.frombuffer(data,dtype='<f4')
+                    assert np.isfinite(values).all()
+                    if k>=2:assert (values>=0).all()
+                    negatives+=int(np.count_nonzero(values<0))
+                    lowest=min(lowest,float(values.min()))
+                    zeros+=int(np.count_nonzero(values==0))
+                    largest=max(largest,float(values.max()))
+                    positive=values[values>0]
+                    if positive.size:smallest=min(smallest,float(positive.min()))
+                    for level,encoder in encoders.items():
+                        m=metrics[level];start=time.perf_counter();encoded=encoder.compress(data)
+                        m['encode_seconds']+=time.perf_counter()-start
+                        start=time.perf_counter();decoded=decoder.decompress(encoded)
+                        m['decode_seconds']+=time.perf_counter()-start
+                        assert decoded==data
+                        m['raw_bytes']+=len(data);m['encoded_bytes']+=len(encoded);m['chunks']+=1
+                array_stats.append({'array':k,'float_count':length,'zeros':zeros,'negative':negatives,'minimum':lowest,'maximum':largest,
+                    'minimum_positive':None if smallest==float('inf') else smallest})
+            assert not f.read(1)
+        assert digest.hexdigest()==expected and sha(path)==expected
+        for m in metrics.values():
+            m['framed_bytes']=m['encoded_bytes']+64*m['chunks']+72
+            m['ratio']=m['raw_bytes']/m['framed_bytes']
+        row={'path':name,'sha256':expected,'iteration':h[3],'arrays':array_stats,'codecs':metrics}
+        rows.append(row)
+        print('WIDE_COMPRESSION',json.dumps({'iteration':h[3],'codecs':metrics}),flush=True)
+    assert sha(review_path)==record['input_review_sha256']
+    assert sha(Path(__file__))==record['script_sha256']
+    result={'passed':True,'rows':rows,'registration_sha256':sha(registration),
+        'elapsed_seconds':time.monotonic()-began,'production_modified':False,
+        'full_forest_admitted':False,'strategic_accuracy_claim':False,'all_bytes_roundtrip_exact':True}
+    with result_path.open('x') as f:json.dump(result,f,indent=2)
+    print('WIDE_COMPRESSION_DONE',json.dumps({'passed':True,'elapsed_seconds':result['elapsed_seconds']}),flush=True)
+
+
+if __name__=='__main__':main()

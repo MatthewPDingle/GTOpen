@@ -1,0 +1,18 @@
+{
+  "id": "E064",
+  "at": "2026-10-17T10:20:18.696533+00:00",
+  "scope": "Only the four local action-data expressions inside training up_action_impl. One inline helper chooses32bit action*hands+hand only for compile-time NA2/3/4; NA0generic expression stays original64bit. No other entry/caller/metadata/ABI/launch/workload/precision/stopping/FPoperation change.",
+  "integer_proof": "Spot::new unique NLHEcombos bound hands<=1326. Each guarded hand loop has0<=hand<hands; common instantiated NAin{2,3,4} gives0<=action<NA, so action*hands+hand<=4*1326-1=5303, no signed32overflow. Adding this identical nonnegative local offset to a64bit base gives same unsigned64address, including synthetic wrap boundaries. Empty hand loops never call helper. All genericNA0arities and global reach/CFV/node slots remain64bit.",
+  "closed_families_unchanged": [
+    "E060math/reciprocal",
+    "E063packed cutoff",
+    "E057/E062prefix map",
+    "E009/E010GPUquantization",
+    "E012/E013CPUencoder"
+  ],
+  "expected_benefit": "Potential lower integer address-generation work in hot common-arity paths. Compiler may already perform equivalent lowering or hoist original addresses; no source-level speed inference.",
+  "fixed_admission": "First exhaustive integer proof and unchanged current D094allocation/local/shared/occupancy/ABI/other8entry filters at actualGPU, plus compute75other8entries exact. If passed, require separately pinned current-driver machine-code evidence of intended address-work reduction before any application kernel. PTX opcode/line counts are diagnostic, not hardware cost or speed. No casts/placement/arity-subset/helper/flag variants to rescue a failure.",
+  "history_audit_sha256": "b5f660b7078f8d9d42da5ed4edd6968d463af06b1044c587918b57edb9faf2d5",
+  "source_activated": false,
+  "candidate_accepted": false
+}

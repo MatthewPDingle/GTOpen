@@ -1,0 +1,793 @@
+{
+  "id": "D149",
+  "at": "2026-10-28T11:07:44.133710+00:00",
+  "status": "invalid_control_fixture_stopped_not_passed",
+  "protocol_sha256": "465860b59fd3c3e4d6e8861d1804e5722bc00beac19ccfd9a6bef18e6f0a5ff8",
+  "original_protocol_and_all_source_unchanged": true,
+  "rustc_exit": 0,
+  "native_exit": 101,
+  "expected36case_metadata_absent": true,
+  "complete_case_events_before_stop": 8,
+  "completed_ordinary_phase_pairs_retained": 180,
+  "CFV_clobbers_retained": 181,
+  "constructor_pairs_retained": 9,
+  "CPU_query_save_constructor_file_pairs_retained": 81,
+  "raw_frames": 848,
+  "represented_words": 207811914,
+  "raw_reader_checks": 136176,
+  "actual_changed_CFV_words": 7468001,
+  "actual_algorithms_by_stage": [
+    {
+      "case": 0,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 1,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 2,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 3,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 4,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 5,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 6,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 7,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    },
+    {
+      "case": 8,
+      "stages": [
+        {
+          "stage": "train-first",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "train-capture",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "train-replay",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "strategy-sync",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "eval-eager",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "eval-capture",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "eval-replay",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "full-sync",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "train-after-sync",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "locked-train",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "locked-eval-eager",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "locked-eval-capture",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "unlocked-train",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "unlocked-eval",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "before-save",
+          "actual_algorithm": 1
+        },
+        {
+          "stage": "resumed-train",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-eager",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-capture",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-eval-replay",
+          "actual_algorithm": 0
+        },
+        {
+          "stage": "resumed-full-sync",
+          "actual_algorithm": 0
+        }
+      ]
+    }
+  ],
+  "failure_cause": "Fixture assumed save/load preserved experimental algorithm and use_isomorphism. Actual load uses Solver::with_storage defaults Dcfr and true, and does not restore either flag. At case8 after resume the first intended plain CfrPlus/noiso continuation request is rejected by the original pre-launch guard. No continuation sweep is executed for that request. Both arms match in completed observations; intended36case coverage did not complete.",
+  "safety_gate_passed": false,
+  "optimization_or_speed_candidate_existed": false,
+  "source_main_live_PTX_custody_pass": true,
+  "all_owned_children_terminal": true,
+  "packing_implementation_created": false,
+  "scope": "Independent retained-only partial raw reader; not the original frozen full-cohort audit, no sampling extension, performance score or positive full-cohort decision. All original files, exit101 and closed invalid status retained."
+}

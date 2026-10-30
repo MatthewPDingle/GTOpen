@@ -1,0 +1,75 @@
+--- E027-primary-plan/build.py
++++ E027-primary-plan-r2/build.py
+@@ -21,9 +21,9 @@
+ assert authorization['independent_source_review_pass'] is True
+ owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = 'f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d'
+-out = ar.RESEARCH / 'runs/E027-build'
+-target = ar.RESEARCH / 'build-primary-e027'
++protocol_hash = '48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783'
++out = ar.RESEARCH / 'runs/E027-build-r2'
++target = ar.RESEARCH / 'build-primary-e027-r2'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -41,7 +41,7 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/E027-design'
++    design=ar.RESEARCH/'runs/E027-design-r2'
+     assert ar.sha256(design/'manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+@@ -163,7 +163,7 @@
+         shutil.copyfile(item['executable'], destination)
+         data=destination.read_bytes()
+         candidate_cuda=Path(authorization['candidate_sources']['crates/solver/src/gpu/kernels.cu']['path']).read_bytes()
+-        accepted_cuda=(ar.RESEARCH/'runs/E027-design/base/kernels.cu').read_bytes()
++        accepted_cuda=(ar.RESEARCH/'runs/E027-design-r2/base/kernels.cu').read_bytes()
+         assert candidate_cuda in data and accepted_cuda not in data, 'Wrong embedded CUDA variant'
+         assert ar.sha256(destination)!=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['reference_binary_sha256']
+         manifest = {**before, 'candidate': 'E027', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
+--- E027-primary-plan/primary.py
++++ E027-primary-plan-r2/primary.py
+@@ -8,7 +8,7 @@
+ 
+ here = Path(__file__).resolve().parent
+ protocol_path = here / 'protocol.json'
+-assert ar.sha256(protocol_path) == 'f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d'
++assert ar.sha256(protocol_path) == '48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+@@ -28,7 +28,7 @@
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+ assert not (ar.RESEARCH / 'gpu-run.lock').exists(), 'Build or GPU work is still active'
+-assert json.loads((ar.RESEARCH / 'runs/E027-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
++assert json.loads((ar.RESEARCH / 'runs/E027-build-r2/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
+ current = ar.source_identity()['source_sha256']
+ binary_pins = {}
+ for name in ('E027-solver', 'E027-postflop_autoresearch'):
+--- E027-primary-plan/assess.py
++++ E027-primary-plan-r2/assess.py
+@@ -15,8 +15,8 @@
+ import postflop_compare as compare
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+-protocol = base / 'runs/E027-primary-plan/protocol.json'
+-assert ar.sha256(protocol) == 'f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d'
++protocol = base / 'runs/E027-primary-plan-r2/protocol.json'
++assert ar.sha256(protocol) == '48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783'
+ plan = json.loads(protocol.read_text(encoding='utf-8'))
+ here=protocol.parent
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+@@ -53,7 +53,7 @@
+ failures = compare.rejection_reasons(assessment['performance'])
+ out = base / 'runs/E027-assessment'
+ out.mkdir(exist_ok=False)
+-source = base / 'runs/E027-build/candidate.patch'
++source = base / 'runs/E027-build-r2/candidate.patch'
+ target = base / 'runs/E027R1.patch'
+ assert not target.exists()
+ shutil.copyfile(source, target)

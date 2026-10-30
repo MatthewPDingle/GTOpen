@@ -1,0 +1,166 @@
+{
+  "candidate": "E027",
+  "revision": 2,
+  "at": "2026-10-16T16:15:37.071111+00:00",
+  "parent_manifest_sha256": "68884e160241e8cff078f5709458158a3f05c5376183bedeb1dc57a17c95684a",
+  "base_sha256": {
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_sha256": {
+    "crates/solver/src/gpu/plan.rs": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+    "crates/solver/src/gpu/mod.rs": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578",
+    "crates/solver/src/gpu/kernels.cu": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2",
+    "crates/solver/src/game.rs": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208"
+  },
+  "only_r1_to_r2_changed_source": "crates/solver/src/gpu/mod.rs",
+  "repair_reversal_exact": true,
+  "all_full_reversals_exact": true,
+  "cuda_identical_to_r1": true,
+  "other_four_candidate_files_identical_to_r1": true,
+  "lengths_computed_before_struct_and_first_move": true,
+  "all157_unowned_checkout_sources_exact": true,
+  "rustfmt_parse_only": {
+    "command": [
+      "C:\\Users\\there\\.cargo\\bin\\rustfmt.exe",
+      "--edition",
+      "2021",
+      "--emit",
+      "stdout",
+      "--config",
+      "skip_children=true",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\mod.rs"
+    ],
+    "returncode": 0,
+    "stderr": ""
+  },
+  "r1_build_exit": 101,
+  "r1_E0382_diagnostics": [
+    {
+      "message": "borrow of partially moved value: `plan`",
+      "spans": [
+        {
+          "byte_end": 12365,
+          "byte_start": 12350,
+          "column_end": 40,
+          "column_start": 25,
+          "expansion": null,
+          "file_name": "crates\\solver\\src\\gpu\\mod.rs",
+          "is_primary": false,
+          "label": "value partially moved here",
+          "line_end": 318,
+          "line_start": 318,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 40,
+              "highlight_start": 25,
+              "text": "            show_spans: plan.show_spans,"
+            }
+          ]
+        },
+        {
+          "byte_end": 15184,
+          "byte_start": 15180,
+          "column_end": 47,
+          "column_start": 43,
+          "expansion": null,
+          "file_name": "crates\\solver\\src\\gpu\\mod.rs",
+          "is_primary": true,
+          "label": "value borrowed here after partial move",
+          "line_end": 366,
+          "line_start": 366,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 47,
+              "highlight_start": 43,
+              "text": "                stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?,"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "message": "borrow of partially moved value: `plan`",
+      "spans": [
+        {
+          "byte_end": 12365,
+          "byte_start": 12350,
+          "column_end": 40,
+          "column_start": 25,
+          "expansion": null,
+          "file_name": "crates\\solver\\src\\gpu\\mod.rs",
+          "is_primary": false,
+          "label": "value partially moved here",
+          "line_end": 318,
+          "line_start": 318,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 40,
+              "highlight_start": 25,
+              "text": "            show_spans: plan.show_spans,"
+            }
+          ]
+        },
+        {
+          "byte_end": 15184,
+          "byte_start": 15180,
+          "column_end": 47,
+          "column_start": 43,
+          "expansion": null,
+          "file_name": "crates\\solver\\src\\gpu\\mod.rs",
+          "is_primary": true,
+          "label": "value borrowed here after partial move",
+          "line_end": 366,
+          "line_start": 366,
+          "suggested_replacement": null,
+          "suggestion_applicability": null,
+          "text": [
+            {
+              "highlight_end": 47,
+              "highlight_start": 43,
+              "text": "                stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?,"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "failed_build_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\build-environment.json": "f224b63e19f4f7ff81f14b2f8d0664e59e14bba6f0f03c187d82eebd27dd39d2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\build.jsonl": "d72a729fd6742a4f7a05a944fda55ca192edd5a9fb4c58a3ef8cd92ea44b6775",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\build.stderr.log": "d717508c1f7100b6b4476d66e560c607bf8b9b1644df5ccb41186ad1cacc00cf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-continuation_capacity.rs": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-game.rs": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-kernels.cu": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-mod.rs": "97bbb476c6d116a45e0243592b9abdc49e21f0055ed2716b4727a9c2994c6243",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-plan.rs": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate.patch": "dbed43ffe3943c75440f0c471b810c656832fba6d396fe03ae1d9f7601803ecf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\exit.json": "8382f372372547ed69f67ba2e047eea4ffa9a28292a1109bfabfb19b89da6638",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\source-before.json": "0f311baf17f2f1ff9677748bc63355cc94bab037b107a49339237435757cfb37"
+  },
+  "test_declarations_unchanged": true,
+  "expected_gpu_unit_passed": 84,
+  "expected_gpu_unit_ignored": 4,
+  "compiler_executions": 0,
+  "native_tests": 0,
+  "gpu_runs": 0,
+  "production_edits": 0,
+  "limitations": "Syntax-only parsing is not Rust ownership/type checking; root must execute a fresh reviewed build. Root owns accepted-source restoration.",
+  "git_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "all162_checkout_sources_restored_E020_at_seal": true,
+  "all_R1_source_and_failed_build_files_preserved": true
+}

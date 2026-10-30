@@ -1,0 +1,58 @@
+{
+  "at": "2026-10-28T23:06:13.097855+00:00",
+  "all_owned_compiler_native_reader_processes_terminal": true,
+  "retained_primary_checkpoint_sha256": "6b68c9b20cecc1f389d22c8c658c6bcd379ed1224cdb124d1775eaef76798c0a",
+  "accepted_solver_source_main_live_and_protected_PTX_unchanged": true,
+  "GPU_and_sequence_locks_absent": true,
+  "live_status_idle": {
+    "/api/status": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "/api/preflop/status": {
+      "state": "",
+      "phase": "",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "published_iteration": 0,
+      "accuracy_iteration": null,
+      "target_gap": null,
+      "stop_reason": "",
+      "preview_note": "",
+      "gaps": [],
+      "gap_total": 0.0,
+      "evs": [],
+      "hero": null,
+      "frozen": [],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": ""
+    },
+    "/api/reports/status": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  },
+  "all_new_bulk_output_root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028",
+  "X_free_bytes": 4131220279296,
+  "current_RAM_baseline_ms": 10456.4109,
+  "best_qualified_config": "E080 / GPU / compressed / 16 workers / default affinity",
+  "goal_active": true,
+  "last_primary_baseline": "B319",
+  "candidate_adopted": false
+}

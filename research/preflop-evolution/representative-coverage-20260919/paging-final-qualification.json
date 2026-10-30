@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "qualified_scope": "Isolated full-F32 paged research continuation harness",
+  "production_deployed": false,
+  "compact_qualified": false,
+  "host_storage_saving": false,
+  "runtime_reduction_percent": 5.55510698502647,
+  "speed_factor": 1.0588185004788533,
+  "late_interval_reduction_percent": 8.435118871855106,
+  "arena_traffic_reduction_percent": 16.666666666666664,
+  "resources": {
+    "ownavg-fresh-baseline": {
+      "samples": 110,
+      "minimum_free_host_bytes": 99891576832,
+      "minimum_free_gpu_bytes": 20844642304
+    },
+    "ownavg-two": {
+      "samples": 103,
+      "minimum_free_host_bytes": 98943537152,
+      "minimum_free_gpu_bytes": 20840448000
+    }
+  },
+  "archives": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\ownavg-fresh-baseline-result.json.gz": {
+      "sha256": "f34c085f98c4ed2768d001afec7739f42013807b9c710810cc4a57be5add304c",
+      "decompressed_sha256": "2fa34eeed823434a46f1a039c88eadca811466ed2b1b10e1682abfca8adceae1"
+    },
+    "T:\\Dev\\GTOpen-paging-research\\research\\preflop-evolution\\representative-coverage-20260919\\ownavg-two-result.json.gz": {
+      "sha256": "2c38482bcd3a1425f9a44febb15d33a9ac98dd310dbc6d51de5b65a7aaeb42ba",
+      "decompressed_sha256": "f997493e7bac0771f5ba217e6b2eee859de3d5f7a97500b6641801316357dc4b"
+    }
+  },
+  "timing_context": "One sequential GPU-uncontended pair. CPU population diagnostics overlapped the early candidate phase and finished before its 500 checkpoint. Light host activity also occurred. No randomized repetitions or uncertainty estimate; historical baseline was slower than the fresh baseline. The generated paired review uses uncontended to mean no competing research GPU solve, not a completely idle host.",
+  "evidence_sha256": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\paging-candidate-exact-review.json": "f8a9ea29443749d8e5450524030d2c23ab81a5d07574e371f397d726debb247c",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\paging-candidate-paired-review.json": "359afc09608a9f83473a8e972a1b22b90b87d42b2214a07542ac6e945879b45e",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\representative-coverage-20260919\\paging-candidate-qualification-status.json": "d69993ecfebc78b6a5c34f36a07f616f91742ed43da01c9c416294d3d1897cd9",
+    "T:\\Dev\\GTOpen-paging-research\\research\\preflop-evolution\\representative-coverage-20260919\\ownavg-switch-test.log": "6df8fe249adf39daecffb159901eda6506290c64b841cb31fe29231894aee753"
+  }
+}

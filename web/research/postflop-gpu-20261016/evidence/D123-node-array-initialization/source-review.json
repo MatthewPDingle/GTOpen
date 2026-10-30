@@ -1,0 +1,31 @@
+{
+  "id": "D123",
+  "at": "2026-10-18T04:06:02.171759+00:00",
+  "scope": "Eight serial per-node scalar vectors only: reserve exact n and append each final value in original ascending node order. No unsafe/uninitialized read, field/schema/layout change, parallelism, SIMD helper, CFV alias, worklist reordering, zero-scan omission, encoder, CUDA or solve-quality change.",
+  "baseline_sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+  "candidate_sha256": "83f5b36fa63643a7b7d25643a04d4b7e1ad9b69826e20fec42ed4c754a9c8ad7",
+  "fully_initialized_fields": [
+    "node_player",
+    "node_na",
+    "node_data_off",
+    "node_children_start",
+    "node_twin",
+    "node_tlose",
+    "node_ttie",
+    "node_cdiv"
+  ],
+  "reasoning": "Each loop visits exactly n nodes once, each reserved vector receives exactly one push on every iteration, all conditional offset/cdiv branches yield the original sentinel or positive-zero value, all float cast/divide expressions and serial per-player arena offsets stay ordered. Full raw53-field/capacity/struct and original-anchor controls are still required.",
+  "local_all_ref_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "spare_capacity|node_player.*with_capacity|node_twin.*with_capacity|MaybeUninit",
+    "--",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "local_all_ref_matches": [],
+  "distinct_from_closed_forms": "E071 parallel joined planner branches, E076 CFV lifetime/row layout, E065 subtree replication, D107 Store/ArenaBuf zero allocation, D090 wide OR, E049 zero provenance and encoder/readback variants remain closed. No timing rescue or historical samples pooled.",
+  "limits": "Bounded local novelty and source reasoning. Source initialization syntax does not prove allocator internal cost, emitted dead fills, CPU speed, material footprint or complete-solve improvement."
+}

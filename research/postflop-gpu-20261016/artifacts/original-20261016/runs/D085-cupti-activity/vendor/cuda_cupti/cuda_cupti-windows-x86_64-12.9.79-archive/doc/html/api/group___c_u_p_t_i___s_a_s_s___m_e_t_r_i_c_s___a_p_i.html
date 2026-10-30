@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.13. CUPTI SASS Metrics API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.14. CUPTI Version" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html" />
+    <link rel="prev" title="5.12. CUPTI Result Codes" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.13. CUPTI SASS Metrics API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.13.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.13.2. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.13.3. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.13. </span>CUPTI SASS Metrics API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-sass-metrics-api">
+<h1><span class="section-number">5.13. </span>CUPTI SASS Metrics API<a class="headerlink" href="#cupti-sass-metrics-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i">Functions, types, and enums that implement the CUPTI SASS Metrics API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_disable___params.html#struct_c_upti___sass_metrics_disable___params"><span class="std std-ref">CUpti_SassMetricsDisable_Params</span></a></dt><dd><p>Params for cuptiSassMetricsDisable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_enable___params.html#struct_c_upti___sass_metrics_enable___params"><span class="std std-ref">CUpti_SassMetricsEnable_Params</span></a></dt><dd><p>Params for cuptiSassMetricsEnable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_flush_data___params.html#struct_c_upti___sass_metrics_flush_data___params"><span class="std std-ref">CUpti_SassMetricsFlushData_Params</span></a></dt><dd><p>Params for cuptiSassMetricsFlushData.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#struct_c_upti___sass_metrics_get_data_properties___params"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params</span></a></dt><dd><p>Params for cuptiSassMetricsGetDataProperties.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_set_config___params.html#struct_c_upti___sass_metrics_set_config___params"><span class="std std-ref">CUpti_SassMetricsSetConfig_Params</span></a></dt><dd><p>Params for cuptiSassMetricsSetConfig.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics_unset_config___params.html#struct_c_upti___sass_metrics_unset_config___params"><span class="std std-ref">CUpti_SassMetricsUnsetConfig_Params</span></a></dt><dd><p>Params for cuptiSassMetricsUnsetConfig.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___config.html#struct_c_upti___sass_metrics___config"><span class="std std-ref">CUpti_SassMetrics_Config</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___data.html#struct_c_upti___sass_metrics___data"><span class="std std-ref">CUpti_SassMetrics_Data</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___get_metrics___params.html#struct_c_upti___sass_metrics___get_metrics___params"><span class="std std-ref">CUpti_SassMetrics_GetMetrics_Params</span></a></dt><dd><p>Params for cuptiSassMetricsGetMetrics.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___get_num_of_metrics___params.html#struct_c_upti___sass_metrics___get_num_of_metrics___params"><span class="std std-ref">CUpti_SassMetrics_GetNumOfMetrics_Params</span></a></dt><dd><p>Params for cuptiSassMetricsGetNumOfMetrics.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___get_properties___params.html#struct_c_upti___sass_metrics___get_properties___params"><span class="std std-ref">CUpti_SassMetrics_GetProperties_Params</span></a></dt><dd><p>Params for cuptiSassMetricsGetProperties.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___instance_value.html#struct_c_upti___sass_metrics___instance_value"><span class="std std-ref">CUpti_SassMetrics_InstanceValue</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___sass_metrics___metric_details.html#struct_c_upti___sass_metrics___metric_details"><span class="std std-ref">CUpti_SassMetrics_MetricDetails</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gab431fb57bd1c85a13f126797d78ee3f8"><span class="std std-ref">CUpti_SassMetricsDisable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaa61089a37e7b9b36589a04f22f21285e"><span class="std std-ref">CUpti_SassMetricsEnable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga093a80d978971b5297910971b4c16d73"><span class="std std-ref">CUpti_SassMetricsFlushData_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga2a5d48ee930b99df2baad153c247101b"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaf4abade746722e2bb09f29c7010f1af3"><span class="std std-ref">CUpti_SassMetricsSetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaf23c4a704d07179f861729c330092cd9"><span class="std std-ref">CUpti_SassMetricsUnsetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga4e9099dc471765098f15babb8720d1de"><span class="std std-ref">CUpti_SassMetrics_GetMetrics_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga89b98cf940aacb9e8fc3563eba4efa12"><span class="std std-ref">CUpti_SassMetrics_GetNumOfMetrics_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga4b9139a820a7905b5ded353ba1e83114"><span class="std std-ref">CUpti_SassMetrics_GetProperties_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga6107c8e716fc8e0fa42e4a415e841933"><span class="std std-ref">CUpti_SassMetrics_InstanceValue_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gad2395eeb6dd319cd120ee5b986f1c91d"><span class="std std-ref">CUpti_SassMetrics_OutputGranularity</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gadf8447d381211251c69cdaf3221a5fec"><span class="std std-ref">cuptiSassMetricsDisable</span></a>(CUpti_SassMetricsDisable_Params *pParams)</dt><dd><p>SASS metric data collection disable API will mark the end of a range, any kernel launched after this API call will not be profiled for the SASS metrics.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga62ea0db81c966ddf066c28644f8b240f"><span class="std std-ref">cuptiSassMetricsEnable</span></a>(CUpti_SassMetricsEnable_Params *pParams)</dt><dd><p>Sass metric data collection enable API will mark the start of a range, between which kernel will be profiled for SASS metrics.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga17d012eec574a36a7a8724177ba5e356"><span class="std std-ref">cuptiSassMetricsFlushData</span></a>(CUpti_SassMetricsFlushData_Params *pParams)</dt><dd><p>Flush SASS metrics data from CUPTI internal buffer to the user buffer.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga2601b1a5b4fe4b9253cdb81f04120b1e"><span class="std std-ref">cuptiSassMetricsGetDataProperties</span></a>(CUpti_SassMetricsGetDataProperties_Params *pParams)</dt><dd><p>SASS metric data properties API will give the data regarding number of instances of a metric value and number of SASS instruction data has been collected.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gad3c097f40817fd8411c086c39ef74d0a"><span class="std std-ref">cuptiSassMetricsGetMetrics</span></a>(CUpti_SassMetrics_GetMetrics_Params *pParams)</dt><dd><p>Get the list of all supported SASS metrics for the chip.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga3019950028060e943b12b7fc6f1b9188"><span class="std std-ref">cuptiSassMetricsGetNumOfMetrics</span></a>(CUpti_SassMetrics_GetNumOfMetrics_Params *pParams)</dt><dd><p>Get the number of supported SASS metrics for the chip.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga391895709314386ece556a4e69f727ef"><span class="std std-ref">cuptiSassMetricsGetProperties</span></a>(CUpti_SassMetrics_GetProperties_Params *pParams)</dt><dd><p>Get metric properties for the queried metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"><span class="std std-ref">cuptiSassMetricsSetConfig</span></a>(CUpti_SassMetricsSetConfig_Params *pParams)</dt><dd><p>Set config for the SASS metric data collection for a device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga5676647f379b5101a09e24e1caa045d7"><span class="std std-ref">cuptiSassMetricsUnsetConfig</span></a>(CUpti_SassMetricsUnsetConfig_Params *pParams)</dt><dd><p>Unset config API will reset the SASS metric data collection configuration for the device.</p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.13.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsDisable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gab431fb57bd1c85a13f126797d78ee3f8"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsDisable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsDisable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsEnable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaa61089a37e7b9b36589a04f22f21285e"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsEnable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsEnable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsFlushData_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga093a80d978971b5297910971b4c16d73"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsFlushData_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsFlushData_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsGetDataProperties_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga2a5d48ee930b99df2baad153c247101b"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsGetDataProperties_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsGetDataProperties_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsSetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaf4abade746722e2bb09f29c7010f1af3"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsSetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsSetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetricsUnsetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gaf23c4a704d07179f861729c330092cd9"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetricsUnsetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetricsUnsetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetrics_GetMetrics_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga4e9099dc471765098f15babb8720d1de"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetrics_GetMetrics_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetrics_GetMetrics_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetrics_GetNumOfMetrics_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga89b98cf940aacb9e8fc3563eba4efa12"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetrics_GetNumOfMetrics_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetrics_GetNumOfMetrics_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetrics_GetProperties_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga4b9139a820a7905b5ded353ba1e83114"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetrics_GetProperties_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetrics_GetProperties_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_SassMetrics_InstanceValue_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga6107c8e716fc8e0fa42e4a415e841933"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetrics_InstanceValue_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_SassMetrics_InstanceValue_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="enumerations">
+<h2><span class="section-number">5.13.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv435CUpti_SassMetrics_OutputGranularity">
+<span id="_CPPv335CUpti_SassMetrics_OutputGranularity"></span><span id="_CPPv235CUpti_SassMetrics_OutputGranularity"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gad2395eeb6dd319cd120ee5b986f1c91d"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SassMetrics_OutputGranularity</span></span></span><a class="headerlink" href="#_CPPv435CUpti_SassMetrics_OutputGranularity" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N35CUpti_SassMetrics_OutputGranularity41CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_GPUE">
+<span id="_CPPv3N35CUpti_SassMetrics_OutputGranularity41CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_GPUE"></span><span id="_CPPv2N35CUpti_SassMetrics_OutputGranularity41CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_GPUE"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ggad2395eeb6dd319cd120ee5b986f1c91da3506a499a5f58307f2888fc7c3d93368"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_GPU</span></span></span><a class="headerlink" href="#_CPPv4N35CUpti_SassMetrics_OutputGranularity41CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_GPUE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS metric data will be collected at GPU level. In <a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#struct_c_upti___sass_metrics_get_data_properties___params"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params</span></a> struct the numOfInstances will be equal to 1. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N35CUpti_SassMetrics_OutputGranularity40CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SME">
+<span id="_CPPv3N35CUpti_SassMetrics_OutputGranularity40CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SME"></span><span id="_CPPv2N35CUpti_SassMetrics_OutputGranularity40CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SME"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ggad2395eeb6dd319cd120ee5b986f1c91da994b9389ba09182f5e160795bf70ed35"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SM</span></span></span><a class="headerlink" href="#_CPPv4N35CUpti_SassMetrics_OutputGranularity40CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SME" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS metric data will be collected at SM level In <a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#struct_c_upti___sass_metrics_get_data_properties___params"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params</span></a> struct the numOfInstances will be equal to number of SMs in the GPU. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N35CUpti_SassMetrics_OutputGranularity42CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SMSPE">
+<span id="_CPPv3N35CUpti_SassMetrics_OutputGranularity42CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SMSPE"></span><span id="_CPPv2N35CUpti_SassMetrics_OutputGranularity42CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SMSPE"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ggad2395eeb6dd319cd120ee5b986f1c91da14d55de8714e8b2c0bf264179d93e3d7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SMSP</span></span></span><a class="headerlink" href="#_CPPv4N35CUpti_SassMetrics_OutputGranularity42CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_SMSPE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS metric data will be collected at SM sub-partition level In <a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#struct_c_upti___sass_metrics_get_data_properties___params"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params</span></a> struct the numOfInstances will be equal to number of SM sub-partitions in the GPU. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N35CUpti_SassMetrics_OutputGranularity45CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_INVALIDE">
+<span id="_CPPv3N35CUpti_SassMetrics_OutputGranularity45CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_INVALIDE"></span><span id="_CPPv2N35CUpti_SassMetrics_OutputGranularity45CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ggad2395eeb6dd319cd120ee5b986f1c91daa691d34ca2acc4dcbcee2299583fb506"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N35CUpti_SassMetrics_OutputGranularity45CUPTI_SASS_METRICS_OUTPUT_GRANULARITY_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.13.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423cuptiSassMetricsDisableP31CUpti_SassMetricsDisable_Params">
+<span id="_CPPv323cuptiSassMetricsDisableP31CUpti_SassMetricsDisable_Params"></span><span id="_CPPv223cuptiSassMetricsDisableP31CUpti_SassMetricsDisable_Params"></span><span id="cuptiSassMetricsDisable__CUpti_SassMetricsDisable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gadf8447d381211251c69cdaf3221a5fec"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsDisable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_disable___params.html#_CPPv431CUpti_SassMetricsDisable_Params" title="CUpti_SassMetricsDisable_Params"><span class="n"><span class="pre">CUpti_SassMetricsDisable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423cuptiSassMetricsDisableP31CUpti_SassMetricsDisable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS metric data collection disable API will mark the end of a range, any kernel launched after this API call will not be profiled for the SASS metrics. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_disable___params.html#struct_c_upti___sass_metrics_disable___params"><span class="std std-ref">CUpti_SassMetricsDisable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – if any cuda context has not been created prior to this API call </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called multiple times for a cuda context without calling <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga62ea0db81c966ddf066c28644f8b240f"><span class="std std-ref">cuptiSassMetricsEnable()</span></a> API or called before <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"><span class="std std-ref">cuptiSassMetricsSetConfig()</span></a> API call. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiSassMetricsEnableP30CUpti_SassMetricsEnable_Params">
+<span id="_CPPv322cuptiSassMetricsEnableP30CUpti_SassMetricsEnable_Params"></span><span id="_CPPv222cuptiSassMetricsEnableP30CUpti_SassMetricsEnable_Params"></span><span id="cuptiSassMetricsEnable__CUpti_SassMetricsEnable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga62ea0db81c966ddf066c28644f8b240f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsEnable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_enable___params.html#_CPPv430CUpti_SassMetricsEnable_Params" title="CUpti_SassMetricsEnable_Params"><span class="n"><span class="pre">CUpti_SassMetricsEnable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiSassMetricsEnableP30CUpti_SassMetricsEnable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Sass metric data collection enable API will mark the start of a range, between which kernel will be profiled for SASS metrics. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_enable___params.html#struct_c_upti___sass_metrics_enable___params"><span class="std std-ref">CUpti_SassMetricsEnable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – if any cuda context has not been created prior to this API call </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called multiple times for a cuda context without calling <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gadf8447d381211251c69cdaf3221a5fec"><span class="std std-ref">cuptiSassMetricsDisable()</span></a> API or called before <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"><span class="std std-ref">cuptiSassMetricsSetConfig()</span></a> API call. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiSassMetricsFlushDataP33CUpti_SassMetricsFlushData_Params">
+<span id="_CPPv325cuptiSassMetricsFlushDataP33CUpti_SassMetricsFlushData_Params"></span><span id="_CPPv225cuptiSassMetricsFlushDataP33CUpti_SassMetricsFlushData_Params"></span><span id="cuptiSassMetricsFlushData__CUpti_SassMetricsFlushData_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga17d012eec574a36a7a8724177ba5e356"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsFlushData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_flush_data___params.html#_CPPv433CUpti_SassMetricsFlushData_Params" title="CUpti_SassMetricsFlushData_Params"><span class="n"><span class="pre">CUpti_SassMetricsFlushData_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiSassMetricsFlushDataP33CUpti_SassMetricsFlushData_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flush SASS metrics data from CUPTI internal buffer to the user buffer. </p>
+<p>User needs to allocate the buffer for retrieving the data. The number of records collected can be queried using the API <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga2601b1a5b4fe4b9253cdb81f04120b1e"><span class="std std-ref">cuptiSassMetricsGetDataProperties()</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_flush_data___params.html#struct_c_upti___sass_metrics_flush_data___params"><span class="std std-ref">CUpti_SassMetricsFlushData_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called outside the enable/disable range. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv433cuptiSassMetricsGetDataPropertiesP41CUpti_SassMetricsGetDataProperties_Params">
+<span id="_CPPv333cuptiSassMetricsGetDataPropertiesP41CUpti_SassMetricsGetDataProperties_Params"></span><span id="_CPPv233cuptiSassMetricsGetDataPropertiesP41CUpti_SassMetricsGetDataProperties_Params"></span><span id="cuptiSassMetricsGetDataProperties__CUpti_SassMetricsGetDataProperties_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga2601b1a5b4fe4b9253cdb81f04120b1e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsGetDataProperties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#_CPPv441CUpti_SassMetricsGetDataProperties_Params" title="CUpti_SassMetricsGetDataProperties_Params"><span class="n"><span class="pre">CUpti_SassMetricsGetDataProperties_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433cuptiSassMetricsGetDataPropertiesP41CUpti_SassMetricsGetDataProperties_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS metric data properties API will give the data regarding number of instances of a metric value and number of SASS instruction data has been collected. </p>
+<p>The number of instances of a metric will vary as per user set the output granularity level with CUpti_SassMetrics_OutputGranularity value. User need to allocate memory for retriving the SASS data using <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga17d012eec574a36a7a8724177ba5e356"><span class="std std-ref">cuptiSassMetricsFlushData()</span></a> API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html#struct_c_upti___sass_metrics_get_data_properties___params"><span class="std std-ref">CUpti_SassMetricsGetDataProperties_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called outside the enable/disable range. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426cuptiSassMetricsGetMetricsP35CUpti_SassMetrics_GetMetrics_Params">
+<span id="_CPPv326cuptiSassMetricsGetMetricsP35CUpti_SassMetrics_GetMetrics_Params"></span><span id="_CPPv226cuptiSassMetricsGetMetricsP35CUpti_SassMetrics_GetMetrics_Params"></span><span id="cuptiSassMetricsGetMetrics__CUpti_SassMetrics_GetMetrics_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1gad3c097f40817fd8411c086c39ef74d0a"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsGetMetrics</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics___get_metrics___params.html#_CPPv435CUpti_SassMetrics_GetMetrics_Params" title="CUpti_SassMetrics_GetMetrics_Params"><span class="n"><span class="pre">CUpti_SassMetrics_GetMetrics_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426cuptiSassMetricsGetMetricsP35CUpti_SassMetrics_GetMetrics_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the list of all supported SASS metrics for the chip. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics___get_metrics___params.html#struct_c_upti___sass_metrics___get_metrics___params"><span class="std std-ref">CUpti_SassMetrics_GetMetrics_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiSassMetricsGetNumOfMetricsP40CUpti_SassMetrics_GetNumOfMetrics_Params">
+<span id="_CPPv331cuptiSassMetricsGetNumOfMetricsP40CUpti_SassMetrics_GetNumOfMetrics_Params"></span><span id="_CPPv231cuptiSassMetricsGetNumOfMetricsP40CUpti_SassMetrics_GetNumOfMetrics_Params"></span><span id="cuptiSassMetricsGetNumOfMetrics__CUpti_SassMetrics_GetNumOfMetrics_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga3019950028060e943b12b7fc6f1b9188"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsGetNumOfMetrics</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics___get_num_of_metrics___params.html#_CPPv440CUpti_SassMetrics_GetNumOfMetrics_Params" title="CUpti_SassMetrics_GetNumOfMetrics_Params"><span class="n"><span class="pre">CUpti_SassMetrics_GetNumOfMetrics_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiSassMetricsGetNumOfMetricsP40CUpti_SassMetrics_GetNumOfMetrics_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of supported SASS metrics for the chip. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics___get_num_of_metrics___params.html#struct_c_upti___sass_metrics___get_num_of_metrics___params"><span class="std std-ref">CUpti_SassMetrics_GetNumOfMetrics_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv429cuptiSassMetricsGetPropertiesP38CUpti_SassMetrics_GetProperties_Params">
+<span id="_CPPv329cuptiSassMetricsGetPropertiesP38CUpti_SassMetrics_GetProperties_Params"></span><span id="_CPPv229cuptiSassMetricsGetPropertiesP38CUpti_SassMetrics_GetProperties_Params"></span><span id="cuptiSassMetricsGetProperties__CUpti_SassMetrics_GetProperties_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga391895709314386ece556a4e69f727ef"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsGetProperties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics___get_properties___params.html#_CPPv438CUpti_SassMetrics_GetProperties_Params" title="CUpti_SassMetrics_GetProperties_Params"><span class="n"><span class="pre">CUpti_SassMetrics_GetProperties_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429cuptiSassMetricsGetPropertiesP38CUpti_SassMetrics_GetProperties_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get metric properties for the queried metric. </p>
+<p>For a given metric the results will be put in CUpti_SassMetrics_MetricDetails which stores metric ID, description of the metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics___get_properties___params.html#struct_c_upti___sass_metrics___get_properties___params"><span class="std std-ref">CUpti_SassMetrics_GetProperties_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiSassMetricsSetConfigP33CUpti_SassMetricsSetConfig_Params">
+<span id="_CPPv325cuptiSassMetricsSetConfigP33CUpti_SassMetricsSetConfig_Params"></span><span id="_CPPv225cuptiSassMetricsSetConfigP33CUpti_SassMetricsSetConfig_Params"></span><span id="cuptiSassMetricsSetConfig__CUpti_SassMetricsSetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsSetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_set_config___params.html#_CPPv433CUpti_SassMetricsSetConfig_Params" title="CUpti_SassMetricsSetConfig_Params"><span class="n"><span class="pre">CUpti_SassMetricsSetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiSassMetricsSetConfigP33CUpti_SassMetricsSetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set config for the SASS metric data collection for a device. </p>
+<p>User need to call this API before calling any of the SASS metric data collection APIs. Each set config API call need to be followed by cuptiSassPatchingUnSetConfig API before calling the <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"><span class="std std-ref">cuptiSassMetricsSetConfig()</span></a> API again for the same device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_set_config___params.html#struct_c_upti___sass_metrics_set_config___params"><span class="std std-ref">CUpti_SassMetricsSetConfig_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – if any cuda context has not been created prior to this API call </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this is called multiple times for the device without calling unset config API </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427cuptiSassMetricsUnsetConfigP35CUpti_SassMetricsUnsetConfig_Params">
+<span id="_CPPv327cuptiSassMetricsUnsetConfigP35CUpti_SassMetricsUnsetConfig_Params"></span><span id="_CPPv227cuptiSassMetricsUnsetConfigP35CUpti_SassMetricsUnsetConfig_Params"></span><span id="cuptiSassMetricsUnsetConfig__CUpti_SassMetricsUnsetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga5676647f379b5101a09e24e1caa045d7"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSassMetricsUnsetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___sass_metrics_unset_config___params.html#_CPPv435CUpti_SassMetricsUnsetConfig_Params" title="CUpti_SassMetricsUnsetConfig_Params"><span class="n"><span class="pre">CUpti_SassMetricsUnsetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427cuptiSassMetricsUnsetConfigP35CUpti_SassMetricsUnsetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unset config API will reset the SASS metric data collection configuration for the device. </p>
+<p>Once this API called CUPTI will deallocate all the memory allocated and remove all the configuration for SASS metric data collection. User can only call this API for a device where <a class="reference internal" href="#group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i_1ga0c3e83b6fa0938f8da75bea89092f848"><span class="std std-ref">cuptiSassMetricsSetConfig()</span></a> API has been called earlier for the device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___sass_metrics_set_config___params.html#struct_c_upti___sass_metrics_set_config___params"><span class="std std-ref">CUpti_SassMetricsSetConfig_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – if any cuda context has not been created prior to this API call </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this is called multiple times for the device without calling set config API </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device doesn’t support SASS metric data collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

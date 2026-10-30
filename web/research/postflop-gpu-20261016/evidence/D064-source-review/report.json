@@ -1,0 +1,62 @@
+{
+  "accepted_source_entries_verified": 162,
+  "artifact_pins_verified": 6,
+  "at": "2026-10-16T19:45:02.926225+00:00",
+  "candidate_accepted": false,
+  "checks": [
+    "Reviewed exact final probe/protocol/PTX; Python AST parsed without importing the probe or loading a driver. All frozen inputs and installed API snapshots match.",
+    "Windows64 ctypes signatures use explicit integer, size_t, deviceptr and opaque-handle widths; APW layout/64-byte union are checked before DLL load. UUID preserves all16 bytes. Installed BeginCapture_v2/THREAD_LOCAL1 and instantiateWithFlags/AUTO_FREE1 match cudarc.",
+    "All31 symbols, including cleanup, resolve before resource creation. Only one kernel launch call exists; an immediately preceding ACTIVE capture getter and same-thread control flow forbid eager submission. No graph-launch symbol or replay exists.",
+    "Own256-byte allocation/window128 are fixed, capability/alignment/UUID guarded. Stream APW exact semantic readback precedes capture; end capture is immediately followed by instantiation, then one kernel node and its retained APW are checked.",
+    "Every applicable cleanup is attempted after error: end unfinished capture, destroy executable/graph, disable and read back private stream window, free allocation, destroy stream, unload module, restore prior binding and release own primary-context reference. Any invoked nonzero/error or cleanup mismatch prevents PASS.",
+    "Normal path has40 CUDA calls and one final JSON marker. Disabled APW is zero length with NORMAL/NORMAL; no allocation access has executed, so this does not claim normalization of previously populated persisting lines.",
+    "Root-only outer wrapper must pin this review/package, authorize one execution, serialize with live-idle GPU lock, enforce51GiB/60sec/owned-child cleanup and preserve logs/return codes plus source/main/live custody."
+  ],
+  "documentation": [
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html",
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__GRAPH.html",
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/structCUaccessPolicyWindow__v1.html"
+  ],
+  "execution_count": 0,
+  "findings": [],
+  "id": "D064",
+  "independent_script_review_pass": true,
+  "independent_source_review_pass": true,
+  "input_sha256": {
+    "C:\\Program Files\\Python312\\python.exe": "5aba6ec903f2e0e946459f98dc45c8129d3f22187f5adac00713d733191d3a3f",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\result.rs": "096198a59cf9c551edcca167ebb26292149fae1a39fef6372cf3ebbef65966b2",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\graph.rs": "dfd8eae6e2cb21bdc9089dec4fb58d0fa9fe2f6c191e06ff994780df20dddb8e",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e",
+    "C:\\Windows\\System32\\nvcuda.dll": "83cb61c63706ead0c2938aa62f3c9abe6098362ec3fd2425b77b2b178d4ae052",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D061-query-terminal-review\\report.json": "1a2734b4ac1bf21d4fed24bcedf1edc599f5adecf213bd2975599483ec031352",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\execution\\result.json": "4b1baf0fcc17eab443ca8b6fef0c3ce28659077e4771d28d50d34d0f20b5f28d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\prepared-manifest.json": "59984e8827220646145d3422075616a1fb272ac078fb253c9fd9e7ac9a8898bf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\query.py": "f16cb7a6d3a57aaf2c4d0c6b1880a874ff1f969a15487c766905277ca77e1885",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\report.json": "96434f27199d8321cfc6f57e4aaa5f77b63f0f3726d5acd7e5e48d7aa1d59135",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\scoped-cleanup-addendum\\report.json": "afe42688933201d9af77631d5096225107c08f51b244f5fddffef445b46ca0be",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\README.md": "f2cff017489fb2fbbe1eabe9fbb129f963e8d0b22dc59b19df2877e9f447c166",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\api-pins.json": "e63733866f1d8650cef6e8ff31fdfa412610e98504c74210159de62f01b218d3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\copy.ptx": "5bcf5832f6e52ab195efbfafea6013273f64066c9620cdeaa02e0be081ec7dc4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\preparation-checks.json": "0bf46bce748682ecced8107a2dbd0ec41bd4e5a77a55b2d4ec8931cba6397640",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\prepared-manifest.json": "5b1efaea69f555f1e577732bfa7318f0f2ecc8c390a950b4a544401ce94ad44b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\probe.py": "236a31bd9d3a1217c5b3f15faf31eb3af799eb3319454ed525575dbf2b1e3aec",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-cache-capture-probe\\protocol.json": "8ca01bc1d1fc67d89b018899def95b6d75d7d2fdca44c46cc89765150f83c094",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D064-root-decisions\\preparation.json": "e24102a75c5a750580474bf6a55cc1ebc7916b6288f18068f21bff3342d70811",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+  },
+  "limitations": [
+    "Source/API review is not execution. Runtime export/driver/capture attribute support may fail; preserve the single fixed attempt without fallback.",
+    "Successful result would establish retained synthetic graph-node APW metadata after immediate instantiation only. It would not establish solver graph inheritance, executable replay semantics, physical cache residency, numerical equivalence or speed.",
+    "Module load may driver-JIT the pinned PTX during separately authorized root execution. No compiler, native, driver, CUDA, build, source/status or live action was performed by this review."
+  ],
+  "performance_measurement": false,
+  "prepared_manifest_sha256": "5b1efaea69f555f1e577732bfa7318f0f2ecc8c390a950b4a544401ce94ad44b",
+  "probe_sha256": "236a31bd9d3a1217c5b3f15faf31eb3af799eb3319454ed525575dbf2b1e3aec",
+  "protocol_sha256": "8ca01bc1d1fc67d89b018899def95b6d75d7d2fdca44c46cc89765150f83c094",
+  "ptx_sha256": "5bcf5832f6e52ab195efbfafea6013273f64066c9620cdeaa02e0be081ec7dc4",
+  "reference_pins_verified": 15,
+  "source_modified": false,
+  "verdict": "PASS_SCOPED_CAPTURE_ONLY_SOURCE_AND_SCRIPT_REVIEW"
+}

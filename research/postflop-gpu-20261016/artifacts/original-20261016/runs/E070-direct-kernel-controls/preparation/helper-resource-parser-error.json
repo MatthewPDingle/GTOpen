@@ -1,0 +1,7 @@
+{
+  "error": "PTX parser check against the already-retained core resource files did not accept NVRTC .ptr .align qualifiers after the scalar type.",
+  "effect": "Parser precheck failed before any new NVRTC/driver/GPU process or report publication. No candidate, corpus or gate changed.",
+  "repair": "Parse complete parameter qualifier lists and preserve all nonmetadata qualifiers in ABI comparisons. Metadata remains a64bit pointer.",
+  "original_sha256": "4b50853baaf4e7f8a51acefe9056d257b83c498e121230718cf9ab662c8be875",
+  "new_GPU_executions": 0
+}

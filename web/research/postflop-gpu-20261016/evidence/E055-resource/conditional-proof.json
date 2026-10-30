@@ -1,0 +1,528 @@
+{
+  "baseline": {
+    "role_predicates_identified": 4,
+    "lock_predicates_identified": 4,
+    "arity_predicates_identified": 16,
+    "static_discount_words": 12,
+    "static_discount_loads": [
+      "ld.global.nc.f32 \t%f1, [%rd13];",
+      "ld.global.nc.f32 \t%f2, [%rd13+4];",
+      "ld.global.nc.f32 \t%f3, [%rd13+8];",
+      "ld.global.nc.f32 \t%f4, [%rd13];",
+      "ld.global.nc.f32 \t%f5, [%rd13+4];",
+      "ld.global.nc.f32 \t%f6, [%rd13+8];",
+      "ld.global.nc.f32 \t%f7, [%rd13];",
+      "ld.global.nc.f32 \t%f8, [%rd13+4];",
+      "ld.global.nc.f32 \t%f9, [%rd13+8];",
+      "ld.global.nc.f32 \t%f10, [%rd13];",
+      "ld.global.nc.f32 \t%f11, [%rd13+4];",
+      "ld.global.nc.f32 \t%f12, [%rd13+8];"
+    ],
+    "opponent": {
+      "reachable_words": 12,
+      "reachable_loads": [
+        "ld.global.nc.f32 \t%f1, [%rd13];",
+        "ld.global.nc.f32 \t%f2, [%rd13+4];",
+        "ld.global.nc.f32 \t%f3, [%rd13+8];",
+        "ld.global.nc.f32 \t%f4, [%rd13];",
+        "ld.global.nc.f32 \t%f5, [%rd13+4];",
+        "ld.global.nc.f32 \t%f6, [%rd13+8];",
+        "ld.global.nc.f32 \t%f7, [%rd13];",
+        "ld.global.nc.f32 \t%f8, [%rd13+4];",
+        "ld.global.nc.f32 \t%f9, [%rd13+8];",
+        "ld.global.nc.f32 \t%f10, [%rd13];",
+        "ld.global.nc.f32 \t%f11, [%rd13+4];",
+        "ld.global.nc.f32 \t%f12, [%rd13+8];"
+      ]
+    },
+    "locked_own": {
+      "reachable_words": 12,
+      "reachable_loads": [
+        "ld.global.nc.f32 \t%f1, [%rd13];",
+        "ld.global.nc.f32 \t%f2, [%rd13+4];",
+        "ld.global.nc.f32 \t%f3, [%rd13+8];",
+        "ld.global.nc.f32 \t%f4, [%rd13];",
+        "ld.global.nc.f32 \t%f5, [%rd13+4];",
+        "ld.global.nc.f32 \t%f6, [%rd13+8];",
+        "ld.global.nc.f32 \t%f7, [%rd13];",
+        "ld.global.nc.f32 \t%f8, [%rd13+4];",
+        "ld.global.nc.f32 \t%f9, [%rd13+8];",
+        "ld.global.nc.f32 \t%f10, [%rd13];",
+        "ld.global.nc.f32 \t%f11, [%rd13+4];",
+        "ld.global.nc.f32 \t%f12, [%rd13+8];"
+      ]
+    },
+    "unlocked_own": {
+      "reachable_words": 12,
+      "reachable_loads": [
+        "ld.global.nc.f32 \t%f1, [%rd13];",
+        "ld.global.nc.f32 \t%f2, [%rd13+4];",
+        "ld.global.nc.f32 \t%f3, [%rd13+8];",
+        "ld.global.nc.f32 \t%f4, [%rd13];",
+        "ld.global.nc.f32 \t%f5, [%rd13+4];",
+        "ld.global.nc.f32 \t%f6, [%rd13+8];",
+        "ld.global.nc.f32 \t%f7, [%rd13];",
+        "ld.global.nc.f32 \t%f8, [%rd13+4];",
+        "ld.global.nc.f32 \t%f9, [%rd13+8];",
+        "ld.global.nc.f32 \t%f10, [%rd13];",
+        "ld.global.nc.f32 \t%f11, [%rd13+4];",
+        "ld.global.nc.f32 \t%f12, [%rd13+8];"
+      ]
+    },
+    "per_arity": {
+      "1": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      },
+      "2": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f1, [%rd13];",
+            "ld.global.nc.f32 \t%f2, [%rd13+4];",
+            "ld.global.nc.f32 \t%f3, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f1, [%rd13];",
+            "ld.global.nc.f32 \t%f2, [%rd13+4];",
+            "ld.global.nc.f32 \t%f3, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f1, [%rd13];",
+            "ld.global.nc.f32 \t%f2, [%rd13+4];",
+            "ld.global.nc.f32 \t%f3, [%rd13+8];"
+          ]
+        }
+      },
+      "3": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f4, [%rd13];",
+            "ld.global.nc.f32 \t%f5, [%rd13+4];",
+            "ld.global.nc.f32 \t%f6, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f4, [%rd13];",
+            "ld.global.nc.f32 \t%f5, [%rd13+4];",
+            "ld.global.nc.f32 \t%f6, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f4, [%rd13];",
+            "ld.global.nc.f32 \t%f5, [%rd13+4];",
+            "ld.global.nc.f32 \t%f6, [%rd13+8];"
+          ]
+        }
+      },
+      "4": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f7, [%rd13];",
+            "ld.global.nc.f32 \t%f8, [%rd13+4];",
+            "ld.global.nc.f32 \t%f9, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f7, [%rd13];",
+            "ld.global.nc.f32 \t%f8, [%rd13+4];",
+            "ld.global.nc.f32 \t%f9, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f7, [%rd13];",
+            "ld.global.nc.f32 \t%f8, [%rd13+4];",
+            "ld.global.nc.f32 \t%f9, [%rd13+8];"
+          ]
+        }
+      },
+      "5": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      },
+      "8": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      },
+      "9": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      },
+      "16": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      },
+      "17": {
+        "opponent": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "locked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f10, [%rd13];",
+            "ld.global.nc.f32 \t%f11, [%rd13+4];",
+            "ld.global.nc.f32 \t%f12, [%rd13+8];"
+          ]
+        }
+      }
+    }
+  },
+  "candidate": {
+    "role_predicates_identified": 4,
+    "lock_predicates_identified": 4,
+    "arity_predicates_identified": 16,
+    "static_discount_words": 12,
+    "static_discount_loads": [
+      "ld.global.nc.f32 \t%f1, [%rd7];",
+      "ld.global.nc.f32 \t%f2, [%rd7+4];",
+      "ld.global.nc.f32 \t%f3, [%rd7+8];",
+      "ld.global.nc.f32 \t%f4, [%rd7];",
+      "ld.global.nc.f32 \t%f5, [%rd7+4];",
+      "ld.global.nc.f32 \t%f6, [%rd7+8];",
+      "ld.global.nc.f32 \t%f7, [%rd7];",
+      "ld.global.nc.f32 \t%f8, [%rd7+4];",
+      "ld.global.nc.f32 \t%f9, [%rd7+8];",
+      "ld.global.nc.f32 \t%f22, [%rd7];",
+      "ld.global.nc.f32 \t%f23, [%rd7+4];",
+      "ld.global.nc.f32 \t%f24, [%rd7+8];"
+    ],
+    "opponent": {
+      "reachable_words": 0,
+      "reachable_loads": []
+    },
+    "locked_own": {
+      "reachable_words": 0,
+      "reachable_loads": []
+    },
+    "unlocked_own": {
+      "reachable_words": 12,
+      "reachable_loads": [
+        "ld.global.nc.f32 \t%f1, [%rd7];",
+        "ld.global.nc.f32 \t%f2, [%rd7+4];",
+        "ld.global.nc.f32 \t%f3, [%rd7+8];",
+        "ld.global.nc.f32 \t%f4, [%rd7];",
+        "ld.global.nc.f32 \t%f5, [%rd7+4];",
+        "ld.global.nc.f32 \t%f6, [%rd7+8];",
+        "ld.global.nc.f32 \t%f7, [%rd7];",
+        "ld.global.nc.f32 \t%f8, [%rd7+4];",
+        "ld.global.nc.f32 \t%f9, [%rd7+8];",
+        "ld.global.nc.f32 \t%f22, [%rd7];",
+        "ld.global.nc.f32 \t%f23, [%rd7+4];",
+        "ld.global.nc.f32 \t%f24, [%rd7+8];"
+      ]
+    },
+    "per_arity": {
+      "1": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      },
+      "2": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f1, [%rd7];",
+            "ld.global.nc.f32 \t%f2, [%rd7+4];",
+            "ld.global.nc.f32 \t%f3, [%rd7+8];"
+          ]
+        }
+      },
+      "3": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f4, [%rd7];",
+            "ld.global.nc.f32 \t%f5, [%rd7+4];",
+            "ld.global.nc.f32 \t%f6, [%rd7+8];"
+          ]
+        }
+      },
+      "4": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f7, [%rd7];",
+            "ld.global.nc.f32 \t%f8, [%rd7+4];",
+            "ld.global.nc.f32 \t%f9, [%rd7+8];"
+          ]
+        }
+      },
+      "5": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      },
+      "8": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      },
+      "9": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      },
+      "16": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      },
+      "17": {
+        "opponent": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "locked_own": {
+          "reachable_words": 0,
+          "reachable_loads": []
+        },
+        "unlocked_own": {
+          "reachable_words": 3,
+          "reachable_loads": [
+            "ld.global.nc.f32 \t%f22, [%rd7];",
+            "ld.global.nc.f32 \t%f23, [%rd7+4];",
+            "ld.global.nc.f32 \t%f24, [%rd7+8];"
+          ]
+        }
+      }
+    }
+  },
+  "gates": {
+    "baseline_all12reads_reachable_for_all3roles": true,
+    "candidate_role_lock_arity_guards_identified": true,
+    "baseline_each_arity_reads3words_all3roles": true,
+    "candidate_opponent_no_discount_reads": true,
+    "candidate_locked_no_discount_reads": true,
+    "candidate_each_arity_unlocked3words": true
+  },
+  "status": "pass_conditional_read_mechanism",
+  "limits": "Root PTX static overapproximation: source-identified actor/traverser equality, signed lock<0 and declared arity comparisons may be fixed; all other conditions explore both successors. Supported immutable3float discount buffer only. Perarity checks cover1/2/3/4/5/8/9/16/17, allowing compiler body merging. No dynamic frequency, timing or universal numeric proof."
+}

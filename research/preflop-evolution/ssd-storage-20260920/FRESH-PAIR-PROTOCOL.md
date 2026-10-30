@@ -1,0 +1,9 @@
+# Fresh timing comparison after exactness qualification
+
+This comparison is eligible only after owner-only and allocation-reuse candidates pass their unchanged small and 500-iteration exactness gates. Select B as the qualified candidate with the lower observed 500-iteration total from those preliminary runs; this selection is a screening decision, not speed evidence. A is the retained original GPU-restored RAM implementation from connected v2. Use immutable retained executables, the same three-board manifest/subtree, 500 iterations, all RAM, and no strategy writes to SSD.
+
+Run the fixed order A, B, B, A in separate fresh processes/directories. Run no native builds, competing GPU work or substantial CPU experiments concurrently. Existing production-idle and 20 GB host / 3 GB GPU reserves apply. Each process has at most 1,800 seconds; the entire four-run comparison has at most 6,000 seconds. Stop and retain evidence on any failed check; do not silently repeat bad timings.
+
+Require every scientific checkpoint at 1, 20, 100 and 500 to equal the preserved resident reference exactly. A must transfer four canonical state images per iteration and B three; no disk entry or SSD strategy read/write is allowed. GPU workspace and state sizes must match. Primary metric is the 100-to-500 wall-time interval divided by 400 (includes the final evaluation); secondary is total run time. Report both individual pairs B1/A1 and B2/A2 and the ratio of the two-run medians. Baseline timing spread above 10% makes the measurement inconclusive. Require at least a 5% primary improvement in both pairs to call a repeatable improvement on this fixture. Two pairs do not justify a statistical confidence interval, a whole-app speedup, or a forecast for the 112-board forest.
+
+This does not test faster numerical convergence: all variants must follow the same exact trajectory. Broader runtime and poker accuracy remain separate gates. Production 56708 is unchanged.

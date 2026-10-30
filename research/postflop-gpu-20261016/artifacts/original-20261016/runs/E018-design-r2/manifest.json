@@ -1,0 +1,31 @@
+{
+  "id": "E018-design-r2",
+  "created_at": "2026-10-16T08:50:32.377472+00:00",
+  "parent_artifact": "E018-design (preserved; all12 sealed files verified)",
+  "scope": "Four frozen E018 files unchanged; authorized fifth file game.rs adds full mapped-child table bytes to public VRAM estimate",
+  "base_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "crates/solver/src/gpu/plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "crates/solver/src/gpu/kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "crates/solver/src/gpu/continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e",
+    "crates/solver/src/game.rs": "fc72c39cf5bf21b5ffdad51c0b58e68daefb5895878132c4aa154247f0dbaf8c"
+  },
+  "patch_sha256": "c094026376165de0d51071d8ea0c94457023565e8d77801d8a594e4e335b8213",
+  "parent_manifest_sha256": "52ab0237ac192b9b64087204750ade60c1ddb6babbe47f0c9457978f7f053c4b",
+  "original_four_candidate_hashes_unchanged": true,
+  "exact_D031_cuda": true,
+  "syntax_check": "rustfmt --edition 2021 --emit stdout --config skip_children=true game.rs > $null: exit0 (parse-only)",
+  "whitespace_check": "git diff --check: exit0",
+  "tests_executed": false,
+  "builds_executed": false,
+  "gpu_executed": false,
+  "first_measurement_id": "E018R1",
+  "independent_review": "pending r2 supplement; original four-file source review PASS"
+}

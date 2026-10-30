@@ -1,0 +1,340 @@
+{
+  "id": "D271",
+  "at": "2026-10-29T08:38:33.675900+00:00",
+  "device_field_inventory": [
+    "d_action_nodes",
+    "d_chance_parents",
+    "d_chance_children",
+    "d_chance_cards",
+    "d_chance_nodes",
+    "d_fold_nodes",
+    "d_show_nodes",
+    "d_node_player",
+    "d_node_na",
+    "d_node_data_off",
+    "d_node_children_start",
+    "d_node_twin",
+    "d_node_tlose",
+    "d_node_ttie",
+    "d_node_cdiv",
+    "d_node_river_slot",
+    "d_cc_start",
+    "d_cc_count",
+    "d_cc_card",
+    "d_cc_child",
+    "d_cc_perm",
+    "d_hand_perm[0]",
+    "d_hand_perm[1]",
+    "d_rsrc[0]",
+    "d_rsrc[1]",
+    "d_children",
+    "d_fold_card_off[0]",
+    "d_fold_card_off[1]",
+    "d_fold_card_idx[0]",
+    "d_fold_card_idx[1]",
+    "d_hand_c1[0]",
+    "d_hand_c1[1]",
+    "d_hand_c2[0]",
+    "d_hand_c2[1]",
+    "d_hand_mask[0]",
+    "d_hand_mask[1]",
+    "d_same[0]",
+    "d_same[1]",
+    "d_weights[0]",
+    "d_weights[1]",
+    "d_riv_off[0]",
+    "d_riv_off[1]",
+    "d_riv_cnt[0]",
+    "d_riv_cnt[1]",
+    "d_riv_idx[0]",
+    "d_riv_idx[1]",
+    "d_riv_lower[0]",
+    "d_riv_lower[1]",
+    "d_riv_upper[0]",
+    "d_riv_upper[1]",
+    "d_riv_card_off[0]",
+    "d_riv_card_off[1]",
+    "d_riv_card_pos[0]",
+    "d_riv_card_pos[1]",
+    "d_lock_off",
+    "d_lock_sigma",
+    "d_regrets[0]",
+    "d_regrets[1]",
+    "d_strat[0]",
+    "d_strat[1]",
+    "d_reach[0]",
+    "d_reach[1]",
+    "d_cfv_slot",
+    "d_cfv",
+    "d_eval_roots",
+    "d_disc"
+  ],
+  "two_actual_production_host_projections": {
+    "baseline": {
+      "production_host_sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "production_source_mod_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "adapted_mod_sha256": "bdb9f4b80f64c4ae982eff7026ec23d172a693e47d2d3f097bc2267032ae57cb",
+      "production_prefix_reverse_exact": true,
+      "original_observer_suffix_reverse_exact": true,
+      "23_CPU_expected_field_transforms": [
+        "d_node_player",
+        "d_node_na",
+        "d_node_data_off",
+        "d_node_children_start",
+        "d_node_twin",
+        "d_node_tlose",
+        "d_node_ttie",
+        "d_node_cdiv",
+        "d_node_river_slot",
+        "d_cc_start",
+        "d_cc_count",
+        "d_rsrc[0]",
+        "d_rsrc[1]",
+        "d_lock_off",
+        "d_cfv_slot",
+        "d_action_nodes",
+        "d_chance_parents",
+        "d_chance_children",
+        "d_chance_nodes",
+        "d_fold_nodes",
+        "d_show_nodes",
+        "d_cc_child",
+        "d_children"
+      ],
+      "observer_replacements": [
+        {
+          "old": "        let(lock_off,lock_sigma)=build_lock_table(solver);",
+          "new": "        let(lock_off,lock_sigma)=build_lock_table(solver);\n        let (_,forward,inverse,_)=self.d271_map_data(solver);"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_player\",&self.d_node_player,&plan.node_player,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_player\",&self.d_node_player,&crate::d271_expected_rows(&plan.node_player,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_na\",&self.d_node_na,&plan.node_na,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_na\",&self.d_node_na,&crate::d271_expected_rows(&plan.node_na,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_data_off\",&self.d_node_data_off,&plan.node_data_off,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_data_off\",&self.d_node_data_off,&crate::d271_expected_rows(&plan.node_data_off,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_children_start\",&self.d_node_children_start,&plan.node_children_start,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_children_start\",&self.d_node_children_start,&crate::d271_expected_rows(&plan.node_children_start,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_twin\",&self.d_node_twin,&plan.node_twin,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_twin\",&self.d_node_twin,&crate::d271_expected_rows(&plan.node_twin,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_tlose\",&self.d_node_tlose,&plan.node_tlose,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_tlose\",&self.d_node_tlose,&crate::d271_expected_rows(&plan.node_tlose,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_ttie\",&self.d_node_ttie,&plan.node_ttie,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_ttie\",&self.d_node_ttie,&crate::d271_expected_rows(&plan.node_ttie,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_cdiv\",&self.d_node_cdiv,&plan.node_cdiv,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_cdiv\",&self.d_node_cdiv,&crate::d271_expected_rows(&plan.node_cdiv,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_river_slot\",&self.d_node_river_slot,&plan.node_river_slot,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_river_slot\",&self.d_node_river_slot,&crate::d271_expected_rows(&plan.node_river_slot,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_start\",&self.d_cc_start,&plan.cc_start,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_start\",&self.d_cc_start,&crate::d271_expected_rows(&plan.cc_start,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_count\",&self.d_cc_count,&plan.cc_count,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_count\",&self.d_cc_count,&crate::d271_expected_rows(&plan.cc_count,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_rsrc[0]\",&self.d_rsrc[0],&plan.reach_slot[0],&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_rsrc[0]\",&self.d_rsrc[0],&crate::d271_expected_rows(&plan.reach_slot[0],&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_rsrc[1]\",&self.d_rsrc[1],&plan.reach_slot[1],&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_rsrc[1]\",&self.d_rsrc[1],&crate::d271_expected_rows(&plan.reach_slot[1],&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_lock_off\",&self.d_lock_off,&lock_off,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_lock_off\",&self.d_lock_off,&crate::d271_expected_rows(&lock_off,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cfv_slot\",&self.d_cfv_slot,&plan.cfv_slot,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cfv_slot\",&self.d_cfv_slot,&crate::d271_expected_rows(&plan.cfv_slot,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_action_nodes\",&self.d_action_nodes,&plan.action_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_action_nodes\",&self.d_action_nodes,&crate::d271_expected_ids(&plan.action_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_parents\",&self.d_chance_parents,&plan.chance_parents,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_parents\",&self.d_chance_parents,&crate::d271_expected_ids(&plan.chance_parents,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_children\",&self.d_chance_children,&plan.chance_children,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_children\",&self.d_chance_children,&crate::d271_expected_ids(&plan.chance_children,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_nodes\",&self.d_chance_nodes,&plan.chance_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_nodes\",&self.d_chance_nodes,&crate::d271_expected_ids(&plan.chance_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_fold_nodes\",&self.d_fold_nodes,&plan.fold_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_fold_nodes\",&self.d_fold_nodes,&crate::d271_expected_ids(&plan.fold_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_show_nodes\",&self.d_show_nodes,&plan.show_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_show_nodes\",&self.d_show_nodes,&crate::d271_expected_ids(&plan.show_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_child\",&self.d_cc_child,&plan.cc_child,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_child\",&self.d_cc_child,&crate::d271_expected_ids(&plan.cc_child,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_children\",&self.d_children,&solver.spot.tree.children,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_children\",&self.d_children,&crate::d271_expected_ids(&solver.spot.tree.children,&forward),&mut out));\n"
+        }
+      ]
+    },
+    "candidate": {
+      "production_host_sha256": "e87bbce61522626980686c5caa68359cc545d09c0883d3c13c7712eaf74b797b",
+      "production_source_mod_sha256": "5250dcf07d8f7543dcda37fc1d82b5354bdd1982c15bfecb6bff1e66b3893f48",
+      "adapted_mod_sha256": "3fade29a6aa8b0b1d1f36eb69a48dcef676460c1249d3db37f74a8d16a1df3ea",
+      "production_prefix_reverse_exact": true,
+      "original_observer_suffix_reverse_exact": true,
+      "23_CPU_expected_field_transforms": [
+        "d_node_player",
+        "d_node_na",
+        "d_node_data_off",
+        "d_node_children_start",
+        "d_node_twin",
+        "d_node_tlose",
+        "d_node_ttie",
+        "d_node_cdiv",
+        "d_node_river_slot",
+        "d_cc_start",
+        "d_cc_count",
+        "d_rsrc[0]",
+        "d_rsrc[1]",
+        "d_lock_off",
+        "d_cfv_slot",
+        "d_action_nodes",
+        "d_chance_parents",
+        "d_chance_children",
+        "d_chance_nodes",
+        "d_fold_nodes",
+        "d_show_nodes",
+        "d_cc_child",
+        "d_children"
+      ],
+      "observer_replacements": [
+        {
+          "old": "        let(lock_off,lock_sigma)=build_lock_table(solver);",
+          "new": "        let(lock_off,lock_sigma)=build_lock_table(solver);\n        let (_,forward,inverse,_)=self.d271_map_data(solver);"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_player\",&self.d_node_player,&plan.node_player,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_player\",&self.d_node_player,&crate::d271_expected_rows(&plan.node_player,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_na\",&self.d_node_na,&plan.node_na,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_na\",&self.d_node_na,&crate::d271_expected_rows(&plan.node_na,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_data_off\",&self.d_node_data_off,&plan.node_data_off,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_data_off\",&self.d_node_data_off,&crate::d271_expected_rows(&plan.node_data_off,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_children_start\",&self.d_node_children_start,&plan.node_children_start,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_children_start\",&self.d_node_children_start,&crate::d271_expected_rows(&plan.node_children_start,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_twin\",&self.d_node_twin,&plan.node_twin,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_twin\",&self.d_node_twin,&crate::d271_expected_rows(&plan.node_twin,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_tlose\",&self.d_node_tlose,&plan.node_tlose,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_tlose\",&self.d_node_tlose,&crate::d271_expected_rows(&plan.node_tlose,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_ttie\",&self.d_node_ttie,&plan.node_ttie,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_ttie\",&self.d_node_ttie,&crate::d271_expected_rows(&plan.node_ttie,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_cdiv\",&self.d_node_cdiv,&plan.node_cdiv,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_cdiv\",&self.d_node_cdiv,&crate::d271_expected_rows(&plan.node_cdiv,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_node_river_slot\",&self.d_node_river_slot,&plan.node_river_slot,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_node_river_slot\",&self.d_node_river_slot,&crate::d271_expected_rows(&plan.node_river_slot,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_start\",&self.d_cc_start,&plan.cc_start,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_start\",&self.d_cc_start,&crate::d271_expected_rows(&plan.cc_start,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_count\",&self.d_cc_count,&plan.cc_count,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_count\",&self.d_cc_count,&crate::d271_expected_rows(&plan.cc_count,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_rsrc[0]\",&self.d_rsrc[0],&plan.reach_slot[0],&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_rsrc[0]\",&self.d_rsrc[0],&crate::d271_expected_rows(&plan.reach_slot[0],&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_rsrc[1]\",&self.d_rsrc[1],&plan.reach_slot[1],&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_rsrc[1]\",&self.d_rsrc[1],&crate::d271_expected_rows(&plan.reach_slot[1],&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_lock_off\",&self.d_lock_off,&lock_off,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_lock_off\",&self.d_lock_off,&crate::d271_expected_rows(&lock_off,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cfv_slot\",&self.d_cfv_slot,&plan.cfv_slot,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cfv_slot\",&self.d_cfv_slot,&crate::d271_expected_rows(&plan.cfv_slot,&inverse),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_action_nodes\",&self.d_action_nodes,&plan.action_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_action_nodes\",&self.d_action_nodes,&crate::d271_expected_ids(&plan.action_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_parents\",&self.d_chance_parents,&plan.chance_parents,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_parents\",&self.d_chance_parents,&crate::d271_expected_ids(&plan.chance_parents,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_children\",&self.d_chance_children,&plan.chance_children,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_children\",&self.d_chance_children,&crate::d271_expected_ids(&plan.chance_children,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_chance_nodes\",&self.d_chance_nodes,&plan.chance_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_chance_nodes\",&self.d_chance_nodes,&crate::d271_expected_ids(&plan.chance_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_fold_nodes\",&self.d_fold_nodes,&plan.fold_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_fold_nodes\",&self.d_fold_nodes,&crate::d271_expected_ids(&plan.fold_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_show_nodes\",&self.d_show_nodes,&plan.show_nodes,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_show_nodes\",&self.d_show_nodes,&crate::d271_expected_ids(&plan.show_nodes,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_cc_child\",&self.d_cc_child,&plan.cc_child,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_cc_child\",&self.d_cc_child,&crate::d271_expected_ids(&plan.cc_child,&forward),&mut out));\n"
+        },
+        {
+          "old": "        records.push(crate::capture(&self.stream,\"d_children\",&self.d_children,&solver.spot.tree.children,&mut out));\n",
+          "new": "        records.push(crate::capture(&self.stream,\"d_children\",&self.d_children,&crate::d271_expected_ids(&solver.spot.tree.children,&forward),&mut out));\n"
+        }
+      ]
+    }
+  },
+  "all_actual_production_prefixes_and_original_observer_statements_reverse_exact": true,
+  "CUDA_source_SHA": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "identical_accepted_PTX_SHA": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "case_scope": "Original36/752phases/3528rawframes/324EV/32changingroots unchanged plus6fixed extra lock cases/30phase pairs/54EVs. Selection derived independently from complete original plans/kinds and actual pinned geometry; require selected and original fallback paths. Every GPU buffer retained; only23 metadata arrays inverted, other43 directly compared. No floating worklist order/physical CFV/precision/quality change.",
+  "observer_limit": "Prebuilt CUDA, observer allocations, retained CPU map/enum and raw I/O are diagnostic only. Actual ordinary NVRTC/JIT/full-cycle/material/CPU process costs unqualified. Same-agent review/shared old frame decoder not external/formal proof.",
+  "failure": "Genuine source/ABI/resource/constructor/metadata/numerical/state/graph/lock/save/resume mismatch closes unchanged E115 form; no source/helper/field/predicate/threshold/scope/flags/quality/sample rescue. Mechanical observer/reader errors retained and corrected additively without repeating completed native cases. All original complete1%/fixture/fresh16/broad/material/holdout/cumulative/app gates remain."
+}

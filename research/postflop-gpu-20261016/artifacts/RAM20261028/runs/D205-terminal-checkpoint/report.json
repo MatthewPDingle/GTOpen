@@ -1,0 +1,80 @@
+{
+  "id": "D205-close-prerequisite",
+  "at": "2026-10-28T22:04:42.815585+00:00",
+  "status": "scoped_cooperative_primitive_pass_whole_solver_unproven",
+  "resource_report_sha256": "897dc04efeeffcc1e71598c8287226169863aa4f4a8633423dc1e2fe6a828618",
+  "full_raw_report_sha256": "e1e1bd2e6c902799ac7c74789c0fc4d950f7e8d4fddbf7af4998e2600ed8d980",
+  "successful_full_matrix_protocol_sha256": "d595488b0d0557d9135f86fb6655072d8e379d1b233757851ff5b474b8fe9b39",
+  "original_protocol_sha256": "613b1c5574e1f121f4fa4d0a0608e390a708e451261e063792f45f57dd1f3743",
+  "all_completed_cases": 256,
+  "successful_full_matrix_kernel_launches": 768,
+  "extra_prior_zero_phase_no_work_launches": 1,
+  "total_completed_primitive_kernel_launches_including_partial_attempt": 769,
+  "prior_nonzero_barrier_or_graph_replay_observations": 0,
+  "all_full_matrix_words_guards_and_cooperative_graph_attributes_exact": true,
+  "full_matrix_raw_sha256": "f47c0582ae54794be05a0363b52fd2f6301c8149ace833469ccacb56e453304f",
+  "full_matrix_raw_bytes": 75096084,
+  "raw_rehashed_at_checkpoint": true,
+  "original_failed_compiler_and_capture_attempt_preserved": true,
+  "repair_scope": "Originalconstantspellingandmissingproductionsingle-streamevent-trackingcontextadapter. No PTX/case/phase/width/barrier/capturemode/data/oracle/gatechange. Onepriorzero-phaseno-worklaunchdisclosed;zerocompletedcase/nonzero-barrier/speedresultsrepeated.",
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D204-cooperative-resource\\execution\\rustc.exit.json",
+      "sha256": "a49f87315060bdbc7598704222eeb7494fd042663e1365e188ca39a9e49d8558",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D204-cooperative-resource\\execution\\probe.exit.json",
+      "sha256": "e70ea88e9b4d6748601d59eed61b40e855bc864676f70de9be5884185bed835b",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution\\rustc.exit.json",
+      "sha256": "6b02ead20ff8793fe7450fc2e90bce18996c4750e9ca3782fb445cd787f7d8d4",
+      "returncode": 1,
+      "expected_preserved_pre_full_matrix_failure": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution-r2\\rustc.exit.json",
+      "sha256": "055ff09d838f83891b87aef6f3281fd4aff607a59d037fc6ab72f42ef138cff7",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution-r2\\probe.exit.json",
+      "sha256": "25c6352b844ff091959e8769ee460f6c8dfe11e868759c94060bb4e42c7a4079",
+      "returncode": 101,
+      "expected_preserved_pre_full_matrix_failure": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution-r3\\rustc.exit.json",
+      "sha256": "a2c5e3b084f4068deadb7b3a3bc0df8920297a3f1bd82a4676a62a2df6c6f055",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution-r3\\probe.exit.json",
+      "sha256": "cd832ee34fc0ed73adda6c23b62d788170d7bc82f35f1100b171701fc9f4ff78",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D205-cooperative-grid-controls\\execution-r3\\audit.exit.json",
+      "sha256": "b39b23e2632fe962ab747d23a5c8d3740141a2c2b1ebec52511868fa411abf34",
+      "returncode": 0,
+      "expected_preserved_pre_full_matrix_failure": false
+    }
+  ],
+  "all_owned_compilers_native_readers_terminal": true,
+  "next_proposal_sha256": "09b07b3aa40afbb7e599531ffb71fdaeb7f72b1a7699d1a9674aa45f1b150fe5",
+  "actual_CFR_optimizer_or_whole_solver_equivalence_proven": false,
+  "solver_or_speed_samples": 0,
+  "new_gain_accepted_or_deployed": false,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "last_primary_baseline_id": "B316",
+  "current_RAM_reference_ms": 10456.4109,
+  "best_qualified": "E080 / GPU / compressed /16workers /defaultaffinity",
+  "goal_active": true
+}

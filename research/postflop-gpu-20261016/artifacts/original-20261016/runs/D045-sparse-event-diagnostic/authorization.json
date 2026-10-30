@@ -1,0 +1,47 @@
+{
+  "candidate": "D045",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D045_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-source-review\\report.json",
+      "sha256": "c068b245683e20383e6e1184e863630566ee2871e33f7b315c9ee5da7fe1acc3"
+    },
+    "D045_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-script-review\\report.json",
+      "sha256": "ab802e5f7c97093190328349b2cb9063ff26950556b24538912812f7458d5296"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-mod.rs",
+      "sha256": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5"
+    },
+    "crates/solver/src/gpu/graph_device_events.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-graph_device_events.rs",
+      "sha256": "0604e7f694b3742dafaba5a9c9789b830c167474db50cc47d75bb02c0491a60d"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-source-review\\report.json": "c068b245683e20383e6e1184e863630566ee2871e33f7b315c9ee5da7fe1acc3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-script-review\\report.json": "ab802e5f7c97093190328349b2cb9063ff26950556b24538912812f7458d5296",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\scripts-manifest.json": "66bc61035bbee5308e7cc34281ffeb86d41f7ec4157a308b6d76741068d97e74",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\protocol.json": "7b5d249b65c4dcaefb13fa6e928b445ede1f0f5228d4931f57f7c2ecdf6ab0b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\source-manifest.json": "0952fc2dde596ac297fd76398fa10e74ee00e46aa6f374359384046ceb3d15a8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\cleanup.json": "f0f958cd6359ba7d928ad707967634ba0ac7fabd770eae505fc331ca95d5d88b"
+  },
+  "authorized_at": "2026-10-16T13:50:30Z",
+  "scope": "Root authorizes the frozen temporary D045 diagnostic build and single fixed D045R1 invocation. No performance acceptance, extension or live deployment."
+}

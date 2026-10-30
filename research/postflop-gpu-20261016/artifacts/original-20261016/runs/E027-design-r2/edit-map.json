@@ -1,0 +1,152 @@
+{
+  "crates/solver/src/gpu/plan.rs": [
+    [
+      "    /// Total bytes of GPU staging (reach + cfv) this plan needs.",
+      "    /// Physical reach-row stride; hand loops and all other layouts still use `nh`.\n    pub fn reach_pitch(&self, p: usize) -> usize {\n        Spot::gpu_reach_pitch(self.nh[p])\n    }\n\n    /// Payload of one player's reach buffer, including row padding.\n    pub fn reach_elements(&self, p: usize) -> usize {\n        self.reach_blocks[p] * self.reach_pitch(p)\n    }\n\n    /// Total bytes of GPU staging (padded reach + cfv) this plan needs.",
+      1
+    ],
+    [
+      "self.reach_blocks[0] as u64 * self.nh[0] as u64",
+      "self.reach_blocks[0] as u64 * self.reach_pitch(0) as u64",
+      1
+    ],
+    [
+      "self.reach_blocks[1] as u64 * self.nh[1] as u64",
+      "self.reach_blocks[1] as u64 * self.reach_pitch(1) as u64",
+      1
+    ],
+    [
+      "    fn river_bounds_match_strength_comparisons() {",
+      "    fn river_bounds_match_strength_comparisons() {\n        // Covers zero-count reuse and every legal range width, including tails.\n        for nh in 0..=1326 {\n            let pitch = Spot::gpu_reach_pitch(nh);\n            assert_eq!(pitch % 8, 0);\n            assert!(pitch >= nh && pitch < nh + 8);\n            assert_eq!(pitch, (nh + 7) & !7usize, \"CUDA address agreement\");\n        }\n        assert_eq!(Spot::gpu_reach_pitch(0), 0);\n        let mut saw_padding = false;",
+      1
+    ],
+    [
+      "                assert_eq!(plan.cfv_slot[0], 0);",
+      "                assert_eq!(plan.cfv_slot[0], 0);\n                assert_eq!(plan.nh, [spot.hands[0].len(), spot.hands[1].len()]);\n                assert_eq!(plan.nh_max, plan.nh[0].max(plan.nh[1]));\n                let dense_reach = (0..2).map(|p| plan.reach_blocks[p] as u64 * plan.nh[p] as u64).sum::<u64>();\n                let padding = (0..2).map(|p| plan.reach_blocks[p] as u64 * (plan.reach_pitch(p) - plan.nh[p]) as u64).sum::<u64>();\n                assert_eq!(plan.staging_bytes(), (dense_reach + padding + (plan.cfv_blocks * plan.nh_max) as u64) * 4);\n                let full_arenas = spot.tree.data_size.iter().sum::<u64>() * 8;\n                assert!(spot.vram_estimate_bytes() >= plan.staging_bytes() + full_arenas + 512 * 1024 * 1024);",
+      1
+    ],
+    [
+      "                    assert_eq!(plan.reach_slot[p][0], 0);",
+      "                    assert_eq!(plan.reach_slot[p][0], 0);\n                    let pitch = plan.reach_pitch(p);\n                    saw_padding |= pitch > plan.nh[p];\n                    assert_eq!(pitch % 8, 0);\n                    assert!(plan.nh[p] <= pitch && pitch < plan.nh[p] + 8);\n                    assert_eq!(plan.reach_elements(p), plan.reach_blocks[p] * pitch);\n                    let mut previous_end = 0;\n                    for slot in 0..plan.reach_blocks[p] {\n                        let begin = slot * pitch;\n                        let end = begin + plan.nh[p];\n                        assert_eq!((begin * 4) % 32, 0);\n                        assert!(previous_end <= begin && end <= plan.reach_elements(p));\n                        previous_end = end;\n                    }",
+      1
+    ],
+    [
+      "        }\n    }\n}\n",
+      "        }\n        assert!(saw_padding, \"actual plans must exercise nonempty row padding\");\n    }\n}\n",
+      1
+    ]
+  ],
+  "crates/solver/src/gpu/mod.rs": [
+    [
+      "stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?",
+      "stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?",
+      1
+    ],
+    [
+      "stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?",
+      "stream.alloc_zeros::<f32>(plan.reach_elements(1)).map_err(e)?",
+      1
+    ],
+    [
+      "                let mut gpu = GpuSolver::new_with_budget(&s, budget).expect(\"test requires CUDA\");",
+      "                let mut gpu = GpuSolver::new_with_budget(&s, budget).expect(\"test requires CUDA\");\n                for p in 0..2 {\n                    assert_eq!(gpu.d_reach[p].len(), plan.reach_elements(p), \"admitted reach payload\");\n                }\n                assert_eq!(gpu.d_cfv.len(), plan.cfv_blocks * plan.nh_max);",
+      1
+    ],
+    [
+      "        Ok(GpuSolver {",
+      "        let reach_len = [plan.reach_elements(0), plan.reach_elements(1)];\n        Ok(GpuSolver {",
+      1
+    ],
+    [
+      "stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?",
+      "stream.alloc_zeros::<f32>(reach_len[0]).map_err(e)?",
+      1
+    ],
+    [
+      "stream.alloc_zeros::<f32>(plan.reach_elements(1)).map_err(e)?",
+      "stream.alloc_zeros::<f32>(reach_len[1]).map_err(e)?",
+      1
+    ]
+  ],
+  "crates/solver/src/gpu/kernels.cu": [
+    [
+      "//  - reach0/reach1: densely packed reach vectors; rsrc[p][n] is the physical\n//    slot of node n's nearest writing ancestor (see plan.rs).",
+      "//  - reach0/reach1: physical row pitch is (nh + 7) & ~7 floats; logical\n//    hand counts remain nh. rsrc[p][n] is the physical row slot of node n's\n//    nearest writing ancestor (see plan.rs).",
+      1
+    ],
+    [
+      "    int nh_a = actor == 0 ? nh0 : nh1;",
+      "    int nh_a = actor == 0 ? nh0 : nh1;\n    const int reach_pitch_a = (nh_a + 7) & ~7;",
+      1
+    ],
+    [
+      "const float* parent_reach = reach_a + (u64)src * nh_a;",
+      "const float* parent_reach = reach_a + (u64)src * reach_pitch_a;",
+      1
+    ],
+    [
+      "reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i]",
+      "reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * reach_pitch_a + i]",
+      2
+    ],
+    [
+      "    const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;",
+      "    const int reach_pitch0 = (nh0 + 7) & ~7;\n    const int reach_pitch1 = (nh1 + 7) & ~7;\n    const float* pr0 = reach0 + (u64)rsrc0[pn] * reach_pitch0;",
+      1
+    ],
+    [
+      "const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;",
+      "const float* pr1 = reach1 + (u64)rsrc1[pn] * reach_pitch1;",
+      1
+    ],
+    [
+      "reach0[(u64)rsrc0[cn] * nh0 + i]",
+      "reach0[(u64)rsrc0[cn] * reach_pitch0 + i]",
+      1
+    ],
+    [
+      "reach1[(u64)rsrc1[cn] * nh1 + j]",
+      "reach1[(u64)rsrc1[cn] * reach_pitch1 + j]",
+      1
+    ],
+    [
+      "    const float* global_reach = (p == 0 ? reach1 : reach0)",
+      "    const int reach_pitch_o = (nh_o + 7) & ~7;\n    const float* global_reach = (p == 0 ? reach1 : reach0)",
+      1
+    ],
+    [
+      "+ (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * nh_o;",
+      "+ (u64)(p == 0 ? rsrc1[n] : rsrc0[n]) * reach_pitch_o;",
+      1
+    ],
+    [
+      "    const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;",
+      "    const int reach_pitch_o = (nh_o + 7) & ~7;\n    const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * reach_pitch_o;",
+      1
+    ],
+    [
+      "        const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;",
+      "        const int reach_pitch_p = (nh_p + 7) & ~7;\n        const float* rp = reach_p_buf + (u64)rsrc_p[n] * reach_pitch_p;",
+      1
+    ]
+  ],
+  "crates/solver/src/game.rs": [
+    [
+      "    /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging",
+      "    /// Physical GPU reach-row pitch in floats; logical hand counts stay unchanged.\n    /// Valid poker ranges have at most 1326 hands. Keep in sync with CUDA's\n    /// `(nh + 7) & ~7` reach addressing, including the zero-count down sweep.\n    pub(crate) fn gpu_reach_pitch(nh: usize) -> usize {\n        nh.div_ceil(8) * 8\n    }\n\n    /// Rough VRAM needed to solve this spot on the GPU: per-node hand staging",
+      1
+    ],
+    [
+      "        let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;",
+      "        let pitch0 = Self::gpu_reach_pitch(self.hands[0].len()) as u64;\n        let pitch1 = Self::gpu_reach_pitch(self.hands[1].len()) as u64;\n        let staging = (reach_blocks[0] * pitch0 + reach_blocks[1] * pitch1 + n * nh_max) * 4;",
+      1
+    ]
+  ],
+  "crates/solver/src/gpu/continuation_capacity.rs": [
+    [
+      "work[q+4]=(full.reach_blocks[q]*full.nh[q]*4) as u64;",
+      "work[q+4]=full.reach_elements(q) as u64*4;",
+      1
+    ]
+  ]
+}

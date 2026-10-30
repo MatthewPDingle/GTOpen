@@ -1,0 +1,145 @@
+{
+  "id": "D308-native",
+  "at": "2026-10-29T20:58:44.687876+00:00",
+  "status": "decline_fixed_packed_form_scalarized_to_original4_FP_sites",
+  "reader_protocol_sha256": "726fd73649a7abd57ee998f5d8b8f0086b4c3e608f73d2478f783fba5cd6fcd2",
+  "witnesses": {
+    "scalar_regret_pair": {
+      "straightline_valid_thread_instruction_sites": 34,
+      "FP_arithmetic_sites": 4,
+      "two_scalar_subtractions": [
+        {
+          "index": 26,
+          "PC": "0x1a0",
+          "instruction": "FADD R17, -R2, R17",
+          "dest": "R17",
+          "common_subtrahend": "R2"
+        },
+        {
+          "index": 27,
+          "PC": "0x1b0",
+          "instruction": "FADD R21, -R2, R21",
+          "dest": "R21",
+          "common_subtrahend": "R2"
+        }
+      ],
+      "two_scalar_FMAs": [
+        {
+          "index": 29,
+          "PC": "0x1d0",
+          "instruction": "FFMA R15, R0, R15, R17",
+          "dest": "R15",
+          "multiplicands": [
+            "R0",
+            "R15"
+          ],
+          "delta": "R17"
+        },
+        {
+          "index": 30,
+          "PC": "0x1e0",
+          "instruction": "FFMA R19, R12, R19, R21",
+          "dest": "R19",
+          "multiplicands": [
+            "R12",
+            "R19"
+          ],
+          "delta": "R21"
+        }
+      ],
+      "two_scalar_output_stores": [
+        {
+          "index": 31,
+          "PC": "0x1f0",
+          "instruction": "STG.E desc[UR4][R2.64], R15",
+          "base": "R2",
+          "offset": 0,
+          "source": "R15"
+        },
+        {
+          "index": 32,
+          "PC": "0x200",
+          "instruction": "STG.E desc[UR4][R2.64+0x4], R19",
+          "base": "R2",
+          "offset": 4,
+          "source": "R19"
+        }
+      ],
+      "no_packed_arithmetic_opcode_or_outofline_call": true
+    },
+    "packed_regret_pair": {
+      "straightline_valid_thread_instruction_sites": 34,
+      "FP_arithmetic_sites": 4,
+      "two_scalar_subtractions": [
+        {
+          "index": 26,
+          "PC": "0x1a0",
+          "instruction": "FADD R19, R14, -R9",
+          "dest": "R19",
+          "common_subtrahend": "R9"
+        },
+        {
+          "index": 27,
+          "PC": "0x1b0",
+          "instruction": "FADD R21, R16, -R9",
+          "dest": "R21",
+          "common_subtrahend": "R9"
+        }
+      ],
+      "two_scalar_FMAs": [
+        {
+          "index": 29,
+          "PC": "0x1d0",
+          "instruction": "FFMA R15, R0, R15, R19",
+          "dest": "R15",
+          "multiplicands": [
+            "R0",
+            "R15"
+          ],
+          "delta": "R19"
+        },
+        {
+          "index": 30,
+          "PC": "0x1e0",
+          "instruction": "FFMA R17, R12, R17, R21",
+          "dest": "R17",
+          "multiplicands": [
+            "R12",
+            "R17"
+          ],
+          "delta": "R21"
+        }
+      ],
+      "two_scalar_output_stores": [
+        {
+          "index": 31,
+          "PC": "0x1f0",
+          "instruction": "STG.E desc[UR4][R8.64], R15",
+          "base": "R8",
+          "offset": 0,
+          "source": "R15"
+        },
+        {
+          "index": 32,
+          "PC": "0x200",
+          "instruction": "STG.E desc[UR4][R8.64+0x4], R17",
+          "base": "R8",
+          "offset": 4,
+          "source": "R17"
+        }
+      ],
+      "no_packed_arithmetic_opcode_or_outofline_call": true
+    }
+  },
+  "negative_reader_fixtures_rejected": [
+    "missing_FMA",
+    "different_FTZ_operation",
+    "wrong_second_output_offset",
+    "cross_component_delta"
+  ],
+  "decision": "PackedvirtualSUB/FMA bothlower to2scalarFADD+2scalarFFMA ontestedRTX5090/driver610.88. Requiredfewer-than4nativeFPsites/componentpair notestablished; closebefore anysolverprototype/numerical/speedtrial.",
+  "native_subtraction_operand_order": "Reference and packedlowering differ in ordering of negatedout/value operands. This structuralreader doesnotassertIEEE/NaNpayload equivalence; no actualnumericaltests executed.",
+  "applicationkernels_numerical_solver_or_speed_samples": 0,
+  "solver_candidate_admitted": false,
+  "limits": "Bothprimitivefullvalid-thread paths contain exactly2plainFADD withnegatedcommonsubtrahend,2plainFFMA consumingbothdistinctdeltas,2scalarstores atsamebase+0/+4, no otherFPoperation/branch/call. AllnativeFPsites accounted. Ifboth4sites, requiredfewerissuedarithmetic gatefails.4negativefixtures. Localstructuralworkproof only,notfullparameter/address/IEEE/NaN/equivalence/dynamiclatencyinterpreter. No claim about allGPUs/drivers/layouts, actual throughput, numericalaccuracy orcompletecycles."
+}

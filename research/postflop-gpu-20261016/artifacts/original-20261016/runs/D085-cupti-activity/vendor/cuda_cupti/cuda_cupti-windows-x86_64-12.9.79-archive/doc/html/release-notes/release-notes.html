@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<meta content="Release notes for CUPTI." name="description" />
+<meta content="User Guide" name="keywords" />
+<meta content="Known issues for CUPTI." name="description" />
+<meta content="User Guide" name="keywords" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. Release Notes &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Usage" href="../main/main.html" />
+    <link rel="prev" title="Overview" href="../overview/overview.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">1.1. Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-9-update-1">1.1.1. Updates in CUDA 12.9 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-9">1.1.2. Updates in CUDA 12.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-8-update-1">1.1.3. Updates in CUDA 12.8 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-8">1.1.4. Updates in CUDA 12.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-6-update-2">1.1.5. Updates in CUDA 12.6 Update 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-6-update-1">1.1.6. Updates in CUDA 12.6 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-6">1.1.7. Updates in CUDA 12.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-5-update-1">1.1.8. Updates in CUDA 12.5 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-5">1.1.9. Updates in CUDA 12.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-4-update-1">1.1.10. Updates in CUDA 12.4 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-4">1.1.11. Updates in CUDA 12.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-3-update-1">1.1.12. Updates in CUDA 12.3 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-3">1.1.13. Updates in CUDA 12.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-2-update-2">1.1.14. Updates in CUDA 12.2 Update 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-2-update-1">1.1.15. Updates in CUDA 12.2 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-2">1.1.16. Updates in CUDA 12.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-1-update-1">1.1.17. Updates in CUDA 12.1 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-1">1.1.18. Updates in CUDA 12.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-0-update-1">1.1.19. Updates in CUDA 12.0 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updates-in-cuda-12-0">1.1.20. Updates in CUDA 12.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#older-versions">1.1.21. Older Versions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-8">1.1.21.1. Updates in CUDA 11.8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-7-update-1">1.1.21.2. Updates in CUDA 11.7 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-7">1.1.21.3. Updates in CUDA 11.7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-6-update-1">1.1.21.4. Updates in CUDA 11.6 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-6">1.1.21.5. Updates in CUDA 11.6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-5-update-1">1.1.21.6. Updates in CUDA 11.5 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-5">1.1.21.7. Updates in CUDA 11.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-4-update-1">1.1.21.8. Updates in CUDA 11.4 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-4">1.1.21.9. Updates in CUDA 11.4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-3">1.1.21.10. Updates in CUDA 11.3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-2">1.1.21.11. Updates in CUDA 11.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-1">1.1.21.12. Updates in CUDA 11.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-11-0">1.1.21.13. Updates in CUDA 11.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-10-2">1.1.21.14. Updates in CUDA 10.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-10-1-update-2">1.1.21.15. Updates in CUDA 10.1 Update 2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-10-1-update-1">1.1.21.16. Updates in CUDA 10.1 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-10-1">1.1.21.17. Updates in CUDA 10.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-10-0">1.1.21.18. Updates in CUDA 10.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-9-2">1.1.21.19. Updates in CUDA 9.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-9-1">1.1.21.20. Updates in CUDA 9.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-9-0">1.1.21.21. Updates in CUDA 9.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-8-0">1.1.21.22. Updates in CUDA 8.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-7-5">1.1.21.23. Updates in CUDA 7.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-7-0">1.1.21.24. Updates in CUDA 7.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-6-5">1.1.21.25. Updates in CUDA 6.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-6-0">1.1.21.26. Updates in CUDA 6.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates-in-cuda-5-5">1.1.21.27. Updates in CUDA 5.5</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#known-issues">1.2. Known Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#profiling">1.2.1. Profiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#event-and-metric-api">1.2.1.1. Event and Metric API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#profiling-and-range-profiling-api">1.2.1.2. Profiling and Range Profiling API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#support">1.3. Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#platform-support">1.3.1. Platform Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gpu-support">1.3.2. GPU Support</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+<li><span class="section-number">1. </span>Release Notes</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-notes">
+<h1><span class="section-number">1. </span>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline"></a></h1>
+<p>CUPTI Release Notes.</p>
+<p>Release notes, including new features and important bug fixes. Supported platforms and GPUs.</p>
+<section id="id1">
+<h2><span class="section-number">1.1. </span>Release Notes<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<section id="updates-in-cuda-12-9-update-1">
+<h3><span class="section-number">1.1.1. </span>Updates in CUDA 12.9 Update 1<a class="headerlink" href="#updates-in-cuda-12-9-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Report the green context ID in the graph-level trace when graphs are launched from the host under a green context,
+instead of reporting the primary context ID.</p></li>
+<li><p>Update the CUPTI API version <code class="docutils literal notranslate"><span class="pre">CUPTI_API_VERSION</span></code> for CUDA Update releases.</p></li>
+<li><p>Include the required NVTX headers in the header file generated_nvtx_meta.h.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-9">
+<h3><span class="section-number">1.1.2. </span>Updates in CUDA 12.9<a class="headerlink" href="#updates-in-cuda-12-9" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>In confidential computing, rotating a key is a high-impact operation that halts all traffic using that key.
+During the key rotation, channels sharing the key will be drained and will not accept new CUDA work until the
+rotation completes. However, this process is not directly visible to user applications. CUPTI offers additional
+feedback to tools, allowing users to account for their impact on application timelines.
+The struct <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityConfidentialComputeRotation</span></code> provides timestamps for each stage of the encryption
+rotation, while the enum <code class="docutils literal notranslate"><span class="pre">CUpti_ConfidentialComputeRotationEventType</span></code> lists the supported stages.</p></li>
+<li><p>For Orin+ mobile chips on the Linux aarch64 platform, added metrics (mcc__*) support for memory controller
+channel (MC Channel) unit which connects to the DRAM.</p></li>
+<li><p>A new attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_DEVICE_BUFFER_SIZE_DEVICE_GRAPHS</span></code> is added in the activity attribute enum
+<code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code> to set and get the size for the profiling buffer for device graph operations.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Decoupled activity kinds <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_CUDA_EVENT</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_SYNCHRONIZATION</span></code>.
+Previously, enabling one of these activities would automatically enable the capturing of records for the other.</p></li>
+<li><p>Fixed a crash when the client fails to provide a buffer in response to the activity buffer request callback issued
+by CUPTI. This condition is notified to the client using the <code class="docutils literal notranslate"><span class="pre">CUPTI_CB_DOMAIN_STATE</span></code> callback.</p></li>
+<li><p>The callback <code class="docutils literal notranslate"><span class="pre">CUPTI_CBID_RESOURCE_MODULE_PROFILED</span></code> is issued regardless of whether kernel tracing is enabled.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-8-update-1">
+<h3><span class="section-number">1.1.3. </span>Updates in CUDA 12.8 Update 1<a class="headerlink" href="#updates-in-cuda-12-8-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>For graph level tracing, fixed the timestamp issue when memcpy node is the first node in the graph.</p></li>
+<li><p>The PC Sampling API and concurrent kernel tracing have been made compatible, allowing them to be collected in the same pass.</p></li>
+<li><p>Resolved bloat in the size of the BSS section in the static CUPTI library.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-8">
+<h3><span class="section-number">1.1.4. </span>Updates in CUDA 12.8<a class="headerlink" href="#updates-in-cuda-12-8" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul>
+<li><p>Added support for the Blackwell architecture.</p></li>
+<li><p>Blackwell architecture introduces a new hardware method called as Hardware Event System (HES) for collecting CUDA kernel timestamps.
+This method provides more accurate timestamps compared to the traditional SW instrumentation and semaphore based
+approach, and it is expected to add minimal overhead to the application.
+The new API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableHWTrace</span></code> enables the collection of kernel timestamps through HW events.
+In CUDA 12.8, this feature is experimental and subject to certain limitations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It is not supported on MPS, WSL, MCDM, MIG, or vGPU setups.</p></li>
+<li><p>On Windows, only a single context can be profiled at a time, while Linux allows tracing multiple contexts simultaneously.</p></li>
+<li><p>Late attach functionality is not supported.</p></li>
+</ul>
+</div></blockquote>
+<p>These limitations are expected to be addressed and removed in future releases.</p>
+</li>
+<li><p>Added support to provide GPU timestamps for the CUDA event record completion. The activity record <cite>CUpti_ActivityCudaEvent `</cite>
+is deprecated and has been replaced by the new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityCudaEvent2</span></code>.
+The new field <code class="docutils literal notranslate"><span class="pre">deviceTimestamp</span></code> provides the device-side timestamp and the field <code class="docutils literal notranslate"><span class="pre">cudaEventSyncId</span></code> provides a
+unique ID to associate event synchronization records with the latest CUDA Event record.</p></li>
+<li><p>The activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_SYNCHRONIZATION</span></code> doesn’t provide records for CUDA synchronization operations
+which return non-zero CUDA status. The API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableAllSyncRecords</span></code> can be used to enable/disable collection
+of all CUDA synchronization operations which return non-zero CUDA status.</p></li>
+<li><p>Profiling of NVLINK (<code class="docutils literal notranslate"><span class="pre">nvl*</span></code>), C2C and PCIe metrics are now supported using <a class="reference external" href="../main/main.html#profiler-host-api">Profiler Host API</a>
+and <a class="reference external" href="../main/main.html#range-profiling-api">Range Profiler APIs</a>. These metrics are collected at the device-level.
+These can’t be collected with the metrics which are collected at the context-level.</p></li>
+<li><p>Added a new field <code class="docutils literal notranslate"><span class="pre">copyCount</span></code> in the memcpy activity record to provide the number of copies performed by the
+batched memcpy operation. The activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy5</span></code> is replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy6</span></code>.</p></li>
+<li><p>For PM Sampling, users can configure the buffer append mode to either retain the latest or the oldest records in the event of a buffer overflow.
+Refer to the <code class="docutils literal notranslate"><span class="pre">CUpti_PmSampling_HardwareBuffer_AppendMode</span></code> enum for additional details.</p></li>
+<li><p>For unified memory profiling, the bitmask of devices involved in the operation is provided using the field <code class="docutils literal notranslate"><span class="pre">processors</span></code>.
+The activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryCounter2</span></code> is deprecated and has been replaced by the new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryCounter3</span></code>.</p></li>
+<li><p>To provide additional information for graph level trace for device launched graphs, a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDeviceGraphTrace</span></code>
+and activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_DEVICE_GRAPH_TRACE</span></code> are introduced. The activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_DEVICE_GRAPH_TRACE</span></code> can not be
+directly enabled or disabled. It is enabled when activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_GRAPH_TRACE</span></code> is enabled
+and device graph trace is enabled through the API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableDeviceGraph()</span></code>.</p></li>
+<li><p>Added a new overhead kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OVERHEAD_UVM_ACTIVITY_INIT</span></code> to report the overhead incurred while
+initializing the Unified Memory profiling.</p></li>
+<li><p>Enum <code class="docutils literal notranslate"><span class="pre">CUpti_PcieGen</span></code> is extended to include PCIe Gen 6.</p></li>
+</ul>
+<p><strong>Deprecated and dropped features</strong></p>
+<ul class="simple">
+<li><p>The CUPTI Event API from the header cupti_events.h and the CUPTI Metric API from the header cupti_metrics.h are deprecated in
+the CUDA 12.8 release and will be removed in a future CUDA release.
+It is recommended to use the <a class="reference external" href="../main/main.html#range-profiling-api">CUPTI Range Profiling API</a> as an alternative.
+For more information, refer to the section <a class="reference external" href="../main/main.html#evolution-of-the-profiling-apis">Evolution of the profiling APIs</a>.</p></li>
+<li><p>The PC Sampling Activity API and the source/SASS level metrics from the header <code class="docutils literal notranslate"><span class="pre">cupti_activity.h</span></code> will not be supported on
+Blackwell and future GPU architectures. These features were deprecated in earlier releases.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue where PM Sampling data was being collected on a different GPU than the intended one in multi-GPU systems.</p></li>
+<li><p>Fixed the issue that activity records for conditional nodes in the graph were not generated for Ampere and later architectures.</p></li>
+<li><p>If the device is in MIG mode, the <code class="docutils literal notranslate"><span class="pre">uuid</span></code> field in the device and NVLINK records returns the MIG UUID
+which uniquely identifies the subscribed MIG compute instance. This needs a matching driver from the 12.8 toolkit.</p></li>
+<li><p>CUPTI generates external correlation records for CUDA APIs even when CUDA API tracing is disabled using
+the <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableRuntimeApi</span></code> or <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableDriverApi</span></code> API. This issue is addressed in the
+CUDA 12.8 release.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-6-update-2">
+<h3><span class="section-number">1.1.5. </span>Updates in CUDA 12.6 Update 2<a class="headerlink" href="#updates-in-cuda-12-6-update-2" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>In CUDA 12.6 GA release, CUPTI added a new set of API around Perfworks host API to simplify usage, shield users from
+low-level concepts, and ease adaptation to changes in Perfworks APIs. The <em>host</em> API was provided in the
+header <code class="docutils literal notranslate"><span class="pre">cupti_profiler_host.h</span></code>. Complementing these, a new set of <em>target</em> API is added in CUDA 12.6 Update 2 to simplify
+profiling for new users and align the call structure with other profiling APIs for faster learning and better
+adaptability. The target API is provided in the header <code class="docutils literal notranslate"><span class="pre">cupti_range_profiler.h</span></code>, and will be referred to as
+<a class="reference external" href="../main/main.html#range-profiling-api">Range Profiling API</a>.
+For range profiling, it is strongly recommended that users, especially those new to the field, utilize the new host and
+target APIs introduced in CUDA 12.6.
+The <a class="reference external" href="../main/main.html#sample-range-profiling">range_profiling</a> sample shows how to use the host and target range profiling APIs.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is important to note that existing <a class="reference external" href="../main/main.html#cupti-profiling-api">Profiling API</a> may be deprecated and
+potentially removed in future releases, so transitioning to new <a class="reference external" href="../main/main.html#profiler-host-api">Profiler Host API</a> and
+<a class="reference external" href="../main/main.html#range-profiling-api">Range Profiler APIs</a> will ensure continued support and compatibility.</p>
+</div>
+<ul class="simple">
+<li><p>Added support for tracing and profiling on Microsoft Compute Driver Model (MCDM). This requires an NVIDIA display driver version of 565 or higher.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Improved the conversion accuracy of timestamps which are captured on the GPU and converted to CPU timestamps.</p></li>
+<li><p>Timestamps reported in the activity records were not always correct for Windows Subsystem for Linux (WSL) systems. This issue has been fixed.</p></li>
+<li><p>Fixed an issue that resulted in failure to capture the tracing information for kernels inside the body of the conditional node of CUDA Graph.
+This requires an NVIDIA display driver version of 565 or higher.</p></li>
+<li><p>PM Sampling trigger mode <code class="docutils literal notranslate"><span class="pre">CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVAL</span></code> is supported for all GA10x (GA102+) chips.</p></li>
+<li><p>Fixed issues with Enhanced compatibility (aka minor version compatibility) of a few CUPTI activities with the driver versions shipped with the CUDA 12.2 or prior releases.</p></li>
+<li><p>Made flushing of activity buffers thread-safe for per-thread activity buffer feature.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-6-update-1">
+<h3><span class="section-number">1.1.6. </span>Updates in CUDA 12.6 Update 1<a class="headerlink" href="#updates-in-cuda-12-6-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Disabling all callbacks in a domain using the <code class="docutils literal notranslate"><span class="pre">cuptiEnableDomain</span></code> API could unintentionally disable other activities and callbacks. This issue has been addressed and resolved.</p></li>
+<li><p>Fixed issues with Enhanced compatibility (aka minor version compatibility) of a few CUPTI activities with the driver versions shipped with the CUDA 12.2 or prior releases.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-6">
+<h3><span class="section-number">1.1.7. </span>Updates in CUDA 12.6<a class="headerlink" href="#updates-in-cuda-12-6" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI introduces PM Sampling APIs for collecting many hardware metrics by sampling the GPU’s performance
+monitors (PM) periodically at fixed intervals for a CUDA workload. These APIs are provided in the header
+file <code class="docutils literal notranslate"><span class="pre">cupti_pmsampling.h</span></code>. These are supported on Turing and later GPU architectures, i.e. devices with
+compute capability 7.5 and higher.
+Refer to the section <a class="reference external" href="../main/main.html#pm-sampling-api">PM Sampling API</a> for more details.</p></li>
+<li><p>The Profiling is split into four main phases - Enumeration, Configuration, Collection and Evaluation.
+APIs for three phases enumeration, configuration and evaluation are provided directly by the low level
+Perfworks APIs. CUPTI is adding a new set of APIs around these Perfworks host APIs to simplify usage,
+shield users from low-level concepts, and ease adaptation to changes in Perfworks APIs. These APIs
+promote consistency, reduce confusion, and enhance integration with CUPTI APIs. New host APIs are
+provided in the header <code class="docutils literal notranslate"><span class="pre">cupti_profiler_host.h</span></code>.
+Additionally, new target APIs will be introduced in a future release to simplify profiling for new
+users and align the call structure with other profiling APIs for faster learning and better adaptability.</p></li>
+<li><p>Added support for identifying the source of the memory allocation. This is useful when memory allocation
+request is made from a library or shared object which is called from the application. A new field
+<code class="docutils literal notranslate"><span class="pre">source</span></code> is added in the memory activity record. The activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory3</span></code> is
+deprecated and it is replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory4</span></code>. Refer to the section
+<a class="reference external" href="../main/main.html#activity-allocation-source-tracking">Device Memory Allocation Source Tracking</a>
+for more details.</p></li>
+<li><p>Added a new overhead kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OVERHEAD_ACTIVITY_BUFFER_REQUEST</span></code> to report the overhead
+incurred while requesting activity buffers from the CUPTI client.</p></li>
+<li><p>Added static library <code class="docutils literal notranslate"><span class="pre">libcupti_static.a</span></code> for ARM Server (arm64 SBSA).</p></li>
+</ul>
+<p><strong>Deprecated and dropped features</strong></p>
+<ul class="simple">
+<li><p>Source/SASS level metrics from the header <code class="docutils literal notranslate"><span class="pre">cupti_activity.h</span></code> are deprecated on Volta and later GPU
+architectures and these will be removed in a future release. It includes metrics
+<code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_GLOBAL_ACCESS</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_SHARED_ACCESS</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_BRANCH</span></code>
+and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_INSTRUCTION_EXECUTION</span></code> and related correlation kinds
+<code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_SOURCE_LOCATOR</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_INSTRUCTION_CORRELATION</span></code>. It is
+recommended to move to the <a class="reference external" href="../main/main.html#cupti-sass-metric-api">SASS Metric API</a> from the header
+<code class="docutils literal notranslate"><span class="pre">cupti_sass_metrics.h</span></code> which is supported on Volta and later GPU architectures.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Exported the profiling API <code class="docutils literal notranslate"><span class="pre">cuptiProfilerIsPassCollected</span></code>.</p></li>
+<li><p>Reduced the collection overhead for memcpy tracing.</p></li>
+<li><p>For some activities, duration for the activity buffer request was getting included in the activity duration.
+This issue is resolved.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-5-update-1">
+<h3><span class="section-number">1.1.8. </span>Updates in CUDA 12.5 Update 1<a class="headerlink" href="#updates-in-cuda-12-5-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed a crash for the graph level tracing for CUDA graphs.</p></li>
+<li><p>Fixed an issue due to which resource callback <code class="docutils literal notranslate"><span class="pre">CUPTI_CBID_RESOURCE_MODULE_PROFILED</span></code> might not be
+issued when no other activity is enabled. This issue was introduced in the CUDA 12.4 Update 1 release.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-5">
+<h3><span class="section-number">1.1.9. </span>Updates in CUDA 12.5<a class="headerlink" href="#updates-in-cuda-12-5" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added APIs <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableDriverApi</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableRuntimeApi</span></code> to limit the tracing of CUDA APIs that are of interest. This can help in reducing the CUDA API tracing overhead.</p></li>
+<li><p>Added new field <code class="docutils literal notranslate"><span class="pre">cigMode</span></code> to communicate the CUDA in Graphics (CIG) mode associated with the CUDA context. The activity record CUpti_ActivityContext2 is deprecated and it is replaced by a new activity record CUpti_ActivityContext3. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ContextCigMode</span></code> describes the supported CIG modes.</p></li>
+<li><p>Added new field <code class="docutils literal notranslate"><span class="pre">numMultiprocessors</span></code> in the context activity record to communicate the number of multiprocessors assigned to the green context.</p></li>
+<li><p>Tracing is supported for MPS (Multi-Process Service) on Tegra platforms.</p></li>
+<li><p>Obfuscated symbols are provided for Linux x86_64 platform, it helps us in speeding up the debug process for issues like crash, hang etc. See <a class="reference external" href="https://developer.nvidia.com/blog/cuda-toolkit-symbol-server/">https://developer.nvidia.com/blog/cuda-toolkit-symbol-server/</a> for information on how to use obfuscated symbols. Symbol server address is: <a class="reference external" href="https://cudatoolkit-symbols.nvidia.com/">https://cudatoolkit-symbols.nvidia.com/</a>.</p></li>
+</ul>
+<p><strong>Deprecated and dropped features</strong></p>
+<ul class="simple">
+<li><p>PC Sampling Activity API from the header <code class="docutils literal notranslate"><span class="pre">cupti_activity.h</span></code> is deprecated for Volta and later GPU architectures and this will be removed in a future release. It is recommended to move to the <a class="reference external" href="../main/main.html#cupti-pc-sampling-api">PC Sampling API</a> from the header <code class="docutils literal notranslate"><span class="pre">cupti_pcsampling.h</span></code> which is supported on Volta and later GPU architectures.</p></li>
+<li><p>Removed support for the PowerPC (ppc64le) architecture.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed Unified memory profiling on Heterogeneous Memory Management (HMM) and Address Translation Service (ATS) systems.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-4-update-1">
+<h3><span class="section-number">1.1.10. </span>Updates in CUDA 12.4 Update 1<a class="headerlink" href="#updates-in-cuda-12-4-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed a crash when API <code class="docutils literal notranslate"><span class="pre">cuptiFinalize</span></code> is used for applications using CUDA Graph.</p></li>
+<li><p>Fixed a crash which can occur while tracing memcpy and memset nodes in a graph when using graph level tracing.</p></li>
+<li><p>Skip delivering worker thread buffers on internal flush if the worker thread buffer is not full.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-4">
+<h3><span class="section-number">1.1.11. </span>Updates in CUDA 12.4<a class="headerlink" href="#updates-in-cuda-12-4" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added tracing support for applications using Green contexts. Added two new fields <code class="docutils literal notranslate"><span class="pre">isGreenContext</span></code> and <code class="docutils literal notranslate"><span class="pre">parentContextId</span></code> in the context activity record. The activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityContext</span></code> is deprecated and it is replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityContext2</span></code>.</p></li>
+<li><p>CUDA API calls are completed asynchronously from the perspective of the host CPU. This is accomplished by queuing the work slated for the GPU into a structure known as a command buffer. If there is insufficient space available in the command buffer when attempting to call a CUDA API, the host call will block until space becomes available. The user should be able to identify when this situation occurs. This is indicated using the new attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OVERHEAD_COMMAND_BUFFER_FULL</span></code> added in the activity overhead enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOverheadKind</span></code>. To provide additional details about the overhead, a new field <code class="docutils literal notranslate"><span class="pre">overheadData</span></code> is added in the overhead activity record. Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOverhead2</span></code> is deprecated and it is replaced by the new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOverhead3</span></code>.</p></li>
+<li><p>Added process ID and thread ID in the JIT activity record. To accommodate this change, activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityJit</span></code> is deprecated and it is replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityJit2</span></code>.</p></li>
+<li><p>To correlate the sampling data for a kernel with the launch API in the serial mode of the PC Sampling APIs, a new field <code class="docutils literal notranslate"><span class="pre">correlationId</span></code> is added in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_PCSamplingPCData</span></code>.</p></li>
+<li><p>For PC Sampling APIs, total (smsp__pcsamp_sample_count) and dropped (smsp__pcsamp_samples_data_dropped) sample counts are collected by default.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed the issue for overhead records showing the default thread ID than the one requested using the API <code class="docutils literal notranslate"><span class="pre">cuptiSetThreadIdType()</span></code>.</p></li>
+<li><p>Fixed instruction level SASS metrics profiling for CUDA Graph applications.</p></li>
+<li><p>When a device graph is first launched from the device and it is not launched from the host earlier, end timestamp could be 0 for graph-level tracing on Ampere and later GPU architectures. This issue is fixed.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-3-update-1">
+<h3><span class="section-number">1.1.12. </span>Updates in CUDA 12.3 Update 1<a class="headerlink" href="#updates-in-cuda-12-3-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>To provide normalized timestamps for all activities, CUPTI uses linear interpolation for conversion from GPU timestamps to CPU timestamps. This was broken with CUDA 12.3 causing spurious gaps or overlap on Tegra platforms. Fixed the issue.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-3">
+<h3><span class="section-number">1.1.13. </span>Updates in CUDA 12.3<a class="headerlink" href="#updates-in-cuda-12-3" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>New attributes <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OVERHEAD_RUNTIME_TRIGGERED_MODULE_LOADING</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OVERHEAD_LAZY_FUNCTION_LOADING</span></code> are added in the activity overhead enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOverheadKind</span></code> to provide the overhead information for CUDA runtime triggered module loading and lazy function loading respectively.</p></li>
+<li><p>New API <code class="docutils literal notranslate"><span class="pre">cuptiGetGraphExecId</span></code> provides the unique ID of the executable graph.</p></li>
+<li><p>Added support for collecting graph level trace for device launched graphs. A new API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableDeviceGraph</span></code> is added to enable the collection of records for device launched graphs.</p></li>
+<li><p>CUDA Graphs can be executed on multiple devices i.e. the root node could be launched on one device and the leaf node could be launched on the another device. New fields <code class="docutils literal notranslate"><span class="pre">endDeviceId</span></code> and <code class="docutils literal notranslate"><span class="pre">endContextId</span></code> are added to identify the ids of device and context respectively which are used to execute the last node of the graph. To accommodate this change, activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGraphTrace</span></code> is deprecated and it is replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGraphTrace2</span></code>.</p></li>
+<li><p>Added WSL profiling support on Windows 10 WSL with OS build version 19044 and greater. WSL profiling is not supported on Windows 10 WSL for systems that exceed 1 TB of system memory.</p></li>
+<li><p>Several performance improvements are done in the tracing path. One of the key improvements is to allow clients to request CUPTI to maintain the activity buffers at the thread level instead of global buffers. This can be achieved by setting the option <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PER_THREAD_ACTIVITY_BUFFER</span></code> of the enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code>. This can help in reducing the collection overhead for applications which launch CUDA activities from multiple host threads.</p></li>
+<li><p>Frame pointers are enabled for Linux x86_64 libraries.</p></li>
+<li><p>The deprecated Activity APIs and structures have been moved to a new header cupti_activity_deprecated.h, which is included in the header cupti_activity.h. Header cupti_activity.h contains only the latest version of APIs and structures.</p></li>
+<li><p>CUPTI no longer uses profiling semaphore pool to store the profiling data. Corresponding attributes <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_POOL_SIZE</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_POOL_LIMIT</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_PRE_ALLOCATE_VALUE</span></code> have been deprecated.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed SASS metric profiling for cuda graph.</p></li>
+<li><p>Fixed race condition in the API <code class="docutils literal notranslate"><span class="pre">cuptiSetThreadIdType</span></code> for late subscription.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-2-update-2">
+<h3><span class="section-number">1.1.14. </span>Updates in CUDA 12.2 Update 2<a class="headerlink" href="#updates-in-cuda-12-2-update-2" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>SASS Metric APIs introduced in the CUDA 12.2 GA release are transitioning from the beta to the production release.</p>
+<ul>
+<li><p>Added support for collecting SASS metrics for CUDA Graphs which are launched from host.</p></li>
+<li><p>Added a new field <code class="docutils literal notranslate"><span class="pre">numOfDroppedRecords</span></code> in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_SassMetricsDisable_Params</span></code> to indicate the number of dropped records when SASS data is flushed prior to calling the disable API.</p></li>
+</ul>
+</li>
+<li><p>Added a new field <code class="docutils literal notranslate"><span class="pre">api</span></code> in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_Profiler_DeviceSupported_Params</span></code> which can be used to check the configuration support level for profiler APIs like Profiling, PC Sampling and SASS Metric APIs.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed the tracing and profiling support for the GA103 GPU.</p></li>
+<li><p>Fixed a hang which can occur when activity buffer gets full while collecting the sampling data using the PC Sampling Activity API.</p></li>
+<li><p>Fixed the issue of incorrect timestamps for graph level trace when a graph node is disabled using the APIs <code class="docutils literal notranslate"><span class="pre">cuGraphNodeSetEnabled</span></code> or <code class="docutils literal notranslate"><span class="pre">cudaGraphNodeSetEnabled</span></code>.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-2-update-1">
+<h3><span class="section-number">1.1.15. </span>Updates in CUDA 12.2 Update 1<a class="headerlink" href="#updates-in-cuda-12-2-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Support for Confidential Computing</strong></p>
+<p>CUPTI supports some APIs while running in CC-devtools mode:</p>
+<ul class="simple">
+<li><p>Callback API</p></li>
+<li><p>Activity API</p></li>
+</ul>
+<p>The profiling APIs are not supported in CC-devtools mode with this release.  Using these APIs should return an error indicating the configuration is not supported:</p>
+<ul class="simple">
+<li><p>Profiling API</p></li>
+<li><p>PC Sampling API</p></li>
+<li><p>Checkpoint API</p></li>
+<li><p>SASS Metrics API</p></li>
+</ul>
+<p>Additionally, CUPTI is not supported at all in full CC mode.  CC-devtools mode must be used for tools support.
+Some CUDA APIs are not supported or behave differently when running in CC or CC-devtools mode; notably, host pinned memory requests will be traced as managed memory requests, and any CUDA memcopies on these converted pointers are traced as Device to Device copies irrespective of the locality of the source or destination pointers.
+For details on how to configure CC or CC-devtools mode, system and software requirements, as well as documentation on CUDA API changes, please see the confidential compute release documentation at <a class="reference external" href="https://docs.nvidia.com/confidential-computing/">https://docs.nvidia.com/confidential-computing/</a>.</p>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed timestamps for graph-level tracing for CUDA graphs running across multiple GPUs.</p></li>
+<li><p>Fixed a potential hang when CUPTI is unable to fetch attributes for an activity.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-2">
+<h3><span class="section-number">1.1.16. </span>Updates in CUDA 12.2<a class="headerlink" href="#updates-in-cuda-12-2" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>A new set of CUPTI APIs for collection of SASS metric data at the source level are provided in the header file <code class="docutils literal notranslate"><span class="pre">cupti_sass_metrics.h</span></code>. These support a larger set of metrics compared to the CUPTI Activity APIs for source-level analysis. SASS to source correlation can be done in the offline mode, similar to the PC sampling APIs. Hence the runtime overhead during data collection is lower. Refer to the section <a class="reference external" href="../main/main.html#cupti-sass-metric-api">CUPTI SASS Metrics API</a> for more details. Please note that this is a Beta feature, interface and functionality are subject to change in a future release.</p></li>
+<li><p>CUPTI now reports fatal errors, non-fatal errors and warnings instantaneously through callbacks. A new callback domain <code class="docutils literal notranslate"><span class="pre">CUPTI_CB_DOMAIN_STATE</span></code> is added for subscribing to the instantaneous error reporting. Corresponding callback ids are provided in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_CallbackIdState</span></code>.</p></li>
+<li><p>Added support for profiling of device graphs and host graphs that launch device graphs. There are some known limitations, please refer to the Known Issues section for details.</p></li>
+<li><p>Change in the stream attribute value is communicated by issuing the resource callback. Refer to the struct <code class="docutils literal notranslate"><span class="pre">CUpti_StreamAttrData</span></code> and callback id <code class="docutils literal notranslate"><span class="pre">CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGED</span></code> added in the enum <code class="docutils literal notranslate"><span class="pre">CUpti_CallbackIdResource</span></code>.</p></li>
+<li><p>New API <code class="docutils literal notranslate"><span class="pre">cuptiGetErrorMessage</span></code> provides descriptive message for CUPTI error codes.</p></li>
+<li><p>Removed the deprecated API <code class="docutils literal notranslate"><span class="pre">cuptiDeviceGetTimestamp</span></code> from the header <code class="docutils literal notranslate"><span class="pre">cupti_events.h</span></code>.</p></li>
+<li><p>Added metrics for Tensor core operations to count different types of tensor instructions.
+These metrics are named as <code class="docutils literal notranslate"><span class="pre">sm[sp]__ops_path_tensor_src_{src}[_dst_{dst}[_sparsity_{on,off}]].</span></code>
+These are available for devices with compute capability 7.0 and higher, except for Turing TU11x GPUs.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed crash for the graph-level trace for device graphs which are launched from the host.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-1-update-1">
+<h3><span class="section-number">1.1.17. </span>Updates in CUDA 12.1 Update 1<a class="headerlink" href="#updates-in-cuda-12-1-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed CUPTI tracing failure when just-in-time compilation of embedded PTX code is disabled using the environment variable <code class="docutils literal notranslate"><span class="pre">CUDA_DISABLE_PTX_JIT</span></code>.</p></li>
+<li><p>Fixed a crash in the API <code class="docutils literal notranslate"><span class="pre">cuptiFinalize</span></code>.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-1">
+<h3><span class="section-number">1.1.18. </span>Updates in CUDA 12.1<a class="headerlink" href="#updates-in-cuda-12-1" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Field <code class="docutils literal notranslate"><span class="pre">wsl</span></code> is added in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_Profiler_DeviceSupported_Params</span></code> to indicate whether Profiling API is supported on Windows Subsystem for Linux (WSL) system or not.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-0-update-1">
+<h3><span class="section-number">1.1.19. </span>Updates in CUDA 12.0 Update 1<a class="headerlink" href="#updates-in-cuda-12-0-update-1" title="Permalink to this headline"></a></h3>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Reduced the host memory overhead by avoiding caching copies of cubin images at the time of loading CUDA modules. Copies of cubin images are now created only when profiling features that need it are enabled.</p></li>
+<li><p>By default CUPTI switches back to the device memory, instead of the pinned host memory, for allocation of the profiling buffer for concurrent kernel tracing. This might help in improving the performance of the tracing run. Memory location can be controlled using the attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_MEM_ALLOCATION_TYPE_HOST_PINNED</span></code> of the activity attribute enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code>.</p></li>
+<li><p>CUPTI now captures the <code class="docutils literal notranslate"><span class="pre">cudaGraphLaunch</span></code> API and its kernels when CUPTI is attached after the graph is instantiated using the API <code class="docutils literal notranslate"><span class="pre">cudaGraphInstantiate</span></code> but it is attached before the graph is launched using the API <code class="docutils literal notranslate"><span class="pre">cudaGraphLaunch</span></code>. Some data in the kernel record would be missing i.e. <code class="docutils literal notranslate"><span class="pre">cacheConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">sharedMemoryExecuted</span></code>, <code class="docutils literal notranslate"><span class="pre">partitionedGlobalCacheRequested</span></code>, <code class="docutils literal notranslate"><span class="pre">partitionedGlobalCacheExecuted</span></code>, <code class="docutils literal notranslate"><span class="pre">sharedMemoryCarveoutRequested</span></code> etc. This fix requires the matching CUDA driver which ships with the CUDA 12.0 Update 1 release.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-12-0">
+<h3><span class="section-number">1.1.20. </span>Updates in CUDA 12.0<a class="headerlink" href="#updates-in-cuda-12-0" title="Permalink to this headline"></a></h3>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added new fields <code class="docutils literal notranslate"><span class="pre">maxPotentialClusterSize</span></code> and <code class="docutils literal notranslate"><span class="pre">maxActiveClusters</span></code> to help in calculating the cluster occupancy correctly. These fields are valid for devices with compute capability 9.0 and higher. To accommodate this change, activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel8</span></code> is deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel9</span></code>.</p></li>
+<li><p>Enhancements for PC Sampling APIs:</p>
+<ul>
+<li><p>CUPTI creates few worker threads to offload certain operations like decoding of the hardware data to the CUPTI PC sampling data and correlation of the PC data to the SASS instructions. CUPTI wakes up these threads periodically. To control the sleep time of the worker threads, a new attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPAN</span></code> is added in the enum <code class="docutils literal notranslate"><span class="pre">CUpti_PCSamplingConfigurationAttributeType</span></code>.</p></li>
+<li><p>Improved error reporting for hardware buffer overflow. When hardware buffer overflows, CUPTI returns the out of memory error code. And a new field <code class="docutils literal notranslate"><span class="pre">hardwareBufferFull</span></code> added in the struct <code class="docutils literal notranslate"><span class="pre">CUpti_PCSamplingData</span></code> is set to differentiate it from other out of memory cases. User can either increase the hardware buffer size or flush the hardware buffer at a higher frequency to avoid overflow.</p></li>
+</ul>
+</li>
+<li><p>Profiling APIs are supported on Windows Subsystem for Linux (WSL) with WSL version 2, NVIDIA display driver version 525 or higher and Windows 11.</p></li>
+<li><p>CUPTI support for Kepler GPUs is dropped in CUDA Toolkit 12.0.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Removed minor CUDA version from the SONAME of the CUPTI shared library for compatibility reasons. For example, SONAME of CUPTI library is libcupti.so.12 instead of libcupti.so.12.0 in CUDA 12.0 release.</p></li>
+<li><p>Activity kinds <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_MARKER</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_MARKER_DATA</span></code> can be enabled together.</p></li>
+</ul>
+</section>
+<section id="older-versions">
+<h3><span class="section-number">1.1.21. </span>Older Versions<a class="headerlink" href="#older-versions" title="Permalink to this headline"></a></h3>
+<section id="updates-in-cuda-11-8">
+<h4><span class="section-number">1.1.21.1. </span>Updates in CUDA 11.8<a class="headerlink" href="#updates-in-cuda-11-8" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI adds tracing and profiling support for Hopper and Ada Lovelace GPU families.</p></li>
+<li><p>Added new fields <code class="docutils literal notranslate"><span class="pre">clusterX</span></code>, <code class="docutils literal notranslate"><span class="pre">clusterY</span></code>, <code class="docutils literal notranslate"><span class="pre">clusterZ</span></code> and <code class="docutils literal notranslate"><span class="pre">clusterSchedulingPolicy</span></code> to output the Thread Block Cluster dimensions and scheduling policy. These fields are valid for devices with compute capability 9.0 and higher. To accommodate this change, activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel7</span></code> is deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel8</span></code>.</p></li>
+<li><p>A new activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_JIT</span></code> and corresponding activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityJit</span></code> are introduced to capture the overhead involved in the JIT (just-in-time) compilation and caching of the PTX or NVVM IR code to the binary code. New record also provides the information about the size and path of the compute cache where the binary code is stored.</p></li>
+<li><p>PC Sampling API is supported on Tegra platforms - QNX, Linux (aarch64) and Linux (x86_64) (Drive SDK).</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue that might cause crash when the size of the device buffer is changed, using the attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_DEVICE_BUFFER_SIZE</span></code>, after creation of the CUDA context.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-7-update-1">
+<h4><span class="section-number">1.1.21.2. </span>Updates in CUDA 11.7 Update 1<a class="headerlink" href="#updates-in-cuda-11-7-update-1" title="Permalink to this headline"></a></h4>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue for PC Sampling API <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingGetData</span></code> which might not always return all the samples when called after the PC sampling range defined by using the APIs <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingStart</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingStop</span></code>. Remaining samples were delivered in the successive call of the API <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingGetData</span></code> after the next range.</p></li>
+<li><p>Disabled tracing of nodes in the CUDA Graph when user enables tracing at the Graph level using the activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_GRAPH_TRACE</span></code>.</p></li>
+<li><p>Fixed missing <code class="docutils literal notranslate"><span class="pre">channelID</span></code> and <code class="docutils literal notranslate"><span class="pre">channelType</span></code> information for kernel records. Earlier these fields were populated for CUDA Graph launches only.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-7">
+<h4><span class="section-number">1.1.21.3. </span>Updates in CUDA 11.7<a class="headerlink" href="#updates-in-cuda-11-7" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>A new activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_GRAPH_TRACE</span></code> and activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGraphTrace</span></code> are introduced to represent the execution for a graph without giving visibility about the execution of its nodes. This is intended to reduce overheads involved in tracing each node separately. This activity can only be enabled for drivers of version 515 and above.</p></li>
+<li><p>A new API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableAndDump</span></code> is added to provide snapshot of certain activities like device, context, stream, NVLink and PCIe at any point during the profiling session.</p></li>
+<li><p>Added sample <a class="reference external" href="../main/main.html#sample-cupti-correlation">cupti_correlation</a> to show correlation between CUDA APIs and corresponding GPU activities.</p></li>
+<li><p>Added sample <a class="reference external" href="../main/main.html#sample-cupti-trace-injection">cupti_trace_injection</a> to show how to build an injection library using the activity and callback APIs which can be used to trace any CUDA application.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed corruption in the function name for PC Sampling API records.</p></li>
+<li><p>Fixed incorrect timestamps for GPU activities when user calls the API <code class="docutils literal notranslate"><span class="pre">cuptiActivityRegisterTimestampCallback</span></code> in the late CUPTI attach scenario.</p></li>
+<li><p>Fixed incomplete records for device to device memcopies in the late CUPTI attach scenario. This issue manifests mainly when application has a mix of CUDA graph and normal kernel launches.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-6-update-1">
+<h4><span class="section-number">1.1.21.4. </span>Updates in CUDA 11.6 Update 1<a class="headerlink" href="#updates-in-cuda-11-6-update-1" title="Permalink to this headline"></a></h4>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed hang for the PC Sampling API <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingStop</span></code>. This issue is seen for the PC sampling start and stop resulting in generation of large number of sampling records.</p></li>
+<li><p>Fixed timing issue for specific device to device memcpy operations.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-6">
+<h4><span class="section-number">1.1.21.5. </span>Updates in CUDA 11.6<a class="headerlink" href="#updates-in-cuda-11-6" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Two new fields <code class="docutils literal notranslate"><span class="pre">channelID</span></code> and <code class="docutils literal notranslate"><span class="pre">channelType</span></code> are added in the activity records for kernel, memcpy, peer-to-peer memcpy and memset to output the ID and type of the hardware channel on which these activities happen. Activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel6</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy4</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP3</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset3</span></code> are deprecated and replaced by new activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel7</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy5</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP4</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset4</span></code>.</p></li>
+<li><p>New fields <code class="docutils literal notranslate"><span class="pre">isMigEnabled</span></code>, <code class="docutils literal notranslate"><span class="pre">gpuInstanceId</span></code>, <code class="docutils literal notranslate"><span class="pre">computeInstanceId</span></code> and <code class="docutils literal notranslate"><span class="pre">migUuid</span></code> are added in the device activity record to provide MIG information for the MIG enabled GPU. Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice3</span></code> is deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice4</span></code>.</p></li>
+<li><p>A new field <code class="docutils literal notranslate"><span class="pre">utilizedSize</span></code> is added in the memory pool and memory activity record to provide the utilized size of the memory pool. Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemoryPool</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory2</span></code> are deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemoryPool2</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory3</span></code> respectively.</p></li>
+<li><p>API <code class="docutils literal notranslate"><span class="pre">cuptiActivityRegisterTimestampCallback</span></code> and callback function <code class="docutils literal notranslate"><span class="pre">CUpti_TimestampCallbackFunc</span></code> are added to register a callback function to obtain timestamp of user’s choice instead of using CUPTI provided timestamp in activity records.</p></li>
+<li><p>Profiling API supports profiling OptiX application.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Fixed multi-pass metric collection using the Profiling API in the auto range and kernel replay mode for Cuda Graph.</p></li>
+<li><p>Fixed the performance issue for the PC sampling API <code class="docutils literal notranslate"><span class="pre">cuptiPCSamplingStop</span></code>.</p></li>
+<li><p>Fixed corruption in variable names for OpenACC activity records.</p></li>
+<li><p>Fixed corruption in the fields of the struct <code class="docutils literal notranslate"><span class="pre">memoryPoolConfig</span></code> in the activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory3</span></code>.</p></li>
+<li><p>Filled the fields of the struct <code class="docutils literal notranslate"><span class="pre">memoryPoolConfig</span></code> in the activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory3</span></code> when a memory pointer allocated via memory pool is released using <code class="docutils literal notranslate"><span class="pre">cudaFree</span></code> CUDA API.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-5-update-1">
+<h4><span class="section-number">1.1.21.6. </span>Updates in CUDA 11.5 Update 1<a class="headerlink" href="#updates-in-cuda-11-5-update-1" title="Permalink to this headline"></a></h4>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue that causes incorrect range name for NVTX event attributes. The issue was introduced in CUDA 11.4.</p></li>
+<li><p>Made NVTX initialization APIs <code class="docutils literal notranslate"><span class="pre">InitializeInjectionNvtx</span></code> and <code class="docutils literal notranslate"><span class="pre">InitializeInjectionNvtx2</span></code> thread-safe.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-5">
+<h4><span class="section-number">1.1.21.7. </span>Updates in CUDA 11.5<a class="headerlink" href="#updates-in-cuda-11-5" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>A new API <code class="docutils literal notranslate"><span class="pre">cuptiProfilerDeviceSupported</span></code> is introduced to expose overall Profiling API support and specific requirements for a given device. Profiling API must be initialized by calling <code class="docutils literal notranslate"><span class="pre">cuptiProfilerInitialize</span></code> before testing device support.</p></li>
+<li><p>PC Sampling struct <code class="docutils literal notranslate"><span class="pre">CUpti_PCSamplingData</span></code> introduces a new field <code class="docutils literal notranslate"><span class="pre">nonUsrKernelsTotalSamples</span></code> to provide information about the number of samples collected for all non-user kernels.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice2</span></code> for device information has been deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice3</span></code>. New record adds a flag <code class="docutils literal notranslate"><span class="pre">isCudaVisible</span></code> to indicate whether device is visible to CUDA.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityNvLink3</span></code> for NVLink information has been deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityNvLink4</span></code>. New record can accommodate NVLink port information up to a maximum of 32 ports.</p></li>
+<li><p>A new <a class="reference external" href="../main/main.html#cupti-checkpoint-api">CUPTI Checkpoint API</a> is introduced, enabling automatic saving and restoring of device state, and facilitating development of kernel replay tools. This is helpful for User Replay mode of the CUPTI Profiling API, but is not limited to use with CUPTI.</p></li>
+<li><p>Tracing is supported on the Windows Subsystem for Linux version 2 (WSL 2).</p></li>
+<li><p>CUPTI is not supported on NVIDIA Crypto Mining Processors (CMP). A new error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTED</span></code> is introduced to indicate it.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue that causes crash for tracing of device to device memcopy operations.</p></li>
+<li><p>Resolved an issue that causes crash for OpenACC activity when it is enabled before other activities.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-4-update-1">
+<h4><span class="section-number">1.1.21.8. </span>Updates in CUDA 11.4 Update 1<a class="headerlink" href="#updates-in-cuda-11-4-update-1" title="Permalink to this headline"></a></h4>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved serialization of CUDA Graph launches for applications which use multiple threads to launch work.</p></li>
+<li><p>Previously, for applications that use CUDA Dynamic Parallelism (CDP), CUPTI detects the presence of the CDP kernels in the CUDA module. Even if CDP kernels are not called, it fails to trace the application. There is a change in the behavior, CUPTI now traces all the host launched kernels until it encounters a host launched kernel which launches child kernels. Subsequent kernels are not traced.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-4">
+<h4><span class="section-number">1.1.21.9. </span>Updates in CUDA 11.4<a class="headerlink" href="#updates-in-cuda-11-4" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Profiling APIs support profiling of the CUDA kernel nodes launched by a CUDA Graph. Auto range profiling with kernel replay mode and user range profiling with user replay and application replay modes are supported. Other combinations of range profiling and replay modes are not supported.</p></li>
+<li><p>Added support for tracing and profiling on <a class="reference external" href="https://www.nvidia.com/en-us/data-center/virtual-gpu-technology/">NVIDIA virtual GPUs</a> (vGPUs) on an upcoming GRID/vGPU release.</p></li>
+<li><p>Added sample <a class="reference external" href="../main/main.html#sample-profiling-injection">profiling_injection</a> to show how to build injection library using the Profiling API.</p></li>
+<li><p>Added sample <a class="reference external" href="../main/main.html#sample-concurrent-profiling">concurrent_profiling</a> to show how to retain the kernel concurrency across streams and devices using the Profiling API.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved the issue of not tracing the device to device memcopy nodes in a CUDA Graph.</p></li>
+<li><p>Fixed the issue of reporting zero size for local memory pool for mempool creation record.</p></li>
+<li><p>Resolved the issue of non-collection of samples for the default CUDA context for PC Sampling API.</p></li>
+<li><p>Enabled tracking of all domains and registered strings in NVTX irrespective of whether the NVTX activity kind or callbacks are enabled. This state tracking is needed for proper working of the tool which creates these NVTX objects before enabling the NVTX activity kind or callback.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-3">
+<h4><span class="section-number">1.1.21.10. </span>Updates in CUDA 11.3<a class="headerlink" href="#updates-in-cuda-11-3" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>A new set of CUPTI APIs for PC sampling data collection are provided in the header file <code class="docutils literal notranslate"><span class="pre">cupti_pcsampling.h</span></code> which support continuous mode data collection without serializing kernel execution and have a lower runtime overhead. Along with these a utility library is provided in the header file <code class="docutils literal notranslate"><span class="pre">cupti_pcsampling_util.h</span></code> which has APIs for GPU assembly to CUDA-C source correlation and for reading and writing the PC sampling data from/to files. Refer to the section <a class="reference external" href="../main/main.html#cupti-pc-sampling-api">CUPTI PC Sampling API</a> for more details.</p></li>
+<li><p>Enum <code class="docutils literal notranslate"><span class="pre">CUpti_PcieGen</span></code> is extended to include PCIe Gen 5.</p></li>
+<li><p>The following functions are deprecated and will be removed in a future release:</p>
+<ul>
+<li><p>Struct <code class="docutils literal notranslate"><span class="pre">NVPA_MetricsContext</span></code> and related APIs <code class="docutils literal notranslate"><span class="pre">NVPW_MetricsContext_*</span></code> from the header <code class="docutils literal notranslate"><span class="pre">nvperf_host.h</span></code>. It is recommended to use the struct <code class="docutils literal notranslate"><span class="pre">NVPW_MetricsEvaluator</span></code> and related APIs <code class="docutils literal notranslate"><span class="pre">NVPW_MetricsEvaluator_*</span></code> instead. Profiling API samples have been updated to show how to use these APIs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cuptiDeviceGetTimestamp</span></code> from the header <code class="docutils literal notranslate"><span class="pre">cupti_events.h</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Overhead reduction for tracing of CUDA memcopies.</p></li>
+<li><p>To provide normalized timestamps for all activities, CUPTI uses linear interpolation for conversion from GPU timestamps to CPU timestamps. This method can cause spurious gaps or overlap on the timeline. CUPTI improves the conversion function to provide more precise timestamps.</p></li>
+<li><p>Generate overhead activity record for semaphore pool allocation.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-2">
+<h4><span class="section-number">1.1.21.11. </span>Updates in CUDA 11.2<a class="headerlink" href="#updates-in-cuda-11-2" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>A new activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_MEMORY_POOL</span></code> and activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemoryPool</span></code> are introduced to represent the creation, destruction and trimming of a memory pool. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemoryPoolType</span></code> lists types of memory pool.</p></li>
+<li><p>A new activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_MEMORY2</span></code> and activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory2</span></code> are introduced to provide separate records for memory allocation and release operations. This helps in correlation of records of these operations to the corresponding CUDA APIs, which otherwise is not possible using the existing activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory</span></code> which provides a single record for both the memory operations.</p></li>
+<li><p>Added a new pointer field of type <code class="docutils literal notranslate"><span class="pre">CUaccessPolicyWindow</span></code> in the kernel activity record to provide the access policy window which specifies a contiguous region of global memory and a persistence property in the L2 cache for accesses within that region. To accommodate this change, activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel5</span></code> is deprecated and replaced by a new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel6</span></code>. This attribute is not collected by default. To control the collection of launch attributes, a new API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableLaunchAttributes</span></code> is introdcued.</p></li>
+<li><p>New attributes <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_DEVICE_BUFFER_PRE_ALLOCATE_VALUE</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_PRE_ALLOCATE_VALUE</span></code> are added in the activity attribute enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code> to set and get the number of device buffers and profiling semaphore pools which are preallocated for the context.</p></li>
+<li><p>CUPTI now allocates profiling buffer for concurrent kernel tracing in the pinned host memory in place of device memory. This might help in improving the performance of the tracing run. Memory location can be controlled using the attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_MEM_ALLOCATION_TYPE_HOST_PINNED</span></code> of the activity attribute enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code>.</p></li>
+<li><p>The compiler generated line information for inlined functions is improved due to which CUPTI can associate inlined functions with the line information of the function call site that has been inlined.</p></li>
+<li><p>Removed support for NVLink performance metrics (<code class="docutils literal notranslate"><span class="pre">nvlrx__*</span></code> and <code class="docutils literal notranslate"><span class="pre">nvltx__*</span></code>) from the Profiling API due to a potential application hang during data collection. The metrics will be added back in a future CUDA release.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Execution overheads introduced by CUPTI in the tracing path is reduced.</p></li>
+<li><p>For the concurrent kernel activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL</span></code>, CUPTI instruments the kernel code to collect the timing information. Previously, every kernel in the CUDA module was instrumented, thus the overhead is proportional to the number of different kernels in the module. This is a static overhead which happens at the time of loading the CUDA module. To reduce this overhead, kernels are not instrumented at the module load time, instead a single instrumentation code is generated at the time of loading the CUDA module and it is applied to each kernel during the kernel execution, thus avoiding most of the static overhead at the CUDA module load time.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-1">
+<h4><span class="section-number">1.1.21.12. </span>Updates in CUDA 11.1<a class="headerlink" href="#updates-in-cuda-11-1" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI adds tracing and profiling support for the NVIDIA Ampere GPUs with compute capability 8.6.</p></li>
+<li><p>Added a new field <code class="docutils literal notranslate"><span class="pre">graphId</span></code> in the activity records for kernel, memcpy, peer-to-peer memcpy and memset to output the unique ID of the CUDA graph that launches the activity through CUDA graph APIs. To accommodate this change, activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy3</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP2</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset2</span></code> are deprecated and replaced by new activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy4</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP3</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset3</span></code>. And kernel activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel5</span></code> replaces the padding field with <code class="docutils literal notranslate"><span class="pre">graphId</span></code>. Added a new API <code class="docutils literal notranslate"><span class="pre">cuptiGetGraphId</span></code> to query the unique ID of the CUDA graph.</p></li>
+<li><p>Added a new API <code class="docutils literal notranslate"><span class="pre">cuptiActivityFlushPeriod</span></code> to set the flush period for the worker thread.</p></li>
+<li><p>Added support for profiling cooperative kernels using Profiling APIs.</p></li>
+<li><p>Added NVLink performance metrics (nvlrx__* and nvltx__*) using the Profiling APIs. These metrics are available on devices with compute capability 7.0, 7.5 and 8.0, and these can be collected at the context level. Refer to the table <a class="reference external" href="../main/main.html#metrics-mapping-table">Metrics Mapping Table</a> for mapping between earlier CUPTI metrics and the Perfworks NVLink metrics for devices with compute capability 7.0.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue that causes CUPTI to not return full and completed activity buffers for a long time, CUPTI now attempts to return buffers early.</p></li>
+<li><p>To reduce the runtime overhead, CUPTI wakes up the worker thread based on certain heuristics instead of waking it up at a regular interval. New API <code class="docutils literal notranslate"><span class="pre">cuptiActivityFlushPeriod</span></code> can be used to control the flush period of the worker thread. This setting overrides the CUPTI heurtistics.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-11-0">
+<h4><span class="section-number">1.1.21.13. </span>Updates in CUDA 11.0<a class="headerlink" href="#updates-in-cuda-11-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI adds tracing and profiling support for devices with compute capability 8.0 i.e. NVIDIA A100 GPUs and systems that are based on A100.</p></li>
+<li><p>Enhancements for CUDA Graph:</p>
+<ul>
+<li><p>Support to correlate the CUDA Graph node with the GPU activities: kernel, memcpy, memset.</p>
+<ul>
+<li><p>Added a new field <code class="docutils literal notranslate"><span class="pre">graphNodeId</span></code> for Node Id in the activity records for kernel, memcpy, memset and P2P transfers. Activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel4</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy2</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP</span></code> are deprecated and replaced by new activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel5</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpy3</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset2</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemcpyPtoP2</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphNodeId</span></code> is the unique ID for the graph node.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">graphNodeId</span></code> can be queried using the new CUPTI API <code class="docutils literal notranslate"><span class="pre">cuptiGetGraphNodeId()</span></code>.</p></li>
+<li><p>Callback <code class="docutils literal notranslate"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_CREATED</span></code> is issued between a pair of the API enter and exit callbacks.</p></li>
+</ul>
+</li>
+<li><p>Introduced new callback <code class="docutils literal notranslate"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_CLONED</span></code> to indicate the cloning of the CUDA Graph node.</p></li>
+<li><p>Retain CUDA driver performance optimization in case memset node is sandwiched between kernel nodes. CUPTI no longer disables the conversion of memset nodes into kernel nodes for CUDA graphs.</p></li>
+<li><p>Added support for cooperative kernels in CUDA graphs.</p></li>
+</ul>
+</li>
+<li><p>Added support to trace Optix applications. Refer the <a class="reference external" href="../library-support/library-support.html#optix">Optix Profiling</a> section.</p></li>
+<li><p>CUPTI overhead is associated with the thread rather than process. Object kind of the overhead record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOverhead</span></code> is switched to <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_OBJECT_THREAD</span></code>.</p></li>
+<li><p>Added error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED</span></code> to indicate the presence of another CUPTI subscriber. API <code class="docutils literal notranslate"><span class="pre">cuptiSubscribe()</span></code> returns the new error code than <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_MAX_LIMIT_REACHED</span></code>.</p></li>
+<li><p>Added a new enum <code class="docutils literal notranslate"><span class="pre">CUpti_FuncShmemLimitConfig</span></code> to indicate whether user has opted in for maximum dynamic shared memory size on devices with compute capability 7.x by using function attributes <code class="docutils literal notranslate"><span class="pre">CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES</span></code> or <code class="docutils literal notranslate"><span class="pre">cudaFuncAttributeMaxDynamicSharedMemorySize</span></code> with CUDA driver and runtime respectively. Field <code class="docutils literal notranslate"><span class="pre">shmemLimitConfig</span></code> in the kernel activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel5</span></code> shows the user choice. This helps in correct occupancy calculation. Value <code class="docutils literal notranslate"><span class="pre">FUNC_SHMEM_LIMIT_OPTIN</span></code> in the enum <code class="docutils literal notranslate"><span class="pre">cudaOccFuncShmemConfig</span></code> is the corresponding option in the CUDA occupancy calculator.</p></li>
+</ul>
+<p><strong>Resolved Issues</strong></p>
+<ul class="simple">
+<li><p>Resolved an issue that causes incorrect or stale timing for memcopy and serial kernel activities.</p></li>
+<li><p>Overhead for PC Sampling Activity APIs is reduced by avoiding the reconfiguration of the GPU when PC sampling period doesn’t change between successive kernels. This is applicable for devices with compute capability 7.0 and higher.</p></li>
+<li><p>Fixed issues in the API <code class="docutils literal notranslate"><span class="pre">cuptiFinalize()</span></code> including the issue which may cause the application to crash. This API provides ability for safe and full detach of CUPTI during the execution of the application. More details in the section <a class="reference external" href="../main/main.html#dynamic-attach-and-detach">Dynamic Detach</a>.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-10-2">
+<h4><span class="section-number">1.1.21.14. </span>Updates in CUDA 10.2<a class="headerlink" href="#updates-in-cuda-10-2" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI allows tracing features for non-root and non-admin users on desktop platforms. Note that events and metrics profiling is still restricted for non-root and non-admin users. More details about the issue and the solutions can be found on this <a class="reference external" href="https://developer.nvidia.com/nvidia-development-tools-solutions-ERR_NVGPUCTRPERM-permission-issue-performance-counters">web page</a>.</p></li>
+<li><p>CUPTI no longer turns off the performance characteristics of CUDA Graph when tracing the application.</p></li>
+<li><p>CUPTI now shows memset nodes in the CUDA graph.</p></li>
+<li><p>Fixed the incorrect timing issue for the asynchronous cuMemset/cudaMemset activity.</p></li>
+<li><p>Several performance improvements are done in the tracing path.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-10-1-update-2">
+<h4><span class="section-number">1.1.21.15. </span>Updates in CUDA 10.1 Update 2<a class="headerlink" href="#updates-in-cuda-10-1-update-2" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>This release is focused on bug fixes and stability of the CUPTI.</p></li>
+<li><p>A security vulnerability issue required profiling tools to disable all the features for non-root or non-admin users. As a result, CUPTI cannot profile the application when using a Windows 419.17 or Linux 418.43 or later driver. More details about the issue and the solutions can be found on this <a class="reference external" href="https://developer.nvidia.com/nvidia-development-tools-solutions-ERR_NVGPUCTRPERM-permission-issue-performance-counters">web page</a>.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-10-1-update-1">
+<h4><span class="section-number">1.1.21.16. </span>Updates in CUDA 10.1 Update 1<a class="headerlink" href="#updates-in-cuda-10-1-update-1" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Support for the IBM POWER platform is added for the</p>
+<ul>
+<li><p>Profiling APIs in the header <code class="docutils literal notranslate"><span class="pre">cupti_profiler_target.h</span></code></p></li>
+<li><p>Perfworks metric APIs in the headers <code class="docutils literal notranslate"><span class="pre">nvperf_host.h</span></code> and <code class="docutils literal notranslate"><span class="pre">nvperf_target.h</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="updates-in-cuda-10-1">
+<h4><span class="section-number">1.1.21.17. </span>Updates in CUDA 10.1<a class="headerlink" href="#updates-in-cuda-10-1" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>This release is focused on bug fixes and performance improvements.</p></li>
+<li><p>The new set of profiling APIs and Perfworks metric APIs which were introduced in the CUDA Toolkit 10.0 are now integrated into the CUPTI library distributed in the CUDA Toolkit. Refer to the sections <a class="reference external" href="../main/main.html#cupti-profiling-api">CUPTI Profiling API</a> and <a class="reference external" href="../main/main.html#perfworks-metric-api">Perfworks Metric APIs</a> for documentation of the new APIs.</p></li>
+<li><p>Event collection mode <code class="docutils literal notranslate"><span class="pre">CUPTI_EVENT_COLLECTION_MODE_CONTINUOUS</span></code> is now supported on all device classes including Geforce and Quadro.</p></li>
+<li><p>Support for the NVTX string registration API <code class="docutils literal notranslate"><span class="pre">nvtxDomainRegisterStringA().</span></code></p></li>
+<li><p>Added enum <code class="docutils literal notranslate"><span class="pre">CUpti_PcieGen</span></code> to list PCIe generations.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-10-0">
+<h4><span class="section-number">1.1.21.18. </span>Updates in CUDA 10.0<a class="headerlink" href="#updates-in-cuda-10-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added tracing support for devices with compute capability 7.5.</p></li>
+<li><p>A new set of metric APIs are added for devices with compute capability 7.0 and higher. These provide low and deterministic profiling overhead on the target system. These APIs are currently supported only on Linux x86 64-bit and Windows 64-bit platforms. Refer to the <a class="reference external" href="https://developer.nvidia.com/cupti">CUPTI web page</a> for documentation and details to download the package with support for these new APIs. Note that both the old and new metric APIs are supported for compute capability 7.0. This is to enable transition of code to the new metric APIs. But one cannot mix the usage of the old and new metric APIs.</p></li>
+<li><p>CUPTI supports profiling of OpenMP applications. OpenMP profiling information is provided in the form of new activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOpenMp</span></code>. New API <code class="docutils literal notranslate"><span class="pre">cuptiOpenMpInitialize</span></code> is used to initialize profiling for supported OpenMP runtimes.</p></li>
+<li><p>Activity record for kernel <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel4</span></code> provides shared memory size set by the CUDA driver.</p></li>
+<li><p>Tracing support for CUDA kernels, memcpy and memset nodes launched by a CUDA Graph.</p></li>
+<li><p>Added support for resource callbacks for resources associated with the CUDA Graph. Refer enum <code class="docutils literal notranslate"><span class="pre">CUpti_CallbackIdResource</span></code> for new callback IDs.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-9-2">
+<h4><span class="section-number">1.1.21.19. </span>Updates in CUDA 9.2<a class="headerlink" href="#updates-in-cuda-9-2" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added support to query PCI devices information which can be used to construct the PCIe topology. See activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_PCIE</span></code> and related activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPcie</span></code>.</p></li>
+<li><p>To view and analyze bandwidth of memory transfers over PCIe topologies, new set of metrics to collect total data bytes transmitted and received through PCIe are added. Those give accumulated count for all devices in the system. These metrics are collected at the device level for the entire application. And those are made available for devices with compute capability 5.2 and higher.</p></li>
+<li><p>CUPTI added support for new metrics:</p>
+<ul>
+<li><p>Instruction executed for different types of load and store</p></li>
+<li><p>Total number of cached global/local load requests from SM to texture cache</p></li>
+<li><p>Global atomic/non-atomic/reduction bytes written to L2 cache from texture cache</p></li>
+<li><p>Surface atomic/non-atomic/reduction bytes written to L2 cache from texture cache</p></li>
+<li><p>Hit rate at L2 cache for all requests from texture cache</p></li>
+<li><p>Device memory (DRAM) read and write bytes</p></li>
+<li><p>The utilization level of the multiprocessor function units that execute tensor core instructions for devices with compute capability 7.0</p></li>
+</ul>
+</li>
+<li><p>A new attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_EVENT_ATTR_PROFILING_SCOPE</span></code> is added under enum <code class="docutils literal notranslate"><span class="pre">CUpti_EventAttribute</span></code> to query the profiling scope of a event. Profiling scope indicates if the event can be collected at the context level or device level or both. See Enum <code class="docutils literal notranslate"><span class="pre">CUpti_EventProfilingScope</span></code> for available profiling scopes.</p></li>
+<li><p>A new error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTED</span></code> is added to indicate that tracing and profiling on virtualized GPU is not supported.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-9-1">
+<h4><span class="section-number">1.1.21.20. </span>Updates in CUDA 9.1<a class="headerlink" href="#updates-in-cuda-9-1" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Added a field for correlation ID in the activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityStream</span></code>.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-9-0">
+<h4><span class="section-number">1.1.21.21. </span>Updates in CUDA 9.0<a class="headerlink" href="#updates-in-cuda-9-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI extends tracing and profiling support for devices with compute capability 7.0.</p></li>
+<li><p>Usage of compute device memory can be tracked through CUPTI. A new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemory</span></code> and activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_MEMORY</span></code> are added to track the allocation and freeing of memory. This activity record includes fields like virtual base address, size, PC (program counter), timestamps for memory allocation and free calls.</p></li>
+<li><p>Unified memory profiling adds new events for thrashing, throttling, remote map and device-to-device migration on 64 bit Linux platforms. New events are added under enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryCounterKind</span></code>. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryRemoteMapCause</span></code> lists possible causes for remote map events.</p></li>
+<li><p>PC sampling supports wide range of sampling periods ranging from 2^5 cycles to 2^31 cycles per sample. This can be controlled through new field <code class="docutils literal notranslate"><span class="pre">samplingPeriod2</span></code> in the PC sampling configuration struct <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSamplingConfig</span></code>.</p></li>
+<li><p>Added API <code class="docutils literal notranslate"><span class="pre">cuptiDeviceSupported()</span></code> to check support for a compute device.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel3</span></code> for kernel execution has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel4</span></code>. New record gives information about queued and submit timestamps which can help to determine software and hardware latencies associated with the kernel launch. These timestamps are not collected by default. Use API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableLatencyTimestamps()</span></code> to enable collection. New field <code class="docutils literal notranslate"><span class="pre">launchType</span></code> of type <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityLaunchType</span></code> can be used to determine if it is a cooperative CUDA kernel launch.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSampling2</span></code> for PC sampling has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSampling3</span></code>. New record accommodates 64-bit PC Offset supported on devices of compute capability 7.0 and higher.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityNvLink</span></code> for NVLink attributes has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityNvLink2</span></code>. New record accommodates increased port numbers between two compute devices.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGlobalAccess2</span></code> for source level global accesses has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGlobalAccess3</span></code>. New record accommodates 64-bit PC Offset supported on devices of compute capability 7.0 and higher.</p></li>
+<li><p>New attributes <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_POOL_SIZE</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_PROFILING_SEMAPHORE_POOL_LIMIT</span></code> are added in the activity attribute enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code> to set and get the profiling semaphore pool size and the pool limit.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-8-0">
+<h4><span class="section-number">1.1.21.22. </span>Updates in CUDA 8.0<a class="headerlink" href="#updates-in-cuda-8-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Sampling of the program counter (PC) is enhanced to point out the true latency issues, it indicates if the stall reasons for warps are actually causing stalls in the issue pipeline. Field <code class="docutils literal notranslate"><span class="pre">latencySamples</span></code> of new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSampling2</span></code> provides true latency samples. This field is valid for devices with compute capability 6.0 and higher. See section <a class="reference external" href="../main/main.html#cupti-pc-sampling-api">PC Sampling</a> for more details.</p></li>
+<li><p>Support for NVLink topology information such as the pair of devices connected via NVLink, peak bandwidth, memory access permissions etc is provided through new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityNvLink</span></code>. NVLink performance metrics for data transmitted/received, transmit/receive throughput and respective header overhead for each physical link. See section <a class="reference external" href="../main/main.html#nvlink">NVLink</a> for more details.</p></li>
+<li><p>CUPTI supports profiling of OpenACC applications. OpenACC profiling information is provided in the form of new activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOpenAccData</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOpenAccLaunch</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityOpenAccOther</span></code>. This aids in correlating OpenACC constructs on the CPU with the corresponding activity taking place on the GPU, and mapping it back to the source code. New API <code class="docutils literal notranslate"><span class="pre">cuptiOpenACCInitialize</span></code> is used to initialize profiling for supported OpenACC runtimes. See section <a class="reference external" href="../main/main.html#openacc">OpenACC</a> for more details.</p></li>
+<li><p>Unified memory profiling provides GPU page fault events on devices with compute capability 6.0 and 64 bit Linux platforms. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryAccessType</span></code> lists memory access types for GPU page fault events and enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryMigrationCause</span></code> lists migration causes for data transfer events.</p></li>
+<li><p>Unified Memory profiling support is extended to Mac platform.</p></li>
+<li><p>Support for 16-bit floating point (FP16) data format profiling. New metrics inst_fp_16, flop_count_hp_add, flop_count_hp_mul, flop_count_hp_fma, flop_count_hp, flop_hp_efficiency, half_precision_fu_utilization are supported. Peak FP16 flops per cycle for device can be queried using the enum <code class="docutils literal notranslate"><span class="pre">CUPTI_DEVICE_ATTR_FLOP_HP_PER_CYCLE</span></code> added to <code class="docutils literal notranslate"><span class="pre">CUpti_DeviceAttribute</span></code>.</p></li>
+<li><p>Added new activity kinds <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_SYNCHRONIZATION</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_STREAM</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_CUDA_EVENT</span></code>, to support the tracing of CUDA synchronization constructs such as context, stream and CUDA event synchronization. Synchronization details are provided in the form of new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivitySynchronization</span></code>. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivitySynchronizationType</span></code> lists different types of CUDA synchronization constructs.</p></li>
+<li><p>APIs <code class="docutils literal notranslate"><span class="pre">cuptiSetThreadIdType()</span></code>/<code class="docutils literal notranslate"><span class="pre">cuptiGetThreadIdType()</span></code> to set/get the mechanism used to fetch the thread-id used in CUPTI records. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityThreadIdType</span></code> lists all supported mechanisms.</p></li>
+<li><p>Added API <code class="docutils literal notranslate"><span class="pre">cuptiComputeCapabilitySupported()</span></code> to check the support for a specific compute capability by the CUPTI.</p></li>
+<li><p>Added support to establish correlation between an external API (such as OpenACC, OpenMP) and CUPTI API activity records. APIs <code class="docutils literal notranslate"><span class="pre">cuptiActivityPushExternalCorrelationId()</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiActivityPopExternalCorrelationId()</span></code> should be used to push and pop external correlation ids for the calling thread. Generated records of type <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityExternalCorrelation</span></code> contain both external and CUPTI assigned correlation ids.</p></li>
+<li><p>Added containers to store the information of events and metrics in the form of activity records <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstantaneousEvent</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstantaneousEventInstance</span></code>, <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstantaneousMetric</span></code> and <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstantaneousMetricInstance</span></code>. These activity records are not produced by the CUPTI, these are included for completeness and ease-of-use. Profilers built on top of CUPTI that sample events may choose to use these records to store the collected event data.</p></li>
+<li><p>Support for domains and annotation of synchronization objects added in NVTX v2. New activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMarker2</span></code> and enums to indicate various stages of synchronization object i.e. <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_FLAG_MARKER_SYNC_ACQUIRE</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_FLAG_MARKER_SYNC_ACQUIRE_SUCCESS</span></code>, <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_FLAG_MARKER_SYNC_ACQUIRE_FAILED</span></code> and <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_FLAG_MARKER_SYNC_RELEASE</span></code> are added.</p></li>
+<li><p>Unused field <code class="docutils literal notranslate"><span class="pre">runtimeCorrelationId</span></code> of the activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemset</span></code> is broken into two fields <code class="docutils literal notranslate"><span class="pre">flags</span></code> and <code class="docutils literal notranslate"><span class="pre">memoryKind</span></code> to indicate the asynchronous behavior and the kind of the memory used for the memset operation. It is supported by the new flag <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_FLAG_MEMSET_ASYNC</span></code> added in the enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityFlag</span></code>.</p></li>
+<li><p>Added flag <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_MEMORY_KIND_MANAGED</span></code> in the enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityMemoryKind</span></code> to indicate managed memory.</p></li>
+<li><p>API <code class="docutils literal notranslate"><span class="pre">cuptiGetStreamId</span></code> has been deprecated. A new API <code class="docutils literal notranslate"><span class="pre">cuptiGetStreamIdEx</span></code> is introduced to provide the stream id based on the legacy or per-thread default stream flag.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-7-5">
+<h4><span class="section-number">1.1.21.23. </span>Updates in CUDA 7.5<a class="headerlink" href="#updates-in-cuda-7-5" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Device-wide sampling of the program counter (PC) is enabled by default. This was a preview feature in the CUDA Toolkit 7.0 release and it was not enabled by default.</p></li>
+<li><p>Ability to collect all events and metrics accurately in presence of multiple contexts on the GPU is extended for devices with compute capability 5.x.</p></li>
+<li><p>API <code class="docutils literal notranslate"><span class="pre">cuptiGetLastError</span></code> is introduced to return the last error that has been produced by any of the CUPTI API calls or the callbacks in the same host thread.</p></li>
+<li><p>Unified memory profiling is supported with MPS (Multi-Process Service)</p></li>
+<li><p>Callback is provided to collect replay information after every kernel run during kernel replay. See API <code class="docutils literal notranslate"><span class="pre">cuptiKernelReplaySubscribeUpdate</span></code> and callback type <code class="docutils literal notranslate"><span class="pre">CUpti_KernelReplayUpdateFunc</span></code>.</p></li>
+<li><p>Added new attributes in enum <code class="docutils literal notranslate"><span class="pre">CUpti_DeviceAttribute</span></code> to query maximum shared memory size for different cache preferences for a device function.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-7-0">
+<h4><span class="section-number">1.1.21.24. </span>Updates in CUDA 7.0<a class="headerlink" href="#updates-in-cuda-7-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>CUPTI supports device-wide sampling of the program counter (PC). Program counters along with the stall reasons from all active warps are sampled at a fixed frequency in the round robin order. Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSampling</span></code> enabled using activity kind <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_KIND_PC_SAMPLING</span></code> outputs stall reason along with PC and other related information. Enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityPCSamplingStallReason</span></code> lists all the stall reasons. Sampling period is configurable and can be tuned using API <code class="docutils literal notranslate"><span class="pre">cuptiActivityConfigurePCSampling</span></code>. This feature is available on devices with compute capability 5.2.</p></li>
+<li><p>Added new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstructionCorrelation</span></code> which can be used to dump source locator records for all the PCs of the function.</p></li>
+<li><p>All events and metrics for devices with compute capability 3.x and 5.0 can be collected accurately in presence of multiple contexts on the GPU. In previous releases only some events and metrics could be collected accurately when multiple contexts were executing on the GPU.</p></li>
+<li><p>Unified memory profiling is enhanced by providing fine grain data transfers to and from the GPU, coupled with more accurate timestamps with each transfer. This information is provided through new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryCounter2</span></code>, deprecating old record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityUnifiedMemoryCounter</span></code>.</p></li>
+<li><p>MPS tracing and profiling support is extended on multi-gpu setups.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice</span></code> for device information has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityDevice2</span></code>. New record adds device UUID which can be used to uniquely identify the device across profiler runs.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel2</span></code> for kernel execution has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel3</span></code>. New record gives information about Global Partitioned Cache Configuration requested and executed. Partitioned global caching has an impact on occupancy calculation. If it is ON, then a CTA can only use a half SM, and thus a half of the registers available per SM. The new fields apply for devices with compute capability 5.2 and higher. Note that this change was done in CUDA 6.5 release with support for compute capability 5.2.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-6-5">
+<h4><span class="section-number">1.1.21.25. </span>Updates in CUDA 6.5<a class="headerlink" href="#updates-in-cuda-6-5" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Instruction classification is done for source-correlated Instruction Execution activity <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstructionExecution</span></code>. See <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityInstructionClass</span></code> for instruction classes.</p></li>
+<li><p>Two new device attributes are added to the activity <code class="docutils literal notranslate"><span class="pre">CUpti_DeviceAttribute</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUPTI_DEVICE_ATTR_FLOP_SP_PER_CYCLE</span></code> gives peak single precision flop per cycle for the GPU.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUPTI_DEVICE_ATTR_FLOP_DP_PER_CYCLE</span></code> gives peak double precision flop per cycle for the GPU.</p></li>
+</ul>
+</li>
+<li><p>Two new metric properties are added:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUPTI_METRIC_PROPERTY_FLOP_SP_PER_CYCLE</span></code> gives peak single precision flop per cycle for the GPU.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUPTI_METRIC_PROPERTY_FLOP_DP_PER_CYCLE</span></code> gives peak double precision flop per cycle for the GPU.</p></li>
+</ul>
+</li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGlobalAccess</span></code> for source level global access information has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityGlobalAccess2</span></code>. New record additionally gives information needed to map SASS assembly instructions to CUDA C source code. And it also provides ideal L2 transactions count based on the access pattern.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityBranch</span></code> for source level branch information has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityBranch2</span></code>. New record additionally gives information needed to map SASS assembly instructions to CUDA C source code.</p></li>
+<li><p>Sample <code class="docutils literal notranslate"><span class="pre">sass_source_map</span></code> is added to demonstrate the mapping of SASS assembly instructions to CUDA C source code.</p></li>
+<li><p>Default event collection mode is changed to Kernel (<code class="docutils literal notranslate"><span class="pre">CUPTI_EVENT_COLLECTION_MODE_KERNEL</span></code>) from Continuous (<code class="docutils literal notranslate"><span class="pre">CUPTI_EVENT_COLLECTION_MODE_CONTINUOUS</span></code>). Also Continuous mode is supported only on Tesla devices.</p></li>
+<li><p>Profiling results might be inconsistent when auto boost is enabled. Profiler tries to disable auto boost by default, it might fail to do so in some conditions, but profiling will continue. A new API <code class="docutils literal notranslate"><span class="pre">cuptiGetAutoBoostState</span></code> is added to query the auto boost state of the device. This API returns error <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_NOT_SUPPORTED</span></code> on devices that don’t support auto boost. Note that auto boost is supported only on certain Tesla devices from the Kepler+ family.</p></li>
+<li><p>Activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel2</span></code> for kernel execution has been deprecated and replaced by new activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityKernel3</span></code>. New record additionally gives information about Global Partitioned Cache Configuration requested and executed. The new fields apply for devices with 5.2 Compute Capability.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-6-0">
+<h4><span class="section-number">1.1.21.26. </span>Updates in CUDA 6.0<a class="headerlink" href="#updates-in-cuda-6-0" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Two new CUPTI activity kinds have been introduced to enable two new types of source-correlated data collection. The <code class="docutils literal notranslate"><span class="pre">Instruction</span> <span class="pre">Execution</span></code> kind collects SASS-level instruction execution counts, divergence data, and predication data. The <code class="docutils literal notranslate"><span class="pre">Shared</span> <span class="pre">Access</span></code> kind collects source correlated data indication inefficient shared memory accesses.</p></li>
+<li><p>CUPTI provides support for CUDA applications using Unified Memory. A new activity record reports Unified Memory activity such as transfers to and from a GPU and the number of Unified Memory related page faults.</p></li>
+<li><p>CUPTI recognized and reports the special MPS context that is used by CUDA applications running on a system with MPS enabled.</p></li>
+<li><p>The CUpti_ActivityContext activity record <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityContext</span></code> has been updated to introduce a new field into the structure in a backwards compatible manner. The 32-bit <code class="docutils literal notranslate"><span class="pre">computeApiKind</span></code> field was replaced with two 16 bit fields, <code class="docutils literal notranslate"><span class="pre">computeApiKind</span></code> and <code class="docutils literal notranslate"><span class="pre">defaultStreamId</span></code>. Because all valid <code class="docutils literal notranslate"><span class="pre">computeApiKind</span></code> values fit within 16 bits, and because all supported CUDA platforms are little-endian, persisted context record data read with the new structure will have the correct value for <code class="docutils literal notranslate"><span class="pre">computeApiKind</span></code> and have a value of zero for <code class="docutils literal notranslate"><span class="pre">defaultStreamId</span></code>. The CUPTI client is responsible for versioning the persisted context data to recognize when the <code class="docutils literal notranslate"><span class="pre">defaultStreamId</span></code> field is valid.</p></li>
+<li><p>To ensure that metric values are calculated as accurately as possible, a new metric API is introduced. Function <code class="docutils literal notranslate"><span class="pre">cuptiMetricGetRequiredEventGroupSets</span></code> can be used to get the groups of events that should be collected at the same time.</p></li>
+<li><p>Execution overheads introduced by CUPTI have been dramatically decreased.</p></li>
+<li><p>The new activity buffer API introduced in CUDA Toolkit 5.5 is required. The legacy <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnqueueBuffer</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiActivityDequeueBuffer</span></code> functions have been removed.</p></li>
+</ul>
+</section>
+<section id="updates-in-cuda-5-5">
+<h4><span class="section-number">1.1.21.27. </span>Updates in CUDA 5.5<a class="headerlink" href="#updates-in-cuda-5-5" title="Permalink to this headline"></a></h4>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Applications that use CUDA Dynamic Parallelism can be profiled using CUPTI. Device-side kernel launches are reported using a new activity kind.</p></li>
+<li><p>Device attributes such as power usage, clocks, thermals, etc. are reported via a new activity kind.</p></li>
+<li><p>A new activity buffer API uses callbacks to request and return buffers of activity records. The existing <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnqueueBuffer</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiActivityDequeueBuffer</span></code> functions are still supported but are deprecated and will be removed in a future release.</p></li>
+<li><p>The Event API supports kernel replay so that any number of events can be collected during a single run of the application.</p></li>
+<li><p>A new metric API <code class="docutils literal notranslate"><span class="pre">cuptiMetricGetValue2</span></code> allows metric values to be calculated for any device, even if that device is not available on the system.</p></li>
+<li><p>CUDA peer-to-peer memory copies are reported explicitly via the activity API. In previous releases these memory copies were only partially reported.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="known-issues">
+<h2><span class="section-number">1.2. </span>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline"></a></h2>
+<p>The following are known issues with the current release.</p>
+<ul>
+<li><p>A security vulnerability issue required profiling tools to disable features using GPU performance counters for non-root or non-admin users when using a Windows 419.17 or Linux 418.43 or later driver. By default, NVIDIA drivers require elevated permissions to access GPU performance counters. On Tegra platforms, profile as root or using sudo. On other platforms, you can either start profiling as root or using sudo, or by enabling non-admin profiling. On Windows, when in MCDM mode, a different set of steps is required for display driver versions prior to 570. More details about the issue and the solutions can be found on the ERR_NVGPUCTRPERM <a class="reference external" href="https://developer.nvidia.com/ERR_NVGPUCTRPERM">web page</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>CUPTI allows tracing features for non-root and non-admin users on desktop platforms only, Tegra platforms require root or sudo access.</p>
+</div>
+</li>
+<li><p>Profiling results might be inconsistent when auto boost is enabled. Profiler tries to disable auto boost by default. But it might fail to do so in some conditions and profiling will continue and results will be inconsistent. API <code class="docutils literal notranslate"><span class="pre">cuptiGetAutoBoostState()</span></code> can be used to query the auto boost state of the device. This API returns error <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_NOT_SUPPORTED</span></code> on devices that don’t support auto boost. Note that auto boost is supported only on certain Tesla devices with compute capability 3.0 and higher.</p></li>
+<li><p>CUPTI doesn’t populate the activity structures which are deprecated, instead the newer version of the activity structure is filled with the information.</p></li>
+<li><p>Because of the low resolution of the timer on Windows, the start and end timestamps can be same for activities having short execution duration on Windows.</p></li>
+<li><p>The application which calls CUPTI APIs cannot be used with Nvidia tools like <code class="docutils literal notranslate"><span class="pre">nvprof</span></code>, <code class="docutils literal notranslate"><span class="pre">Nvidia</span> <span class="pre">Visual</span> <span class="pre">Profiler</span></code>, <code class="docutils literal notranslate"><span class="pre">Nsight</span> <span class="pre">Compute</span></code>, <code class="docutils literal notranslate"><span class="pre">Nsight</span> <span class="pre">Systems</span></code>, <code class="docutils literal notranslate"><span class="pre">Nvidia</span> <span class="pre">Nsight</span> <span class="pre">Visual</span> <span class="pre">Studio</span> <span class="pre">Edition</span></code>, <code class="docutils literal notranslate"><span class="pre">cuda-gdb</span></code> and <code class="docutils literal notranslate"><span class="pre">cuda-memcheck</span></code>.</p></li>
+<li><p>PCIe and NVLink records, when enabled using the API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnable</span></code>, are not captured when CUPTI is initialized lazily after the CUDA initialization. API <code class="docutils literal notranslate"><span class="pre">cuptiActivityEnableAndDump</span></code> can be used to dump the records for these activities at any point during the profiling session.</p></li>
+<li><p>CUPTI fails to profile the OpenACC application when the OpenACC library linked with the application has missing definition of the OpenACC API routine/s. This is indicated by the error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINE</span></code>.</p></li>
+<li><p>OpenACC profiling might fail when OpenACC library is linked statically in the user application. This happens due to the missing definition of the OpenACC API routines needed for the OpenACC profiling, as compiler might ignore definitions for the functions not used in the application. This issue can be mitigated by linking the OpenACC library dynamically.</p></li>
+<li><p>Unified memory profiling is not supported on the ARM architecture.</p></li>
+<li><p>Profiling a C++ application which overloads the new operator at the global scope and uses any CUDA APIs like cudaMalloc() or cudaMallocManaged() inside the overloaded new operator will result in a hang.</p></li>
+<li><p>Devices with compute capability 6.0 and higher introduce a new feature, compute preemption, to give fair chance for all compute contexts while running long tasks. With compute preemption feature-</p>
+<ul class="simple">
+<li><p>If multiple contexts are running in parallel it is possible that long kernels will get preempted.</p></li>
+<li><p>Some kernels may get preempted occasionally due to timeslice expiry for the context.</p></li>
+</ul>
+<p>If kernel has been preempted, the time the kernel spends preempted is still counted towards kernel duration.</p>
+</li>
+</ul>
+<p>Compute preemption can affect events and metrics collection. The following are known issues with the current release:</p>
+<ul>
+<li><p>Events and metrics collection for a MPS client can result in higher counts than expected on devices with compute capability 7.0 and higher, since MPS client may get preempted due to termination of another MPS client.</p></li>
+<li><p>Events warps_launched and sm_cta_launched and metric inst_per_warp might provide higher counts than expected on devices with compute capability 6.0 and higher. Metric unique_warps_launched can be used in place of warps_launched to get correct count of actual warps launched as it is not affected by compute preemption.</p>
+<p>To avoid compute preemption affecting profiler results try to isolate the context being profiled:</p>
+<ul class="simple">
+<li><p>Run the application on secondary GPU where display is not connected.</p></li>
+<li><p>On Linux if the application is running on the primary GPU where the display driver is connected then unload the display driver.</p></li>
+<li><p>Run only one process that uses GPU at one time.</p></li>
+</ul>
+</li>
+<li><p>Devices with compute capability 6.0 and higher support demand paging. When the kernel is scheduled for the first time, all the pages allocated using cudaMallocManaged and that are required for execution of the kernel are fetched in the global memory when GPU faults are generated. Profiler requires multiple passes to collect all the metrics required for kernel analysis. The kernel state needs to be saved and restored for each kernel replay pass. For devices with compute capability 6.0 and higher and platforms supporting Unified memory, in the first kernel iteration the GPU faults will be generated and all pages will be fetched in the global memory. Second iteration onwards GPU page faults will not occur. This will significantly affect the memory related events and timing. The time taken from trace will include the time required to fetch the pages but most of the metrics profiled in multiple iterations will not include time/cycles required to fetch the pages. This causes inconsistency in the profiler results.</p></li>
+<li><p>When profiling an application that uses CUDA Dynamic Parallelism (CDP) there are several limitations to the profiling tools. CUDA 12.0 adds support for revamped CUDA Dynamic Parallelism APIs (referred to as CDP2), offering substantial performance improvements vs. the legacy CUDA Dynamic Parallelism APIs (referred to as CDP1).</p>
+<ul class="simple">
+<li><p>For Legacy CUDA Dynamic Parallelism (CDP1), CUPTI supports tracing of all host and device kernels for devices with compute capability 5.x and 6.x. For devices with compute capability 7.0 and higher, CUPTI traces all the host launched kernels until it encounters a host launched kernel which launches child kernels; subsequent kernels are not traced.</p></li>
+<li><p>For CUDA Dynamic Parallelism (CDP2), CUPTI supports tracing of host launched kernels only, it can’t trace device launched kernels.</p></li>
+<li><p>CUPTI doesn’t report CUDA API calls for device launched kernels.</p></li>
+<li><p>CUPTI doesn’t support profiling of device launched kernels i.e. it doesn’t report detailed event, metric, and source-level results for device launched kernels. Event, metric, and source-level results collected for CPU-launched kernels will include event, metric, and source-level results for the entire call-tree of kernels launched from within that kernel.</p></li>
+</ul>
+</li>
+<li><p>When profiling an application that uses CUDA Device Graphs, there are some limitations to the profiling tools.</p>
+<ul class="simple">
+<li><p>CUPTI traces the device graph when it is launched from the host. When the graph is launched from the device, graph level tracing is supported, but node level tracing is not.</p></li>
+</ul>
+</li>
+<li><p>Compilation of samples autorange_profiling and userrange_profiling requires a host compiler which supports C++11 features. For some g++ compilers, it is required to use the flag -std=c++11 to turn on C++11 features.</p></li>
+<li><p>PC Sampling Activity API is not supported on Tegra platforms, while PC Sampling API is supported on Tegra platforms.</p></li>
+<li><p>As of CUDA 11.4 and R470 TRD1 driver release, CUPTI is supported in a vGPU environment which requires a vGPU license. If the license is not obtained after 20 minutes, the reported performance data including metrics from the GPU will be inaccurate. This is because of a feature in vGPU environment which reduces performance but retains functionality as specified <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-licensing-user-guide/index.html#software-enforcement-grid-licensing">here</a>.</p></li>
+<li><p>CUPTI is not supported on NVIDIA Crypto Mining Processors (CMP). This is reported using the error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTED</span></code>. For more information, please visit the <a class="reference external" href="https://developer.nvidia.com/ERR_NVCMPGPU">web page</a>.</p></li>
+<li><p>CUPTI versions shipped in the CUDA Toolkit 11.7 and CUDA Toolkit 11.8 don’t support Kepler (sm_35 and sm_37) devices. Refer to the webpages <a class="reference external" href="https://developer.nvidia.com/cupti-ctk11_7">CUPTI 11.7</a> and <a class="reference external" href="https://developer.nvidia.com/cupti-ctk11_8">CUPTI 11.8</a> for location of the CUPTI packages having the support for these Kepler devices.</p></li>
+<li><p>Support for the GA103 GPU was added in the CUDA 11.6 release but it was broken for releases from CUDA 11.8 to CUDA 12.2 Update 1.</p></li>
+<li><p>Unified memory profiling is broken for Maxwell devices on Windows platform.</p></li>
+<li><p>For confidential computing devices, allocation of pinned (page-locked) host memory for profiling buffer for concurrent kernel tracing is not supported. Setting attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_ACTIVITY_ATTR_MEM_ALLOCATION_TYPE_HOST_PINNED</span></code> of the activity attribute enum <code class="docutils literal notranslate"><span class="pre">CUpti_ActivityAttribute</span></code> will return the error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_NOT_SUPPORTED</span></code>.</p></li>
+<li><p>There is no tracing and profiling support for chip-to-chip (C2C) interconnect.</p></li>
+<li><p>With the new PC Sampling APIs CUPTI doesn’t report any pc sampling data for cuda graph launches in serialized mode.</p></li>
+<li><p>There can be a long delay in attaching CUPTI to a running process. It is possible that the thread might starve if it is unable to access the resources it needs to perform the attach operation, as other threads have higher priority or hold locks on these resources.</p></li>
+<li><p>Concurrent kernel tracing is not supported for cooperative kernel launches under MPS for pre-Hopper archs, and it can cause hang.</p></li>
+<li><p>The latency timestamps i.e. queued and submitted timestamps are not supported for the HW events based kernel tracing.</p></li>
+</ul>
+<section id="profiling">
+<h3><span class="section-number">1.2.1. </span>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline"></a></h3>
+<p>The following are common known issues for the Event API, Metric API, Range Profiling API and Profiling API:</p>
+<ul class="simple">
+<li><p>Profiling may significantly change the overall performance characteristics of the application. Refer to the section <a class="reference external" href="../main/main.html#cupti-overhead">CUPTI Overhead</a> for more details.</p></li>
+<li><p>Profiling a kernel while other contexts are active on the same device (e.g. X server, or secondary CUDA or graphics application) can result in varying metric values for L2/FB (Device Memory) related metrics. Specifically, L2/FB traffic from non-profiled contexts cannot be excluded from the metric results. To completely avoid this issue, profile the application on a GPU without secondary contexts accessing the same device (e.g. no X server on Linux).</p></li>
+<li><p>Profiling is not supported for multidevice cooperative kernels, that is, kernels launched by using the API functions <code class="docutils literal notranslate"><span class="pre">cudaLaunchCooperativeKernelMultiDevice</span></code> or <code class="docutils literal notranslate"><span class="pre">cuLaunchCooperativeKernelMultiDevice</span></code>.</p></li>
+<li><p>Enabling certain events can cause GPU kernels to run longer than the driver’s watchdog time-out limit. In these cases the driver will terminate the GPU kernel resulting in an application error and profiling data will not be available. Please disable the driver watchdog time out before profiling such long running CUDA kernels</p>
+<ul>
+<li><p>On Linux, setting the X Config option Interactive to false is recommended.</p></li>
+<li><p>For Windows, detailed information about TDR (Timeout Detection and Recovery) and how to disable it is available at <a class="reference external" href="https://docs.microsoft.com/en-us/windows-hardware/drivers/display/timeout-detection-and-recovery">https://docs.microsoft.com/en-us/windows-hardware/drivers/display/timeout-detection-and-recovery</a></p></li>
+</ul>
+</li>
+<li><p>The values of operations/second calculated from this NVIDIA developer tools site and generated by using the data center monitoring tools are not calculated in the same way as the operations/second used for export control purposes and should not be relied upon to assess performance against the export control limits.</p></li>
+</ul>
+<section id="event-and-metric-api">
+<h4><span class="section-number">1.2.1.1. </span>Event and Metric API<a class="headerlink" href="#event-and-metric-api" title="Permalink to this headline"></a></h4>
+<p>The following are known issues related to Event and Metric API:</p>
+<ul class="simple">
+<li><p>The CUPTI <a class="reference external" href="../main/main.html#cupti-event-api">event APIs</a> from the header <code class="docutils literal notranslate"><span class="pre">cupti_events.h</span></code> and <a class="reference external" href="../main/main.html#cupti-metric-api">metric APIs</a> from the header <code class="docutils literal notranslate"><span class="pre">cupti_metrics.h</span></code> are not supported for the devices with compute capability 7.5 and higher. It is advised to use the <a class="reference external" href="../main/main.html#range-profiling-api">CUPTI Range Profiling API</a> instead. Refer to the section <a class="reference external" href="../main/main.html#evolution-of-the-profiling-apis">Evolution of the profiling APIs</a> for more details.</p></li>
+<li><p>While collecting events in continuous mode, event reporting may be delayed i.e. event values may be returned by a later call to readEvent(s) API and the event values for the last readEvent(s) API may get lost.</p></li>
+<li><p>When profiling events, it is possible that the domain instance that gets profiled gives event value 0 due to absence of workload on the domain instance since CUPTI profiles one instance of the domain by default. To profile all instances of the domain, user can set event group attribute <code class="docutils literal notranslate"><span class="pre">CUPTI_EVENT_GROUP_ATTR_PROFILE_ALL_DOMAIN_INSTANCES</span></code> through API <code class="docutils literal notranslate"><span class="pre">cuptiEventGroupSetAttribute()</span></code>.</p></li>
+<li><p>Profiling results might be incorrect for CUDA applications compiled with nvcc version older than 9.0 for devices with compute capability 6.0 and 6.1. Profiling session will continue and CUPTI will notify it using error code <code class="docutils literal notranslate"><span class="pre">CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLE</span></code>. It is advised to recompile the application code with nvcc version 9.0 or later. Ignore this warning if code is already compiled with the recommended nvcc version.</p></li>
+<li><p>For some metrics, the required events can only be collected for a single CUDA context. For an application that uses multiple CUDA contexts, these metrics will only be collected for one of the contexts. The metrics that can be collected only for a single CUDA context are indicated in the <a class="reference external" href="../main/main.html#metrics-reference">metric reference tables</a>.</p></li>
+<li><p>Some metric values are calculated assuming a kernel is large enough to occupy all device multiprocessors with approximately the same amount of work. If a kernel launch does not have this characteristic, then those metric values may not be accurate.</p></li>
+<li><p>Some events and metrics are not available on all devices. For list of metrics, you can refer to the <a class="reference external" href="../main/main.html#metrics-reference">metric reference tables</a>.</p></li>
+<li><p>CUPTI can give out of memory error for event and metrics profiling, it could be due to large number of instructions in the kernel.</p></li>
+<li><p>Profiling is not supported for CUDA kernel nodes launched by a CUDA Graph.</p></li>
+<li><p>These APIs are not supported on below system configurations:</p>
+<ul>
+<li><p>64-bit ARM Server CPU architecture (arm64 SBSA).</p></li>
+<li><p>Virtual GPUs (vGPU).</p></li>
+<li><p>Windows Subsystem for Linux (WSL).</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="profiling-and-range-profiling-api">
+<h4><span class="section-number">1.2.1.2. </span>Profiling and Range Profiling API<a class="headerlink" href="#profiling-and-range-profiling-api" title="Permalink to this headline"></a></h4>
+<p>The following are common known issues for Profiling API and Range Profiling API:</p>
+<ul class="simple">
+<li><p>Profiling a kernel while any other GPU work is executing on the same MIG compute instance can result in varying metric values for all units. Care should be taken to serialize, or otherwise prevent concurrent CUDA launches within the target application to ensure those kernels do not influence each other. Be aware that GPU work issued through other APIs in the target process or workloads created by non-target processes running simultaneously in the same MIG compute instance will influence the collected metrics. Note that it is acceptable to run CUDA processes in other MIG compute instances as they will not influence the profiled MIG compute instance.</p></li>
+<li><p>NVLink performance metrics (<code class="docutils literal notranslate"><span class="pre">nvlrx__*</span></code> and <code class="docutils literal notranslate"><span class="pre">nvltx__*</span></code>) are supported by the Range Profiling API but not by the Profiling API.</p></li>
+<li><p>Profiling is not supported under MPS (Multi-Process Service).</p></li>
+<li><p>For profiling the CUDA kernel nodes launched by a CUDA Graph, not all combinations of range profiling and replay modes are supported. Here are some limitations:</p>
+<ul>
+<li><p>User replay and application replay modes with auto range are not supported.</p></li>
+<li><p>In the user range mode, entire graph is profiled as one workload i.e. all the kernel nodes launched by the CUDA Graph will be profiled and single result will be provided, user can’t do the profiling for a range of kernels.</p></li>
+<li><p>For Device Graph profiling in the auto range and kernel replay mode, each kernel node will be profiled except for the nodes which launch device graphs.</p></li>
+</ul>
+</li>
+<li><p>Profiling kernels executed on a device that is part of an SLI group is not supported.</p></li>
+<li><p>Profiling on Windows Subsystem for Linux (WSL) is only supported with WSL version 2, NVIDIA display driver version 525 or higher and Windows 11.</p></li>
+<li><p>Profiling is not supported for applications using Green Contexts.</p></li>
+<li><p>Profiling is not supported for device graphs which have been updated after instantiation.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="support">
+<h2><span class="section-number">1.3. </span>Support<a class="headerlink" href="#support" title="Permalink to this headline"></a></h2>
+<p>Information on supported platforms and GPUs.</p>
+<section id="platform-support">
+<h3><span class="section-number">1.3.1. </span>Platform Support<a class="headerlink" href="#platform-support" title="Permalink to this headline"></a></h3>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Table 1. Platforms supported by CUPTI</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 87%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Platform</p></th>
+<th class="head"><p>Support</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Windows</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Windows Subsystem for Linux version 2 (WSL 2)</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-even"><td><p>Linux (x86_64)</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>Linux (aarch64 sbsa)</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-even"><td><p>Linux (x86_64) (Drive SDK)</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-odd"><td><p>Linux (aarch64)</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-even"><td><p>Linux (ppc64le)</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>QNX</p></td>
+<td><p>Yes*</p></td>
+</tr>
+<tr class="row-even"><td><p>Mac OSX</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Android</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+<p>Tracing and profiling of 32-bit processes is not supported.</p>
+<p>Event and Metric APIs are not supported on Linux (aarch64 sbsa) and WSL 2 platforms.</p>
+</section>
+<section id="gpu-support">
+<h3><span class="section-number">1.3.2. </span>GPU Support<a class="headerlink" href="#gpu-support" title="Permalink to this headline"></a></h3>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">Table 2. GPU architectures supported by different CUPTI APIs</span><a class="headerlink" href="#id3" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 44%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CUPTI API</p></th>
+<th class="head"><p>Supported GPU architectures</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Activity</p></td>
+<td><p>Maxwell and later GPU architectures, i.e. devices with compute capability 5.0 and higher</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Callback</p></td>
+<td><p>Maxwell and later GPU architectures, i.e. devices with compute capability 5.0 and higher</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Host Profiling</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+<tr class="row-odd"><td><p>Range Profiling</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+<tr class="row-even"><td><p>PC Sampling</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+<tr class="row-odd"><td><p>SASS Metric</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+<tr class="row-even"><td><p>PM Sampling</p></td>
+<td><p>Turing and later GPU architectures, i.e. devices with compute capability 7.5 and higher</p></td>
+<td><p>Not supported on Maxwell, Pascal and Volta GPUs</p></td>
+</tr>
+<tr class="row-odd"><td><p>Profiling</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+<tr class="row-even"><td><p>Event</p></td>
+<td><p>Maxwell, Pascal and Volta</p></td>
+<td><p>Not supported on Turing and later GPU architectures, i.e. devices with compute capability 7.5 and higher</p></td>
+</tr>
+<tr class="row-odd"><td><p>Metric</p></td>
+<td><p>Maxwell, Pascal and Volta</p></td>
+<td><p>Not supported on Turing and later GPU architectures, i.e. devices with compute capability 7.5 and higher</p></td>
+</tr>
+<tr class="row-even"><td><p>Checkpoint</p></td>
+<td><p>Volta and later GPU architectures, i.e. devices with compute capability 7.0 and higher</p></td>
+<td><p>Not supported on Maxwell and Pascal GPUs</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

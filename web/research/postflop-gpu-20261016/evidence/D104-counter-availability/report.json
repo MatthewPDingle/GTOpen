@@ -1,0 +1,84 @@
+{
+  "id": "D104-counter-availability",
+  "at": "2026-10-17T10:12:29.502109+00:00",
+  "status": "availability_query_unavailable",
+  "protocol_sha256": "1752475db18f04b7a89992f95a63d70b4d1e4d5159eb231a54753d078c16947f",
+  "markers": [
+    {
+      "stage": "identity",
+      "device": "NVIDIA GeForce RTX 5090",
+      "major": 12,
+      "minor": 0,
+      "driver_version": 13030,
+      "CUPTI_API_VERSION": 28,
+      "initialize_struct_size": 16,
+      "support_struct_size": 52,
+      "deinitialize_struct_size": 16
+    },
+    {
+      "stage": "initialize",
+      "result": 0,
+      "result_name": "CUPTI_SUCCESS"
+    },
+    {
+      "stage": "context_create",
+      "result": 0,
+      "private_context": true,
+      "flags": 0
+    },
+    {
+      "stage": "availability_size",
+      "result": 0,
+      "result_name": "CUPTI_SUCCESS",
+      "required_bytes": 9184,
+      "struct_size": 40
+    },
+    {
+      "stage": "availability_fill",
+      "result": 26,
+      "result_name": "CUPTI_ERROR_HARDWARE_BUSY",
+      "allocated_bytes": 9184,
+      "returned_bytes": 9184,
+      "guard_words_checked": 128,
+      "guards_exact": true
+    },
+    {
+      "stage": "context_destroy",
+      "result": 0
+    },
+    {
+      "stage": "deinitialize",
+      "result": 0,
+      "result_name": "CUPTI_SUCCESS"
+    },
+    {
+      "stage": "complete",
+      "availability_image_obtained": false,
+      "size_queries": 1,
+      "fill_queries": 1,
+      "requested_bytes": 9184,
+      "returned_bytes": 9184,
+      "private_contexts_created": 1,
+      "private_contexts_destroyed": 1,
+      "current_context_after_is_null": true,
+      "cleanup_success": true,
+      "guards_exact": true,
+      "application_kernel_launches": 0,
+      "profiling_sessions": 0,
+      "counter_collections": 0,
+      "live_process_attachments": 0,
+      "performance_measured": false
+    }
+  ],
+  "binary_sha256": "98007ae807c431f9b23c33f42abec92c381bb9fa3027c70d8fc848481747a3ef",
+  "stdout_sha256": "985dc9f43c32140fcc5bfa931ad5388af6afa497d5974b44864e398cf93b1bd9",
+  "image": null,
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "profiling_sessions": 0,
+  "counter_collections": 0,
+  "source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Availability metadata query only, not runtime hardware counter values. Success does not establish permission to enable/collect, replay/graph correctness, observer overhead or speed. Private context destroyed and profiler deinitialized; no elevation/retries/global changes/live attach."
+}

@@ -1,0 +1,189 @@
+{
+  "created_at": "2026-10-16T08:14:33Z",
+  "protocol": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-extension\\protocol.json",
+    "sha256": "dc8eacf39025fa8330a7aca35a32f75403aa2de0db6e8967e26569c89fae38f2"
+  },
+  "decision": "rejected",
+  "accepted": false,
+  "deployed": false,
+  "cohorts": {
+    "E016-extension-new-six": {
+      "aggregate_gate_met": true,
+      "fixture_guard_pass": true,
+      "performance": {
+        "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+        "baseline_full_cycle_ms": 11442.3315,
+        "candidate_full_cycle_ms": 9966.964950000001,
+        "observed_gain_pct": 12.893932936657173,
+        "required_gain_pct": 2.0,
+        "aggregate_gate_met": true,
+        "fixture_median_regression_above_3pct": [],
+        "fixture_regression_guard": {
+          "threshold_pct": 3.0,
+          "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+          "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+          "fixtures": [
+            {
+              "fixture_id": "rainbow",
+              "median_regression_pct": -13.112674998742765,
+              "paired_regression_pct": [
+                -13.36822346039614,
+                -12.458495801559943,
+                -12.050590264650383,
+                -14.790349144347148,
+                -12.902467853647593,
+                -14.514487778305579
+              ],
+              "repetitions_above_3pct": 0,
+              "paired_repetitions": 6,
+              "required_repetitions": 4,
+              "repeatable_material_regression": false,
+              "reason": "rainbow: median regression -13.1127%; 0/6 paired repetitions exceed 3% (requires median >3% and at least 4 repetitions)."
+            },
+            {
+              "fixture_id": "two-tone",
+              "median_regression_pct": -12.822368860009341,
+              "paired_regression_pct": [
+                -13.87810906592068,
+                -9.797882226477183,
+                -13.407478099126774,
+                -13.797067245880188,
+                -13.255322811746737,
+                -11.573146363989574
+              ],
+              "repetitions_above_3pct": 0,
+              "paired_repetitions": 6,
+              "required_repetitions": 4,
+              "repeatable_material_regression": false,
+              "reason": "two-tone: median regression -12.8224%; 0/6 paired repetitions exceed 3% (requires median >3% and at least 4 repetitions)."
+            },
+            {
+              "fixture_id": "river",
+              "median_regression_pct": -2.369664989299394,
+              "paired_regression_pct": [
+                -12.56022689548425,
+                2.8860415592306463,
+                -0.10079041396130503,
+                -12.056989074414163,
+                4.599684210431829,
+                7.168427719076021
+              ],
+              "repetitions_above_3pct": 2,
+              "paired_repetitions": 6,
+              "required_repetitions": 4,
+              "repeatable_material_regression": false,
+              "reason": "river: median regression -2.3697%; 2/6 paired repetitions exceed 3% (requires median >3% and at least 4 repetitions)."
+            }
+          ],
+          "affected_fixtures": [],
+          "failed": false
+        },
+        "statistical_significance_established": false
+      }
+    },
+    "E016-extension-pooled-nine": {
+      "aggregate_gate_met": true,
+      "fixture_guard_pass": false,
+      "performance": {
+        "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+        "baseline_full_cycle_ms": 11448.1929,
+        "candidate_full_cycle_ms": 9984.288799999998,
+        "observed_gain_pct": 12.787206791388023,
+        "required_gain_pct": 2.0,
+        "aggregate_gate_met": true,
+        "fixture_median_regression_above_3pct": [
+          "river"
+        ],
+        "fixture_regression_guard": {
+          "threshold_pct": 3.0,
+          "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+          "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+          "fixtures": [
+            {
+              "fixture_id": "rainbow",
+              "median_regression_pct": -12.81028525596087,
+              "paired_regression_pct": [
+                -7.668778482656145,
+                -11.934330426326486,
+                -13.404746548289578,
+                -13.36822346039614,
+                -12.458495801559943,
+                -12.050590264650383,
+                -14.790349144347148,
+                -12.902467853647593,
+                -14.514487778305579
+              ],
+              "repetitions_above_3pct": 0,
+              "paired_repetitions": 9,
+              "required_repetitions": 5,
+              "repeatable_material_regression": false,
+              "reason": "rainbow: median regression -12.8103%; 0/9 paired repetitions exceed 3% (requires median >3% and at least 5 repetitions)."
+            },
+            {
+              "fixture_id": "two-tone",
+              "median_regression_pct": -13.143103652309017,
+              "paired_regression_pct": [
+                -5.0759375367529085,
+                -13.143103652309017,
+                -15.688384199053736,
+                -13.87810906592068,
+                -9.797882226477183,
+                -13.407478099126774,
+                -13.797067245880188,
+                -13.255322811746737,
+                -11.573146363989574
+              ],
+              "repetitions_above_3pct": 0,
+              "paired_repetitions": 9,
+              "required_repetitions": 5,
+              "repeatable_material_regression": false,
+              "reason": "two-tone: median regression -13.1431%; 0/9 paired repetitions exceed 3% (requires median >3% and at least 5 repetitions)."
+            },
+            {
+              "fixture_id": "river",
+              "median_regression_pct": 3.709294802674142,
+              "paired_regression_pct": [
+                7.413528194368549,
+                5.006504991056663,
+                15.9419127825425,
+                -12.56022689548425,
+                2.8860415592306463,
+                -0.10079041396130503,
+                -12.056989074414163,
+                4.599684210431829,
+                7.168427719076021
+              ],
+              "repetitions_above_3pct": 5,
+              "paired_repetitions": 9,
+              "required_repetitions": 5,
+              "repeatable_material_regression": true,
+              "reason": "river: median regression 3.7093%; 5/9 paired repetitions exceed 3% (requires median >3% and at least 5 repetitions)."
+            }
+          ],
+          "affected_fixtures": [
+            "river"
+          ],
+          "failed": true
+        },
+        "statistical_significance_established": false
+      }
+    }
+  },
+  "initial_failure_retained": true,
+  "all_original_pairs_pooled": true,
+  "diagnostic_D028_excluded": true,
+  "further_extension_permitted": false,
+  "statistical_significance_claim": false,
+  "scope": "Adaptive engineering qualification amendment, explicitly triggered by the initial failure and D028 inconsistency. Both new-six and pooled-nine gates required.",
+  "comparisons": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-extension-new-six\\report.json",
+      "sha256": "d27eae194163accfb808cc599423e64f77ba0d28c6f686463b5686419faed5a6"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-extension-pooled-nine\\report.json",
+      "sha256": "67a6a2a7fd329bbd0c71b0d1381bcfcba7d886ea6b08ecaf29a9b404ae00d1d7"
+    }
+  ]
+}

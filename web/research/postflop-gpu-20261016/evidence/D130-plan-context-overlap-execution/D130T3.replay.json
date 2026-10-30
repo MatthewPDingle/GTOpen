@@ -1,0 +1,103 @@
+{
+  "at": "2026-10-18T06:14:05.556880+00:00",
+  "rows": [
+    {
+      "CUDA_context_and_stream_pairs": 1,
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 2363596800,
+        "faults": 121081,
+        "peak_commit_bytes": 2363670528,
+        "peak_working_set_bytes": 471007232,
+        "working_set_bytes": 471007232
+      },
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 1675988992,
+        "faults": 57960,
+        "peak_commit_bytes": 1675988992,
+        "peak_working_set_bytes": 233811968,
+        "working_set_bytes": 233811968
+      },
+      "board": "Ks7h2d",
+      "component_ms": 170.3892,
+      "cpu_after_ticks100ns": 3750000,
+      "cpu_before_ticks100ns": 781250,
+      "fixture_index": 0,
+      "nodes": 1346813,
+      "overlap_eligible": true,
+      "performance_is_full_solve": false,
+      "process_CPU_ms": 296.875,
+      "raw_plan": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D130-plan-context-overlap\\execution\\D130T3\\fixture-0.bin",
+      "reference_case": 2,
+      "stage": "plan_context_component"
+    },
+    {
+      "CUDA_context_and_stream_pairs": 1,
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 3066077184,
+        "faults": 428850,
+        "peak_commit_bytes": 3066179584,
+        "peak_working_set_bytes": 1611386880,
+        "working_set_bytes": 1611386880
+      },
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 2525749248,
+        "faults": 386469,
+        "peak_commit_bytes": 2525749248,
+        "peak_working_set_bytes": 1458552832,
+        "working_set_bytes": 1458552832
+      },
+      "board": "Ks7s2d",
+      "component_ms": 101.8497,
+      "cpu_after_ticks100ns": 12031250,
+      "cpu_before_ticks100ns": 10312500,
+      "fixture_index": 1,
+      "nodes": 1346813,
+      "overlap_eligible": true,
+      "performance_is_full_solve": false,
+      "process_CPU_ms": 171.875,
+      "raw_plan": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D130-plan-context-overlap\\execution\\D130T3\\fixture-1.bin",
+      "reference_case": 6,
+      "stage": "plan_context_component"
+    },
+    {
+      "CUDA_context_and_stream_pairs": 1,
+      "GPU_solver_executions": 0,
+      "after": {
+        "commit_bytes": 1864011776,
+        "faults": 474714,
+        "peak_commit_bytes": 3066179584,
+        "peak_working_set_bytes": 1626218496,
+        "working_set_bytes": 790499328
+      },
+      "application_kernel_launches": 0,
+      "arm": "overlap",
+      "before": {
+        "commit_bytes": 2231902208,
+        "faults": 445787,
+        "peak_commit_bytes": 3066179584,
+        "peak_working_set_bytes": 1626218496,
+        "working_set_bytes": 1489305600
+      },
+      "board": "Ks7h2dQhTc",
+      "component_ms": 108.3272,
+      "cpu_after_ticks100ns": 14843750,
+      "cpu_before_ticks100ns": 14062500,
+      "fixture_index": 2,
+      "nodes": 33,
+      "overlap_eligible": false,
+      "performance_is_full_solve": false,
+      "process_CPU_ms": 78.125,
+      "raw_plan": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D130-plan-context-overlap\\execution\\D130T3\\fixture-2.bin",
+      "reference_case": 10,
+      "stage": "plan_context_component"
+    }
+  ],
+  "all_full_metadata_and_counter_invariants_pass": true,
+  "stdout_sha256": "85b6ad1f5acf958cd9774b61b1e3c5ca6fe10a70315a2ce7c9b74c6224eb1ace"
+}

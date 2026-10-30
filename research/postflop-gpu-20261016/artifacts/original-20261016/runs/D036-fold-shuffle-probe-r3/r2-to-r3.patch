@@ -1,0 +1,41 @@
+--- R2/probe.rs
++++ R3/probe.rs
+@@ -2,9 +2,35 @@
+ use cudarc::{driver::{CudaContext, CudaFunction, CudaStream, LaunchConfig, PushKernelArg},
+     nvrtc::{compile_ptx_with_opts, CompileOptions}};
+ use serde_json::{json, Value};
+-use std::{error::Error, fs::OpenOptions, io::{BufWriter, Write}, sync::Arc};
+-
+-type Result<T> = std::result::Result<T, Box<dyn Error>>;
++use std::{ fs::OpenOptions, io::{BufWriter, Write}, sync::Arc};
++
++#[derive(Debug)]
++struct ProbeError(String);
++impl std::fmt::Display for ProbeError {
++    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
++        f.write_str(&self.0)
++    }
++}
++impl std::error::Error for ProbeError {}
++impl From<cudarc::driver::DriverError> for ProbeError {
++    fn from(value: cudarc::driver::DriverError) -> Self { Self(format!("CUDA driver: {value:?}")) }
++}
++impl From<cudarc::nvrtc::CompileError> for ProbeError {
++    fn from(value: cudarc::nvrtc::CompileError) -> Self { Self(format!("NVRTC compiler: {value:?}")) }
++}
++impl From<std::io::Error> for ProbeError {
++    fn from(value: std::io::Error) -> Self { Self(format!("I/O: {value}")) }
++}
++impl From<serde_json::Error> for ProbeError {
++    fn from(value: serde_json::Error) -> Self { Self(format!("JSON: {value}")) }
++}
++impl From<String> for ProbeError {
++    fn from(value: String) -> Self { Self(value) }
++}
++impl From<&str> for ProbeError {
++    fn from(value: &str) -> Self { Self(value.to_owned()) }
++}
++type Result<T> = std::result::Result<T, ProbeError>;
+ const GUARD: u32 = 0x4b123456;
+ const BASELINE: &str = include_str!("baseline.cu");
+ const CANDIDATE: &str = include_str!("candidate.cu");

@@ -1,0 +1,118 @@
+{
+  "id": "E070-complete-host-ABI-source-audit",
+  "status": "pass_source_abi_only",
+  "launch_sites": [
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 570,
+      "candidate_line": 575,
+      "kernel": "down_action",
+      "baseline_arguments": 18,
+      "candidate_arguments": 17,
+      "metadata_argument_index_zero_based": 3,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 635,
+      "candidate_line": 639,
+      "kernel": "up_fold",
+      "baseline_arguments": 21,
+      "candidate_arguments": 21,
+      "metadata_argument_index_zero_based": 4,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 731,
+      "candidate_line": 735,
+      "kernel": "up_action_eval",
+      "baseline_arguments": 17,
+      "candidate_arguments": 16,
+      "metadata_argument_index_zero_based": 5,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 801,
+      "candidate_line": 804,
+      "kernel": "down_action",
+      "baseline_arguments": 18,
+      "candidate_arguments": 17,
+      "metadata_argument_index_zero_based": 3,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 863,
+      "candidate_line": 865,
+      "kernel": "up_fold",
+      "baseline_arguments": 21,
+      "candidate_arguments": 21,
+      "metadata_argument_index_zero_based": 4,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 965,
+      "candidate_line": 967,
+      "kernel": "up_action",
+      "baseline_arguments": 20,
+      "candidate_arguments": 19,
+      "metadata_argument_index_zero_based": 4,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\mod.rs",
+      "baseline_line": 1245,
+      "candidate_line": 1246,
+      "kernel": "down_action",
+      "baseline_arguments": 18,
+      "candidate_arguments": 17,
+      "metadata_argument_index_zero_based": 3,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\continuation.rs",
+      "baseline_line": 144,
+      "candidate_line": 144,
+      "kernel": "continuation_transport",
+      "baseline_arguments": 12,
+      "candidate_arguments": 11,
+      "metadata_argument_index_zero_based": 2,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\continuation.rs",
+      "baseline_line": 160,
+      "candidate_line": 160,
+      "kernel": "continuation_project",
+      "baseline_arguments": 12,
+      "candidate_arguments": 11,
+      "metadata_argument_index_zero_based": 2,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    },
+    {
+      "file": "crates\\solver\\src\\gpu\\continuation_storage.rs",
+      "baseline_line": 292,
+      "candidate_line": 292,
+      "kernel": "continuation_storage_copy",
+      "baseline_arguments": 13,
+      "candidate_arguments": 12,
+      "metadata_argument_index_zero_based": 2,
+      "all_other_argument_expressions_and_CUDA_parameter_types_unchanged": true
+    }
+  ],
+  "site_count": 10,
+  "kernel_entries": 7,
+  "all_nonmetadata_host_arguments_unchanged": true,
+  "all_nonmetadata_CUDA_parameter_types_unchanged": true,
+  "all_changed_metadata_arguments_match_u16_device_field": true,
+  "candidate_manifest_sha256": "b5c61824e571dcd48db0b94b36747925d692a6aa727c9d52fa78893c697685d0",
+  "audit_source_sha256": "56e7e55f57059e70e2d9083bec620f584fb2cbb37a3ce7ab43446d47d90c370e",
+  "CUDA_Rust_typecheck": false,
+  "CUDA_compilation": false,
+  "GPUexecutions": 0,
+  "limits": "Finite source/parser audit, not an integrated Rust type check, driver ABI/resource check or GPU numerical result. The three continuation helper entries still require their prospective numerical/resource controls.",
+  "candidate_accepted": false
+}

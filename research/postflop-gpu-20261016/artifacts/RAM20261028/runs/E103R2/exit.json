@@ -1,0 +1,42 @@
+{
+  "started_at": "2026-10-28T21:36:11.913094+00:00",
+  "finished_at": "2026-10-28T21:36:24.323332+00:00",
+  "returncode": 0,
+  "error": null,
+  "cleanup": null,
+  "terminal_process_times": {
+    "creation_FILETIME": 134376969719184616,
+    "exit_FILETIME": 134376969843168346,
+    "kernel_100ns": 13437500,
+    "user_100ns": 158593750,
+    "CPU_ms": 17203.125,
+    "lifetime_ms": 12398.373
+  },
+  "parent_wall_ms": 12410.004700010177,
+  "affinity_spawn_witnesses": [
+    {
+      "pid": 39768,
+      "original_parent": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "selected_parent_before_spawn": {
+        "process_mask": 1431655765,
+        "system_mask": 4294967295
+      },
+      "restored_parent_after_spawn": {
+        "process_mask": 4294967295,
+        "system_mask": 4294967295
+      },
+      "actual_child_at_spawn": {
+        "process_mask": 1431655765,
+        "system_mask": 4294967295
+      },
+      "child_inherits_mask_before_native_start": true
+    }
+  ],
+  "parent_final_affinity": {
+    "process_mask": 4294967295,
+    "system_mask": 4294967295
+  }
+}

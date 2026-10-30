@@ -1,0 +1,33 @@
+{
+  "id": "D256-kernel-control",
+  "at": "2026-10-29T05:26:31.271189+00:00",
+  "status": "pass_scoped_constant_discount_action_raw_equivalence",
+  "actual_symbol_words": 9828,
+  "nonvacuous_symbol_word_changes": 822,
+  "root_cross_check_only": true,
+  "checks": 77825,
+  "cases": 819,
+  "kernel_launches": 1638,
+  "output_words_both_arms": 12375858,
+  "immutable_words_both_arms": 5199114,
+  "guard_words_both_arms": 10240828,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\baseline-inputs.bin": "8b826edb0656008e8eddc096c942cfce8a6d0f9c41f4898a2352182084cfdb43",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\baseline.bin": "59ed60aced21fec38edf8b716fab843a2344169aec580081d3cdd65b8980bca1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\candidate-inputs.bin": "8b826edb0656008e8eddc096c942cfce8a6d0f9c41f4898a2352182084cfdb43",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\candidate.bin": "59ed60aced21fec38edf8b716fab843a2344169aec580081d3cdd65b8980bca1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\inputs.bin": "495cd8b0bb39f76132a7f907732ffd414e419e91cb454c69dddcc438e1bb3659",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D256-constant-action-r2\\output\\symbol-bindings.bin": "a12b151a8a55767c464da2ad15ca0040e8d4ab5abc43cee802718852be0c9ddc"
+  },
+  "protocol_sha256": "e71f6d43e86da462a08cebb397355e4a65b1da094e74b76475d35d3934a14ddd",
+  "corpus_sha256": "b0e82dca741b3435c775baeeaddc177a78080234430c873492c48d6283d8252a",
+  "complete_sha256": "b2d2dd13a6a8ac4f9363454a412585e38c6434c194ac23b46323ce9389db31ec",
+  "audit_script_sha256": "d23c93db0b3f20850d000345977aaa08f2eb6113fc22c2bb8c451d645b3a24de",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "all_parent_child_cfv_rows_disjoint": true,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "arithmetic": "exact fractions",
+  "zero_sum": true,
+  "hidden_type_respected": true,
+  "cases": [
+    {
+      "rare_type_entry": "0",
+      "baseline": {
+        "value": "0",
+        "full_gap": "0",
+        "p1_root_gain": "0",
+        "p2_gain": "0",
+        "reached_post_gap": "0",
+        "conditional_post_gap": "0"
+      },
+      "rebuilt": {
+        "value": "0",
+        "full_gap": "1/2",
+        "p1_root_gain": "1/2",
+        "p2_gain": "0",
+        "reached_post_gap": "0",
+        "conditional_post_gap": "0"
+      }
+    },
+    {
+      "rare_type_entry": "1/1000000",
+      "baseline": {
+        "value": "-1/2000000",
+        "full_gap": "1/2000000",
+        "p1_root_gain": "1/2000000",
+        "p2_gain": "0",
+        "reached_post_gap": "0",
+        "conditional_post_gap": "0"
+      },
+      "rebuilt": {
+        "value": "1/2000000",
+        "full_gap": "1000001/2000000",
+        "p1_root_gain": "999999/2000000",
+        "p2_gain": "1/1000000",
+        "reached_post_gap": "1/1000000",
+        "conditional_post_gap": "2/1000001"
+      }
+    }
+  ],
+  "interpretation": "A mathematical counterexample, not evidence that this mechanism caused the poker transfer result. The zero-entry case has exact local equilibria; the positive-entry case has small but nonzero local residual."
+}

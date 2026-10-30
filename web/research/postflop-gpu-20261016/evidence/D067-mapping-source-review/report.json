@@ -1,0 +1,76 @@
+{
+  "id": "D067-mapping-source-review",
+  "created_at": "2026-10-16T21:34:51.066029+00:00",
+  "verdict": "PASS_FROZEN_CPU_ONLY_MAPPING_SOURCE",
+  "independent_source_review_pass": true,
+  "source_manifest_sha256": "d2e04fa0782ee80e26046ead26c974b1bc4036cf2ebd374fb505d24fedaba863",
+  "candidate_sha256": {
+    "crates/solver/src/gpu/mod.rs": "e05e34464d59d455d42fa5e999c1956f8737f991ac484eb6676f5ccab76ce53c",
+    "crates/solver/src/gpu/planned_show_incidence.rs": "6df48598cd669bcd6891cf099eabefd8b0ffa566e16fe041ad15f517d57d97de"
+  },
+  "actionable_findings": [],
+  "findings": [
+    "Accepted mod.rs is byte-exact with only the cfg(test) module declaration appended. One new ignored test calls only accepted Spot::new/GpuPlan::build and bounded CPU validation/file output; no Solver, learning arena, CUDA context/device operation, solve iteration or exploitability call is on its selected path.",
+    "All three embedded complete configs and geometry objects match frozen D066 anchors/raw records. The helper requires 16 GiB available RAM before each sequential fixture, verifies node/nh/reach geometry and all fold spans, then compares every retained 20-byte fold record plus EOF before producing that fixture output.",
+    "The helper validates show-list partition/strict per-level order, unique showdown node kinds, logical reach and river bounds, contiguous per-slot sorted-index ranges and unique logical hand indices, and exact three f64-to-f32 payoff casts. It writes all plan.show_nodes as the fixed 36-byte codec without deduplication.",
+    "Fresh output uses create_new, explicit flush and sync; partial failures remain evidence and stop the test. Spot/plan are dropped before each fixture success marker. No flag files are read by the native helper; all-three-fold-pass and final-complete enforcement belongs to the separately reviewed assessor.",
+    "The schema matches five markers, three files and selected 1-pass/88-filtered inventory. num_slots and show/river/tie metadata are newly reconstructed, not historical upload observations; no output equivalence, incidence-to-time conversion or performance acceptance is claimed."
+  ],
+  "checked": {
+    "frozen_artifacts": 11,
+    "frozen_references": 15,
+    "current_accepted_sources": 162,
+    "embedded_exact_configs": 3,
+    "embedded_exact_historical_geometry_objects": 3,
+    "production_mod_prefix_exact": true,
+    "new_module_patch_exact": true
+  },
+  "limits": [
+    "Source review and host parsing only; syntax/apply checks are pinned preparation evidence, not a compiler or execution result.",
+    "This pass does not authorize activation/build/run. Final frozen script review and separate root decision remain necessary.",
+    "Historical raw reach payloads remain unavailable; any future counts are planned-show incidence at only the six recorded D066 training boundaries."
+  ],
+  "reviewer_observations": [
+    {
+      "kind": "read-only path error",
+      "detail": "Initial read asked for nonexistent runtime-scope.json; corrected to actual runtime-shape.json from the directory/manifest. No source or artifact changed."
+    },
+    {
+      "kind": "corrected review request before seal",
+      "detail": "Initially suggested comparing num_slots to historical geometry. Inspection confirmed D066 did not record it; request withdrawn, newly derived bounded metadata retained. No source change required."
+    }
+  ],
+  "compiler_native_gpu_executed": false,
+  "production_changed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\source-manifest.json": "d2e04fa0782ee80e26046ead26c974b1bc4036cf2ebd374fb505d24fedaba863",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\base-mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\candidate-mod.rs": "e05e34464d59d455d42fa5e999c1956f8737f991ac484eb6676f5ccab76ce53c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\candidate-planned_show_incidence.rs": "6df48598cd669bcd6891cf099eabefd8b0ffa566e16fe041ad15f517d57d97de",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\candidate.patch": "944357a52701d16b1a3406d8fb14c731ca7c79c272e7b4ffd7b510d4fdf6db61",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\inputs.json": "82474868bdcb5d430846712e806462c2837c8c7a5e41a8741f77a57493aef826",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\output-schema.json": "ec97acfb8c99ff380427e8588c6313d77e1462f494d405d7a03f2f80bc58e2f2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\README.md": "3b29158afde3b4d3622e08e32bb0c31afb1fbe14a0322282efc54057d621c11e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\runtime-shape.json": "05c58eca3729b052f7d805c87d3fadaa09e78919bbaf4b563b01469558ca09c6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\scope-manifest.json": "9de1a4c9bc1c00830499aa7418d1f1417db6e39ea03976d714bcc95fa8acea85",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\source-checks.json": "2661af0571867c74442e6a8a4e6957780d553b5e2300a1f7e03cd17f84adbecc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\syntax-checks.json": "af00e5963c817a8407b5f5cbddbe7101683d5330c05e228a1d378c9869447e68",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-root-decisions\\mapping-preparation.json": "88afb84fe53d352967515cdff6ee82f4838abbefc19fc9fadf077a1723d3211d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-source-review\\report.json": "c802efc3b9315490690db763485f69efeb83440047dbeeefb9478f25ab3f750d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-source-review\\manifest.json": "89f1bbb0598fd18b9dc7124c2e493fc6ebcb9b2c09ad1323ff0c226b4aab770a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\report.json": "78a16dee5c3c23aa2738c8ce06db3142d1f84408a62ad5b59e2016929c16d55c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-showdown-zero-scout\\report.json": "d48545168f79a1ad4d97d7402581ebf66aa757d762309e64c4d28b17c78d5202",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\design\\anchors.json": "ce46137e6832b7b69c18bb346eb3f84c08db2deab1344328d469af243da648c3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\source-manifest.json": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\candidate-fold_zero_census.rs": "14574cf4d66ab6d4a35fe795968c4f37d8258e7f98efa43f9bcf395048138cf7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census-artifacts.json": "38b1e9c7fcc5780b9cbef76fd48ce5bed508f3fe317b84549b6e9e78b08e56cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066R1\\stdout.log": "8c17fc1291d68a2908ca375258ab0fca93ff85ef4190b0a1e428ba2354bca371",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-independent-review\\report.json": "b6c9a39790578335bee453727d32bdb7cc4f5e1bae3c194d1e3f91b4a8db1e18",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\rainbow-fold-mapping.u32le": "4f581087bc0cb085ec5e5a176c8ac134b5506fe87911c056472a5828eab47af9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\two-tone-fold-mapping.u32le": "81b30dad1be59c6e05f1c6554bb1f63e91c8a15a5d82fefc2a35dbd2baf55399",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\river-fold-mapping.u32le": "55e0cb15ef94c6e9b1ba7d306e82b3e92ebd4997a664bdfe6f97d3f7f8e5c839"
+  }
+}

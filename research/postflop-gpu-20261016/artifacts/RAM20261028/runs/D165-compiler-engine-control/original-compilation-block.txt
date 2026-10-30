@@ -1,0 +1,14 @@
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+            std::sync::OnceLock::new();
+        let ptx = PTX
+            .get_or_init(|| {
+                cudarc::nvrtc::compile_ptx_with_opts(
+                    include_str!("kernels.cu"),
+                    cudarc::nvrtc::CompileOptions {
+                        arch: Some(arch),
+                        ..Default::default()
+                    },
+                )
+                .map_err(e)
+            })
+            .clone()?;

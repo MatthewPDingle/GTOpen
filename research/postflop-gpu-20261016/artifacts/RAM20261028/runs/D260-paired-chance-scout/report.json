@@ -1,0 +1,44 @@
+{
+  "id": "D260",
+  "at": "2026-10-29T06:24:51.177051+00:00",
+  "status": "pass_source_history_and_integer_ownership_only",
+  "accepted_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "history_sha256": "65f3adc42b5d8dd4d30ba2c74fec4180da08753b9d0640604b638bd6e16e38c0",
+  "local_ref_revisions": 28,
+  "retained_CUDA_files": 821,
+  "unique_CUDA_hashes": 199,
+  "matching_multiaccumulator_chance_forms": [],
+  "all_count_width_records": 1358848,
+  "enumerated_boundary_shapes": 10467,
+  "enumerated_hand_indices": 6482572,
+  "raw_ownership_sha256": "4407b9649f280a1e81e9665d8d7571e534b3c2607b2522087528a16b690c0c34",
+  "raw_ownership_bytes": 32612368,
+  "record_stream_sha256": "167df1c75003dce599569069461ef4c66bba745d189d1292c371b073a856f7d8",
+  "fixed_next_form": "Only up_chance: two striped hands i0 and i0+blockDim.x per thread, stride2*blockDim.x, one ascending original card loop with two independent positive-zero accumulators. Load immutable mask/permutation/childCFVbase once when either hand is live. Preserve per-hand original membership/perm index, ordered additions, final multiply and all stores; tail second hand has no loads/stores. Minimum independent pair, not an adjacent float2 vector instruction or shared table/barrier.",
+  "dependency_contract": "Production chance outputs are unique parent rows and read completed child rows at next depth. Pairing changes hand scheduling only; all logical per-hand indices/addresses and ordered card contributions remain. Actual per-level input/output ownership and full numerical/raw tests still mandatory.",
+  "closed_forms_declined": [
+    "Action sorting overlaps E056; alternative ordering key/scope is not admitted.",
+    "Chance child-to-slot translation overlaps E018/E039 and earlier explicit declines; not admitted."
+  ],
+  "closed_forms_not_composed": [
+    "E039 shared chance metadata",
+    "E046 interleaved chance record",
+    "E048/E086 membership rewrite",
+    "E099 adjacent-hand vector action memory",
+    "E102 downward parent fanout",
+    "E112 constant discounts",
+    "E113 writable qualifiers"
+  ],
+  "risks": [
+    "Two accumulators may increase registers/spills or reduce residency.",
+    "Additional hand predicates may cost more than private metadata reuse saves.",
+    "Within-CFV parent/child disjointness must remain explicit; this proof does not establish GPU math or speed."
+  ],
+  "next_required": "Exact off-tree source, original ABI/resources and emitted same-card metadata reuse/two recurrence mechanism before application kernels. All original raw/ordinary/complete1%/strictfixture/fresh16/broad/material/holdout/cumulative/app gates remain. Fixed form closes without hand-count/width/tile/predicate/field/loop/helper/flags/source/sample rescue after genuine failure.",
+  "compilers": 0,
+  "application_kernels": 0,
+  "source_activated": false,
+  "performance_samples": 0,
+  "goal_active": true,
+  "all_new_bulk_X_S_read_only_no_T_access": true
+}

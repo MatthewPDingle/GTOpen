@@ -1,0 +1,143 @@
+{
+  "id": "E038-primary-and-upload-control",
+  "at": "2026-10-17T00:05:29.305611+00:00",
+  "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+  "baseline": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-root-decisions\\baseline.json",
+    "sha256": "22d1b4b2c2ade026e8c1dbb34b049eb07db2076efd3476061c6a0ba5661f890f"
+  },
+  "accepted_arena_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\base\\arena.rs",
+  "candidate_arena_sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+  "protected_main_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\protected-main.json",
+  "protected_ptx": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\base\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate\\arena.rs": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-control-design\\attachment.rs": "47e77c2321a7cfb09a1522b075e0a0fed8f53c4ea4f7a044d771dc26880d93b1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-root-decisions\\baseline.json": "22d1b4b2c2ade026e8c1dbb34b049eb07db2076efd3476061c6a0ba5661f890f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\common.py": "4df14f9808f9889d02b57ab41c7e6b1c63efb50ac5ac2c8d7dbfa6e34f345f93",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\protocol.json": "6a81d6a768f234e46cd148960ecdefa1c396985508616833ac081644a634517b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\protected-main.json": "4357e1c07b34766ff8601c64d4c2584868e60575edafde865189a9e15adc1220",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\manifest.json": "61b64edf06df7aec0df01382f2d6c3d7f6b119c77a2cadcb0c38f7f5e9b654ff",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E038-source-review\\report.json": "c09344a215ab2376a4e5db213dfd52bf8f558cb03ca6edab468b548f73c3b838",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\control-source-review.json": "d00027aac24b85c6b0c64f445d48d8366ffe05781919ca656bd189463995be9c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.exe": "7e73b8fd4f5bb792cdd4285befa140d08f943db73a78ea4ec457daed4735ef62",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.manifest.json": "dc0407911d88fd1040ec44ef7ab81ab2f6cab4d7d0f0c15cdc1a3740014dbea6",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\build.py": "4c88b9745619e8f1b97b971d238938c96809bd374321721519da2a9ddf84adc9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\native.py": "784ab3842889abb7a0bcb9bea0f585fc52d56c7045581bd0d79c805725c08b0d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\assess.py": "979c1944921d2c226304d3d675d95ae0ccba03714c21ae3291d1bbcc558eb94d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\base-control-arena.rs": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\candidate-control-arena.rs": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866"
+  },
+  "build_phases": [
+    {
+      "id": "control-base",
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\base-control-arena.rs",
+      "source_sha256": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+      "features": "gpu",
+      "integration": false,
+      "control": true,
+      "outputs": {
+        "solver": "E038-control-base-solver"
+      },
+      "target": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e038-control-base"
+    },
+    {
+      "id": "control-candidate",
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\candidate-control-arena.rs",
+      "source_sha256": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866",
+      "features": "gpu",
+      "integration": false,
+      "control": true,
+      "outputs": {
+        "solver": "E038-control-candidate-solver"
+      },
+      "target": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e038-control-candidate"
+    },
+    {
+      "id": "feature-candidate",
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate\\arena.rs",
+      "source_sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+      "features": "preflop-research",
+      "integration": false,
+      "control": false,
+      "outputs": {
+        "solver": "E038-feature-solver"
+      },
+      "target": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e038-feature-candidate"
+    },
+    {
+      "id": "primary-candidate",
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate\\arena.rs",
+      "source_sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+      "features": "gpu",
+      "integration": true,
+      "control": false,
+      "outputs": {
+        "solver": "E038-solver",
+        "postflop_autoresearch": "E038-postflop_autoresearch"
+      },
+      "target": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e038-primary-candidate"
+    }
+  ],
+  "baseline_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.exe",
+    "sha256": "7e73b8fd4f5bb792cdd4285befa140d08f943db73a78ea4ec457daed4735ef62",
+    "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "dc0407911d88fd1040ec44ef7ab81ab2f6cab4d7d0f0c15cdc1a3740014dbea6"
+  },
+  "control_ids": [
+    "V038-unit",
+    "V038-base-upload",
+    "V038-candidate-upload"
+  ],
+  "control_filter": "gpu::arena::e038_upload_control::exact_u16_zero_upload_lifecycle",
+  "control_selection": "Existing runner uses a full qualified substring filter; validate the one-test exact inventory and three retained markers. No shared runner mutation.",
+  "control_evidence": "Two actual full/compact layouts,26 byte-exact raw/query/save files plus evidence.json per arm; normalized summaries differ only in the expected fast-path flag.",
+  "measurement_order": [
+    "B119",
+    "E038R1",
+    "E038R2",
+    "B120",
+    "B121",
+    "E038R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B119",
+      "candidate": "E038R1"
+    },
+    {
+      "baseline": "B120",
+      "candidate": "E038R2"
+    },
+    {
+      "baseline": "B121",
+      "candidate": "E038R3"
+    }
+  ],
+  "policy": {
+    "minimum_complete_cycle_gain_pct": 1.0,
+    "fixture_slowdown_threshold_pct": 0.0,
+    "fixture_guard": "Positive median slowdown and at least2/3 strictly positive paired slowdowns rejects; unrounded, no epsilon.",
+    "exactness": "All18 complete non-timing result payloads and138 checkpoints match accepted E020C1; full normalized evaluator/configuration/stopping conditions retained.",
+    "scope": "Initial primary screen only; no statistical confidence or adoption claim.",
+    "sampling": "All fixed observations retained; no historical timing pooling, exclusions, extensions or rescue retries."
+  },
+  "adoption_requirements": [
+    "Separate prospectively fixed16-pair confirmation: at least1% aggregate, at least13 improving pairs, positive paired/block/order medians and no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/resume/continuation controls, fixed holdout and fresh-original cumulative qualification.",
+    "No material memory, capacity, behavior or compatibility cost. Source and compiled/runtime evidence appropriate to the change; no universal no-slowdown claim."
+  ],
+  "runtime_authority": "User-authorized ongoing performance research; root reviewed source/control and will execute exactly these pinned build and native scripts. No deployment or automatic adoption."
+}

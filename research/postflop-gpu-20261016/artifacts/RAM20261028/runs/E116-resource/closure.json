@@ -1,0 +1,94 @@
+{
+  "at": "2026-10-29T14:27:09.995445+00:00",
+  "status": "REJECTED_CLOSED_AT_COMPILED_RESOURCE_GATE",
+  "failed_gates": [
+    "down_action:no_occupancy_loss",
+    "up_action:no_maxthread_loss",
+    "up_action:no_occupancy_loss"
+  ],
+  "raw_module_markers_independently_recomputed": [
+    {
+      "kernel": "down_action",
+      "baseline_registers": 40,
+      "candidate_registers": 46,
+      "baseline_max_threads": 1024,
+      "candidate_max_threads": 1024,
+      "baseline_occupancies": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "candidate_occupancies": [
+        [
+          64,
+          20
+        ],
+        [
+          128,
+          10
+        ],
+        [
+          256,
+          5
+        ]
+      ],
+      "independently_recomputed_no_occupancy_loss": false,
+      "independently_recomputed_no_maxthread_loss": true
+    },
+    {
+      "kernel": "up_action",
+      "baseline_registers": 62,
+      "candidate_registers": 66,
+      "baseline_max_threads": 1024,
+      "candidate_max_threads": 896,
+      "baseline_occupancies": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "candidate_occupancies": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          7
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "independently_recomputed_no_occupancy_loss": false,
+      "independently_recomputed_no_maxthread_loss": false
+    }
+  ],
+  "reason": "More registers lower fixed64/128/256 theoretical occupancy in both targets; up_action maximum supported block threads fall1024to896. Original D108 maxthread prerequisite also fails independently of stricter prospective no-occupancy-loss requirement. This is a compiled prerequisite rejection, not an actual numerical/timed slowdown.",
+  "source_sha256": "3128ecf06d02861926b4f270fb7a46ba728fb8d7fc06aa9a1821390e8fb4cc4c",
+  "report_sha256": "85085583ab2b122fc5334c5b317cbb443be8d135d4acfb4a328106de5ab52437",
+  "new_application_kernels_solver_or_speed_runs": 0,
+  "actual_guarded_division_mechanism_not_qualified": true,
+  "no_source_helper_predicate_arity_threshold_selection_scope_flag_or_sample_rescue": true,
+  "all_owned_compiler_module_children_terminal": true,
+  "all_source_main_live_protected_PTX_unchanged": true,
+  "goal_active": true
+}

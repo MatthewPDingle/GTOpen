@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-28T09:19:06.823686+00:00",
+  "mapping": [
+    {
+      "template": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-primary-native.py",
+      "template_sha256": "0b27533aba415e1a07dbe91861148d5dbfda972c97294d0c9b19d7e4ee6b29d6",
+      "adapted": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-primary-native.py",
+      "adapted_sha256": "be7aa3ba271e1cc55caf013c2c70bd3580835bb043ef2b8c85516b8c95f3c1e9"
+    },
+    {
+      "template": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-primary-assess.py",
+      "template_sha256": "4300c5399144271b39536c5113ce8e60426f5a5b0688ceeb6d1a82323dfd6b18",
+      "adapted": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-primary-assess.py",
+      "adapted_sha256": "43068327b65b60a7a9f94c83206ef931008e2b25fa822a334d27950f2d3ed865"
+    },
+    {
+      "template": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-primary-root-check.py",
+      "template_sha256": "a5ef541cc327fb7262d92b861df764bae0a56f8aee32d0ae861ad890447b05dc",
+      "adapted": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-primary-root-check.py",
+      "adapted_sha256": "62cb49c0f8f3ac62103a28ab75859df738c1e9b06bd29145bb70e11d2f1368d2"
+    },
+    {
+      "template": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-freeze-primary.py",
+      "template_sha256": "b79bdc640bc92aa34764b527309dcac149408d57d9184b5fe46189493fc51bf6",
+      "adapted": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-freeze-primary.py",
+      "adapted_sha256": "594399f97b80a0d6a3420a65e328f1dce50e7e329855bf1f9aa67bb371afe455"
+    }
+  ],
+  "sequence": [
+    "V091-unit",
+    "B296",
+    "E091R1",
+    "E091R2",
+    "B297",
+    "B298",
+    "E091R3"
+  ],
+  "changed": "Candidate/run IDs, raw-control evidence paths and added prerequisite identities only. Same frozen primary score, exact anchor, strict fixture guard, source custody and no-rescue policy as current-RAM E090 screen.",
+  "candidate_source_or_evaluator_changed": false,
+  "native_primary_children_started": 0
+}

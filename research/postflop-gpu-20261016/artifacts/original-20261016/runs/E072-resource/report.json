@@ -1,0 +1,271 @@
+{
+  "id": "E072-resource",
+  "at": "2026-10-18T02:15:43.659104+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "protocol_sha256": "be256cd18733dda93740a865f77db8470a10fe72ecd5bf71c6a49ea0e344d741",
+  "gates": {
+    "compute_120:unchanged8entries_exact": true,
+    "compute_120:only_fold_entry_changed": true,
+    "compute_120:ABI_exact": true,
+    "compute_120:FP_opcode_counts_exact": false,
+    "compute_120:integer_shared_staging_emitted": true,
+    "compute_120:additional_barrier_emitted": true,
+    "compute_75:unchanged8entries_exact": true,
+    "compute_75:only_fold_entry_changed": true,
+    "compute_75:ABI_exact": true,
+    "compute_75:FP_opcode_counts_exact": true,
+    "compute_75:integer_shared_staging_emitted": true,
+    "compute_75:additional_barrier_emitted": true,
+    "up_fold:local_bytes_not_increased": true,
+    "up_fold:dynamic_shared_not_increased": true,
+    "up_fold:max_threads_not_reduced": true,
+    "up_fold:supports_all_fixed_thread_controls": true,
+    "up_fold:both_fit_default_limits": true,
+    "up_fold:positive_fixed_driver_occupancy": true,
+    "static_shared_bytes_exact": true,
+    "dynamic_shared_bytes_exact": true
+  },
+  "baseline": {
+    "actual_block_threads": 128,
+    "dynamic_shared_bytes": 5304,
+    "fits_default_limits": true,
+    "kernel": "up_fold",
+    "kernel_launches": 0,
+    "local_bytes_per_thread": 0,
+    "max_threads": 1024,
+    "occupancy_by_threads": [
+      [
+        64,
+        13
+      ],
+      [
+        128,
+        12
+      ],
+      [
+        256,
+        6
+      ]
+    ],
+    "performance_measurement": false,
+    "registers": 39,
+    "shape": "same128threads_max1326hands",
+    "stage": "resource",
+    "static_shared_bytes": 1232,
+    "variant": "baseline"
+  },
+  "candidate": {
+    "actual_block_threads": 128,
+    "dynamic_shared_bytes": 5304,
+    "fits_default_limits": true,
+    "kernel": "up_fold",
+    "kernel_launches": 0,
+    "local_bytes_per_thread": 0,
+    "max_threads": 1024,
+    "occupancy_by_threads": [
+      [
+        64,
+        13
+      ],
+      [
+        128,
+        12
+      ],
+      [
+        256,
+        6
+      ]
+    ],
+    "performance_measurement": false,
+    "registers": 36,
+    "shape": "same128threads_max1326hands",
+    "stage": "resource",
+    "static_shared_bytes": 1232,
+    "variant": "candidate"
+  },
+  "feasibility": {
+    "status": "admit_numerical_controls",
+    "gates": {
+      "local_bytes_not_increased": true,
+      "dynamic_shared_not_increased": true,
+      "max_threads_not_reduced": true,
+      "supports_all_fixed_thread_controls": true,
+      "both_fit_default_limits": true,
+      "positive_fixed_driver_occupancy": true
+    },
+    "prior_strict_allocation_diagnostic": {
+      "status": "admit_numerical_controls",
+      "gates": {
+        "allocated_registers_not_increased": true,
+        "local_bytes_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_not_increased": true,
+        "max_threads_not_reduced": true,
+        "both_fit_default_limits": true,
+        "driver_occupancy_not_reduced": true
+      },
+      "nominal_registers": [
+        39,
+        36
+      ],
+      "allocated_registers_per_warp": [
+        1280,
+        1280
+      ],
+      "allocated_registers_per_block": [
+        {
+          "threads": 64,
+          "baseline": 2560,
+          "candidate": 2560
+        },
+        {
+          "threads": 128,
+          "baseline": 5120,
+          "candidate": 5120
+        },
+        {
+          "threads": 256,
+          "baseline": 10240,
+          "candidate": 10240
+        }
+      ],
+      "performance_qualified": false,
+      "candidate_accepted": false
+    },
+    "resource_warnings": [],
+    "performance_qualified": false,
+    "candidate_accepted": false
+  },
+  "abi": {
+    "compute_120": {
+      "baseline_header_sha256": "f9e0ff157a8e7bf7e2bbb755ad9de9dac12f1f03469c5f1e920ff59289ec8430",
+      "candidate_header_sha256": "f9e0ff157a8e7bf7e2bbb755ad9de9dac12f1f03469c5f1e920ff59289ec8430"
+    },
+    "compute_75": {
+      "baseline_header_sha256": "e8044ce7a79dc875b33a68a9393756fc15c91982b9deb7cb41c46fe90be635e9",
+      "candidate_header_sha256": "e8044ce7a79dc875b33a68a9393756fc15c91982b9deb7cb41c46fe90be635e9"
+    }
+  },
+  "emitted_mechanism": {
+    "compute_120": {
+      "integer_shared_load_sites": 15,
+      "integer_shared_store_sites": 5,
+      "barrier_sites": [
+        3,
+        4
+      ],
+      "FP_opcodes": {
+        "add.f32": 18,
+        "sub.f32": 2,
+        "mul.f32": 1
+      },
+      "driver_SASS_inspected": false
+    },
+    "compute_75": {
+      "integer_shared_load_sites": 7,
+      "integer_shared_store_sites": 1,
+      "barrier_sites": [
+        3,
+        4
+      ],
+      "FP_opcodes": {
+        "add.f32": 10,
+        "sub.f32": 2,
+        "mul.f32": 1
+      },
+      "driver_SASS_inspected": false
+    }
+  },
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5304,
+      "fits_default_limits": true,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 39,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5304,
+      "fits_default_limits": true,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 36,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "compile_variants": 4,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "resource_rows": 2,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "e2947fb160bb5eb897b989fe89859c2e3a8af170a45bbd4dc5f4c5e576574984",
+    "candidate-compute_75": "33bb5aa7f284f5b1a166e518c338a694cce3f8691d718f1cd45d84daad13ab27"
+  },
+  "binary_sha256": "3b99025b460b54653f5c0d8c49e5c368c3e8f6f127076bc7bf217f4b09d52462",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "accepted_main_live_PTX_unchanged": true,
+  "limits": "PTX/driver resources and integer shared-staging sites only; no SASS traffic, GPU float equality, actual integrated CPU/memory/capacity or speed proof. All direct and full-solver qualification gates remain required."
+}

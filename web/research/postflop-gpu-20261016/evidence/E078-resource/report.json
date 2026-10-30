@@ -1,0 +1,588 @@
+{
+  "id": "E078-resource",
+  "at": "2026-10-18T05:33:47.888933+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "protocol_sha256": "40817b8faafe8bb57126ff755196703d76f258fd715ea907f52d313b76e2bc23",
+  "gates": {
+    "compute_120:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_120:original20ABI_parameters_exact": false,
+    "compute_120:candidate30ABI_parameters": false,
+    "compute_120:three_original_fold_shared_arrays": true,
+    "compute_120:private_fold_marker_compare_emitted": true,
+    "compute_120:fold_collectives_emitted": true,
+    "compute_120:action_entry_changed": true,
+    "compute_75:other8entries_exact_modulo_only_local_function_ordinals": true,
+    "compute_75:original20ABI_parameters_exact": true,
+    "compute_75:candidate30ABI_parameters": true,
+    "compute_75:three_original_fold_shared_arrays": true,
+    "compute_75:private_fold_marker_compare_emitted": true,
+    "compute_75:fold_collectives_emitted": true,
+    "compute_75:action_entry_changed": true,
+    "local_bytes_not_increased": true,
+    "dynamic_shared_not_increased": true,
+    "max_threads_not_reduced": true,
+    "supports_all_fixed_thread_controls": true,
+    "both_fit_default_limits": true,
+    "positive_fixed_driver_occupancy": true,
+    "dynamic_shared_exact": true
+  },
+  "rows": [
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 6544,
+      "variant": "candidate"
+    }
+  ],
+  "feasibility": {
+    "status": "admit_numerical_controls",
+    "gates": {
+      "local_bytes_not_increased": true,
+      "dynamic_shared_not_increased": true,
+      "max_threads_not_reduced": true,
+      "supports_all_fixed_thread_controls": true,
+      "both_fit_default_limits": true,
+      "positive_fixed_driver_occupancy": true
+    },
+    "prior_strict_allocation_diagnostic": {
+      "status": "reject_resource_prefilter",
+      "gates": {
+        "allocated_registers_not_increased": true,
+        "local_bytes_not_increased": true,
+        "static_shared_not_increased": false,
+        "dynamic_shared_not_increased": true,
+        "max_threads_not_reduced": true,
+        "both_fit_default_limits": true,
+        "driver_occupancy_not_reduced": false
+      },
+      "nominal_registers": [
+        62,
+        62
+      ],
+      "allocated_registers_per_warp": [
+        2048,
+        2048
+      ],
+      "allocated_registers_per_block": [
+        {
+          "threads": 64,
+          "baseline": 4096,
+          "candidate": 4096
+        },
+        {
+          "threads": 128,
+          "baseline": 8192,
+          "candidate": 8192
+        },
+        {
+          "threads": 256,
+          "baseline": 16384,
+          "candidate": 16384
+        }
+      ],
+      "performance_qualified": false,
+      "candidate_accepted": false
+    },
+    "resource_warnings": [
+      "static_shared_not_increased",
+      "driver_occupancy_not_reduced"
+    ],
+    "performance_qualified": false,
+    "candidate_accepted": false
+  },
+  "resource_warnings": [
+    "static_shared_not_increased",
+    "driver_occupancy_not_reduced"
+  ],
+  "emitted_mechanism": {
+    "compute_120": {
+      "other_entries": {
+        "copy_root": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "down_action": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "down_chance": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_fold": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_show": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_chance": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "copy_span": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_action_eval": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        }
+      },
+      "baseline_ABI": [
+        [
+          "u32",
+          "up_action_param_1"
+        ],
+        [
+          "u32",
+          "up_action_param_2"
+        ],
+        [
+          "u32",
+          "up_action_param_3"
+        ],
+        [
+          "u32",
+          "up_action_param_18"
+        ],
+        [
+          "u32",
+          "up_action_param_19"
+        ]
+      ],
+      "candidate_ABI": [
+        [
+          "u32",
+          "up_action_param_1"
+        ],
+        [
+          "u32",
+          "up_action_param_2"
+        ],
+        [
+          "u32",
+          "up_action_param_3"
+        ],
+        [
+          "u32",
+          "up_action_param_18"
+        ],
+        [
+          "u32",
+          "up_action_param_19"
+        ],
+        [
+          "u32",
+          "up_action_param_29"
+        ]
+      ],
+      "candidate_shared_declarations": [
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE11local_reach",
+          "5304"
+        ],
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE1s",
+          "208"
+        ],
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE11total_parts",
+          "1024"
+        ]
+      ],
+      "candidate_fold_marker_compares": [
+        "setp.ne.s32 \t%p3, %r189, -1;",
+        "setp.eq.s32 \t%p25, %r35, -1;"
+      ],
+      "candidate_barrier_instruction_sites": 4,
+      "FP_opcode_counts_diagnostic_only": {
+        "baseline": {
+          "fma.rn.f32": 72,
+          "setp.gt.f32": 19,
+          "max.f32": 23,
+          "add.f32": 37,
+          "div.rn.f32": 16,
+          "mul.f32": 16,
+          "sub.f32": 16,
+          "rcp.rn.f32": 1,
+          "setp.leu.f32": 2
+        },
+        "candidate": {
+          "add.f32": 71,
+          "sub.f32": 18,
+          "mul.f32": 17,
+          "fma.rn.f32": 72,
+          "setp.gt.f32": 19,
+          "max.f32": 23,
+          "div.rn.f32": 16,
+          "rcp.rn.f32": 1,
+          "setp.leu.f32": 7
+        }
+      },
+      "limits": "Source-matched ABI/shared/marker/barrier emission only; not complete FPdataflow, raw numerical equivalence, SASS/dynamic traffic or speed. Exact folded/arithmetic/hand/CFV raw controls remain."
+    },
+    "compute_75": {
+      "other_entries": {
+        "copy_root": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "down_action": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "down_chance": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_fold": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_show": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_chance": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "copy_span": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        },
+        "up_action_eval": {
+          "raw_exact": true,
+          "normalized_only_local_function_ordinals_exact": true
+        }
+      },
+      "baseline_ABI": [
+        [
+          "u64",
+          "up_action_param_0"
+        ],
+        [
+          "u32",
+          "up_action_param_1"
+        ],
+        [
+          "u32",
+          "up_action_param_2"
+        ],
+        [
+          "u32",
+          "up_action_param_3"
+        ],
+        [
+          "u64",
+          "up_action_param_4"
+        ],
+        [
+          "u64",
+          "up_action_param_5"
+        ],
+        [
+          "u64",
+          "up_action_param_6"
+        ],
+        [
+          "u64",
+          "up_action_param_7"
+        ],
+        [
+          "u64",
+          "up_action_param_8"
+        ],
+        [
+          "u64",
+          "up_action_param_9"
+        ],
+        [
+          "u64",
+          "up_action_param_10"
+        ],
+        [
+          "u64",
+          "up_action_param_11"
+        ],
+        [
+          "u64",
+          "up_action_param_12"
+        ],
+        [
+          "u64",
+          "up_action_param_13"
+        ],
+        [
+          "u64",
+          "up_action_param_14"
+        ],
+        [
+          "u64",
+          "up_action_param_15"
+        ],
+        [
+          "u64",
+          "up_action_param_16"
+        ],
+        [
+          "u64",
+          "up_action_param_17"
+        ],
+        [
+          "u32",
+          "up_action_param_18"
+        ],
+        [
+          "u32",
+          "up_action_param_19"
+        ]
+      ],
+      "candidate_ABI": [
+        [
+          "u64",
+          "up_action_param_0"
+        ],
+        [
+          "u32",
+          "up_action_param_1"
+        ],
+        [
+          "u32",
+          "up_action_param_2"
+        ],
+        [
+          "u32",
+          "up_action_param_3"
+        ],
+        [
+          "u64",
+          "up_action_param_4"
+        ],
+        [
+          "u64",
+          "up_action_param_5"
+        ],
+        [
+          "u64",
+          "up_action_param_6"
+        ],
+        [
+          "u64",
+          "up_action_param_7"
+        ],
+        [
+          "u64",
+          "up_action_param_8"
+        ],
+        [
+          "u64",
+          "up_action_param_9"
+        ],
+        [
+          "u64",
+          "up_action_param_10"
+        ],
+        [
+          "u64",
+          "up_action_param_11"
+        ],
+        [
+          "u64",
+          "up_action_param_12"
+        ],
+        [
+          "u64",
+          "up_action_param_13"
+        ],
+        [
+          "u64",
+          "up_action_param_14"
+        ],
+        [
+          "u64",
+          "up_action_param_15"
+        ],
+        [
+          "u64",
+          "up_action_param_16"
+        ],
+        [
+          "u64",
+          "up_action_param_17"
+        ],
+        [
+          "u32",
+          "up_action_param_18"
+        ],
+        [
+          "u32",
+          "up_action_param_19"
+        ],
+        [
+          "u64",
+          "up_action_param_20"
+        ],
+        [
+          "u64",
+          "up_action_param_21"
+        ],
+        [
+          "u64",
+          "up_action_param_22"
+        ],
+        [
+          "u64",
+          "up_action_param_23"
+        ],
+        [
+          "u64",
+          "up_action_param_24"
+        ],
+        [
+          "u64",
+          "up_action_param_25"
+        ],
+        [
+          "u64",
+          "up_action_param_26"
+        ],
+        [
+          "u64",
+          "up_action_param_27"
+        ],
+        [
+          "u64",
+          "up_action_param_28"
+        ],
+        [
+          "u32",
+          "up_action_param_29"
+        ]
+      ],
+      "candidate_shared_declarations": [
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE11local_reach",
+          "5304"
+        ],
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE1s",
+          "208"
+        ],
+        [
+          "4",
+          "_ZZ22produce_fold_in_parentjiPKiPKfS2_PKjS2_S4_S4_S4_S4_S4_S4_PfiiiE11total_parts",
+          "1024"
+        ]
+      ],
+      "candidate_fold_marker_compares": [
+        "setp.ne.s32 \t%p3, %r152, -1;",
+        "setp.eq.s32 \t%p21, %r28, -1;"
+      ],
+      "candidate_barrier_instruction_sites": 4,
+      "FP_opcode_counts_diagnostic_only": {
+        "baseline": {
+          "fma.rn.f32": 85,
+          "add.f32": 39,
+          "max.f32": 40,
+          "setp.leu.f32": 11,
+          "div.rn.f32": 23,
+          "mul.f32": 23,
+          "setp.gt.f32": 23,
+          "sub.f32": 23,
+          "rcp.rn.f32": 1
+        },
+        "candidate": {
+          "add.f32": 49,
+          "sub.f32": 25,
+          "mul.f32": 24,
+          "fma.rn.f32": 85,
+          "max.f32": 40,
+          "setp.leu.f32": 11,
+          "div.rn.f32": 23,
+          "setp.gt.f32": 23,
+          "rcp.rn.f32": 1
+        }
+      },
+      "limits": "Source-matched ABI/shared/marker/barrier emission only; not complete FPdataflow, raw numerical equivalence, SASS/dynamic traffic or speed. Exact folded/arithmetic/hand/CFV raw controls remain."
+    }
+  },
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "3912ae02aeea38352aba74df1b69979ee22117ee75d8067d06e14d01608f1a4c",
+    "candidate-compute_75": "0b0f54ed201ab0e1502c9d7da18470e17e8e562be6e032e474a9e96b3d7721c9"
+  },
+  "binary_sha256": "47dbaa85c1b28820e0ff352c0d294abf24456e65c7043b9fe40526773882bebd",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "accepted_main_live_PTX_unchanged": true,
+  "limits": "Resource queries/compiler-only. Staticshared/register/occupancy differences disclosed, not actual process/GPU peaks or no-tradeoff proof. Default dynamic0 for every hand shape and conservative1326staticbound, actual64/128/256driveroccupancies. No native numerical/application kernel/solver/speed test yet. All exact/broad/state/material/1%/strictfixture/fresh16/holdout/cumulative gates remain."
+}

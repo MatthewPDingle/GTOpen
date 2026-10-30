@@ -1,0 +1,36 @@
+{
+  "id": "E037-independent-numerical-audit-preparation",
+  "status": "PREPARED_NOT_EXECUTED_AWAITING_TERMINAL_EVIDENCE",
+  "parent_audit": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-independent-review\\audit-numerical.py",
+  "parent_audit_sha256": "926d66316d4c060e3875a9338da5aa0e8c83b5bad17e417047dfd57659038ca1",
+  "audit_sha256": "c2b717b97e9c073047b090249d9aa58f9112e7f9313c092bca504f830103e032",
+  "protocol_sha256": "48e8c20d6e9744e6397274596979ac69ff94d6d57a6d7d13a726ae9a16910c86",
+  "scripts_manifest_sha256": "6f00150b84498fc9c9572b07b546f6e01c110d618b22ab9973749b42d53f8540",
+  "fixed_order": [
+    "V037-unit",
+    "B116",
+    "E037R1",
+    "E037R2",
+    "B117",
+    "B118",
+    "E037R3"
+  ],
+  "expected": {
+    "passed": 85,
+    "failed": 0,
+    "ignored": 4,
+    "measured": 0,
+    "filtered": 0,
+    "benchmark_results": 18,
+    "convergence_records": 138,
+    "focused_marker": "E037_SHOW_ZERO_TEST",
+    "comparison_pairs": 34,
+    "kernel_launches": 68
+  },
+  "terminal_trigger": "Root confirms build, unit, all six fixed benchmark runs and assessor terminal; only then write terminal-inputs.json with id E037, root_all_stages_terminal true and immutable comparison_sha256. No validation or summary written before that notice.",
+  "review_boundary": "Numerical/order/gates only; menu_change_review owns source/build/run custody, cleanup and combined manifest. The audit does not require the live checkout to be restored before reading immutable evidence.",
+  "source_compiler_native_gpu_executed": false,
+  "candidate_outcome_read": false,
+  "syntax_check": "ast.parse only; audit not imported or executed",
+  "preparation_error_preserved": "preparation-error.json"
+}

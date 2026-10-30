@@ -1,0 +1,197 @@
+{
+  "id": "D067-show-mapping-feasibility",
+  "created_at": "2026-10-16T21:24:58.962471+00:00",
+  "verdict": "GO_FOR_SEPARATELY_AUTHORIZED_CPU_ONLY_PLANNED_SHOW_MAPPING_DERIVATION",
+  "scope": "Source/evidence feasibility only. No implementation, compiler, native solver, GPU census, candidate or performance measurement.",
+  "recommendation": "Reuse the immutable D066 all-physical-row flags with a new exact accepted-plan host reconstruction. First reproduce the saved fold mapping bytes and recorded geometry, then derive a separately named planned-showdown incidence report. No second GPU census is needed for this narrowly defined sufficient whole-row predicate if those checks pass.",
+  "accepted_source": "E020; all 162 source-map entries checked exact during this audit",
+  "source_snapshots": {
+    "crates/solver/src/gpu/plan.rs": {
+      "snapshot": "source-evidence/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "snapshot": "source-evidence/mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "snapshot": "source-evidence/kernels.cu",
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+    },
+    "crates/solver/src/game.rs": {
+      "snapshot": "source-evidence/game.rs",
+      "sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+    },
+    "crates/solver/src/tree.rs": {
+      "snapshot": "source-evidence/tree.rs",
+      "sha256": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761"
+    },
+    "crates/solver/src/lib.rs": {
+      "snapshot": "source-evidence/lib.rs",
+      "sha256": "28cb0e238056e6f22790b797b918114a66ba772fd67bc651834501266561ed95"
+    },
+    "crates/solver/Cargo.toml": {
+      "snapshot": "source-evidence/solver-Cargo.toml",
+      "sha256": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6"
+    }
+  },
+  "retained_evidence": {
+    "source_manifest_sha256": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+    "raw_stdout_sha256": "8c17fc1291d68a2908ca375258ab0fca93ff85ef4190b0a1e428ba2354bca371",
+    "compact_artifact_manifest_sha256": "38b1e9c7fcc5780b9cbef76fd48ce5bed508f3fe317b84549b6e9e78b08e56cc",
+    "verified_compact_files": 15,
+    "raw_markers": 39,
+    "raw_reach_float_payload_retained": false,
+    "full_configs": "Exact three SpotConfig objects in frozen D066 design/anchors.json; do not reconstruct from board names or a later bench_spot.json.",
+    "algorithm_and_schedule": "Source checks ordinary defaults: DCFR, compressed storage, isomorphism=true, no locks; two independent GpuSolver instances share immutable Spot. Every20 checks, snapshot before evaluation at20/final. No new snapshot or reweighting.",
+    "fixtures": [
+      {
+        "fixture_id": "rainbow",
+        "board": "Ks7h2d",
+        "nodes": 1346813,
+        "nh": [
+          257,
+          319
+        ],
+        "reach_blocks": [
+          750803,
+          724734
+        ],
+        "entries": [
+          192956371,
+          231190146
+        ],
+        "num_levels": 14,
+        "snapshots": [
+          20,
+          200
+        ],
+        "final_iteration": 200,
+        "fold_mapping_file": "rainbow-fold-mapping.u32le"
+      },
+      {
+        "fixture_id": "two-tone",
+        "board": "Ks7s2d",
+        "nodes": 1346813,
+        "nh": [
+          258,
+          320
+        ],
+        "reach_blocks": [
+          456834,
+          440970
+        ],
+        "entries": [
+          117863172,
+          141110400
+        ],
+        "num_levels": 14,
+        "snapshots": [
+          20,
+          200
+        ],
+        "final_iteration": 200,
+        "fold_mapping_file": "two-tone-fold-mapping.u32le"
+      },
+      {
+        "fixture_id": "river",
+        "board": "Ks7h2dQhTc",
+        "nodes": 33,
+        "nh": [
+          233,
+          280
+        ],
+        "reach_blocks": [
+          17,
+          17
+        ],
+        "entries": [
+          3961,
+          4760
+        ],
+        "num_levels": 8,
+        "snapshots": [
+          20,
+          60
+        ],
+        "final_iteration": 60,
+        "fold_mapping_file": "river-fold-mapping.u32le"
+      }
+    ],
+    "native_upload_check": "candidate-fold_zero_census.rs:98-130 compared complete d_rsrc[0/1], fold_nodes, node_player, node_twin and node_tlose against an independently built GpuPlan in both arms. All physical reach row lengths checked; no padding.",
+    "not_native_upload_checked": "show_nodes/show_spans, node_river_slot and node_ttie were not compared/downloaded by D066. Neither complete reach_slot arrays nor show mapping were retained as raw files. Their new reconstruction must be labelled host-planned; constructor source supports the upload relation, not a new device readback claim.",
+    "flag_definition": "One byte per entire physical row; zero means every logical f32 word is bits0x00000000. Bits1/2/4 indicate any negative zero/finite nonzero/nonfinite. It cannot classify only the board-filtered o_idx subset, recover values, prove fast-path outputs or measure time."
+  },
+  "determinism_and_upload_proof": [
+    {
+      "source": "game.rs:173-209,253-319",
+      "finding": "Root hands follow ascending combo index. Tree uses exact config; suit permutations follow fixed nested enumeration, identity moved to index0. HashMaps are lookup-only for combo identity, not iteration-order producers."
+    },
+    {
+      "source": "tree.rs:572-594,710-789",
+      "finding": "Parent-before-child node IDs and action children are built serially in fixed action order; chance children enumerate card0..51. Keep root-board-only construction and all unreachable nodes: removing unused branches would renumber nodes/owners."
+    },
+    {
+      "source": "game.rs:433-503",
+      "finding": "Parallel river calculations store by explicit stable key; each hand rank list sorts the full (strength,index) tuple. Completion order does not assign plan IDs."
+    },
+    {
+      "source": "plan.rs:114-208",
+      "finding": "Exact DFS initializes unvisited reach_src entries to owner0; action edges replace actor owner with child; chance edges replace both. Isomorphism chooses representatives from fixed valid permutation/card order. Preserve all full-tree indices, including unreachable zero-owner entries."
+    },
+    {
+      "source": "plan.rs:246-277,301-314,414-426",
+      "finding": "Work lists scan ascending node IDs into level vectors then flatten ascending levels. River slots are assigned on first node-index occurrence with HashMap entry lookup (never HashMap iteration). Physical reach slots are first owner occurrence while scanning the full reach_src vector in node-index order, separately for each player. No random seed/order affects assignments."
+    },
+    {
+      "source": "plan.rs:369-375,486-490; mod.rs:208-218,318-344,365-368",
+      "finding": "Payouts use exact f64-to-f32 casts from tree; plan shared geometry is untouched by full-action arena override. Compressed D066 constructors use the same build(spot,true), upload show_nodes/rsrc/river-slot/payout arrays directly and move show_spans unchanged; no later remapping."
+    },
+    {
+      "source": "mod.rs:890-925; kernels.cu:218-225",
+      "finding": "Each nonempty show span launches one CTA per nodes[start+b], with opponent q=1-p d_rsrc/d_reach. Kernel ro_g is reach_o_buf + rsrc_o[n]*nh_o. Count every planned show node once per traverser, without deduplicating owners or counting all physical rows as show work."
+    }
+  ],
+  "snapshot_validity": {
+    "sources": [
+      "candidate-fold_zero_census.rs:199-244,294-310",
+      "mod.rs:393-433,763-854,890-925"
+    ],
+    "proof": "After the complete last paired iteration, retained reach1 is the input last consumed by p0 show: p0 up does not write reaches, and E015 p1 down passes nh1=0 and leaves reach1 intact. Retained reach0 is the last p1 show input after p1 down. Training up kernels write CFVs/learning only. Source synchronize before snapshot waits but does not replace reaches. Snapshot occurs before either exploitability call, which would replace reaches with average-policy values.",
+    "limits": "This applies to those six frozen training boundaries only, not all iterations, evaluation inputs, alternate roots/continuations or arbitrary snapshots."
+  },
+  "minimum_later_derivation": [
+    "Separate root authorization is required to prepare/compile/run any exporter. Prefer one small off-tree CPU-only binary using the exact accepted solver sources without the gpu feature; include byte-exact archived plan.rs as a local module and re-export solver public game/tree/cards at crate root. Production plan.rs references only these public modules; no GpuSolver or CUDA call is needed. This integration has not been compiled here.",
+    "Pin source/Cargo.lock/toolchain and exact D066 anchors/configs; build Spot then GpuPlan::build(&spot,true), one fixture at a time. Do not construct Solver learning stores, replay training, load CUDA, or infer geometry from fold counts. The normal Spot construction still computes river tables on CPU; retain a bounded host memory/process guard.",
+    "Before new counts, require exact nodes, nh, reach_blocks and all recorded fold spans. Regenerate each entire20-byte fold record (node,slot0,slot1,selected amount0bits,amount1bits) and compare full bytes/length to all three frozen D066 fold files. This is a cross-check on deterministic reconstruction, not a substitute for the full source proof or a new device check.",
+    "Retain deterministic planned show records with node, both reach slots, river slot, f32 win/lose/tie bits and per-player sorted count; retain contiguous show level spans. Assert list coverage, unique visited terminal IDs, KIND_TERM_SHOWDOWN, valid slot/count/range bounds and exact nh/rowflag lengths. No outcomes may select a smaller fixture or omit nodes.",
+    "For each of the six snapshots and both traversers, join flags[1-p][reach_slot[1-p][node]], count whole-row +0 and separately require all three already-cast payout values finite. Report per-level and whole-show CTA counts, preserving empty sorted-own/opponent categories where present. Count launch work, not unique reach rows or hand counts; no weighted time proxy.",
+    "Write new D067 outputs with input hashes and an explicit planned mapping provenance label. Preserve D066 files/reports unchanged. Missing/mismatched geometry fails closed without GPU recensus or alternative mappings under this authorization."
+  ],
+  "minimum_runtime_claim_if_later_successful": "Planned showdown CTAs whose last training input whole row was all exact positive zero at the six retained D066 boundaries; optional separate finite-three-payout eligibility. No new GPU measurement.",
+  "limitations": [
+    "No showdown incidence has been derived in this source-only audit. Published D066 counts remain fold-only.",
+    "All-row+0 is sufficient and conservative; row flags cannot reveal zeros only in the active river subset. Raw floats are unavailable.",
+    "Node_ttie and show-related device metadata have constructor/source provenance only. A requirement for independently downloaded actual show metadata would require new runtime evidence; this plan does not provide it.",
+    "Whole-row incidence does not prove a shortcut exact, remove output stores safely, bound all-iteration frequency, measure showdown latency or establish complete-cycle headroom. E035 fold rejection stays closed."
+  ],
+  "compiler_native_gpu_executed": false,
+  "implementation_written": false,
+  "production_changed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-root-decisions\\preparation.json": "7e14a68d183638cbef005fb9ae280d501ad0cfb41484d61228163df37d03c7c5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\source-manifest.json": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\design\\anchors.json": "ce46137e6832b7b69c18bb346eb3f84c08db2deab1344328d469af243da648c3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\design\\scope.json": "4026ff5cc7f750df8b5aac761c356ae704f33a5b122535813c0c3e177844afa2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\candidate-fold_zero_census.rs": "14574cf4d66ab6d4a35fe795968c4f37d8258e7f98efa43f9bcf395048138cf7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\output-schema.json": "a2be88380ec9881899da23d08f5c451293537701b5ebc18bfda667e1ae76b3dc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-independent-review\\report.json": "b6c9a39790578335bee453727d32bdb7cc4f5e1bae3c194d1e3f91b4a8db1e18",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census-artifacts.json": "38b1e9c7fcc5780b9cbef76fd48ce5bed508f3fe317b84549b6e9e78b08e56cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066R1\\stdout.log": "8c17fc1291d68a2908ca375258ab0fca93ff85ef4190b0a1e428ba2354bca371",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-cleanup\\report.json": "c19ce0a577a27c444fe816737be09acd2a06d5bd8c5cfc1acf749cdce2b92564",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E035-three-pair-comparison\\report.json": "1c919a8579ae12c109674a70e93564954eecfe007cabbce468aa7e020926201b"
+  },
+  "preparation_observation": "Initial schema read used nonexistent source/schema.json; corrected to existing frozen output-schema.json. Read-only path error, no artifact or source changed."
+}

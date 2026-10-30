@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-18T09:36:10.672028+00:00",
+  "original_protocol_sha256": "41aa9396d3b9c252f7e87c173860d21d48a665202245283099c16d6481f34132",
+  "original_compiler_receipt_sha256": "98f59fb7ac6ce2f57c2a13d70b6db43c0c7c47a1be0d5f3b4d5caddb12598a22",
+  "original_compiler_stderr_sha256": "f977c3ded9098c488c1c4103da5c5a7164ef44f89f3e6407061f8e4d6ba38f10",
+  "cause": "Copied GPU module used accepted public GpuPlan but its F32 use_full_action_arenas helper is pub(crate). RustE0624 stopped compilation before any binary/native execution.",
+  "repair": "Copy only the exact six-line helper body into the standalone public-plan adapter, rename self to plan, and call it explicitly in baseline/candidate constructor and reference validator. Same fields/loops/statements. Production/candidate sources, controls, workloads, timing boundaries, gates and phase order unchanged.",
+  "accepted_plan_source_sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+  "original_body": "\n        self.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];\n        for (i, node) in spot.tree.nodes.iter().enumerate() {\n            self.node_data_off[i] = node.data_offset;\n        }\n    ",
+  "adapter_body": "\n        plan.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];\n        for (i, node) in spot.tree.nodes.iter().enumerate() {\n            plan.node_data_off[i] = node.data_offset;\n        }\n    ",
+  "original_failed_compiler_attempts": 1,
+  "original_native_processes": 0,
+  "successful_compilers_so_far": 0,
+  "candidate_source_changed": false,
+  "no_samples_rerun": true
+}

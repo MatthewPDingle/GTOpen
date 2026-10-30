@@ -1,0 +1,146 @@
+{
+  "id": "E046-resource",
+  "at": "2026-10-17T02:28:45.525674+00:00",
+  "status": "rejected_resource_gate",
+  "protocol_sha256": "abc64b2a57581ed2e3fe49696dbf8bf0fe1d4f732af800ce4286515d01e0cde5",
+  "source_manifest_sha256": "977b4cdb8cb36a4172f669c15feebbe9eed4750c29bec6ab82f19c7a0c5d617e",
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_thread_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "theoretical_blocks_per_sm": 12,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "theoretical_blocks_per_sm": 12,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "abi": {
+    "baseline": [
+      "u32",
+      "u32",
+      "u32",
+      "u32"
+    ],
+    "candidate": [
+      "u32",
+      "u32",
+      "u32",
+      "u32"
+    ]
+  },
+  "gates": {
+    "other8_entries_exact": true,
+    "up_chance_compiled_body_changed": true,
+    "registers_not_increased": false,
+    "local_not_increased": true,
+    "static_shared_not_increased": true,
+    "max_threads_not_reduced": true,
+    "fits_default_limits": true,
+    "occupancy_not_reduced": true,
+    "baseline_abi_exact": false,
+    "candidate_abi_exact": false
+  },
+  "ptx_sha256": {
+    "baseline": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "candidate": "e55a0c81af2671d3869c679aceb31c5efe19415c89bd1d4d108915a3c7bbce06"
+  },
+  "entry_body_sha256": {
+    "baseline": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "f640d449f94fa2f561282eb07f399d0f59db20a4e69f1ab42d356bb21cf02f0a",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    },
+    "candidate": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "40fae3e9b52316770d60e3e2bdfb086af4b2bd369a918a8fa981db88f4a24ca1",
+      "up_action": "f640d449f94fa2f561282eb07f399d0f59db20a4e69f1ab42d356bb21cf02f0a",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    }
+  },
+  "binary_sha256": "694bf1043a2fcf0dba0802472fa63324d9cb5b933dd6c8e76edbdcc324bd796a",
+  "stdout_sha256": "3559bdfac055ca62085a29489948a5a8a13561260d7eb010652c2c332aab1ac3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_unchanged": true,
+  "main_live_ptx_unchanged": true,
+  "limits": "Actual driver register/local/shared/default-limit queries and theoretical occupancy for this device/three block shapes only. No numerical kernel, runtime overlap, cold-start/capacity or speed evidence."
+}

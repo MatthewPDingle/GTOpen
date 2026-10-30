@@ -1,0 +1,72 @@
+{
+  "id": "E068-broader-scout",
+  "at": "2026-10-17T12:07:17.911518+00:00",
+  "status": "conditional_source_facts_only_confirmation_still_running",
+  "new_compiler_or_native_executions": 0,
+  "production_source_changed": false,
+  "prerequisite": "Do notbuildorlaunchuntilall32freshconfirmationprocessesandassessment/rootterminalandallfrozenfresh16gatespass.",
+  "fixed_control_sources_sha256": {
+    "postflop_state_perf.rs": "7d6f51618d0fe5b0fa431351c31cc0775f4a3bd7e816a2e93ecda9bbafa49d47",
+    "postflop_action_menus.rs": "4a518cbc449668a3221737815507e8ffc1f0434f1c387809736ce31b3cad5cc3",
+    "postflop_resume_state.rs": "eb15af135a357f9ceb8e21d3fe8f2a616a0d562ee9468cc6ada6113ca27617a4",
+    "gpu.rs": "ad04b4fa49edc0e75556761236fb9f3274aeab513131976e9615f31885a58c06",
+    "continuation_paging.rs": "9c93c8bd9b84c40a40d4a8ad2b4b6844bfc2b68bb93b64fe450e4a21c670de2f",
+    "continuation_symmetry.rs": "6135cf31b478d789e4ba454cfc47de3d0b768e04b8ea330b109d3ba9f2c02ec8"
+  },
+  "ordered_snapshot_requirements": {
+    "state": {
+      "records": 12,
+      "snapshots": 24
+    },
+    "menus": {
+      "records": 12,
+      "snapshots": 24
+    },
+    "resume": {
+      "records": 16,
+      "snapshots": 112
+    },
+    "total": 160
+  },
+  "f32": "Fixed3fixturecomplete evaluator, compareevery non-timingstate/checkpoint betweenacceptedE051andE068andhistoricalacceptedanchor; noF32speedclaim.",
+  "continuation": "Same160alternatingpaging/rejection/stored720fullstatepasscases;acceptedE051source-matchedfeaturebinariesidentified, currentE068feature-solver exists;2candidatefeatureintegrationbinariesneedfreshserializedbuildafterconfirmation.",
+  "io_boundary": "State/menu/resume use compile-time CARGO_MANIFEST_DIR/target/research-fixtures save paths. Do not run them against protected checkout paths. Compile exact unchanged harness sources with rustc --test, cfg gpu, pinned accepted/candidate solver rlibs and an explicit isolated S: CARGO_MANIFEST_DIR per arm, recording environment. Keep full benchmark/harness source unchanged; no new output under crates/solver/target.",
+  "compiled_libraries": {
+    "baseline": {
+      "primary_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+      "solver_library": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+      "declared_library_sha256": "c55801469c43d75e329da05b1b56ad1a93865f5cae863ff78c1c7c43d97a5239",
+      "actual_library_rehash_deferred_until_build_admission": true
+    },
+    "candidate": {
+      "primary_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E068-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "2138345d19fd4b22628d8e97e9f05bcd0e411b71a99099d4a63a28334793f971",
+      "solver_library": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e068-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+      "declared_library_sha256": "f2ffb592904a498cd55d6bc97f37c3c0a20c607ed73856c22a1064161b82dbc4",
+      "actual_library_rehash_deferred_until_build_admission": true
+    }
+  },
+  "feature_binary_manifest_maps": {
+    "E051-broader-continuation_paging": {
+      "source_map_verified_from_manifest": true,
+      "actual_binary_rehash_required_at_native_admission": true
+    },
+    "E051-broader-continuation_symmetry": {
+      "source_map_verified_from_manifest": true,
+      "actual_binary_rehash_required_at_native_admission": true
+    },
+    "E051-feature-solver": {
+      "source_map_verified_from_manifest": true,
+      "actual_binary_rehash_required_at_native_admission": true
+    },
+    "E068-feature-solver": {
+      "source_map_verified_from_manifest": true,
+      "actual_binary_rehash_required_at_native_admission": true
+    }
+  },
+  "manifest_only_not_binary_rehash": true,
+  "material_costs": "Actual owned buffer/capacity accounting and module/lifetime behavior required; same host/plan/source alone and lower queried registers are not universal no-cost evidence.",
+  "source_specific_risk": "Unconditionalignoredchildloads needproducerownership/initializationguarantees duringpaging/resume/storedpaths; raw alladdresses/bitstates passed, fullbroader paths stillrequired.",
+  "limits": "Preparation/sourcefacts only, not broadqualification, physicalGPUmemory/capacity/material/holdout/cumulative/speed/adoption result."
+}

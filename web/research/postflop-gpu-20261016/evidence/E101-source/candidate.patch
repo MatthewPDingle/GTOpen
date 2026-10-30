@@ -1,0 +1,29 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -84,7 +84,7 @@
+             float r = small ? rc[a] : regs[doff + (u64)a * nh_a + i];
+             float v;
+             if (sum > 1e-12f) {
+-                v = pr * ((r > 0.f ? r : 0.f) / sum);
++                v = pr * (r > 0.f ? r / sum : 0.f);
+             } else {
+                 v = uni;
+             }
+@@ -381,7 +381,7 @@
+             float out = 0.f;
+             for (int a = 0; a < na; a++) {
+                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+-                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
++                float sig = sum > 1e-12f ? (r > 0.f ? r / sum : 0.f) : uni;
+                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;
+@@ -508,7 +508,7 @@
+             float out = 0.f;
+             for (int a = 0; a < na; a++) {
+                 float s = strat_p[doff + (u64)a * nh_p + i];
+-                float sig = sum > 1e-12f ? (s > 0.f ? s : 0.f) / sum : uni;
++                float sig = sum > 1e-12f ? (s > 0.f ? s / sum : 0.f) : uni;
+                 out += sig * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+             }
+             cfv[(u64)cfv_slot[n] * nh_max + i] = out;

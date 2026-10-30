@@ -1,0 +1,67 @@
+{
+  "id": "small-gain-confirmation-positive-gain-amendment",
+  "status": "FROZEN_PROPOSAL_NOT_ADOPTED_OR_AUTHORIZED",
+  "parent_manifest_sha256": "066d917509793f760fb858ccc509e0c41fb934a1cdfa2022ba432437657397aa",
+  "parent_protocol_sha256": "e3df1e4193bdc497cd361a05ab9b1e1df75e4f1fcabd937c26e074ccf7bad0ed",
+  "purpose": "Replace v1 minimum effect-size rejection with a positive-direction and consistency screen for the same four selected hypotheses. All v1 files and historical rejected outcomes remain immutable.",
+  "family": [
+    "E007",
+    "E008",
+    "E032",
+    "E036"
+  ],
+  "baseline_decision_hold": "Design only until E037 finishes. If E037 fails, E020 remains the proposed reference and this four-family design applies. If E037 qualifies, stop before any small-gain source/build freeze: root must prospectively reconsider the accepted baseline and source applicability, particularly whether E036 is subsumed. Do not undo E037 or construct combinations under this amendment.",
+  "unchanged_cohort": {
+    "pairs_per_candidate": 16,
+    "blocks": 4,
+    "pairs_per_candidate_per_block": 4,
+    "BC_per_candidate_per_block": 2,
+    "CB_per_candidate_per_block": 2,
+    "benchmark_runs": 128,
+    "fixture_results": 384,
+    "convergence_records": 2944
+  },
+  "replacement_gates": {
+    "aggregate_gain_pct": "100*(sum_f median_i(B_if)-sum_f median_i(C_if))/sum_f median_i(B_if) > 0, using the unchanged complete-cycle timing field.",
+    "paired_gain_pct": "For each pair i: g_i=100*(sum_f B_if-sum_f C_if)/sum_f B_if. Median(g_1..g_16) > 0.",
+    "direction": "At least 13 of 16 g_i > 0. Exact ties are nonwins and remain in every calculation; no tolerance, rounded-display or epsilon-based win definition.",
+    "blocks": "Median of the four g_i in each of the four fixed blocks must be > 0.",
+    "order_strata": "Median of the eight BC g_i must be > 0 and median of the eight CB g_i must be > 0.",
+    "minimum_effect_size": "None. Remove v1 aggregate/paired >=1% and block/order >=0.5% gates; do not reinstate a hidden practical-size cutoff during this confirmation.",
+    "fixture_guard": "Unchanged: reject if any fixture median is >3% slower AND at least 9 of 16 paired fixture slowdowns are >3%. No aggregate gain overrides this guard.",
+    "exactness": "Unchanged full non-timing/config/state/fingerprint/stopping/checkpoint equality against the fresh reference. Three complete results and 23 convergence records per run, fixed 200/200/60 stops. Existing unit/source/custody gates remain mandatory.",
+    "conjunction": "Every gate must pass; no metric substitution, discretionary tradeoff, or rounded-value comparison."
+  },
+  "randomized_order_recommendation": {
+    "choice": "Recommend constrained randomization of BC/CB orientations, fixed once before new measurements. Keep v1 candidate interleaving, adjacent pair processes and all pair/block identities.",
+    "method": "For each candidate in each block, uniformly choose one of the six permutations of [BC,BC,CB,CB]. Draw the full set once using a recorded seed/algorithm; emit and hash the complete 64-pair explicit schedule before execution. No reroll or outcome-based choice. This proposal does not draw or replace the v1 schedule.",
+    "benefit": "This preserves exact first/second-position balance while reducing deterministic alignment of an arm with a repeating temporal pattern. It may improve drift resistance beyond fixed alternation at negligible orchestration cost.",
+    "limits": "It does not remove nonlinear drift, thermal/cache carryover, process interaction or serial dependence. Chance alignment can remain. No additional cooldown, timing event, warmup, sample or statistical framework is proposed.",
+    "finalization": "Root chooses the amendment and ordering policy after independent review and E037 resolution; an adopted randomized policy requires one explicit frozen schedule before source/build/runtime authorization."
+  },
+  "reporting": [
+    "Report all four candidates, including failures/inconclusive cases; preserve the original selected-family size and historical-selection caveat.",
+    "Report unrounded aggregate and paired gains, absolute complete-cycle milliseconds, all 16 paired gains, win/tie/loss counts, four block medians, two order-stratum medians, all fixture metrics and regression decisions.",
+    "Report per-pair min/max and median absolute deviation, plus the block/order ranges, as descriptive observed variability only. These are not confidence bounds on the true effect.",
+    "Keep old samples out of every new decision statistic. Neither the retained 13/16 rule nor the other consistency gates yield calibrated confidence under potentially dependent observations; do not use v1 nominal p-values/alpha as evidence of significance.",
+    "Explicitly state that positive observed estimates need not imply a positive true effect; small effects can be indistinguishable from shared drift despite consistent signs."
+  ],
+  "comparison_with_v1": {
+    "benefit": "An observed 0.9% gain can advance if it is consistently positive; a true 1% improvement is no longer automatically rejected solely for estimating below 1%.",
+    "cost": "A tiny observed gain may advance despite little practical value. The removed magnitude margin no longer screens measurement-resolution effects; repeatability and independent broader checks carry more weight.",
+    "finite_sample_limit": "The 13/16 and every-block/order requirements remain demanding: a real positive effect can fail them. This protocol offers no power guarantee and no permission to extend a borderline cohort.",
+    "scope": "A pass only advances to unchanged broader exactness/fixture/holdout/fresh-original cumulative qualification under separate authorization. It is not adoption or a claim that true gain is at least 1%."
+  },
+  "unchanged_rules": "Retain all v1 source applicability findings, fresh per-arm builds and reference, root-only authorization, all-samples retention, no retries/replacements/extensions, no timing-based stopping, exactness/error preservation, broader qualification and no additivity. E037 remains outside this family and keeps its existing 2% gate.",
+  "official_reference": {
+    "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm",
+    "scope": "General blocking/randomization rationale only; the constrained serial GPU design above is a local operational recommendation, not a statistical guarantee."
+  },
+  "executed": {
+    "candidate_preparation": false,
+    "runtime_harness_preparation": false,
+    "compiler_native_gpu": false,
+    "randomized_schedule_draw": false,
+    "production_or_status_change": false
+  }
+}

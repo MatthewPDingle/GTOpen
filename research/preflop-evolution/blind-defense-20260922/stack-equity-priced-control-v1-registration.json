@@ -1,0 +1,26 @@
+{
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_equity_priced_control_v1.py": "6665b36817442738aa917ba3176d2ca9d7b3846b63a3b5b7bce3ace4ed7b164f",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_equity_priced_model_v1.py": "015c790b601c44e1cc615525a93d9d4291eb84d52525a29ed098cab6c439e601",
+    "T:\\Dev\\GTOpen\\tools\\research\\test_stack_equity_priced_model_v1.py": "0340e1685c8cf8b665eaa1b2ce46d3ee3b77e434021cee0034f85dcb0687d1cc",
+    "T:\\Dev\\GTOpen\\tools\\research\\river_matched_training_pilot_v1.py": "c80b7fe2d848decdfa3dca844f50d9e67760326d6b4e0a7149e1b259ffdd6070",
+    "T:\\Dev\\GTOpen\\tools\\research\\bounded_parallel_evaluation_archive_v2.py": "0080bfcf12b42acd4cdffb233398341549acbdfcbbc513cc0220fc7339384bff"
+  },
+  "scope": "Synthetic implementation qualification only",
+  "seeds": [
+    9297401,
+    9297402
+  ],
+  "batch_sizes": [
+    31,
+    257,
+    8192
+  ],
+  "wall_seconds": 120,
+  "cuda_bytes": 512000000,
+  "float32_absolute_tolerance": 2e-06,
+  "float64_absolute_tolerance": 2e-12,
+  "new_poker_labels": false,
+  "scientific_training": false,
+  "accuracy_claim": false
+}

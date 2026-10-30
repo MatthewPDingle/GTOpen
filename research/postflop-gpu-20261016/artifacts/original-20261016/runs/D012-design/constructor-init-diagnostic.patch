@@ -1,0 +1,138 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -73,6 +73,53 @@
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+     format!("cuda: {err:?}")
++}
++
++
++// Diagnostic-only constructor wall times: no CUDA events or extra waits.
++#[derive(serde::Serialize)]
++struct ConstructorSpan { stage: &'static str, wall_ms: f64 }
++struct ConstructorTrace {
++    started: Option<std::time::Instant>,
++    last: Option<std::time::Instant>,
++    spans: Vec<ConstructorSpan>,
++}
++impl ConstructorTrace {
++    fn new() -> Self {
++        let enabled = std::env::var_os("POSTFLOP_AUTORESEARCH_CONSTRUCTOR_PROFILE")
++            .as_deref() == Some(std::ffi::OsStr::new("1"));
++        let started = enabled.then(std::time::Instant::now);
++        Self { started, last: started, spans: Vec::with_capacity(if enabled { 16 } else { 0 }) }
++    }
++    fn mark(&mut self, stage: &'static str) {
++        if let Some(last) = self.last {
++            let now = std::time::Instant::now();
++            let wall_ms = now.duration_since(last).as_secs_f64() * 1e3;
++            if wall_ms.is_finite() { self.spans.push(ConstructorSpan { stage, wall_ms }); }
++            self.last = Some(now);
++        }
++    }
++    fn finish(self, quantized_readback: bool, arena_elements: [usize; 2], nodes: usize) {
++        if let Some(started) = self.started {
++            let wall_ms_before_logging = started.elapsed().as_secs_f64() * 1e3;
++            if !wall_ms_before_logging.is_finite() { return; }
++            use std::io::Write;
++            let mut stderr = std::io::stderr().lock();
++            let _ = writeln!(stderr, "GPU_CONSTRUCTOR_PROFILE {}", serde_json::json!({
++                "schema_version": 1, "phase": "gpu_new_with_budget", "completed": true,
++                "clock": "host_wall", "diagnostic_only": true,
++                "environment": {
++                    "POSTFLOP_AUTORESEARCH_CONSTRUCTOR_PROFILE": "1",
++                    "CUDA_MODULE_LOADING": std::env::var("CUDA_MODULE_LOADING").ok()
++                },
++                "quantized_readback": quantized_readback, "nodes": nodes,
++                "arena_elements": arena_elements,
++                "wall_ms_before_logging": wall_ms_before_logging, "spans": self.spans,
++                "extra_cuda_synchronizations": 0,
++                "note": "Host-call spans may block or submit asynchronous work. Only existing waits inside named spans drain the stream; these are not isolated device times. Logging/timers perturb initialization; exclude this run from qualification."
++            }));
++        }
++    }
+ }
+ 
+ pub struct GpuSolver {
+@@ -206,6 +253,7 @@
+     /// Check the configured traversal's compact buffers before device allocation.
+     /// Build the plan once and reuse it for both the budget check and upload.
+     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
++        let mut trace = ConstructorTrace::new();
+         if solver.algo == Algorithm::PcfrPlus {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+@@ -227,8 +275,11 @@
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
++        trace.mark("plan_and_budget_cpu");
+         let ctx = CudaContext::new(0).map_err(e)?;
++        trace.mark("context_create_host_call");
+         let stream = ctx.new_stream().map_err(e)?;
++        trace.mark("stream_create_host_call_with_existing_context_wait");
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+         // cross-stream event tracking is unnecessary — and the events it
+         // records would invalidate CUDA graph capture.
+@@ -241,6 +292,7 @@
+         let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
+         let arch: &'static str =
+             Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
++        trace.mark("context_configuration_and_device_info_host_calls");
+         static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+             std::sync::OnceLock::new();
+         let ptx = PTX
+@@ -255,7 +307,9 @@
+                 .map_err(e)
+             })
+             .clone()?;
++        trace.mark("ptx_acquire_or_compile_cpu");
+         let module = ctx.load_module(ptx).map_err(e)?;
++        trace.mark("module_load_host_call");
+         let func = |name: &str| module.load_function(name).map_err(e);
+ 
+         let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
+@@ -265,10 +319,12 @@
+ 
+         let data_len = plan.arena_elements;
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
++        trace.mark("pinned_staging_allocation_host_call");
+         let mut arena_layout = [
+             ArenaLayout::new(solver, &plan, 0),
+             ArenaLayout::new(solver, &plan, 1),
+         ];
++        trace.mark("arena_layouts_cpu");
+         let d_regrets = [
+             arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
+             arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
+@@ -277,6 +333,7 @@
+             arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
+             arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
+         ];
++        trace.mark("arena_upload_calls_with_existing_waits");
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+         let n = plan.num_nodes;
+@@ -304,6 +361,7 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
++        trace.mark("locks_log_and_fold_tables_cpu");
+         let mut gpu = GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+@@ -386,9 +444,14 @@
+             stream,
+             _module: module,
+         };
++        trace.mark("function_lookup_metadata_upload_and_basebuffers_host_calls");
+         gpu.quantized_readback = QuantizedReadback::try_new(
+             solver, &gpu.arena_layout, &gpu.h_staging, &gpu.stream, &gpu._module, needed, budget_bytes,
+         )?;
++        trace.mark("quantized_readback_try_new_with_existing_waits");
++        let quantized_readback = gpu.uses_quantized_readback();
++        trace.mark("final_return_cpu");
++        trace.finish(quantized_readback, data_len, solver.spot.tree.nodes.len());
+         Ok(gpu)
+     }
+ 

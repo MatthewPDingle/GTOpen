@@ -1,0 +1,43 @@
+{
+  "candidate": "D044",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D044_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-source-review\\report.json",
+      "sha256": "539d583a34ce59b926ce8fb438ef197ab1cdf4640c4a5428a3c46303cef63696"
+    },
+    "D044_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-evidence-script-review\\report.json",
+      "sha256": "a0f11fde4fc6115514c75293685cc390af210bc5e9cd853e6f7d0e0dfd03a8c0"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\candidate\\game.rs",
+      "sha256": "fef5db1cac90a2797d6bc5ad85870b8ee1247681f69f17c27a7dc0862bec2e35"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\scripts-manifest.json": "179fa88dc90ee3b551debf76f837aef38b0af2012468f0c41d91e87839642bf8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\protocol.json": "f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\source-manifest.json": "8f522e9f4c2c71537495492119b95be8c50f48be117d57206a3a2c602f59b013",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-source-review\\report.json": "539d583a34ce59b926ce8fb438ef197ab1cdf4640c4a5428a3c46303cef63696",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-evidence-script-review\\report.json": "a0f11fde4fc6115514c75293685cc390af210bc5e9cd853e6f7d0e0dfd03a8c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-source\\cleanup.json": "7edfa69c99b7171d6c327b8d3535e15b6703d92b1aa0584b8e8762a567155eba"
+  },
+  "scope": "Root authorizes the frozen isolated D044 diagnostic build and fixed six-run cohort only after E023 restoration and independent source/script review. No candidate acceptance, accuracy-setting change, cohort extension or live deployment.",
+  "authorized_at": "2026-10-16T13:22:48Z"
+}

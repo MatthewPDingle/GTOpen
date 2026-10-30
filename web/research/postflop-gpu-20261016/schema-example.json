@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "postflop-gpu-20261016",
+  "updated_at": null,
+  "stale_after_seconds": 120,
+  "state": "pending",
+  "stage": "Preparing research",
+  "activity": "Waiting for the first verified hardware check and complete-run baseline.",
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "backend": "CUDA",
+    "verified": false
+  },
+  "baseline": {
+    "id": null,
+    "commit": null,
+    "measured_at": null,
+    "full_cycle_definition": "Wall time for the same complete postflop workload, including setup, solve, and required result evaluation. Solve time is reported separately."
+  },
+  "accepted_complete_run": {
+    "status": "pending",
+    "scope": "complete_run",
+    "candidate_id": null,
+    "baseline_ms": null,
+    "best_ms": null,
+    "correctness": "pending",
+    "measured_at": null,
+    "method": "Pending comparable complete-run measurements and correctness validation."
+  },
+  "validation": {
+    "status": "pending",
+    "summary": "No candidate has passed the required correctness and complete-run performance checks yet."
+  },
+  "deployment": {
+    "status": "not_deployed",
+    "candidate_id": null,
+    "commit": null,
+    "summary": "Research results are separate from the application currently running."
+  },
+  "fixtures": [],
+  "experiments": [],
+  "accepted_history": [],
+  "evidence": [],
+  "schema_notes": {
+    "timestamps": "ISO 8601 with timezone; null until recorded. All timing values are milliseconds, or null when unmeasured. Write status.json atomically.",
+    "state": "pending | running | paused | blocked | complete | failed",
+    "accepted_complete_run": "The headline requires status=validated, scope=complete_run, correctness=pass, and positive baseline_ms and best_ms. These must be comparable measured full-cycle wall times. Never populate these from solve-only, kernel, setup-only, or summed worker times. method explains the workload, repeats, and aggregation. Speedup is calculated as (1 - best_ms / baseline_ms) * 100.",
+    "fixture_shape": {"id":"fixture-id","name":"Fixture name","description":"Workload and measurement protocol","baseline":{"full_cycle_ms":null,"solve_ms":null,"fingerprint":null},"best":{"status":"pending","candidate_id":null,"full_cycle_ms":null,"solve_ms":null,"fingerprint":null},"correctness":{"status":"pending","details":"Awaiting exact/equivalence checks."},"evidence":[]},
+    "fixture_acceptance": "best.status=accepted and correctness.status=pass are required before best timings or a fixture speedup are displayed. baseline and best fingerprints can be strings or objects containing multiple named fingerprints. A provisional baseline uses provisional:true, repetitions:1, status:single_measurement, and detail to describe its limits. Put candidate/rejected/invalid measurements in experiments.",
+    "experiment_shape": {"id":"candidate-id","at":null,"title":"Candidate description","status":"queued","fixture":"fixture-id or suite name","full_cycle_ms":null,"solve_ms":null,"baseline_full_cycle_ms":null,"correctness":"pending","reason":"Awaiting measurement.","evidence":[]},
+    "experiment_status": "queued | running | measured | accepted | rejected | invalid. Measured means timing was recorded, but acceptance is pending. Retain rejected and invalid experiments with their reason and evidence. A numeric experiment gain requires status=accepted and correctness=pass.",
+    "accepted_history_shape": {"at":null,"status":"validated","scope":"complete_run","candidate_id":"candidate-id","baseline_ms":null,"best_ms":null,"correctness":"pass","method":"Same comparison protocol as the headline."},
+    "evidence_shape": {"label":"Benchmark log","url":"./evidence/benchmark.log","detail":"Command, environment, timings, and correctness output."},
+    "evidence_urls": "Relative HTTP-served paths or http(s) URLs. No local filesystem paths. Evidence arrays are supported at the root, per fixture, and per experiment.",
+    "deployment": "status=deployed only after installation/activation has been verified. Use not_deployed, pending, or failed otherwise. Record candidate_id and commit separately from active research."
+  }
+}

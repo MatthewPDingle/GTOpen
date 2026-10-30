@@ -1,0 +1,42 @@
+{
+  "magic": "D274-SPOT-v1 +4nullbytes",
+  "field_order": [
+    "config_json",
+    "board",
+    "board_mask",
+    "tree_config_json",
+    "tree_root_street",
+    "tree_nodes",
+    "tree_children",
+    "tree_actions",
+    "tree_data_size",
+    "hands",
+    "weights",
+    "same_combo",
+    "river_root_street",
+    "river_entries",
+    "suit_perms",
+    "hand_perm",
+    "data_vector_capacities"
+  ],
+  "Vec": "u64 length then every typed value",
+  "Array": "u64 fixed length then every value",
+  "Node": "<4B2I7Q,68bytes:kind/player/street/na,children/actions start,data offset,put arraylen=2/2f64bits,3payoff f64bits",
+  "HandInfo": "<BBIQ,14bytes:cards/weight f32bits/mask",
+  "Action": "u64 vectorlength;variant u8 fold0/check1/call2/bet3/raise4;last3 thenf64bits",
+  "River": "u64 entrycount;u8Option0/1;Some:arraylen2 and2vectors of u32strength/u16handindex pairs",
+  "Capacities": "board/tree.nodes/tree.children/tree.actions/river.entries/suit_perms;eachp hands/weights/same_combo/hand_perm outer andall inner capacities;then everySome river sorted vector capacities",
+  "actual_Spot_fields_covered": [
+    "config",
+    "board",
+    "board_mask",
+    "tree",
+    "hands",
+    "weights",
+    "same_combo",
+    "river",
+    "suit_perms",
+    "hand_perm"
+  ],
+  "No_raw_struct_padding_reads": true
+}

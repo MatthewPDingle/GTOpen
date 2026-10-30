@@ -1,0 +1,17 @@
+{
+  "id": "E122",
+  "at": "2026-10-29T19:29:09.838933+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "53506d39892fce9ba0247e3d032ec7d117b2c2452dd6b0acf7115e6ce5b70c4d",
+  "edit": {
+    "old": "                if (pos < lb) lower_c += r;\r\n                else if (pos >= ub) higher_c += r;",
+    "new": "#if __CUDA_ARCH__ == 1200\r\n                asm volatile(\r\n                    \"{\\n\\t\"\r\n                    \".reg .pred p_lo, p_hi, p_not_lo;\\n\\t\"\r\n                    \"setp.lt.u32 p_lo, %3, %4;\\n\\t\"\r\n                    \"setp.ge.u32 p_hi, %3, %5;\\n\\t\"\r\n                    \"not.pred p_not_lo, p_lo;\\n\\t\"\r\n                    \"and.pred p_hi, p_hi, p_not_lo;\\n\\t\"\r\n                    \"@p_lo add.rn.f32 %0, %0, %2;\\n\\t\"\r\n                    \"@p_hi add.rn.f32 %1, %1, %2;\\n\\t\"\r\n                    \"}\"\r\n                    : \"+f\"(lower_c), \"+f\"(higher_c)\r\n                    : \"f\"(r), \"r\"(pos), \"r\"(lb), \"r\"(ub));\r\n#else\r\n                if (pos < lb) lower_c += r;\r\n                else if (pos >= ub) higher_c += r;\r\n#endif"
+  },
+  "entire_CRLF_source_inverse_exact": true,
+  "target": "up_show only compute120 explicit rank-predicated corrections; compute75originalC++tokens",
+  "unchanged": "All selectedfloatingoperandvalues/order/precision, tot_c, fullprefix/same/valid/tied/payout, hand/card/rank iterationorder, all5barriers,host/publicplan/globalarrays/ABI27/grid/block/dynamicshared/quality/stopping/save unchanged. No closedhunk composed.",
+  "risks": "Inlinevolatile constraints may lose CSE/increase FP/Boolean work/lifetimes/registers/JIT or emit no beneficial nativechange. Sourcepredicate proof is not NaN/compiler/native/GPU orspeedproof. Fixedoneform closesaftergenuinefailure without asm/helper/predicate/scope/architecture/flags/width/quality/sample rescue.",
+  "contract_sha256": "0839176387e664b16ae4d4b11e320d75d508bb419c954fb03ff7210e37c237c3",
+  "history_sha256": "990f79c9fab3703fee6eea032f3c2e45b2cf018a1492df1e952e5b01bb0b3c21"
+}

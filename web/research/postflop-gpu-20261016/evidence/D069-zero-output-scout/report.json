@@ -1,0 +1,104 @@
+{
+  "id": "D069",
+  "at": "2026-10-16T22:06:07.264849+00:00",
+  "verdict": "GO_SOURCE_FEASIBILITY_ONLY",
+  "decision": "A separate prospective candidate can distinguish the actual +0 device-expression result and omit the zero-branch second barrier/present rewrites for that result. No implementation or runtime approval follows from this scout.",
+  "scope": "Read-only accepted E020 plus closed E036 source/evidence and already retained D067 sign-count report. No new production code, compiler, native process, GPU work or census.",
+  "source_argument": [
+    {
+      "point": "Eligibility is unchanged",
+      "detail": "Require the entire logical opponent row to contain raw +0 bits, not numerical equality/sum0 or just sorted entries, and all three actual f32 payoff words finite. Preserve initial reach/card-position staging and first publication collective. Nonzero, -0, Inf/NaN reach or nonfinite payout goes through the byte-exact original fallback."
+    },
+    {
+      "point": "Compute and classify the actual expression",
+      "detail": "After eligibility, win/lose/tie and +0 lower/higher/tied are identical in every thread of the CTA. Evaluate the same win*lower + lose*higher + tie*tied expression and classify its actual device f32 bits; only0x00000000 permits the shortened path. Do not substitute a host sign classification, real-number0, x==0 or a reassociated expression. Keep existing compilation options."
+    },
+    {
+      "point": "The positive-zero path has no remaining intra-CTA dependency",
+      "detail": "Keep the full logical own-row +0 store loop. Every index i has exactly one writer from the threadIdx.x/128 strided partition. If every present-hand result is also exact+0, these stores already establish both present and absent outputs. No later same-CTA read or overwrite follows, so a post-store CTA barrier adds no required ordering before uniform return. Other active terminal CTAs have distinct persistent CFV slots, and later consumers remain behind the existing stream/captured-kernel dependency."
+    },
+    {
+      "point": "Negative-zero remains a distinct path",
+      "detail": "For0x80000000, absent hands still require+0 while present p_idx hands require-0. Keep full-row zeroing, the mandatory CTA barrier, then the original present-hand expression/writes. Sorted p_idx and logical zeroing can assign different lanes to the same address; removing this barrier on that path would introduce a write race."
+    },
+    {
+      "point": "Smallest conceptual change",
+      "detail": "Within the existing finite zero-input branch, compute the identical uniform zero-mass expression and test its bits after the existing full-row store loop, before the existing second barrier. Exact+0 returns; other bits retain the barrier/present path. Keep its original expression rather than forcing a sign-derived constant. No host, ABI, launch, shared-memory, fallback, other-kernel or card-preload changes."
+    }
+  ],
+  "source_locations": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\kernels.cu",
+      "lines": "195-292",
+      "role": "accepted up_show ABI, full-row+0 stores and sorted present result expression"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\kernels.cu",
+      "lines": "228-261",
+      "role": "closed E036 eligibility, first collective, full-row stores, mandatory second barrier and present writes"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\source-evidence\\plan.rs",
+      "lines": "214-241,244-277,527-541",
+      "role": "unique persistent terminal CFV slots, complete planned terminal lists and existing slot geometry assertions"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\mod.rs",
+      "lines": "661-697,890-927",
+      "role": "evaluation/training up_show use the same three payoff arrays and existing ordered stream launches"
+    }
+  ],
+  "existing_runtime_evidence": {
+    "E036_status": "rejected and closed",
+    "gain_pct": 1.1556152128749404,
+    "aggregate_gate_met": false,
+    "full_primary_results_exact": 18,
+    "convergence_records_exact": 138,
+    "unit_inventory": "85 passed,4 ignored",
+    "old_GPU_comparison_pairs": 34,
+    "old_GPU_launches": 68,
+    "what_it_proves": "Executed E036 cases matched accepted old up_show and asserted eligible present signed zeros/absent+0 with cross-lane coverage. This does not execute or validate the proposed early return."
+  },
+  "existing_sign_count_evidence": {
+    "report": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-payout-sign-scout\\report.json",
+    "sha256": "66e2a49ec5d241e1aa0bd1551ae8a6c4df5e2339a935d41e2b58b3646552c4bd",
+    "count_rows": 12,
+    "nonempty_eligible_sign_patterns": [
+      "011"
+    ],
+    "all_three_sign_bits_negative_111_observed": 0,
+    "meaning": "Sign pattern is win,lose,tie sign bits. The count report is bound/read and its historical references are hash-checked here, not independently recounted. It evaluates no device expression and supports no timing, lifetime-frequency or speed claim."
+  },
+  "minimal_future_test_obligations": [
+    "Reuse the fixed E03634-pair/68-launch original-GPU reference unit with the new candidate, preserving both orientations, partial/full/empty sorted lists, nonzero starts/slots, count0, poisoned complete output/padding and all21 readonly input checks.",
+    "Keep explicit present+0 checks for mixed/positive-zero cases and present-0 versus absent+0 checks for all-negative finite/all-negative-zero cases with actual cross-lane p_idx witnesses; both classified result paths must remain covered.",
+    "Keep the excluded tail -0/nonzero/Inf/NaN and three nonfinite payoff-channel cases. Source review must verify exact bitwise eligibility and fallback suffix; direct equality alone does not prove excluded cases took fallback.",
+    "Any later separately authorized production experiment still uses the unchanged primary exact18/138 and >=2%/fixture guards, with conditional broader qualification only on pass. No extra E036 samples, timing exclusions or modified acceptance threshold."
+  ],
+  "limitations": [
+    "Additional expression evaluation and a uniform bit branch have cost; the first collective, full logical-row staging, card-position preload and full-row stores remain. Removed source operations or incidence are not a complete-cycle bound.",
+    "New code may compile differently, including floating contraction; exact source expression and matching options plus actual old-GPU comparison remain necessary. No universal NaN-payload claim is made.",
+    "The no-second-barrier reasoning assumes current accepted unique terminal CFV slots, valid nonaliasing metadata, immutable payoff inputs and existing ordered consumers; it does not apply to arbitrary aliases or concurrent writers.",
+    "Whole-row incidence comes from historical sampled plan-derived joins; it is not new device metadata, current-strategy content or a new solve."
+  ],
+  "official_documentation": [
+    {
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html",
+      "support": "Kernel completion makes its global-memory results available for later kernels/host copies. This supports the source inference that no terminal CTA barrier is needed solely to publish final unique stores."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-extensions.html",
+      "section": "5.4.4 Synchronization primitives",
+      "support": "CTA barriers coordinate conflicting cross-thread memory accesses. The -0 route retains that dependency; the +0 return route has no later conflicting access."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/floating-point/index.html",
+      "sections": "2.2 and2.3",
+      "support": "Floating operation ordering and FMA choices can affect exact results. Preserve the device expression/options and test actual bits rather than using a host arithmetic substitute."
+    }
+  ],
+  "all_162_accepted_source_hashes_current_exact": true,
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false,
+  "performance_measurement": false
+}

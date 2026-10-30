@@ -1,0 +1,675 @@
+[
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 0,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 37
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 0
+      },
+      {
+        "dst": 146028889676,
+        "label": "b",
+        "src": 146028888596,
+        "words": 0
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 37
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 0,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 37
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 0
+      },
+      {
+        "dst": 146028889676,
+        "label": "b",
+        "src": 146028888596,
+        "words": 0
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 37
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 1,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 39
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 1
+      },
+      {
+        "dst": 146028889680,
+        "label": "b",
+        "src": 146028888596,
+        "words": 1
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 39
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 1,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 39
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 1
+      },
+      {
+        "dst": 146028889680,
+        "label": "b",
+        "src": 146028888596,
+        "words": 1
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 39
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 31,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 99
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 31
+      },
+      {
+        "dst": 146028889800,
+        "label": "b",
+        "src": 146028888596,
+        "words": 31
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 99
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 31,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 99
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 31
+      },
+      {
+        "dst": 146028889800,
+        "label": "b",
+        "src": 146028888596,
+        "words": 31
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 99
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 32,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 101
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 32
+      },
+      {
+        "dst": 146028889804,
+        "label": "b",
+        "src": 146028888596,
+        "words": 32
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 101
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 32,
+    "parameters": [
+      {
+        "dst": 146028889600,
+        "label": "prefix",
+        "src": 146028889088,
+        "words": 101
+      },
+      {
+        "dst": 146028889628,
+        "label": "a",
+        "src": 146028888076,
+        "words": 32
+      },
+      {
+        "dst": 146028889804,
+        "label": "b",
+        "src": 146028888596,
+        "words": 32
+      },
+      {
+        "dst": 146028890112,
+        "label": "consumer",
+        "src": 146028889600,
+        "words": 101
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 257,
+    "parameters": [
+      {
+        "dst": 146028894720,
+        "label": "prefix",
+        "src": 146028892160,
+        "words": 551
+      },
+      {
+        "dst": 146028894748,
+        "label": "a",
+        "src": 146028888076,
+        "words": 257
+      },
+      {
+        "dst": 146028895824,
+        "label": "b",
+        "src": 146028890644,
+        "words": 257
+      },
+      {
+        "dst": 146028897280,
+        "label": "consumer",
+        "src": 146028894720,
+        "words": 551
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 257,
+    "parameters": [
+      {
+        "dst": 146028894720,
+        "label": "prefix",
+        "src": 146028892160,
+        "words": 551
+      },
+      {
+        "dst": 146028894748,
+        "label": "a",
+        "src": 146028888076,
+        "words": 257
+      },
+      {
+        "dst": 146028895824,
+        "label": "b",
+        "src": 146028890644,
+        "words": 257
+      },
+      {
+        "dst": 146028897280,
+        "label": "consumer",
+        "src": 146028894720,
+        "words": 551
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 4097,
+    "parameters": [
+      {
+        "dst": 146028955136,
+        "label": "prefix",
+        "src": 146028921856,
+        "words": 8231
+      },
+      {
+        "dst": 146028955164,
+        "label": "a",
+        "src": 146028888076,
+        "words": 4097
+      },
+      {
+        "dst": 146028971600,
+        "label": "b",
+        "src": 146028904980,
+        "words": 4097
+      },
+      {
+        "dst": 146028988416,
+        "label": "consumer",
+        "src": 146028955136,
+        "words": 8231
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 4097,
+    "parameters": [
+      {
+        "dst": 146028955136,
+        "label": "prefix",
+        "src": 146028921856,
+        "words": 8231
+      },
+      {
+        "dst": 146028955164,
+        "label": "a",
+        "src": 146028888076,
+        "words": 4097
+      },
+      {
+        "dst": 146028971600,
+        "label": "b",
+        "src": 146028904980,
+        "words": 4097
+      },
+      {
+        "dst": 146028988416,
+        "label": "consumer",
+        "src": 146028955136,
+        "words": 8231
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "a"
+      ],
+      "consumer": [
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": false,
+    "kernel_nodes": 4,
+    "n": 131073,
+    "parameters": [
+      {
+        "dst": 146030986752,
+        "label": "prefix",
+        "src": 146029937664,
+        "words": 262183
+      },
+      {
+        "dst": 146030986780,
+        "label": "a",
+        "src": 146028888076,
+        "words": 131073
+      },
+      {
+        "dst": 146031511120,
+        "label": "b",
+        "src": 146029412884,
+        "words": 131073
+      },
+      {
+        "dst": 146032035840,
+        "label": "consumer",
+        "src": 146030986752,
+        "words": 262183
+      }
+    ]
+  },
+  {
+    "abort": false,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "consumer": [
+        "a",
+        "b"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 4,
+    "n": 131073,
+    "parameters": [
+      {
+        "dst": 146030986752,
+        "label": "prefix",
+        "src": 146029937664,
+        "words": 262183
+      },
+      {
+        "dst": 146030986780,
+        "label": "a",
+        "src": 146028888076,
+        "words": 131073
+      },
+      {
+        "dst": 146031511120,
+        "label": "b",
+        "src": 146029412884,
+        "words": 131073
+      },
+      {
+        "dst": 146032035840,
+        "label": "consumer",
+        "src": 146030986752,
+        "words": 262183
+      }
+    ]
+  },
+  {
+    "abort": true,
+    "branch_independence_and_consumer_dependencies_exact": true,
+    "dependencies": {
+      "a": [
+        "prefix"
+      ],
+      "b": [
+        "prefix"
+      ],
+      "prefix": []
+    },
+    "fork": true,
+    "kernel_nodes": 3,
+    "n": 257,
+    "parameters": [
+      {
+        "dst": 146028893696,
+        "label": "prefix",
+        "src": 146028891136,
+        "words": 551
+      },
+      {
+        "dst": 146028893724,
+        "label": "a",
+        "src": 146028888076,
+        "words": 257
+      },
+      {
+        "dst": 146028894800,
+        "label": "b",
+        "src": 146028889620,
+        "words": 257
+      }
+    ]
+  }
+]

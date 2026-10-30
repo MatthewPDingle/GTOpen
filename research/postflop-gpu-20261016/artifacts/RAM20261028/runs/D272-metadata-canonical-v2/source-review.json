@@ -1,0 +1,125 @@
+{
+  "id": "D272",
+  "at": "2026-10-29T09:07:01.709429+00:00",
+  "device_field_inventory": [
+    "d_action_nodes",
+    "d_chance_parents",
+    "d_chance_children",
+    "d_chance_cards",
+    "d_chance_nodes",
+    "d_fold_nodes",
+    "d_show_nodes",
+    "d_node_player",
+    "d_node_na",
+    "d_node_data_off",
+    "d_node_children_start",
+    "d_node_twin",
+    "d_node_tlose",
+    "d_node_ttie",
+    "d_node_cdiv",
+    "d_node_river_slot",
+    "d_cc_start",
+    "d_cc_count",
+    "d_cc_card",
+    "d_cc_child",
+    "d_cc_perm",
+    "d_hand_perm[0]",
+    "d_hand_perm[1]",
+    "d_rsrc[0]",
+    "d_rsrc[1]",
+    "d_children",
+    "d_fold_card_off[0]",
+    "d_fold_card_off[1]",
+    "d_fold_card_idx[0]",
+    "d_fold_card_idx[1]",
+    "d_hand_c1[0]",
+    "d_hand_c1[1]",
+    "d_hand_c2[0]",
+    "d_hand_c2[1]",
+    "d_hand_mask[0]",
+    "d_hand_mask[1]",
+    "d_same[0]",
+    "d_same[1]",
+    "d_weights[0]",
+    "d_weights[1]",
+    "d_riv_off[0]",
+    "d_riv_off[1]",
+    "d_riv_cnt[0]",
+    "d_riv_cnt[1]",
+    "d_riv_idx[0]",
+    "d_riv_idx[1]",
+    "d_riv_lower[0]",
+    "d_riv_lower[1]",
+    "d_riv_upper[0]",
+    "d_riv_upper[1]",
+    "d_riv_card_off[0]",
+    "d_riv_card_off[1]",
+    "d_riv_card_pos[0]",
+    "d_riv_card_pos[1]",
+    "d_lock_off",
+    "d_lock_sigma",
+    "d_regrets[0]",
+    "d_regrets[1]",
+    "d_strat[0]",
+    "d_strat[1]",
+    "d_reach[0]",
+    "d_reach[1]",
+    "d_cfv_slot",
+    "d_cfv",
+    "d_eval_roots",
+    "d_disc"
+  ],
+  "production_source_projection": {
+    "baseline": {
+      "production_mod_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "adapted_mod_sha256": "4a97cdda6298b7218a4865053c41f1c4e3be26f7d25a0cfcf29324c3f45cd619",
+      "actual_production_prefix_reverse_byte_exact": true,
+      "all_original_full69field_snapshot_suffix_byte_exact": true,
+      "only_new_observer": "Read-only actual metadata flag/layout and independent CPU plan/map capture; no production or snapshot statement edited."
+    },
+    "candidate": {
+      "production_mod_sha256": "5250dcf07d8f7543dcda37fc1d82b5354bdd1982c15bfecb6bff1e66b3893f48",
+      "adapted_mod_sha256": "6bcd5214acb3f8a633abe2050e865e7e0bb460a33f0b522270f1c93121c95d4d",
+      "actual_production_prefix_reverse_byte_exact": true,
+      "all_original_full69field_snapshot_suffix_byte_exact": true,
+      "only_new_observer": "Read-only actual metadata flag/layout and independent CPU plan/map capture; no production or snapshot statement edited."
+    }
+  },
+  "probe_projection": {
+    "baseline": {
+      "all_original_statements_inverse_byte_exact_after_namespace": true,
+      "edits": [
+        {
+          "position": 8669,
+          "old": "        let mut gpu = GpuSolver::new(&host).expect(\"benchmark requires CUDA\");",
+          "new": "        let mut gpu = GpuSolver::new(&host).expect(\"benchmark requires CUDA\");\n        d272_map_capture(&gpu,&host,name,\"initial\");"
+        },
+        {
+          "position": 17955,
+          "old": "    let mut g=GpuSolver::new(&s).unwrap();g.iterate().unwrap();",
+          "new": "    let mut g=GpuSolver::new(&s).unwrap();d272_map_capture(&g,&s,name,\"resumed\");g.iterate().unwrap();"
+        }
+      ],
+      "original_probe_sha256": "b8075553015d33334a993e42e8c5933fd4036e74067294c5edf38ac06182bb15"
+    },
+    "candidate": {
+      "all_original_statements_inverse_byte_exact_after_namespace": true,
+      "edits": [
+        {
+          "position": 8670,
+          "old": "        let mut gpu = GpuSolver::new(&host).expect(\"benchmark requires CUDA\");",
+          "new": "        let mut gpu = GpuSolver::new(&host).expect(\"benchmark requires CUDA\");\n        d272_map_capture(&gpu,&host,name,\"initial\");"
+        },
+        {
+          "position": 17956,
+          "old": "    let mut g=GpuSolver::new(&s).unwrap();g.iterate().unwrap();",
+          "new": "    let mut g=GpuSolver::new(&s).unwrap();d272_map_capture(&g,&s,name,\"resumed\");g.iterate().unwrap();"
+        }
+      ],
+      "original_probe_sha256": "4c4f79adf6c1ea13e8b6020ad29cb2dc0afc774dc8a5bd06ecc307c057c0842c"
+    }
+  },
+  "actual_host_types": "Exact accepted E080 and frozen E115 source with original plan/fullarena/private visibility and sealedPTX adapters, plus appended read-only getter. All original d166_snapshot bytes unchanged; both wrappers4448.",
+  "scope": "Original full compressed threecanonical games with same.3%pot/check20/cap400/stops200/200/60,all6science46checks/12CPU+12all69fieldGPU/fullphysicalCFVpairs/6queries3saves9EV. Actual accepted/candidate hosts; identical acceptedCUDA. Source/snapshot probes inverse byte-exact except read-only original plan/kind/map capture.23metadata fields compared under exact node identity inverse;other43devicebuffers/fullphysicalCFV andallCPU/state/metadata/header/dtype/length/graph/wrapper values literal exact. Both raw GPU file hashes recorded independently, no raw ID equality claim. PrebuiltPTX/observer/map/I/O clocks unscored. All original resource limits retained.",
+  "failure": "Genuine source/ABI/resource/constructor/map/numeric/state/shape/physical/lifecycle/capacity mismatch closes frozen E115 source without field/helper/predicate/selection/width/scope/flags/quality/sample rescue. Mechanical observer/reader errors preserved/additive,completed native cases never repeated. Ordinary actualNVRTC/JIT builds/units and full1%/strictfixture/fresh16/broad/material/holdout/fresh-original/cumulative/app gates remain."
+}

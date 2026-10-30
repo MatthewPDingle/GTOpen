@@ -1,0 +1,31 @@
+{
+  "id": "E047-final-source-review",
+  "at": "2026-10-17T02:34:47.385966+00:00",
+  "status": "pass_to_fresh_compile_units_and_fixed_primary",
+  "root_review_only": true,
+  "source_scope": "One existing training entry gains na==1 routing to unchanged helper<1>;2/3/4/generic code, all bodies/host/plan/stores/launches/buffers and other8 PTX entries unchanged.",
+  "compiled_resource_scope": "Same66registers/64local bytes,896 max threads and14/7/3 theoretical blocks at64/128/256. Same exact ABI. Module/code size and full-cycle behavior still need qualification.",
+  "raw_gpu_control": {
+    "cases": 819,
+    "changed_path_cases": 138,
+    "kernel_launches": 1638,
+    "root_checks": 56527,
+    "raw_output_words": 12375858,
+    "actual_device_immutable_words": 5199114,
+    "guard_words": 10240828,
+    "all_raw_exact": true,
+    "raw_files_retained": 5
+  },
+  "reporting_failure": "Native comparator and all per-case assertions passed once, but final marker retained old717/1434 constants; wrapper rejected it. Original source/raw marker/failure retained. Root independently decoded all819 full records and exact EOF; only assessment totals corrected. No numerical mismatch, native rerun or corpus exclusion.",
+  "resource_root_check_sha256": "dc84f120d08e21dc36aaaff24a9caf6d8387841fe3957382f432bc7a01470c06",
+  "control_report_sha256": "0264515e2e0f511ebe3f63320f5dad098132a878d7c854ffd3103bd07ae245de",
+  "ordinary_expected_passed": 84,
+  "ordinary_expected_ignored": 4,
+  "pending": [
+    "fresh feature/primary builds",
+    "ordinary84/4",
+    "fixed3pair1%/strict fixture screen",
+    "conditional fresh16pair/broader/holdout/cumulative/resource qualification"
+  ],
+  "candidate_accepted": false
+}

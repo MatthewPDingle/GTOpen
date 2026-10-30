@@ -1,0 +1,11 @@
+--- r1/graph_device_events.rs
++++ r2/graph_device_events.rs
+@@ -96,7 +96,7 @@
+         return Err(format!("unexpected non-kernel graph node: {kind:?}"));
+     }
+     let mut params: sys::CUDA_KERNEL_NODE_PARAMS = unsafe { std::mem::zeroed() };
+-    unsafe { cu(sys::cuGraphKernelNodeGetParams(node, &mut params))?; }
++    unsafe { cu(sys::cuGraphKernelNodeGetParams_v2(node, &mut params))?; }
+     let mut name = ptr::null();
+     unsafe { cu(sys::cuFuncGetName(&mut name, params.func))?; }
+     if name.is_null() { return Err("null kernel name".into()); }

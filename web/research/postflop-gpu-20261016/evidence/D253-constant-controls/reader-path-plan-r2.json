@@ -1,0 +1,24 @@
+{
+  "id": "D253-reader-path-R2",
+  "at": "2026-10-29T04:58:22.042694+00:00",
+  "status": "FROZEN_PRE_ADDITIVE_READER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-reader-path-r2.py": "cdfdc9b3b39033ecbfcd7ff9cfb41658862308371330a0fa2c079f06dd7256da",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\protocol.json": "8fe7a9826408731b6a5573e6faa1bd931682e661f6d9c01dd18c84392d1f2b21",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\audit.py": "6dd4359f9aa0d80c5600fa2f662e25a5d5a4f52065e61c4bae9802d3c1859d42",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\audit-r2.py": "855bb9e9bf00d841b95f3044e7209e74be67f66c079e756a43937edce87c2b3d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\probe.rs": "f29ae1dd03f03250a12f17f611684681abbd5e665eb5753574e25d642b9791b4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\probe.exe": "073ff323fb01abeb854f98d1f9c4b92e6ccae159cf5f9aa3a5b78e248ef86d37",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\primitive.cu": "c7ec832bf2db886818959792954d9ab1be97b4cc24a23413311974d0685484af",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\execution\\complete-native.json": "35b01821e93ccba06d3bc1b82b836d700f95e6308bcf2dd46841bc4c534f2c2a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\execution\\audit.exit.json": "4061d96a1631b077945734035079321fa700bd360725b4943457d69bef5643d0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\execution\\audit.stderr.log": "760d837f0a3e124c8e16dd34d116cdce6ffafa55849f697b62e9dd80fec12ba3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\output\\metadata.json": "6efb1ae35960324b9afaa86723c5852eb21c8f3285e1ef57e7b2a4cdf045b979",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\output\\primitive-compute_120.ptx": "f848b9d8a6d90e8a02c8f4f85e0f73df8aa8b7f3d8fe6bc2c83df9df6cf03c51",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\output\\primitive-compute_75.ptx": "1f5af4565d73f519b9f5b250c840841f0ef00e88721917b74b221e69534e9b62",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\output\\raw.bin": "36107d2585b8fc9affe41df0386ef9417245948956e41c45f0ac4f224ace8b4e"
+  },
+  "cause": "Auditor copied from runs/ into its evidence subdirectory retained parents[1], so import common failed before any raw decoding. All240 native kernels were complete and passed, with their raw files and receipts retained.",
+  "repair": "One exact root-parent-index change in a new audit-r2.py; all corpus, decoding, oracles, gates, data, CUDA, binary and native execution unchanged.",
+  "completed_native_cases_repeated": 0
+}

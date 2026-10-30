@@ -1,0 +1,22 @@
+{
+  "id": "D104-availability-root-check",
+  "at": "2026-10-17T10:17:13.519836+00:00",
+  "status": "pass_preserved_hardware_busy_no_collection",
+  "checks": 163,
+  "protocol_sha256": "1752475db18f04b7a89992f95a63d70b4d1e4d5159eb231a54753d078c16947f",
+  "report_sha256": "337171550fca167bb0a7efd4c9cfeb57b2d850a976caecb7c963a9fa8acad007",
+  "single_two_phase_query": true,
+  "size_bytes": 9184,
+  "fill_result": 26,
+  "fill_result_name": "CUPTI_ERROR_HARDWARE_BUSY",
+  "private_context_created_and_destroyed": 1,
+  "current_context_restored_null": true,
+  "guards": "128native checked u8 bytes; guard_words_checked label uses u8units, not128f32words. No independent raw guard image retained.",
+  "profiling_sessions": 0,
+  "counter_collections": 0,
+  "application_kernel_launches": 0,
+  "source_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root source/transcript/pin replay, not external independent review. HardwareBusy does not identify the resource owner or establish unsupported hardware, disabled counters, insufficient privilege, or availability of any workaround. No fill retry or alternate profiling API attempted."
+}

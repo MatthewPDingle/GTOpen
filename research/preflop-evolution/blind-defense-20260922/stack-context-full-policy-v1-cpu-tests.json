@@ -1,0 +1,35 @@
+{
+  "record_type": "agent-recorded-exec-command-observation",
+  "command": "C:/Program Files/Python312/python.exe -B -m unittest -v test_stack_context_full_policy_v1",
+  "working_directory": "T:\\Dev\\GTOpen\\tools\\research",
+  "exit_code": 0,
+  "tests": 4,
+  "unittest_seconds": 7.642,
+  "command_wall_seconds": 8.1084413,
+  "test_names": [
+    "test_complete_policy_preserves_all_streets_and_both_overrides",
+    "test_model_roundtrip",
+    "test_played_average_uses_overridden_own_reach",
+    "test_reject_missing_swapped_or_stale_state"
+  ],
+  "sources": {
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_full_policy_v1.py": "fc4e0cfe0170113688ba3adaccbe823fde0752e32b282795089d3312d73d8ee8",
+    "T:\\Dev\\GTOpen\\tools\\research\\test_stack_context_full_policy_v1.py": "b4d53460f4fb92b7f102e9a0b2fdd65b9d8f397addb24a016eb56bd84625fc36"
+  },
+  "scope": "CPU integration fixtures from two retained policies at generations 0/1/77; no fitting or fresh scientific labels",
+  "checks": [
+    "362 and 387 inputs",
+    "all four streets",
+    "both exact/root overrides",
+    "complete first-two-played-model own-reach average",
+    "model object roundtrip",
+    "missing/stale identity and incomplete-bank rejection"
+  ],
+  "policy_absolute_tolerance": 1e-10,
+  "cpu_only": true,
+  "cuda_parity_qualified": false,
+  "full_training_checkpoint_implemented": false,
+  "multi_context_cycle_tested": false,
+  "accuracy_qualified": false,
+  "production_modified": false
+}

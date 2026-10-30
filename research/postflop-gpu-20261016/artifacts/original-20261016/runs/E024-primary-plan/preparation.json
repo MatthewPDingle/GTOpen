@@ -1,0 +1,50 @@
+{
+  "candidate": "E024",
+  "at": "2026-10-16T14:13:50.713934+00:00",
+  "python_ast_pass": [
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "source_archive_sha256": "7dd34e086b9bdeaf20f687b64a86ac349df14e6f7edbe916a1b9554d4ebd250d",
+  "protocol_sha256": "39fb1748192c01f5cf190e31edbc5d6cf4282966c798b44fd196fe8e04fde62e",
+  "accepted_source_entries_verified": 162,
+  "D046_candidate_exact": true,
+  "D046_terminal_review_sha256": "d32e2c233a0bf5eda140f85d1ce8b5ca131b0887ad03e784b6d8300a32828fca",
+  "unchanged_primary_gates_and_counts": [
+    "aggregate_gate",
+    "fixture_guard",
+    "exactness",
+    "measurement_boundaries",
+    "expected_fixtures",
+    "expected_stops",
+    "expected_convergence_records_per_run",
+    "unit_screen",
+    "outcome_triggered_extensions"
+  ],
+  "ids_verified_unused": [
+    "V024-unit",
+    "B080",
+    "E024R1",
+    "E024R2",
+    "B081",
+    "B082",
+    "E024R3"
+  ],
+  "reserved_E023_unused_ids_not_reused": [
+    "B077",
+    "B078",
+    "B079"
+  ],
+  "expected_units": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "fixed_result_count": 18,
+  "fixed_convergence_check_count": 138,
+  "conditional_qualification_implemented": false,
+  "builds": 0,
+  "native_or_gpu_runs": 0,
+  "checkout_edits": 0,
+  "status_edits": 0
+}

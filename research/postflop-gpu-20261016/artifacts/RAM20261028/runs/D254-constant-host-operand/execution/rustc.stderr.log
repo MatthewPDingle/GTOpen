@@ -1,0 +1,50 @@
+error[E0616]: field `entries` of struct `RiverTable` is private
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\baseline\continuation_capacity.rs:16:104
+   |
+16 |         +config_owned(&s.config.tree)+config_owned(&s.tree.config)+owned(&s.suit_perms)+owned(&s.river.entries);
+   |                                                                                                        ^^^^^^^ private field
+
+error[E0616]: field `entries` of struct `RiverTable` is private
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\baseline\continuation_capacity.rs:21:22
+   |
+21 |     for r in s.river.entries.iter().flatten() {
+   |                      ^^^^^^^ private field
+
+error[E0624]: method `use_full_action_arenas` is private
+   --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\baseline\continuation_capacity.rs:60:47
+    |
+ 60 |     let mut full=GpuPlan::build(s,false);full.use_full_action_arenas(s);
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: crates\solver\src\gpu\plan.rs:486:5
+    |
+486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+    |     ------------------------------------------------------------ private method defined here
+
+error[E0616]: field `entries` of struct `RiverTable` is private
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\candidate\continuation_capacity.rs:16:104
+   |
+16 |         +config_owned(&s.config.tree)+config_owned(&s.tree.config)+owned(&s.suit_perms)+owned(&s.river.entries);
+   |                                                                                                        ^^^^^^^ private field
+
+error[E0616]: field `entries` of struct `RiverTable` is private
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\candidate\continuation_capacity.rs:21:22
+   |
+21 |     for r in s.river.entries.iter().flatten() {
+   |                      ^^^^^^^ private field
+
+error[E0624]: method `use_full_action_arenas` is private
+   --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D254-constant-host-operand\candidate\continuation_capacity.rs:60:47
+    |
+ 60 |     let mut full=GpuPlan::build(s,false);full.use_full_action_arenas(s);
+    |                                               ^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: crates\solver\src\gpu\plan.rs:486:5
+    |
+486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+    |     ------------------------------------------------------------ private method defined here
+
+error: aborting due to 6 previous errors
+
+Some errors have detailed explanations: E0616, E0624.
+For more information about an error, try `rustc --explain E0616`.

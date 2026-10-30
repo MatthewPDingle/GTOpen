@@ -1,0 +1,7 @@
+{
+  "id": "E032-custody-reviewer-correction",
+  "failed_script_sha256": "920ac40b95d539bc8bc3bcadb32ef20b444fba3a4c6dbfa72da239e8e1c2b7fc",
+  "failure": "KeyError: build_stderr_log_sha256",
+  "cause": "Reviewer used generated suffix for a manifest field whose actual name is build_stderr_sha256. The source manifest itself is consistent.",
+  "scope": "Host-only audit stopped before writing its report. No input/source/native execution or mutation."
+}

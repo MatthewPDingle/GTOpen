@@ -1,0 +1,38 @@
+{
+  "id": "D057-source-checks",
+  "created_at": "2026-10-16T18:20:49.442588+00:00",
+  "accepted_source_entries_verified": 162,
+  "production_mod_exact_prefix_plus_only_test_declaration": true,
+  "all_other_accepted_sources_unchanged": true,
+  "literal_anchors_exact_D057_plan": true,
+  "copied_numeric_head_tail_original_except_self_to_gpu": true,
+  "planned_device_bytes_compare_cpu_fingerprint_helpers_byte_exact_D045": true,
+  "no_graph_cloning_upload_capture_or_training_instrumentation": true,
+  "only_two_event_record_sites": true,
+  "sampled_batch_no_pre_eval_synchronize_download_or_logging": true,
+  "graph_descriptors_semantic_multiset_no_argument_pointer_deref": true,
+  "read_only_git_apply_check": "passed",
+  "rustfmt_parse_only": "passed; emit stdout discarded; not typecheck or compiler proof",
+  "new_test_declarations": 1,
+  "new_ignored_declarations": 1,
+  "prospective_inventory": {
+    "normal_pass": 84,
+    "normal_ignored": 5,
+    "total": 89,
+    "filtered_manual_pass": 1,
+    "filtered_manual_filtered": 88
+  },
+  "preserved_draft": "draft-r1/candidate-evaluation_device_events.rs",
+  "draft_repair": "Root caught synchronize-error cleanup early-return. Final close retains wait error then attempts both destroys under bound context and returns collected errors; Drop never panics. No timing/numeric scope change.",
+  "host_check_note": "Initial mechanical tail extraction retained one separator space and failed before any seal writes. Corrected exact method closing delimiter extraction; candidate source unchanged.",
+  "candidate_sha256": {
+    "crates/solver/src/gpu/mod.rs": "a75e42492e460aca64e4b05bdcd762b28c28d069bfa126d93f90a3a5f25d49ea",
+    "crates/solver/src/gpu/evaluation_device_events.rs": "09e35e16097b6b68ad85df4b26855bbdc66bc82ceb56db0ea13d69f040056fdb"
+  },
+  "compiler_native_gpu_executed": false,
+  "revision": "r2",
+  "parent_source_manifest_sha256": "4aed7a39e47bd2a36b5a1795261b359d4e6dd13197acf52c65652a7eb887b898",
+  "r1_to_r2_source_delta": "One admission JSON field device_arena_elements:plan.arena_elements. Exact R1 recovered by deleting that line; no numerical/timing/allocation/control-flow change.",
+  "r2_parse_patch_checks": "PASS rustfmt parse-only emit stdout; PASS git apply --check. Initial unsealed patch serialization used Windows newline translation; corrected to byte write. No source/numeric change or compiler/native execution.",
+  "r2_exact_source_reversal_to_r1": true
+}

@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-18T07:52:43.014884+00:00",
+  "overall_observer_form": "closed_after_failed_combined_private_commit_control",
+  "original_gate_pass": false,
+  "failed_checks": [
+    {
+      "label": "CPU private allocation",
+      "observed_delta_bytes": 67244032.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": false
+    },
+    {
+      "label": "CPU private release",
+      "observed_delta_bytes": -67244032.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": false
+    }
+  ],
+  "all_18_GPU_checks_pass": true,
+  "CPU_RSS_check_pass": true,
+  "raw_private_commit_progression": [
+    {
+      "stage": "baseline",
+      "declared_CPU_bytes": 0,
+      "first_private_bytes": 642547712,
+      "last_private_bytes": 642547712,
+      "min_private_bytes": 642547712,
+      "max_private_bytes": 642547712
+    },
+    {
+      "stage": "CPU128",
+      "declared_CPU_bytes": 134217728,
+      "first_private_bytes": 777031680,
+      "last_private_bytes": 709791744,
+      "min_private_bytes": 709791744,
+      "max_private_bytes": 777031680
+    },
+    {
+      "stage": "CPU_free",
+      "declared_CPU_bytes": 0,
+      "first_private_bytes": 575303680,
+      "last_private_bytes": 575303680,
+      "min_private_bytes": 575303680,
+      "max_private_bytes": 575303680
+    }
+  ],
+  "inference": "The combined process has unrelated changing commitment in addition to the known buffer; the failure does not establish a defective Windows counter. It cannot certify that total process commitment equals one payload. A new CPU-only explicit VirtualAlloc commitment control can validate the accounting API without CUDA state; actual solver measurement must still retain full driver commitment.",
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "original_samples_or_tolerance_changed": false,
+  "candidate_adopted": false,
+  "all_owned_children_terminal": true
+}

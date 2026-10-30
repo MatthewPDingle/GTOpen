@@ -1,0 +1,76 @@
+--- preflop_expected_training_pipeline_v1.py
++++ preflop_expected_training_pipeline_v2.py
+@@ -22,11 +22,11 @@
+ from preflop_expected_native_targets_v2 import FrozenExpectedTargets
+ from preflop_expected_policy_v1 import ExpectedPolicy
+ from preflop_expected_training_fit_v1 import fit
+-import preflop_expected_board_workers_v1 as board_workers_api
+-import preflop_expected_river_workers_v1 as river_workers_api
+-from preflop_expected_board_workers_v1 import pool as board_pool, complete as complete_board
+-from preflop_expected_river_workers_v1 import pool as river_pool, complete as complete_river, commit
+-from preflop_expected_native_execution_v1 import run_native, verify_native, sha
++import preflop_expected_board_workers_v2 as board_workers_api
++import preflop_expected_river_workers_v2 as river_workers_api
++from preflop_expected_board_workers_v2 import pool as board_pool, complete as complete_board
++from preflop_expected_river_workers_v2 import pool as river_pool, complete as complete_river, commit
++from preflop_expected_native_execution_v2 import run_native, verify_native, sha
+ from preflop_expected_worker_cancellation_v1 import coordinated_pool
+ from weighted_training_v1 import first_action_view
+ from weighted_deal_binding_v1 import DealWeightGeneration
+@@ -34,7 +34,7 @@
+ from sampled_allin_protocol_v3 import policy_document
+ from sampled_physical_root_evaluation_v1 import save
+ 
+-METHOD = 'typed-all-node-native-joint-cycle-v1'
++METHOD = 'typed-all-node-native-joint-cycle-v2'
+ 
+ 
+ def wait(future, guard):
+@@ -90,7 +90,7 @@
+             or result['record']['policy_recipe_sha256'] != digest(recipe)):
+         raise ValueError('Board result detached from complete frozen policy/plan')
+     expected_worker_sources={str(Path(sys.modules[n].__file__).resolve()):sha(sys.modules[n].__file__)
+-        for n in ('preflop_expected_board_workers_v1','preflop_expected_native_execution_v1',
++        for n in ('preflop_expected_board_workers_v2','preflop_expected_native_execution_v2',
+                   'preflop_expected_native_targets_v2','preflop_expected_native_targets_v1','preflop_expected_policy_v1')}
+     plan=provider._plan
+     if (expected_worker_sources != result['worker_source_identities']
+@@ -110,7 +110,9 @@
+     if result['invocation_identities']!=invocation_ids: raise ValueError('Changed invocation source binding')
+     invocation = result['native_invocation']
+     verify_native(invocation, executable=executable,
+-        arguments=[str(Path(context_path).resolve()),str(request_path)], expected_identities=invocation_ids)
++        arguments=[str(Path(context_path).resolve()),str(request_path),
++            "--output-byte-limit="+str(limits["max_output_bytes"])], expected_identities=invocation_ids,
++        timeout=limits["native_timeout_seconds"],max_output_bytes=limits["max_output_bytes"],direct_outputs=())
+     for kind in ('receipt_path','stdout_path','stderr_path'):
+         if not Path(invocation[kind]).resolve().is_relative_to(folder):
+             raise ValueError('Native board artifact escaped ownership')
+@@ -217,9 +219,16 @@
+                 bp=part/'batch.json'; qp=part/'queries.json'; pp=part/'policies.json'; save(bp,batch)
+                 invoke_ids={str(p):native_ids[str(p)] for p in (context_path,Path(native['bridge']).resolve())}
+                 invoke_ids[str(bp)]=sha(bp)
+-                invocation=run_native(native['bridge'],['queries',str(context_path),str(bp),'-',str(qp)],
++                query_arguments=['queries',str(context_path),str(bp),'-',str(qp),
++                    '--output-byte-limit='+str(river_workers_api.MAX_NATIVE_OUTPUT_BYTES)]
++                query_outputs=[dict(path=str(qp),argument_index=5)]
++                invocation=run_native(native['bridge'],query_arguments,
+                     folder=part,label='native-queries',expected_identities=invoke_ids,guard=guard,
+-                    timeout=runtime_limits['river']['native_timeout_seconds'])
++                    timeout=runtime_limits['river']['native_timeout_seconds'],
++                    max_output_bytes=river_workers_api.MAX_NATIVE_OUTPUT_BYTES,direct_outputs=query_outputs)
++                verify_native(invocation,executable=native['bridge'],arguments=query_arguments,
++                    expected_identities=invoke_ids,timeout=runtime_limits['river']['native_timeout_seconds'],
++                    max_output_bytes=river_workers_api.MAX_NATIVE_OUTPUT_BYTES,direct_outputs=query_outputs)
+                 queries=json.loads(qp.read_bytes())
+                 view=first_action_view(queries,context['nodes'][0]['children'][3]+1)
+                 probabilities=engine.infer(engine.prepare(view)); save(pp,policy_document(queries,probabilities))
+@@ -280,7 +289,7 @@
+     on_stage('fits-complete'); verify_sources(config)
+     candidate,reference=checkpoint.complete_cycle(objects,state,staged,config,registry,resources,
+         networks=networks,fit_receipts=receipts,on_stage=lambda stage:on_stage(stage))
+-    result=dict(format=1,method=METHOD,completed_cycles=candidate['completed_cycles'],used_model=used,
++    result=dict(format=2,method=METHOD,completed_cycles=candidate['completed_cycles'],used_model=used,
+         next_model=candidate['next_model'],checkpoint=reference,collections=collections,
+         fit_receipts=receipts,fits=metrics,seconds=time.monotonic()-began,
+         config_sha256=checkpoint.hash_document(config),registry_sha256=registry.sha256,

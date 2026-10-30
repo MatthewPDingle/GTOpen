@@ -1,0 +1,171 @@
+{
+  "id": "D221",
+  "at": "2026-10-29T00:38:42.881357+00:00",
+  "status": "pass_static_native_payout_placement",
+  "capture_report_sha256": "8dd746641d00f52865a9ef05689ba4622530c7aab30e098975ba929e1dafa290",
+  "gates": {
+    "baseline:exact_five_barriers": true,
+    "baseline:win:exact_parameter_address_load_chain": true,
+    "baseline:win:param_to_address_no_intervening_overwrite": true,
+    "baseline:win:address_to_load_no_intervening_overwrite": true,
+    "baseline:win:required_placement": true,
+    "baseline:lose:exact_parameter_address_load_chain": true,
+    "baseline:lose:param_to_address_no_intervening_overwrite": true,
+    "baseline:lose:address_to_load_no_intervening_overwrite": true,
+    "baseline:lose:required_placement": true,
+    "baseline:tie:exact_parameter_address_load_chain": true,
+    "baseline:tie:param_to_address_no_intervening_overwrite": true,
+    "baseline:tie:address_to_load_no_intervening_overwrite": true,
+    "baseline:tie:required_placement": true,
+    "baseline:capture:terminal_zero": true,
+    "baseline:disassemble:terminal_zero": true,
+    "candidate:exact_five_barriers": true,
+    "candidate:win:exact_parameter_address_load_chain": true,
+    "candidate:win:param_to_address_no_intervening_overwrite": true,
+    "candidate:win:address_to_load_no_intervening_overwrite": true,
+    "candidate:win:required_placement": true,
+    "candidate:lose:exact_parameter_address_load_chain": true,
+    "candidate:lose:param_to_address_no_intervening_overwrite": true,
+    "candidate:lose:address_to_load_no_intervening_overwrite": true,
+    "candidate:lose:required_placement": true,
+    "candidate:tie:exact_parameter_address_load_chain": true,
+    "candidate:tie:param_to_address_no_intervening_overwrite": true,
+    "candidate:tie:address_to_load_no_intervening_overwrite": true,
+    "candidate:tie:required_placement": true,
+    "candidate:capture:terminal_zero": true,
+    "candidate:disassemble:terminal_zero": true
+  },
+  "witnesses": {
+    "baseline": {
+      "barriers": [
+        1344,
+        2080,
+        3296,
+        5696,
+        6480
+      ],
+      "loads": {
+        "win": {
+          "chain": [
+            {
+              "address_hex": "0x1900",
+              "instruction": "LDCU.128 UR20, c[0x0][0x390]"
+            },
+            {
+              "address_hex": "0x19a0",
+              "instruction": "IADD.64 R8, R4.reuse, UR20"
+            },
+            {
+              "address_hex": "0x1a20",
+              "instruction": "LDG.E.CONSTANT R13, desc[UR12][R8.64]"
+            }
+          ],
+          "preceding_barriers": 5
+        },
+        "lose": {
+          "chain": [
+            {
+              "address_hex": "0x1900",
+              "instruction": "LDCU.128 UR20, c[0x0][0x390]"
+            },
+            {
+              "address_hex": "0x19b0",
+              "instruction": "IADD.64 R20, R4, UR22"
+            },
+            {
+              "address_hex": "0x1a30",
+              "instruction": "LDG.E.CONSTANT R14, desc[UR12][R20.64]"
+            }
+          ],
+          "preceding_barriers": 5
+        },
+        "tie": {
+          "chain": [
+            {
+              "address_hex": "0x1910",
+              "instruction": "LDCU.64 UR8, c[0x0][0x3a0]"
+            },
+            {
+              "address_hex": "0x19c0",
+              "instruction": "IADD.64 R22, R4, UR8"
+            },
+            {
+              "address_hex": "0x1a40",
+              "instruction": "LDG.E.CONSTANT R15, desc[UR12][R22.64]"
+            }
+          ],
+          "preceding_barriers": 5
+        }
+      }
+    },
+    "candidate": {
+      "barriers": [
+        1568,
+        2224,
+        3440,
+        5840,
+        6608
+      ],
+      "loads": {
+        "win": {
+          "chain": [
+            {
+              "address_hex": "0x90",
+              "instruction": "LDC.64 R14, c[0x0][0x390]"
+            },
+            {
+              "address_hex": "0x190",
+              "instruction": "IMAD.WIDE.U32 R14, R3, 0x4, R14"
+            },
+            {
+              "address_hex": "0x1b0",
+              "instruction": "LDG.E.CONSTANT R0, desc[UR12][R14.64]"
+            }
+          ],
+          "preceding_barriers": 0
+        },
+        "lose": {
+          "chain": [
+            {
+              "address_hex": "0xb0",
+              "instruction": "LDC.64 R16, c[0x0][0x398]"
+            },
+            {
+              "address_hex": "0x1a0",
+              "instruction": "IMAD.WIDE.U32 R16, R3.reuse, 0x4, R16"
+            },
+            {
+              "address_hex": "0x1d0",
+              "instruction": "LDG.E.CONSTANT R10, desc[UR12][R16.64]"
+            }
+          ],
+          "preceding_barriers": 0
+        },
+        "tie": {
+          "chain": [
+            {
+              "address_hex": "0xd0",
+              "instruction": "LDC.64 R18, c[0x0][0x3a0]"
+            },
+            {
+              "address_hex": "0x1c0",
+              "instruction": "IMAD.WIDE.U32 R18, R3, 0x4, R18"
+            },
+            {
+              "address_hex": "0x1e0",
+              "instruction": "LDG.E.CONSTANT R11, desc[UR12][R18.64]"
+            }
+          ],
+          "preceding_barriers": 0
+        }
+      }
+    }
+  },
+  "parser": "Exact fixed-driver instructions plus conservative register-overwrite checks, no arbitrary SASS CFG/dynamic simulator. Review chains are bound to captured file hashes. Packed128bit constant load offsets win0x390/lose0x398 and tie0x3a0 follow unchanged27parameter ABI.",
+  "all_owned_compilers_native_readers_terminal": true,
+  "application_kernels": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Confirms static earlier global payout-load instructions in module-loaded driverJIT code at compute120, same default loader. Does not measure latency, prove numerical equivalence, apply to other drivers, or claim speed."
+}

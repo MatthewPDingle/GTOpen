@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\continuation_overnight.py", line 272, in <module>
+    {'inventory':inventory,'prepare':prepare,'run':run}[sys.argv[1]]()
+  File "T:\Dev\GTOpen\tools\research\continuation_overnight.py", line 255, in run
+    if child.returncode:raise RuntimeError(f'Reference process exited {child.returncode}; see references.log')
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Reference process exited 101; see references.log

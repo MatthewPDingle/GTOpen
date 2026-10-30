@@ -1,0 +1,66 @@
+{
+  "id": "D293",
+  "at": "2026-10-29T18:23:04.342367+00:00",
+  "status": "pass_scoped_sparse_card_PTX_guard_compaction_endpoint_and_barrier_witness",
+  "protocol_sha256": "373864e40fe106cdcb7b4d6dc7b5098cc00e0ad2cd34b4910bb21ea342bdc05b",
+  "witness": {
+    "five_barriers": [
+      "bar.red.or.pred \t%p2, 0, %p1;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;"
+    ],
+    "bounded_reach_bits": "0x67800000",
+    "nh_o_limit": 1326,
+    "unsafe_fallback": "Anybad r17!=0 ->BB35 withr302 originalrelativeend r29; endpointstores thencommonprefix/consumer.",
+    "compaction_region": "$L__BB4_15:\n\tsetp.ne.s32 \t%p13, %r17, 0;\n\tcvt.u64.u32 \t%rd17, %r294;\n\tmul.wide.u32 \t%rd97, %r294, 4;\n\tadd.s64 \t%rd98, %rd7, %rd97;\n\tld.global.nc.u32 \t%r26, [%rd98];\n\tsub.s32 \t%r27, %r26, %r4;\n\tld.global.nc.u32 \t%r28, [%rd98+4];\n\tsub.s32 \t%r29, %r28, %r4;\n\tmov.u32 \t%r302, %r29;\n\t@%p13 bra \t$L__BB4_35;\n\tsetp.ge.u32 \t%p14, %r27, %r29;\n\tmov.u32 \t%r302, %r27;\n\t@%p14 bra \t$L__BB4_35;\n\tsub.s32 \t%r157, %r28, %r26;\n\tand.b32  \t%r30, %r157, 3;\n\tsetp.eq.s32 \t%p15, %r30, 0;\n\tmov.u32 \t%r297, %r27;\n\tmov.u32 \t%r302, %r27;\n\t@%p15 bra \t$L__BB4_25;\n\tmul.wide.u32 \t%rd99, %r27, 4;\n\tadd.s64 \t%rd18, %rd11, %rd99;\n\tld.shared.u32 \t%r158, [%rd18];\n\tmul.wide.u32 \t%rd100, %r158, 4;\n\tadd.s64 \t%rd101, %rd13, %rd100;\n\tld.shared.u32 \t%r159, [%rd101];\n\tsetp.ne.s32 \t%p16, %r159, 0;\n\tselp.u32 \t%r160, 1, 0, %p16;\n\tadd.s32 \t%r302, %r27, %r160;\n\tadd.s32 \t%r297, %r27, 1;\n\tsetp.eq.s32 \t%p17, %r30, 1;\n\t@%p17 bra \t$L__BB4_25;\n\tld.shared.u32 \t%r33, [%rd18+4];\n\tmul.wide.u32 \t%rd102, %r33, 4;\n\tadd.s64 \t%rd103, %rd13, %rd102;\n\tld.shared.u32 \t%r161, [%rd103];\n\tsetp.eq.s32 \t%p18, %r161, 0;\n\t@%p18 bra \t$L__BB4_21;\n\tadd.s32 \t%r34, %r302, 1;\n\tmul.wide.u32 \t%rd104, %r302, 4;\n\tadd.s64 \t%rd105, %rd11, %rd104;\n\tst.shared.u32 \t[%rd105], %r33;\n\tmov.u32 \t%r302, %r34;\n$L__BB4_21:\n\tadd.s32 \t%r297, %r27, 2;\n\tsetp.eq.s32 \t%p19, %r30, 2;\n\t@%p19 bra \t$L__BB4_25;\n\tld.shared.u32 \t%r37, [%rd18+8];\n\tmul.wide.u32 \t%rd106, %r37, 4;\n\tadd.s64 \t%rd107, %rd13, %rd106;\n\tld.shared.u32 \t%r162, [%rd107];\n\tsetp.eq.s32 \t%p20, %r162, 0;\n\t@%p20 bra \t$L__BB4_24;\n\tadd.s32 \t%r38, %r302, 1;\n\tmul.wide.u32 \t%rd108, %r302, 4;\n\tadd.s64 \t%rd109, %rd11, %rd108;\n\tst.shared.u32 \t[%rd109], %r37;\n\tmov.u32 \t%r302, %r38;\n$L__BB4_24:\n\tadd.s32 \t%r297, %r27, 3;\n$L__BB4_25:\n\tsub.s32 \t%r163, %r26, %r28;\n\tsetp.gt.u32 \t%p21, %r163, -4;\n\t@%p21 bra \t$L__BB4_35;\n$L__BB4_26:\n\tmul.wide.u32 \t%rd110, %r297, 4;\n\tadd.s64 \t%rd19, %rd11, %rd110;\n\tld.shared.u32 \t%r46, [%rd19];\n\tmul.wide.u32 \t%rd111, %r46, 4;\n\tadd.s64 \t%rd112, %rd13, %rd111;\n\tld.shared.u32 \t%r164, [%rd112];\n\tsetp.eq.s32 \t%p22, %r164, 0;\n\t@%p22 bra \t$L__BB4_28;\n\tadd.s32 \t%r47, %r302, 1;\n\tmul.wide.u32 \t%rd113, %r302, 4;\n\tadd.s64 \t%rd114, %rd11, %rd113;\n\tst.shared.u32 \t[%rd114], %r46;\n\tmov.u32 \t%r302, %r47;\n$L__BB4_28:\n\tld.shared.u32 \t%r49, [%rd19+4];\n\tmul.wide.u32 \t%rd115, %r49, 4;\n\tadd.s64 \t%rd116, %rd13, %rd115;\n\tld.shared.u32 \t%r165, [%rd116];\n\tsetp.eq.s32 \t%p23, %r165, 0;\n\t@%p23 bra \t$L__BB4_30;\n\tadd.s32 \t%r50, %r302, 1;\n\tmul.wide.u32 \t%rd117, %r302, 4;\n\tadd.s64 \t%rd118, %rd11, %rd117;\n\tst.shared.u32 \t[%rd118], %r49;\n\tmov.u32 \t%r302, %r50;\n$L__BB4_30:\n\tld.shared.u32 \t%r52, [%rd19+8];\n\tmul.wide.u32 \t%rd119, %r52, 4;\n\tadd.s64 \t%rd120, %rd13, %rd119;\n\tld.shared.u32 \t%r166, [%rd120];\n\tsetp.eq.s32 \t%p24, %r166, 0;\n\t@%p24 bra \t$L__BB4_32;\n\tadd.s32 \t%r53, %r302, 1;\n\tmul.wide.u32 \t%rd121, %r302, 4;\n\tadd.s64 \t%rd122, %rd11, %rd121;\n\tst.shared.u32 \t[%rd122], %r52;\n\tmov.u32 \t%r302, %r53;\n$L__BB4_32:\n\tld.shared.u32 \t%r55, [%rd19+12];\n\tmul.wide.u32 \t%rd123, %r55, 4;\n\tadd.s64 \t%rd124, %rd13, %rd123;\n\tld.shared.u32 \t%r167, [%rd124];\n\tsetp.eq.s32 \t%p25, %r167, 0;\n\t@%p25 bra \t$L__BB4_34;\n\tadd.s32 \t%r56, %r302, 1;\n\tmul.wide.u32 \t%rd125, %r302, 4;\n\tadd.s64 \t%rd126, %rd11, %rd125;\n\tst.shared.u32 \t[%rd126], %r55;\n\tmov.u32 \t%r302, %r56;\n$L__BB4_34:\n\tadd.s32 \t%r297, %r297, 4;\n\tsetp.ne.s32 \t%p26, %r297, %r29;\n\t@%p26 bra \t$L__BB4_26;\n$L__BB4_35:\n\tcvt.u32.u64 \t%r168, %rd17;\n\tshl.b64 \t%rd127, %rd17, 2;\n\tadd.s64 \t%rd129, %rd128, %rd127;\n\tst.shared.u32 \t[%rd129], %r302;\n\tadd.s32 \t%r294, %r168, %r24;\n\tsetp.lt.u32 \t%p27, %r294, 52;\n\t@%p27 bra \t$L__BB4_15;\n",
+    "six_nontrivial_index_store_sites": [
+      [
+        "%rd105",
+        "%r33"
+      ],
+      [
+        "%rd109",
+        "%r37"
+      ],
+      [
+        "%rd114",
+        "%r46"
+      ],
+      [
+        "%rd118",
+        "%r49"
+      ],
+      [
+        "%rd122",
+        "%r52"
+      ],
+      [
+        "%rd126",
+        "%r55"
+      ]
+    ],
+    "first_peeled_element": "Originalbeginpos remains in-place; bit!=0incrementswrite exactlyone, no redundant selfstore.",
+    "all7peeled_unrolled_reach_zero_tests": true,
+    "all_endpoint_consumers_after_original_fifth_barrier": true,
+    "floating_opcode_inventory_unchanged": {
+      "mov.f32": 14,
+      "add.f32": 106,
+      "selp.f32": 90,
+      "sub.f32": 6,
+      "mul.f32": 1,
+      "fma.rn.f32": 2
+    },
+    "limits": "Bounded fixedPTX instruction/CFG witness and sourcecontract, not a generalPTX interpreter/fulladdress-or-floatingprovenanceproof. Actualnative/dataflow and rawGPU/wholeengine/canonical/broad gates remain. FPcounts alone do not prove equivalence."
+  },
+  "negative_reader_fixtures": [
+    "threshold",
+    "zero_predicate",
+    "fallback",
+    "wrong_position",
+    "missing_barrier"
+  ],
+  "new_GPU_kernel_solver_compiler_or_speed_samples": 0,
+  "candidate_adopted": false
+}

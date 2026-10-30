@@ -1,0 +1,17 @@
+{
+  "id": "D170",
+  "at": "2026-10-28T15:38:40.739089+00:00",
+  "status": "source_and_consumed_value_contract_reviewed_for_compile_only_probe",
+  "hypothesis": "Narrow one GPU per-node arena-offset metadata array from u64 to u32 while every doff/add/multiply/float expression remains original u64/float. Potential smaller metadata upload/cache traffic; no demonstrated 1% headroom or performance claim.",
+  "source_scope": "Only 5 node_data_off pointer declarations in two templated helpers and three action entries. Exact byte reversal to accepted source. Three u64 doff locals/address expressions and six unaffected entries unchanged. No new source activated.",
+  "distinct_from_closed": "E070 packs player/arity, E073 narrows river strength boundaries, E064 changes local action-offset arithmetic. This form changes a separate consumed immutable global arena-base array and keeps all local address arithmetic exactly original. Closed mechanisms not composed or reopened.",
+  "host_contract_before_future_integration": [
+    "Keep public CPU GpuPlan u64 offsets and arena layout/save fields unchanged. Select narrow representation once only when every non-sentinel offset < u32::MAX; preserve u64::MAX as private u32::MAX for unconsumed sentinel positions. Any unrepresentable or ambiguous legitimate u32::MAX offset selects original64 program and upload, never truncation or unsupported capacity.",
+    "Selection AFTER final compact/full F32 plan decision. Use matching typed allocation, kernel program and cache format for lifetime of GpuSolver including captured graphs/continuation. Separate 32/64 cache cells; never alias existing single PTX cache across formats. Preserve all launch arguments and owners. Typed pointer ownership requires full Rust source review before integration.",
+    "Host packing vector/allocation/scan/upload/DLL/JIT/cleanup costs must remain in original complete clocks. Observe actual retained metadata, CPU/peak/capacity and update research-only capacity accounting without undercount; no hidden extra dual payload.",
+    "Plain/compressed, compact/full, both actors, locks, arbitrary menus, warm save/load/resume, continuation/paged/pooled paths and fallback boundary cases require broad complete state/numeric validation before adoption. These are obligations, not existing implemented/tested claims."
+  ],
+  "integer_contract": "For an accessed real node offset d < 2^32-1, zero_extend(u32(d))==u64(d); unchanged u64 doff + u64(action)*hands + hand has identical addresses including crossing 2^32 in the unchanged sum. Non-action u64::MAX sentinels are not consumed by action work lists. Original64 fallback handles every wider original supported offset. No original64 capacity removed.",
+  "compile_prerequisites": "Require all expected9 entries, same ABI and barrier count for3 target entries, exact normalized other6 bodies in compute120/75, intended param-origin global u64->u32 loads in all3 targets. No new local/spill or dynamic shared, no lowered max threads/default-limit violation/stack growth; all fixed64/128/256 occupancies positive. Registers/static/occupancy changes reported under D108. No app kernel or speed until pass.",
+  "failure_rule": "Any real emitted-mechanism/ABI/resource failure closes exact form without width/source/flag/criterion rescue. Passing compile prerequisite is neither correctness nor speed/adoption."
+}

@@ -1,0 +1,173 @@
+{
+  "passed": true,
+  "scope": "Three development boards, both called pots, 20 evolving-range iterations; storage equivalence only",
+  "summary": {
+    "resident": {
+      "checkpoints_exact": true,
+      "seconds": 12.3698197,
+      "storage": null
+    },
+    "ram": {
+      "checkpoints_exact": true,
+      "seconds": 38.4497935,
+      "storage": {
+        "entries": [
+          {
+            "bytes": 338179856,
+            "disk": false,
+            "gpu_transfer_bytes": 27054388480,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 160269032,
+            "disk": false,
+            "gpu_transfer_bytes": 12821522560,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 565676720,
+            "disk": false,
+            "gpu_transfer_bytes": 45254137600,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 99172752,
+            "disk": false,
+            "gpu_transfer_bytes": 7933820160,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 47122936,
+            "disk": false,
+            "gpu_transfer_bytes": 3769834880,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 165656400,
+            "disk": false,
+            "gpu_transfer_bytes": 13252512000,
+            "read_bytes": 0,
+            "write_bytes": 0
+          }
+        ],
+        "workspace_bytes": 1661170368
+      }
+    },
+    "ssd": {
+      "checkpoints_exact": true,
+      "seconds": 217.1972743,
+      "storage": {
+        "entries": [
+          {
+            "bytes": 338179856,
+            "disk": true,
+            "gpu_transfer_bytes": 27054388480,
+            "read_bytes": 13527194240,
+            "write_bytes": 13865374096
+          },
+          {
+            "bytes": 160269032,
+            "disk": true,
+            "gpu_transfer_bytes": 12821522560,
+            "read_bytes": 6410761280,
+            "write_bytes": 6571030312
+          },
+          {
+            "bytes": 565676720,
+            "disk": true,
+            "gpu_transfer_bytes": 45254137600,
+            "read_bytes": 22627068800,
+            "write_bytes": 23192745520
+          },
+          {
+            "bytes": 99172752,
+            "disk": true,
+            "gpu_transfer_bytes": 7933820160,
+            "read_bytes": 3966910080,
+            "write_bytes": 4066082832
+          },
+          {
+            "bytes": 47122936,
+            "disk": true,
+            "gpu_transfer_bytes": 3769834880,
+            "read_bytes": 1884917440,
+            "write_bytes": 1932040376
+          },
+          {
+            "bytes": 165656400,
+            "disk": true,
+            "gpu_transfer_bytes": 13252512000,
+            "read_bytes": 6626256000,
+            "write_bytes": 6791912400
+          }
+        ],
+        "workspace_bytes": 1661170368
+      }
+    },
+    "mixed": {
+      "checkpoints_exact": true,
+      "seconds": 133.1010528,
+      "storage": {
+        "entries": [
+          {
+            "bytes": 338179856,
+            "disk": false,
+            "gpu_transfer_bytes": 27054388480,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 160269032,
+            "disk": false,
+            "gpu_transfer_bytes": 12821522560,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 565676720,
+            "disk": true,
+            "gpu_transfer_bytes": 45254137600,
+            "read_bytes": 22627068800,
+            "write_bytes": 23192745520
+          },
+          {
+            "bytes": 99172752,
+            "disk": false,
+            "gpu_transfer_bytes": 7933820160,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 47122936,
+            "disk": false,
+            "gpu_transfer_bytes": 3769834880,
+            "read_bytes": 0,
+            "write_bytes": 0
+          },
+          {
+            "bytes": 165656400,
+            "disk": true,
+            "gpu_transfer_bytes": 13252512000,
+            "read_bytes": 6626256000,
+            "write_bytes": 6791912400
+          }
+        ],
+        "workspace_bytes": 1661170368
+      }
+    }
+  },
+  "strategy_write_bytes": 86403843456,
+  "production_ready": false,
+  "limitation": "Direct GPU storage prototype. Read counters omit checkpoint CPU materialization reads. Sequential pilot, early 20-iteration state; not a long-run throughput or full-forest capacity qualification.",
+  "result_sha256": {
+    "resident": "6651645e1369262b2f029f22244de691484ab2371c50f455dc33020de3010e3c",
+    "ram": "039f5d47ac2e5a93c02234616e0d2bc1763f994c7c3470c744c98cec0673194c",
+    "ssd": "c80badb027a9cbdcfa383b82f880a02702b7b25d7957bc5f0cb668b0711c20ba",
+    "mixed": "e5b2142d89841c59cbc2ccf34e1a03f5f2d4f8aaf8c96a67b9778c1c680c4fdc"
+  }
+}

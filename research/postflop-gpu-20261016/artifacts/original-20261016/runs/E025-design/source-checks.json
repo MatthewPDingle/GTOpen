@@ -1,0 +1,24 @@
+{
+  "candidate": "E025",
+  "at": "2026-10-16T14:40:46.587696+00:00",
+  "all_162_accepted_sources_exact": true,
+  "base_sha256": {
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "candidate_sha256": {
+    "crates/solver/src/gpu/plan.rs": "a4dc7787346e130d691189964a7d43d2348dbcf96c0682f99d79aab9bb460f87",
+    "crates/solver/src/game.rs": "dce07877708bd3b93919c1bfe1c3528bd5f785a30703ef829462189b5f09ce38"
+  },
+  "production_delta": "Two bounded physical-stride roundings plus field documentation; existing test extended only",
+  "unchanged_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "plan_non_test_reversal_exact": true,
+  "game_reversal_exact": true,
+  "git_apply_check_returncode": 0,
+  "new_tests": 0,
+  "expected_gpu_unit_passed": 84,
+  "expected_gpu_unit_ignored": 4,
+  "builds": 0,
+  "native_tests": 0,
+  "gpu_runs": 0
+}

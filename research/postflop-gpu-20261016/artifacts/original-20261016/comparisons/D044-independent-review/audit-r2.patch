@@ -1,0 +1,11 @@
+--- audit.py
++++ audit-r2.py
+@@ -100,7 +100,7 @@
+   assert build['nodes']==v['node_count'] and build['hands']==v['hands']
+   assert v['constructor_us_before_logging']+1e-6>=sum(v['stage_us'].values()) and build['build_ms']*1000+1e-6>=v['constructor_us_before_logging']
+  marks.extend(pr);raw[identity]={'report':r,'results':rs,'profiles':pr};chron.append({'id':identity,'start':r['started_at'],'finish':r['finished_at']})
+-for x,y in zip(chron,chron[1:]):assert dt(x['finish'])<dt(y['start'])
++for x,y in zip(chron,chron[1:]):assert dt(x['finish'])<=dt(y['start'])  # Evidence timestamps have one-second precision.
+ assert dt(inv['at'])<=dt(chron[0]['start']) and dt(chron[-1]['finish'])<=dt(done['at'])
+ assert len(marks)==9 and marks==C['raw_profiles'] and C['all_complete_states_exact']==18 and C['convergence_checks_exact']==check_count==138 and C['profile_records']==9 and C['uninstrumented_records']==0
+ Bids=[p['baseline'] for p in Q['pairs']];Pids=[p['candidate'] for p in Q['pairs']];bs=ps=0.0;table=[];grouped={k:0.0 for k in Q['stage_names']}

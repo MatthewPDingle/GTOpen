@@ -1,0 +1,113 @@
+
+    fn resident_ptr<T>(&self, data: &CudaSlice<T>) -> u64 {
+        use cudarc::driver::DevicePtr;
+        let (pointer, record) = data.device_ptr(&self.stream);
+        drop(record);
+        pointer
+    }
+
+    fn resident_args(&self, p: usize, reuse: bool) -> ResidentArgs {
+        // All fields are integer POD; explicit reserved word avoids undefined padding reads.
+        let mut a: ResidentArgs = unsafe { std::mem::zeroed() };
+        a.action_nodes = self.resident_ptr(&self.d_action_nodes);
+        a.chance_parents = self.resident_ptr(&self.d_chance_parents);
+        a.chance_children = self.resident_ptr(&self.d_chance_children);
+        a.chance_cards = self.resident_ptr(&self.d_chance_cards);
+        a.chance_nodes = self.resident_ptr(&self.d_chance_nodes);
+        a.fold_nodes = self.resident_ptr(&self.d_fold_nodes);
+        a.show_nodes = self.resident_ptr(&self.d_show_nodes);
+        a.node_player = self.resident_ptr(&self.d_node_player);
+        a.node_na = self.resident_ptr(&self.d_node_na);
+        a.node_data_off = self.resident_ptr(&self.d_node_data_off);
+        a.node_children_start = self.resident_ptr(&self.d_node_children_start);
+        a.children = self.resident_ptr(&self.d_children);
+        a.node_twin = self.resident_ptr(&self.d_node_twin);
+        a.node_tlose = self.resident_ptr(&self.d_node_tlose);
+        a.node_ttie = self.resident_ptr(&self.d_node_ttie);
+        a.node_cdiv = self.resident_ptr(&self.d_node_cdiv);
+        a.node_river_slot = self.resident_ptr(&self.d_node_river_slot);
+        a.reach0 = self.resident_ptr(&self.d_reach[0]);
+        a.reach1 = self.resident_ptr(&self.d_reach[1]);
+        a.rsrc0 = self.resident_ptr(&self.d_rsrc[0]);
+        a.rsrc1 = self.resident_ptr(&self.d_rsrc[1]);
+        a.regrets0 = self.resident_ptr(&self.d_regrets[0]);
+        a.regrets1 = self.resident_ptr(&self.d_regrets[1]);
+        a.strat_p = self.resident_ptr(&self.d_strat[p]);
+        a.lock_off = self.resident_ptr(&self.d_lock_off);
+        a.lock_sigma = self.resident_ptr(&self.d_lock_sigma);
+        a.cfv_slot = self.resident_ptr(&self.d_cfv_slot);
+        a.cfv = self.resident_ptr(&self.d_cfv);
+        a.disc = self.resident_ptr(&self.d_disc);
+        a.mask0 = self.resident_ptr(&self.d_hand_mask[0]);
+        a.mask1 = self.resident_ptr(&self.d_hand_mask[1]);
+        a.hand_perm = self.resident_ptr(&self.d_hand_perm[p]);
+        a.pc1 = self.resident_ptr(&self.d_hand_c1[p]);
+        a.pc2 = self.resident_ptr(&self.d_hand_c2[p]);
+        a.same = self.resident_ptr(&self.d_same[p]);
+        a.fold_card_off = self.resident_ptr(&self.d_fold_card_off[1-p]);
+        a.fold_card_idx = self.resident_ptr(&self.d_fold_card_idx[1-p]);
+        a.p_off = self.resident_ptr(&self.d_riv_off[p]);
+        a.p_cnt = self.resident_ptr(&self.d_riv_cnt[p]);
+        a.p_idx = self.resident_ptr(&self.d_riv_idx[p]);
+        a.p_lower = self.resident_ptr(&self.d_riv_lower[p]);
+        a.p_upper = self.resident_ptr(&self.d_riv_upper[p]);
+        a.o_off = self.resident_ptr(&self.d_riv_off[1-p]);
+        a.o_cnt = self.resident_ptr(&self.d_riv_cnt[1-p]);
+        a.o_idx = self.resident_ptr(&self.d_riv_idx[1-p]);
+        a.o_card_off = self.resident_ptr(&self.d_riv_card_off[1-p]);
+        a.o_card_pos = self.resident_ptr(&self.d_riv_card_pos[1-p]);
+        a.cc_start = self.resident_ptr(&self.d_cc_start);
+        a.cc_count = self.resident_ptr(&self.d_cc_count);
+        a.cc_card = self.resident_ptr(&self.d_cc_card);
+        a.cc_child = self.resident_ptr(&self.d_cc_child);
+        a.cc_perm = self.resident_ptr(&self.d_cc_perm);
+        a.num_levels = self.num_levels as i32;
+        a.p = p as i32;
+        a.nh0 = self.nh[0];
+        a.down_nh1 = if reuse { 0 } else { self.nh[1] };
+        a.nh_p = self.nh[p];
+        a.nh_o = self.nh[1-p];
+        a.nh_max = self.nh_max;
+        for l in 0..self.num_levels {
+            for (kind, span) in [self.action_spans[l], self.chance_spans[l], self.fold_spans[l], self.show_spans[l], self.chance_node_spans[l]].into_iter().enumerate() {
+                a.spans[kind][l] = [span.start, span.count];
+            }
+        }
+        a
+    }
+
+    fn try_resident_sweep(&mut self, p: usize, reuse: bool) -> Result<bool, String> {
+        let Some(function) = self.resident.function.as_ref() else { return Ok(false); };
+        if self.num_levels == 0 || self.num_levels > 64 { return Ok(false); }
+        let spans = [&self.action_spans, &self.chance_spans, &self.fold_spans, &self.show_spans, &self.chance_node_spans];
+        if spans.iter().flat_map(|v| v.iter()).any(|s| s.start > i32::MAX as u32 || s.count > i32::MAX as u32) { return Ok(false); }
+        let largest = spans.iter().flat_map(|v| v.iter()).map(|s| s.count).max().unwrap_or(0);
+        let sm = self._ctx.attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT).map_err(e)? as u32;
+        if largest < sm { return Ok(false); }
+        let current = (0..2).map(|p| (self.nh[p] as usize).checked_mul(4).and_then(|n| self.riv_max_cnt[p].checked_mul(16).and_then(|m| n.checked_add(m)))).collect::<Option<Vec<_>>>();
+        let Some(current) = current.and_then(|v| v.into_iter().max()) else { return Ok(false); };
+        // Workspace swaps may change dimensions. Never reuse a stale shared-memory plan.
+        if current != self.resident.shared as usize { return Ok(false); }
+        let blocks = largest.min(self.resident.blocks);
+        if blocks == 0 { return Ok(false); }
+        let a = self.resident_args(p, reuse);
+        let nh0 = self.nh[0];
+        let down_nh1 = if reuse { 0 } else { self.nh[1] };
+        {
+            let [reach0, reach1] = &mut self.d_reach;
+            unsafe {
+                self.stream.launch_builder(&self.f_copy_root)
+                    .arg(&self.d_weights[0]).arg(&self.d_weights[1])
+                    .arg(&mut *reach0).arg(&mut *reach1)
+                    .arg(&nh0).arg(&down_nh1)
+                    .launch(Self::cfg(4, 0)).map_err(e)?;
+            }
+        }
+        // The enclosing exclusive borrow and existing single-stream invariant retain every
+        // pointer owner through launch/capture. No pointer is cached across workspace swaps.
+        unsafe {
+            self.stream.launch_builder(function).arg(&a)
+                .launch_cooperative(Self::cfg(blocks, self.resident.shared)).map_err(e)?;
+        }
+        Ok(true)
+    }

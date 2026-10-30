@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-29T14:08:46.488792+00:00",
+  "actual_game_source_sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+  "observer_file_sha256": "bd4d74249012af0590e660051aacbe5292da3ff40fb67e77ef9ca2057ff44d1a",
+  "original_entire_production_prefix_byte_exact": true,
+  "appended_profiled_method_inverse_byte_exact": true,
+  "method_edits": [
+    {
+      "position": 0,
+      "old": "    fn new_impl(",
+      "new": "    fn d274_profiled_new_impl("
+    },
+    {
+      "position": 129,
+      "old": "    ) -> Result<Spot, String> {\n",
+      "new": "    ) -> Result<Spot, String> {\n        let d274_total=std::time::Instant::now();\n"
+    },
+    {
+      "position": 4696,
+      "old": "        let tree = TreeBuilder::build_with_options(",
+      "new": "        let d274_tree=std::time::Instant::now();\n        D274_MARKS.with(|m|{let mut x=m.get();x.tree_started=true;m.set(x);});\n        let tree = TreeBuilder::build_with_options("
+    },
+    {
+      "position": 5027,
+      "old": "        let river = build_river_table(&board, board_mask, &hands);",
+      "new": "        D274_MARKS.with(|m|{let mut x=m.get();x.tree_ns=d274_tree.elapsed().as_nanos()as u64;m.set(x);});\n        let d274_river=std::time::Instant::now();\n        D274_MARKS.with(|m|{let mut x=m.get();x.river_started=true;m.set(x);});\n        let river = build_river_table(&board, board_mask, &hands);\n        D274_MARKS.with(|m|{let mut x=m.get();x.river_ns=d274_river.elapsed().as_nanos()as u64;m.set(x);});"
+    },
+    {
+      "position": 5439,
+      "old": "        // Suit symmetry group:",
+      "new": "        let d274_symmetry=std::time::Instant::now();\n        D274_MARKS.with(|m|{let mut x=m.get();x.symmetry_started=true;m.set(x);});\n        // Suit symmetry group:"
+    },
+    {
+      "position": 7911,
+      "old": "        Ok(Spot {",
+      "new": "        let d274_result=Ok(Spot {"
+    },
+    {
+      "position": 8133,
+      "old": "            hand_perm,\n        })",
+      "new": "            hand_perm,\n        });\n        D274_MARKS.with(|m|{let mut x=m.get();x.symmetry_ns=d274_symmetry.elapsed().as_nanos()as u64;x.total_ns=d274_total.elapsed().as_nanos()as u64;m.set(x);});\n        d274_result"
+    }
+  ],
+  "all17serializedfields_cover_entire_originalSpot_tree_andriver": true,
+  "control": "Original Spot::new unchanged,only appended cfg(test) clone/timers/serializer/observer. One exact CPU observer test per fresh process, no other unit test executed. Both outputs native-compared andwritten in full outside clocks. Data-vector capacities included. No GPU/CFR/sourcecandidate or performance qualification."
+}

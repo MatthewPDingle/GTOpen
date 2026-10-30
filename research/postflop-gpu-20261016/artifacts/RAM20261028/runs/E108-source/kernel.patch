@@ -1,0 +1,17 @@
+--- E080/kernels.cu
++++ E108/kernels.cu
+@@ -240,7 +240,13 @@
+     // totals, then chunk offsets are added back.
+     __shared__ float chunk_sum[257];
+     {
+-        int chunk = (m_o + blockDim.x - 1) / blockDim.x;
++        const u32 threads = blockDim.x;
++        const u32 rounded = (u32)m_o + threads - 1u;
++        int chunk;
++        if ((threads & (threads - 1u)) == 0u)
++            chunk = (int)(rounded >> (31u - (u32)__clz(threads)));
++        else
++            chunk = (int)(rounded / threads);
+         int lo_k = threadIdx.x * chunk;
+         int hi_k = min(lo_k + chunk, m_o);
+         float acc = 0.f;

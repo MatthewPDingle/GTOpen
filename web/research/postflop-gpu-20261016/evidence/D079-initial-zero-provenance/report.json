@@ -1,0 +1,50 @@
+{
+  "id": "D079-initial-zero-provenance",
+  "at": "2026-10-17T03:14:20.116803+00:00",
+  "status": "source_feasible_pending_access_invalidation_and_cpu_cost_proof",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9"
+  },
+  "proposal": "Track whether a quantized ArenaBuf remains an unexposed default-filled allocation. Only concrete i16/u16 defaults establish q==0. A GPU zero-upload predicate could skip the q OR scan in that proven state, retaining exact existing scale-bit and snapshot/inactive guards and original full scan for every other state.",
+  "current_source_facts": [
+    "ArenaBuf owns private Box<[T]> and private cached pointer; one constructor fills every entry with T::default.",
+    "Only slice,write_at,as_slice,as_mut_slice expose mutable access or a borrowed view/pointer escape. read_at returns a value; len/is_empty expose metadata only.",
+    "Store compressed read/write paths use q.slice; save loading uses existing Store writes for compressed data, and direct F32 slice loading.",
+    "Solver::with_storage constructs four default-filled arenas without inspecting quantized values. GPU ArenaLayout construction uses layout metadata before can_upload_zeros.",
+    "Current GPU predicate scans scales then all q values and applies both snapshot guards. No provenance cache exists."
+  ],
+  "proposed_invariant": "A sticky per-buffer atomic starts true only after default allocation succeeds; conservatively invalidate before any quantized borrowed-view or mutable access escapes, including read-only as_slice because its pointer can escape. Never re-enable after access, even if data is restored to zero. Treat by-value primitive reads as non-escaping. Moves preserve the flag with the owner. Concurrent disjoint users must not race a non-atomic flag.",
+  "generic_type_limit": "Default is not generally zero. Only i16/u16 use the zero inference. Consider cfg(gpu) tracking and a compile-time type-size path so F32 and CPU-only hot accessors do not acquire per-access atomic work; actual final-build code/cost must be checked. No unsafe pointer-tag scheme or iteration==0 assumption.",
+  "possible_costs": [
+    "Extra atomic read/branch in compressed CPU accessors, generic object size/alignment and code generation. No free/no-tradeoff claim.",
+    "Conservative read-only invalidation forfeits optimization after inspection; original exact scan remains the fallback.",
+    "Skipped cold q reads can shift page/cache/first-touch work into readback. Whole-cycle/process measurements must include that, not preparation-only savings."
+  ],
+  "historical_context": {
+    "diagnostic_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D042-zero-proof-diagnostic\\report.json",
+    "diagnostic_sha256": "abb01cbd1dd3af865c6c6df84b47c3fcf63205c5b756ad4104f834b0b132d87c",
+    "whole_predicate_sum_fixture_medians_ms": 270.8338,
+    "limits": "Historical instrumented whole-predicate envelopes include scale/guard and page/cache costs. They do not establish current removable q-scan work or projected speedup.",
+    "distinct_from_closed": "E038 omitted only the unsigned q scan without stored provenance and failed. E045 parallelized complete scans and failed a fixture guard. This would use ownership/access history to preserve an exact proof without reading untouched q data; no chunk/threshold/partial-kernel rescue of those experiments."
+  },
+  "novelty": {
+    "local_all_ref_history_stdout": "",
+    "preserved_text_search": "No pristine/unobserved-default/zero-provenance tracking match in retained candidate patches/README/review files. Current source explicitly has onlyBox+pointer.",
+    "limits": "No exhaustive remote-history claim."
+  },
+  "required_before_primary": [
+    "One fixed off-tree design must cover every reference/mutation escape and maintain conservative fallback; no production activation yet.",
+    "Compiled original-reference predicate/data tests must call the new candidate before reference access, or on separate matched owners, so reference reads cannot silently invalidate and bypass the intended fast path. Verify fast/no-scan and dirty/scan paths explicitly.",
+    "Exact q/scale bits, signedzero/nonfinite scales, zero/nonzero mutations, escaped views/pointers, read_at, moves, concurrent disjoint operations, saves/load/resume and snapshot guards.",
+    "Measure actual metadata size and final-built F32/CPU-only accessor code. Freeze matched full CPU compressed solve/encoding and warm-constructor resource checks before adoption; repeatable CPU slowdown disqualifies. Standalone wins alone never qualify.",
+    "Fresh feature/GPU builds and ordinary tests, then the unchanged fixed complete-cycle1%/strict fixture screen. If it passes, separately frozen16pair/broader/holdout/fresh-original cumulative/process/resource qualification."
+  ],
+  "candidate_source_written": false,
+  "compiler_gpu_solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

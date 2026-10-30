@@ -1,0 +1,17 @@
+# E026 source and prospective primary script review
+
+PASS for the frozen source and prospective scripts. No actionable finding remains. This is not activation authorization: D051's independent terminal exact comparison and a separately pinned root authorization remain required.
+
+The archived CUDA is byte-identical to the D050 candidate already reviewed for logical128 scan dependencies at physical256. The complete mod.rs difference is exactly two launch expressions at candidate/mod.rs:695 and :928. They override only block_dim; Self::cfg at :385 retains grid/count and dynamic shared bytes. Evaluation and training still use the same loaded up_show function, arguments, guards, stream order and graph capture paths. Dynamic shared formulas at :627 and :857, buffers, budgets, workspace swaps and all other launches are unchanged. This introduces no graph lifetime or metadata mutation.
+
+The CUDA scan change preserves 128 logical chunks, +0 initialization, all128 serial chunk additions and base-add order. All256 threads reach the same barriers; only lower128 compute scan state, while all threads may consume the published prefix for independent own-hand outputs. D050's PTX/capacity review is the scoped compiler evidence; neither that review nor this source review establishes numerical or performance equivalence. D051 covers the required old128/new256 actual complete-up_show comparison before activation.
+
+All three execution/assessment scripts require the canonical D050 validation hash and canonical future D051 validation path. The latter must report executed numerical validation, exact pass, exact baseline/candidate CUDA hashes, physical128/256 with logical128, 148 comparison pairs, 296 launches, and no performance/acceptance claim. Root authorization pins that future immutable report hash. There is no authorization or D051 terminal validation at review time.
+
+Build remains serialized under gpu-run.lock, rejects inherited compiler overrides, requires an unused target, fresh solver/test Cargo artifacts from the expected source paths, exact two-file candidate identities and all160 unowned identities, and candidate CUDA embedded in both executables with complete E020 CUDA absent. Child cleanup retains the lock until termination; terminal build observation precedes tests. Existing frozen helpers and source/evaluator pins remain unchanged.
+
+The fixed order is V026-unit, B086, E026R1, E026R2, B087, B088, E026R3. Units must be84 passed/4 ignored before timings. The assessor requires all18 complete non-timing result objects and138 convergence records, exact fixture stops200/200/60 and target completion. It retains the >=2% sum-of-fixture-medians gate and repeated >3% fixture regression guard, all samples, no exclusions/extensions, and no acceptance mode. Broad original controls, F32/GPU/continuation, unchanged wide-turn holdout and fresh-original cumulative remain required only if the primary passes.
+
+The earlier draft's V025-unit label was corrected before the final seal; draft-r3 and preseal-check-failure.json preserve that failure. Final protocol and both primary order checks consistently use V026-unit.
+
+Independent file audit passed273 checks over205 pinned inputs, including all162 current E020 source identities, both source archives, all final script/support/reference hashes, AST-only parsing and unused IDs/output paths. No reviewed script was imported or executed. No compiler, native tests, CUDA calls, timing, checkout mutation or status mutation occurred.

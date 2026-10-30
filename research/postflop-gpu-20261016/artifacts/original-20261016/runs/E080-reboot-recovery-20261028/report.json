@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-28T07:51:09.940493+00:00",
+  "status": "pass_verified_reboot_recovery",
+  "native": {
+    "pid": 26528,
+    "startup_ready": true,
+    "last_boot": "2026-10-27T23:12:59.5000000Z",
+    "created": "2026-10-28T07:51:07.9603000Z",
+    "at": "2026-10-28T07:51:09.0469221Z",
+    "port": 43735,
+    "path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "sha256": "c3c88449297574df6eeb9cb3badf4a99b0802dc740fea0f9d8fee401c1c22a62"
+  },
+  "saved_file_inventory_unchanged": true,
+  "saved_files": 2214,
+  "served_root_and_preflop_JS_exact": true,
+  "accepted_source_main_live_PTX_custody_pass": true,
+  "source_or_binary_replaced": false,
+  "solver_performance_samples": 0,
+  "GPU_identity_after_reboot": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version,memory.total",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607 MiB",
+    "stderr": ""
+  },
+  "scope": "Restored exact previously qualified E080 app after verified OS reboot. No active process was stopped. Last verified sessions were empty; saved files remain available and no arbitrary save was loaded. Previous performance measurements remain historical observations; no new gain or cold-cache claim."
+}

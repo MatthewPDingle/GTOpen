@@ -1,0 +1,20 @@
+
+running 3 tests
+test accepted::tests::river_bounds_match_strength_comparisons ... ok
+test candidate::tests::river_bounds_match_strength_comparisons ... ok
+test marker_controls::fold_producer_markers_are_private_and_exact ... FAILED
+
+failures:
+
+---- marker_controls::fold_producer_markers_are_private_and_exact stdout ----
+
+thread 'marker_controls::fold_producer_markers_are_private_and_exact' (299324) panicked at S:\GTOpen-research\postflop-gpu-20261016\runs\E078-plan-control\probe.rs:98:17:
+assertion failed: !folds.is_empty()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    marker_controls::fold_producer_markers_are_private_and_exact
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+

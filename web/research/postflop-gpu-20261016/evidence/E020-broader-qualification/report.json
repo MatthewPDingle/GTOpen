@@ -1,0 +1,86 @@
+{
+  "status": "pass",
+  "at": "2026-10-16T11:25:37Z",
+  "error": null,
+  "checks": [
+    {
+      "id": "V020-state",
+      "passed": 1,
+      "exact_scope": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-state-baseline; metrics must be empty."
+    },
+    {
+      "id": "V020-menu",
+      "passed": 1,
+      "exact_scope": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-menu-baseline; metrics must be empty."
+    },
+    {
+      "id": "V020-resume",
+      "passed": 1,
+      "exact_scope": "One executed ignored test;16 ordered records/112 exact snapshots vs V000-resume-baseline-r; metrics empty; exact raw/save/query/exploit fields."
+    },
+    {
+      "id": "V020-gpu",
+      "passed": 6,
+      "exact_scope": "Complete tests/gpu.rs ordinary suite:6 passed,0 failed,0 ignored,0 measured,0 filtered. Internal CPU/GPU tolerance controls are distinct from bit-exact original comparisons."
+    },
+    {
+      "id": "V020-f32-original",
+      "passed": 1,
+      "exact_scope": "One executed ignored test, all3 fixtures; raw results identical to report; complete non-timing equality to preserved V004-f32-baseline."
+    },
+    {
+      "id": "V020-f32-candidate",
+      "passed": 1,
+      "exact_scope": "One executed ignored test, all3 fixtures; every non-timing/config/state field exact vs fresh original. No F32 speed claim."
+    },
+    {
+      "id": "V020-continuation-paging",
+      "passed": 1,
+      "exact_scope": "Exactly named test1 passed/0 failed/0 ignored;160 alternating board/player sweeps; exact CFVs+F32 arenas and rejected invalid-input state unchanged."
+    },
+    {
+      "id": "V020-continuation-rejection",
+      "passed": 1,
+      "exact_scope": "Exactly named test1 passed/0 failed/0 ignored; invalid/nonfinite/asymmetric roots and unsupported host states rejected without mutation."
+    },
+    {
+      "id": "V020-continuation-stored",
+      "passed": 1,
+      "exact_scope": "Exactly fully qualified test1 passed/0 failed/0 ignored;720 unique pass rows, all passed; one summary720, full_device_arrays_bitwise_equal/restored_arrays_bitwise_equal/values_bitwise_equal all true. Explicit unique bulk GTO_SSD_STUDY_DIR recorded; test uses unlimited RAM budget, no forced SSD-spill claim."
+    }
+  ],
+  "verified_artifacts": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-state\\report.json": "fbefdb9129b1f6b8240196100b15819ca205d51d7ab0a1081acf11d9523c25dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-state\\stdout.log": "bed734f11e89377fbc019fd744f6b781a7a56d2d3fd9ce2f4a951deff2a8f89a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-menu\\report.json": "bdc670a42a04f6cb241d89d8068c472a7afc411cb7ec293cc79fc0239cc447cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-menu\\stdout.log": "4caaf512732078196deaee5fd1a4dec972c43306ebd6c51795a17f4886c76e02",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-resume\\report.json": "827ff2294a44400a38d313981176c12540603dbe9e5df8ebc023b7bb3e60e5ef",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-resume\\stdout.log": "7fb692dd8dbb9c535dfe0937769c8283f8bd0af4e14ed25bb457e422d7b70778",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-gpu\\report.json": "4321ad4d23bdb960ef000ccd0eaf250dfca0e33d3a70add77328840f1924a96f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-gpu\\stdout.log": "8089c73a01f6df22f3a7d04960301cc88a6a8c4c4dda73751c8019686491a875",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-f32-original\\report.json": "83671210edded6d1f203eae1fe146e85d1c7c6f35230bd4a66656d9943e1c141",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-f32-original\\stdout.log": "cfa5790ab27a43fce4e1ee9df8bec9ecb286c25877251d9027c67a9dc6d3ac4e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\report.json": "4553cd2196b4faec001f7bb63a425920cc71420f05bb1a1438a59867a29cd651",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\stdout.log": "6d1142ef0c1eb0efa1da84fcca5fa22f8acaaabe75c3a443dc751c55e2ec8740",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-f32-candidate\\report.json": "14e09f04b45b59a11d46b19e6458ab633e7415da9cd2416e5167ea0133343df0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-f32-candidate\\stdout.log": "6a8eae67c07354d8e24a5300581f1ad49cd5abd2a4d07d28546b9df15a504a80",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-paging\\report.json": "a356ee49dd5c8b26aadb5011cf67ba413ab943edd4092f38a3931026c0a5cbdd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-paging\\stdout.log": "469f0e6e1a5ff2b1463f03eda8f441f9a4208622bbef155ac1787eb507c0fa70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-rejection\\report.json": "63cf9adf8e5f6d49581ffe1794aa772ddb643dd0f426cc0c2533c49a5a4e2033",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-rejection\\stdout.log": "23e2bdd4106f912f67a2f13df653c367d90fef7052705b0ca9d6626922573192",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-stored\\report.json": "35eed054409866a90805d663ab9c1a2d8369780b77d4119b86f13b8ed4b6bfc5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-continuation-stored\\stdout.log": "b873e7d429c83e4f23a6510cbc66ad2429512382eea5bb5dbbaedd25620fa05d"
+  },
+  "invocation": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-qualification-execution\\invocation.json",
+    "sha256": "cb5bc1371bd8a89a4eea82c8a800cc5fa3822273367d7aeca87259dd039bab7d"
+  },
+  "all_builds_ready_sha256": "4c53c85b4d7e83915ce31ec93d13a0dc916d8aca5c722441152e10886a6fdda0",
+  "original_snapshots": 160,
+  "f32_fixtures": 3,
+  "gpu_tests": 6,
+  "continuation_tests": 3,
+  "performance_claim": false,
+  "accepted": false,
+  "deployed": false
+}

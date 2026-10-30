@@ -1,0 +1,10 @@
+{
+  "id": "D205-R2",
+  "at": "2026-10-28T21:56:38.957731+00:00",
+  "status": "mechanical_Rust_API_enum_alias_before_any_native_GPU_process",
+  "original_failure": "Frozen Rust shim referenced legacy CUkernelNodeAttrID enum variant CU_KERNEL_NODE_ATTRIBUTE_COOPERATIVE. This exact retained cudarc build aliases the parameter type to CUlaunchAttributeID and exports CU_LAUNCH_ATTRIBUTE_COOPERATIVE instead. Both identify attribute2; compile-time numericassert==2 added.",
+  "original_compiler_returncode": 1,
+  "original_native_GPU_processes": 0,
+  "original_protocol_sha256": "613b1c5574e1f121f4fa4d0a0608e390a708e451261e063792f45f57dd1f3743",
+  "change": "One constant spelling in actual graph attribute getter, pluscompile-time attribute2 check. No shader/PTX/barrier/graphs/data/case/grid/threads/phases/CPUoracle/flags/gates/speedchange. Alloriginalfiles/failedcompilerreceiptretained; onecorrectedRustcompilerthenalloriginalunexecuted256nativecasesonce. No completednativecase repeated."
+}

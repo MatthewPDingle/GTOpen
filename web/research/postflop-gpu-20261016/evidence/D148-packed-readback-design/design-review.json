@@ -1,0 +1,66 @@
+{
+  "id": "D148",
+  "at": "2026-10-28T10:38:47.038450+00:00",
+  "status": "source_design_requires_controls_not_executable",
+  "motivation": "D147 places roughly204ms in full-arena CPU encoding and126ms in compact active encoding; inactive restoration is only42-44ms and cannot satisfy its prospective1% admission proxy even if removed entirely. Focus on active readback transport/encoding rather than that smaller shortcut.",
+  "hypothesis": "Explore GPU packing of active q words and exact per-node scales before download, preserving the shared Rust encoder as the oracle and inactive restoration unchanged. Reduce both transferred bytes and CPU encoding work; no saving is inferred before complete-cycle qualification.",
+  "historical_counterevidence": [
+    "E009/E010 remain rejected. Their integrated source appended encoding kernels to the main CUDA program and eagerly prepared optional metadata/device output buffers. E010 already reused the pinned host buffer; that is not a new idea.",
+    "D011 measured river optional setup only0.1468ms; function loads/direct optional setup did not explain the repeated river regression. D012 located an87ms CPU planning/budget wall stall before context creation. D013 isolated runs still failed timing and changed the observed penalty. No compiler, allocator or driver cause is established.",
+    "Do not retime old binaries, pool old samples, add arbitrary thresholds after failure, regrade their decisions or call this a proven fix. Any new form must own a distinct integration/resource contract and pass fresh full timing, fixture, correctness and material gates."
+  ],
+  "proposed_distinct_integration": [
+    "Keep the accepted main kernels.cu and its runtime NVRTC/JIT path byte unchanged. Generate a separate auxiliary PTX artifact outside measured solves, bind its source/toolchain/options/hash, and load only when the optional path is admitted. This removes auxiliary NVRTC work from runtime but does not eliminate driver JIT/module-load cost.",
+    "Use a bounded region of the existing CFV scratch allocation only after the existing readback entry stream synchronization. Place packet descriptors, packed words and scales in disjoint checked regions; reuse the same cached pinned host staging allocation. No additional explicit device output/descriptor allocations. Module code can still consume resources and must be measured.",
+    "Keep all four device regret/strategy arrays read-only, original CPU host offsets/scale indices and quantization semantics. Scatter exact q words/scales for active blocks; retain original handling of inactive snapshots, signed zeros, nonfinite data and F32 fallback.",
+    "Use original CPU readback for unsupported device/format/endian/size/checked-capacity conditions before auxiliary work. Size/packet rules require prospective calibration/freeze, boundary controls and no tuning after a failed screen. Small-fixture behavior must be tested, not assumed.",
+    "Scratch pointers cannot be cached across continuation take/swap/storage operations. Check current lengths/ownership each call. Borrowed staging and device regions must remain alive until their existing completion waits; no global setting, counter retry or alternate executor."
+  ],
+  "CFV_lifetime_review": {
+    "support": "D141 finite model checks all incoming-CFV independence in12 accepted layouts. Current training does a complete up pass; evaluation mode0 regenerates terminals before mode1 reuse, and root outputs have separate storage. This motivates a post-completion scratch phase but is not universal runtime proof.",
+    "unresolved": [
+      "Audit every entry and read of CFV, including graph warm/capture/replay, continuation evaluation, locked/warm states and storage/paging buffers.",
+      "Continuation storage and paging explicitly include d_cfv in seven-buffer take/swap/state operations. Verify preservation of their persistent/format contracts and future results; never silently weaken an existing assertion.",
+      "Demonstrate byte-exact learning/reach/immutable inputs, CPU q/scales, EV/checkpoints, save/load/resume and subsequent solve/evaluation after scratch contents are replaced. CFV scratch bytes may differ only if its nonpersistent role is proved for every admitted path."
+    ]
+  },
+  "mandatory_next_before_implementation": [
+    "Review novelty against exact E009/E010 sources and budget/lifetime contracts; decline if it is merely an equivalent failed form.",
+    "Freeze a finite packet/address/liveness model and check odd tails, u64 offsets, empty blocks, disjoint descriptor/output regions, host q guards and every capacity decline before any application kernel.",
+    "Freeze and run a source-bound auxiliary compile/load/resource probe, then full actual input/output CPU-oracle controls covering signed/unsigned, ties, NaN/Inf, signed zeros, subnormals, reciprocal overflow, saturation and source immutability. No performance or adoption claim from these controls.",
+    "Only after those prerequisites, decide on a bounded integrated prototype with all setup/readback/destruction costs, fresh1% complete-solve screen, strict fixture guards, fresh16 confirmation and broad CPU/memory/capacity/holdout/cumulative checks."
+  ],
+  "official_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.0/nvrtc/index.html",
+      "supports": "NVRTC returns PTX that can be loaded through the driver module API. It can run without a GPU. This supports preparing a bound artifact, not a speed or compatibility guarantee."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__MODULE.html",
+      "supports": "Driver module-data loading accepts compiled input and has its own resource/lifetime/error contract. Precompilation does not make loading or JIT free."
+    }
+  ],
+  "source_mutation_or_native_execution": false,
+  "E011_implementation_created": false,
+  "new_performance_candidate_created": false,
+  "speed_gain_or_no_tradeoff_claimed": false,
+  "reference_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-continuation-paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-continuation-storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\D011-init-observation.json": "0d16d74ece06970ab96ad061579b18b142443da7189f6ac8dda37a09327c7477",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\D012-constructor-observation.json": "ab98b7c801faef5503f5e22ef102d6790e09a47b40ea69deef289e2646bb549b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\D013-isolated-observation.json": "6b7ee07a4636d676d80eb9b7976599743b4126fcc0265e6641a67a9682f8eecc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\D141-finite-CFV-model.json": "0f536326da8f2400d7218dc9822f134641a02630fa9abd3aa076e2f75088f4b3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E009-failed-comparison.json": "0f9dab72188e5fbf95db146cd43e681b7d7105a2e3bbd4dd42c589b30a0ca7be",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-arena.rs": "75e0ca3e5725b22d192d8d1006387369a5f196ae260e11567f74617dbe2bc4cb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-controls.rs": "879d6fba00e9439956612891cafdc074d37ede9c272fc7c068d0ca2e3587e81c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-failed-comparison.json": "b35eb442c7e226fe6d025063b40a4363493e78a794ab8617f0a48ae781b87cac",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-kernels.cu": "b502c439775fe98794a606deb77a7e61aa34519fd157bb55c721ab929beab2e8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-mod.rs": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-quantized_readback.rs": "9ed3b74710399f921a7fd4a648ed30304d6f5c983970f42c57a138e11d7e3038",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\original-encoding-proof.cu": "bb8f5400d3354b7138fdc8e1154e3cf77dc312a9b94b0951c4cf6413d367fde4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\original-encoding-proof.rs": "5e3f1bf10a9a70a48343f46ca3e0ad08f3417cc8d69089c4bd39d3f523eeb343"
+  }
+}

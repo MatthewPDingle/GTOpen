@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-28T13:30:43.761303+00:00",
+  "status": "FROZEN_PRE_EXTRACTION_REPAIR",
+  "wheel_sha256": "6bcd4e7f8e205cbe644f5a98f2f799bef9556fefc89dd786e79a16312ce49872",
+  "original_failure_sha256": "b7a5fddb9858d9c134d73d1f2d603fbea5fb1a7703b7e4ad3f97b1d792f9fd97",
+  "original_retrieval_protocol_unchanged": true,
+  "repair_script_sha256": "0099ea12eec8bbed566b49d8b8cf2b384522ee0ab474922c300b24a785821b7d",
+  "actual_archive_members": {
+    "nvidia/cu13/bin/x86_64/nvrtc-builtins64_130.dll": 4471328,
+    "nvidia/cu13/bin/x86_64/nvrtc64_130_0.alt.dll": 91032096,
+    "nvidia/cu13/bin/x86_64/nvrtc64_130_0.dll": 90965024,
+    "nvidia/cu13/include/nvrtc.h": 46037
+  },
+  "extract_only": [
+    "nvidia/cu13/bin/x86_64/nvrtc-builtins64_130.dll",
+    "nvidia/cu13/bin/x86_64/nvrtc64_130_0.alt.dll",
+    "nvidia/cu13/bin/x86_64/nvrtc64_130_0.dll",
+    "nvidia/cu13/include/nvrtc.h"
+  ],
+  "scope": "Correct only literal package member paths after inspecting exact archived member inventory. Include official alternate compiler DLL as well as primary/builtins/header,matching full baseline DLL inventory. Same pinned official13.0.88 wheel,no repeatdownload,DLLload/compiler/context/kernel/solver or performance observation. Does not repair a numerical/resource/performance candidate failure."
+}

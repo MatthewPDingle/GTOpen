@@ -1,0 +1,127 @@
+{
+  "id": "D134/E083",
+  "at": "2026-10-18T09:44:52.386929+00:00",
+  "decision": "rejected_component_admission",
+  "reason": "Rejected at the frozen initialization-component admission gate: summed fixture-median saving 40.0397 ms is below 94.215979 ms; rainbow median is 2.8987 ms slower; river all-thread CPU median 93.75 ms exceeds its 79.375 ms limit. Complete device images and fresh/warm compressed/F32 controls passed. This is component evidence, not an observed complete-solve gain. Close the zero-arena wait batching/final-fence form; no additional samples, threshold, caller, source-scope or placement variants.",
+  "component_report_sha256": "359a777d0427992cc19ed68c9fd786af10c2f55d0490732c24de0b495a001cec",
+  "protocol_sha256": "9c3528ab494d2ad703d8c7e3d8d6b13c84528bd1b1a3460deff305881c7c66ad",
+  "checks": 6821,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_component_ms": [
+        524.4491999999999,
+        481.1884,
+        497.1966
+      ],
+      "candidate_component_ms": [
+        500.0953,
+        475.9184,
+        521.8663
+      ],
+      "baseline_median_ms": 497.1966,
+      "candidate_median_ms": 500.0953,
+      "saving_of_medians_ms": -2.8987000000000194,
+      "improving_pairs": 2,
+      "large_fixture_wall_gate": false,
+      "baseline_CPU_ms": [
+        562.5,
+        500.0,
+        531.25
+      ],
+      "candidate_CPU_ms": [
+        515.625,
+        500.0,
+        562.5
+      ],
+      "baseline_CPU_median_ms": 531.25,
+      "candidate_CPU_median_ms": 515.625,
+      "CPU_limit_ms": 557.5,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_component_ms": [
+        437.4129,
+        365.1135,
+        313.3186
+      ],
+      "candidate_component_ms": [
+        325.8173,
+        310.67060000000004,
+        357.77189999999996
+      ],
+      "baseline_median_ms": 365.1135,
+      "candidate_median_ms": 325.8173,
+      "saving_of_medians_ms": 39.2962,
+      "improving_pairs": 2,
+      "large_fixture_wall_gate": true,
+      "baseline_CPU_ms": [
+        562.5,
+        437.5,
+        375.0
+      ],
+      "candidate_CPU_ms": [
+        359.375,
+        343.75,
+        390.625
+      ],
+      "baseline_CPU_median_ms": 437.5,
+      "candidate_CPU_median_ms": 359.375,
+      "CPU_limit_ms": 461.875,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_id": "river",
+      "baseline_component_ms": [
+        81.8032,
+        89.29520000000001,
+        88.6551
+      ],
+      "candidate_component_ms": [
+        85.0129,
+        92.0523,
+        84.9208
+      ],
+      "baseline_median_ms": 88.6551,
+      "candidate_median_ms": 85.0129,
+      "saving_of_medians_ms": 3.6422000000000025,
+      "improving_pairs": 1,
+      "large_fixture_wall_gate": true,
+      "baseline_CPU_ms": [
+        62.5,
+        78.125,
+        62.5
+      ],
+      "candidate_CPU_ms": [
+        93.75,
+        78.125,
+        93.75
+      ],
+      "baseline_CPU_median_ms": 62.5,
+      "candidate_CPU_median_ms": 93.75,
+      "CPU_limit_ms": 79.375,
+      "CPU_guard_pass": false
+    }
+  ],
+  "summed_fixture_median_component_saving_ms": 40.03969999999998,
+  "minimum_component_saving_ms": 94.215979,
+  "full_device_frames_exact": true,
+  "ability_fresh_warm_compressed_F32_pass": true,
+  "compiler_attempts": 2,
+  "successful_compilers": 1,
+  "original_pre_native_visibility_failure_preserved": true,
+  "observer_adapter_repair_sha256": "6b7299ae6a1b99d564b8bdccf71dabe2d83f7850f58824d2ecc605ae1c6330d3",
+  "ability_processes": 1,
+  "timing_processes": 6,
+  "initialization_windows": 18,
+  "application_kernel_launches": 0,
+  "full_solver_executions": 0,
+  "source_activated": false,
+  "source_adopted": false,
+  "accepted_live_source": "E080",
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "raw_frame_storage": "S only; per-field full-word comparisons and SHA/bytes in component report",
+  "limits": "Copied-constructor full GPU-initialization component only, not a complete solve or observed1%full-cycle gain. Every exposed device field compared to CPU references and paired frames. Full GPU positive-zero images were read and checked, represented losslessly as zero runs; no separate full raw zero files. CPU observer outside timing; full stage cost retained. No actual forced allocator/hardware failure. Material/whole-solver/graph/application/holdout/cumulative checks remain if admitted. No extensions, variants or retry rescue."
+}

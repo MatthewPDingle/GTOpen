@@ -1,0 +1,36 @@
+{
+  "id": "E015-design",
+  "at": "2026-10-16T07:17:38.640903+00:00",
+  "state": "source-ready; not compiled or executed by builder",
+  "baseline_commit": "d64ac12333e1b6a5591967aa6c76a2b62c846ab8",
+  "baseline_mod_sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+  "candidate_mod_sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+  "patch_sha256": "7fc1ad0b47533e3e583dd3864357f854d1276225507d094f5291c5b6cd3c9273",
+  "mechanical_source_checks": {
+    "constructor_unchanged": true,
+    "evaluation_unchanged": true,
+    "up_dispatch_unchanged": true,
+    "continuation_bridge_unchanged": true,
+    "three_down_overrides_only": true,
+    "three_paired_callsites_only": true,
+    "generic_sweep_forces_full": true,
+    "legacy_copy_root_arguments_identical": true,
+    "legacy_down_action_arguments_identical": true,
+    "legacy_down_chance_arguments_identical": true
+  },
+  "protected_source_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c"
+  },
+  "syntax_check": "rustfmt --edition 2021 --emit stdout --config skip_children=true crates/solver/src/gpu/mod.rs (exit0; stdout discarded; no source write)",
+  "whitespace_check": "git diff --check (exit0)",
+  "test_commands_for_root": [
+    "LIB.exe gpu::tests::paired_reach_reuse_ --nocapture --test-threads=1"
+  ],
+  "execution_scope": "No build, GPU compilation, GPU execution, live API write, or deployment by builder."
+}

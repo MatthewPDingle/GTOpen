@@ -1,0 +1,35 @@
+# D043: opponent-only training action compiler probe
+
+Prepared outside the checkout from accepted E020. This is a resource query, with no kernel launches, solver execution, floating-point differential test, performance measurement or acceptance. Root executes only after review, D042 completion and exact E020 restoration. No production host partition is implemented.
+
+## Concrete source hypothesis
+
+`source-mod.rs:958-989` submits the full training action list through `up_action` at128 threads. The accepted `baseline.cu:332-405` implementation includes both a traverser regret/strategy update and a much smaller opponent branch. That opponent branch (`:400-405`) initializes `float acc = 0.f`, adds children in ascending original action order, and writes one parent CFV. It does not read regrets, strategy sums, reach, lock tables or discounts. The unchanged down sweep already incorporates opponent locks into child reach.
+
+`candidate.cu` contains the whole22878-byte accepted source as a byte-identical prefix and appends only `up_action_opponent_impl<NA>` plus `up_action_opponent`. The original opponent loop text is copied byte-for-byte, including +0, address expression and addition order. The new dispatcher retains NA2,3,4 and generic0 specializations; this is not a simultaneous arity change. Its explicit caller precondition is an opponent-only node list. This standalone probe never exercises that precondition because it launches no kernels.
+
+The potential mechanism is separating the opponent path from the traverser kernel's compiled register/local-storage requirements. D021 measured the original dispatcher at66 registers,64 local bytes/thread and7 theoretical128-thread blocks/SM; D037 later required the unchanged action entry PTX to match while accepting the separate showdown cache. D043 remeasures the unchanged dispatcher in both modules, rather than inheriting those resource values as a current result.
+
+## Cost and novelty
+
+The preserved D027 exact source census has523533 rainbow action nodes (274801 actor0,248732 actor1) and318562 two-tone nodes (167213/151349). Opponent hand visits are151585643/301555008 and92556202/184128836 respectively across the pair, about half of logical action-hand work. These are counts, not native time shares. Each flop has10 mixed-actor levels: splitting every mixed level adds20 launches per paired iteration. The river census has no mixed levels, but even it would pay any added module/function construction cost. D020/D029 synchronized eager spans and D033 heavily perturbed dense-event intervals cannot establish a native family fraction or a projected complete-cycle gain.
+
+This differs from E005/E014, which specialized action arity while retaining both ownership paths, and E017, which filtered no-op downward work. Those failures remain direct cost counterevidence. E005's initial screen and E014's three-pair comparison did not qualify despite resource improvements. The separate preflop grouped-opponent entry experiment also reduced resources but regressed; its eight-seat terminal pathway is not this postflop branch, yet it is a warning against converting compiler occupancy into a speed claim. The copied reports and `source-preflop-findings.md:151-155` preserve that history.
+
+## Possible later integration obligations (not implemented here)
+
+Any later candidate must leave the full heavy `up_action` for traverser nodes and route only the opposite actor to this entry. Stable per-level actor filtering must preserve original child order and all node/arena identities; original aggregate down and evaluation lists stay unchanged. `source-plan.rs:162,199` advances one level on each edge; `:218-241` assigns unique same-level CFV slots and separate parity/terminal storage. This supports within-level partition independence, but runtime raw-state controls remain necessary.
+
+A later implementation must account for new immutable actor-list payload/spans, admission and continuation capacity, extra function/module setup and graph nodes, and both sublaunches in training profile bucket6. A new device list must remain owned and immutable for every captured graph; no workspace swap may substitute it. Empty/uniform levels must avoid unnecessary extra launches. All init/build/readback costs stay in the complete cycle. Arbitrary arities, locks, CFR+/DCFR, full/compact storage, evaluation interleaving, capture/replay, resume and standalone continuation need existing exact controls if a performance screen qualifies. No E016 cross-iteration reuse is introduced.
+
+## Fixed resource query and gate
+
+Both whole sources compile/load in one context with production-equivalent NVRTC options: only `arch=compute_120`, all other cudarc CompileOptions default. Device must be the RTX5090. Query exactly three rows in this order: baseline/up_action, candidate/up_action, candidate/up_action_opponent, each128 threads and0 dynamic shared bytes. Record registers, local bytes/thread, static shared, max threads, theoretical active blocks/warps per SM, device limits and NVRTC version. The runner records rustc identity/path/hash, pinned rlibs, NVRTC DLL hashes, pre/post telemetry and complete commands. No telemetry polling occurs during the child.
+
+All original extracted PTX entries and the original dispatcher's queried resource fields must remain byte/value-identical between modules; otherwise the diagnostic is invalid and all evidence is retained. The material-resource prerequisite is frozen now: the new entry must have zero local bytes, at least25% fewer registers than the simultaneously queried original dispatcher, strictly more theoretical active128-thread blocks/SM, and support128 threads. Passing these conditions is only a prerequisite to considering a later candidate; it is not numerical validation, throughput, latency, GPU utilization, a performance gain or adoption. A failed gate is a valid negative resource result, not permission to retune this sealed source.
+
+## Execution and evidence
+
+Root alone runs `python -B run.py --execute --prepared-manifest-sha256 <frozen SHA>`. `commands.json` records the exact paths and future compiler command. The one-shot runner uses the existing GPU lock/live-solve refusal, verifies the entire162-entry accepted E020 map and all prepared/dependency/reference hashes before and after work, and requires the pinned terminal D042 cohort/report. It refuses an existing binary/output record, keeps at least50GiB free plus1GiB output reservation, uses fixed600-second build/probe limits, preserves stdout/stderr to files and reports a10-second heartbeat. SIGTERM/SIGBREAK/interrupt/error cleanup targets only its owned child. No live server state is changed.
+
+The five required markers are one device record, three resource rows and completion. Full PTX, extracted compared entries, opcode counts, commands, dependency/source identities and report are retained. Resource attributes and static PTX counts are not timings; compiler/probe wall time is audit metadata only. Failures are terminal in this directory; any repair uses an additive version. No runtime evidence exists at preparation.

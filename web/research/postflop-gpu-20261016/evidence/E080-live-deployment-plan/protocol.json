@@ -1,0 +1,37 @@
+{
+  "id": "E080-qualified-live-maintenance",
+  "at": "2026-10-18T08:48:22.192886+00:00",
+  "status": "FROZEN_PRE_LIVE_OPERATION",
+  "candidate": "E080",
+  "candidate_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-gto-server.exe",
+  "candidate_sha256": "c3c88449297574df6eeb9cb3badf4a99b0802dc740fea0f9d8fee401c1c22a62",
+  "candidate_manifest_sha256": "3464526e39cd90766372d7112055c69703d9eb33e4d86f1c8fd12ea424c159e1",
+  "live_path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+  "old_sha256": "6909ebe22240d17cab427e5a348d6ce2c6fe4634cbad49f31b2213fb2103cf4c",
+  "old_identity": {
+    "path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "pid": 215600,
+    "created": "2026-10-18T01:43:35.1451030Z"
+  },
+  "backup_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-live-deployment\\E051-gto-server.exe",
+  "output_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-live-deployment",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-deploy-qualified-server.py": "ec7ccda7d9e19cadcbf91bb2a299460460a8625320437733a79675dc9ecac268",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-live-deployment-plan\\deploy.ps1": "9162aded601d900a9438ab96139d3db3b82e043dc0cce8d3eff0a9a4fd0cbb3d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-gto-server.exe": "c3c88449297574df6eeb9cb3badf4a99b0802dc740fea0f9d8fee401c1c22a62",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-gto-server.manifest.json": "3464526e39cd90766372d7112055c69703d9eb33e4d86f1c8fd12ea424c159e1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E080-final-qualification-r3\\accepted.json": "76d1cb8e8f946cbd3eeff550836a92c28489ba15f9b45f5e60dba9a251864367",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-source-integration\\report.json": "068f21004a949df9d22f6363ff279e8d3d53798715f9b1e583ca3908c7e2bfb1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-server-controls\\responsiveness-report.json": "45a6635a0296a4a0f56054878ca3179bc7846947db2a53d13e02b701a43baa01",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-server-controls\\build\\report.json": "57f15ebfd26b3f1986aec0ee7086434e1ee0e5ae0ac912dc21c1c153a1a3479b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E080\\protected-main.json": "82e55422854174ec564aa6f20c13376a0d2e449d5f9ed6972fc987ed9edc65dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E080\\baseline.json": "951455cc2aed3e49a5a5ce36d9fdbc23d546387ce413326ef34bac1a9c56fe19"
+  },
+  "authority": "User goal/full-access/all-command authorization and AGENTS routine desktop rebuild/restart/session restoration authorization. No approval prompt or permission/security/database change.",
+  "maintenance_guards": "Verify old PID/path/hash/creation/listener and empty sessions/reports immediately before stopping. Save checksum-verified E051 executable on S. Replace only explicit desktop-runtime release gto-server.exe. Start hidden on43735 with original GPU/compressed/Rayon16/NVRTC environment. Verify new PID/path/hash/listener and identical empty sessions/UI bytes. Roll back from verified E051 backup on failure if port free; never stop unrelated port occupants.",
+  "accepted_cumulative_gain_pct": 14.741418835370924,
+  "new_performance_samples": 0,
+  "candidate_source_changes_this_operation": [],
+  "new_custody_epoch": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E080-live-20261018",
+  "earlier_epochs_preserved": true
+}

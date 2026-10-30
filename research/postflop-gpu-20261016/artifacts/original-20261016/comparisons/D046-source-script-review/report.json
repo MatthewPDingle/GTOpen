@@ -1,0 +1,62 @@
+{
+  "id": "D046",
+  "verdict": "PASS_SOURCE_SCRIPT_ONLY",
+  "at": "2026-10-16T14:06:32.682950+00:00",
+  "prepared_manifest_sha256": "8e8ec64a83b744eb75c60156e610b0dbc3185c5b9615759a8194ab1c465e1146",
+  "artifact_pins_verified": 10,
+  "reference_pins_verified": 10,
+  "dependency_rlibs_verified": 2,
+  "accepted_source_entries_verified": 162,
+  "candidate_sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+  "protocol_sha256": "a454cc1a985a6e31f8fecea5b7e628926a4e2cff7151a03715f386d7b9a4b6c1",
+  "probe_sha256": "2eefbd98586b1ef1d01ffcf4fd44190c64c4c1e89d7a35d2c9b170473dc0cbb5",
+  "runner_sha256": "c64da6eae7a4fc6422f5594b0ad883f0e9881233bc27067272215f97ccd0f690",
+  "exact_one_literal_change_verified": true,
+  "down_action_and_all_other_source_bytes_unchanged": true,
+  "generic_affected_valid_counts": "1 and5-8;2/3/4 compile-time caches remain,>8 already reloaded",
+  "source_reasoning_references": [
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "lines": "331-451",
+      "use": "Training-up loop/update order and unchanged dispatcher/lock/opponent paths"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "lines": "215-240,245-275,361-392,525-546",
+      "use": "Parity-disjoint parent/child CFV storage; unique same-level nodes; distinct arena offsets and existing invariant coverage"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs",
+      "sha256": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+      "lines": "569-580",
+      "use": "Full-layout action arena offset allocation"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "lines": "267-276,370,855-986",
+      "use": "Separate device buffers and ordered per-level same-stream launches"
+    }
+  ],
+  "prospective_gates": {
+    "zero_local_bytes": true,
+    "registers_no_more_than_baseline": true,
+    "active_blocks_per_sm_no_fewer_than_baseline": true,
+    "max_threads_per_block_at_least": 128,
+    "scope": "Resource-only prerequisite for a later bounded candidate; no numerical or performance acceptance."
+  },
+  "other_eight_ptx_entries_exact_required": true,
+  "findings": [],
+  "execution_evidence_absent_at_review": true,
+  "reviewer_actions": {
+    "python_AST_only": true,
+    "native_builds": 0,
+    "native_runs": 0,
+    "gpu_calls": 0,
+    "production_edits": 0,
+    "dashboard_edits": 0
+  },
+  "scope": "Prospective compiler/resource probe only. Source alias/order reasoning does not establish compiled numerical equality or speed. Later changed-up_action PTX inspection and exact generic-menu controls remain required."
+}

@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-29T02:48:13.294662+00:00",
+  "cases": 1638,
+  "kernel_launches": 3276,
+  "full_original_shape_value_profile_modes": true,
+  "changes": [
+    {
+      "old": "struct Case {nh:",
+      "new": "struct Case {evaluation_mode:i32,nh:"
+    },
+    {
+      "old": " let mut cases=Vec::new();\n for na in [1,2,3,4,5,8,9,16,17] {for role in 0..3 {for p in 0..2 {for algo in 0..2 {\n  for (nh,t) in [(1,1),(129,20),(257,200)] {cases.push(Case{nh,na,block:128,p,role,algo,t,mode:0,count:1});}\n }}}}\n for na in [1,2,8,9,17] {for role in 0..3 {for nh in [0,31,32,33,63,64,65,127,128,255,256,511,512,513,1023,1024,1326] {\n  cases.push(Case{nh,na,block:128,p:1,role,algo:0,t:200,mode:0,count:1});\n }}}\n for na in [1,2,9,17] {for role in 0..3 {for block in [1,32,64,256] {for nh in [7,129,513] {\n  cases.push(Case{nh,na,block,p:0,role,algo:1,t:20,mode:0,count:1});\n }}}}\n for na in [1,2,3,4,8,9,17] {for role in 0..3 {for mode in 1..=4 {\n  cases.push(Case{nh:257,na,block:128,p:1,role,algo:mode%2,t:200,mode,count:1});\n }}}\n for na in [1,2,9,17] {for role in 0..3 {cases.push(Case{nh:129,na,block:128,p:0,role,algo:0,t:20,mode:0,count:0});}}\n assert_eq!(cases.len(),819);\n",
+      "new": " let declared:serde_json::Value=serde_json::from_str(include_str!(\"corpus.json\")).unwrap();\n let cases:Vec<Case>=declared[\"cases\"].as_array().unwrap().iter().map(|c|{let n=|k:&str|c[k].as_u64().unwrap();Case{evaluation_mode:n(\"evaluation_mode\") as i32,nh:n(\"hands\") as usize,na:n(\"actions\") as usize,block:n(\"threads\") as u32,p:n(\"p\") as i32,role:n(\"role\") as u32,algo:n(\"algorithm\") as u32,t:n(\"iteration\") as u32,mode:n(\"value_mode\") as u32,count:n(\"count\") as i32}}).collect();assert_eq!(cases.len(),1638);\n"
+    },
+    {
+      "old": "let Case{nh,na,block,p,role,algo,t,mode,count}=*c;",
+      "new": "let Case{evaluation_mode,nh,na,block,p,role,algo,t,mode,count}=*c;"
+    },
+    {
+      "old": "loff as u32]);",
+      "new": "loff as u32,evaluation_mode as u32]);"
+    },
+    {
+      "old": "let bf=bm.load_function(\"up_action\").unwrap();let cf=cm.load_function(\"up_action\").unwrap();",
+      "new": "let bf=bm.load_function(\"up_action_eval\").unwrap();let cf=cm.load_function(\"up_action_eval\").unwrap();"
+    },
+    {
+      "old": "unsafe{stream.launch_builder(f).arg(&dn).arg(&start).arg(&count).arg(&p).arg(&dp).arg(&da).arg(&doff).arg(&dcs).arg(&dc).arg(&mut dr).arg(&mut ds).arg(&drs).arg(&drp).arg(&dl).arg(&dls).arg(&dslot).arg(&mut dv).arg(&dd).arg(&nharg).arg(&maxarg).launch(LaunchConfig{grid_dim:(3,1,1),block_dim:(block,1,1),shared_mem_bytes:0}).unwrap();}",
+      "new": "unsafe{stream.launch_builder(f).arg(&dn).arg(&start).arg(&count).arg(&p).arg(&evaluation_mode).arg(&dp).arg(&da).arg(&doff).arg(&dcs).arg(&dc).arg(&ds).arg(&dl).arg(&dls).arg(&dslot).arg(&mut dv).arg(&nharg).arg(&maxarg).launch(LaunchConfig{grid_dim:(3,1,1),block_dim:(block,1,1),shared_mem_bytes:0}).unwrap();}"
+    },
+    {
+      "old": "role==0 && i>=off",
+      "new": "false && i>=off"
+    },
+    {
+      "old": "\"stage\":\"case\",\"id\":index,",
+      "new": "\"stage\":\"case\",\"id\":index,\"evaluation_mode\":evaluation_mode,"
+    }
+  ],
+  "non_null_original_17argument_eval_ABI_both_arms": true,
+  "seed_generators_float_code_immutable_images_and_disjoint_guards_preserved": true,
+  "scope": "All original819 retained shapes repeated forBR andaverage. Evaluation only updates owned CFV row; regret/strategy/otherarrays must be entirely unmodified. Complete independent retained raw reader, no speed samples."
+}

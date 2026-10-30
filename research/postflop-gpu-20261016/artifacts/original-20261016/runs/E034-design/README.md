@@ -1,0 +1,9 @@
+# E034: correct the cache eligibility assertion
+
+Source preparation only. Production is byte-exact E033: accepted E020 numerical kernels plus the same separate cache-policy module, same runtime cleanup source, ownership/epoch/close behavior, measured cleanup, and E033_CACHE_POLICY / E033_CACHE_CLEANUP_ERROR markers. Only one assertion in the existing shared-evaluation test changes.
+
+E033 remains a failed unit gate: V033-unit returned 101 with 86 passed, 1 failed and 4 ignored. The nine-node allocation owns 36 bytes, giving floor(36/128)*128 = 0; production correctly returns no policy. The unconditional test assertion failed before this tiny fixture's numerical checks. All six E033 benchmark directories were absent; there is no E033 performance evidence.
+
+The correction explicitly requires no configured policy and a zero stream window for W=0. Nonzero fixtures still require enabled policy and exactly W owned bytes; unsupported fallback cannot stand in for enabled coverage on the qualification machine. Every fixture, budget check, iteration count, lock update, numerical equality and full-store check is unchanged. The prospective ordinary inventory remains 87 tests with 4 ignored; the separate feature continuation test is unchanged.
+
+proposal.json and proposal-manifest.json preserve the pre-authorization diagnosis and exact test-only diff. candidate.patch is the complete candidate against accepted E020, containing modified mod.rs plus new cache_policy.rs. The parent E033 source, failed run and cleanup are pinned and unchanged. Source checks are mechanical and a read-only patch applicability check; no E034 compiler, native or GPU execution occurred. Fresh independent source/script review and root authorization remain required before activation/execution. No primary execution package is prepared by this source archive.

@@ -1,0 +1,2210 @@
+{
+  "at": "2026-10-17T05:06:37.351713+00:00",
+  "status": "official_components_ready_local_only",
+  "manifest_url": "https://developer.download.nvidia.com/compute/cuda/redist/redistrib_12.9.1.json",
+  "manifest_sha256": "8335301010b0023ee1ff61eb11e2600ca62002d76780de4089011ad77e0c7630",
+  "packages": {
+    "cuda_cupti": {
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cupti/windows-x86_64/cuda_cupti-windows-x86_64-12.9.79-archive.zip",
+      "version": "12.9.79",
+      "archive": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti-windows-x86_64-12.9.79-archive.zip",
+      "sha256": "c96018456dc4db6af6d69d6db0170a2ccc656ddde8c8ce6ee05682c2c5569daa",
+      "bytes": 13359912,
+      "unpacked_bytes": 55871152,
+      "files": {
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\LICENSE": {
+          "sha256": "213f2f1cc4bfecd53eb1579edc89d6e3a024ddd2f77413b69b40e2bf3c114d84",
+          "bytes": 63522
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cuda_stdint.h": {
+          "sha256": "15cf80a04f152499300fc8a830e19abc1872eec803735692a91282aa07d08751",
+          "bytes": 4205
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti.h": {
+          "sha256": "536e83ba6afddd41cb5f07beb390dd2732e2bb2fdc7cf90da68574c406d09dbc",
+          "bytes": 4820
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_activity.h": {
+          "sha256": "ef11d11e13f725455c84414855a1956550994c214ef8d2269bae63fc32124252",
+          "bytes": 237607
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_activity_deprecated.h": {
+          "sha256": "eb01ced356237e6b1b1aef2685ba13f4cc11118ab56860e8a74d4a724392fdc8",
+          "bytes": 142937
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_callbacks.h": {
+          "sha256": "da47efc991e0d46c0ae1576eaa6f4c06935cf735d26c3d3566ddebfd162d5d51",
+          "bytes": 30552
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_checkpoint.h": {
+          "sha256": "1c7f8b9a3ce702039bd344c5c3e58208d46526a611fff246e03ea90e36a968e9",
+          "bytes": 5391
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_common.h": {
+          "sha256": "fd80cc339e1eb0f3a175ff93b1d0b66ef417c4d5cb730cd327dbe0086a726bc0",
+          "bytes": 3607
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h": {
+          "sha256": "87bda1c526285330d1837fbc08af504e4a69b247242f7dec3446b3e8237d051d",
+          "bytes": 78277
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_events.h": {
+          "sha256": "4f88ea6928e5f14e1a0920463507277cd9561f5821d33ecc95daef5c8d8f6ab0",
+          "bytes": 53272
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_metrics.h": {
+          "sha256": "fa701722f97f1fdb25957a89d0d3641cc7ec3cb500036a93e5b73fa367ca62e9",
+          "bytes": 32999
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_nvtx_cbid.h": {
+          "sha256": "bfa701f28a09cb9f91e0134ecdf328400a6c2db284ce16c691de952504af4374",
+          "bytes": 6023
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_pcsampling.h": {
+          "sha256": "4d5b87e6cbe65fe0dcc558965c86505ef773455b39750ef94f7ff75a96fce424",
+          "bytes": 33080
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_pcsampling_util.h": {
+          "sha256": "eaf1e3537f6b6cdf7c58cb88d17449ef01637ea70e7cdc263bc956f04f593510",
+          "bytes": 12832
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_pmsampling.h": {
+          "sha256": "184e5a1dba1c9653c50d01349102716ec4be252d243f3c6cec4af2c90ff70177",
+          "bytes": 20930
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_profiler_host.h": {
+          "sha256": "c832adc0e1305852ee2eddd22d2f713924acdee2369efd05e7c9318fa8cab7e4",
+          "bytes": 22695
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_profiler_target.h": {
+          "sha256": "00bacd04e459ae43ce69828efd555199fe8af6022b2aa9c817bc992fae64d43f",
+          "bytes": 32896
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_range_profiler.h": {
+          "sha256": "1df5ece839b0e4bab9863cce8ef364bf169ca0eade7521528ff4028e2e1234b9",
+          "bytes": 19244
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_result.h": {
+          "sha256": "edac82f0cd69ff7c63b7a075ddfc9dfabfa4009df1f91fb839b031b4b9e1148c",
+          "bytes": 13474
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_runtime_cbid.h": {
+          "sha256": "548b509b6744b714c345904a83874fa2b3c611450ada0b2211fa63b7355eddcc",
+          "bytes": 48876
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_sass_metrics.h": {
+          "sha256": "0c71609f41bfbed405b1e05012056957e1afa47716580a83688cfb01f97f2c63",
+          "bytes": 20109
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_target.h": {
+          "sha256": "9f1c28a369cf043de7dc441880292685ceb6d3cc60489b2e151954f517523229",
+          "bytes": 1306
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_version.h": {
+          "sha256": "45de59393de7bb8c56ea95e80fb382bb71ff0448d876b63a2c421d3cb44a1fd3",
+          "bytes": 4708
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cudaD3D10_meta.h": {
+          "sha256": "3d21cf541fc64a3e8d111477fc94dc9ebbfed929aea5609eb69602f32745db8a",
+          "bytes": 4439
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cudaD3D11_meta.h": {
+          "sha256": "fa87ddc95dab6f95e25d319aea7c64020f673e42e6b1ab963a3710bbc461d16d",
+          "bytes": 1823
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cudaD3D9_meta.h": {
+          "sha256": "89a25b6eee7cbc560ecaee18b97d9007122d1f4f62a096dae0296f30655fddd0",
+          "bytes": 5379
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cudaGL_meta.h": {
+          "sha256": "67e4b157a27f114e8cdd3c6cffac917ac38672a6ce0931f47c640eb99b371117",
+          "bytes": 3344
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cudart_removed_meta.h": {
+          "sha256": "d490116dc4330bfef77043436e525147d930abe2ed7ec9fc4c37a1c56ddd4989",
+          "bytes": 4550
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_d3d10_interop_meta.h": {
+          "sha256": "76c86ea44b708215f9290a048fc4a0504e8b7c9af6b14c0deff203622548a13f",
+          "bytes": 3364
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_d3d11_interop_meta.h": {
+          "sha256": "9d29f4ec811d51a1625b1d7cb5643d160853e64fd77c0cbd6af988329eec1e6e",
+          "bytes": 1500
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_d3d9_interop_meta.h": {
+          "sha256": "928816f80222c48cabc8976f3c998288778cd55d1f465cd4d32373a7f7084c41",
+          "bytes": 4178
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_gl_interop_meta.h": {
+          "sha256": "a312356f67f7bfb4fca94967306235e4488adb5e05f2bd15edc9c1588a003d8b",
+          "bytes": 2492
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_meta.h": {
+          "sha256": "d27bd2b6a7bd4989b75f6a0a29b4dbbdea0ba5000bc207664723b20bcb41a7b9",
+          "bytes": 103808
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_cuda_runtime_api_meta.h": {
+          "sha256": "e68b9269222cf9e46ec762f4c2c795f567ec781fcbf0291d390ed7ed13ffc7c6",
+          "bytes": 77517
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\generated_nvtx_meta.h": {
+          "sha256": "166cd5598f21a43eec0afe76411812abfcac4d7c6b7475e721f3b424cc093aeb",
+          "bytes": 7917
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\nvperf_common.h": {
+          "sha256": "c1278d2059af2ba803bbc62c6616885e5ef3db77bacb01bced79133d2b38dfda",
+          "bytes": 17648
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\nvperf_cuda_host.h": {
+          "sha256": "41fdec4233164fb0c697223ff1bbe51bbe11f575aab10ed468b019b13fea2047",
+          "bytes": 9110
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\nvperf_host.h": {
+          "sha256": "0a2f24588b044d9de7be84be43950797943e0fb69290cd044722ec983e964da3",
+          "bytes": 74469
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\include\\nvperf_target.h": {
+          "sha256": "c5d74c5c2a8413f2e868cde157b41f1acdc042404f6adf319b94d8bccb03db0a",
+          "bytes": 24233
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\checkpoint.dll": {
+          "sha256": "f0252a31427a0d3000d6f2373781b7ef9b359daffe03a38c2dc32cd343aa6b46",
+          "bytes": 490576
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\checkpoint.lib": {
+          "sha256": "30744b0c59115ef126c01f595e9ae3c09efab97009982c171712ea0648c405f8",
+          "bytes": 2256
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\cupti.lib": {
+          "sha256": "0cb36336a35041507590d2ca41f27c05dfe38b9e03125d25c471e81ccc5c40d7",
+          "bytes": 52058
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\cupti64_2025.2.1.dll": {
+          "sha256": "be1ecb387e14c1c0515b3b162b44c89b480c9a12f16c60f7b82eb8b1ebc35e74",
+          "bytes": 4552272
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_host.dll": {
+          "sha256": "df3538d2311784dd6b426a9b107876d97f45126ddc44cee5239917313c54686d",
+          "bytes": 24430656
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_host.lib": {
+          "sha256": "56772e037de0b13e7668cfd8c75ca460c62c2c2bc4d5a8eeb8fcd6a06ffa1a9f",
+          "bytes": 137552
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_target.dll": {
+          "sha256": "923e550ac7404187c26808ff331ec04db182d1c8d075603e9d67f507ad303125",
+          "bytes": 2842704
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_target.lib": {
+          "sha256": "3710dbf9eed7d9ca02278363648f4ee74cf7ed25db85b4b44ba920dce4e5211f",
+          "bytes": 105464
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\pcsamplingutil.dll": {
+          "sha256": "3bdb884dd971b09cb32833a66a6384b38b12b841e543d50a23ce65ae32e5e2b2",
+          "bytes": 65088
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\pcsamplingutil.lib": {
+          "sha256": "2e53a7cbd728171ce460df0f2f5a174a41b71b1d04aa813d0898b81f08f7d617",
+          "bytes": 2914
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\genindex.html": {
+          "sha256": "f53667213cb55c114f5430ab135b1e363e8f6a709f1dd8e24b06d47a49080859",
+          "bytes": 633199
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\index.html": {
+          "sha256": "f279a38a993127d8cfdb1f56136dd9102200854c5c191f22719cd85dff2d1496",
+          "bytes": 28962
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\objects.inv": {
+          "sha256": "977d5d5cca26c873e8c55ccf57816e0d3dbe45da683e77c14aac14535be114ce",
+          "bytes": 127045
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\project.json": {
+          "sha256": "d81b26662d9d7f6ff1096edb624101c7b322dd9603849bcc944151ee496b0245",
+          "bytes": 36
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\search.html": {
+          "sha256": "70d2a8014b9d920547aff293f367011ac9af9f1b7fc95de6a728b1c5b1ee7278",
+          "bytes": 6419
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\searchindex.js": {
+          "sha256": "1e63fce5271220f5cfd8dcc90dc49d24dabfc73961375755aef7b7f3c013d206",
+          "bytes": 3463850
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\VERSION": {
+          "sha256": "706c6da7d416dd8e2d3ffa1795002add02268600ef260ab80a0b33f4b7febe59",
+          "bytes": 6
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\data-structures.html": {
+          "sha256": "c33bb8cc6f279f6883e1a7dca5e07fea08817999c72129201016ac145c5e1b87",
+          "bytes": 94748
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html": {
+          "sha256": "db3b3426186264811733e3afffbbba11ff34e7f59f44a2eb1267a0dd5114ffe3",
+          "bytes": 618552
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html": {
+          "sha256": "837f6218aa6addbd720a27edb440b8ce0a91cd65a78aa13e8995915bc2feab99",
+          "bytes": 97319
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html": {
+          "sha256": "4a3baa9f545dd1c02346be5ece092d6e34760e6961705f6f71fb809154cb3137",
+          "bytes": 12432
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___e_v_e_n_t___a_p_i.html": {
+          "sha256": "04c9d865fac69156d5cada27ec56ea83beb3cd6477a57fb01d305994e79de977",
+          "bytes": 211882
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html": {
+          "sha256": "67c2884134989e34089badf361aa61d0e1b7af31a3d159e08b788f931e4a1e00",
+          "bytes": 126946
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html": {
+          "sha256": "fe8b24b62f579429f652c10ef101de543500653792960aced059c23ce5628535",
+          "bytes": 85376
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html": {
+          "sha256": "dacf69272f3ee375e6d8354c21a1ae2ab88a13f112a504f03d0c33f12ceabb38",
+          "bytes": 20382
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html": {
+          "sha256": "ea6f59c3bf95b92d66f6825c674a20dad29de5739a7a7ba31cdc8e4895b44e07",
+          "bytes": 69712
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html": {
+          "sha256": "07cd8d746b2e9dc4b168be904326d44de3a9943aba36d8941be363837eb660f5",
+          "bytes": 95795
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html": {
+          "sha256": "dbe660b91e83d68a509560e1cae5d0aebc6c7813632f3386bd1efd9f990e5621",
+          "bytes": 73260
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html": {
+          "sha256": "d2451669c244f0af5726b6419a54de15c6c8cd8078f21af2eb89d58f32492369",
+          "bytes": 86808
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html": {
+          "sha256": "be05d02350a7d33f4d74a89be074a64857eb7acd54b0d1c7ebbf53a85bbc74a1",
+          "bytes": 59041
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html": {
+          "sha256": "34c11e2f292cd63891ec637a2fa7723f6c35d608c5a7eb51c466644ee47d19b0",
+          "bytes": 56743
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html": {
+          "sha256": "42a420ee37d17ea72e88b961b401d7342ab4c026838d0121137d8a68c0fc8f86",
+          "bytes": 13854
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\modules.html": {
+          "sha256": "ecee33e7393dfb0dcd324fcabc1c062c59ce3937913cab004c709d03ba384335",
+          "bytes": 12900
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespaces.html": {
+          "sha256": "32f5c10690f58c649be122cb28af70a50b790c7a5c65e2f3b7e5aadd75352088",
+          "bytes": 7843
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespace_c_u_p_t_i.html": {
+          "sha256": "426a107615d9476afa6615ee2eb90ed3c22f733e65667c219d49a3c803fe2a43",
+          "bytes": 7972
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespace_c_u_p_t_i_1_1_pc_sampling_util.html": {
+          "sha256": "29117deb329c3cbcd7a5b829e0a8c10827e830292a45ee52e24ea9bd3169786e",
+          "bytes": 46426
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespace_n_v.html": {
+          "sha256": "813097ff42029cbf4f5ea9a2ce198679fd9279c155f6957e8ef2b9b66401b310",
+          "bytes": 7939
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespace_n_v_1_1_cupti.html": {
+          "sha256": "a67c869ab2f636af0779641a57e3e720d12a0b64100605d3e40d3c025867feae",
+          "bytes": 8253
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\namespace_n_v_1_1_cupti_1_1_checkpoint.html": {
+          "sha256": "873251c5a9c13a0f55a282b825694639780581b64e55bc496eb7851a5337797a",
+          "bytes": 25478
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity.html": {
+          "sha256": "afe2310e46c8fc665c47fbc37bbb172fe4f7a9a2da2d47d3a8a0b1c52c8e6952",
+          "bytes": 40019
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_auto_boost_state.html": {
+          "sha256": "160c4245a165544fc4441527b83965e24df307dc35d482d11e0559a4237a8a1d",
+          "bytes": 40531
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_a_p_i.html": {
+          "sha256": "f41430c53e9bb0814816f7868a5074927c6c8262afe5d57e7a22c15a2a830325",
+          "bytes": 45406
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_branch.html": {
+          "sha256": "b6ee9922bf4c8966be21e87b0a436667ade79acc5da12cd270fdf2d1f6f6cfcf",
+          "bytes": 44413
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_branch2.html": {
+          "sha256": "c7d100aee3221ed1b2a0c9b83aea5ac3719ce050874230e3484776c81fa6c8be",
+          "bytes": 45705
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_cdp_kernel.html": {
+          "sha256": "616b5c48739b245443f7df54ec44e1ae7ec1b4cda69a420ee8a750634220372a",
+          "bytes": 64087
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_context.html": {
+          "sha256": "17f15f9766812242273c3bb07aef8dc811802d35847c2ce9855ca7a3bbac63f6",
+          "bytes": 42950
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_context2.html": {
+          "sha256": "bf12ad729d9143d26cf1bb27e2f2a166cc132206731b84ad31aa3ebf9351cad8",
+          "bytes": 45532
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_context3.html": {
+          "sha256": "5d25747b893f17377649d454fcdac885d88e690395063189347aa11218dd2125",
+          "bytes": 46239
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_cuda_event.html": {
+          "sha256": "44c750227e99fe4f9fd5ba58a5f0b50b559444f3bf51bec163721411992e9c11",
+          "bytes": 43562
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_cuda_event2.html": {
+          "sha256": "f98a0c4eb361b5d9b0fe256ba9752703e51ce69bd4ea78f28318968ad0bfe675",
+          "bytes": 47962
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device.html": {
+          "sha256": "585e56921029a9a753408aedd93e89d8ae00079f7d17a0a2c2f20a367f21b6ba",
+          "bytes": 61036
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device2.html": {
+          "sha256": "8a663b34c588f938aef5aac10488476ea34ef2b326d4461362c9d631ef3bd85c",
+          "bytes": 63854
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device3.html": {
+          "sha256": "413f15924356ea15966616fd1a9ef0c1ced6c979f34740ad8227c93d9dcd75aa",
+          "bytes": 64744
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device4.html": {
+          "sha256": "9a0e7f2ef1a81dd49e5dbb2d1c3779f48c62b1bbeba2a56b286ed51ed6032186",
+          "bytes": 68034
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device5.html": {
+          "sha256": "9b17b775cc653f9a82a8da9daca6a84f69d181e2d2a7229eba0497e24276d1cf",
+          "bytes": 69472
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device_attribute.html": {
+          "sha256": "e327722fb20a2711f7022fa5b6943c8f7252887899d01f261bb72a20cb1c8ae0",
+          "bytes": 44194
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_device_graph_trace.html": {
+          "sha256": "8bf80baca41b1eaf83309ec4ee0fc37c0201d12427191c5a5460361c5e07aa72",
+          "bytes": 47717
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_environment.html": {
+          "sha256": "daef4a46da22fdace8c665bda08e225c1804e166f907620d4822a511faa3dff3",
+          "bytes": 52938
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_event.html": {
+          "sha256": "939a2183a9c1190ae22cfada7882910d26cd8a33108c69c9d453ee043ed79116",
+          "bytes": 42898
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_event_instance.html": {
+          "sha256": "7abdb5f47603b151319bc4a3409eaf97ed86f543bdc1ca20e4f429e194ef5f08",
+          "bytes": 44968
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_external_correlation.html": {
+          "sha256": "64821d80463999741840a86031ebd95d2810b97d75f0694ce2e6e22ccedcd69f",
+          "bytes": 44030
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_function.html": {
+          "sha256": "a78b2554d5f01076ad41e048b3282a7fcfa0eff34ef51afd8271b9c8ccf5cff6",
+          "bytes": 44230
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_global_access.html": {
+          "sha256": "c5a18b46f9e584fdbcc7d05f4362c7ae8488e4372603c14cfebb77ff1e30a94e",
+          "bytes": 45917
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_global_access2.html": {
+          "sha256": "adb08cd7d88c3ad141975eca52be8293a664ef48c4595e40fc3aac35f6cbef63",
+          "bytes": 48502
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_global_access3.html": {
+          "sha256": "84a268ddd0984568e7d4303cfe7a1c47f400e546f35e89fe3cc42752e020a997",
+          "bytes": 47445
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_graph_trace.html": {
+          "sha256": "5f0fcde5c43325ee99dc1f18a050c8e8c04c5abd7f42ecba1f6ed4d7a8758739",
+          "bytes": 46542
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_graph_trace2.html": {
+          "sha256": "469d800a3567ba384503aad4295b38cf094f346fec8a39f8c80ff08f5311995f",
+          "bytes": 48173
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instantaneous_event.html": {
+          "sha256": "89de5a97123edadeb609fcf01a45c4abf98ba1e2d0a1c6fe5c5728d9158f9f1f",
+          "bytes": 44047
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instantaneous_event_instance.html": {
+          "sha256": "e9b247881e5e79bcfa6a6ed855d6a9ffedd7e83acd7653a56836cf470f8a3bdd",
+          "bytes": 45586
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instantaneous_metric.html": {
+          "sha256": "bcaa6b55dc022671b6d3e00412ad1d4760d714b72654253f3c1b1841b5757b70",
+          "bytes": 45510
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instantaneous_metric_instance.html": {
+          "sha256": "91fad0946706f7310cd2a7a241e55a383d306cdaf5d1b63057806284ff9f0823",
+          "bytes": 46956
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instruction_correlation.html": {
+          "sha256": "8a95378e9d5a3755949be5897fa9a24cc22f0c7d9d9b4a136f32a28818e389cd",
+          "bytes": 44173
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_instruction_execution.html": {
+          "sha256": "51ee7f663014b4c06ab5e36fb15c6697244543e16f12c25e77b8c5392156e452",
+          "bytes": 47889
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_jit.html": {
+          "sha256": "907729dc52f960d401ad71095cb25fbb51983f06e00a33596a8fa2103d46bcde",
+          "bytes": 48311
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_jit2.html": {
+          "sha256": "b56e43387d3b2d0963deba3b46998c6ad5af0a0d420a3cd4f322813f98c58898",
+          "bytes": 49658
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel.html": {
+          "sha256": "00a9342cc98ce972cc7db5e730d0219350ef151afefaaeb8b18bd039a670d413",
+          "bytes": 58470
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel2.html": {
+          "sha256": "5f8331adf9c58e899eda552f9727c0680e518746c255020d5c1c8a1aadc3aee9",
+          "bytes": 59403
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel3.html": {
+          "sha256": "53029115b743e41bfd5e637bbff98ef88c3a34c72f4f87e9776a2c7d4bd8bf79",
+          "bytes": 62135
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel4.html": {
+          "sha256": "723308957409b6a8ea3e17dbeb4c2df2123f78d573af1b9c9193cb17f0568a3f",
+          "bytes": 70718
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel5.html": {
+          "sha256": "5707680811170312a96e3b3f8fcb4d5a827141ee1b49c022cd90be4b021e0326",
+          "bytes": 73631
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel6.html": {
+          "sha256": "46e246336fd6b50f6a0cb4b6cc202da8b481dd2700fa4e725139d6fe1f02b6f0",
+          "bytes": 74558
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel7.html": {
+          "sha256": "788df7b59128fc1da5450e2b1c2bf627cf6d6f822cea098ff771edc9de0fd195",
+          "bytes": 76249
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel8.html": {
+          "sha256": "ed49808692a727db84b60050a0c0d4f01223b26c6dce114deae416eedade0f28",
+          "bytes": 80311
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_kernel9.html": {
+          "sha256": "b2f634d5a90ba08cec8cffc9c57e34c77f3ec20c58f7dc7221181b95d647d3c3",
+          "bytes": 82000
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_marker.html": {
+          "sha256": "14d4767deb6ca99a046917938a01ab65093f88c8b8acd87a5dafc29ac0947a13",
+          "bytes": 46032
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_marker2.html": {
+          "sha256": "c99181fb8aaf3ce2a58deffe9abe2985231e15f7bdfa210991c40819c7494122",
+          "bytes": 46756
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_marker_data.html": {
+          "sha256": "9aa47ccefffcee9977711b69506368b3279e23e739a782471b8fff86be2b7ae4",
+          "bytes": 44887
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy.html": {
+          "sha256": "9c84eb56f2944c8fa81efd09962a13ef3ff948ba333b4fdd0c6ffa4d4e5befe5",
+          "bytes": 52009
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy3.html": {
+          "sha256": "807a0538df7fd77bccb8eb879812fc3bfb651207f77ec53c40a5a70589d7a33b",
+          "bytes": 52998
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy4.html": {
+          "sha256": "3621f817715d435cba8df130bfb7ab50328c696fe89b349688af78c1bd334886",
+          "bytes": 54608
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy5.html": {
+          "sha256": "22b2577407dd7c33d5bad1ac39ffdc29e2aa0b03a12387084d435e1953f0738e",
+          "bytes": 56478
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy6.html": {
+          "sha256": "cc3e0516500efc842cd915c8a2e59dc2c42bdcf9b5e121eb7ec53eca92adb374",
+          "bytes": 57297
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy_pto_p.html": {
+          "sha256": "c02544f6137ee9df1a77c7658f647acba3e0ca5e95573f76a77d45237a1c9401",
+          "bytes": 54229
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy_pto_p2.html": {
+          "sha256": "74d0c6e1144d01342eb4749708f893ac524ad9d9f6331cb82f0b1661c54e6450",
+          "bytes": 54993
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy_pto_p3.html": {
+          "sha256": "e84b5f214a090b8e4c3f8d981caa0a788946bbf94f3542ab137cc0f7627e69ba",
+          "bytes": 56655
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memcpy_pto_p4.html": {
+          "sha256": "877c4cde75a4c85231016f1e50ed7ff63648e401ed336c251edb1562cfd025a6",
+          "bytes": 57581
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory.html": {
+          "sha256": "80af980adfde07814b2c540d0e5c2d948e7c84b548aa984ae36a3b66c925f26b",
+          "bytes": 50016
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory2.html": {
+          "sha256": "1709964d8ec3f9ed8fbd0e27fe59e34787cfdc6a8b564f06bb43b1cec7ec6d79",
+          "bytes": 58909
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory3.html": {
+          "sha256": "425ac748ea8b9d3e2fe1a437fb6af1f03762bf14afbd1902b24e77d4d3c97187",
+          "bytes": 60067
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory4.html": {
+          "sha256": "38118e6459108bf6d3b92f38b3572d4b502ac2149f20b5500169441f4a2d0596",
+          "bytes": 60962
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory_pool.html": {
+          "sha256": "2ee79ba377823bb0b1fce5dc1b476605c7782c40116f83bbbbe3de6259e300a4",
+          "bytes": 49963
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memory_pool2.html": {
+          "sha256": "cbc52d147fb9bf4fb6d82bea0548dda4bb00526bd80a429d477cd25b11fa8a2b",
+          "bytes": 51219
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memset.html": {
+          "sha256": "353265b6bf3eb7e717a35797ead3337f4b7ddd0bbe81655f0ba003686a571f65",
+          "bytes": 49479
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memset2.html": {
+          "sha256": "fae5bca33a62d74ac303a2c085e04ff4a1965094a287704dd85a3cc7e5869fe9",
+          "bytes": 50464
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memset3.html": {
+          "sha256": "8a1eca177bedce34a08c1e57c9ed40343c86c7f130858ac43d5852e067e218be",
+          "bytes": 52078
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_memset4.html": {
+          "sha256": "a104ba8015d7f75075201e32a520d73f6de07043479bed0cc45f1847602f40f7",
+          "bytes": 53719
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_mem_decompress.html": {
+          "sha256": "fc5fa869ffd3900a5a15e3269e534d2a47473d2b5912f943f19e9d20538d2977",
+          "bytes": 48840
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_metric.html": {
+          "sha256": "c0215cbb76c4e7a5a0202e027510d8af435a6544098d6521fed2463b2aab865b",
+          "bytes": 44142
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_metric_instance.html": {
+          "sha256": "ceaa8b1b863d6cbdb9043089c8cd53febeca4f223d5a457a67292acdbd6b9d32",
+          "bytes": 45466
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_module.html": {
+          "sha256": "63ac403985641cd3de3e9ae925a567c593d128af60b73463e61cab76140bfda8",
+          "bytes": 42632
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_name.html": {
+          "sha256": "7ebc49b9b5843235c7edd868f8397dc8b21cd70f013428b9cb5f41cc41342dfc",
+          "bytes": 42824
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_nv_link.html": {
+          "sha256": "b1311f71139163f2e3fa3c815bb235ddf4a443decdc84ef106e9a23f0d4608c4",
+          "bytes": 51608
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_nv_link2.html": {
+          "sha256": "e36bece2cf82bce99123d8da43026f9a7d531aa48e2cb4565682e5e8287ef3e4",
+          "bytes": 51751
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_nv_link3.html": {
+          "sha256": "3a8db27d50d6591919e1d0329cf8cfb80da8e7b33c639f06ebd3c81664df17fd",
+          "bytes": 53406
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_nv_link4.html": {
+          "sha256": "1b6bbd7361e8917d25181c7ce5b7a2097e14e9ab1e7ebda8f35a1cfb0918cf3f",
+          "bytes": 53144
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_open_acc.html": {
+          "sha256": "0de9ba8c724a8bee7a39c6b8e1f5a1d9dda9abc197ff234c30e8abc11e70af8c",
+          "bytes": 58202
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_open_acc_data.html": {
+          "sha256": "bf695076d516600f850fcf156e0fa753e4da9425e862e93dc31698b98b30ff2d",
+          "bytes": 50275
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_open_acc_launch.html": {
+          "sha256": "b57d423617d1418832c06a93329c69bad5fdd687eb396bddfc81c27e6e1450da",
+          "bytes": 63631
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_open_acc_other.html": {
+          "sha256": "7f5e199f7714a06b239d6f2e60daa94ef3afaac86b4799f990e61587570402aa",
+          "bytes": 60006
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_open_mp.html": {
+          "sha256": "446f881bee3aa57ec6ed8c5d671de34eb9e162a2aaa9bb1dcdbc75319df1a383",
+          "bytes": 45029
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_overhead.html": {
+          "sha256": "c28452980e984f9d78c4ef8224e304d8c3a0c621daec64d1ba3a8b3c5c8755cc",
+          "bytes": 54458
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_overhead2.html": {
+          "sha256": "549313d08f188f27cdd84df27a098f23cf0190207654e441223c0f1daaccc5c3",
+          "bytes": 46031
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_overhead3.html": {
+          "sha256": "22afa0e06630ff58eef861fd4c7ff1d096419f738d8a872ba7e52b1c153ce448",
+          "bytes": 47150
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_overhead_command_buffer_full_data.html": {
+          "sha256": "f48513cd6ae6e29a8bd2a926733ac378c4c81c55b55d5b61394ef15325ba9c55",
+          "bytes": 41549
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_pcie.html": {
+          "sha256": "0ef6034a942b261fe79b9a4f31637c3c23f53de827824b21c2a691cdbcf3dbb6",
+          "bytes": 52722
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_preemption.html": {
+          "sha256": "59d9e080908c017456eec398726aed639faa0fe56f7a77a350a16d8efdbae7d2",
+          "bytes": 45102
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_p_c_sampling.html": {
+          "sha256": "0266e586a5d4fd7785772a94f5ae67e5334f926aad22a4fba1e98c570ce865e3",
+          "bytes": 46045
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_p_c_sampling2.html": {
+          "sha256": "f0445e9ab3a1b3e9b426d812d04959b2ec330f2936ffe8180e0aed3ebfda59b7",
+          "bytes": 47146
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_p_c_sampling3.html": {
+          "sha256": "4bcceeef7636ac263201e635c02389f2a11a1fa6c2a1953164d8c9ce7439a5cd",
+          "bytes": 46876
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_p_c_sampling_config.html": {
+          "sha256": "a92913cf8efbadbbb6dd271c4a55da94114be11520f74153e3b3d9a739b84788",
+          "bytes": 42479
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_p_c_sampling_record_info.html": {
+          "sha256": "9126fd7ce8f5e437e35427054b0ed188fce7bab1cbe5e61bcbd8932988fec3e2",
+          "bytes": 43320
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_shared_access.html": {
+          "sha256": "e01a965a04e042ccd7c3f246d984a2d0a16af3caf514c6539dcf762c8ec3c4bd",
+          "bytes": 48177
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_source_locator.html": {
+          "sha256": "af06c5392f4ef8dccf28b2ca1d8afe93963f1e348450e95a2eb6e4545d2e991a",
+          "bytes": 42739
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_stream.html": {
+          "sha256": "825522c0cbf1a5f9c7216f688e907fd0b1169856723e1ae545a06381b7fceb2f",
+          "bytes": 43343
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_synchronization.html": {
+          "sha256": "a26a670ea94ad8b2b8a47d3d0232621a5baa0369bd03ab645b2a35414ebe2c6e",
+          "bytes": 46530
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_synchronization2.html": {
+          "sha256": "64524387ae38d9ada28fe060229b973e9961a1a426f2ba2a0ecf7b86dead8318",
+          "bytes": 49723
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_unified_memory_counter.html": {
+          "sha256": "48d3497e5f108829072d9640cdadb20615a57f301e456786e5341fff937014c1",
+          "bytes": 46757
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_unified_memory_counter2.html": {
+          "sha256": "8095c99f00c05834c6eb5d217029295e19ac3046c1c37d9a5d11fd11bd3a4fb1",
+          "bytes": 53520
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_unified_memory_counter3.html": {
+          "sha256": "d23305cda685c49353c36c7cf3e56db0166069df6bbd9604ee99f85694a54c2b",
+          "bytes": 55399
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___activity_unified_memory_counter_config.html": {
+          "sha256": "9c792323f6230ad674fa2a32e6fc133518a8d51e532c3ab30465ec134e12096e",
+          "bytes": 43124
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___callback_data.html": {
+          "sha256": "0d5d03ffab88bc63a9305b472e01384365fb0ad99d8d6837a8180e0312e6db02",
+          "bytes": 49853
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___event_group_set.html": {
+          "sha256": "ef8d0bd7310c98a9b949a5f2410117a191be6f25b6baff8162af9aaec8234f0b",
+          "bytes": 40787
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___event_group_sets.html": {
+          "sha256": "754c3a88cfbd31a97618a41e97be02e8320999293c537e06f27da0b86e356d60",
+          "bytes": 40853
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___get_cubin_crc_params.html": {
+          "sha256": "3dfd3c9cf5b5809fc56f86f824c40b66c79cf1a53d067c4cb5ba71cdd834af3a",
+          "bytes": 41704
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___get_sass_to_source_correlation_params.html": {
+          "sha256": "f2a0aab4340097e20e10f9691ddec43aa32404b78549397a1e895f7462d03e0e",
+          "bytes": 45898
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___graph_data.html": {
+          "sha256": "110771064ba01606401becab2af2279ad3754c20f229fe67c7ef065e82244bdc",
+          "bytes": 44667
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___module_resource_data.html": {
+          "sha256": "f3558fb48765c044e3b374da11a341c4a9de1770937f8f1acc564dbce645d1bd",
+          "bytes": 41618
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___nvtx_data.html": {
+          "sha256": "c26caf38f0b8cf4d7ba03ed33d15b3d077e7273db09dbf0c3fed83d69b5daf27",
+          "bytes": 42100
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___counter_data_image___initialize___params.html": {
+          "sha256": "3f8b1265e227b246a726a2192af884296ee77ed13c1bbb6f5f854ede17844eac",
+          "bytes": 43877
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___counter_data___get_sample_info___params.html": {
+          "sha256": "c96815aa7ea239270ef090e9a4e1e98fd43c4267fa0f083c1614a244f113ea9a",
+          "bytes": 46787
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___decode_data___params.html": {
+          "sha256": "f2822f74d9055c9f43583400e87b1d81bc9cdefced53f01138871a0a89038949",
+          "bytes": 45460
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___disable___params.html": {
+          "sha256": "5929d00465d9b9693f8376cca4d534845f815d32ec2a80ad299cae93cd2e0b21",
+          "bytes": 41270
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___enable___params.html": {
+          "sha256": "ec037cc37a403e68ba00f8ab74e5c1ce261b45c084501d055a43ceb37544c24f",
+          "bytes": 42068
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___get_counter_availability___params.html": {
+          "sha256": "129d4f87d3ffbd675a7444bde71f16fd6c3cc4e627ac8db3e180874d754f3f7a",
+          "bytes": 43641
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___get_counter_data_info___params.html": {
+          "sha256": "5442fcc6b93b1b904c7bb237b17018a804fde3252db919a55927d8eeb8dd667a",
+          "bytes": 45318
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___get_counter_data_size___params.html": {
+          "sha256": "fce563776bf4df4f9d75dd0a21af56984370f809461a8b1d516ce2438cad2541",
+          "bytes": 45454
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___set_config___params.html": {
+          "sha256": "951b9a0c229fc94ecc9573a6fab737ae8543f027b4d7b0acc9ee17a82de84a9f",
+          "bytes": 48354
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___start___params.html": {
+          "sha256": "fb76425740c63f5b14697d83b9a6185c5bded00ea0e9b5961aeafbe1f5f1a546",
+          "bytes": 41204
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___pm_sampling___stop___params.html": {
+          "sha256": "4665ec1990404edf25bb4a9ebb118453057be77bfa25795de753ae50ccdd2cb1",
+          "bytes": 41171
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___begin_pass___params.html": {
+          "sha256": "49aef6da73fceb1011bf25a5943732408473ed8b156ebbb759ac3a3ce74f624b",
+          "bytes": 40976
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___begin_session___params.html": {
+          "sha256": "b9f6fa8e3b6f0f95129797cc88e7c87f8b07100cc791964d0a479166183ac7d8",
+          "bytes": 50672
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___counter_data_image_options.html": {
+          "sha256": "c07018ddd11cfc5338bb095981b05d8bd53309b71eb893d95bcbfa98967240be",
+          "bytes": 45385
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___counter_data_image___calculate_scratch_buffer_size___params.html": {
+          "sha256": "46b7c74f1ad6f59084c1803586da328b480a05a54388c0983a3cb50bf6bca054",
+          "bytes": 44427
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___counter_data_image___calculate_size___params.html": {
+          "sha256": "72d5957bc3ba023045154c93904d90796db4587e7c0000d02a04ccfd8331740a",
+          "bytes": 44246
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___counter_data_image___initialize_scratch_buffer___params.html": {
+          "sha256": "9ec8df0d74b7ec49cc33ce06bd9e33af91b003de1c1efa22724e1e6cfa8c19e9",
+          "bytes": 45557
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___counter_data_image___initialize___params.html": {
+          "sha256": "6323363afaf580e02f68fd1d2de8bb82e58d17472e4ff6ef2e41de368e5a0502",
+          "bytes": 45133
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___device_supported___params.html": {
+          "sha256": "acdffa9cec2c0566f2b028fcfe63c2153da98333671dca18ce9221d09767f96d",
+          "bytes": 50087
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___de_initialize___params.html": {
+          "sha256": "3e667a3c344c351a079ae09e7a7b04ac11bd0a16dc0e078bacc4581001ad890e",
+          "bytes": 40323
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___disable_profiling___params.html": {
+          "sha256": "dab42be025de4000db30d99388d33869f3849f21fe466c10dfa4e680b9c291e8",
+          "bytes": 41217
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___enable_profiling___params.html": {
+          "sha256": "c4741493b56e93f30d2a6fc61aa588bb72c867a5a5219a3753a18aacf784fc6b",
+          "bytes": 41172
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___end_pass___params.html": {
+          "sha256": "82cb41fe3d16ed063cd08308ecdf471b017e212b8d831c03cbf735b1c7b147b7",
+          "bytes": 42743
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___end_session___params.html": {
+          "sha256": "8710b15035f3810052b7ea10b12c2db87cd3adbeb28aefde587198e2289205ec",
+          "bytes": 41018
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___flush_counter_data___params.html": {
+          "sha256": "b435e0b7a5aec666ace82d2321dba145a750299dc9f1d6ca998b9e045cad5edd",
+          "bytes": 43107
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___get_counter_availability___params.html": {
+          "sha256": "f27684f649a2c00d043592519c55fe69928b99303c1255b1dda18394c9798215",
+          "bytes": 44044
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___config_add_metrics___params.html": {
+          "sha256": "1c9ca61c00b255c2db2523d21aa56dead1e50a334ad31ce6d8eae2ffd25f3f3f",
+          "bytes": 43794
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___deinitialize___params.html": {
+          "sha256": "deba4180ef8a60c0e1c2222628389964b4b75d5709a6fbda532fa7a8d64111cb",
+          "bytes": 41866
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___evaluate_to_gpu_values___params.html": {
+          "sha256": "e41e7be8b56020015a0dcd982221597725547992648e3328c70f3716d524de79",
+          "bytes": 47873
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_base_metrics___params.html": {
+          "sha256": "16beb578e097949552e55d1e88d197c97e1a341d7d1102cec3cbefbad5b972ae",
+          "bytes": 44817
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_config_image_size___params.html": {
+          "sha256": "7c4e8623253fafba50447d43f1653bb27813051a39f5988bc1c9fc56e5e8653e",
+          "bytes": 42769
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_config_image___params.html": {
+          "sha256": "cd32b7683b7889d4f3650fe42dd1324da3c758f40860a2ef0204c0b23d3a40bb",
+          "bytes": 43586
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params.html": {
+          "sha256": "89346dfb96faef20b4d5971441799c1669d933ab4a0402a9a913e2be7a1541ec",
+          "bytes": 45440
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_metric_properties___params.html": {
+          "sha256": "35811b1dcb5bb52a11c6d75302b811b0ee5a7bdc12fac5ec48916e696a2455be",
+          "bytes": 47125
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_num_of_passes___params.html": {
+          "sha256": "089ee34794933240d5c2f7cebec2ef92f722d0970818ef2cfd8c63e2a652ffaa",
+          "bytes": 43270
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_range_name___params.html": {
+          "sha256": "1bdf8ccc32640a017373cbd774dec48bf6d7609826e992179634af5288a6d673",
+          "bytes": 45424
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_sub_metrics___params.html": {
+          "sha256": "59d0a88a04141604d6229b3bef602a851457cd4f37b78a0fe5dcc3f5134f4c78",
+          "bytes": 45701
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___get_supported_chips___params.html": {
+          "sha256": "6433310f415fbf35c0a8317b29d902dcd37dd2519cde71c01311a4d8086ab7bd",
+          "bytes": 42552
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___host___initialize___params.html": {
+          "sha256": "c1e2efc62cd25a08bd0f634d8de6f467f408fcd2592320704d7f77eca8560f14",
+          "bytes": 44864
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___initialize___params.html": {
+          "sha256": "2cc5bdabf3072c7ff01c00ab6ec3b760c9a019cff03ada85c26357855c7d9ab3",
+          "bytes": 40246
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___is_pass_collected___params.html": {
+          "sha256": "2414cba90a2ed54e7c7a1c160a9461cb8c304f04341635932a294a11fc82f350",
+          "bytes": 44867
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___pop_range___params.html": {
+          "sha256": "9afcb1f99e959d288ee4d5727cc142f041253d704f55e5079c79df5b66875111",
+          "bytes": 40915
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___push_range___params.html": {
+          "sha256": "b1b37445ff15c339b6aae47ec38efb5fe466638dd2f79406e71c693518a4fbbb",
+          "bytes": 42807
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___set_config___params.html": {
+          "sha256": "421c716ecce0599c9765e4a07f30128ce416aaeceb907518be5ba4452289593e",
+          "bytes": 46339
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___profiler___unset_config___params.html": {
+          "sha256": "43df9af332769ec08d493655429e044ba217177c8dd81b8248ba39e838dc944d",
+          "bytes": 41088
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_configuration_info.html": {
+          "sha256": "895f158980f8374e6ddadbe8f77b47233a53fa233c84227531b52d2ddbe2d874",
+          "bytes": 55398
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_configuration_info_params.html": {
+          "sha256": "367b39c3f5f057c84322ef616abe540d0513148b9512441030191314ddc1ac6a",
+          "bytes": 44787
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_data.html": {
+          "sha256": "509720c143266a205da6fed777e38a8b2d986cac8447ef1175419434c72c411c",
+          "bytes": 47937
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_disable_params.html": {
+          "sha256": "52ce87ddd6b47758993c2c7846e40df99e2bf57fc93da495660d1790f6f24547",
+          "bytes": 41013
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_enable_params.html": {
+          "sha256": "482f9870603ba3a7d13a4edc177646a7f5d5017e3f2606be4f402ad88e584c7c",
+          "bytes": 41004
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_get_data_params.html": {
+          "sha256": "d05d4bb9876b8d9a1055a9048ea56ba7cac0fba9bede90f51cc2516b9d40e7e4",
+          "bytes": 42341
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_get_num_stall_reasons_params.html": {
+          "sha256": "08cd6420b400ece33372d49e447126b616f59928a677ce3f7ee0c10e8b3ab597",
+          "bytes": 42348
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_get_stall_reasons_params.html": {
+          "sha256": "c02ccadb144858bb34eecee0063ec8eab9ad2ef5ba2c272dd74fdd3026ef7efb",
+          "bytes": 44064
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_p_c_data.html": {
+          "sha256": "77571d3a0a51fb0fb91a278d514679e6e7d680aac5fc10689bdf992e808a4bbb",
+          "bytes": 46201
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_stall_reason.html": {
+          "sha256": "6fe508cb8361c730c3db46035100f9498b9e0e9cd3b4aef8dd529999b95f3ecd",
+          "bytes": 40156
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_start_params.html": {
+          "sha256": "fb842148b5d26eb02b376f10e153fbd3edf03bd9f73bf83488d4243f2c923875",
+          "bytes": 40962
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___p_c_sampling_stop_params.html": {
+          "sha256": "6f5a7548e904f7753dd69a32e302488a6eb5d303e168ada41a732166f87eb9ca",
+          "bytes": 40986
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___counter_data_image___initialize___params.html": {
+          "sha256": "7564312f290a9da5fcc1ffae14e005c201648c2d6045140ff8889022926784be",
+          "bytes": 43978
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___counter_data___get_range_info___params.html": {
+          "sha256": "2650e290b31404296034b0840e4faf79ba9ad3f2dd96470fb283b2b0d8d123be",
+          "bytes": 45777
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___decode_data___params.html": {
+          "sha256": "64b1eaa836266be5406967d41f1d0f42e5cafd2079756c29a584bf57cf50a393",
+          "bytes": 42466
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___disable___params.html": {
+          "sha256": "99d278c7422054838f5ba993aacf8dbb53848ff042ce32a25fbf89eb5dc43e52",
+          "bytes": 41432
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___enable___params.html": {
+          "sha256": "e18d6514e9634c9602e98ea32a6832e4f9f6549e5c37114aee6c89c36c39bbb7",
+          "bytes": 42231
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___get_counter_data_info___params.html": {
+          "sha256": "0a72bb593ee617b91faffe2b51d12aa5dc5a607c7fd94fb73d85b7fceedf8c6e",
+          "bytes": 43487
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___get_counter_data_size___params.html": {
+          "sha256": "d3563d1eb792e407592612748989bd4bc88c5678b3d530a4db4dddc97a7b0f84",
+          "bytes": 46631
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___pop_range___params.html": {
+          "sha256": "f5d020a8511157b4827a72e8c14ab60723953335a6f38d4d34e5aafa9bb7b2df",
+          "bytes": 41484
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___push_range___params.html": {
+          "sha256": "fc15f7b3829cc6030ab6f35e1ee6f50252f18b53f6b63136c8c4661aacdb0339",
+          "bytes": 42504
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___set_config___params.html": {
+          "sha256": "e7703ef7fa04447c574455329d465edbf1f3550c1b6d683d4d4fc45cfb8025bd",
+          "bytes": 51680
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___start___params.html": {
+          "sha256": "8e4d03d95c5a12506269f8fa5a40d57bb1494c80c4ba5f0aa49cbc8a75d14159",
+          "bytes": 41372
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___range_profiler___stop___params.html": {
+          "sha256": "b94009ffd132706d856e0f4d71ac131cf6cc6f8ef0737e122ed821940c6d8853",
+          "bytes": 43936
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___resource_data.html": {
+          "sha256": "db9df18e3d093e9d02b6d949b92ec5305b6e743e586fff80ae17f2584548497b",
+          "bytes": 41821
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_disable___params.html": {
+          "sha256": "e378e4fdcf8baf2e8c507f469bbce5bab673aecf6e43136fd1235f201d149cfb",
+          "bytes": 42080
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_enable___params.html": {
+          "sha256": "99b30bc8a8b9c39bd9e38503bf94ef5833923cd8f8dcbfce68e962f78a5422bb",
+          "bytes": 42371
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_flush_data___params.html": {
+          "sha256": "20557106bfa63ec8f0c1b46aec8061c2e6314514adcd94920dbffe700aea0030",
+          "bytes": 44728
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_get_data_properties___params.html": {
+          "sha256": "03790e82b696fdc0536352fba821e27bb8b7ae7359f4390414e72ddc847a2e91",
+          "bytes": 43447
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_set_config___params.html": {
+          "sha256": "1ab530b25cd6cdefb2a0240d9902c1ff74563aa6cd6aab607d1e9f7a3d635417",
+          "bytes": 43206
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics_unset_config___params.html": {
+          "sha256": "f2dadde929e0e2749fd861dd8f7166e0eeb08ee830d3e534f416f26d0ff83b83",
+          "bytes": 41297
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___config.html": {
+          "sha256": "6b494b68a03d1a7c4634dec7da7810c05a4eca385ea5817ba6dd1fba9a401e93",
+          "bytes": 40269
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___data.html": {
+          "sha256": "727b7fc57ac413877cbab1bfac04fee1f49aeb746ca888f9f0cadf21018cadba",
+          "bytes": 44272
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___get_metrics___params.html": {
+          "sha256": "4d027debf78ee0a397cf43b6a310098e5abb5aab5eb28041b688a9804046a254",
+          "bytes": 43572
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___get_num_of_metrics___params.html": {
+          "sha256": "b68bd1619ab705ae17c9a8c3e64270dd7d7e2f4becd44c37a51740d220a4fcce",
+          "bytes": 42369
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___get_properties___params.html": {
+          "sha256": "30c10fda7b4635ee87e99e7a0c7821ca42c5e7e0fde71e67b614a1b821908efe",
+          "bytes": 43443
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___instance_value.html": {
+          "sha256": "d53acb1f749f802d81139ad2943545a0c4d9d2e28d70f7e327cf7e45806e3d9c",
+          "bytes": 38331
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___sass_metrics___metric_details.html": {
+          "sha256": "d80761bab70a7c4c3715822902bf149afb2f92d3fe53de0573f44be5a44ac62f",
+          "bytes": 41158
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___state_data.html": {
+          "sha256": "dd48521f4ef079d60151ef2b308561a43cebee7e57a6717fe1f59f1662ec9159",
+          "bytes": 42004
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___stream_attr_data.html": {
+          "sha256": "c8ab17da3bcb46d5dfc271773becbf7b44f825ea5b029c38fcd58b99ced16baa",
+          "bytes": 41599
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_upti___synchronize_data.html": {
+          "sha256": "c300f5a7bbcce260b6562f56d5ab3fd75eb54956d6ddbfdbf1b4d9647425651a",
+          "bytes": 40651
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info.html": {
+          "sha256": "81f0cc571b62c7464eb85bcca39620c3fc29cc9cf38d296f44962484f60feee6",
+          "bytes": 13988
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_buffer_info_params.html": {
+          "sha256": "cd4645e80aa62f52073f43e62cd583ced6c426c2cc3f9878f0b2549f7c713ea4",
+          "bytes": 14105
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_header_data_params.html": {
+          "sha256": "04f321200b4ece8aef51268da1be283bd433f90a6cae65da22ec8e6c30006217",
+          "bytes": 14281
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_pc_samp_data_params.html": {
+          "sha256": "3cde84fd2760f6ddd6317ed0a456812b8909dbea5c9fcb84ccefe5bc278583d2",
+          "bytes": 21080
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params.html": {
+          "sha256": "9de4a99bba9e14a1b82dcc609e26fcba114745640383a994e55a22c4c2396074",
+          "bytes": 16513
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___put_pc_samp_data_params.html": {
+          "sha256": "4c5754d6056af74c17d95cec7dc9c7d13d78fdd1d388a7717c00b7419d5a8668",
+          "bytes": 19259
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_header.html": {
+          "sha256": "3353b5fb02e0c4f17a627fb7d5e96aaf1ace7f62c48c62003fad7594d8b844ae",
+          "bytes": 12029
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_pc_sampling_stall_reasons.html": {
+          "sha256": "b69a01c2c6b69bc20852bc3766b31472ff154594c5ce03eb0a0959ff7c2d6565",
+          "bytes": 13347
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html": {
+          "sha256": "e0495822642a02df8131ef8d3d03a36639182e8cdbbebed598d4847825db41cf",
+          "bytes": 16491
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\union_c_upti___activity_object_kind_id.html": {
+          "sha256": "f3ed643da0a9cda4975f77b1a09a6933e5f0b7df7cc899cd97fe686e050be350",
+          "bytes": 44875
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\api\\union_c_upti___metric_value.html": {
+          "sha256": "72f64b47c437b030ad29c67191c21f2925f5ffea9c2a420fc2895dad715da9da",
+          "bytes": 43700
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\copyright-and-licenses\\index.html": {
+          "sha256": "bd968a1f482a4cbc50d41f82ed4e928a587f2cb693ae4da2b2db96edf68f2d3d",
+          "bytes": 82496
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\library-support\\library-support.html": {
+          "sha256": "016cb89225678d993a990230fc77117f258a558c4a4d63f601457dfd1bd3a578",
+          "bytes": 8731
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\main\\main.html": {
+          "sha256": "9d0db8d75a40e77e5a950076233f7ce51ccdf9546eea4b88f2a3c2b3daecd453",
+          "bytes": 495956
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\notices-header\\notices-header.html": {
+          "sha256": "d5909513fc3542c8b0ffb2628976820814deafeef8a4830813f165e6b0a5c346",
+          "bytes": 8285
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\overview\\overview.html": {
+          "sha256": "fe9bd6c38186870db0f259df2008674dbb234aae5f910c48de5e61f2ca703f02",
+          "bytes": 12893
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\release-notes\\release-notes.html": {
+          "sha256": "b382f40e9b4355ef603bca1e171b1620d01ddc73071235a7d2790a6e356a8575",
+          "bytes": 156854
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\special-configurations\\special-configurations.html": {
+          "sha256": "368882478686257327df6c3820c1e03cae3f277d5df24dbb07485f2fec04b553",
+          "bytes": 13064
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_images\\config-image.png": {
+          "sha256": "a266a0506200a9bce87fc980be8863cbd7916b43319e22171724ab5b46cc345b",
+          "bytes": 31322
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_images\\counter-data-image.png": {
+          "sha256": "fa0b8d71ead5d0102b092bc79da30d56324e16bc06f5e8c52cd46cb9eec07219",
+          "bytes": 62412
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_images\\metrics-tree.png": {
+          "sha256": "ed6deb3c906d364644aeed77c9aab8311ad5d68ddc9fce93577d087e2fcba1fd",
+          "bytes": 24037
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_images\\nested-ranges.png": {
+          "sha256": "1b495795f5cc31ba4092104eaaee9a52025a19ac66d1ef4e590c0d7fd872c5f3",
+          "bytes": 46184
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_sphinx_design_static\\design-style.b7bb847fb20b106c3d81b95245e65545.min.css": {
+          "sha256": "4e50c43af8d63b9dd7641dc84184ce1a2b3f5ce33ee183e2f476d083d2273a70",
+          "bytes": 48387
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_sphinx_design_static\\design-tabs.js": {
+          "sha256": "b01cea2ce60dc68a45a610960b064b46a3410ef4bd0bb851e8cad1f67327850c",
+          "bytes": 797
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\api-styles-dark.css": {
+          "sha256": "4d2ed071f82a1455ab42bd3bc300f148b5fd22b53679872d456c5346f1b34dbf",
+          "bytes": 1489
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\api-styles.css": {
+          "sha256": "b6c3df024d50e5d67a467c9ea67f46577f61ad8cb9be6d8acdc0a6fb62fc836f",
+          "bytes": 2520
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\basic.css": {
+          "sha256": "b008f9f53f8600dd7c85e8d19645681c6596d54e286a6ff255632016de4fe317",
+          "bytes": 15597
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\design-style.b7bb847fb20b106c3d81b95245e65545.min.css": {
+          "sha256": "4e50c43af8d63b9dd7641dc84184ce1a2b3f5ce33ee183e2f476d083d2273a70",
+          "bytes": 48387
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\design-tabs.js": {
+          "sha256": "b01cea2ce60dc68a45a610960b064b46a3410ef4bd0bb851e8cad1f67327850c",
+          "bytes": 797
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\doctools.js": {
+          "sha256": "b5cad4208b5895e6182a3d6ba2a28c38ba4c3ed7ddff4635839aa430eee59614",
+          "bytes": 10766
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\documentation_options.js": {
+          "sha256": "46d0ea088581507349a337659ad6b01ffdbdc332f1974a089b1fea5d222ca943",
+          "bytes": 435
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\favicon.ico": {
+          "sha256": "bedcb14e0470ff8abe26405a630e9604ac4fa581b385a7cfb00420c22f541b6e",
+          "bytes": 25214
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\file.png": {
+          "sha256": "5c4bc9a16aebf38c4b950f59b8e501ca36495328cb9eb622218bce9064a35e3e",
+          "bytes": 286
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\jquery-3.5.1.js": {
+          "sha256": "416a3b2c3bf16d64f6b5b6d0f7b079df2267614dd6847fc2f3271b4409233c37",
+          "bytes": 287630
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\jquery.js": {
+          "sha256": "f7f6a5894f1d19ddad6fa392b2ece2c5e578cbf7da4ea805b6885eb6985b6e3d",
+          "bytes": 89476
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\language_data.js": {
+          "sha256": "7aa27b3410d57dcbc7b0e600fb4a497e536627c207f630b09801e172e29deaac",
+          "bytes": 339
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\Logo_and_CUDA.png": {
+          "sha256": "6e9f6a6532d666e24e3a6eb33611991618f4920e45e3a1f18cf5f02cbfb9a308",
+          "bytes": 128602
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\lunr.min.js": {
+          "sha256": "43640071a5d5c092a876f893fa53833ae295bcb6616b6d9c3866bdb865178131",
+          "bytes": 29516
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\lunr_search.js": {
+          "sha256": "c2aea957172fc69212ceabfe3114b9f804d91e1179802d06fb944148c2d6cf30",
+          "bytes": 6606
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\main_ov_logo_rect.png": {
+          "sha256": "b15c15d30ac536c3fc4401c8d10abb699dc5b421d68ef6b394dfb4c617933dda",
+          "bytes": 57423
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\main_ov_logo_square.png": {
+          "sha256": "06b7ba35792a640bf5725c179b84750d5ab670a88ccc94a8b4360997c08c19b8",
+          "bytes": 195331
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\mermaid-init.js": {
+          "sha256": "278bd7f2126b6c73bf8f41cc5e78272934e558e9303089f5cff29d654e2554b6",
+          "bytes": 1326
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\minus.png": {
+          "sha256": "47e7fc50db3699f1ca41ce9a2ffa202c00c5d1d5180c55f62ba859b1bd6cc008",
+          "bytes": 90
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\NVIDIA-LogoBlack.svg": {
+          "sha256": "2b3902d0845adc134d656d464864abd3802a3e09bace5fc70a3c146894648c2a",
+          "bytes": 2494
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\NVIDIA-LogoWhite.svg": {
+          "sha256": "c4e96de70c9f79001312b0366965f0ca9384a542cdc8e095d16bc9e540a8e57d",
+          "bytes": 3780
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\omni-style-dark.css": {
+          "sha256": "e4b8da3e21e73fa5304e35bec66d6c6b126f8724d5d3611a036e9a157159eed1",
+          "bytes": 14107
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\omni-style.css": {
+          "sha256": "978b64e740af59798392b4ae66efdf25d3fb2c751df62a168dcdf1679175fbf9",
+          "bytes": 53494
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\plus.png": {
+          "sha256": "54115199b96a130cba02147c47c0deb43dcc9b9f08b5162bba8642b34980ac63",
+          "bytes": 90
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\pygments.css": {
+          "sha256": "b4ce0a3c690b00b06accc101a1afaa38c867bd444c7d3905979874dbb66d069f",
+          "bytes": 4892
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\searchtools.js": {
+          "sha256": "d6b5ee21edd7b46c029c5111326719dcec5c5f52368704a93b2d6485cb22414c",
+          "bytes": 16634
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\social-media.js": {
+          "sha256": "3ace3ec53ebde17036ee0879b1111264e0aba6e2315ecde76d2d4ffd9ba3ded5",
+          "bytes": 2681
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\theme-setter.js": {
+          "sha256": "b60c8d1a768192cb7088ee7f5f14a785ffabd4d1d6b2bab9ce8531a96bbed1b5",
+          "bytes": 1763
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\theme-switcher-general.css": {
+          "sha256": "5229f831e2d87761e735212bbe699ef9356477eb4b4012c4cbbf13f527071d9b",
+          "bytes": 927
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\twemoji.css": {
+          "sha256": "79f024cf4b763993639a7db8d2951b43e6a61619a50bc4fa92e3d3e20ccf8363",
+          "bytes": 103
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\twemoji.js": {
+          "sha256": "4c98db8e2416f696e9805f90294c56fae45c71f1cae843c25d69c28087ad691b",
+          "bytes": 332
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\underscore-1.13.1.js": {
+          "sha256": "cc10f799cd0f6b65f95c4012445497e5ba3cb9f51964a9468940b27bde98b487",
+          "bytes": 68420
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\underscore.js": {
+          "sha256": "218fb1c1fc72e9af6b866f430be2a67fa376392b4db2f4dbf32772671b6ae55c",
+          "bytes": 19530
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\version.js": {
+          "sha256": "6144e92b94ec60214a75aa94d7bbbb30e31223aa289f6bbc22c5e64975d8876a",
+          "bytes": 7617
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\badge_only.css": {
+          "sha256": "c4050fa47d8bb6297c79811f663e6cfa32cb6b783b47eaeddd6ba50d5cf1a666",
+          "bytes": 3275
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\theme.css": {
+          "sha256": "af78284d3c7a8ab0917208ddc2a71854d4b552802104a7146f8705dca8dd88d1",
+          "bytes": 129674
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\js\\badge_only.js": {
+          "sha256": "f0a4808d04c4d55378751ac096a8376b64b1a704c82584b0ee590212cf413013",
+          "bytes": 934
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\js\\html5shiv-printshiv.min.js": {
+          "sha256": "b42a7e949a6e21d66b30fbbb4a22deafd9e0ccabc04f0fa2907fc6252fdf165f",
+          "bytes": 4370
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\js\\html5shiv.min.js": {
+          "sha256": "f6e0283561ddb33b140e14977ffad57163aa28f7e2e7ff15e51e1475b6657b60",
+          "bytes": 2734
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\js\\theme.js": {
+          "sha256": "536ad2d746e944c5570cc15badaeccc3c0582a1b66e45511fe4edce32b6da510",
+          "bytes": 5023
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\fontawesome-webfont.eot": {
+          "sha256": "7bfcab6db99d5cfbf1705ca0536ddc78585432cc5fa41bbd7ad0f009033b2979",
+          "bytes": 165742
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\fontawesome-webfont.svg": {
+          "sha256": "ad6157926c1622ba4e1d03d478f1541368524bfc46f51e42fe0d945f7ef323e4",
+          "bytes": 444379
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\fontawesome-webfont.ttf": {
+          "sha256": "aa58f33f239a0fb02f5c7a6c45c043d7a9ac9a093335806694ecd6d4edc0d6a8",
+          "bytes": 165548
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\fontawesome-webfont.woff": {
+          "sha256": "ba0c59deb5450f5cb41b3f93609ee2d0d995415877ddfa223e8a8a7533474f07",
+          "bytes": 98024
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\fontawesome-webfont.woff2": {
+          "sha256": "2adefcbc041e7d18fcf2d417879dc5a09997aa64d675b7a3c4b6ce33da13f3fe",
+          "bytes": 77160
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-bold-italic.woff": {
+          "sha256": "980c8592e5488df256192c999e92db8fd302db8cd8909b7fa266a684e37e45f8",
+          "bytes": 323344
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-bold-italic.woff2": {
+          "sha256": "c0916a33340d063f7b05679e08031e729d1888444706f04804705da5966d895d",
+          "bytes": 193308
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-bold.woff": {
+          "sha256": "0e56b17d142eb366c8007031d14e34da48c70b4a9d9a0ca492e696a7bae45e1e",
+          "bytes": 309728
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-bold.woff2": {
+          "sha256": "ae88fc0d7a961832f809527d30bd3983a6866d42f66a56ade23f543681594db6",
+          "bytes": 184912
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-normal-italic.woff": {
+          "sha256": "26318a1467a5e5caf10b04cfa942d079632560cd7a29cec565fd1dc9f7ec5081",
+          "bytes": 328412
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-normal-italic.woff2": {
+          "sha256": "4465765f2f6eddcdad34ffd7cab559e56bc0e75e45e192f85e9562b0771481dc",
+          "bytes": 195704
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-normal.woff": {
+          "sha256": "5b9025dda4d7688e3311b0c17eddc501133b807def33effaef6593843cf5416e",
+          "bytes": 309192
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\lato-normal.woff2": {
+          "sha256": "983b0caf336e8542214fc17019a4fc5e0360864b92806ca14d55c1fc1c2c5a0f",
+          "bytes": 182708
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\Roboto-Slab-Bold.woff": {
+          "sha256": "9fec87cadbe2413b255f1ec577573a83f1ca2e1c37aa023dbebcd3a7b864636a",
+          "bytes": 87624
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\Roboto-Slab-Bold.woff2": {
+          "sha256": "1a0c024dd1a267c52d5575469ffe8570d1e84164de7d393cf3414bafd17d7a0c",
+          "bytes": 67312
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\Roboto-Slab-Regular.woff": {
+          "sha256": "9f32630e2c0c5135bf1e86e36cb65b3932e4410644235bc2bd995e9c7f6ff117",
+          "bytes": 86288
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\doc\\html\\_static\\css\\fonts\\Roboto-Slab-Regular.woff2": {
+          "sha256": "874e42222856d7af03b3f438d21d923a4280d47fe67c48510e2174a1579795ef",
+          "bytes": 66444
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\activity_trace_async\\activity_trace_async.cu": {
+          "sha256": "e1acb3316237f06fee51dfb8b6474f3970e8dcd4c5bef64ccabb6dbe886c3c81",
+          "bytes": 7382
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\activity_trace_async\\Makefile": {
+          "sha256": "dc442432d4a8f238feecafaf183e6c91758f2562ca58b4b2774e62f67d0f451c",
+          "bytes": 3224
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\autorange_profiling\\auto_range_profiling.cu": {
+          "sha256": "cfce11d1e3dda6ed240174d54d4902c4dda7d3a722f27a642b94401f24cf872a",
+          "bytes": 17921
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\autorange_profiling\\Makefile": {
+          "sha256": "ac89a1f8ac82e23906f87b1b00eb2eddc9fa4d649cbdeae2c24350aa6c5b03a2",
+          "bytes": 3971
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_event\\callback_event.cu": {
+          "sha256": "8b685caca887e7010cf08588cd7c816b0e9f79b3cdf4e31fb07146d04e64b960",
+          "bytes": 9091
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_event\\Makefile": {
+          "sha256": "b4dd17d73b61384c71d90375653278eee993e269fd43429c1ba85cf120621588",
+          "bytes": 3173
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_metric\\callback_metric.cu": {
+          "sha256": "20121ef117ed287df6d16d668d9d634c1138e6d78c1e03ac8ea2c2d02b752f09",
+          "bytes": 16500
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_metric\\Makefile": {
+          "sha256": "4336f290601f6360b2458fad6028599ccfe6e16e53d8745bd91ed789093cc63b",
+          "bytes": 3181
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_profiling\\callback_profiling.cu": {
+          "sha256": "2073551d3dea758a1d0d96438e3254bfee8afb4311a5604abcac2d8fdedac69a",
+          "bytes": 20495
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_profiling\\Makefile": {
+          "sha256": "33bb9487e958edb4b81c4170e4b3688a98d3e3af17a256e42667271186b87ec0",
+          "bytes": 3947
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_timestamp\\callback_timestamp.cu": {
+          "sha256": "985a67735324e1eae011df16b3653bfd1255923c5aaf387620677d049caffd0f",
+          "bytes": 11192
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\callback_timestamp\\Makefile": {
+          "sha256": "62869041c965266ce6ca321452ebea59e171635f71d5b1bad38182eadc3234f1",
+          "bytes": 3236
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\checkpoint_kernels\\checkpoint_kernels.cu": {
+          "sha256": "f29c4537031b35b05f43b64888f2f8bfdfa2257ef712d4f191b1c288e8cd3ba3",
+          "bytes": 5114
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\checkpoint_kernels\\Makefile": {
+          "sha256": "e2e8bbd6afca0fd04f62eeef3be3c292733da38da73abecad56af91a0d32590d",
+          "bytes": 3401
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\common\\helper_cupti.h": {
+          "sha256": "f5afa7296c8d86ebfb234b9e86b1ca2c327eb69a8fb5fe12955a8312f4eb5324",
+          "bytes": 11145
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\common\\helper_cupti_activity.h": {
+          "sha256": "52c91d21117932deb8a1feac15530d6cc3965357331f3da17760ac1f8eca3a54",
+          "bytes": 109558
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\concurrent_profiling\\concurrent_profiling.cu": {
+          "sha256": "4fdce31387a6feb15091265118eb44b1843b7a764b53b69aad38cd153e484436",
+          "bytes": 33184
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\concurrent_profiling\\Makefile": {
+          "sha256": "4bb434f08166844a8a257db5ae66df5638df07cf23f77f4c35064d07ab1ef4e1",
+          "bytes": 3964
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cuda_graphs_trace\\cuda_graphs_trace.cu": {
+          "sha256": "06d5d415858a411a4893db7ba7fe545df5dd9d9df9e57f8b32d9278dfd05fbe7",
+          "bytes": 10748
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cuda_graphs_trace\\Makefile": {
+          "sha256": "754ca998a9d3bb840548216284e7fad2b5c2815dceffa6e23603803794281cd5",
+          "bytes": 3205
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cuda_memory_trace\\Makefile": {
+          "sha256": "f2bb43208e3307c04581d892e95e270f09ee3a604a66db3f24e74ee7961c0cc9",
+          "bytes": 3178
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cuda_memory_trace\\memory_trace.cu": {
+          "sha256": "a654d9ac9b928196eade3c5b98ca68fdc06af5b61560c5a1df2bfc1dbed03e18",
+          "bytes": 5367
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_correlation\\cupti_correlation.cu": {
+          "sha256": "c7384b72135e5ec390178d9585c70ceaacf6721f9e7d3ff203786a5e21d8f797",
+          "bytes": 11007
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_correlation\\Makefile": {
+          "sha256": "ad37764a3356ab7be9c34b02abca4193e253dcc7e44962b61c010405db272dc6",
+          "bytes": 3204
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_external_correlation\\cupti_external_correlation.cu": {
+          "sha256": "9abb40e6af49cf40fd66a15ffab5b5631b6acca2f6bcf28d03ab0a111e0c11e0",
+          "bytes": 8710
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_external_correlation\\Makefile": {
+          "sha256": "14d876ed853dcd209b78b717bb06c128d33d1e29b480613399f90c2ed0263134",
+          "bytes": 3267
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_metric_properties\\cupti_metric_properties.cpp": {
+          "sha256": "512997115ea55f6bf999475b9b0bfdfc90dedc4415d09f35905fa611d7e68fb5",
+          "bytes": 32214
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_metric_properties\\Makefile": {
+          "sha256": "4bb790a8556d913fd0b70b1437229446fb481d44d4acc98bc5b4307c312e3233",
+          "bytes": 4000
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_nvtx\\cupti_nvtx.cu": {
+          "sha256": "24b4604596ce58f1414c214b9b017d4d489924c2f45b2fc7d5355a9389eb6760",
+          "bytes": 9387
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_nvtx\\Makefile": {
+          "sha256": "47108b86f62c30d0f01c85b849a96eac68fd4df8741fd73b0cf5d76cd483317f",
+          "bytes": 3349
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_query\\cupti_query.cpp": {
+          "sha256": "ebdcfbd9729a5ac72d18607146e371b119af5b7858f42659b5565f5e6f48143d",
+          "bytes": 16120
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_query\\Makefile": {
+          "sha256": "5f3a32e00402674c9dc76aa3a7d426957169650e54a9fda7e43caba6cf34e960",
+          "bytes": 2925
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_trace_injection\\cupti_trace_injection.cpp": {
+          "sha256": "c8ebfad0bd203dbd9ae7a521f042b3b05a74082bbe971b046f0585837b492f65",
+          "bytes": 14328
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_trace_injection\\Makefile": {
+          "sha256": "31446744bf5ab0cde8de821f8bae49a8f80f966a7e173e4d918ec0e2dd7ff8b0",
+          "bytes": 2227
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\cupti_trace_injection\\README.txt": {
+          "sha256": "51bfbebc0af45fb1db00977c0ac8904974529a6612354fa157e5bb09123e656c",
+          "bytes": 1672
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\event_multi_gpu\\event_multi_gpu.cu": {
+          "sha256": "8570dcf01ef5d1aafb22bc9ad1e7fd229d4b2683ecc9ac88531e6db2850c337d",
+          "bytes": 5299
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\event_multi_gpu\\Makefile": {
+          "sha256": "9a38494ec62e10790919de0fc5663a4281c695f4d477fb2808d06db41f728452",
+          "bytes": 2958
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\event_sampling\\event_sampling.cu": {
+          "sha256": "4b472a2f775a467f18aba86ec295a06458b98cec08c4d74855e7a29cba0a84f3",
+          "bytes": 9439
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\event_sampling\\Makefile": {
+          "sha256": "f2bd2579a3aeb50ee96ccbdebda77c484382939e75b264bc1bda91bff759c8c2",
+          "bytes": 3172
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\nested_range_profiling\\Makefile": {
+          "sha256": "0c53ce281b6a8983383e930a692aac249cafd195acc3f22b33ab94771ee55c02",
+          "bytes": 3988
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\nested_range_profiling\\nested_range_profiling.cu": {
+          "sha256": "c369b2e5337092c04a449a51d8b1d1bd012ce3f8cbc76267310b5506b8c7279b",
+          "bytes": 20020
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\nvlink_bandwidth\\Makefile": {
+          "sha256": "74ace9cfcb41d411997574db6e12a99ec733d4cabe0d7b148cdc690831d6df53",
+          "bytes": 3186
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\nvlink_bandwidth\\nvlink_bandwidth.cu": {
+          "sha256": "1adec9669c2cbd2cb2923c590fa958889108fcd98bdf4b8345bdfdc39c5c76d3",
+          "bytes": 17318
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling\\Makefile": {
+          "sha256": "ef814ab68368f520be9574bcfd39b5dd110b4d258a6227d3d6f6d9b0a8b926a0",
+          "bytes": 2370
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling\\pc_sampling.cu": {
+          "sha256": "2244abf5f1d1241a880e75596834e54449533549c1c661c1db09e29429380070",
+          "bytes": 4864
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_continuous\\libpc_sampling_continuous.pl": {
+          "sha256": "e4e5c4865e35435fc507df35aaad249cd2d67c4d60ce20310031ffb81449a5ed",
+          "bytes": 9200
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_continuous\\Makefile": {
+          "sha256": "3f958eb2c95b55a377f5aa1a796952d36989b465ba4b0feeca9838efec0bb3cd",
+          "bytes": 2216
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_continuous\\pc_sampling_continuous.cpp": {
+          "sha256": "3b481ce241debb904aafd9505e2493cfe9ec5813a4dde7154f08c0bd466b8e33",
+          "bytes": 46152
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_continuous\\README.txt": {
+          "sha256": "6a8a3422ab3929ef6eec59b5d99776b3dc11b63875fab4974535823d059e5d43",
+          "bytes": 1566
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_start_stop\\Makefile": {
+          "sha256": "75731f43cc433e05b31b91f78567c36c3a76e6901a25ade250489d7511fece37",
+          "bytes": 2444
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_start_stop\\pc_sampling_start_stop.cu": {
+          "sha256": "86802d1d5e2185c3b5370033a24625bec05ac9065f6bcddea3f245eff380b334",
+          "bytes": 17835
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_utility\\Makefile": {
+          "sha256": "55da7daefce199ebfba09a4274aa1a249116873afb40f41b9ff56caa933dbcca",
+          "bytes": 2087
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_utility\\pc_sampling_utility.cpp": {
+          "sha256": "5c1b34d26cd4f98ca1228a2dfaf9c169a2ec5ca7975b85ae139288c5f38d027f",
+          "bytes": 1228
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_utility\\pc_sampling_utility_helper.h": {
+          "sha256": "4b542536d93cd01f114ffe44f72405f76a74e21c26a9020f35d726e8509b8ee2",
+          "bytes": 27135
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pc_sampling_utility\\README.txt": {
+          "sha256": "aca22ce313f3abcb84f676ae0afe088ddb12f01a9f88f38f4b2f637c1dbed5ca",
+          "bytes": 992
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pm_sampling\\Makefile": {
+          "sha256": "66b1af0cab30eda2e95f504dc95e9c29fd9a42a0da37cf8ceda5524dd64f5320",
+          "bytes": 2477
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pm_sampling\\pm_sampling.cu": {
+          "sha256": "0677b85e09bd81b727547266847c28401890b602cc2625d03fcb30916fd9a044",
+          "bytes": 17512
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\pm_sampling\\pm_sampling.h": {
+          "sha256": "14a3f7891e3d01d4e87956e7960ade886afceed590f253a238b20f1ff24c863a",
+          "bytes": 17402
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\range_profiling\\Makefile": {
+          "sha256": "774939edab0e11c97f4a1737613670ce35374c55e547df0f68a59435c2e71c3f",
+          "bytes": 2515
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\range_profiling\\range_profiling.cu": {
+          "sha256": "4799ff196a69ccaf7d1fb7433258cff581302ca28470708241d75e510ec53b88",
+          "bytes": 13083
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\range_profiling\\range_profiling.h": {
+          "sha256": "b4882e1fe3933933c41f3da62c6faf0cbc9e74afd6529bfa58626053d95ac0ec",
+          "bytes": 16691
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\sass_metrics\\Makefile": {
+          "sha256": "97320b5b54fe507386b202e4a48ac9ef4844695f8e21134d672a4204d7f3af64",
+          "bytes": 3529
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\sass_metrics\\sass_metrics.cu": {
+          "sha256": "6a57856571e06d118a4cbe3182bab39bef53bd37542678fbd9de44ee7a1611da",
+          "bytes": 20887
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\sass_source_map\\Makefile": {
+          "sha256": "a40c7e0e2f3bdaeb67f07f97c9653184b886cdd33cc4e5ec5207ff1772ab40b4",
+          "bytes": 3168
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\sass_source_map\\sass_source_map.cu": {
+          "sha256": "4fff611da3ae8e1e9d886dcd1d79229c8a752b8403a6e0b46a03ecb52854940e",
+          "bytes": 6152
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\unified_memory\\Makefile": {
+          "sha256": "5d8db05680033b221abe6ded63d43d7c2ff3a543b7baeda9e0923087b0af0d59",
+          "bytes": 3295
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\unified_memory\\unified_memory.cu": {
+          "sha256": "fbbbbd521b67f5ad534a02e50e5211910d6fe99e3990461a9d364c019931d4e4",
+          "bytes": 4345
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\userrange_profiling\\Makefile": {
+          "sha256": "b0e204936ad8727e11829f9584ced6c98ac9a6e44e8be4eeeeda6bee6bc600a3",
+          "bytes": 3969
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\userrange_profiling\\user_range_profiling.cu": {
+          "sha256": "22f2218e9646bb481a3a2538da8604b6bbb694f6f52e4f504c04f4596863f0c7",
+          "bytes": 17805
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\c_util\\FileOp.h": {
+          "sha256": "476878cfb5cd7914cc5df14187d70e11851facfed224bcbd6baf050a73e37a33",
+          "bytes": 1237
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\c_util\\ScopeExit.h": {
+          "sha256": "fa8225ef9c179a5748c2eacdb39a85a149c634aa1fe69dcf9ba08161f2d77975",
+          "bytes": 504
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\profilerhost_util\\Eval.h": {
+          "sha256": "489c62592b81bebaa9bd6a24178da3cbf6ee5644fc7da0127813d31c62e6bca1",
+          "bytes": 2164
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\profilerhost_util\\List.h": {
+          "sha256": "9c85e9b3ebbe658cd71f262b0fc35ae6a378685ae297142694dd67970318105e",
+          "bytes": 1684
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\profilerhost_util\\Metric.h": {
+          "sha256": "c6a126317ef46e5c60a6b6bf008fcd57cf654cb3e61fe86b1c6f1492a193a521",
+          "bytes": 1884
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\profilerhost_util\\Parser.h": {
+          "sha256": "475388560277a08dedb6b9cf70b5a91e69e49cbff3a560cbfe9fc925538b0923",
+          "bytes": 1957
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\include\\profilerhost_util\\Utils.h": {
+          "sha256": "fc134329860310fb70c6eefc84fcca83553e1e7384181b37db45b0954ca8ea8f",
+          "bytes": 4604
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\src\\profilerhost_util\\Eval.cpp": {
+          "sha256": "15b469bbc19fb55a8da3db66749bc6d5803df73cc5b2608c953a91e7c6924ae8",
+          "bytes": 15510
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\src\\profilerhost_util\\List.cpp": {
+          "sha256": "fd81c7cbc4b5f25089b5678c6dbc884a8abe70c9be80074d349de65f9dd68ab8",
+          "bytes": 9847
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\src\\profilerhost_util\\Makefile": {
+          "sha256": "964279e14be35158590d0c2e71916f37585183d3e2b3c5b1adf22d79e462e7e2",
+          "bytes": 3415
+        },
+        "cuda_cupti-windows-x86_64-12.9.79-archive\\samples\\extensions\\src\\profilerhost_util\\Metric.cpp": {
+          "sha256": "ae4ddf8ae11d5f9ceb3de2603721ec9e1d1e5aa7501a27238efce65006ada325",
+          "bytes": 12413
+        }
+      }
+    },
+    "cuda_cudart": {
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-12.9.79-archive.zip",
+      "version": "12.9.79",
+      "archive": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cudart-windows-x86_64-12.9.79-archive.zip",
+      "sha256": "179e9c43b0735ffe67207b3da556eb5a0c50f3047961882b7657d3b822d34ef8",
+      "bytes": 3521238,
+      "unpacked_bytes": 11336190,
+      "files": {
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\LICENSE": {
+          "sha256": "213f2f1cc4bfecd53eb1579edc89d6e3a024ddd2f77413b69b40e2bf3c114d84",
+          "bytes": 63522
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\bin\\cudart64_12.dll": {
+          "sha256": "760c38928bbe5759f7b31ed6692599eb7ec83cedd5702e84c2b72028a89837e1",
+          "bytes": 583680
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\builtin_types.h": {
+          "sha256": "e75d7426f7b4e8abcd6e3cdd0631fa9577a6c5f8cd31f1ff2996e79d9b5ab4a3",
+          "bytes": 3214
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\channel_descriptor.h": {
+          "sha256": "cae3e4f0be2931e031ba983399754984bf3bb41255302ffbcacac47ec39bc202",
+          "bytes": 22443
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\common_functions.h": {
+          "sha256": "8c2f53f4d2b46fcf8adffb1403d15568ec39be63bd98c2f26fef2d670f056dd7",
+          "bytes": 3475
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups.h": {
+          "sha256": "5f042da90008ce4af671926c5683669948a3eceb9d39743ecdd6881cbfa96156",
+          "bytes": 62427
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuComplex.h": {
+          "sha256": "8c04f75b56a2d57ad07aa59d8cb903fcabd6366658a89dad00a4b4a00939150f",
+          "bytes": 12534
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda.h": {
+          "sha256": "fda3285d055a9f05e40cd76352f9f073d0ab45d42fb5bb0db4bb33b0df506d28",
+          "bytes": 1168299
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D10.h": {
+          "sha256": "71b0381d768a973c7507b1d643c98b2daa1d85882080d072bf7885e3b4ba693e",
+          "bytes": 32125
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D10Typedefs.h": {
+          "sha256": "f4eeb57be3783e56086f3b4f7aa3349d170b27f33e7575fcb16e1d29f1d5226c",
+          "bytes": 7333
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D11.h": {
+          "sha256": "c9fd2d072e99411384b0610604f3b29727f0ab897084287390d744445b6d9e73",
+          "bytes": 14087
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D11Typedefs.h": {
+          "sha256": "edb21242e2ab914b8c658da0463dedb786cf34995926629669ffe39b11ee8965",
+          "bytes": 4484
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D9.h": {
+          "sha256": "729a1bab78dee02d815a0bc757c77f0b5462bcc15c359aecc635a2a8d70bd97b",
+          "bytes": 36205
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaD3D9Typedefs.h": {
+          "sha256": "e2e94f7c2d0f4bf23ccbca2e18854899fbcc0aab34a886be748959b2a2e2908f",
+          "bytes": 8533
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaGL.h": {
+          "sha256": "80c4f51cf19afac8ae8e2d2002c298af85f8e4b736f472a0942fedb4d486c943",
+          "bytes": 22501
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaGLTypedefs.h": {
+          "sha256": "e52f155f43813a55a6a8d361731cef9058d4563cd98a330ab4a87621704af543",
+          "bytes": 6699
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaProfilerTypedefs.h": {
+          "sha256": "c8983a9a436d2ffbda06c32d6ea4fbcd6a25aa3eb20b0c4d04da8b97d4030eec",
+          "bytes": 3375
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudart_platform.h": {
+          "sha256": "533a3dc955c7e7b3c6bd3b6f6298364c832657311f5b9e3e8e6608c84550dd03",
+          "bytes": 2774
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cudaTypedefs.h": {
+          "sha256": "de38095e7fd221660ff578456e6984880f368838391640a810984f7dd9fee412",
+          "bytes": 117233
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_awbarrier.h": {
+          "sha256": "425d45616992029b798ad78a8f53553a15fe76c62bf3c9ff6c72c65a855fc3af",
+          "bytes": 9620
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_awbarrier_helpers.h": {
+          "sha256": "3fb7af882e74b95c329e0be94efbbd4b164a4a1bda0b81926fde6396e5b6b65c",
+          "bytes": 12854
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_awbarrier_primitives.h": {
+          "sha256": "73e548b39b2867086da71dfd2c70268ea211c0caa4d0adc801be6919d239db14",
+          "bytes": 4808
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_bf16.h": {
+          "sha256": "cac0cb30e0e9537d961af51e14f22991ea94f402150e12bae07e23e73c0dd83d",
+          "bytes": 209636
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_bf16.hpp": {
+          "sha256": "62d08482ccc7d80457782346f8924601915e4cfe294ab50c1facf8268d99e7f4",
+          "bytes": 140417
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_d3d10_interop.h": {
+          "sha256": "55039312e63d29dde634e4e707fbd22c4e439739dadac4e0abd03a506e29d981",
+          "bytes": 29316
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_d3d11_interop.h": {
+          "sha256": "ce04ecb5dccb3b27e48b97c1b1f8aa801bb44760ff575e60750aaac78d543d14",
+          "bytes": 12787
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_d3d9_interop.h": {
+          "sha256": "50ad1133b84981533ad42e74c8a6afc73a9d83c9f6182311801a5ccf3e7c6e84",
+          "bytes": 31646
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_device_runtime_api.h": {
+          "sha256": "abaf39adf3178a75bb9f25bca374665266a3a6d49573522fbfc159ac3d7b5a7e",
+          "bytes": 47905
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_egl_interop.h": {
+          "sha256": "64ae1e0a083c5ffedc2a4e39cb729c8a3e56cbc676de45e4041e582f821482b2",
+          "bytes": 38154
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp16.h": {
+          "sha256": "8980426c8de9e6db31805ed2c8237ec83e5fa2251c151f50391feec54375f58e",
+          "bytes": 212222
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp16.hpp": {
+          "sha256": "a0e04ce40be4d702fd10e1e6aacd6e7ae1d4132a48eb62634a69d14e4dd4b264",
+          "bytes": 124424
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp4.h": {
+          "sha256": "9fab28f598e98de19f50950b63269b3bd72de9e20170135ee88175a999dec262",
+          "bytes": 14180
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp4.hpp": {
+          "sha256": "d05895b1b40aa48e2c1fe94309198cff9b0b599268ce4a445fa279941dfe1f42",
+          "bytes": 35784
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp6.h": {
+          "sha256": "870d0daaa39c028b63d0b221917b9e4ca93e0120db196f1050b3cc81c7c4a4ca",
+          "bytes": 14325
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp6.hpp": {
+          "sha256": "1f3a1e2dc95279b0b85802aee26fe1394210f36c28dfa3fce818b80d576c9683",
+          "bytes": 57412
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp8.h": {
+          "sha256": "e51e0a07ac5222f9625896ef85772ee8bdc939cb8225d58728851818b9958506",
+          "bytes": 19509
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_fp8.hpp": {
+          "sha256": "1a76e135a9a18e5ac8e88093c0dff94d6f2a633feb294d27c9e4f872422d6948",
+          "bytes": 99128
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_gl_interop.h": {
+          "sha256": "a4a4041049b59206543d55fdc6c0720b245afd933bf3c298e9d9a2f4a8ac1de1",
+          "bytes": 19664
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_occupancy.h": {
+          "sha256": "a3445fd09846af0b16a9ab2b10b302522b72b0cd93e358a91bdd2dedd19bc8a2",
+          "bytes": 73438
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_pipeline.h": {
+          "sha256": "aacbf316553e1a34a8f13398ec720846f41cebb70fdedb7fdc97aa0093932262",
+          "bytes": 8354
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_pipeline_helpers.h": {
+          "sha256": "f59a26516dea3b56384ac636c6128b5fc920abc3493bd4bb910306157efa2713",
+          "bytes": 14225
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_pipeline_primitives.h": {
+          "sha256": "98ac2abfed83ecfe4eddbbf12f824146ef987aedabc0fa94c87b15849feba514",
+          "bytes": 8823
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_runtime.h": {
+          "sha256": "00fafc879eda880a860c195933ce97a0b306fc82761388d1b2fcf4d2ee200e1e",
+          "bytes": 101161
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_runtime_api.h": {
+          "sha256": "1f4ed7aab029ca8f327732349cbb63866919d2b5b8d35e4ddf4df092c9e00ccc",
+          "bytes": 671107
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_surface_types.h": {
+          "sha256": "64fc83dc785b0b1ac9e6ed68d26342a4547382f7a6a97140d8aad205dad8c1e9",
+          "bytes": 3764
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_texture_types.h": {
+          "sha256": "e46d1704740d6a0fa338ce66cd9023d0fe432082114fbab9c06acbf69a5f20f9",
+          "bytes": 3764
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_atomic_functions.h": {
+          "sha256": "873238d1f1ee42428badfddf84c6d40a175de52936e4ec90efa28ca4ad0e1c1f",
+          "bytes": 9693
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_atomic_functions.hpp": {
+          "sha256": "59f4bb142f75d1c820918187927b1041730b6d571183a69989972dc146a69f3a",
+          "bytes": 10740
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_double_functions.h": {
+          "sha256": "6d320fba0bec4047535f35190b6ed5c3c559ee7ccc081f53a9cfdfe4fe34f97f",
+          "bytes": 3517
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_functions.h": {
+          "sha256": "030f0f2c4b270b55a2c3402de9c5c7aa52fa967c02c92d38479c5388cab6c7c0",
+          "bytes": 3475
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_launch_parameters.h": {
+          "sha256": "32e3edf2d180dc0e3025e38779db1f10436ab8fd16069121a8e609c5fd6046e3",
+          "bytes": 3964
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\device_types.h": {
+          "sha256": "2416b764cb308e6d9e93268826f3918f5a05e760d28e49c112ff9c732491e328",
+          "bytes": 3669
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\driver_functions.h": {
+          "sha256": "ab08532254d6d6829ea9a650901900bf0b4588f0d4636fbc634d7ee31874c334",
+          "bytes": 4770
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\driver_types.h": {
+          "sha256": "e97e8d07bff8fd583382d2ae9a209198bb40055efc535e754c1e56512294f00d",
+          "bytes": 206569
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\host_config.h": {
+          "sha256": "087908be5214f2483e13630aa1ee26f2cd00e0c2aee6451016c0b46fc359117e",
+          "bytes": 3445
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\host_defines.h": {
+          "sha256": "28047eea24100b91fd397e96fb2755f74ac806494fdc39a8b3d15a48bfd7b5ca",
+          "bytes": 3451
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\library_types.h": {
+          "sha256": "38c2b1cb0292337a608a802ad0b2ab616b3ceb1a289c61417b2c00f084455bbc",
+          "bytes": 5267
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\math_constants.h": {
+          "sha256": "9040ea02b7486f2637998cd9bcadd8dd59ec855a5d7d74f274579fdeefa6a01a",
+          "bytes": 7760
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\math_functions.h": {
+          "sha256": "e556f9d919cc7d7b0a086a6d6cafdcdb9146fb397b82940e868ebaee6746f6aa",
+          "bytes": 3463
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\mma.h": {
+          "sha256": "9749dd585be009be5aa5bdeab5f05aa3aa9483f0511aa4397746f999a8209934",
+          "bytes": 2992
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\nvfunctional": {
+          "sha256": "0538a04f2586c6a26a82818c93d34c13ad226fe88b34010c38974e9c8f22fcd9",
+          "bytes": 3035
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_20_atomic_functions.h": {
+          "sha256": "91f79dcef4a18056b11365dacafcb14636caa257ea63431e0a02e1e6c9bbb0c2",
+          "bytes": 4579
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_20_atomic_functions.hpp": {
+          "sha256": "0bbc694e3ec9c2e70a98d12e455d00ac1bbedfcd1a65c58f52f13ef75a44da9b",
+          "bytes": 4199
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_20_intrinsics.h": {
+          "sha256": "b46f223f215af661459e46024a5d58f8e2566f75f1e278015d88a6f2eac52736",
+          "bytes": 58858
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_20_intrinsics.hpp": {
+          "sha256": "7a6b8c10602132e9568772698193f36c3ce2dd5f26e60c5420594202bcfb4f80",
+          "bytes": 8633
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_30_intrinsics.h": {
+          "sha256": "ca500ef3ffd4463fff64a86c22d946d61c806edbba0a55921c55bc7c2051e4c7",
+          "bytes": 17214
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_30_intrinsics.hpp": {
+          "sha256": "701e63430e8c509fca2ee24eebf55697b53dd3d53128e6d8269f0edd0bc9c0f6",
+          "bytes": 25171
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_32_atomic_functions.h": {
+          "sha256": "2e2d73fea14f23ab168a0bca19f3f34b97da9d9d7ace35309e433ac7ef517a75",
+          "bytes": 5825
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_32_atomic_functions.hpp": {
+          "sha256": "d6cb7d7e7e3961b2f76a2b1bdc6c04008f27ed4e4ee4a18298e3cc3ff0da35b6",
+          "bytes": 6743
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_32_intrinsics.h": {
+          "sha256": "f050bcd23c7cba2c21d80ade2abe23457b617d7a9d03dd7506b5a530cb12dd82",
+          "bytes": 34055
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_32_intrinsics.hpp": {
+          "sha256": "74ea3633e759344643ec06bdd061e298a3ad483fcf800b609d26429d5d269057",
+          "bytes": 71204
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_35_atomic_functions.h": {
+          "sha256": "7a15dc657fc4844847103e9db16390971c40f5e6db8282acd12586a85309b7b3",
+          "bytes": 2967
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_35_intrinsics.h": {
+          "sha256": "92dac7919499a3611ee4dc86cdbd9eccfa3a0ccd2c8f1d0c2328ca25807cbc3b",
+          "bytes": 2770
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_60_atomic_functions.h": {
+          "sha256": "e1ca160ce1a65d42197d8ba578f4fbd00429bf05bea65eca31325e673486e55d",
+          "bytes": 13508
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_60_atomic_functions.hpp": {
+          "sha256": "cad128980da64b7736f942ee50d305c1b0ef3baa04217c757dae9fbf7d7809b8",
+          "bytes": 23645
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_61_intrinsics.h": {
+          "sha256": "2633fa8b29038e6ae94dc205761da8d71e1656ea8bdaf4ddc05a758888ab1a23",
+          "bytes": 11140
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\sm_61_intrinsics.hpp": {
+          "sha256": "1c2b2f68dd5513ac773b42e6feef4e5b64ac16e55ad39288d51b951f7e576bf8",
+          "bytes": 6948
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\surface_functions.h": {
+          "sha256": "aa9aa51007376b766123ee8b6db105d7c20ebe8af4c50faa40bad42b635033ed",
+          "bytes": 6906
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\surface_indirect_functions.h": {
+          "sha256": "082f48c0649bebd37ceb80e81c50d82aa94e2e549d8a013daaae17995c59d790",
+          "bytes": 11120
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\surface_types.h": {
+          "sha256": "863530cd094f387b4c4c0ee428055c91ea2733fb0a13c93136ceec9b33827c57",
+          "bytes": 4641
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\texture_fetch_functions.h": {
+          "sha256": "f889b1a37fc1360eb5aa98ac1ee90b9bfdda6a67c949275c6b659a9114d101bf",
+          "bytes": 12691
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\texture_indirect_functions.h": {
+          "sha256": "5d3b7b635072266c4bfc22c46c88ce25dd2eb1510fc4a9608bb07e05054281af",
+          "bytes": 21801
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\texture_types.h": {
+          "sha256": "1887d9c33528c4d841b509f0cd586e7602d201274959c53c87ca5917b7e7cfed",
+          "bytes": 6540
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\vector_functions.h": {
+          "sha256": "69c863a2b5c66654fca2be925ef94b1b66e6fbb8dfbb768314146fa23775d2ab",
+          "bytes": 8184
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\vector_functions.hpp": {
+          "sha256": "c7b15cc4d81a15ba93ccad66b086ea71ac22c524ecb98b6c5d94c7ddcca55757",
+          "bytes": 10376
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\vector_types.h": {
+          "sha256": "e3fd5898057158048c8dcc215e7426e599aa03fa5553ef9d1f65159464e35693",
+          "bytes": 14179
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\memcpy_async.h": {
+          "sha256": "0e05ef6e5c38acb6be4f678d23338ba12ddc43c37a9f9a29363f38b1e48c3352",
+          "bytes": 3022
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\reduce.h": {
+          "sha256": "9a86fd41b5ae66ec5abdf03a131c8f13207ae21e0a2e1e4c99fcade6748e647d",
+          "bytes": 3012
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\scan.h": {
+          "sha256": "c1131b91109572fabf6f8d91a91f1b48c0cee960537b0381aeabb9e02bbf94b9",
+          "bytes": 3003
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\async.h": {
+          "sha256": "fa8fdafc1a55c292b45506c7276c8b8d26952e073c386c5ac52f5cfaf2cc5ef1",
+          "bytes": 19574
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\coalesced_reduce.h": {
+          "sha256": "03d1e18f77c39bdf2cf68ffd727f3837c504bd0232dad19845ac903ad8f4b842",
+          "bytes": 4352
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\coalesced_scan.h": {
+          "sha256": "3273c657f293c1cd66096a066120c5512fdd391715de323ee55ffce1ee22d6ba",
+          "bytes": 7487
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\driver_abi.h": {
+          "sha256": "234b5d0be27516cc2f34d2243f7e64469cc779d63d432abd0e6dae77303efcf8",
+          "bytes": 4063
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\functional.h": {
+          "sha256": "d66e968211b98265ee813ff74d2cf94cfc49a514c090c1283432ffdb565f3948",
+          "bytes": 9117
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\helpers.h": {
+          "sha256": "7e3ee03ac590af58646ebb2eb3a791880e67b21b065221a3265affcd5deb5922",
+          "bytes": 27169
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\info.h": {
+          "sha256": "0ff5810d50abfb17d96627972b30f9f856d85f1dd82f0e841d6d3a15d3e005ee",
+          "bytes": 12810
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\invoke.h": {
+          "sha256": "60729e6b39912e209a91d9c63710528c932278e3de9a317614ef02f76df4e2a9",
+          "bytes": 8805
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\memory.h": {
+          "sha256": "7d8bafdd01a7fd6ffefc656cc2bf34c3ccd975cc464e678b42ff3676b09b7d70",
+          "bytes": 5742
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\partitioning.h": {
+          "sha256": "948bfb1ae79397473a6d5475394a67bbf91aaf8164c7a6cb9c0e944bdda9e3c2",
+          "bytes": 7313
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\reduce.h": {
+          "sha256": "76b358f11ac30b45eb8df272f43c118ccb584c3d02702facecad0832b29895d5",
+          "bytes": 23720
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\scan.h": {
+          "sha256": "a455988d98bc04f52cee25b37066533d9a3083e93d37eae1af17f5643164c83c",
+          "bytes": 17486
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cooperative_groups\\details\\sync.h": {
+          "sha256": "79c962c6005385a6566edbbce65d1fd1e033cf10a9abf20f68d117cd4c821148",
+          "bytes": 11076
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\lib\\x64\\cuda.lib": {
+          "sha256": "eacf5ca874891527c1231b936080abdb58f717fe4537aaee83eb8099f1b2bb16",
+          "bytes": 161926
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\lib\\x64\\cudadevrt.lib": {
+          "sha256": "c98d84a0739740aed2b8596ec050d42ba6e77185efb9e9b4707832b8c6ec3955",
+          "bytes": 3121468
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\lib\\x64\\cudart.lib": {
+          "sha256": "102cfd03d598f467c3698b9919b6ffc3635e4cb483f35df31f0e2c31a97a34cb",
+          "bytes": 117462
+        },
+        "cuda_cudart-windows-x86_64-12.9.79-archive\\lib\\x64\\cudart_static.lib": {
+          "sha256": "dd650c41593ba90e9c6ea346b935ec62200b1f34c228aa7ea41f81c8c56f2b20",
+          "bytes": 2904506
+        }
+      }
+    }
+  },
+  "docs": {
+    "cupti12.9-usage.html": {
+      "url": "https://docs.nvidia.com/cupti/12.9.1/main/main.html",
+      "sha256": "2deec75f30d4f03bf16b53eae84a5d9f8e1c1743cece0073cfa79d5e4a4af747"
+    },
+    "cupti12.9-activity.html": {
+      "url": "https://docs.nvidia.com/cupti/12.9.1/api/group__CUPTI__ACTIVITY__API.html",
+      "sha256": "fbd2589bde4110589726917f49fa16aa6e913f46e2d727a5a4ad58e9f3a584c3"
+    },
+    "nsight-current-guide.html": {
+      "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html",
+      "sha256": "a1a39c40a403c28633fd164222d38a74afaeacd869f3234ad151ffd1559545f4"
+    }
+  },
+  "system_installation": false,
+  "privilege_or_driver_change": false,
+  "global_environment_change": false,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "accepted_source": "E051",
+  "goal_active": true
+}

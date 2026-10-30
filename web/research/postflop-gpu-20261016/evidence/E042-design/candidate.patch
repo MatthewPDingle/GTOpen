@@ -1,0 +1,10 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -369,6 +369,7 @@
+         // register-cache regrets and child values for the common small-na case
+         float rc[8], vc[8];
+         bool small = na <= 8;
++        #pragma unroll 2
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float sum = 0.f;
+             for (int a = 0; a < na; a++) {

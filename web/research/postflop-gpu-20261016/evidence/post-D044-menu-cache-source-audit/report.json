@@ -1,0 +1,30 @@
+{
+  "scope": "Source-only feasibility audit; no candidate, profiling, builds, native execution or checkout edits",
+  "decision": "NO_GO_FOR_CANDIDATE_NOW",
+  "basis": {
+    "ordinary_complete_cycle_ms": 9823.562399999999,
+    "instrumented_tree_sum_fixture_medians_ms": 251.53999999999996,
+    "two_percent_target_ms": 196.47124799999997,
+    "necessary_tree_removal_pct": 78.107357875487,
+    "limit": "Approximate direct-span headroom only: grouped medians and component instrumentation do not bound cache side effects or component bias."
+  },
+  "source_findings": [
+    "tree.rs:454-545 legal_actions depends on builder-fixed config/root street and betting state, not card identity. tree.rs:731-746 repeats identical fresh betting states across root-board-legal runout cards, so exact menu reuse is source-feasible.",
+    "A per-builder key must retain exact to_bits() for both put and street_bet arrays and last_increment, plus street/to_act/num_raises/last_aggressor. Conservatively retain checked too; it is unused by menu generation but used by recursion. Do not merge epsilon-near amounts, signed zeros or differing state histories through rounded keys.",
+    "On misses preserve all existing f64 expression order, clamp predicates, sort_by(total_cmp), and dedup_by epsilon logic at813-818. Hits copy the exact ordered Action variants/amount bits; config and root street remain scoped to one builder.",
+    "Preserve check_budget before menu generation at558, invalid-action-count validation at561, all strict/LenientLoad entry validation at316-388, and original error messages/order. Do not cache invalid results across builds.",
+    "Keep parent-first node/actions/data_offset append and post-recursion child_indices append at557-598 unchanged. Cache only immutable menus, never node IDs/child indices/subtrees; retain intentional impossible-runout slots at724-729 for save layout.",
+    "A menu cache cannot remove recursive apply_action work, output vector growth/copies, node/terminal construction or per-node child_indices allocation. Cloning cached Vec still allocates; retaining immutable menus avoids that allocation only with added ownership/lookup cost.",
+    "max_nodes is a node cap, not a host-byte allowance. Bound actual cache keys, table capacity and retained menu bytes; decline cache growth on its own cap/allocation failure without a new solver error. Extra retained memory remains a real peak-memory cost, and must not be claimed unchanged merely because the cache is bounded."
+  ],
+  "minimum_empirical_prerequisite": "Only a bounded unchanged-builder menu-only profile that separates legal_actions cost from recursion/output construction and quantifies timer/profiling overhead could justify implementation. Need credible removable menu cost above about196.47ms across frozen fixtures before lookup/ownership costs. Per-node timers may dominate tiny calls: calibrate or use fixed sparse sampling and retain all samples; counts or hit rates alone are not speed evidence. No diagnostic prepared or run here.",
+  "future_exactness_obligations": "If later justified, compare complete ordered nodes/actions/children/data_size and f64 bits to the original builder, plus existing build_validation/save_compat strict-versus-legacy and budget error cases. This is an obligation, not a request to expand the harness now.",
+  "closed_overlap": "No postflop legal-menu memoization proposal found in scoped research/autoresearch Markdown search for legal_actions, TreeBuilder, and action-menu/cache combinations. E005/E014/E023 training action dispatch experiments concern GPU traversal, not CPU tree menu construction. The only exact legal_actions search hit was unrelated preflop terminal-equity reuse. This is not an exhaustive claim about every historical artifact.",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-constructor-diagnostic\\report.json": "945f2c64c8bcec1f336e455bb7495435d7a9da8f42635abaf3e21c83a454493c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-independent-review\\summary.md": "0d1a9529df0ad726a3e73d7e3de9c02e81080f49529ec91b5bf59b5aceb976f0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\build_validation.rs": "85887549db58869042e5058f50bc6fed184390006872fca1521c2c3a3a306888",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_compat.rs": "dec5d4256f93ffb331c7dd7f24056947c8a15a41d2e584e71c025918b376e1e0"
+  }
+}

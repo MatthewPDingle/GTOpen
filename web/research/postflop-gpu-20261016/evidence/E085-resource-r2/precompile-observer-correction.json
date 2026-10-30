@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-18T10:02:40.825771+00:00",
+  "original_protocol_sha256": "5eb04640d3674ff1af49f8a9852b722d4c92b260415a92e2897d66a0c101ac25",
+  "reason": "Static4store count assumed one store per template. Compiler unrolling may legally emit multiple stores per template. This is not a semantic/resource requirement. Source shows the same replacement in the shared helper for all four dispatch forms; direct corpus must cover all four. Emission observer requires actual streaming instruction presence and none in baseline.",
+  "before": "gates[arch+':streaming_stores_emitted_all4paths']=bt.count('st.global.cs.f32')==0 and ct.count('st.global.cs.f32')==4",
+  "after": "gates[arch+':streaming_store_emitted']=bt.count('st.global.cs.f32')==0 and ct.count('st.global.cs.f32')>=1",
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "candidate_and_original_Rust_compiler_probe_bytes_unchanged": true,
+  "resource_math_performance_gates_unchanged": true
+}

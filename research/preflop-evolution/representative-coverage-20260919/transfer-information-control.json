@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "hidden_chance_deviation_bb": 0.0,
+  "deliberately_invalid_clairvoyant_deviation_bb": 0.9999999999999991,
+  "accounting": {
+    "normalizer_relative_error": 5.161223670668846e-10,
+    "frequency_max_error": 1.2212453270876722e-15,
+    "hand_summary_max_error": 2.9199119719325317e-09,
+    "terminal_probability_max_error": 0.0,
+    "cash_conservation_max_error": 3.276697668752604e-08
+  },
+  "inputs_sha256": {
+    "tools\\research\\transfer_information_control.py": "86549e2beb1371473500cec79c90998765d7ac9c7620fabcddbe207fa702f6e4",
+    "tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-control-fold.json": "8a2b9957c5fe853bef34228038784fd125fa783599302152a160acebab64e668",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v2-streamed-fold-result.json": "beddb1a5d274b8c63b108a84c1289ee8e239ea3bd88ce765ab8bda5fd89a21aa"
+  },
+  "note": "Synthetic utilities, not a poker strategy result. Tests that leaf aggregation precedes preflop maximization."
+}

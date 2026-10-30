@@ -1,0 +1,934 @@
+{
+  "id": "D313",
+  "at": "2026-10-29T22:20:41.873591+00:00",
+  "status": "pass_finite_ownership_phase_and_original_CFV_writer_model",
+  "protocol_sha256": "7bba28f91beede39d6f81b033013ca3924f6481d4a2838d368dc49f75c4f4417",
+  "checks": 343670,
+  "cases": [
+    {
+      "fixture": "rainbow",
+      "constructor": "initial",
+      "original_action_nodes": 523533,
+      "structural_candidate_stars": 355790,
+      "safe_before_nonoverlap_selection": 146551,
+      "unsafe_foreign_reader_stars": 209239,
+      "selected_disjoint_stars": 106592,
+      "selected_action_children": 112464,
+      "remaining_action_nodes": 304477,
+      "modeled_old_up_action_CTAs": 523533,
+      "modeled_new_up_action_CTAs": 411069,
+      "modeled_CTA_reduction_pct": 21.481740406048903,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 1644276,
+      "original_all_action_immutable_buffer_bytes": 2094132,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [
+        {
+          "parent": 6014,
+          "parent_level": 3,
+          "output_slot": 141415,
+          "foreign_action_reader": 4,
+          "reader_owner_parent": 3,
+          "read_slot": 141415,
+          "reader_level": 4
+        },
+        {
+          "parent": 12025,
+          "parent_level": 3,
+          "output_slot": 141416,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 141416,
+          "reader_level": 4
+        },
+        {
+          "parent": 18036,
+          "parent_level": 3,
+          "output_slot": 141417,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 141417,
+          "reader_level": 4
+        },
+        {
+          "parent": 24047,
+          "parent_level": 3,
+          "output_slot": 141418,
+          "foreign_action_reader": 6015,
+          "reader_owner_parent": 6014,
+          "read_slot": 141418,
+          "reader_level": 4
+        },
+        {
+          "parent": 30058,
+          "parent_level": 3,
+          "output_slot": 141419,
+          "foreign_action_reader": 6015,
+          "reader_owner_parent": 6014,
+          "read_slot": 141419,
+          "reader_level": 4
+        },
+        {
+          "parent": 36069,
+          "parent_level": 3,
+          "output_slot": 141420,
+          "foreign_action_reader": 9756,
+          "reader_owner_parent": 6014,
+          "read_slot": 141420,
+          "reader_level": 4
+        },
+        {
+          "parent": 42080,
+          "parent_level": 3,
+          "output_slot": 141421,
+          "foreign_action_reader": 9756,
+          "reader_owner_parent": 6014,
+          "read_slot": 141421,
+          "reader_level": 4
+        },
+        {
+          "parent": 48091,
+          "parent_level": 3,
+          "output_slot": 141422,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 141422,
+          "reader_level": 4
+        }
+      ],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 3
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 101
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 98,
+          "safe_heads": 1,
+          "unsafe_heads": 97,
+          "original_next_level_action_nodes": 346
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 147,
+          "safe_heads": 142,
+          "unsafe_heads": 5,
+          "original_next_level_action_nodes": 493
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 147,
+          "safe_heads": 61,
+          "unsafe_heads": 86,
+          "original_next_level_action_nodes": 10194
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 9555,
+          "safe_heads": 2351,
+          "unsafe_heads": 7204,
+          "original_next_level_action_nodes": 36162
+        },
+        {
+          "parent_level": 7,
+          "shape_candidate_heads": 35378,
+          "safe_heads": 6657,
+          "unsafe_heads": 28721,
+          "original_next_level_action_nodes": 73745
+        },
+        {
+          "parent_level": 8,
+          "shape_candidate_heads": 72912,
+          "safe_heads": 11682,
+          "unsafe_heads": 61230,
+          "original_next_level_action_nodes": 127302
+        },
+        {
+          "parent_level": 9,
+          "shape_candidate_heads": 112896,
+          "safe_heads": 22102,
+          "unsafe_heads": 90794,
+          "original_next_level_action_nodes": 141120
+        },
+        {
+          "parent_level": 10,
+          "shape_candidate_heads": 94080,
+          "safe_heads": 72978,
+          "unsafe_heads": 21102,
+          "original_next_level_action_nodes": 103488
+        },
+        {
+          "parent_level": 11,
+          "shape_candidate_heads": 30576,
+          "safe_heads": 30576,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 30576
+        },
+        {
+          "parent_level": 12,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\rainbow-initial.model.bin",
+      "projection_sha256": "303a471203fe893e7022e7589dde68ddf1bff163849e75243ccedd2706f101cc",
+      "source_plan_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "source_GPU_sha256": "0ca6a8f5fdd4756f4cf0f73755b8c27d01afb2b9ef4abddd570f0195649621fa"
+    },
+    {
+      "fixture": "rainbow",
+      "constructor": "resumed",
+      "original_action_nodes": 523533,
+      "structural_candidate_stars": 355790,
+      "safe_before_nonoverlap_selection": 146551,
+      "unsafe_foreign_reader_stars": 209239,
+      "selected_disjoint_stars": 106592,
+      "selected_action_children": 112464,
+      "remaining_action_nodes": 304477,
+      "modeled_old_up_action_CTAs": 523533,
+      "modeled_new_up_action_CTAs": 411069,
+      "modeled_CTA_reduction_pct": 21.481740406048903,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 1644276,
+      "original_all_action_immutable_buffer_bytes": 2094132,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [
+        {
+          "parent": 6014,
+          "parent_level": 3,
+          "output_slot": 141415,
+          "foreign_action_reader": 4,
+          "reader_owner_parent": 3,
+          "read_slot": 141415,
+          "reader_level": 4
+        },
+        {
+          "parent": 12025,
+          "parent_level": 3,
+          "output_slot": 141416,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 141416,
+          "reader_level": 4
+        },
+        {
+          "parent": 18036,
+          "parent_level": 3,
+          "output_slot": 141417,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 141417,
+          "reader_level": 4
+        },
+        {
+          "parent": 24047,
+          "parent_level": 3,
+          "output_slot": 141418,
+          "foreign_action_reader": 6015,
+          "reader_owner_parent": 6014,
+          "read_slot": 141418,
+          "reader_level": 4
+        },
+        {
+          "parent": 30058,
+          "parent_level": 3,
+          "output_slot": 141419,
+          "foreign_action_reader": 6015,
+          "reader_owner_parent": 6014,
+          "read_slot": 141419,
+          "reader_level": 4
+        },
+        {
+          "parent": 36069,
+          "parent_level": 3,
+          "output_slot": 141420,
+          "foreign_action_reader": 9756,
+          "reader_owner_parent": 6014,
+          "read_slot": 141420,
+          "reader_level": 4
+        },
+        {
+          "parent": 42080,
+          "parent_level": 3,
+          "output_slot": 141421,
+          "foreign_action_reader": 9756,
+          "reader_owner_parent": 6014,
+          "read_slot": 141421,
+          "reader_level": 4
+        },
+        {
+          "parent": 48091,
+          "parent_level": 3,
+          "output_slot": 141422,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 141422,
+          "reader_level": 4
+        }
+      ],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 3
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 101
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 98,
+          "safe_heads": 1,
+          "unsafe_heads": 97,
+          "original_next_level_action_nodes": 346
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 147,
+          "safe_heads": 142,
+          "unsafe_heads": 5,
+          "original_next_level_action_nodes": 493
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 147,
+          "safe_heads": 61,
+          "unsafe_heads": 86,
+          "original_next_level_action_nodes": 10194
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 9555,
+          "safe_heads": 2351,
+          "unsafe_heads": 7204,
+          "original_next_level_action_nodes": 36162
+        },
+        {
+          "parent_level": 7,
+          "shape_candidate_heads": 35378,
+          "safe_heads": 6657,
+          "unsafe_heads": 28721,
+          "original_next_level_action_nodes": 73745
+        },
+        {
+          "parent_level": 8,
+          "shape_candidate_heads": 72912,
+          "safe_heads": 11682,
+          "unsafe_heads": 61230,
+          "original_next_level_action_nodes": 127302
+        },
+        {
+          "parent_level": 9,
+          "shape_candidate_heads": 112896,
+          "safe_heads": 22102,
+          "unsafe_heads": 90794,
+          "original_next_level_action_nodes": 141120
+        },
+        {
+          "parent_level": 10,
+          "shape_candidate_heads": 94080,
+          "safe_heads": 72978,
+          "unsafe_heads": 21102,
+          "original_next_level_action_nodes": 103488
+        },
+        {
+          "parent_level": 11,
+          "shape_candidate_heads": 30576,
+          "safe_heads": 30576,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 30576
+        },
+        {
+          "parent_level": 12,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\rainbow-resumed.model.bin",
+      "projection_sha256": "303a471203fe893e7022e7589dde68ddf1bff163849e75243ccedd2706f101cc",
+      "source_plan_sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "source_GPU_sha256": "1030a50e143a893332dc229e87eeb2f9d5651192f1fb17fa218db6bae1e8a75c"
+    },
+    {
+      "fixture": "two-tone",
+      "constructor": "initial",
+      "original_action_nodes": 318562,
+      "structural_candidate_stars": 216248,
+      "safe_before_nonoverlap_selection": 89297,
+      "unsafe_foreign_reader_stars": 126951,
+      "selected_disjoint_stars": 64844,
+      "selected_action_children": 68302,
+      "remaining_action_nodes": 185416,
+      "modeled_old_up_action_CTAs": 318562,
+      "modeled_new_up_action_CTAs": 250260,
+      "modeled_CTA_reduction_pct": 21.440724254619195,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 1001040,
+      "original_all_action_immutable_buffer_bytes": 1274248,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [
+        {
+          "parent": 12025,
+          "parent_level": 3,
+          "output_slot": 85957,
+          "foreign_action_reader": 4,
+          "reader_owner_parent": 3,
+          "read_slot": 85957,
+          "reader_level": 4
+        },
+        {
+          "parent": 18036,
+          "parent_level": 3,
+          "output_slot": 85958,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 85958,
+          "reader_level": 4
+        },
+        {
+          "parent": 24047,
+          "parent_level": 3,
+          "output_slot": 85959,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 85959,
+          "reader_level": 4
+        },
+        {
+          "parent": 36069,
+          "parent_level": 3,
+          "output_slot": 85960,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 85960,
+          "reader_level": 4
+        },
+        {
+          "parent": 42080,
+          "parent_level": 3,
+          "output_slot": 85961,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 85961,
+          "reader_level": 4
+        },
+        {
+          "parent": 48091,
+          "parent_level": 3,
+          "output_slot": 85962,
+          "foreign_action_reader": 15767,
+          "reader_owner_parent": 12025,
+          "read_slot": 85962,
+          "reader_level": 4
+        },
+        {
+          "parent": 60113,
+          "parent_level": 3,
+          "output_slot": 85963,
+          "foreign_action_reader": 15767,
+          "reader_owner_parent": 12025,
+          "read_slot": 85963,
+          "reader_level": 4
+        },
+        {
+          "parent": 66124,
+          "parent_level": 3,
+          "output_slot": 85964,
+          "foreign_action_reader": 18037,
+          "reader_owner_parent": 18036,
+          "read_slot": 85964,
+          "reader_level": 4
+        }
+      ],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 3
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 75
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 72,
+          "safe_heads": 1,
+          "unsafe_heads": 71,
+          "original_next_level_action_nodes": 255
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 108,
+          "safe_heads": 102,
+          "unsafe_heads": 6,
+          "original_next_level_action_nodes": 363
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 108,
+          "safe_heads": 68,
+          "unsafe_heads": 40,
+          "original_next_level_action_nodes": 6294
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 5824,
+          "safe_heads": 1414,
+          "unsafe_heads": 4410,
+          "original_next_level_action_nodes": 22083
+        },
+        {
+          "parent_level": 7,
+          "shape_candidate_heads": 21507,
+          "safe_heads": 4086,
+          "unsafe_heads": 17421,
+          "original_next_level_action_nodes": 44911
+        },
+        {
+          "parent_level": 8,
+          "shape_candidate_heads": 44299,
+          "safe_heads": 7115,
+          "unsafe_heads": 37184,
+          "original_next_level_action_nodes": 77382
+        },
+        {
+          "parent_level": 9,
+          "shape_candidate_heads": 68592,
+          "safe_heads": 13586,
+          "unsafe_heads": 55006,
+          "original_next_level_action_nodes": 85740
+        },
+        {
+          "parent_level": 10,
+          "shape_candidate_heads": 57160,
+          "safe_heads": 44347,
+          "unsafe_heads": 12813,
+          "original_next_level_action_nodes": 62876
+        },
+        {
+          "parent_level": 11,
+          "shape_candidate_heads": 18577,
+          "safe_heads": 18577,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 18577
+        },
+        {
+          "parent_level": 12,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\two-tone-initial.model.bin",
+      "projection_sha256": "4b2ff7ed55bb615fb2012088046f37ca02c804a0b40246410a28c27def7d609f",
+      "source_plan_sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "source_GPU_sha256": "b836ded95173fd46de2a624ed56f8fd2f3c38fd042114b0cd51cf6e7f4f884da"
+    },
+    {
+      "fixture": "two-tone",
+      "constructor": "resumed",
+      "original_action_nodes": 318562,
+      "structural_candidate_stars": 216248,
+      "safe_before_nonoverlap_selection": 89297,
+      "unsafe_foreign_reader_stars": 126951,
+      "selected_disjoint_stars": 64844,
+      "selected_action_children": 68302,
+      "remaining_action_nodes": 185416,
+      "modeled_old_up_action_CTAs": 318562,
+      "modeled_new_up_action_CTAs": 250260,
+      "modeled_CTA_reduction_pct": 21.440724254619195,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 1001040,
+      "original_all_action_immutable_buffer_bytes": 1274248,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [
+        {
+          "parent": 12025,
+          "parent_level": 3,
+          "output_slot": 85957,
+          "foreign_action_reader": 4,
+          "reader_owner_parent": 3,
+          "read_slot": 85957,
+          "reader_level": 4
+        },
+        {
+          "parent": 18036,
+          "parent_level": 3,
+          "output_slot": 85958,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 85958,
+          "reader_level": 4
+        },
+        {
+          "parent": 24047,
+          "parent_level": 3,
+          "output_slot": 85959,
+          "foreign_action_reader": 3745,
+          "reader_owner_parent": 3,
+          "read_slot": 85959,
+          "reader_level": 4
+        },
+        {
+          "parent": 36069,
+          "parent_level": 3,
+          "output_slot": 85960,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 85960,
+          "reader_level": 4
+        },
+        {
+          "parent": 42080,
+          "parent_level": 3,
+          "output_slot": 85961,
+          "foreign_action_reader": 12026,
+          "reader_owner_parent": 12025,
+          "read_slot": 85961,
+          "reader_level": 4
+        },
+        {
+          "parent": 48091,
+          "parent_level": 3,
+          "output_slot": 85962,
+          "foreign_action_reader": 15767,
+          "reader_owner_parent": 12025,
+          "read_slot": 85962,
+          "reader_level": 4
+        },
+        {
+          "parent": 60113,
+          "parent_level": 3,
+          "output_slot": 85963,
+          "foreign_action_reader": 15767,
+          "reader_owner_parent": 12025,
+          "read_slot": 85963,
+          "reader_level": 4
+        },
+        {
+          "parent": 66124,
+          "parent_level": 3,
+          "output_slot": 85964,
+          "foreign_action_reader": 18037,
+          "reader_owner_parent": 18036,
+          "read_slot": 85964,
+          "reader_level": 4
+        }
+      ],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 3
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 75
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 72,
+          "safe_heads": 1,
+          "unsafe_heads": 71,
+          "original_next_level_action_nodes": 255
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 108,
+          "safe_heads": 102,
+          "unsafe_heads": 6,
+          "original_next_level_action_nodes": 363
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 108,
+          "safe_heads": 68,
+          "unsafe_heads": 40,
+          "original_next_level_action_nodes": 6294
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 5824,
+          "safe_heads": 1414,
+          "unsafe_heads": 4410,
+          "original_next_level_action_nodes": 22083
+        },
+        {
+          "parent_level": 7,
+          "shape_candidate_heads": 21507,
+          "safe_heads": 4086,
+          "unsafe_heads": 17421,
+          "original_next_level_action_nodes": 44911
+        },
+        {
+          "parent_level": 8,
+          "shape_candidate_heads": 44299,
+          "safe_heads": 7115,
+          "unsafe_heads": 37184,
+          "original_next_level_action_nodes": 77382
+        },
+        {
+          "parent_level": 9,
+          "shape_candidate_heads": 68592,
+          "safe_heads": 13586,
+          "unsafe_heads": 55006,
+          "original_next_level_action_nodes": 85740
+        },
+        {
+          "parent_level": 10,
+          "shape_candidate_heads": 57160,
+          "safe_heads": 44347,
+          "unsafe_heads": 12813,
+          "original_next_level_action_nodes": 62876
+        },
+        {
+          "parent_level": 11,
+          "shape_candidate_heads": 18577,
+          "safe_heads": 18577,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 18577
+        },
+        {
+          "parent_level": 12,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\two-tone-resumed.model.bin",
+      "projection_sha256": "4b2ff7ed55bb615fb2012088046f37ca02c804a0b40246410a28c27def7d609f",
+      "source_plan_sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "source_GPU_sha256": "fe4a749d2b7900f37804e5fdfbe6a23496249a1ee384c30e8c0ce2694fd1c700"
+    },
+    {
+      "fixture": "river",
+      "constructor": "initial",
+      "original_action_nodes": 12,
+      "structural_candidate_stars": 10,
+      "safe_before_nonoverlap_selection": 10,
+      "unsafe_foreign_reader_stars": 0,
+      "selected_disjoint_stars": 5,
+      "selected_action_children": 5,
+      "remaining_action_nodes": 2,
+      "modeled_old_up_action_CTAs": 12,
+      "modeled_new_up_action_CTAs": 7,
+      "modeled_CTA_reduction_pct": 41.666666666666664,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 28,
+      "original_all_action_immutable_buffer_bytes": 48,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 1
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\river-initial.model.bin",
+      "projection_sha256": "337cd90f7e4a26bdc3b1634b2114751bd4a48e1bab1396b122036b0c150d065c",
+      "source_plan_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "source_GPU_sha256": "f4b34287ad442eaf3020a8c9d20434be0bc91ed4c0394659ca38b58065e09141"
+    },
+    {
+      "fixture": "river",
+      "constructor": "resumed",
+      "original_action_nodes": 12,
+      "structural_candidate_stars": 10,
+      "safe_before_nonoverlap_selection": 10,
+      "unsafe_foreign_reader_stars": 0,
+      "selected_disjoint_stars": 5,
+      "selected_action_children": 5,
+      "remaining_action_nodes": 2,
+      "modeled_old_up_action_CTAs": 12,
+      "modeled_new_up_action_CTAs": 7,
+      "modeled_CTA_reduction_pct": 41.666666666666664,
+      "extra_GPU_worklist_payload_if_one_remaining_plus_head_list_bytes": 28,
+      "original_all_action_immutable_buffer_bytes": 48,
+      "new_FP_operations_removed": 0,
+      "CFV_payload_or_mapping_changed": false,
+      "all_action_updates_once": true,
+      "physical_scratch_last_writer_identity_exact": true,
+      "foreign_read_witnesses": [],
+      "levels": [
+        {
+          "parent_level": 0,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 1,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 2,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 3,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 4,
+          "shape_candidate_heads": 2,
+          "safe_heads": 2,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 2
+        },
+        {
+          "parent_level": 5,
+          "shape_candidate_heads": 1,
+          "safe_heads": 1,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 1
+        },
+        {
+          "parent_level": 6,
+          "shape_candidate_heads": 0,
+          "safe_heads": 0,
+          "unsafe_heads": 0,
+          "original_next_level_action_nodes": 0
+        }
+      ],
+      "projection": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D313-action-star-ownership\\river-resumed.model.bin",
+      "projection_sha256": "337cd90f7e4a26bdc3b1634b2114751bd4a48e1bab1396b122036b0c150d065c",
+      "source_plan_sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "source_GPU_sha256": "09f2a31b5bae43cf35703b91375b948cb7b26f9f5f0feb0a3ecd1a354995e7cd"
+    }
+  ],
+  "full_GPU_files_SHA256_verified": 6,
+  "negative_ownership_controls": [
+    "single_foreign_reader_rejected",
+    "mixed_own_foreign_reader_rejected"
+  ],
+  "scope": "Read-only finite six original accepted plans/frames. Structural CTA count reductions and ownership proofs are not dynamic GPU operation/occupancy/speed/headroom/capacity/material or numerical equivalence evidence. No shader/host candidate created, new native/compiler/GPU/CFR/solver/speed samples0.",
+  "next_obligations": "Full source scheduling/FP/locks/graphs/continuation/representation/CFV live-byte proof, actual CUDA resource/local/stack/maxthread/defaultlimits and true emitted two-stage mechanism before any numerical kernels. All fullraw/device/ordinary/fullcycle1%strictfixture/fresh16/broad/material/capacity/holdout/freshoriginal/app adoption gates remain.",
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "goal_active": true
+}

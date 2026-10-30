@@ -1,0 +1,18 @@
+{
+  "id": "E022-root-script-review",
+  "at": "2026-10-16T12:14:24Z",
+  "status": "PASS_SOURCE_ONLY",
+  "independent_script_review_pass": true,
+  "reviewer": "root, independent of plan builder",
+  "prepared_manifest_sha256": "8663776389cb6e676dc66b2596a725f9257a698f1a7a99aaf22c7d5b65e1fcf7",
+  "protocol_sha256": "65e680ac9a02e09e37919ba854c3f6a1fbe7629ef586c896589567cb48acfec8",
+  "checks": [
+    "Normalized comparison against executed E021 scripts: only IDs, protocol pins, one CUDA source/copy tuple and descriptions change.",
+    "Accepted E020 reference binary/manifests and fixed evaluator remain pinned.",
+    "Three fixed alternating pairs,84/4 unit inventory,3 fixtures and23 checks per run; same2% gate and repeated fixture guard.",
+    "Fresh target and exact linked CUDA proof preserved; all162 source-map entries checked with only kernels.cu allowed to change.",
+    "Broader, wide-turn and fresh-original qualification required only if primary passes. Both wide-turn arms retain21808 dynamic shared bytes.",
+    "All script/reference pins verified and prospective run IDs/target absent."
+  ],
+  "execution": "No compiler, native test or GPU execution from this review."
+}

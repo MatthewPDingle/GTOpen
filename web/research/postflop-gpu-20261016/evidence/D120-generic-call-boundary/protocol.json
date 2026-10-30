@@ -1,0 +1,21 @@
+{
+  "id": "D120",
+  "at": "2026-10-18T03:02:06.653626+00:00",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D120-prepare.py": "bdc42dbddec50e71173a8cec07045802298289005ee52ede2daf1e8fda18e041",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\resource-feasibility-policy-20261017.md": "eaa3f168c57a1f390510ac21454fcce3ac0bc454e1ef9a49f73876ec9cda393c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E074-source\\baseline.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E074-source\\candidate.cu": "c8b6289a1520d728f43d240b4abd1bb4152db22a24354bc464f3fdbde40b1fd0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E074-source\\candidate.patch": "09cf1e5f63f10705b93d25702b5874ce5f23a40293550739c1a55b1d0f40601f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D120-generic-call-boundary\\history.json": "c0196c5ccf54dcc9e28fcb9d99a9cb0f09b08a474f303083cbc5f3fdc16ed508"
+  },
+  "scope": "Source/ABI/forwarding/novelty only; no compiler/resource/app kernel/solve/performance execution.",
+  "hypothesis": "Keep all inline commonarity2/3/4paths, send only original genericNA0fallback through one __noinline__device wrapper that force-inlines the exact original NA0helper. May reduce common entry register budget; call/stack/scheduling costs may instead hurt.",
+  "prospective_resource_prerequisites": "Actualcompute120andcompute75, unchanged8globalPTXentries and20parameterup_actionABI, actual emitted private helper+call. Actualup_actionregistercount must strictly decrease and128threadoccupancy strictly increase as the targeted mechanism. D108no new local/spill/dynamic bytes, no lowermaxthreads/defaultfit/positive64/128/256occupancy; exactstatic/dynamic reservations. Record stack/local/call-frame evidence and disclose unmeasured costs. Failure closes wrapper/helper/call/dispatch placement/aritysubset variants, no sweep/retry.",
+  "acceptance": "Resource reduction is no numerical/speed/no-tradeoff proof. Fixed full raw generic/common GPU controls and all unrounded1%/strictfixture/fresh16/broad/state/F32/save/resume/continuation/actualCPU/host+GPUpeak/capacity/holdout/cumulative qualification required. No altered arithmetic/precision/quality or sample rescue.",
+  "candidate_accepted": false
+}

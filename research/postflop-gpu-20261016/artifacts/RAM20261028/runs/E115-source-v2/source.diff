@@ -1,0 +1,192 @@
+--- baseline/crates/solver/src/gpu/arena.rs
++++ candidate/crates/solver/src/gpu/arena.rs
+@@ -7,6 +7,7 @@
+ 
+ struct ActiveBlock {
+     node: u32,
++    device_node: u32,
+     host: u64,
+     device: usize,
+     len: usize,
+@@ -16,6 +17,7 @@
+ 
+ struct InactiveBlock {
+     node: u32,
++    device_node: u32,
+     host: u64,
+     len: usize,
+     // usize::MAX represents a block of positive-zero bits. Signed zero and
+@@ -62,6 +64,21 @@
+ }
+ 
+ impl ArenaLayout {
++    pub(super) fn is_compact(&self) -> bool { self.compact }
++
++    pub(super) fn set_device_nodes(&mut self, forward: &[u32]) {
++        for block in &mut self.active { block.device_node = forward[block.node as usize]; }
++        for block in &mut self.inactive { block.device_node = forward[block.node as usize]; }
++    }
++
++    pub(super) fn device_node(&self, node: u32) -> Option<u32> {
++        if let Ok(i) = self.active.binary_search_by_key(&node, |b| b.node) {
++            return Some(self.active[i].device_node);
++        }
++        self.inactive.binary_search_by_key(&node, |b| b.node).ok()
++            .map(|i| self.inactive[i].device_node)
++    }
++
+     pub(super) fn new(solver: &Solver, plan: &GpuPlan, p: usize) -> Self {
+         let len = plan.arena_elements[p];
+         let compact = len != solver.spot.tree.data_size[p] as usize
+@@ -82,12 +99,12 @@
+                 if off == u64::MAX {
+                     max_inactive = max_inactive.max(count);
+                     layout.inactive.push(InactiveBlock {
+-                        node: i as u32, host: node.data_offset, len: count,
++                        node: i as u32, device_node: i as u32, host: node.data_offset, len: count,
+                         initial: [usize::MAX; 2],
+                     });
+                 } else {
+                     layout.active.push(ActiveBlock {
+-                        node: i as u32, host: node.data_offset, device: off as usize, len: count,
++                        node: i as u32, device_node: i as u32, host: node.data_offset, device: off as usize, len: count,
+                     });
+                 }
+             }
+@@ -248,7 +265,7 @@
+         ArenaLayout {
+             compact, len: 4, active: Vec::new(), copies: Vec::new(),
+             inactive: if compact {
+-                vec![InactiveBlock { node: 1, host: 2, len: 2, initial: [usize::MAX; 2] }]
++                vec![InactiveBlock { node: 1, device_node: 1, host: 2, len: 2, initial: [usize::MAX; 2] }]
+             } else { Vec::new() },
+             initial: [Vec::new(), Vec::new()], zeros: vec![0.0; 2],
+         }
+--- baseline/crates/solver/src/gpu/mod.rs
++++ candidate/crates/solver/src/gpu/mod.rs
+@@ -7,6 +7,7 @@
+ 
+ pub mod plan;
+ mod arena;
++mod metadata;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+ #[cfg(feature = "preflop-research")]
+@@ -121,6 +122,7 @@
+     d_hand_perm: [CudaSlice<u32>; 2],
+     /// Orbit folding active: syncs must mark the CPU solver sym-dirty.
+     iso_active: bool,
++    metadata_ordered: bool,
+     d_rsrc: [CudaSlice<u32>; 2],
+     d_children: CudaSlice<u32>,
+     // device: hands
+@@ -210,6 +212,15 @@
+     /// Check the configured traversal's compact buffers before device allocation.
+     /// Build the plan once and reuse it for both the budget check and upload.
+     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
++        Self::new_with_budget_layout(solver, budget_bytes, true)
++    }
++
++    // Extra continuation projection arrays retain CPU node indexing.
++    fn new_original_layout(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
++        Self::new_with_budget_layout(solver, budget_bytes, false)
++    }
++
++    fn new_with_budget_layout(solver: &Solver, budget_bytes: u64, allow_order: bool) -> Result<GpuSolver, String> {
+         if solver.algo == Algorithm::PcfrPlus {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+@@ -300,7 +311,20 @@
+             arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
+             arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
+         ];
+-        let (lock_off, lock_sigma) = build_lock_table(solver);
++        let (mut lock_off, lock_sigma) = build_lock_table(solver);
++        let metadata_ordered = allow_order && metadata::eligible(
++            &plan, &arena_layout, h_staging.as_mut_slice(), solver.spot.tree.children.len());
++        let d_children = if metadata_ordered {
++            metadata::prepare(&mut plan, &mut arena_layout, &mut lock_off, h_staging.as_mut_slice());
++            let children = metadata::children_image(
++                &solver.spot.tree.children, &plan.reach_src[0], h_staging.as_mut_slice());
++            let device = stream.clone_htod(children).map_err(e)?;
++            // The pinned scratch is reused below and for all later readback.
++            stream.synchronize().map_err(e)?;
++            device
++        } else {
++            stream.clone_htod(&solver.spot.tree.children).map_err(e)?
++        };
+ 
+         let n = plan.num_nodes;
+         let nh = plan.nh;
+@@ -369,8 +393,9 @@
+             d_cc_perm: up32(&plan.cc_perm)?,
+             d_hand_perm: [up32(&plan.hand_perm_flat[0])?, up32(&plan.hand_perm_flat[1])?],
+             iso_active: plan.iso_active,
++            metadata_ordered,
+             d_rsrc: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?],
+-            d_children: up32(&solver.spot.tree.children)?,
++            d_children,
+             d_fold_card_off: [up32(&fold_card_off[0])?, up32(&fold_card_off[1])?],
+             d_fold_card_idx: [up32(&fold_card_idx[0])?, up32(&fold_card_idx[1])?],
+             d_hand_c1: [up32(&plan.hand_c1[0])?, up32(&plan.hand_c1[1])?],
+@@ -1076,7 +1101,20 @@
+         // old device buffers. The server's mutex ordering already prevents an
+         // overlap, but the safety of a device free shouldn't depend on it.
+         self.stream.synchronize().map_err(e)?;
+-        let (lock_off, lock_sigma) = build_lock_table(solver);
++        let mut nonaction_plan = None;
++        let (lock_off, lock_sigma) = build_lock_table_mapped(solver, |node| {
++            if !self.metadata_ordered { return node; }
++            if let Some(device) = self.arena_layout[0].device_node(node)
++                .or_else(|| self.arena_layout[1].device_node(node)) { return device; }
++            // Public lock APIs accept action nodes only. Preserve even manual
++            // library nonaction entries without retaining a full mapping.
++            let plan = nonaction_plan.get_or_insert_with(|| {
++                let mut plan = GpuPlan::build(&solver.spot, self.iso_active);
++                metadata::build_map(&mut plan);
++                plan
++            });
++            plan.reach_src[0][node as usize]
++        });
+         self.d_lock_off = self.stream.clone_htod(&lock_off).map_err(e)?;
+         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
+         // captured graphs hold pointers to the old lock buffers
+@@ -1141,11 +1179,15 @@
+ 
+ /// Per-node offset (-1 = unlocked) plus concatenated locked sigmas.
+ fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
++    build_lock_table_mapped(solver, |node| node)
++}
++
++fn build_lock_table_mapped(solver: &Solver, mut node: impl FnMut(u32) -> u32) -> (Vec<i64>, Vec<f32>) {
+     let n = solver.spot.tree.nodes.len();
+     let mut off = vec![-1i64; n];
+     let mut sigma = Vec::new();
+     for (&node_idx, lock) in &solver.locks {
+-        off[node_idx as usize] = sigma.len() as i64;
++        off[node(node_idx) as usize] = sigma.len() as i64;
+         sigma.extend_from_slice(lock);
+     }
+     if sigma.is_empty() {
+--- baseline/crates/solver/src/gpu/continuation.rs
++++ candidate/crates/solver/src/gpu/continuation.rs
+@@ -62,7 +62,7 @@
+             if !host.spot.suit_perms.contains(&composed) {return Err("suit permutations are not a closed group".into());}
+         }}
+         let metadata_bytes=host.spot.tree.nodes.len() as u64*if future_card_orbits {4} else {12};
+-        let gpu=GpuSolver::new_with_budget(host,budget.checked_sub(metadata_bytes)
++        let gpu=GpuSolver::new_original_layout(host,budget.checked_sub(metadata_bytes)
+             .ok_or("budget too small for symmetry metadata")?)?;
+         let mut masks=vec![1u32;host.spot.tree.nodes.len()];
+         let mut stack=vec![(0u32,crate::game::Dealt::default())];
+--- baseline/crates/solver/src/gpu/continuation_paging.rs
++++ candidate/crates/solver/src/gpu/continuation_paging.rs
+@@ -70,7 +70,7 @@
+         Self::validate(host)?;
+         // Force full action layouts, so host arenas are the sole parked copy.
+         // The caller must preflight individual and total resident metadata.
+-        let mut gpu = GpuSolver::new(host)?;
++        let mut gpu = GpuSolver::new_original_layout(host, u64::MAX)?;
+         gpu.stream.synchronize().map_err(e)?;
+         let buffers = take(&mut gpu)?;
+         let lengths = std::array::from_fn(|i| buffers[i].len());

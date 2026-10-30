@@ -1,0 +1,73 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -78,6 +78,7 @@
+     f_copy_root: CudaFunction,
+     f_down_action: CudaFunction,
+     f_down_chance: CudaFunction,
++    f_down_chance_parent: CudaFunction,
+     f_up_fold: CudaFunction,
+     f_up_show: CudaFunction,
+     f_up_chance: CudaFunction,
+@@ -331,6 +332,7 @@
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
++            f_down_chance_parent: func("down_chance_parent")?,
+             f_up_fold: func("up_fold")?,
+             f_up_show: func("up_show")?,
+             f_up_chance: func("up_chance")?,
+@@ -618,18 +620,21 @@
+                         .map_err(e)?;
+                 }
+             }
+-            let sp = self.chance_spans[l];
++            let sp = self.chance_node_spans[l];
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+                 unsafe {
+                     self.stream
+-                        .launch_builder(&self.f_down_chance)
+-                        .arg(&self.d_chance_parents)
+-                        .arg(&self.d_chance_children)
+-                        .arg(&self.d_chance_cards)
++                        .launch_builder(&self.f_down_chance_parent)
++                        .arg(&self.d_chance_nodes)
+                         .arg(&start)
+                         .arg(&count)
++                        .arg(&self.d_cc_start)
++                        .arg(&self.d_cc_count)
++                        .arg(&self.d_cc_card)
++                        .arg(&self.d_cc_child)
++                        .arg(&self.d_cc_perm)
+                         .arg(&self.d_rsrc[0])
+                         .arg(&self.d_rsrc[1])
+                         .arg(&self.d_hand_mask[0])
+@@ -850,19 +855,22 @@
+                 }
+                 prof_acc(&self.stream, &mut prof, 1, t0)?;
+             }
+-            let sp = self.chance_spans[l];
++            let sp = self.chance_node_spans[l];
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+                 let t0 = profq(&prof);
+                 unsafe {
+                     self.stream
+-                        .launch_builder(&self.f_down_chance)
+-                        .arg(&self.d_chance_parents)
+-                        .arg(&self.d_chance_children)
+-                        .arg(&self.d_chance_cards)
++                        .launch_builder(&self.f_down_chance_parent)
++                        .arg(&self.d_chance_nodes)
+                         .arg(&start)
+                         .arg(&count)
++                        .arg(&self.d_cc_start)
++                        .arg(&self.d_cc_count)
++                        .arg(&self.d_cc_card)
++                        .arg(&self.d_cc_child)
++                        .arg(&self.d_cc_perm)
+                         .arg(&self.d_rsrc[0])
+                         .arg(&self.d_rsrc[1])
+                         .arg(&self.d_hand_mask[0])

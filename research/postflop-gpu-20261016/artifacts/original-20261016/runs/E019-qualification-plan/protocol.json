@@ -1,0 +1,502 @@
+{
+  "id": "E019-qualification-plan",
+  "at": "2026-10-16T10:19:52.899178+00:00",
+  "status": "SOURCE_ONLY_PROSPECTIVE_CONDITIONAL_ON_PRIMARY_PASS",
+  "actual_run_ids_reserved": false,
+  "executed": false,
+  "production_edits": false,
+  "entry_gate": [
+    "Terminal E019 primary3-pair report qualifies >=2% aggregate and no registered repeatable fixture regression.",
+    "Every primary non-timing field exact and V019-unit exact84 passed/0 failed/4 ignored/0 measured/0 filtered.",
+    "Independent primary/source/D036 audits pass; source and binaries unchanged. No broader build or native launch based on partial timings."
+  ],
+  "identity_bindings": "All ${...} roles are symbols, not IDs. Parent seals a separate bindings/commands manifest before any broader native run; each value must be unique and absent from runs, dashboard and comparison output paths. No outcome-driven rebinding/extension. Candidate binaries/manifests and all source/input hashes are pinned before execution and verified after each run.",
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "base_environment": {
+    "RAYON_NUM_THREADS": "16",
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": null,
+    "CARGO_TARGET_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\build",
+    "NVRTC_PATH_PREFIX": "X:/Dev/GTOpen/.cuda-nvrtc/nvidia/cuda_nvrtc/bin"
+  },
+  "build_order": [
+    {
+      "purpose": "Ordinary GPU integration and frozen state/menu/resume controls",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--features",
+        "gpu",
+        "--test",
+        "postflop_state_perf",
+        "--test",
+        "postflop_action_menus",
+        "--test",
+        "postflop_resume_state",
+        "--test",
+        "gpu",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "expected_targets": [
+        "postflop_state_perf",
+        "postflop_action_menus",
+        "postflop_resume_state",
+        "gpu"
+      ]
+    },
+    {
+      "purpose": "Only selected feature-gated continuation tests; no full preflop research suite",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "-p",
+        "solver",
+        "--features",
+        "preflop-research",
+        "--lib",
+        "--test",
+        "continuation_paging",
+        "--test",
+        "continuation_symmetry",
+        "--no-run",
+        "--message-format=json"
+      ],
+      "expected_targets": [
+        "solver",
+        "continuation_paging",
+        "continuation_symmetry"
+      ],
+      "copy_target_names": {
+        "solver": "E019-continuation-tests",
+        "continuation_paging": "E019-continuation_paging",
+        "continuation_symmetry": "E019-continuation_symmetry"
+      }
+    }
+  ],
+  "build_contract": "Both builds finish before the six cumulative runs. Serialize under gpu-run.lock; live GET-only idle preflight; >=50GiB free+peak reservation. Preserve command/environment/logs, exact source identities before/after and immutable copies/manifests. Capture Cargo JSON target paths instead of guessing target filenames. Never overwrite the primary E019-postflop_autoresearch executable. Child cleanup stays inside lock on failure; heartbeat errors nonfatal. Each control source identity equals the primary E019 source map, differing from E015 only by the approved kernel. No feature-enabled binary substitutes for the gpu-only timing binary.",
+  "correctness_run_order": [
+    {
+      "role": "STATE_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${STATE_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_state_perf.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_state_perf.manifest.json",
+        "--test",
+        "postflop_states"
+      ],
+      "gate": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-state-baseline; metrics must be empty."
+    },
+    {
+      "role": "MENU_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${MENU_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_action_menus.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_action_menus.manifest.json",
+        "--test",
+        "postflop_action_menus"
+      ],
+      "gate": "One executed ignored test;12 ordered records/24 exact snapshots vs V000-menu-baseline; metrics must be empty."
+    },
+    {
+      "role": "RESUME_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${RESUME_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_resume_state.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_resume_state.manifest.json",
+        "--test",
+        "postflop_resume_state"
+      ],
+      "gate": "One executed ignored test;16 ordered records/112 exact snapshots vs V000-resume-baseline-r; metrics empty; exact raw/save/query/exploit fields."
+    },
+    {
+      "role": "GPU_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${GPU_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-gpu.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-gpu.manifest.json",
+        "--test",
+        "*",
+        "--not-ignored"
+      ],
+      "gate": "Complete tests/gpu.rs ordinary suite:6 passed,0 failed,0 ignored,0 measured,0 filtered. Internal CPU/GPU tolerance controls are distinct from bit-exact original comparisons."
+    },
+    {
+      "role": "F32_ORIGINAL_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${F32_ORIGINAL_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "environment_override": {
+        "POSTFLOP_AUTORESEARCH_STORAGE": "f32"
+      },
+      "gate": "One executed ignored test, all3 fixtures; raw results identical to report; complete non-timing equality to preserved V004-f32-baseline."
+    },
+    {
+      "role": "F32_CANDIDATE_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${F32_CANDIDATE_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "environment_override": {
+        "POSTFLOP_AUTORESEARCH_STORAGE": "f32"
+      },
+      "gate": "One executed ignored test, all3 fixtures; every non-timing/config/state field exact vs fresh original. No F32 speed claim."
+    },
+    {
+      "role": "PAGING_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${PAGING_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation_paging.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation_paging.manifest.json",
+        "--test",
+        "paging_preserves_resident_trajectories_and_rejects_invalid_inputs",
+        "--not-ignored"
+      ],
+      "gate": "Exactly named test1 passed/0 failed/0 ignored;160 alternating board/player sweeps; exact CFVs+F32 arenas and rejected invalid-input state unchanged."
+    },
+    {
+      "role": "REJECTION_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${REJECTION_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation_symmetry.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation_symmetry.manifest.json",
+        "--test",
+        "symmetric_continuation_rejects_unsupported_inputs_without_mutation",
+        "--not-ignored"
+      ],
+      "gate": "Exactly named test1 passed/0 failed/0 ignored; invalid/nonfinite/asymmetric roots and unsupported host states rejected without mutation."
+    },
+    {
+      "role": "STORED_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${STORED_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "validation",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation-tests.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-continuation-tests.manifest.json",
+        "--test",
+        "gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes",
+        "--not-ignored"
+      ],
+      "environment_override": {
+        "GTO_SSD_STUDY_DIR": "${STORED_STATE_DIR}"
+      },
+      "gate": "Exactly fully qualified test1 passed/0 failed/0 ignored;720 unique pass rows, all passed; one summary720, full_device_arrays_bitwise_equal/restored_arrays_bitwise_equal/values_bitwise_equal all true. Explicit unique bulk GTO_SSD_STUDY_DIR recorded; test uses unlimited RAM budget, no forced SSD-spill claim."
+    }
+  ],
+  "stop_on_correctness_failure": true,
+  "controls_comparison_command": [
+    "C:/Program Files/Python312/python.exe",
+    "-B",
+    "tools/postflop_validate_controls.py",
+    "--id",
+    "${CONTROLS_COMPARISON_ID}",
+    "--baseline-runs",
+    "V000-state-baseline",
+    "V000-menu-baseline",
+    "V000-resume-baseline-r",
+    "--candidate-runs",
+    "${STATE_ID}",
+    "${MENU_ID}",
+    "${RESUME_ID}"
+  ],
+  "f32_comparison_policy": {
+    "fixtures": [
+      "rainbow",
+      "two-tone",
+      "river"
+    ],
+    "known_iterations": [
+      200,
+      200,
+      60
+    ],
+    "ignored_fields_only": [
+      "build_ms",
+      "init_ms",
+      "solve_ms",
+      "readback_ms",
+      "full_cycle_ms",
+      "fingerprint_ms_excluded"
+    ],
+    "compare": "All remaining top-level and nested fields, including config,state_fingerprint,root_strategy_bits,exploit_bits,stopping iteration, target settings and storage, exactly equal. Raw AUTORESEARCH_RESULT records must equal report.results. Verify report/raw/binary/manifest/evaluator source hashes; target_met true, target_pct0.3,check_every20,max_iterations400. Correctness only; do not promote component or F32 timing."
+  },
+  "cumulative_run_order": [
+    {
+      "role": "CUM_B1_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_B1_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "baseline",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": false
+    },
+    {
+      "role": "CUM_C1_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_C1_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "candidate",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": true
+    },
+    {
+      "role": "CUM_C2_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_C2_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "candidate",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": true
+    },
+    {
+      "role": "CUM_B2_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_B2_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "baseline",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": false
+    },
+    {
+      "role": "CUM_B3_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_B3_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "baseline",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/baseline-complete.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": false
+    },
+    {
+      "role": "CUM_C3_ID",
+      "command": [
+        "C:/Program Files/Python312/python.exe",
+        "-B",
+        "tools/postflop_autoresearch.py",
+        "--id",
+        "${CUM_C3_ID}",
+        "--title",
+        "E019 prospective broader qualification",
+        "--kind",
+        "candidate",
+        "--binary",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.exe",
+        "--build-manifest",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries/E019-postflop_autoresearch.manifest.json",
+        "--test",
+        "postflop_complete_cycle"
+      ],
+      "same_binary_as_primary_candidate_required": true
+    }
+  ],
+  "cumulative_pairs": [
+    {
+      "baseline": "${CUM_B1_ID}",
+      "candidate": "${CUM_C1_ID}"
+    },
+    {
+      "baseline": "${CUM_B2_ID}",
+      "candidate": "${CUM_C2_ID}"
+    },
+    {
+      "baseline": "${CUM_B3_ID}",
+      "candidate": "${CUM_C3_ID}"
+    }
+  ],
+  "cumulative_gates": {
+    "count": "exactly3 fresh measurements per binary; all retained; no exclusions or extension",
+    "aggregate": "sum of per-fixture full-cycle medians; reduction >=2% vs immutable original baseline-complete",
+    "fixture": "Reject if candidate fixture median >3% slower and at least2of3 paired regressions >3%. All fixtures always included.",
+    "exactness": "Every result/config non-timing field exact across all6 compressed runs, plus immutable original anchors; raw records==report records; finite timings/quality and full hashes verified.",
+    "cache": "Warm-driver-cache cohort disclosed; no resets or selective warmups and no cold-start claim.",
+    "stop": "Once complete, assess all3pairs. Failure rejects; no outcome-triggered extension/reclassification. Operational failures remain visible and stop for separate evidence review."
+  },
+  "cumulative_compare_dry_run": [
+    "C:/Program Files/Python312/python.exe",
+    "-B",
+    "tools/postflop_compare.py",
+    "--id",
+    "${CUMULATIVE_COMPARISON_ID}",
+    "--candidate-id",
+    "E019R1",
+    "--baseline-runs",
+    "${CUM_B1_ID}",
+    "${CUM_B2_ID}",
+    "${CUM_B3_ID}",
+    "--candidate-runs",
+    "${CUM_C1_ID}",
+    "${CUM_C2_ID}",
+    "${CUM_C3_ID}",
+    "--warm-cache-cohort",
+    "--dry-run"
+  ],
+  "compare_adapter": "--candidate-id must reference actual native primary E019R1 report, not planned logical E019 row. Pin byte-identical runs/E019R1.patch alias to the reviewed E019 full patch if absent; never overwrite it. Primary E019R1 binary must equal all fresh cumulative candidate binaries. The helper can mark qualifying/rejected only, never accept. Prepare terminal publication only after independent audit; a gate failure uses --reject without --dry-run, success uses ordinary publication, retaining all evidence.",
+  "acceptance": "Only after incremental primary AND cumulative original gates, all broader correctness checks, source review and independent raw-evidence audit pass. Research validation is separate from main integration/deployment; no live server mutation in this plan.",
+  "limits": [
+    "No statistical significance claim from three pairs.",
+    "No F32, saved-state, API, cold-start or SSD-spill performance qualification.",
+    "Continuation comparisons share changed up_fold on both sides; they prove integration consistency, not original-kernel equivalence.",
+    "No added graph/ownership/ABI test required: production modification is only the reduction body; captured/eager/eval/lock/resume coverage exists.",
+    "Do not launch full preflop research, rejected E016 controls or closed historical programs."
+  ]
+}

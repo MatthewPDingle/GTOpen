@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "method": "research-export-only-bounded-sources-v1",
+  "created": 1790925930.9017928,
+  "originals_preserved": true,
+  "sources": [
+    {
+      "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_v1.rs",
+      "original_sha256": "8c1244694735cced671819cf4e28367e749da4bcc832761e31b058fc5d52d9fc",
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs",
+      "new_sha256": "7eaa77dfaf433baa1ebcc48b067dab672a6a47faab623bd9feac70c916c6e0c5",
+      "previous_uncompiled_sha256": "3934ff5c42eed9ce05c4a0fac82197371fe370c9ad149a405ece37cf8ce7af05"
+    },
+    {
+      "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_v1.rs",
+      "original_sha256": "b450db3e9c5e71503e91a2f3719f6ee98cc0e395316761c2f804a04995819dbd",
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs",
+      "new_sha256": "18b1e6a7bb4137ee1db4f189871f1f8a84852a8c5dff0e01ea4aa43e12a432ee",
+      "previous_uncompiled_sha256": "5c69e821a668528966b3757a6f2eb2824db170d8df16d69813bb86649cdc38aa"
+    },
+    {
+      "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_v2.rs",
+      "original_sha256": "0c8097f0aea2882eda4d2aa461ddbcc590660d1c439b24c864496a6e5530f846",
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs",
+      "new_sha256": "550d3cb460552b9a1628cd44de7a997383e5c9b3bc30a86d72af6f015ac77daa",
+      "previous_uncompiled_sha256": "9c93e7bcbcf55c814fb36ea78140560a0e1778cc0f289208bb8c77d3608cc6a7"
+    },
+    {
+      "original": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_v1.rs",
+      "original_sha256": "eccc329a887d34cfb25bb1a8825c7a817dbe115429c4e7175f0ea908daaf9be7",
+      "new": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs",
+      "new_sha256": "e3ff51bb28657327dea8303ce45a825cf0a5412ea68f745aea9dfc3f49b2d5ac",
+      "previous_uncompiled_sha256": "def011fdf0b60c0e29f722befc047dd00ef5338dca611a04d4982b4019c273de"
+    }
+  ],
+  "helper": {
+    "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\research_bounded_output_v1.rs",
+    "sha256": "dd61cf57460fbe409c199f48a1149610bebadf8aa97eb3b602c8add171e19da9"
+  },
+  "failure_reserve": 256,
+  "board_ceiling": 2000000000,
+  "transport_ceiling": 64000000,
+  "optional_final_limit_argument": "--output-byte-limit=",
+  "scope": "Serialization/resource boundary only; no poker calculation, native run or accuracy evidence.",
+  "correction": "Helper declaration moved below original inner docs and attributes; v1 snapshots preserved. No compilation or native invocation occurred before correction.",
+  "previous_publication": {
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounded-export-sources-v1\\publication.json",
+    "sha256": "e4344bb837b5c1bfeeb11de3d185d2a59340ce1371d01490c62650476d5a8a98"
+  }
+}

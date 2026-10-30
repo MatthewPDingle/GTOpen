@@ -1,0 +1,52 @@
+{
+  "purpose": "Prospective analytic precision review; no new evaluation draws or observed policy outcomes",
+  "source_hashes": {
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\SHOWDOWN-COMPLETE-EVALUATION-PLAN.md": "46a501625edfe9c312ed5e1e6fb5a20a6978e434ae1132ad82f594f01bdc7440",
+    "tools\\research\\hu_showdown_complete_evaluation_v2_20260926.py": "b81a90716c79c7012b81913605727ccece1b929df3972c450cc4977e75b157da",
+    "tools\\research\\hu_showdown_complete_evaluation_review_v2_20260926.py": "266e8982e77a35bd4c2e45106535c045b9ebedb0e0d2a1fe15d89b937aa03bd4",
+    "tools\\research\\crossed_complete_policy_comparison_v1.py": "a336c7065ebe769dfd0d1309596b7dce3f74af35c71acc3e824229de65fecb38",
+    "tools\\research\\sampled_evaluation_intervals_v1.py": "bc32655c0a0e3367a1ec510472ea030c2e15542451c32a84cabcca3f2a09943e",
+    "tools\\research\\sampled_physical_deals_v1.py": "38b855209faffecfa500cb4b501b955c57ab5bfae5c9255d4a0607c7ff659a1a",
+    "tools\\research\\complete_bank_root_stability_v1.py": "2bfa682fed6ea0130933947c3308c0e181ff4263c820dd77cf0762f67fff1f0f"
+  },
+  "paper": "https://www.learningtheory.org/colt2009/papers/012.pdf",
+  "theorem": 4,
+  "stack": 200.0,
+  "dead_money": 0.5,
+  "deals": 65536,
+  "contrasts": 8,
+  "looks": 1,
+  "family_error_probability": 0.05,
+  "difference_bounds": [
+    -400.5,
+    400.5
+  ],
+  "two_sided_log_factor": 6.461468176353717,
+  "minimum_unclipped_radius_bb_per_entry": 0.18427533412077662,
+  "illustrative_sample_standard_deviations": [
+    {
+      "sd": 0,
+      "unclipped_radius": 0.18427533412077662
+    },
+    {
+      "sd": 5,
+      "unclipped_radius": 0.25448722055642153
+    },
+    {
+      "sd": 10,
+      "unclipped_radius": 0.3246991069920664
+    },
+    {
+      "sd": 20,
+      "unclipped_radius": 0.4651228798633562
+    },
+    {
+      "sd": 40,
+      "unclipped_radius": 0.7459704256059358
+    }
+  ],
+  "fresh_evaluation_deals_drawn": 0,
+  "trial_or_inference_code_modified": false,
+  "interpretation": "Illustrative widths, not prospective power or measured variance. One fixed complete sample remains required. Confidence intervals spanning zero do not establish equivalence; these comparisons do not bound exploitability."
+}

@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-18T08:56:00.047117+00:00",
+  "bounded_local_history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "warp.*node|node.*warp|blockIdx.x.*warp|threadIdx.x.*>> 5",
+        "--",
+        "crates/solver/src/gpu/kernels.cu",
+        "crates/solver/src/gpu/mod.rs"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "-i",
+        "warp.{0,40}node|node.{0,40}warp|warp.{0,20}pack|pack.{0,20}warp",
+        "research/postflop-gpu-20261016/experiments.md"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "no_matching_history_lines": true,
+  "limits": "Bounded current ledger and local all-ref GPU source history only; no exhaustive remote novelty claim. Different from closed fixed64/256thread action blocks, arity partition/specialization, early-store, register/load/helper and fold-fusion candidates."
+}

@@ -1,0 +1,6652 @@
+{
+  "id": "D278",
+  "at": "2026-10-29T14:55:52.274934+00:00",
+  "status": "pass_scoped_retained_allocation_API_activity_audit",
+  "protocol_sha256": "8c6feb3d849348f484509dce467c69c23153cbf7c1bb70be4064c55f4333b7a4",
+  "traces": [
+    {
+      "id": "D212P1",
+      "whole_raw_sha256": "f829ca0a5ac4c5c7bdebb8b921a22acada805fa421b716f756ea2967aaff105f",
+      "raw_bytes": 11187984,
+      "whole": {
+        "record_count": 63568,
+        "record_kinds": {
+          "1": {
+            "count": 728,
+            "summed_wall_ms": 178.258054,
+            "union_wall_ms": 178.258054
+          },
+          "2": {
+            "count": 27,
+            "summed_wall_ms": 5.571175,
+            "union_wall_ms": 5.571175
+          },
+          "4": {
+            "count": 6493,
+            "summed_wall_ms": 8978.5293,
+            "union_wall_ms": 8978.5293
+          },
+          "10": {
+            "count": 56320,
+            "summed_wall_ms": 7878.482949,
+            "union_wall_ms": 7876.473048
+          }
+        },
+        "all_API_records": 6493,
+        "all_API_union_wall_ms": 8978.5293,
+        "all_API_summed_wall_ms": 8978.5293,
+        "APIs": {
+          "cuDeviceGet": {
+            "count": 3,
+            "summed_wall_ms": 0.0029,
+            "union_wall_ms": 0.0029,
+            "max_single_wall_ms": 0.0018,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRetain": {
+            "count": 3,
+            "summed_wall_ms": 270.5269,
+            "union_wall_ms": 270.5269,
+            "max_single_wall_ms": 107.2938,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuDeviceGetAttribute": {
+            "count": 9,
+            "summed_wall_ms": 0.0042,
+            "union_wall_ms": 0.0042,
+            "max_single_wall_ms": 0.0017,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuCtxGetCurrent": {
+            "count": 3149,
+            "summed_wall_ms": 0.2674,
+            "union_wall_ms": 0.2674,
+            "max_single_wall_ms": 0.0232,
+            "return_value_counts": {
+              "0": 3149
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSetCurrent": {
+            "count": 1,
+            "summed_wall_ms": 0.001,
+            "union_wall_ms": 0.001,
+            "max_single_wall_ms": 0.001,
+            "return_value_counts": {
+              "0": 1
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSynchronize": {
+            "count": 3,
+            "summed_wall_ms": 0.0064,
+            "union_wall_ms": 0.0064,
+            "max_single_wall_ms": 0.0026,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamCreate": {
+            "count": 3,
+            "summed_wall_ms": 0.0935,
+            "union_wall_ms": 0.0935,
+            "max_single_wall_ms": 0.0491,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuInit": {
+            "count": 3,
+            "summed_wall_ms": 0.1864,
+            "union_wall_ms": 0.1864,
+            "max_single_wall_ms": 0.184,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuModuleLoadData": {
+            "count": 3,
+            "summed_wall_ms": 4.5773,
+            "union_wall_ms": 4.5773,
+            "max_single_wall_ms": 2.0417,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemHostAlloc": {
+            "count": 3,
+            "summed_wall_ms": 156.1835,
+            "union_wall_ms": 156.1835,
+            "max_single_wall_ms": 87.7045,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemAllocAsync": {
+            "count": 198,
+            "summed_wall_ms": 54.5529,
+            "union_wall_ms": 54.5529,
+            "max_single_wall_ms": 24.5371,
+            "return_value_counts": {
+              "0": 198
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemsetD8Async": {
+            "count": 27,
+            "summed_wall_ms": 0.9557,
+            "union_wall_ms": 0.9557,
+            "max_single_wall_ms": 0.1315,
+            "return_value_counts": {
+              "0": 27
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamSynchronize": {
+            "count": 36,
+            "summed_wall_ms": 241.3533,
+            "union_wall_ms": 241.3533,
+            "max_single_wall_ms": 27.1226,
+            "return_value_counts": {
+              "0": 36
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuModuleGetFunction": {
+            "count": 24,
+            "summed_wall_ms": 1.6311,
+            "union_wall_ms": 1.6311,
+            "max_single_wall_ms": 0.1145,
+            "return_value_counts": {
+              "0": 24
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyHtoDAsync_v2": {
+            "count": 631,
+            "summed_wall_ms": 61.0745,
+            "union_wall_ms": 61.0745,
+            "max_single_wall_ms": 17.0595,
+            "return_value_counts": {
+              "0": 631
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuLaunchKernel": {
+            "count": 1232,
+            "summed_wall_ms": 9.0774,
+            "union_wall_ms": 9.0774,
+            "max_single_wall_ms": 0.206,
+            "return_value_counts": {
+              "0": 1232
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamBeginCapture_v2": {
+            "count": 9,
+            "summed_wall_ms": 0.0533,
+            "union_wall_ms": 0.0533,
+            "max_single_wall_ms": 0.0283,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamEndCapture": {
+            "count": 9,
+            "summed_wall_ms": 0.0134,
+            "union_wall_ms": 0.0134,
+            "max_single_wall_ms": 0.0026,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphInstantiateWithFlags": {
+            "count": 9,
+            "summed_wall_ms": 3.0167,
+            "union_wall_ms": 3.0167,
+            "max_single_wall_ms": 0.5593,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphLaunch": {
+            "count": 934,
+            "summed_wall_ms": 84.6389,
+            "union_wall_ms": 84.6389,
+            "max_single_wall_ms": 0.6288,
+            "return_value_counts": {
+              "0": 934
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoHAsync_v2": {
+            "count": 42,
+            "summed_wall_ms": 7807.9351,
+            "union_wall_ms": 7807.9351,
+            "max_single_wall_ms": 492.5525,
+            "return_value_counts": {
+              "0": 42
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoDAsync_v2": {
+            "count": 10,
+            "summed_wall_ms": 0.0233,
+            "union_wall_ms": 0.0233,
+            "max_single_wall_ms": 0.0087,
+            "return_value_counts": {
+              "0": 10
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.192,
+            "union_wall_ms": 0.192,
+            "max_single_wall_ms": 0.1001,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1086,
+            "union_wall_ms": 0.1086,
+            "max_single_wall_ms": 0.0066,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.7274,
+            "union_wall_ms": 0.7274,
+            "max_single_wall_ms": 0.2029,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.2004,
+            "union_wall_ms": 0.2004,
+            "max_single_wall_ms": 0.0745,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 78.3144,
+            "union_wall_ms": 78.3144,
+            "max_single_wall_ms": 47.3957,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 202.8103,
+            "union_wall_ms": 202.8103,
+            "max_single_wall_ms": 123.5109,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0011,
+            "union_wall_ms": 0.0011,
+            "max_single_wall_ms": 0.0006,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {
+          "1": {
+            "count": 624,
+            "bytes": 230664756
+          },
+          "2": {
+            "count": 42,
+            "bytes": 4362734328
+          },
+          "8": {
+            "count": 62,
+            "bytes": 70560
+          }
+        },
+        "memset_count": 27,
+        "memset_bytes": 9277420756,
+        "kernels": 56320
+      },
+      "phases": [
+        {
+          "fixture": "rainbow",
+          "stage": "init",
+          "phase_span_ms": 581.393,
+          "record_count": 364,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 10.316824,
+              "union_wall_ms": 10.316824
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 3.482076,
+              "union_wall_ms": 3.482076
+            },
+            "4": {
+              "count": 298,
+              "summed_wall_ms": 292.8774,
+              "union_wall_ms": 292.8774
+            }
+          },
+          "all_API_records": 298,
+          "all_API_union_wall_ms": 292.8774,
+          "all_API_summed_wall_ms": 292.8774,
+          "APIs": {
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0018,
+              "union_wall_ms": 0.0018,
+              "max_single_wall_ms": 0.0018,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 78.9099,
+              "union_wall_ms": 78.9099,
+              "max_single_wall_ms": 78.9099,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.002,
+              "union_wall_ms": 0.002,
+              "max_single_wall_ms": 0.0017,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0157,
+              "union_wall_ms": 0.0157,
+              "max_single_wall_ms": 0.0013,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSetCurrent": {
+              "count": 1,
+              "summed_wall_ms": 0.001,
+              "union_wall_ms": 0.001,
+              "max_single_wall_ms": 0.001,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0026,
+              "union_wall_ms": 0.0026,
+              "max_single_wall_ms": 0.0026,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0203,
+              "union_wall_ms": 0.0203,
+              "max_single_wall_ms": 0.0203,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.184,
+              "union_wall_ms": 0.184,
+              "max_single_wall_ms": 0.184,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.2927,
+              "union_wall_ms": 1.2927,
+              "max_single_wall_ms": 1.2927,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 87.7045,
+              "union_wall_ms": 87.7045,
+              "max_single_wall_ms": 87.7045,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 42.5583,
+              "union_wall_ms": 42.5583,
+              "max_single_wall_ms": 24.5371,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.4309,
+              "union_wall_ms": 0.4309,
+              "max_single_wall_ms": 0.1315,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 49.2126,
+              "union_wall_ms": 49.2126,
+              "max_single_wall_ms": 15.3409,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.5471,
+              "union_wall_ms": 0.5471,
+              "max_single_wall_ms": 0.1145,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 31.994,
+              "union_wall_ms": 31.994,
+              "max_single_wall_ms": 17.0595,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 119023720
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 5781612184,
+          "kernels": 0
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "solve",
+          "phase_span_ms": 4869.2055,
+          "record_count": 28632,
+          "record_kinds": {
+            "1": {
+              "count": 229,
+              "summed_wall_ms": 0.163174,
+              "union_wall_ms": 0.163174
+            },
+            "4": {
+              "count": 2173,
+              "summed_wall_ms": 4867.8558,
+              "union_wall_ms": 4867.8558
+            },
+            "10": {
+              "count": 26230,
+              "summed_wall_ms": 4855.241275,
+              "union_wall_ms": 4854.145543
+            }
+          },
+          "all_API_records": 2173,
+          "all_API_union_wall_ms": 4867.8558,
+          "all_API_summed_wall_ms": 4867.8558,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1085,
+              "summed_wall_ms": 0.0754,
+              "union_wall_ms": 0.0754,
+              "max_single_wall_ms": 0.0016,
+              "return_value_counts": {
+                "0": 1085
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 1.9992,
+              "union_wall_ms": 1.9992,
+              "max_single_wall_ms": 0.1355,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 458,
+              "summed_wall_ms": 2.7278,
+              "union_wall_ms": 2.7278,
+              "max_single_wall_ms": 0.1277,
+              "return_value_counts": {
+                "0": 458
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0145,
+              "union_wall_ms": 0.0145,
+              "max_single_wall_ms": 0.0094,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0062,
+              "union_wall_ms": 0.0062,
+              "max_single_wall_ms": 0.0026,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 1.431,
+              "union_wall_ms": 1.431,
+              "max_single_wall_ms": 0.5162,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 36.5837,
+              "union_wall_ms": 36.5837,
+              "max_single_wall_ms": 0.6288,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 11,
+              "summed_wall_ms": 4824.9997,
+              "union_wall_ms": 4824.9997,
+              "max_single_wall_ms": 492.5525,
+              "return_value_counts": {
+                "0": 11
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 2,
+              "summed_wall_ms": 0.0097,
+              "union_wall_ms": 0.0097,
+              "max_single_wall_ms": 0.0087,
+              "return_value_counts": {
+                "0": 2
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0086,
+              "union_wall_ms": 0.0086,
+              "max_single_wall_ms": 0.0086,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 11,
+              "bytes": 48240
+            },
+            "8": {
+              "count": 18,
+              "bytes": 20736
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26230
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "readback",
+          "phase_span_ms": 292.5383,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 98.387355,
+              "union_wall_ms": 98.387355
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 98.781,
+              "union_wall_ms": 98.781
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 98.781,
+          "all_API_summed_wall_ms": 98.781,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0037,
+              "union_wall_ms": 0.0037,
+              "max_single_wall_ms": 0.001,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 98.549,
+              "union_wall_ms": 98.549,
+              "max_single_wall_ms": 27.1226,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.2283,
+              "union_wall_ms": 0.2283,
+              "max_single_wall_ms": 0.0653,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 2729544064
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "init",
+          "phase_span_ms": 405.2402,
+          "record_count": 363,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 9.190914,
+              "union_wall_ms": 9.190914
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 2.081355,
+              "union_wall_ms": 2.081355
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 245.1996,
+              "union_wall_ms": 245.1996
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 245.1996,
+          "all_API_summed_wall_ms": 245.1996,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0015,
+              "union_wall_ms": 0.0015,
+              "max_single_wall_ms": 0.0015,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0007,
+              "union_wall_ms": 0.0007,
+              "max_single_wall_ms": 0.0007,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 107.2938,
+              "union_wall_ms": 107.2938,
+              "max_single_wall_ms": 107.2938,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0015,
+              "union_wall_ms": 0.0015,
+              "max_single_wall_ms": 0.0011,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0149,
+              "union_wall_ms": 0.0149,
+              "max_single_wall_ms": 0.0025,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0021,
+              "union_wall_ms": 0.0021,
+              "max_single_wall_ms": 0.0021,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0491,
+              "union_wall_ms": 0.0491,
+              "max_single_wall_ms": 0.0491,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 2.0417,
+              "union_wall_ms": 2.0417,
+              "max_single_wall_ms": 2.0417,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 68.2503,
+              "union_wall_ms": 68.2503,
+              "max_single_wall_ms": 68.2503,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 11.2047,
+              "union_wall_ms": 11.2047,
+              "max_single_wall_ms": 3.1151,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.3142,
+              "union_wall_ms": 0.3142,
+              "max_single_wall_ms": 0.0732,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 32.6092,
+              "union_wall_ms": 32.6092,
+              "max_single_wall_ms": 12.8334,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.4136,
+              "union_wall_ms": 0.4136,
+              "max_single_wall_ms": 0.0923,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 23.0023,
+              "union_wall_ms": 23.0023,
+              "max_single_wall_ms": 9.5906,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 111603416
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 3495675532,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "solve",
+          "phase_span_ms": 3023.5213,
+          "record_count": 29276,
+          "record_kinds": {
+            "1": {
+              "count": 249,
+              "summed_wall_ms": 0.17376,
+              "union_wall_ms": 0.17376
+            },
+            "4": {
+              "count": 2357,
+              "summed_wall_ms": 3022.2569,
+              "union_wall_ms": 3022.2569
+            },
+            "10": {
+              "count": 26670,
+              "summed_wall_ms": 3009.459609,
+              "union_wall_ms": 3008.54544
+            }
+          },
+          "all_API_records": 2357,
+          "all_API_union_wall_ms": 3022.2569,
+          "all_API_summed_wall_ms": 3022.2569,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1177,
+              "summed_wall_ms": 0.0845,
+              "union_wall_ms": 0.0845,
+              "max_single_wall_ms": 0.0023,
+              "return_value_counts": {
+                "0": 1177
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 1.9295,
+              "union_wall_ms": 1.9295,
+              "max_single_wall_ms": 0.1013,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 546,
+              "summed_wall_ms": 2.7699,
+              "union_wall_ms": 2.7699,
+              "max_single_wall_ms": 0.0662,
+              "return_value_counts": {
+                "0": 546
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0079,
+              "union_wall_ms": 0.0079,
+              "max_single_wall_ms": 0.0036,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0051,
+              "union_wall_ms": 0.0051,
+              "max_single_wall_ms": 0.0025,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 0.995,
+              "union_wall_ms": 0.995,
+              "max_single_wall_ms": 0.5593,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 39.8321,
+              "union_wall_ms": 39.8321,
+              "max_single_wall_ms": 0.5083,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 13,
+              "summed_wall_ms": 2976.6156,
+              "union_wall_ms": 2976.6156,
+              "max_single_wall_ms": 312.8035,
+              "return_value_counts": {
+                "0": 13
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0082,
+              "union_wall_ms": 0.0082,
+              "max_single_wall_ms": 0.0046,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0091,
+              "union_wall_ms": 0.0091,
+              "max_single_wall_ms": 0.0091,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 13,
+              "bytes": 50704
+            },
+            "8": {
+              "count": 36,
+              "bytes": 41616
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26670
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "readback",
+          "phase_span_ms": 210.523,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 59.960713,
+              "union_wall_ms": 59.960713
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 60.4439,
+              "union_wall_ms": 60.4439
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 60.4439,
+          "all_API_summed_wall_ms": 60.4439,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.007,
+              "union_wall_ms": 0.007,
+              "max_single_wall_ms": 0.002,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 60.0434,
+              "union_wall_ms": 60.0434,
+              "max_single_wall_ms": 16.6388,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.3935,
+              "union_wall_ms": 0.3935,
+              "max_single_wall_ms": 0.1216,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 1633012592
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "init",
+          "phase_span_ms": 90.086,
+          "record_count": 356,
+          "record_kinds": {
+            "1": {
+              "count": 50,
+              "summed_wall_ms": 0.015264,
+              "union_wall_ms": 0.015264
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 0.007744,
+              "union_wall_ms": 0.007744
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 89.6071,
+              "union_wall_ms": 89.6071
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 89.6071,
+          "all_API_summed_wall_ms": 89.6071,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0009,
+              "union_wall_ms": 0.0009,
+              "max_single_wall_ms": 0.0009,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0004,
+              "union_wall_ms": 0.0004,
+              "max_single_wall_ms": 0.0004,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 84.3232,
+              "union_wall_ms": 84.3232,
+              "max_single_wall_ms": 84.3232,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0007,
+              "union_wall_ms": 0.0007,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0088,
+              "union_wall_ms": 0.0088,
+              "max_single_wall_ms": 0.0006,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0017,
+              "union_wall_ms": 0.0017,
+              "max_single_wall_ms": 0.0017,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0241,
+              "union_wall_ms": 0.0241,
+              "max_single_wall_ms": 0.0241,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.2429,
+              "union_wall_ms": 1.2429,
+              "max_single_wall_ms": 1.2429,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 0.2287,
+              "union_wall_ms": 0.2287,
+              "max_single_wall_ms": 0.2287,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 0.7899,
+              "union_wall_ms": 0.7899,
+              "max_single_wall_ms": 0.1844,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.2106,
+              "union_wall_ms": 0.2106,
+              "max_single_wall_ms": 0.063,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 0.8421,
+              "union_wall_ms": 0.8421,
+              "max_single_wall_ms": 0.6295,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.6704,
+              "union_wall_ms": 0.6704,
+              "max_single_wall_ms": 0.1137,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 1.2627,
+              "union_wall_ms": 1.2627,
+              "max_single_wall_ms": 0.0655,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 50,
+              "bytes": 32100
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 133040,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "solve",
+          "phase_span_ms": 19.484,
+          "record_count": 4347,
+          "record_kinds": {
+            "1": {
+              "count": 74,
+              "summed_wall_ms": 0.046882,
+              "union_wall_ms": 0.046882
+            },
+            "4": {
+              "count": 853,
+              "summed_wall_ms": 18.9591,
+              "union_wall_ms": 18.9591
+            },
+            "10": {
+              "count": 3420,
+              "summed_wall_ms": 13.782065,
+              "union_wall_ms": 13.782065
+            }
+          },
+          "all_API_records": 853,
+          "all_API_union_wall_ms": 18.9591,
+          "all_API_summed_wall_ms": 18.9591,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 425,
+              "summed_wall_ms": 0.053,
+              "union_wall_ms": 0.053,
+              "max_single_wall_ms": 0.0232,
+              "return_value_counts": {
+                "0": 425
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 60,
+              "summed_wall_ms": 0.8868,
+              "union_wall_ms": 0.8868,
+              "max_single_wall_ms": 0.0649,
+              "return_value_counts": {
+                "0": 60
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 228,
+              "summed_wall_ms": 3.5797,
+              "union_wall_ms": 3.5797,
+              "max_single_wall_ms": 0.206,
+              "return_value_counts": {
+                "0": 228
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0309,
+              "union_wall_ms": 0.0309,
+              "max_single_wall_ms": 0.0283,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0021,
+              "union_wall_ms": 0.0021,
+              "max_single_wall_ms": 0.001,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 0.5907,
+              "union_wall_ms": 0.5907,
+              "max_single_wall_ms": 0.4227,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 120,
+              "summed_wall_ms": 8.2231,
+              "union_wall_ms": 8.2231,
+              "max_single_wall_ms": 0.3374,
+              "return_value_counts": {
+                "0": 120
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 6,
+              "summed_wall_ms": 5.5838,
+              "union_wall_ms": 5.5838,
+              "max_single_wall_ms": 1.8764,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0054,
+              "union_wall_ms": 0.0054,
+              "max_single_wall_ms": 0.0028,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0036,
+              "union_wall_ms": 0.0036,
+              "max_single_wall_ms": 0.0036,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 60,
+              "bytes": 720
+            },
+            "2": {
+              "count": 6,
+              "bytes": 13064
+            },
+            "8": {
+              "count": 8,
+              "bytes": 8208
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 3420
+        },
+        {
+          "fixture": "river",
+          "stage": "readback",
+          "phase_span_ms": 0.7289,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 0.003168,
+              "union_wall_ms": 0.003168
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 0.1917,
+              "union_wall_ms": 0.1917
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 0.1917,
+          "all_API_summed_wall_ms": 0.1917,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0018,
+              "union_wall_ms": 0.0018,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 0.0757,
+              "union_wall_ms": 0.0757,
+              "max_single_wall_ms": 0.0419,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.1142,
+              "union_wall_ms": 0.1142,
+              "max_single_wall_ms": 0.0422,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                43540
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 65664
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        }
+      ],
+      "outside_named_phases": {
+        "record_count": 158,
+        "record_kinds": {
+          "4": {
+            "count": 158,
+            "summed_wall_ms": 282.3568,
+            "union_wall_ms": 282.3568
+          }
+        },
+        "all_API_records": 158,
+        "all_API_union_wall_ms": 282.3568,
+        "all_API_summed_wall_ms": 282.3568,
+        "APIs": {
+          "cuCtxGetCurrent": {
+            "count": 6,
+            "summed_wall_ms": 0.0026,
+            "union_wall_ms": 0.0026,
+            "max_single_wall_ms": 0.001,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.192,
+            "union_wall_ms": 0.192,
+            "max_single_wall_ms": 0.1001,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1086,
+            "union_wall_ms": 0.1086,
+            "max_single_wall_ms": 0.0066,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.7274,
+            "union_wall_ms": 0.7274,
+            "max_single_wall_ms": 0.2029,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.2004,
+            "union_wall_ms": 0.2004,
+            "max_single_wall_ms": 0.0745,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 78.3144,
+            "union_wall_ms": 78.3144,
+            "max_single_wall_ms": 47.3957,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 202.8103,
+            "union_wall_ms": 202.8103,
+            "max_single_wall_ms": 123.5109,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0011,
+            "union_wall_ms": 0.0011,
+            "max_single_wall_ms": 0.0006,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              43540
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {},
+        "memset_count": 0,
+        "memset_bytes": 0,
+        "kernels": 0
+      },
+      "cross_phase_records_retained_in_outside_bucket": [],
+      "unknown_driver_callback_names": [],
+      "successful_stream_ordered_allocation_API_records": 198,
+      "synchronous_ordinary_allocation_API_records": 0
+    },
+    {
+      "id": "D212P2",
+      "whole_raw_sha256": "049d905a9a9b5dae7565cdefbda9201d1a97cee2848b6d06ba5084623c07e460",
+      "raw_bytes": 11187984,
+      "whole": {
+        "record_count": 63568,
+        "record_kinds": {
+          "1": {
+            "count": 728,
+            "summed_wall_ms": 177.076182,
+            "union_wall_ms": 177.076182
+          },
+          "2": {
+            "count": 27,
+            "summed_wall_ms": 5.853668,
+            "union_wall_ms": 5.853668
+          },
+          "4": {
+            "count": 6493,
+            "summed_wall_ms": 8883.0275,
+            "union_wall_ms": 8883.0275
+          },
+          "10": {
+            "count": 56320,
+            "summed_wall_ms": 7865.212496,
+            "union_wall_ms": 7863.248073
+          }
+        },
+        "all_API_records": 6493,
+        "all_API_union_wall_ms": 8883.0275,
+        "all_API_summed_wall_ms": 8883.0275,
+        "APIs": {
+          "cuDeviceGet": {
+            "count": 3,
+            "summed_wall_ms": 0.0025,
+            "union_wall_ms": 0.0025,
+            "max_single_wall_ms": 0.0014,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRetain": {
+            "count": 3,
+            "summed_wall_ms": 232.4261,
+            "union_wall_ms": 232.4261,
+            "max_single_wall_ms": 81.982,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuDeviceGetAttribute": {
+            "count": 9,
+            "summed_wall_ms": 0.0034,
+            "union_wall_ms": 0.0034,
+            "max_single_wall_ms": 0.0013,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuCtxGetCurrent": {
+            "count": 3149,
+            "summed_wall_ms": 0.2598,
+            "union_wall_ms": 0.2598,
+            "max_single_wall_ms": 0.0019,
+            "return_value_counts": {
+              "0": 3149
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSetCurrent": {
+            "count": 1,
+            "summed_wall_ms": 0.0005,
+            "union_wall_ms": 0.0005,
+            "max_single_wall_ms": 0.0005,
+            "return_value_counts": {
+              "0": 1
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSynchronize": {
+            "count": 3,
+            "summed_wall_ms": 0.0055,
+            "union_wall_ms": 0.0055,
+            "max_single_wall_ms": 0.0023,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamCreate": {
+            "count": 3,
+            "summed_wall_ms": 0.0754,
+            "union_wall_ms": 0.0754,
+            "max_single_wall_ms": 0.0513,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuInit": {
+            "count": 3,
+            "summed_wall_ms": 0.0071,
+            "union_wall_ms": 0.0071,
+            "max_single_wall_ms": 0.004,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuModuleLoadData": {
+            "count": 3,
+            "summed_wall_ms": 3.9051,
+            "union_wall_ms": 3.9051,
+            "max_single_wall_ms": 1.4147,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemHostAlloc": {
+            "count": 3,
+            "summed_wall_ms": 139.981,
+            "union_wall_ms": 139.981,
+            "max_single_wall_ms": 70.0835,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemAllocAsync": {
+            "count": 198,
+            "summed_wall_ms": 40.4759,
+            "union_wall_ms": 40.4759,
+            "max_single_wall_ms": 14.7788,
+            "return_value_counts": {
+              "0": 198
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemsetD8Async": {
+            "count": 27,
+            "summed_wall_ms": 0.824,
+            "union_wall_ms": 0.824,
+            "max_single_wall_ms": 0.0822,
+            "return_value_counts": {
+              "0": 27
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamSynchronize": {
+            "count": 36,
+            "summed_wall_ms": 246.6265,
+            "union_wall_ms": 246.6265,
+            "max_single_wall_ms": 26.7341,
+            "return_value_counts": {
+              "0": 36
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuModuleGetFunction": {
+            "count": 24,
+            "summed_wall_ms": 1.1374,
+            "union_wall_ms": 1.1374,
+            "max_single_wall_ms": 0.1006,
+            "return_value_counts": {
+              "0": 24
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyHtoDAsync_v2": {
+            "count": 631,
+            "summed_wall_ms": 64.3063,
+            "union_wall_ms": 64.3063,
+            "max_single_wall_ms": 21.3696,
+            "return_value_counts": {
+              "0": 631
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuLaunchKernel": {
+            "count": 1232,
+            "summed_wall_ms": 7.2657,
+            "union_wall_ms": 7.2657,
+            "max_single_wall_ms": 0.0923,
+            "return_value_counts": {
+              "0": 1232
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamBeginCapture_v2": {
+            "count": 9,
+            "summed_wall_ms": 0.0261,
+            "union_wall_ms": 0.0261,
+            "max_single_wall_ms": 0.0098,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamEndCapture": {
+            "count": 9,
+            "summed_wall_ms": 0.0161,
+            "union_wall_ms": 0.0161,
+            "max_single_wall_ms": 0.0042,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphInstantiateWithFlags": {
+            "count": 9,
+            "summed_wall_ms": 2.6426,
+            "union_wall_ms": 2.6426,
+            "max_single_wall_ms": 0.6169,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphLaunch": {
+            "count": 934,
+            "summed_wall_ms": 89.6209,
+            "union_wall_ms": 89.6209,
+            "max_single_wall_ms": 0.7362,
+            "return_value_counts": {
+              "0": 934
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoHAsync_v2": {
+            "count": 42,
+            "summed_wall_ms": 7790.2121,
+            "union_wall_ms": 7790.2121,
+            "max_single_wall_ms": 516.932,
+            "return_value_counts": {
+              "0": 42
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoDAsync_v2": {
+            "count": 10,
+            "summed_wall_ms": 0.0238,
+            "union_wall_ms": 0.0238,
+            "max_single_wall_ms": 0.0089,
+            "return_value_counts": {
+              "0": 10
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.2281,
+            "union_wall_ms": 0.2281,
+            "max_single_wall_ms": 0.1189,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1347,
+            "union_wall_ms": 0.1347,
+            "max_single_wall_ms": 0.0077,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.6418,
+            "union_wall_ms": 0.6418,
+            "max_single_wall_ms": 0.1882,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.1845,
+            "union_wall_ms": 0.1845,
+            "max_single_wall_ms": 0.0495,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 91.6079,
+            "union_wall_ms": 91.6079,
+            "max_single_wall_ms": 61.9853,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 170.3855,
+            "union_wall_ms": 170.3855,
+            "max_single_wall_ms": 103.1923,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0012,
+            "union_wall_ms": 0.0012,
+            "max_single_wall_ms": 0.0006,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {
+          "1": {
+            "count": 624,
+            "bytes": 230664756
+          },
+          "2": {
+            "count": 42,
+            "bytes": 4362734328
+          },
+          "8": {
+            "count": 62,
+            "bytes": 70560
+          }
+        },
+        "memset_count": 27,
+        "memset_bytes": 9277420756,
+        "kernels": 56320
+      },
+      "phases": [
+        {
+          "fixture": "rainbow",
+          "stage": "init",
+          "phase_span_ms": 542.5466,
+          "record_count": 364,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 8.633321,
+              "union_wall_ms": 8.633321
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 3.770235,
+              "union_wall_ms": 3.770235
+            },
+            "4": {
+              "count": 298,
+              "summed_wall_ms": 263.1373,
+              "union_wall_ms": 263.1373
+            }
+          },
+          "all_API_records": 298,
+          "all_API_union_wall_ms": 263.1373,
+          "all_API_summed_wall_ms": 263.1373,
+          "APIs": {
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0014,
+              "union_wall_ms": 0.0014,
+              "max_single_wall_ms": 0.0014,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 73.8893,
+              "union_wall_ms": 73.8893,
+              "max_single_wall_ms": 73.8893,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0015,
+              "union_wall_ms": 0.0015,
+              "max_single_wall_ms": 0.0013,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0107,
+              "union_wall_ms": 0.0107,
+              "max_single_wall_ms": 0.0017,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSetCurrent": {
+              "count": 1,
+              "summed_wall_ms": 0.0005,
+              "union_wall_ms": 0.0005,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0023,
+              "union_wall_ms": 0.0023,
+              "max_single_wall_ms": 0.0023,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0098,
+              "union_wall_ms": 0.0098,
+              "max_single_wall_ms": 0.0098,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.004,
+              "union_wall_ms": 0.004,
+              "max_single_wall_ms": 0.004,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.1804,
+              "union_wall_ms": 1.1804,
+              "max_single_wall_ms": 1.1804,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 70.0835,
+              "union_wall_ms": 70.0835,
+              "max_single_wall_ms": 70.0835,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 28.7971,
+              "union_wall_ms": 28.7971,
+              "max_single_wall_ms": 14.7788,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.2674,
+              "union_wall_ms": 0.2674,
+              "max_single_wall_ms": 0.0822,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 54.6415,
+              "union_wall_ms": 54.6415,
+              "max_single_wall_ms": 18.5156,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.3395,
+              "union_wall_ms": 0.3395,
+              "max_single_wall_ms": 0.0745,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 33.9084,
+              "union_wall_ms": 33.9084,
+              "max_single_wall_ms": 21.3696,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 119023720
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 5781612184,
+          "kernels": 0
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "solve",
+          "phase_span_ms": 4841.4564,
+          "record_count": 28632,
+          "record_kinds": {
+            "1": {
+              "count": 229,
+              "summed_wall_ms": 0.163642,
+              "union_wall_ms": 0.163642
+            },
+            "4": {
+              "count": 2173,
+              "summed_wall_ms": 4840.1307,
+              "union_wall_ms": 4840.1307
+            },
+            "10": {
+              "count": 26230,
+              "summed_wall_ms": 4828.159803,
+              "union_wall_ms": 4827.117776
+            }
+          },
+          "all_API_records": 2173,
+          "all_API_union_wall_ms": 4840.1307,
+          "all_API_summed_wall_ms": 4840.1307,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1085,
+              "summed_wall_ms": 0.0769,
+              "union_wall_ms": 0.0769,
+              "max_single_wall_ms": 0.0014,
+              "return_value_counts": {
+                "0": 1085
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 2.3467,
+              "union_wall_ms": 2.3467,
+              "max_single_wall_ms": 0.1916,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 458,
+              "summed_wall_ms": 2.1694,
+              "union_wall_ms": 2.1694,
+              "max_single_wall_ms": 0.0725,
+              "return_value_counts": {
+                "0": 458
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0136,
+              "union_wall_ms": 0.0136,
+              "max_single_wall_ms": 0.0098,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0065,
+              "union_wall_ms": 0.0065,
+              "max_single_wall_ms": 0.0026,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 1.0891,
+              "union_wall_ms": 1.0891,
+              "max_single_wall_ms": 0.5303,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 40.7983,
+              "union_wall_ms": 40.7983,
+              "max_single_wall_ms": 0.7362,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 11,
+              "summed_wall_ms": 4793.6124,
+              "union_wall_ms": 4793.6124,
+              "max_single_wall_ms": 516.932,
+              "return_value_counts": {
+                "0": 11
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 2,
+              "summed_wall_ms": 0.0098,
+              "union_wall_ms": 0.0098,
+              "max_single_wall_ms": 0.0089,
+              "return_value_counts": {
+                "0": 2
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.008,
+              "union_wall_ms": 0.008,
+              "max_single_wall_ms": 0.008,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 11,
+              "bytes": 48240
+            },
+            "8": {
+              "count": 18,
+              "bytes": 20736
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26230
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "readback",
+          "phase_span_ms": 290.608,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 98.09174,
+              "union_wall_ms": 98.09174
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 98.4809,
+              "union_wall_ms": 98.4809
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 98.4809,
+          "all_API_summed_wall_ms": 98.4809,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0044,
+              "union_wall_ms": 0.0044,
+              "max_single_wall_ms": 0.0014,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 98.1793,
+              "union_wall_ms": 98.1793,
+              "max_single_wall_ms": 26.7341,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.2972,
+              "union_wall_ms": 0.2972,
+              "max_single_wall_ms": 0.1036,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 2729544064
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "init",
+          "phase_span_ms": 355.8861,
+          "record_count": 363,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 9.954747,
+              "union_wall_ms": 9.954747
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 2.075594,
+              "union_wall_ms": 2.075594
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 223.3325,
+              "union_wall_ms": 223.3325
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 223.3325,
+          "all_API_summed_wall_ms": 223.3325,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0016,
+              "union_wall_ms": 0.0016,
+              "max_single_wall_ms": 0.0016,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0007,
+              "union_wall_ms": 0.0007,
+              "max_single_wall_ms": 0.0007,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 81.982,
+              "union_wall_ms": 81.982,
+              "max_single_wall_ms": 81.982,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0009,
+              "union_wall_ms": 0.0009,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0146,
+              "union_wall_ms": 0.0146,
+              "max_single_wall_ms": 0.0014,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0014,
+              "union_wall_ms": 0.0014,
+              "max_single_wall_ms": 0.0014,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0513,
+              "union_wall_ms": 0.0513,
+              "max_single_wall_ms": 0.0513,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.4147,
+              "union_wall_ms": 1.4147,
+              "max_single_wall_ms": 1.4147,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 69.597,
+              "union_wall_ms": 69.597,
+              "max_single_wall_ms": 69.597,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 11.4881,
+              "union_wall_ms": 11.4881,
+              "max_single_wall_ms": 2.5669,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.3653,
+              "union_wall_ms": 0.3653,
+              "max_single_wall_ms": 0.0787,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 33.0963,
+              "union_wall_ms": 33.0963,
+              "max_single_wall_ms": 11.3465,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.4264,
+              "union_wall_ms": 0.4264,
+              "max_single_wall_ms": 0.1006,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 24.8922,
+              "union_wall_ms": 24.8922,
+              "max_single_wall_ms": 10.4414,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 111603416
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 3495675532,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "solve",
+          "phase_span_ms": 3039.6238,
+          "record_count": 29276,
+          "record_kinds": {
+            "1": {
+              "count": 249,
+              "summed_wall_ms": 0.175397,
+              "union_wall_ms": 0.175397
+            },
+            "4": {
+              "count": 2357,
+              "summed_wall_ms": 3037.8969,
+              "union_wall_ms": 3037.8969
+            },
+            "10": {
+              "count": 26670,
+              "summed_wall_ms": 3023.803991,
+              "union_wall_ms": 3022.881595
+            }
+          },
+          "all_API_records": 2357,
+          "all_API_union_wall_ms": 3037.8969,
+          "all_API_summed_wall_ms": 3037.8969,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1177,
+              "summed_wall_ms": 0.095,
+              "union_wall_ms": 0.095,
+              "max_single_wall_ms": 0.0019,
+              "return_value_counts": {
+                "0": 1177
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 1.9997,
+              "union_wall_ms": 1.9997,
+              "max_single_wall_ms": 0.0638,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 546,
+              "summed_wall_ms": 3.5223,
+              "union_wall_ms": 3.5223,
+              "max_single_wall_ms": 0.0923,
+              "return_value_counts": {
+                "0": 546
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0085,
+              "union_wall_ms": 0.0085,
+              "max_single_wall_ms": 0.0048,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0068,
+              "union_wall_ms": 0.0068,
+              "max_single_wall_ms": 0.0042,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 1.1016,
+              "union_wall_ms": 1.1016,
+              "max_single_wall_ms": 0.6169,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 41.9828,
+              "union_wall_ms": 41.9828,
+              "max_single_wall_ms": 0.6273,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 13,
+              "summed_wall_ms": 2989.1614,
+              "union_wall_ms": 2989.1614,
+              "max_single_wall_ms": 311.3251,
+              "return_value_counts": {
+                "0": 13
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0073,
+              "union_wall_ms": 0.0073,
+              "max_single_wall_ms": 0.0029,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0115,
+              "union_wall_ms": 0.0115,
+              "max_single_wall_ms": 0.0115,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 13,
+              "bytes": 50704
+            },
+            "8": {
+              "count": 36,
+              "bytes": 41616
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26670
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "readback",
+          "phase_span_ms": 209.0439,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 59.990298,
+              "union_wall_ms": 59.990298
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 60.3818,
+              "union_wall_ms": 60.3818
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 60.3818,
+          "all_API_summed_wall_ms": 60.3818,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0068,
+              "union_wall_ms": 0.0068,
+              "max_single_wall_ms": 0.0016,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 60.0728,
+              "union_wall_ms": 60.0728,
+              "max_single_wall_ms": 17.0118,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.3022,
+              "union_wall_ms": 0.3022,
+              "max_single_wall_ms": 0.1017,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 1633012592
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "init",
+          "phase_span_ms": 80.2961,
+          "record_count": 356,
+          "record_kinds": {
+            "1": {
+              "count": 50,
+              "summed_wall_ms": 0.015522,
+              "union_wall_ms": 0.015522
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 0.007839,
+              "union_wall_ms": 0.007839
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 80.0822,
+              "union_wall_ms": 80.0822
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 80.0822,
+          "all_API_summed_wall_ms": 80.0822,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0015,
+              "union_wall_ms": 0.0015,
+              "max_single_wall_ms": 0.0015,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0004,
+              "union_wall_ms": 0.0004,
+              "max_single_wall_ms": 0.0004,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 76.5548,
+              "union_wall_ms": 76.5548,
+              "max_single_wall_ms": 76.5548,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.001,
+              "union_wall_ms": 0.001,
+              "max_single_wall_ms": 0.0007,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0108,
+              "union_wall_ms": 0.0108,
+              "max_single_wall_ms": 0.0003,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0018,
+              "union_wall_ms": 0.0018,
+              "max_single_wall_ms": 0.0018,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0143,
+              "union_wall_ms": 0.0143,
+              "max_single_wall_ms": 0.0143,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.31,
+              "union_wall_ms": 1.31,
+              "max_single_wall_ms": 1.31,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 0.3005,
+              "union_wall_ms": 0.3005,
+              "max_single_wall_ms": 0.3005,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 0.1907,
+              "union_wall_ms": 0.1907,
+              "max_single_wall_ms": 0.1019,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.1913,
+              "union_wall_ms": 0.1913,
+              "max_single_wall_ms": 0.0503,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 0.5692,
+              "union_wall_ms": 0.5692,
+              "max_single_wall_ms": 0.5607,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.3715,
+              "union_wall_ms": 0.3715,
+              "max_single_wall_ms": 0.0762,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 0.5644,
+              "union_wall_ms": 0.5644,
+              "max_single_wall_ms": 0.0492,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 50,
+              "bytes": 32100
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 133040,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "solve",
+          "phase_span_ms": 16.5726,
+          "record_count": 4347,
+          "record_kinds": {
+            "1": {
+              "count": 74,
+              "summed_wall_ms": 0.048348,
+              "union_wall_ms": 0.048348
+            },
+            "4": {
+              "count": 853,
+              "summed_wall_ms": 16.2285,
+              "union_wall_ms": 16.2285
+            },
+            "10": {
+              "count": 3420,
+              "summed_wall_ms": 13.248702,
+              "union_wall_ms": 13.248702
+            }
+          },
+          "all_API_records": 853,
+          "all_API_union_wall_ms": 16.2285,
+          "all_API_summed_wall_ms": 16.2285,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 425,
+              "summed_wall_ms": 0.0358,
+              "union_wall_ms": 0.0358,
+              "max_single_wall_ms": 0.0002,
+              "return_value_counts": {
+                "0": 425
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 60,
+              "summed_wall_ms": 0.5949,
+              "union_wall_ms": 0.5949,
+              "max_single_wall_ms": 0.0181,
+              "return_value_counts": {
+                "0": 60
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 228,
+              "summed_wall_ms": 1.574,
+              "union_wall_ms": 1.574,
+              "max_single_wall_ms": 0.0384,
+              "return_value_counts": {
+                "0": 228
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.004,
+              "union_wall_ms": 0.004,
+              "max_single_wall_ms": 0.0019,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0028,
+              "union_wall_ms": 0.0028,
+              "max_single_wall_ms": 0.0011,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 0.4519,
+              "union_wall_ms": 0.4519,
+              "max_single_wall_ms": 0.2436,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 120,
+              "summed_wall_ms": 6.8398,
+              "union_wall_ms": 6.8398,
+              "max_single_wall_ms": 0.1522,
+              "return_value_counts": {
+                "0": 120
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 6,
+              "summed_wall_ms": 6.7163,
+              "union_wall_ms": 6.7163,
+              "max_single_wall_ms": 2.4408,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0067,
+              "union_wall_ms": 0.0067,
+              "max_single_wall_ms": 0.0031,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0023,
+              "union_wall_ms": 0.0023,
+              "max_single_wall_ms": 0.0023,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 60,
+              "bytes": 720
+            },
+            "2": {
+              "count": 6,
+              "bytes": 13064
+            },
+            "8": {
+              "count": 8,
+              "bytes": 8208
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 3420
+        },
+        {
+          "fixture": "river",
+          "stage": "readback",
+          "phase_span_ms": 0.7494,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 0.003167,
+              "union_wall_ms": 0.003167
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 0.1704,
+              "union_wall_ms": 0.1704
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 0.1704,
+          "all_API_summed_wall_ms": 0.1704,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0022,
+              "union_wall_ms": 0.0022,
+              "max_single_wall_ms": 0.0006,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 0.0456,
+              "union_wall_ms": 0.0456,
+              "max_single_wall_ms": 0.012,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.1226,
+              "union_wall_ms": 0.1226,
+              "max_single_wall_ms": 0.047,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                51104
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 65664
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        }
+      ],
+      "outside_named_phases": {
+        "record_count": 158,
+        "record_kinds": {
+          "4": {
+            "count": 158,
+            "summed_wall_ms": 263.1863,
+            "union_wall_ms": 263.1863
+          }
+        },
+        "all_API_records": 158,
+        "all_API_union_wall_ms": 263.1863,
+        "all_API_summed_wall_ms": 263.1863,
+        "APIs": {
+          "cuCtxGetCurrent": {
+            "count": 6,
+            "summed_wall_ms": 0.0026,
+            "union_wall_ms": 0.0026,
+            "max_single_wall_ms": 0.0007,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.2281,
+            "union_wall_ms": 0.2281,
+            "max_single_wall_ms": 0.1189,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1347,
+            "union_wall_ms": 0.1347,
+            "max_single_wall_ms": 0.0077,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.6418,
+            "union_wall_ms": 0.6418,
+            "max_single_wall_ms": 0.1882,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.1845,
+            "union_wall_ms": 0.1845,
+            "max_single_wall_ms": 0.0495,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 91.6079,
+            "union_wall_ms": 91.6079,
+            "max_single_wall_ms": 61.9853,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 170.3855,
+            "union_wall_ms": 170.3855,
+            "max_single_wall_ms": 103.1923,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0012,
+            "union_wall_ms": 0.0012,
+            "max_single_wall_ms": 0.0006,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              51104
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {},
+        "memset_count": 0,
+        "memset_bytes": 0,
+        "kernels": 0
+      },
+      "cross_phase_records_retained_in_outside_bucket": [],
+      "unknown_driver_callback_names": [],
+      "successful_stream_ordered_allocation_API_records": 198,
+      "synchronous_ordinary_allocation_API_records": 0
+    },
+    {
+      "id": "D212P3",
+      "whole_raw_sha256": "7602d3f5e087c8863d7f8adeea08907f7108a257f4f205ace423c01d118a69b3",
+      "raw_bytes": 11187984,
+      "whole": {
+        "record_count": 63568,
+        "record_kinds": {
+          "1": {
+            "count": 728,
+            "summed_wall_ms": 173.304609,
+            "union_wall_ms": 173.304609
+          },
+          "2": {
+            "count": 27,
+            "summed_wall_ms": 5.547983,
+            "union_wall_ms": 5.547983
+          },
+          "4": {
+            "count": 6493,
+            "summed_wall_ms": 8762.9363,
+            "union_wall_ms": 8762.9363
+          },
+          "10": {
+            "count": 56320,
+            "summed_wall_ms": 7902.174826,
+            "union_wall_ms": 7900.317945
+          }
+        },
+        "all_API_records": 6493,
+        "all_API_union_wall_ms": 8762.9363,
+        "all_API_summed_wall_ms": 8762.9363,
+        "APIs": {
+          "cuDeviceGet": {
+            "count": 3,
+            "summed_wall_ms": 0.0025,
+            "union_wall_ms": 0.0025,
+            "max_single_wall_ms": 0.0018,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRetain": {
+            "count": 3,
+            "summed_wall_ms": 219.4795,
+            "union_wall_ms": 219.4795,
+            "max_single_wall_ms": 74.3229,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuDeviceGetAttribute": {
+            "count": 9,
+            "summed_wall_ms": 0.0036,
+            "union_wall_ms": 0.0036,
+            "max_single_wall_ms": 0.0016,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuCtxGetCurrent": {
+            "count": 3149,
+            "summed_wall_ms": 0.212,
+            "union_wall_ms": 0.212,
+            "max_single_wall_ms": 0.0018,
+            "return_value_counts": {
+              "0": 3149
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSetCurrent": {
+            "count": 1,
+            "summed_wall_ms": 0.0007,
+            "union_wall_ms": 0.0007,
+            "max_single_wall_ms": 0.0007,
+            "return_value_counts": {
+              "0": 1
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuCtxSynchronize": {
+            "count": 3,
+            "summed_wall_ms": 0.0062,
+            "union_wall_ms": 0.0062,
+            "max_single_wall_ms": 0.0025,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamCreate": {
+            "count": 3,
+            "summed_wall_ms": 0.0944,
+            "union_wall_ms": 0.0944,
+            "max_single_wall_ms": 0.048,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuInit": {
+            "count": 3,
+            "summed_wall_ms": 0.0066,
+            "union_wall_ms": 0.0066,
+            "max_single_wall_ms": 0.0041,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuModuleLoadData": {
+            "count": 3,
+            "summed_wall_ms": 3.8093,
+            "union_wall_ms": 3.8093,
+            "max_single_wall_ms": 1.484,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemHostAlloc": {
+            "count": 3,
+            "summed_wall_ms": 88.0257,
+            "union_wall_ms": 88.0257,
+            "max_single_wall_ms": 50.4331,
+            "return_value_counts": {
+              "0": 3
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemAllocAsync": {
+            "count": 198,
+            "summed_wall_ms": 31.6516,
+            "union_wall_ms": 31.6516,
+            "max_single_wall_ms": 9.1667,
+            "return_value_counts": {
+              "0": 198
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemsetD8Async": {
+            "count": 27,
+            "summed_wall_ms": 0.7225,
+            "union_wall_ms": 0.7225,
+            "max_single_wall_ms": 0.113,
+            "return_value_counts": {
+              "0": 27
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamSynchronize": {
+            "count": 36,
+            "summed_wall_ms": 240.8516,
+            "union_wall_ms": 240.8516,
+            "max_single_wall_ms": 26.2738,
+            "return_value_counts": {
+              "0": 36
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuModuleGetFunction": {
+            "count": 24,
+            "summed_wall_ms": 0.9378,
+            "union_wall_ms": 0.9378,
+            "max_single_wall_ms": 0.1428,
+            "return_value_counts": {
+              "0": 24
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyHtoDAsync_v2": {
+            "count": 631,
+            "summed_wall_ms": 55.2055,
+            "union_wall_ms": 55.2055,
+            "max_single_wall_ms": 17.0885,
+            "return_value_counts": {
+              "0": 631
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuLaunchKernel": {
+            "count": 1232,
+            "summed_wall_ms": 5.7824,
+            "union_wall_ms": 5.7824,
+            "max_single_wall_ms": 0.0665,
+            "return_value_counts": {
+              "0": 1232
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamBeginCapture_v2": {
+            "count": 9,
+            "summed_wall_ms": 0.0264,
+            "union_wall_ms": 0.0264,
+            "max_single_wall_ms": 0.0093,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamEndCapture": {
+            "count": 9,
+            "summed_wall_ms": 0.012,
+            "union_wall_ms": 0.012,
+            "max_single_wall_ms": 0.0021,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphInstantiateWithFlags": {
+            "count": 9,
+            "summed_wall_ms": 2.4889,
+            "union_wall_ms": 2.4889,
+            "max_single_wall_ms": 0.5941,
+            "return_value_counts": {
+              "0": 9
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphLaunch": {
+            "count": 934,
+            "summed_wall_ms": 80.3963,
+            "union_wall_ms": 80.3963,
+            "max_single_wall_ms": 0.4949,
+            "return_value_counts": {
+              "0": 934
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoHAsync_v2": {
+            "count": 42,
+            "summed_wall_ms": 7839.5117,
+            "union_wall_ms": 7839.5117,
+            "max_single_wall_ms": 486.4152,
+            "return_value_counts": {
+              "0": 42
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemcpyDtoDAsync_v2": {
+            "count": 10,
+            "summed_wall_ms": 0.0227,
+            "union_wall_ms": 0.0227,
+            "max_single_wall_ms": 0.0104,
+            "return_value_counts": {
+              "0": 10
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.189,
+            "union_wall_ms": 0.189,
+            "max_single_wall_ms": 0.0974,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1057,
+            "union_wall_ms": 0.1057,
+            "max_single_wall_ms": 0.007,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.5571,
+            "union_wall_ms": 0.5571,
+            "max_single_wall_ms": 0.1559,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.1613,
+            "union_wall_ms": 0.1613,
+            "max_single_wall_ms": 0.0484,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 72.6241,
+            "union_wall_ms": 72.6241,
+            "max_single_wall_ms": 47.2351,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 120.0469,
+            "union_wall_ms": 120.0469,
+            "max_single_wall_ms": 80.6765,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0023,
+            "union_wall_ms": 0.0023,
+            "max_single_wall_ms": 0.0013,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {
+          "1": {
+            "count": 624,
+            "bytes": 230664756
+          },
+          "2": {
+            "count": 42,
+            "bytes": 4362734328
+          },
+          "8": {
+            "count": 62,
+            "bytes": 70560
+          }
+        },
+        "memset_count": 27,
+        "memset_bytes": 9277420756,
+        "kernels": 56320
+      },
+      "phases": [
+        {
+          "fixture": "rainbow",
+          "stage": "init",
+          "phase_span_ms": 498.6877,
+          "record_count": 364,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 8.578637,
+              "union_wall_ms": 8.578637
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 3.477438,
+              "union_wall_ms": 3.477438
+            },
+            "4": {
+              "count": 298,
+              "summed_wall_ms": 225.0969,
+              "union_wall_ms": 225.0969
+            }
+          },
+          "all_API_records": 298,
+          "all_API_union_wall_ms": 225.0969,
+          "all_API_summed_wall_ms": 225.0969,
+          "APIs": {
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0018,
+              "union_wall_ms": 0.0018,
+              "max_single_wall_ms": 0.0018,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 74.3229,
+              "union_wall_ms": 74.3229,
+              "max_single_wall_ms": 74.3229,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0018,
+              "union_wall_ms": 0.0018,
+              "max_single_wall_ms": 0.0016,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0128,
+              "union_wall_ms": 0.0128,
+              "max_single_wall_ms": 0.0017,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSetCurrent": {
+              "count": 1,
+              "summed_wall_ms": 0.0007,
+              "union_wall_ms": 0.0007,
+              "max_single_wall_ms": 0.0007,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0025,
+              "union_wall_ms": 0.0025,
+              "max_single_wall_ms": 0.0025,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0125,
+              "union_wall_ms": 0.0125,
+              "max_single_wall_ms": 0.0125,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0041,
+              "union_wall_ms": 0.0041,
+              "max_single_wall_ms": 0.0041,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.2392,
+              "union_wall_ms": 1.2392,
+              "max_single_wall_ms": 1.2392,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 50.4331,
+              "union_wall_ms": 50.4331,
+              "max_single_wall_ms": 50.4331,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 22.33,
+              "union_wall_ms": 22.33,
+              "max_single_wall_ms": 9.1667,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.3364,
+              "union_wall_ms": 0.3364,
+              "max_single_wall_ms": 0.113,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 46.7542,
+              "union_wall_ms": 46.7542,
+              "max_single_wall_ms": 14.7048,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.2738,
+              "union_wall_ms": 0.2738,
+              "max_single_wall_ms": 0.0671,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 29.3711,
+              "union_wall_ms": 29.3711,
+              "max_single_wall_ms": 17.0885,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 119023720
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 5781612184,
+          "kernels": 0
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "solve",
+          "phase_span_ms": 4770.439,
+          "record_count": 28632,
+          "record_kinds": {
+            "1": {
+              "count": 229,
+              "summed_wall_ms": 0.161275,
+              "union_wall_ms": 0.161275
+            },
+            "4": {
+              "count": 2173,
+              "summed_wall_ms": 4769.204,
+              "union_wall_ms": 4769.204
+            },
+            "10": {
+              "count": 26230,
+              "summed_wall_ms": 4757.80113,
+              "union_wall_ms": 4756.802462
+            }
+          },
+          "all_API_records": 2173,
+          "all_API_union_wall_ms": 4769.204,
+          "all_API_summed_wall_ms": 4769.204,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1085,
+              "summed_wall_ms": 0.0614,
+              "union_wall_ms": 0.0614,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 1085
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 1.857,
+              "union_wall_ms": 1.857,
+              "max_single_wall_ms": 0.0473,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 458,
+              "summed_wall_ms": 1.9272,
+              "union_wall_ms": 1.9272,
+              "max_single_wall_ms": 0.0665,
+              "return_value_counts": {
+                "0": 458
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.013,
+              "union_wall_ms": 0.013,
+              "max_single_wall_ms": 0.0093,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0039,
+              "union_wall_ms": 0.0039,
+              "max_single_wall_ms": 0.0021,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 1.058,
+              "union_wall_ms": 1.058,
+              "max_single_wall_ms": 0.4311,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 36.4649,
+              "union_wall_ms": 36.4649,
+              "max_single_wall_ms": 0.4859,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 11,
+              "summed_wall_ms": 4727.7985,
+              "union_wall_ms": 4727.7985,
+              "max_single_wall_ms": 486.4152,
+              "return_value_counts": {
+                "0": 11
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 2,
+              "summed_wall_ms": 0.0114,
+              "union_wall_ms": 0.0114,
+              "max_single_wall_ms": 0.0104,
+              "return_value_counts": {
+                "0": 2
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0087,
+              "union_wall_ms": 0.0087,
+              "max_single_wall_ms": 0.0087,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 11,
+              "bytes": 48240
+            },
+            "8": {
+              "count": 18,
+              "bytes": 20736
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26230
+        },
+        {
+          "fixture": "rainbow",
+          "stage": "readback",
+          "phase_span_ms": 289.8369,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 96.741923,
+              "union_wall_ms": 96.741923
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 97.076,
+              "union_wall_ms": 97.076
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 97.076,
+          "all_API_summed_wall_ms": 97.076,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0045,
+              "union_wall_ms": 0.0045,
+              "max_single_wall_ms": 0.0013,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 96.817,
+              "union_wall_ms": 96.817,
+              "max_single_wall_ms": 26.2738,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.2545,
+              "union_wall_ms": 0.2545,
+              "max_single_wall_ms": 0.0729,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 2729544064
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "init",
+          "phase_span_ms": 321.1959,
+          "record_count": 363,
+          "record_kinds": {
+            "1": {
+              "count": 57,
+              "summed_wall_ms": 7.765336,
+              "union_wall_ms": 7.765336
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 2.062895,
+              "union_wall_ms": 2.062895
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 179.2337,
+              "union_wall_ms": 179.2337
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 179.2337,
+          "all_API_summed_wall_ms": 179.2337,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.0015,
+              "union_wall_ms": 0.0015,
+              "max_single_wall_ms": 0.0015,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0004,
+              "union_wall_ms": 0.0004,
+              "max_single_wall_ms": 0.0004,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 72.744,
+              "union_wall_ms": 72.744,
+              "max_single_wall_ms": 72.744,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0009,
+              "union_wall_ms": 0.0009,
+              "max_single_wall_ms": 0.0005,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0103,
+              "union_wall_ms": 0.0103,
+              "max_single_wall_ms": 0.0009,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0021,
+              "union_wall_ms": 0.0021,
+              "max_single_wall_ms": 0.0021,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.048,
+              "union_wall_ms": 0.048,
+              "max_single_wall_ms": 0.048,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.484,
+              "union_wall_ms": 1.484,
+              "max_single_wall_ms": 1.484,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 37.3683,
+              "union_wall_ms": 37.3683,
+              "max_single_wall_ms": 37.3683,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 9.1636,
+              "union_wall_ms": 9.1636,
+              "max_single_wall_ms": 2.2338,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.267,
+              "union_wall_ms": 0.267,
+              "max_single_wall_ms": 0.0495,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 36.7226,
+              "union_wall_ms": 36.7226,
+              "max_single_wall_ms": 16.8094,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.4103,
+              "union_wall_ms": 0.4103,
+              "max_single_wall_ms": 0.1428,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 21.0107,
+              "union_wall_ms": 21.0107,
+              "max_single_wall_ms": 9.7266,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 57,
+              "bytes": 111603416
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 3495675532,
+          "kernels": 0
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "solve",
+          "phase_span_ms": 3152.1709,
+          "record_count": 29276,
+          "record_kinds": {
+            "1": {
+              "count": 249,
+              "summed_wall_ms": 0.172315,
+              "union_wall_ms": 0.172315
+            },
+            "4": {
+              "count": 2357,
+              "summed_wall_ms": 3146.3224,
+              "union_wall_ms": 3146.3224
+            },
+            "10": {
+              "count": 26670,
+              "summed_wall_ms": 3130.875611,
+              "union_wall_ms": 3130.017398
+            }
+          },
+          "all_API_records": 2357,
+          "all_API_union_wall_ms": 3146.3224,
+          "all_API_summed_wall_ms": 3146.3224,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 1177,
+              "summed_wall_ms": 0.075,
+              "union_wall_ms": 0.075,
+              "max_single_wall_ms": 0.0006,
+              "return_value_counts": {
+                "0": 1177
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 200,
+              "summed_wall_ms": 1.9881,
+              "union_wall_ms": 1.9881,
+              "max_single_wall_ms": 0.106,
+              "return_value_counts": {
+                "0": 200
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 546,
+              "summed_wall_ms": 2.5514,
+              "union_wall_ms": 2.5514,
+              "max_single_wall_ms": 0.0621,
+              "return_value_counts": {
+                "0": 546
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0087,
+              "union_wall_ms": 0.0087,
+              "max_single_wall_ms": 0.0045,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0044,
+              "union_wall_ms": 0.0044,
+              "max_single_wall_ms": 0.0019,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 1.0417,
+              "union_wall_ms": 1.0417,
+              "max_single_wall_ms": 0.5941,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 407,
+              "summed_wall_ms": 38.1581,
+              "union_wall_ms": 38.1581,
+              "max_single_wall_ms": 0.4949,
+              "return_value_counts": {
+                "0": 407
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 13,
+              "summed_wall_ms": 3102.4802,
+              "union_wall_ms": 3102.4802,
+              "max_single_wall_ms": 326.3407,
+              "return_value_counts": {
+                "0": 13
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0055,
+              "union_wall_ms": 0.0055,
+              "max_single_wall_ms": 0.0026,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0093,
+              "union_wall_ms": 0.0093,
+              "max_single_wall_ms": 0.0093,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 200,
+              "bytes": 2400
+            },
+            "2": {
+              "count": 13,
+              "bytes": 50704
+            },
+            "8": {
+              "count": 36,
+              "bytes": 41616
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 26670
+        },
+        {
+          "fixture": "two-tone",
+          "stage": "readback",
+          "phase_span_ms": 207.9586,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 59.819944,
+              "union_wall_ms": 59.819944
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 60.2146,
+              "union_wall_ms": 60.2146
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 60.2146,
+          "all_API_summed_wall_ms": 60.2146,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0068,
+              "union_wall_ms": 0.0068,
+              "max_single_wall_ms": 0.0018,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 59.9084,
+              "union_wall_ms": 59.9084,
+              "max_single_wall_ms": 16.5673,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.2994,
+              "union_wall_ms": 0.2994,
+              "max_single_wall_ms": 0.0939,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 1633012592
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "init",
+          "phase_span_ms": 75.4782,
+          "record_count": 356,
+          "record_kinds": {
+            "1": {
+              "count": 50,
+              "summed_wall_ms": 0.015485,
+              "union_wall_ms": 0.015485
+            },
+            "2": {
+              "count": 9,
+              "summed_wall_ms": 0.00765,
+              "union_wall_ms": 0.00765
+            },
+            "4": {
+              "count": 297,
+              "summed_wall_ms": 75.2947,
+              "union_wall_ms": 75.2947
+            }
+          },
+          "all_API_records": 297,
+          "all_API_union_wall_ms": 75.2947,
+          "all_API_summed_wall_ms": 75.2947,
+          "APIs": {
+            "cuInit": {
+              "count": 1,
+              "summed_wall_ms": 0.001,
+              "union_wall_ms": 0.001,
+              "max_single_wall_ms": 0.001,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGet": {
+              "count": 1,
+              "summed_wall_ms": 0.0003,
+              "union_wall_ms": 0.0003,
+              "max_single_wall_ms": 0.0003,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDevicePrimaryCtxRetain": {
+              "count": 1,
+              "summed_wall_ms": 72.4126,
+              "union_wall_ms": 72.4126,
+              "max_single_wall_ms": 72.4126,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuDeviceGetAttribute": {
+              "count": 3,
+              "summed_wall_ms": 0.0009,
+              "union_wall_ms": 0.0009,
+              "max_single_wall_ms": 0.0007,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxGetCurrent": {
+              "count": 142,
+              "summed_wall_ms": 0.0066,
+              "union_wall_ms": 0.0066,
+              "max_single_wall_ms": 0.0002,
+              "return_value_counts": {
+                "0": 142
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuCtxSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0016,
+              "union_wall_ms": 0.0016,
+              "max_single_wall_ms": 0.0016,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamCreate": {
+              "count": 1,
+              "summed_wall_ms": 0.0339,
+              "union_wall_ms": 0.0339,
+              "max_single_wall_ms": 0.0339,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleLoadData": {
+              "count": 1,
+              "summed_wall_ms": 1.0861,
+              "union_wall_ms": 1.0861,
+              "max_single_wall_ms": 1.0861,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemHostAlloc": {
+              "count": 1,
+              "summed_wall_ms": 0.2243,
+              "union_wall_ms": 0.2243,
+              "max_single_wall_ms": 0.2243,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemAllocAsync": {
+              "count": 66,
+              "summed_wall_ms": 0.158,
+              "union_wall_ms": 0.158,
+              "max_single_wall_ms": 0.0912,
+              "return_value_counts": {
+                "0": 66
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemsetD8Async": {
+              "count": 9,
+              "summed_wall_ms": 0.1191,
+              "union_wall_ms": 0.1191,
+              "max_single_wall_ms": 0.0294,
+              "return_value_counts": {
+                "0": 9
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 5,
+              "summed_wall_ms": 0.5813,
+              "union_wall_ms": 0.5813,
+              "max_single_wall_ms": 0.5723,
+              "return_value_counts": {
+                "0": 5
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuModuleGetFunction": {
+              "count": 8,
+              "summed_wall_ms": 0.2537,
+              "union_wall_ms": 0.2537,
+              "max_single_wall_ms": 0.0449,
+              "return_value_counts": {
+                "0": 8
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 57,
+              "summed_wall_ms": 0.4153,
+              "union_wall_ms": 0.4153,
+              "max_single_wall_ms": 0.0305,
+              "return_value_counts": {
+                "0": 57
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 50,
+              "bytes": 32100
+            }
+          },
+          "memset_count": 9,
+          "memset_bytes": 133040,
+          "kernels": 0
+        },
+        {
+          "fixture": "river",
+          "stage": "solve",
+          "phase_span_ms": 17.0024,
+          "record_count": 4347,
+          "record_kinds": {
+            "1": {
+              "count": 74,
+              "summed_wall_ms": 0.046495,
+              "union_wall_ms": 0.046495
+            },
+            "4": {
+              "count": 853,
+              "summed_wall_ms": 16.6286,
+              "union_wall_ms": 16.6286
+            },
+            "10": {
+              "count": 3420,
+              "summed_wall_ms": 13.498085,
+              "union_wall_ms": 13.498085
+            }
+          },
+          "all_API_records": 853,
+          "all_API_union_wall_ms": 16.6286,
+          "all_API_summed_wall_ms": 16.6286,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 425,
+              "summed_wall_ms": 0.0301,
+              "union_wall_ms": 0.0301,
+              "max_single_wall_ms": 0.0003,
+              "return_value_counts": {
+                "0": 425
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyHtoDAsync_v2": {
+              "count": 60,
+              "summed_wall_ms": 0.5633,
+              "union_wall_ms": 0.5633,
+              "max_single_wall_ms": 0.0447,
+              "return_value_counts": {
+                "0": 60
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuLaunchKernel": {
+              "count": 228,
+              "summed_wall_ms": 1.3038,
+              "union_wall_ms": 1.3038,
+              "max_single_wall_ms": 0.0401,
+              "return_value_counts": {
+                "0": 228
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamBeginCapture_v2": {
+              "count": 3,
+              "summed_wall_ms": 0.0047,
+              "union_wall_ms": 0.0047,
+              "max_single_wall_ms": 0.0022,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamEndCapture": {
+              "count": 3,
+              "summed_wall_ms": 0.0037,
+              "union_wall_ms": 0.0037,
+              "max_single_wall_ms": 0.002,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphInstantiateWithFlags": {
+              "count": 3,
+              "summed_wall_ms": 0.3892,
+              "union_wall_ms": 0.3892,
+              "max_single_wall_ms": 0.2408,
+              "return_value_counts": {
+                "0": 3
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuGraphLaunch": {
+              "count": 120,
+              "summed_wall_ms": 5.7733,
+              "union_wall_ms": 5.7733,
+              "max_single_wall_ms": 0.1301,
+              "return_value_counts": {
+                "0": 120
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 6,
+              "summed_wall_ms": 8.5513,
+              "union_wall_ms": 8.5513,
+              "max_single_wall_ms": 2.8477,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoDAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.0058,
+              "union_wall_ms": 0.0058,
+              "max_single_wall_ms": 0.0023,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 1,
+              "summed_wall_ms": 0.0034,
+              "union_wall_ms": 0.0034,
+              "max_single_wall_ms": 0.0034,
+              "return_value_counts": {
+                "0": 1
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "1": {
+              "count": 60,
+              "bytes": 720
+            },
+            "2": {
+              "count": 6,
+              "bytes": 13064
+            },
+            "8": {
+              "count": 8,
+              "bytes": 8208
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 3420
+        },
+        {
+          "fixture": "river",
+          "stage": "readback",
+          "phase_span_ms": 0.7157,
+          "record_count": 24,
+          "record_kinds": {
+            "1": {
+              "count": 4,
+              "summed_wall_ms": 0.003199,
+              "union_wall_ms": 0.003199
+            },
+            "4": {
+              "count": 20,
+              "summed_wall_ms": 0.1766,
+              "union_wall_ms": 0.1766
+            }
+          },
+          "all_API_records": 20,
+          "all_API_union_wall_ms": 0.1766,
+          "all_API_summed_wall_ms": 0.1766,
+          "APIs": {
+            "cuCtxGetCurrent": {
+              "count": 10,
+              "summed_wall_ms": 0.0021,
+              "union_wall_ms": 0.0021,
+              "max_single_wall_ms": 0.0006,
+              "return_value_counts": {
+                "0": 10
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuStreamSynchronize": {
+              "count": 6,
+              "summed_wall_ms": 0.0467,
+              "union_wall_ms": 0.0467,
+              "max_single_wall_ms": 0.0131,
+              "return_value_counts": {
+                "0": 6
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            },
+            "cuMemcpyDtoHAsync_v2": {
+              "count": 4,
+              "summed_wall_ms": 0.1278,
+              "union_wall_ms": 0.1278,
+              "max_single_wall_ms": 0.0585,
+              "return_value_counts": {
+                "0": 4
+              },
+              "process_ids": [
+                9332
+              ],
+              "thread_count": 1
+            }
+          },
+          "copies_by_direction": {
+            "2": {
+              "count": 4,
+              "bytes": 65664
+            }
+          },
+          "memset_count": 0,
+          "memset_bytes": 0,
+          "kernels": 0
+        }
+      ],
+      "outside_named_phases": {
+        "record_count": 158,
+        "record_kinds": {
+          "4": {
+            "count": 158,
+            "summed_wall_ms": 193.6888,
+            "union_wall_ms": 193.6888
+          }
+        },
+        "all_API_records": 158,
+        "all_API_union_wall_ms": 193.6888,
+        "all_API_summed_wall_ms": 193.6888,
+        "APIs": {
+          "cuCtxGetCurrent": {
+            "count": 6,
+            "summed_wall_ms": 0.0024,
+            "union_wall_ms": 0.0024,
+            "max_single_wall_ms": 0.001,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuModuleUnload": {
+            "count": 2,
+            "summed_wall_ms": 0.189,
+            "union_wall_ms": 0.189,
+            "max_single_wall_ms": 0.0974,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeAsync": {
+            "count": 132,
+            "summed_wall_ms": 0.1057,
+            "union_wall_ms": 0.1057,
+            "max_single_wall_ms": 0.007,
+            "return_value_counts": {
+              "0": 132
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphExecDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.5571,
+            "union_wall_ms": 0.5571,
+            "max_single_wall_ms": 0.1559,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuGraphDestroy": {
+            "count": 6,
+            "summed_wall_ms": 0.1613,
+            "union_wall_ms": 0.1613,
+            "max_single_wall_ms": 0.0484,
+            "return_value_counts": {
+              "0": 6
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuStreamDestroy_v2": {
+            "count": 2,
+            "summed_wall_ms": 72.6241,
+            "union_wall_ms": 72.6241,
+            "max_single_wall_ms": 47.2351,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuDevicePrimaryCtxRelease_v2": {
+            "count": 2,
+            "summed_wall_ms": 120.0469,
+            "union_wall_ms": 120.0469,
+            "max_single_wall_ms": 80.6765,
+            "return_value_counts": {
+              "0": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          },
+          "cuMemFreeHost": {
+            "count": 2,
+            "summed_wall_ms": 0.0023,
+            "union_wall_ms": 0.0023,
+            "max_single_wall_ms": 0.0013,
+            "return_value_counts": {
+              "709": 2
+            },
+            "process_ids": [
+              9332
+            ],
+            "thread_count": 1
+          }
+        },
+        "copies_by_direction": {},
+        "memset_count": 0,
+        "memset_bytes": 0,
+        "kernels": 0
+      },
+      "cross_phase_records_retained_in_outside_bucket": [],
+      "unknown_driver_callback_names": [],
+      "successful_stream_ordered_allocation_API_records": 198,
+      "synchronous_ordinary_allocation_API_records": 0
+    }
+  ],
+  "phase_medians": [
+    {
+      "fixture": "rainbow",
+      "stage": "init",
+      "median_observer_span_ms": 542.5466,
+      "median_API_union_wall_ms": 263.1373,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0128,
+          "counts": [
+            142,
+            142,
+            142
+          ]
+        },
+        "cuCtxSetCurrent": {
+          "median_summed_wall_ms": 0.0007,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuCtxSynchronize": {
+          "median_summed_wall_ms": 0.0025,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGet": {
+          "median_summed_wall_ms": 0.0018,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGetAttribute": {
+          "median_summed_wall_ms": 0.0018,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuDevicePrimaryCtxRetain": {
+          "median_summed_wall_ms": 74.3229,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuInit": {
+          "median_summed_wall_ms": 0.0041,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemAllocAsync": {
+          "median_summed_wall_ms": 28.7971,
+          "counts": [
+            66,
+            66,
+            66
+          ]
+        },
+        "cuMemHostAlloc": {
+          "median_summed_wall_ms": 70.0835,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 31.994,
+          "counts": [
+            57,
+            57,
+            57
+          ]
+        },
+        "cuMemsetD8Async": {
+          "median_summed_wall_ms": 0.3364,
+          "counts": [
+            9,
+            9,
+            9
+          ]
+        },
+        "cuModuleGetFunction": {
+          "median_summed_wall_ms": 0.3395,
+          "counts": [
+            8,
+            8,
+            8
+          ]
+        },
+        "cuModuleLoadData": {
+          "median_summed_wall_ms": 1.2392,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamCreate": {
+          "median_summed_wall_ms": 0.0125,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 49.2126,
+          "counts": [
+            5,
+            5,
+            5
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "solve",
+      "median_observer_span_ms": 4841.4564,
+      "median_API_union_wall_ms": 4840.1307,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0754,
+          "counts": [
+            1085,
+            1085,
+            1085
+          ]
+        },
+        "cuGraphInstantiateWithFlags": {
+          "median_summed_wall_ms": 1.0891,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuGraphLaunch": {
+          "median_summed_wall_ms": 36.5837,
+          "counts": [
+            407,
+            407,
+            407
+          ]
+        },
+        "cuLaunchKernel": {
+          "median_summed_wall_ms": 2.1694,
+          "counts": [
+            458,
+            458,
+            458
+          ]
+        },
+        "cuMemcpyDtoDAsync_v2": {
+          "median_summed_wall_ms": 0.0098,
+          "counts": [
+            2,
+            2,
+            2
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 4793.6124,
+          "counts": [
+            11,
+            11,
+            11
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 1.9992,
+          "counts": [
+            200,
+            200,
+            200
+          ]
+        },
+        "cuStreamBeginCapture_v2": {
+          "median_summed_wall_ms": 0.0136,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamEndCapture": {
+          "median_summed_wall_ms": 0.0062,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 0.0086,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "readback",
+      "median_observer_span_ms": 290.608,
+      "median_API_union_wall_ms": 98.4809,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0044,
+          "counts": [
+            10,
+            10,
+            10
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 0.2545,
+          "counts": [
+            4,
+            4,
+            4
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 98.1793,
+          "counts": [
+            6,
+            6,
+            6
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "init",
+      "median_observer_span_ms": 355.8861,
+      "median_API_union_wall_ms": 223.3325,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0146,
+          "counts": [
+            142,
+            142,
+            142
+          ]
+        },
+        "cuCtxSynchronize": {
+          "median_summed_wall_ms": 0.0021,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGet": {
+          "median_summed_wall_ms": 0.0007,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGetAttribute": {
+          "median_summed_wall_ms": 0.0009,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuDevicePrimaryCtxRetain": {
+          "median_summed_wall_ms": 81.982,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuInit": {
+          "median_summed_wall_ms": 0.0015,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemAllocAsync": {
+          "median_summed_wall_ms": 11.2047,
+          "counts": [
+            66,
+            66,
+            66
+          ]
+        },
+        "cuMemHostAlloc": {
+          "median_summed_wall_ms": 68.2503,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 23.0023,
+          "counts": [
+            57,
+            57,
+            57
+          ]
+        },
+        "cuMemsetD8Async": {
+          "median_summed_wall_ms": 0.3142,
+          "counts": [
+            9,
+            9,
+            9
+          ]
+        },
+        "cuModuleGetFunction": {
+          "median_summed_wall_ms": 0.4136,
+          "counts": [
+            8,
+            8,
+            8
+          ]
+        },
+        "cuModuleLoadData": {
+          "median_summed_wall_ms": 1.484,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamCreate": {
+          "median_summed_wall_ms": 0.0491,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 33.0963,
+          "counts": [
+            5,
+            5,
+            5
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "solve",
+      "median_observer_span_ms": 3039.6238,
+      "median_API_union_wall_ms": 3037.8969,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0845,
+          "counts": [
+            1177,
+            1177,
+            1177
+          ]
+        },
+        "cuGraphInstantiateWithFlags": {
+          "median_summed_wall_ms": 1.0417,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuGraphLaunch": {
+          "median_summed_wall_ms": 39.8321,
+          "counts": [
+            407,
+            407,
+            407
+          ]
+        },
+        "cuLaunchKernel": {
+          "median_summed_wall_ms": 2.7699,
+          "counts": [
+            546,
+            546,
+            546
+          ]
+        },
+        "cuMemcpyDtoDAsync_v2": {
+          "median_summed_wall_ms": 0.0073,
+          "counts": [
+            4,
+            4,
+            4
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 2989.1614,
+          "counts": [
+            13,
+            13,
+            13
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 1.9881,
+          "counts": [
+            200,
+            200,
+            200
+          ]
+        },
+        "cuStreamBeginCapture_v2": {
+          "median_summed_wall_ms": 0.0085,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamEndCapture": {
+          "median_summed_wall_ms": 0.0051,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 0.0093,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "readback",
+      "median_observer_span_ms": 209.0439,
+      "median_API_union_wall_ms": 60.3818,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0068,
+          "counts": [
+            10,
+            10,
+            10
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 0.3022,
+          "counts": [
+            4,
+            4,
+            4
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 60.0434,
+          "counts": [
+            6,
+            6,
+            6
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "river",
+      "stage": "init",
+      "median_observer_span_ms": 80.2961,
+      "median_API_union_wall_ms": 80.0822,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0088,
+          "counts": [
+            142,
+            142,
+            142
+          ]
+        },
+        "cuCtxSynchronize": {
+          "median_summed_wall_ms": 0.0017,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGet": {
+          "median_summed_wall_ms": 0.0004,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuDeviceGetAttribute": {
+          "median_summed_wall_ms": 0.0009,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuDevicePrimaryCtxRetain": {
+          "median_summed_wall_ms": 76.5548,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuInit": {
+          "median_summed_wall_ms": 0.001,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemAllocAsync": {
+          "median_summed_wall_ms": 0.1907,
+          "counts": [
+            66,
+            66,
+            66
+          ]
+        },
+        "cuMemHostAlloc": {
+          "median_summed_wall_ms": 0.2287,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 0.5644,
+          "counts": [
+            57,
+            57,
+            57
+          ]
+        },
+        "cuMemsetD8Async": {
+          "median_summed_wall_ms": 0.1913,
+          "counts": [
+            9,
+            9,
+            9
+          ]
+        },
+        "cuModuleGetFunction": {
+          "median_summed_wall_ms": 0.3715,
+          "counts": [
+            8,
+            8,
+            8
+          ]
+        },
+        "cuModuleLoadData": {
+          "median_summed_wall_ms": 1.2429,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamCreate": {
+          "median_summed_wall_ms": 0.0241,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 0.5813,
+          "counts": [
+            5,
+            5,
+            5
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "river",
+      "stage": "solve",
+      "median_observer_span_ms": 17.0024,
+      "median_API_union_wall_ms": 16.6286,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0358,
+          "counts": [
+            425,
+            425,
+            425
+          ]
+        },
+        "cuGraphInstantiateWithFlags": {
+          "median_summed_wall_ms": 0.4519,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuGraphLaunch": {
+          "median_summed_wall_ms": 6.8398,
+          "counts": [
+            120,
+            120,
+            120
+          ]
+        },
+        "cuLaunchKernel": {
+          "median_summed_wall_ms": 1.574,
+          "counts": [
+            228,
+            228,
+            228
+          ]
+        },
+        "cuMemcpyDtoDAsync_v2": {
+          "median_summed_wall_ms": 0.0058,
+          "counts": [
+            4,
+            4,
+            4
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 6.7163,
+          "counts": [
+            6,
+            6,
+            6
+          ]
+        },
+        "cuMemcpyHtoDAsync_v2": {
+          "median_summed_wall_ms": 0.5949,
+          "counts": [
+            60,
+            60,
+            60
+          ]
+        },
+        "cuStreamBeginCapture_v2": {
+          "median_summed_wall_ms": 0.0047,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamEndCapture": {
+          "median_summed_wall_ms": 0.0028,
+          "counts": [
+            3,
+            3,
+            3
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 0.0034,
+          "counts": [
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    },
+    {
+      "fixture": "river",
+      "stage": "readback",
+      "median_observer_span_ms": 0.7289,
+      "median_API_union_wall_ms": 0.1766,
+      "APIs": {
+        "cuCtxGetCurrent": {
+          "median_summed_wall_ms": 0.0021,
+          "counts": [
+            10,
+            10,
+            10
+          ]
+        },
+        "cuMemcpyDtoHAsync_v2": {
+          "median_summed_wall_ms": 0.1226,
+          "counts": [
+            4,
+            4,
+            4
+          ]
+        },
+        "cuStreamSynchronize": {
+          "median_summed_wall_ms": 0.0467,
+          "counts": [
+            6,
+            6,
+            6
+          ]
+        }
+      },
+      "limits": "Per-family medians/sums and API waits are not additive or removable; no primary timing sample or full-cycle bound."
+    }
+  ],
+  "reader_checks": 381025,
+  "raw_records_all_accounted": 190704,
+  "stream_ordered_allocation_observed_all3traces": true,
+  "new_optimizer_candidate_created": false,
+  "new_compilers_native_GPU_CFR_solver_or_speed_samples": 0,
+  "scope_limits": "Entire3 originalD212acceptedcurrentRAM tracefiles andall18phase markers pertrace. All recorded driver API wall intervals, memorycopy/memset/kernel activity accounted by contained init/solve/readback or explicit outside/crossing buckets. Fullheader/payloadSHAchecked. Driver API context/stream columns carry processID/threadID andgraph column carries returnValue, not CUDAhandles/graphID. Derive exact perAPIcounts/summed+unionwallintervals/nonzero returns and allcopy/memsetcounts/bytes, retained no drops/errors. No new compiler/collector/native/GPU/CFR/solver/benchmark or performancequalification samples. Retained observer intervals are activity descriptions, not CPUtime, waitremovability, additive wallattribution, unbiased latency/headroom or achievedgain. Original ±10%wholefixture usefulness guard is coarse anddoesnotbound perAPIbias. Do not pool historical/currenttimings or claim lowerbound/upperbound fullspeed from these intervals. Closedfamilies stayclosed; any future source/configuration needs prospective novelty/ownership/effective-state/resource/quality and every original fullcycle1%/strictfixture/fresh16/broad/material/holdout/cumulative/application gate.",
+  "next": "Do not propose enabling already observed stream-ordered allocation or ignored legacy eager-commit flag. Classify all actual initialization/API costs and semantic closed-family aliases before a distinct next source. No speed gain or source admission from this census."
+}

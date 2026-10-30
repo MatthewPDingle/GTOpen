@@ -1,0 +1,31 @@
+{
+  "id": "E047-kernel-control-r2",
+  "at": "2026-10-17T02:34:10.520486+00:00",
+  "status": "pass_scoped_up_action_raw_equivalence",
+  "root_cross_check_only": true,
+  "reporting_failure_sha256": "2677aae82a63d7d9365bb6ebd1633ac6fbd31b7b5de59e18922d7ddd89afe008",
+  "new_native_runs": 0,
+  "checks": 56527,
+  "cases": 819,
+  "kernel_launches": 1638,
+  "output_words_both_arms": 12375858,
+  "immutable_words_both_arms": 5199114,
+  "guard_words_both_arms": 10240828,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\baseline-inputs.bin": "aaee2f89c5d2511f1bab5f7a642e24c6e6f46adc7bb76624a3d57c21797836e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\baseline.bin": "4f141fa43f30a09a60f1657550684d5c44aa097ae2850cd4496a55069d3af29e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\candidate-inputs.bin": "aaee2f89c5d2511f1bab5f7a642e24c6e6f46adc7bb76624a3d57c21797836e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\candidate.bin": "4f141fa43f30a09a60f1657550684d5c44aa097ae2850cd4496a55069d3af29e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\inputs.bin": "9386a74587e07fec0561409858688a1e9b184a3b1c92d11a47b08091d68469e0"
+  },
+  "protocol_sha256": "6c4a8153675704a80f05e91f4221dd6a430498c1d36347f7a0e13f8ea386aa58",
+  "corpus_sha256": "dd71a0cb1a815c667b1fcea71515dde7c063fe2f2b998934d481809208cb633e",
+  "complete_sha256": "0b2c6ebf53eee03c76952a160f0a399bac1829282b58bc406eb81d6738c805c5",
+  "audit_script_sha256": "24dd626c9ecaa3d593eefe45e576cad42e83d9a520542776c24a901819895666",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

@@ -1,0 +1,74 @@
+{
+  "purpose": "Post-hoc fixed-prediction diagnostic only; no self-play or strategic improvement claim",
+  "controls": {
+    "passed": true,
+    "legal_action_mask": true,
+    "positive_regret_policy_unchanged": true,
+    "ties": "first legal maximizing action",
+    "cases": 5,
+    "self_play_qualified": false
+  },
+  "source_sha256": "ff0ba8cc71bda1b6a52a136334f33d83ed61f115a6dde77f7b46198dc362cfdc",
+  "rows": [
+    {
+      "player": 0,
+      "fit": {
+        "steps": 128,
+        "batch_size": 512
+      },
+      "uniform_fallback_policy_l1": 0.854888916015625,
+      "highest_fallback_policy_l1": 0.033721923828125,
+      "affected_observation_weight": 0.7127685546875
+    },
+    {
+      "player": 0,
+      "fit": {
+        "steps": 128,
+        "batch_size": 8192
+      },
+      "uniform_fallback_policy_l1": 0.28569590730236133,
+      "highest_fallback_policy_l1": 0.0007227627711113424,
+      "affected_observation_weight": 0.2852783203125
+    },
+    {
+      "player": 0,
+      "fit": {
+        "steps": 1024,
+        "batch_size": 8192
+      },
+      "uniform_fallback_policy_l1": 0.7379694363837821,
+      "highest_fallback_policy_l1": 0.001519241071282171,
+      "affected_observation_weight": 0.60382080078125
+    },
+    {
+      "player": 1,
+      "fit": {
+        "steps": 128,
+        "batch_size": 512
+      },
+      "uniform_fallback_policy_l1": 0.710099482857321,
+      "highest_fallback_policy_l1": 0.7001100622844044,
+      "affected_observation_weight": 0.012847900390625
+    },
+    {
+      "player": 1,
+      "fit": {
+        "steps": 128,
+        "batch_size": 8192
+      },
+      "uniform_fallback_policy_l1": 1.0158734881940668,
+      "highest_fallback_policy_l1": 0.6187482440534419,
+      "affected_observation_weight": 0.486968994140625
+    },
+    {
+      "player": 1,
+      "fit": {
+        "steps": 1024,
+        "batch_size": 8192
+      },
+      "uniform_fallback_policy_l1": 0.5924170398960862,
+      "highest_fallback_policy_l1": 0.5412390613804612,
+      "affected_observation_weight": 0.109710693359375
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+--- accepted-E051/plan.rs
++++ D099-prototype/plan.rs
+@@ -322,7 +322,11 @@
+         let mut riv_card_pos = [Vec::new(), Vec::new()];
+         let mut riv_max_cnt = [0usize, 0usize];
+         for p in 0..2 {
++            let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];
+             for &key in &slots {
++                for positions in &mut by_card {
++                    positions.clear();
++                }
+                 let eval = spot.river.entries[key].as_deref().expect("river eval");
+                 let sorted = &eval.sorted[p];
+                 let opponent = &eval.sorted[1 - p];
+@@ -330,7 +334,6 @@
+                 riv_off[p].push(riv_sorted_idx[p].len() as u32);
+                 riv_cnt[p].push(sorted.len() as u32);
+                 riv_max_cnt[p] = riv_max_cnt[p].max(sorted.len());
+-                let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];
+                 for (pos, &(stren, idx)) in sorted.iter().enumerate() {
+                     while lower < opponent.len() && opponent[lower].0 < stren {
+                         lower += 1;

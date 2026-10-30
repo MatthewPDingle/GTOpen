@@ -1,0 +1,124 @@
+"""Synthetic metadata controls for the recovered terminal-evidence path."""
+import importlib.util
+import json
+from pathlib import Path
+import sys
+import tempfile
+import time
+import numpy as np
+sys.path.insert(0,str(Path(__file__).parent))
+import stack_context_final_report_v2 as report
+from stack_context_matched_analysis_v1 import DEPTHS,DEALS,context_analysis,finish
+from stack_context_independent_audit_v1 import audit_comparison
+
+values={d:np.zeros((DEALS,2,4,2),dtype=np.float64) for d in DEPTHS}
+comparison=finish([context_analysis(values[d],depth=d,dead_money=.5) for d in DEPTHS])
+arithmetic=audit_comparison(comparison,values)
+original=report.OUT,report.STORE,report.LOCKS,report.REVIEW_SHA
+rejected=0;positive=0;began=time.monotonic()
+def write(path,value):
+    path.write_text(json.dumps(value,allow_nan=False,sort_keys=True,separators=(',',':')),encoding='utf-8')
+try:
+    with tempfile.TemporaryDirectory(prefix='gtopen-resumed-report-control-') as folder:
+        root=Path(folder);report.OUT=root/'out';report.OUT.mkdir();report.STORE=root/'store';report.STORE.mkdir()
+        report.LOCKS=tuple(root/f'owner-{i}' for i in range(5));out=report.OUT
+        def child(prefix,script,pid,*,resume=False,parent=None):
+            start=dict(pid=pid,created=1.,unix=2.,command=['C:/Program Files/Python312/python.exe','-B',
+                str(report.ROOT/'tools/research'/script),'--run']+(['--resume'] if resume else []))
+            if parent is not None:start['parent_pid']=parent
+            if resume:start['original_attempt_sha256']=report.sha(out/(report.base.EVALUATION+'-attempt.json'))
+            write(Path(str(prefix)+'-started.json'),start)
+            for stream in ('stdout','stderr'):Path(str(prefix)+'-'+stream+'.log').write_bytes(b'SYNTHETIC SOFTWARE CONTROL\n')
+            write(Path(str(prefix)+'-finished.json'),dict(start,exit_code=0,finished_unix=3.,
+                stdout_sha256=report.sha(Path(str(prefix)+'-stdout.log')),stderr_sha256=report.sha(Path(str(prefix)+'-stderr.log'))))
+        write(out/'stack-context-pressure-continuation-v2-training-result.json',dict(training_complete=True,production_modified=False,
+            arms={a:dict(completed_cycles=64) for a in ('A-baseline','A-relative','B-baseline','B-relative')}))
+        throughput_path=out/(report.base.THROUGHPUT+'-result.json')
+        write(throughput_path,dict(complete=True,passed=True,full_played_banks_64=True,cuda_passed=True,
+            reference_agreement_passed=True,production_modified=False))
+        write(out/(report.base.THROUGHPUT+'-attempt.json'),dict(pid=2147480011,process_created=1.))
+        child(out/(report.base.HANDOFF+'-001-throughput'),'stack_context_final_bank_throughput_v4.py',2147480011)
+        bank_path=report.STORE/'bank-identities.json';write(bank_path,dict(synthetic=True))
+        reg_path=out/(report.base.EVALUATION+'-registration.json')
+        write(reg_path,dict(maximum_evaluation_seconds=72*3600,maximum_invocation_seconds=12*3600,banks=dict(synthetic=True),
+            inputs={str(throughput_path):report.sha(throughput_path),
+                str(report.ROOT/'tools/research/stack_context_matched_evaluation_v5.py'):report.sha(report.ROOT/'tools/research/stack_context_matched_evaluation_v5.py')}))
+        original_attempt=out/(report.base.EVALUATION+'-attempt.json')
+        write(original_attempt,dict(pid=2147480012,process_created=1.,admitted_unix=1000.,registration_sha256=report.sha(reg_path)))
+        child(out/(report.base.HANDOFF+'-002-evaluation'),'stack_context_matched_evaluation_v5.py',2147480012)
+        old_failure=out/(report.base.HANDOFF+'-failure.json')
+        write(old_failure,dict(error="ValueError('Child returned without terminal completion; no automatic resume')",
+            automatic_retry_allowed=False,preserve_evidence=True))
+        write(out/(report.base.HANDOFF+'-attempt.json'),dict(pid=2147480000,created=1.))
+        bound=root/'bound.json';write(bound,dict(synthetic=True))
+        review_path=out/(report.RESUME+'-review.json')
+        write(review_path,dict(complete=True,passed=True,qualified_clean_boundary_continuation=True,
+            verified_registered_inputs=4607,remaining_deals=1888,partial_scientific_batch_retry_allowed=False,
+            original_admitted_unix=1000.,original_evaluation_deadline_unix=1000.+72*3600,
+            registration_sha256=report.sha(reg_path),inputs={str(bound):report.sha(bound)}))
+        report.REVIEW_SHA=report.sha(review_path)
+        write(out/(report.RESUME+'-attempt.json'),dict(pid=2147480020,created=1.,review_sha256=report.REVIEW_SHA,
+            runner_sha256=report.sha(report.ROOT/'tools/research/stack_context_clean_boundary_resume_v1.py')))
+        child(out/(report.RESUME+'-evaluation'),'stack_context_matched_evaluation_v5.py',2147480021,resume=True,parent=2147480020)
+        write(report.STORE/'invocation-original.json',dict(pid=2147480012,process_created=1.,resume=False))
+        write(report.STORE/'invocation-resume.json',dict(pid=2147480021,process_created=1.,resume=True))
+        exports=[root/f'range-{i}.json' for i in range(28)]
+        for p in exports:write(p,dict(synthetic=True))
+        terminal_path=out/(report.base.EVALUATION+'-result.json')
+        write(terminal_path,dict(fixed_policy_evaluation_complete=True,production_modified=False,
+            registration_sha256=report.sha(reg_path),bank_identities_sha256=report.sha(bank_path),comparison=comparison,
+            journals={str(d):dict(completed_deals=4096) for d in DEPTHS},range_exports={str(p):report.sha(p) for p in exports}))
+        resume_path=out/(report.RESUME+'-result.json')
+        write(resume_path,dict(complete=True,passed=True,unix=4.,original_attempt_preserved=True,
+            original_helper_failure_preserved=True,only_unstarted_remaining_batches_allowed=True,original_budgets_and_sources_unchanged=True,
+            evaluation_result_sha256=report.sha(terminal_path),evaluation_registration_sha256=report.sha(reg_path)))
+        assert report.terminal_evidence(include_reader=False)[0]==report.read(terminal_path);positive+=1
+        reader_path=out/(report.base.READER+'-result.json')
+        write(reader_path,dict(complete=True,passed=True,independent_readback_complete=True,
+            training_heldout_stack_separation_verified=True,production_modified=False,
+            evaluation_result_sha256=report.sha(terminal_path),evaluation_registration_sha256=report.sha(reg_path),
+            original_archive_batches=896,reference_policy_replay_batches=14,reference_complete_preflop_range_replays=28,
+            independent_chance_cycles=256,strictly_board_disjoint_test=False,native_payoff_oracle_independent=False,arithmetic=arithmetic))
+        write(out/(report.base.READER+'-attempt.json'),dict(pid=2147480031,process_created=1.))
+        write(out/(report.READBACK_RUN+'-attempt.json'),dict(pid=2147480030,created=1.))
+        child(out/(report.READBACK_RUN+'-reader'),'stack_context_matched_readback_v6.py',2147480031,parent=2147480030)
+        readback_path=out/(report.READBACK_RUN+'-result.json')
+        write(readback_path,dict(complete=True,passed=True,unix=4.,reader_result_sha256=report.sha(reader_path),
+            evaluation_result_sha256=report.sha(terminal_path)))
+        assert report.terminal_evidence()[0]['comparison']==comparison;positive+=1
+        def refuse():
+            global rejected
+            try:report.terminal_evidence()
+            except ValueError:rejected+=1
+            else:raise AssertionError('Unsafe terminal evidence accepted')
+        def change(path,key,value):
+            before=path.read_bytes();doc=report.read(path);doc[key]=value;write(path,doc)
+            try:refuse()
+            finally:path.write_bytes(before)
+        before=reader_path.read_bytes();reader_path.unlink();refuse();reader_path.write_bytes(before)
+        report.LOCKS[0].write_text('synthetic owner');refuse();report.LOCKS[0].unlink()
+        failure=out/(report.RESUME+'-failure.json');write(failure,{});refuse();failure.unlink()
+        change(old_failure,'error','unrecognized failure')
+        change(resume_path,'complete',False)
+        change(out/(report.RESUME+'-evaluation-finished.json'),'exit_code',1)
+        log=out/(report.RESUME+'-evaluation-stdout.log');before=log.read_bytes();log.write_bytes(b'changed');refuse();log.write_bytes(before)
+        change(out/(report.RESUME+'-evaluation-started.json'),'parent_pid',999)
+        extra=report.STORE/'invocation-extra.json';write(extra,dict(resume=True));refuse();extra.unlink()
+        change(original_attempt,'admitted_unix',2000.)
+        change(terminal_path,'fixed_policy_evaluation_complete',False)
+        change(terminal_path,'bank_identities_sha256','0'*64)
+        change(reader_path,'evaluation_result_sha256','0'*64)
+        change(reader_path,'reference_complete_preflop_range_replays',27)
+        change(reader_path,'strictly_board_disjoint_test',True)
+        change(readback_path,'complete',False)
+        old_live=report.base.live;report.base.live=lambda *args:True
+        try:refuse()
+        finally:report.base.live=old_live
+        assert report.terminal_evidence()[0]['comparison']==comparison;positive+=1
+finally:report.OUT,report.STORE,report.LOCKS,report.REVIEW_SHA=original
+result=dict(complete=True,passed=True,seconds=time.monotonic()-began,positive_controls=positive,negative_controls=rejected,
+    candidate_source_sha256=report.sha(Path(report.__file__)),original_renderer_sha256=report.sha(Path(report.base.__file__)),
+    synthetic_metadata_only=True,actual_scientific_values_read=False,new_scientific_deals=False,fitting=False,native_execution=False,gpu_used=False)
+target=Path(__file__).with_name('final-report-v2-control-result.json')
+with target.open('x',encoding='utf-8') as f:json.dump(result,f,sort_keys=True,separators=(',',':'))
+print(json.dumps(dict(passed=True,positive=positive,negative=rejected,seconds=result['seconds'],path=str(target))))

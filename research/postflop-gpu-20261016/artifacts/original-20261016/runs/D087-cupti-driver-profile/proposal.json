@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-17T05:44:36.052951+00:00",
+  "id": "D087",
+  "type": "diagnostic_only",
+  "prior_goal_turn": "progress: D085 profiler validated and E054 exact full-cycle screen rejected",
+  "accepted_source": "E051",
+  "proposal": "Add CUPTI Driver API activity records and six explicit init/solve/readback phase timestamps to separate host/API costs from device work. Preserve direct collector lifecycle and accepted solver library.",
+  "evidence_basis": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\gap-census.json",
+  "schema": "Existing176byte row; kind4 has cbid in detail, processId/context, threadId/stream, returnValue/graph, unique correlationId; no kernel-node fields reused for interpretation. Names decoded offline from matching SDK cbid header.",
+  "quality_gates": "Ability13kernel/4graphlaunch/4kernelAPIcall complete control, exact data/guards, valid API timestamps/correlation and0errors/drops. Then fixed3matched ordinary/observed rainbow pairs, exact6states/60checks, per-pair absolute complete/native/outer observer change<=10%, no exclusions/pooling/extensions.",
+  "phase_ids": {
+    "1": "GPUinitbegin after collector start",
+    "2": "GPUinitend after GPU synchronize",
+    "3": "solvebegin",
+    "4": "solveend after GPU synchronize",
+    "5": "readbackbegin",
+    "6": "readbackend after GPU synchronize"
+  },
+  "limits": "No new solver change or optimization accepted. API time can include waiting on device and overlap GPU intervals; not additive to kernel time or a removable-speedup bound. No admin, counters, injection, driver/global installation or setting changes.",
+  "source_current_policy": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md"
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "artifact": "D010-quantization-design",
+  "status": "design_only",
+  "created_utc": "2026-10-16T05:11:11.8084778Z",
+  "source_checkout": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "source_commit": "9e6d402ccbf1930d124940754718a29b09b04e4a",
+  "source_snapshot": [
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs",
+      "sha256": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7"
+    }
+  ],
+  "diagnostic": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D009\\stdout.log",
+    "sha256": "dd03590e4fcb53aff50c1158c09f3c698885602be778721cdc96c04fac1653f3",
+    "qualifying": false,
+    "note": "CPU stage includes scatter and inactive restoration; it is not an estimate of removable encoding."
+  },
+  "protocol": {
+    "path": "X:\\Dev\\GTOpen\\web\\research\\postflop-gpu-20261016\\program.md",
+    "sha256": "b9a715b9e4acda28dffb72b72b39b60655e6f7f924acdfec76c0b198de319e06"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "e871c884b01c5d050343ea36641f11c9aa09c344465c8db8186720ee961671fe"
+    }
+  ],
+  "validation": "Source review and artifact consistency only. No production edits, build, GPU execution, or deployment."
+}

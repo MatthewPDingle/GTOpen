@@ -1,0 +1,928 @@
+{
+  "id": "D123",
+  "at": "2026-10-18T04:10:27.823093+00:00",
+  "status": "decline_CPU_component_saving_budget_not_met",
+  "protocol_sha256": "e9ec0b89cbdcd2febc7da1f32e6ee1bdfdfa499d587d7a26b1f51795587a2ccb",
+  "binary_sha256": "d14012cad03d2fa105021fe04d5970a9a11ee5baa134d70d5da1db520043dc9a",
+  "cases": [
+    {
+      "case": 0,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27673609,
+      "root_checks": 219,
+      "raw_bytes": 464407988,
+      "raw_sha256": "45521f186810e70157801dd77829ae187de7a679973bc32e707e802fd03cb5ff",
+      "board": "Ks7h2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 159.42139999999998,
+          "candidate_ms": 190.6893,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 165.1104,
+          "candidate_ms": 162.8962,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 177.391,
+          "candidate_ms": 167.7707,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 191.72729999999999,
+          "candidate_ms": 166.6956,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 159.0855,
+          "candidate_ms": 180.57819999999998,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 169.7771,
+          "candidate_ms": 184.68390000000002,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 171.8585,
+          "candidate_ms": 207.5493,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 168.21439999999998,
+          "candidate_ms": 167.6293,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 170.299,
+          "candidate_ms": 175.7515,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 169.7771,
+      "candidate_median_ms": 175.7515,
+      "median_paired_saving_ms": -5.452499999999986,
+      "saving_of_medians_ms": -5.974400000000003
+    },
+    {
+      "case": 1,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27673609,
+      "root_checks": 219,
+      "raw_bytes": 464407988,
+      "raw_sha256": "087dc399dd40507cfdee9ca60a70f440b51f47120d6bff43bdcbb8a09aa215ef",
+      "board": "Ks7h2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 173.21339999999998,
+          "candidate_ms": 214.05579999999998,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 184.73690000000002,
+          "candidate_ms": 185.0165,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 207.2745,
+          "candidate_ms": 182.8946,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 196.9138,
+          "candidate_ms": 180.12,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 184.38379999999998,
+          "candidate_ms": 187.6531,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 188.1524,
+          "candidate_ms": 218.924,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 177.1802,
+          "candidate_ms": 179.2475,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 180.6354,
+          "candidate_ms": 182.32319999999999,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 181.2148,
+          "candidate_ms": 213.9079,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 184.38379999999998,
+      "candidate_median_ms": 185.0165,
+      "median_paired_saving_ms": -2.067299999999989,
+      "saving_of_medians_ms": -0.6327000000000282
+    },
+    {
+      "case": 2,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27673609,
+      "root_checks": 219,
+      "raw_bytes": 464407988,
+      "raw_sha256": "6830c7234515e61af090db86b9ba8060347c9be141b4a2d4e75be272bd495ed5",
+      "board": "Ks7h2d",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 132.2481,
+          "candidate_ms": 157.9676,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 144.4363,
+          "candidate_ms": 175.5663,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 157.12529999999998,
+          "candidate_ms": 218.5163,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 126.81029999999998,
+          "candidate_ms": 150.5848,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 188.7673,
+          "candidate_ms": 172.8877,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 183.0881,
+          "candidate_ms": 145.4204,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 163.4022,
+          "candidate_ms": 142.2413,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 192.1345,
+          "candidate_ms": 183.22150000000002,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 157.5066,
+          "candidate_ms": 189.5105,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 157.5066,
+      "candidate_median_ms": 172.8877,
+      "median_paired_saving_ms": -23.774500000000018,
+      "saving_of_medians_ms": -15.381100000000004
+    },
+    {
+      "case": 3,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27673609,
+      "root_checks": 219,
+      "raw_bytes": 464407988,
+      "raw_sha256": "dca2cf6d341353d56ef9c0022f0892def6a368c399fae795075221ff3f2408ba",
+      "board": "Ks7h2d",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 204.05339999999998,
+          "candidate_ms": 181.76590000000002,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 164.85739999999998,
+          "candidate_ms": 177.8135,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 180.52280000000002,
+          "candidate_ms": 181.0993,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 184.80669999999998,
+          "candidate_ms": 176.2305,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 173.97889999999998,
+          "candidate_ms": 183.83440000000002,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 189.48209999999997,
+          "candidate_ms": 175.5743,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 200.5844,
+          "candidate_ms": 218.2593,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 183.9336,
+          "candidate_ms": 202.16219999999998,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 209.27609999999999,
+          "candidate_ms": 196.4004,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 184.80669999999998,
+      "candidate_median_ms": 181.76590000000002,
+      "median_paired_saving_ms": -0.5764999999999816,
+      "saving_of_medians_ms": 3.0407999999999618
+    },
+    {
+      "case": 4,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27687171,
+      "root_checks": 219,
+      "raw_bytes": 464624980,
+      "raw_sha256": "cde2306bfadd373859d0394f4e8ea01215aeb45d85c67a2c5260804782488103",
+      "board": "Ks7s2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 157.6118,
+          "candidate_ms": 122.5721,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 156.6173,
+          "candidate_ms": 166.9691,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 130.39159999999998,
+          "candidate_ms": 126.7133,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 157.0761,
+          "candidate_ms": 148.1538,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 133.1737,
+          "candidate_ms": 123.1767,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 157.2847,
+          "candidate_ms": 131.6019,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 142.0561,
+          "candidate_ms": 126.4767,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 165.5442,
+          "candidate_ms": 140.6396,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 158.9709,
+          "candidate_ms": 145.6626,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 157.0761,
+      "candidate_median_ms": 131.6019,
+      "median_paired_saving_ms": 13.308300000000003,
+      "saving_of_medians_ms": 25.474199999999996
+    },
+    {
+      "case": 5,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 27687171,
+      "root_checks": 219,
+      "raw_bytes": 464624980,
+      "raw_sha256": "fa9e70c0bef9023edcc73c83bad147d2cfc51a64afce7a6c7883523777401bce",
+      "board": "Ks7s2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 132.3181,
+          "candidate_ms": 148.3587,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 142.3317,
+          "candidate_ms": 174.0566,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 120.0023,
+          "candidate_ms": 138.5775,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 164.7882,
+          "candidate_ms": 152.17249999999999,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 156.3369,
+          "candidate_ms": 152.5283,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 173.4574,
+          "candidate_ms": 135.4254,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 172.0415,
+          "candidate_ms": 130.4161,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 158.98989999999998,
+          "candidate_ms": 148.5874,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 163.9521,
+          "candidate_ms": 168.0805,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 158.98989999999998,
+      "candidate_median_ms": 148.5874,
+      "median_paired_saving_ms": 3.8086000000000126,
+      "saving_of_medians_ms": 10.402499999999975
+    },
+    {
+      "case": 6,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 25620394,
+      "root_checks": 219,
+      "raw_bytes": 431556548,
+      "raw_sha256": "b49e0de74d6218bc0370ae8a27a5410229b847d2407fa50c515eed864bc2e24c",
+      "board": "Ks7s2d",
+      "iso_requested": true,
+      "iso_active": true,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 111.0737,
+          "candidate_ms": 97.81099999999999,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 109.5729,
+          "candidate_ms": 89.65729999999999,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 112.6985,
+          "candidate_ms": 136.6647,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 82.79509999999999,
+          "candidate_ms": 90.6909,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 84.37559999999999,
+          "candidate_ms": 106.3522,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 99.1891,
+          "candidate_ms": 117.722,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 87.19,
+          "candidate_ms": 91.33840000000001,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 131.3806,
+          "candidate_ms": 88.9077,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 115.478,
+          "candidate_ms": 103.9165,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 109.5729,
+      "candidate_median_ms": 97.81099999999999,
+      "median_paired_saving_ms": -4.148400000000009,
+      "saving_of_medians_ms": 11.761900000000011
+    },
+    {
+      "case": 7,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 25620394,
+      "root_checks": 219,
+      "raw_bytes": 431556548,
+      "raw_sha256": "b0ca122e21d6ffcbfee2a47a83cc3f4a688813b9010267160c4a18f8ca73d167",
+      "board": "Ks7s2d",
+      "iso_requested": true,
+      "iso_active": true,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "measured_pairs": [
+        {
+          "baseline_ms": 88.9264,
+          "candidate_ms": 91.3257,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 88.112,
+          "candidate_ms": 107.3513,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 109.1082,
+          "candidate_ms": 146.56150000000002,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 96.51029999999999,
+          "candidate_ms": 94.5509,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 123.3511,
+          "candidate_ms": 126.84519999999999,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 110.0856,
+          "candidate_ms": 100.5696,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 123.2799,
+          "candidate_ms": 92.64219999999999,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 125.49270000000001,
+          "candidate_ms": 107.7043,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 103.0832,
+          "candidate_ms": 96.8502,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 109.1082,
+      "candidate_median_ms": 100.5696,
+      "median_paired_saving_ms": 1.959399999999988,
+      "saving_of_medians_ms": 8.538600000000002
+    },
+    {
+      "case": 8,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 7000,
+      "root_checks": 219,
+      "raw_bytes": 115764,
+      "raw_sha256": "877f32ef38dfd4707a25884483821399583dd6d1233e7aa3e4f4f28cea5cd761",
+      "board": "Ks7h2dQhTc",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 33,
+      "measured_pairs": [
+        {
+          "baseline_ms": 0.0231,
+          "candidate_ms": 0.0235,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 0.022,
+          "candidate_ms": 0.0217,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 0.0214,
+          "candidate_ms": 0.0217,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 0.0211,
+          "candidate_ms": 0.0216,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 0.0208,
+          "candidate_ms": 0.0213,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 0.020999999999999998,
+          "candidate_ms": 0.0213,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 0.0209,
+          "candidate_ms": 0.0213,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 0.0212,
+          "candidate_ms": 0.0213,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 0.0209,
+          "candidate_ms": 0.0214,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 0.0211,
+      "candidate_median_ms": 0.0214,
+      "median_paired_saving_ms": -0.00040000000000000105,
+      "saving_of_medians_ms": -0.0002999999999999982
+    },
+    {
+      "case": 9,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 7000,
+      "root_checks": 219,
+      "raw_bytes": 115764,
+      "raw_sha256": "87dc7cfd8f2197b4b9e6532fd07a3b86cac171d436fe73cfc82839e2966d5f3e",
+      "board": "Ks7h2dQhTc",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 33,
+      "measured_pairs": [
+        {
+          "baseline_ms": 0.0373,
+          "candidate_ms": 0.039799999999999995,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 0.0379,
+          "candidate_ms": 0.0387,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 0.0361,
+          "candidate_ms": 0.0351,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 0.0371,
+          "candidate_ms": 0.025,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 0.0218,
+          "candidate_ms": 0.022799999999999997,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 0.0207,
+          "candidate_ms": 0.0219,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 0.0202,
+          "candidate_ms": 0.022099999999999998,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 0.0176,
+          "candidate_ms": 0.0198,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 0.0217,
+          "candidate_ms": 0.0214,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 0.0218,
+      "candidate_median_ms": 0.022799999999999997,
+      "median_paired_saving_ms": -0.0009999999999999974,
+      "saving_of_medians_ms": -0.0009999999999999974
+    },
+    {
+      "case": 10,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 7000,
+      "root_checks": 219,
+      "raw_bytes": 115764,
+      "raw_sha256": "2913750f4a0649359887928db84c6ce11ee3b04235af80692f22fda8d2a9c5f2",
+      "board": "Ks7h2dQhTc",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 33,
+      "measured_pairs": [
+        {
+          "baseline_ms": 0.019,
+          "candidate_ms": 0.017900000000000003,
+          "first": "baseline",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 0.017,
+          "candidate_ms": 0.0166,
+          "first": "candidate",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 0.0166,
+          "candidate_ms": 0.0166,
+          "first": "baseline",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 0.016399999999999998,
+          "candidate_ms": 0.0167,
+          "first": "candidate",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 0.016399999999999998,
+          "candidate_ms": 0.0261,
+          "first": "baseline",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 0.0165,
+          "candidate_ms": 0.0166,
+          "first": "candidate",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 0.016399999999999998,
+          "candidate_ms": 0.0166,
+          "first": "baseline",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 0.0163,
+          "candidate_ms": 0.016399999999999998,
+          "first": "candidate",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 0.0161,
+          "candidate_ms": 0.0165,
+          "first": "baseline",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 0.016399999999999998,
+      "candidate_median_ms": 0.0166,
+      "median_paired_saving_ms": -9.99999999999994e-05,
+      "saving_of_medians_ms": -0.00020000000000000226
+    },
+    {
+      "case": 11,
+      "fields": 53,
+      "all_values_capacities_structs_exact": true,
+      "baseline_matches_retained_accepted_metadata": true,
+      "baseline_words": 7000,
+      "root_checks": 219,
+      "raw_bytes": 115764,
+      "raw_sha256": "baa1a031d9c9d9c41a2c35445e20b215fc66efb7a057d531c286c393054065d1",
+      "board": "Ks7h2dQhTc",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 33,
+      "measured_pairs": [
+        {
+          "baseline_ms": 0.0177,
+          "candidate_ms": 0.018099999999999998,
+          "first": "candidate",
+          "pair": 0
+        },
+        {
+          "baseline_ms": 0.0168,
+          "candidate_ms": 0.0171,
+          "first": "baseline",
+          "pair": 1
+        },
+        {
+          "baseline_ms": 0.017,
+          "candidate_ms": 0.0168,
+          "first": "candidate",
+          "pair": 2
+        },
+        {
+          "baseline_ms": 0.0165,
+          "candidate_ms": 0.0165,
+          "first": "baseline",
+          "pair": 3
+        },
+        {
+          "baseline_ms": 0.0165,
+          "candidate_ms": 0.0166,
+          "first": "candidate",
+          "pair": 4
+        },
+        {
+          "baseline_ms": 0.0162,
+          "candidate_ms": 0.0194,
+          "first": "baseline",
+          "pair": 5
+        },
+        {
+          "baseline_ms": 0.0279,
+          "candidate_ms": 0.031099999999999996,
+          "first": "candidate",
+          "pair": 6
+        },
+        {
+          "baseline_ms": 0.0172,
+          "candidate_ms": 0.017900000000000003,
+          "first": "baseline",
+          "pair": 7
+        },
+        {
+          "baseline_ms": 0.0166,
+          "candidate_ms": 0.0216,
+          "first": "candidate",
+          "pair": 8
+        }
+      ],
+      "baseline_median_ms": 0.0168,
+      "candidate_median_ms": 0.017900000000000003,
+      "median_paired_saving_ms": -0.0003999999999999976,
+      "saving_of_medians_ms": -0.0011000000000000038
+    }
+  ],
+  "canonical_case_ids": [
+    2,
+    6,
+    10
+  ],
+  "canonical_sum_CPU_plan_saving_ms": -3.619399999999992,
+  "required_component_saving_ms": 95.825124,
+  "admit_one_integrated_trial": false,
+  "original_and_candidate_plan_tests_pass": true,
+  "all53_values_capacities_structs_match_retained_accepted": true,
+  "all12_fixed_CPU_processes_completed": true,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "GPU_or_solver_executions": 0,
+  "complete_solve_performance_measured": false,
+  "candidate_accepted": false,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "limits": "CPU planner component screen only. Predetermined saving budget is a screening heuristic, not a hardware/headroom bound, necessary condition, causal attribution, accepted speedup or complete-solve qualification. No allocator physical/temporary/driver peak or native GPU evidence. Fixed9 pairs per each12 cases retained. No source/layout/initialization/helper/threshold variants or extra samples after a failed control or component gate."
+}

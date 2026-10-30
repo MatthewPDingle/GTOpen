@@ -1,0 +1,67 @@
+{
+  "id": "E037-three-pair-comparison",
+  "decision": "rejected",
+  "scope": "Repeated warm-cache compressed-storage complete-cycle screen",
+  "reason": "Rejected: 3 measurements per binary; sum of fixture medians 10377.9961 -> 10275.1830 ms (0.9907% observed gain). Below the registered 1% aggregate gate; no reproducible aggregate benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed. Effective user-directed policy was frozen before timing: aggregate >=1% and no repeatable measured fixture slowdown. A preliminary pass requires fresh fixed16-pair confirmation and broader/resource/compatibility qualification before adoption.",
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 10377.9961,
+    "candidate_full_cycle_ms": 10275.182999999999,
+    "observed_gain_pct": 0.9906835482430102,
+    "required_gain_pct": 1.0,
+    "aggregate_gate_met": false,
+    "fixture_median_regression_above_0pct": [],
+    "fixture_regression_guard": {
+      "threshold_pct": 0.0,
+      "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+      "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -0.898069943497559,
+          "paired_regression_pct": [
+            -2.0072749561394057,
+            -0.898069943497559,
+            1.089823013694552
+          ],
+          "repetitions_above_0pct": 1,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_measured_regression": false,
+          "reason": "rainbow: median regression -0.8981%; 1/3 paired repetitions exceed 0% (requires median >0% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -0.7263599692630158,
+          "paired_regression_pct": [
+            0.3198006907098469,
+            -1.7885309893550116,
+            -0.5131431922433533
+          ],
+          "repetitions_above_0pct": 1,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_measured_regression": false,
+          "reason": "two-tone: median regression -0.7264%; 1/3 paired repetitions exceed 0% (requires median >0% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": -14.395198209501853,
+          "paired_regression_pct": [
+            -13.14055146796082,
+            -14.395198209501853,
+            -12.165253125538234
+          ],
+          "repetitions_above_0pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_measured_regression": false,
+          "reason": "river: median regression -14.3952%; 0/3 paired repetitions exceed 0% (requires median >0% and at least 2 repetitions)."
+        }
+      ],
+      "affected_fixtures": [],
+      "failed": false
+    },
+    "statistical_significance_established": false
+  }
+}

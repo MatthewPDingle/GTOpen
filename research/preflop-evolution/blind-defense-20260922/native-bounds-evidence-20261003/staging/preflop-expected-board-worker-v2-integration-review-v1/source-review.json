@@ -1,0 +1,101 @@
+{
+  "format": 1,
+  "outcome": "success",
+  "scope": "source-only prospective board worker integration; no native launch",
+  "sources": {
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_board_workers_v1.py": "20d38b94ae2a8f9b5c88774c116c3fdb46dc01bd5c6bed76a604f4cc11410adb",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_board_workers_v2.py": "d4f941fc7fcabb9197aa3cbea95698cbd78294e05ea21c47af5f00a7ea736b1d",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_native_execution_v2.py": "1627430507472de471552ffca420b416a5ab0d6670b9ea8e5fb0e11b0da6699f",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\prepare_board_worker_v2_review_v1.py": "e7dfeb00fede4b4ca9c2588955e449e7b625d797474aaaf489f661939a105679"
+  },
+  "inverse_reconstruction_sha256": "20d38b94ae2a8f9b5c88774c116c3fdb46dc01bd5c6bed76a604f4cc11410adb",
+  "transformations": [
+    {
+      "old": "FrozenExpectedTargets v2. Runtime limits are explicit operational bounds, not a\n",
+      "new": "FrozenExpectedTargets v2. The prospective aggregate output contract is 256 bytes\nthrough 2 GB, inclusive; incompatible limits are rejected, never silently capped.\nRuntime limits are explicit operational bounds, not a\n",
+      "count": 1
+    },
+    {
+      "old": "METHOD = 'typed-all-preflop-native-board-worker-v1'",
+      "new": "METHOD = 'typed-all-preflop-native-board-worker-v2'",
+      "count": 1
+    },
+    {
+      "old": "or not 1 <= result['max_output_bytes'] <= 8_000_000_000",
+      "new": "or not 256 <= result['max_output_bytes'] <= DEFAULT_MAX_OUTPUT_BYTES",
+      "count": 1
+    },
+    {
+      "old": "Native output byte limit must fit authenticated execution bounds",
+      "new": "Prospective bounded board output limit must be 256 through 2,000,000,000 bytes",
+      "count": 1
+    },
+    {
+      "old": "import preflop_expected_native_execution_v1 as native",
+      "new": "import preflop_expected_native_execution_v2 as native",
+      "count": 1
+    },
+    {
+      "old": "arguments = [str(s['context_path']), str(request_path)]",
+      "new": "arguments = [str(s['context_path']), str(request_path),\n        '--output-byte-limit='+str(s['runtime_limits']['max_output_bytes'])]",
+      "count": 1
+    },
+    {
+      "old": "max_output_bytes=s['runtime_limits']['max_output_bytes'])",
+      "new": "max_output_bytes=s['runtime_limits']['max_output_bytes'], direct_outputs=())",
+      "count": 1
+    },
+    {
+      "old": "        expected_identities=invocation_identities)\n",
+      "new": "        expected_identities=invocation_identities,\n        timeout=s['runtime_limits']['native_timeout_seconds'],\n        max_output_bytes=s['runtime_limits']['max_output_bytes'], direct_outputs=())\n",
+      "count": 2
+    },
+    {
+      "old": "result = dict(format=1, method=METHOD",
+      "new": "result = dict(format=2, method=METHOD",
+      "count": 1
+    }
+  ],
+  "identical_function_asts": [
+    "sha",
+    "_digest",
+    "_save",
+    "_payload",
+    "_identities",
+    "_check_identities",
+    "guard",
+    "pool"
+  ],
+  "preserved_signatures": [
+    "initialize",
+    "complete",
+    "pool"
+  ],
+  "explicit_contract_change": {
+    "original_max_output_bytes": [
+      1,
+      8000000000
+    ],
+    "prospective_max_output_bytes": [
+      256,
+      2000000000
+    ],
+    "default": 2000000000,
+    "operation": "reject incompatible configuration; no normalization/capping"
+  },
+  "result_identity": {
+    "format": 2,
+    "method": "typed-all-preflop-native-board-worker-v2"
+  },
+  "native_identity": {
+    "format": 2,
+    "method": "native-process-bound-export-v2",
+    "direct_outputs": []
+  },
+  "evidence": {
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\authoritative-worker-v1.py": "20d38b94ae2a8f9b5c88774c116c3fdb46dc01bd5c6bed76a604f4cc11410adb",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\native-execution-v2.py": "1627430507472de471552ffca420b416a5ab0d6670b9ea8e5fb0e11b0da6699f",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\prospective-worker-v2.py": "d4f941fc7fcabb9197aa3cbea95698cbd78294e05ea21c47af5f00a7ea736b1d",
+    "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop-expected-board-worker-v2-integration-review-v1\\worker-v1-to-v2.diff": "74ab4d0ffe753aa560d4eeb1fc5da033029df716c17cb6529811a554ba66dc7e"
+  }
+}

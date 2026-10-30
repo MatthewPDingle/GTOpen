@@ -1,0 +1,41 @@
+{
+  "id": "D269",
+  "at": "2026-10-29T07:45:45.965953+00:00",
+  "status": "pass_actual_host_types_only",
+  "protocol_sha256": "700115e987c770e789df13bc7e54c709794818faf575fc695b63aea3a6bb32ba",
+  "rows": {
+    "baseline": [
+      4448,
+      8,
+      32,
+      8,
+      40,
+      8,
+      160,
+      8
+    ],
+    "candidate": [
+      4448,
+      8,
+      32,
+      8,
+      40,
+      8,
+      160,
+      8
+    ]
+  },
+  "gates": {
+    "baseline_wrapper": true,
+    "candidate_wrapper_bound": true,
+    "wrapper_alignment": true,
+    "records_no_growth": true,
+    "arena_layout_no_growth": true
+  },
+  "all_owned_children_terminal": true,
+  "fresh_compilers": 2,
+  "filtered_CPU_layout_helpers": 2,
+  "GpuSolver_constructors_CUDA_APIs_kernels_solves_performance_runs": 0,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "limits": "Two fresh offline locked release full library test builds with continuation-transfer-research, then each exact gpu::d269_host_types_only test once. Appended source observers only print actual private type sizes; source prefixes byte-exact and every build restored before filtered helper. No ordinary tests, GpuSolver constructors, CUDA context/API/kernel/solve or performance samples. Resource/layout gate only, not material neutrality or numerical/caller/capability proof."
+}

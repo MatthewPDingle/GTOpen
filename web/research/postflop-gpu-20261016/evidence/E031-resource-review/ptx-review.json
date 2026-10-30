@@ -1,0 +1,184 @@
+{
+  "id": "E031-changed-up-show-ptx-review",
+  "verdict": "PASS_SCOPED_PTX_EXPLANATION_RESOURCE_SCREEN_REMAINS_REJECTED",
+  "findings": [],
+  "scope": "Independent read-only changed-up_show source/PTX inspection and allocation arithmetic. Custody, full resource gate and other-entry verification are separately owned by the terminal reviewer.",
+  "static_shared": {
+    "baseline_declared_arrays": {
+      "chunk_sum": 1028
+    },
+    "candidate_declared_arrays": {
+      "card_off_sh": 212,
+      "chunk_sum": 1028
+    },
+    "declared_growth_bytes": 212,
+    "baseline_total_declared_bytes": 1028,
+    "candidate_total_declared_bytes": 1240,
+    "baseline_cuda_queried_bytes": 1040,
+    "candidate_cuda_queried_bytes": 1248,
+    "queried_growth_bytes": 208,
+    "baseline_effective_padding_bytes": 12,
+    "candidate_effective_padding_bytes": 8,
+    "explanation": "The53-u32 array is fully212bytes in PTX. Queried totals include12bytes above baseline declarations and8bytes above candidate declarations, yielding212-4=208bytes growth. Both queried totals match16-byte round-up for these kernels. This is an observed allocation/padding reconciliation, not a universal driver granularity claim or proof of physical symbol offsets."
+  },
+  "changed_integer_path": {
+    "card_base": "Original global absolute slot base read retained before all staging.",
+    "preload": "Candidate lines143-205 add a generic block-stride53-word global-to-shared copy before first bar.sync at209. Compiler emits tail/main unrolled paths for arbitrary block width; production128 means one copy for each tid0..52.",
+    "consumer_load_sites": {
+      "baseline_global": [
+        414,
+        415,
+        687,
+        688
+      ],
+      "candidate_shared": [
+        480,
+        484,
+        757,
+        761
+      ]
+    },
+    "loop_semantics": "The same absolute c0/c1 bounds feed the original ascending t loops and t-card_base position cache lookup. p0/p1 card IDs, nonzero slots and empty spans retain the source contracts. This does not alter the sorted-hand or per-card floating recurrence.",
+    "added_static_integer_work": "The generic preload adds loop-trip code, including another div.u32 PTX site. Static global-u32 sites rise22to23 because five preload sites replace four consumer sites; site counts are not dynamic loads or latency."
+  },
+  "floating_and_control_inspection": {
+    "signature_byte_exact": true,
+    "floating_arithmetic_and_selection_instruction_count": 219,
+    "arithmetic_sequence_same_after_predicate_rename": true,
+    "normalization": "Whitespace normalized; subtract6 from candidate predicate-register identifiers in floating arithmetic/move/select instructions. All opcodes, float register operands/destinations/constants and instruction order then match exactly.",
+    "normalized_fp_sequence_sha256": "13b60685fe419b7f7583efb1ea81e68da4137f336f5c13568d0b20204641e117",
+    "prefix_scan_region": {
+      "baseline_lines": [
+        188,
+        343
+      ],
+      "candidate_lines": [
+        253,
+        408
+      ],
+      "lines_each": 156,
+      "alpha_equivalent": true,
+      "method": "Register and label identifiers renamed bijectively in first-occurrence order within second-through-fifth barrier region; full remaining text including immediates/branches/instruction order matches. This is local textual alpha-equivalence, not a whole-kernel formal proof."
+    },
+    "barrier_lines": {
+      "baseline": [
+        144,
+        188,
+        248,
+        299,
+        343
+      ],
+      "candidate": [
+        209,
+        253,
+        313,
+        364,
+        408
+      ]
+    },
+    "ftz_modifiers_present": false,
+    "final_payout_dependency": "The final subtraction/addition chain uses the same %f327..%f333 operands; mul.f32 f334 followed by the same two fma.rn.f32 f335/f336 remains exact text.",
+    "limits": "Integer address and predicate names differ around the new table; source mapping plus inspected PTX supports retained operands and loop semantics. Static opcode equality alone is not treated as equivalence. No SASS execution, native outputs, NaN-payload guarantee or complete-kernel numerical proof."
+  },
+  "resource_result_retained": {
+    "registers": [
+      38,
+      39
+    ],
+    "local_bytes": [
+      0,
+      0
+    ],
+    "static_shared_bytes": [
+      1040,
+      1248
+    ],
+    "occupancy_rows": [
+      {
+        "shape": "rainbow_p0",
+        "dynamic_shared_bytes": 6300,
+        "baseline_blocks": 12,
+        "candidate_blocks": 11
+      },
+      {
+        "shape": "rainbow_p1",
+        "dynamic_shared_bytes": 5060,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      },
+      {
+        "shape": "two_tone_p0",
+        "dynamic_shared_bytes": 6320,
+        "baseline_blocks": 12,
+        "candidate_blocks": 11
+      },
+      {
+        "shape": "two_tone_p1",
+        "dynamic_shared_bytes": 5080,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      },
+      {
+        "shape": "river_p0",
+        "dynamic_shared_bytes": 5600,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      },
+      {
+        "shape": "river_p1",
+        "dynamic_shared_bytes": 4660,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      },
+      {
+        "shape": "wide_turn",
+        "dynamic_shared_bytes": 21808,
+        "baseline_blocks": 4,
+        "candidate_blocks": 4
+      },
+      {
+        "shape": "full_hand_upper_bound",
+        "dynamic_shared_bytes": 26520,
+        "baseline_blocks": 3,
+        "candidate_blocks": 3
+      },
+      {
+        "shape": "empty_sorted_opponent",
+        "dynamic_shared_bytes": 1276,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      },
+      {
+        "shape": "single_sorted_opponent",
+        "dynamic_shared_bytes": 1292,
+        "baseline_blocks": 12,
+        "candidate_blocks": 12
+      }
+    ],
+    "screen_pass": false,
+    "reason": "Two registered shapes lose theoretical128-thread block residency12to11. Neither this PTX review nor nominal byte reconciliation overrides the prospective resource screen. Register and shared changes coexist; no isolated causal attribution to one resource is established.",
+    "no_direct_or_primary_progression": true
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\candidate.cu": "75defdd19a144924e41d1ca36e166161c2e097ec22843905444376e9a561079b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\baseline-up_show.ptx": "de20dd92cfe4ce74b39454315a11464d648d5f0de6b639fd7977b20b7bf56166",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\candidate-up_show.ptx": "96dc8e99f9738912097d21fe118364cd6ab46a806d691a6b6997bbef242fbd1f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\report.json": "275631d98386a203173dd1e49037cd18c385c5cefd2eb98c36a7b8d0abf22cda",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\ptx-inspection.json": "4a1dc34bdd645a2778654fc8366229a6c8b345af3ca43f798448b4923b533227",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\protocol.json": "30b0b9b2b83aa165c004d80a4b1235e394dca1f18850cb543cd173446aba5545",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\prepared-manifest.json": "fd50fe183d77d697ce43e8a79d0cdf9d466c720fd452aad39d61c98592f51f16",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-design\\manifest.json": "88fd1fdca4a1eba7deffb3563540b35d46a87f42d9485774c25a05de29c47662",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E031-source-review\\report.json": "6860b52400025410b56c1611e56c222c6fd7ecc638823c5a655eb3c708450108"
+  },
+  "reviewer_execution": {
+    "compiler": false,
+    "native": false,
+    "gpu": false,
+    "source_mutation": false
+  },
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "rescue_variant_proposed": false
+}

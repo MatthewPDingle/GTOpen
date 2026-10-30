@@ -1,0 +1,38 @@
+{
+  "candidate": "D044",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_ACCEPTANCE_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E020_server_qualification": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_SERVER_QUALIFICATION_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "D044_source_review": {
+      "path": "ROOT_FILL_IMMUTABLE_D044_SOURCE_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "D044_script_review": {
+      "path": "ROOT_FILL_IMMUTABLE_D044_SCRIPT_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\candidate\\game.rs",
+      "sha256": "fef5db1cac90a2797d6bc5ad85870b8ee1247681f69f17c27a7dc0862bec2e35"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\scripts-manifest.json": "ROOT_FILL_AFTER_REVIEW",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\protocol.json": "f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\source-manifest.json": "8f522e9f4c2c71537495492119b95be8c50f48be117d57206a3a2c602f59b013",
+    "ROOT_FILL_ALL_PREREQUISITE_PATHS": "ROOT_FILL"
+  },
+  "scope": "Root pins immutable E020 acceptance/server and independent D044 source/script review. One temporary game.rs diagnostic; no accuracy shortcut, solver work or performance acceptance. Placeholders do not authorize execution."
+}

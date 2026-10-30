@@ -1,0 +1,59 @@
+{
+  "id": "E054-resource-root-check",
+  "at": "2026-10-17T05:33:51.932365+00:00",
+  "status": "pass_resource_feasibility_only",
+  "root_cross_check_only": true,
+  "resource_report_sha256": "7bda4cf60cb773de59e5a3b6620f2f62f328f7cf6fbeaf576b2253a35662e391",
+  "terminal_sha256": "26ab17b32174248f767408ecab41bec5f7372b5d726cdb9bf385bce25e2c04f1",
+  "registers_before_after": [
+    62,
+    62
+  ],
+  "local_bytes_before_after": [
+    64,
+    64
+  ],
+  "shared_bytes_before_after": [
+    0,
+    0
+  ],
+  "occupancy_before": [
+    [
+      64,
+      16
+    ],
+    [
+      128,
+      8
+    ],
+    [
+      256,
+      4
+    ]
+  ],
+  "occupancy_after": [
+    [
+      64,
+      16
+    ],
+    [
+      128,
+      8
+    ],
+    [
+      256,
+      4
+    ]
+  ],
+  "max_threads_before_after": [
+    1024,
+    1024
+  ],
+  "exact_abi_other8_entries": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Root replay of compute_120 PTX, actual loaded attributes, compiler/probe receipts only. No universal hardware, numerical or speed proof."
+}

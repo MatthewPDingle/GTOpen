@@ -1,0 +1,28 @@
+{
+  "id": "D067",
+  "kind": "additive source-location clarification; sealed report unchanged",
+  "report_sha256": "d48545168f79a1ad4d97d7402581ebf66aa757d762309e64c4d28b17c78d5202",
+  "reason": "Final line-number check found two shorthand subranges ended before the associated barrier; algebra/control conclusions unchanged.",
+  "kernels.cu_locations": {
+    "function": 195,
+    "reach_and_card_position_staging": [
+      227,
+      230
+    ],
+    "full_span_zero_and_barrier": [
+      235,
+      238
+    ],
+    "blocked_scan": [
+      239,
+      261
+    ],
+    "three_node_payoffs": 263,
+    "final_masses_and_expression": [
+      287,
+      291
+    ]
+  },
+  "payout_binding": "Both evaluation and training launch sites pass the same node_twin/node_tlose/node_ttie arrays for both traversers; only the hand/reach/river tables switch player roles. Eligibility is the same three node f32 payoffs, not actor-selected fold payout logic.",
+  "candidate_or_execution_change": false
+}

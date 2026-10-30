@@ -1,0 +1,117 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "mode": "baseline",
+      "parallelism": 1,
+      "wall_seconds": 40.812999999994645,
+      "workers": [
+        {
+          "mode": "baseline",
+          "batch": "test-000000",
+          "seconds": 9.090368899982423,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        },
+        {
+          "mode": "baseline",
+          "batch": "test-000032",
+          "seconds": 8.628481100022327,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        },
+        {
+          "mode": "baseline",
+          "batch": "test-000000",
+          "seconds": 8.196310599974822,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        },
+        {
+          "mode": "baseline",
+          "batch": "test-000032",
+          "seconds": 8.708777299994836,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        }
+      ]
+    },
+    {
+      "mode": "candidate",
+      "parallelism": 1,
+      "wall_seconds": 27.57799999997951,
+      "workers": [
+        {
+          "mode": "candidate",
+          "batch": "test-000000",
+          "seconds": 5.32002289997763,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000032",
+          "seconds": 5.397433899983298,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000000",
+          "seconds": 5.410129700001562,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000032",
+          "seconds": 5.337861700012581,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        }
+      ]
+    },
+    {
+      "mode": "candidate",
+      "parallelism": 4,
+      "wall_seconds": 8.64000000001397,
+      "workers": [
+        {
+          "mode": "candidate",
+          "batch": "test-000032",
+          "seconds": 6.563908999989508,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000032",
+          "seconds": 6.74715829998604,
+          "exact_original_archive": true,
+          "sha256": "da01acb5117eed842d1ef42af461da5342bf70df26e2838da9ea59a49eb15c4f"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000000",
+          "seconds": 6.940986599976895,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        },
+        {
+          "mode": "candidate",
+          "batch": "test-000000",
+          "seconds": 6.929964400012977,
+          "exact_original_archive": true,
+          "sha256": "32e05a408c2218981e1a23c9530a6daecd54ecf0bcdf9e3aa9ed3fab525d03e0"
+        }
+      ]
+    }
+  ],
+  "registration_sha256": "d9305c53adb65fbcb79e248a904330f1b16f45e6ee77d3a43b71565fe96ae3f4",
+  "baseline_to_parallel_wall_ratio": 4.723726851843594,
+  "candidate_serial_to_parallel_wall_ratio": 3.191898148140616,
+  "maximum_scratch_bytes": 1000000000,
+  "production_modified": false,
+  "study_modified": false,
+  "limitation": "CPU archive throughput only; concurrent study running; not end-to-end acceleration qualification."
+}

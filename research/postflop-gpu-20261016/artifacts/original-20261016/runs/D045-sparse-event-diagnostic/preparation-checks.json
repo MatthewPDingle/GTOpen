@@ -1,0 +1,61 @@
+{
+  "id": "D045",
+  "at": "2026-10-16T13:48:42.184134+00:00",
+  "status": "SOURCE_AND_SYNTAX_CHECKS_ONLY",
+  "python_ast_files": [
+    "build.py",
+    "run.py",
+    "assess.py"
+  ],
+  "source_manifest_sha256": "0952fc2dde596ac297fd76398fa10e74ee00e46aa6f374359384046ceb3d15a8",
+  "source_artifacts_verified": 8,
+  "accepted_source_entries_verified": 162,
+  "unchanged_D035_protocol_keys": [
+    "warm_until",
+    "check_every",
+    "batch_length",
+    "sample_iterations",
+    "batch_arm_order",
+    "raw_and_compressed_equality_checkpoints",
+    "exploit_anchor_checkpoints",
+    "event_boundaries_per_graph",
+    "events_per_graph",
+    "total_cloned_graph_event_nodes",
+    "dense_reference_total_events",
+    "boundary_topology",
+    "selected_interval",
+    "allocation_lifetime",
+    "setup",
+    "sampling",
+    "outer_timing",
+    "abs_outer_perturbation_pct",
+    "usefulness_screen",
+    "output",
+    "correctness",
+    "terminal_policy",
+    "no_claims",
+    "event_edge_definition"
+  ],
+  "selector_only_delta": "E020 up_show shared_bytes3788/3044\u21926300/5060",
+  "expected_markers": 22,
+  "expected_selected_intervals": 18,
+  "accepted_unit_inventory": {
+    "passed": 84,
+    "ignored": 4,
+    "report_sha256": "f81cf88f3840b05be019c08a6b918848018af748415e0efa869b3ed774e34da4",
+    "stdout_sha256": "a3c0c0e74c9565a57b31d4412ea629de149c496373227009dfa4173d1d6c8293"
+  },
+  "only_new_test_count": 1,
+  "only_new_test_ignored": true,
+  "expected_filtered_invocation": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 88
+  },
+  "builds": 0,
+  "native_tests": 0,
+  "gpu_work": 0,
+  "production_source_edits": 0
+}

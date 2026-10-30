@@ -1,0 +1,30 @@
+{
+  "id": "D233-kernel-control",
+  "at": "2026-10-29T02:46:41.003112+00:00",
+  "status": "pass_scoped_up_action_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 63899,
+  "cases": 819,
+  "kernel_launches": 1638,
+  "output_words_both_arms": 12375858,
+  "immutable_words_both_arms": 5199114,
+  "guard_words_both_arms": 10240828,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\output\\baseline-inputs.bin": "0037a39c7fff83a78967604881395b1c828d9f458d2ccc3efcb5bc3429a9b77b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\output\\baseline.bin": "4ed3a38bb075789d6e2b236ddd0ebfa55239b223db81a31da7e03fa160b6ec42",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\output\\candidate-inputs.bin": "0037a39c7fff83a78967604881395b1c828d9f458d2ccc3efcb5bc3429a9b77b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\output\\candidate.bin": "4ed3a38bb075789d6e2b236ddd0ebfa55239b223db81a31da7e03fa160b6ec42",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D233-stride-up-action\\output\\inputs.bin": "3e9c9b3badf51e98ad22f42c7f54bc93586b132a16788d48e2b0b6f9e1046d25"
+  },
+  "protocol_sha256": "f5f72c4c04a3cae69c29e3c1162a910712b9404c01bd3c453bad061d04805883",
+  "corpus_sha256": "b0e82dca741b3435c775baeeaddc177a78080234430c873492c48d6283d8252a",
+  "complete_sha256": "17a87f437f9b9e10706f9b88e26f4ba42098718772ac8d9995354bf46a70829e",
+  "audit_script_sha256": "f1b9ff6ce9dc0b42fa4cc3c2295d7505f8a832a31fbcc8f0f5ef535021052ffe",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "all_parent_child_cfv_rows_disjoint": true,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

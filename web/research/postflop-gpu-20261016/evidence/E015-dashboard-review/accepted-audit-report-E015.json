@@ -1,0 +1,273 @@
+{
+  "checked_at": "2026-10-16T07:38:22.670Z",
+  "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/",
+  "live_http": true,
+  "viewport_emulation_only": true,
+  "status_updated_at": "2026-10-16T07:36:40Z",
+  "desktop": {
+    "metrics": [
+      "ACCEPTED COMPLETE-RUN GAIN\n+9.62%\n\n1.106× throughput for the same complete workload.",
+      "BASELINE COMPLETE RUN\n10.74 s\n\nB038 / B039 / B040 · bad4779b",
+      "BEST VALIDATED COMPLETE RUN\n9.71 s\n\nE015 · Oct 16, 05:56:59 PM",
+      "CORRECTNESS VALIDATION\nPass\n\n3 / 3 fixtures passed. See fingerprints below."
+    ],
+    "validated": "validated",
+    "deployment": "blocked",
+    "deploymentSummary": "Automatic approval review rejected replacing/restarting the live server: \"blocked by policy\" (no further reason). Main source and the updated native server are ready. Twenty server tests and an isolated 100-iteration GPU API smoke passed; live sessions were unchanged. The live executable remains the original version.",
+    "activity": "E015 accepted: 9.62% cumulative complete-cycle improvement. Main-source server validation passed. Auditing whether unchanged reach can also be reused between iterations.",
+    "fixtureRows": [
+      {
+        "name": "Rainbow flop",
+        "cells": [
+          "6.32 s",
+          "5.72 s\nE015",
+          "+9.46%",
+          "4.98 s → 4.69 s",
+          "PASS\nExact state/configuration and stopping iterations in both cohorts; F32, saved-state, menu, resume and GPU controls passed.\nFingerprints"
+        ]
+      },
+      {
+        "name": "Two-tone flop",
+        "cells": [
+          "4.31 s",
+          "3.88 s\nE015",
+          "+10.07%",
+          "3.04 s → 2.88 s",
+          "PASS\nExact state/configuration and stopping iterations in both cohorts; F32, saved-state, menu, resume and GPU controls passed.\nFingerprints"
+        ]
+      },
+      {
+        "name": "River",
+        "cells": [
+          "106.7 ms",
+          "105.9 ms\nE015",
+          "+0.67%",
+          "17.2 ms → 16.3 ms",
+          "PASS\nExact state/configuration and stopping iterations in both cohorts; F32, saved-state, menu, resume and GPU controls passed.\nFingerprints"
+        ]
+      }
+    ],
+    "chartLabel": "Accepted complete-run gains: baseline 0%; E004 +5.38%; E015 +9.62%",
+    "documentWidth": 1425,
+    "bodyWidth": 1425,
+    "viewport": 1440,
+    "staleLabel": "Status current"
+  },
+  "mobile": {
+    "width": 390,
+    "documentWidth": 390,
+    "bodyWidth": 390,
+    "tableScrollers": [
+      {
+        "width": 356,
+        "scrollWidth": 720,
+        "overflowX": "auto"
+      },
+      {
+        "width": 356,
+        "scrollWidth": 915,
+        "overflowX": "auto"
+      }
+    ],
+    "metricRects": [
+      {
+        "left": 16,
+        "right": 190
+      },
+      {
+        "left": 200,
+        "right": 374
+      },
+      {
+        "left": 16,
+        "right": 190
+      },
+      {
+        "left": 200,
+        "right": 374
+      }
+    ],
+    "gain": "+9.62%",
+    "deployment": "blocked"
+  },
+  "narrow": {
+    "width": 320,
+    "documentWidth": 305,
+    "bodyWidth": 305,
+    "tableScrollers": [
+      {
+        "width": 271,
+        "scrollWidth": 720,
+        "overflowX": "auto"
+      },
+      {
+        "width": 271,
+        "scrollWidth": 688,
+        "overflowX": "auto"
+      }
+    ],
+    "metricRects": [
+      {
+        "left": 16,
+        "right": 147.5
+      },
+      {
+        "left": 157.5,
+        "right": 289
+      },
+      {
+        "left": 16,
+        "right": 147.5
+      },
+      {
+        "left": 157.5,
+        "right": 289
+      }
+    ],
+    "gain": "+9.62%",
+    "deployment": "blocked"
+  },
+  "accepted": {
+    "status": "validated",
+    "scope": "complete_run",
+    "candidate_id": "E015",
+    "baseline_ms": 10740.3699,
+    "best_ms": 9707.2344,
+    "correctness": "pass",
+    "measured_at": "2026-10-16T07:26:59Z",
+    "method": "Three alternating original-baseline/candidate pairs; sum of per-fixture medians. Fresh compressed native solves on RTX 5090 with a warm driver cache: tree construction, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo builds, fingerprinting, destruction after fingerprinting, browser/API latency and disk saving excluded. E004 improves initialization; E015 reduces repeated reach propagation during solving. F32 and saved/resumed correctness passed; their performance and cold-start performance are not qualified."
+  },
+  "fixtures": [
+    {
+      "id": "rainbow",
+      "baseline_ms": 6318.9925,
+      "best_ms": 5720.9104,
+      "baseline_solve_ms": 4981.337500000001,
+      "best_solve_ms": 4693.6479,
+      "cumulative_match": true
+    },
+    {
+      "id": "two-tone",
+      "baseline_ms": 4314.7213,
+      "best_ms": 3880.3794,
+      "baseline_solve_ms": 3044.467,
+      "best_solve_ms": 2882.5867,
+      "cumulative_match": true
+    },
+    {
+      "id": "river",
+      "baseline_ms": 106.65610000000001,
+      "best_ms": 105.9446,
+      "baseline_solve_ms": 17.225,
+      "best_solve_ms": 16.2683,
+      "cumulative_match": true
+    }
+  ],
+  "links": [
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-qualification/report.json",
+      "status": 200,
+      "valid_json": true
+    },
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-independent-review/validation.json",
+      "status": 200,
+      "valid_json": true
+    },
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-independent-review/cumulative-validation.json",
+      "status": 200,
+      "valid_json": true
+    },
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-cumulative-comparison/report.json",
+      "status": 200,
+      "valid_json": true
+    },
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-controls-comparison/report.json",
+      "status": 200,
+      "valid_json": true
+    },
+    {
+      "url": "http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/E015-f32-comparison/report.json",
+      "status": 200,
+      "valid_json": true
+    }
+  ],
+  "accepted_rows": [
+    "E015 · Oct 16, 05:50:16 PM\nPaired player reach reuse\nAll three fixtures\n\tACCEPTED\t9.71 s\n+9.62% vs baseline\n\t7.59 s\tPASS\nValidated 3.9828% incremental improvement versus E004; fresh original-baseline comparison gives 9.6192% cumulative complete-cycle improvement. All accuracy controls passed. Main source integrated; live deployment blocked.\nE015 report ↗\nE015 log ↗\nRepeated complete-cycle comparison ↗\n160 exact state/menu/resume snapshots ↗\nFull F32 exact comparison ↗\n84 unit tests including raw-state proof ↗\nSix GPU integration tests ↗\nRepeated complete-cycle comparison ↗\nAccepted qualification and scope ↗\nIndependent primary and correctness audit ↗\nIndependent cumulative audit ↗\nIndependent main-source integration review ↗\nUpdated server API smoke ↗\nTwenty server unit tests ↗",
+    "E004 · Oct 16, 02:47:22 PM\nInitialize proven-zero compressed arenas directly on GPU\nAll three fixtures\n\tACCEPTED\t11.18 s\t8.86 s\tPASS\nValidated 5.3832% aggregate complete-cycle improvement across three alternating pairs; individual pairs improved 5.08-5.92%. Gain comes from initialization. Broad accuracy checks passed; deployment pending.\nE004 report ↗\nE004 log ↗\nRepeated complete-cycle comparison ↗\nQualification ↗"
+  ],
+  "source_encoding_candidates": [
+    {
+      "path": "$.hardware.gpu",
+      "value": "NVIDIA GeForce RTX 5090 Â· 32 GB"
+    },
+    {
+      "path": "$.hardware.backend",
+      "value": "CUDA Â· Windows Â· driver 610.88"
+    },
+    {
+      "path": "$.fixtures[0].description",
+      "value": "Ks7h2d Â· zero rake"
+    },
+    {
+      "path": "$.fixtures[1].description",
+      "value": "Ks7s2d Â· 5% rake, cap 3"
+    },
+    {
+      "path": "$.fixtures[2].description",
+      "value": "Ks7h2dQhTc Â· 5% rake, cap 3"
+    },
+    {
+      "path": "$.experiments[93].reason",
+      "value": "Standalone exact screen passed (20,480,834 encoded words; 22,696 scales). All 56 timing groups improved; finite block times fell 51â€“55%. Runtime feature check included. This is a CPU component probe, not a complete-cycle gain; E012 will test integration.",
+      "experiment_id_at_followup": "D015"
+    }
+  ],
+  "visible_encoding_candidates": [
+    {
+      "text": "NVIDIA GeForce RTX 5090 Â· 32 GB · CUDA Â· Windows Â· driver 610.88 · verified",
+      "tag": "SPAN",
+      "id": "hardware"
+    },
+    {
+      "text": "Ks7h2d Â· zero rake",
+      "tag": "DIV",
+      "id": ""
+    },
+    {
+      "text": "Ks7s2d Â· 5% rake, cap 3",
+      "tag": "DIV",
+      "id": ""
+    },
+    {
+      "text": "Ks7h2dQhTc Â· 5% rake, cap 3",
+      "tag": "DIV",
+      "id": ""
+    },
+    {
+      "text": "Standalone exact screen passed (20,480,834 encoded words; 22,696 scales). All 56 timing groups improved; finite block times fell 51â€“55%. Runtime feature check included. This is a CPU component probe, not a complete-cycle gain; E012 will test integration.",
+      "tag": "DIV",
+      "id": ""
+    }
+  ],
+  "console_errors": [],
+  "console_warnings": [],
+  "non_get_requests": [],
+  "issues": [
+    "Visible encoding anomaly"
+  ],
+  "passed": false,
+  "manual_screenshot_review": {
+    "desktop": "Metrics, blocked deployment and current stage readable; hardware/fixture mojibake visible.",
+    "mobile_390": "Cards and deployment text readable and fit viewport; hardware mojibake visible.",
+    "screenshots_reviewed": [
+      "accepted-desktop-E015.png",
+      "accepted-mobile-top-E015.png",
+      "accepted-mobile-summary-E015.png"
+    ],
+    "physical_device_tested": false
+  }
+}

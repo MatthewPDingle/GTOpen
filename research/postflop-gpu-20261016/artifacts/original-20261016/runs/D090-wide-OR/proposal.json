@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T06:12:26.892608+00:00",
+  "id": "D090",
+  "type": "isolated_CPU_probe_only",
+  "basis_sha256": "97888c326a114eef54c1ea158f74e1233c1fb7260e62c74bdfc99a879d401406",
+  "proposal": "Same serial typed signed/unsigned u16-bit OR with per-function AVX2 target_feature and runtime feature guard. Compare against identical portable fold. No parallel/chunk/threshold/metadata/unsigned omission/readback encoder transform.",
+  "official_docs": [
+    "https://doc.rust-lang.org/std/macro.is_x86_feature_detected.html",
+    "https://doc.rust-lang.org/reference/attributes/codegen.html#the-target_feature-attribute"
+  ],
+  "safety": "Probe calls wide helpers only after runtime AVX2 detection. Helpers retain readonly typed slices and exact casts/bitwise OR; no explicit intrinsics, pointer casts or floating arithmetic. A production fallback/caller is not implemented by this probe.",
+  "compile_gate": "All4typed helpers retained in final assembly. Portable helpers show128bit vector loop and no256bit register. Wide helpers show256bitload/OR loops. No benchmark without raw exactness control.",
+  "numerical_gate": "All65536singleword bitpatterns plus304vector/tail/offset/pattern cases, complete before/after typed input/guard words and4result words retained and independently decoded.",
+  "component_protocol": "16fixed independent-process pairs BC/CB alternating in4blocks,32processes total. Each fresh accepted rainbow Solver has matching full CPU arenas; time4originalscale checks+4q reductions, then separately measure pretouched data. Allocation/factory, GPU, snapshots and whole constructor excluded. No q pre-touch before fresh timer.",
+  "component_admission_gate": "Baseline fresh median must lie within75%to125%of D088187.8079ms for representativeness. Fresh median gain>=25%, at least13/16positive pairs, positive paired median, all4block medians and both order medians. Pretouched median must not regress. This only admits further candidate investigation; current1%full-cycle/fresh16/exactness/resource/holdout/cumulative gates remain required for adoption.",
+  "no_tradeoff_limits": "Wider vectors may change CPU power/frequency/time; source/micro speed cannot prove no cost. No solver source activation or accepted optimization from this probe. All failures retained; no ISA/helper/factor/size rescue, sample extension/exclusion/pooling."
+}

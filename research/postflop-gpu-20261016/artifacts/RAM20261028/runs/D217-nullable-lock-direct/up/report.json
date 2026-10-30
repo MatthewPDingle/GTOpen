@@ -1,0 +1,80 @@
+{
+  "id": "D217-up",
+  "at": "2026-10-28T23:57:21.128909+00:00",
+  "status": "pass_direct_full_raw_nullable_lock_equivalence",
+  "cases": 4095,
+  "kernel_launches": 8190,
+  "null_cases": 1638,
+  "nonnull_cases": 2457,
+  "kernel_mode_counts": {
+    "0": 1365,
+    "1": 1365,
+    "2": 1365
+  },
+  "output_words_both_arms": 61879290,
+  "immutable_words_both_arms": 25995570,
+  "guard_words_both_arms": 56505344,
+  "reader_checks": 656856,
+  "coverage": {
+    "nullable": [
+      false,
+      true
+    ],
+    "kernel_kind": [
+      0,
+      1,
+      2
+    ],
+    "role": [
+      0,
+      1,
+      2
+    ],
+    "p": [
+      0,
+      1
+    ],
+    "actions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8,
+      9,
+      16,
+      17
+    ],
+    "threads": [
+      1,
+      32,
+      64,
+      128,
+      256
+    ],
+    "value_mode": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "count": [
+      0,
+      1
+    ]
+  },
+  "raw_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\up\\output\\baseline-inputs.bin": "1d60ef37daa3a912815777617cf54c37c9a7c921ac44b7542f1daa7da36667bc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\up\\output\\baseline.bin": "34f741963ed26f33d3d7639966dead3e478d60b167bb29b544df4b79e7e5c77e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\up\\output\\candidate-inputs.bin": "1d60ef37daa3a912815777617cf54c37c9a7c921ac44b7542f1daa7da36667bc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\up\\output\\candidate.bin": "34f741963ed26f33d3d7639966dead3e478d60b167bb29b544df4b79e7e5c77e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\up\\output\\inputs.bin": "22a7f15e13524e62c0daa39460d25c5d840531a4d7b95356133d2e11be1c6f54"
+  },
+  "source_native_immutable_guard_assertions_passed": true,
+  "all_case_records_retained": true,
+  "source_or_compiler_or_shader_changed": false,
+  "candidate_accepted": false,
+  "performance_samples": 0,
+  "limits": "Finite direct corpus only. Whole raw outputs/immutable snapshots/unowned guards exact; no universal IEEE payload/illegal alias/arbitrary bounds, host predicate/graphs/fullcanonical/paging/material/capacity/complete speed/adoption proof."
+}

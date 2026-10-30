@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.2. CUPTI Callback API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.3. CUPTI Checkpoint API" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html" />
+    <link rel="prev" title="5.1. CUPTI Activity API" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.2. CUPTI Callback API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.2.1. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.2.2. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.2.3. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.2. </span>CUPTI Callback API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-callback-api">
+<h1><span class="section-number">5.2. </span>CUPTI Callback API<a class="headerlink" href="#cupti-callback-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i">Functions, types, and enums that implement the CUPTI Callback API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___callback_data.html#struct_c_upti___callback_data"><span class="std std-ref">CUpti_CallbackData</span></a></dt><dd><p>Data passed into a runtime or driver API callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___graph_data.html#struct_c_upti___graph_data"><span class="std std-ref">CUpti_GraphData</span></a></dt><dd><p>CUDA graphs data passed into a resource callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___module_resource_data.html#struct_c_upti___module_resource_data"><span class="std std-ref">CUpti_ModuleResourceData</span></a></dt><dd><p>Module data passed into a resource callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___nvtx_data.html#struct_c_upti___nvtx_data"><span class="std std-ref">CUpti_NvtxData</span></a></dt><dd><p>Data passed into a NVTX callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___resource_data.html#struct_c_upti___resource_data"><span class="std std-ref">CUpti_ResourceData</span></a></dt><dd><p>Data passed into a resource callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___state_data.html#struct_c_upti___state_data"><span class="std std-ref">CUpti_StateData</span></a></dt><dd><p>Data passed into a State callback function.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___stream_attr_data.html#struct_c_upti___stream_attr_data"><span class="std std-ref">CUpti_StreamAttrData</span></a></dt><dd><p>Stream attribute data passed into a resource callback function for CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGED callback.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___synchronize_data.html#struct_c_upti___synchronize_data"><span class="std std-ref">CUpti_SynchronizeData</span></a></dt><dd><p>Data passed into a synchronize callback function.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7bd557c9b3084014c680b9925842be24"><span class="std std-ref">CUpti_ApiCallbackSite</span></a></dt><dd><p>Specifies the point in an API call that a callback is issued.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga9e77154dbe0cc07fb9332f95a83d6d9e"><span class="std std-ref">CUpti_CallbackDomain</span></a></dt><dd><p>Callback domains.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga690fb2a42aefe39f00033c957ce211b2"><span class="std std-ref">CUpti_CallbackIdResource</span></a></dt><dd><p>Callback IDs for resource domain.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga6658126cabc47048530173d4b03488aa"><span class="std std-ref">CUpti_CallbackIdState</span></a></dt><dd><p>Callback IDs for state domain.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gacaeba9950bf4f48ea7ab9a0402dc7e6f"><span class="std std-ref">CUpti_CallbackIdSync</span></a></dt><dd><p>Callback IDs for synchronization domain.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7dcebeb8ae4f79c90905a8f6befc51d7"><span class="std std-ref">cuptiEnableAllDomains</span></a>(uint32_t enable, CUpti_SubscriberHandle subscriber)</dt><dd><p>Enable or disable all callbacks in all domains.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gace619a64b77d6533754de798b5e8263e"><span class="std std-ref">cuptiEnableCallback</span></a>(uint32_t enable, CUpti_SubscriberHandle subscriber, CUpti_CallbackDomain domain, CUpti_CallbackId cbid)</dt><dd><p>Enable or disabled callbacks for a specific domain and callback ID.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga926699208431270d4197fcb639da6a5c"><span class="std std-ref">cuptiEnableDomain</span></a>(uint32_t enable, CUpti_SubscriberHandle subscriber, CUpti_CallbackDomain domain)</dt><dd><p>Enable or disabled all callbacks for a specific domain.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga0fe2357995aa7861a37e5896c6a18635"><span class="std std-ref">cuptiGetCallbackName</span></a>(CUpti_CallbackDomain domain, uint32_t cbid, const char **name)</dt><dd><p>Get the name of a callback for a specific domain and callback ID.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gaf861e55f8d61286b97471e2bede138a6"><span class="std std-ref">cuptiGetCallbackState</span></a>(uint32_t *enable, CUpti_SubscriberHandle subscriber, CUpti_CallbackDomain domain, CUpti_CallbackId cbid)</dt><dd><p>Get the current enabled/disabled state of a callback for a specific domain and function ID.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gad2c32850b2e03b37e284df083dc9053f"><span class="std std-ref">cuptiSubscribe</span></a>(CUpti_SubscriberHandle *subscriber, CUpti_CallbackFunc callback, void *userdata)</dt><dd><p>Initialize a callback subscriber with a callback function and user data.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga4526fa1776292fa325971e815e0c7dc2"><span class="std std-ref">cuptiSupportedDomains</span></a>(size_t *domainCount, CUpti_DomainTable *domainTable)</dt><dd><p>Get the available callback domains.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga20b68c9c33f129179b56687a17356682"><span class="std std-ref">cuptiUnsubscribe</span></a>(CUpti_SubscriberHandle subscriber)</dt><dd><p>Unregister a callback subscriber.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga21bab4f7f7e04488b0e7edcea9f5a49c"><span class="std std-ref">CUpti_CallbackFunc</span></a></dt><dd><p>Function type for a callback.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7fde6b76bdbcafbcf750b0f91a3484f8"><span class="std std-ref">CUpti_CallbackId</span></a></dt><dd><p>An ID for a driver API, runtime API, resource or synchronization callback.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga76b7ef0d7caebdcae0880e218185950b"><span class="std std-ref">CUpti_DomainTable</span></a></dt><dd><p>Pointer to an array of callback domains.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7932f010e8b2c785d85f4048235afca3"><span class="std std-ref">CUpti_SubscriberHandle</span></a></dt><dd><p>A callback subscriber.</p>
+</dd>
+</dl>
+</div>
+<section id="enumerations">
+<h2><span class="section-number">5.2.1. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv421CUpti_ApiCallbackSite">
+<span id="_CPPv321CUpti_ApiCallbackSite"></span><span id="_CPPv221CUpti_ApiCallbackSite"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7bd557c9b3084014c680b9925842be24"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ApiCallbackSite</span></span></span><a class="headerlink" href="#_CPPv421CUpti_ApiCallbackSite" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Specifies the point in an API call that a callback is issued. </p>
+<p>Specifies the point in an API call that a callback is issued. This value is communicated to the callback function via <a class="reference internal" href="struct_c_upti___callback_data.html#struct_c_upti___callback_data_1a01337ce329bea0e08d803cb99c1f1f01"><span class="std std-ref">CUpti_CallbackData::callbackSite</span></a>. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ApiCallbackSite15CUPTI_API_ENTERE">
+<span id="_CPPv3N21CUpti_ApiCallbackSite15CUPTI_API_ENTERE"></span><span id="_CPPv2N21CUpti_ApiCallbackSite15CUPTI_API_ENTERE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga7bd557c9b3084014c680b9925842be24a6b1e29cc790239e0c0f393791cd4ca0a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_API_ENTER</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ApiCallbackSite15CUPTI_API_ENTERE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The callback is at the entry of the API call. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ApiCallbackSite14CUPTI_API_EXITE">
+<span id="_CPPv3N21CUpti_ApiCallbackSite14CUPTI_API_EXITE"></span><span id="_CPPv2N21CUpti_ApiCallbackSite14CUPTI_API_EXITE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga7bd557c9b3084014c680b9925842be24a1df739da617612b774bb0a8895c15fab"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_API_EXIT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ApiCallbackSite14CUPTI_API_EXITE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The callback is at the exit of the API call. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ApiCallbackSite26CUPTI_API_CBSITE_FORCE_INTE">
+<span id="_CPPv3N21CUpti_ApiCallbackSite26CUPTI_API_CBSITE_FORCE_INTE"></span><span id="_CPPv2N21CUpti_ApiCallbackSite26CUPTI_API_CBSITE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga7bd557c9b3084014c680b9925842be24a94de03c1d5ce8d086378a9ab407f07d6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_API_CBSITE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ApiCallbackSite26CUPTI_API_CBSITE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv420CUpti_CallbackDomain">
+<span id="_CPPv320CUpti_CallbackDomain"></span><span id="_CPPv220CUpti_CallbackDomain"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga9e77154dbe0cc07fb9332f95a83d6d9e"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></span><a class="headerlink" href="#_CPPv420CUpti_CallbackDomain" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Callback domains. </p>
+<p>Callback domains. Each domain represents callback points for a group of related API functions or CUDA driver activity. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain23CUPTI_CB_DOMAIN_INVALIDE">
+<span id="_CPPv3N20CUpti_CallbackDomain23CUPTI_CB_DOMAIN_INVALIDE"></span><span id="_CPPv2N20CUpti_CallbackDomain23CUPTI_CB_DOMAIN_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea254f9b2ca3ce46af1c3801c91512dc64"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain23CUPTI_CB_DOMAIN_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid domain. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain26CUPTI_CB_DOMAIN_DRIVER_APIE">
+<span id="_CPPv3N20CUpti_CallbackDomain26CUPTI_CB_DOMAIN_DRIVER_APIE"></span><span id="_CPPv2N20CUpti_CallbackDomain26CUPTI_CB_DOMAIN_DRIVER_APIE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea77c508fe29e5781fff2900676cd63213"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_DRIVER_API</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain26CUPTI_CB_DOMAIN_DRIVER_APIE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for all driver API functions. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_RUNTIME_APIE">
+<span id="_CPPv3N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_RUNTIME_APIE"></span><span id="_CPPv2N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_RUNTIME_APIE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea06a7d035b9d878cc4b43c7dc93b3c632"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_RUNTIME_API</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_RUNTIME_APIE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for all runtime API functions. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain24CUPTI_CB_DOMAIN_RESOURCEE">
+<span id="_CPPv3N20CUpti_CallbackDomain24CUPTI_CB_DOMAIN_RESOURCEE"></span><span id="_CPPv2N20CUpti_CallbackDomain24CUPTI_CB_DOMAIN_RESOURCEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9eaef8b9adbf66219e14fd5efe4d95f2dd8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_RESOURCE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain24CUPTI_CB_DOMAIN_RESOURCEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for CUDA resource tracking. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_SYNCHRONIZEE">
+<span id="_CPPv3N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_SYNCHRONIZEE"></span><span id="_CPPv2N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_SYNCHRONIZEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea8a7cb1b85712a67d11042cecef41ab6a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_SYNCHRONIZE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain27CUPTI_CB_DOMAIN_SYNCHRONIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for CUDA synchronization. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_NVTXE">
+<span id="_CPPv3N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_NVTXE"></span><span id="_CPPv2N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_NVTXE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea1c32d00925a82f91321d8f4255109b4c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_NVTX</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_NVTXE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for NVTX API functions. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain21CUPTI_CB_DOMAIN_STATEE">
+<span id="_CPPv3N20CUpti_CallbackDomain21CUPTI_CB_DOMAIN_STATEE"></span><span id="_CPPv2N20CUpti_CallbackDomain21CUPTI_CB_DOMAIN_STATEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea12968b91b0f3fa966e190d83ba625d4a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_STATE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain21CUPTI_CB_DOMAIN_STATEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Domain containing callback points for various states. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_SIZEE">
+<span id="_CPPv3N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_SIZEE"></span><span id="_CPPv2N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_SIZEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea1c9cf5f36c1ecc264c41bbe4d92e5594"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain20CUPTI_CB_DOMAIN_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackDomain25CUPTI_CB_DOMAIN_FORCE_INTE">
+<span id="_CPPv3N20CUpti_CallbackDomain25CUPTI_CB_DOMAIN_FORCE_INTE"></span><span id="_CPPv2N20CUpti_CallbackDomain25CUPTI_CB_DOMAIN_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga9e77154dbe0cc07fb9332f95a83d6d9ea672f477ceb97ef64ccbdd8bdd999a02d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CB_DOMAIN_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackDomain25CUPTI_CB_DOMAIN_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv424CUpti_CallbackIdResource">
+<span id="_CPPv324CUpti_CallbackIdResource"></span><span id="_CPPv224CUpti_CallbackIdResource"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga690fb2a42aefe39f00033c957ce211b2"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackIdResource</span></span></span><a class="headerlink" href="#_CPPv424CUpti_CallbackIdResource" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Callback IDs for resource domain. </p>
+<p>Callback IDs for resource domain, CUPTI_CB_DOMAIN_RESOURCE. This value is communicated to the callback function via the <code class="docutils literal notranslate"><span class="pre">cbid</span></code> parameter. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource27CUPTI_CBID_RESOURCE_INVALIDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource27CUPTI_CBID_RESOURCE_INVALIDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource27CUPTI_CBID_RESOURCE_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a97eef59d0abb5fb3bc4615ef5dedc79d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource27CUPTI_CBID_RESOURCE_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid resource callback ID. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_CONTEXT_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_CONTEXT_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_CONTEXT_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a2e6ddca485e2a49e44965eea62c4dedd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_CONTEXT_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_CONTEXT_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A new context has been created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a792c08361eacf82ee0168b20a1056ba9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A context is about to be destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource34CUPTI_CBID_RESOURCE_STREAM_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource34CUPTI_CBID_RESOURCE_STREAM_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource34CUPTI_CBID_RESOURCE_STREAM_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2ac2b9f0465e39f28e5262f8dcc21a32f2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_STREAM_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource34CUPTI_CBID_RESOURCE_STREAM_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A new stream has been created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource43CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource43CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource43CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a8b7dbb4502ec13c1c1e7b75fc2fd1bc3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource43CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A stream is about to be destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_CU_INIT_FINISHEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_CU_INIT_FINISHEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_CU_INIT_FINISHEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2ad8e1e55b0322e194035ccc10b9ec69eb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_CU_INIT_FINISHED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_CU_INIT_FINISHEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The driver has finished initializing. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_MODULE_LOADEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_MODULE_LOADEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_MODULE_LOADEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a581d8e8224e9634c10be2d2e8a58735b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_MODULE_LOADED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_MODULE_LOADEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A module has been loaded. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_MODULE_UNLOAD_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_MODULE_UNLOAD_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_MODULE_UNLOAD_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a794a819f149bf776844f1222f93b2b57"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_MODULE_UNLOAD_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_MODULE_UNLOAD_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A module is about to be unloaded. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_MODULE_PROFILEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_MODULE_PROFILEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_MODULE_PROFILEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a24176e4521d615dd5e80a9e13165a79c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_MODULE_PROFILED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource35CUPTI_CBID_RESOURCE_MODULE_PROFILEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The current module which is being profiled. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_GRAPH_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_GRAPH_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_GRAPH_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a858bcdb19761d2de275b5d9e424fbb75"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPH_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource33CUPTI_CBID_RESOURCE_GRAPH_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph has been created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_GRAPH_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_GRAPH_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_GRAPH_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2ac45ccdeadae3836c9ee7d5802b621e73"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPH_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource42CUPTI_CBID_RESOURCE_GRAPH_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph is about to be destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource32CUPTI_CBID_RESOURCE_GRAPH_CLONEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource32CUPTI_CBID_RESOURCE_GRAPH_CLONEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource32CUPTI_CBID_RESOURCE_GRAPH_CLONEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a5aac97ce2930ef232473e6cce230ff7e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPH_CLONED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource32CUPTI_CBID_RESOURCE_GRAPH_CLONEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph is cloned. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHNODE_CREATE_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHNODE_CREATE_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHNODE_CREATE_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a7d5a7fb50e67fc63b588aeedb44035fb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_CREATE_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHNODE_CREATE_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph node is about to be created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHNODE_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHNODE_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHNODE_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a4f6c21c14aa32e3b3526aaa0a35cb3d4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHNODE_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph node is created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHNODE_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHNODE_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHNODE_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2aedd6a0bb5b2f70d7262e8f973e2847dc"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHNODE_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph node is about to be destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource48CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource48CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource48CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a2a856a1825b32d89ed7ee8dc863e054b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource48CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Dependency on a CUDA graph node is created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource57CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource57CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource57CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a27a3d4247a2e437b4170ed38e6471262"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource57CUPTI_CBID_RESOURCE_GRAPHNODE_DEPENDENCY_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Dependency on a CUDA graph node is destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATE_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATE_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATE_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2ada4b8510bc6420193e0d6dd6fafc98f1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATE_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource45CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATE_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An executable CUDA graph is about to be created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a471a1a00b37b3cb56b796a095c0fb93e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource37CUPTI_CBID_RESOURCE_GRAPHEXEC_CREATEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An executable CUDA graph is created. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHEXEC_DESTROY_STARTINGE">
+<span id="_CPPv3N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHEXEC_DESTROY_STARTINGE"></span><span id="_CPPv2N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHEXEC_DESTROY_STARTINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a4e73fcf1883f507f2451c96ae2dd9c76"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHEXEC_DESTROY_STARTING</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource46CUPTI_CBID_RESOURCE_GRAPHEXEC_DESTROY_STARTINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An executable CUDA graph is about to be destroyed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_GRAPHNODE_CLONEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_GRAPHNODE_CLONEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_GRAPHNODE_CLONEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a888c713cc24de13847a9bcbb2354870e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_GRAPHNODE_CLONED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource36CUPTI_CBID_RESOURCE_GRAPHNODE_CLONEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA graph node is cloned. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGEDE">
+<span id="_CPPv3N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGEDE"></span><span id="_CPPv2N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2abafd5c0ebc360b77ba938e603714ebd9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGED</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource44CUPTI_CBID_RESOURCE_STREAM_ATTRIBUTE_CHANGEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUDA stream attribute is changed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource24CUPTI_CBID_RESOURCE_SIZEE">
+<span id="_CPPv3N24CUpti_CallbackIdResource24CUPTI_CBID_RESOURCE_SIZEE"></span><span id="_CPPv2N24CUpti_CallbackIdResource24CUPTI_CBID_RESOURCE_SIZEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a17f0566102c22f7158a24f55ba0ec3db"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource24CUPTI_CBID_RESOURCE_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N24CUpti_CallbackIdResource29CUPTI_CBID_RESOURCE_FORCE_INTE">
+<span id="_CPPv3N24CUpti_CallbackIdResource29CUPTI_CBID_RESOURCE_FORCE_INTE"></span><span id="_CPPv2N24CUpti_CallbackIdResource29CUPTI_CBID_RESOURCE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga690fb2a42aefe39f00033c957ce211b2a9ba2c95e47ade58dcdb4865af3d8bb82"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_RESOURCE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N24CUpti_CallbackIdResource29CUPTI_CBID_RESOURCE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv421CUpti_CallbackIdState">
+<span id="_CPPv321CUpti_CallbackIdState"></span><span id="_CPPv221CUpti_CallbackIdState"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga6658126cabc47048530173d4b03488aa"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackIdState</span></span></span><a class="headerlink" href="#_CPPv421CUpti_CallbackIdState" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Callback IDs for state domain. </p>
+<p>Callback IDs for state domain, CUPTI_CB_DOMAIN_STATE. This value is communicated to the callback function via the <code class="docutils literal notranslate"><span class="pre">cbid</span></code> parameter. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState24CUPTI_CBID_STATE_INVALIDE">
+<span id="_CPPv3N21CUpti_CallbackIdState24CUPTI_CBID_STATE_INVALIDE"></span><span id="_CPPv2N21CUpti_CallbackIdState24CUPTI_CBID_STATE_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaaf0f60a5849c25406d3904f58e8fc74ed"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState24CUPTI_CBID_STATE_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid state callback ID. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState28CUPTI_CBID_STATE_FATAL_ERRORE">
+<span id="_CPPv3N21CUpti_CallbackIdState28CUPTI_CBID_STATE_FATAL_ERRORE"></span><span id="_CPPv2N21CUpti_CallbackIdState28CUPTI_CBID_STATE_FATAL_ERRORE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaa3efdab09d4a145863388d4f81c188949"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_FATAL_ERROR</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState28CUPTI_CBID_STATE_FATAL_ERRORE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Notification of fatal errors - high impact, non-recoverable When encountered, CUPTI automatically invokes <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1gaad1be905ea718ed54246e52e02667e8f"><span class="std std-ref">cuptiFinalize()</span></a> User can control behavior of the application in future from receiving this callback - such as continuing without profiling, or terminating the whole application. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState22CUPTI_CBID_STATE_ERRORE">
+<span id="_CPPv3N21CUpti_CallbackIdState22CUPTI_CBID_STATE_ERRORE"></span><span id="_CPPv2N21CUpti_CallbackIdState22CUPTI_CBID_STATE_ERRORE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaa22b0661f938addac359437a748a61702"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_ERROR</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState22CUPTI_CBID_STATE_ERRORE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Notification of non fatal errors - high impact, but recoverable This notification is not issued in the current release. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState24CUPTI_CBID_STATE_WARNINGE">
+<span id="_CPPv3N21CUpti_CallbackIdState24CUPTI_CBID_STATE_WARNINGE"></span><span id="_CPPv2N21CUpti_CallbackIdState24CUPTI_CBID_STATE_WARNINGE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaa94791ab2eac1157e0223b8a12f4e8f2c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_WARNING</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState24CUPTI_CBID_STATE_WARNINGE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Notification of warnings - low impact, recoverable. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState21CUPTI_CBID_STATE_SIZEE">
+<span id="_CPPv3N21CUpti_CallbackIdState21CUPTI_CBID_STATE_SIZEE"></span><span id="_CPPv2N21CUpti_CallbackIdState21CUPTI_CBID_STATE_SIZEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaa57a2fbf959c1b90bf56a3b5551221959"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState21CUPTI_CBID_STATE_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_CallbackIdState26CUPTI_CBID_STATE_FORCE_INTE">
+<span id="_CPPv3N21CUpti_CallbackIdState26CUPTI_CBID_STATE_FORCE_INTE"></span><span id="_CPPv2N21CUpti_CallbackIdState26CUPTI_CBID_STATE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gga6658126cabc47048530173d4b03488aaa16c87d07c3ad3bb1f678e93411653ccd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_STATE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_CallbackIdState26CUPTI_CBID_STATE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv420CUpti_CallbackIdSync">
+<span id="_CPPv320CUpti_CallbackIdSync"></span><span id="_CPPv220CUpti_CallbackIdSync"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gacaeba9950bf4f48ea7ab9a0402dc7e6f"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackIdSync</span></span></span><a class="headerlink" href="#_CPPv420CUpti_CallbackIdSync" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Callback IDs for synchronization domain. </p>
+<p>Callback IDs for synchronization domain, CUPTI_CB_DOMAIN_SYNCHRONIZE. This value is communicated to the callback function via the <code class="docutils literal notranslate"><span class="pre">cbid</span></code> parameter. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackIdSync30CUPTI_CBID_SYNCHRONIZE_INVALIDE">
+<span id="_CPPv3N20CUpti_CallbackIdSync30CUPTI_CBID_SYNCHRONIZE_INVALIDE"></span><span id="_CPPv2N20CUpti_CallbackIdSync30CUPTI_CBID_SYNCHRONIZE_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ggacaeba9950bf4f48ea7ab9a0402dc7e6fa9f6517fe91c4340e584d65eebd85a17e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_SYNCHRONIZE_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackIdSync30CUPTI_CBID_SYNCHRONIZE_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid synchronize callback ID. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackIdSync42CUPTI_CBID_SYNCHRONIZE_STREAM_SYNCHRONIZEDE">
+<span id="_CPPv3N20CUpti_CallbackIdSync42CUPTI_CBID_SYNCHRONIZE_STREAM_SYNCHRONIZEDE"></span><span id="_CPPv2N20CUpti_CallbackIdSync42CUPTI_CBID_SYNCHRONIZE_STREAM_SYNCHRONIZEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ggacaeba9950bf4f48ea7ab9a0402dc7e6fa90ee543086b48a83c4b08df845d75e01"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_SYNCHRONIZE_STREAM_SYNCHRONIZED</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackIdSync42CUPTI_CBID_SYNCHRONIZE_STREAM_SYNCHRONIZEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stream synchronization has completed for the stream. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackIdSync43CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZEDE">
+<span id="_CPPv3N20CUpti_CallbackIdSync43CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZEDE"></span><span id="_CPPv2N20CUpti_CallbackIdSync43CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZEDE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ggacaeba9950bf4f48ea7ab9a0402dc7e6fa4be043a702da1d8f89d0095a694d59db"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackIdSync43CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Context synchronization has completed for the context. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackIdSync27CUPTI_CBID_SYNCHRONIZE_SIZEE">
+<span id="_CPPv3N20CUpti_CallbackIdSync27CUPTI_CBID_SYNCHRONIZE_SIZEE"></span><span id="_CPPv2N20CUpti_CallbackIdSync27CUPTI_CBID_SYNCHRONIZE_SIZEE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ggacaeba9950bf4f48ea7ab9a0402dc7e6fab377e05ece55e668778890b850365854"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_SYNCHRONIZE_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackIdSync27CUPTI_CBID_SYNCHRONIZE_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N20CUpti_CallbackIdSync32CUPTI_CBID_SYNCHRONIZE_FORCE_INTE">
+<span id="_CPPv3N20CUpti_CallbackIdSync32CUPTI_CBID_SYNCHRONIZE_FORCE_INTE"></span><span id="_CPPv2N20CUpti_CallbackIdSync32CUPTI_CBID_SYNCHRONIZE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ggacaeba9950bf4f48ea7ab9a0402dc7e6fa6f4642bec1e5cb59bbd4996fbbf22f61"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CBID_SYNCHRONIZE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N20CUpti_CallbackIdSync32CUPTI_CBID_SYNCHRONIZE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.2.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiEnableAllDomains8uint32_t22CUpti_SubscriberHandle">
+<span id="_CPPv321cuptiEnableAllDomains8uint32_t22CUpti_SubscriberHandle"></span><span id="_CPPv221cuptiEnableAllDomains8uint32_t22CUpti_SubscriberHandle"></span><span id="cuptiEnableAllDomains__uint32_t.CUpti_SubscriberHandle"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7dcebeb8ae4f79c90905a8f6befc51d7"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiEnableAllDomains</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span>, <a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">subscriber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiEnableAllDomains8uint32_t22CUpti_SubscriberHandle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable or disable all callbacks in all domains. </p>
+<p>Enable or disable all callbacks in all domains.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong><p>: a subscriber must serialize access to cuptiGetCallbackState, cuptiEnableCallback, cuptiEnableDomain, and cuptiEnableAllDomains. For example, if cuptiGetCallbackState(sub,</p>
+<p>d, *) and cuptiEnableAllDomains(sub) are called concurrently, the results are undefined.</p>
+</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable</strong> – New enable state for all callbacks in all domain. Zero disables all callbacks, non-zero enables all callbacks. </p></li>
+<li><p><strong>subscriber</strong> – - Handle to callback subscription</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialized CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code> is invalid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419cuptiEnableCallback8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId">
+<span id="_CPPv319cuptiEnableCallback8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId"></span><span id="_CPPv219cuptiEnableCallback8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId"></span><span id="cuptiEnableCallback__uint32_t.CUpti_SubscriberHandle.CUpti_CallbackDomain.CUpti_CallbackId"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gace619a64b77d6533754de798b5e8263e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiEnableCallback</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span>, <a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">subscriber</span></span>, <a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">domain</span></span>, <a class="reference internal" href="#_CPPv416CUpti_CallbackId" title="CUpti_CallbackId"><span class="n"><span class="pre">CUpti_CallbackId</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cbid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419cuptiEnableCallback8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable or disabled callbacks for a specific domain and callback ID. </p>
+<p>Enable or disabled callbacks for a subscriber for a specific domain and callback ID.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong><p>: a subscriber must serialize access to cuptiGetCallbackState, cuptiEnableCallback, cuptiEnableDomain, and cuptiEnableAllDomains. For example, if cuptiGetCallbackState(sub,</p>
+<p>d, c) and cuptiEnableCallback(sub, d, c) are called concurrently, the results are undefined.</p>
+</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable</strong> – New enable state for the callback. Zero disables the callback, non-zero enables the callback. </p></li>
+<li><p><strong>subscriber</strong> – - Handle to callback subscription </p></li>
+<li><p><strong>domain</strong> – The domain of the callback </p></li>
+<li><p><strong>cbid</strong> – The ID of the callback</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialized CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code>, <code class="docutils literal notranslate"><span class="pre">domain</span></code> or <code class="docutils literal notranslate"><span class="pre">cbid</span></code> is invalid. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417cuptiEnableDomain8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain">
+<span id="_CPPv317cuptiEnableDomain8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain"></span><span id="_CPPv217cuptiEnableDomain8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain"></span><span id="cuptiEnableDomain__uint32_t.CUpti_SubscriberHandle.CUpti_CallbackDomain"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga926699208431270d4197fcb639da6a5c"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiEnableDomain</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span>, <a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">subscriber</span></span>, <a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">domain</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417cuptiEnableDomain8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable or disabled all callbacks for a specific domain. </p>
+<p>Enable or disabled all callbacks for a specific domain.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong><p>: a subscriber must serialize access to cuptiGetCallbackState, cuptiEnableCallback, cuptiEnableDomain, and cuptiEnableAllDomains. For example, if cuptiGetCallbackEnabled(sub,</p>
+<p>d, *) and cuptiEnableDomain(sub, d) are called concurrently, the results are undefined.</p>
+</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable</strong> – New enable state for all callbacks in the domain. Zero disables all callbacks, non-zero enables all callbacks. </p></li>
+<li><p><strong>subscriber</strong> – - Handle to callback subscription </p></li>
+<li><p><strong>domain</strong> – The domain of the callback</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialized CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code> or <code class="docutils literal notranslate"><span class="pre">domain</span></code> is invalid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiGetCallbackName20CUpti_CallbackDomain8uint32_tPPKc">
+<span id="_CPPv320cuptiGetCallbackName20CUpti_CallbackDomain8uint32_tPPKc"></span><span id="_CPPv220cuptiGetCallbackName20CUpti_CallbackDomain8uint32_tPPKc"></span><span id="cuptiGetCallbackName__CUpti_CallbackDomain.uint32_t.cCPP"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga0fe2357995aa7861a37e5896c6a18635"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetCallbackName</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">domain</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cbid</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiGetCallbackName20CUpti_CallbackDomain8uint32_tPPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the name of a callback for a specific domain and callback ID. </p>
+<p>Returns a pointer to the name c_string in <code class="docutils literal notranslate"><span class="pre">**name</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Names</strong> are available only for the DRIVER and RUNTIME domains.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> – The domain of the callback </p></li>
+<li><p><strong>cbid</strong> – The ID of the callback </p></li>
+<li><p><strong>name</strong> – Returns pointer to the name string on success, NULL otherwise</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">name</span></code> is NULL, or if <code class="docutils literal notranslate"><span class="pre">domain</span></code> or <code class="docutils literal notranslate"><span class="pre">cbid</span></code> is invalid. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiGetCallbackStateP8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId">
+<span id="_CPPv321cuptiGetCallbackStateP8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId"></span><span id="_CPPv221cuptiGetCallbackStateP8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId"></span><span id="cuptiGetCallbackState__uint32_tP.CUpti_SubscriberHandle.CUpti_CallbackDomain.CUpti_CallbackId"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gaf861e55f8d61286b97471e2bede138a6"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetCallbackState</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">enable</span></span>, <a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">subscriber</span></span>, <a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">domain</span></span>, <a class="reference internal" href="#_CPPv416CUpti_CallbackId" title="CUpti_CallbackId"><span class="n"><span class="pre">CUpti_CallbackId</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cbid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiGetCallbackStateP8uint32_t22CUpti_SubscriberHandle20CUpti_CallbackDomain16CUpti_CallbackId" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the current enabled/disabled state of a callback for a specific domain and function ID. </p>
+<p>Returns non-zero in <code class="docutils literal notranslate"><span class="pre">*enable</span></code> if the callback for a domain and callback ID is enabled, and zero if not enabled.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong><p>: a subscriber must serialize access to cuptiGetCallbackState, cuptiEnableCallback, cuptiEnableDomain, and cuptiEnableAllDomains. For example, if cuptiGetCallbackState(sub,</p>
+<p>d, c) and cuptiEnableCallback(sub, d, c) are called concurrently, the results are undefined.</p>
+</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable</strong> – Returns non-zero if callback enabled, zero if not enabled </p></li>
+<li><p><strong>subscriber</strong> – Handle to the initialize subscriber </p></li>
+<li><p><strong>domain</strong> – The domain of the callback </p></li>
+<li><p><strong>cbid</strong> – The ID of the callback</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialized CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">enabled</span></code> is NULL, or if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code>, <code class="docutils literal notranslate"><span class="pre">domain</span></code> or <code class="docutils literal notranslate"><span class="pre">cbid</span></code> is invalid. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414cuptiSubscribeP22CUpti_SubscriberHandle18CUpti_CallbackFuncPv">
+<span id="_CPPv314cuptiSubscribeP22CUpti_SubscriberHandle18CUpti_CallbackFuncPv"></span><span id="_CPPv214cuptiSubscribeP22CUpti_SubscriberHandle18CUpti_CallbackFuncPv"></span><span id="cuptiSubscribe__CUpti_SubscriberHandleP.CUpti_CallbackFunc.voidP"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gad2c32850b2e03b37e284df083dc9053f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSubscribe</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">subscriber</span></span>, <a class="reference internal" href="#_CPPv418CUpti_CallbackFunc" title="CUpti_CallbackFunc"><span class="n"><span class="pre">CUpti_CallbackFunc</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414cuptiSubscribeP22CUpti_SubscriberHandle18CUpti_CallbackFuncPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize a callback subscriber with a callback function and user data. </p>
+<p>Initializes a callback subscriber with a callback function and (optionally) a pointer to user data. The returned subscriber handle can be used to enable and disable the callback for specific domains and callback IDs. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only a single subscriber can be registered at a time. To ensure that no other CUPTI client interrupts the profiling session, it’s the responsibility of all the CUPTI clients to call this function before starting the profling session. In case profiling session is already started by another CUPTI client, this function returns the error code CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED. Note that this function returns the same error when application is launched using NVIDIA tools like nvprof, Visual Profiler, Nsight Systems, Nsight Compute, cuda-gdb and cuda-memcheck. </p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function does not enable any callbacks. </p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong>: this function is thread safe.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subscriber</strong> – Returns handle to initialize subscriber </p></li>
+<li><p><strong>callback</strong> – The callback function </p></li>
+<li><p><strong>userdata</strong> – A pointer to user data. This data will be passed to the callback function via the <code class="docutils literal notranslate"><span class="pre">userdata</span></code> parameter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialize CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED</strong> – if there is already a CUPTI subscriber </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code> is NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiSupportedDomainsP6size_tP17CUpti_DomainTable">
+<span id="_CPPv321cuptiSupportedDomainsP6size_tP17CUpti_DomainTable"></span><span id="_CPPv221cuptiSupportedDomainsP6size_tP17CUpti_DomainTable"></span><span id="cuptiSupportedDomains__sP.CUpti_DomainTableP"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga4526fa1776292fa325971e815e0c7dc2"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiSupportedDomains</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">domainCount</span></span>, <a class="reference internal" href="#_CPPv417CUpti_DomainTable" title="CUpti_DomainTable"><span class="n"><span class="pre">CUpti_DomainTable</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">domainTable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiSupportedDomainsP6size_tP17CUpti_DomainTable" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the available callback domains. </p>
+<p>Returns in <code class="docutils literal notranslate"><span class="pre">*domainTable</span></code> an array of size <code class="docutils literal notranslate"><span class="pre">*domainCount</span></code> of all the available callback domains. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong>: this function is thread safe.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domainCount</strong> – Returns number of callback domains </p></li>
+<li><p><strong>domainTable</strong> – Returns pointer to array of available callback domains</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialize CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">domainCount</span></code> or <code class="docutils literal notranslate"><span class="pre">domainTable</span></code> are NULL </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416cuptiUnsubscribe22CUpti_SubscriberHandle">
+<span id="_CPPv316cuptiUnsubscribe22CUpti_SubscriberHandle"></span><span id="_CPPv216cuptiUnsubscribe22CUpti_SubscriberHandle"></span><span id="cuptiUnsubscribe__CUpti_SubscriberHandle"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga20b68c9c33f129179b56687a17356682"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiUnsubscribe</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv422CUpti_SubscriberHandle" title="CUpti_SubscriberHandle"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">subscriber</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416cuptiUnsubscribe22CUpti_SubscriberHandle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unregister a callback subscriber. </p>
+<p>Removes a callback subscriber so that no future callbacks will be issued to that subscriber. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong>: this function is thread safe.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>subscriber</strong> – Handle to the initialize subscriber</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if unable to initialized CUPTI </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">subscriber</span></code> is NULL or not initialized </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.2.3. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv418CUpti_CallbackFunc">
+<span id="_CPPv318CUpti_CallbackFunc"></span><span id="_CPPv218CUpti_CallbackFunc"></span><span id="CUpti_CallbackFunc"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga21bab4f7f7e04488b0e7edcea9f5a49c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackFunc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416CUpti_CallbackId" title="CUpti_CallbackId"><span class="n"><span class="pre">CUpti_CallbackId</span></span></a><span class="w"> </span><span class="n"><span class="pre">cbid</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cbdata</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv418CUpti_CallbackFunc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Function type for a callback. </p>
+<p>Function type for a callback. The type of the data passed to the callback in <code class="docutils literal notranslate"><span class="pre">cbdata</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">domain</span></code>. If <code class="docutils literal notranslate"><span class="pre">domain</span></code> is CUPTI_CB_DOMAIN_DRIVER_API or CUPTI_CB_DOMAIN_RUNTIME_API the type of <code class="docutils literal notranslate"><span class="pre">cbdata</span></code> will be <a class="reference internal" href="struct_c_upti___callback_data.html#struct_c_upti___callback_data"><span class="std std-ref">CUpti_CallbackData</span></a>. If <code class="docutils literal notranslate"><span class="pre">domain</span></code> is CUPTI_CB_DOMAIN_RESOURCE the type of <code class="docutils literal notranslate"><span class="pre">cbdata</span></code> will be <a class="reference internal" href="struct_c_upti___resource_data.html#struct_c_upti___resource_data"><span class="std std-ref">CUpti_ResourceData</span></a>. If <code class="docutils literal notranslate"><span class="pre">domain</span></code> is CUPTI_CB_DOMAIN_SYNCHRONIZE the type of <code class="docutils literal notranslate"><span class="pre">cbdata</span></code> will be <a class="reference internal" href="struct_c_upti___synchronize_data.html#struct_c_upti___synchronize_data"><span class="std std-ref">CUpti_SynchronizeData</span></a>. If <code class="docutils literal notranslate"><span class="pre">domain</span></code> is CUPTI_CB_DOMAIN_NVTX the type of <code class="docutils literal notranslate"><span class="pre">cbdata</span></code> will be <a class="reference internal" href="struct_c_upti___nvtx_data.html#struct_c_upti___nvtx_data"><span class="std std-ref">CUpti_NvtxData</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param userdata</dt>
+<dd class="field-odd"><p>User data supplied at subscription of the callback </p>
+</dd>
+<dt class="field-even">Param domain</dt>
+<dd class="field-even"><p>The domain of the callback </p>
+</dd>
+<dt class="field-odd">Param cbid</dt>
+<dd class="field-odd"><p>The ID of the callback </p>
+</dd>
+<dt class="field-even">Param cbdata</dt>
+<dd class="field-even"><p>Data passed to the callback. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv416CUpti_CallbackId">
+<span id="_CPPv316CUpti_CallbackId"></span><span id="_CPPv216CUpti_CallbackId"></span><span id="CUpti_CallbackId"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7fde6b76bdbcafbcf750b0f91a3484f8"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CallbackId</span></span></span><a class="headerlink" href="#_CPPv416CUpti_CallbackId" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An ID for a driver API, runtime API, resource or synchronization callback. </p>
+<p>An ID for a driver API, runtime API, resource or synchronization callback. Within a driver API callback this should be interpreted as a CUpti_driver_api_trace_cbid value (these values are defined in cupti_driver_cbid.h). Within a runtime API callback this should be interpreted as a CUpti_runtime_api_trace_cbid value (these values are defined in cupti_runtime_cbid.h). Within a resource API callback this should be interpreted as a <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga690fb2a42aefe39f00033c957ce211b2"><span class="std std-ref">CUpti_CallbackIdResource</span></a> value. Within a synchronize API callback this should be interpreted as a <a class="reference internal" href="#group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1gacaeba9950bf4f48ea7ab9a0402dc7e6f"><span class="std std-ref">CUpti_CallbackIdSync</span></a> value. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv417CUpti_DomainTable">
+<span id="_CPPv317CUpti_DomainTable"></span><span id="_CPPv217CUpti_DomainTable"></span><span id="CUpti_DomainTable"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga76b7ef0d7caebdcae0880e218185950b"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv420CUpti_CallbackDomain" title="CUpti_CallbackDomain"><span class="n"><span class="pre">CUpti_CallbackDomain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_DomainTable</span></span></span><a class="headerlink" href="#_CPPv417CUpti_DomainTable" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Pointer to an array of callback domains. </p>
+</dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv422CUpti_SubscriberHandle">
+<span id="_CPPv322CUpti_SubscriberHandle"></span><span id="_CPPv222CUpti_SubscriberHandle"></span><span id="CUpti_SubscriberHandle"></span><span class="target" id="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i_1ga7932f010e8b2c785d85f4048235afca3"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">CUpti_Subscriber_st</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_SubscriberHandle</span></span></span><a class="headerlink" href="#_CPPv422CUpti_SubscriberHandle" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A callback subscriber. </p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

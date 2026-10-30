@@ -1,0 +1,117 @@
+{
+  "passed": true,
+  "generations": 4,
+  "declared_draws": 12,
+  "nodes": 5,
+  "maximum_independent_scalar_delta_error": 2.842170943040401e-14,
+  "maximum_original_root_delta_error": 0.0,
+  "checkpoint_split_matches_uninterrupted": true,
+  "rejected_cases": [
+    "replayed-generation",
+    "missing-draw",
+    "wrong-generation",
+    "wrong-played-policy",
+    "wrong-exact-targets",
+    "wrong-context",
+    "wrong-model",
+    "reordered-index",
+    "wrong-board",
+    "missing-node",
+    "extra-node",
+    "changed-target-hash",
+    "missing-tree-identity",
+    "absent-entry-target",
+    "nonpostflop-target",
+    "nonfinite-target",
+    "moment-overflow",
+    "changed-checkpoint-seal",
+    "wrong-board-count",
+    "hand-visit-confusion",
+    "nonsequential-history",
+    "absent-class-counter",
+    "negative-moment",
+    "missing-node-checkpoint",
+    "changed-restoration-config",
+    "changed-context-source"
+  ],
+  "original_bad_target_policy": [
+    1.0,
+    0.0
+  ],
+  "corrected_synthetic_policy": [
+    0.0,
+    1.0
+  ],
+  "correction_generations": 16,
+  "moments_and_support_counts_retained": true,
+  "returned_arrays_do_not_alias": true,
+  "seconds": 3.889999999955762,
+  "inputs": {
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_regret_accumulator_check_v2.py": "9c70c8d4feebad7cad93e5b4a3c9e11e8b833392da6d53766ce1be4b1c558961",
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_regret_accumulator_v1.py": "f4437373b8ca6c65b789956aed5d560070fbec6ecfe845e2c96fce2f46b840ed",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_preflop_expected_components_v2.py": "dd6206ddb43ae2e3ce687eecb0818c5d104e9bb947894c41111d9e025e5c4937",
+    "T:\\Dev\\GTOpen\\tools\\research\\stack_context_preflop_expected_components_check_v2.py": "e73ef92a15b37d407885a4b215bcffc43c858abfdf19153dbd32ca6d6048c702",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_root_accumulator_v1.py": "86660ab126624f711bb690ee4a3cd3e8474b96ed6dd0cc77e782c1ae1d628180",
+    "T:\\Dev\\GTOpen\\tools\\research\\preflop_allin_matrix_v1.py": "5f518a3cdad0cc8b16657b47decb09f14c8eee05c566b850d887d73d9cce0ccd",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-400\\context.json": "e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-20\\context.json": "ff18e85ab99a5d8e0a84a69ca0758445340a3b83d163ee47596ca989a17284f2",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-40\\context.json": "fb4ed9caa05787c5869ac233d44dac211d3c547cf99cd9bb616e627e2e4a073a",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-100\\context.json": "5f51080d234050f7c8eb270b8a6fcd245d56385dc701ddf08ea55dee8b549936",
+    "S:\\GTOpen-research\\stack-context-population-v1\\stack-200\\context.json": "d90376995fce53469d1e39edee2401c529198610d9b2b74e77befb6f63491e6d"
+  },
+  "depth_cases": [
+    {
+      "stack": 20,
+      "nodes": 4,
+      "generations": 3,
+      "board_draws": 6,
+      "scalar_delta_error": 1.7763568394002505e-15,
+      "restart_exact": true,
+      "maximum_independent_moment_error": 8.881784197001252e-16
+    },
+    {
+      "stack": 40,
+      "nodes": 5,
+      "generations": 3,
+      "board_draws": 6,
+      "scalar_delta_error": 3.552713678800501e-15,
+      "restart_exact": true,
+      "maximum_independent_moment_error": 8.881784197001252e-16
+    },
+    {
+      "stack": 100,
+      "nodes": 5,
+      "generations": 3,
+      "board_draws": 6,
+      "scalar_delta_error": 7.105427357601002e-15,
+      "restart_exact": true,
+      "maximum_independent_moment_error": 8.881784197001252e-16
+    },
+    {
+      "stack": 200,
+      "nodes": 5,
+      "generations": 3,
+      "board_draws": 6,
+      "scalar_delta_error": 2.842170943040401e-14,
+      "restart_exact": true,
+      "maximum_independent_moment_error": 8.881784197001252e-16
+    },
+    {
+      "stack": 400,
+      "nodes": 5,
+      "generations": 3,
+      "board_draws": 6,
+      "scalar_delta_error": 5.684341886080802e-14,
+      "restart_exact": true,
+      "maximum_independent_moment_error": 8.881784197001252e-16
+    }
+  ],
+  "zero_opponent_reach_preserves_fallback": true,
+  "synthetic_only": true,
+  "model_inference": false,
+  "native_execution": false,
+  "gpu_used": false,
+  "scientific_training_admitted": false,
+  "accuracy_qualified": false,
+  "production_modified": false
+}

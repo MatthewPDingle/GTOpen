@@ -1,0 +1,27 @@
+--- accepted-E051/plan.rs
++++ E069/plan.rs
+@@ -274,7 +274,7 @@
+         };
+         let (action_nodes, action_spans) = flatten_nodes(action_by_level);
+         let (fold_nodes, fold_spans) = flatten_nodes(fold_by_level);
+-        let (show_nodes, show_spans) = flatten_nodes(show_by_level);
++        let (mut show_nodes, show_spans) = flatten_nodes(show_by_level);
+         let (chance_nodes, chance_node_spans) = flatten_nodes(cnode_by_level);
+ 
+         let mut edge_by_level: Vec<Vec<(u32, u32, u32)>> = vec![Vec::new(); num_levels];
+@@ -310,6 +310,15 @@
+                 }
+                 node_river_slot[ni] = s as i32;
+             }
++        }
++        // Group independent showdown blocks by immutable river lookup tables.
++        // Node ID is a deterministic tie-breaker; level spans remain unchanged.
++        for span in &show_spans {
++            let start = span.start as usize;
++            let end = start + span.count as usize;
++            show_nodes[start..end].sort_unstable_by_key(|&node| {
++                (node_river_slot[node as usize], node)
++            });
+         }
+         let num_slots = slots.len();
+         let mut riv_off = [Vec::new(), Vec::new()];

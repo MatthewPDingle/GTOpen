@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-18T23:24:20.804274+00:00",
+  "GpuSolver_sources_scanned": 223,
+  "non_default_stride_hits": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-build\\candidate-mod.rs",
+      "expression": "NH_MAX as i32"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-cleanup\\candidate-mod.rs",
+      "expression": "NH_MAX as i32"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-compile-check\\candidate-mod.rs",
+      "expression": "NH_MAX as i32"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\candidate\\mod.rs",
+      "expression": "NH_MAX as i32"
+    }
+  ],
+  "local_all_ref_query": [
+    "git",
+    "log",
+    "--all",
+    "--oneline",
+    "-G",
+    "let nh_max = self.nh\\[",
+    "--",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "local_all_ref_matches": "",
+  "scope": "Bounded local source/history audit; no exhaustive semantic or remote novelty claim. Existing E025 pads every row and changes allocations/admission; E076 changes node-to-row IDs via lifetime sharing. This proposal preserves all row IDs and allocations and only passes nh[p] as the five up-kernel row-stride argument. No padding, coloring, sharing, fusion or closed hunk is composed.",
+  "declined_other_lead": "Chance child-to-slot resolution overlaps closed E018/E039 and stays declined."
+}

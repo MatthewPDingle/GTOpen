@@ -1,0 +1,64 @@
+{
+  "candidate": "E023",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E023_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E023-source-review\\report.json",
+      "sha256": "d29ed9b9555a160880ae96462a8ec020e3ff3833fc3433b5a1da09e487a904e4"
+    },
+    "E023_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E023-script-review\\report.json",
+      "sha256": "d9023ce90c0ecf38f0c019d39e8c64af52ae9e253a8b064ec0a249cbc023c91c"
+    },
+    "D043_resource_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D043-independent-review\\validation.json",
+      "sha256": "7aefb6a4ab8c2021a87e78032777a3169fc9e1d247d5544335d696010ae7092f"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\kernels.cu",
+      "sha256": "2148b39d69e7267c03feec8a622e6f587f1b29da8f9aec49d58b3611bcf2abd4"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\continuation_capacity.rs",
+      "sha256": "7d7667119a76727cb9ae0da025319a10d94e1f1afce692d7729083d6fd04128f"
+    },
+    "crates/solver/src/game.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\game.rs",
+      "sha256": "4c9fd95709c048b9460886f412ebe81b580f45592e4e816a47b7be2483eb7b24"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-primary-plan\\scripts-manifest.json": "8b2109769f6bd7c879809400ecaf06b61235e72f3064a08e92d66328364027df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-primary-plan\\protocol.json": "9e9dd8943acf6ae8a5ad55aeef61f13e9fbc993b5ec8ae1860a3bb7413116844",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\manifest.json": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E023-source-review\\report.json": "d29ed9b9555a160880ae96462a8ec020e3ff3833fc3433b5a1da09e487a904e4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E023-script-review\\report.json": "d9023ce90c0ecf38f0c019d39e8c64af52ae9e253a8b064ec0a249cbc023c91c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D043-independent-review\\validation.json": "7aefb6a4ab8c2021a87e78032777a3169fc9e1d247d5544335d696010ae7092f"
+  },
+  "scope": "Root authorizes only the frozen isolated E023 build, exactness screen and fixed primary cohort. E020 acceptance/server qualification and independent source/script/resource reviews verified. Broader qualification remains conditional; no live deployment authorized here.",
+  "resource_probe_pass": true,
+  "authorized_at": "2026-10-16T13:06:26Z"
+}

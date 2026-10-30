@@ -1,0 +1,29 @@
+--- E080/kernels.cu
++++ E106/kernels.cu
+@@ -54,7 +54,7 @@
+     u32 src = actor == 0 ? rsrc0[n] : rsrc1[n];
+     const float* parent_reach = reach_a + (u64)src * nh_a;
+ 
+-    long long loff = lock_off[n];
++    long long loff = lock_off ? lock_off[n] : -1ll;
+     if (loff >= 0) {
+         // locked node: play the fixed sigma
+         const float* sig = lock_sigma + loff;
+@@ -352,7 +352,7 @@
+     const int na = NA == 0 ? node_na[n] : NA;
+     u32 cs = node_children_start[n];
+     if (node_player[n] == p) {
+-        long long loff = lock_off[n];
++        long long loff = lock_off ? lock_off[n] : -1ll;
+         if (loff >= 0) {
+             // locked: fixed sigma, no regret/strategy update
+             const float* sig = lock_sigma + loff;
+@@ -474,7 +474,7 @@
+         }
+         return;
+     }
+-    long long loff = lock_off[n];
++    long long loff = lock_off ? lock_off[n] : -1ll;
+     if (loff >= 0) {
+         // locked: fixed sigma in both modes (the best responder cannot
+         // deviate at locked nodes)

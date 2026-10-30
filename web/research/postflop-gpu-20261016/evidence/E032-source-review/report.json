@@ -1,0 +1,63 @@
+{
+  "id": "E032-source-review",
+  "created_at": "2026-10-16T19:04:31.437017+00:00",
+  "verdict": "PASS_SCOPED_SOURCE_ONLY",
+  "independent_source_review_pass": true,
+  "findings": [],
+  "source_manifest_sha256": "a8118cb83b89b1cef59f45443b98345eba4b49771d0fdcc9cf6e2e7b564b1b40",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16"
+  },
+  "scope": "Exactly one off-tree gpu/mod.rs change: optional constructor device-limit query/host scalar, checked complete-terminal spans, training scheduling and focused tests. CUDA/evaluator/metadata/device buffers/evaluation remain accepted E020.",
+  "review": [
+    "Count helper converts each full length through i32::try_from, checks positive device limit, and returns both full spans or None. On None the initial phase is empty and every original fold/show/chance/action level sequence remains intact; no partial consolidation.",
+    "The positive/clamped grid query occurs immediately after context creation, before stream work. Query failure/nonpositive limit selects original dispatch. The field is initialized from an independent scalar, so no plan borrow follows partial moves. No heap/device payload or saved format changes.",
+    "All reached terminal slots are persistent, pairwise distinct and disjoint from parity scratch. Completed down reaches feed the same terminal kernel arguments; per-node block width, shared bytes and floating order remain exact. Reordering only changes terminal grid size/count and temporal locality.",
+    "E015 second-pass reach reuse is unchanged. Ordinary eager/captured/profiled training and standalone/continuation sweeps share the checked schedule; eval methods, graph APIs, root-copy/down code, locks and readback are byte-exact. Constructor-fixed choice remains stable across capture/replay/workspace swaps.",
+    "Profile buckets 3/4 continue to surround actual terminal launches; no new normal-path synchronization. Reverse chance/action sequence and every launch body/argument/config expression are byte-exact.",
+    "One new host test checks real multi-level iso/full terminal union, CFV slot disjointness, empty kinds, limit equality/overflow and all-or-nothing fallback. Existing lifecycle matrix asserts consolidation and terminal profile counts, then compares raw learned/reach states against forced original scheduling. legacy_iteration restores the stored limit before unwrapping errors."
+  ],
+  "oracle_limit": "The forced-original test route shares paired_sweep and is not an immutable original implementation. Frozen E020 primary and later independent old/new controls remain required; no numerical equivalence or performance claim is made from this read.",
+  "prospective_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "executed": false
+  },
+  "mechanical_checks": {
+    "iterate_and_evaluation_byte_exact": true,
+    "sweep_entry_byte_exact": true,
+    "down_prefix_byte_exact": true,
+    "readback_locks_drop_byte_exact": true,
+    "up_fold_launch_body_sha256": "46c9d63a897dceb8c7fceefe9d67000cfaa9f41afdcaf2c3ae4731bef3178d6e",
+    "up_show_launch_body_sha256": "8532421e5ef519ca2b085990f73bf3c61ea9301340f3ef5c444c162e2516bb8c",
+    "up_chance_launch_body_sha256": "e11af6cacab123c99e00e6e764df826b44cd908b7b5595227867cc7cadd160b0",
+    "up_action_launch_body_sha256": "f89ae15b53a6e3bf714fb04ad1d3b0c860ab4767f7452f2a6b0b89ce1ba036a5",
+    "reverse_chance_action_suffix_exact": true,
+    "one_added_test_and_unchanged_ignore_declarations": true,
+    "all162_current_accepted": true
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\manifest.json": "a8118cb83b89b1cef59f45443b98345eba4b49771d0fdcc9cf6e2e7b564b1b40",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\base\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\candidate\\mod.rs": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\candidate.patch": "6885672b8c9db50f4b80767ee5448c0b4ae4d45d96457582d9cf072bd4bcada4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\draft1.patch": "6885672b8c9db50f4b80767ee5448c0b4ae4d45d96457582d9cf072bd4bcada4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\README.md": "6d5e14d51559cd9b9855a6ae5b42ecb12bd1b26734ae1cbcc9d797c2ae7738fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\source-checks.json": "252ca0eae74113611dd1d82317e11d3a69d12ef012183d32820f6fa08a2c161f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\report.json": "721fd478f276d4b09bf7b9dc664f6f7120d0fe756f9cc809a029c36d4750691e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D060-next-hypothesis-scout\\manifest.json": "3dc5ac7e3898c279ed87325b3ec1cf52681b885919eeb102272c22bc911b8db8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D060-independent-source-review\\report.json": "6552d0a03c4cb188101410ce9dde2d0095dc16512a6c605fdf341bacc02cc1c7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D060-independent-source-review\\manifest.json": "45a890671b25f98484c143a3bb44f2ad9f247a8e43be313dd92496f130abc605",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-root-decisions\\preparation.json": "3bf016d5c11940e00cec02b542e928745df8c5105d7171c799cf02aff1b0b3fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b"
+  },
+  "no_compiler_native_gpu": true,
+  "production_modified": false,
+  "status_modified": false,
+  "candidate_accepted": false,
+  "performance_measurement": false,
+  "failed_reviewer_attempts": []
+}

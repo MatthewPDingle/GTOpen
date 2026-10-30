@@ -1,0 +1,102 @@
+{
+  "stage": "actual postflop_autoresearch executable ThinLTO assembly module",
+  "assembly_module": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D019-E013-final-codegen\\generated\\postflop_autoresearch-ba6a3e8216b3a7e5.solver-e2d3113d740308c1.solver.d49c914e8c5c5922-cgu.0.rcgu.o.rcgu.s",
+  "assembly_sha256": "9b2126cfa5510d3791a00b94b691e72a85860e257ce98cd1a37d668d589711ae",
+  "assembly_bytes": 7759923,
+  "functions": {
+    "write_sse41": {
+      "symbol": "_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode11write_sse41",
+      "source_start_line": 264835,
+      "source_end_line": 264894,
+      "lines": 60,
+      "sha256": "3c7d6ba056bfd6383881e6b56cec4b20b62aca51d8fcd5a949c8bfeb5d671843",
+      "rintf_call_sites": 0,
+      "roundps": 0,
+      "roundss": 0,
+      "calls_or_jumps": [
+        "callq\t_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_i16_sse41",
+        "jmp\t.LBB186_6",
+        "jmp\tmemcpy",
+        "callq\t_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41",
+        "callq\t_RNvNvNtCs8xEFJqa6dYS_4core5slice20copy_from_slice_impl17len_mismatch_fail"
+      ]
+    },
+    "encode_i16_sse41": {
+      "symbol": "_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_i16_sse41",
+      "source_start_line": 264902,
+      "source_end_line": 265142,
+      "lines": 241,
+      "sha256": "cedf8e37ff11c5e075b43950129a73f777717be8a14ad1fc1adbaf0798692e42",
+      "rintf_call_sites": 0,
+      "roundps": 2,
+      "roundss": 1,
+      "calls_or_jumps": [
+        "jmp\t.LBB187_8",
+        "jmp\t.LBB187_16",
+        "callq\tmemset",
+        "jmp\t.LBB187_18"
+      ]
+    },
+    "encode_u16_sse41": {
+      "symbol": "_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41",
+      "source_start_line": 265150,
+      "source_end_line": 265387,
+      "lines": 238,
+      "sha256": "4717375ea6956779c91d291cecd2f346c6f4eca0d5877b1680e314c27f444f35",
+      "rintf_call_sites": 0,
+      "roundps": 2,
+      "roundss": 1,
+      "calls_or_jumps": [
+        "jmp\t.LBB188_8",
+        "jmp\t.LBB188_16",
+        "callq\tmemset",
+        "jmp\t.LBB188_18"
+      ]
+    },
+    "portable_write_f32": {
+      "symbol": "_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store9write_f32",
+      "source_start_line": 254290,
+      "source_end_line": 254806,
+      "lines": 517,
+      "sha256": "80576d89fb274ad8b2ffc68d843bbd51ea9be20bbf703453029cf4f4b2fec371",
+      "rintf_call_sites": 10,
+      "roundps": 0,
+      "roundss": 0,
+      "calls_or_jumps": [
+        "jmp\t.LBB157_12",
+        "jmp\tmemcpy",
+        "jmp\t.LBB157_30",
+        "jmp\t.LBB157_20",
+        "jmp\t.LBB157_37",
+        "callq\tmemset",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "jmp\t.LBB157_39",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "callq\trintf",
+        "jmp\t.LBB157_39",
+        "callq\t_RNvNvNtCs8xEFJqa6dYS_4core5slice20copy_from_slice_impl17len_mismatch_fail"
+      ]
+    }
+  },
+  "D015_body_comparison": {
+    "i16": {
+      "D015_source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D015-host-sse41-proof\\d015_sse41_i16.asm.txt",
+      "D015_sha256": "6fecc7f5ae925d0405d15aa4eba4c3cfca5009610657167bacb5f1b4720a3424",
+      "equivalent_after_function_and_local_label_renaming": true,
+      "normalized_sha256": "d833c094d5763d049f2b845e1f3453aa7793b5e6d2a50225d24836f1fdc96733"
+    },
+    "u16": {
+      "D015_source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D015-host-sse41-proof\\d015_sse41_u16.asm.txt",
+      "D015_sha256": "e0c9f253e3a28b2b82d1fb55b2a2b1031e954d8244da381c00d482e8a73e9ff7",
+      "equivalent_after_function_and_local_label_renaming": true,
+      "normalized_sha256": "ef6d499203ca466737b1fed37af865fc56f2f76ff757316a516745067641e02c"
+    }
+  }
+}

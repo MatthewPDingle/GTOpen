@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-17T08:19:30.283577+00:00",
+  "gpu": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88",
+    "stderr": ""
+  },
+  "protocol_sha256": "95385401b37f48b17a1efdd25cba0bd5263fe31381f9b9d85d2cfbc7e6ff87c2",
+  "executor_sha256": "14871397204b4b7c3fd8725d551afcdedd11095189120dafafc74b04d57db459"
+}

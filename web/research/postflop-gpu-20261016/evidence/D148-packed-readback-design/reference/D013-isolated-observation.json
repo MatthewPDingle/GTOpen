@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "id": "D013-isolated-summary",
+  "created_at": "2026-10-16T06:07:25Z",
+  "kind": "diagnostic",
+  "accepted_gain": false,
+  "baseline": "E004",
+  "candidate": "E010",
+  "fixtures": [
+    {
+      "fixture_id": "two-tone",
+      "exact_screen": "pass",
+      "exact_fields": [
+        "config",
+        "algorithm",
+        "storage",
+        "iteration",
+        "max_iterations",
+        "check_every",
+        "target_pct",
+        "target_met",
+        "exploit_bits",
+        "fingerprint",
+        "state_fingerprint",
+        "nodes",
+        "cpu_arena_bytes",
+        "use_isomorphism"
+      ],
+      "metrics": {
+        "build_ms": {
+          "baseline_values": [
+            79.6202,
+            79.6395,
+            85.2354
+          ],
+          "candidate_values": [
+            88.8523,
+            81.9375,
+            87.9708
+          ],
+          "baseline_median": 79.6395,
+          "candidate_median": 87.9708,
+          "median_regression_pct": 10.461266080274246,
+          "paired_regression_pct": [
+            11.595173084217336,
+            2.8855027969788782,
+            3.2092299678302627
+          ]
+        },
+        "init_ms": {
+          "baseline_values": [
+            577.8658,
+            574.9366,
+            578.2213
+          ],
+          "candidate_values": [
+            616.7802,
+            620.5567,
+            615.6262
+          ],
+          "baseline_median": 577.8658,
+          "candidate_median": 616.7802,
+          "median_regression_pct": 6.734158692208458,
+          "paired_regression_pct": [
+            6.734158692208458,
+            7.934805333318495,
+            6.468959202990265
+          ]
+        },
+        "solve_ms": {
+          "baseline_values": [
+            3299.8469999999998,
+            3336.3654,
+            3290.3831
+          ],
+          "candidate_values": [
+            3405.8007,
+            3457.6622,
+            3414.2432
+          ],
+          "baseline_median": 3299.8469999999998,
+          "candidate_median": 3414.2432,
+          "median_regression_pct": 3.4667122445374066,
+          "paired_regression_pct": [
+            3.210867049290478,
+            3.635596988267542,
+            3.764306350831914
+          ]
+        },
+        "readback_ms": {
+          "baseline_values": [
+            286.3494,
+            261.31419999999997,
+            303.08000000000004
+          ],
+          "candidate_values": [
+            236.4407,
+            211.4271,
+            202.3225
+          ],
+          "baseline_median": 286.3494,
+          "candidate_median": 211.4271,
+          "median_regression_pct": -26.164643613711082,
+          "paired_regression_pct": [
+            -17.429301405904816,
+            -19.090849253504018,
+            -33.244522898244696
+          ]
+        },
+        "full_cycle_ms": {
+          "baseline_values": [
+            4243.7265,
+            4252.3019,
+            4256.968900000001
+          ],
+          "candidate_values": [
+            4347.9435,
+            4371.632,
+            4320.218800000001
+          ],
+          "baseline_median": 4252.3019,
+          "candidate_median": 4347.9435,
+          "median_regression_pct": 2.2491723835506683,
+          "paired_regression_pct": [
+            2.455789740455727,
+            2.8062471293489155,
+            1.4857966192799665
+          ]
+        }
+      }
+    },
+    {
+      "fixture_id": "river",
+      "exact_screen": "pass",
+      "exact_fields": [
+        "config",
+        "algorithm",
+        "storage",
+        "iteration",
+        "max_iterations",
+        "check_every",
+        "target_pct",
+        "target_met",
+        "exploit_bits",
+        "fingerprint",
+        "state_fingerprint",
+        "nodes",
+        "cpu_arena_bytes",
+        "use_isomorphism"
+      ],
+      "metrics": {
+        "build_ms": {
+          "baseline_values": [
+            0.26830000000000004,
+            0.3448,
+            0.5544
+          ],
+          "candidate_values": [
+            0.2665,
+            0.2621,
+            0.2834
+          ],
+          "baseline_median": 0.3448,
+          "candidate_median": 0.2665,
+          "median_regression_pct": -22.70881670533642,
+          "paired_regression_pct": [
+            -0.6708907938874464,
+            -23.984918793503486,
+            -48.88167388167388
+          ]
+        },
+        "init_ms": {
+          "baseline_values": [
+            170.6559,
+            177.1486,
+            188.7712
+          ],
+          "candidate_values": [
+            190.4582,
+            188.90109999999999,
+            191.4064
+          ],
+          "baseline_median": 177.1486,
+          "candidate_median": 190.4582,
+          "median_regression_pct": 7.513240296564594,
+          "paired_regression_pct": [
+            11.603642182895513,
+            6.634260727998975,
+            1.3959756573036497
+          ]
+        },
+        "solve_ms": {
+          "baseline_values": [
+            18.253700000000002,
+            17.819499999999998,
+            19.7529
+          ],
+          "candidate_values": [
+            18.0591,
+            17.6938,
+            19.3438
+          ],
+          "baseline_median": 18.253700000000002,
+          "candidate_median": 18.0591,
+          "median_regression_pct": -1.0660852320351522,
+          "paired_regression_pct": [
+            -1.0660852320351522,
+            -0.7054069979516742,
+            -2.0710882958957844
+          ]
+        },
+        "readback_ms": {
+          "baseline_values": [
+            0.5827,
+            0.5691,
+            0.6227
+          ],
+          "candidate_values": [
+            0.8384,
+            0.7195,
+            1.3538000000000001
+          ],
+          "baseline_median": 0.5827,
+          "candidate_median": 0.8384,
+          "median_regression_pct": 43.88192895143299,
+          "paired_regression_pct": [
+            43.88192895143299,
+            26.427692848357044,
+            117.40806166693432
+          ]
+        },
+        "full_cycle_ms": {
+          "baseline_values": [
+            189.776,
+            195.89989999999997,
+            209.7287
+          ],
+          "candidate_values": [
+            209.6415,
+            207.5969,
+            212.41299999999998
+          ],
+          "baseline_median": 195.89989999999997,
+          "candidate_median": 209.6415,
+          "median_regression_pct": 7.014602866055597,
+          "paired_regression_pct": [
+            10.46786738049068,
+            5.970906570141188,
+            1.2798915932821675
+          ]
+        }
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "D013-TB1",
+      "report_sha256": "7fddbd4e1c2c864ca68db7581009d66738704ae71018ab005bc7c31dd7632cdf",
+      "log_sha256": "7de8f94ab26965d664d19ea2d652f9bd9e8792e05fd089195992ed0c58d3df6d"
+    },
+    {
+      "id": "D013-TB2",
+      "report_sha256": "04eff681a1d3e0831de34baba6b3d1c301a7bdafd08522df2db93c131ae91a2e",
+      "log_sha256": "1ea0b75b9a4ab57f6b89a3fad7121dc68f0fdef8d9dc4e2c969eadd4d2dd118c"
+    },
+    {
+      "id": "D013-TB3",
+      "report_sha256": "3b590b74f55221d57f933eb1586802b94eb49b5f908630c6e5c2bae3d96b3d7c",
+      "log_sha256": "47875e4a61b13f92c7099fae1e42017f20d4001d2cc6433a4b4f1587104b8ec0"
+    },
+    {
+      "id": "D013-TC1",
+      "report_sha256": "995fbc60671fa7eddcfcfb2ad9c49f77f4a5c1e85b244b70e7448963a9940aea",
+      "log_sha256": "4be2176e65744406c37397b3bb99793b8fbc15a53ed785c60e4476a3f79ddc2f"
+    },
+    {
+      "id": "D013-TC2",
+      "report_sha256": "b29f8c78933016d991dae6730394a652ec5e1034ba4ad314a62566f747f15409",
+      "log_sha256": "ffed2d748e7b57ccba44cee6ed4ce1764247c35f51194437bc9f2d1e387a26f6"
+    },
+    {
+      "id": "D013-TC3",
+      "report_sha256": "8d210c9ad3e277f747db3dd9710bcf6448acbffd1eff8b919855edbaab6a7729",
+      "log_sha256": "8908e09ba54316e7171ac4d9a417ac7d9a7be11b787664b056d58e9e7f7af9c4"
+    },
+    {
+      "id": "D013-RB1",
+      "report_sha256": "444c9a447af643c03ff44986c575fc37df9ef4021092d48892dd864f651107f9",
+      "log_sha256": "c73802d7cf6bfa3b6880d8ecad218ef87925f5efcb8112c1a6992f528b72f5e3"
+    },
+    {
+      "id": "D013-RB2",
+      "report_sha256": "630c33839b0f025c35c48bf46acc5379b6e5e43118cd2783ced750e5f623ac9c",
+      "log_sha256": "63c44fa485ffca56229c226f33cf029b7f666b4097e010ec133b6c9ee7708307"
+    },
+    {
+      "id": "D013-RB3",
+      "report_sha256": "03a8a7779962711f90e20f5d383b558b69e3229f7fed6c2280f0801e7c3ce01d",
+      "log_sha256": "27c1c80945dc7f41e0961c1667155cc0a2bfe470be2e1374ab1f917dff34515b"
+    },
+    {
+      "id": "D013-RC1",
+      "report_sha256": "7dc5e6186a1b6a226fe1ae65d242c9f2ed6e3e5c0f1b6d8f709f26e274ea7943",
+      "log_sha256": "183a50e1b74eb85745986066fc0beaaf4490eae3fce29ba67a01a5137f324a0b"
+    },
+    {
+      "id": "D013-RC2",
+      "report_sha256": "c5a5ccea0246388d17bf532dac810b43b973771cde5b48950bbe6a1b14b46767",
+      "log_sha256": "b58ed01bb4145b091b104156adbda97e8864bfc70cb1eb4b3041f462595951d4"
+    },
+    {
+      "id": "D013-RC3",
+      "report_sha256": "73fe7cc8b17886854d640d1140fcf0209818e5064afb9b31bbdc6a59512070c3",
+      "log_sha256": "b41162581376fb03de323852f8c31142e4a53be5a75afd89f53d8af163dbf3d7"
+    }
+  ],
+  "interpretation": [
+    "The isolated two-tone candidate is slower overall despite lower readback time. The earlier full-suite construction advantage is absent when this fixture runs first.",
+    "The isolated river median is slower by about 7%, substantially less than the full-suite 80% regression. Three paired values vary, so this diagnostic does not establish a stable isolated river penalty.",
+    "These observations support sensitivity to execution history, without proving an allocator or CUDA cause. E010 remains rejected under the frozen full-suite evaluator."
+  ],
+  "limitations": [
+    "Fixture filters change first-use NVRTC/PTX costs, allocator and cache history. Do not compare absolute values with fixed-suite scores or claim a replacement qualification.",
+    "Three paired repetitions are diagnostic; no statistical significance is claimed.",
+    "The registered complete cycle excludes post-fingerprint destruction. A future object-lifetime change needs separate whole-process measurement including destruction so work moved outside the boundary is not claimed as savings."
+  ]
+}

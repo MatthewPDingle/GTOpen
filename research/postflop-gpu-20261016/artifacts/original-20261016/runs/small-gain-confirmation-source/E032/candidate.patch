@@ -1,0 +1,185 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -71,6 +71,18 @@
+     format!("cuda: {err:?}")
+ }
+ 
++// Both terminal kinds consolidate together or retain their original level schedule.
++fn training_terminal_spans(
++    fold_len: usize, show_len: usize, grid_limit: u32,
++) -> Option<[LevelSpan; 2]> {
++    if grid_limit == 0 { return None; }
++    let full = |len: usize| {
++        let count = i32::try_from(len).ok()? as u32;
++        (count <= grid_limit).then_some(LevelSpan { start: 0, count })
++    };
++    Some([full(fold_len)?, full(show_len)?])
++}
++
+ pub struct GpuSolver {
+     _ctx: Arc<CudaContext>,
+     stream: Arc<CudaStream>,
+@@ -93,6 +105,8 @@
+     chance_node_spans: Vec<LevelSpan>,
+     fold_spans: Vec<LevelSpan>,
+     show_spans: Vec<LevelSpan>,
++    // Zero selects the original per-level training schedule.
++    terminal_grid_limit: u32,
+     riv_max_cnt: [usize; 2],
+ 
+     // device: work lists
+@@ -223,6 +237,14 @@
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
+         let ctx = CudaContext::new(0).map_err(e)?;
++        // Optional capability query before any stream work: failure preserves
++        // the original schedule rather than adding a new construction failure.
++        let terminal_grid_limit = ctx
++            .attribute(sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X)
++            .ok()
++            .filter(|&limit| limit > 0)
++            .map(|limit| (limit as u32).min(i32::MAX as u32))
++            .unwrap_or(0);
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+         // cross-stream event tracking is unnecessary — and the events it
+@@ -316,6 +338,7 @@
+             chance_node_spans: plan.chance_node_spans,
+             fold_spans: plan.fold_spans,
+             show_spans: plan.show_spans,
++            terminal_grid_limit,
+             riv_max_cnt: plan.riv_max_cnt,
+ 
+             d_action_nodes: up32(&plan.action_nodes)?,
+@@ -852,8 +875,19 @@
+ 
+         let pi = p as i32;
+         let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
+-        for l in (0..self.num_levels).rev() {
+-            let sp = self.fold_spans[l];
++        let terminal_spans = training_terminal_spans(
++            self.d_fold_nodes.len(), self.d_show_nodes.len(), self.terminal_grid_limit,
++        );
++        // Terminal rows are persistent and disjoint from upward scratch. Once
++        // down is complete they can all be produced before chance/action work.
++        // None is the terminal-only phase; Some(l) preserves reverse levels.
++        for level in std::iter::once(None).chain((0..self.num_levels).rev().map(Some)) {
++            let [fold, show] = match (level, terminal_spans) {
++                (None, Some(spans)) => spans,
++                (Some(l), None) => [self.fold_spans[l], self.show_spans[l]],
++                _ => [LevelSpan::default(); 2],
++            };
++            let sp = fold;
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+@@ -887,7 +921,7 @@
+                 }
+                 prof_acc(&self.stream, &mut prof, 3, t0)?;
+             }
+-            let sp = self.show_spans[l];
++            let sp = show;
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+@@ -927,6 +961,7 @@
+                 }
+                 prof_acc(&self.stream, &mut prof, 4, t0)?;
+             }
++            let Some(l) = level else { continue; };
+             let sp = self.chance_node_spans[l];
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+@@ -1220,8 +1255,12 @@
+         gpu.iteration += 1;
+         let d = Discounts::for_iteration(gpu.algo, gpu.iteration);
+         gpu.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut gpu.d_disc).unwrap();
+-        gpu.sweep(0, None).unwrap();
+-        gpu.sweep(1, None).unwrap();
++        // Exercise the original terminal schedule, still through the shared
++        // dispatcher; the immutable E020 binary remains the independent oracle.
++        let limit = std::mem::replace(&mut gpu.terminal_grid_limit, 0);
++        let result = gpu.sweep(0, None).and_then(|_| gpu.sweep(1, None));
++        gpu.terminal_grid_limit = limit;
++        result.unwrap();
+     }
+ 
+     // Test-only copy of the original full-down dispatch. This deliberately
+@@ -1271,6 +1310,58 @@
+     }
+ 
+     #[test]
++    fn training_terminal_consolidation_covers_lists_and_falls_back() {
++        for iso in [false, true] {
++            let solver = reach_reuse_solver(crate::store::Storage::F32,
++                Algorithm::Dcfr, iso, "50");
++            let plan = GpuPlan::build(&solver.spot, iso);
++            let full = training_terminal_spans(plan.fold_nodes.len(),
++                plan.show_nodes.len(), i32::MAX as u32).unwrap();
++            let mut terminal_slots = std::collections::BTreeSet::new();
++            for (nodes, spans, whole) in [
++                (&plan.fold_nodes, &plan.fold_spans, full[0]),
++                (&plan.show_nodes, &plan.show_spans, full[1]),
++            ] {
++                assert!(spans.iter().filter(|sp| sp.count > 0).count() > 1,
++                    "fixture needs terminals at multiple levels");
++                let per_level: Vec<u32> = spans.iter().flat_map(|sp| {
++                    let start = sp.start as usize;
++                    nodes[start..start + sp.count as usize].iter().copied()
++                }).collect();
++                assert_eq!(&per_level, nodes);
++                assert_eq!(whole.start, 0);
++                assert_eq!(whole.count as usize, nodes.len());
++                for &node in nodes {
++                    assert!(terminal_slots.insert(plan.cfv_slot[node as usize]),
++                        "terminal CFV rows must be unique");
++                }
++            }
++            for &node in plan.action_nodes.iter().chain(&plan.chance_nodes) {
++                assert!(!terminal_slots.contains(&plan.cfv_slot[node as usize]),
++                    "terminal CFV rows must not alias upward scratch");
++            }
++            let largest = plan.fold_nodes.len().max(plan.show_nodes.len());
++            assert!(largest > 0);
++            assert!(training_terminal_spans(plan.fold_nodes.len(),
++                plan.show_nodes.len(), largest as u32).is_some());
++            assert!(training_terminal_spans(plan.fold_nodes.len(),
++                plan.show_nodes.len(), (largest - 1) as u32).is_none());
++        }
++        for (fold, show) in [(0, 0), (0, 3), (3, 0)] {
++            let spans = training_terminal_spans(fold, show, 3).unwrap();
++            assert_eq!((spans[0].start, spans[0].count), (0, fold as u32));
++            assert_eq!((spans[1].start, spans[1].count), (0, show as u32));
++        }
++        assert!(training_terminal_spans(0, 0, 0).is_none());
++        assert!(training_terminal_spans(1, 1, 0).is_none());
++        assert!(training_terminal_spans(4, 1, 3).is_none());
++        assert!(training_terminal_spans(1, 4, 3).is_none());
++        assert!(training_terminal_spans(i32::MAX as usize, 0, u32::MAX).is_some());
++        assert!(training_terminal_spans(i32::MAX as usize + 1, 0, u32::MAX).is_none());
++        assert!(training_terminal_spans(0, usize::MAX, u32::MAX).is_none());
++    }
++
++    #[test]
+     fn paired_reach_reuse_matches_full_sweeps_across_lifecycle() {
+         use crate::store::Storage;
+         let mut arities = std::collections::BTreeSet::new();
+@@ -1283,6 +1374,9 @@
+                         .map(|n| n.num_children));
+                     let mut candidate = reach_reuse_gpu(&s, compact);
+                     let mut reference = reach_reuse_gpu(&s, compact);
++                    assert!(training_terminal_spans(candidate.d_fold_nodes.len(),
++                        candidate.d_show_nodes.len(), candidate.terminal_grid_limit).is_some(),
++                        "fixture must exercise consolidated terminal launches");
+                     let case = format!("{algo:?}/{storage:?}/compact={compact}");
+                     for step in 1..=3 {
+                         candidate.iterate().unwrap();
+@@ -1304,6 +1398,8 @@
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation"));
+                     let profile = candidate.iterate_profiled().unwrap();
+                     assert_eq!(profile.launches[0], 2);
++                    assert_eq!(profile.launches[3], 2 * u32::from(!candidate.d_fold_nodes.is_empty()));
++                    assert_eq!(profile.launches[4], 2 * u32::from(!candidate.d_show_nodes.is_empty()));
+                     legacy_iteration(&mut reference);
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled"));
+                     candidate.sync_to_cpu(&mut s).unwrap();

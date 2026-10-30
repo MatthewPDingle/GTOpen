@@ -1,0 +1,25 @@
+{
+  "id": "D091-conditional-discount-reads",
+  "at": "2026-10-17T06:26:26.371486+00:00",
+  "root_source_review_only": true,
+  "proposal": "Move only the three immutable discount loads in up_action_impl from helper entry into the existing unlocked-own branch, immediately before original doff/reach setup. Opponent and locked nodes do not use these values.",
+  "source_proof": [
+    "d_disc is a separate owned3float device allocation. Supported ordinary/continuation uploads write the same values before this kernel/graph on its stream; no concurrent discount writer exists during a launch. Moving reads cannot change their values.",
+    "All floating operands, arithmetic/reduction order, branches/loops, strategy/CFV/regret store scheduling, cache arrays, pointer qualifiers and hostABI/graphs/allocations/stopping/quality remain unchanged. Invalid/trapping custom device pointers are outside supported caller contract.",
+    "Current accepted PTX has12static f32discount words across2/3/4/generic specializations, reachable on opponent/locked paths. Required candidate mechanism: zero reads reachable on opponent and locked-own paths; each declared1/2/3/4/5/8/9/16/17arity retains exactly3reachable words on unlocked-own paths. Compiler merging is permitted. Unknown non-role/non-lock/non-arity CFGpredicates explore both successors."
+  ],
+  "measured_motivation": {
+    "D085_root_sha256": "d12b5ba24565d461a40a3f2ab349cbc93a8b0b035575dd759c90663c805d8a0c",
+    "kernel": "up_action",
+    "median_share_of_summed_traced_kernel_time_pct": 35.61788083102774,
+    "limits": "Largest rainbow kernel family only; no saved-latency or complete-cycle gain forecast."
+  },
+  "closed_evidence": "D090wideCPUORcomponent failed; no composition. E044changed host discount upload and remains closed; this only removes GPU reads unused by a role. E023actor list routing, E054parentCFV store, E021reach cache removal and launch-bound/cache/arity/FP variants are not revived. E051strategy store scheduling retained.",
+  "resource_gate": "Compute120actual function body changes; exact20parameterABI and other8entries. No register/local/staticshared increase, no maxthreads/64-128-256occupancy reduction. Conditional CFGmechanism must pass. No numeric/timing work after any failure; no scope/location/factor rescue.",
+  "numerical_gate": "Only if resource+mechanism pass: freeze complete own/locked/opponent, actor/arity/tail/algorithm/nonfinite raw matrix, actual full input/output/guard images; full solver exactness before performance.",
+  "performance_gate": "Same1%complete-cycle policy, strict fixture guards, separate fresh16confirmation, broader/F32/save/menu/resume/continuation/material/holdout/fresh-original cumulative before adoption. No exclusions/extensions/pooling.",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "6a2de30858f904e0365be3375d46929ca9b755818fa31588e1b29994737db22e"
+  },
+  "candidate_accepted": false
+}

@@ -1,0 +1,23 @@
+{
+  "id": "E054-raw-control-source-review",
+  "at": "2026-10-17T05:33:51.957935+00:00",
+  "root_review_only": true,
+  "resource_root_sha256": "20c9ed71ed34a6473eacebd970cb9777a0bc55a062f530d9a646982f4d74c5ca",
+  "source_review_sha256": "59f59856d3a7bb9e9ec1fbaf2411417917c074a6b6cc2d493ff4f91308476d0a",
+  "cases": 819,
+  "launches": 1638,
+  "changed_path_cases": 264,
+  "scope": "Frozen E051 complete matrix unchanged: own/locked/opponent, both actors and algorithms, arities1-17, tails0-1326, alternate blocks, signed zero/subnormal/quiet NaN/infinity/finite overflow/count0. No dropped cases.",
+  "cfv_row_contract": "Actual parent node2 has slot2. Actual children nodes4..4+na-1 map to reversed slots4..4+na-1, so parent never aliases any child for every arity, including uncached na>8. Native assertions and raw root decoder verify each actual device slot/child image. All nonowned child words remain guarded. This matches production adjacent-level parity pools and separate cached terminal slots.",
+  "production_proof": "GpuPlan::build is the only production cfv_slot assignment site in scoped GPU source. Reached action/chance rows unique perlevel, even/odd disjoint; terminal rows beyond both pools. Action children advance one level. Plan tests already assert parent cannot overwrite child input storage. GpuSolver new/continuation plans use GpuPlan::build; separate owned learning/CFV buffers and CUDA stream dependencies remain unchanged.",
+  "caller_source_sha256": {
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "limits": "Finite declared raw matrix and root source review; no external independent audit or universal NaN/address/geometry proof. Full solver, continuation, F32, saves, heldout, costs and exactness/performance gates remain required."
+}

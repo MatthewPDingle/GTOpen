@@ -1,0 +1,31 @@
+{
+  "id": "E075",
+  "at": "2026-10-18T03:12:19.287946+00:00",
+  "status": "pass_immutable_CTA_uniform_node_address_proof",
+  "source_manifest_sha256": "bff82ed544508cce522d5605a505abe65bc3f728d38c8a0b3263e12e5e30b671",
+  "D121_protocol_sha256": "cb14c11d1d1997a12a48e812816bcde9e88f3b84002d34c0571bb9930c381f67",
+  "source_reverse_exact": true,
+  "other8global_source_entries_exact": true,
+  "transformed_address_expressions": [
+    "nodes + start + b",
+    "node_na + n",
+    "node_children_start + n",
+    "node_player + n",
+    "lock_off + n",
+    "node_data_off + n",
+    "rsrc_p + n",
+    "cfv_slot + n"
+  ],
+  "floating_source_recurrences_barriers_ABI_unchanged": true,
+  "no_thread_or_action_dependent_addresses_transformed": true,
+  "immutable_load_site_count_in_helper": 10,
+  "hardware_benefit_unproven": true,
+  "resource_and_SASS_prerequisites_before_numerical_launch": true,
+  "risk": "Original backend may already optimize these reads; ldu/address conversions/opaque asm can change scheduling/registers and hurt. Need actual emitted native difference plus full raw numerical and complete-cycle/material qualification.",
+  "reference": {
+    "url": "https://docs.nvidia.com/cuda/archive/12.9.2/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-ldu",
+    "review": "PTX8.8ldu loads read-only global data whose address is common across the warp, with supported32/64bit signed/unsigned scalar types. This source proves addressesCTAuniform, not all metadata/float operands in general. No hardware speed claim from the instruction specification."
+  },
+  "external_independent_review": false,
+  "candidate_accepted": false
+}

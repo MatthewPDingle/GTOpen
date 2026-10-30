@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\stack_context_parallel_continuation_v2.py", line 312, in <module>
+    main(run=parser.parse_args().run)
+  File "T:\Dev\GTOpen\tools\research\stack_context_parallel_continuation_v2.py", line 241, in main
+    require(allocated+max(0, MAX_LOGICAL-own) <= 800_000_000_000, 'Expanded transient reservation exceeds cap')
+  File "T:\Dev\GTOpen\tools\research\stack_context_parallel_continuation_v1.py", line 48, in require
+    if not ok:raise ValueError(message)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Expanded transient reservation exceeds cap

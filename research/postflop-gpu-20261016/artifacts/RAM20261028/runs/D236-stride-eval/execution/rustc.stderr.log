@@ -1,0 +1,20 @@
+warning: variable does not need to be mutable
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D236-stride-eval\probe.rs:77:8
+   |
+77 |    let mut dr=stream.clone_htod(&regret).unwrap();let mut ds=stream.clone_htod(&strategy).unwrap();let mut dv=stream.clone_htod(&cfv...
+   |        ----^^
+   |        |
+   |        help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D236-stride-eval\probe.rs:77:55
+   |
+77 |    let mut dr=stream.clone_htod(&regret).unwrap();let mut ds=stream.clone_htod(&strategy).unwrap();let mut dv=stream.clone_htod(&cfv...
+   |                                                       ----^^
+   |                                                       |
+   |                                                       help: remove this `mut`
+
+warning: 2 warnings emitted
+

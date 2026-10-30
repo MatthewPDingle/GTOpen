@@ -1,0 +1,66 @@
+{
+  "id": "D268",
+  "at": "2026-10-29T07:33:06.699459+00:00",
+  "protocol_sha256": "766987cc43d0a69c9351ebf4abfc6dafa7ce1735ea981b68b875b54f0c16a215",
+  "status": "pass_record_padding_only",
+  "rows": {
+    "BaselineActiveBlock": {
+      "bytes": 32,
+      "alignment": 8,
+      "offsets": {
+        "node": 24,
+        "host": 0,
+        "device": 8,
+        "len": 16
+      }
+    },
+    "ProposedActiveBlock": {
+      "bytes": 32,
+      "alignment": 8,
+      "offsets": {
+        "node": 24,
+        "host": 0,
+        "device": 8,
+        "len": 16,
+        "device_node": 28
+      }
+    },
+    "BaselineInactiveBlock": {
+      "bytes": 40,
+      "alignment": 8,
+      "offsets": {
+        "node": 32,
+        "host": 16,
+        "len": 24,
+        "initial": 0
+      }
+    },
+    "ProposedInactiveBlock": {
+      "bytes": 40,
+      "alignment": 8,
+      "offsets": {
+        "node": 32,
+        "host": 16,
+        "len": 24,
+        "initial": 0,
+        "device_node": 36
+      }
+    }
+  },
+  "gates": {
+    "ActiveBlock_baseline_size": true,
+    "ActiveBlock_zero_growth": true,
+    "ActiveBlock_alignment": true,
+    "ActiveBlock_nonoverlap_bounds": true,
+    "InactiveBlock_baseline_size": true,
+    "InactiveBlock_zero_growth": true,
+    "InactiveBlock_alignment": true,
+    "InactiveBlock_nonoverlap_bounds": true
+  },
+  "compiler_identity": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "compiled_executable_sha256": "e857e746ac1cfd9e7a9aab6bc159dfba093fe2c7ead6a0269a2822f1666afc6f",
+  "all_owned_children_terminal": true,
+  "solver_constructors_CUDA_APIs_kernels_solves_performance_runs": 0,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "limits": "Verbatim accepted private record definitions and one proposed additional u32 device_node field; Rust native default layout on actual compiler. One standalone compiler and one CPU-only layout helper. No cargo, solver construction, CUDA API/context/kernel/solve, timing or production source changes. This proves record padding only, not complete GpuSolver/ArenaLayout type sizes, material cost, locks/all callers or candidate feasibility."
+}

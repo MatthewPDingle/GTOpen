@@ -1,0 +1,152 @@
+{
+  "id": "D174",
+  "at": "2026-10-28T16:31:31.753230+00:00",
+  "status": "rejected_closed_material_error_path_cost",
+  "protocol_sha256": "9a720b7177569e6c56f14939b5012dc90ddb18383563051be1b151524a605460",
+  "contract_checks": 144,
+  "budget_calls_exact_error_and_CPU_fingerprint": 18,
+  "unsupported_Pcfr_calls_before_all_work": 2,
+  "actual_worker_joined_and_caller_plan_no_CUDA_markers": true,
+  "nvcuda_DLL_observed_absent_before_after_everycall": true,
+  "fixtures": [
+    {
+      "fixture": "rainbow",
+      "metrics": {
+        "wall_ms": {
+          "reference": [
+            115.333,
+            115.0541,
+            116.1016
+          ],
+          "candidate": [
+            140.6424,
+            140.6685,
+            126.1621
+          ],
+          "reference_median": 115.333,
+          "candidate_median": 140.6424,
+          "candidate_limit": 117.48633,
+          "median_regression_pct": 21.94462989777428,
+          "slower_pairs": 3
+        },
+        "CPU_ms": {
+          "reference": [
+            93.75,
+            125.0,
+            109.375
+          ],
+          "candidate": [
+            218.75,
+            218.75,
+            171.875
+          ],
+          "reference_median": 109.375,
+          "candidate_median": 218.75,
+          "candidate_limit": 126.09375,
+          "median_regression_pct": 100.0,
+          "slower_pairs": 3
+        }
+      },
+      "material_gates": {
+        "wall_ms": false,
+        "CPU_ms": false
+      }
+    },
+    {
+      "fixture": "two-tone",
+      "metrics": {
+        "wall_ms": {
+          "reference": [
+            87.65259999999999,
+            88.184,
+            87.2432
+          ],
+          "candidate": [
+            102.36439999999999,
+            102.6363,
+            97.9596
+          ],
+          "reference_median": 87.65259999999999,
+          "candidate_median": 102.36439999999999,
+          "candidate_limit": 89.52912599999999,
+          "median_regression_pct": 16.78421404499124,
+          "slower_pairs": 3
+        },
+        "CPU_ms": {
+          "reference": [
+            93.75,
+            93.75,
+            93.75
+          ],
+          "candidate": [
+            187.5,
+            171.875,
+            156.25
+          ],
+          "reference_median": 93.75,
+          "candidate_median": 171.875,
+          "candidate_limit": 110.3125,
+          "median_regression_pct": 83.33333333333333,
+          "slower_pairs": 3
+        }
+      },
+      "material_gates": {
+        "wall_ms": false,
+        "CPU_ms": false
+      }
+    },
+    {
+      "fixture": "river",
+      "metrics": {
+        "wall_ms": {
+          "reference": [
+            0.033,
+            0.0303,
+            0.0216
+          ],
+          "candidate": [
+            0.0247,
+            0.0183,
+            0.021500000000000002
+          ],
+          "reference_median": 0.0303,
+          "candidate_median": 0.021500000000000002,
+          "candidate_limit": 1.030603,
+          "median_regression_pct": -29.04290429042904,
+          "slower_pairs": 0
+        },
+        "CPU_ms": {
+          "reference": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "candidate": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "reference_median": 0.0,
+          "candidate_median": 0.0,
+          "candidate_limit": 15.625,
+          "median_regression_pct": null,
+          "slower_pairs": 0
+        }
+      },
+      "material_gates": {
+        "wall_ms": true,
+        "CPU_ms": true
+      }
+    }
+  ],
+  "material_cost_pass": false,
+  "source_form_closed": true,
+  "whole_retained_stdout_sha256": "e751b864003b98787ae542778db13dcd2da611d4dda19051d2278eef2d7223f6",
+  "all_owned_children_terminal": true,
+  "actual_CUDA_constructor_or_application_kernel_calls": 0,
+  "performance_qualification_samples": 0,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "candidate_accepted": false,
+  "scope": "Actual staged/reference constructorfailure paths, identicalCPUinput/fullstatefingerprints/errorstrings and originalhelper12mocks ineachmodule. Materialwall/CPUgatesfixedbeforefirstnative. No successfulGPUsolve/speed gain or rawdeviceproof. Any materialfailurecloses source with no source/eligibility/placement/budget/threshold/sample rescue."
+}

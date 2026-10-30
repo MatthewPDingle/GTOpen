@@ -1,0 +1,86 @@
+--- accepted/crates/solver/src/gpu/mod.rs
++++ diagnostic/crates/solver/src/gpu/mod.rs
+@@ -205,6 +205,12 @@
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+ 
++        let mut d088_last = std::time::Instant::now();
++        let mut d088_mark = |stage: &str| {
++            let elapsed = d088_last.elapsed().as_secs_f64() * 1000.0;
++            eprintln!("D088_INIT {{\"stage\":\"{}\",\"elapsed_ms\":{}}}", stage, elapsed);
++            d088_last = std::time::Instant::now();
++        };
+         let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+         // F32 stores already support cheap direct DMA. Prefer that path if it
+         // fits, avoiding inactive host snapshots on warm full-precision solves.
+@@ -222,12 +228,14 @@
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
++        d088_mark("plan_budget");
+         let ctx = CudaContext::new(0).map_err(e)?;
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+         // cross-stream event tracking is unnecessary — and the events it
+         // records would invalidate CUDA graph capture.
+         unsafe { ctx.disable_event_tracking() };
++        d088_mark("context_stream");
+ 
+         // Compile the PTX for the device we actually found: hardcoded
+         // compute_86 refuses to load on an A100 (8.0) and makes newer cards
+@@ -252,6 +260,7 @@
+             .clone()?;
+         let module = ctx.load_module(ptx).map_err(e)?;
+         let func = |name: &str| module.load_function(name).map_err(e);
++        d088_mark("nvrtc_module");
+ 
+         let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
+         let upi32 = |v: &Vec<i32>| stream.clone_htod(v).map_err(e);
+@@ -260,19 +269,22 @@
+ 
+         let data_len = plan.arena_elements;
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
++        d088_mark("pinned_staging");
+         let mut arena_layout = [
+             ArenaLayout::new(solver, &plan, 0),
+             ArenaLayout::new(solver, &plan, 1),
+         ];
++        d088_mark("arena_layouts");
+         let d_regrets = [
+-            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
+-            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
++            { let device = arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?; d088_mark("regret0_upload"); device },
++            { let device = arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?; d088_mark("regret1_upload"); device },
+         ];
+         let d_strat = [
+-            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
+-            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
++            { let device = arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?; d088_mark("strategy0_upload"); device },
++            { let device = arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?; d088_mark("strategy1_upload"); device },
+         ];
+         let (lock_off, lock_sigma) = build_lock_table(solver);
++        d088_mark("lock_table");
+ 
+         let n = plan.num_nodes;
+         let nh = plan.nh;
+@@ -299,7 +311,8 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
+-        Ok(GpuSolver {
++        d088_mark("fold_table");
++        let d088_result = GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+@@ -379,7 +392,9 @@
+             _ctx: ctx,
+             stream,
+             _module: module,
+-        })
++        };
++        d088_mark("metadata_upload_and_object");
++        Ok(d088_result)
+     }
+ 
+     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {

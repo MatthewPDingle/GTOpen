@@ -1,0 +1,51 @@
+{
+  "at": "2026-10-16T17:12:44.801338+00:00",
+  "status": "HOST_PREPARATION_CHECKS_PASS",
+  "ast": [
+    "prepare_corpus.py",
+    "check_corpus.py",
+    "run.py"
+  ],
+  "accepted_source_map_entries": 162,
+  "inherited_case_records_unchanged": 148,
+  "extra_full_own_cases": 4,
+  "dense_slot_partitions": 80,
+  "explicit_absent_positive_zero_assertions": true,
+  "original_corpus_preserved": true,
+  "expected": {
+    "id": "E029-direct-corpus",
+    "corpus_sha256": "a194947cc8bb0de8fb8da5c1908bb5c4312aec6ae00f4a58080a4b5871a6de42",
+    "original_corpus_sha256": "a68daeefff0fd2cd968c8124e089586b62a91703a646030d3229c2ee53f68bf8",
+    "bytes": 4752553,
+    "geometry_count": 40,
+    "comparison_pairs": 152,
+    "kernel_launches": 304,
+    "inherited_pairs": 148,
+    "extra_full_own_pairs": 4,
+    "regular_pairs": 148,
+    "zero_count_pairs": 4,
+    "active_words_compared": 80952,
+    "output_guard_word_checks": 535072,
+    "input_buffers_per_arm": [
+      21,
+      22
+    ],
+    "device_input_buffer_checks": 6536,
+    "device_input_word_checks": 1512976,
+    "rounding_witness_checks": 2,
+    "stdout_markers": 155,
+    "raw_result_records": 152,
+    "inherited_active_data_exact": true,
+    "dense_slot_complements_checked": 80,
+    "complement_shapes": {
+      "empty-own": 2,
+      "partial-own": 34,
+      "full-own": 4
+    },
+    "nonzero_missing_start_geometries": 36,
+    "native_execution": false
+  },
+  "source_review_sha256": "d4c1ba121c7c1494a3ac4c927369ea01674c455cf2383c61e379f8dbc5d4a4eb",
+  "build_native_gpu_executions": 0,
+  "rust_compilation_not_performed": true
+}

@@ -1,0 +1,41 @@
+{
+  "id": "D106",
+  "at": "2026-10-17T10:32:02.070209+00:00",
+  "status": "source_audit_no_native_or_speed_evidence",
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "e960802c1b1f302772704000c2abde6a48ccfa5fa67807407b05610c89e7198a"
+  },
+  "findings": [
+    {
+      "source": "tree.rs:advance_street chance construction",
+      "fact": "Every allowed card constructs the same child_state; card is explicitly unused. board_mask is static root board only. Current code intentionally builds already-dealt-card phantom subtrees for save-compatible numbering.",
+      "implication": "Full betting subtrees repeat exactly; replication can remove repeated recursive/menu/transient-vector work while preserving every output node, child slot and action."
+    },
+    {
+      "source": "game.rs:Spot::new_impl and benchmark build stage",
+      "fact": "Spot tree creation and CPU Storeallocation are inside registered full-cycle timing. River ranking and symmetry are separate unchanged work.",
+      "implication": "This targets real complete-cycle work; actual end-to-end speed must still be measured."
+    },
+    {
+      "source": "D044constructor diagnostic and following menu-cache audit",
+      "fact": "Historical tree spans sum251.54ms; menu caching alone was declined under2%gate because recursion/output growth remain. Those older spans are not current speed evidence.",
+      "implication": "Whole subtree replication is a distinct algorithm removing recursion/menu work together, not a menu-cache retry or a projected2.56%gain."
+    }
+  ],
+  "bounded_novelty_search": "rg over indexed source-review/proposal/audit/README files for subtree cloning/copying and topology/subtree reuse found no prior executed form. Not exhaustive semantic novelty proof.",
+  "excluded_directions": [
+    "E005/E014separate GPUarity entries",
+    "E009/E010GPUquantization",
+    "E012/E013CPUencoding",
+    "D099by-card scratch",
+    "E064local index narrowing"
+  ],
+  "production_source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

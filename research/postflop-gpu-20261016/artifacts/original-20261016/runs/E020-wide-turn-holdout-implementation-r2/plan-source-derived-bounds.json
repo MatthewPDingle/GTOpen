@@ -1,0 +1,28 @@
+{
+  "method": "source-derived safe tree upper bound, not actual native build or GPU allocation",
+  "root_hands_each": 1128,
+  "river_valid_hands_each": 1081,
+  "river_cards": 48,
+  "street_action_nodes_upper": 10,
+  "street_fold_nodes_upper": 8,
+  "street_show_endpoints_upper": 9,
+  "street_action_edges_upper": 26,
+  "turn_tree_nodes_upper": 11691,
+  "total_action_edges_upper": 11258,
+  "full_reach_blocks_both_upper": 12124,
+  "full_staging_bytes_upper": 107453280,
+  "full_f32_regret_and_strategy_bytes_upper": 101592192,
+  "public_vram_estimate_upper_bytes_including_512MiB_slack": 745916384,
+  "baseline_show_dynamic_bytes": 13160,
+  "candidate_show_dynamic_bytes": 21808,
+  "static_shared_bytes_from_D037": 1040,
+  "actual_holdout_occupancy_queried": false,
+  "resource_warning": "5->3 occupancy is measured only at conservative1326 shape, not asserted for this1128/1081 shape",
+  "native_assertions_required": [
+    "hands=[1128,1128]",
+    "tree nodes<=11691",
+    "every visited river count=1081",
+    "both show_shared formulas match13160/21808 bytes",
+    "public estimate<=2GiB"
+  ]
+}

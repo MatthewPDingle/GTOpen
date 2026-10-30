@@ -1,0 +1,35 @@
+{
+  "scope": "Root-only commands after sealed reviews and activation; no execution performed by preparer",
+  "sequence": [
+    {
+      "script": "compile_check.py",
+      "arguments": [
+        "immutable authorization.json SHA256"
+      ],
+      "effect": "fresh feature library no-run compile"
+    },
+    {
+      "script": "build.py",
+      "arguments": [
+        "same immutable authorization.json SHA256"
+      ],
+      "effect": "separate fresh GPU-only lib+fixed evaluator no-run build"
+    },
+    {
+      "script": "primary.py",
+      "arguments": [],
+      "effect": "one unit screen then fixed six solves"
+    },
+    {
+      "script": "assess.py",
+      "arguments": [],
+      "effect": "all markers/nontiming/23check obligations then frozen gates"
+    }
+  ],
+  "python": "C:\\Program Files\\Python312\\python.exe",
+  "prefix": [
+    "-I",
+    "-B"
+  ],
+  "no_automatic_acceptance": true
+}

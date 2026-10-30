@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-28T11:27:57.643296+00:00",
+  "id": "E092",
+  "status": "isolated_integration_source_before_compiler",
+  "D153_fixed_contract_sha256": "484a23b213575d2ff65963863b619e31101186a3d4ee3725d4fb1d2e73e114fd",
+  "fallback_mod_reversal_exact": true,
+  "arena_original_text_exact_prefix": true,
+  "inactive_restore_body_exact_original_duplicate": true,
+  "main_CUDA_and_plan_bytes_exact": true,
+  "admission": "Exactly frozen16MiB aggregate selected source,compressed I16/U16,cc120,currentCFV/pinned>=65544words,31descriptors,128threads. Private min_source_bytes parameter exists solely so same checked internal path can be forced in separate correctness controls. Actual application entry points pass the fixed16MiB constant.",
+  "new_allocations": "Two host Block vectors per admitted sync. No per-packet heap, extra explicit device buffers or pinned allocations. Option of two CudaFunctions retains auxiliary module owners; wrapper/host/module resource changes require actual qualification. Lazy load errors decline before data writes after draining the stream. Runtime copy/launch failures drain and propagate.",
+  "bounds": "Whole-call preflight validates selected Store/q/scale formats and current lengths, unique increasing node ownership, disjoint increasing host/source intervals, u64/usize overflow and every packet block footprint before optional work. Unsupported layouts decline to original path.",
+  "pinned": "Raw-zero exactly checked65544word prefix before typed f32 views. Descriptor and packed output bits travel as f32 storage without arithmetic. Exact borrowed prefix retained through upload/download completion; no cached scratch pointer or escaped borrow.",
+  "CPU_state": "Direct q raw bits and exact scale scatter, exact duplicated original inactive restoration. Iteration and symmetry publication copied. All learning source arrays remain read-only; only completed CFV scratch and CPU output stores written.",
+  "not_proven": "Compilation, actual source/host engine equivalence, intended activation, default fallback silence, resource/memory/capacity effects and complete-cycle speed remain unproven. No numerical/source/threshold/shape rescue after actual failed form; old E009/E010 stay closed."
+}

@@ -1,0 +1,88 @@
+{
+  "id": "D177",
+  "at": "2026-10-28T16:50:43.533361+00:00",
+  "status": "FROZEN_PRE_COMPILERS_AND_DIRECT_GPU_CASES",
+  "category_order": [
+    "up",
+    "chance"
+  ],
+  "folders": {
+    "up": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action",
+    "chance": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance"
+  },
+  "category_protocol_sha256": {
+    "up": "521dbdcae42910154feaee890187cc525ed1c44200612eb7a17a860e338fcc3f",
+    "chance": "6b955bee482582bbee53b49f91da6bb8f3b5976b22eeaf98bd206beb4dea76c6"
+  },
+  "rustc_commands": {
+    "up": [
+      "rustc",
+      "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\probe.rs",
+      "--edition=2021",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "codegen-units=1",
+      "-C",
+      "lto=thin",
+      "-L",
+      "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+      "--extern",
+      "cudarc=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib",
+      "--extern",
+      "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+      "-o",
+      "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\probe.exe"
+    ],
+    "chance": [
+      "rustc",
+      "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\probe.rs",
+      "--edition=2021",
+      "-C",
+      "opt-level=3",
+      "-C",
+      "codegen-units=1",
+      "-C",
+      "lto=thin",
+      "-L",
+      "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+      "--extern",
+      "cudarc=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib",
+      "--extern",
+      "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+      "-o",
+      "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\probe.exe"
+    ]
+  },
+  "required_free_bytes": 85899345920,
+  "raw_reservation_bytes": 12884901888,
+  "expected_cases": 1244,
+  "expected_kernel_launches": 2488,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-prepare-direct.py": "4195a6505984dd407b88d5da0ea0c7773b4a079cfaf89036876af33e0d4476a1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-execute.py": "90db93a90e0be120d8c1817dc439dd5b03b0adbeabe14b98297fd890c44746fd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E096-resource\\protocol.json": "15c9453b2fd4a94ec00a695be3e7ed4db480991c248f37397298c015019acbd8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E096-resource\\report.json": "e4509c01283376f7723d17376926af53919b95759acc34431cdbf6023cf9e0fd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E096-source\\manifest.json": "8d0b67720a537c2f477be1dbce17fe53e4fe5fc40909d132fde4b3d04792b4f9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\protocol.json": "b00d85c4d954d2764f4bd243b5043c4a66c71dcc543ea3dd787df93809105f17",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\source-review.json": "ee817c203331fc894ec53e80694e6d36e149405e4ff5c1e3b9bb41c639686b36",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D176-cache-engine-control\\report.json": "14dd22202ae9b82fa45a8b2585758573fcc8b1774e66e963993870997a91b995",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\execution\\complete.json": "5e47a24aa4ab2fd6fe8c15f85cf4c187d08ba443f99aa44ce4a11920d59d1f37",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-cache-direct-controls\\source-review.json": "9e89ae2d95cd4522539e097f826f89a3d7f9440fd68f84d430f2f7199eeafcbb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\audit.py": "37ce801a09f1dd48cb0d495abce6d8f31726c27ba946c081ec50ecece052d5a3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\candidate.ptx": "8a9d38e62b3a95de36fe0e7933ce641ff28927541eab3cf7161e9ff67ef454fe",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\corpus.json": "b0e82dca741b3435c775baeeaddc177a78080234430c873492c48d6283d8252a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\discounts.rs": "ebd9caba01145065cdf77ac363bc2b0d5fef0334ecc3e75ffc62d64e75f2c94f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-up-action\\probe.rs": "a23a3337c7aeb06d72468eb1affea03ac85618bd1294596ebe1ff162928715da",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\audit.py": "64d8588039cd854dfb4190431336e8e1e66f886f6e658c561f9f1c4d88d21acf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\candidate.ptx": "8a9d38e62b3a95de36fe0e7933ce641ff28927541eab3cf7161e9ff67ef454fe",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\corpus.json": "166210e856f8665e192053f6a9da8cd42ffe3a35503de2f157cea7cbcfaacff0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D177-chance\\probe.rs": "ce4e2db7615a45363c98ab6ca0e06b95f1a6d60a9b83f6c1cec8e9c22e8b49eb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib": "1198bd7f593e9c60787894d6c5dc4c3b6308f2f98edfcab5ad8dba9320ee116d"
+  },
+  "scope": "TwoRustcompilers/twoactualGPUdirectprocesses/twocomplete retainedreaders. No unfilteredcase/floatorder/precision/source/flags changes or NVRTC repeat/primaryspeed sample/sourceactivation/adoption. Allwordsexact orformclosed."
+}

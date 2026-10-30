@@ -1,0 +1,11 @@
+{
+  "id": "D205-R3",
+  "at": "2026-10-28T21:59:31.672001+00:00",
+  "status": "mechanical_harness_context_adapter_matches_production_before_first_completed_case",
+  "original_failure": "R2enableddefaultcudarc cross-stream events. ActualproductionGpuSolver immediately disables eventtracking foritssoleownedstream beforeallocation. Nativephysical-address observer records a read event before capture, then mutable launch-builder waits that noncaptured event, failing CUDA_ERROR_STREAM_CAPTURE_ISOLATION beforethecapturedcooperativelaunch call. This is an observer/context adapter defect, not a raw/barrier/coopattribute numeric outcome.",
+  "evidence": "Localcudarc LaunchArgs::launch_cooperative iterates waits beforecallingcuLaunchCooperativeKernel; DevicePtr/SyncOnDrop and PushKernelArg add/read/writeevents onlywith eventtracking. NVIDIAgraphdocs prohibitwaitingnoncapturedeventinsidecapture without externalnode.",
+  "primary_source": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cuda-graphs.html",
+  "repair": "Addexactproductionunsafe ctx.disable_event_tracking immediatelyafternew_stream andbeforeanyCudaSliceallocation, withbefore/afteratomicstateasserts. Allbuffers/graphlaunchesremainonesameownedstream, explicitlysynchronizedbeforehostsnapshots/drop. No newstream/capturemode/external-eventflag/barrier/data/kernel/case/phase/gate change.",
+  "original_observations": "0 completedcases/0graphreplays/0nonzero-barrierphases. One eagerzero-phase/no-opkernel completed andfull36wordstate/scratchseedassertspassed butnorawframewritten. Thispartialno-worksetupwillbeincidentallyrepeatedaspartoforiginalmatrix; disclosed,notpooled asanaccuracy/performancecase. No completedcase,nonzero-barrierresultorspeedobservationrepeated.",
+  "preservation": "Originalcompileerror,R2binary/exit/errorand20Brawheaderremainunchanged. R3freshcompiler/native/outputdirectory,alloriginal256cases/768launchmatrixonce. Failureonactualgenuinegraph/rawbarrier closesexactform;notanoutcome-basedvariant."
+}

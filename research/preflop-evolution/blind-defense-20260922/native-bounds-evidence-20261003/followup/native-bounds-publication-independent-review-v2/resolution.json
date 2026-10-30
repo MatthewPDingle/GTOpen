@@ -1,0 +1,164 @@
+{
+  "byte_gate_changes": false,
+  "control_reruns": 0,
+  "correction_written_by_this_reviewer": false,
+  "errata": {
+    "bytes": 1098,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\ERRATA.md",
+    "sha256": "e5bd152162860c5c3ea9dc60906d58d73461ac20c19555b1c3f10e3ae7772060"
+  },
+  "errata_text": "# Publication wording correction\n\nRead this together with STACK-CONTEXT-COMPLETE-NATIVE-BOUNDS-20261003.md.\nThe original findings and publication receipt are preserved byte for byte.\n\nThe findings' phrase \"four small Python wiring controls separately checked OS\ncommand lines\" is too broad. In the successful river-control suite, the two\nbridge/trace children received independent OS command-line checks. The two\nhistory/selected transport children checked argument/payload bindings without\nindependent OS command-line checks. The execution-v2 suite has one separate\nOS-attestation control. Do not extend those checks to all 39 native receipts:\ntheir observed_argv field records the owned Popen argument vector.\n\nThe independent publication review passed all technical byte/source/wiring\nchecks but intentionally saved overall passed=false for this prose issue.\nThis additive correction resolves the wording without rewriting that report or\nrerunning any control. Its earlier audit-script helper argument-name failure is\nalso retained; it was not an implementation failure or a scientific attempt.\n",
+  "findings_unchanged": {
+    "bytes": 4790,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\STACK-CONTEXT-COMPLETE-NATIVE-BOUNDS-20261003.md",
+    "sha256": "4a6515d44c2e7d60c2590939416f078e077fc95aad1802eeeef53a564f9c22fb"
+  },
+  "followup_receipt": {
+    "bytes": 10067,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\followup-publication.json",
+    "sha256": "c6ec2c30d107582141a2619462114e72bc47475d83d270acceb30c8188c4b77e"
+  },
+  "format": 1,
+  "full_audit_reruns": 0,
+  "imports_reexecuted": false,
+  "independent_prose_assessment": "The additive wording exactly resolves the single retained review prose failure: two successful bridge/trace children, two history/selected children without independent OS cmdline, and one separate execution-v2 OS-attestation control. The original report intentionally remains passed=false.",
+  "inherited_technical_checks": 7993,
+  "inherited_technical_checks_rerun": false,
+  "native_runs": 0,
+  "passed": true,
+  "poker_accuracy_established": false,
+  "preserved_audit_attempt_files": [
+    {
+      "copy": {
+        "bytes": 555,
+        "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\followup\\native-bounds-publication-independent-review-v1\\failure.json",
+        "sha256": "d08e3e9cbf3e91395fa54b0939bbd823be1f1e27940c9442762b8ee19ee289fe"
+      },
+      "original": {
+        "bytes": 555,
+        "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v1\\failure.json",
+        "sha256": "d08e3e9cbf3e91395fa54b0939bbd823be1f1e27940c9442762b8ee19ee289fe"
+      }
+    },
+    {
+      "copy": {
+        "bytes": 13982,
+        "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\followup\\native-bounds-publication-independent-review-v1\\review.py",
+        "sha256": "51d92994342917f6969566bf0c5f031b2876312de30f3a281e55369beb7c5392"
+      },
+      "original": {
+        "bytes": 13982,
+        "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v1\\review.py",
+        "sha256": "51d92994342917f6969566bf0c5f031b2876312de30f3a281e55369beb7c5392"
+      }
+    },
+    {
+      "copy": {
+        "bytes": 5113,
+        "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\followup\\native-bounds-publication-independent-review-v2\\result.json",
+        "sha256": "2823b37693f8ee87fb67453e6caf2046328350d7486e294808d272d76a549120"
+      },
+      "original": {
+        "bytes": 5113,
+        "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v2\\result.json",
+        "sha256": "2823b37693f8ee87fb67453e6caf2046328350d7486e294808d272d76a549120"
+      }
+    },
+    {
+      "copy": {
+        "bytes": 13994,
+        "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\followup\\native-bounds-publication-independent-review-v2\\review.py",
+        "sha256": "540ed94e3a8668f93e73332c4ab917bf7e99ca33cf957c165ed7aaef651b6004"
+      },
+      "original": {
+        "bytes": 13994,
+        "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v2\\review.py",
+        "sha256": "540ed94e3a8668f93e73332c4ab917bf7e99ca33cf957c165ed7aaef651b6004"
+      }
+    }
+  ],
+  "prior_review": {
+    "bytes": 5113,
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v2\\result.json",
+    "sha256": "2823b37693f8ee87fb67453e6caf2046328350d7486e294808d272d76a549120"
+  },
+  "publication_receipt_unchanged": {
+    "bytes": 541630,
+    "path": "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\native-bounds-evidence-20261003\\publication.json",
+    "sha256": "eadcf1572e967f8be6a2b323830b431d06df7f77d00e04675df7de5bfc416ec0"
+  },
+  "repo_writes": false,
+  "resolution_source": {
+    "bytes": 5455,
+    "path": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\native-bounds-publication-independent-review-v2\\resolve_errata.py",
+    "sha256": "56b2d288adbe45fb241d489d1158db5610fd13037fad173a8a41f0daf06df2fd"
+  },
+  "resolved_issue": {
+    "correction": "The successful river suite independently checks OS cmdline for its two bridge/trace children. The two history/selected transport children check arguments/payload without OS cmdline. The execution suite has a separate OS-attestation control.",
+    "evidence_source": "C:\\Users\\there\\Documents\\New project\\.work\\gtopen-evaluation-resume\\preflop_expected_river_workers_source_check_v2a.py",
+    "evidence_source_sha256": "9c5db5dbe7d8633ed2e0cf8f2138e3c4278084756527f1bbde4f0bd4257f3ffe",
+    "location": "findings paragraph on observed_argv",
+    "original_claim": "four small Python wiring controls separately checked OS command lines",
+    "severity": "prose precision"
+  },
+  "resource_profile_admitted": false,
+  "retained_review_overall_passed": false,
+  "retained_review_prose_review_passed": false,
+  "retained_review_technical_checks_passed": true,
+  "runtime_and_rust_bytes_unchanged": [
+    {
+      "bytes": 19212,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_native_execution_v2.py",
+      "sha256": "1627430507472de471552ffca420b416a5ab0d6670b9ea8e5fb0e11b0da6699f"
+    },
+    {
+      "bytes": 15059,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_board_workers_v2.py",
+      "sha256": "d4f941fc7fcabb9197aa3cbea95698cbd78294e05ea21c47af5f00a7ea736b1d"
+    },
+    {
+      "bytes": 34650,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_river_workers_v2.py",
+      "sha256": "d34f4134c65adc8603882c4a6c2023b653dbdf27fd6f09794a2504c90f3d1fce"
+    },
+    {
+      "bytes": 7647,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_river_transport_v2.py",
+      "sha256": "2b1c8fbc5484af9288375ee7665e0e87d9ec0486a7c93c74d670063d21610ddc"
+    },
+    {
+      "bytes": 22459,
+      "path": "T:\\Dev\\GTOpen\\tools\\research\\preflop_expected_training_pipeline_v2.py",
+      "sha256": "499a828901ed2a12b26680b1accfea73f4ca6eee527088ac9fb86a266ac3536d"
+    },
+    {
+      "bytes": 2852,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\research_sampled\\research_bounded_output_v1.rs",
+      "sha256": "dd61cf57460fbe409c199f48a1149610bebadf8aa97eb3b602c8add171e19da9"
+    },
+    {
+      "bytes": 3815,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_fixed_board_tree_bounded_v2.rs",
+      "sha256": "7eaa77dfaf433baa1ebcc48b067dab672a6a47faab623bd9feac70c916c6e0c5"
+    },
+    {
+      "bytes": 6989,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_allin_history_bridge_bounded_v2.rs",
+      "sha256": "18b1e6a7bb4137ee1db4f189871f1f8a84852a8c5dff0e01ea4aa43e12a432ee"
+    },
+    {
+      "bytes": 6066,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_sampled_action_trace_bounded_v3.rs",
+      "sha256": "550d3cb460552b9a1628cd44de7a997383e5c9b3bc30a86d72af6f015ac77daa"
+    },
+    {
+      "bytes": 13333,
+      "path": "T:\\Dev\\GTOpen\\crates\\solver\\examples\\hu_river_two_stage_stream_bounded_v2.rs",
+      "sha256": "e3ff51bb28657327dea8303ce45a825cf0a5412ea68f745aea9dfc3f49b2d5ac"
+    }
+  ],
+  "scientific_changes": false,
+  "scientific_runs": 0,
+  "scope": "Narrow additive prose-issue resolution based on retained technical publication review; no full audit replay",
+  "terminal_unix": 1790956071.5313122
+}

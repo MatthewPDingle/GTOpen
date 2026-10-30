@@ -1,0 +1,39 @@
+{
+  "id": "D122",
+  "at": "2026-10-18T03:45:06.303469+00:00",
+  "scope": "Exactly12retained accepted E051metadata cases, source/liveness/integer model only. No compiler, rebuilt plan, CUDA/appkernel, solver, new timing or source activation.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D122-cfv-lifetimes.py": "18008443c4cbb3d8bb691a126ddffeebecf217262c9a80c10ebfab3b4774f5a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\report.json": "724be58144d61e220a01342e0116832ad061d3261e805ace6d8f9f06f0fd7536",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\field-schema.json": "6cf083e02a4988c2d7d2c4bc4319c814f8730f92bcd9b611e102978577465c30",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\accepted-plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-00.bin": "3f36f5f327ff75dc0094c5b1723321b543a11999bc6fc0e704e2c1a717edb91e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-01.bin": "58c6656b26e710bbacc539be70d9689150bd4fe686bae1ab30a5e0f56fff62df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-02.bin": "4a9cd844d354cae4c0882d3c0516edf6f1eac551c531d3e99b46ff8bdd6b3612",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-03.bin": "9198d6ae50b943f209d918042b11baccf629d5f7a490eb14d424102e873641b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-04.bin": "f09e70b3e73a5bd8b82a00b5474c525934a45030e123d0bf2ec647c9e9561596",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-05.bin": "e14e71188e221642c8d82bc07b91e051547a132532fbdc83e7b93d2e4cf5c152",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-06.bin": "3dbdb5985d4a598f5b878ec6b092181c2e967c5ced06170d638d3797bf05ee24",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-07.bin": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-08.bin": "126eecf0d8e031771626d244616c97cdde41c05f687f23ba7b9c65baa90f077c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-09.bin": "890881dda9f6b9d6a5e1915b14e55baa1bb02026e4b0b55e538d4b96e99c0b58",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-10.bin": "112186ed3885def03978d1524bd0c9b52e5a14a01c43fc34d6f20d26fc258cbf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-11.bin": "0dbf07d2007db5e9c5c0505b7806318cd7c202e9865a4deb18c43c67325fe61e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D122-cfv-lifetimes\\history.json": "2f3210bf0ffc1a367c162a0a5c0d47843f5e1d807e42f1b73aef26a511cba1a3"
+  },
+  "fixed_analysis": [
+    "Count all one-action parents by actual child kind/arity; retain concrete potential cross-CTA conflicts for naive early parent writes into existing two-parity storage.",
+    "Model only disjoint pairs: reachedone-action parent whose unique reachedchild is an action node ofarity>=2. No chain/fusion implementation.",
+    "Merge parent/child CFVintervals into one closedinterval[level(parent)-1,level(child)]. Preserve original level schedule,all float kernels/updates and terminal caches. Sharedrow would be read then overwritten by the originalone-actionparent, same hand index only.",
+    "Assign representative interval colors in descending producer level, nodeIDascending, LIFOfree colors; retire only after all consumption in a stage. Relabel the rootcolor to0. Assign distinct terminal caches after scratchcolors in original nodeIDorder.",
+    "Independently verify per-color closedinterval nonoverlap and actual action/chance graph read/write collisions: only selectedone-actionparent may read/write its selectedchild row in place. Check all other shared logical-node pairs/lifetimes and terminal/root/sentinel/geometry contracts."
+  ],
+  "admission": "Require all12models valid, scratch/block/payload never increases, and at leastone canonical iso-on flop has fewerCFVblocks before implementing one Rustprototype. This is storage/source feasibility only, not a measured speedup/traffic bound or no-tradeoff proof. Actual CPUtemporary/packing/capacity costs and all GPU/exact/broad/1%/strictfixture/fresh16/material/holdout/cumulative gates remain.",
+  "no_optimization_accepted": true
+}

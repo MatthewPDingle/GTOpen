@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-18T05:06:47.645772+00:00",
+  "predicate_body_exact_match_to_accepted_arena_rs": true,
+  "original_arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "predicate_source_body": "match store {\n            Store::I16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0\n            }\n            Store::U16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0\n            }\n            Store::F32(_) => false,\n        }",
+  "model_scope": "Accepted solver RLIB/mimalloc/Spot/Solver/GpuPlan CPU build, fresh process per arm, original reg0/reg1/strat0/strat1 exact predicates copied verbatim. No GPU/context/pinned buffer/device allocation. Model is not the production upload function; layout fresh snapshot guards are trivially true and private ArenaLayout construction is not reproduced.",
+  "proposed_mechanism": "For Windows quantized stores with total q payload >=64MiB and every scale positive-zero, hint all4 owned q ranges once, then execute all4 original validation scans. No cached provenance, skipped/reordered q scan, parallel OR, SIMD helper, initialization omission or source activation. Threshold64MiB is fixed before first native observation and cannot be tuned after failure. Tiny cases fall back before scale precheck; additional eligibility work stays inside component clock.",
+  "limits": "Source is an isolated component prototype. Counters describe whole process and cannot isolate hard faults or physical-cache allocation. Prefetch and extra eligibility/timer overhead included. No no-tradeoff or complete-cycle claim."
+}

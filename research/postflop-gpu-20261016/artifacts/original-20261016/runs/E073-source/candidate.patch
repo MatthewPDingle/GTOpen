@@ -1,0 +1,68 @@
+--- E051/crates/solver/src/gpu/kernels.cu
++++ E073/crates/solver/src/gpu/kernels.cu
+@@ -201,7 +201,7 @@
+     const float* __restrict__ reach_o_buf,
+     const u32* __restrict__ p_off, const u32* __restrict__ p_cnt,
+     const u32* __restrict__ p_idx,
+-    const u32* __restrict__ p_lower, const u32* __restrict__ p_upper,
++    const unsigned short* __restrict__ p_lower, const unsigned short* __restrict__ p_upper,
+     const u32* __restrict__ o_off, const u32* __restrict__ o_cnt,
+     const u32* __restrict__ o_idx,
+     const u32* __restrict__ o_card_off, const u32* __restrict__ o_card_pos,
+--- E051/crates/solver/src/gpu/mod.rs
++++ E073/crates/solver/src/gpu/mod.rs
+@@ -135,8 +135,8 @@
+     d_riv_off: [CudaSlice<u32>; 2],
+     d_riv_cnt: [CudaSlice<u32>; 2],
+     d_riv_idx: [CudaSlice<u32>; 2],
+-    d_riv_lower: [CudaSlice<u32>; 2],
+-    d_riv_upper: [CudaSlice<u32>; 2],
++    d_riv_lower: [CudaSlice<u16>; 2],
++    d_riv_upper: [CudaSlice<u16>; 2],
+     d_riv_card_off: [CudaSlice<u32>; 2],
+     d_riv_card_pos: [CudaSlice<u32>; 2],
+     // device: locks (rebuilt via update_locks)
+@@ -257,6 +257,19 @@
+         let upi32 = |v: &Vec<i32>| stream.clone_htod(v).map_err(e);
+         let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
+         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
++        // Rank boundaries are counts of at most 1326 physical hands. Keep
++        // the public CPU plan intact and narrow only these private uploads.
++        let up_bounds = |v: &Vec<u32>| -> Result<CudaSlice<u16>, String> {
++            let mut values = Vec::with_capacity(v.len());
++            for &value in v {
++                values.push(u16::try_from(value).map_err(|_| "river rank boundary exceeds u16".to_string())?);
++            }
++            let device = stream.clone_htod(&values).map_err(e)?;
++            // Retire every transfer before the temporary source can be freed,
++            // including when later constructor work returns an error.
++            stream.synchronize().map_err(e)?;
++            Ok(device)
++        };
+ 
+         let data_len = plan.arena_elements;
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+@@ -353,8 +366,8 @@
+             d_riv_off: [up32(&plan.riv_off[0])?, up32(&plan.riv_off[1])?],
+             d_riv_cnt: [up32(&plan.riv_cnt[0])?, up32(&plan.riv_cnt[1])?],
+             d_riv_idx: [up32(&plan.riv_sorted_idx[0])?, up32(&plan.riv_sorted_idx[1])?],
+-            d_riv_lower: [up32(&plan.riv_lower[0])?, up32(&plan.riv_lower[1])?],
+-            d_riv_upper: [up32(&plan.riv_upper[0])?, up32(&plan.riv_upper[1])?],
++            d_riv_lower: [up_bounds(&plan.riv_lower[0])?, up_bounds(&plan.riv_lower[1])?],
++            d_riv_upper: [up_bounds(&plan.riv_upper[0])?, up_bounds(&plan.riv_upper[1])?],
+             d_riv_card_off: [up32(&plan.riv_card_off[0])?, up32(&plan.riv_card_off[1])?],
+             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
+             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
+--- E051/crates/solver/src/gpu/continuation_capacity.rs
++++ E073/crates/solver/src/gpu/continuation_capacity.rs
+@@ -50,8 +50,8 @@
+     for q in 0..2 {
+         macro_rules! arr {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f[q].len()*size_of::<$t>()) as u64)*};}
+         n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,
+-            d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,
+-            d_riv_upper:u32,d_riv_card_off:u32,d_riv_card_pos:u32);
++            d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u16,
++            d_riv_upper:u16,d_riv_card_off:u32,d_riv_card_pos:u32);
+     }
+     n
+ }

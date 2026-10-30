@@ -1,0 +1,34 @@
+{
+  "id": "E118",
+  "at": "2026-10-29T15:49:59.144892+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "ed63d1818aa939b7870a71ae48e7efc8e6313b92ec0a07a33d26e4f8a78f7022",
+  "edits": [
+    {
+      "old": "    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];",
+      "new": "#if __CUDA_ARCH__ == 1200\r\n    int unsafe_tie_reach = 0;\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {\r\n        float r = ro_g[j];\r\n        ro_sh[j] = r;\r\n        unsafe_tie_reach |= __float_as_uint(r) > 0x67800000u;\r\n    }\r\n#else\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];\r\n#endif"
+    },
+    {
+      "old": "        card_pos_sh[j] = o_card_pos[card_base + j];\r\n    __syncthreads();\r\n    const float* ro = ro_sh;",
+      "new": "        card_pos_sh[j] = o_card_pos[card_base + j];\r\n#if __CUDA_ARCH__ == 1200\r\n    int any_unsafe_tie_reach = __syncthreads_or(unsafe_tie_reach);\r\n#else\r\n    __syncthreads();\r\n#endif\r\n    const float* ro = ro_sh;"
+    },
+    {
+      "old": "    int m_p = p_cnt[slot];\r\n    u32 pb = p_off[slot];",
+      "new": "    int m_p = p_cnt[slot];\r\n    u32 pb = p_off[slot];\r\n#if __CUDA_ARCH__ == 1200\r\n    // Bounded nonnegative reach keeps the omitted tie argument finite.\r\n    bool finite_zero_tie = !any_unsafe_tie_reach && m_o > 0 && m_o <= 1326\r\n        && total > 0.f\r\n        && (__float_as_uint(tie) & 0x7fffffffu) == 0\r\n        && (__float_as_uint(win) & 0x7fffffffu) < 0x7f800000u\r\n        && (__float_as_uint(lose) & 0x7fffffffu) < 0x7f800000u;\r\n    if (finite_zero_tie) {\r\n        for (int k = threadIdx.x; k < m_p; k += blockDim.x) {\r\n            u32 i = p_idx[pb + k];\r\n            u32 lb = p_lower[pb + k], ub = p_upper[pb + k];\r\n            float lower = lb > 0 ? prefix[lb - 1] : 0.f;\r\n            float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);\r\n            float lower_c = 0.f, higher_c = 0.f;\r\n            u32 cc[2] = { pc1[i], pc2[i] };\r\n            for (int x = 0; x < 2; x++) {\r\n                u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];\r\n                u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];\r\n                for (u32 t = c0; t < c1; t++) {\r\n                    u32 pos = card_pos_sh[t - card_base];\r\n                    float r = reach_sh[pos];\r\n                    if (pos < lb) lower_c += r;\r\n                    else if (pos >= ub) higher_c += r;\r\n                }\r\n            }\r\n            lower -= lower_c;\r\n            higher -= higher_c;\r\n            // Exact prefix ordering of the sealed compute_120 baseline.\r\n            float first_terms = __fmaf_rn(win, lower, __fmul_rn(lose, higher));\r\n            u32 first_bits = __float_as_uint(first_terms) & 0x7fffffffu;\r\n            if (first_bits > 0 && first_bits < 0x7f800000u) {\r\n                cfv[(u64)cfv_slot[n] * nh_max + i] = first_terms;\r\n                continue;\r\n            }\r\n            // Signed-zero/nonfinite prefix: reproduce the original total\r\n            // card sum and final payout, preserving every input order.\r\n            float tot_c = 0.f;\r\n            for (int x = 0; x < 2; x++) {\r\n                u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];\r\n                u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];\r\n                for (u32 t = c0; t < c1; t++) {\r\n                    u32 pos = card_pos_sh[t - card_base];\r\n                    tot_c += reach_sh[pos];\r\n                }\r\n            }\r\n            u32 sc = same_p[i];\r\n            float same_r = sc != SENTINEL ? ro[sc] : 0.f;\r\n            float valid = total - tot_c + same_r;\r\n            float tied = valid - lower - higher;\r\n            cfv[(u64)cfv_slot[n] * nh_max + i] = win * lower + lose * higher + tie * tied;\r\n        }\r\n        return;\r\n    }\r\n#endif\r\n"
+    }
+  ],
+  "entire_CRLF_source_inverse_exact": true,
+  "original_full_noneligible_hand_loop_byte_exact": true,
+  "active_architecture_macro": 1200,
+  "scope": "Oneup_show-onlyCUDAform. Existingfirstcopybarrierbecomesor-reductionvalidatingallro bits<=+2^80; otherbarriers/sharedregions unchanged. Positive-total,m_o1..1326,finitepayoffs,tie±0 permitorderedlower/higheronlyloop. NativebaselineFMAprefixorderexplicit;nonzerofiniteprefixskipstot_c/same_r/valid/tied/finalzeroFMA. Signedzero/nonfiniteprefixreplaysorderedtot_candoriginalpayout. IneligibleCTAandallotherarchitecturesretainsoriginalhandloop, absent-handzeroing/root/host/ABI/launch/payload/quality/cadence unchanged.",
+  "proof_input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D281-zero-tie-scout\\report.json": "9924d84ebfa9c85143c9ecabb40d3de63a22b6d1dc931fd186538c5d19fbdc0f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D281-zero-tie-scout\\hit-classification.json": "c365e943ae88b9c23ee37cc2432f1fff80f196b475b5397f3f785815ebd959bd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D281-zero-tie-scout\\arithmetic-contract.json": "d4c78f5ce1a2d4a6c561775b8bd7d34b44c239b5925f9bbd6bde6a2b2a029909",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D281-zero-tie-scout\\static-payout-census.json": "9a026e6dc76041874352d834b488ccc70051ed0bb07fe62e6cb97fed310bc86d"
+  },
+  "risks": "ExtraCTAclassifier/uniformbranch, replayatzeroprefix, functionsize/registers/divergence/driverJITcost maylose. Sourceproofdoesnotqualifyemittedbypass,prefixFPprovenance,wholeIEEEequivalence,materialcostorspeed. NoE036zero-row/E069zero-output/E084firstcardcache/E107payoutloadhoisthunkcomposed. Genuinefailureclosesfixedbound/predicate/arch/loop/sourcewithoutrescue.",
+  "new_compilers_GPU_CFR_solver_or_speed_samples": 0,
+  "source_activated": false
+}

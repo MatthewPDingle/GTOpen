@@ -1,0 +1,34 @@
+{
+  "id": "D168",
+  "at": "2026-10-28T14:51:02.075909+00:00",
+  "status": "configuration_source_correctness_and_runner_protocol_next_not_executed",
+  "hypothesis": "User changedRAMtimings;accepted E080usesRayon16CPUworkers for preparation/readback. Explore a finite CPUworkerconfiguration8/16/32 on same accepted E080,not anewCUDA kernel orNVRTC13variant. Potentialbandwidth/scheduling/setup/readback effects arehypotheses,not measuredheadroom.",
+  "history_screen": "Current fullledgerandGPU-pass exactCPUthread/SMT pattern hasno matchingtrial;manyGPU64/128/256threadshapes aredistinctandclosed. This isboundedcurrent-source/historyscreen,notexhaustiveallarchiveddata. NoE093compiler/source/version/flags rescue.",
+  "frozen_config_inventory": [
+    8,
+    16,
+    32
+  ],
+  "reference_workers": 16,
+  "source_files_to_pin": {
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rayon-core-1.13.0\\src\\lib.rs": "5da845890b55010d8f5e243ac9d112c60c710a0f412dce8ebf6f8b6987bd261c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\gpu-pass.md": "a52b91995c7ca5c57b6b56b489fbd00523e48c614d872e8b028fb8a2f77da19f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-RAM-thread-config-scope\\history-at-freeze.txt": "9d4bbe24e3bee663ec2c3b8c614fb4e03b7ba2292a161d9b4cab9bc095843539"
+  },
+  "first_obligations": [
+    "Verify actualselectedRayonpool size inside freshprocess against8/16/32 without preinitializingormovingany original clock;inspectfixed benchmark andpostflop library construction forhardwired overrides. Existing genericrunner forces16,so freezeexplicitparameterized childenvironment/metadata handling instead ofclaiming envchangealoneworked.",
+    "Keepaccepted E080exact source/kernel/binary anddefaultmath/cache/launches/storage/quality/target/checkcadence/cap. Originalthreefixture orderperprocess. Verifyallfullraw/scientific/stop/EV/checkpoint invariants acrossdeclaredconfigs beforeinterpretingtimes;CPUparallelquantization scheduling doesnot automaticallyprovebitidentity.",
+    "Before firsttiming freeze a finite balancedblock schedule for8/16/32 and3freshobservationsperconfiguration,originalsumeachfixturemedian>=1%/strictfixturegates,sampleIDs/environment/sourceprovenance,rawdisk/RAM/CPU/processlimits andnoextensions/exclusions. Reference16maybesharedonlyifprospectivelydeclared matchedblockcontrols;neverpoolhistorical/RAMbaseline timings.",
+    "NoOS/RAM/affinity/power/priority/GPUclock changes. Only child-localCPUworkerconfiguration,not GPUblockwidth orproductionsetting. No mainservice restart orpreflop/reportsettingchange.",
+    "Anyadvancingconfigurationrequires separatelyfrozen fresh16confirmation andallruntime/broad/material/capacity/holdout/freshoriginal/desktopverification. A globalworkerchange canaffectpreflop/report/CPUtasks;must qualifytheirperformance/accuracybeforeadoption,oruseaseparatelydefined/newqualifiedpostflop-onlydesign. Do not silentlytradepreflopthroughputforpostfloptiming."
+  ],
+  "failure": "Actualfailedconfigurationsterminalwithallobservations retained;no count/CPUaffinity/threshold/touchpolicy/resampling/sourcevariantrescue. No benchmarkclock/source/quality shortcuts. Initialdiagnosticpassisnotadoption orproofofoptimalconfiguration.",
+  "native_compilers_or_solver_processes_started": 0,
+  "source_or_setting_changed": false,
+  "current_E080_RAM_baseline_ms": 10456.4109,
+  "new_gain_accepted": false,
+  "all_new_output_X": true
+}

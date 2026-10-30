@@ -1,0 +1,134 @@
+--- R1/run.py
++++ R2/run.py
+@@ -7,7 +7,7 @@
+ ROOT=HERE.parent.parent
+ REPO=Path(r'X:\Dev\GTOpen-gpu-research-20261016')
+ STATUS=Path(r'X:\Dev\GTOpen\web\research\postflop-gpu-20261016\status.json')
+-TARGET=ROOT/'build-holdout-e020'
++TARGET=ROOT/'build-holdout-e020-r2'
+ ORDER=['B1','C1','C2','B2','B3','C3']
+ TIMINGS={'build_ms','init_ms','solve_ms','readback_ms','full_cycle_ms','fingerprint_ms_excluded'}
+ COMPILER_KEYS={'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER',
+@@ -71,6 +71,34 @@
+     assert re.search(r'test result: ok\. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out;',text),name
+     assert name in text and 'FAILED' not in text
+ 
++def embedded_cuda(binary,name):
++    data=Path(binary).read_bytes()
++    counts={role:data.count((HERE/f'{role}-kernels.cu').read_bytes()) for role in ['E015','E020']}
++    if name=='E015-resource':
++        assert all(n>0 for n in counts.values()),('resource must embed both exact CUDA sources',counts)
++    else:
++        role=name.split('-')[0];other='E020' if role=='E015' else 'E015'
++        assert counts[role]>0 and counts[other]==0,('wrong embedded CUDA arm',name,counts)
++    return counts
++
++def check_cargo_artifacts(logs,workspace,target,wanted):
++    artifacts=[x for x in logs if x.get('reason')=='compiler-artifact']
++    target=target.resolve();workspace=workspace.resolve()
++    assert artifacts
++    for item in artifacts:
++        for filename in item.get('filenames',[])+([item['executable']] if item.get('executable') else []):
++            assert Path(filename).resolve().is_relative_to(target),('artifact outside arm target',filename,target)
++    solver=[x for x in artifacts if x['target']['name']=='solver' and x['target']['kind']==['lib']]
++    assert len(solver)==1
++    rows=[x for x in artifacts if x.get('executable') and x.get('profile',{}).get('test') and x['target']['name'] in wanted]
++    assert {x['target']['name'] for x in rows}==set(wanted) and len(rows)==len(wanted)
++    for item in solver+rows:
++        assert item['fresh'] is False,('refuse cached arm solver/test artifact',item['target']['name'])
++        assert Path(item['manifest_path']).resolve()==workspace/'crates/solver/Cargo.toml'
++        expected=workspace/'crates/solver/src/lib.rs' if item in solver else HERE/('resource.rs' if item['target']['name']=='postflop_wide_turn_resources' else 'evaluator.rs')
++        assert Path(item['target']['src_path']).resolve()==expected.resolve()
++    return rows,solver[0]
++
+ def main():
+     def interrupted(signum, _frame):raise KeyboardInterrupt(f'received signal {signum}')
+     for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+@@ -121,14 +149,18 @@
+             try:
+                 with (out/'heartbeat-errors.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps({'at':now(),'error':repr(error)})+'\n')
+             except Exception:pass
+-    def env():
++    def env(role=None):
+         value=os.environ.copy()
+         overrides=compiler_overrides(value)
+         assert not overrides,('Refuse unregistered compiler overrides',overrides)
+         for key in ['POSTFLOP_AUTORESEARCH_FIXTURE','POSTFLOP_AUTORESEARCH_STORAGE','POSTFLOP_AUTORESEARCH_PROFILE',
+                     'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER']:
+             value.pop(key,None)
+-        value.update(RAYON_NUM_THREADS='16',CARGO_TARGET_DIR=str(TARGET))
++        value.pop('CARGO_TARGET_DIR',None)
++        value.update(RAYON_NUM_THREADS='16')
++        if role is not None:
++            assert role in ['E015','E020']
++            value['CARGO_TARGET_DIR']=str(TARGET/role)
+         value['PATH']=str(runner.NVRTC)+os.pathsep+value.get('PATH','')
+         return value
+     def preflight(where,gpu):
+@@ -174,6 +206,9 @@
+         binary=HERE/'build/binaries'/f'{name}.exe'
+         manifest_path=binary.with_suffix('.manifest.json');manifest=read(manifest_path)
+         assert manifest['binary_sha256']==sha(binary) and manifest['prepared_manifest_sha256']==sha(HERE/'prepared-manifest.json')
++        assert manifest['target_dir']==str(TARGET/manifest['role'])
++        assert manifest['cargo_artifact']['fresh'] is False and manifest['solver_artifact']['fresh'] is False
++        assert embedded_cuda(binary,name)==manifest['embedded_cuda_occurrences']
+         return binary,manifest_path
+     def all_builds_ready():
+         path=pin(authorization['all_builds_ready'])
+@@ -184,6 +219,7 @@
+         for name in ['E015-holdout','E020-holdout','E015-resource']:
+             binary,manifest=built(name)
+             assert str(binary) in listed and str(manifest) in listed
++        assert sha(HERE/'build/binaries/E015-holdout.exe')!=sha(HERE/'build/binaries/E020-holdout.exe'),'identical holdout arm executables'
+         return {'path':str(path),'sha256':sha(path)}
+ 
+     with runner.exclusive_lock(ROOT/'gpu-run.lock'):
+@@ -193,33 +229,44 @@
+         try:
+             if args.phase=='build':
+                 preflight(out,False);(out/'binaries').mkdir()
++                assert not TARGET.exists(),('target root must be unused',TARGET)
++                save(out/'target-isolation.json',{'root':str(TARGET),'root_absent_before_build':True,
++                    'arm_targets':{role:str(TARGET/role) for role in ['E015','E020']},'shared_between_arms':False})
++                TARGET.mkdir()
+                 save(out/'toolchain.json',{'rustc':runner.read_command(['rustc','-Vv']),'cargo':runner.read_command(['cargo','-V']),
+                     'nvrtc_dll_sha256':{p.name:sha(p) for p in sorted(Path(runner.NVRTC).glob('*.dll'))}})
+                 outputs=[]
+                 for role in ['E015','E020']:
+                     folder=out/role;folder.mkdir()
+                     workspace=HERE/'workspaces'/role
++                    target=TARGET/role;target.mkdir(exist_ok=False)
++                    assert not any(target.iterdir()),'arm target must be empty before its build'
+                     command=['cargo','test','--release','--locked','--offline','-p','solver','--features','gpu','--test','postflop_wide_turn_holdout']
+                     wanted={'postflop_wide_turn_holdout':role+'-holdout'}
+                     if role=='E015':
+                         command+=['--test','postflop_wide_turn_resources'];wanted['postflop_wide_turn_resources']='E015-resource'
+                     command+=['--no-run','--message-format=json']
+-                    execute(command,folder,workspace,1800,env())
++                    execute(command,folder,workspace,1800,env(role))
+                     logs=[json.loads(line) for line in (folder/'stdout.log').read_text(encoding='utf-8').splitlines()]
+                     assert any(x.get('reason')=='build-finished' and x.get('success') is True for x in logs)
+-                    rows=[x for x in logs if x.get('reason')=='compiler-artifact' and x.get('executable') and x.get('profile',{}).get('test') and x['target']['name'] in wanted]
+-                    assert {x['target']['name'] for x in rows}==set(wanted) and len(rows)==len(wanted)
++                    rows,solver_artifact=check_cargo_artifacts(logs,workspace,target,wanted)
+                     deps={f:sha(Path(f)) for x in logs if x.get('reason')=='compiler-artifact' for f in x.get('filenames',[]) if Path(f).is_file() and Path(f).suffix in {'.rlib','.rmeta','.lib','.dll'}}
+                     for item in rows:
+                         name=wanted[item['target']['name']];destination=out/'binaries'/f'{name}.exe'
+                         assert not destination.exists();shutil.copyfile(item['executable'],destination)
++                        source_presence=embedded_cuda(destination,name)
+                         manifest={'role':role,'name':name,'at':now(),'binary_sha256':sha(destination),
+                             'prepared_manifest_sha256':sha(HERE/'prepared-manifest.json'),'workspace_source_map':read(HERE/'workspace-source-maps.json')[role],
+                             'cargo_artifact':item,'dependency_artifact_sha256':deps,'command':command,
++                            'solver_artifact':solver_artifact,'target_dir':str(target),'target_empty_before_build':True,
++                            'embedded_cuda_occurrences':source_presence,
+                             'build_stdout_sha256':sha(folder/'stdout.log'),'build_stderr_sha256':sha(folder/'stderr.log'),
+                             'evaluator_sha256':sha(HERE/'evaluator.rs'),'fixture_sha256':sha(HERE/'fixture.json'),'source_verified_after_build':True}
+                         save(destination.with_suffix('.manifest.json'),manifest);outputs.append({'path':str(destination),'sha256':sha(destination)})
+-                save(out/'report.json',{'status':'pass','scope':'compilation only','outputs':outputs,'gpu_executions':0})
++                assert sha(out/'binaries/E015-holdout.exe')!=sha(out/'binaries/E020-holdout.exe'),'identical holdout arm executables'
++                save(out/'report.json',{'status':'pass','scope':'compilation only','outputs':outputs,'gpu_executions':0,
++                    'separate_empty_arm_targets':True,'solver_and_test_fresh':False,'holdout_binary_hashes_distinct':True,
++                    'expected_cuda_sources_embedded':True})
+             elif args.phase=='resource':
+                 ready=all_builds_ready();preflight(out,True)
+                 binary,manifest=built('E015-resource')

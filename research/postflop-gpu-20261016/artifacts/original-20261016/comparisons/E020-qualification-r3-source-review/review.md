@@ -1,0 +1,5 @@
+# E020 qualification R3: narrow source review
+
+PASS_NARROW_BINDING_REVISION_SOURCE_ONLY. Manifest e2e1e7a896f70eb54107bf4d83c6d9334953bbcbfcc20d7ad5db94850121110d verifies. The sole executable change updates cumulative.py's canonical holdout outcome path to E020-wide-turn-holdout-implementation-r2/cohort/report.json. A byte replacement proves no other executable change; ten other R2 files, including the numerical protocol, are byte-identical. All new manifest entries and the preserved prior invalid readiness hash verify; Python AST/JSON source checks only.
+
+The fixed controls, original baseline, numerical/workload settings, pair order, score, guards, exactness checks and independent-audit gates are unchanged. Valid broader builds are reused rather than rerun. R3's separate directory requires fresh root authorization/readiness bindings; the old wrong-arm readiness cannot satisfy them. Corrected holdout builds and actual future ready records still require review. No GPU, compiler, test, source or status action was performed.

@@ -1,0 +1,11 @@
+{
+  "python_ast": "pass",
+  "rust_syntax": "rustfmt --edition2021 --emit stdout probe.rs passed",
+  "candidate_mod_syntax": "rustfmt --config skip_children=true --emit stdout passed; ordinary standalone invocation first refused missing sibling plan.rs, no source mutation",
+  "full_candidate_identity_matches_reviewed_files": true,
+  "resource_rows": 14,
+  "kernel_launch_calls_in_source": 0,
+  "production_edits": 0,
+  "builds_executed": 0,
+  "gpu_calls_executed": 0
+}

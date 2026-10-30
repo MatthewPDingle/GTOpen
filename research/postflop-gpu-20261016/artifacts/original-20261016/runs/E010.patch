@@ -1,0 +1,304 @@
+diff --git a/crates/solver/src/gpu/arena.rs b/crates/solver/src/gpu/arena.rs
+index 10b9d137..2fe03415 100644
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -1,5 +1,5 @@
+ //! Exact host mapping for GPU arenas containing only visited action nodes.
+-use super::{e, plan::GpuPlan, write_arena};
++use super::{e, plan::GpuPlan, quantized_readback::{ArenaPlan, Block}, write_arena};
+ use crate::{cfr::Solver, store::Store, tree::KIND_ACTION};
+ use cudarc::driver::{CudaSlice, CudaStream};
+ use std::sync::Arc;
+@@ -172,6 +172,35 @@ impl ArenaLayout {
+         Ok(device)
+     }
+ 
++    pub(super) fn quantized_plan(&self, solver: &Solver, p: usize) -> Result<ArenaPlan, String> {
++        let mut blocks = Vec::new();
++        if self.compact {
++            for block in &self.active {
++                blocks.push(Block { node: block.node, host: block.host, source: block.device as u64,
++                    output: 0, len: u32::try_from(block.len).map_err(|_| "quantized block too long")? });
++            }
++        } else {
++            // Match write_arena, including action blocks not visited by the plan.
++            let nh = solver.spot.hands[p].len();
++            for (node, value) in solver.spot.tree.nodes.iter().enumerate() {
++                if value.kind != KIND_ACTION || value.player as usize != p { continue; }
++                let len = (value.num_children as usize).checked_mul(nh).ok_or("quantized block overflow")?;
++                blocks.push(Block { node: u32::try_from(node).map_err(|_| "quantized node overflow")?,
++                    host: value.data_offset, source: value.data_offset, output: 0,
++                    len: u32::try_from(len).map_err(|_| "quantized block too long")? });
++            }
++        }
++        ArenaPlan::new(blocks, self.len,
++            usize::try_from(solver.spot.tree.data_size[p]).map_err(|_| "quantized host arena overflow")?)
++    }
++
++    pub(super) fn write_quantized(&self, solver: &Solver, p: usize, which: usize,
++        blocks: &[Block], words: &[u16], scales: &[f32]) {
++        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
++        scatter_quantized(store, blocks, words, scales);
++        self.restore_inactive_compressed(store, which);
++    }
++
+     pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+         if !self.compact {
+             write_arena(solver, which != 0, p, data);
+@@ -198,6 +227,10 @@ impl ArenaLayout {
+                     &data[block.device..block.device + block.len]);
+             }
+         });
++        self.restore_inactive_compressed(store, which);
++    }
++
++    fn restore_inactive_compressed(&self, store: &Store, which: usize) {
+         self.inactive.par_iter().for_each(|block| {
+             let start = block.initial[which];
+             let values = if start == usize::MAX { &self.zeros[..block.len] }
+@@ -207,10 +240,53 @@ impl ArenaLayout {
+     }
+ }
+ 
++fn scatter_quantized(store: &Store, blocks: &[Block], words: &[u16], scales: &[f32]) {
++    blocks.par_iter().enumerate().for_each(|(index, block)| {
++        let start = block.output as usize;
++        let values = &words[start..start + block.len as usize];
++        // Descriptor host ranges and node indices are disjoint, like write_arena.
++        unsafe {
++            match store {
++                Store::I16 { q, scale } => {
++                    for (dst, &value) in q.slice(block.host, values.len()).iter_mut().zip(values) {
++                        *dst = value as i16;
++                    }
++                    scale.write_at(block.node as usize, scales[index]);
++                }
++                Store::U16 { q, scale } => {
++                    q.slice(block.host, values.len()).copy_from_slice(values);
++                    scale.write_at(block.node as usize, scales[index]);
++                }
++                Store::F32(_) => unreachable!("quantized readback requires compressed stores"),
++            }
++        }
++    });
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+ 
++    #[test]
++    fn quantized_scatter_preserves_gaps_other_scales_and_signed_bits() {
++        let blocks = vec![Block { node: 2, host: 1, source: 9, output: 0, len: 3 }];
++        for mut store in [Store::i16(6, 5), Store::u16(6, 5)] {
++            match &mut store {
++                Store::I16 { q, scale } => { q.as_mut_slice().fill(123); scale.as_mut_slice().fill(-0.0); }
++                Store::U16 { q, scale } => { q.as_mut_slice().fill(123); scale.as_mut_slice().fill(-0.0); }
++                _ => unreachable!(),
++            }
++            scatter_quantized(&store, &blocks, &[0x8000, 0xffff, 32767], &[f32::from_bits(1)]);
++            let (words, scales) = match &store {
++                Store::I16 { q, scale } => (q.as_slice().iter().map(|&v| v as u16).collect::<Vec<_>>(), scale.as_slice()),
++                Store::U16 { q, scale } => (q.as_slice().to_vec(), scale.as_slice()),
++                _ => unreachable!(),
++            };
++            assert_eq!(words, [123, 0x8000, 0xffff, 32767, 123, 123]);
++            assert_eq!(scales.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), [0x80000000, 0x80000000, 1, 0x80000000, 0x80000000]);
++        }
++    }
++
+     fn layout(compact: bool) -> ArenaLayout {
+         ArenaLayout {
+             compact, len: 4, active: Vec::new(), copies: Vec::new(),
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf4772..25da2626 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -509,3 +509,65 @@ extern "C" __global__ void up_action_eval(
+         }
+     }
+ }
++
++// Exact compressed readback: D010 proof arithmetic, separate packed output offsets.
++template <bool SIGNED> __device__ void quantize_readback_block(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    __shared__ float maxima[128];
++    const u32 block = blockIdx.x;
++    const u32 tid = threadIdx.x;
++    const u64 offset = offsets[block];
++    const u64 output_offset = output_offsets[block];
++    const u32 length = lengths[block];
++    float maximum = 0.0f;
++    for (u32 i = tid; i < length; i += 128) {
++        float value = src[offset + i];
++        // fmaxf ignores NaNs, as Rust f32::max does. No addition/reassociation.
++        maximum = fmaxf(maximum, SIGNED ? fabsf(value) : value);
++    }
++    maxima[tid] = maximum;
++    __syncthreads();
++    for (u32 distance = 64; distance != 0; distance >>= 1) {
++        if (tid < distance) maxima[tid] = fmaxf(maxima[tid], maxima[tid + distance]);
++        __syncthreads();
++    }
++    maximum = maxima[0];
++    const bool valid = maximum > 0.0f && isfinite(maximum);
++    if (tid == 0) scales[block] = valid ? maximum : 0.0f;
++    if (!valid) {
++        for (u32 i = tid; i < length; i += 128) words[output_offset + i] = 0;
++        return;
++    }
++
++    // Match two separate Rust f32 operations, including overflow of k to +Inf.
++    const float k = __fdiv_rn(SIGNED ? 32767.0f : 65535.0f, maximum);
++    const float lo = SIGNED ? -32768.0f : 0.0f;
++    const float hi = SIGNED ? 32767.0f : 65535.0f;
++    for (u32 i = tid; i < length; i += 128) {
++        const float value = src[offset + i];
++        const float y = __fmul_rn(SIGNED ? value : fmaxf(value, 0.0f), k);
++        // Rust round_ties_even() then saturating `as`: NaN -> 0, infinities
++        // saturate. In-range integers here are all exactly representable in f32.
++        const int q = isnan(y) ? 0
++            : y >= hi ? (SIGNED ? 32767 : 65535)
++            : y <= lo ? (SIGNED ? -32768 : 0)
++            : __float2int_rn(y);
++        words[output_offset + i] = (unsigned short)q;
++    }
++}
++
++extern "C" __global__ void quantize_i16_readback(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    quantize_readback_block<true>(src, offsets, output_offsets, lengths, words, scales);
++}
++
++extern "C" __global__ void quantize_u16_readback(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    quantize_readback_block<false>(src, offsets, output_offsets, lengths, words, scales);
++}
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index b5f7166c..1847c802 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -7,6 +7,9 @@
+ 
+ pub mod plan;
+ mod arena;
++mod quantized_readback;
++#[cfg(test)]
++mod quantized_readback_tests;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+ #[cfg(feature = "preflop-research")]
+@@ -20,6 +23,7 @@ mod continuation_paging;
+ #[cfg(feature = "preflop-research")]
+ pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};
+ use arena::ArenaLayout;
++use quantized_readback::QuantizedReadback;
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -157,6 +161,7 @@ pub struct GpuSolver {
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
+     arena_layout: [ArenaLayout; 2],
++    quantized_readback: Option<QuantizedReadback>,
+ 
+     pub iteration: u32,
+     pub algo: Algorithm,
+@@ -299,7 +304,7 @@ impl GpuSolver {
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
+-        Ok(GpuSolver {
++        let mut gpu = GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+@@ -362,6 +367,7 @@ impl GpuSolver {
+             d_regrets,
+             d_strat,
+             arena_layout,
++            quantized_readback: None,
+             d_reach: [
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+@@ -379,7 +385,17 @@ impl GpuSolver {
+             _ctx: ctx,
+             stream,
+             _module: module,
+-        })
++        };
++        gpu.quantized_readback = QuantizedReadback::try_new(
++            solver, &gpu.arena_layout, &gpu.h_staging, &gpu.stream, &gpu._module, needed, budget_bytes,
++        )?;
++        Ok(gpu)
++    }
++
++    /// Whether full compressed downloads use exact GPU encoding for this engine.
++    /// Tight budgets or optional allocation OOM keep the original CPU encoder.
++    pub fn uses_quantized_readback(&self) -> bool {
++        self.quantized_readback.is_some()
+     }
+ 
+     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {
+@@ -983,18 +999,25 @@ impl GpuSolver {
+     /// Works for both f32 and compressed CPU storage (encodes per node).
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
+-        for p in 0..2 {
+-            let len = self.d_regrets[p].len();
+-            self.stream
+-                .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+-            self.stream
+-                .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++        if let Some(readback) = &mut self.quantized_readback {
++            for p in 0..2 {
++                readback.download(&self.stream, &self.d_regrets[p], &mut self.h_staging, solver, &self.arena_layout[p], p, 0)?;
++                readback.download(&self.stream, &self.d_strat[p], &mut self.h_staging, solver, &self.arena_layout[p], p, 1)?;
++            }
++        } else {
++            for p in 0..2 {
++                let len = self.d_regrets[p].len();
++                self.stream
++                    .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
++                self.stream
++                    .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            }
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -1051,6 +1074,9 @@ impl GpuSolver {
+ pub(crate) struct PinnedBuf {
+     ptr: *mut f32,
+     len: usize,
++    // Conservative initialized prefix for temporary compressed readback views.
++    // Other completed staging writes preserve initialization once established.
++    initialized_prefix_bytes: usize,
+ }
+ 
+ unsafe impl Send for PinnedBuf {}
+@@ -1063,6 +1089,7 @@ impl PinnedBuf {
+         Ok(PinnedBuf {
+             ptr: ptr as *mut f32,
+             len,
++            initialized_prefix_bytes: 0,
+         })
+     }
+     pub(crate) fn as_slice(&self) -> &[f32] {

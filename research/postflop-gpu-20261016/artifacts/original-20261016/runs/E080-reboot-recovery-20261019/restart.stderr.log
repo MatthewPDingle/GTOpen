@@ -1,0 +1,8 @@
+Get-FileHash : The term 'Get-FileHash' is not recognized as the name of a cmdlet, function, script file, or operable 
+program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At S:\GTOpen-research\postflop-gpu-20261016\runs\E080-reboot-recovery-20261019\restart.ps1:10 char:5
++ if((Get-FileHash -LiteralPath $taskExe -Algorithm SHA256).Hash.ToLowe ...
++     ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

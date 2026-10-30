@@ -1,0 +1,63 @@
+{
+  "inputs": {
+    "tools\\research\\hu_sampled_neural_bank_run_20260922.py": "ea45d3c8ea3bae946429be9bf67dc3837a46a37a978db7b6bb0885ef990a9166",
+    "tools\\research\\hu_sampled_neural_bank_control_20260922.py": "2936f60d3f98c0cf757acf55c18e443f1ce97cb0fd97390b2fe8edc59061ce46",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1-registration.json": "0e15d30d6d923b4c543ae769b579cfee57b3156a94bbded35713342e7f856371",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json": "dc77ab6f9142b0e68b3326b6766ef5b86e0f1525cc2e0f77759c45563c81035f",
+    "tools\\research\\hu_sampled_policy_bank_20260922.py": "04c79944fa6845a67b2d1df789a65e6130694fef49e132de62be9b09a945dd7e",
+    "tools\\research\\hu_sampled_neural_control_20260922.py": "e9e4c9b437fe94b83b688e102e94801f5c0cdbf31e0275176fa2fb6afff3c251",
+    "tools\\research\\hu_sampled_neural_fallback_20260922.py": "cfbd9e1b79b716eb9df54d731fff2dd80fa280918120cc8d524cf82f284d401e",
+    "tools\\research\\hu_sampled_convergence_fixture_20260922.py": "a34ebb84aebb5644021d736e15c7ee3c931c804f46bbf6a78fea976cc3362a5a",
+    "tools\\research\\hu_sampled_updates_oracle_20260922.py": "da8ab47f607d9779f78ad797944f62c9e5d6aa17c601ce6bbbae775e29116efd",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1-case0-seed17.json": "552d584848d718afd545d90912e0c291b77a9874f7e6a8ff1db38c3420347085",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1-case0-seed31.json": "3cb39fc6a168ba7832e82d2c4377efd69202633ccfd22549cf8d3397e0d2d8bd",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1-case1-seed17.json": "1a3ac55d5f3df04ab447cced8463a5b42de79936260e02ddc04a0768b0490a04",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1-case1-seed31.json": "14d8a7d257dece8e393a3a045262d0b7a5280293353d16a002de65aae92dc7ac"
+  },
+  "created_at_unix": 1790054815.8176587,
+  "maximum_seconds": 6000,
+  "fixture": "research\\preflop-evolution\\blind-defense-20260922\\sampled-convergence-v1-fixture.json",
+  "output_prefix": "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-bank-v1",
+  "bank_prefix": "target/research-sampled/sampled-neural-bank-v1",
+  "reference_prefix": "research\\preflop-evolution\\blind-defense-20260922\\sampled-neural-max-v1",
+  "cases": [
+    0,
+    1
+  ],
+  "seeds": [
+    17,
+    31
+  ],
+  "config": {
+    "reservoir_capacity": 32768,
+    "traversals_per_player": 256,
+    "max_iterations": 2048,
+    "advantage_train_steps": 128,
+    "strategy_train_steps": 512,
+    "checkpoints": [
+      1,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      768,
+      1024,
+      1536,
+      2048
+    ],
+    "target_gap": 0.01,
+    "consecutive_checks": 2
+  },
+  "method": "Retained neural advantage models with observable own-reach-weighted averaging; ordinary equal iteration weights",
+  "changes": "Replace learned average-policy model with a saved model bank; extend stopping budget. Advantage fitting and traversal unchanged.",
+  "comparison": "Must reproduce every shared max-v1 exact-average checkpoint within 1e-10, not merely similar aggregate gaps.",
+  "bank": "Initial uniform policy plus all actually played trained models; final unused model excluded; complete bank saved and reloaded at checkpoints.",
+  "memory": "Bank grows linearly with iterations: at cap, 4094 networks of 6211 float32 parameters, 101711336 bytes before scales/overheads. Not constant storage.",
+  "stopping": "Exact summed finite BR gain <= .01 on two consecutive checkpoints, otherwise stop at 2048. No extension without a new registration.",
+  "finite_only": "All-info arrays serve only as small-game replay oracles; they are not a scalable physical-poker representation.",
+  "no_automatic_retry": true,
+  "production_modified": false
+}

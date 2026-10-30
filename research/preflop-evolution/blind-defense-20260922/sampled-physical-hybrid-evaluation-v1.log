@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_sampled_physical_hybrid_evaluation_20260922.py", line 228, in <module>
+    elif args.worker: worker(json.loads(Path(args.worker).read_text()))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_sampled_physical_hybrid_evaluation_20260922.py", line 148, in worker
+    result = run(reg, STORE, guard)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\sampled_physical_hybrid_evaluation_v1.py", line 73, in run
+    summary = batch_values(context_path, batch, objects, checkpoint, folder / batch_id, guard, bank, reference)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\sampled_physical_root_evaluation_cuda_v1.py", line 124, in batch_values
+    assert policy_error <= reference['policy_tolerance']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -1,0 +1,45 @@
+{
+  "id": "E070-resumed-runtime-access-audit",
+  "resume_goal_updated_at": 1792284705,
+  "checks": [
+    {
+      "at": "2026-10-18T00:55:26.759303+00:00",
+      "classification": "no progress",
+      "current_thread_mode": "on-request",
+      "filesystem": "restricted",
+      "network": "restricted",
+      "sealed_plan_unchanged": true,
+      "S_control_archive_exists": false,
+      "gpu_run_lock_exists": false,
+      "verified_live_process_wait": false
+    },
+    {
+      "at": "2026-10-18T00:56:02.364221+00:00",
+      "classification": "no progress",
+      "current_thread_mode": "on-request",
+      "filesystem": "restricted",
+      "network": "restricted",
+      "sealed_plan_and129inputs_unchanged": true,
+      "S_control_archive_exists": false,
+      "gpu_run_lock_exists": false,
+      "verified_live_process_wait": false
+    },
+    {
+      "at": "2026-10-18T00:56:29.893788+00:00",
+      "classification": "no progress",
+      "current_thread_mode": "on-request",
+      "filesystem": "restricted",
+      "network": "restricted",
+      "sealed_plan_unchanged": true,
+      "S_control_archive_exists": false,
+      "gpu_run_lock_exists": false,
+      "verified_live_process_wait": false
+    }
+  ],
+  "consecutive_resumed_goal_turns_with_same_block": 3,
+  "reason": "The goal is active again, so the blocked audit restarts. The current runtime still requires a native approval for S writes/localhost admission; user requests no further approval prompts. Frozen preparation is complete and dependent GPU work cannot proceed under that constraint.",
+  "new_GPU_executions": 0,
+  "new_speed_samples": 0,
+  "blocked_audit_passed": true,
+  "disposition": "Mark goal blocked after the third consecutive resumed goal turn. Preparation is complete; dependent native work requires actual S/local-network runtime access or another approval notification, which the user asked to avoid."
+}

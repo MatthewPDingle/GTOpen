@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-18T01:29:33.866537+00:00",
+  "status": "native_full_access_execution_operational",
+  "effective_session_permissions": {
+    "sandbox_mode": "danger-full-access",
+    "approval_policy": "never",
+    "source": "Current authoritative developer permission context"
+  },
+  "commands_issued_without_sandbox_permissions": true,
+  "security_configuration_or_database_modified": false,
+  "current_native_execution_denials": 0,
+  "current_approval_requests": 0,
+  "isolated_build_phases_completed": 2,
+  "direct_GPU_case_pairs_passed": 5953,
+  "ordinary_units_passed": 84,
+  "primary_complete_solve_processes_completed": 6,
+  "primary_complete_fixture_results_exact": 18,
+  "primary_convergence_records_exact": 138,
+  "primary_gain_pct": 0.8551867596000117,
+  "candidate_rejected_below_one_percent": true,
+  "candidate_adopted": false,
+  "accepted_candidate": "E051",
+  "accepted_cumulative_gain_pct": 12.4372274192464,
+  "all_owned_children_terminal": true,
+  "GPU_lock_absent": true,
+  "accepted_main_live_PTX_custody_pass": true,
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-primary-manager\\primary.exit.json": "fa076c18dcf8cb8d709778ba37373cb9ef5d14da5d4eae06e804894ca3461d40",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-final-build\\complete.json": "d0732fc59c7637abecedd28c455c241ab908c234492f0fad3ad018592cb18751",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-input-contract-correction\\complete.json": "d36f721f3182718596b49f5a7447ff2e15a97c17037d9c24f282170d34ff6bcf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-primary-wrapper\\complete.json": "d3a848ab99c2224e17083bf53e947c233c3560488d439857791d32a57b976547",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-initial-closure\\decision.json": "cc0d509c12347306054a110f7bc9e520ef110f045d90ca1ff7c3ca14a19f1e99",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E070-root-crosscheck\\report.json": "86d5c76f054e0e3c93eaa29256431de93549e137b9b2e5d36fe7e2605d6f5d5b"
+  },
+  "goal_controller": {
+    "observed_status": "blocked",
+    "observed_through": "get_goal tool, after completed native E070 execution",
+    "permission_failure_cause_removed": true,
+    "model_resume_tool_available": false,
+    "user_control": "/goal resume",
+    "official_documentation": "https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex"
+  },
+  "limits": "Successful full-access execution proves the current execution path works; it does not identify the internal rule behind historical blocked-by-policy failures. No live server deployment or application restart performed."
+}

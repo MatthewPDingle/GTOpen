@@ -1,0 +1,460 @@
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -37,6 +37,10 @@
+     // Level-ordered work lists (flat arrays + one span per level).
+     pub action_nodes: Vec<u32>,
+     pub action_spans: Vec<LevelSpan>,
++    /// Optional stable actor-partitioned training list; aggregate traversal stays unchanged.
++    /// None means every original level is uniform and both actor spans use action_nodes.
++    pub up_action_nodes: Option<Vec<u32>>,
++    pub up_action_spans: [Vec<LevelSpan>; 2],
+     pub chance_parents: Vec<u32>,
+     pub chance_children: Vec<u32>,
+     pub chance_cards: Vec<u32>,
+@@ -108,6 +112,38 @@
+     pub riv_card_pos: [Vec<u32>; 2],
+     /// Max sorted-list length across slots, per player (shared-mem sizing).
+     pub riv_max_cnt: [usize; 2],
++}
++
++// Every span uses one coordinate system: the optional list for mixed plans,
++// otherwise the original aggregate list. No node or child order within an actor changes.
++fn partition_up_actions(
++    nodes: &[u32], spans: &[LevelSpan], player: &[i32],
++) -> (Option<Vec<u32>>, [Vec<LevelSpan>; 2]) {
++    let mixed = spans.iter().any(|sp| {
++        let level = &nodes[sp.start as usize..(sp.start + sp.count) as usize];
++        level.first().is_some_and(|&first| level.iter().any(|&n| player[n as usize] != player[first as usize]))
++    });
++    let mut partitioned = mixed.then(|| Vec::with_capacity(nodes.len()));
++    let mut by_actor = [Vec::with_capacity(spans.len()), Vec::with_capacity(spans.len())];
++    for sp in spans {
++        let level = &nodes[sp.start as usize..(sp.start + sp.count) as usize];
++        for p in 0..2 {
++            let actor_span = if let Some(ids) = partitioned.as_mut() {
++                let start = u32::try_from(ids.len()).expect("training action IDs exceed u32");
++                ids.extend(level.iter().copied().filter(|&n| player[n as usize] == p as i32));
++                LevelSpan { start, count: u32::try_from(ids.len()).expect("training action IDs exceed u32") - start }
++            } else {
++                LevelSpan { start: sp.start, count: if level.first().is_some_and(|&n| player[n as usize] == p as i32) { sp.count } else { 0 } }
++            };
++            by_actor[p].push(actor_span);
++        }
++    }
++    if let Some(ids) = &partitioned { assert_eq!(ids.len(), nodes.len(), "every action must belong to one player"); }
++    (partitioned, by_actor)
++}
++
++fn action_id_bytes(count: usize) -> u64 {
++    (count as u64).checked_mul(4).expect("training action byte count exceeds u64")
+ }
+ 
+ impl GpuPlan {
+@@ -425,6 +461,8 @@
+             }
+         }
+ 
++        let (up_action_nodes, up_action_spans) = partition_up_actions(&action_nodes, &action_spans, &node_player);
++
+         GpuPlan {
+             num_levels,
+             nh,
+@@ -433,6 +471,8 @@
+             iso_active,
+             action_nodes,
+             action_spans,
++            up_action_nodes,
++            up_action_spans,
+             chance_parents,
+             chance_children,
+             chance_cards,
+@@ -490,11 +530,22 @@
+         }
+     }
+ 
+-    /// Total bytes of GPU staging (reach + cfv) this plan needs.
++    /// Extra immutable IDs used only by training-up dispatch.
++    pub(crate) fn training_metadata_bytes(&self) -> u64 {
++        self.up_action_nodes.as_ref().map_or(0, |ids| action_id_bytes(ids.len()))
++    }
++
++    /// Traversal working bytes: reach + CFV staging and optional training IDs.
++    /// Exact-budget callers include this total once; continuation metadata accounts
++    /// for the IDs separately from its individually counted mutable workspace buffers.
+     pub fn staging_bytes(&self) -> u64 {
+-        (self.reach_blocks[0] as u64 * self.nh[0] as u64
+-            + self.reach_blocks[1] as u64 * self.nh[1] as u64
+-            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
++        let words = [(self.reach_blocks[0], self.nh[0]), (self.reach_blocks[1], self.nh[1]),
++            (self.cfv_blocks, self.nh_max)].into_iter().fold(0u64, |sum, (n, width)| {
++                (n as u64).checked_mul(width as u64).and_then(|v| sum.checked_add(v))
++                    .expect("GPU traversal word count exceeds u64")
++            });
++        words.checked_mul(4).and_then(|bytes| bytes.checked_add(self.training_metadata_bytes()))
++            .expect("GPU traversal byte count exceeds u64")
+     }
+ }
+ 
+@@ -503,8 +554,57 @@
+     use super::*;
+     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+ 
++    fn assert_actor_partition(nodes: &[u32], spans: &[LevelSpan], player: &[i32],
++        ids: &Option<Vec<u32>>, actors: &[Vec<LevelSpan>; 2]) {
++        let selected = ids.as_deref().unwrap_or(nodes);
++        let mut consumed = Vec::new();
++        for (l, original) in spans.iter().enumerate() {
++            let level = &nodes[original.start as usize..(original.start + original.count) as usize];
++            for p in 0..2 {
++                let sp = actors[p][l];
++                let actual = &selected[sp.start as usize..(sp.start + sp.count) as usize];
++                let expected: Vec<_> = level.iter().copied().filter(|&n| player[n as usize] == p as i32).collect();
++                assert_eq!(actual, expected);
++                consumed.extend_from_slice(actual);
++            }
++        }
++        consumed.sort_unstable();
++        let mut original = nodes.to_vec(); original.sort_unstable();
++        assert_eq!(consumed, original, "exact union without omitted or repeated IDs");
++    }
++
++    #[test]
++    fn training_actor_partition_preserves_stable_coverage_and_coordinates() {
++        let player = [0, 1, 0, 1, 1, 0, 0];
++        for (nodes, spans, mixed) in [
++            (vec![], vec![LevelSpan::default()], false),
++            (vec![5, 2, 4, 1, 3], vec![LevelSpan { start: 0, count: 2 }, LevelSpan { start: 2, count: 0 }, LevelSpan { start: 2, count: 3 }], false),
++            (vec![0, 4, 2, 1, 6, 3, 5], vec![LevelSpan { start: 0, count: 0 }, LevelSpan { start: 0, count: 1 }, LevelSpan { start: 1, count: 4 }, LevelSpan { start: 5, count: 2 }], true),
++        ] {
++            let original = nodes.clone();
++            let (ids, actors) = partition_up_actions(&nodes, &spans, &player);
++            assert_eq!(ids.is_some(), mixed);
++            assert_eq!(nodes, original, "aggregate traversal order is untouched");
++            assert_actor_partition(&nodes, &spans, &player, &ids, &actors);
++            if !mixed {
++                for p in 0..2 { for (actual, original) in actors[p].iter().zip(&spans) {
++                    assert_eq!(actual.start, original.start, "uniform spans address original IDs");
++                } }
++            }
++        }
++    }
++
++    #[test]
++    fn training_actor_metadata_bytes_are_exact_and_checked() {
++        assert_eq!(action_id_bytes(0), 0);
++        assert_eq!(action_id_bytes(523533), 2094132);
++        #[cfg(target_pointer_width = "64")]
++        assert!(std::panic::catch_unwind(|| action_id_bytes(usize::MAX)).is_err());
++    }
++
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
++        let mut selection_seen = [false; 2];
+         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+             let sizing = || StreetSizing {
+                 bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![],
+@@ -522,6 +622,12 @@
+             }).unwrap();
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
++                selection_seen[usize::from(plan.up_action_nodes.is_some())] = true;
++                assert_actor_partition(&plan.action_nodes, &plan.action_spans, &plan.node_player,
++                    &plan.up_action_nodes, &plan.up_action_spans);
++                assert_eq!(plan.training_metadata_bytes(), plan.up_action_nodes.as_ref().map_or(0, |ids| ids.len() as u64 * 4));
++                let original_staging = (plan.reach_blocks[0] * plan.nh[0] + plan.reach_blocks[1] * plan.nh[1] + plan.cfv_blocks * plan.nh_max) as u64 * 4;
++                assert_eq!(plan.staging_bytes(), original_staging + plan.training_metadata_bytes());
+                 assert_eq!(plan.cfv_slot[0], 0);
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();
+@@ -584,5 +690,6 @@
+                 }
+             }
+         }
++        assert_eq!(selection_seen, [true, true], "real plans cover uniform and mixed selection");
+     }
+ }
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -82,6 +82,7 @@
+     f_up_show: CudaFunction,
+     f_up_chance: CudaFunction,
+     f_up_action: CudaFunction,
++    f_up_action_opponent: CudaFunction,
+     f_up_action_eval: CudaFunction,
+ 
+     // plan metadata kept host-side
+@@ -89,6 +90,7 @@
+     nh: [i32; 2],
+     nh_max: i32,
+     action_spans: Vec<LevelSpan>,
++    up_action_spans: [Vec<LevelSpan>; 2],
+     chance_spans: Vec<LevelSpan>,
+     chance_node_spans: Vec<LevelSpan>,
+     fold_spans: Vec<LevelSpan>,
+@@ -97,6 +99,9 @@
+ 
+     // device: work lists
+     d_action_nodes: CudaSlice<u32>,
++    // Immutable training metadata, retained by this solver through graph replay;
++    // continuation workspace swaps must not replace this list.
++    d_up_action_nodes: Option<CudaSlice<u32>>,
+     d_chance_parents: CudaSlice<u32>,
+     d_chance_children: CudaSlice<u32>,
+     d_chance_cards: CudaSlice<u32>,
+@@ -307,11 +312,13 @@
+             f_up_show: func("up_show")?,
+             f_up_chance: func("up_chance")?,
+             f_up_action: func("up_action")?,
++            f_up_action_opponent: func("up_action_opponent")?,
+             f_up_action_eval: func("up_action_eval")?,
+             num_levels: plan.num_levels,
+             nh: [nh[0] as i32, nh[1] as i32],
+             nh_max: plan.nh_max as i32,
+             action_spans: plan.action_spans,
++            up_action_spans: plan.up_action_spans,
+             chance_spans: plan.chance_spans,
+             chance_node_spans: plan.chance_node_spans,
+             fold_spans: plan.fold_spans,
+@@ -319,6 +326,7 @@
+             riv_max_cnt: plan.riv_max_cnt,
+ 
+             d_action_nodes: up32(&plan.action_nodes)?,
++            d_up_action_nodes: plan.up_action_nodes.as_ref().map(|ids| up32(ids)).transpose()?,
+             d_chance_parents: up32(&plan.chance_parents)?,
+             d_chance_children: up32(&plan.chance_children)?,
+             d_chance_cards: up32(&plan.chance_cards)?,
+@@ -955,7 +963,8 @@
+                 }
+                 prof_acc(&self.stream, &mut prof, 5, t0)?;
+             }
+-            let sp = self.action_spans[l];
++            let action_nodes = self.d_up_action_nodes.as_ref().unwrap_or(&self.d_action_nodes);
++            let sp = self.up_action_spans[p][l];
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+@@ -963,7 +972,7 @@
+                 unsafe {
+                     self.stream
+                         .launch_builder(&self.f_up_action)
+-                        .arg(&self.d_action_nodes)
++                        .arg(action_nodes)
+                         .arg(&start)
+                         .arg(&count)
+                         .arg(&pi)
+@@ -988,6 +997,29 @@
+                 }
+                 prof_acc(&self.stream, &mut prof, 6, t0)?;
+             }
++            let sp = self.up_action_spans[1 - p][l];
++            if sp.count > 0 {
++                let start = sp.start as i32;
++                let count = sp.count as i32;
++                let t0 = profq(&prof);
++                unsafe {
++                    self.stream
++                        .launch_builder(&self.f_up_action_opponent)
++                        .arg(action_nodes)
++                        .arg(&start)
++                        .arg(&count)
++                        .arg(&self.d_node_na)
++                        .arg(&self.d_node_children_start)
++                        .arg(&self.d_children)
++                        .arg(&self.d_cfv_slot)
++                        .arg(&mut self.d_cfv)
++                        .arg(&nh_p)
++                        .arg(&nh_max)
++                        .launch(Self::cfg(sp.count, 0))
++                        .map_err(e)?;
++                }
++                prof_acc(&self.stream, &mut prof, 6, t0)?;
++            }
+         }
+         Ok(())
+     }
+@@ -1179,7 +1211,11 @@
+                 + 512 * 1024 * 1024
+         } else { u64::MAX };
+         let gpu = GpuSolver::new_with_budget(s, budget).expect("test requires CUDA");
++        assert!(plan.up_action_nodes.is_some(), "turn matrix must exercise actual mixed-list selection");
++        assert_eq!(gpu.stream.clone_dtoh(gpu.d_up_action_nodes.as_ref().unwrap()).unwrap(), *plan.up_action_nodes.as_ref().unwrap());
++        assert_eq!(gpu.stream.clone_dtoh(&gpu.d_action_nodes).unwrap(), plan.action_nodes);
+         for p in 0..2 {
++            assert!(gpu.up_action_spans[p].iter().any(|sp| sp.count > 0));
+             if compact {
+                 assert!(gpu.d_regrets[p].len() < s.spot.tree.data_size[p] as usize,
+                     "fixture must actually exercise compact action arenas");
+@@ -1220,8 +1256,20 @@
+         gpu.iteration += 1;
+         let d = Discounts::for_iteration(gpu.algo, gpu.iteration);
+         gpu.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut gpu.d_disc).unwrap();
+-        gpu.sweep(0, None).unwrap();
+-        gpu.sweep(1, None).unwrap();
++        // Independent original-up oracle: route the entire aggregate level to
++        // the unchanged heavy dispatcher, whose original opponent branch remains.
++        // Keep the optional device list alive locally while it is not selected.
++        assert!(gpu.graphs.is_none());
++        let saved_nodes = gpu.d_up_action_nodes.take();
++        let saved_spans = std::mem::replace(&mut gpu.up_action_spans,
++            [vec![LevelSpan::default(); gpu.num_levels], vec![LevelSpan::default(); gpu.num_levels]]);
++        for p in 0..2 {
++            gpu.up_action_spans[p].clone_from(&gpu.action_spans);
++            gpu.up_action_spans[1 - p].fill(LevelSpan::default());
++            gpu.sweep(p, None).unwrap();
++        }
++        gpu.up_action_spans = saved_spans;
++        gpu.d_up_action_nodes = saved_nodes;
+     }
+ 
+     // Test-only copy of the original full-down dispatch. This deliberately
+@@ -1304,6 +1352,9 @@
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation"));
+                     let profile = candidate.iterate_profiled().unwrap();
+                     assert_eq!(profile.launches[0], 2);
++                    let action_launches = candidate.up_action_spans.iter()
++                        .map(|spans| spans.iter().filter(|sp| sp.count > 0).count() as u32).sum::<u32>() * 2;
++                    assert_eq!(profile.launches[6], action_launches, "both actor sublaunches belong to bucket6");
+                     legacy_iteration(&mut reference);
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled"));
+                     candidate.sync_to_cpu(&mut s).unwrap();
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -513,3 +513,42 @@
+         }
+     }
+ }
++
++// D043 compiler-only candidate: caller supplies only nodes whose actor != p.
++// The normal down sweep already incorporates opponent locks into reach.
++// No host routing or kernel launch is implemented by this standalone probe.
++template<int NA>
++__device__ __forceinline__ void up_action_opponent_impl(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_na,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
++{
++    int b = blockIdx.x;
++    if (b >= count) return;
++    u32 n = nodes[start + b];
++    const int na = NA == 0 ? node_na[n] : NA;
++    u32 cs = node_children_start[n];
++        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++            float acc = 0.f;
++            for (int a = 0; a < na; a++)
++                acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc;
++        }
++}
++
++extern "C" __global__ void up_action_opponent(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_na,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    if (na == 2) up_action_opponent_impl<2>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else if (na == 3) up_action_opponent_impl<3>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else if (na == 4) up_action_opponent_impl<4>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++    else up_action_opponent_impl<0>(nodes, start, count, node_na, node_children_start, children, cfv_slot, cfv, nh_p, nh_max);
++}
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -36,7 +36,7 @@
+             +bytes(&p.riv_card_off[q])+bytes(&p.riv_card_pos[q]);
+         n+=53*4+(2*p.nh[q]*4) as u64; // fold-card offsets and two entries per hand
+     }
+-    n+(p.num_nodes*8) as u64+4+12+(4*p.nh_max*4) as u64 // unlocked table, sigma, discounts, eval roots
++    n+p.training_metadata_bytes()+(p.num_nodes*8) as u64+4+12+(4*p.nh_max*4) as u64 // unlocked table, sigma, discounts, eval roots
+ }
+ 
+ /// Actual CUDA slice payloads, excluding the seven borrowed mutable buffers.
+@@ -53,7 +53,7 @@
+             d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,
+             d_riv_upper:u32,d_riv_card_off:u32,d_riv_card_pos:u32);
+     }
+-    n
++    n+g.d_up_action_nodes.as_ref().map_or(0, |ids| (ids.len()*size_of::<u32>()) as u64)
+ }
+ 
+ pub fn stored_capacity_plan(s: &Spot) -> Value {
+@@ -71,7 +71,8 @@
+     let state=if compact.iso_active {(compact.arena_elements[0]+compact.arena_elements[1]) as u64*8}
+         else {(s.tree.data_size[0]+s.tree.data_size[1])*8};
+     let plan_host=owned(&compact.action_nodes)+owned(&compact.node_data_off);
+-    let spans=owned(&full.action_spans)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans);
++    let spans=owned(&full.action_spans)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans)
++        +owned(&full.up_action_spans[0])+owned(&full.up_action_spans[1]);
+     let host=spot_owned(s)+plan_host+spans+4; // one-float pinned staging; full ArenaLayouts have no heap
+     json!({"canonical_state_bytes":state,"explicit_state_bytes":(s.tree.data_size[0]+s.tree.data_size[1])*8,
+         "base_gpu_metadata_bytes":base,"wrapper_gpu_metadata_bytes":wrapper,"retained_gpu_payload_bytes":base+wrapper,
+@@ -80,3 +81,40 @@
+         "node_count":s.tree.nodes.len(),"canonical_actions":compact.action_nodes.len(),"iso_active":compact.iso_active,
+         "limitations":"Payload accounting; excludes CUDA context/modules, allocator bookkeeping, driver scratch, process baseline, constructor temporary plans and evaluation recursion scratch. Reserve separately. Construction temporarily holds previous workspace plus this game's workspace. CPU materialization also holds full explicit arrays."})
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::{parse_sizes, Solver, SpotConfig, StreetSizing};
++    use std::sync::Arc;
++
++    #[test]
++    fn training_actor_list_matches_observed_metadata_for_mixed_and_uniform_plans() {
++        for (board, mixed) in [("KsQs2dJd", true), ("KsQs2dJd3c", false)] {
++            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++            let spot = Arc::new(Spot::new(SpotConfig {
++                board: board.into(), range_oop: "AA,KK,QQ,AKs,AKo".into(),
++                range_ip: "AA,QQ,TT,AQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                    ..Default::default() },
++            }).unwrap());
++            let mut solver = Solver::new(spot.clone());
++            solver.use_isomorphism = false;
++            let mut plan = GpuPlan::build(&spot, false);
++            plan.use_full_action_arenas(&spot);
++            assert_eq!(plan.up_action_nodes.is_some(), mixed);
++            let expected = metadata(&plan, &spot);
++            let gpu = GpuSolver::new(&solver).expect("test requires CUDA");
++            assert_eq!(gpu.d_up_action_nodes.is_some(), mixed);
++            assert_eq!(observed_metadata(&gpu), expected);
++            let capacity = stored_capacity_plan(&spot);
++            assert_eq!(capacity["base_gpu_metadata_bytes"].as_u64().unwrap(), expected);
++            for p in 0..2 { assert_eq!(gpu.up_action_spans[p].capacity(), plan.up_action_spans[p].capacity()); }
++            assert_eq!(gpu.stream.clone_dtoh(&gpu.d_action_nodes).unwrap(), plan.action_nodes);
++            if let Some(ids) = &gpu.d_up_action_nodes {
++                assert_eq!(gpu.stream.clone_dtoh(ids).unwrap(), *plan.up_action_nodes.as_ref().unwrap());
++            }
++        }
++    }
++}
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -401,9 +401,11 @@
+         // Count every potential writer, including non-representative chance
+         // branches. This conservatively covers either isomorphism setting.
+         let mut reach_blocks = [1u64; 2];
++        let mut action_ids = 0u64;
+         for node in &self.tree.nodes {
+             match node.kind {
+                 crate::tree::KIND_ACTION => {
++                    action_ids += 1;
+                     reach_blocks[node.player as usize] += node.num_children as u64;
+                 }
+                 crate::tree::KIND_CHANCE => {
+@@ -418,7 +420,9 @@
+         }
+         let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
+         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+-        staging + arenas + 512 * 1024 * 1024
++        // Mixed-level training may retain one extra ID per visited action.
++        // Counting every action conservatively covers either isomorphism setting.
++        (staging + arenas + 512 * 1024 * 1024).saturating_add(action_ids.saturating_mul(4))
+     }
+ 
+     pub fn num_action_nodes(&self) -> usize {

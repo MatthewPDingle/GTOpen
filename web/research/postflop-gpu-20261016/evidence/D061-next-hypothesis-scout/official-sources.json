@@ -1,0 +1,22 @@
+{
+  "read_at_utc": "2026-10-16T19:20:39.308725+00:00",
+  "urls": {
+    "guide": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/l2-cache-control.html",
+    "gpu": "https://developer.nvidia.com/cuda/gpus",
+    "context": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__CTX.html",
+    "primary_context": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__PRIMARY__CTX.html",
+    "stream": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html",
+    "graph": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__GRAPH.html",
+    "window": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/structCUaccessPolicyWindow__v1.html"
+  },
+  "claims": {
+    "guide": "CC8.0+ supports persistence hints. A contiguous window and hitRatio influence retention rather than guarantee residency. Set-aside is shared among concurrent work; excessive windows can contend. MIG disables set-aside; MPS controls its setting at server startup. These are environmental caveats, not claims that this Windows device uses MIG or MPS.",
+    "gpu": "Official table lists GeForce RTX5090 as compute capability12.0. This does not establish actual nonzero limits on the installed driver.",
+    "context": "cuCtxGetLimit reads current context configuration. CU_LIMIT_PERSISTING_L2_CACHE_SIZE is a performance hint that may be ignored/clamped. cuCtxResetPersistingL2Cache normalizes all persisting lines, not one allocation.",
+    "primary_context": "Primary context is unique per device and shared with runtime users in the process. Retain must be balanced by release; release does not pop current context. A separate process query cannot inspect the live server process context limit.",
+    "stream": "cuStreamSetAttribute affects subsequent submitted work. This alone does not prove inheritance by captured kernel nodes or retroactive modification of instantiated graph executions.",
+    "graph": "Kernel-node GetAttribute/SetAttribute APIs exist. Graph objects are not thread-safe. Any future policy must be verified at the graph-node/instantiation boundary; this scout does not claim automatic stream-to-graph propagation.",
+    "window": "CUaccessPolicyWindow describes a contiguous pointer/byte extent, bounded by the maximum-window attribute; driver alignment and architecture-dependent classification mean a nominal hitRatio is not an observed cache hit rate."
+  },
+  "scope": "Official pages read through web tool; no copied full documentation and no driver query."
+}

@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-16T13:10:04Z",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "tools/postflop_compare.py",
+    "--id",
+    "E023-three-pair-comparison",
+    "--candidate-id",
+    "E023R1",
+    "--baseline-runs",
+    "B074",
+    "B075",
+    "B076",
+    "--candidate-runs",
+    "E023R1",
+    "E023R2",
+    "E023R3",
+    "--warm-cache-cohort",
+    "--reject"
+  ],
+  "decision_gate_failures": [
+    "Below the registered 2% aggregate gate; no reproducible aggregate benefit established.",
+    "Repeatable material fixture regression: river: median regression 4.8054%; 2/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+  ],
+  "script_sha256": "73db48d1562451be32783156a0baec85a51ba2768825ea1c931ec8d11792f4f6",
+  "protocol_sha256": "9e9dd8943acf6ae8a5ad55aeef61f13e9fbc993b5ec8ae1860a3bb7413116844"
+}

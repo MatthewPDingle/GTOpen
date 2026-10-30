@@ -1,0 +1,23 @@
+{
+  "id": "D202",
+  "at": "2026-10-28T21:43:42.657227+00:00",
+  "status": "FROZEN_PRE_NO_CONTEXT_DRIVER_ATTRIBUTE_QUERY",
+  "inputs": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D202-cooperative-scope.py": "34eb449f597b6e1c4e175089f62241575be701621739770aafc4f890fd009b10",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\experiments.md": "2703428cd528f7f92ac85b855b7183c11fc618a29e10af04f3b74a2cf19ef451",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\launch.rs": "21fbbef76b123b27fdb2eac67d7cd161d81058a37e0484394e8a3871ddfdb9ff",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E103-primary-checkpoint\\report.json": "9999c2844c8f8e2f9c0ed3f636e3bc87dbed605a7ff54d117df5ab58416215a9"
+  },
+  "proposal": "Resident cooperative traversal: a fixed grid visits original whole-node work items at original128threads, preserving allphase/level/node arithmetic dependencies, with supported cooperative_groups grid barriers replacing between-kernel completion boundaries. No parent-chance fanout, fold-producer fusion or alteredfloating reduction proposed.",
+  "query": "cuInit,driverVersion/devicecount,readdeviceUUID/name/attributes16/17/95/106/75/76,primarycontextstate before/after; no primarycontextretain/create/module/compiler/kernel/solve/settings/counter. SerializeunderexistingGPUlock; expected5090UUIDexact.",
+  "next_admission": "Only if actualsupport95==1. Then separatelyfreeze official-header/toolchain barrier primitive compiler/module/resource/rawguard proof before any solver optimizer implementation. Gridmustnotexceedactualoccupancy*SM, allthreadsmustreachbarriers. A capabilityquery/primitive cannotadmitfullsolveperformance orarchitectureequivalence.",
+  "novelty": "Boundedcurrentfullledger andlocalworktree source search hasno persistentcooperativegrid/this_grid/grid.sync solvermechanism. E078foldproducer fusion, E102parentchancegrouping andE032terminalconsolidation remainclosed and are notcomposed. D1698/32 andE10316workermasks remainclosed. No wideningclosedhelper/source/flag/resampling form.",
+  "risks": "Persistentkernelcouldloweroccupancy/parallelism,increasecodegen/register/shared/stack/JIT/hostwrappercost, andcreatebarrier liveness/visibility/error/TDR/capture/continuationobligations. Neveruseadhocglobalspinbarriers. Allactualmaterial/resource/capacity/original1%strictfixture/fresh16/broad/holdout/applicationgatesmandatory. Prospective costinventorymustdeclareanynewhandles/argumentframesbeforefullsolvercontrols; no postobservedwrapperexception.",
+  "prior_goal_turn": "progress: D20154.6GBfullrawstateplusactualmasks passed;E103 completed2units/2warmups/6timings,independentraw/arithmetic replay andclosure.0.122554%gainbelow1%,rainbowguard andCPU+1.101928%gatefailed. Allchildren terminal; live/source unchanged.",
+  "primary_sources": [
+    "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cooperative-groups.html",
+    "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__TYPES.html",
+    "https://docs.nvidia.com/cuda/cuda-driver-api/cuda_driver_api/group__CUDA__EXEC.html"
+  ]
+}

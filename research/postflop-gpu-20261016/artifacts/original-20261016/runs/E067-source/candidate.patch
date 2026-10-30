@@ -1,0 +1,30 @@
+--- accepted-E051/kernels.cu
++++ E067-original-D049-E043/kernels.cu
+@@ -51,7 +51,8 @@
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+     float* reach_a = actor == 0 ? reach0 : reach1;
+     int nh_a = actor == 0 ? nh0 : nh1;
+-    u32 src = actor == 0 ? rsrc0[n] : rsrc1[n];
++    const u32* rsrc_a = actor == 0 ? rsrc0 : rsrc1;
++    u32 src = rsrc_a[n];
+     const float* parent_reach = reach_a + (u64)src * nh_a;
+ 
+     long long loff = lock_off[n];
+@@ -62,7 +63,7 @@
+             float pr = parent_reach[i];
+             for (int a = 0; a < na; a++) {
+                 u32 child = children[cs + a];
+-                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr * sig[a * nh_a + i];
++                reach_a[(u64)rsrc_a[child] * nh_a + i] = pr * sig[a * nh_a + i];
+             }
+         }
+         return;
+@@ -88,7 +89,7 @@
+             } else {
+                 v = uni;
+             }
+-            reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
++            reach_a[(u64)rsrc_a[child] * nh_a + i] = v;
+         }
+     }
+ }

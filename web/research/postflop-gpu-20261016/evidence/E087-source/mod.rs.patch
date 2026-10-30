@@ -1,0 +1,56 @@
+--- accepted/crates/solver/src/gpu/mod.rs
++++ E087/crates/solver/src/gpu/mod.rs
+@@ -273,12 +273,14 @@
+             .clone()?;
+         let module = ctx.load_module(ptx).map_err(e)?;
+ 
+-        let data_len = plan.arena_elements;
+-        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+         let mut arena_layout = [
+             ArenaLayout::new(solver, &plan, 0),
+             ArenaLayout::new(solver, &plan, 1),
+         ];
++        let staging_len = arena_layout[0]
++            .prepare_bounded(solver, 0, arena::PINNED_WORD_LIMIT)?
++            .max(arena_layout[1].prepare_bounded(solver, 1, arena::PINNED_WORD_LIMIT)?);
++        let mut h_staging = PinnedBuf::new(&ctx, staging_len)?;
+ 
+                 Ok((module, h_staging, arena_layout))
+             },
+@@ -1025,17 +1027,10 @@
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
+         for p in 0..2 {
+-            let len = self.d_regrets[p].len();
+-            self.stream
+-                .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+-            self.stream
+-                .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            self.arena_layout[p].download(&self.stream, solver, p, 0,
++                &self.d_regrets[p], self.h_staging.as_mut_slice())?;
++            self.arena_layout[p].download(&self.stream, solver, p, 1,
++                &self.d_strat[p], self.h_staging.as_mut_slice())?;
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -1051,12 +1046,8 @@
+     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
+         for p in 0..2 {
+-            let len = self.d_strat[p].len();
+-            self.stream
+-                .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            self.arena_layout[p].download(&self.stream, solver, p, 1,
++                &self.d_strat[p], self.h_staging.as_mut_slice())?;
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {

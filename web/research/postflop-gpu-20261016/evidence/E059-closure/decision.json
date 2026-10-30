@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-17T08:13:45.290066+00:00",
+  "id": "E059",
+  "decision": "rejected_fixed_allocated_register_budget",
+  "reported_registers": [
+    30,
+    40
+  ],
+  "modeled_allocated_registers_per_warp": [
+    1024,
+    1280
+  ],
+  "blocker_branches": [
+    7,
+    0
+  ],
+  "actual_occupancy_unchanged": true,
+  "only_failed_gate": "allocated_registers_not_increased",
+  "no_mask_expression_control_placement_factor_variant_rescue": true,
+  "direct_numerical_primary_confirmation_broad_holdout_cumulative_not_run": true,
+  "source_activated": false,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted_source": "E051",
+  "root_report_sha256": "b2d3152c5275b321f42bfa6fa7023222a45132f4d0950225dd69d5558e220af9",
+  "goal_active": true
+}

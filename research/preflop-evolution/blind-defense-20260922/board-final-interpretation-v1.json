@@ -1,0 +1,93 @@
+{
+  "format": 1,
+  "created_utc": "2026-09-28T01:15:47.634573+00:00",
+  "inputs": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-report-evidence.json": "e701c91da6c5ff966e63e29cda9d81135e0fed856872ee5e1e428fae7b815aa2",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\weighted-complete-board-root-study-v1-independent-review.json": "82d0d242489bb6bffcd4582592285f9804ce8eccb0e8f2748d952f924a5174f1",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\weighted-complete-board-root-study-v1-result.json": "2cd6c1d2d9b9ea362ff8f104376b06d8a97982ecce0a494ed570ea05b87fa092",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-status-recovery-v2-result.json": "c18396376b34aa8bb3b62999772332b99deb047ae945888757bb719f35998fdb",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-all-hand-classes.json": "2ebf54f1a2a2ae7108316f79c92517c2a750aef39ff2e7a2585d48c33552eb9a",
+    "S:\\GTOpen-research\\weighted-complete-board-root-study-v1\\analysis.json": "5f7c8dcbc9f7e37b4240f67715cd8a8856f72d50e60a47f3d2c17656778e42be",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-costs.json": "467713b5293e535a4130cc21e1585d23c6d36c8cd74c803833efd77fe4f2f5b7",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-evaluation-resource-wrapper-v1-initial-failure.json": "5eaf5818f451e099e3c8dfb0cbd25412629a378d7ff1df3b3732293aeea98afe",
+    "T:\\Dev\\GTOpen\\tools\\research\\board_final_interpretation_v1.py": "693f1b43f275f7fe6b6b589bc66cc8a75b8f9624e2d15f7f261a1c06bf13488a"
+  },
+  "report_inputs_verified": 337,
+  "report_outputs_verified": {
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\BOARD-FINAL-FINDINGS.md": "a1fc8c53aadadf20a03766219057bfa7c30d8d9b8ddab4bae0d751105f1ffc47",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-all-hand-classes.json": "2ebf54f1a2a2ae7108316f79c92517c2a750aef39ff2e7a2585d48c33552eb9a",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-costs.json": "467713b5293e535a4130cc21e1585d23c6d36c8cd74c803833efd77fe4f2f5b7",
+    "T:\\Dev\\GTOpen\\research\\preflop-evolution\\blind-defense-20260922\\board-final-gains.png": "e1233b42d91b3fe11761c7473f9f7ea5de06a651ce525bb95a98835c6b7c7fa9"
+  },
+  "family_diagnostics_posthoc": true,
+  "families": [
+    {
+      "family": "all",
+      "classes": 169,
+      "entry_mass": 1.0,
+      "control_tv": 0.49648798996206694,
+      "candidate_tv": 0.3862901464741262,
+      "difference_pp": -11.019784348794076,
+      "improved_classes": 107,
+      "improved_entry_mass": 0.6132688804516594,
+      "worsened_classes": 62,
+      "candidate_classes_above_half_tv": 55
+    },
+    {
+      "family": "pairs",
+      "classes": 13,
+      "entry_mass": 0.058900716326702934,
+      "control_tv": 0.3766242731090827,
+      "candidate_tv": 0.245761663406455,
+      "difference_pp": -13.086260970262769,
+      "improved_classes": 9,
+      "improved_entry_mass": 0.04116855550332745,
+      "worsened_classes": 4,
+      "candidate_classes_above_half_tv": 3
+    },
+    {
+      "family": "suited",
+      "classes": 78,
+      "entry_mass": 0.23540980889882995,
+      "control_tv": 0.5385299680018967,
+      "candidate_tv": 0.3718157147282278,
+      "difference_pp": -16.67142532736689,
+      "improved_classes": 52,
+      "improved_entry_mass": 0.15642968651388314,
+      "worsened_classes": 26,
+      "candidate_classes_above_half_tv": 25
+    },
+    {
+      "family": "offsuit",
+      "classes": 78,
+      "entry_mass": 0.7056894747744671,
+      "control_tv": 0.49246775821244376,
+      "candidate_tv": 0.40284792712112566,
+      "difference_pp": -8.961983109131811,
+      "improved_classes": 46,
+      "improved_entry_mass": 0.4156706384344488,
+      "worsened_classes": 32,
+      "candidate_classes_above_half_tv": 27
+    }
+  ],
+  "registered_comparisons": {
+    "positive": 0,
+    "negative": 0,
+    "inconclusive": 8
+  },
+  "manual_visual_review": {
+    "completed": true,
+    "plot_sha256": "e1233b42d91b3fe11761c7473f9f7ea5de06a651ce525bb95a98835c6b7c7fa9",
+    "all_eight_comparisons_visible": true,
+    "labels_legible": true,
+    "intervals_not_clipped": true
+  },
+  "interpretation_complete": true,
+  "accuracy_qualified": false,
+  "promoted": false,
+  "production_modified": false,
+  "new_deals": 0,
+  "training_changed": false,
+  "interpretation_sha256": "d0ddf0aa673f838eca7bde85ce316d9f7e61546e840b8ed8826417cabeba1b88",
+  "next_action": "Complete saved-history trajectory diagnostic before choosing further training."
+}

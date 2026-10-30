@@ -1,0 +1,64 @@
+"""Summarize complete two-tone profiles, preserve repairs, checkpoint next work."""
+import json,statistics,struct,sys,urllib.request
+from collections import defaultdict
+from pathlib import Path
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT/'runs/accepted-E051'));import common_e051 as old
+old.custody();assert not (ROOT/'gpu-run.lock').exists()
+H=ROOT/'runs/D096-two-tone-profile';R=ROOT/'comparisons/D096-two-tone-root-check';P=old.read(H/'cohort-plan-r2.json');q=old.read(H/'cohort-report.json');r=old.read(R/'report.json')
+assert q['status']=='pass_scoped_activity_diagnostic' and r['observer_usefulness_pass'] and r['checks_passed']==188
+assert old.read(ROOT/'runs/D096-manager-r2/complete.json')['all_owned_children_terminal']
+assert q['all6full_results_60checkpoints_exact'] and q['no_drops_or_collector_errors'] and q['excluded_samples']==[] and q['extension_runs']==0 and q['historical_timing_samples_used']==0
+for p,h in old.read(H/'retained-pair-r2.json')['artifact_sha256'].items():old.pin(p,h)
+traces=list(q['traces'].values());families=[]
+for name in sorted(traces[0]['families']):
+    families.append({'kernel':name,'calls_each_trace':traces[0]['families'][name]['count'],'median_summed_kernel_ms':statistics.median(t['families'][name]['summed_ms'] for t in traces),'median_share_of_summed_kernel_time_pct':statistics.median(t['families'][name]['share_of_summed_kernel_time_pct'] for t in traces)})
+families.sort(key=lambda x:x['median_summed_kernel_ms'],reverse=True)
+graph_times={};schema=struct.Struct('<6I4Q10I80s')
+for identity in [p['trace'] for p in P['pairs']]:
+    raw=(H/'cohort-execution/traces'/identity/'trace.bin').read_bytes();groups=defaultdict(list)
+    for row in schema.iter_unpack(raw[16:]):
+        if row[0] in [3,10] and row[10]:groups[row[10]].append(row)
+    records=[]
+    for graph,rows in sorted(groups.items(),key=lambda item:min(x[6] for x in item[1])):
+        nodes=len({x[9] for x in rows});assert nodes in [63,147]
+        records.append({'graph_id':graph,'role':'training' if nodes==63 else 'raked_evaluation','kernel_nodes':nodes,'kernel_records':len(rows),'summed_kernel_ms':sum(x[7]-x[6] for x in rows)/1e6,'families':{name:sum(x[7]-x[6] for x in rows if x[20].split(b'\0')[0].decode()==name)/1e6 for name in {x[20].split(b'\0')[0].decode() for x in rows}}})
+    graph_times[identity]=records
+summary={'at':old.now(),'status':'measured_scoped_two_tone_profile','cohort_protocol_sha256':old.sha(H/'cohort-plan-r2.json'),'cohort_report_sha256':old.sha(H/'cohort-report.json'),'root_report_sha256':old.sha(R/'report.json'),'root_checks':188,'native_results_exact':6,'convergence_checkpoints_exact':60,'kernel_records_each_trace':26670,'kernel_graph_nodes_sorted':[63,63,147],'graph_launch_records_each_trace':407,'observer_cycle_changes_pct':r['observer_cycle_changes_pct'],'all_three_clocks_in_every_pair_within10pct':True,'families':families,'median_phase_intervals':r['median_phase_intervals'],'graph_kernel_times':graph_times,'first_pair_retained_unchanged':True,'source_topology_repair_preserved':True,'no_native_repeated_or_added':True,'source_activated':False,'optimization_accepted':False,'new_performance_gain':False,'accepted_source':'E051','limits':'Only filtered two-tone/RTX5090 with fresh-process initialization. Family durations are traced kernel sums, not uninstrumented complete-cycle shares, removable headroom, confidence or per-family bias bounds. API waits overlap device work. Component medians are not additive. Primary second-fixture initialization is different because in-process PTX/context state is already warm.'}
+old.save(H/'profile-summary.json',summary)
+checkpoint={'at':old.now(),'previous_goal_turn':'progress: D094 prospective allocation policy/helper and D095/E058 codegen closure','current_goal_turn':'progress: fresh two-tone observer build, exact6run/60checkpoint matched cohort,188check raw timeline replay and source-derived rake topology correction','goal_active':True,'accepted_source':'E051','accepted_cumulative_gain_pct':12.4372274192464,'last_primary_baseline':'B185','owned_sessions_terminal':[5189,16752,81877],'all_owned_children_terminal':True,'retained_original_pair_unchanged':True,'source_main_live_ptx_unchanged':True,'source_audit_declined':'An application PTX cache already exists: gpu/mod.rs static OnceLock<Result<Ptx,String>>. D041 already documented it. Do not implement or retime that duplicate; filtered two-tone first-use costs do not represent ordinary second-fixture NVRTC cost.','next':'A new possible source mechanism is eliminating divergent blocker-continue control in up_chance while preserving the original hm&cm predicate and exact acc bits. Consider unconditionally computing the original child value/add and selecting prior acc bits for blocked lanes with a32bit mask. Before admitting: search retained history to distinguish from closed E039/E046 metadata and E048 membership predicates; prove ALL previously skipped child/hand-permutation/CFV addresses are valid and race-free in supported GpuPlan layouts. Do not replace skip with add-zero (NaN/signedzero differences). No metadata/precision/sum order change. Require actual PTX branch removal, prospective D094 allocation/resource gates, full raw exact device inputs/outputs/guards including nonfinites, then unchanged full1%/fixture/fresh16/broader/material/holdout/cumulative gates. The9%traced chance share is not a speed bound. If unsupported or already compiled branchless, preserve counterevidence and choose a distinct mechanism. No closed hypothesis rescue.','live_deployment':'Automatic approval block remains; do not retry or ask duplicate permission.'}
+old.save(H/'checkpoint.json',checkpoint)
+published=[]
+def put(path,prefix):
+    key='evidence/'+prefix+'/'+path.name;dst=old.ar.DASHBOARD/key;dst.parent.mkdir(parents=True,exist_ok=True)
+    if dst.exists():assert dst.read_bytes()==path.read_bytes(),dst
+    else:dst.write_bytes(path.read_bytes())
+    with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/'+key,timeout=15) as response:assert response.read()==path.read_bytes()
+    published.append({'path':str(path),'url':key,'sha256':old.sha(path)})
+for path in [H/'profile-summary.json',H/'checkpoint.json',H/'repair-preparation-failure.json',H/'repair-reference-count-r2.json']:
+    put(path,H.name)
+for manager in ['D096-manager','D096-manager-r2']:
+    for path in (ROOT/'runs'/manager).iterdir():
+        if path.is_file():put(path,manager)
+for path in [Path(__file__),ROOT/'runs/D096-prepare.py',ROOT/'runs/D096-freeze-cohort.py',ROOT/'runs/D096-repair-topology.py',ROOT/'runs/D096-repair-topology-r2.py',ROOT/'runs/D096-repair-topology-r3.py']:
+    put(path,'D096-preparation-sources')
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+    s=old.read(old.ar.STATUS);e=next(e for e in s['experiments'] if e['id']=='D096');e.update(status='measured',correctness='pass',stage='Two-tone device/API profile validated',reason='Six full result/fingerprint payloads and60checkpoints exact. Three traces each26,670kernels,407graph launches,63/63/147kernel graph nodes; zero collector errors/drops.188root checks pass; all3observer clocks within10%in every pair. First pair retained across source-derived rake-topology reader repair; no runs repeated/excluded/added. Traced action updates32.25%,showdown29.55%,action-down16.67%,chance-up8.97%of summed kernel time; no complete-cycle gain claim.',updated_at=old.now());e['evidence'].extend([{'label':'Kernel family/graph and phase summary','url':'evidence/'+H.name+'/profile-summary.json'},{'label':'Preserved next-step checkpoint','url':'evidence/'+H.name+'/checkpoint.json'}]);s.update(updated_at=old.now(),state='running',active_experiment=None,stage='Next source mechanism from validated device profiles',activity='D096 two-tone profiling passed exactness/observer/trace checks. Rake adds evaluation sweeps; all original data retained. Accepted E051/cumulative12.437227% unchanged; no new optimization or gain accepted.');old.ar.atomic_json(old.ar.STATUS,s)
+ledger=old.REPO/'research/postflop-gpu-20261016/experiments.md';raw=ledger.read_bytes();assert b'### D096 two-tone device/API profile' not in raw
+note=f'''
+
+### D096 two-tone device/API profile -- fresh matched diagnostic
+
+Previous turn completed D094material resource calibration/helper and E058compiler-mechanism closure. D096 builds a fresh off-tree two-tone diagnostic from exact acceptedE051solver rlib, unchanged retainedD087Collector DLL/import library/SDK, and retained instrumented evaluator. Only the diagnostic fixture guard/message changes from rainbow to two-tone; primary evaluator/source/binary untouched. Retain actual D087DLL symbol/environment/magic identifiers. Build protocol cfaaaaae81299012758ec04253a36ecb8d415634d67fb745c23c9fd04f6c523e, session5189terminal0. Unexecuted reporting-script parent selector caught/repaired before cohort; original script preserved.
+
+Original matched BC/CB/BC six-process protocol d4dadfe534237082cdb284fb423ad1dfc258eeb918aeb594a01fa1eae182cdfb stopped after successful D096B1/T1 at a bad topology expectation, not a native/collector/state failure. Matching CPU span nonempty patterns was insufficient: two-tone positive rake runs BR plus average-EV sweeps, while rainbow runs BR only. Source formula down23,training63/player,BR40/player,additionalAVG22/player gives eval147 and2*63*200+147*10=26,670kernel records (not103/26,230). Original wrong prediction/failure/manager receipts and all completed data preserved. Two reference-count preparation assertions also stopped before further native output; scripts/receipts retained. Corrected reader protocol6fee5b99ca0ce5b5bdaf12bc800d64cf3be7ab428a8db0dab703619bdf5f3d32 pins retained pair raw/log/receipt hashes and runs only original remaining T2/B2/B3/T3, same binaries/settings/order/quality/10%clocks. Session16752terminal1is the original reader/manager;81877terminal0is the corrected remaining execution/root replay. No completed native run repeated or timing excluded/pooled/extended.
+
+All6full non-timing result/fingerprint payloads and60convergence checkpoints match accepted two-tone anchor. All3traces:26,670kernels,407successful graph-launch APIs, graph kernel-node counts63/63/147with199/199/9repeats; every kernel/driver correlation joins, six ordered phase markers, zero drops/errors/invalid timestamps/outstanding buffers. Complete-cycle observer changes {json.dumps(r['observer_cycle_changes_pct'])}%; allnative-process and outer-runner clocks also pass the originalabsolute10%rule in everypair. Root188checks SHA256 {old.sha(R/'report.json')}; cohort {old.sha(H/'cohort-report.json')}. No confidence, unbiased phase/family attribution or speed claim; root replay is not external independence.
+
+Median shares of summed traced kernel durations: up_action32.2512298223%(5,200calls),up_show29.5462065108%(2,520),down_action16.6736727174%(5,330),up_chance8.9682287661%(3,960),up_fold8.5785561445%(5,040). Kernel sums may overlap and are not complete-cycle shares/removable headroom. Diagnostic phase medians: init597.3671ms,solve2861.0062ms,readback262.5734ms; device unions12.771059/2847.652677/64.669369ms. Solve DtoH API union2816.8968ms overlaps2805.76914msdevice work; it is not standalone copy overhead. Filtered two-tone is first in each fresh process here; ordinary primary second-fixture PTX/context history differs. Never add these independently computed component medians or compare causally with old rainbow cohorts.
+
+Source scouting declined a PTX cache: current gpu/mod.rsalready has the process-local static OnceLock<Result<Ptx,String>>, documented inD041; no duplicate prototype/native run. Potential next mechanism is exact bit-selection of previous chance accumulator for blocked lanes to remove divergentcontinue, preserving existing blocker predicate and ordered used sums. Address/race proofs, retained-history/codegen/resource gates and full raw numerical controls required before timing; no candidate admitted by this9%share alone. Original source1%/fixture/fresh16/broad/material/holdout/cumulative gates unchanged. Existing root publication91artifacts plus{len(published)}supplemental files HTTP-byte verified. Accepted162/main157/live/protectedPTX unchanged, E051cumulative12.4372274192%, lastprimaryB185. Goal active.
+'''
+newline=b'\r\n' if b'\r\n' in raw else b'\n';ledger.write_bytes(raw+note.encode('utf-8').replace(b'\n',newline))
+old.save(H/'supplemental-publication.json',{'at':old.now(),'published':published,'http_bytes_verified':True,'accepted_source_unchanged':True,'no_optimization_accepted':True});old.custody()
+print(json.dumps({'status':'profile_complete_and_published','root_checks':188,'new_public_files':len(published),'top_families':families[:4],'accepted_source':'E051','all_owned_sessions_terminal':True}),flush=True)

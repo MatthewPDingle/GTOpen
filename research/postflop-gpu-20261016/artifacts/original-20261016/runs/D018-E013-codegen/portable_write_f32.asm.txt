@@ -1,0 +1,225 @@
+_RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store9write_f32:
+.seh_proc _RNvMs1_NtCsifJ2Jc9XidW_6solver5storeNtB5_5Store9write_f32
+	pushq	%r15
+	.seh_pushreg %r15
+	pushq	%r14
+	.seh_pushreg %r14
+	pushq	%r13
+	.seh_pushreg %r13
+	pushq	%r12
+	.seh_pushreg %r12
+	pushq	%rsi
+	.seh_pushreg %rsi
+	pushq	%rdi
+	.seh_pushreg %rdi
+	pushq	%rbx
+	.seh_pushreg %rbx
+	subq	$96, %rsp
+	.seh_stackalloc 96
+	movaps	%xmm9, 80(%rsp)
+	.seh_savexmm %xmm9, 80
+	movaps	%xmm8, 64(%rsp)
+	.seh_savexmm %xmm8, 64
+	movaps	%xmm7, 48(%rsp)
+	.seh_savexmm %xmm7, 48
+	movaps	%xmm6, 32(%rsp)
+	.seh_savexmm %xmm6, 32
+	.seh_endprologue
+	movq	%r9, %rdi
+	movq	%r8, %rbx
+	movq	%rcx, %rsi
+	movq	200(%rsp), %r8
+	movq	192(%rsp), %r14
+	movq	(%rcx), %rax
+	testq	%rax, %rax
+	je	.LBB968_4
+	movl	%edx, %r15d
+	addq	%rbx, %rbx
+	cmpl	$1, %eax
+	jne	.LBB968_13
+	testq	%r8, %r8
+	je	.LBB968_3
+	leaq	(,%r8,4), %rax
+	xorps	%xmm1, %xmm1
+	xorl	%ecx, %ecx
+	movaps	__xmm@7fffffff7fffffff7fffffff7fffffff(%rip), %xmm0
+	.p2align	4
+.LBB968_7:
+	movss	(%r14,%rcx), %xmm2
+	andps	%xmm0, %xmm2
+	movaps	%xmm1, %xmm3
+	maxss	%xmm2, %xmm3
+	movaps	%xmm3, %xmm6
+	cmpunordss	%xmm3, %xmm6
+	movaps	%xmm6, %xmm2
+	andnps	%xmm3, %xmm2
+	andps	%xmm1, %xmm6
+	orps	%xmm2, %xmm6
+	addq	$4, %rcx
+	movaps	%xmm6, %xmm1
+	cmpq	%rcx, %rax
+	jne	.LBB968_7
+	jmp	.LBB968_8
+.LBB968_4:
+	cmpq	%r8, %rdi
+	jne	.LBB968_22
+	movq	24(%rsi), %rax
+	leaq	(%rax,%rbx,4), %rcx
+	shlq	$2, %r8
+	movq	%r14, %rdx
+	movaps	32(%rsp), %xmm6
+	movaps	48(%rsp), %xmm7
+	movaps	64(%rsp), %xmm8
+	movaps	80(%rsp), %xmm9
+	.seh_startepilogue
+	addq	$96, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	.seh_endepilogue
+	jmp	memcpy
+.LBB968_13:
+	testq	%r8, %r8
+	je	.LBB968_14
+	leaq	(,%r8,4), %rax
+	xorps	%xmm0, %xmm0
+	xorl	%ecx, %ecx
+	.p2align	4
+.LBB968_16:
+	movaps	%xmm0, %xmm1
+	maxss	(%r14,%rcx), %xmm1
+	movaps	%xmm1, %xmm6
+	cmpunordss	%xmm1, %xmm6
+	movaps	%xmm6, %xmm2
+	andnps	%xmm1, %xmm2
+	andps	%xmm0, %xmm6
+	orps	%xmm2, %xmm6
+	addq	$4, %rcx
+	movaps	%xmm6, %xmm0
+	cmpq	%rcx, %rax
+	jne	.LBB968_16
+	jmp	.LBB968_17
+.LBB968_3:
+	xorps	%xmm6, %xmm6
+.LBB968_8:
+	addq	24(%rsi), %rbx
+	movd	%xmm6, %eax
+	testl	%eax, %eax
+	setns	%cl
+	movl	%eax, %edx
+	andl	$2147483647, %edx
+	addl	$-8388608, %edx
+	cmpl	$2130706432, %edx
+	setb	%dl
+	andb	%cl, %dl
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%dl, %al
+	je	.LBB968_9
+	cmpq	%rdi, %r8
+	cmovbq	%r8, %rdi
+	testq	%rdi, %rdi
+	je	.LBB968_21
+	movss	__real@46fffe00(%rip), %xmm7
+	movaps	%xmm7, %xmm8
+	divss	%xmm6, %xmm8
+	xorl	%r12d, %r12d
+	movss	__real@c7000000(%rip), %xmm9
+	.p2align	4
+.LBB968_12:
+	leaq	1(%r12), %r13
+	movss	(%r14,%r12,4), %xmm0
+	mulss	%xmm8, %xmm0
+	callq	rintf
+	movaps	%xmm9, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm7, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	movw	%ax, (%rbx,%r12,2)
+	movq	%r13, %r12
+	cmpq	%r13, %rdi
+	jne	.LBB968_12
+	jmp	.LBB968_21
+.LBB968_14:
+	xorps	%xmm6, %xmm6
+.LBB968_17:
+	addq	24(%rsi), %rbx
+	movd	%xmm6, %eax
+	testl	%eax, %eax
+	setns	%cl
+	movl	%eax, %edx
+	andl	$2147483647, %edx
+	addl	$-8388608, %edx
+	cmpl	$2130706432, %edx
+	setb	%dl
+	andb	%cl, %dl
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%dl, %al
+	je	.LBB968_9
+	cmpq	%rdi, %r8
+	cmovbq	%r8, %rdi
+	testq	%rdi, %rdi
+	je	.LBB968_21
+	movss	__real@477fff00(%rip), %xmm7
+	movaps	%xmm7, %xmm8
+	divss	%xmm6, %xmm8
+	xorl	%r12d, %r12d
+	xorps	%xmm9, %xmm9
+	.p2align	4
+.LBB968_20:
+	leaq	1(%r12), %r13
+	movss	(%r14,%r12,4), %xmm0
+	maxss	%xmm9, %xmm0
+	mulss	%xmm8, %xmm0
+	callq	rintf
+	xorps	%xmm1, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm7, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	movw	%ax, (%rbx,%r12,2)
+	movq	%r13, %r12
+	cmpq	%r13, %rdi
+	jne	.LBB968_20
+	jmp	.LBB968_21
+.LBB968_9:
+	addq	%rdi, %rdi
+	movq	%rbx, %rcx
+	xorl	%edx, %edx
+	movq	%rdi, %r8
+	callq	memset
+	xorps	%xmm6, %xmm6
+.LBB968_21:
+	movq	48(%rsi), %rax
+	movss	%xmm6, (%rax,%r15,4)
+	movaps	32(%rsp), %xmm6
+	movaps	48(%rsp), %xmm7
+	movaps	64(%rsp), %xmm8
+	movaps	80(%rsp), %xmm9
+	.seh_startepilogue
+	addq	$96, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r13
+	popq	%r14
+	popq	%r15
+	.seh_endepilogue
+	retq
+.LBB968_22:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.1174(%rip), %rax
+	movq	%rdi, %rcx
+	movq	%r8, %rdx
+	movq	%rax, %r8
+	callq	_RNvNvNtCs8xEFJqa6dYS_4core5slice20copy_from_slice_impl17len_mismatch_fail
+	ud2
+	.seh_endproc

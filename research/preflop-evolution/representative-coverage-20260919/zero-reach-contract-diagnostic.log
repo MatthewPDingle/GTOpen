@@ -1,0 +1,11 @@
+
+running 1 test
+test zero_opponent_pruning_differs_from_unpruned_gpu_average_updates ... gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+ZERO_REACH {"both_cfvs_zero":true,"cpu_all_arenas_unchanged":true,"cpu_gpu_normalized_root_difference":0.058535635471343994,"cpu_root_formula_error":0.5150482654571533,"gpu_root_average_sums_changed":true,"gpu_root_formula_error":1.1920928955078125e-7,"mode":"zero_opponent","passed":true,"same_state_cfv_difference_per_mass":0.0}
+gpu: 195813 nodes, 12 levels, staging+arenas 82.0 MB
+ZERO_REACH {"both_cfvs_zero":false,"cpu_all_arenas_unchanged":false,"cpu_gpu_normalized_root_difference":0.0,"cpu_root_formula_error":0.0,"gpu_root_average_sums_changed":true,"gpu_root_formula_error":0.0,"mode":"zero_own","passed":true,"same_state_cfv_difference_per_mass":7.029236257949378e-6}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+

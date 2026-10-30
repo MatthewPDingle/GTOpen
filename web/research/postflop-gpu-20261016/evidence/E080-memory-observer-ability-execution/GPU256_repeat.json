@@ -1,0 +1,2975 @@
+{
+  "stage": "GPU256_repeat",
+  "native": {
+    "CPU_owned_payload_bytes": 0,
+    "GPU_owned_payload_bytes": 268435456,
+    "NVRTC_compiles": 0,
+    "PID": 301716,
+    "application_kernels": 0,
+    "device_free_bytes_informational": 32227983360,
+    "device_total_bytes": 34190458880,
+    "stage": "GPU256_repeat"
+  },
+  "samples": [
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192050817932600
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192050818358800,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192050868380700
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192050868986600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192050919047800
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192050921016400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192050969199500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192050969771500,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051019550800
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051020132700,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051069899800
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051070541100,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051119990700
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051120581300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051170534900
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051171267700,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051220630300
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051221222900,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051270966900
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051271503900,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051321251900
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051321863600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051371623400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051372078400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051421789400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051422363100,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051472198000
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051472664800,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051522759500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051523284400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051573265600
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051573736500,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051623819400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051624332000,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051673984800
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051674482400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051724441500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051725053300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051774985900
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051775776800,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21808,
+        "PagefileUsage": 1045995520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 1045995520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051825355200
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051825899200,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051875957600
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051876791700,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051926424400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051927013500,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192051976784600
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192051977215600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052027313000
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052027847300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052077736000
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052078292900,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052128268500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052128813900,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052178798100
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052179376100,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052229187800
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052229691300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052281063300
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052281740600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052329845900
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052330716000,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052380384000
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052381103500,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052430821500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052431367600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052481242200
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052481820000,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052531494400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052532093400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052581941700
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052582517600,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052632428200
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052632970500,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052682831500
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052683412300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052733430600
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052733869400,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    },
+    {
+      "CPU": {
+        "cb": 80,
+        "PageFaultCount": 70346,
+        "PeakWorkingSetSize": 264196096,
+        "WorkingSetSize": 129974272,
+        "QuotaPeakPagedPoolUsage": 308632,
+        "QuotaPagedPoolUsage": 307512,
+        "QuotaPeakNonPagedPoolUsage": 22480,
+        "QuotaNonPagedPoolUsage": 21400,
+        "PagefileUsage": 844267520,
+        "PeakPagefileUsage": 1314951168,
+        "PrivateUsage": 844267520,
+        "CPU_ticks100ns": 1562500,
+        "creation_filetime": 134367833669697115,
+        "sample_perf_ns": 192052783456400
+      },
+      "GPU": {
+        "pid": 301716,
+        "sample_perf_ns": 192052784065300,
+        "counters": {
+          "Shared Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Dedicated Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Non Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 77594624
+              }
+            ],
+            "sum_bytes": 77594624
+          },
+          "Local Usage": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 721035264
+              }
+            ],
+            "sum_bytes": 721035264
+          },
+          "Total Committed": {
+            "instances": [
+              {
+                "instance": "pid_301716_luid_0x00000000_0x00013BA3_phys_0",
+                "CStatus": 0,
+                "bytes": 798629888
+              }
+            ],
+            "sum_bytes": 798629888
+          }
+        }
+      }
+    }
+  ]
+}

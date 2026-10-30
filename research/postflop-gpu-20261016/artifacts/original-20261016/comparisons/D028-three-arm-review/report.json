@@ -1,0 +1,3839 @@
+{
+  "schema_version": 1,
+  "id": "D028-three-arm-review",
+  "status": "diagnostic_complete_no_candidate_acceptance",
+  "protocol_adherence": {
+    "all_9_runs_retained": true,
+    "all_27_complete_nontiming_records_exact": true,
+    "matches_prior_frozen_result_records": true,
+    "prespecified_order_matched": true,
+    "serialized_by_recorded_start_finish": true,
+    "each_arm_each_position_once": true,
+    "fixed_full_suite_compressed_unprofiled_environment": true,
+    "same_runner_source_hash": true,
+    "recorded_worktree_source_unchanged": true,
+    "binary_manifest_log_hashes_verified": true,
+    "original_six_recorded_sources_match_frozen_manifest": true,
+    "E015_to_E016_source_changes": [
+      "crates/solver/src/gpu/mod.rs"
+    ]
+  },
+  "protocol": {
+    "id": "D028",
+    "created_before_runs": "2026-10-16T07:58:16Z",
+    "purpose": "Locate whether the fresh original-baseline river regression is specific to E016 or shared with retained E015 under the current run history.",
+    "scope": "Diagnostic only. Does not replace, exclude or reclassify any prior timing cohort; no candidate acceptance from this script.",
+    "trigger": "E016 primary passed +4.1126% versus E015; fresh original-baseline cohort failed river regression guard in all three pairs, primarily in constructor initialization.",
+    "arms": {
+      "original": [
+        "baseline-complete",
+        "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f"
+      ],
+      "E015": [
+        "E015-postflop_autoresearch",
+        "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda"
+      ],
+      "E016": [
+        "E016-postflop_autoresearch",
+        "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf"
+      ]
+    },
+    "order": [
+      {
+        "arm": "original",
+        "repetition": 1,
+        "id": "D028-original-1"
+      },
+      {
+        "arm": "E015",
+        "repetition": 1,
+        "id": "D028-E015-1"
+      },
+      {
+        "arm": "E016",
+        "repetition": 1,
+        "id": "D028-E016-1"
+      },
+      {
+        "arm": "E015",
+        "repetition": 2,
+        "id": "D028-E015-2"
+      },
+      {
+        "arm": "E016",
+        "repetition": 2,
+        "id": "D028-E016-2"
+      },
+      {
+        "arm": "original",
+        "repetition": 2,
+        "id": "D028-original-2"
+      },
+      {
+        "arm": "E016",
+        "repetition": 3,
+        "id": "D028-E016-3"
+      },
+      {
+        "arm": "original",
+        "repetition": 3,
+        "id": "D028-original-3"
+      },
+      {
+        "arm": "E015",
+        "repetition": 3,
+        "id": "D028-E015-3"
+      }
+    ],
+    "fixed_inputs": "Same frozen complete-cycle evaluator, workload, native binaries, full fixture order, compressed storage, 16 CPU threads and unprofiled environment.",
+    "interpretation_rules": [
+      "Retain all nine runs and all 27 fixture records. Compare full-cycle and component distributions across all arms.",
+      "Report original/E015 and original/E016 differences separately from E015/E016; do not infer a unique cause from timing location.",
+      "If the regression occurs before graph construction in solve, do not attribute it to graph capture without further evidence.",
+      "A favorable diagnostic does not erase the failed cumulative cohort or by itself establish stable cumulative performance."
+    ],
+    "source_hash": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+  },
+  "chronology": [
+    {
+      "id": "D028-original-1",
+      "arm": "original",
+      "repetition": 1,
+      "started_at": "2026-10-16T07:58:16Z",
+      "finished_at": "2026-10-16T07:58:31Z"
+    },
+    {
+      "id": "D028-E015-1",
+      "arm": "E015",
+      "repetition": 1,
+      "started_at": "2026-10-16T07:58:32Z",
+      "finished_at": "2026-10-16T07:58:46Z"
+    },
+    {
+      "id": "D028-E016-1",
+      "arm": "E016",
+      "repetition": 1,
+      "started_at": "2026-10-16T07:58:47Z",
+      "finished_at": "2026-10-16T07:59:01Z"
+    },
+    {
+      "id": "D028-E015-2",
+      "arm": "E015",
+      "repetition": 2,
+      "started_at": "2026-10-16T07:59:01Z",
+      "finished_at": "2026-10-16T07:59:16Z"
+    },
+    {
+      "id": "D028-E016-2",
+      "arm": "E016",
+      "repetition": 2,
+      "started_at": "2026-10-16T07:59:16Z",
+      "finished_at": "2026-10-16T07:59:30Z"
+    },
+    {
+      "id": "D028-original-2",
+      "arm": "original",
+      "repetition": 2,
+      "started_at": "2026-10-16T07:59:30Z",
+      "finished_at": "2026-10-16T07:59:45Z"
+    },
+    {
+      "id": "D028-E016-3",
+      "arm": "E016",
+      "repetition": 3,
+      "started_at": "2026-10-16T07:59:46Z",
+      "finished_at": "2026-10-16T07:59:59Z"
+    },
+    {
+      "id": "D028-original-3",
+      "arm": "original",
+      "repetition": 3,
+      "started_at": "2026-10-16T08:00:00Z",
+      "finished_at": "2026-10-16T08:00:15Z"
+    },
+    {
+      "id": "D028-E015-3",
+      "arm": "E015",
+      "repetition": 3,
+      "started_at": "2026-10-16T08:00:15Z",
+      "finished_at": "2026-10-16T08:00:29Z"
+    }
+  ],
+  "arm_run_ids": {
+    "original": [
+      "D028-original-1",
+      "D028-original-2",
+      "D028-original-3"
+    ],
+    "E015": [
+      "D028-E015-1",
+      "D028-E015-2",
+      "D028-E015-3"
+    ],
+    "E016": [
+      "D028-E016-1",
+      "D028-E016-2",
+      "D028-E016-3"
+    ]
+  },
+  "component_matrix_ms": {
+    "original": {
+      "rainbow": {
+        "build_ms": {
+          "raw": [
+            88.8523,
+            82.53779999999999,
+            83.0587
+          ],
+          "median": 83.0587,
+          "min": 82.53779999999999,
+          "max": 88.8523,
+          "range": 6.3145000000000095,
+          "mean": 84.81626666666666
+        },
+        "init_ms": {
+          "raw": [
+            1048.9354,
+            1003.7267999999999,
+            991.4722
+          ],
+          "median": 1003.7267999999999,
+          "min": 991.4722,
+          "max": 1048.9354,
+          "range": 57.46320000000003,
+          "mean": 1014.7114666666666
+        },
+        "solve_ms": {
+          "raw": [
+            5489.8616,
+            5302.1925,
+            5505.5425
+          ],
+          "median": 5489.8616,
+          "min": 5302.1925,
+          "max": 5505.5425,
+          "range": 203.34999999999945,
+          "mean": 5432.5322
+        },
+        "readback_ms": {
+          "raw": [
+            400.7971,
+            391.8277,
+            343.5115
+          ],
+          "median": 391.8277,
+          "min": 343.5115,
+          "max": 400.7971,
+          "range": 57.28559999999999,
+          "mean": 378.7121
+        },
+        "full_cycle_ms": {
+          "raw": [
+            7028.4954,
+            6780.3338,
+            6923.633
+          ],
+          "median": 6923.633,
+          "min": 6780.3338,
+          "max": 7028.4954,
+          "range": 248.16159999999945,
+          "mean": 6910.820733333333
+        }
+      },
+      "two-tone": {
+        "build_ms": {
+          "raw": [
+            408.50710000000004,
+            394.6013,
+            459.21139999999997
+          ],
+          "median": 408.50710000000004,
+          "min": 394.6013,
+          "max": 459.21139999999997,
+          "range": 64.61009999999999,
+          "mean": 420.77326666666664
+        },
+        "init_ms": {
+          "raw": [
+            740.2158,
+            770.2792000000001,
+            682.6508
+          ],
+          "median": 740.2158,
+          "min": 682.6508,
+          "max": 770.2792000000001,
+          "range": 87.62840000000006,
+          "mean": 731.0486
+        },
+        "solve_ms": {
+          "raw": [
+            3399.8451,
+            3216.2232,
+            3312.7709
+          ],
+          "median": 3312.7709,
+          "min": 3216.2232,
+          "max": 3399.8451,
+          "range": 183.6219000000001,
+          "mean": 3309.613066666667
+        },
+        "readback_ms": {
+          "raw": [
+            283.6698,
+            263.3965,
+            247.1037
+          ],
+          "median": 263.3965,
+          "min": 247.1037,
+          "max": 283.6698,
+          "range": 36.566100000000006,
+          "mean": 264.72333333333336
+        },
+        "full_cycle_ms": {
+          "raw": [
+            4832.2965,
+            4644.5717,
+            4701.7968
+          ],
+          "median": 4701.7968,
+          "min": 4644.5717,
+          "max": 4832.2965,
+          "range": 187.72479999999996,
+          "mean": 4726.221666666667
+        }
+      },
+      "river": {
+        "build_ms": {
+          "raw": [
+            0.2107,
+            0.2006,
+            0.2309
+          ],
+          "median": 0.2107,
+          "min": 0.2006,
+          "max": 0.2309,
+          "range": 0.030299999999999994,
+          "mean": 0.21406666666666666
+        },
+        "init_ms": {
+          "raw": [
+            104.7114,
+            90.2645,
+            97.9332
+          ],
+          "median": 97.9332,
+          "min": 90.2645,
+          "max": 104.7114,
+          "range": 14.4469,
+          "mean": 97.63636666666666
+        },
+        "solve_ms": {
+          "raw": [
+            17.308,
+            18.3594,
+            20.0285
+          ],
+          "median": 18.3594,
+          "min": 17.308,
+          "max": 20.0285,
+          "range": 2.7205000000000013,
+          "mean": 18.5653
+        },
+        "readback_ms": {
+          "raw": [
+            0.9703999999999999,
+            0.6053999999999999,
+            0.8964
+          ],
+          "median": 0.8964,
+          "min": 0.6053999999999999,
+          "max": 0.9703999999999999,
+          "range": 0.365,
+          "mean": 0.8240666666666666
+        },
+        "full_cycle_ms": {
+          "raw": [
+            123.231,
+            109.4636,
+            119.1263
+          ],
+          "median": 119.1263,
+          "min": 109.4636,
+          "max": 123.231,
+          "range": 13.767399999999995,
+          "mean": 117.27363333333334
+        }
+      }
+    },
+    "E015": {
+      "rainbow": {
+        "build_ms": {
+          "raw": [
+            87.6497,
+            91.32690000000001,
+            80.55460000000001
+          ],
+          "median": 87.6497,
+          "min": 80.55460000000001,
+          "max": 91.32690000000001,
+          "range": 10.772300000000001,
+          "mean": 86.5104
+        },
+        "init_ms": {
+          "raw": [
+            686.4228,
+            692.6869,
+            653.4277
+          ],
+          "median": 686.4228,
+          "min": 653.4277,
+          "max": 692.6869,
+          "range": 39.25920000000008,
+          "mean": 677.5124666666667
+        },
+        "solve_ms": {
+          "raw": [
+            5215.8858,
+            5221.6051,
+            5061.7621
+          ],
+          "median": 5215.8858,
+          "min": 5061.7621,
+          "max": 5221.6051,
+          "range": 159.84299999999985,
+          "mean": 5166.417666666666
+        },
+        "readback_ms": {
+          "raw": [
+            396.721,
+            414.859,
+            350.5145
+          ],
+          "median": 396.721,
+          "min": 350.5145,
+          "max": 414.859,
+          "range": 64.34449999999998,
+          "mean": 387.3648333333333
+        },
+        "full_cycle_ms": {
+          "raw": [
+            6386.7291000000005,
+            6420.624400000001,
+            6146.3067
+          ],
+          "median": 6386.7291000000005,
+          "min": 6146.3067,
+          "max": 6420.624400000001,
+          "range": 274.3177000000005,
+          "mean": 6317.886733333334
+        }
+      },
+      "two-tone": {
+        "build_ms": {
+          "raw": [
+            439.6522,
+            421.4147,
+            379.05
+          ],
+          "median": 421.4147,
+          "min": 379.05,
+          "max": 439.6522,
+          "range": 60.60219999999998,
+          "mean": 413.3723
+        },
+        "init_ms": {
+          "raw": [
+            500.9317,
+            496.0485,
+            420.33320000000003
+          ],
+          "median": 496.0485,
+          "min": 420.33320000000003,
+          "max": 500.9317,
+          "range": 80.59849999999994,
+          "mean": 472.4378
+        },
+        "solve_ms": {
+          "raw": [
+            3236.7801,
+            3161.3768,
+            3094.7308
+          ],
+          "median": 3161.3768,
+          "min": 3094.7308,
+          "max": 3236.7801,
+          "range": 142.04930000000013,
+          "mean": 3164.2959
+        },
+        "readback_ms": {
+          "raw": [
+            291.0136,
+            273.5495,
+            249.69559999999998
+          ],
+          "median": 273.5495,
+          "min": 249.69559999999998,
+          "max": 291.0136,
+          "range": 41.31800000000001,
+          "mean": 271.4195666666667
+        },
+        "full_cycle_ms": {
+          "raw": [
+            4468.4561,
+            4352.4935,
+            4143.8711
+          ],
+          "median": 4352.4935,
+          "min": 4143.8711,
+          "max": 4468.4561,
+          "range": 324.58500000000004,
+          "mean": 4321.6069
+        }
+      },
+      "river": {
+        "build_ms": {
+          "raw": [
+            0.2157,
+            0.21130000000000002,
+            0.21469999999999997
+          ],
+          "median": 0.21469999999999997,
+          "min": 0.21130000000000002,
+          "max": 0.2157,
+          "range": 0.004399999999999987,
+          "mean": 0.2139
+        },
+        "init_ms": {
+          "raw": [
+            106.0796,
+            97.8461,
+            94.22540000000001
+          ],
+          "median": 97.8461,
+          "min": 94.22540000000001,
+          "max": 106.0796,
+          "range": 11.854199999999992,
+          "mean": 99.3837
+        },
+        "solve_ms": {
+          "raw": [
+            19.2889,
+            17.8434,
+            18.261
+          ],
+          "median": 18.261,
+          "min": 17.8434,
+          "max": 19.2889,
+          "range": 1.4455000000000027,
+          "mean": 18.464433333333332
+        },
+        "readback_ms": {
+          "raw": [
+            0.9678,
+            0.7474,
+            0.843
+          ],
+          "median": 0.843,
+          "min": 0.7474,
+          "max": 0.9678,
+          "range": 0.22040000000000004,
+          "mean": 0.8527333333333333
+        },
+        "full_cycle_ms": {
+          "raw": [
+            126.5848,
+            116.6824,
+            113.57780000000001
+          ],
+          "median": 116.6824,
+          "min": 113.57780000000001,
+          "max": 126.5848,
+          "range": 13.00699999999999,
+          "mean": 118.94833333333334
+        }
+      }
+    },
+    "E016": {
+      "rainbow": {
+        "build_ms": {
+          "raw": [
+            90.7529,
+            85.9375,
+            84.7553
+          ],
+          "median": 85.9375,
+          "min": 84.7553,
+          "max": 90.7529,
+          "range": 5.997599999999991,
+          "mean": 87.14856666666667
+        },
+        "init_ms": {
+          "raw": [
+            712.9105999999999,
+            651.6614,
+            684.7801999999999
+          ],
+          "median": 684.7801999999999,
+          "min": 651.6614,
+          "max": 712.9105999999999,
+          "range": 61.24919999999997,
+          "mean": 683.1174
+        },
+        "solve_ms": {
+          "raw": [
+            4927.703799999999,
+            4780.1169,
+            4777.7624000000005
+          ],
+          "median": 4780.1169,
+          "min": 4777.7624000000005,
+          "max": 4927.703799999999,
+          "range": 149.9413999999988,
+          "mean": 4828.5277
+        },
+        "readback_ms": {
+          "raw": [
+            371.5021,
+            360.97240000000005,
+            340.53270000000003
+          ],
+          "median": 360.97240000000005,
+          "min": 340.53270000000003,
+          "max": 371.5021,
+          "range": 30.96939999999995,
+          "mean": 357.6690666666667
+        },
+        "full_cycle_ms": {
+          "raw": [
+            6102.9234,
+            5878.7371,
+            5887.8822
+          ],
+          "median": 5887.8822,
+          "min": 5878.7371,
+          "max": 6102.9234,
+          "range": 224.1862999999994,
+          "mean": 5956.514233333333
+        }
+      },
+      "two-tone": {
+        "build_ms": {
+          "raw": [
+            410.9859,
+            445.35380000000004,
+            483.14230000000003
+          ],
+          "median": 445.35380000000004,
+          "min": 410.9859,
+          "max": 483.14230000000003,
+          "range": 72.15640000000002,
+          "mean": 446.494
+        },
+        "init_ms": {
+          "raw": [
+            519.3721999999999,
+            474.0084,
+            404.9782
+          ],
+          "median": 474.0084,
+          "min": 404.9782,
+          "max": 519.3721999999999,
+          "range": 114.39399999999989,
+          "mean": 466.1196
+        },
+        "solve_ms": {
+          "raw": [
+            3040.348,
+            2924.8750999999997,
+            2943.0551
+          ],
+          "median": 2943.0551,
+          "min": 2924.8750999999997,
+          "max": 3040.348,
+          "range": 115.47290000000021,
+          "mean": 2969.4260666666664
+        },
+        "readback_ms": {
+          "raw": [
+            302.0283,
+            266.36710000000005,
+            255.92
+          ],
+          "median": 266.36710000000005,
+          "min": 255.92,
+          "max": 302.0283,
+          "range": 46.108300000000014,
+          "mean": 274.7718
+        },
+        "full_cycle_ms": {
+          "raw": [
+            4272.7961,
+            4110.6693,
+            4087.1548000000003
+          ],
+          "median": 4110.6693,
+          "min": 4087.1548000000003,
+          "max": 4272.7961,
+          "range": 185.64129999999932,
+          "mean": 4156.8733999999995
+        }
+      },
+      "river": {
+        "build_ms": {
+          "raw": [
+            0.2941,
+            0.2782,
+            0.2346
+          ],
+          "median": 0.2782,
+          "min": 0.2346,
+          "max": 0.2941,
+          "range": 0.05949999999999997,
+          "mean": 0.2689666666666667
+        },
+        "init_ms": {
+          "raw": [
+            103.3785,
+            101.757,
+            93.66969999999999
+          ],
+          "median": 101.757,
+          "min": 93.66969999999999,
+          "max": 103.3785,
+          "range": 9.70880000000001,
+          "mean": 99.60173333333333
+        },
+        "solve_ms": {
+          "raw": [
+            17.656499999999998,
+            17.711000000000002,
+            17.4002
+          ],
+          "median": 17.656499999999998,
+          "min": 17.4002,
+          "max": 17.711000000000002,
+          "range": 0.3108000000000004,
+          "mean": 17.589233333333333
+        },
+        "readback_ms": {
+          "raw": [
+            0.8284,
+            0.8513999999999999,
+            1.0228
+          ],
+          "median": 0.8513999999999999,
+          "min": 0.8284,
+          "max": 1.0228,
+          "range": 0.1943999999999999,
+          "mean": 0.9008666666666666
+        },
+        "full_cycle_ms": {
+          "raw": [
+            122.1985,
+            120.6387,
+            112.35480000000001
+          ],
+          "median": 120.6387,
+          "min": 112.35480000000001,
+          "max": 122.1985,
+          "range": 9.843699999999984,
+          "mean": 118.39733333333334
+        }
+      }
+    }
+  },
+  "arm_contrasts": [
+    {
+      "reference_arm": "original",
+      "comparison_arm": "E015",
+      "descriptive_sum_of_fixture_medians_ms": {
+        "reference": 11744.5561,
+        "comparison": 10855.905,
+        "gain_pct": 7.566493722142454
+      },
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -7.754655684378409,
+          "within_block_regression_pct": [
+            -9.13092011129436,
+            -5.305187187096894,
+            -11.227144766338704
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 4.590999999999994,
+            "init_ms": -317.30399999999986,
+            "solve_ms": -273.97580000000016,
+            "readback_ms": 4.893300000000011,
+            "full_cycle_ms": -536.9038999999993
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": -1.2026000000000039,
+              "init_ms": -362.5126,
+              "solve_ms": -273.97580000000016,
+              "readback_ms": -4.076099999999997,
+              "full_cycle_ms": -641.7662999999993
+            },
+            {
+              "build_ms": 8.789100000000019,
+              "init_ms": -311.0398999999999,
+              "solve_ms": -80.58740000000034,
+              "readback_ms": 23.031299999999987,
+              "full_cycle_ms": -359.70939999999973
+            },
+            {
+              "build_ms": -2.504099999999994,
+              "init_ms": -338.0445000000001,
+              "solve_ms": -443.78039999999964,
+              "readback_ms": 7.002999999999986,
+              "full_cycle_ms": -777.3262999999997
+            }
+          ]
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -7.429144960071444,
+          "within_block_regression_pct": [
+            -7.529347588667212,
+            -6.28859276733742,
+            -11.866223142607947
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 12.907599999999945,
+            "init_ms": -244.16729999999995,
+            "solve_ms": -151.39409999999998,
+            "readback_ms": 10.15300000000002,
+            "full_cycle_ms": -349.3033000000005
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 31.145099999999957,
+              "init_ms": -239.28409999999997,
+              "solve_ms": -163.06500000000005,
+              "readback_ms": 7.3437999999999874,
+              "full_cycle_ms": -363.84040000000005
+            },
+            {
+              "build_ms": 26.8134,
+              "init_ms": -274.23070000000007,
+              "solve_ms": -54.8463999999999,
+              "readback_ms": 10.15300000000002,
+              "full_cycle_ms": -292.07820000000083
+            },
+            {
+              "build_ms": -80.16139999999996,
+              "init_ms": -262.31759999999997,
+              "solve_ms": -218.04010000000017,
+              "readback_ms": 2.591899999999981,
+              "full_cycle_ms": -557.9256999999998
+            }
+          ]
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": -2.051520109329341,
+          "within_block_regression_pct": [
+            2.7215554527675767,
+            6.594703627507226,
+            -4.657661658256817
+          ],
+          "repetitions_above_3pct": 1,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 0.003999999999999976,
+            "init_ms": -0.0870999999999924,
+            "solve_ms": -0.0984000000000016,
+            "readback_ms": -0.0534,
+            "full_cycle_ms": -2.4438999999999993
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 0.0050000000000000044,
+              "init_ms": 1.3682000000000016,
+              "solve_ms": 1.9809000000000019,
+              "readback_ms": -0.0025999999999999357,
+              "full_cycle_ms": 3.3538000000000068
+            },
+            {
+              "build_ms": 0.010700000000000015,
+              "init_ms": 7.581600000000009,
+              "solve_ms": -0.5160000000000018,
+              "readback_ms": 0.14200000000000002,
+              "full_cycle_ms": 7.218800000000002
+            },
+            {
+              "build_ms": -0.01620000000000002,
+              "init_ms": -3.7077999999999918,
+              "solve_ms": -1.7675000000000018,
+              "readback_ms": -0.0534,
+              "full_cycle_ms": -5.54849999999999
+            }
+          ]
+        }
+      ],
+      "within_block_pairing_scope": "Repetition 1/2/3 blocks of the prespecified Latin schedule, not adjacent alternating pairs or independent qualification cohorts.",
+      "all_three_whole_test_and_runner_envelopes_lower": true
+    },
+    {
+      "reference_arm": "original",
+      "comparison_arm": "E016",
+      "descriptive_sum_of_fixture_medians_ms": {
+        "reference": 11744.5561,
+        "comparison": 10119.1902,
+        "gain_pct": 13.839313177617674
+      },
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -14.959643297095615,
+          "within_block_regression_pct": [
+            -13.168849765484659,
+            -13.297231767556926,
+            -14.959643297095615
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 2.8787999999999982,
+            "init_ms": -318.9466,
+            "solve_ms": -709.7447000000002,
+            "readback_ms": -30.855299999999943,
+            "full_cycle_ms": -1035.7507999999998
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 1.9005999999999972,
+              "init_ms": -336.02480000000014,
+              "solve_ms": -562.1578000000009,
+              "readback_ms": -29.295000000000016,
+              "full_cycle_ms": -925.5720000000001
+            },
+            {
+              "build_ms": 3.39970000000001,
+              "init_ms": -352.06539999999995,
+              "solve_ms": -522.0756000000001,
+              "readback_ms": -30.855299999999943,
+              "full_cycle_ms": -901.5967
+            },
+            {
+              "build_ms": 1.6966000000000037,
+              "init_ms": -306.6920000000001,
+              "solve_ms": -727.780099999999,
+              "readback_ms": -2.9787999999999784,
+              "full_cycle_ms": -1035.7507999999998
+            }
+          ]
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -12.572374459057878,
+          "within_block_regression_pct": [
+            -11.57835410140915,
+            -11.495191257355353,
+            -13.07249177591
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 36.8467,
+            "init_ms": -266.20739999999995,
+            "solve_ms": -369.71579999999994,
+            "readback_ms": 2.970600000000047,
+            "full_cycle_ms": -591.1275000000005
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 2.4787999999999784,
+              "init_ms": -220.84360000000004,
+              "solve_ms": -359.49710000000005,
+              "readback_ms": 18.358499999999992,
+              "full_cycle_ms": -559.5004000000008
+            },
+            {
+              "build_ms": 50.752500000000055,
+              "init_ms": -296.27080000000007,
+              "solve_ms": -291.34810000000016,
+              "readback_ms": 2.970600000000047,
+              "full_cycle_ms": -533.9024000000009
+            },
+            {
+              "build_ms": 23.930900000000065,
+              "init_ms": -277.6726,
+              "solve_ms": -369.71579999999994,
+              "readback_ms": 8.816299999999984,
+              "full_cycle_ms": -614.6419999999998
+            }
+          ]
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": 1.269576911227821,
+          "within_block_regression_pct": [
+            -0.8378573573208037,
+            10.208964441147561,
+            -5.684303130375068
+          ],
+          "repetitions_above_3pct": 1,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 0.0675,
+            "init_ms": 3.8238000000000056,
+            "solve_ms": -0.7029000000000032,
+            "readback_ms": -0.04500000000000004,
+            "full_cycle_ms": 1.5123999999999995
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 0.08339999999999997,
+              "init_ms": -1.332899999999995,
+              "solve_ms": 0.3484999999999978,
+              "readback_ms": -0.1419999999999999,
+              "full_cycle_ms": -1.0324999999999989
+            },
+            {
+              "build_ms": 0.0776,
+              "init_ms": 11.492500000000007,
+              "solve_ms": -0.6483999999999988,
+              "readback_ms": 0.246,
+              "full_cycle_ms": 11.1751
+            },
+            {
+              "build_ms": 0.003700000000000009,
+              "init_ms": -4.263500000000008,
+              "solve_ms": -2.6282999999999994,
+              "readback_ms": 0.12639999999999996,
+              "full_cycle_ms": -6.771499999999989
+            }
+          ]
+        }
+      ],
+      "within_block_pairing_scope": "Repetition 1/2/3 blocks of the prespecified Latin schedule, not adjacent alternating pairs or independent qualification cohorts.",
+      "all_three_whole_test_and_runner_envelopes_lower": true
+    },
+    {
+      "reference_arm": "E015",
+      "comparison_arm": "E016",
+      "descriptive_sum_of_fixture_medians_ms": {
+        "reference": 10855.905,
+        "comparison": 10119.1902,
+        "gain_pct": 6.786304780670072
+      },
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -7.810678865336573,
+          "within_block_regression_pct": [
+            -4.443678376776628,
+            -8.439791307524548,
+            -4.204549375969147
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": -1.7121999999999957,
+            "init_ms": -1.6426000000001295,
+            "solve_ms": -435.76890000000003,
+            "readback_ms": -35.74859999999995,
+            "full_cycle_ms": -498.84690000000046
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 3.103200000000001,
+              "init_ms": 26.48779999999988,
+              "solve_ms": -288.1820000000007,
+              "readback_ms": -25.21890000000002,
+              "full_cycle_ms": -283.8057000000008
+            },
+            {
+              "build_ms": -5.389400000000009,
+              "init_ms": -41.02550000000008,
+              "solve_ms": -441.4881999999998,
+              "readback_ms": -53.88659999999993,
+              "full_cycle_ms": -541.8873000000003
+            },
+            {
+              "build_ms": 4.200699999999998,
+              "init_ms": 31.352499999999964,
+              "solve_ms": -283.9996999999994,
+              "readback_ms": -9.981799999999964,
+              "full_cycle_ms": -258.4245000000001
+            }
+          ]
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -5.555992214577687,
+          "within_block_regression_pct": [
+            -4.378693571589542,
+            -5.555992214577687,
+            -1.3686791560673761
+          ],
+          "repetitions_above_3pct": 0,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 23.939100000000053,
+            "init_ms": -22.040099999999995,
+            "solve_ms": -218.32169999999996,
+            "readback_ms": -7.182399999999973,
+            "full_cycle_ms": -241.82420000000002
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": -28.66629999999998,
+              "init_ms": 18.44049999999993,
+              "solve_ms": -196.4321,
+              "readback_ms": 11.014700000000005,
+              "full_cycle_ms": -195.66000000000076
+            },
+            {
+              "build_ms": 23.939100000000053,
+              "init_ms": -22.040099999999995,
+              "solve_ms": -236.50170000000026,
+              "readback_ms": -7.182399999999973,
+              "full_cycle_ms": -241.82420000000002
+            },
+            {
+              "build_ms": 104.09230000000002,
+              "init_ms": -15.355000000000018,
+              "solve_ms": -151.67569999999978,
+              "readback_ms": 6.224400000000003,
+              "full_cycle_ms": -56.71630000000005
+            }
+          ]
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": 3.3906570313946283,
+          "within_block_regression_pct": [
+            -3.465107975049142,
+            3.3906570313946283,
+            -1.0767949370387497
+          ],
+          "repetitions_above_3pct": 1,
+          "repeatable_material_regression_pattern": false,
+          "component_median_candidate_minus_baseline_ms": {
+            "build_ms": 0.06350000000000003,
+            "init_ms": 3.910899999999998,
+            "solve_ms": -0.6045000000000016,
+            "readback_ms": 0.008399999999999963,
+            "full_cycle_ms": 3.956299999999999
+          },
+          "component_within_block_candidate_minus_baseline_ms": [
+            {
+              "build_ms": 0.07839999999999997,
+              "init_ms": -2.7010999999999967,
+              "solve_ms": -1.632400000000004,
+              "readback_ms": -0.13939999999999997,
+              "full_cycle_ms": -4.386300000000006
+            },
+            {
+              "build_ms": 0.06689999999999999,
+              "init_ms": 3.910899999999998,
+              "solve_ms": -0.13239999999999696,
+              "readback_ms": 0.10399999999999998,
+              "full_cycle_ms": 3.956299999999999
+            },
+            {
+              "build_ms": 0.01990000000000003,
+              "init_ms": -0.5557000000000158,
+              "solve_ms": -0.8607999999999976,
+              "readback_ms": 0.17979999999999996,
+              "full_cycle_ms": -1.222999999999999
+            }
+          ]
+        }
+      ],
+      "within_block_pairing_scope": "Repetition 1/2/3 blocks of the prespecified Latin schedule, not adjacent alternating pairs or independent qualification cohorts.",
+      "all_three_whole_test_and_runner_envelopes_lower": true
+    }
+  ],
+  "whole_test_process_diagnostic_ms": {
+    "original": {
+      "test_ms": {
+        "raw": [
+          14770.0,
+          14280.0,
+          14400.0
+        ],
+        "median": 14400.0,
+        "min": 14280.0,
+        "max": 14770.0,
+        "range": 490.0,
+        "mean": 14483.333333333334
+      },
+      "runner_process_ms": {
+        "raw": [
+          15061.99999999808,
+          14577.9999999977,
+          14765.999999999622
+        ],
+        "median": 14765.999999999622,
+        "min": 14577.9999999977,
+        "max": 15061.99999999808,
+        "range": 484.00000000037835,
+        "mean": 14801.999999998467
+      },
+      "sum_fixture_cycles_ms": {
+        "raw": [
+          11984.0229,
+          11534.3691,
+          11744.5561
+        ],
+        "median": 11744.5561,
+        "min": 11534.3691,
+        "max": 11984.0229,
+        "range": 449.65380000000005,
+        "mean": 11754.316033333333
+      },
+      "sum_fingerprint_ms": {
+        "raw": [
+          2564.4512,
+          2528.1207000000004,
+          2449.1842
+        ],
+        "median": 2528.1207000000004,
+        "min": 2449.1842,
+        "max": 2564.4512,
+        "range": 115.26699999999983,
+        "mean": 2513.9187
+      },
+      "test_minus_cycles_and_fingerprints_ms": {
+        "raw": [
+          221.5259000000001,
+          217.5101999999997,
+          206.25970000000007
+        ],
+        "median": 217.5101999999997,
+        "min": 206.25970000000007,
+        "max": 221.5259000000001,
+        "range": 15.266200000000026,
+        "mean": 215.09859999999995
+      }
+    },
+    "E015": {
+      "test_ms": {
+        "raw": [
+          13730.0,
+          13670.0,
+          13130.0
+        ],
+        "median": 13670.0,
+        "min": 13130.0,
+        "max": 13730.0,
+        "range": 600.0,
+        "mean": 13510.0
+      },
+      "runner_process_ms": {
+        "raw": [
+          14030.99999999904,
+          13984.000000000378,
+          13421.999999998661
+        ],
+        "median": 13984.000000000378,
+        "min": 13421.999999998661,
+        "max": 14030.99999999904,
+        "range": 609.0000000003783,
+        "mean": 13812.333333332694
+      },
+      "sum_fixture_cycles_ms": {
+        "raw": [
+          10981.77,
+          10889.8003,
+          10403.7556
+        ],
+        "median": 10889.8003,
+        "min": 10403.7556,
+        "max": 10981.77,
+        "range": 578.0144,
+        "mean": 10758.441966666667
+      },
+      "sum_fingerprint_ms": {
+        "raw": [
+          2519.8654,
+          2545.1047,
+          2518.1353
+        ],
+        "median": 2519.8654,
+        "min": 2518.1353,
+        "max": 2545.1047,
+        "range": 26.96939999999995,
+        "mean": 2527.7018
+      },
+      "test_minus_cycles_and_fingerprints_ms": {
+        "raw": [
+          228.36459999999943,
+          235.09499999999935,
+          208.10909999999967
+        ],
+        "median": 228.36459999999943,
+        "min": 208.10909999999967,
+        "max": 235.09499999999935,
+        "range": 26.985899999999674,
+        "mean": 223.85623333333282
+      }
+    },
+    "E016": {
+      "test_ms": {
+        "raw": [
+          13330.0,
+          12900.0,
+          12730.0
+        ],
+        "median": 12900.0,
+        "min": 12730.0,
+        "max": 13330.0,
+        "range": 600.0,
+        "mean": 12986.666666666666
+      },
+      "runner_process_ms": {
+        "raw": [
+          13687.000000001717,
+          13250.0,
+          12969.00000000096
+        ],
+        "median": 13250.0,
+        "min": 12969.00000000096,
+        "max": 13687.000000001717,
+        "range": 718.0000000007567,
+        "mean": 13302.000000000893
+      },
+      "sum_fixture_cycles_ms": {
+        "raw": [
+          10497.918,
+          10110.0451,
+          10087.3918
+        ],
+        "median": 10110.0451,
+        "min": 10087.3918,
+        "max": 10497.918,
+        "range": 410.52620000000024,
+        "mean": 10231.784966666666
+      },
+      "sum_fingerprint_ms": {
+        "raw": [
+          2593.1633,
+          2551.1113,
+          2432.3315000000002
+        ],
+        "median": 2551.1113,
+        "min": 2432.3315000000002,
+        "max": 2593.1633,
+        "range": 160.83179999999993,
+        "mean": 2525.535366666667
+      },
+      "test_minus_cycles_and_fingerprints_ms": {
+        "raw": [
+          238.91870000000017,
+          238.8436000000006,
+          210.27670000000035
+        ],
+        "median": 238.8436000000006,
+        "min": 210.27670000000035,
+        "max": 238.91870000000017,
+        "range": 28.641999999999825,
+        "mean": 229.34633333333372
+      }
+    }
+  },
+  "telemetry": [
+    {
+      "run": "D028-original-1",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:58:16Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2418,
+      "utilization_pct": 2,
+      "temperature_c": 45,
+      "power_w": 83.36,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-original-1",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:58:31Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2488,
+      "utilization_pct": 2,
+      "temperature_c": 45,
+      "power_w": 83.0,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-1",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:58:32Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2476,
+      "utilization_pct": 2,
+      "temperature_c": 45,
+      "power_w": 83.19,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-1",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:58:46Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2471,
+      "utilization_pct": 2,
+      "temperature_c": 46,
+      "power_w": 83.61,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-1",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:58:47Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2471,
+      "utilization_pct": 4,
+      "temperature_c": 46,
+      "power_w": 84.16,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-1",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:59:01Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2476,
+      "utilization_pct": 5,
+      "temperature_c": 47,
+      "power_w": 85.39,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-2",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:59:02Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2490,
+      "utilization_pct": 2,
+      "temperature_c": 47,
+      "power_w": 85.35,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-2",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:59:16Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2489,
+      "utilization_pct": 2,
+      "temperature_c": 48,
+      "power_w": 84.54,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-2",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:59:16Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2489,
+      "utilization_pct": 3,
+      "temperature_c": 48,
+      "power_w": 84.5,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-2",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:59:30Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2478,
+      "utilization_pct": 1,
+      "temperature_c": 48,
+      "power_w": 83.93,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-original-2",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:59:31Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2476,
+      "utilization_pct": 1,
+      "temperature_c": 48,
+      "power_w": 84.04,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-original-2",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:59:45Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2461,
+      "utilization_pct": 2,
+      "temperature_c": 49,
+      "power_w": 84.45,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-3",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T07:59:46Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2461,
+      "utilization_pct": 1,
+      "temperature_c": 49,
+      "power_w": 84.67,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E016-3",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T07:59:59Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2463,
+      "utilization_pct": 3,
+      "temperature_c": 50,
+      "power_w": 83.99,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-original-3",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T08:00:00Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2483,
+      "utilization_pct": 3,
+      "temperature_c": 49,
+      "power_w": 84.57,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-original-3",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T08:00:15Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2463,
+      "utilization_pct": 4,
+      "temperature_c": 50,
+      "power_w": 85.91,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-3",
+      "phase": "telemetry_before",
+      "at": "2026-10-16T08:00:15Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2462,
+      "utilization_pct": 1,
+      "temperature_c": 50,
+      "power_w": 85.37,
+      "sm_clock_mhz": 2542
+    },
+    {
+      "run": "D028-E015-3",
+      "phase": "telemetry_after",
+      "at": "2026-10-16T08:00:29Z",
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+      "driver": "610.88",
+      "memory_total_mb": 32607,
+      "memory_used_mb": 2461,
+      "utilization_pct": 21,
+      "temperature_c": 51,
+      "power_w": 85.61,
+      "sm_clock_mhz": 2542
+    }
+  ],
+  "exact_fixture_records": [
+    {
+      "algorithm": "Dcfr",
+      "board": "Ks7h2d",
+      "check_every": 20,
+      "config": {
+        "board": "Ks7h2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.0,
+          "starting_pot": 60.0
+        }
+      },
+      "cpu_arena_bytes": 1386321040,
+      "exploit_bits": 4595130701932466176,
+      "exploit_chips": 0.16549766118453135,
+      "exploit_pct_pot": 0.2758294353075523,
+      "fingerprint": "65fb2853a11f3acc",
+      "fixture_id": "rainbow",
+      "fixture_index": 0,
+      "flushed_progress_logging_included": true,
+      "iteration": 200,
+      "max_iterations": 400,
+      "nodes": 1346813,
+      "runtime_nvrtc_jit_included": true,
+      "schema_version": 1,
+      "stage": "fixture_complete",
+      "state_fingerprint": {
+        "algorithm": "Dcfr",
+        "arenas": [
+          {
+            "arena": "regrets",
+            "bytes": 317428942,
+            "entries": 156020845,
+            "hash": "af31c4ea5b36e0de",
+            "kind": "i16",
+            "player": 0,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 317428942,
+            "entries": 156020845,
+            "hash": "47bb30304cc30491",
+            "kind": "u16",
+            "player": 0,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "regrets",
+            "bytes": 375731578,
+            "entries": 185172163,
+            "hash": "c0fbb58a97c882ba",
+            "kind": "i16",
+            "player": 1,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 375731578,
+            "entries": 185172163,
+            "hash": "b3f701482b98c098",
+            "kind": "u16",
+            "player": 1,
+            "scale_entries": 1346813
+          }
+        ],
+        "exploit_bits": 4595130701932466176,
+        "hash": "65fb2853a11f3acc",
+        "iteration": 200,
+        "iteration_le_bytes": [
+          200,
+          0,
+          0,
+          0
+        ],
+        "method": "fnv1a64-little-endian-v1",
+        "root_strategy_bits": [
+          1065085704,
+          1065070093,
+          1065067529,
+          1065248517,
+          1065228548,
+          1065248517,
+          1065247491,
+          1065256707,
+          1065249283,
+          1065352448,
+          1065352448,
+          1065258499,
+          1065352448,
+          1065229318,
+          1065255940,
+          1065352448,
+          1065258756,
+          1065262852,
+          1065256964,
+          1065352448,
+          1065352448,
+          1065352448,
+          1065322497,
+          1065242373,
+          1065352448,
+          1065245187,
+          1065241859,
+          1065252611,
+          1065352448,
+          1065196549,
+          1065243139,
+          1065253635,
+          1065253893,
+          1065352448,
+          1065352448,
+          1065352448,
+          1065253635,
+          1065352448,
+          1065164809,
+          1065352448,
+          1065213446,
+          1065110791,
+          1065198597,
+          1065155337,
+          1065196293,
+          1065224454,
+          1065224452,
+          1065352448,
+          1065297410,
+          1065026831,
+          1065270531,
+          1065128711,
+          1065313793,
+          1065262595,
+          1065300994,
+          1065352448,
+          1065352448,
+          1065352448,
+          1065352448,
+          1065275906,
+          1065352448,
+          1065201927,
+          1065352192,
+          1065352448,
+          1065352448,
+          1065352192,
+          1065270786,
+          1065352448,
+          1065270019,
+          1065352448,
+          1065352448,
+          1065352448,
+          1065148934,
+          1065299202,
+          1065352448,
+          1065350656,
+          1065351424,
+          1065351936,
+          1065295875,
+          1065245957,
+          1065351680,
+          1065347584,
+          1065350912,
+          1065201927,
+          1065351680,
+          1065343488,
+          1065350912,
+          1065290242,
+          1065234437,
+          1065350144,
+          1065330433,
+          1065336320,
+          1065270786,
+          1065352192,
+          1065352448,
+          1065348096,
+          1065348096,
+          1065341440,
+          1065242883,
+          1065352192,
+          1065147401,
+          1065346304,
+          1065334529,
+          1065317377,
+          1065351936,
+          1065106696,
+          1065348352,
+          1065337856,
+          1065327105,
+          1065240835,
+          1065352192,
+          1065018895,
+          1065342208,
+          1065325313,
+          1065327105,
+          1065351936,
+          1065299202,
+          1065351936,
+          1065351936,
+          1065351936,
+          1065351936,
+          1065351168,
+          1065346304,
+          1065346048,
+          1065346304,
+          1065351936,
+          1065261827,
+          1065351424,
+          1065309186,
+          1065351680,
+          1065350656,
+          1065344512,
+          1065346048,
+          1065341185,
+          1065338625,
+          1065351936,
+          1065351424,
+          1065285890,
+          1065351936,
+          1065350656,
+          1065347584,
+          1065346048,
+          1065340416,
+          1065337856,
+          1065352192,
+          1065251587,
+          1065351936,
+          1065266435,
+          1065351168,
+          1065348864,
+          1065349632,
+          1065346048,
+          1065334785,
+          1065337857,
+          1065263620,
+          1065065737,
+          1065255171,
+          1065256195,
+          1065284098,
+          1065281026,
+          1065264132,
+          1065250563,
+          1065244419,
+          1065246211,
+          1065213702,
+          1065040654,
+          1065218052,
+          1065278467,
+          1065174792,
+          1065285634,
+          1065282050,
+          1065245443,
+          1065244419,
+          1065251587,
+          1065202949,
+          1065201159,
+          1065281794,
+          1065292547,
+          1065157129,
+          1065285635,
+          1065251333,
+          1065258755,
+          1065260547,
+          1065261572,
+          1065340416,
+          1065339392,
+          1065337857,
+          1065337344,
+          1065273858,
+          1065321729,
+          1065318913,
+          1065320193,
+          1065319170,
+          1065302018,
+          1065304066,
+          1065301506,
+          1065287426,
+          1065287426,
+          1065282818,
+          1065310721,
+          1065309185,
+          1065310977,
+          1065268739,
+          1065217286,
+          1065129735,
+          1065295874,
+          1065237508,
+          1065316610,
+          1065236741,
+          1065314561,
+          1065313281,
+          1065295106,
+          1065291522,
+          1065287170,
+          1065273090,
+          1065265411,
+          1065259780,
+          1065306369,
+          1065293570,
+          1065301250,
+          1065204741,
+          1065259011,
+          1065182469,
+          1065262340,
+          1065289218,
+          1065315841,
+          1065311490,
+          1065247491,
+          1065312258,
+          1065293058,
+          1065284866,
+          1065284611,
+          1065270786,
+          1065262339,
+          1065257987,
+          1065306881,
+          1065301762,
+          1065302018,
+          1065215494,
+          1065179912,
+          1065239301,
+          1065160713,
+          1065268484,
+          1065255171,
+          1065314305,
+          1065309185,
+          1065311234,
+          1065203461,
+          1065288963,
+          1065279491,
+          1065284098,
+          1065267203,
+          1065257988,
+          1065261315,
+          1065305346,
+          1065299970,
+          1065298178,
+          1015193339,
+          1015692897,
+          1015774953,
+          1003257242,
+          1005813273,
+          1003257242,
+          1003388515,
+          1002208903,
+          1003159146,
+          943718016,
+          943718016,
+          1001979534,
+          943718016,
+          1005714730,
+          1002307014,
+          943718016,
+          1001946582,
+          1001422318,
+          1002175948,
+          943718016,
+          943718016,
+          943718016,
+          988806448,
+          1004043638,
+          943718016,
+          1003683418,
+          1004109389,
+          1002733175,
+          943718016,
+          1008271054,
+          1003945554,
+          1002602107,
+          1002569146,
+          943718016,
+          943718016,
+          943718016,
+          1002602107,
+          943718016,
+          1010302424,
+          943718016,
+          1007189606,
+          1013759526,
+          1008139986,
+          1010908604,
+          1008287438,
+          1006337294,
+          1006337545,
+          943718016,
+          995753548,
+          1017077282,
+          1000439485,
+          1012612682,
+          991559372,
+          1001455262,
+          994835868,
+          943718016,
+          943718016,
+          943718016,
+          943718016,
+          999751378,
+          943718016,
+          1007926853,
+          947911936,
+          943718016,
+          943718016,
+          947911936,
+          1000406718,
+          943718016,
+          1000505019,
+          943718016,
+          943718016,
+          943718016,
+          1011318385,
+          995294810,
+          943718016,
+          958398144,
+          954203488,
+          950009376,
+          996146528,
+          1003584908,
+          952106432,
+          967835120,
+          957349456,
+          1007926853,
+          952106432,
+          974650936,
+          957349600,
+          997588500,
+          1005059400,
+          960495232,
+          984743402,
+          981729016,
+          1000406718,
+          947911936,
+          943718016,
+          966786752,
+          966786592,
+          976748176,
+          1003978321,
+          947912192,
+          1011416485,
+          970456440,
+          982646492,
+          990641896,
+          950009376,
+          1014021662,
+          966262480,
+          980418080,
+          986447464,
+          1004240457,
+          947912192,
+          1017331222,
+          975961596,
+          987364940,
+          986447260,
+          950009536,
+          995294599,
+          950009536,
+          950009536,
+          950009536,
+          950009376,
+          956300800,
+          970456656,
+          970980704,
+          970456656,
+          950009536,
+          1001553563,
+          954203488,
+          992738812,
+          952106624,
+          958398144,
+          973602544,
+          970980704,
+          977010124,
+          979631444,
+          950009376,
+          954203488,
+          998473465,
+          950009536,
+          958397984,
+          967835296,
+          970980704,
+          977796720,
+          980418080,
+          947911936,
+          1002864243,
+          950009536,
+          1000963757,
+          956300800,
+          965213800,
+          962592320,
+          970980704,
+          982515280,
+          980417840,
+          1001324019,
+          1015832295,
+          1002405505,
+          1002274437,
+          998702834,
+          999096038,
+          1001258486,
+          1002995311,
+          1003781719,
+          1003552350,
+          1007173223,
+          1016634934,
+          1006894840,
+          999423562,
+          1009663477,
+          998506232,
+          998964970,
+          1003650651,
+          1003781719,
+          1002864243,
+          1007861466,
+          1007976002,
+          998997737,
+          996998457,
+          1010793922,
+          998506100,
+          1002896811,
+          1001946767,
+          1001717398,
+          1001586151,
+          977796720,
+          978845264,
+          980417840,
+          980942352,
+          1000013514,
+          989199892,
+          990248692,
+          989921022,
+          990183025,
+          994573936,
+          994049472,
+          994705004,
+          998276863,
+          998276863,
+          998866669,
+          992345780,
+          992738984,
+          992280246,
+          1000668854,
+          1006943858,
+          1012547148,
+          996146752,
+          1004666428,
+          990838355,
+          1004764502,
+          991362770,
+          991690440,
+          996343354,
+          997260830,
+          998309630,
+          1000111815,
+          1001094825,
+          1001815516,
+          993459858,
+          996736558,
+          994770538,
+          1007746782,
+          1001914000,
+          1009172146,
+          1001487852,
+          997850636,
+          991035100,
+          992149015,
+          1003388515,
+          991952416,
+          996867626,
+          998604533,
+          998637166,
+          1000406718,
+          1001488029,
+          1002045068,
+          993328790,
+          994639470,
+          994573936,
+          1007058540,
+          1009335812,
+          1004436836,
+          1010564556,
+          1000701456,
+          1002405505,
+          991428304,
+          992738984,
+          992214548,
+          1007828700,
+          997915919,
+          999292496,
+          998702834,
+          1000865456,
+          1002044882,
+          1001619097,
+          993721807,
+          995098000,
+          995556731
+        ],
+        "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback"
+      },
+      "storage": "compressed",
+      "target_met": true,
+      "target_pct": 0.3,
+      "use_isomorphism": true
+    },
+    {
+      "algorithm": "Dcfr",
+      "board": "Ks7s2d",
+      "check_every": 20,
+      "config": {
+        "board": "Ks7s2d",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "cpu_arena_bytes": 1391071288,
+      "exploit_bits": 4594601713124613664,
+      "exploit_chips": 0.15081527232835956,
+      "exploit_pct_pot": 0.25135878721393257,
+      "fingerprint": "9dd12ac305ce542f",
+      "fixture_id": "two-tone",
+      "fixture_index": 1,
+      "flushed_progress_logging_included": true,
+      "iteration": 200,
+      "max_iterations": 400,
+      "nodes": 1346813,
+      "runtime_nvrtc_jit_included": true,
+      "schema_version": 1,
+      "stage": "fixture_complete",
+      "state_fingerprint": {
+        "algorithm": "Dcfr",
+        "arenas": [
+          {
+            "arena": "regrets",
+            "bytes": 318643112,
+            "entries": 156627930,
+            "hash": "81e4922faddee8df",
+            "kind": "i16",
+            "player": 0,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 318643112,
+            "entries": 156627930,
+            "hash": "9b1305ea75f444cf",
+            "kind": "u16",
+            "player": 0,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "regrets",
+            "bytes": 376892532,
+            "entries": 185752640,
+            "hash": "112676fa41d0253e",
+            "kind": "i16",
+            "player": 1,
+            "scale_entries": 1346813
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 376892532,
+            "entries": 185752640,
+            "hash": "060e1d9bda7dbaa9",
+            "kind": "u16",
+            "player": 1,
+            "scale_entries": 1346813
+          }
+        ],
+        "exploit_bits": 4594601713124613664,
+        "hash": "9dd12ac305ce542f",
+        "iteration": 200,
+        "iteration_le_bytes": [
+          200,
+          0,
+          0,
+          0
+        ],
+        "method": "fnv1a64-little-endian-v1",
+        "root_strategy_bits": [
+          1064912653,
+          1065105931,
+          1065106440,
+          1065175304,
+          1065178885,
+          1065175304,
+          1065266180,
+          1065293571,
+          1065266435,
+          1065352192,
+          1065352192,
+          1065182216,
+          1065352192,
+          1065177096,
+          1065182216,
+          1065221894,
+          1065281283,
+          1065289475,
+          1065281283,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065173256,
+          1065352192,
+          1065352192,
+          1065169416,
+          1065173256,
+          1065262851,
+          1065227270,
+          1065281795,
+          1065285635,
+          1065281795,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065336577,
+          1065352192,
+          1065352192,
+          1065291523,
+          1065189127,
+          1065013520,
+          1065165062,
+          1065274372,
+          1065290755,
+          1065013520,
+          1065165318,
+          1065352192,
+          1065302018,
+          1065253125,
+          1065285634,
+          1065352192,
+          1065302018,
+          1065245187,
+          1065273092,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065300994,
+          1065352192,
+          1065134858,
+          1065352192,
+          1065352192,
+          1065273092,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065233157,
+          1065304833,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065300482,
+          1065351936,
+          1065352192,
+          1065352192,
+          1065350912,
+          1065304833,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065232389,
+          1065341440,
+          1065137930,
+          1065341440,
+          1065297922,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065343488,
+          1065281794,
+          1065352192,
+          1065351680,
+          1065352192,
+          1065352192,
+          1065177864,
+          1065297922,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065343488,
+          1064968210,
+          1065180421,
+          1065304834,
+          1064780049,
+          1065305090,
+          1065352192,
+          1065303042,
+          1065352192,
+          1065351936,
+          1065351936,
+          1065351936,
+          1065345024,
+          1065351936,
+          1065351936,
+          1065318914,
+          1065352192,
+          1065283074,
+          1065351936,
+          1065351424,
+          1065351936,
+          1065351936,
+          1065319681,
+          1065351936,
+          1065351936,
+          1064806169,
+          1065352192,
+          1065303042,
+          1065352192,
+          1065351936,
+          1065351936,
+          1065351936,
+          1065345024,
+          1065351936,
+          1065351936,
+          1065318914,
+          1064967954,
+          1065140998,
+          1065248259,
+          1065200645,
+          1064459305,
+          1065200645,
+          1065259267,
+          1064655392,
+          1065259267,
+          1065287938,
+          1065019658,
+          1065268483,
+          1065285123,
+          1065298690,
+          1065283586,
+          1065246981,
+          1065261827,
+          1065256451,
+          1065265412,
+          1065226500,
+          1065003792,
+          1065214212,
+          1065294851,
+          1065231108,
+          1065294851,
+          1065256452,
+          1065255427,
+          1065255427,
+          1065262339,
+          1065287938,
+          1065019407,
+          1065268483,
+          1065283586,
+          1065298690,
+          1065285123,
+          1065246981,
+          1065256451,
+          1065261827,
+          1065265412,
+          1065296387,
+          1065349376,
+          1065348608,
+          1065346816,
+          1065347584,
+          1065264131,
+          1065330433,
+          1065328129,
+          1065330433,
+          1065290755,
+          1065293570,
+          1065301250,
+          1065260548,
+          1065271298,
+          1065281027,
+          1065285891,
+          1065277955,
+          1065286402,
+          1065310977,
+          1065302786,
+          1065158153,
+          1065194247,
+          1065332225,
+          1065254403,
+          1065328641,
+          1065265667,
+          1065328641,
+          1065271812,
+          1065291010,
+          1065291010,
+          1065229828,
+          1065262083,
+          1065262083,
+          1065258499,
+          1065273090,
+          1065273090,
+          1065301250,
+          1065296387,
+          1065349376,
+          1065348608,
+          1065346816,
+          1065347584,
+          1065263876,
+          1065330433,
+          1065328129,
+          1065330433,
+          1065290755,
+          1065301250,
+          1065293570,
+          1065260548,
+          1065281282,
+          1065271298,
+          1065285891,
+          1065286402,
+          1065277955,
+          1065310977,
+          1065195525,
+          1065238533,
+          1065164038,
+          1065223174,
+          1065254404,
+          1065174536,
+          1065254916,
+          1065174536,
+          1065275138,
+          1065249285,
+          1065266436,
+          1065249285,
+          1065255427,
+          1065269763,
+          1065255427,
+          1065299458,
+          1065300738,
+          1065299458,
+          1020730962,
+          1014070572,
+          1014038046,
+          1009630711,
+          1009401516,
+          1009630711,
+          1000996354,
+          996736325,
+          1000963757,
+          947911936,
+          947911936,
+          1009188363,
+          947911936,
+          1009516028,
+          1009188363,
+          1006648959,
+          999063130,
+          997784853,
+          999063130,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          1009761777,
+          947911936,
+          947911936,
+          1010007526,
+          1009761777,
+          1001422495,
+          1005976862,
+          998997598,
+          998506100,
+          998997598,
+          947911936,
+          947911936,
+          947911936,
+          981597818,
+          947911936,
+          947911936,
+          997260589,
+          1008746015,
+          1017503246,
+          1010286224,
+          999947826,
+          997457188,
+          1017503246,
+          1010269841,
+          947911936,
+          994573736,
+          1002667446,
+          998506232,
+          947911936,
+          994573736,
+          1003683418,
+          1000111658,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          994835868,
+          947911936,
+          1012219264,
+          947911936,
+          947911936,
+          1000111658,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          1005223232,
+          993853062,
+          947911936,
+          947911936,
+          947911936,
+          947912192,
+          994967140,
+          950009376,
+          947911936,
+          947911936,
+          957349456,
+          993853062,
+          947911936,
+          947911936,
+          947911936,
+          947912192,
+          1005321532,
+          976748176,
+          1012022665,
+          976748176,
+          995622264,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          974651088,
+          998997737,
+          947911936,
+          952106624,
+          947911936,
+          947911936,
+          1009466878,
+          995622264,
+          947911936,
+          947911936,
+          947911936,
+          947911936,
+          974651088,
+          1018953164,
+          1009303214,
+          993852873,
+          1024192232,
+          993787340,
+          947911936,
+          994311800,
+          947911936,
+          950009376,
+          950009376,
+          950009376,
+          973078016,
+          950009376,
+          950009376,
+          990248558,
+          947912192,
+          998833902,
+          950009376,
+          954203488,
+          950009376,
+          950009376,
+          990052090,
+          950009376,
+          950009376,
+          1023774319,
+          947911936,
+          994311800,
+          947911936,
+          950009376,
+          950009376,
+          950009376,
+          973078016,
+          950009376,
+          950009376,
+          990248558,
+          1018961356,
+          1011826274,
+          1003290214,
+          1008008918,
+          1029324145,
+          1008008918,
+          1001881233,
+          1026186753,
+          1001881233,
+          998178306,
+          1017306810,
+          1000701621,
+          998571633,
+          995425878,
+          998768368,
+          1003453842,
+          1001553563,
+          1002241670,
+          1001094654,
+          1006075409,
+          1017814528,
+          1007140592,
+          996408660,
+          1005485603,
+          996408660,
+          1002241481,
+          1002372738,
+          1002372738,
+          1001488029,
+          998178306,
+          1017314839,
+          1000701621,
+          998768368,
+          995425878,
+          998571633,
+          1003453842,
+          1002241670,
+          1001553563,
+          1001094654,
+          996015462,
+          963640864,
+          965738208,
+          969408112,
+          967835296,
+          1001258660,
+          984743402,
+          985922996,
+          984743402,
+          997457188,
+          996736558,
+          994770538,
+          1001717217,
+          1000341184,
+          999095897,
+          998473334,
+          999489095,
+          998407931,
+          992280246,
+          994377334,
+          1010728388,
+          1008418350,
+          983826104,
+          1002503806,
+          985660864,
+          1001062058,
+          985660864,
+          1000275491,
+          997391898,
+          997391898,
+          1005649438,
+          1001520796,
+          1001520796,
+          1001979534,
+          1000111815,
+          1000111815,
+          994770538,
+          996015462,
+          963640864,
+          965738208,
+          969408112,
+          967835296,
+          1001291252,
+          984743402,
+          985922996,
+          984743402,
+          997457188,
+          994770538,
+          996736558,
+          1001717217,
+          999063271,
+          1000341184,
+          998473334,
+          998407931,
+          999489095,
+          992280246,
+          1008336588,
+          1004535136,
+          1010351758,
+          1006501126,
+          1002503613,
+          1009679860,
+          1002438080,
+          1009679860,
+          999849679,
+          1003158943,
+          1000963588,
+          1003158943,
+          1002372738,
+          1000537786,
+          1002372738,
+          995229066,
+          994901401,
+          995229066
+        ],
+        "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback"
+      },
+      "storage": "compressed",
+      "target_met": true,
+      "target_pct": 0.3,
+      "use_isomorphism": true
+    },
+    {
+      "algorithm": "Dcfr",
+      "board": "Ks7h2dQhTc",
+      "check_every": 20,
+      "config": {
+        "board": "Ks7h2dQhTc",
+        "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+        "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+        "tree": {
+          "add_allin": false,
+          "allin_threshold": 0.85,
+          "carry_aggressor_through_checks": null,
+          "effective_stack": 970.0,
+          "ip": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                },
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "max_raises": 10,
+          "oop": [
+            {
+              "bet": [
+                {
+                  "PotPct": 33.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            },
+            {
+              "bet": [
+                {
+                  "PotPct": 75.0
+                }
+              ],
+              "donk": [],
+              "raise": [
+                {
+                  "PotPct": 60.0
+                }
+              ]
+            }
+          ],
+          "rake_cap": 3.0,
+          "rake_pct": 0.05,
+          "starting_pot": 60.0
+        }
+      },
+      "cpu_arena_bytes": 33360,
+      "exploit_bits": 4595002455471455360,
+      "exploit_chips": 0.16193810683850884,
+      "exploit_pct_pot": 0.2698968447308481,
+      "fingerprint": "63944e67a4f99157",
+      "fixture_id": "river",
+      "fixture_index": 2,
+      "flushed_progress_logging_included": true,
+      "iteration": 60,
+      "max_iterations": 400,
+      "nodes": 33,
+      "runtime_nvrtc_jit_included": true,
+      "schema_version": 1,
+      "stage": "fixture_complete",
+      "state_fingerprint": {
+        "algorithm": "Dcfr",
+        "arenas": [
+          {
+            "arena": "regrets",
+            "bytes": 7588,
+            "entries": 3728,
+            "hash": "2b9a02ef5184cd83",
+            "kind": "i16",
+            "player": 0,
+            "scale_entries": 33
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 7588,
+            "entries": 3728,
+            "hash": "ce97d51d8692bf2b",
+            "kind": "u16",
+            "player": 0,
+            "scale_entries": 33
+          },
+          {
+            "arena": "regrets",
+            "bytes": 9092,
+            "entries": 4480,
+            "hash": "1e48e73f0bd174cf",
+            "kind": "i16",
+            "player": 1,
+            "scale_entries": 33
+          },
+          {
+            "arena": "strategy_sums",
+            "bytes": 9092,
+            "entries": 4480,
+            "hash": "a9e756509a590c79",
+            "kind": "u16",
+            "player": 1,
+            "scale_entries": 33
+          }
+        ],
+        "exploit_bits": 4595002455471455360,
+        "hash": "63944e67a4f99157",
+        "iteration": 60,
+        "iteration_le_bytes": [
+          60,
+          0,
+          0,
+          0
+        ],
+        "method": "fnv1a64-little-endian-v1",
+        "root_strategy_bits": [
+          1057023871,
+          1057038848,
+          1057026304,
+          1065348352,
+          1065348352,
+          1065348352,
+          1065348352,
+          1065348352,
+          1065348352,
+          1064914695,
+          1064914944,
+          1065350656,
+          1064916743,
+          1065350656,
+          1065350656,
+          1064909319,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065123840,
+          1065124867,
+          1065123584,
+          1065124611,
+          1065350656,
+          1065124099,
+          1065125376,
+          1065350656,
+          1065350656,
+          1065121028,
+          1065122304,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065153539,
+          1065152000,
+          1065152259,
+          1065150720,
+          1065003776,
+          1065001221,
+          1065240578,
+          1065239042,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065350656,
+          1065322496,
+          1065350656,
+          1065338624,
+          1065350656,
+          1065320960,
+          1065349632,
+          1065350656,
+          1065350656,
+          1065333760,
+          1065352192,
+          1065350912,
+          1065352704,
+          1065350656,
+          1065351680,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065350656,
+          1065352704,
+          1065350912,
+          1065352704,
+          1065350656,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352704,
+          1063165729,
+          1065236226,
+          1065181440,
+          1065185283,
+          1065199106,
+          1065238018,
+          1065181699,
+          1065185536,
+          1065199362,
+          1063233824,
+          1065240576,
+          1065181184,
+          1065184768,
+          1065185027,
+          1065350656,
+          1054933279,
+          1061062977,
+          1065216258,
+          1065216768,
+          1065216512,
+          1065350656,
+          1057668725,
+          1061243711,
+          1065217026,
+          1065216770,
+          1053184826,
+          1060436992,
+          1065215746,
+          1065216000,
+          1065350656,
+          1058830180,
+          1061232703,
+          1065216768,
+          1065217026,
+          1065184259,
+          1064764416,
+          1065173248,
+          1065161728,
+          1064843784,
+          1064842760,
+          1064847368,
+          1065143811,
+          1065143808,
+          1065144064,
+          1065184256,
+          1064775433,
+          1065172480,
+          1065159939,
+          1064850440,
+          1064855048,
+          1065141763,
+          1065143555,
+          1065143808,
+          1065187840,
+          1064765952,
+          1065175552,
+          1065163523,
+          1064851720,
+          1064850440,
+          1065141763,
+          1065143555,
+          1065143552,
+          1064149010,
+          1062484268,
+          1063366686,
+          1063580955,
+          1063608091,
+          1063323392,
+          1063615003,
+          1064199442,
+          1064187154,
+          1064235281,
+          1064109587,
+          1062865664,
+          1063259424,
+          1063520796,
+          1063558939,
+          1063241504,
+          1063563035,
+          1064212241,
+          1064256000,
+          1063972373,
+          1062423341,
+          1063175457,
+          1063221504,
+          1062798887,
+          1063235360,
+          1063801368,
+          1063889686,
+          1065349632,
+          1064473869,
+          1064475149,
+          1065071620,
+          1065060352,
+          1065350656,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352192,
+          1065352192,
+          1065352704,
+          1065222144,
+          1065222400,
+          1065222400,
+          1064450816,
+          1064422144,
+          1064461326,
+          1064239121,
+          1064241408,
+          1064959750,
+          1064980742,
+          1065350656,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065351936,
+          1065351936,
+          1065352448,
+          1065223938,
+          1065223936,
+          1064352000,
+          1064253457,
+          1064368384,
+          1065349632,
+          1064354048,
+          1064356111,
+          1065009664,
+          1064440064,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065351936,
+          1065351936,
+          1065352448,
+          1065224192,
+          1065224448,
+          1064336656,
+          1064303120,
+          1064348431,
+          1065349632,
+          1064421902,
+          1064423168,
+          1065068292,
+          1065250562,
+          1065350656,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352704,
+          1065352192,
+          1065352192,
+          1065352192,
+          1065222402,
+          1065222658,
+          1064456960,
+          1064448014,
+          1064408832,
+          1056846082,
+          1056816128,
+          1056841216,
+          966262632,
+          966262632,
+          966262632,
+          966262632,
+          966262632,
+          966262632,
+          1020665642,
+          1020657664,
+          958398304,
+          1020600107,
+          958398304,
+          958398304,
+          1020837671,
+          958398304,
+          958398304,
+          958398304,
+          1012924416,
+          1012858657,
+          1012940800,
+          1012875041,
+          958398304,
+          1012907808,
+          1012826112,
+          958398304,
+          958398304,
+          1013104413,
+          1013022720,
+          958398304,
+          958398304,
+          958398304,
+          1011023677,
+          1011122176,
+          1011105596,
+          1011204096,
+          1017815040,
+          1017896788,
+          1004273444,
+          1004470049,
+          958398304,
+          958398304,
+          958398304,
+          958398304,
+          958398304,
+          958398304,
+          988806928,
+          958398304,
+          979632128,
+          958398304,
+          989593348,
+          962592768,
+          958398304,
+          958398304,
+          983039848,
+          947912448,
+          957349744,
+          939523840,
+          958398304,
+          952107008,
+          939523840,
+          939523840,
+          939523840,
+          958398464,
+          939523840,
+          957349744,
+          939523840,
+          958398304,
+          939523840,
+          939523840,
+          939523840,
+          939523840,
+          1040548730,
+          1004830492,
+          1009238016,
+          1008992092,
+          1008107370,
+          1004601119,
+          1009221464,
+          1008975872,
+          1008090986,
+          1040276351,
+          1004273664,
+          1009254400,
+          1009025024,
+          1009008476,
+          958398464,
+          1057980272,
+          1048767869,
+          1007009658,
+          1006977024,
+          1006993408,
+          958398464,
+          1055556373,
+          1048236805,
+          1006960507,
+          1006976891,
+          1058854499,
+          1050019840,
+          1007042426,
+          1007026176,
+          958398464,
+          1053233465,
+          1048280836,
+          1006977024,
+          1006960507,
+          1009057627,
+          1024442368,
+          1009762304,
+          1010499584,
+          1022934791,
+          1022967559,
+          1022820105,
+          1011646260,
+          1011646464,
+          1011630080,
+          1009057792,
+          1024266099,
+          1009811456,
+          1010614083,
+          1022721802,
+          1022574349,
+          1011777330,
+          1011662643,
+          1011646464,
+          1008828416,
+          1024417792,
+          1009614848,
+          1010384711,
+          1022680843,
+          1022721802,
+          1011777330,
+          1011662643,
+          1011662848,
+          1033043821,
+          1043274577,
+          1039302414,
+          1037588264,
+          1037371179,
+          1039648768,
+          1037315884,
+          1032640371,
+          1032738674,
+          1032353656,
+          1033359208,
+          1041748992,
+          1040160512,
+          1038069536,
+          1037764389,
+          1040245631,
+          1037731621,
+          1032537973,
+          1032187904,
+          1034456919,
+          1043518285,
+          1040509819,
+          1040325632,
+          1042016100,
+          1040270207,
+          1035824963,
+          1035118413,
+          962592544,
+          1029091113,
+          1029070634,
+          1015644022,
+          1016004608,
+          958398304,
+          939523840,
+          939523840,
+          939523840,
+          939523840,
+          947912448,
+          947912704,
+          939524096,
+          1006632960,
+          1006600192,
+          1006600192,
+          1029459968,
+          1029918720,
+          1029291814,
+          1032322936,
+          1032304640,
+          1019223872,
+          1018552138,
+          958398304,
+          939523840,
+          939523840,
+          939523840,
+          939523840,
+          950009696,
+          950009696,
+          943718208,
+          1006403332,
+          1006403584,
+          1031041024,
+          1032208250,
+          1030778880,
+          962592544,
+          1031008256,
+          1030975245,
+          1017626624,
+          1029632000,
+          939523840,
+          939523840,
+          939523840,
+          939523840,
+          950009696,
+          950009696,
+          943718208,
+          1006370816,
+          1006338048,
+          1031286536,
+          1031810944,
+          1031098123,
+          962592544,
+          1029922589,
+          1029902336,
+          1015750517,
+          1002995512,
+          958398304,
+          939523840,
+          939523840,
+          939523840,
+          939523840,
+          947912704,
+          947912448,
+          947912704,
+          1006599936,
+          1006567169,
+          1029361664,
+          1029504803,
+          1030131712
+        ],
+        "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback"
+      },
+      "storage": "compressed",
+      "target_met": true,
+      "target_pct": 0.3,
+      "use_isomorphism": true
+    }
+  ],
+  "conclusions": [
+    "The prior repeatable river regression is not reproduced as a repeatable pattern in this diagnostic. This neither establishes a unique E016 cause nor establishes a shared E015 cause.",
+    "River medians: original119.1263, E015116.6824, E016120.6387ms. E016/original median+1.2696%; E015/original-2.0515%; E016/E015+3.3907% but only1/3 block-paired repetitions exceeds3% in each contrast.",
+    "All three river init ranges overlap. E016 has higher median init by3.8238ms versus original and3.9109ms versus E015, while median solve is lower by0.7029ms/0.6045ms respectively; component medians are nonadditive. No unique constructor substage or external cause is identified.",
+    "Both optimized arms improve flop medians; E016 improves all six block-paired flop solve spans relative to E015. Descriptive arm sums/whole-test evidence remain diagnostic, not new acceptance results.",
+    "The failed original-reference E016 cohort remains failed and preserved. No reclassification, exclusion, pooling or replacement with these later measurements."
+  ],
+  "limits": [
+    "Three runs per arm, deterministic balanced position order, not randomized or powered significance evidence; predecessor/history/cache/CPU scheduling effects remain possible.",
+    "Same-binary timing drift across cohorts is observed, but cause cannot be assigned from it. Do not subtract gains across separately timed cohorts.",
+    "Boundary GPU samples show one device/driver,2542MHz SM and45-51C, but do not observe river or constructor internals.",
+    "Whole-test includes hashing and scoped destruction; runner process includes output/dashboard/polling. These are not pure end-to-end application metrics.",
+    "Original manifest records six source hashes; other candidate source records are additional provenance coverage, not evidence of changes."
+  ],
+  "next_narrow_evidence_step": "Use preserved original/E015/E016 binaries with the existing river-only fixture filter in a predeclared balanced three-arm diagnostic, keeping all repeats and exact states. Compare init and solve separately to assess dependence on the earlier large fixtures. River-only makes river the first process fixture and changes in-process NVRTC/cache history, so it cannot alone isolate allocator versus compiler versus driver causes or overturn the failed full-suite cohort. If init remains ambiguous, instrument constructor substages only in a separate diagnostic derived from the existing D012 approach; keep the frozen evaluator and qualification rule unchanged.",
+  "no_build_gpu_or_production_changes_by_reviewer": true,
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-three-arm\\protocol.json",
+      "sha256": "445cd679f338d1c767dfb708d371772c22dcff2ad748183d751487606dbab50a",
+      "bytes": 2531
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-three-arm\\completed.json",
+      "sha256": "4a5b6ab2df4d78a68d8136d9fa77a4b0a7bcee90de692c0192e44f033b7c521c",
+      "bytes": 149
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-three-arm.py",
+      "sha256": "ed40a1840fc5fd081bc767b4d009f984a2bec29b240dc39355ea7f3ad616d7b5",
+      "bytes": 3219
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-1\\report.json",
+      "sha256": "5e3a55bf473cf4377f59be9b49263c137fe4b2880de2c970219a3c84d0faaf76",
+      "bytes": 105470
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe",
+      "sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+      "bytes": 2063360
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+      "sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411",
+      "bytes": 923
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-1\\stdout.log",
+      "sha256": "2b22a2726b0e0ab9bd8df432cd19d3c5a309a03fa1e2653f044d62c56dbc1bab",
+      "bytes": 34123
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-1\\report.json",
+      "sha256": "e1ab62067a0a88a9dd4889c1816f48e0401649d72ec5964ae1e3b5ed302e6e4d",
+      "bytes": 132581
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+      "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+      "bytes": 2064896
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+      "sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+      "bytes": 26996
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-1\\stdout.log",
+      "sha256": "915532b533717f774911dedd1baed3557a0fd29f8f413888370f03cb541dd630",
+      "bytes": 34121
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-1\\report.json",
+      "sha256": "11a7dea3e2511356af3149c2a2034d626beda540d9d7b3c81f88af603b8b6e44",
+      "bytes": 132655
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.exe",
+      "sha256": "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf",
+      "bytes": 2065920
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.manifest.json",
+      "sha256": "fcf4fdaacbddc55154a79db7f2cad64b2c68190df5e096cc01148425ae541eee",
+      "bytes": 27013
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-1\\stdout.log",
+      "sha256": "5054cf17724216ef577feb9d29cab2aca3ab6e4e475d913063796a41774e8b13",
+      "bytes": 34177
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-2\\report.json",
+      "sha256": "5a44488afeb4b574463d60a73b8fd77d7bdd22168cb93a6ab8e10a1233b6ae18",
+      "bytes": 132599
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-2\\stdout.log",
+      "sha256": "d7af1e99c7870ff61843131423cadc4759e5d10e73e70667a84035d54be48abc",
+      "bytes": 34138
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-2\\report.json",
+      "sha256": "8239c52c4fa91999290c83226529f2eb33d68102bae1ed36c736507ec5e41ffa",
+      "bytes": 132686
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-2\\stdout.log",
+      "sha256": "9220a5a058721b778e5ee1c5096d4dfb664b1f6446f31bd08de6a6ccfa43034b",
+      "bytes": 34219
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-2\\report.json",
+      "sha256": "d68934ba86264eb03e8c2e69d6e20030dc20027a13cf920bc59cf9d052eb3ef2",
+      "bytes": 105555
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-2\\stdout.log",
+      "sha256": "e54b9381b0665fa2c7c09fdcd6b411dde201c150051bcab95da74cbc51594480",
+      "bytes": 34209
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-3\\report.json",
+      "sha256": "a0a032d0e94f3f5e967c734c9c9fe5ac2504754fac5431dc27a707d6c1874bf8",
+      "bytes": 132740
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E016-3\\stdout.log",
+      "sha256": "d0d68b21314a668512ae62870e70371e7960cc3a54828eac905664f1363bbf48",
+      "bytes": 34263
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-3\\report.json",
+      "sha256": "e6a032b5962b07e708359af32a158721ede0711c04b81b971f9ac78487f0392b",
+      "bytes": 105490
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-original-3\\stdout.log",
+      "sha256": "105c4ff0cf8271319ff3fbc4cb5f9c800c88abc66ef05618bb1e6e20464546d0",
+      "bytes": 34142
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-3\\report.json",
+      "sha256": "a3446058368289683c12491dcb3cc29753ef78e96b36e4b924313f37fc485329",
+      "bytes": 132726
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D028-E015-3\\stdout.log",
+      "sha256": "77a41435b6cf614b69557da4141ed51fbf1cca855a3a621a520fd7d3d1fe7a68",
+      "bytes": 34264
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\baseline-manifest.json",
+      "sha256": "67d9b0aea75b8885521217c00673cb50687b5e847fd964748d43175afba256fa",
+      "bytes": 835
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "bytes": 73402
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json",
+      "sha256": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+      "bytes": 928
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\cumulative-validation.json",
+      "sha256": "795eef777a720e42ff45a65f36bcfcdd30f6120742c0d3c8c402592f3b916b10",
+      "bytes": 30687
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-cumulative-comparison\\report.json",
+      "sha256": "7388a33a1f00f965a8761bb1600b877e62c2048fc29d9b9242f8e328644511ff",
+      "bytes": 102773
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B044\\report.json",
+      "sha256": "2919ec84038408d1fc64292c4322a633fa050498e9137b9ff54ae6c4c93b2a05",
+      "bytes": 105494
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\validation.json",
+      "sha256": "84b620daa89baf6d97eff6d9271429fcc53bc9e8dd4d42bd0fcce3ed9883c7c0",
+      "bytes": 24128
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\broader-validation.json",
+      "sha256": "43794f6db4dfc72466f2fb7f6dd642b1aaafb79a7dbae591ed7415b125285f27",
+      "bytes": 22796
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\lifetime-boundary-validation.json",
+      "sha256": "8aab99b9f751e2390c48773c969973a4c72adfc23a2637c421b023f44d476cb7",
+      "bytes": 10361
+    }
+  ]
+}

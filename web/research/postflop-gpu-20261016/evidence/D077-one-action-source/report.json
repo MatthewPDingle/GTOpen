@@ -1,0 +1,65 @@
+{
+  "id": "D077-one-action-source",
+  "at": "2026-10-17T02:31:42.364585+00:00",
+  "status": "go_one_fixed_no_launch_resource_probe",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+  },
+  "mechanism": "In the existing up_action entry, dispatch na==1 to the existing byte-unchanged up_action_impl<1>, before the current2/3/4/generic cases. No independent entry/list/launch/plan or hand-loop change.",
+  "source_exactness": "All helper arithmetic, branch bodies and child ordering remain byte-identical. New compile-time arity may change generated floating instructions, so actual original-versus-candidate raw controls remain mandatory. Arbitrary arity fallback unchanged.",
+  "historical_incidence": [
+    {
+      "fixture_id": "rainbow",
+      "action_count_histogram": {
+        "1": 37926,
+        "2": 331244,
+        "3": 154363
+      },
+      "one_action_fraction": 0.07244242483281856
+    },
+    {
+      "fixture_id": "two-tone",
+      "action_count_histogram": {
+        "1": 23080,
+        "2": 201504,
+        "3": 93978
+      },
+      "one_action_fraction": 0.07245057477037437
+    },
+    {
+      "fixture_id": "river",
+      "action_count_histogram": {
+        "2": 4,
+        "3": 8
+      },
+      "one_action_fraction": 0.0
+    }
+  ],
+  "incidence_sha256": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e",
+  "incidence_limits": "Old retained structural work counts, not current latency shares, removable work or a projected speed gain. No new census.",
+  "novelty": {
+    "unique_cuda_bytes": true,
+    "preserved_cuda_files_checked": 282,
+    "local_all_ref_up_action_impl_1_history": "",
+    "difference_from_prior": "E005/E014 added separate2/3 entries with list partition/new launches. E042 unrolled the own-unlocked hand loop. This adds only existing-entry compile-time arity1 routing. Preserved patch/readme search found no prior up_action_impl<1>."
+  },
+  "possible_costs": [
+    "Extra uniform dispatch branch and code/NVRTC/JIT footprint; full-cycle timing must include them.",
+    "Kernel-wide registers/local storage can rise despite a smaller1-action case; resource gate comes first."
+  ],
+  "no_new_host_device_pinned_event_stream_graph_allocation": true,
+  "predeclared_gates": [
+    "Changed up_action, same exact PTX ABI, other8 entries byte-exact.",
+    "No register/local/shared increase, thread-limit reduction or theoretical64/128/256 occupancy decrease.",
+    "If resource passes, fixed direct originalGPU raw corpus before full solver timing.",
+    "Current1%/strict fixture policy; separately frozen16pair/broader/holdout/cumulative/resource qualification before adoption."
+  ],
+  "no_arity_or_factor_sweep_after_outcome": true,
+  "source_activated": false,
+  "compiler_native_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

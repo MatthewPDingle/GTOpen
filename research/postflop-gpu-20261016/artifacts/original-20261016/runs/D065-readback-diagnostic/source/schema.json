@@ -1,0 +1,117 @@
+{
+  "id": "D065-full-readback-marker",
+  "prefix": "LIFECYCLE_PROFILE ",
+  "enable_environment": {
+    "name": "POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE",
+    "exact_value": "1",
+    "all_other_values": "no timer output"
+  },
+  "fixed_fields": {
+    "schema_version": 1,
+    "phase": "full_readback",
+    "completed": true,
+    "clock": "host_wall",
+    "diagnostic_only": true,
+    "extra_cuda_synchronizations": 0
+  },
+  "fields": {
+    "thread": "string, diagnostic identity only",
+    "wall_ms_before_logging": "finite nonnegative host elapsed ms before JSON/locked stderr output",
+    "spans": "exactly14 objects in ordered_spans order",
+    "note": "exact inherited D009 explanation"
+  },
+  "span_wall_ms": "each span also has finite nonnegative wall_ms",
+  "ordered_spans": [
+    {
+      "stage": "initial_stream_wait",
+      "player": null,
+      "arena": null,
+      "bytes": null
+    },
+    {
+      "stage": "dtoh_host_call",
+      "player": 0,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_stream_wait",
+      "player": 0,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "encode_scatter_restore_cpu",
+      "player": 0,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_host_call",
+      "player": 0,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_stream_wait",
+      "player": 0,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "encode_scatter_restore_cpu",
+      "player": 0,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_host_call",
+      "player": 1,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_stream_wait",
+      "player": 1,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "encode_scatter_restore_cpu",
+      "player": 1,
+      "arena": "regrets",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_host_call",
+      "player": 1,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "dtoh_stream_wait",
+      "player": 1,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "encode_scatter_restore_cpu",
+      "player": 1,
+      "arena": "strat",
+      "bytes": "actual device arena length in f32 words * 4"
+    },
+    {
+      "stage": "publish_iteration_and_symmetry_flag_cpu",
+      "player": null,
+      "arena": null,
+      "bytes": null
+    }
+  ],
+  "bytes_obligations": "Same actual device bytes for each arena group and equal regrets/strat lengths per player. Bytes describe downloaded f32 input, not compressed output or extra inactive restoration traffic.",
+  "expected_profile_records_per_complete_primary_suite": 3,
+  "expected_control_records_per_complete_primary_suite": 0,
+  "placement": "Inside full sync_to_cpu after state publication; after final convergence_check and before timing_complete for the same current fixture. Associate using unchanged existing stage markers; no fixture field is added.",
+  "failure": "Existing fallible methods may return before completed trace; missing/incomplete records invalidate diagnostic evidence. Best-effort logging never masks a CUDA error.",
+  "measurement_limit": "Host-call plus existing wait is transfer-related host elapsed, not isolated GPU/PCIe duration. CPU span includes encoding, scatter and inactive restoration; marker/log/timer overhead remains inside full-cycle wall time.",
+  "new_evaluator_or_numerical_fields": false
+}

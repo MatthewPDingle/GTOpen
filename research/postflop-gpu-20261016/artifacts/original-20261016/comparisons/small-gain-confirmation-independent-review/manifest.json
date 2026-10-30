@@ -1,0 +1,42 @@
+{
+  "id": "small-gain-confirmation-independent-review",
+  "at": "2026-10-16T23:58:10.196055+00:00",
+  "verdict": "PASS_AUDIT_ALL_FOUR_REJECTED",
+  "numerical_audit_pass": true,
+  "source_build_custody_pass": true,
+  "accepted_sources_restored": true,
+  "candidates": [
+    "E007",
+    "E008",
+    "E032",
+    "E036"
+  ],
+  "all_four_rejected": true,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "artifact_sha256": {
+    "audit-custody.py": "391455e36abc4c9403a5151878a6fb9615dc3a4d1a377407e4b3fe47c133976d",
+    "audit-numerical.py": "4cf98e02229812c6b3d113e58565556a013a7c2ff4db9bca57dcd8aab637eed0",
+    "combined-summary.md": "5f0b74342fb9d4b7fc45d0109033b2286cae7997e36daf3aad1b62894ac3ed1d",
+    "custody-preparation.json": "d1904d07d2a311030d1bd110a40be8d29e3528f6c801c2191e0b6a60966e72eb",
+    "custody-terminal-inputs.json": "eb72e046248af78244f9e7bd386e27110d4cfd41ef13191768c068d9d53ecdd4",
+    "custody-validation.json": "0cd4f4a6d9e13f41b474b1aeb70f91e7cc55fa22f1ec666d8438b9e63c26fb80",
+    "numerical-audit-exit.json": "d4f58c00aea8a00f4415f9ab51d4333922ee31a088037ed151aeebde83c888e9",
+    "numerical-audit.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "numerical-audit.stdout.log": "0440771c21949b179ff2d43a8da1d3aa1e1c1fdae882b66636abf9ac8df072c0",
+    "numerical-preparation.json": "b925111c07f043e10be99a9e30c477f2a3d5ec5ba87f38dd8d36000713f492f7",
+    "numerical-summary.md": "5c9c30977702953c75aa4e63f7a846727f14abc8d01e2f6f9c5fa44a47ee8d5c",
+    "numerical-terminal-inputs.json": "c58aba043ceb41f9221b7eb94fea7b9cfc4f31202e39709d8198dbb494d91b33",
+    "numerical-validation.json": "46c3d9186db62a9d3f32b3131f777d5736b1afcc12172269ff9e6e9003c4ea87"
+  },
+  "terminal_reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\scripts-manifest.json": "34e9a0372539975170a01d3d137f483fb9656839d0faeb6dd3f6a3a67044131f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\authorization.json": "193b030dc4014176b26218b2c87d90acee5deadb71d2f916b18974f33c30402d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\build-terminal.json": "4572873dd1ac38bb116c2e1636a07c4c49db1549c4f1fdd3698a4c7d678e56cb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\native-terminal.json": "bf62dbad0bbf273c5b67350709da9b2aa2681451a65022afc10b11b2bb259f13",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-build\\complete.json": "91ff4077300bd5c571e8ec069e00403cba80d5ff4bbcc82dcb68ee2900fb5c77",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-execution\\complete.json": "0a0cb5a2c283fadd5ca1e07a5bd08162510d1a2989349aa864a3c6077281c162",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\small-gain-confirmation\\report.json": "f8476a55415293f90b629de3a843e2f4d76b9935a441428a3b0fc56bd9de0ff2"
+  },
+  "scope": "Two independent file-only audits of the complete frozen fresh family. No extra sampling or reviewer compiler/native/GPU execution."
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1. Release Notes" href="../release-notes/release-notes.html" />
+    <link rel="prev" title="CUPTI" href="../index.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+<li>Overview</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <span class="target" id="overview"></span><section id="id1">
+<h1>Overview<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h1>
+<p>The <em>CUDA Profiling Tools Interface</em> (CUPTI) provides a C-based interface for creating profiling and tracing tools designed for CUDA applications.
+CUPTI provides the following APIs: the <em>Activity API</em>, the <em>Callback API</em>, the <em>Host Profiling API</em>, the <em>Range Profiling API</em>,
+the <em>PC Sampling API</em>, the <em>SASS Metric API</em>, the <em>PM Sampling API</em>, the <em>Checkpoint API</em>, the <em>Profiling API</em>, the <em>Event API</em>,
+and the <em>Metric API</em>. Using these APIs, you can develop profiling tools that offer insights into the CPU and GPU behavior of CUDA
+applications. The CUPTI installation includes several <a class="reference external" href="../main/main.html#samples">samples</a> that demonstrate the use of these APIs.
+CUPTI is delivered as a dynamic library on all platforms supported by CUDA. On Linux (x86_64) and ARM Server (arm64 SBSA),
+a static library is also provided.</p>
+<p>In this CUPTI document, <strong>Tracing</strong> refers to the collection of timestamps and additional information for CUDA activities such
+as CUDA APIs, kernel launches and memory copies during the execution of a CUDA application. Tracing helps in identifying performance
+issues for the CUDA code by telling you which parts of a program require the most time. Tracing information can be collected using
+the <em>Activity</em> and <em>Callback</em> APIs.</p>
+<p>In this CUPTI document, <strong>Profiling</strong> refers to the collection of GPU performance metrics for individual kernels or a set of kernels in
+isolation. This process may involve multiple replays of the kernels or the entire application to gather comprehensive GPU performance data.
+For Volta and earlier GPU architectures, these metrics can be collected using CUPTI <em>Event</em> and <em>Metric</em> APIs. For Volta and later
+GPU architectures, <em>Range</em> and <em>Host</em> Profiling APIs replace this functionality.
+Refer to the section <a class="reference external" href="../main/main.html#evolution-of-the-profiling-apis">Evolution of the profiling APIs</a> for more details.
+The <em>SASS Metric</em> API collects kernel performance metrics at the source level. The <em>PM Sampling</em> API collects metrics by sampling
+the GPU’s performance monitors (PM) periodically at fixed intervals. And periodic sampling of the warp program counter and warp
+scheduler state is captured using the <em>PC Sampling</em> API.</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Table 1. Description of CUPTI APIs</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>CUPTI API</p></th>
+<th class="head"><p>Feature Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Activity</p></td>
+<td><p>Asynchronously record CUDA activities, e.g. CUDA API, Kernel, memory copy</p></td>
+</tr>
+<tr class="row-odd"><td><p>Callback</p></td>
+<td><p>CUDA event callback mechanism to notify subscriber that a specific CUDA event executed e.g. “Entering CUDA runtime memory copy”</p></td>
+</tr>
+<tr class="row-even"><td><p>Host Profiling</p></td>
+<td><p>Host APIs for enumeration, configuration and evaluation of performance metrics</p></td>
+</tr>
+<tr class="row-odd"><td><p>Range Profiling</p></td>
+<td><p>Target APIs for collection of performance metrics for a range of execution</p></td>
+</tr>
+<tr class="row-even"><td><p>PC Sampling</p></td>
+<td><p>Sampling of the warp program counter and warp scheduler state (stall reasons)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SASS Metrics</p></td>
+<td><p>Collect kernel performance metrics at the source level using SASS patching</p></td>
+</tr>
+<tr class="row-even"><td><p>PM Sampling</p></td>
+<td><p>Collect hardware metrics by sampling the GPU performance monitors (PM) periodically at fixed intervals</p></td>
+</tr>
+<tr class="row-odd"><td><p>Profiling</p></td>
+<td><p>Target APIs for collection of performance metrics for a range of execution.
+Host operations - enumeration, configuration and evaluation of metrics are supported by the Perfworks Metrics API.</p></td>
+</tr>
+<tr class="row-even"><td><p>Event</p></td>
+<td><p>Collect kernel performance counters for a kernel execution</p></td>
+</tr>
+<tr class="row-odd"><td><p>Metric</p></td>
+<td><p>Collect kernel performance metrics for a kernel execution</p></td>
+</tr>
+<tr class="row-even"><td><p>Checkpoint</p></td>
+<td><p>Provides support for automatically saving and restoring the functional state of the CUDA device</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric-h2 rubric">CUPTI Python</p>
+<p>CUPTI Python is a library that provides Python APIs for creating profiling and tracing tools specifically designed for CUDA Python applications.
+The current release supports a subset of CUPTI C Activity and Callback APIs. It’s important to note that this library is available only for Linux (x86_64) platforms.
+For developers interested in utilizing CUPTI Python, it’s recommended to refer to the official documentation at <a class="reference external" href="https://pypi.org/project/cupti-python/">https://pypi.org/project/cupti-python/</a>
+for more detailed information on its capabilities and usage instructions.</p>
+<p class="rubric-h2 rubric">CUPTI Profiling API vs. NVIDIA Nsight Perf SDK</p>
+<p><a class="reference external" href="../main/main.html#cupti-profiling-api">CUPTI Profiling API</a> and <a class="reference external" href="../main/main.html#range-profiling-api">CUPTI Range Profiling API</a>
+support profiling of CUDA kernels and these allow collection of GPU performance metrics for a particular kernel or range of kernels at
+the CUDA context level. <a class="reference external" href="https://developer.nvidia.com/nsight-perf-sdk">NVIDIA Nsight Perf SDK</a> supports graphics APIs
+(i.e. DirectX, Vulkan, OpenGL) allowing collection of GPU performance metrics at graphics device, context and queue levels.
+Both NVIDIA Nsight PerfSDK and CUPTI Profiling API share the host APIs (i.e. metrics enumeration, configuration and evaluation)
+but differ in which GPU APIs they target on the device.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

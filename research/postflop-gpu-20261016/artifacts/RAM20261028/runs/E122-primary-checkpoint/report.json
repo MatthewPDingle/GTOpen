@@ -1,0 +1,255 @@
+{
+  "id": "E122-primary-checkpoint",
+  "at": "2026-10-29T19:48:06.496849+00:00",
+  "status": "REJECTED_CLOSED_PREDICATED_CORRECTION_FORM",
+  "measurement_epoch": "RAM20261028",
+  "source_manifest_sha256": "b1520852983210d62e3d0697b981a3cd8f58632da667595e280398d6dc6cf588",
+  "candidate_CUDA_sha256": "53506d39892fce9ba0247e3d032ec7d117b2c2452dd6b0acf7115e6ce5b70c4d",
+  "change": "compute120 up_show original if(pos<lb)lower+=r;else if(pos>=ub)higher+=r expressed as explicit inline PTX predicated add.rn.f32 with read/write +f constraints and unsigned else priority. Original metadata, host, all9ABIs, all8untargetedbodies and compute75all9bodies exact. Original tot_c/prefix/same/valid/tied/fullpayout/looporder/5barriers/grid/block/dynamicshared/quality/cadence retained.",
+  "resource_warning": "Show registers38to40. Local0/static1040/dynamicworst26520/stack1024/maxthreads1024/worst64,128,256occupancy3,3,3 unchanged. Resource inventory alone is not material-cost qualification.",
+  "compiled_scope": "D299 four complete Boolean rows/1000unsignedboundarytriples and bounded141uniqueCUDA/localallref history. D300 all30inline PTX corrections original pos/lower/upper/reach/selfreadwrite operands and unsigned else priority;5negativefixtures. D301 fixed-driver native FSEL30to0, predFADD30to60 and unpredFADD106to76: totalstaticFADD136unchanged,1FMUL/2FFMA and5barriers retained. All30nativepairs same position/reach value versions;4negativefixtures. Scoped linear/readers, not universal CFG/pointer/IEEE proof or dynamic instruction savings/speed attribution.",
+  "reader_repair": "Original D301 positive reader passed; first negative mutation made no change because literal whitespace before @P1 differed. V2 changes only negative-fixture anchoring to regex whitespace at fixed PC1ea0. Original script/protocol/failure receipt retained; source/captures/gates unchanged, no compiler/module/native/kernel/solver/speed repeat.",
+  "direct_control": {
+    "checks": 771411,
+    "inventory": {
+      "device_input_word_checks": 129552160,
+      "device_input_buffer_checks": 558600,
+      "active_words_compared": 7783100,
+      "output_guard_word_checks": 64469440,
+      "full_output_words_both_arms": 80035640,
+      "comparison_pairs": 13300,
+      "rounding_witness_checks": 2
+    },
+    "kernel_launches": 26600,
+    "raw_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-kernel-control\\execution\\raw-results.jsonl",
+    "raw_bytes": 1756110897,
+    "raw_sha256": "654610f1b7608d2e948067f212a1f526e76f6e923e68b5606962f1f576dbc12a",
+    "scope": "Entire E1202636cases/244physicalgeometries retained exactprefix plus24single-opponent reachcases from E121 data only. Original unencoded E120 probe and metadata for BOTH arms; no encodedE121source composition.2660cases x5widths1/32/64/128/256. All21physicalinputs literal equal and expected, wholeCFV/guards/NaNbits exact, acceptedrankoracle/anti-vacuity/2roundingwitnesses retained. Finiteisolatedcontrols only; fullrawengine/canonical/broad still unqualified."
+  },
+  "raw_not_rehashed_after_complete_readers": true,
+  "two_fresh_integrated_ordinary_builds_include_actual_NVRTC_JIT": true,
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9158.0047,
+    "candidate_full_cycle_ms": 9199.0021,
+    "observed_gain_pct": -0.44766738326745126,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.06742144692493106,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 1.2221653603574147,
+        "slower_pairs": 2,
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -0.033435776513889036,
+        "slower_pairs": 2,
+        "failed": false
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_ms": [
+        5677.5166,
+        5416.5257,
+        5400.6561
+      ],
+      "candidate_ms": [
+        5412.873799999999,
+        5468.7275,
+        5391.8926
+      ],
+      "baseline_median_ms": 5416.5257,
+      "candidate_median_ms": 5412.873799999999,
+      "gain_pct": 0.06742144692493106,
+      "paired_gain_pct": [
+        4.661242205791182,
+        -0.9637506197007395,
+        0.1622673215574682
+      ],
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_ms": [
+        3756.3208,
+        3655.6428,
+        3622.0456
+      ],
+      "candidate_ms": [
+        3700.3208,
+        3706.1965,
+        3640.0501
+      ],
+      "baseline_median_ms": 3655.6428,
+      "candidate_median_ms": 3700.3208,
+      "gain_pct": -1.2221653603574147,
+      "paired_gain_pct": [
+        1.4908204858328393,
+        -1.3828949589932564,
+        -0.4970809865011089
+      ],
+      "guard_failed": true
+    },
+    {
+      "fixture_id": "river",
+      "baseline_ms": [
+        85.8362,
+        88.27550000000001,
+        77.366
+      ],
+      "candidate_ms": [
+        93.1059,
+        85.80749999999999,
+        81.922
+      ],
+      "baseline_median_ms": 85.8362,
+      "candidate_median_ms": 85.80749999999999,
+      "gain_pct": 0.033435776513889036,
+      "paired_gain_pct": [
+        -8.469270540867372,
+        2.7957927171185863,
+        -5.888891761238784
+      ],
+      "guard_failed": false
+    }
+  ],
+  "exactness": {
+    "fixture_results": 18,
+    "convergence_records": 138,
+    "all_exact": true
+  },
+  "primary_protocol_sha256": "f758029c1c22238212114ab571154f2269c7fca201572494399261002fcb6c0c",
+  "comparison_sha256": "df84a6ada3d182f382890af6a7cf5bbefb07ad5e2b389faf0617267923a9a9fb",
+  "root_replay_sha256": "0760662c2bb68db992d0c5360d7d6eea80bc31a06a88cd5617a9978c7e2b39a0",
+  "full_raw_engine_canonical_broad_material_completed": false,
+  "remaining_qualification_requirements": [],
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-resource\\execution\\probe.exit.json",
+      "sha256": "dee48c721e3be4f67985bdbcfc10f710e5e2ded722eaaf3c41440e25285815c8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-resource\\execution\\rustc.exit.json",
+      "sha256": "b0955208f7fa8c8458d890867dd18ea046ab089c1cc09466898afe127944e3ee",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D301-predicated-correction-native\\execution\\candidate\\capture.exit.json",
+      "sha256": "18aec28ac2653f22bfc4172eab297495f9f35f73769581a6dd13112c35ebff3f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D301-predicated-correction-native\\execution\\candidate\\disassemble.exit.json",
+      "sha256": "794a87375724880afd3fe5597df11fd5d144dd80119477a74ee0cc934078d693",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-kernel-control\\execution\\probe.exit.json",
+      "sha256": "a613856389d284f01515ec64445af013ce7bb040d34633e57e6bd2b8cdb3e873",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-kernel-control\\execution\\rustc.exit.json",
+      "sha256": "74fe70dc51f762744f491beedee128c5b720313e3f3def2a8bc9b2cfa6e19af8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-direct-audit\\capture.exit.json",
+      "sha256": "86f8cc4df79c8fbcf617cfdb1b4eb150dcd0cabbf95b3e2f1d0a92b791eb3f1e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-direct-audit\\reader.exit.json",
+      "sha256": "db75019efc84d4bd321a743920a556484590f0d0b448ae5d6c419e6f43a3b981",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-final-build\\feature\\cargo.exit.json",
+      "sha256": "f3472c7a20e2cdbdc1545278bcdd24ef48cf7714565f7e25d765e44da4f6d402",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-final-build\\primary\\cargo.exit.json",
+      "sha256": "9bc774cb5bd6d34ea8cca43e9dc203dfad115cb5f33f2b8319fa9cadec14fdf9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\B375.exit.json",
+      "sha256": "cb13597d0ae79f63eded26fa1db71186d73ace0774c92cf58adbde4860158b85",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\B376.exit.json",
+      "sha256": "0d12035377d29c04ecc3e17e2b463d04b8461fed850361d638c2fb084919653f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\B377.exit.json",
+      "sha256": "30864b73ee215ba8c007ea0022f5ec89acd43d07eb7e3fd7921f1cab2f8a6f27",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\E122R1.exit.json",
+      "sha256": "3fe120ef266fcc1c1ff637e7f1972ce394b5866c774182f919e5121de8931153",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\E122R2.exit.json",
+      "sha256": "6d3cd5d15ca64cc2fbdf69663275a531f0c859eb139288829b145e1bd293ce86",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\E122R3.exit.json",
+      "sha256": "29fb7fb5eaa5ebf7cdd209c6c57d1e2782daff2713948e2ea443f39f81c89b8a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-execution\\V122-unit.exit.json",
+      "sha256": "3e1814a3581d9310911bc1e96207deee8b831b12f385500605427e1c2e1050ea",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-wrapper\\assess.exit.json",
+      "sha256": "3dbbbfa78cdac62a0043cc4b1d0ea14c9b63fd88fbe3f6d894c7b4d37253ddbe",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-wrapper\\native.exit.json",
+      "sha256": "2b887d26eb4d860be9182041948929616a89411f412a4bab63161b8da6b9f71b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E122-primary-wrapper\\root-check.exit.json",
+      "sha256": "5d4515d16bce791b4973cc55c03971a4ec2ca79c69db8afa8f5b9015d3fef768",
+      "returncode": 0
+    }
+  ],
+  "all_owned_screen_work_terminal": true,
+  "locks_absent": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "candidate_adopted": false,
+  "reason": "Complete-solve medians total 9158.0047 to 9199.0021 ms: -0.447667% observed gain. The fixed form failed the 1% or strict fixture guard and is closed without source variants or extra samples.",
+  "extra_or_rescue_samples": 0,
+  "last_primary_baseline": "B377",
+  "next_unused_primary_baseline": "B378",
+  "best_qualified_config": "E080/GPU/compressed/16workers/defaultaffinity",
+  "hardware_epoch_baseline_ms": 10456.4109,
+  "historical_or_RAMtimings_scored": 0,
+  "all_new_bulk_X_S_readonly_noT": true,
+  "goal_active": true
+}

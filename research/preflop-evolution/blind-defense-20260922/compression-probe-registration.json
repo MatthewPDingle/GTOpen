@@ -1,0 +1,137 @@
+{
+  "purpose": "Codec feasibility only; old narrow-range states do not prove wide-BB compression",
+  "iteration": 2000,
+  "block_bytes": 262144,
+  "selection": {
+    "paired": 0,
+    "rainbow": 2,
+    "mono": 4,
+    "two-tone": 8,
+    "middle-index": 56,
+    "last-index": 111
+  },
+  "boards": {
+    "0": "AdAcJc",
+    "2": "AcKd9h",
+    "4": "AcKcQc",
+    "8": "AcQc4d",
+    "56": "Qc7h7d",
+    "111": "4c3d2h"
+  },
+  "entries": [
+    [
+      "weighted",
+      0
+    ],
+    [
+      "weighted",
+      2
+    ],
+    [
+      "weighted",
+      4
+    ],
+    [
+      "weighted",
+      8
+    ],
+    [
+      "weighted",
+      56
+    ],
+    [
+      "weighted",
+      111
+    ],
+    [
+      "weighted",
+      112
+    ],
+    [
+      "weighted",
+      114
+    ],
+    [
+      "weighted",
+      116
+    ],
+    [
+      "weighted",
+      120
+    ],
+    [
+      "weighted",
+      168
+    ],
+    [
+      "weighted",
+      223
+    ],
+    [
+      "equal",
+      0
+    ],
+    [
+      "equal",
+      2
+    ],
+    [
+      "equal",
+      4
+    ],
+    [
+      "equal",
+      8
+    ],
+    [
+      "equal",
+      56
+    ],
+    [
+      "equal",
+      111
+    ],
+    [
+      "equal",
+      112
+    ],
+    [
+      "equal",
+      114
+    ],
+    [
+      "equal",
+      116
+    ],
+    [
+      "equal",
+      120
+    ],
+    [
+      "equal",
+      168
+    ],
+    [
+      "equal",
+      223
+    ]
+  ],
+  "array_selection": "All four arrays; first, middle, final aligned 256 KiB windows, de-duplicated",
+  "layouts": [
+    "raw",
+    "shuffle",
+    "xor_shuffle"
+  ],
+  "codecs": [
+    "zstd1",
+    "zstd3",
+    "lz4",
+    "zlib1"
+  ],
+  "source_indices": {
+    "S:\\GTOpen-research\\strategic-segments-v1\\strategic-weighted112-2000-v1\\final\\index.json": "b69ce9279caca245c45f47e5acce54e94936735390b397d764f3e5140e6067be",
+    "S:\\GTOpen-research\\strategic-segments-v1\\strategic-equal112-2000-v1\\final\\index.json": "c27cf729f2b9a59ad8fc69da5ed38bb5b55871d5bb615d84db9529ba9ff6b894"
+  },
+  "script_sha256": "0d30143d9d05a1b0b8a55c01d44d8d5e14ba7c571b380f99b032840d78458aa8",
+  "created_at_unix": 1790042561.8151155
+}

@@ -1,0 +1,9 @@
+# Proposed amendment: positive gain with repeatability
+
+Preserve v1 and replace its magnitude cutoffs with strictly positive aggregate and median paired gain. Retain at least 13/16 improving pairs, but require only a positive median in every four-pair block and in each eight-pair BC/CB stratum. Exact ties are nonwins; compare unrounded values. All exactness, fixture regression, custody, unit and later broader qualification gates remain unchanged.
+
+This allows an observed 0.9% result to advance without treating 1% as a cliff. It can also advance a very small consistent effect, so report the actual size in percent and milliseconds, every pair, block/order summaries and descriptive variability. The rules do not establish statistical confidence or guarantee the true effect is positive. Genuine small improvements can still fail a finite 16-pair consistency screen; there are no extensions or replacement runs.
+
+Recommend drawing each candidate/block's BC/CB order once from the six balanced permutations of two BC and two CB pairs. Keep the v1 candidate interleaving and adjacent processes, record the seed/algorithm and freeze all 64 pairs before execution. This is a small protection against deterministic alignment with drift, not a cure for dependence or cache/thermal carryover. NIST's [blocking and randomization guidance](https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm) supports the general rationale; no calibrated guarantee is inferred here. No schedule is drawn in this proposal.
+
+This remains design only until E037 finishes. If E037 fails, the proposed reference remains E020. If E037 qualifies, reconsider the accepted baseline and all four source applicability decisions before freezing any small-gain source/build package; E036 may be subsumed and must not undo E037. No conditional combination is proposed. The old outcomes, four-hypothesis selection, no-additivity rule and E037's separate 2% gate stay unchanged.

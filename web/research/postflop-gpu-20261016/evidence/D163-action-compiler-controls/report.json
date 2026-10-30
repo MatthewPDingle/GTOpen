@@ -1,0 +1,29 @@
+{
+  "id": "D163",
+  "at": "2026-10-28T13:43:56.819848+00:00",
+  "status": "pass_scoped_down_and_up_action_raw_equivalence",
+  "protocol_sha256": "2f4d52d182f4b86e24638824d12995df556c8b1647e2f4b2e8afb978fb6a6685",
+  "cases": 2349,
+  "kernel_launches": 4698,
+  "checks": 9997032,
+  "output_words_both_arms": 34607242,
+  "immutable_words_both_arms": 19933890,
+  "guard_words_both_arms": 27917200,
+  "category_reports": {
+    "down": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D163-down-action\\report.json",
+      "status": "pass_scoped_down_action_raw_equivalence"
+    },
+    "up": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D163-up-action-root-check\\report.json",
+      "status": "pass_scoped_up_action_raw_equivalence"
+    }
+  },
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "NVRTC_compilations": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Finite existing action corpora only. All physical outputs,actual immutable input words and guards exact through independent retained readers,including both zero signs/nonfinite witnesses. Other7changed kernels,full engine/primary raw-state/quality/save/resume/continuation and actual runtime integration/material/capacity/performance qualification still required. Not universal numerical identity or speed proof."
+}

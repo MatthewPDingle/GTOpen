@@ -1,0 +1,33 @@
+{
+  "baseline_identity_pass": true,
+  "baseline_bytes": 22624,
+  "candidate_bytes": 22654,
+  "baseline_fnv1a64": "3f0594b037a1dda3",
+  "candidate_fnv1a64": "072e23408c39a7f1",
+  "scoped_replacements": [
+    {
+      "old": "cfv_slot[children[cs + a]]",
+      "new": "child_cfv_slots[cs + a]",
+      "count": 4
+    },
+    {
+      "old": "const u32* __restrict__ children,",
+      "new": "const u32* __restrict__ child_cfv_slots,",
+      "count": 2
+    },
+    {
+      "old": ", children, regrets_p",
+      "new": ", child_cfv_slots, regrets_p",
+      "count": 4
+    }
+  ],
+  "unmodified_prefix_bytes": 14087,
+  "unmodified_suffix_bytes": 3257,
+  "inverse_transform_recovers_baseline": true,
+  "entrypoint_names_identical": true,
+  "float_expressions_and_order_source_identical_except_address_subexpressions": true,
+  "run_py_ast_parse": "passed",
+  "rust_compilation": "not executed",
+  "cuda_compilation": "not executed",
+  "numerical_validation": "not executed"
+}

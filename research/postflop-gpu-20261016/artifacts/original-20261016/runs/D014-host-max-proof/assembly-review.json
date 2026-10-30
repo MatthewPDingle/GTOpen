@@ -1,0 +1,149 @@
+{
+  "scope": "Compiler output inspection, not a throughput model or production disassembly.",
+  "source_asm": "prototype.prototype.1ab0bb7343479e38-cgu.0.rcgu.s",
+  "source_asm_sha256": "d076623cae133ed018fa722a9d3745be3975ae46b5de4d54d33d66a049b22dc2",
+  "functions": [
+    {
+      "symbol": "d014_baseline_i16",
+      "source_asm": "prototype.prototype.1ab0bb7343479e38-cgu.0.rcgu.s",
+      "first_line": 10741,
+      "last_line": 11010,
+      "excerpt": "d014_baseline_i16.asm.txt",
+      "excerpt_sha256": "b719b64941e9645707078ebd578af5c6d2e64db56b7352ae40945c91fed8cccc",
+      "stack_bytes": 184,
+      "max_loop": {
+        "first_line": 10798,
+        "last_line": 10821,
+        "static_instruction_count": 23,
+        "instructions": {
+          "movups": 2,
+          "andps": 4,
+          "movaps": 6,
+          "maxps": 2,
+          "cmpunordps": 2,
+          "andnps": 2,
+          "orps": 2,
+          "addq": 1,
+          "cmpq": 1,
+          "jne": 1
+        },
+        "stack_access_lines": []
+      },
+      "rintf_static_call_sites": 5
+    },
+    {
+      "symbol": "d014_candidate_i16",
+      "source_asm": "prototype.prototype.1ab0bb7343479e38-cgu.0.rcgu.s",
+      "first_line": 11298,
+      "last_line": 11913,
+      "excerpt": "d014_candidate_i16.asm.txt",
+      "excerpt_sha256": "a5269226b0e37073e228473903632d1b0e3fcade141c58a12cd0fe9ad938cc03",
+      "stack_bytes": 264,
+      "max_loop": {
+        "first_line": 11370,
+        "last_line": 11496,
+        "static_instruction_count": 126,
+        "instructions": {
+          "movaps": 43,
+          "movups": 8,
+          "andps": 16,
+          "movlhps": 2,
+          "unpcklps": 4,
+          "shufps": 12,
+          "maxps": 8,
+          "cmpunordps": 8,
+          "andnps": 8,
+          "orps": 8,
+          "unpckhpd": 2,
+          "unpckhps": 4,
+          "subq": 1,
+          "addq": 1,
+          "jne": 1
+        },
+        "stack_access_lines": [
+          "movaps\t%xmm4, 80(%rsp)",
+          "movaps\t64(%rsp), %xmm7",
+          "movaps\t%xmm7, 64(%rsp)",
+          "movaps\t48(%rsp), %xmm7",
+          "movaps\t%xmm12, 48(%rsp)",
+          "movaps\t32(%rsp), %xmm7",
+          "movaps\t%xmm12, 32(%rsp)",
+          "movaps\t80(%rsp), %xmm4"
+        ]
+      },
+      "rintf_static_call_sites": 5
+    },
+    {
+      "symbol": "d014_baseline_u16",
+      "source_asm": "prototype.prototype.1ab0bb7343479e38-cgu.0.rcgu.s",
+      "first_line": 11024,
+      "last_line": 11289,
+      "excerpt": "d014_baseline_u16.asm.txt",
+      "excerpt_sha256": "32b6ea76f60ebc207c0f77620f3d80a6501e79e2a586cd3270590954d1c23030",
+      "stack_bytes": 184,
+      "max_loop": {
+        "first_line": 11080,
+        "last_line": 11101,
+        "static_instruction_count": 21,
+        "instructions": {
+          "movups": 2,
+          "movaps": 6,
+          "maxps": 2,
+          "cmpunordps": 2,
+          "andps": 2,
+          "andnps": 2,
+          "orps": 2,
+          "addq": 1,
+          "cmpq": 1,
+          "jne": 1
+        },
+        "stack_access_lines": []
+      },
+      "rintf_static_call_sites": 5
+    },
+    {
+      "symbol": "d014_candidate_u16",
+      "source_asm": "prototype.prototype.1ab0bb7343479e38-cgu.0.rcgu.s",
+      "first_line": 11922,
+      "last_line": 12523,
+      "excerpt": "d014_candidate_u16.asm.txt",
+      "excerpt_sha256": "f1b40aa77a6215b329f7001cb0345f9dde1327a448b3080c43601244ad581818",
+      "stack_bytes": 264,
+      "max_loop": {
+        "first_line": 11994,
+        "last_line": 12113,
+        "static_instruction_count": 119,
+        "instructions": {
+          "movaps": 44,
+          "movups": 8,
+          "movlhps": 2,
+          "unpcklps": 4,
+          "shufps": 12,
+          "unpckhpd": 2,
+          "unpckhps": 4,
+          "maxps": 8,
+          "cmpunordps": 8,
+          "andps": 8,
+          "andnps": 8,
+          "orps": 8,
+          "subq": 1,
+          "addq": 1,
+          "jne": 1
+        },
+        "stack_access_lines": [
+          "movaps\t%xmm14, 32(%rsp)",
+          "movaps\t%xmm15, 48(%rsp)",
+          "movaps\t%xmm12, 64(%rsp)",
+          "movaps\t%xmm13, 80(%rsp)",
+          "movaps\t32(%rsp), %xmm1",
+          "movaps\t48(%rsp), %xmm1",
+          "movaps\t64(%rsp), %xmm1",
+          "movaps\t80(%rsp), %xmm1"
+        ]
+      },
+      "rintf_static_call_sites": 5
+    }
+  ],
+  "finding": "Baseline already uses two packed SSE maxps accumulators over eight values per max-loop iteration. Four-lane source is further vectorized over thirty-two values with deinterleaving shuffles and stack spills. Both retain rintf calls in the unchanged rounding stage.",
+  "compile_warning": "Thin LTO emits multiple .s files, so rustc ignored the requested single asm output path. All actual assembly outputs are preserved and hashed in report.json."
+}

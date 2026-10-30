@@ -1,0 +1,17 @@
+
+running 1 test
+test gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes ... gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+gpu: 195813 nodes, 12 levels, staging+arenas 80.2 MB
+
+thread 'gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes' (77576) panicked at crates\solver\src\gpu\continuation_stored_device_tests.rs:80:112:
+called `Result::unwrap()` on an `Err` value: "GPU transport source is absent from parked canonical plan"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 193 filtered out; finished in 0.31s
+

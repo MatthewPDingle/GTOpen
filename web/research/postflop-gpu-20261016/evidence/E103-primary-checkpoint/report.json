@@ -1,0 +1,173 @@
+{
+  "id": "E103-primary-checkpoint",
+  "at": "2026-10-28T21:37:18.032581+00:00",
+  "status": "rejected_closed_fixed_affinity_form",
+  "performance": {
+    "aggregation": "Unrounded sum fixture medians,3observations perarm",
+    "baseline_full_cycle_ms": 9636.4502,
+    "candidate_full_cycle_ms": 9624.6403,
+    "observed_gain_pct": 0.12255446512866532,
+    "required_gain_pct": 1.0,
+    "primary_timing_and_cost_pass": false,
+    "gates": {
+      "aggregate_ge1pct": false,
+      "strict_fixture_clear": false,
+      "CPU_ms_median_regression_le1pct": false,
+      "lifetime_ms_median_regression_le1pct": true,
+      "parent_wall_ms_median_regression_le1pct": true
+    },
+    "failed_gates": [
+      "aggregate_ge1pct",
+      "strict_fixture_clear",
+      "CPU_ms_median_regression_le1pct"
+    ],
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": 0.3316525643160669,
+        "slower_pairs": 3,
+        "failed": true
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -0.8022965139764814,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 0.2184109281113577,
+        "slower_pairs": 1,
+        "failed": false
+      }
+    ]
+  },
+  "whole_process_costs": {
+    "CPU_ms": {
+      "baseline": [
+        17015.625,
+        16937.5,
+        18062.5
+      ],
+      "candidate": [
+        16671.875,
+        17203.125,
+        17312.5
+      ],
+      "median_regression_pct": 1.1019283746556363
+    },
+    "lifetime_ms": {
+      "baseline": [
+        12407.9942,
+        12462.5533,
+        12468.1963
+      ],
+      "candidate": [
+        12369.1675,
+        12398.373,
+        12417.6074
+      ],
+      "median_regression_pct": -0.5149851595820265
+    },
+    "parent_wall_ms": {
+      "baseline": [
+        12418.337399998563,
+        12473.92299999774,
+        12479.504899994936
+      ],
+      "candidate": [
+        12379.520800008322,
+        12410.004700010177,
+        12428.043699997943
+      ],
+      "median_regression_pct": -0.5124153803705123
+    }
+  },
+  "primary_report_sha256": "64424876e8825cc04954b21dbd3c095f8cac5767cd29728e226b8eef61c23404",
+  "root_replay_sha256": "a44f34b7cb6251ed38e440978f8763671714fbf08f6206717c34de71ab34ad67",
+  "raw_control_report_sha256": "881591b008b1a246a47f3051dffac1f96f2460f69d50f300266f0fd233b43bac",
+  "all66_retained_raw_extents_verified": true,
+  "raw_bytes_not_rehashed_after_original_fullcomparison": true,
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\V103-B\\exit.json",
+      "sha256": "e2eae7bc5a0dae1a05f9d82d3a1aaac83ceec46bd917b7c52766bade6aa0783c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\V103-C\\exit.json",
+      "sha256": "e26acf6a8ed532d098539dd8ba6b20765b98c7277cad2f568d30cf237698509e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\W103-B\\exit.json",
+      "sha256": "d59d2c8ff25cb422b4e83de214e3be501f00736e7c4c84360f093de85b44d4b5",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\W103-C\\exit.json",
+      "sha256": "d8a3e2c744ab9e347ed29e33294be47857ac601647b0a4c16b57254aa6bc53f3",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B314\\exit.json",
+      "sha256": "5dadd5cb403b52e8c7dc46284430f52cdd9cac5b9f280788c92e37c0eaf134c1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E103R1\\exit.json",
+      "sha256": "b2475f458bef29b497d7f2af24433ef0658004870d99a80e738daa68b0ba6a81",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E103R2\\exit.json",
+      "sha256": "84a7dc5d0bde6a5b9ce08bc133664f547ef87bd8792e9b105f314ecee0938df0",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B315\\exit.json",
+      "sha256": "dc0f4467049679c29d47235a5c062f9311eb2cead616a0bd8ba8ff6a222d8727",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B316\\exit.json",
+      "sha256": "80a213cd1b635dee332491272675e7ce85cc5d8e6ed68b8ab634558bf21ea69d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E103R3\\exit.json",
+      "sha256": "7aa0e76c102202b876f3856375ab110274d855e6a0a08832c3cfec81a78fb746",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\execution\\audit.exit.json",
+      "sha256": "4525276407938872b108a046e315625313be69896947dc35fb9dfcacf070510c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\execution\\baseline.exit.json",
+      "sha256": "78608eec69d93f178fdbcf91d90a24b32e8694bdf86d06b2357884de55d6a1bd",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D201-affinity-raw-controls\\execution\\candidate.exit.json",
+      "sha256": "fc14690c5d429907c5194a9bc22f124c257319d7f3c9251330a5f7109699322e",
+      "returncode": 0
+    }
+  ],
+  "all_owned_compiler_native_readers_terminal": true,
+  "new_source_or_compiler_variants": 0,
+  "new_gain_accepted_or_deployed": false,
+  "alternate_sibling_CCD_subset_count_priority_power_OS_clock_source_flags_samples_rescue_allowed": false,
+  "future_requirements": [
+    "Separatelyfrozen16freshpairs:aggregate>=1%,>=13improvingpairs,positivepaired/block/order medians,no strictfixture slowdown.",
+    "BroadF32/menu/state/save/resume/continuation/paging/fallback/actualCPU/RAM/GPUmemory/capacity/graph/resource andnonpostflop/responsiveness checks. Processaffinity restricts all nativehelper/NVRTCthreads andcouldhurtotherpathways; no live/globalsetting without applicationqualification.",
+    "Fixedholdout,fresh-original currentRAM cumulativecomparison andactualtemporaryserver/application qualification beforeadoption. Initialscreen doesnotestablish significance/universal/no-tradeoff."
+  ],
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "last_primary_baseline_id": "B316",
+  "original_current_RAM_reference_ms": 10456.4109,
+  "historical_or_RAM_reference_samples_scored": 0,
+  "best_qualified": "E080 / GPU / compressed /16workers / defaultalllogicalaffinity",
+  "goal_active": true
+}

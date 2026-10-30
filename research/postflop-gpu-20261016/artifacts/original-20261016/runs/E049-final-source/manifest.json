@@ -1,0 +1,27 @@
+{
+  "id": "E049",
+  "at": "2026-10-17T03:19:08.339347+00:00",
+  "owned": {
+    "crates/solver/src/store.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\base-store.rs",
+      "base_sha256": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\candidate-store.rs",
+      "candidate_sha256": "7036e2d7b7e1202c3b8dadc66bf164800ddf1d45ad0d808800177bd188310342"
+    },
+    "crates/solver/src/gpu/arena.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\base-arena.rs",
+      "base_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\candidate-arena.rs",
+      "candidate_sha256": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1"
+    }
+  },
+  "hypothesis": "Skip exact q scan only for unexposed default-filled i16/u16 ownership. Retain original scale and snapshot guards and fallback. No changed GPU code/math.",
+  "new_tests": 2,
+  "ordinary_gpu_expected": {
+    "passed": 86,
+    "ignored": 4
+  },
+  "predicate_comparisons": 5600,
+  "cpu_only_tracking": false,
+  "candidate_accepted": false
+}

@@ -1,0 +1,14 @@
+{
+  "id": "E108",
+  "at": "2026-10-29T01:03:56.416079+00:00",
+  "source_change": "Only blocked up_show chunk binding: exact guarded power-of-two integer ceil-shift, with original unsigned division fallback for other positive widths. Explicit one fixed if/else form. Reverse replacement restores complete accepted bytes including CRLF. All source operands/operations after binding, five barriers, floating expressions/ordered sums, other8entries and all Rust host source unchanged. No earlier payout relocation.",
+  "source_binding": "        const u32 threads = blockDim.x;\r\n        const u32 rounded = (u32)m_o + threads - 1u;\r\n        int chunk;\r\n        if ((threads & (threads - 1u)) == 0u)\r\n            chunk = (int)(rounded >> (31u - (u32)__clz(threads)));\r\n        else\r\n            chunk = (int)(rounded / threads);\r\n",
+  "integer_contract_report": {
+    "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\report.json",
+    "sha256": "5505ef516895e78a37bb5fc9ac0c24e833efe89993252d505e95a68c0345ba75",
+    "shapes": 339712
+  },
+  "host_capacity_contract": "Exact original27argument ABI,9entries,launch counts/shapes/widths128/graph, wrapper4448,buffers,metadata,global/pinned/shared reservations and capacity; no new state/helper/buffer. Supported nonpower controls retain exact original divisor path.",
+  "compiled_prerequisite": "All8untargeted PTX entries alpha-exact120/75, ABI27/fivebarriers exact. D108 no newlocal/dynamic/stack or maxthreadloss, positive64/128/256occupancies/defaultlimits at1326hands; register/static/occupancy changes disclosed. Resources alone do not admit application kernels. Separately retained PTXCFG must show power-of-two paths avoid div.u32/lowering and converge to same chunk/scan operands; original nonpower fallback retained. Current-driver SASS must preserve bypass before numerical tests. If unconditional quotient remains, close form rather than changing spelling/helper/branch/flags.",
+  "failure_policy": "Any genuine emitted-mechanism/resource/ABI/numeric/state/cost/speed failure closes this frozen form, no if/ternary/placement/helper/asm/qualifier/flags/width/threshold/entrysubset/quality/extra-sample rescue. Mechanical preparation/compiler/observer/reader errors may be repaired additively without completed native cases repeated. All exactness, unrounded1%completecycle/strictfixture/fresh16/broad/material/holdout/cumulative/application gates unchanged. No adoption/speed claim from prerequisites."
+}

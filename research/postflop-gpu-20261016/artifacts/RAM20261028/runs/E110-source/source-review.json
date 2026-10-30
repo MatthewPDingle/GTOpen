@@ -1,0 +1,17 @@
+{
+  "id": "E110",
+  "at": "2026-10-29T03:16:48.103420+00:00",
+  "source_change": "Two exact fold-only replacements: own partial initializations/additions move into existing same-thread strided global reach copy; original later sharedpartial loop removed. Sameallfloatoperands/order/precision, originalcard sums andblockreduction/barriers, remaining8globals/ABI/host/wrapper4448/dynamicshared/quality/flags unchanged. Original signedstrides retained; E109/E107/E108 forms absent.",
+  "replacements": [
+    {
+      "old": "    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)\r\n        local_reach[j] = global_reach[j];",
+      "new": "    float partial = 0.0;\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {\r\n        float value = global_reach[j];\r\n        local_reach[j] = value;\r\n        partial += (float)value;\r\n    }"
+    },
+    {
+      "old": "    float partial = 0.0;\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)\r\n        partial += (float)ro[j];\r\n",
+      "new": ""
+    }
+  ],
+  "scout_sha256": "5a28bc1966c8af6eb97e711f1bbdc48362fa54e54cd30a4cb0757262a989edcb",
+  "failure_policy": "Any genuine mechanism/resource/ABI/numerical/state/cost/speed failure closes exactcopy-partialfusion form without source/helper/order/loop/width/placement/flags/entrysubset/threshold/quality/sample rescue. Mechanicalobserver errors retained additively; completed nativecases never repeated."
+}

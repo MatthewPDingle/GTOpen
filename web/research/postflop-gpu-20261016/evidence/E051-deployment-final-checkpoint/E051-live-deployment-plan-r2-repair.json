@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T01:43:22.899381+00:00",
+  "status": "preserved_pre_live_operation_failure",
+  "old_protocol_sha256": "0d280a133faaa2a81fd7dc731dc5d4f9227ac9ebbea29695b9c5c9bcb03025f2",
+  "old_exit_sha256": "b3110e16c1c2be758436ef003ef47c877cd9adb17d371c9875deb71efca3e2e3",
+  "old_stderr_sha256": "2b5afb17ce39cc1a2a5add8bc4db901b4e8a11efa385b878f9630a955fb35aac",
+  "original_process37268_still_live_and_hash_exact": true,
+  "backup_not_created": true,
+  "replacement_or_stop_or_start_operations": 0,
+  "reported_failure": "Get-FileHash unavailable in the launched child PowerShell despite read-only later interactive command discovery succeeding; exact autoload cause unproven.",
+  "repair": "Use .NET SHA256 over an owned file stream instead of the Get-FileHash cmdlet. Algorithm/output unchanged. Retain the original evidence.",
+  "additional_preflight_precision_alignment": ".NET reports2026-10-16T02:58:55.0784386Z, while frozen CIM reports2026-10-16T02:58:55.0784380Z. Compare creation at the microsecond precision supported by CIM, while still verifying exact frozen PID/CIM creation/executable/hash/listener and authenticated process handle before stopping.",
+  "same_deployment_candidate_and_session_guards": true,
+  "new_GPU_or_performance_samples": 0
+}

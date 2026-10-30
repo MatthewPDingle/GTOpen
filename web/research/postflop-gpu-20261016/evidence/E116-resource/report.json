@@ -1,0 +1,850 @@
+{
+  "id": "E116-resource",
+  "at": "2026-10-29T14:26:01.109967+00:00",
+  "status": "rejected_closed_resource_or_ABI_gate",
+  "protocol_sha256": "efb2e51f27cc1614c55594188873986c3e0e7750c37a476c5b9f4c53aecf49c6",
+  "gates": {
+    "compute_120:copy_root:header_ABI_exact": true,
+    "compute_120:copy_root:untargeted_body_exact": true,
+    "compute_120:down_action:header_ABI_exact": true,
+    "compute_120:down_action:barriers_exact": true,
+    "compute_120:down_chance:header_ABI_exact": true,
+    "compute_120:down_chance:untargeted_body_exact": true,
+    "compute_120:up_fold:header_ABI_exact": true,
+    "compute_120:up_fold:untargeted_body_exact": true,
+    "compute_120:up_show:header_ABI_exact": true,
+    "compute_120:up_show:untargeted_body_exact": true,
+    "compute_120:up_chance:header_ABI_exact": true,
+    "compute_120:up_chance:untargeted_body_exact": true,
+    "compute_120:up_action:header_ABI_exact": true,
+    "compute_120:up_action:barriers_exact": true,
+    "compute_120:copy_span:header_ABI_exact": true,
+    "compute_120:copy_span:untargeted_body_exact": true,
+    "compute_120:up_action_eval:header_ABI_exact": true,
+    "compute_120:up_action_eval:untargeted_body_exact": true,
+    "compute_75:copy_root:header_ABI_exact": true,
+    "compute_75:copy_root:untargeted_body_exact": true,
+    "compute_75:down_action:header_ABI_exact": true,
+    "compute_75:down_action:barriers_exact": true,
+    "compute_75:down_chance:header_ABI_exact": true,
+    "compute_75:down_chance:untargeted_body_exact": true,
+    "compute_75:up_fold:header_ABI_exact": true,
+    "compute_75:up_fold:untargeted_body_exact": true,
+    "compute_75:up_show:header_ABI_exact": true,
+    "compute_75:up_show:untargeted_body_exact": true,
+    "compute_75:up_chance:header_ABI_exact": true,
+    "compute_75:up_chance:untargeted_body_exact": true,
+    "compute_75:up_action:header_ABI_exact": true,
+    "compute_75:up_action:barriers_exact": true,
+    "compute_75:copy_span:header_ABI_exact": true,
+    "compute_75:copy_span:untargeted_body_exact": true,
+    "compute_75:up_action_eval:header_ABI_exact": true,
+    "compute_75:up_action_eval:untargeted_body_exact": true,
+    "copy_root:actual_resources_exact": true,
+    "down_action:no_new_local": true,
+    "down_action:no_constant_growth": true,
+    "down_action:no_dynamic_growth": true,
+    "down_action:no_maxthread_loss": true,
+    "down_action:fixed_occupancies_positive": true,
+    "down_action:no_occupancy_loss": false,
+    "down_action:no_static_shared_growth": true,
+    "down_action:default_limits_fit": true,
+    "down_action:no_stack_growth": true,
+    "down_chance:actual_resources_exact": true,
+    "up_fold:actual_resources_exact": true,
+    "up_show:actual_resources_exact": true,
+    "up_chance:actual_resources_exact": true,
+    "up_action:no_new_local": true,
+    "up_action:no_constant_growth": true,
+    "up_action:no_dynamic_growth": true,
+    "up_action:no_maxthread_loss": false,
+    "up_action:fixed_occupancies_positive": true,
+    "up_action:no_occupancy_loss": false,
+    "up_action:no_static_shared_growth": true,
+    "up_action:default_limits_fit": true,
+    "up_action:no_stack_growth": true,
+    "copy_span:actual_resources_exact": true,
+    "up_action_eval:actual_resources_exact": true,
+    "compute_120:both_normalization_entries_emitted_change": true,
+    "compute_75:both_normalization_entries_emitted_change": true
+  },
+  "entry_tables": {
+    "compute_120": {
+      "copy_root": {
+        "parameter_count": 6,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_action": {
+        "parameter_count": 18,
+        "header_ABI_exact": true,
+        "body_alpha_exact": false
+      },
+      "down_chance": {
+        "parameter_count": 13,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_fold": {
+        "parameter_count": 21,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_show": {
+        "parameter_count": 27,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_chance": {
+        "parameter_count": 15,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action": {
+        "parameter_count": 20,
+        "header_ABI_exact": true,
+        "body_alpha_exact": false
+      },
+      "copy_span": {
+        "parameter_count": 3,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action_eval": {
+        "parameter_count": 17,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      }
+    },
+    "compute_75": {
+      "copy_root": {
+        "parameter_count": 6,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "down_action": {
+        "parameter_count": 18,
+        "header_ABI_exact": true,
+        "body_alpha_exact": false
+      },
+      "down_chance": {
+        "parameter_count": 13,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_fold": {
+        "parameter_count": 21,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_show": {
+        "parameter_count": 27,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_chance": {
+        "parameter_count": 15,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action": {
+        "parameter_count": 20,
+        "header_ABI_exact": true,
+        "body_alpha_exact": false
+      },
+      "copy_span": {
+        "parameter_count": 3,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      },
+      "up_action_eval": {
+        "parameter_count": 17,
+        "header_ABI_exact": true,
+        "body_alpha_exact": true
+      }
+    }
+  },
+  "resource_rows": [
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          20
+        ],
+        [
+          128,
+          10
+        ],
+        [
+          256,
+          5
+        ]
+      ],
+      "registers": 46,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 896,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          7
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 66,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [
+    {
+      "entry": "down_action",
+      "baseline": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "registers": 46,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    },
+    {
+      "entry": "up_action",
+      "baseline": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 62,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 896,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            7
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "registers": 66,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "PTX_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "4d735eb4e80f15e995bee4bb4c770643d947cde519cd297edb66583ad8e0b6b1",
+    "candidate-compute_75": "f8975dff9af20b6579f03ad445dad98e18566869582f78a088c386d42cf5250e"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "limits": "ABI/resource/all9 unchanged ABI and resource gate only; Single-positive finite normalization; actual guarded division bypass/retained FP operands and caller/extent reviews remain before numerical controls. No speed/no-cost/accuracy/adoption proof. Failure closes exactform without othercount/width/helper/flags/source/sample rescue."
+}

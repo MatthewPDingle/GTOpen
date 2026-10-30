@@ -1,0 +1,91 @@
+{
+  "id": "E099-direct-controls",
+  "at": "2026-10-28T18:48:34.109908+00:00",
+  "status": "pass_scoped_all_direct_device_words",
+  "protocol_sha256": "e20adc3810651e6f77ec5c3f58fd3bb60e67667db9b9cadd68aa522046c1f54d",
+  "checks": 3633871,
+  "cases": 13528,
+  "kernel_launches": 27056,
+  "output_words_both_arms": 159186104,
+  "immutable_words_both_arms": 67954474,
+  "guard_words_both_arms": 138348750,
+  "units": {
+    "up": {
+      "cases": 7062,
+      "legacy_cases": 819,
+      "kernel_launches": 14124,
+      "output_words_both_arms": 69286368,
+      "immutable_words_both_arms": 32347362,
+      "guard_words_both_arms": 59197818,
+      "eligible_nonempty_paired_cases": 4580,
+      "nonfinite_active_words_both_arms": 1039988,
+      "signed_zero_witnesses_both_arms": [
+        0,
+        0
+      ],
+      "legacy_all_input_baseline_and_immutable_prefixes_exact": true
+    },
+    "down": {
+      "cases": 6466,
+      "legacy_cases": 1530,
+      "kernel_launches": 12932,
+      "output_words_both_arms": 89899736,
+      "immutable_words_both_arms": 35607112,
+      "guard_words_both_arms": 79150932,
+      "eligible_nonempty_paired_cases": 3868,
+      "nonfinite_active_words_both_arms": 1952398,
+      "signed_zero_witnesses_both_arms": [
+        1395574,
+        1413510
+      ],
+      "legacy_all_input_baseline_and_immutable_prefixes_exact": true
+    }
+  },
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\output\\inputs.bin": {
+      "bytes": 204595124,
+      "sha256": "a65c0ac10ab00e8029ce01fe2c8b28d93ad323487075c264db73ce66b9b495ab"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\output\\baseline.bin": {
+      "bytes": 138770481,
+      "sha256": "32855e30ac47bd626b3e42bfb21f54ec9024072bf534678c524f04b76d18ad3c"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\output\\candidate.bin": {
+      "bytes": 138770481,
+      "sha256": "32855e30ac47bd626b3e42bfb21f54ec9024072bf534678c524f04b76d18ad3c"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\output\\baseline-inputs.bin": {
+      "bytes": 65400932,
+      "sha256": "9b5da617c8b683c0acab00e955d2e8f8887d631880f00dd158b738c31a7c70a1"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\up\\output\\candidate-inputs.bin": {
+      "bytes": 65400932,
+      "sha256": "9b5da617c8b683c0acab00e955d2e8f8887d631880f00dd158b738c31a7c70a1"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\down\\output\\inputs.bin": {
+      "bytes": 252203448,
+      "sha256": "e9dd980c51353553cd2cbe6c31863b2bcbc2a7dcb11d70f8dd8e84d3f003115c"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\down\\output\\baseline.bin": {
+      "bytes": 179928801,
+      "sha256": "d3102e5eecb6c57b382d25a9030c4ac560abaeeabb9e4cf3d2faac8fdffc2e76"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\down\\output\\candidate.bin": {
+      "bytes": 179928801,
+      "sha256": "d3102e5eecb6c57b382d25a9030c4ac560abaeeabb9e4cf3d2faac8fdffc2e76"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\down\\output\\baseline-inputs.bin": {
+      "bytes": 71860832,
+      "sha256": "3dac0150b98a3c6300f478c5e6ac0ad82ead3cf4dbdad123c1df813397bc0b15"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-direct-controls\\down\\output\\candidate-inputs.bin": {
+      "bytes": 71860832,
+      "sha256": "3dac0150b98a3c6300f478c5e6ac0ad82ead3cf4dbdad123c1df813397bc0b15"
+    }
+  },
+  "original_legacy_cases_unchanged": true,
+  "all_physical_outputs_inputs_and_guards_exact": true,
+  "solver_or_performance_runs": 0,
+  "candidate_accepted": false,
+  "scope": "Finite declared device matrix only. Original scalar fallbacks plus prospective aligned pairgeometry, actual matrix addresses/extents, every raw word, exceptional/rounding signs and untouched areas. Original cases proven by entire legacy raw input/original output/immutable prefixes. No universal arithmetic/layout, multi-node engine/physical canonical, CPU/memory/capacity/speed/adoption proof."
+}

@@ -1,0 +1,26 @@
+{
+  "id": "D103-profiler-support-root-check",
+  "at": "2026-10-17T10:08:16.542830+00:00",
+  "status": "pass_compatible_only",
+  "checks": 161,
+  "protocol_sha256": "655ca2adeec7e54b6395fdaf1cdf273604a4c79f61ae76cff7fed032a79e4dd5",
+  "native_report_sha256": "3fd296cc09c39bf5284c098976e4b1ab44ff250e119f71c1b316bf4021e11ab6",
+  "raw_markers_exact": true,
+  "export_binding_allowlist_checked": [
+    "cuDeviceGet",
+    "cuDeviceGetAttribute",
+    "cuDeviceGetName",
+    "cuDriverGetVersion",
+    "cuInit",
+    "cuptiGetResultString",
+    "cuptiGetVersion",
+    "cuptiProfilerDeInitialize",
+    "cuptiProfilerDeviceSupported",
+    "cuptiProfilerInitialize"
+  ],
+  "application_kernel_launches": 0,
+  "counter_collections": 0,
+  "profiling_sessions": 0,
+  "candidate_accepted": false,
+  "limits": "Root transcript/source/ABI-pin replay, not external independent audit or OS/API internal side-effect tracing. Compatibility only. Permission, actual metric availability, collection/replay/graph/observer effects and speed remain unverified."
+}

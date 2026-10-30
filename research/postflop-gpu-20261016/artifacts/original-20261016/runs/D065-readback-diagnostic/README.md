@@ -1,0 +1,13 @@
+# D065 full-readback diagnostic
+
+Root alone activates/builds/runs after source and script review. This adapts the fixed D044 diagnostic lifecycle to accepted E020: D065B1/P1, P2/B2, B3/P3, immutable E020 controls and one fresh instrumented executable. No timing sample is excluded or replaced and there is no performance acceptance.
+
+`build.py AUTH_SHA256` uses one unused isolated target, exact162-source identity with only gpu/mod.rs changed, unchanged numerical CUDA plus marker embedding, fresh Cargo artifact/source/features and bounded locked process cleanup. The two known pre-existing generated PTX files are SHA/size pinned and narrowly excluded from Git untracked source admission. Nothing is deleted.
+
+`cohort.py` preserves the frozen evaluator and compressed3-fixture workload. It explicitly sets POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE to0 for immutable E020 controls and1 for D065 profiles, clears the fixture filter and leaves the eager/profile flag0. Each invocation records this child override because the unchanged shared runner does not include it in its environment summary.
+
+`assess.py` checks all18 complete non-timing results and138 checkpoints, exactly3 full_readback records per profile and none per control,14 ordered spans, actual device byte counts and nested timing consistency. The source-pinned D009 counts distinguish compact two-tone device arenas from full CPU stores. No constructor or public-synchronize trace is enabled.
+
+Transfer-related host time is dtoh_host_call plus dtoh_stream_wait; CPU time includes encoding, scatter and inactive restoration. Each is grouped within a run before medians. The per-record min(transfer_host,CPUencode) is an optimistic measured-span overlap ceiling only. Startup/tail, extra pinned buffers, bandwidth contention and implementation costs are unmeasured; no saving or candidate headroom is established. All samples/ranges and ordinary complete-cycle denominator are reported. The absolute10% outer perturbation screen governs diagnostic usefulness only and cannot bound component bias.
+
+Root authorization.json must set candidate D065 and accepted E020/server, independent source/script review booleans true. Prerequisites E020_acceptance, E020_server_qualification, D065_source_review and D065_script_review are path/sha256 pairs included in evidence_sha256. candidate_sources maps gpu/mod.rs to its exact archived candidate path/hash. evidence_sha256 includes final script/source seals and prerequisite evidence. Run build.py with this immutable authorization hash, observe terminal exit, then cohort.py and assess.py. Restore only the temporary mod.rs instrumentation after custody/audit and verify all162 accepted identities. No live-server mutation.

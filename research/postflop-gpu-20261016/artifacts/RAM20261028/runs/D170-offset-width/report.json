@@ -1,0 +1,593 @@
+{
+  "id": "D170",
+  "at": "2026-10-28T15:38:53.806417+00:00",
+  "status": "pass_compiled_prerequisites",
+  "protocol_sha256": "551760c993f1d32ceb6a337fabe8f3e124a341749ca103645d6f41d2b3bfecc5",
+  "gates": {
+    "compute_120:other6entries_exact": true,
+    "compute_120:down_action:ABI_exact": true,
+    "compute_120:down_action:CTA_barriers_exact": true,
+    "compute_120:down_action:intended_u64_to_u32_loads": true,
+    "compute_120:up_action:ABI_exact": true,
+    "compute_120:up_action:CTA_barriers_exact": true,
+    "compute_120:up_action:intended_u64_to_u32_loads": true,
+    "compute_120:up_action_eval:ABI_exact": true,
+    "compute_120:up_action_eval:CTA_barriers_exact": true,
+    "compute_120:up_action_eval:intended_u64_to_u32_loads": true,
+    "compute_75:other6entries_exact": true,
+    "compute_75:down_action:ABI_exact": true,
+    "compute_75:down_action:CTA_barriers_exact": true,
+    "compute_75:down_action:intended_u64_to_u32_loads": true,
+    "compute_75:up_action:ABI_exact": true,
+    "compute_75:up_action:CTA_barriers_exact": true,
+    "compute_75:up_action:intended_u64_to_u32_loads": true,
+    "compute_75:up_action_eval:ABI_exact": true,
+    "compute_75:up_action_eval:CTA_barriers_exact": true,
+    "compute_75:up_action_eval:intended_u64_to_u32_loads": true,
+    "down_action:no_new_local_or_spill": true,
+    "down_action:no_dynamic_shared_increase": true,
+    "down_action:max_threads_not_lowered": true,
+    "down_action:positive_fixed_occupancies": true,
+    "down_action:both_fit_default_limits": true,
+    "down_action:no_stack_growth": true,
+    "up_action:no_new_local_or_spill": true,
+    "up_action:no_dynamic_shared_increase": true,
+    "up_action:max_threads_not_lowered": true,
+    "up_action:positive_fixed_occupancies": true,
+    "up_action:both_fit_default_limits": true,
+    "up_action:no_stack_growth": true,
+    "up_action_eval:no_new_local_or_spill": true,
+    "up_action_eval:no_dynamic_shared_increase": true,
+    "up_action_eval:max_threads_not_lowered": true,
+    "up_action_eval:positive_fixed_occupancies": true,
+    "up_action_eval:both_fit_default_limits": true,
+    "up_action_eval:no_stack_growth": true
+  },
+  "pointer_load_proof": {
+    "compute_120": {
+      "down_action": {
+        "baseline": [
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd17, [%rd328];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd35, [%rd243];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd57, [%rd137];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd83, [%rd393];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r4, [%rd325];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r30, [%rd241];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r63, [%rd136];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r264, [%rd389];"
+          }
+        ]
+      },
+      "up_action": {
+        "baseline": [
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd26, [%rd23];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd46, [%rd43];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd69, [%rd66];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd86, [%rd677];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r8, [%rd456];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r21, [%rd335];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r34, [%rd184];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r316, [%rd674];"
+          }
+        ]
+      },
+      "up_action_eval": {
+        "baseline": [
+          {
+            "parameters": [
+              7
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd18, [%rd193];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              7
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r182, [%rd193];"
+          }
+        ]
+      }
+    },
+    "compute_75": {
+      "down_action": {
+        "baseline": [
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd17, [%rd126];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd58, [%rd269];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd39, [%rd205];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd72, [%rd323];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r95, [%rd125];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r150, [%rd268];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r125, [%rd204];"
+          },
+          {
+            "parameters": [
+              5
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r171, [%rd322];"
+          }
+        ]
+      },
+      "up_action": {
+        "baseline": [
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd33, [%rd31];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd99, [%rd96];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd69, [%rd66];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd118, [%rd568];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r137, [%rd31];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r202, [%rd96];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r176, [%rd66];"
+          },
+          {
+            "parameters": [
+              6
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r243, [%rd565];"
+          }
+        ]
+      },
+      "up_action_eval": {
+        "baseline": [
+          {
+            "parameters": [
+              7
+            ],
+            "bits": 64,
+            "line": "ld.global.nc.u64 \t%rd13, [%rd134];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              7
+            ],
+            "bits": 32,
+            "line": "ld.global.nc.u32 \t%r110, [%rd134];"
+          }
+        ]
+      }
+    }
+  },
+  "other6entries": {
+    "compute_120": {
+      "copy_root": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "up_chance": true,
+      "copy_span": true
+    },
+    "compute_75": {
+      "copy_root": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "up_chance": true,
+      "copy_span": true
+    }
+  },
+  "resource_rows": [
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [],
+  "parser_fixtures": [
+    {
+      "kernel": "down_action",
+      "bits": 32,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    },
+    {
+      "kernel": "down_action",
+      "bits": 64,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    },
+    {
+      "kernel": "up_action",
+      "bits": 32,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    },
+    {
+      "kernel": "up_action",
+      "bits": 64,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    },
+    {
+      "kernel": "up_action_eval",
+      "bits": 32,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    },
+    {
+      "kernel": "up_action_eval",
+      "bits": 64,
+      "positive_and_wrong_param_and_loaded_value_checks": true
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "9774e85b6785b1a578486c0a53d1ea1a53311fb0c354e348fac5329eb218c473",
+    "candidate-compute_75": "2a2db7dc93730cf162263e80cf43aeb6c18d73b12879d44f3dc8d48c3a6239b0"
+  },
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "scope": "Compile/module/load/ABI/intended offset-load width/resource feasibility only. Actual resource differences disclosed under D108. No scientific equivalence, actual capacity/speed or main integration claim. Future admitted work requires separately frozen full numerical and wide-fallback/host ownership proof, complete speed and all adoption gates. No real failure rescue."
+}

@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-17T07:20:07.368357+00:00",
+  "id": "E057",
+  "root_source_review_only": true,
+  "proposal": {
+    "id": "D093-prefix-layout",
+    "at": "2026-10-17T07:20:04.867721+00:00",
+    "status": "FROZEN_BEFORE_CPU_MODEL",
+    "candidate": "E057",
+    "candidate_sha256": "b9c1b260895debf954def29b28804d3cd1cc0b431a668c698d72dda55693cec3",
+    "transform": "Only prefix-buffer physical indices change. Full32word tiles use k XOR ((k>>5)&31); final partial tile is identity. Enable only for power-of-two per-thread chunk lengths greater than1; otherwise identity. This fixed structural choice targets power-of-two bank strides, not measured parameter tuning. All five prefix accesses use the same function. No new storage, barriers, metadata, ABI, launch or float operation.",
+    "history": "Scoped ledger/research plus retained CU/patch/review search found no postflop prefix swizzle. E008 carry, E022 tail pruning, E031 offset cache, E050 async, E052 width and E053 producer fusion remain absent/closed; this changes addresses only, not those mechanisms.",
+    "proof": "Each full tile retains tile ID and XORs a tile-constant into its lower5bits, hence is an involution/bijection. Partial tail identity is disjoint. Original same-k producer/consumer ownership and arithmetic dependencies are preserved. Test both flags for every0..1326length and all integer block geometries1..256.",
+    "bank_reference": {
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html#shared-memory",
+      "fact": "NVIDIA documents32banks with successive32bit words mapped to successive banks; same-address reads may broadcast. This model counts distinct words per bank, not hardware time."
+    },
+    "ptx_observation": "Accepted E051 up_show PTX contains scalar f32 shared loads/stores in the blocked prefix recurrence and carry application. This is PTX, not final SASS or a measured bank-conflict counter. Driver lowering may change transactions.",
+    "fixed_cpu_model_gate": "Exact bounded permutation, at least one fixture has reduced modeled total prefix requests and none increases. Model one complete show pass for both players; count scan prefix stores plus carry read/store, total read and lower/upper queries. Reach/card-position traffic, arithmetic, barriers, instruction issue, actual iterations and driver SASS are outside this model. A pass only admits resource inspection.",
+    "later_gates": "One no-launch resource probe, no register/local/static/dynamic increase or maxthread/occupancy loss, exact ABI/other8entries at compute120/75. If that passes, direct raw up_show equivalence before unchanged three-pair1%screen, separately frozen16pairs and all broad/material/holdout/cumulative checks. No key/width/guard/block/schedule variants to rescue a failed gate.",
+    "inputs": {
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-resource\\execution\\candidate.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\report.json": "724be58144d61e220a01342e0116832ad061d3261e805ace6d8f9f06f0fd7536",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-03.bin": "9198d6ae50b943f209d918042b11baccf629d5f7a490eb14d424102e873641b6",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-07.bin": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-11.bin": "0dbf07d2007db5e9c5c0505b7806318cd7c202e9865a4deb18c43c67325fe61e"
+    },
+    "source_activated": false,
+    "gpu_executions": 0,
+    "performance_measured": false,
+    "reviewer": "Root source review/model, not external independent review"
+  },
+  "cpu_model_sha256": "931b28599f6cb7c03b76e3a630ee356cd055a1e4b08cdbc73a17b5fb72f841ca",
+  "candidate_accepted": false
+}

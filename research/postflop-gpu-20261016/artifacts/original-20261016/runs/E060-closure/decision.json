@@ -1,0 +1,69 @@
+{
+  "at": "2026-10-17T08:38:03.030083+00:00",
+  "id": "E060",
+  "decision": "rejected_repeatable_fixture_regression_despite_above1pct_aggregate",
+  "accepted_source": "E051",
+  "observed_gain_pct": 1.2170441078096297,
+  "minimum_gain_pct": 1.0,
+  "fixture_regression_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": -0.9865806679353992,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -1.0133254242300396,
+        -0.5148572142819727,
+        -0.9354835169754613
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": -1.6688847130549769,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -2.650688936260534,
+        -0.34251561793802565,
+        -0.940255715638925
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": 3.167589397444166,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        6.998724769460541,
+        -3.43208149209102,
+        0.27198437677752346
+      ],
+      "failed": true
+    }
+  ],
+  "failed_fixture": "river",
+  "all18full_results_138checkpoints_exact": true,
+  "ordinary_units_passed": 84,
+  "scalar_cases_passed": 2130758,
+  "raw_kernel_cases_passed": 819,
+  "raw_kernel_launches": 1638,
+  "compiled_allocated_resource_gate_passed": true,
+  "nominal_registers_before_after": [
+    62,
+    64
+  ],
+  "allocated_registers_per_warp_before_after": [
+    2048,
+    2048
+  ],
+  "local_bytes_before_after": [
+    64,
+    64
+  ],
+  "source_restored_never_promoted": true,
+  "fresh16_broader_holdout_cumulative_not_run": true,
+  "no_extra_samples_guard_math_window_arity_kernel_subset_or_placement_rescue": true,
+  "primary_report_sha256": "562abef8e27ac51ee26bed19e78143effc38b74f30e1dbf203ad34f2263fb4f1",
+  "root_report_sha256": "62aded75a313b3c5dbf48460ec0a9e03b05c72dcc250db646235eda1582e3c35",
+  "goal_active": true,
+  "limits": "Initial3pairs do not establish significance or universal causal slowdown. Fixed observed perfixture guard rejects this candidate; aggregate alone cannot authorize adoption. Primary exactness includes deterministic whole-arena fingerprints, raw root strategy/EV bits, stops and checkpoints, not raw complete arena-byte comparison."
+}

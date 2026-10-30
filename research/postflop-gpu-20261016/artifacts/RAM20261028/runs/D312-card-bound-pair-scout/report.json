@@ -1,0 +1,16 @@
+{
+  "id": "D312",
+  "at": "2026-10-29T22:07:39.351970+00:00",
+  "status": "bounded_history_and_alignment_address_contract_pass",
+  "history_sha256": "af9ea9cfc807319f364b86cb8adc7e1506b8439d73840bd6f0e43706bbb4c304",
+  "alignment_and_same8bytecoverage_checks": 1277952,
+  "scope": "Integeraddress/alignmentproofonly; noC++compiler/nativeGPU/float/pointeraliasing/throughputproof. All53wordrows/cards0..51staywithinoriginalrow, originaltwoaddresses unchanged; actualpointerguardhandlesbase0or4mod8.",
+  "source_manifest_sha256": "8f07e2166cb296314d92bee9a805e7add96a22e6fed7ade6cd04317e56284660",
+  "API_sources": [
+    "https://docs.nvidia.com/cuda/archive/12.8.0/cuda-c-programming-guide/index.html",
+    "https://developer.nvidia.com/blog/cuda-pro-tip-increase-performance-with-vectorized-memory-access/"
+  ],
+  "API_contract": "CUDAuint2size/alignment8. A naturallyaligned8byteloadrequires8bytealignment; alignedvectorcastsaredocumented. Misaligned8readsnotassumedvalid. Documentationisnotactualcompiler/native/speedproof.",
+  "new_compilers_GPU_or_solver_samples": 0,
+  "all_new_bulk_X_S_readonly_no_T": true
+}

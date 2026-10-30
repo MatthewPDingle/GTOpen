@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-18T07:30:01.158312+00:00",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-remaining-build-plan\\capacity.rs",
+    "--crate-name",
+    "e080_capacity_candidate",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--extern",
+    "solver=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-broader-feature\\release\\deps\\libsolver-96ae39724bbe9550.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-broader-feature\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-broader-feature\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e080-broader-feature\\release\\deps",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-capacity-candidate.exe"
+  ]
+}

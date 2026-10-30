@@ -1,0 +1,568 @@
+{
+  "id": "D297",
+  "at": "2026-10-29T18:58:00.469242+00:00",
+  "status": "pass_scoped_two_terminal_native_hand_word_operand_and_removed_load_witness",
+  "protocol_sha256": "5dbf35832f222a4cd64f831b4f03677a7ce5c41d1d30771bfd68033ccd1df7ef",
+  "entry_witnesses": {
+    "up_fold": {
+      "required_native_operand_chain": [
+        {
+          "PC": "0x1470",
+          "op": "LDC.64 R2, c[0x0][0x3f0]"
+        },
+        {
+          "PC": "0x1520",
+          "op": "IMAD.WIDE R8, R0, 0x4, R2"
+        },
+        {
+          "PC": "0x1530",
+          "op": "LDG.E.CONSTANT R8, desc[UR6][R8.64]"
+        },
+        {
+          "PC": "0x1560",
+          "op": "SHF.R.U32.HI R13, RZ, 0xc, R8.reuse"
+        },
+        {
+          "PC": "0x1570",
+          "op": "IMAD.SHL.U32 R10, R8, 0x4, RZ"
+        },
+        {
+          "PC": "0x1580",
+          "op": "SHF.R.U32.HI R11, RZ, 0x4, R8"
+        },
+        {
+          "PC": "0x15a0",
+          "op": "ISETP.NE.AND P0, PT, R13, 0x7ff, PT"
+        },
+        {
+          "PC": "0x15b0",
+          "op": "LOP3.LUT R17, R10, 0xfc, RZ, 0xc0, !PT"
+        },
+        {
+          "PC": "0x15c0",
+          "op": "LOP3.LUT R16, R11, 0xfc, RZ, 0xc0, !PT"
+        },
+        {
+          "PC": "0x15e0",
+          "op": "LDS R14, [R17+UR11]"
+        },
+        {
+          "PC": "0x1610",
+          "op": "LDS R15, [R16+UR11]"
+        },
+        {
+          "PC": "0x1630",
+          "op": "@P0 LEA R13, R13, UR4, 0x2"
+        },
+        {
+          "PC": "0x1640",
+          "op": "@P0 LDS R12, [R13]"
+        }
+      ],
+      "all_constant_read_ranges": [
+        {
+          "PC": "0x0",
+          "start": "0x37c",
+          "bytes": 4,
+          "op": "LDC R1, c[0x0][0x37c]"
+        },
+        {
+          "PC": "0x20",
+          "start": "0x38c",
+          "bytes": 4,
+          "op": "LDC R0, c[0x0][0x38c]"
+        },
+        {
+          "PC": "0x50",
+          "start": "0x388",
+          "bytes": 4,
+          "op": "LDC R3, c[0x0][0x388]"
+        },
+        {
+          "PC": "0x60",
+          "start": "0x358",
+          "bytes": 8,
+          "op": "LDCU.64 UR6, c[0x0][0x358]"
+        },
+        {
+          "PC": "0x70",
+          "start": "0x380",
+          "bytes": 8,
+          "op": "LDC.64 R4, c[0x0][0x380]"
+        },
+        {
+          "PC": "0x80",
+          "start": "0x390",
+          "bytes": 4,
+          "op": "LDC R8, c[0x0][0x390]"
+        },
+        {
+          "PC": "0xa0",
+          "start": "0x40c",
+          "bytes": 4,
+          "op": "LDCU UR5, c[0x0][0x40c]"
+        },
+        {
+          "PC": "0xf0",
+          "start": "0x3b8",
+          "bytes": 8,
+          "op": "@!P0 LDC.64 R2, c[0x0][0x3b8]"
+        },
+        {
+          "PC": "0x100",
+          "start": "0x3b0",
+          "bytes": 8,
+          "op": "@P0 LDC.64 R6, c[0x0][0x3b0]"
+        },
+        {
+          "PC": "0x1a0",
+          "start": "0x3c8",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3c8]"
+        },
+        {
+          "PC": "0x210",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R13, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x240",
+          "start": "0x3c0",
+          "bytes": 8,
+          "op": "@P0 LDC.64 R2, c[0x0][0x3c0]"
+        },
+        {
+          "PC": "0x3d0",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R5, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x400",
+          "start": "0x3e0",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3e0]"
+        },
+        {
+          "PC": "0x520",
+          "start": "0x3e8",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3e8]"
+        },
+        {
+          "PC": "0xaa0",
+          "start": "0x3e8",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3e8]"
+        },
+        {
+          "PC": "0xd50",
+          "start": "0x3e8",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3e8]"
+        },
+        {
+          "PC": "0xeb0",
+          "start": "0x3e8",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3e8]"
+        },
+        {
+          "PC": "0x1080",
+          "start": "0x40c",
+          "bytes": 4,
+          "op": "LDCU UR4, c[0x0][0x40c]"
+        },
+        {
+          "PC": "0x10f0",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R6, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x11e0",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDCU UR8, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x1320",
+          "start": "0x398",
+          "bytes": 8,
+          "op": "LDCU.64 UR4, c[0x0][0x398]"
+        },
+        {
+          "PC": "0x1360",
+          "start": "0x390",
+          "bytes": 4,
+          "op": "LDCU UR4, c[0x0][0x390]"
+        },
+        {
+          "PC": "0x1390",
+          "start": "0x408",
+          "bytes": 4,
+          "op": "LDCU UR4, c[0x0][0x408]"
+        },
+        {
+          "PC": "0x13a0",
+          "start": "0x3a8",
+          "bytes": 8,
+          "op": "@!P0 LDC.64 R8, c[0x0][0x3a8]"
+        },
+        {
+          "PC": "0x13b0",
+          "start": "0x3a0",
+          "bytes": 8,
+          "op": "@P0 LDC.64 R10, c[0x0][0x3a0]"
+        },
+        {
+          "PC": "0x1420",
+          "start": "0x3f8",
+          "bytes": 8,
+          "op": "LDCU.64 UR4, c[0x0][0x3f8]"
+        },
+        {
+          "PC": "0x1430",
+          "start": "0x410",
+          "bytes": 4,
+          "op": "LDCU UR10, c[0x0][0x410]"
+        },
+        {
+          "PC": "0x1440",
+          "start": "0x408",
+          "bytes": 4,
+          "op": "LDCU UR14, c[0x0][0x408]"
+        },
+        {
+          "PC": "0x1450",
+          "start": "0x400",
+          "bytes": 8,
+          "op": "LDCU.64 UR12, c[0x0][0x400]"
+        },
+        {
+          "PC": "0x1470",
+          "start": "0x3f0",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x3f0]"
+        }
+      ],
+      "legacy_card_pointer_ranges_absent": [
+        "0x3d0",
+        "0x3d8"
+      ],
+      "FP_opcode_inventory_unchanged": {
+        "FADD": 36,
+        "FMUL": 1
+      },
+      "static_barriers_unchanged": [
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0"
+      ],
+      "same_sentinel": 2047,
+      "same_shift": 12,
+      "card_byte_shifts": [
+        2,
+        4
+      ],
+      "card_byte_mask": 252,
+      "limits": "Fixed-driver local CB0 argument-slot/load/decode/compare/consumer witness. CB0 slots agree with unchanged typed PTX ABI and baseline; not a universal ABI/pointer interpreter. Native FP opcode counts are inventory only; D296 ordered PTX topology, complete host-address domain, future raw GPU/engine/canonical/broad qualification remain required. No counters, dynamic load counts, speed, or adoption claim."
+    },
+    "up_show": {
+      "required_native_operand_chain": [
+        {
+          "PC": "0x1ac0",
+          "op": "LDCU.64 UR4, c[0x0][0x410]"
+        },
+        {
+          "PC": "0x1b30",
+          "op": "LEA R24, P0, R12, UR4, 0x2"
+        },
+        {
+          "PC": "0x1b40",
+          "op": "LEA.HI.X R25, R12, UR5, RZ, 0x2, P0"
+        },
+        {
+          "PC": "0x1b50",
+          "op": "LDG.E.CONSTANT R11, desc[UR12][R24.64]"
+        },
+        {
+          "PC": "0x1bb0",
+          "op": "IMAD.SHL.U32 R6, R11, 0x4, RZ"
+        },
+        {
+          "PC": "0x1bc0",
+          "op": "LOP3.LUT R6, R6, 0xfc, RZ, 0xc0, !PT"
+        },
+        {
+          "PC": "0x1bd0",
+          "op": "IADD.64 R6, R2, R6"
+        },
+        {
+          "PC": "0x2a00",
+          "op": "SHF.R.U32.HI R6, RZ, 0x4, R11"
+        },
+        {
+          "PC": "0x2a20",
+          "op": "LOP3.LUT R6, R6, 0xfc, RZ, 0xc0, !PT"
+        },
+        {
+          "PC": "0x2a30",
+          "op": "IADD.64 R6, R2, R6"
+        },
+        {
+          "PC": "0x3730",
+          "op": "SHF.R.U32.HI R9, RZ, 0xc, R11"
+        },
+        {
+          "PC": "0x3780",
+          "op": "ISETP.NE.AND P0, PT, R9, 0x7ff, PT"
+        },
+        {
+          "PC": "0x37f0",
+          "op": "MOV R6, RZ"
+        },
+        {
+          "PC": "0x3800",
+          "op": "@P0 IMAD R9, R9, 0x4, R10"
+        },
+        {
+          "PC": "0x3820",
+          "op": "@P0 LDS R6, [R9]"
+        }
+      ],
+      "all_constant_read_ranges": [
+        {
+          "PC": "0x0",
+          "start": "0x37c",
+          "bytes": 4,
+          "op": "LDC R1, c[0x0][0x37c]"
+        },
+        {
+          "PC": "0x20",
+          "start": "0x38c",
+          "bytes": 4,
+          "op": "LDC R0, c[0x0][0x38c]"
+        },
+        {
+          "PC": "0x50",
+          "start": "0x388",
+          "bytes": 4,
+          "op": "LDC R3, c[0x0][0x388]"
+        },
+        {
+          "PC": "0x60",
+          "start": "0x358",
+          "bytes": 8,
+          "op": "LDCU.64 UR12, c[0x0][0x358]"
+        },
+        {
+          "PC": "0x70",
+          "start": "0x380",
+          "bytes": 8,
+          "op": "LDC.64 R4, c[0x0][0x380]"
+        },
+        {
+          "PC": "0x80",
+          "start": "0x3a8",
+          "bytes": 8,
+          "op": "LDC.64 R6, c[0x0][0x3a8]"
+        },
+        {
+          "PC": "0x90",
+          "start": "0x3f0",
+          "bytes": 8,
+          "op": "LDC.64 R8, c[0x0][0x3f0]"
+        },
+        {
+          "PC": "0xb0",
+          "start": "0x3e8",
+          "bytes": 8,
+          "op": "LDC.64 R10, c[0x0][0x3e8]"
+        },
+        {
+          "PC": "0xe0",
+          "start": "0x43c",
+          "bytes": 4,
+          "op": "LDCU UR8, c[0x0][0x43c]"
+        },
+        {
+          "PC": "0x100",
+          "start": "0x400",
+          "bytes": 8,
+          "op": "LDC.64 R2, c[0x0][0x400]"
+        },
+        {
+          "PC": "0x120",
+          "start": "0x3b8",
+          "bytes": 8,
+          "op": "LDCU.64 UR6, c[0x0][0x3b8]"
+        },
+        {
+          "PC": "0x200",
+          "start": "0x3b0",
+          "bytes": 8,
+          "op": "LDC.64 R8, c[0x0][0x3b0]"
+        },
+        {
+          "PC": "0x240",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R14, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x3e0",
+          "start": "0x438",
+          "bytes": 4,
+          "op": "LDCU UR16, c[0x0][0x438]"
+        },
+        {
+          "PC": "0x480",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R10, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x4a0",
+          "start": "0x408",
+          "bytes": 8,
+          "op": "LDC.64 R8, c[0x0][0x408]"
+        },
+        {
+          "PC": "0x580",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R12, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x5a0",
+          "start": "0x3f8",
+          "bytes": 8,
+          "op": "LDC.64 R8, c[0x0][0x3f8]"
+        },
+        {
+          "PC": "0x670",
+          "start": "0x428",
+          "bytes": 8,
+          "op": "LDCU.64 UR4, c[0x0][0x428]"
+        },
+        {
+          "PC": "0x6f0",
+          "start": "0x440",
+          "bytes": 4,
+          "op": "LDCU UR5, c[0x0][0x440]"
+        },
+        {
+          "PC": "0x700",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDC R14, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x720",
+          "start": "0x430",
+          "bytes": 8,
+          "op": "LDC.64 R16, c[0x0][0x430]"
+        },
+        {
+          "PC": "0x820",
+          "start": "0x360",
+          "bytes": 4,
+          "op": "LDCU UR16, c[0x0][0x360]"
+        },
+        {
+          "PC": "0x18d0",
+          "start": "0x3c0",
+          "bytes": 16,
+          "op": "LDCU.128 UR24, c[0x0][0x3c0]"
+        },
+        {
+          "PC": "0x1910",
+          "start": "0x390",
+          "bytes": 16,
+          "op": "LDCU.128 UR20, c[0x0][0x390]"
+        },
+        {
+          "PC": "0x1920",
+          "start": "0x3a0",
+          "bytes": 8,
+          "op": "LDCU.64 UR8, c[0x0][0x3a0]"
+        },
+        {
+          "PC": "0x1a20",
+          "start": "0x440",
+          "bytes": 4,
+          "op": "LDCU UR4, c[0x0][0x440]"
+        },
+        {
+          "PC": "0x1aa0",
+          "start": "0x3d0",
+          "bytes": 8,
+          "op": "LDC.64 R6, c[0x0][0x3d0]"
+        },
+        {
+          "PC": "0x1ac0",
+          "start": "0x410",
+          "bytes": 8,
+          "op": "LDCU.64 UR4, c[0x0][0x410]"
+        },
+        {
+          "PC": "0x1ad0",
+          "start": "0x3e0",
+          "bytes": 8,
+          "op": "LDC.64 R8, c[0x0][0x3e0]"
+        },
+        {
+          "PC": "0x1ae0",
+          "start": "0x3d8",
+          "bytes": 8,
+          "op": "LDC.64 R22, c[0x0][0x3d8]"
+        },
+        {
+          "PC": "0x3740",
+          "start": "0x430",
+          "bytes": 8,
+          "op": "LDCU.64 UR4, c[0x0][0x430]"
+        }
+      ],
+      "legacy_card_pointer_ranges_absent": [
+        "0x418",
+        "0x420"
+      ],
+      "FP_opcode_inventory_unchanged": {
+        "FADD": 136,
+        "FMUL": 1,
+        "FFMA": 2
+      },
+      "static_barriers_unchanged": [
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0",
+        "BAR.SYNC.DEFER_BLOCKING 0x0"
+      ],
+      "same_sentinel": 2047,
+      "same_shift": 12,
+      "card_byte_shifts": [
+        2,
+        4
+      ],
+      "card_byte_mask": 252,
+      "limits": "Fixed-driver local CB0 argument-slot/load/decode/compare/consumer witness. CB0 slots agree with unchanged typed PTX ABI and baseline; not a universal ABI/pointer interpreter. Native FP opcode counts are inventory only; D296 ordered PTX topology, complete host-address domain, future raw GPU/engine/canonical/broad qualification remain required. No counters, dynamic load counts, speed, or adoption claim."
+    }
+  },
+  "negative_reader_fixtures": [
+    "up_fold:wrong_sentinel",
+    "up_fold:wrong_card_mask",
+    "up_fold:wrong_word_load",
+    "up_fold:legacy_card_pointer_read",
+    "up_show:wrong_sentinel",
+    "up_show:wrong_card_mask",
+    "up_show:wrong_word_load",
+    "up_show:legacy_card_pointer_read"
+  ],
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_application_kernel_solver_or_speed_samples": 0,
+  "candidate_adopted": false
+}

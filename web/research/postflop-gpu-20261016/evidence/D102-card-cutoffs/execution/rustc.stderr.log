@@ -1,0 +1,11 @@
+error: linking with `link.exe` failed: exit code: 1107
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.41.34120\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs\\rustc9qP4sY\\symbols.o" "<5 object files omitted>" "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps/{libserde_json-83a0670a02a34a4d,libmemchr-863cd9a4723da2aa,libitoa-74a051154152f23d,libzmij-421e3e50aa0a9d3e,libserde_core-94e9cc654b950df9}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs\\probe.exe" "/OPT:REF,ICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: probe.d102_probe.332bac75d9d56514-cgu.0.rcgu.o : error LNK2019: unresolved external symbol _RNvXs_NtCsavOST1yGCNT_10serde_json5valueNtB4_5ValueNtNtCs8xEFJqa6dYS_4core3fmt7Display3fmt referenced in function _RNvCs4onylU5w85I_10d102_probe4main
+          probe.d102_probe.332bac75d9d56514-cgu.0.rcgu.o : error LNK2001: unresolved external symbol _RNvXs5_NtCsavOST1yGCNT_10serde_json5errorNtB5_5ErrorNtNtCs8xEFJqa6dYS_4core3fmt5Debug3fmt
+          S:\GTOpen-research\postflop-gpu-20261016\build-e051-final-primary\release\deps\libserde_json-83a0670a02a34a4d.rlib : fatal error LNK1107: invalid or corrupt file: cannot read at 0x1F93FC
+          
+
+error: aborting due to 1 previous error
+

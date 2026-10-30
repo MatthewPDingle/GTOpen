@@ -1,0 +1,30 @@
+{
+  "id": "E033-primary-plan-r2",
+  "status": "PASS_HOST_SOURCE_CHECKS_ONLY",
+  "at": "2026-10-16T20:04:12.398720+00:00",
+  "parent_manifest_sha256": "cc3a71ce30dbc8921a369481e74acc7b6f07aabf06ae6e0996678cd55d196457",
+  "source_manifest_sha256": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+  "protocol_sha256": "35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135",
+  "accepted_entries_verified": 162,
+  "only_known_preexisting_untracked_paths": [
+    "crates/solver/target/research-fixtures/postflop-latest.ptx",
+    "crates/solver/target/research-fixtures/preflop-latest.ptx"
+  ],
+  "all_reserved_outputs_absent": true,
+  "python_ast_parse": [
+    "compile_check.py",
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "primary_and_assessor_body_unchanged_except_protocol_hash_and_plan_path": true,
+  "expected_gpu_units": {
+    "passed": 87,
+    "ignored": 4
+  },
+  "fixed_pairs": 3,
+  "complete_results": 18,
+  "convergence_checks": 138,
+  "compiler_native_gpu_execution": false,
+  "production_or_status_edits": false
+}

@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T09:47:48.874133+00:00",
+  "scope": "Only up_show: fill first52 retired chunk_sum words with original full per-card serial sums after its original final scan barrier; one extra CTA barrier; initialize tot_c from the first card cache and retain all second-card additions and both lower/higher correction loops. No other entry, ABI, allocation, host, launch, scan, layout, precision, quality or save change.",
+  "source_reverse_exact": true,
+  "ordered_arithmetic": "Each card sum begins with +0 and adds reach_sh[card_pos_sh[t-card_base]] in original t order. Original tot_c is the completed first-card serial accumulator followed by the second-card serial additions. Cache replaces exactly the first accumulator; it does not add two independently summed cards. Original lower_c/higher_c recurrences are unchanged. GPU bitwise parity including NaN/signedzero remains to be tested.",
+  "synchronization": "Original final scan CTA barrier retires every chunk_sum read and completes reach_sh/card_pos_sh writes. Threads stride over independent card IDs and write only cache[0..52], within the existing257word array even at width1. The added uniform CTA barrier publishes all cached sums before any hand consumes them. No chunk_sum read or write overlaps its scan lifetime.",
+  "barriers_before_after": [
+    5,
+    6
+  ],
+  "risks": "New serial per-card work, a CTA barrier, shared reads/writes and longer register lifetimes may outweigh removed per-hand additions. Small/empty/tail inputs may regress. No resource or no-tradeoff assertion from source."
+}

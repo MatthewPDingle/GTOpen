@@ -1,0 +1,38 @@
+"""Freeze execution, publish the complete scoped context/plan component result."""
+from pathlib import Path
+import ast,json,shutil,subprocess,sys,urllib.request
+R=Path(r'S:\GTOpen-research\postflop-gpu-20261016');C=R/'runs/accepted-E051-live-20261018';sys.path.insert(0,str(C));import common_e051_live as old
+H=R/'runs/D130-plan-context-overlap';M=R/'runs/D130-manager';old.custody();assert not M.exists()and not(R/'gpu-run.lock').exists();P=old.read(H/'protocol.json')
+for p,h in P['input_sha256'].items():old.pin(p,h)
+for n in['execute.py','replay.py']:ast.parse((H/n).read_text(encoding='utf-8'))
+P.update(at=old.now(),original_preparation_protocol_sha256=old.sha(H/'protocol.json'));P['input_sha256'].update({str(p):old.sha(p)for p in[Path(__file__),H/'execute.py',H/'replay.py',H/'protocol.json']});old.save(H/'execution-plan.json',P)
+def publish(p,key):
+ dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True)
+ if dst.exists():assert dst.read_bytes()==p.read_bytes(),key
+ else:shutil.copyfile(p,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+ return {'url':'evidence/'+key,'sha256':old.sha(p)}
+pub=[publish(H/n,H.name+'/'+n)for n in['execute.py','replay.py','execution-plan.json']]+[publish(Path(__file__),H.name+'/prepare-run.py')];old.save(H/'runner-pre-execution-publication.json',{'at':old.now(),'protocol_sha256':old.sha(H/'execution-plan.json'),'HTTP_byte_verified_artifacts':pub,'compiler_or_native_executions':0})
+M.mkdir();print('D130executionprotocol',old.sha(H/'execution-plan.json'),flush=True);old.child([sys.executable,'-B',str(H/'execute.py'),old.sha(H/'execution-plan.json')],M,'component',old.env(),3000);q=old.read(H/'report.json');old.custody();assert not(R/'gpu-run.lock').exists()
+for folder in[H,H/'build',H/'execution',M]:
+ for p in folder.iterdir():
+  if p.is_file()and p.suffix in['.py','.rs','.json','.log']:pub.append(publish(p,(H.name+'-'+folder.name if folder in[H/'build',H/'execution']else folder.name)+'/'+p.name))
+for spec in P['order']:
+ for p in(H/'execution'/spec['id']).glob('*.json'):pub.append(publish(p,H.name+'-'+spec['id']+'/'+p.name))
+reason=f"Component saving {q['sum_fixture_component_saving_ms']:.6f} ms versus the fixed 95.825124 ms screening budget. Full plan metadata and lifecycle controls pass; all-thread CPU guards retained. "+('One integrated trial admitted; no full-solve speed or material-cost conclusion yet.'if q['admit_one_integrated_trial']else'Component admission failed. This exact overlap/threshold/thread form is closed; no rescue variants or extra samples.')
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(old.ar.STATUS);e=next(x for x in s['experiments']if x['id']=='D130');e.update(status='measured',correctness='18 lifecycle/error mocks and all 18 full plan snapshots pass',stage='One integrated source trial admitted'if q['admit_one_integrated_trial']else'Closed: component admission failed',reason=reason,updated_at=old.now(),accepted=False);e['evidence'].extend([{'label':'Frozen ability/cohort execution plan','url':'evidence/D130-plan-context-overlap/execution-plan.json'},{'label':'Full component wall/CPU and plan results','url':'evidence/D130-plan-context-overlap/report.json'}]);s.update(updated_at=old.now(),state='running',goal_status='active',active_experiment=None,stage='Preparing plan/context overlap integration'if q['admit_one_integrated_trial']else'Investigating the next GPU optimization',activity=reason+' Accepted and live E051 remain at 12.44% cumulative gain; last primary B249.');old.ar.atomic_json(old.ar.STATUS,s)
+old.save(M/'publication.json',{'at':old.now(),'HTTP_byte_verified_artifacts':pub,'bulk_raw_retained_physically_S':True,'all_owned_children_terminal':True,'source_main_live_PTX_custody_pass':True})
+ledger=old.REPO/'research/postflop-gpu-20261016/experiments.md';raw=ledger.read_bytes();assert b'### D130 plan and context overlap component'not in raw
+entry=f'''
+
+### D130 plan and context overlap component
+
+Previous turn completed E078 full correctness and fixed three-pair screen, rejected0.538396055% aggregate slowdown and rainbow/river guards; no fusion variants. Accepted162/main163/live/protected2PTX and idle state revalidated, last primaryB249. New bounded local-all-ref/source search found no context/CPU-plan overlap. This differs from closed E071 parallel planner stages, D109 context/module cache and NVRTC overlap without headroom: CPU GpuPlan build stays serial and byte-exact, context lifetime unchanged, no cached result or shifted destructor boundary. D041 server MEM_CTX counterevidence retained: fresh-process gain may be absent on already active server contexts. No universal application claim.
+
+Freeze preparation{old.sha(H/'protocol.json')} and execution{old.sha(H/'execution-plan.json')} before first compiler/native. One scoped CUDA context/stream worker runs while caller executes original compressed plan/budget work; fixed original-node eligibility>=65536, smaller trees serial. Join before result/error; plan budget error priority, CUDA error/panic propagation after successful plan, worker cleanup and spawn-failure serial fallback reviewed. Actual spawn failure not injected. No kernel/math/quality/storage/layout/source activation. Returned context rebound to caller inside both component clocks. cudarc0.19.7Send/Sync/binding and official CUDA/Rust API contract recorded; no config/reset/lifetime change.
+
+One compiler, one CPU-only18mock success/error/panic/priority/resourceDrop/counter ability process, then exactly6fresh processes BC/CB/BC, each3canonical compressed fixtures.18context/stream pairs, zero application kernels/solvers/NVRTC/modules/pinned/devicearrays. Each full53fieldactualplan/capacity/struct/kind/children snapshot independently matches acceptedD092 outside timing: {q['encoded_words_checked']}encodedwords/{q['root_checks']}checks/{q['raw_bytes']}rawbytes onS. Wall/all-threadCPU/rawmemory counters retained. Component sum fixture-median saving{q['sum_fixture_component_saving_ms']}ms vs prospective95.825124ms budget; eligible large fixture requires positive median and>=2/3improving pairs, CPU median<=baseline*1.10+5ms. Budget uses historical9582.5124only as constant,no pooling/native headroom bound. Fixtures{json.dumps(q['fixtures'],separators=(',',':'))}. Report{old.sha(H/'report.json')}. {reason}
+
+Speculative context work on rejected budgets, warm server cost, OSfailure fallback, actual cross-thread GPU/state/F32/menu/save/resume/continuation/material/fullcycle1%/strictfixture/fresh16/holdout/fresh-original cumulative remain unqualified. No no-tradeoff or full-cycle speed claim. All{len(pub)}published code/API/protocol/report/log artifacts HTTPbyteverified, raw physicallyS, all owned children terminal and noGPUlock. Accepted162/main163/live/protected2PTX exact; no E079source or new primary IDs. E051accepted/deployed12.4372274192%,lastB249 unchanged,goalactive. {'One integrated source trial may proceed through all unchanged gates.'if q['admit_one_integrated_trial']else'Exact scoped source/filter/threshold/thread/placement form closed; no rescue or resampling.'}
+''';nl=b'\r\n'if b'\r\n'in raw else b'\n';ledger.write_bytes(raw+entry.encode().replace(b'\n',nl));old.custody();subprocess.run(['git','commit','--only','-m','research: screen original plan and CUDA context setup overlap','--','research/postflop-gpu-20261016/experiments.md'],cwd=old.REPO,check=True);old.custody();print(json.dumps({'status':q['status'],'saving_ms':q['sum_fixture_component_saving_ms'],'admit_integrated':q['admit_one_integrated_trial'],'published_files':len(pub)}),flush=True)

@@ -1,0 +1,18 @@
+{
+  "id": "D223",
+  "at": "2026-10-29T01:02:58.694802+00:00",
+  "status": "pass_exhaustive_supported_chunk_integer_model",
+  "protocol_sha256": "7d324a38d9041a036eefa1e3c089331becf146f2678412a086f1fdd97212f9dd",
+  "shape_records": 339712,
+  "power_two_shapes": 11943,
+  "fallback_shapes": 327769,
+  "maximum_chunk": 1326,
+  "reader_checks": 1358848,
+  "raw_bytes": 9511936,
+  "raw_sha256": "5e2da81db001e219fa11f9df14dd7da7af9db288ab26ddc7922f28b4db9a712a",
+  "all_model_and_reader_values_exact": true,
+  "same_bounds_reason": "Only chunk binding changes; equal integer chunk and unchanged tid/m_o/min expressions imply identical lo_k,hi_k and subsequent ordered float loop bounds for every lane. This is an algebraic inference, not an emitted-code or device-float observation.",
+  "CUDA_contexts_kernels_compilers_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "CPU integer-only model+complete retained shape stream and separate arithmetic readback in one owned process. Every shape tested, not only production widths. Exact chunk equality plus identical later source operands proves same lo/hi loop bounds algebraically; no claim every float result was tested. No CUDA calls/context/compiler/kernel/solver/performance. No candidate source activation or adoption."
+}

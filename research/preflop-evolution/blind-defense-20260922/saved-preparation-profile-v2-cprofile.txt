@@ -1,0 +1,53 @@
+         181334812 function calls (181334646 primitive calls) in 139.039 seconds
+
+   Ordered by: cumulative time
+   List reduced from 536 to 45 due to restriction <45>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        3    3.404    1.135   88.550   29.517 sampled_visible_initialization_v1.py:11(features)
+   395438    7.560    0.000   85.146    0.000 sampled_visible_poker_features_v1.py:94(from_active_features)
+        2    0.563    0.282   82.952   41.476 hu_saved_preparation_profile_20260925_v2.py:56(<lambda>)
+        1    0.054    0.054   51.146   51.146 hu_saved_preparation_profile_20260925_v2.py:49(<lambda>)
+        1    0.123    0.123   51.090   51.090 action_integrated_checkpoint_v1.py:94(restore_checkpoint)
+   395438    9.087    0.000   44.158    0.000 sampled_visible_poker_features_v1.py:60(visible_summaries)
+        1    0.072    0.072   35.213   35.213 exact_initial_hybrid_checkpoint_v1.py:100(restore_checkpoint)
+ 14235768   25.575    0.000   26.729    0.000 sampled_visible_poker_features_v1.py:99(one)
+        1    0.005    0.005   19.734   19.734 sampled_visible_hybrid_checkpoint_v1.py:161(restore_checkpoint)
+   651916    5.073    0.000   19.531    0.000 sampled_physical_reservoir_v1.py:15(checked_row)
+      397    0.124    0.000   17.511    0.044 sampled_visible_hybrid_checkpoint_v1.py:82(validate_model)
+      786    1.683    0.002   16.612    0.021 sampled_physical_preflop_table_v1.py:62(__init__)
+  3675859    5.822    0.000   15.524    0.000 {built-in method builtins.any}
+   394520    3.725    0.000   14.922    0.000 sampled_visible_poker_features_v1.py:32(best_visible_rank)
+        2    1.862    0.931   13.387    6.693 sampled_physical_reservoir_v1.py:87(load)
+      237    0.015    0.000   11.797    0.050 exact_initial_hybrid_checkpoint_v1.py:18(validate_model)
+      158    0.020    0.000   11.477    0.073 exact_initial_hybrid_checkpoint_v1.py:46(model_document)
+      160    0.014    0.000   10.544    0.066 sampled_visible_hybrid_checkpoint_v1.py:113(model_document)
+     1824    0.030    0.000    9.287    0.005 __init__.py:299(loads)
+     1824    0.009    0.000    9.118    0.005 decoder.py:332(decode)
+     1824    9.099    0.005    9.099    0.005 decoder.py:343(raw_decode)
+      325    0.135    0.000    8.782    0.027 sampled_visible_hybrid_checkpoint_v1.py:26(encoded)
+      325    0.003    0.000    8.554    0.026 __init__.py:183(dumps)
+      325    0.003    0.000    8.551    0.026 encoder.py:183(encode)
+      325    8.546    0.026    8.546    0.026 encoder.py:205(iterencode)
+  3816595    2.403    0.000    7.495    0.000 {built-in method builtins.sorted}
+        1    0.002    0.002    6.754    6.754 hu_saved_preparation_profile_20260925_v2.py:68(<lambda>)
+        1    0.091    0.091    6.752    6.752 hu_action_integrated_fresh_review_20260925.py:29(base_predict)
+  2049725    1.683    0.000    6.001    0.000 {built-in method builtins.max}
+        1    0.000    0.000    5.893    5.893 exact_initial_hybrid_checkpoint_v1.py:55(verify_bank)
+        1    0.000    0.000    5.820    5.820 action_integrated_checkpoint_v1.py:58(verify_bank)
+       79    0.010    0.000    5.820    0.074 action_integrated_checkpoint_v1.py:49(model_document)
+   386978    3.163    0.000    5.421    0.000 sampled_visible_poker_features_v1.py:26(_straight_high)
+        1    0.044    0.044    5.371    5.371 sampled_visible_hybrid_checkpoint_v1.py:119(verify_bank)
+ 24120892    4.939    0.000    4.939    0.000 sampled_physical_reservoir_v1.py:18(<genexpr>)
+  2696064    4.922    0.000    4.922    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+  3946148    2.516    0.000    4.718    0.000 {built-in method builtins.sum}
+   299123    3.010    0.000    4.518    0.000 sampled_physical_preflop_table_v1.py:18(validate_preflop)
+       79    0.008    0.000    4.211    0.053 action_integrated_checkpoint_v1.py:25(validate_model)
+   789040    1.001    0.000    4.090    0.000 __init__.py:595(__init__)
+  1106462    1.502    0.000    3.517    0.000 fromnumeric.py:71(_wrapreduction)
+  1053199    0.617    0.000    3.297    0.000 {method 'all' of 'numpy.ndarray' objects}
+  1967717    3.288    0.000    3.288    0.000 {built-in method numpy.asarray}
+   789040    0.451    0.000    3.089    0.000 __init__.py:669(update)
+ 14631206    2.909    0.000    2.909    0.000 sampled_visible_poker_features_v1.py:96(<genexpr>)
+
+

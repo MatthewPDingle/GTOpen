@@ -1,0 +1,72 @@
+{
+  "candidate": "E027",
+  "revision": 2,
+  "at": "2026-10-16T16:19:21.429426+00:00",
+  "status": "HOST_FILE_CHECKS_ONLY_PASS",
+  "script_ast": [
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "allowed_script_substitutions": {
+    "f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d": "48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783",
+    "runs/E027-design": "runs/E027-design-r2",
+    "runs/E027-build": "runs/E027-build-r2",
+    "build-primary-e027": "build-primary-e027-r2",
+    "runs/E027-primary-plan/protocol.json": "runs/E027-primary-plan-r2/protocol.json"
+  },
+  "substitution_counts": {
+    "build.py": {
+      "f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d": 1,
+      "runs/E027-design": 2,
+      "runs/E027-build": 1,
+      "build-primary-e027": 1,
+      "runs/E027-primary-plan/protocol.json": 0
+    },
+    "primary.py": {
+      "f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d": 1,
+      "runs/E027-design": 0,
+      "runs/E027-build": 1,
+      "build-primary-e027": 0,
+      "runs/E027-primary-plan/protocol.json": 0
+    },
+    "assess.py": {
+      "f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d": 1,
+      "runs/E027-design": 0,
+      "runs/E027-build": 1,
+      "build-primary-e027": 0,
+      "runs/E027-primary-plan/protocol.json": 1
+    }
+  },
+  "normalized_script_control_flow_identical_to_r1": true,
+  "measurement_protocol_unchanged": true,
+  "fixed_order": [
+    "V027-unit",
+    "B089",
+    "E027R1",
+    "E027R2",
+    "B090",
+    "B091",
+    "E027R3"
+  ],
+  "all_seven_ids_unused": true,
+  "new_target_and_output_absent": true,
+  "both_binary_names_unused": true,
+  "accepted_source_entries_verified": 162,
+  "owned_source_entries": 5,
+  "candidate_changes_from_r1": [
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "source_manifest_sha256": "0401006b33a45ff9bdc2d2e9ef255285146a7538b4197f5bc130b6ac8f54e0b5",
+  "preserved_r1_file_count": 47,
+  "failed_build_exit": 101,
+  "native_tests": 0,
+  "gpu_executions": 0,
+  "compiler_executions": 0,
+  "production_edits": 0,
+  "status_edits": 0
+}

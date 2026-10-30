@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-18T01:21:20.807276+00:00",
+  "status": "scripts_prepared_no_primary_native_runs",
+  "pairs": [
+    {
+      "baseline": "B226",
+      "candidate": "E070R1"
+    },
+    {
+      "baseline": "B227",
+      "candidate": "E070R2"
+    },
+    {
+      "baseline": "B228",
+      "candidate": "E070R3"
+    }
+  ],
+  "measurement_order": [
+    "B226",
+    "E070R1",
+    "E070R2",
+    "B227",
+    "B228",
+    "E070R3"
+  ],
+  "ordinary_unit_id": "V070-unit",
+  "source_sha256": {
+    "assess.py": "2058f03edc7186f5ed29d397a9c4294e8d04d6eb95b6c0a48b7b017f8b568373",
+    "native.py": "7b1699ee5e3b964bb94b100c3b60e6f349e4df694b7ddcaaefbea7923df35d53",
+    "root-check.py": "5e80aaa7e33ec1df7210cf90143c771e4e6f7134b17b1ad412c6cf3430879012",
+    "run.py": "57ec2c4d88cc25aa7def8c2a890213645a25c08620d30397e22b7e9c85924583"
+  },
+  "direct_controls": "Original passing case evidence plus explicitly corrected unexecuted byte sentinel cases; all5953GPUcase pairs exact, no repeats. No speed samples yet.",
+  "control_closure_sha256": "d36f721f3182718596b49f5a7447ff2e15a97c17037d9c24f282170d34ff6bcf",
+  "cutoff_pct": 1.0,
+  "no_timing_extensions_or_exclusions": true
+}

@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-29T20:58:37.303895+00:00",
+  "original_reader_sha256": "85e586700db52aea9b1d4ad75eeec2ac32c1514d777473ab9e70ee83425f33a0",
+  "original_protocol_sha256": "d5f3b7a0ea5be08cb3dc8294202d9813941656fdd60131b866ba75101b687d5a",
+  "reader_v1_executed": false,
+  "observation": "Pre-execution review found native .reuse hints are ignored by positive parser but remain in raw text used for negative string mutation. First subtraction has .reuse, so literal mutation would be unchanged.",
+  "repair": "V2 removes only .reuse hints from negative-fixture text after positive original-file inspection. Actual captured files and all positive cases/constraints unchanged; no source/compiler/module/native/solver/performance repeat."
+}

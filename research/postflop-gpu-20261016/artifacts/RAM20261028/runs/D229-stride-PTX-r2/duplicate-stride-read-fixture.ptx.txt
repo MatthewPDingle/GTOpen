@@ -1,0 +1,5 @@
+ld.param.u32 %r1, [test_param_0];
+ld.param.u32 %r2, [test_param_0];
+cvt.s64.s32 %rd1, %r1;
+cvt.s64.s32 %rd2, %r2;
+mul.lo.s64 %rd3, %rd1, %rd9;

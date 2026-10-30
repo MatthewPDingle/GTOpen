@@ -1,0 +1,56 @@
+{
+  "candidate": "E036",
+  "at": "2026-10-16T21:53:32Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E036_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-source-review\\report.json",
+      "sha256": "b0f7a1896a2e5f5aefacf23b37dabdbd50ad19a1e0c3560aa08c4a6facf4035b"
+    },
+    "E036_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-script-review\\report.json",
+      "sha256": "c0f5d9b45bb113e35e53185e32842fb5cee554c9facdccfa22687d079fd7fe1d"
+    },
+    "D067_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\report.json",
+      "sha256": "1ecbdcd95211088d000e6ebbee566a1c3a0ab96c1e6e6ef6f69839950cc22cce"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\kernels.cu",
+      "sha256": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-source-review\\report.json": "b0f7a1896a2e5f5aefacf23b37dabdbd50ad19a1e0c3560aa08c4a6facf4035b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-script-review\\report.json": "c0f5d9b45bb113e35e53185e32842fb5cee554c9facdccfa22687d079fd7fe1d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\report.json": "1ecbdcd95211088d000e6ebbee566a1c3a0ab96c1e6e6ef6f69839950cc22cce",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-primary-plan\\scripts-manifest.json": "c53cde6ec8aab5aec607d0ebf63513e64774bb2bc61c2f8345db4c85630456a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-primary-plan\\protocol.json": "b86c617a758b1ab3e281d935060c294b695d7b132b5ffc64d132d7cb76c838b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\manifest.json": "1252fa30431bdb567617577ca75812f48b7127f3cd8d8e6551a8afdbdf9b6bbe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-root-decisions\\preparation.json": "ba9b74076bd0401aaa4ec27dccf156cbbed41e43be2f6ace36098cd0bf91e594",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-source-review\\manifest.json": "8e635ce6bbda3b3b7b314f48fd8c065c1a0c1b4c5530ddf711caa0a5f4b745dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-script-review\\manifest.json": "eba192892847e8183a797b28996205cf8e19f583338e69fbbedaa8a65bd8a85a"
+  },
+  "scope": "Activate exactly the two frozen files. One fresh feature library no-run compile, separate fresh GPU-only lib/evaluator build, V036-unit then only fixed B113/E036R1,E036R2/B114,B115/E036R3 cohort if prior gates pass. Assess exact18 complete results/138 checkpoints and unchanged >=2percent aggregate and fixture guard. No extra samples, implementation change, broader qualification or live deployment. Preserve outcomes; reject restores accepted source.",
+  "previous_goal_turn_classification": "progress"
+}

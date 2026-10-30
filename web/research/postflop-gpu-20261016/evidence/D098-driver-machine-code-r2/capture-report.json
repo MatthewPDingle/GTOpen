@@ -1,0 +1,180 @@
+{
+  "id": "D098",
+  "at": "2026-10-17T08:19:35.454150+00:00",
+  "status": "captured_source_matched_driver_code",
+  "protocol_sha256": "95385401b37f48b17a1efdd25cba0bd5263fe31381f9b9d85d2cfbc7e6ff87c2",
+  "executor_sha256": "14871397204b4b7c3fd8725d551afcdedd11095189120dafafc74b04d57db459",
+  "input_ptx_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "probe_sha256": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+  "markers": {
+    "D098_DEVICE": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "major": 12,
+        "minor": 0,
+        "driver_api_version": 13030
+      }
+    ],
+    "D098_KERNEL": [
+      {
+        "name": "copy_root",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_action",
+        "registers": 40,
+        "local": 32,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_fold",
+        "registers": 39,
+        "local": 0,
+        "shared": 1232,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_show",
+        "registers": 38,
+        "local": 0,
+        "shared": 1040,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action",
+        "registers": 62,
+        "local": 64,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          16,
+          8,
+          4
+        ]
+      },
+      {
+        "name": "copy_span",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action_eval",
+        "registers": 40,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      }
+    ],
+    "D098_MODULE": [
+      {
+        "index": 0,
+        "module_id": 21,
+        "bytes": 195184,
+        "same_owned_context": true,
+        "elf_magic": true
+      }
+    ],
+    "D098_COMPLETE": [
+      {
+        "callback_errors": 0,
+        "modules": 1,
+        "kernel_launches": 0,
+        "solver_executions": 0,
+        "performance_measured": false
+      }
+    ]
+  },
+  "module_sha256": {
+    "module-0.cubin": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47"
+  },
+  "disassembly_sha256": {
+    "module-0-json.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "module-0-json.stdout.log": "e61422d025a7d75336646bb0e644f4322fa11efeea4f8a69da1437df6fe059cd",
+    "module-0-sass.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "module-0-sass.stdout.log": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061"
+  },
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "source_activated": false,
+  "performance_measured": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Source/PTX-matched driver-loaded code, not extraction from the frozen accepted benchmark executable. Static SASS counts are not dynamic executions or speed/precision evidence. Candidate exact reciprocal reuse is not implemented or admitted by this diagnostic."
+}

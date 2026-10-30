@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-17T05:02:13.264052+00:00",
+  "id": "E053",
+  "decision": "rejected",
+  "accepted_source": "E051",
+  "gain_pct": 0.13698089552633597,
+  "minimum_gain_pct": 1.0,
+  "strict_fixture_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": -0.3687890802388875,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -0.4899944837237059,
+        -0.2588755731094739,
+        -0.3687890802388875
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 0.5143431331437538,
+      "slower_pairs": 3,
+      "paired_slowdown_pct": [
+        0.040752415586821515,
+        0.4572022649536513,
+        1.6106263998140347
+      ],
+      "failed": true
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": -11.181516751958378,
+      "slower_pairs": 0,
+      "paired_slowdown_pct": [
+        -3.1321681447889462,
+        -1.4029247202214732,
+        -14.02063687586476
+      ],
+      "failed": false
+    }
+  ],
+  "all18full_results_138checkpoints_exact": true,
+  "ordinary_tests_passed": 84,
+  "raw_kernel_cases_passed": 364,
+  "raw_kernel_launches": 728,
+  "source_restored_and_never_promoted": true,
+  "confirmation_broader_holdout_cumulative_not_run": true,
+  "no_variant_rescue_or_extra_samples": true,
+  "resource_report_sha256": "420eb935e580dac7528c9b9917dc626c076899981f5f5b963836081b3f20bf08",
+  "raw_root_report_sha256": "617f5ea988a78bc1f54921741771d68cc98f14e2f54e373965c9dfc28a695202",
+  "primary_report_sha256": "59972db523ee87169474838b18aff9d60f17097afde6bb7e339620ba103dffe0",
+  "root_report_sha256": "5308636e3fc7048b0d0f7e3c7aceaaf3c08581621bc789c17797563fbb65dbf7",
+  "goal_active": true
+}

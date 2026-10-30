@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "artifact": "D011-design",
+  "status": "diagnostic_patch_not_applied",
+  "created_utc": "2026-10-16T05:44:18.797873+00:00",
+  "target": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\quantized_readback.rs",
+  "base_sha256": "9ed3b74710399f921a7fd4a648ed30304d6f5c983970f42c57a138e11d7e3038",
+  "candidate_sha256": "f500b365b9559859b77d071c898a16ecda96a9caf27926c37e7016fae1cc8104",
+  "patch_sha256": "ed5eb4a58ba94e0335996f4df6f125d21b071c9e6d8db040a6a3f21598bcb66c",
+  "environment_flag": "POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE=1",
+  "cuda_call_site_counts": {
+    "stream\\.synchronize\\(\\)": {
+      "base": 5,
+      "candidate": 5
+    },
+    "stream\\.alloc::<": {
+      "base": 5,
+      "candidate": 5
+    },
+    "stream\\.memcpy_htod\\(": {
+      "base": 3,
+      "candidate": 3
+    },
+    "stream\\.memcpy_dtoh\\(": {
+      "base": 2,
+      "candidate": 2
+    },
+    "module\\.load_function\\(": {
+      "base": 2,
+      "candidate": 2
+    },
+    "stream\\.launch_builder\\(": {
+      "base": 1,
+      "candidate": 1
+    }
+  },
+  "readback_and_tests_exactly_unchanged": true,
+  "extra_waits": 0,
+  "numeric_path_changed": false,
+  "validation": "PASS: rustfmt parse-only; git apply --check; source call-site count assertions; exact unchanged readback/tests suffix; repository source hashes unchanged. No build/GPU/application.",
+  "source_mod_rs_sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+  "trace_records_custom_environment_flag": true,
+  "cuda_module_loading_env_recorded_not_queried": true,
+  "readme_sha256": "52f4301d71d8587abc26479f66626cd70fe476a9db7c179d71bad531cd8ff1ea"
+}

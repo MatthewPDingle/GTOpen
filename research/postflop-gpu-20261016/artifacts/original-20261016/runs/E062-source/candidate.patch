@@ -1,0 +1,58 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -187,6 +187,13 @@
+         float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
+         cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;
+     }
++}
++
++// In complete 32-word tiles, XOR high index bits into bank bits. The
++// final partial tile stays in place, so the allocation and bounds are exact.
++__device__ __forceinline__ int show_prefix_index(int k, int m, bool permute)
++{
++    return permute && k < (m & ~31) ? k ^ ((k >> 5) & 31) : k;
+ }
+ 
+ // Up sweep, showdown terminals: sorted-order sweep with card-removal
+@@ -239,14 +246,15 @@
+     // Blocked inclusive scan: per-thread chunk scan, thread-0 scans chunk
+     // totals, then chunk offsets are added back.
+     __shared__ float chunk_sum[257];
++    int chunk = (m_o + blockDim.x - 1) / blockDim.x;
++    bool permute_prefix = chunk > 1 && (chunk & (chunk - 1)) == 0;
+     {
+-        int chunk = (m_o + blockDim.x - 1) / blockDim.x;
+         int lo_k = threadIdx.x * chunk;
+         int hi_k = min(lo_k + chunk, m_o);
+         float acc = 0.f;
+         for (int k = lo_k; k < hi_k; k++) {
+             acc += reach_sh[k];
+-            prefix[k] = acc;
++            prefix[show_prefix_index(k, m_o, permute_prefix)] = acc;
+         }
+         chunk_sum[threadIdx.x + 1] = acc;
+         __syncthreads();
+@@ -256,10 +264,10 @@
+         }
+         __syncthreads();
+         float base = chunk_sum[threadIdx.x];
+-        for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
++        for (int k = lo_k; k < hi_k; k++) prefix[show_prefix_index(k, m_o, permute_prefix)] += base;
+     }
+     __syncthreads();
+-    float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
++    float total = m_o > 0 ? prefix[show_prefix_index(m_o - 1, m_o, permute_prefix)] : 0.f;
+     float win = node_twin[n], lose = node_tlose[n], tie = node_ttie[n];
+ 
+     int m_p = p_cnt[slot];
+@@ -267,8 +275,8 @@
+     for (int k = threadIdx.x; k < m_p; k += blockDim.x) {
+         u32 i = p_idx[pb + k];
+         u32 lb = p_lower[pb + k], ub = p_upper[pb + k];
+-        float lower = lb > 0 ? prefix[lb - 1] : 0.f;
+-        float higher = total - (ub > 0 ? prefix[ub - 1] : 0.f);
++        float lower = lb > 0 ? prefix[show_prefix_index((int)lb - 1, m_o, permute_prefix)] : 0.f;
++        float higher = total - (ub > 0 ? prefix[show_prefix_index((int)ub - 1, m_o, permute_prefix)] : 0.f);
+         float tot_c = 0.f, lower_c = 0.f, higher_c = 0.f;
+         u32 cc[2] = { pc1[i], pc2[i] };
+         for (int x = 0; x < 2; x++) {

@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "development": {
+    "panel_postflop_residual_bb": 0.0013922120444335162,
+    "reconstructed_by_player_bb": [
+      0.0006443320416672194,
+      0.0007478800027659009
+    ],
+    "largest_local_residual_bb": 0.001420126556534478,
+    "local_boards_above_001_bb": 0,
+    "private_mass_above_001_bb": 0,
+    "boards": [
+      {
+        "board": "8c7c4h",
+        "chance_weight": 0.75,
+        "private_conditioned_weight": 0.818475085974704,
+        "iteration": 2000,
+        "postflop_residual_by_player_bb": [
+          0.0006764895609791605,
+          0.0007436369955553176
+        ],
+        "postflop_residual_bb": 0.001420126556534478,
+        "weighted_residual_contribution_bb": 0.0011623382054545173
+      },
+      {
+        "board": "KhQd9d",
+        "chance_weight": 0.25,
+        "private_conditioned_weight": 0.1815249140252961,
+        "iteration": 2000,
+        "postflop_residual_by_player_bb": [
+          0.0004993374632375804,
+          0.0007670112372309915
+        ],
+        "postflop_residual_bb": 0.001266348700468572,
+        "weighted_residual_contribution_bb": 0.000229873838978603
+      }
+    ],
+    "interpretation": "Descriptive residual concentration, not a new pass/fail rule. The registered 0.01 bb gate applies to the complete weighted panel. A low aggregate does not certify every board or rare hand. Local 0.01 counts use the same numerical reference only for visibility. Weights include legal private-card normalization; simple chance-only averaging is incorrect. No claim about unseen full-deck accuracy or per-hand error bounds follows."
+  },
+  "rare_board_control": {
+    "panel_postflop_residual_bb": 0.001,
+    "reconstructed_by_player_bb": [
+      0.0005,
+      0.0005
+    ],
+    "largest_local_residual_bb": 1.0,
+    "local_boards_above_001_bb": 1,
+    "private_mass_above_001_bb": 0.001,
+    "boards": [
+      {
+        "board": "rare",
+        "chance_weight": 0.001,
+        "private_conditioned_weight": 0.001,
+        "iteration": 2000,
+        "postflop_residual_by_player_bb": [
+          0.5,
+          0.5
+        ],
+        "postflop_residual_bb": 1.0,
+        "weighted_residual_contribution_bb": 0.001
+      },
+      {
+        "board": "common",
+        "chance_weight": 0.999,
+        "private_conditioned_weight": 0.999,
+        "iteration": 2000,
+        "postflop_residual_by_player_bb": [
+          0.0,
+          0.0
+        ],
+        "postflop_residual_bb": 0.0,
+        "weighted_residual_contribution_bb": 0.0
+      }
+    ],
+    "interpretation": "Descriptive residual concentration, not a new pass/fail rule. The registered 0.01 bb gate applies to the complete weighted panel. A low aggregate does not certify every board or rare hand. Local 0.01 counts use the same numerical reference only for visibility. Weights include legal private-card normalization; simple chance-only averaging is incorrect. No claim about unseen full-deck accuracy or per-hand error bounds follows."
+  },
+  "rejected": [
+    "nan",
+    "negative"
+  ],
+  "worker_order_invariant": true,
+  "reserved_outcomes_accessed": false,
+  "inputs_sha256": {
+    "tools\\research\\transfer_board_diagnostic_controls.py": "bc35f4aa01417696fea73fe3dc3567f7a8674e8a2d2eeff7a90a759d37a3ee90",
+    "tools\\research\\transfer_board_diagnostics.py": "3fb7648c2b9d9726c33f1a2e66e895ea222bd616fccc82454ffe880a442b4531",
+    "tools\\research\\continuation_transfer_aggregate.py": "73d0f5869c80fd89f796c1c65aaf63d8dfb36bceb6ed65b61e78eeb018b83dab",
+    "research\\preflop-evolution\\conditional-hu-20260919\\subtree.json": "c461ea211d2d3f24fb85ccbe213b1b73ab0e0177f789442dbf7217f9b6f540e6",
+    "research\\preflop-evolution\\integrated-coverage-20260919\\old-two-orbits-result.json": "858cd02f6c2c2280b0940c9826cbb1a8a07df50478905e515aaa7cd30ffb6afc",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-two-0-result.json": "fb140cecb08a704931459272062b71030207d50d683585b614742d124431f7ef",
+    "research\\preflop-evolution\\representative-coverage-20260919\\transfer-v3-streamed-two-1-result.json": "710b4d1afd93f4142c1d26c57bcfe0c8135d5566ca0517878e6cb71f297e8194"
+  }
+}

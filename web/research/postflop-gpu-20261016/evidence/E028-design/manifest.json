@@ -1,0 +1,86 @@
+{
+  "id": "E028-design",
+  "sealed_at": "2026-10-16T16:45:17.548699+00:00",
+  "base": "accepted E020",
+  "accepted_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "accepted_source_map_count": 162,
+  "owned_source_count": 9,
+  "auxiliary_source_count": 2,
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/gpu/continuation_host_paging_tests.rs": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9",
+    "crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "89bccd9b55cd8d57be4faeaa5739ef1e94e692ec894fc90865f7be0b265ccc1d",
+    "crates/solver/src/gpu/mod.rs": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+    "crates/solver/src/gpu/plan.rs": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+    "crates/solver/src/gpu/continuation_paging.rs": "de02a25550e4167ebd9deb5f5d0a3b968325dce604920ec43e66e5f556cd7700",
+    "crates/solver/src/gpu/continuation_storage.rs": "16e966e7cea7e01213ba4a8cf24958c18369ac3d596b258e479a300893345312",
+    "crates/solver/src/gpu/continuation_capacity.rs": "94d38bf7ed1241aa93c0fde614cdc9645a546206c522d4ce551ccf967735d966",
+    "crates/solver/src/gpu/continuation_host_paging_tests.rs": "eeab4c40bc07e7d33d36bafc0bc84b702e1f0c3227cf25621fbb00114acc98ee",
+    "crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "dd3315a9c1818f3051ac86a026556cbedaf43747ed19737a3a00b4f9f9046a3b",
+    "crates/solver/src/game.rs": "660363146a5ddd050277d4297efee92069b7bf5e1bba69b3ed881f7d382833d2"
+  },
+  "accepted_auxiliary_sha256": {
+    "crates/solver/examples/continuation_storage_capacity.rs": "7bda2f3077f32385e7df2aca224dd1a19a69257104dca2b041629118cf04f490",
+    "crates/solver/examples/hu_context_capacity.rs": "b91af213353164de7313c425a692d9c01fb40b1733532dd0213df58400e83512"
+  },
+  "candidate_auxiliary_sha256": {
+    "crates/solver/examples/continuation_storage_capacity.rs": "c2d7f36a175f518f7962ac21076a6f2f4cfd06e3af8e38a7d3faf49ada5f7442",
+    "crates/solver/examples/hu_context_capacity.rs": "2643457e1051544c8b25785d790e3ad7ab5d3528e16056ada322ff0d16fb960e"
+  },
+  "artifact_sha256": {
+    "base/crates/solver/examples/continuation_storage_capacity.rs": "7bda2f3077f32385e7df2aca224dd1a19a69257104dca2b041629118cf04f490",
+    "base/crates/solver/examples/hu_context_capacity.rs": "b91af213353164de7313c425a692d9c01fb40b1733532dd0213df58400e83512",
+    "base/crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "base/crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "base/crates/solver/src/gpu/continuation_host_paging_tests.rs": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9",
+    "base/crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "base/crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6",
+    "base/crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "base/crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "base/crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "base/crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "candidate/crates/solver/examples/continuation_storage_capacity.rs": "c2d7f36a175f518f7962ac21076a6f2f4cfd06e3af8e38a7d3faf49ada5f7442",
+    "candidate/crates/solver/examples/hu_context_capacity.rs": "2643457e1051544c8b25785d790e3ad7ab5d3528e16056ada322ff0d16fb960e",
+    "candidate/crates/solver/src/game.rs": "660363146a5ddd050277d4297efee92069b7bf5e1bba69b3ed881f7d382833d2",
+    "candidate/crates/solver/src/gpu/continuation_capacity.rs": "94d38bf7ed1241aa93c0fde614cdc9645a546206c522d4ce551ccf967735d966",
+    "candidate/crates/solver/src/gpu/continuation_host_paging_tests.rs": "eeab4c40bc07e7d33d36bafc0bc84b702e1f0c3227cf25621fbb00114acc98ee",
+    "candidate/crates/solver/src/gpu/continuation_paging.rs": "de02a25550e4167ebd9deb5f5d0a3b968325dce604920ec43e66e5f556cd7700",
+    "candidate/crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "dd3315a9c1818f3051ac86a026556cbedaf43747ed19737a3a00b4f9f9046a3b",
+    "candidate/crates/solver/src/gpu/continuation_storage.rs": "16e966e7cea7e01213ba4a8cf24958c18369ac3d596b258e479a300893345312",
+    "candidate/crates/solver/src/gpu/kernels.cu": "89bccd9b55cd8d57be4faeaa5739ef1e94e692ec894fc90865f7be0b265ccc1d",
+    "candidate/crates/solver/src/gpu/mod.rs": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+    "candidate/crates/solver/src/gpu/plan.rs": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+    "candidate.patch": "a0fcc0cc127a763fae4cf7fc6ea136c79509396022eb6639212784001674d05b",
+    "owned-paths.json": "999a354acb22943240b03ab94322e8a03f625e4fce9d357151a821d9be1429c4",
+    "README.md": "99e83eee992488d00243a9bee0b23bd9f14e2c2978656e747357d571fa12ba1a",
+    "source-checks.json": "3d6226a843ef371c762b1fbffc20cd127ae4d479bad9e9acb20b8762a2699097",
+    "syntax-checks.json": "e391eef5df83e822fc5a48982ac16ab073ede41b244830038c09e98c47ad96c5"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D053-actor1-sigma-source-audit\\manifest.json": "9fc7c8c6275b38d70dafb1a4d938f43c8f7d419911f285d088a404f41e4a8f03",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D053-actor1-sigma-source-audit\\report.json": "07fc3d1dc6307bb0df07d29e715c19ff5557df2447cd795243c43ac84e24c60f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D053-actor1-sigma-source-audit\\capacity-compatibility-addendum\\manifest.json": "1584495d2d7bd1584a8d30bbf6c9a7e97a75449fa12f9a07abbefcdeae2694ec",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D053-actor1-sigma-source-audit\\capacity-compatibility-addendum\\report.json": "4d426ee004b8413fff768e34b3bc0bdd4b38508e4afd6b3096bb298f46a24344",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\report.json": "cf5a5680d054362e9624157045a7ec242dd3d67c7c350023f9311ceed83fb94d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-compatibility.json": "067687d3b31f4dec44d43a605cb04dcabdc09cdd5049da0befa29fd3c8b4050f"
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "new_test_filter": "gpu::tests::actor1_sigma_cache_production_and_lifetime",
+  "compiler_native_gpu_executed": false,
+  "production_checkout_changed": false,
+  "candidate_accepted": false
+}

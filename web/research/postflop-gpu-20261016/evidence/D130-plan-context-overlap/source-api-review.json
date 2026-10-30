@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-18T06:11:12.703194+00:00",
+  "history_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "spawn_scoped|spawn.*CudaContext|context.*join|join.*context|context_worker|plan_and_context",
+    "--",
+    "crates/solver/src/gpu"
+  ],
+  "all_ref_matches": [],
+  "mechanism": "The original serial GpuPlan build and compressed budget arithmetic run on the caller while one scoped worker creates the same CUDA primary-context owner and stream. Join before returning or consuming the result. No context cache/lifetime extension, plan stage parallelism, NVRTC overlap, memory hint, kernel/math/quality/storage/layout changes.",
+  "eligibility": "Fixed original tree.nodes.len>=65536; smaller trees run original serial path. This threshold is fixed before first compiler/native/component data and cannot be adjusted after failure.",
+  "failure_contract": "Budget/plan error retains priority over worker CUDA error/panic. Every spawned worker joined, results dropped before error returns. For admitted plan, original GPU error propagates or panic resumes on caller. Failed OS spawn falls back to serial CUDA creation after successful plan. No unjoined/detached task. Extra speculative context work on budget rejection and warm server setup still need material checks before adoption.",
+  "primary_sources": {
+    "CUDA_primary": "https://docs.nvidia.com/cuda/archive/12.9.2/cuda-driver-api/group__CUDA__PRIMARY__CTX.html",
+    "CUDA_binding": "https://docs.nvidia.com/cuda/archive/12.9.2/cuda-driver-api/group__CUDA__CTX.html",
+    "Rust_scoped_builder": "https://doc.rust-lang.org/std/thread/struct.Builder.html",
+    "Rust_join": "https://doc.rust-lang.org/std/thread/struct.ScopedJoinHandle.html",
+    "process_CPU": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes"
+  },
+  "local_api": "Pinned cudarc0.19.7 has Send+Sync for context/stream, bind_to_thread uses driver current-thread binding; new retains primary context, new_stream binds context. Returned context rebound to caller inside both component clocks. No driver configuration/reset/limit change.",
+  "counterevidence": "D041: server VRAM query already retains a context, so fresh-process savings are not a universal server gain. D088 stages only motivate the test, not native headroom bound. D109 module caching is closed. D116/E071 parallel CPU plan stages, D126 memory hint, D127 sparse page reads and E078 parent-fold fusion stay closed. No failed mechanism composed or rescued."
+}

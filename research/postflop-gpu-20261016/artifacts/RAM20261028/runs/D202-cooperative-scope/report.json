@@ -1,0 +1,98 @@
+{
+  "id": "D202",
+  "at": "2026-10-28T21:43:42.714374+00:00",
+  "status": "eligible_for_separately_frozen_barrier_primitive",
+  "protocol_sha256": "525a7ee29f4df0458be77278b97eec9960a58929b29306303f4afc1e7a416dff",
+  "driver_version": 13030,
+  "devices": [
+    {
+      "ordinal": 0,
+      "device": 0,
+      "name": "NVIDIA GeForce RTX 5090",
+      "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee"
+    }
+  ],
+  "selected": {
+    "ordinal": 0,
+    "device": 0,
+    "name": "NVIDIA GeForce RTX 5090",
+    "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee"
+  },
+  "attributes": {
+    "SM_count": 170,
+    "kernel_exec_timeout": 1,
+    "cooperative_launch": 1,
+    "max_blocks_per_SM": 24,
+    "compute_major": 12,
+    "compute_minor": 0
+  },
+  "local_primary_context_before": {
+    "flags": 0,
+    "active": 0
+  },
+  "local_primary_context_after": {
+    "flags": 0,
+    "active": 0
+  },
+  "driver_calls": [
+    {
+      "api": "cuInit",
+      "returncode": 0
+    },
+    {
+      "api": "cuDriverGetVersion",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetCount",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGet",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetUuid_v2",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetName",
+      "returncode": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxGetState",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxGetState",
+      "returncode": 0
+    }
+  ],
+  "new_contexts_or_compilers_or_modules_or_kernels_or_solves": 0,
+  "new_gain_accepted": false,
+  "scope": "Read-onlyactualdevicecapability query, not co-residency/compile/graph/barrier/liveness/accuracy/performance/capacity proof. No fullsolveroptimization admitted. Officialheader/toolchain andoriginalparalleldependency proof remain before implementation."
+}

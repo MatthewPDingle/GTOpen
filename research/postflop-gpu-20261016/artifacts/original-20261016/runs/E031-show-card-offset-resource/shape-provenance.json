@@ -1,0 +1,43 @@
+{
+  "id": "E031-resource-shape-provenance",
+  "formula_both_arms": "4*nh_o +16*m_max",
+  "block_threads_both_arms": 128,
+  "frozen_primary_build_complete_hands": {
+    "rainbow": [
+      257,
+      319
+    ],
+    "two-tone": [
+      258,
+      320
+    ],
+    "river": [
+      233,
+      280
+    ]
+  },
+  "rainbow_observed_per_training_graph_bytes": {
+    "0": [
+      6300
+    ],
+    "1": [
+      5060
+    ]
+  },
+  "two_tone_observed_evaluation_bytes": [
+    5080,
+    6320
+  ],
+  "wide_turn_observed": {
+    "nh_o": 1128,
+    "max_valid_opponent_hands": 1081,
+    "dynamic_shared_bytes": 21808
+  },
+  "river_derivation": "Final-board logical hands are already board-legal; river-table construction filters only extra cards. With no extra river cards, m_max equals opponent nh:280/233. Current unchanged source is pinned.",
+  "max_valid_reconstruction": "For rainbow and two-tone, integer m_max=(observed_shared_bytes-4*nh_o)/16 yields314/252 and315/253 respectively; source formula and allocation are unchanged.",
+  "nonfixture_rows": [
+    "1326/1326 is a conservative all-two-card-combinations capacity bound, not a real completed-board opponent set",
+    "319/0 and319/1 are synthetic allocation edges; no numerical kernel or plan is claimed"
+  ],
+  "no_native_or_compiler_execution": true
+}

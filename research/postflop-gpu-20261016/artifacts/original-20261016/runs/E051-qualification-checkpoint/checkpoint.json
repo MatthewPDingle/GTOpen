@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-17T04:24:33.539641+00:00",
+  "goal_active": true,
+  "accepted_source": "E020",
+  "accepted_cumulative_suite_gain_pct": 10.379845449201353,
+  "candidate": "E051",
+  "candidate_source_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "git_head": "933b1fba",
+  "all_owned_sessions_terminal": [
+    97561,
+    81305,
+    4535
+  ],
+  "owned_child_active": false,
+  "all_accepted162_main_head_live_ptx_unchanged": true,
+  "candidate_accepted": false,
+  "initial_gain_pct": 1.8437102310814113,
+  "fresh16_gain_pct": 2.1751731506940737,
+  "positive_confirmation_pairs": 16,
+  "fresh96results_736checks_exact": true,
+  "last_actual_primary_baseline": "B167",
+  "confirmation_report_sha256": "c8f59c562260f735df85fdc8538b58585505770bc9ab6c940712ad9fcfc0c7ed",
+  "confirmation_root_sha256": "7d408749785a7de3a452b434dd6bc48cd6ecadfde4f66a5667b722c466dd5c9b",
+  "broader_report_sha256": "90935004bc4a5e4554bca2c6557740953954438e9980977ffda23d42961ff75c",
+  "broader_root_sha256": "d4b5f45d38cee2c001c88b83c12b9f01b64dce89ca75ed06d45a09da86142246",
+  "broader_scope": {
+    "state_menu_resume_snapshots_each": 160,
+    "f32_fixtures_each": 3,
+    "gpu_tolerance_suite_tests_each": 6,
+    "paging_sweeps_each": 160,
+    "stored_bitwise_passes_each": 720,
+    "last3complete_save_files_byte_equal": true,
+    "actual_mutable_workspace_bytes_each": 104827924
+  },
+  "remaining_gates": [
+    "matched actual owned metadata/workspace/host object capacity evidence",
+    "fixed wide-turn full169 holdout before/after with exact raw store bytes and current strict non-regression guard",
+    "fresh-original cumulative complete-cycle comparison; no adding historical percentages",
+    "root audit, qualification/source adoption and source integration only if every gate passes"
+  ],
+  "capacity_implementation_facts": {
+    "candidate_feature_library": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-broader-feature\\release\\deps\\libsolver-96ae39724bbe9550.rlib",
+      "sha256": "89b1ade0b23a93866c204ef63f40c1750e14c6225b1af07b03b8194f10f05607"
+    },
+    "candidate_library_manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-broader-continuation_paging.manifest.json",
+    "baseline_feature_library": "Primary baseline rlib is gpu-only and cannot expose StoredContinuationGpu. Build a fresh acceptedE020 feature rlib with cargo build --release --locked --offline -p solver --features preflop-research --lib --message-format=json in a new isolatedS CARGO_TARGET_DIR. Do not trust mutable old shared-target rlibs. No source activation is needed for that baseline build. Pin all deps and expected BASE source/cuda before linking.",
+    "public_api": "solver::gpu::{StoredContinuationGpu,StoredWorkspace,stored_capacity_plan,GpuSolver}. StoredContinuationGpu::new(&host,&mutworkspace,&root,key,&mutram).research_capacity_check() asserts actual retained CUDA metadata/wrapper/state counts against CPU plan. StoredWorkspace.bytes() measures actual11mutable component payloads.",
+    "fixed_matrix": "Reuse existing stored720source cases: boardsKsQs2d,KsQs2s,KsQh2d, each pot/stack39.5/80and93.5/155; bet50/donk50/maxraises0,rake.04cap6, ranges exactlycontinuation_stored_device_tests.rs:66onward. Host Solver::new,F32,CFR+,iso=false,iteration0,unlocked; RAMu64MAX. Query sizes of public types and compare complete capacity JSON/workspace trajectory across arms. No solver iteration or forced-spill claim.",
+    "memory_scope": "Keep actual owned payload/type sizes exact. Any optional ctx.mem_get_info query is device-wide, includes unrelated driver/context/module/allocator effects and is not a solver-only delta or speed result. Do not add an outcome-driven tolerance. No source/new primitive buffer change in E051; compiled local64/shared0/regs62 already queried."
+  },
+  "holdout_implementation_facts": {
+    "evaluator": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\evaluator.rs",
+    "evaluator_sha256": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+    "fixture": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\fixture.json",
+    "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+    "method": "Compile the exact generic existing evaluator.rs unchanged with rustc --test,cfg gpu,release3/thinLTO/1unit and each pinned primary solver/cudarc/serde_json rlib. Adjacent fixture.json must remain exact. It has no arm-specific label gate, only a historical doc title. Own-CUDA embedded/opposite absent guards required.",
+    "native": "postflop_wide_turn_holdout --ignored --nocapture --test-threads=1. Clear POSTFLOP_AUTORESEARCH_FIXTURE/STORAGE/PROFILE because evaluator rejects them. POSTFLOP_HOLDOUT_STATE must be fresh uniqueSfile per run. Fixed3pairs BC/CB/BC, unchanged target.3/check20/max400 and same existing full169wide-turn fixture. Nonregression only: reject positive median slowdown plus2of3slower pairs; no extension. Full raw q/scale files, every non-timing result and checkpoint compare exactly. Native ar can record this onefixture as validation, but do not use primary compare.validate_run which requires3primaryfixtures.",
+    "raw_codec_reference": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\run.py",
+    "material_observation": "Existing evaluator records current device-wide meminfo after score, without retaining a new context. Do not call that solver-only residency."
+  },
+  "cumulative": "Use frozen original baseline-complete and E051 primary binaries in a separately frozen fresh3pair complete-cycle cohort. Verify exact evaluator/bench hashes and states. AcceptedE020 step timings remain2.175%fresh16; new total must be measured against original, not formed by adding10.3798%.",
+  "live_deployment": "Existing automatic review rejected executable replacement/restart as blocked by policy. Do not retry/escalate or ask duplicate permission. Source integration is separate after every gate; current main/live remain pinned.",
+  "future_acceptance_helpers": "If E051 is adopted, preserve old frozen common.py/source/protected-main files. Create new accepted-source/protection/helper copies for later research rather than changing old pins and invalidating historical evidence. Do not promote now."
+}

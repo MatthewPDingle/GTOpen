@@ -1,0 +1,2082 @@
+{
+  "manifest": {
+    "bet_menu": "50,75",
+    "boards": [
+      {
+        "board": "AdAc4c",
+        "weight": 1
+      },
+      {
+        "board": "AcKd4h",
+        "weight": 1
+      },
+      {
+        "board": "AcQd9d",
+        "weight": 1
+      },
+      {
+        "board": "AcQc4d",
+        "weight": 1
+      },
+      {
+        "board": "AcJd2h",
+        "weight": 1
+      },
+      {
+        "board": "AcTd4c",
+        "weight": 1
+      },
+      {
+        "board": "Ac9d4h",
+        "weight": 1
+      },
+      {
+        "board": "Ac8d3h",
+        "weight": 1
+      },
+      {
+        "board": "Ac7c4d",
+        "weight": 1
+      },
+      {
+        "board": "Ac5d2h",
+        "weight": 1
+      },
+      {
+        "board": "KdKc7h",
+        "weight": 1
+      },
+      {
+        "board": "KcQd5h",
+        "weight": 1
+      },
+      {
+        "board": "KcJd8h",
+        "weight": 1
+      },
+      {
+        "board": "KcThTd",
+        "weight": 1
+      },
+      {
+        "board": "KcTc5d",
+        "weight": 1
+      },
+      {
+        "board": "Kc9c5d",
+        "weight": 1
+      },
+      {
+        "board": "Kc7h7d",
+        "weight": 1
+      },
+      {
+        "board": "Kc6d3h",
+        "weight": 1
+      },
+      {
+        "board": "Kc4d2d",
+        "weight": 1
+      },
+      {
+        "board": "QcJdTc",
+        "weight": 1
+      },
+      {
+        "board": "QcJc5d",
+        "weight": 1
+      },
+      {
+        "board": "QcTc9d",
+        "weight": 1
+      },
+      {
+        "board": "Qc9d2d",
+        "weight": 1
+      },
+      {
+        "board": "Qc8c6c",
+        "weight": 1
+      },
+      {
+        "board": "Qc6d5c",
+        "weight": 1
+      },
+      {
+        "board": "Qc4d3h",
+        "weight": 1
+      },
+      {
+        "board": "JcTdTc",
+        "weight": 1
+      },
+      {
+        "board": "JcTc4d",
+        "weight": 1
+      },
+      {
+        "board": "Jc9c4d",
+        "weight": 1
+      },
+      {
+        "board": "Jc7d7c",
+        "weight": 1
+      },
+      {
+        "board": "Jc6d3h",
+        "weight": 1
+      },
+      {
+        "board": "Jc4d2c",
+        "weight": 1
+      },
+      {
+        "board": "Tc9d6h",
+        "weight": 1
+      },
+      {
+        "board": "Tc8d5h",
+        "weight": 1
+      },
+      {
+        "board": "Tc7d3h",
+        "weight": 1
+      },
+      {
+        "board": "Tc5d4h",
+        "weight": 1
+      },
+      {
+        "board": "9d9c8c",
+        "weight": 1
+      },
+      {
+        "board": "9c8c7d",
+        "weight": 1
+      },
+      {
+        "board": "9c6d5h",
+        "weight": 1
+      },
+      {
+        "board": "9c4d4c",
+        "weight": 1
+      },
+      {
+        "board": "8c7d6c",
+        "weight": 1
+      },
+      {
+        "board": "8c6d2d",
+        "weight": 1
+      },
+      {
+        "board": "8c3d3c",
+        "weight": 1
+      },
+      {
+        "board": "7c6c3d",
+        "weight": 1
+      },
+      {
+        "board": "7c3c2d",
+        "weight": 1
+      },
+      {
+        "board": "6c4d2c",
+        "weight": 1
+      },
+      {
+        "board": "5c2h2d",
+        "weight": 1
+      }
+    ],
+    "purpose": "CPU memory feasibility only. No strategies trained; current registered solve unchanged.",
+    "reserved": false,
+    "source": "existing report subset, systematic weighted midpoints",
+    "suit_orbits": true
+  },
+  "note": "CPU planning only. No CUDA allocations or strategy evaluation. Excludes per-context overhead. Packed arenas require an appropriate GPU budget; current F32 constructor prefers full arenas if the budget permits.",
+  "rows": [
+    {
+      "board": "AdAc4c",
+      "full_arena_bytes": 1549443376,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1549443376,
+      "planned_compact_bytes": 3616371736,
+      "pot": 39.5,
+      "staging_bytes": 2066928360,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AdAc4c",
+      "full_arena_bytes": 1549443376,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 923691808,
+      "planned_compact_bytes": 2180608524,
+      "pot": 39.5,
+      "staging_bytes": 1256916716,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AdAc4c",
+      "full_arena_bytes": 296031216,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 296031216,
+      "planned_compact_bytes": 775598304,
+      "pot": 93.5,
+      "staging_bytes": 479567088,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AdAc4c",
+      "full_arena_bytes": 296031216,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 176738848,
+      "planned_compact_bytes": 468568256,
+      "pot": 93.5,
+      "staging_bytes": 291829408,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcKd4h",
+      "full_arena_bytes": 1604453200,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1604453200,
+      "planned_compact_bytes": 3735219264,
+      "pot": 39.5,
+      "staging_bytes": 2130766064,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcKd4h",
+      "full_arena_bytes": 1604453200,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1604453200,
+      "planned_compact_bytes": 3735219264,
+      "pot": 39.5,
+      "staging_bytes": 2130766064,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcKd4h",
+      "full_arena_bytes": 306541200,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 306541200,
+      "planned_compact_bytes": 800977744,
+      "pot": 93.5,
+      "staging_bytes": 494436544,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcKd4h",
+      "full_arena_bytes": 306541200,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 306541200,
+      "planned_compact_bytes": 800977744,
+      "pot": 93.5,
+      "staging_bytes": 494436544,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcQd9d",
+      "full_arena_bytes": 1595284896,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1595284896,
+      "planned_compact_bytes": 3724831368,
+      "pot": 39.5,
+      "staging_bytes": 2129546472,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQd9d",
+      "full_arena_bytes": 1595284896,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 951019968,
+      "planned_compact_bytes": 2246014956,
+      "pot": 39.5,
+      "staging_bytes": 1294994988,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQd9d",
+      "full_arena_bytes": 304789536,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 304789536,
+      "planned_compact_bytes": 798876336,
+      "pot": 93.5,
+      "staging_bytes": 494086800,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQd9d",
+      "full_arena_bytes": 304789536,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 181967808,
+      "planned_compact_bytes": 482632704,
+      "pot": 93.5,
+      "staging_bytes": 300664896,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQc4d",
+      "full_arena_bytes": 1636542264,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1636542264,
+      "planned_compact_bytes": 3817227792,
+      "pot": 39.5,
+      "staging_bytes": 2180685528,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQc4d",
+      "full_arena_bytes": 1636542264,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 975615312,
+      "planned_compact_bytes": 2301709284,
+      "pot": 39.5,
+      "staging_bytes": 1326093972,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQc4d",
+      "full_arena_bytes": 312672024,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 312672024,
+      "planned_compact_bytes": 818647704,
+      "pot": 93.5,
+      "staging_bytes": 505975680,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcQc4d",
+      "full_arena_bytes": 312672024,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 186673872,
+      "planned_compact_bytes": 494573856,
+      "pot": 93.5,
+      "staging_bytes": 307899984,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcJd2h",
+      "full_arena_bytes": 1631958112,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1631958112,
+      "planned_compact_bytes": 3801164584,
+      "pot": 39.5,
+      "staging_bytes": 2169206472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcJd2h",
+      "full_arena_bytes": 1631958112,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1631958112,
+      "planned_compact_bytes": 3801164584,
+      "pot": 39.5,
+      "staging_bytes": 2169206472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcJd2h",
+      "full_arena_bytes": 311796192,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 311796192,
+      "planned_compact_bytes": 815141040,
+      "pot": 93.5,
+      "staging_bytes": 503344848,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcJd2h",
+      "full_arena_bytes": 311796192,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 311796192,
+      "planned_compact_bytes": 815141040,
+      "pot": 93.5,
+      "staging_bytes": 503344848,
+      "suit_permutations": 1
+    },
+    {
+      "board": "AcTd4c",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1641126416,
+      "planned_compact_bytes": 3815900184,
+      "pot": 39.5,
+      "staging_bytes": 2174773768,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcTd4c",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 978348128,
+      "planned_compact_bytes": 2300849852,
+      "pot": 39.5,
+      "staging_bytes": 1322501724,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcTd4c",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 313547856,
+      "planned_compact_bytes": 818224832,
+      "pot": 93.5,
+      "staging_bytes": 504676976,
+      "suit_permutations": 2
+    },
+    {
+      "board": "AcTd4c",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 187196768,
+      "planned_compact_bytes": 494307648,
+      "pot": 93.5,
+      "staging_bytes": 307110880,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Ac9d4h",
+      "full_arena_bytes": 1668631328,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1668631328,
+      "planned_compact_bytes": 3877497800,
+      "pot": 39.5,
+      "staging_bytes": 2208866472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac9d4h",
+      "full_arena_bytes": 1668631328,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1668631328,
+      "planned_compact_bytes": 3877497800,
+      "pot": 39.5,
+      "staging_bytes": 2208866472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac9d4h",
+      "full_arena_bytes": 318802848,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 318802848,
+      "planned_compact_bytes": 831405744,
+      "pot": 93.5,
+      "staging_bytes": 512602896,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac9d4h",
+      "full_arena_bytes": 318802848,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 318802848,
+      "planned_compact_bytes": 831405744,
+      "pot": 93.5,
+      "staging_bytes": 512602896,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac8d3h",
+      "full_arena_bytes": 1673215480,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1673215480,
+      "planned_compact_bytes": 3893561008,
+      "pot": 39.5,
+      "staging_bytes": 2220345528,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac8d3h",
+      "full_arena_bytes": 1673215480,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1673215480,
+      "planned_compact_bytes": 3893561008,
+      "pot": 39.5,
+      "staging_bytes": 2220345528,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac8d3h",
+      "full_arena_bytes": 319678680,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 319678680,
+      "planned_compact_bytes": 834912408,
+      "pot": 93.5,
+      "staging_bytes": 515233728,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac8d3h",
+      "full_arena_bytes": 319678680,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 319678680,
+      "planned_compact_bytes": 834912408,
+      "pot": 93.5,
+      "staging_bytes": 515233728,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac7c4d",
+      "full_arena_bytes": 1700720392,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1700720392,
+      "planned_compact_bytes": 3950810920,
+      "pot": 39.5,
+      "staging_bytes": 2250090528,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Ac7c4d",
+      "full_arena_bytes": 1700720392,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1013874736,
+      "planned_compact_bytes": 2382178176,
+      "pot": 39.5,
+      "staging_bytes": 1368303440,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Ac7c4d",
+      "full_arena_bytes": 324933672,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 324933672,
+      "planned_compact_bytes": 847110936,
+      "pot": 93.5,
+      "staging_bytes": 522177264,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Ac7c4d",
+      "full_arena_bytes": 324933672,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 193994416,
+      "planned_compact_bytes": 511755104,
+      "pot": 93.5,
+      "staging_bytes": 317760688,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Ac5d2h",
+      "full_arena_bytes": 1709888696,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1709888696,
+      "planned_compact_bytes": 3974241928,
+      "pot": 39.5,
+      "staging_bytes": 2264353232,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac5d2h",
+      "full_arena_bytes": 1709888696,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1709888696,
+      "planned_compact_bytes": 3974241928,
+      "pot": 39.5,
+      "staging_bytes": 2264353232,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac5d2h",
+      "full_arena_bytes": 326685336,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 326685336,
+      "planned_compact_bytes": 852159496,
+      "pot": 93.5,
+      "staging_bytes": 525474160,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Ac5d2h",
+      "full_arena_bytes": 326685336,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 326685336,
+      "planned_compact_bytes": 852159496,
+      "pot": 93.5,
+      "staging_bytes": 525474160,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KdKc7h",
+      "full_arena_bytes": 1645710568,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1645710568,
+      "planned_compact_bytes": 3823267984,
+      "pot": 39.5,
+      "staging_bytes": 2177557416,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KdKc7h",
+      "full_arena_bytes": 1645710568,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1645710568,
+      "planned_compact_bytes": 3823267984,
+      "pot": 39.5,
+      "staging_bytes": 2177557416,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KdKc7h",
+      "full_arena_bytes": 314423688,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 314423688,
+      "planned_compact_bytes": 819766728,
+      "pot": 93.5,
+      "staging_bytes": 505343040,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KdKc7h",
+      "full_arena_bytes": 314423688,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 314423688,
+      "planned_compact_bytes": 819766728,
+      "pot": 93.5,
+      "staging_bytes": 505343040,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcQd5h",
+      "full_arena_bytes": 1682383784,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1682383784,
+      "planned_compact_bytes": 3921339720,
+      "pot": 39.5,
+      "staging_bytes": 2238955936,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcQd5h",
+      "full_arena_bytes": 1682383784,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1682383784,
+      "planned_compact_bytes": 3921339720,
+      "pot": 39.5,
+      "staging_bytes": 2238955936,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcQd5h",
+      "full_arena_bytes": 321430344,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 321430344,
+      "planned_compact_bytes": 840943352,
+      "pot": 93.5,
+      "staging_bytes": 519513008,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcQd5h",
+      "full_arena_bytes": 321430344,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 321430344,
+      "planned_compact_bytes": 840943352,
+      "pot": 93.5,
+      "staging_bytes": 519513008,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcJd8h",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1641126416,
+      "planned_compact_bytes": 3820247888,
+      "pot": 39.5,
+      "staging_bytes": 2179121472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcJd8h",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1641126416,
+      "planned_compact_bytes": 3820247888,
+      "pot": 39.5,
+      "staging_bytes": 2179121472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcJd8h",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 313547856,
+      "planned_compact_bytes": 819207216,
+      "pot": 93.5,
+      "staging_bytes": 505659360,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcJd8h",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 313547856,
+      "planned_compact_bytes": 819207216,
+      "pot": 93.5,
+      "staging_bytes": 505659360,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcThTd",
+      "full_arena_bytes": 1627373960,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1627373960,
+      "planned_compact_bytes": 3776405968,
+      "pot": 39.5,
+      "staging_bytes": 2149032008,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcThTd",
+      "full_arena_bytes": 1627373960,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1627373960,
+      "planned_compact_bytes": 3776405968,
+      "pot": 39.5,
+      "staging_bytes": 2149032008,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcThTd",
+      "full_arena_bytes": 310920360,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 310920360,
+      "planned_compact_bytes": 809669608,
+      "pot": 93.5,
+      "staging_bytes": 498749248,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcThTd",
+      "full_arena_bytes": 310920360,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 310920360,
+      "planned_compact_bytes": 809669608,
+      "pot": 93.5,
+      "staging_bytes": 498749248,
+      "suit_permutations": 1
+    },
+    {
+      "board": "KcTc5d",
+      "full_arena_bytes": 1686967936,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1686967936,
+      "planned_compact_bytes": 3915664408,
+      "pot": 39.5,
+      "staging_bytes": 2228696472,
+      "suit_permutations": 2
+    },
+    {
+      "board": "KcTc5d",
+      "full_arena_bytes": 1686967936,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1005676288,
+      "planned_compact_bytes": 2360970516,
+      "pot": 39.5,
+      "staging_bytes": 1355294228,
+      "suit_permutations": 2
+    },
+    {
+      "board": "KcTc5d",
+      "full_arena_bytes": 322306176,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 322306176,
+      "planned_compact_bytes": 839538096,
+      "pot": 93.5,
+      "staging_bytes": 517231920,
+      "suit_permutations": 2
+    },
+    {
+      "board": "KcTc5d",
+      "full_arena_bytes": 322306176,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 192425728,
+      "planned_compact_bytes": 507177344,
+      "pot": 93.5,
+      "staging_bytes": 314751616,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc9c5d",
+      "full_arena_bytes": 1719057000,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1719057000,
+      "planned_compact_bytes": 3988977528,
+      "pot": 39.5,
+      "staging_bytes": 2269920528,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc9c5d",
+      "full_arena_bytes": 1719057000,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1024806000,
+      "planned_compact_bytes": 2405169288,
+      "pot": 39.5,
+      "staging_bytes": 1380363288,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc9c5d",
+      "full_arena_bytes": 328437000,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 328437000,
+      "planned_compact_bytes": 855243288,
+      "pot": 93.5,
+      "staging_bytes": 526806288,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc9c5d",
+      "full_arena_bytes": 328437000,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 196086000,
+      "planned_compact_bytes": 516664032,
+      "pot": 93.5,
+      "staging_bytes": 320578032,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc7h7d",
+      "full_arena_bytes": 1741977760,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1741977760,
+      "planned_compact_bytes": 4038859640,
+      "pot": 39.5,
+      "staging_bytes": 2296881880,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc7h7d",
+      "full_arena_bytes": 1741977760,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1741977760,
+      "planned_compact_bytes": 4038859640,
+      "pot": 39.5,
+      "staging_bytes": 2296881880,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc7h7d",
+      "full_arena_bytes": 332816160,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 332816160,
+      "planned_compact_bytes": 865899920,
+      "pot": 93.5,
+      "staging_bytes": 533083760,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc7h7d",
+      "full_arena_bytes": 332816160,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 332816160,
+      "planned_compact_bytes": 865899920,
+      "pot": 93.5,
+      "staging_bytes": 533083760,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc6d3h",
+      "full_arena_bytes": 1769482672,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1769482672,
+      "planned_compact_bytes": 4100457256,
+      "pot": 39.5,
+      "staging_bytes": 2330974584,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc6d3h",
+      "full_arena_bytes": 1769482672,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1769482672,
+      "planned_compact_bytes": 4100457256,
+      "pot": 39.5,
+      "staging_bytes": 2330974584,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc6d3h",
+      "full_arena_bytes": 338071152,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 338071152,
+      "planned_compact_bytes": 879080832,
+      "pot": 93.5,
+      "staging_bytes": 541009680,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc6d3h",
+      "full_arena_bytes": 338071152,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 338071152,
+      "planned_compact_bytes": 879080832,
+      "pot": 93.5,
+      "staging_bytes": 541009680,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Kc4d2d",
+      "full_arena_bytes": 1778650976,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1778650976,
+      "planned_compact_bytes": 4123888264,
+      "pot": 39.5,
+      "staging_bytes": 2345237288,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc4d2d",
+      "full_arena_bytes": 1778650976,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1060332608,
+      "planned_compact_bytes": 2486497612,
+      "pot": 39.5,
+      "staging_bytes": 1426165004,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc4d2d",
+      "full_arena_bytes": 339822816,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 339822816,
+      "planned_compact_bytes": 884129392,
+      "pot": 93.5,
+      "staging_bytes": 544306576,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Kc4d2d",
+      "full_arena_bytes": 339822816,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 202883648,
+      "planned_compact_bytes": 534111488,
+      "pot": 93.5,
+      "staging_bytes": 331227840,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJdTc",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1641126416,
+      "planned_compact_bytes": 3824595592,
+      "pot": 39.5,
+      "staging_bytes": 2183469176,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJdTc",
+      "full_arena_bytes": 1641126416,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 978348128,
+      "planned_compact_bytes": 2306135620,
+      "pot": 39.5,
+      "staging_bytes": 1327787492,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJdTc",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 313547856,
+      "planned_compact_bytes": 820189600,
+      "pot": 93.5,
+      "staging_bytes": 506641744,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJdTc",
+      "full_arena_bytes": 313547856,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 187196768,
+      "planned_compact_bytes": 495502400,
+      "pot": 93.5,
+      "staging_bytes": 308305632,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJc5d",
+      "full_arena_bytes": 1714472848,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1714472848,
+      "planned_compact_bytes": 3990305136,
+      "pot": 39.5,
+      "staging_bytes": 2275832288,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJc5d",
+      "full_arena_bytes": 1714472848,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1022073184,
+      "planned_compact_bytes": 2406028720,
+      "pot": 39.5,
+      "staging_bytes": 1383955536,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJc5d",
+      "full_arena_bytes": 327561168,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 327561168,
+      "planned_compact_bytes": 855666160,
+      "pot": 93.5,
+      "staging_bytes": 528104992,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcJc5d",
+      "full_arena_bytes": 327561168,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 195563104,
+      "planned_compact_bytes": 516930240,
+      "pot": 93.5,
+      "staging_bytes": 321367136,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcTc9d",
+      "full_arena_bytes": 1677799632,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1677799632,
+      "planned_compact_bytes": 3900928808,
+      "pot": 39.5,
+      "staging_bytes": 2223129176,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcTc9d",
+      "full_arena_bytes": 1677799632,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1000210656,
+      "planned_compact_bytes": 2352117844,
+      "pot": 39.5,
+      "staging_bytes": 1351907188,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcTc9d",
+      "full_arena_bytes": 320554512,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 320554512,
+      "planned_compact_bytes": 836454304,
+      "pot": 93.5,
+      "staging_bytes": 515899792,
+      "suit_permutations": 2
+    },
+    {
+      "board": "QcTc9d",
+      "full_arena_bytes": 320554512,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 191379936,
+      "planned_compact_bytes": 505320256,
+      "pot": 93.5,
+      "staging_bytes": 313940320,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc9d2d",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1760314368,
+      "planned_compact_bytes": 4090069360,
+      "pot": 39.5,
+      "staging_bytes": 2329754992,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc9d2d",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1049401344,
+      "planned_compact_bytes": 2466149384,
+      "pot": 39.5,
+      "staging_bytes": 1416748040,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc9d2d",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 336319488,
+      "planned_compact_bytes": 876979424,
+      "pot": 93.5,
+      "staging_bytes": 540659936,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc9d2d",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 200792064,
+      "planned_compact_bytes": 529799936,
+      "pot": 93.5,
+      "staging_bytes": 329007872,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc8c6c",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1760314368,
+      "planned_compact_bytes": 4094417064,
+      "pot": 39.5,
+      "staging_bytes": 2334102696,
+      "suit_permutations": 6
+    },
+    {
+      "board": "Qc8c6c",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 497206272,
+      "planned_compact_bytes": 1168889196,
+      "pot": 39.5,
+      "staging_bytes": 671682924,
+      "suit_permutations": 6
+    },
+    {
+      "board": "Qc8c6c",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 336319488,
+      "planned_compact_bytes": 877961808,
+      "pot": 93.5,
+      "staging_bytes": 541642320,
+      "suit_permutations": 6
+    },
+    {
+      "board": "Qc8c6c",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 95400960,
+      "planned_compact_bytes": 251598480,
+      "pot": 93.5,
+      "staging_bytes": 156197520,
+      "suit_permutations": 6
+    },
+    {
+      "board": "Qc6d5c",
+      "full_arena_bytes": 1787819280,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1787819280,
+      "planned_compact_bytes": 4151666976,
+      "pot": 39.5,
+      "staging_bytes": 2363847696,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc6d5c",
+      "full_arena_bytes": 1787819280,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1065798240,
+      "planned_compact_bytes": 2503278936,
+      "pot": 39.5,
+      "staging_bytes": 1437480696,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc6d5c",
+      "full_arena_bytes": 341574480,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 341574480,
+      "planned_compact_bytes": 890160336,
+      "pot": 93.5,
+      "staging_bytes": 548585856,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc6d5c",
+      "full_arena_bytes": 341574480,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 203929440,
+      "planned_compact_bytes": 537760704,
+      "pot": 93.5,
+      "staging_bytes": 333831264,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Qc4d3h",
+      "full_arena_bytes": 1810740040,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1810740040,
+      "planned_compact_bytes": 4205896792,
+      "pot": 39.5,
+      "staging_bytes": 2395156752,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Qc4d3h",
+      "full_arena_bytes": 1810740040,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1810740040,
+      "planned_compact_bytes": 4205896792,
+      "pot": 39.5,
+      "staging_bytes": 2395156752,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Qc4d3h",
+      "full_arena_bytes": 345953640,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 345953640,
+      "planned_compact_bytes": 901799352,
+      "pot": 93.5,
+      "staging_bytes": 555845712,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Qc4d3h",
+      "full_arena_bytes": 345953640,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 345953640,
+      "planned_compact_bytes": 901799352,
+      "pot": 93.5,
+      "staging_bytes": 555845712,
+      "suit_permutations": 1
+    },
+    {
+      "board": "JcTdTc",
+      "full_arena_bytes": 1659463024,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1659463024,
+      "planned_compact_bytes": 3845371384,
+      "pot": 39.5,
+      "staging_bytes": 2185908360,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTdTc",
+      "full_arena_bytes": 1659463024,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 989279392,
+      "planned_compact_bytes": 2318555196,
+      "pot": 39.5,
+      "staging_bytes": 1329275804,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTdTc",
+      "full_arena_bytes": 317051184,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 317051184,
+      "planned_compact_bytes": 824392416,
+      "pot": 93.5,
+      "staging_bytes": 507341232,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTdTc",
+      "full_arena_bytes": 317051184,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 189288352,
+      "planned_compact_bytes": 498021824,
+      "pot": 93.5,
+      "staging_bytes": 308733472,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTc4d",
+      "full_arena_bytes": 1728225304,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1728225304,
+      "planned_compact_bytes": 4003713128,
+      "pot": 39.5,
+      "staging_bytes": 2275487824,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTc4d",
+      "full_arena_bytes": 1728225304,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1030271632,
+      "planned_compact_bytes": 2414021960,
+      "pot": 39.5,
+      "staging_bytes": 1383750328,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTc4d",
+      "full_arena_bytes": 330188664,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 330188664,
+      "planned_compact_bytes": 858327080,
+      "pot": 93.5,
+      "staging_bytes": 528138416,
+      "suit_permutations": 2
+    },
+    {
+      "board": "JcTc4d",
+      "full_arena_bytes": 330188664,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 197131792,
+      "planned_compact_bytes": 518521120,
+      "pot": 93.5,
+      "staging_bytes": 321389328,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc9c4d",
+      "full_arena_bytes": 1755730216,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1755730216,
+      "planned_compact_bytes": 4069658448,
+      "pot": 39.5,
+      "staging_bytes": 2313928232,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc9c4d",
+      "full_arena_bytes": 1755730216,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1046668528,
+      "planned_compact_bytes": 2453794396,
+      "pot": 39.5,
+      "staging_bytes": 1407125868,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc9c4d",
+      "full_arena_bytes": 335443656,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 335443656,
+      "planned_compact_bytes": 872490376,
+      "pot": 93.5,
+      "staging_bytes": 537046720,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc9c4d",
+      "full_arena_bytes": 335443656,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 200269168,
+      "planned_compact_bytes": 527079264,
+      "pot": 93.5,
+      "staging_bytes": 326810096,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc7d7c",
+      "full_arena_bytes": 1769482672,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1769482672,
+      "planned_compact_bytes": 4100457256,
+      "pot": 39.5,
+      "staging_bytes": 2330974584,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc7d7c",
+      "full_arena_bytes": 1769482672,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1054866976,
+      "planned_compact_bytes": 2472359172,
+      "pot": 39.5,
+      "staging_bytes": 1417492196,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc7d7c",
+      "full_arena_bytes": 338071152,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 338071152,
+      "planned_compact_bytes": 879080832,
+      "pot": 93.5,
+      "staging_bytes": 541009680,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc7d7c",
+      "full_arena_bytes": 338071152,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 201837856,
+      "planned_compact_bytes": 531059648,
+      "pot": 93.5,
+      "staging_bytes": 329221792,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc6d3h",
+      "full_arena_bytes": 1796987584,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1796987584,
+      "planned_compact_bytes": 4162054872,
+      "pot": 39.5,
+      "staging_bytes": 2365067288,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Jc6d3h",
+      "full_arena_bytes": 1796987584,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1796987584,
+      "planned_compact_bytes": 4162054872,
+      "pot": 39.5,
+      "staging_bytes": 2365067288,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Jc6d3h",
+      "full_arena_bytes": 343326144,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 343326144,
+      "planned_compact_bytes": 892261744,
+      "pot": 93.5,
+      "staging_bytes": 548935600,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Jc6d3h",
+      "full_arena_bytes": 343326144,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 343326144,
+      "planned_compact_bytes": 892261744,
+      "pot": 93.5,
+      "staging_bytes": 548935600,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Jc4d2c",
+      "full_arena_bytes": 1806155888,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1806155888,
+      "planned_compact_bytes": 4185485880,
+      "pot": 39.5,
+      "staging_bytes": 2379329992,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc4d2c",
+      "full_arena_bytes": 1806155888,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1076729504,
+      "planned_compact_bytes": 2523627164,
+      "pot": 39.5,
+      "staging_bytes": 1446897660,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc4d2c",
+      "full_arena_bytes": 345077808,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 345077808,
+      "planned_compact_bytes": 897310304,
+      "pot": 93.5,
+      "staging_bytes": 552232496,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Jc4d2c",
+      "full_arena_bytes": 345077808,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 206021024,
+      "planned_compact_bytes": 542072256,
+      "pot": 93.5,
+      "staging_bytes": 336051232,
+      "suit_permutations": 2
+    },
+    {
+      "board": "Tc9d6h",
+      "full_arena_bytes": 1751146064,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1751146064,
+      "planned_compact_bytes": 4049247536,
+      "pot": 39.5,
+      "staging_bytes": 2298101472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc9d6h",
+      "full_arena_bytes": 1751146064,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1751146064,
+      "planned_compact_bytes": 4049247536,
+      "pot": 39.5,
+      "staging_bytes": 2298101472,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc9d6h",
+      "full_arena_bytes": 334567824,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 334567824,
+      "planned_compact_bytes": 868001328,
+      "pot": 93.5,
+      "staging_bytes": 533433504,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc9d6h",
+      "full_arena_bytes": 334567824,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 334567824,
+      "planned_compact_bytes": 868001328,
+      "pot": 93.5,
+      "staging_bytes": 533433504,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc8d5h",
+      "full_arena_bytes": 1755730216,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1755730216,
+      "planned_compact_bytes": 4069658448,
+      "pot": 39.5,
+      "staging_bytes": 2313928232,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc8d5h",
+      "full_arena_bytes": 1755730216,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1755730216,
+      "planned_compact_bytes": 4069658448,
+      "pot": 39.5,
+      "staging_bytes": 2313928232,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc8d5h",
+      "full_arena_bytes": 335443656,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 335443656,
+      "planned_compact_bytes": 872490376,
+      "pot": 93.5,
+      "staging_bytes": 537046720,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc8d5h",
+      "full_arena_bytes": 335443656,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 335443656,
+      "planned_compact_bytes": 872490376,
+      "pot": 93.5,
+      "staging_bytes": 537046720,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc7d3h",
+      "full_arena_bytes": 1796987584,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1796987584,
+      "planned_compact_bytes": 4157707168,
+      "pot": 39.5,
+      "staging_bytes": 2360719584,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc7d3h",
+      "full_arena_bytes": 1796987584,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1796987584,
+      "planned_compact_bytes": 4157707168,
+      "pot": 39.5,
+      "staging_bytes": 2360719584,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc7d3h",
+      "full_arena_bytes": 343326144,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 343326144,
+      "planned_compact_bytes": 891279360,
+      "pot": 93.5,
+      "staging_bytes": 547953216,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc7d3h",
+      "full_arena_bytes": 343326144,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 343326144,
+      "planned_compact_bytes": 891279360,
+      "pot": 93.5,
+      "staging_bytes": 547953216,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc5d4h",
+      "full_arena_bytes": 1801571736,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1801571736,
+      "planned_compact_bytes": 4169422672,
+      "pot": 39.5,
+      "staging_bytes": 2367850936,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc5d4h",
+      "full_arena_bytes": 1801571736,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1801571736,
+      "planned_compact_bytes": 4169422672,
+      "pot": 39.5,
+      "staging_bytes": 2367850936,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc5d4h",
+      "full_arena_bytes": 344201976,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 344201976,
+      "planned_compact_bytes": 893803640,
+      "pot": 93.5,
+      "staging_bytes": 549601664,
+      "suit_permutations": 1
+    },
+    {
+      "board": "Tc5d4h",
+      "full_arena_bytes": 344201976,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 344201976,
+      "planned_compact_bytes": 893803640,
+      "pot": 93.5,
+      "staging_bytes": 549601664,
+      "suit_permutations": 1
+    },
+    {
+      "board": "9d9c8c",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1760314368,
+      "planned_compact_bytes": 4077026248,
+      "pot": 39.5,
+      "staging_bytes": 2316711880,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9d9c8c",
+      "full_arena_bytes": 1760314368,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1049401344,
+      "planned_compact_bytes": 2458220732,
+      "pot": 39.5,
+      "staging_bytes": 1408819388,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9d9c8c",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 336319488,
+      "planned_compact_bytes": 874032272,
+      "pot": 93.5,
+      "staging_bytes": 537712784,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9d9c8c",
+      "full_arena_bytes": 336319488,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 200792064,
+      "planned_compact_bytes": 528007808,
+      "pot": 93.5,
+      "staging_bytes": 327215744,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c8c7d",
+      "full_arena_bytes": 1783235128,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1783235128,
+      "planned_compact_bytes": 4131256064,
+      "pot": 39.5,
+      "staging_bytes": 2348020936,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c8c7d",
+      "full_arena_bytes": 1783235128,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1063065424,
+      "planned_compact_bytes": 2490923948,
+      "pot": 39.5,
+      "staging_bytes": 1427858524,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c8c7d",
+      "full_arena_bytes": 340698648,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 340698648,
+      "planned_compact_bytes": 885671288,
+      "pot": 93.5,
+      "staging_bytes": 544972640,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c8c7d",
+      "full_arena_bytes": 340698648,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 203406544,
+      "planned_compact_bytes": 535040032,
+      "pot": 93.5,
+      "staging_bytes": 331633488,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c6d5h",
+      "full_arena_bytes": 1824492496,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1824492496,
+      "planned_compact_bytes": 4219304784,
+      "pot": 39.5,
+      "staging_bytes": 2394812288,
+      "suit_permutations": 1
+    },
+    {
+      "board": "9c6d5h",
+      "full_arena_bytes": 1824492496,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1824492496,
+      "planned_compact_bytes": 4219304784,
+      "pot": 39.5,
+      "staging_bytes": 2394812288,
+      "suit_permutations": 1
+    },
+    {
+      "board": "9c6d5h",
+      "full_arena_bytes": 348581136,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 348581136,
+      "planned_compact_bytes": 904460272,
+      "pot": 93.5,
+      "staging_bytes": 555879136,
+      "suit_permutations": 1
+    },
+    {
+      "board": "9c6d5h",
+      "full_arena_bytes": 348581136,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 348581136,
+      "planned_compact_bytes": 904460272,
+      "pot": 93.5,
+      "staging_bytes": 555879136,
+      "suit_permutations": 1
+    },
+    {
+      "board": "9c4d4c",
+      "full_arena_bytes": 1847413256,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1847413256,
+      "planned_compact_bytes": 4273534600,
+      "pot": 39.5,
+      "staging_bytes": 2426121344,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c4d4c",
+      "full_arena_bytes": 1847413256,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1101324848,
+      "planned_compact_bytes": 2576678608,
+      "pot": 39.5,
+      "staging_bytes": 1475353760,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c4d4c",
+      "full_arena_bytes": 352960296,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 352960296,
+      "planned_compact_bytes": 916099288,
+      "pot": 93.5,
+      "staging_bytes": 563138992,
+      "suit_permutations": 2
+    },
+    {
+      "board": "9c4d4c",
+      "full_arena_bytes": 352960296,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 210727088,
+      "planned_compact_bytes": 553416032,
+      "pot": 93.5,
+      "staging_bytes": 342688944,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c7d6c",
+      "full_arena_bytes": 1824492496,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1824492496,
+      "planned_compact_bytes": 4223652488,
+      "pot": 39.5,
+      "staging_bytes": 2399159992,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c7d6c",
+      "full_arena_bytes": 1824492496,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1087660768,
+      "planned_compact_bytes": 2546618276,
+      "pot": 39.5,
+      "staging_bytes": 1458957508,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c7d6c",
+      "full_arena_bytes": 348581136,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 348581136,
+      "planned_compact_bytes": 905442656,
+      "pot": 93.5,
+      "staging_bytes": 556861520,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c7d6c",
+      "full_arena_bytes": 348581136,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 208112608,
+      "planned_compact_bytes": 546981184,
+      "pot": 93.5,
+      "staging_bytes": 338868576,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c6d2d",
+      "full_arena_bytes": 1842829104,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1842829104,
+      "planned_compact_bytes": 4266166800,
+      "pot": 39.5,
+      "staging_bytes": 2423337696,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c6d2d",
+      "full_arena_bytes": 1842829104,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1098592032,
+      "planned_compact_bytes": 2572252272,
+      "pot": 39.5,
+      "staging_bytes": 1473660240,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c6d2d",
+      "full_arena_bytes": 352084464,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 352084464,
+      "planned_compact_bytes": 914557392,
+      "pot": 93.5,
+      "staging_bytes": 562472928,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c6d2d",
+      "full_arena_bytes": 352084464,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 210204192,
+      "planned_compact_bytes": 552487488,
+      "pot": 93.5,
+      "staging_bytes": 342283296,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c3d3c",
+      "full_arena_bytes": 1861165712,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1861165712,
+      "planned_compact_bytes": 4313028816,
+      "pot": 39.5,
+      "staging_bytes": 2451863104,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c3d3c",
+      "full_arena_bytes": 1861165712,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1109523296,
+      "planned_compact_bytes": 2600529152,
+      "pot": 39.5,
+      "staging_bytes": 1491005856,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c3d3c",
+      "full_arena_bytes": 355587792,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 355587792,
+      "planned_compact_bytes": 924654512,
+      "pot": 93.5,
+      "staging_bytes": 569066720,
+      "suit_permutations": 2
+    },
+    {
+      "board": "8c3d3c",
+      "full_arena_bytes": 355587792,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 212295776,
+      "planned_compact_bytes": 558591168,
+      "pot": 93.5,
+      "staging_bytes": 346295392,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c6c3d",
+      "full_arena_bytes": 1874918168,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1874918168,
+      "planned_compact_bytes": 4335132216,
+      "pot": 39.5,
+      "staging_bytes": 2460214048,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c6c3d",
+      "full_arena_bytes": 1874918168,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1117721744,
+      "planned_compact_bytes": 2613808160,
+      "pot": 39.5,
+      "staging_bytes": 1496086416,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c6c3d",
+      "full_arena_bytes": 358215288,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 358215288,
+      "planned_compact_bytes": 929280200,
+      "pot": 93.5,
+      "staging_bytes": 571064912,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c6c3d",
+      "full_arena_bytes": 358215288,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 213864464,
+      "planned_compact_bytes": 561376800,
+      "pot": 93.5,
+      "staging_bytes": 347512336,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c3c2d",
+      "full_arena_bytes": 1884086472,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1884086472,
+      "planned_compact_bytes": 4358563224,
+      "pot": 39.5,
+      "staging_bytes": 2474476752,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c3c2d",
+      "full_arena_bytes": 1884086472,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1123187376,
+      "planned_compact_bytes": 2627946600,
+      "pot": 39.5,
+      "staging_bytes": 1504759224,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c3c2d",
+      "full_arena_bytes": 359966952,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 359966952,
+      "planned_compact_bytes": 934328760,
+      "pot": 93.5,
+      "staging_bytes": 574361808,
+      "suit_permutations": 2
+    },
+    {
+      "board": "7c3c2d",
+      "full_arena_bytes": 359966952,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 214910256,
+      "planned_compact_bytes": 564428640,
+      "pot": 93.5,
+      "staging_bytes": 349518384,
+      "suit_permutations": 2
+    },
+    {
+      "board": "6c4d2c",
+      "full_arena_bytes": 1888670624,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1888670624,
+      "planned_compact_bytes": 4365931024,
+      "pot": 39.5,
+      "staging_bytes": 2477260400,
+      "suit_permutations": 2
+    },
+    {
+      "board": "6c4d2c",
+      "full_arena_bytes": 1888670624,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1125920192,
+      "planned_compact_bytes": 2632372936,
+      "pot": 39.5,
+      "staging_bytes": 1506452744,
+      "suit_permutations": 2
+    },
+    {
+      "board": "6c4d2c",
+      "full_arena_bytes": 360842784,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 360842784,
+      "planned_compact_bytes": 935870656,
+      "pot": 93.5,
+      "staging_bytes": 575027872,
+      "suit_permutations": 2
+    },
+    {
+      "board": "6c4d2c",
+      "full_arena_bytes": 360842784,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 215433152,
+      "planned_compact_bytes": 565357184,
+      "pot": 93.5,
+      "staging_bytes": 349924032,
+      "suit_permutations": 2
+    },
+    {
+      "board": "5c2h2d",
+      "full_arena_bytes": 1897838928,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 1897838928,
+      "planned_compact_bytes": 4393709736,
+      "pot": 39.5,
+      "staging_bytes": 2495870808,
+      "suit_permutations": 1
+    },
+    {
+      "board": "5c2h2d",
+      "full_arena_bytes": 1897838928,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 1897838928,
+      "planned_compact_bytes": 4393709736,
+      "pot": 39.5,
+      "staging_bytes": 2495870808,
+      "suit_permutations": 1
+    },
+    {
+      "board": "5c2h2d",
+      "full_arena_bytes": 362594448,
+      "future_card_orbits": false,
+      "packed_arena_bytes": 362594448,
+      "planned_compact_bytes": 941901600,
+      "pot": 93.5,
+      "staging_bytes": 579307152,
+      "suit_permutations": 1
+    },
+    {
+      "board": "5c2h2d",
+      "full_arena_bytes": 362594448,
+      "future_card_orbits": true,
+      "packed_arena_bytes": 362594448,
+      "planned_compact_bytes": 941901600,
+      "pot": 93.5,
+      "staging_bytes": 579307152,
+      "suit_permutations": 1
+    }
+  ]
+}

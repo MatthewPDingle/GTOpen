@@ -1,0 +1,25 @@
+{
+  "id": "D223-integer-proof",
+  "at": "2026-10-29T01:02:57.482584+00:00",
+  "status": "FROZEN_PRE_CPU_ONLY_EXHAUSTIVE_PROOF",
+  "m_range_inclusive": [
+    0,
+    1326
+  ],
+  "width_range_inclusive": [
+    1,
+    256
+  ],
+  "expected_shape_records": 339712,
+  "raw_record_format": "<7I: m,width,numerator,original_chunk,candidate_chunk,power_two,shift(0xffffffff for fallback)",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-prepare-chunk.py": "cd3f7ee2259ea0e499a029ca2651b01a43de3866c65380e88c8b2988680aca9e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-proof.py": "281d8128a6e448250228ca8cc07f96922792a8295f1748f1378e28671868304c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\source-review.json": "9c42754a312f940759816b9ca414afdcbca893b75fb7c5c601805faf830d036a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D207-resident-resource\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-primary-checkpoint\\report.json": "a789ab1837b58a3c4d87e6188b20f0329bbd913d84cde8331a781568e218d8ef",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "scope": "CPU integer-only model+complete retained shape stream and separate arithmetic readback in one owned process. Every shape tested, not only production widths. Exact chunk equality plus identical later source operands proves same lo/hi loop bounds algebraically; no claim every float result was tested. No CUDA calls/context/compiler/kernel/solver/performance. No candidate source activation or adoption."
+}

@@ -1,0 +1,61 @@
+{
+  "id": "D289",
+  "at": "2026-10-29T17:56:13.306449+00:00",
+  "status": "pass_scoped_default128_static7phase_PTX_ladder",
+  "protocol_sha256": "b84e7c2abe3339667c29fb4f1143d454337cc6ac512fba4896766c54856f5e41",
+  "witness": {
+    "uniform_default128_branch": "mov.u32 \t%r31, %ntid.x;\n\tsetp.eq.s32 \t%p20, %r31, 128;\n\t@%p20 bra \t$L__BB3_32;",
+    "generic_fallback_region": "\n\tsetp.lt.u32 \t%p21, %r31, 2;\n\tmov.u32 \t%r95, %r31;\n\t@%p21 bra \t$L__BB3_47;\n$L__BB3_29:\n\tshr.u32 \t%r33, %r95, 1;\n\tsetp.ge.u32 \t%p22, %r96, %r33;\n\t@%p22 bra \t$L__BB3_31;\n\tmul.wide.u32 \t%rd138, %r33, 4;\n\tadd.s64 \t%rd139, %rd14, %rd138;\n\tld.shared.f32 \t%f90, [%rd139];\n\tld.shared.f32 \t%f91, [%rd14];\n\tadd.f32 \t%f92, %f90, %f91;\n\tst.shared.f32 \t[%rd14], %f92;\n$L__BB3_31:\n\tbar.sync \t0;\n\tsetp.gt.u32 \t%p23, %r95, 3;\n\tmov.u32 \t%r95, %r33;\n\t@%p23 bra \t$L__BB3_29;\n\tbra.uni \t$L__BB3_47;\n",
+    "fast_steps": [
+      {
+        "step": 64,
+        "byte_offset": 256,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 32,
+        "byte_offset": 128,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 16,
+        "byte_offset": 64,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 8,
+        "byte_offset": 32,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 4,
+        "byte_offset": 16,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 2,
+        "byte_offset": 8,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      },
+      {
+        "step": 1,
+        "byte_offset": 4,
+        "same_thread_guard_and_two_ordered_loads_ADD_store_then_CTAbarrier": true
+      }
+    ],
+    "fast_barriers": 7,
+    "fast_shared_FP_adds": 7,
+    "shared_own_pointer": "%rd14",
+    "thread_register": "%r96",
+    "common_join": "$L__BB3_47",
+    "limits": "Scoped exactPTXpattern/operand/control witness, not arbitrary CFG/interpreter/native/IEEE or performance proof. Originalgenericbody/source and CPU256width dependency model remain mandatory; direct actualGPU originalcorpus next."
+  },
+  "negative_reader_fixtures": [
+    "wrong_offset",
+    "wrong_defaultwidth",
+    "missing_barrier",
+    "wrong_ADD_operand"
+  ],
+  "new_compiler_GPU_kernel_solver_or_speed_samples": 0,
+  "candidate_accepted": false
+}

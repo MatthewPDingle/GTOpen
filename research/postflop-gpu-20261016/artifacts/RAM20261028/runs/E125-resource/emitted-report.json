@@ -1,0 +1,259 @@
+{
+  "id": "E125-emitted-width",
+  "at": "2026-10-29T21:44:44.623907+00:00",
+  "status": "pass_resources_and_all7_typed_unrolled_loads_exact_inverse",
+  "original_resource_report_sha256": "497c81404a13024e6b300a2a870cf663f94b4a81a92857eabe9f603b77c2991e",
+  "gates": {
+    "compute_120:copy_root:header_exact": true,
+    "compute_120:copy_root:untargeted_exact": true,
+    "compute_120:down_action:header_exact": true,
+    "compute_120:down_action:untargeted_exact": true,
+    "compute_120:down_chance:header_exact": true,
+    "compute_120:down_chance:untargeted_exact": true,
+    "compute_120:up_fold:header_exact": true,
+    "compute_120:up_fold:untargeted_exact": true,
+    "compute_120:up_show:header_exact": true,
+    "compute_120:up_show:untargeted_exact": true,
+    "compute_120:up_chance:header_exact": true,
+    "compute_120:up_chance:body_changed": true,
+    "compute_120:up_chance:barriers_same": true,
+    "compute_120:up_action:header_exact": true,
+    "compute_120:up_action:untargeted_exact": true,
+    "compute_120:copy_span:header_exact": true,
+    "compute_120:copy_span:untargeted_exact": true,
+    "compute_120:up_action_eval:header_exact": true,
+    "compute_120:up_action_eval:untargeted_exact": true,
+    "compute_75:copy_root:header_exact": true,
+    "compute_75:copy_root:untargeted_exact": true,
+    "compute_75:down_action:header_exact": true,
+    "compute_75:down_action:untargeted_exact": true,
+    "compute_75:down_chance:header_exact": true,
+    "compute_75:down_chance:untargeted_exact": true,
+    "compute_75:up_fold:header_exact": true,
+    "compute_75:up_fold:untargeted_exact": true,
+    "compute_75:up_show:header_exact": true,
+    "compute_75:up_show:untargeted_exact": true,
+    "compute_75:up_chance:header_exact": true,
+    "compute_75:up_chance:body_changed": true,
+    "compute_75:up_chance:barriers_same": true,
+    "compute_75:up_action:header_exact": true,
+    "compute_75:up_action:untargeted_exact": true,
+    "compute_75:copy_span:header_exact": true,
+    "compute_75:copy_span:untargeted_exact": true,
+    "compute_75:up_action_eval:header_exact": true,
+    "compute_75:up_action_eval:untargeted_exact": true,
+    "copy_root:actual_resources_exact": true,
+    "down_action:actual_resources_exact": true,
+    "down_chance:actual_resources_exact": true,
+    "up_fold:actual_resources_exact": true,
+    "up_show:actual_resources_exact": true,
+    "up_chance:no_new_local": true,
+    "up_chance:no_constant_growth": true,
+    "up_chance:no_dynamic_growth": true,
+    "up_chance:no_maxthread_loss": true,
+    "up_chance:positive_occupancies": true,
+    "up_chance:defaultlimits_fit": true,
+    "up_chance:no_stack_growth": true,
+    "up_action:actual_resources_exact": true,
+    "copy_span:actual_resources_exact": true,
+    "up_action_eval:actual_resources_exact": true,
+    "compute_120:all_source_unrolled_u16_loads_exact_inverse": true,
+    "compute_75:all_source_unrolled_u16_loads_exact_inverse": true
+  },
+  "architectures": {
+    "compute_120": {
+      "all7_unrolled_loads_accounted": true,
+      "handperm_parameter": 10,
+      "actual_load_sites": [
+        {
+          "scale": "%rd57",
+          "index": "%rd56",
+          "address": "%rd58",
+          "small": "%rs1",
+          "wide": "%r70"
+        },
+        {
+          "scale": "%rd71",
+          "index": "%rd70",
+          "address": "%rd72",
+          "small": "%rs2",
+          "wide": "%r71"
+        },
+        {
+          "scale": "%rd85",
+          "index": "%rd84",
+          "address": "%rd86",
+          "small": "%rs3",
+          "wide": "%r72"
+        },
+        {
+          "scale": "%rd100",
+          "index": "%rd99",
+          "address": "%rd101",
+          "small": "%rs4",
+          "wide": "%r75"
+        },
+        {
+          "scale": "%rd114",
+          "index": "%rd113",
+          "address": "%rd115",
+          "small": "%rs5",
+          "wide": "%r76"
+        },
+        {
+          "scale": "%rd128",
+          "index": "%rd127",
+          "address": "%rd129",
+          "small": "%rs6",
+          "wide": "%r77"
+        },
+        {
+          "scale": "%rd142",
+          "index": "%rd141",
+          "address": "%rd143",
+          "small": "%rs7",
+          "wide": "%r78"
+        }
+      ],
+      "whole_entry_inverse_exact_except_typed_load_zeroextend_and_element_stride_and_bijective_virtual_register_rename": true,
+      "inverse_byteexact_without_register_rename": true,
+      "all_FP_branches_barriers_predicates_and_other_metadata_reads_preserved": true
+    },
+    "compute_75": {
+      "all7_unrolled_loads_accounted": true,
+      "handperm_parameter": 10,
+      "actual_load_sites": [
+        {
+          "scale": "%rd80",
+          "index": "%rd79",
+          "address": "%rd81",
+          "small": "%rs1",
+          "wide": "%rd206"
+        },
+        {
+          "scale": "%rd95",
+          "index": "%rd94",
+          "address": "%rd96",
+          "small": "%rs2",
+          "wide": "%rd207"
+        },
+        {
+          "scale": "%rd110",
+          "index": "%rd109",
+          "address": "%rd111",
+          "small": "%rs3",
+          "wide": "%rd208"
+        },
+        {
+          "scale": "%rd129",
+          "index": "%rd128",
+          "address": "%rd130",
+          "small": "%rs4",
+          "wide": "%rd209"
+        },
+        {
+          "scale": "%rd150",
+          "index": "%rd149",
+          "address": "%rd151",
+          "small": "%rs5",
+          "wide": "%rd210"
+        },
+        {
+          "scale": "%rd171",
+          "index": "%rd170",
+          "address": "%rd172",
+          "small": "%rs6",
+          "wide": "%rd211"
+        },
+        {
+          "scale": "%rd192",
+          "index": "%rd191",
+          "address": "%rd193",
+          "small": "%rs7",
+          "wide": "%rd212"
+        }
+      ],
+      "whole_entry_inverse_exact_except_typed_load_zeroextend_and_element_stride_and_bijective_virtual_register_rename": true,
+      "inverse_byteexact_without_register_rename": false,
+      "all_FP_branches_barriers_predicates_and_other_metadata_reads_preserved": true
+    }
+  },
+  "negative_reader_fixtures_rejected": [
+    "compute_120:wrong_table_base",
+    "compute_120:wrong_conversion_destination",
+    "compute_120:wrong_element_stride",
+    "compute_75:wrong_table_base",
+    "compute_75:wrong_conversion_destination",
+    "compute_75:wrong_element_stride"
+  ],
+  "resource_warnings": [
+    {
+      "entry": "up_chance",
+      "baseline": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_chance",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 30,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_chance",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "observer_repairs": "Originalcheckerassumedoneemittedsite; one sourceload unrollsseven. Firstadditivereadercovers120butnot75differentbase/shift/directu64extend/virtualr renaming. V2accountsall7botharchitecturesandwhole-entryinverse. 75restoresu32intermediatereg/signedextendunderoriginalu16domain(all65536positivevaluesexact). Originalsource/protocol/checkers/reportsretained; no source/compiler/native/queryrepeat. Realregister30to40warningretained, sameoccupancy24/12/6,max1024,local0.",
+  "application_kernel_launches": 0,
+  "solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "full_raw_and_other_qualification_pending": true
+}

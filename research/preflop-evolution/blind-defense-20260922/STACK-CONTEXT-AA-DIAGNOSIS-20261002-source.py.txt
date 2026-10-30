@@ -1,0 +1,139 @@
+"""Bind the existing visit, lookup and reservoir evidence into a diagnosis."""
+from pathlib import Path
+import hashlib
+import json
+import math
+import numpy as np
+import time
+
+OUT=Path('T:/Dev/GTOpen/research/preflop-evolution/blind-defense-20260922')
+ROOT=Path('S:/GTOpen-research/stack-context-matched-learning-v1/B-relative')
+KEY='e88a0434e40da35419d3e556903e5cf6e90e5bbc919fe9506adea67f0c223508'
+NAME='STACK-CONTEXT-AA-DIAGNOSIS-20261002'
+inputs={}
+
+
+def sha(raw):return hashlib.sha256(raw).hexdigest()
+
+
+def read(path):
+    raw=Path(path).read_bytes();inputs[str(path)]=sha(raw)
+    return json.loads(raw)
+
+
+targets=[OUT/(NAME+s) for s in ('.md','-receipt.json','-source.py.txt')]
+assert not any(p.exists() for p in targets)
+tables=read(OUT/'stack-context-aa-existing-targets-20261002-v1.json')
+case=read(OUT/'stack-context-aa-archived-visit-20261002-v1.json')
+visits=read(OUT/'stack-context-aa-archive-coverage-20261002-v1.json')
+ranges=read(OUT/'stack-context-final-range-summary-v1.json')
+bank=read(Path('S:/GTOpen-research/stack-context-matched-evaluation-v5/bank-identities.json'))
+assert tables['all_played_models']==256 and len(tables['records'])==1280
+assert visits['cycles']==64 and visits['physical_AA_deals']==64 and visits['AA_branch_visits']==10
+assert case['cycle']==19 and len(case['matches'])==1
+match=case['matches'][0]
+assert match['original_sampled_advantages_bb']==match['conditional_advantages_bb']==[394.,0.,0.,0.]
+assert match['conditional_action_values_bb'][:2]==[[-6.,6.5],[-400.,398.5]]
+assert match['frozen_policy']==[0.,1.,0.,0.]
+assert len(set(case['physical_deal']))==9
+hero,opponent,board=case['physical_deal'][:2],case['physical_deal'][2:4],case['physical_deal'][4:]
+assert [c//4 for c in hero]==[12,12]
+assert sorted(c//4 for c in opponent)==[6,11]
+assert sorted(c//4 for c in board)==[0,2,6,8,11]
+group=[r for r in tables['records'] if r['arm']=='B-relative' and r['depth']==400]
+assert len(group)==64
+bad=[r for r in group if r['generation']>=19]
+assert len(bad)==45 and all(r['actual_retained_visit_count']==1 and r['table_fold_probability']==1
+    and abs(r['fold_mean_advantage_bb']-394)<1e-9 and r['call_mean_advantage_bb']==0 for r in bad)
+coverage=next(r for r in tables['coverage'] if r['arm']=='B-relative' and r['depth']==400)
+denominator=coverage['own_history_weight']
+uniform_fold_weight=.5*group[0]['own_history_weight']
+known_fold_weight=sum(r['own_history_weight']*r['table_fold_probability'] for r in group if r['table_row_present'])+uniform_fold_weight
+lower_fold=known_fold_weight/denominator
+upper_fold=(known_fold_weight+coverage['unanalysed_neural_fallback_weight'])/denominator
+desc=next(r for r in ranges['descriptions'] if r['arm']=='B-relative' and r['depth']==400)
+node=next(n for n in desc['nodes'] if n['node']==6)
+aa=next(h for h in node['classes'] if h['hand']=='AA')
+assert abs(denominator-aa['own_history_weighted_support'])<1e-9
+assert abs(lower_fold-aa['conditional_hand_action_policy'][0])<1e-12
+assert lower_fold<=aa['conditional_hand_action_policy'][0]+1e-12<=upper_fold+1e-12
+raw=[v for row in visits['rows'] for v in row['branch_visits']]
+means=[sum(v['advantages_bb'][i] for v in raw)/len(raw) for i in (0,1)]
+assert means[0]>0 and means[1]<0
+progress=read(ROOT/'progress.json')
+reservoir_evidence=[]
+for cycle in (19,63):
+    reference=progress['updates'][cycle-1]['checkpoint']
+    checkpoint=read(ROOT/'objects'/reference['file'])
+    assert inputs[str(ROOT/'objects'/reference['file'])]==reference['sha256']
+    assert checkpoint['next_model']==bank['selection']['arms']['B-relative']['played'][cycle]
+    reference=checkpoint['contexts'][KEY]['reservoirs'][0]
+    path=ROOT/'objects'/reference['file'];payload=path.read_bytes()
+    assert sha(payload)==reference['sha256'];inputs[str(path)]=sha(payload)
+    with np.load(path,allow_pickle=False) as archive:
+        keys=archive['keys'];lo=keys[:,1]
+        selected=np.flatnonzero((keys[:,0]==7)&((lo&63)//4==12)&(((lo>>6)&63)//4==12))
+        assert len(selected)==1
+        slot=int(selected[0]);iteration=int(archive['iterations'][slot]);values=archive['values'][slot].tolist()
+        assert slot==16967 and iteration==19 and values==[394.,0.,0.,0.]
+        assert abs(float(archive['deal_weights'][slot])-match['source_deal_weight'])<1e-12
+        metadata=json.loads(str(archive['metadata']))
+        reservoir_evidence.append(dict(cycle=cycle,sha256=sha(payload),retained_slot=slot,
+            original_visit_iteration=iteration,values_bb=values,seen=metadata['seen'],capacity=metadata['capacity']))
+text=f'''# Why the experimental model folds AA: traced evidence
+
+The 400bb AA anomaly has a concrete cause in the experimental policy: **a single retained losing training visit becomes a pure-fold lookup override, and that override survives across 45 played generations.** This is a sparse synthetic training-target problem, not evidence that Ignition players fold AA or that the additional river inputs are inherently wrong. Production on port 56708 remains unchanged.
+
+## The chain from a physical deal to the displayed range
+
+In run B's candidate, generation 18 had no retained AA lookup row at BB's response to BTN's 4-bet. Its frozen policy called at this visit. Cycle 19 sampled BB with AA, BTN with K8, and a board with ranks K-T-8-4-2. BTN made two pair and AA lost. The archived native trace records BB's conditional Fold value as **-6bb** and Call value as **-400bb** under that physical deal and frozen continuation policy. Their difference is +394bb in favor of folding on this one outcome.
+
+The resulting centered advantage target is `[394, 0]` for Fold/Call. Both the original sampled target and the archived conditional-action target agree. This specific case is not explained by sampling the subsequent betting actions: the conditional trace gives the same result. The remaining chance variation includes the opponent's cards and the runout; one losing runout is not AA's expected value across those possibilities.
+
+The weighted preflop lookup converts positive mean advantages into action probabilities. **One row is enough to override the neural policy completely**; there is no evidence-strength blending at this boundary. With one positive Fold advantage and zero Call advantage, its recommendation becomes 100% Fold. Root and initial-BTN overrides do not replace this later BB branch.
+
+I authenticated all 256 already-played model files and read AA lookup rows at all five fitting depths. At this specific branch, every played generation from **19 through 63** retains a one-visit row with that same +394/0 target and a pure-fold policy. No generation 64 model was used in the played-bank analysis.
+
+Existing reservoir checkpoints at generations 19 and 63 independently confirm the same retained slot, **16967**, still carries **visit iteration 19** and `[394, 0, 0, 0]`. At generation 63, this BB/context reservoir has seen **209,338 total visits** but keeps **32,768**, shared across decision nodes and hands. A large overall training collection therefore does not guarantee adequate coverage of a particular hand at a particular branch.
+
+## How that produces 91.16% folding
+
+The average weights each played model by its generation weight and AA's own earlier 3-bet probability. Its total weight at the branch is **{denominator:.9f}**. The table's folding contributions, plus the initial uniform model, account for **{100*lower_fold:.6f}%** folding, matching the verified export to within 1e-12. The remaining neural-fallback generations contribute no measurable extra folding. The anomaly is thus directly accounted for by the lookup overrides and the declared averaging rule; it is not a mislabeled chart or missing normalization.
+
+AA's 87.58% own-history support describes how often the averaged policies send AA through its own earlier action. **It does not mean that the learner has many independent AA targets here.** Model reuse and real training-visit counts must be reported separately when assessing learned range reliability.
+
+## Memory retention is only part of the problem
+
+I also decoded the relevant original batch at **all 64 training cycles**, using eight independent archive reads and retaining the file identities. Those cycles contain 64 physical AA deals but just **10 positive visits to this particular 4-bet response**. Of those ten, only the cycle-19 target is retained in the generation-63 lookup.
+
+Keeping all ten original targets would still leave mean advantages of **{means[0]:.4f}bb for Fold** and **{means[1]:.4f}bb for Call**. Two losing 400bb outcomes dominate the small collection. Retaining every preflop target would remove arbitrary forgetting, but **it would not by itself fix this case**. Those means combine targets centered under changing frozen policies; they are regret-like training quantities, not standalone action EVs or a confidence interval.
+
+## What should change next
+
+1. Preserve cumulative preflop evidence separately from the shared visit reservoir, so rare branch/hand observations are not randomly displaced by abundant other visits. Keep correct source-deal and counterfactual weighting; do not reinterpret sampled advantages as action EVs.
+2. Give later preflop branches expected continuation targets across multiple legal opponent holdings and runouts, rather than relying on a handful of visited physical deals. The current board-integrated BB-root update offers an architectural starting point, but extending it to later branches still needs derivation, resource estimates and controls. Replacing this case's sampled action target with its already-recorded conditional-action target alone would leave the +394 target unchanged.
+3. Track actual branch/hand visit counts and target dispersion independently of own-history mixture support. Verify supported premium responses and independent-run agreement before another full training comparison. A minimum-count blend can prevent a one-visit override, but it cannot qualify a poorly learned neural fallback and is not the complete solution.
+
+No premium-hand rule, forced calling floor, policy edit, new trial or deployment was introduced. This analysis is a post hoc causal trace of existing evidence, not a new accuracy comparison. The original failed improvement criterion and uncertainty remain unchanged. The native trace was decoded and authenticated, not independently recomputed, so a separate payoff/learning diagnostic is still appropriate before accepting a corrected learner.
+
+Evidence: [all played AA table rows](stack-context-aa-existing-targets-20261002-v1.csv), [original losing visit](stack-context-aa-archived-visit-20261002-v1.json), [all 64-cycle branch visits](stack-context-aa-archive-coverage-20261002-v1.json), and this document's [identity and arithmetic receipt](STACK-CONTEXT-AA-DIAGNOSIS-20261002-receipt.json). The earlier [comparison findings](STACK-CONTEXT-FINDINGS-20261002.md) remain preserved.
+'''
+targets[0].write_text(text,encoding='utf-8')
+targets[2].write_bytes(Path(__file__).read_bytes())
+receipt=dict(complete=True,posthoc_existing_evidence=True,model_files_authenticated=256,
+    fitted_depth_AA_rows_examined=1280,visited_physical_AA_deals=64,branch_visits=10,
+    generation19_to63_pure_fold_rows=45,retained_actual_visits_at_generation63=1,
+    original_retained_visit_iteration=19,original_retained_slot=16967,
+    recorded_action_values_bb=[-6.,-400.],mean_of_all_original_advantages_bb=means,
+    original_conditional_target_does_not_remove_this_chance_error=True,
+    average_denominator=denominator,table_and_initial_fold_probability=lower_fold,
+    unknown_neural_fold_upper_bound=upper_fold,
+    exported_fold_probability=aa['conditional_hand_action_policy'][0],
+    export_reconstruction_error=abs(lower_fold-aa['conditional_hand_action_policy'][0]),
+    reservoir_evidence=reservoir_evidence,inputs=inputs,
+    outputs={str(p):sha(p.read_bytes()) for p in (targets[0],targets[2])},
+    new_scientific_work=False,native_execution=False,model_inference=False,fitting=False,
+    gpu_used=False,production_modified=False,scientific_gate_changed=False,broad_goal_complete=False,
+    fixes_proposed_not_implemented=True,unix=time.time())
+targets[1].write_text(json.dumps(receipt,indent=2,sort_keys=True,allow_nan=False)+'\n',encoding='utf-8')
+print(json.dumps({k:v for k,v in receipt.items() if k not in ('inputs','outputs','reservoir_evidence')},sort_keys=True))

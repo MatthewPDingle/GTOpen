@@ -1,0 +1,29 @@
+{
+  "id": "D161",
+  "at": "2026-10-28T13:30:45.103708+00:00",
+  "status": "official_toolchain_artifacts_staged_compiler_protocol_next",
+  "candidate_version": "13.0.88",
+  "candidate_wheel_sha256": "6bcd4e7f8e205cbe644f5a98f2f799bef9556fefc89dd786e79a16312ce49872",
+  "history_sha256": "186af03cf5899ff88cc2f01890c654f354987bc06fc913e3fed9ba8ef9341537",
+  "accepted_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "accepted_host_compilation_source_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+  "original_preparation_failure_preserved": true,
+  "layout_repair_protocol_sha256": "9065c4b8193caa7ccbdd45b980ba5706dffbb62a402ba97312af7d06d53ca2de",
+  "scope": "Same exact accepted main CUDA source,no new compiler flags,arithmetic,precision,launches or global/preflop toolchain change. Candidate private13runtime compilation only oncc12.0; other targets retain exact original12.9 compiler. Need actual baseline version/API and compile options before a frozen no-kernel mechanism/resource probe. Runtime compilation/DLL/JIT/load costs remain inside qualification clock.",
+  "primary_sources": [
+    "https://pypi.org/project/nvidia-cuda-nvrtc/13.0.88/",
+    "https://docs.nvidia.com/cuda/archive/13.0.1/nvrtc/index.html",
+    "https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html"
+  ],
+  "obligations": [
+    "Verify exact native ABI/nvrtcVersion and Create/Compile/log/PTX/Destroy lifecycle;load only private absolute DLLs with scoped dependency directory. No alias renaming or global PATH replacement.",
+    "Source-bound literal default CompileOptions only gpu-architecture plus existing kernel name,default math preserved;validate control PTX matches retained accepted PTX before attributing candidate changes.",
+    "Freeze kernel/parameter inventories,actual supported launch shape/default stack/heap/shared/local/max-thread gates and emitted-code mechanism before compilation. Whole PTX version/header difference alone is not useful codegen mechanism. No kernel launch before resources/caller/ABI pass.",
+    "If compiler passes,use full signed-zero/nonfinite/locks/arbitrarymenu/disjointarena/rawdevice/CPU EV/stop/save/resume/continuation controls,both algorithms,F32/compressed,and original reference;never infer exactness from compilation.",
+    "Only then fresh complete-cycle screen plus independent fresh16,broad/capacity/material/holdout/fresh-original gates. Resource warnings alone follow D108policy,but actual hard failures close the form.",
+    "No new optimizer/E093,application activation,source flag rescue or performance gain at preparation stage."
+  ],
+  "new_compiler_runs": 0,
+  "GPU_or_solver_runs": 0,
+  "all_new_output_X": true
+}

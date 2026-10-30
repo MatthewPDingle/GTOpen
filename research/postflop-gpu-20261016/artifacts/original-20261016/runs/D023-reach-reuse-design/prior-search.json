@@ -1,0 +1,64 @@
+{
+  "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\events.jsonl",
+  "sha256": "e5e68bcbbe077eb5a761bee3aaddc5addc26f748c6c46b07b4dc81eebf3b0d2d",
+  "query": "postflop_cuda hypotheses containing reach/capture/reuse, plus source review of current and prior postflop kernels/tests and E001-E014 ledger as described in audit",
+  "matches": [
+    {
+      "line": 52,
+      "event": "run",
+      "id": "E009",
+      "hypothesis": "Dense reach-owner storage reduces postflop VRAM without changing any reach calculation",
+      "commit": "4fe013617fc43a951f18977dffe4633bc59070c4",
+      "utc": "2026-09-07T01:50:21+00:00"
+    },
+    {
+      "line": 53,
+      "event": "run",
+      "id": "E009R",
+      "hypothesis": "Repeat compact postflop reaches and verify time to unchanged 0.3-percent target",
+      "commit": "4fe013617fc43a951f18977dffe4633bc59070c4",
+      "utc": "2026-09-07T01:51:51+00:00"
+    },
+    {
+      "line": 55,
+      "event": "run",
+      "id": "E009R2",
+      "hypothesis": "Paired warm repeat of compact reach storage after original-layout control",
+      "commit": "4763e3ea36f56f1bddb30e7e02a671095542614e",
+      "utc": "2026-09-07T01:54:09+00:00"
+    },
+    {
+      "line": 67,
+      "event": "run",
+      "id": "E011B",
+      "hypothesis": "Stage opponent reach in shared memory before deterministic CPU-precision fold sums",
+      "commit": "fa9da02b6cbd429650975bf5ed36df1375c9a1a7",
+      "utc": "2026-09-07T02:01:02+00:00"
+    },
+    {
+      "line": 199,
+      "event": "run",
+      "id": "E023",
+      "hypothesis": "Specialize two/three/four-action reach propagation to eliminate dynamic local cache and accelerate both iterations and checks",
+      "commit": "7d72ebd40006e0a1ae3689e7fc31a99290d66311",
+      "utc": "2026-09-07T04:16:30+00:00"
+    },
+    {
+      "line": 273,
+      "event": "run",
+      "id": "E030",
+      "hypothesis": "Capture repeated postflop accuracy evaluations with batched root downloads, rebuilding on lock updates",
+      "commit": "8fffe84a34ecd081e4fcde9b54ac5220e00fb1ad",
+      "utc": "2026-09-07T05:29:31+00:00"
+    },
+    {
+      "line": 276,
+      "event": "run",
+      "id": "E030A",
+      "hypothesis": "Retain original eager first-check transfers and capture subsequent checks to avoid one-shot startup regression",
+      "commit": "e20667ebb1b3d442564588ad2d79b0c2a98d5f16",
+      "utc": "2026-09-07T05:34:45+00:00"
+    }
+  ],
+  "limit": "A bounded metadata/source search found no prior ordinary paired-training per-player reach reuse; this is not proof of absence from all historical branches."
+}

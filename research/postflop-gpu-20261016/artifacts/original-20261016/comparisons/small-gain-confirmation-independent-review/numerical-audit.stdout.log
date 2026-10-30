@@ -1,0 +1,54 @@
+{
+  "audit_pass": true,
+  "report_sha256": "46c3d9186db62a9d3f32b3131f777d5736b1afcc12172269ff9e6e9003c4ea87",
+  "arms": {
+    "E007": {
+      "decision": "rejected",
+      "gain_pct": 2.2128585009572284,
+      "gates": {
+        "aggregate_ge_1pct": true,
+        "at_least13_positive_pairs": true,
+        "paired_median_positive": true,
+        "every_block_median_positive": true,
+        "both_orientation_medians_positive": true,
+        "fixture_guard_pass": false
+      }
+    },
+    "E008": {
+      "decision": "rejected",
+      "gain_pct": 0.5171077403540596,
+      "gates": {
+        "aggregate_ge_1pct": false,
+        "at_least13_positive_pairs": false,
+        "paired_median_positive": true,
+        "every_block_median_positive": true,
+        "both_orientation_medians_positive": true,
+        "fixture_guard_pass": true
+      }
+    },
+    "E032": {
+      "decision": "rejected",
+      "gain_pct": 0.5306581815377895,
+      "gates": {
+        "aggregate_ge_1pct": false,
+        "at_least13_positive_pairs": true,
+        "paired_median_positive": true,
+        "every_block_median_positive": true,
+        "both_orientation_medians_positive": true,
+        "fixture_guard_pass": true
+      }
+    },
+    "E036": {
+      "decision": "rejected",
+      "gain_pct": 0.8488034104504394,
+      "gates": {
+        "aggregate_ge_1pct": false,
+        "at_least13_positive_pairs": false,
+        "paired_median_positive": true,
+        "every_block_median_positive": false,
+        "both_orientation_medians_positive": true,
+        "fixture_guard_pass": true
+      }
+    }
+  }
+}

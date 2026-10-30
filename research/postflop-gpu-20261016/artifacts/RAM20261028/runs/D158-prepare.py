@@ -1,0 +1,25 @@
+import sys,shutil
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'epoch'))
+import common as h
+h.custody();h.ar.refuse_active(h.ar.live_status());assert not (ROOT/'gpu-run.lock').exists()
+assert h.read(ROOT/'comparisons/D157-actual-resources/report.json')['status']=='rejected_actual_resource_prerequisite'
+H=ROOT/'runs/D158-cold-main-acquisition';H.mkdir(exist_ok=False)
+shutil.copyfile(ROOT/'runs/D158-cold-compile.rs',H/'probe.rs')
+shutil.copyfile(h.REPO/'crates/solver/src/gpu/kernels.cu',H/'kernels.cu')
+reference=ROOT/'runs/E091-resource/execution/baseline-compute_120.ptx'
+resource=h.read(ROOT/'runs/E091-resource/report.json');h.pin(reference,resource['ptx_sha256']['baseline-compute_120'])
+shutil.copyfile(reference,H/'reference-main-compute120.ptx')
+h.pin(ROOT/'runs/E091-resource/baseline.cu',h.custody()['crates/solver/src/gpu/kernels.cu'])
+for name in ['execute','assess']:shutil.copyfile(ROOT/'runs'/f'D158-{name}.py',H/(name+'.py'))
+deps=ROOT/'reference/accepted-e080-deps';cmd=['rustc',str(H/'probe.rs'),'--edition=2021','-C','opt-level=3','-C','codegen-units=1','-C','lto=thin','-L','dependency='+str(deps)]
+for crate,file in [('cudarc','libcudarc-ba3140064b5903a3.rlib'),('serde_json','libserde_json-83a0670a02a34a4d.rlib')]:cmd+=['--extern',crate+'='+str(deps/file)]
+cmd+=['-o',str(H/'probe.exe')]
+mod=h.REPO/'crates/solver/src/gpu/mod.rs';source=mod.read_text(encoding='utf-8')
+assert 'static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>>' in source
+assert 'arch: Some(arch),\n                        ..Default::default()' in source
+h.save(H/'scope-review.json',{'at':h.now(),'E092_remains_closed_after_resource_failure':True,'distinct_question':'Measure current first-process PTX acquisition only; existing process-local cache is already present. A possible source-bound prebuilt main PTX would remove cold compilation rather than add a duplicate warm cache. No optimizer or E093 created; do not infer a gain from this probe.','history_counterevidence':['D041/D109 record process-local OnceLock and historical PTX acquire about53-60ms,below current1% suite threshold. D109 module/function loads about1.46-1.98ms are also too small and context retention already exists. Old outcomes remain unchanged.','E080 overlaps zero scans with compiler/staging setup. Even a large raw compiler duration may be hidden by concurrent proof work. Any admitted standalone proxy still needs fresh actual critical-path evidence before source implementation.','E009/E010/E092 packed readback mechanisms remain closed. This probe changes no readback,arena,scratch,q/scale,allocation,context lifetime or solver source.'], 'proxy_rule':'Three fresh source-bound CPU compilation processes,one acquisition each,exact PTX to retained accepted-source reference. Compare minimum raw acquisition duration to1% of current five-run baseline10456.4109ms. If below,decline for insufficient conservative standalone evidence; if at least,only admit actual overlap/critical-path diagnosis. This is an effort-selection heuristic,not a rigorous upper bound or causal future saving. GPU-context absence,CPU contention/scheduling/library initialization can differ in real solves.','scope':'One Rust compiler and three CPU-only NVRTC processes,all artifacts X. No solver,explicit GPU context/kernels or timings of an optimization. No compile/arch/source/gate/sample variants or extensions after actual failed identity/proxy result.'})
+files=[Path(__file__),ROOT/'runs/D158-cold-compile.rs',ROOT/'runs/D158-execute.py',ROOT/'runs/D158-assess.py',mod,h.REPO/'crates/solver/src/gpu/kernels.cu',reference,ROOT/'runs/E091-resource/report.json',ROOT/'comparisons/D157-actual-resources/report.json',ROOT/'comparisons/RAM20261028-baseline/report.json',ROOT/'runs/D157-actual-resources/source-review.json',ROOT/'epoch/common.py',ROOT/'epoch/accepted-source.json',ROOT/'epoch/protected-main.json']+[p for p in H.rglob('*') if p.is_file()]+[p for p in deps.iterdir() if p.is_file()]+[p for p in Path(h.ar.NVRTC).iterdir() if p.is_file()]
+for name in ['execute','assess']:compile((H/(name+'.py')).read_text(encoding='utf-8'),name,'exec')
+h.save(H/'protocol.json',{'id':'D158','at':h.now(),'status':'FROZEN_PRE_COMPILER_AND_COLD_ACQUISITIONS','rustc_command':cmd,'native_sequence':['C01','C02','C03'],'minimum_proxy_rule_baseline_ms':10456.4109,'required_proxy_pct':1.0,'required_free_bytes':66*1024**3,'reference_PTX_sha256':h.sha(H/'reference-main-compute120.ptx'),'input_sha256':{str(p):h.sha(p) for p in files},'scope':'One compiler,exactly three fresh CPU-only NVRTC/default-compute120 main-source acquisitions,then independent emitted-PTX/time replay. Same process-local OnceLock get_or_init/clone call as accepted source,no actual optimization. Three PTX artifacts must exactly match accepted-source reference. Predeclared minimum>=1% current aggregate raw proxy admits only a future overlap diagnostic. No samples/source/arch/gates/variants/extensions after failure;no primary score/adoption.'})
+h.custody();print(h.sha(H/'protocol.json'),flush=True)

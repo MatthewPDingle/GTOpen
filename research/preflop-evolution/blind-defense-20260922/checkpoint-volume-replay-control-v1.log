@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "T:\Dev\GTOpen\tools\research\hu_checkpoint_volume_replay_control_20260925.py", line 187, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_checkpoint_volume_replay_control_20260925.py", line 125, in main
+    if sys.argv[1:]==['--worker']:worker(read(rp));return
+                                  ^^^^^^^^^^^^^^^^
+  File "T:\Dev\GTOpen\tools\research\hu_checkpoint_volume_replay_control_20260925.py", line 86, in worker
+    if key not in ('fits','root_integration_seconds'):assert new[key]==old[key],key
+                                                             ^^^^^^^^^^^^^^^^^^
+AssertionError: initial_policy_sha256

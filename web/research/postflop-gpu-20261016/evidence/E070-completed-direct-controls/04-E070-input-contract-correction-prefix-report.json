@@ -1,0 +1,26 @@
+{
+  "id": "E070-down-action-root-raw-decoder",
+  "status": "pass_observed_1172case_prefix_raw_equivalence",
+  "checks": 25995407,
+  "cases": 1172,
+  "kernel_launches": 2344,
+  "output_words_both_arms": 30218096,
+  "immutable_words_both_arms": 13859288,
+  "guard_words_both_arms": 25854740,
+  "full_raw_files_equal": true,
+  "raw_sha256": {
+    "baseline-inputs.bin": "b1e65b18c712ac414398d589fd58eef7f9e1c1555909f16c3a418f471b3df76b",
+    "baseline.bin": "3dbdab883de03f439b2b76a49f0c4966562c927f231d49f79fd9b8cceaf37b30",
+    "candidate-inputs.bin": "b1e65b18c712ac414398d589fd58eef7f9e1c1555909f16c3a418f471b3df76b",
+    "candidate.bin": "3dbdab883de03f439b2b76a49f0c4966562c927f231d49f79fd9b8cceaf37b30",
+    "inputs.bin": "f928d42a9d5bc5d563229b52870081f993846a66859e118b1eaf839c7ba6dfa1"
+  },
+  "audit_sha256": "3f4c2240e8518fa5950ceb73e83994fadf7df7777f648c3a3a90197199434c23",
+  "corpus_sha256": "32ea0a19c4dd7ca4841c35cc1812aab0b4c847804d67f34b40c14b3cdafd6850",
+  "limits": "Finite declared inputs only. Root replay is not external independent review; no solver accuracy, speed, universal NaN/layout or wide-address proof.",
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "native_process_completed_normally": false,
+  "source_returncode": 101,
+  "coverage": "Only completed original case IDs0through1171; remaining24cases unexecuted by this source process."
+}

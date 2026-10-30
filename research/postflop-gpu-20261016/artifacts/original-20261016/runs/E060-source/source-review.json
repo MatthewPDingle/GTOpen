@@ -1,0 +1,23 @@
+{
+  "id": "E060-source",
+  "at": "2026-10-17T08:23:07.684956+00:00",
+  "mechanism": "Compute the denominator-only reciprocal approximation/refinement once per hand in common2/3/4 up_action; reuse for the original numerator-specific3FMA sequence seen in D098 driver SASS. Only compute120, valid positive denominator <=2^60 and numerator0 or >=2^-60. Original division for every other branch and architecture.",
+  "source_contract": [
+    "sum is an ordered sum of nonnegative r>0?r:0 terms; finite sum is >=every positive term by monotonic correctly-rounded nonnegative additions",
+    "selected sum>1e-12 is normal and <=2^60, so reciprocal is normal; numerator0 or >=2^-60 and <=sum bounds nonzero quotient >=2^-120 and <=1",
+    "if sum overflows/infinite or numerator is too tiny, original numerator/sum operation remains; NaN/nonpositive sums use original uniform branch",
+    "regret reads/order/threshold, child CFV/strategy/regret expression order, graph, allocations, menus, locks, quality and ABI unchanged",
+    "generic NA0 and other architecture preprocessor paths retain division arithmetic; require actual compiled comparisons not source claims"
+  ],
+  "precision_status": "UNPROVEN_PENDING_GPU_RAW_EXACTNESS. Matching observed normal-path operations and conservative domain is a source hypothesis, not proof of CUDA division equivalence or portability. No direct reciprocal multiplication replacement.",
+  "frozen_next_gates": "Allocated/resource gate first. If pass, require actual compiled reciprocal/refinement sharing and unchanged other8entries/ABI. Then raw scalar denominator/numerator and complete up_action kernel inputs/outputs/guards including boundary/nonfinite/native fallback cases, exact primary states/checkpoints, then same initial1%/fixture/fresh16/broader/material/holdout/cumulative policy. Stop on any numerical failure. No denominator-window, math, arity, placement or guard variants rescuing closed outcome.",
+  "tradeoff_risks": [
+    "extra lane predicates/divergence/fallback code and registers/local storage may outweigh eliminated reciprocal work",
+    "same occupancy alone does not establish equal allocated registers",
+    "source guard does not establish all actual device results"
+  ],
+  "candidate_sha256": "50ad4559ca5b30bb961f4f74d41df1e050bed2bcd33441e76decac8dd3de547e",
+  "independent_review": false,
+  "d098_report_sha256": "d50be563968c3f920188d4af8deab2d52607fd09bd851fb65a3a26bec3df099c",
+  "no_source_activation": true
+}

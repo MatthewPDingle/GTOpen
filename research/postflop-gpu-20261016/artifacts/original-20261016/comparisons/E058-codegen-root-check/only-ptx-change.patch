@@ -1,0 +1,12 @@
+--- accepted-down-action.ptx
++++ conditional-down-action.ptx
+@@ -436,8 +436,8 @@
+ 	shl.b64 	%rd268, %rd267, 2;
+ 	add.s64 	%rd269, %rd38, %rd268;
+ 	ld.global.f32 	%f16, [%rd269];
++	setp.leu.f32 	%p30, %f15, 0f2B8CBCCC;
+ 	div.rn.f32 	%f175, %f16, 0f40400000;
+-	setp.leu.f32 	%p30, %f15, 0f2B8CBCCC;
+ 	mov.f32 	%f173, %f175;
+ 	@%p30 bra 	$L__BB1_48;
+ 	div.rn.f32 	%f125, %f12, %f15;

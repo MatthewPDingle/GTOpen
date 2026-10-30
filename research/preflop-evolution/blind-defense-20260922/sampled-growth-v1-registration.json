@@ -1,0 +1,42 @@
+{
+  "inputs": {
+    "target\\release\\examples\\hu_sampled_growth_gpu.exe": "4978ef20aa15aad21c1a517de4b58b6d709ee9fafd5c221cdc546ea583a5c9c2",
+    "research\\preflop-evolution\\blind-defense-20260922\\bb-context-candidate.json": "8e79a4666487873e1f3e9626a6c0fc952879b24b2bdcd54cd125860787e8432d",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-growth-v1-deals.bin": "d30752a7b071bc43f0027a3ce599d142e2f1036e3cf1535916ee4927496d1c44",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-growth-v1-deals.json": "2ac32589eaec2f6b0aa37fd433a2454ef70fc99934a9e696d503d32104af9913",
+    "crates\\solver\\examples\\research_sampled\\postflop_state_v1.cuh": "8710c2d892999e521c033901f96bd9cdec27687ca9083c3254a7e8a956c5e564",
+    "crates\\solver\\examples\\research_sampled\\evaluator_v1.cuh": "417d8e4cbc5503210f9394b01f09e01bef18848ecb765935a9c0f6f29b476e3e",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled_poker_v1.cu": "67d8a198f20bb3702ff34c2a44e81176d5f55a02506960d81d18c1b21871d847",
+    "tools\\research\\hu_sampled_growth_run_20260922.py": "d587bc70dab5d05849429649ccb848d9d49fef0d704e3dd27ebc7bd4121bb5e0",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-poker-v1-registration.json": "3fd881e395a7619c26b4bcee92180f3a1f88e11fea677eab3422bf5c1685e48c",
+    "research\\preflop-evolution\\blind-defense-20260922\\sampled-poker-v1-review.json": "b6f1bd73fe18f01cbfff29ddaaca3e60f142f1252c66a3c2f4b8358c3bd5f7e2",
+    "crates\\solver\\examples\\hu_sampled_growth_gpu.rs": "03b85b1b925480c07dc882d87c58dbc66ba1661294d62b67cf47a2c3f61bccc9",
+    "crates\\solver\\examples\\research_sampled\\poker_reference_v1.rs": "954654489e7ce2d5c07d884e2643f672f40ffe724e450aa87f4353385b499488",
+    "crates\\solver\\examples\\research_sampled\\state.rs": "8ea8309a9ccd9a7c0f473cf26a491330e9b4619d89712475e6c56f38ee47cfc7",
+    "crates\\solver\\src\\evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+    "crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "tools\\research\\loopback_research_validation.py": "f09cc89bd313d30c40c67f7a7dea0894b2471fd083c6f2942fef7cc0873844c2",
+    "tools\\research\\paged_continuation_validation.py": "ce900147330132f1fe0f7126c81955ae6e0c40a74d8d7ecbf33afdb549fcff35"
+  },
+  "created_at_unix": 1790051472.0669577,
+  "maximum_seconds": 300,
+  "training_soft_seconds": 180,
+  "purpose": "Measure actual fresh-deal lookup reuse, per-street state growth and whole-batch cost before convergence admission.",
+  "budgets": {
+    "max_deals": 262144,
+    "batch_deals": 2048,
+    "max_infosets": 8000000,
+    "max_records_per_traversal": 512
+  },
+  "gates": {
+    "full_target_support": true,
+    "no_eviction": true,
+    "full_checkpoint_retained": true,
+    "max_live_reference_error": 1e-09,
+    "no_partial_batch_when_entry_cap_reached": true
+  },
+  "limits": "Resource probe, not a convergence or poker accuracy experiment. No policy exported to preview or production.",
+  "no_automatic_retry": true
+}

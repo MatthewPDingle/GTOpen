@@ -1,0 +1,288 @@
+{
+  "id": "D066",
+  "marker": "D066_FOLD_ZERO_CENSUS ",
+  "cleanup_error_marker": "D066_SOLVER_CLEANUP_ERROR",
+  "expected_marker_count": 39,
+  "expected_stage_order": [
+    {
+      "fixture_id": "rainbow",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 80
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 100
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 120
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 140
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 160
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 180
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "snapshot",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "final_anchor_exact",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 80
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 100
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 120
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 140
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 160
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 180
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "snapshot",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "final_anchor_exact",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "river",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "river",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "river",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "river",
+      "stage": "snapshot",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "river",
+      "stage": "final_anchor_exact",
+      "iteration": 60
+    },
+    {
+      "stage": "complete"
+    }
+  ],
+  "invalid_stage_fails": true,
+  "test_filter": "gpu::fold_zero_census::fold_zero_reach_census",
+  "native_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 88
+  },
+  "source_entries": {
+    "accepted": 162,
+    "diagnostic": 163
+  },
+  "native_output_directory_env": "D066_CENSUS_DIR",
+  "native_output_directory_requirement": "Pre-existing empty dedicated directory, every artifact create_new; no deletion/retry/overwrite. Retain failure partial files.",
+  "expected_files": [
+    "rainbow-fold-mapping.u32le",
+    "two-tone-fold-mapping.u32le",
+    "river-fold-mapping.u32le",
+    "rainbow-iteration20-reach0.rowflags",
+    "rainbow-iteration20-reach1.rowflags",
+    "rainbow-iteration200-reach0.rowflags",
+    "rainbow-iteration200-reach1.rowflags",
+    "two-tone-iteration20-reach0.rowflags",
+    "two-tone-iteration20-reach1.rowflags",
+    "two-tone-iteration200-reach0.rowflags",
+    "two-tone-iteration200-reach1.rowflags",
+    "river-iteration20-reach0.rowflags",
+    "river-iteration20-reach1.rowflags",
+    "river-iteration60-reach0.rowflags",
+    "river-iteration60-reach1.rowflags"
+  ],
+  "mapping_codec": {
+    "byte_order": "little",
+    "header_bytes": 0,
+    "record_bytes": 20,
+    "fields": [
+      "node_u32",
+      "physical_slot_player0_u32",
+      "physical_slot_player1_u32",
+      "selected_amount_traverser0_f32_bits_u32",
+      "selected_amount_traverser1_f32_bits_u32"
+    ],
+    "order": "Exactly finalized flat fold_nodes order, including repeated physical owner slots if any. JSON geometry.fold_spans partitions this order.",
+    "validation": "Byte length=20*geometry.fold_ctas_per_traverser. Slots below geometry.reach_blocks[q], amount finite iff exponent bits !=0x7f800000. Native verifies full uploaded fold list/slot/player/payout arrays and host spans against independently built finalized plan for both ordinary solvers."
+  },
+  "rowclass_codec": {
+    "header_bytes": 0,
+    "element_bytes": 1,
+    "length": "geometry.reach_blocks[q]",
+    "order": "physical row index; exactly geometry.nh[q] logical float words each, no padding",
+    "flags": {
+      "1": "any negative zero bits0x80000000",
+      "2": "any finite nonzero",
+      "4": "any nonfinite exponent0x7f800000",
+      "0": "all words bits0x00000000"
+    },
+    "allowed_values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "chunk_boundary": "Absolute word index divided by nh; accumulate flags through entire array before finalizing rows."
+  },
+  "snapshot": {
+    "arrays_order": "opponent q0 thenq1; traverser p=1-q",
+    "reach_equality": "Pinned native code compares each paired float bit; hashes alone are not an equality proof. Raw float payloads are not retained.",
+    "whole_reach_word_categories": "Disjoint positive_zero,negative_zero,finite_nonzero,nonfinite counts sum to entries; these include non-fold rows and must not be mistaken for fold CTA counts.",
+    "fold_counts": "Recompute by iterating every mapping record, looking up rowclass at slot[q]. Independent flags may overlap within a row. all_positive_zero_and_finite_amount additionally requires finite selected amount[p].",
+    "levels": "Each original fold span, including count0; sum each count field equals aggregate fold_counts.",
+    "maximum_pairwise_float_bytes": 8388608
+  },
+  "admission": "Exact reused D045 payload count, two-arm reserve, CPU stores and pinned staging separately; device_arena_elements are compact GPU lengths, not full CPU store lengths. Compact geometry/rowflags budget added.",
+  "controls": {
+    "checkpoints": 23,
+    "paired_snapshots": 6,
+    "paired_reach_arrays": 12,
+    "full_cpu_q_and_scale_comparisons": 3,
+    "full_final_fingerprints": 3,
+    "original_anchor": "B065",
+    "accepted_anchor": "E020C1"
+  },
+  "cleanup": "Retain each solver own CudaContext Arc across destruction; check both and admission wrapper before final_anchor_exact.cleanup_complete. Error-path guard synchronizes each solver before buffer drop; any cleanup error marker fails.",
+  "runtime_hashes": "Artifact/reach FNV1a64 as inherited fingerprint; orchestration should additionally SHA256-pin retained files.",
+  "no_timing_threshold": true,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "interpretation": "Snapshot incidence only. No dynamic all-iteration fraction, kernel-cost share, speedup, safe no-write branch, or positive-zero CFV claim."
+}
