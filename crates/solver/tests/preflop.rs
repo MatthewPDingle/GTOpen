@@ -2480,7 +2480,8 @@ fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     p.response = Some(ProfileResponse { contextual_reraise: None, limp_unopened: None, adaptive_from: Some(0.25), source_stats: None, cold_reraise: None, limp_contexts: vec![] });
     s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
     assert!(s.live_seats()[1]);
-    assert!(s.set_hero(Some(0)).unwrap_err().contains("joint solving"));
+    // adaptive villains no longer block hero mode; an unsolved table still does
+    assert!(s.set_hero(Some(0)).unwrap_err().contains("solve the table first"));
     let small = s.nodes[0].actions.iter().position(|a| a.kind == "raise").unwrap();
     let jam = s.nodes[0].actions.iter().position(|a| a.kind == "jam").unwrap();
     let sn = s.child(0, small); let jn = s.child(0, jam);
@@ -2510,6 +2511,58 @@ fn adaptive_profiles_learn_large_responses_and_preserve_locks() {
     assert!(s.set_table(vec![false; 6], vec![None, Some(p), None, None, None, None]).is_err());
 }
 
+
+/// HERO works against adaptive (archetype) villains. Their ordinary actions
+/// stay forced by the profile and their large-bet responses keep learning
+/// against the hero instead of freezing at the table solve; unprofiled
+/// villains still freeze. Hero off restores the table's frozen flags.
+#[test]
+fn hero_mode_keeps_adaptive_villains_learning_large_bets() {
+    use solver::preflop::ProfileResponse;
+    let mut cfg = six_max_cfg(); cfg.stack = 20.0; cfg.add_allin = true;
+    let mut s = legacy_solver(cfg, table()).unwrap();
+    let mut p = profile_with(BUCKET_VS_RAISE, flat_policy(1.0, 0.0), "station");
+    p.buckets = vec![Some(flat_policy(1.0, 0.0)); NUM_BUCKETS];
+    p.response = Some(ProfileResponse { adaptive_from: Some(0.25), ..Default::default() });
+    s.set_table(vec![false; 6], vec![None, Some(p.clone()), None, None, None, None]).unwrap();
+    for _ in 0..40 {
+        s.iterate();
+    }
+    s.set_hero(Some(0)).unwrap();
+    assert_eq!(s.hero, Some(0));
+    assert_eq!(s.seat_frozen, vec![false, false, true, true, true, true]);
+    let act = |s: &PreflopSolver, node: usize, kind: &str| {
+        s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap()
+    };
+    // HJ facing UTG's jam: adaptive node, learned in hero mode
+    let jn = s.child(0, act(&s, 0, "jam"));
+    assert_eq!(s.nodes[jn].actor, 1);
+    // HJ facing UTG's small open: ordinary node, still forced by the profile
+    let sn = s.child(0, act(&s, 0, "raise"));
+    let call = act(&s, sn, "call");
+    // CO after UTG and HJ fold: unprofiled villain, frozen at its table average
+    let f1 = s.child(0, act(&s, 0, "fold"));
+    let co = s.child(f1, act(&s, f1, "fold"));
+    assert_eq!(s.nodes[co].actor, 2);
+    let (jam_before, co_before) = (s.average_strategy(jn), s.average_strategy(co));
+    for _ in 0..60 {
+        s.iterate();
+    }
+    let moved = |a: &[f32], b: &[f32]| a.iter().zip(b).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+    assert!(moved(&jam_before, &s.average_strategy(jn)) > 1e-3, "adaptive large-bet response must keep learning");
+    assert!(moved(&co_before, &s.average_strategy(co)) < 1e-6, "unprofiled villain must stay frozen");
+    assert_eq!(s.average_strategy(sn)[call * NUM_CLASSES], 1.0, "ordinary action stays forced");
+    s.set_hero(None).unwrap();
+    assert_eq!(s.hero, None);
+    assert_eq!(s.seat_frozen, vec![false; 6]);
+    // an adaptive villain frozen explicitly by the user stays frozen in hero mode
+    s.set_table(vec![false, true, false, false, false, false], vec![None, Some(p), None, None, None, None]).unwrap();
+    for _ in 0..20 {
+        s.iterate();
+    }
+    s.set_hero(Some(0)).unwrap();
+    assert!(s.seat_frozen[1]);
+}
 
 #[test]
 fn adaptive_gap_respects_fixed_actions_instead_of_reporting_their_bleed() {

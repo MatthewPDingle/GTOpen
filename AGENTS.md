@@ -68,10 +68,12 @@ game). Config shape (see `PreflopConfig` in
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.
-- `realization`: new UI scenarios use "balanced" (relative class priors,
-  pot-conserving HU shares, explicit configured rake). It is not a newly
-  trained rake-free model. "calibrated" retains embedded training rake;
-  "static" (the API omission default) and "raw" retain legacy behavior.
+- `realization`: new UI scenarios use "calibrated" (closest to GTO Wizard
+  in the 6-max benchmark; retains embedded training rake). "balanced"
+  (relative class priors, pot-conserving HU shares, explicit configured
+  rake) over-defends the BB (fold 49.6% vs Wizard ~62% vs a BTN open).
+  Scenarios load the model they saved. "static" (the API omission default)
+  and "raw" retain legacy behavior.
   See `docs/preflop_balanced_model.md`. Optional `fourbet_mults` and
   `fourbet_mults_by_seat` split later raises from the 3-bet menu; omission
   retains the original all-round multiplier inheritance. These features
@@ -143,7 +145,10 @@ web UI at :3737 drives all of it.
 Caveats to carry into any writeup: EVs vs frozen profiles are ceilings;
 calibrated HU realization is pessimistic on no-initiative flatting (call ranges
 are the soft numbers; folds and value-raises are robust); ordinary villain fold-vs-raise remains fixed per bucket/band. New app-generated
-profiles learn responses from 25% of stack, so keep HERO off for joint solves.
+profiles learn responses from 25% of stack; in HERO mode those adaptive
+villains stay live (large-bet responses keep learning, ordinary actions stay
+forced) while unprofiled villains freeze. Hero off keeps what they learned
+until the next RE-SOLVE.
 Adaptive-seat gaps respect their fixed actions; fully fixed/frozen gaps remain
 bleed. Historical fully fixed results and old saves keep their original model.
 See `docs/preflop_modeling_fix.md`; the Data sample is online, not live casino.

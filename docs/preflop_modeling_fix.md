@@ -22,10 +22,14 @@ accepts `adaptive_from: 0.25` on `/api/preflop/generate`; explicit `null` retain
 fixed responses. Rust `generate_profile` returns corrected limp ranges with
 adaptation disabled until the caller chooses a threshold.
 
-Leave **HERO off** and your target seat on **Solver** for joint adaptive solves.
-HERO mode freezes other seats, so the engine refuses it while unfrozen adaptive
-opponents are present. Explicit point locks still take priority; explicitly
-frozen seats keep their saved averages. Adaptive seats show a convergence gap
+HERO mode works with adaptive opponents (fixed 2026-10-12; it used to refuse
+them). The hero learns its exploit while adaptive opponents keep learning
+their large-bet responses against it; their ordinary actions stay forced and
+unprofiled opponents freeze at their table strategy. Leaving HERO keeps what
+the adaptive opponents learned until the next RE-SOLVE. A joint solve with
+HERO off and your seat on Solver remains equivalent when every other seat is
+modeled. Explicit point locks still take priority; explicitly frozen seats
+keep their saved averages. Adaptive seats show a convergence gap
 within the fixed ordinary-action rules, while fully fixed/frozen seats retain
 their unrestricted bleed measurement. CPU and CUDA use the same distinction.
 

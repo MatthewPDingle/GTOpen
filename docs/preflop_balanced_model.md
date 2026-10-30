@@ -1,6 +1,6 @@
 # Heads-up rake accounting and position sizes
 
-New UI scenarios use **Balanced (approx.)**. Existing saves keep the model that generated their regrets and strategy sums. To change an old game, select Balanced, **Build Game**, and solve afresh. Re-solve alone does not change its model.
+New UI scenarios use **Calibrated** again (2026-10-12): in the 6-max 100bb GTO Wizard benchmark Balanced made the BB defend 50.4% against a BTN open (fold 49.6 / call 41.1 / 3-bet 9.3) where Wizard folds ~62% and Calibrated folds 63.4%. Balanced remains available as **Balanced (exact rake)**. Existing saves and saved scenarios keep the model they were built with. To change an old game, select the model, **Build Game**, and solve afresh. Re-solve alone does not change its model.
 
 ## What changed
 

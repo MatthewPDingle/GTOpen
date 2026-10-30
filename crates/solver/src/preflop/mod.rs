@@ -1404,11 +1404,22 @@ impl PreflopSolver {
                     .pre_hero_frozen
                     .clone()
                     .unwrap_or_else(|| self.seat_frozen.clone());
-                if self.seat_profiles.iter().enumerate().any(|(i, p)| i != h
-                    && !table_frozen[i] && p.as_ref().and_then(|p| p.response.as_ref())
-                        .and_then(|r| r.adaptive_from).is_some()) {
-                    return Err("adaptive profiles need joint solving: leave HERO off and set your target seat to Solver".into());
-                }
+                // Adaptive villains stay LIVE in hero mode: their profile still
+                // forces every ordinary action, and their large-bet responses
+                // keep learning against the hero. Freezing those responses at
+                // the table solve would let the hero exploit stale jam/4-bet
+                // defences — the artifact adaptive profiles exist to prevent.
+                // An adaptive seat the user froze explicitly stays frozen.
+                let stays_live = |i: usize| -> bool {
+                    i != h
+                        && !table_frozen[i]
+                        && self.seat_profiles[i]
+                            .as_ref()
+                            .and_then(|p| p.response.as_ref())
+                            .and_then(|r| r.adaptive_from)
+                            .is_some()
+                };
+                let live_villains: Vec<bool> = (0..self.n).map(stays_live).collect();
                 if table_frozen[h] && !fully_ruled(&self.seat_profiles[h]) {
                     return Err(format!(
                         "seat {} is frozen — unfreeze it before making it hero; hero mode would discard its pinned average",
@@ -1438,7 +1449,10 @@ impl PreflopSolver {
                     self.restore_hero_backup();
                 }
                 self.hero_backup = Some(self.snapshot_seat(h, table_iter));
-                self.seat_frozen = (0..self.n).map(|i| i != h).collect();
+                // Only the hero's blocks are backed up: leaving hero mode keeps
+                // what adaptive villains learned against the exploit until the
+                // next RE-SOLVE re-converges the table.
+                self.seat_frozen = (0..self.n).map(|i| i != h && !live_villains[i]).collect();
                 self.hero = Some(h);
                 self.zero_seat_blocks(h);
                 self.iteration = 0;

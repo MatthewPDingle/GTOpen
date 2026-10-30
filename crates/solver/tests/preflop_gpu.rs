@@ -10,7 +10,8 @@
 use solver::preflop::equity::{class_index, EquityTable, NUM_CLASSES};
 use solver::preflop::gpu::PreflopGpu;
 use solver::preflop::{
-    BucketPolicy, PreflopConfig, PreflopSolver, SeatProfile, BUCKET_VS_RAISE, NUM_BUCKETS,
+    BucketPolicy, PreflopConfig, PreflopSolver, ProfileResponse, SeatProfile, BUCKET_VS_RAISE,
+    NUM_BUCKETS,
 };
 use std::sync::{Arc, OnceLock};
 
@@ -224,8 +225,50 @@ fn gpu_matches_cpu_frozen_hero() {
     run_equivalence(cpu, gs);
 }
 
-fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
-    let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
+/// Hero mode against an adaptive villain: the villain's large-bet responses
+/// stay live while the hero exploits. Checked on the classic GPU engine and
+/// on the throughput engine the server actually uses.
+#[test]
+fn gpu_matches_cpu_hero_with_adaptive_villain() {
+    let build = || {
+        let mut s = legacy_solver(hu25(), table()).unwrap();
+        s.prune = false;
+        for _ in 0..40 {
+            s.iterate();
+        }
+        let mut buckets: Vec<Option<BucketPolicy>> = vec![Some(flat_policy(0.6, 0.1)); NUM_BUCKETS];
+        buckets[BUCKET_VS_RAISE as usize] = Some(flat_policy(0.5, 0.1));
+        let villain = SeatProfile {
+            name: "adaptive station".into(),
+            buckets,
+            vs_raise_bands: None,
+            postflop: None,
+            limp_defense: None,
+            response: Some(ProfileResponse { adaptive_from: Some(0.25), ..Default::default() }),
+        };
+        s.set_table(vec![false, false], vec![None, Some(villain)]).unwrap();
+        for _ in 0..40 {
+            s.iterate();
+        }
+        s.set_hero(Some(0)).unwrap();
+        s
+    };
+    let cpu = build();
+    assert_eq!(cpu.seat_frozen, vec![false, false], "adaptive villain stays live in hero mode");
+    run_equivalence(build(), build());
+    run_equivalence_with(build(), build(), |s| PreflopGpu::new_throughput(s, 8_000).map(|(g, _)| g));
+}
+
+fn run_equivalence(cpu: PreflopSolver, gs: PreflopSolver) {
+    run_equivalence_with(cpu, gs, |s| PreflopGpu::new(s, 8_000));
+}
+
+fn run_equivalence_with(
+    mut cpu: PreflopSolver,
+    mut gs: PreflopSolver,
+    make: impl Fn(&PreflopSolver) -> Result<PreflopGpu, String>,
+) {
+    let mut g = make(&gs).expect("gpu init");
 
     // Short horizon: per-iteration math must mirror to float noise before
     // chaos has room to amplify.

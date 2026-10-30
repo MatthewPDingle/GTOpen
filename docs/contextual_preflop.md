@@ -5,7 +5,9 @@ It is a separate entry derived from the existing Ignition pool. Existing
 profiles, hand-painted ranges and saved games are not converted.
 
 Select the new entry for a modeled seat, then **Apply model** or **Re-solve**.
-For joint adaptive solves, leave HERO off and your own seat on Solver. Opening,
+HERO mode works with it: adaptive large-bet responses keep learning while the
+hero exploits (a joint solve with HERO off and your seat on Solver is
+equivalent when every other seat is modeled). Opening,
 vs-limp, vs-raise and squeeze policies retain the existing measured ranges.
 The new model changes responses to a **3-bet or later raise**.
 

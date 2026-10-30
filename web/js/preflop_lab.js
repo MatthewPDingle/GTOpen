@@ -70,7 +70,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const legacyModelNote = document.createElement('div');
   legacyModelNote.className = 'pfl-legacy-value-note'; legacyModelNote.hidden = true;
-  legacyModelNote.textContent = 'This saved solve uses legacy calibration with embedded rake. Select Balanced and Build Game for the corrected rake model; Re-solve preserves the saved model.';
+  legacyModelNote.textContent = 'Calibrated embeds the rake of its training solves, so the rake setting barely moves heads-up flop values. Balanced applies your rake exactly but over-defends the big blind (50% vs ~38% in the GTO Wizard benchmark). Changing model needs Build Game; Re-solve keeps the saved model.';
   els.realization.closest('.pfl-grid2').after(legacyModelNote);
   const previewBanner = document.createElement('div');
   previewBanner.id = 'pfl-publication';
@@ -316,7 +316,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.ante.value = p.ante;
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
-    if (els.realization) els.realization.value = p.realization === "calibrated" ? "balanced" : (p.realization || "balanced");
+    // Load exactly what the scenario saved; scenarios without a model get the
+    // default (calibrated: closest to GTO Wizard in the 6-max benchmark).
+    if (els.realization) els.realization.value = p.realization || 'calibrated';
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
