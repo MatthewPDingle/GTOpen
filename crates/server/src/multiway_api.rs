@@ -44,8 +44,11 @@ pub struct MwTreeInfo {
     pub hands: [usize; NP],
     pub arena_mb_f32: f64,
     pub arena_mb_compressed: f64,
-    /// Estimated GPU memory for a fully resident solve (0 without CUDA).
+    /// Estimated GPU memory for a fully resident f32 solve, and the least
+    /// the GPU solver can work with (16-bit arenas, subtrees swept in
+    /// groups). 0 without CUDA.
     pub gpu_mb: f64,
+    pub gpu_min_mb: f64,
     pub build_secs: f64,
 }
 
@@ -140,9 +143,12 @@ fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
 
 fn tree_info(spot: &MwSpot, build_secs: f64) -> MwTreeInfo {
     #[cfg(feature = "gpu")]
-    let gpu_mb = solver::multiway::gpu::estimate_device_bytes(spot, Algorithm::Dcfr) as f64 / 1e6;
+    let (gpu_mb, gpu_min_mb) = {
+        let (full, min) = solver::multiway::gpu::estimate_device_bytes(spot, Algorithm::Dcfr);
+        (full as f64 / 1e6, min as f64 / 1e6)
+    };
     #[cfg(not(feature = "gpu"))]
-    let gpu_mb = 0.0;
+    let (gpu_mb, gpu_min_mb) = (0.0, 0.0);
     MwTreeInfo {
         board: spot.config.board.clone(),
         nodes: spot.tree.nodes.len(),
@@ -152,6 +158,7 @@ fn tree_info(spot: &MwSpot, build_secs: f64) -> MwTreeInfo {
         arena_mb_f32: spot.arena_bytes(Storage::F32) as f64 / 1e6,
         arena_mb_compressed: spot.arena_bytes(Storage::Compressed) as f64 / 1e6,
         gpu_mb,
+        gpu_min_mb,
         build_secs,
     }
 }
@@ -321,11 +328,13 @@ fn run(
         };
         match gpu {
             Ok(mut g) => {
-                let note = format!("CUDA, {:.2} GB on the GPU", g.device_bytes() as f64 / 1e9);
-                lock_unpoisoned(&status).note = note;
+                lock_unpoisoned(&status).note = g.describe();
                 let base = g.iteration;
                 let start = Instant::now();
                 let mut last_sync = Instant::now();
+                // A download costs about a second per 20 GB of arenas; keep
+                // it under ~10% of the solve time.
+                let mut sync_every = 3.0f64;
                 let mut synced = true;
                 let mut done = false;
                 while g.iteration < base + req.max_iterations && !stop.load(Ordering::Relaxed) {
@@ -338,8 +347,11 @@ fn run(
                         done = pr.exploit_pct_pot <= req.target_exploit_pct;
                         // Keep the browsable copy fresh without paying for a
                         // download at every check.
-                        if done || last_sync.elapsed().as_secs_f64() > 3.0 {
-                            *lock_unpoisoned(&solver) = g.to_cpu()?;
+                        if done || last_sync.elapsed().as_secs_f64() > sync_every {
+                            let t = Instant::now();
+                            let s = g.to_cpu()?;
+                            *lock_unpoisoned(&solver) = s;
+                            sync_every = sync_every.max(10.0 * t.elapsed().as_secs_f64());
                             last_sync = Instant::now();
                             synced = true;
                         }

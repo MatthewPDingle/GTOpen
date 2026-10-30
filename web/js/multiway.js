@@ -89,7 +89,11 @@ function spotRequest() {
 
 function treeText(t) {
   if (!t) return '';
-  const gpu = t.gpu_mb > 0 ? ` · GPU est. ${fmt(t.gpu_mb / 1000, 2)} GB` : '';
+  let gpu = '';
+  if (t.gpu_mb > 0) {
+    gpu = ` · GPU est. ${fmt(t.gpu_mb / 1000, 2)} GB`;
+    if (t.gpu_min_mb > 0 && t.gpu_min_mb < t.gpu_mb * 0.95) gpu += ` (fits in ${fmt(t.gpu_min_mb / 1000, 2)} GB)`;
+  }
   return `${t.nodes.toLocaleString()} nodes · ${t.action_nodes.toLocaleString()} decisions · ` +
     `RAM ${fmt(t.arena_mb_compressed / 1000, 2)} GB${gpu} · hands ${t.hands.join('/')}`;
 }

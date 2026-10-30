@@ -1,10 +1,17 @@
 //! CUDA three-player CFR: level-synchronous sweeps over the full public
-//! tree with all arenas resident in VRAM (f32, no suit isomorphism).
+//! tree with the arenas resident in VRAM (no suit isomorphism).
 //!
 //! One iteration is three traversals. Before traversal p only the player
 //! updated last, (p + 2) % 3, needs its reach recomputed; the up sweep then
 //! evaluates terminals, chance averages and action nodes level by level.
 //! Each traversal is captured into a CUDA graph after the first iteration.
+//!
+//! Large trees: the arenas can be stored compressed on the device (i16
+//! regrets, u16 strategy sums, per-node scales, as in `Storage::Compressed`),
+//! and the subtrees below the first chance layer (turn cards for a flop
+//! root, river cards for a turn root) can be swept in groups that share one
+//! scratch region for reaches and values. Only the root part's reaches and
+//! the group roots' values stay resident.
 
 use super::game::MwSpot;
 use super::solver::{Dealt, MwProgress, MwSolver};
@@ -13,15 +20,17 @@ use crate::cfr::{Algorithm, Discounts};
 use crate::store::{Storage, Store};
 use crate::tree::SENTINEL;
 use cudarc::driver::{
-    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, DevicePtr, LaunchConfig,
-    PushKernelArg,
+    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, DevicePtr, DeviceRepr,
+    LaunchConfig, PushKernelArg, ValidAsZeroBits,
 };
 use std::collections::HashMap;
 use std::sync::Arc;
 
 const BLOCK: u32 = 128;
 /// VRAM left free for the driver, graphs and fragmentation.
-const HEADROOM: u64 = 384 << 20;
+const HEADROOM: u64 = 512 << 20;
+/// Most actions a node may have on compressed arenas (kernel register array).
+const MAX_ACTIONS_Q: usize = 16;
 
 fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
@@ -37,27 +46,376 @@ macro_rules! launch {
     }};
 }
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug)]
 struct Span {
     start: i32,
     count: i32,
 }
 
+#[derive(Clone, Copy, Default, Debug)]
+struct LevelSpans {
+    action: Span,
+    chance: Span,
+    edge: Span,
+    fold: Span,
+    show: Span,
+}
+
+/// One level-synchronous sweep: the root part, or one group of subtrees
+/// below the first chance layer (entered through `entry` chance edges).
+#[derive(Clone, Default, Debug)]
+struct Sweep {
+    levels: Vec<LevelSpans>,
+    entry: Span,
+}
+
+/// Tree structure shared by every grouping choice.
+struct Layout {
+    order: Vec<u32>,
+    /// 0 = root part, 1 + c = below first-layer card c.
+    seg: Vec<u8>,
+    /// Level within the node's segment (group roots are level 0).
+    level: Vec<u32>,
+    dealt: Vec<Dealt>,
+    /// Reach slots per player and level widths of the root part.
+    root_slots: [usize; NP],
+    root_width: Vec<u32>,
+    /// Per first-layer card: reach slots per player and level widths
+    /// (level 0, the group roots, excluded: their values are resident).
+    card_slots: Vec<[usize; NP]>,
+    card_width: Vec<Vec<u32>>,
+    num_roots: usize,
+}
+
+impl Layout {
+    fn build(spot: &MwSpot) -> Result<Layout, String> {
+        let tree = &spot.tree;
+        let nn = tree.nodes.len();
+        let mut seg = vec![0u8; nn];
+        let mut level = vec![u32::MAX; nn];
+        let mut dealt = vec![Dealt::default(); nn];
+        let mut order: Vec<u32> = Vec::with_capacity(nn);
+        level[0] = 0;
+        order.push(0);
+        let mut head = 0;
+        let mut root_slots = [1usize; NP];
+        let mut card_slots = vec![[0usize; NP]; 52];
+        let mut num_roots = 0;
+        let mut kids: Vec<(usize, Option<u8>)> = Vec::new();
+        while head < order.len() {
+            let n = order[head] as usize;
+            head += 1;
+            let node = &tree.nodes[n];
+            kids.clear();
+            match node.kind {
+                KIND_ACTION => kids.extend((0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, None))),
+                KIND_CHANCE => {
+                    for c in 0..52u8 {
+                        let ch = tree.children[node.children_start as usize + c as usize];
+                        if ch != SENTINEL {
+                            kids.push((ch as usize, Some(c)));
+                        }
+                    }
+                }
+                _ => {}
+            }
+            for &(c, card) in &kids {
+                if level[c] != u32::MAX {
+                    return Err("tree node reached twice".into());
+                }
+                if let (Some(k), 0) = (card, seg[n]) {
+                    seg[c] = 1 + k;
+                    level[c] = 0;
+                    num_roots += 1;
+                } else {
+                    seg[c] = seg[n];
+                    level[c] = level[n] + 1;
+                }
+                dealt[c] = match card {
+                    Some(k) => dealt[n].push(k),
+                    None => dealt[n],
+                };
+                let slots = if seg[c] == 0 { &mut root_slots } else { &mut card_slots[seg[c] as usize - 1] };
+                for (k, s) in slots.iter_mut().enumerate() {
+                    if card.is_some() || (node.kind == KIND_ACTION && node.player as usize == k) {
+                        *s += 1;
+                    }
+                }
+                order.push(c as u32);
+            }
+        }
+        if order.len() != nn {
+            return Err("tree has unreachable nodes".into());
+        }
+        let mut root_width = Vec::new();
+        let mut card_width: Vec<Vec<u32>> = vec![Vec::new(); 52];
+        for &n in &order {
+            let (l, s) = (level[n as usize] as usize, seg[n as usize]);
+            let w = if s == 0 { &mut root_width } else { &mut card_width[s as usize - 1] };
+            if w.len() <= l {
+                w.resize(l + 1, 0);
+            }
+            if s == 0 || l > 0 {
+                w[l] += 1;
+            }
+        }
+        Ok(Layout { order, seg, level, dealt, root_slots, root_width, card_slots, card_width, num_roots })
+    }
+
+    /// Reach bytes and widest level of one group of first-layer cards.
+    fn group_bytes(&self, cards: &[u8], nh: &[usize; NP]) -> (u64, u32) {
+        let mut reach = 0u64;
+        let mut width: Vec<u32> = Vec::new();
+        for &c in cards {
+            let s = &self.card_slots[c as usize];
+            reach += (0..NP).map(|k| (s[k] * nh[k] * 4) as u64).sum::<u64>();
+            let w = &self.card_width[c as usize];
+            if width.len() < w.len() {
+                width.resize(w.len(), 0);
+            }
+            for (l, &x) in w.iter().enumerate() {
+                width[l] += x;
+            }
+        }
+        (reach, width.into_iter().max().unwrap_or(0))
+    }
+
+    fn cards_present(&self) -> Vec<u8> {
+        (0..52u8).filter(|&c| self.card_slots[c as usize].iter().any(|&x| x > 0)).collect()
+    }
+}
+
+/// Memory of a plan, by part.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct GpuBytes {
+    pub arenas: u64,
+    pub reach: u64,
+    pub values: u64,
+    pub tables: u64,
+}
+
+impl GpuBytes {
+    pub fn total(&self) -> u64 {
+        self.arenas + self.reach + self.values + self.tables
+    }
+}
+
+fn arena_bytes(spot: &MwSpot, storage: Storage, algo: Algorithm) -> u64 {
+    let e: u64 = spot.tree.data_size.iter().sum();
+    let nn = spot.tree.nodes.len() as u64;
+    let pcfr = algo == Algorithm::PcfrPlus;
+    match storage {
+        Storage::F32 => e * if pcfr { 12 } else { 8 },
+        Storage::Compressed => e * if pcfr { 6 } else { 4 } + nn * 4 * NP as u64 * if pcfr { 3 } else { 2 },
+    }
+}
+
+fn table_bytes(spot: &MwSpot, river_slots: usize) -> u64 {
+    let nn = spot.tree.nodes.len() as u64;
+    // per node: player, na, offset (8), children start, cdiv, class, river,
+    // cfv slot, 3 reach slots, lock offset (8); level lists; chance edges.
+    nn * 72
+        + spot.tree.children.len() as u64 * 4
+        + river_slots as u64 * (2704 * 4 + 53 * 4 * NP as u64)
+        + spot.hands.iter().map(|h| h.len() as u64 * 64).sum::<u64>()
+}
+
+/// Groups first-layer cards so each group's scratch fits `scratch` bytes.
+/// None when even single cards do not fit.
+fn group_cards(layout: &Layout, nh: &[usize; NP], scratch: u64) -> Option<Vec<Vec<u8>>> {
+    let nh_max = *nh.iter().max().unwrap() as u64;
+    let root_width = layout.root_width.iter().copied().max().unwrap_or(0) as u64;
+    let cost = |cards: &[u8]| {
+        let (reach, w) = layout.group_bytes(cards, nh);
+        reach + 2 * (w as u64).max(root_width) * nh_max * 4
+    };
+    let mut groups: Vec<Vec<u8>> = Vec::new();
+    let mut cur: Vec<u8> = Vec::new();
+    for c in layout.cards_present() {
+        cur.push(c);
+        if cost(&cur) > scratch {
+            cur.pop();
+            if cur.is_empty() {
+                return None;
+            }
+            groups.push(std::mem::take(&mut cur));
+            cur.push(c);
+            if cost(&cur) > scratch {
+                return None;
+            }
+        }
+    }
+    if !cur.is_empty() {
+        groups.push(cur);
+    }
+    Some(groups)
+}
+
+fn plan_bytes(spot: &MwSpot, layout: &Layout, groups: &[Vec<u8>], storage: Storage, algo: Algorithm, river_slots: usize) -> GpuBytes {
+    let nh: [usize; NP] = std::array::from_fn(|k| spot.hands[k].len());
+    let nh_max = *nh.iter().max().unwrap() as u64;
+    let mut reach_slots = layout.root_slots;
+    let mut width = layout.root_width.iter().copied().max().unwrap_or(0);
+    let mut max_group = [0usize; NP];
+    for g in groups {
+        let mut s = [0usize; NP];
+        for &c in g {
+            for k in 0..NP {
+                s[k] += layout.card_slots[c as usize][k];
+            }
+        }
+        for k in 0..NP {
+            max_group[k] = max_group[k].max(s[k]);
+        }
+        width = width.max(layout.group_bytes(g, &nh).1);
+    }
+    for k in 0..NP {
+        reach_slots[k] += max_group[k];
+    }
+    GpuBytes {
+        arenas: arena_bytes(spot, storage, algo),
+        reach: (0..NP).map(|k| (reach_slots[k] * nh[k] * 4) as u64).sum(),
+        values: (2 * width as u64 + layout.num_roots as u64) * nh_max * 4,
+        tables: table_bytes(spot, river_slots),
+    }
+}
+
+/// How a spot runs within `budget` device bytes: storage, first-layer card
+/// groups and memory. Prefers f32 arenas, then as few groups as fit.
+fn choose(
+    spot: &MwSpot,
+    layout: &Layout,
+    algo: Algorithm,
+    budget: u64,
+    opts: &MwGpuOptions,
+    river_slots: usize,
+) -> Result<(Storage, Vec<Vec<u8>>, GpuBytes), String> {
+    let nh: [usize; NP] = std::array::from_fn(|k| spot.hands[k].len());
+    let nh_max = *nh.iter().max().unwrap() as u64;
+    let all = layout.cards_present();
+    let max_na = max_actions(spot);
+    let storages: Vec<Storage> = match opts.storage {
+        Some(Storage::Compressed) if max_na > MAX_ACTIONS_Q => {
+            return Err(format!("compressed GPU arenas support at most {MAX_ACTIONS_Q} actions per node"))
+        }
+        Some(s) => vec![s],
+        None if max_na > MAX_ACTIONS_Q => vec![Storage::F32],
+        None => vec![Storage::F32, Storage::Compressed],
+    };
+    let mut smallest: Option<GpuBytes> = None;
+    for &storage in &storages {
+        let groups: Vec<Vec<u8>> = match opts.max_cards_per_group {
+            Some(k) => all.chunks(k.max(1)).map(|c| c.to_vec()).collect(),
+            None => {
+                let single: Vec<Vec<u8>> = if all.is_empty() { vec![] } else { vec![all.clone()] };
+                let b = plan_bytes(spot, layout, &single, storage, algo, river_slots);
+                if b.total() <= budget {
+                    single
+                } else {
+                    let resident = b.arenas
+                        + b.tables
+                        + layout.root_slots.iter().zip(&nh).map(|(&s, &h)| (s * h * 4) as u64).sum::<u64>()
+                        + layout.num_roots as u64 * nh_max * 4;
+                    match budget.checked_sub(resident).and_then(|scratch| group_cards(layout, &nh, scratch)) {
+                        Some(g) => g,
+                        None => {
+                            let singles: Vec<Vec<u8>> = all.iter().map(|&c| vec![c]).collect();
+                            let b = plan_bytes(spot, layout, &singles, storage, algo, river_slots);
+                            if smallest.map_or(true, |x| b.total() < x.total()) {
+                                smallest = Some(b);
+                            }
+                            continue;
+                        }
+                    }
+                }
+            }
+        };
+        let b = plan_bytes(spot, layout, &groups, storage, algo, river_slots);
+        if b.total() <= budget || opts.max_cards_per_group.is_some() {
+            return Ok((storage, groups, b));
+        }
+        if smallest.map_or(true, |x| b.total() < x.total()) {
+            smallest = Some(b);
+        }
+    }
+    let b = smallest.unwrap_or_default();
+    Err(format!(
+        "spot needs at least {:.2} GB of GPU memory ({:.2} GB arenas, {:.2} GB reach, {:.2} GB values, {:.2} GB tables); {:.2} GB available",
+        b.total() as f64 / 1e9,
+        b.arenas as f64 / 1e9,
+        b.reach as f64 / 1e9,
+        b.values as f64 / 1e9,
+        b.tables as f64 / 1e9,
+        budget as f64 / 1e9
+    ))
+}
+
+fn max_actions(spot: &MwSpot) -> usize {
+    spot.tree.nodes.iter().filter(|n| n.kind == KIND_ACTION).map(|n| n.num_children as usize).max().unwrap_or(0)
+}
+
+/// Terminal payoff classes and river boards (independent of grouping).
+struct Terminals {
+    node_class: Vec<i32>,
+    node_river: Vec<i32>,
+    coef: Vec<f32>,
+    river_keys: Vec<usize>,
+}
+
+fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
+    let tree = &spot.tree;
+    let cfg = &tree.config;
+    let nn = tree.nodes.len();
+    let mut node_class = vec![-1i32; nn];
+    let mut node_river = vec![-1i32; nn];
+    let mut classes: HashMap<Vec<u32>, i32> = HashMap::new();
+    let mut coef: Vec<f32> = Vec::new();
+    let mut river_slots: HashMap<usize, i32> = HashMap::new();
+    let mut river_keys: Vec<usize> = Vec::new();
+    for (n, node) in tree.nodes.iter().enumerate() {
+        if node.kind != KIND_TERM_FOLD && node.kind != KIND_TERM_SHOWDOWN {
+            continue;
+        }
+        let mut c27 = [0f32; 27];
+        for p in 0..NP {
+            let cf = super::eval::basis_coeffs(&payoff_table(node, p, cfg.rake_pct, cfg.rake_cap));
+            for x in 0..3 {
+                for y in 0..3 {
+                    c27[p * 9 + x * 3 + y] = cf[x][y] as f32;
+                }
+            }
+        }
+        let key: Vec<u32> = c27.iter().map(|v| v.to_bits()).collect();
+        let next = classes.len() as i32;
+        node_class[n] = *classes.entry(key).or_insert_with(|| {
+            coef.extend_from_slice(&c27);
+            next
+        });
+        if node.kind == KIND_TERM_SHOWDOWN {
+            let k = spot.river.key(layout.dealt[n].as_slice());
+            let next = river_keys.len() as i32;
+            node_river[n] = *river_slots.entry(k).or_insert_with(|| {
+                river_keys.push(k);
+                next
+            });
+        }
+    }
+    if coef.is_empty() {
+        coef.push(0.0);
+    }
+    Terminals { node_class, node_river, coef, river_keys }
+}
+
 /// Host-side layout of the tree for the kernels.
 struct Plan {
-    num_levels: usize,
+    sweeps: Vec<Sweep>,
     action: Vec<u32>,
-    action_spans: Vec<Span>,
     chance: Vec<u32>,
-    chance_spans: Vec<Span>,
     edge_par: Vec<u32>,
     edge_chi: Vec<u32>,
     edge_card: Vec<u32>,
-    edge_spans: Vec<Span>,
     fold: Vec<u32>,
-    fold_spans: Vec<Span>,
     show: Vec<u32>,
-    show_spans: Vec<Span>,
     node_player: Vec<i32>,
     node_na: Vec<i32>,
     node_off: Vec<u64>,
@@ -70,7 +428,6 @@ struct Plan {
     reach_slot: [Vec<u32>; NP],
     reach_slots: [usize; NP],
     coef: Vec<f32>,
-    // River boards by slot.
     srt_off: [Vec<u32>; NP],
     srt_str: [Vec<u32>; NP],
     srt_idx: [Vec<u32>; NP],
@@ -81,143 +438,161 @@ struct Plan {
 }
 
 impl Plan {
-    fn build(spot: &MwSpot) -> Result<Plan, String> {
+    fn build(spot: &MwSpot, layout: &Layout, term: Terminals, groups: &[Vec<u8>]) -> Result<Plan, String> {
         let tree = &spot.tree;
         let nn = tree.nodes.len();
-        let children_of = |n: usize, out: &mut Vec<(u32, u32)>| {
-            out.clear();
-            let node = &tree.nodes[n];
-            match node.kind {
-                KIND_ACTION => {
-                    for a in 0..node.num_children as usize {
-                        out.push((tree.child(node, a), u32::MAX));
-                    }
-                }
-                KIND_CHANCE => {
-                    for c in 0..52u32 {
-                        let ch = tree.children[node.children_start as usize + c as usize];
-                        if ch != SENTINEL {
-                            out.push((ch, c));
-                        }
-                    }
-                }
-                _ => {}
+        let mut group_of = [usize::MAX; 52];
+        for (g, cards) in groups.iter().enumerate() {
+            for &c in cards {
+                group_of[c as usize] = g;
+            }
+        }
+        // Sweep of each node: 0 = root part, 1 + group.
+        let sweep_of = |n: usize| -> usize {
+            match layout.seg[n] {
+                0 => 0,
+                s => 1 + group_of[s as usize - 1],
             }
         };
-
-        // Breadth-first order with levels; every node is reached once (the
-        // tree is a tree).
-        let mut level = vec![u32::MAX; nn];
-        let mut dealt = vec![Dealt::default(); nn];
-        let mut order: Vec<u32> = Vec::with_capacity(nn);
-        level[0] = 0;
-        order.push(0);
-        let mut head = 0;
-        let mut kids = Vec::new();
-        let mut reach_slot: [Vec<u32>; NP] = std::array::from_fn(|_| vec![0u32; nn]);
-        let mut reach_slots = [1usize; NP];
-        let mut edge_lists: Vec<(u32, u32, u32, u32)> = Vec::new(); // (level, par, chi, card)
-        while head < order.len() {
-            let n = order[head] as usize;
-            head += 1;
-            children_of(n, &mut kids);
-            let node = &tree.nodes[n];
-            for &(c, card) in &kids {
-                let c = c as usize;
-                if level[c] != u32::MAX {
-                    return Err("tree node reached twice".into());
-                }
-                level[c] = level[n] + 1;
-                order.push(c as u32);
-                if node.kind == KIND_CHANCE {
-                    dealt[c] = dealt[n].push(card as u8);
-                    for k in 0..NP {
-                        reach_slot[k][c] = reach_slots[k] as u32;
-                        reach_slots[k] += 1;
-                    }
-                    edge_lists.push((level[n], n as u32, c as u32, card));
-                } else {
-                    dealt[c] = dealt[n];
-                    for k in 0..NP {
-                        if node.kind == KIND_ACTION && node.player as usize == k {
-                            reach_slot[k][c] = reach_slots[k] as u32;
-                            reach_slots[k] += 1;
-                        } else {
-                            reach_slot[k][c] = reach_slot[k][n];
-                        }
-                    }
-                }
-            }
-        }
-        if order.len() != nn {
-            return Err("tree has unreachable nodes".into());
-        }
-        let num_levels = level.iter().max().copied().unwrap_or(0) as usize + 1;
-
-        // cfv slots: index within the level, halves alternate by parity.
-        let mut width = vec![0u32; num_levels];
-        let mut cfv_slot = vec![0u32; nn];
-        for &n in &order {
-            let l = level[n as usize] as usize;
-            cfv_slot[n as usize] = width[l];
-            width[l] += 1;
-        }
-        let w = *width.iter().max().unwrap() as usize;
+        let num_sweeps = 1 + groups.len();
+        let mut num_levels = vec![0usize; num_sweeps];
         for n in 0..nn {
-            if level[n] % 2 == 1 {
-                cfv_slot[n] += w as u32;
+            let s = sweep_of(n);
+            num_levels[s] = num_levels[s].max(layout.level[n] as usize + 1);
+        }
+
+        // cfv slots: index within (sweep, level); halves alternate by level
+        // parity; group roots get resident slots after both halves.
+        let mut width: Vec<Vec<u32>> = num_levels.iter().map(|&l| vec![0u32; l]).collect();
+        let mut cfv_slot = vec![0u32; nn];
+        let mut root_idx = vec![u32::MAX; nn];
+        let mut roots = 0u32;
+        for &n in &layout.order {
+            let n = n as usize;
+            let s = sweep_of(n);
+            let l = layout.level[n] as usize;
+            if s > 0 && l == 0 {
+                root_idx[n] = roots;
+                roots += 1;
+            } else {
+                cfv_slot[n] = width[s][l];
+                width[s][l] += 1;
+            }
+        }
+        let w = width.iter().flat_map(|v| v.iter().copied()).max().unwrap_or(0);
+        for n in 0..nn {
+            if root_idx[n] != u32::MAX {
+                cfv_slot[n] = 2 * w + root_idx[n];
+            } else if layout.level[n] % 2 == 1 {
+                cfv_slot[n] += w;
             }
         }
 
-        // Per-level work lists.
-        let mut by_level: Vec<[Vec<u32>; 4]> = (0..num_levels).map(|_| Default::default()).collect();
-        for &n in &order {
-            let l = level[n as usize] as usize;
-            let k = match tree.nodes[n as usize].kind {
+        // Reach slots (BFS order: parents first). The root part counts from
+        // 0 with the owner trick; every group counts from the root part's
+        // total, sharing one scratch region.
+        let mut reach_slot: [Vec<u32>; NP] = std::array::from_fn(|_| vec![0u32; nn]);
+        let mut next_slot: Vec<[usize; NP]> = vec![layout.root_slots; num_sweeps];
+        next_slot[0] = [1; NP];
+        let mut kids: Vec<(usize, bool)> = Vec::new();
+        for &n in &layout.order {
+            let n = n as usize;
+            let node = &tree.nodes[n];
+            kids.clear();
+            match node.kind {
+                KIND_ACTION => kids.extend((0..node.num_children as usize).map(|a| (tree.child(node, a) as usize, false))),
+                KIND_CHANCE => kids.extend(
+                    (0..52usize)
+                        .map(|c| tree.children[node.children_start as usize + c])
+                        .filter(|&ch| ch != SENTINEL)
+                        .map(|ch| (ch as usize, true)),
+                ),
+                _ => {}
+            }
+            for &(c, chance) in &kids {
+                let s = sweep_of(c);
+                for k in 0..NP {
+                    if chance || (node.kind == KIND_ACTION && node.player as usize == k) {
+                        reach_slot[k][c] = next_slot[s][k] as u32;
+                        next_slot[s][k] += 1;
+                    } else {
+                        reach_slot[k][c] = reach_slot[k][n];
+                    }
+                }
+            }
+        }
+        let reach_slots: [usize; NP] = std::array::from_fn(|k| next_slot.iter().map(|x| x[k]).max().unwrap());
+
+        // Work lists, sweep by sweep, level by level.
+        let mut by: Vec<Vec<[Vec<u32>; 4]>> =
+            num_levels.iter().map(|&l| (0..l).map(|_| Default::default()).collect()).collect();
+        let mut edges: Vec<Vec<Vec<(u32, u32, u32)>>> = num_levels.iter().map(|&l| vec![Vec::new(); l]).collect();
+        let mut entry: Vec<Vec<(u32, u32, u32)>> = vec![Vec::new(); num_sweeps];
+        for &n in &layout.order {
+            let nu = n as usize;
+            let node = &tree.nodes[nu];
+            let s = sweep_of(nu);
+            let l = layout.level[nu] as usize;
+            let k = match node.kind {
                 KIND_ACTION => 0,
                 KIND_CHANCE => 1,
                 KIND_TERM_FOLD => 2,
                 KIND_TERM_SHOWDOWN => 3,
                 _ => return Err("unknown node kind".into()),
             };
-            by_level[l][k].push(n);
-        }
-        let flatten = |k: usize| -> (Vec<u32>, Vec<Span>) {
-            let mut v = Vec::new();
-            let mut spans = Vec::with_capacity(num_levels);
-            for lv in &by_level {
-                spans.push(Span { start: v.len() as i32, count: lv[k].len() as i32 });
-                v.extend_from_slice(&lv[k]);
+            by[s][l][k].push(n);
+            if node.kind == KIND_CHANCE {
+                for c in 0..52u32 {
+                    let ch = tree.children[node.children_start as usize + c as usize];
+                    if ch == SENTINEL {
+                        continue;
+                    }
+                    let cs = sweep_of(ch as usize);
+                    if cs == s {
+                        edges[s][l].push((n, ch, c));
+                    } else {
+                        entry[cs].push((n, ch, c));
+                    }
+                }
             }
-            (v, spans)
+        }
+        let mut lists: [Vec<u32>; 4] = Default::default();
+        let (mut edge_par, mut edge_chi, mut edge_card) = (Vec::new(), Vec::new(), Vec::new());
+        let mut push_edges = |list: &[(u32, u32, u32)]| {
+            let span = Span { start: edge_par.len() as i32, count: list.len() as i32 };
+            for &(a, b, c) in list {
+                edge_par.push(a);
+                edge_chi.push(b);
+                edge_card.push(c);
+            }
+            span
         };
-        let (action, action_spans) = flatten(0);
-        let (chance, chance_spans) = flatten(1);
-        let (fold, fold_spans) = flatten(2);
-        let (show, show_spans) = flatten(3);
-        edge_lists.sort_by_key(|x| x.0);
-        let mut edge_spans = vec![Span::default(); num_levels];
-        for (i, x) in edge_lists.iter().enumerate() {
-            let s = &mut edge_spans[x.0 as usize];
-            if s.count == 0 {
-                s.start = i as i32;
+        let mut sweeps = Vec::with_capacity(num_sweeps);
+        for s in 0..num_sweeps {
+            let mut sw = Sweep { entry: push_edges(&entry[s]), levels: Vec::new() };
+            for l in 0..num_levels[s] {
+                let mut spans = [Span::default(); 4];
+                for (k, out) in lists.iter_mut().enumerate() {
+                    spans[k] = Span { start: out.len() as i32, count: by[s][l][k].len() as i32 };
+                    out.extend_from_slice(&by[s][l][k]);
+                }
+                sw.levels.push(LevelSpans {
+                    action: spans[0],
+                    chance: spans[1],
+                    fold: spans[2],
+                    show: spans[3],
+                    edge: push_edges(&edges[s][l]),
+                });
             }
-            s.count += 1;
+            sweeps.push(sw);
         }
+        let [action, chance, fold, show] = lists;
 
-        // Per-node data.
-        let cfg = &tree.config;
         let mut node_player = vec![-1i32; nn];
         let mut node_na = vec![0i32; nn];
         let mut node_off = vec![0u64; nn];
         let mut node_cs = vec![0u32; nn];
         let mut node_cdiv = vec![0f32; nn];
-        let mut node_class = vec![-1i32; nn];
-        let mut node_river = vec![-1i32; nn];
-        let mut classes: HashMap<Vec<u32>, i32> = HashMap::new();
-        let mut coef: Vec<f32> = Vec::new();
-        let mut river_slots: HashMap<usize, i32> = HashMap::new();
-        let mut river_keys: Vec<usize> = Vec::new();
         for (n, node) in tree.nodes.iter().enumerate() {
             node_cs[n] = node.children_start;
             match node.kind {
@@ -227,31 +602,7 @@ impl Plan {
                     node_off[n] = node.data_offset;
                 }
                 KIND_CHANCE => node_cdiv[n] = 1.0 / (44 - node.street as i32) as f32,
-                _ => {
-                    let mut c27 = [0f32; 27];
-                    for p in 0..NP {
-                        let cf = super::eval::basis_coeffs(&payoff_table(node, p, cfg.rake_pct, cfg.rake_cap));
-                        for x in 0..3 {
-                            for y in 0..3 {
-                                c27[p * 9 + x * 3 + y] = cf[x][y] as f32;
-                            }
-                        }
-                    }
-                    let key: Vec<u32> = c27.iter().map(|v| v.to_bits()).collect();
-                    let next = classes.len() as i32;
-                    node_class[n] = *classes.entry(key).or_insert_with(|| {
-                        coef.extend_from_slice(&c27);
-                        next
-                    });
-                    if node.kind == KIND_TERM_SHOWDOWN {
-                        let k = spot.river.key(dealt[n].as_slice());
-                        let next = river_keys.len() as i32;
-                        node_river[n] = *river_slots.entry(k).or_insert_with(|| {
-                            river_keys.push(k);
-                            next
-                        });
-                    }
-                }
+                _ => {}
             }
         }
 
@@ -261,77 +612,55 @@ impl Plan {
         let mut srt_idx: [Vec<u32>; NP] = Default::default();
         let mut cpos_off: [Vec<u32>; NP] = Default::default();
         let mut cpos: [Vec<u32>; NP] = Default::default();
-        let mut rank_pair = Vec::with_capacity(river_keys.len() * 2704);
+        let mut rank_pair = Vec::with_capacity(term.river_keys.len() * 2704);
         let mut max_sorted = [0usize; NP];
-        for &key in &river_keys {
+        for &key in &term.river_keys {
             let ev = spot.river.entries[key].as_deref().ok_or("river eval missing")?;
             rank_pair.extend_from_slice(&ev.rank_pair);
             for k in 0..NP {
                 srt_off[k].push(srt_str[k].len() as u32);
                 let list = &ev.sorted[k];
                 max_sorted[k] = max_sorted[k].max(list.len());
-                for &(s, i) in list {
+                let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];
+                for (pos, &(s, i)) in list.iter().enumerate() {
                     srt_str[k].push(s);
                     srt_idx[k].push(i as u32);
+                    let h = &spot.hands[k][i as usize];
+                    by_card[h.c1 as usize].push(pos as u32);
+                    by_card[h.c2 as usize].push(pos as u32);
                 }
-                for c in 0..52u8 {
+                for v in by_card {
                     cpos_off[k].push(cpos[k].len() as u32);
-                    for (pos, &(_, i)) in list.iter().enumerate() {
-                        let h = &spot.hands[k][i as usize];
-                        if h.c1 == c || h.c2 == c {
-                            cpos[k].push(pos as u32);
-                        }
-                    }
+                    cpos[k].extend(v);
                 }
                 cpos_off[k].push(cpos[k].len() as u32);
             }
         }
         for k in 0..NP {
             srt_off[k].push(srt_str[k].len() as u32);
-            // Kernels index cpos_off[slot * 53 + 52]; keep one dummy entry
-            // so empty uploads stay valid.
-            if cpos_off[k].is_empty() {
-                cpos_off[k].push(0);
-            }
-            for v in [&mut srt_str[k], &mut srt_idx[k], &mut cpos[k]] {
-                if v.is_empty() {
-                    v.push(0);
-                }
-            }
-        }
-        if rank_pair.is_empty() {
-            rank_pair.push(0);
-        }
-        if coef.is_empty() {
-            coef.push(0.0);
         }
 
         Ok(Plan {
-            num_levels,
+            sweeps,
             action,
-            action_spans,
             chance,
-            chance_spans,
-            edge_par: edge_lists.iter().map(|x| x.1).collect(),
-            edge_chi: edge_lists.iter().map(|x| x.2).collect(),
-            edge_card: edge_lists.iter().map(|x| x.3).collect(),
-            edge_spans,
+            edge_par,
+            edge_chi,
+            edge_card,
             fold,
-            fold_spans,
             show,
-            show_spans,
             node_player,
             node_na,
             node_off,
             node_cs,
             node_cdiv,
-            node_class,
-            node_river,
+            node_class: term.node_class,
+            node_river: term.node_river,
             cfv_slot,
-            cfv_slots: 2 * w,
+            cfv_slots: 2 * w as usize + roots as usize,
             reach_slot,
             reach_slots,
-            coef,
+            coef: term.coef,
             srt_off,
             srt_str,
             srt_idx,
@@ -343,43 +672,47 @@ impl Plan {
     }
 }
 
-/// Device bytes a spot needs on the GPU (arenas, reach, values, tables).
-pub fn estimate_device_bytes(spot: &MwSpot, algo: Algorithm) -> u64 {
-    let arenas: u64 = spot.tree.data_size.iter().sum::<u64>() * if algo == Algorithm::PcfrPlus { 12 } else { 8 };
-    // Rough non-arena share: reach + values + per-node data, measured on
-    // turn trees at well under a quarter of the f32 arenas.
-    arenas + arenas / 4 + spot.tree.nodes.len() as u64 * 64 + HEADROOM
+/// Device memory a spot needs: (fully resident with f32 arenas, smallest
+/// workable plan). The second decides whether the GPU can take it at all.
+pub fn estimate_device_bytes(spot: &MwSpot, algo: Algorithm) -> (u64, u64) {
+    let Ok(layout) = Layout::build(spot) else { return (0, 0) };
+    let rivers = terminals(spot, &layout).river_keys.len();
+    let all = layout.cards_present();
+    let single: Vec<Vec<u8>> = if all.is_empty() { vec![] } else { vec![all.clone()] };
+    let full = plan_bytes(spot, &layout, &single, Storage::F32, algo, rivers).total() + HEADROOM;
+    let singles: Vec<Vec<u8>> = all.iter().map(|&c| vec![c]).collect();
+    let max_na = max_actions(spot);
+    let storage = if max_na > MAX_ACTIONS_Q { Storage::F32 } else { Storage::Compressed };
+    let min = plan_bytes(spot, &layout, &singles, storage, algo, rivers).total() + HEADROOM;
+    (full, min.min(full))
 }
 
-pub struct MwGpuSolver {
-    pub spot: Arc<MwSpot>,
-    pub iteration: u32,
-    pub algo: Algorithm,
-    _ctx: Arc<CudaContext>,
-    stream: Arc<CudaStream>,
-    _module: Arc<CudaModule>,
-    f_copy_root: CudaFunction,
-    f_down_action: CudaFunction,
-    f_down_chance: CudaFunction,
-    f_up_fold: CudaFunction,
-    f_up_show: CudaFunction,
-    f_up_chance: CudaFunction,
-    f_up_action: CudaFunction,
-    num_levels: usize,
-    action_spans: Vec<Span>,
-    chance_spans: Vec<Span>,
-    edge_spans: Vec<Span>,
-    fold_spans: Vec<Span>,
-    show_spans: Vec<Span>,
-    nh: [i32; NP],
-    nh_max: i32,
-    max_sorted: [usize; NP],
-    /// Owned device buffers; kernels get raw pointers into them.
-    bufs: Bufs,
-    device_bytes: u64,
-    /// Reach buffers hold current-strategy reaches for every player.
-    reach_current: bool,
-    graphs: Option<Vec<CudaGraph>>,
+/// Overrides for tests and tuning.
+#[derive(Clone, Debug, Default)]
+pub struct MwGpuOptions {
+    /// Arena storage on the device (default: f32 when it fits).
+    pub storage: Option<Storage>,
+    /// Device bytes to plan for (default: free memory minus headroom).
+    pub budget_bytes: Option<u64>,
+    /// Sweep the subtrees below the first chance layer in groups of at most
+    /// this many cards (default: as few groups as fit).
+    pub max_cards_per_group: Option<usize>,
+}
+
+enum DevArenas {
+    F32 {
+        reg: [CudaSlice<f32>; NP],
+        str: [CudaSlice<f32>; NP],
+        prd: Option<[CudaSlice<f32>; NP]>,
+    },
+    Q {
+        reg: [CudaSlice<i16>; NP],
+        str: [CudaSlice<u16>; NP],
+        prd: Option<[CudaSlice<i16>; NP]>,
+        rsc: [CudaSlice<f32>; NP],
+        ssc: [CudaSlice<f32>; NP],
+        psc: Option<[CudaSlice<f32>; NP]>,
+    },
 }
 
 struct Bufs {
@@ -416,10 +749,9 @@ struct Bufs {
     rank_pair: CudaSlice<u32>,
     lock_off: CudaSlice<i64>,
     lock_sigma: CudaSlice<f32>,
+    /// {pos, neg, strat, iteration bits}
     disc: CudaSlice<f32>,
-    regrets: [CudaSlice<f32>; NP],
-    strat: [CudaSlice<f32>; NP],
-    preds: Option<[CudaSlice<f32>; NP]>,
+    arenas: DevArenas,
 }
 
 /// Raw device pointer of a buffer. Event tracking is disabled (everything
@@ -428,54 +760,81 @@ fn ptr<T>(s: &CudaSlice<T>, stream: &CudaStream) -> u64 {
     s.device_ptr(stream).0
 }
 
+/// Uploads `v`, or `len` zeros when it is empty (kernels never read the
+/// arena of a player without decisions, but allocations must be non-empty).
+fn upload<T: DeviceRepr + ValidAsZeroBits>(stream: &Arc<CudaStream>, v: &[T], len: usize) -> Result<CudaSlice<T>, String> {
+    if v.is_empty() {
+        stream.alloc_zeros::<T>(len.max(1)).map_err(e)
+    } else {
+        stream.clone_htod(v).map_err(e)
+    }
+}
+
+pub struct MwGpuSolver {
+    pub spot: Arc<MwSpot>,
+    pub iteration: u32,
+    pub algo: Algorithm,
+    pub storage: Storage,
+    _ctx: Arc<CudaContext>,
+    stream: Arc<CudaStream>,
+    _module: Arc<CudaModule>,
+    f_copy_root: CudaFunction,
+    f_down_action: CudaFunction,
+    f_down_action_q: CudaFunction,
+    f_down_chance: CudaFunction,
+    f_up_fold: CudaFunction,
+    f_up_show: CudaFunction,
+    f_up_chance: CudaFunction,
+    f_up_action: CudaFunction,
+    f_up_action_q: CudaFunction,
+    sweeps: Vec<Sweep>,
+    nh: [i32; NP],
+    nh_max: i32,
+    max_sorted: [usize; NP],
+    bufs: Bufs,
+    bytes: GpuBytes,
+    /// Reach buffers hold current-strategy reaches for every player.
+    reach_current: bool,
+    graphs: Option<Vec<CudaGraph>>,
+}
+
 impl MwGpuSolver {
     /// Fresh solver (zero regrets) for `spot`.
     pub fn new(spot: Arc<MwSpot>, algo: Algorithm) -> Result<MwGpuSolver, String> {
-        Self::build(spot, algo, None)
+        Self::build(spot, algo, None, &MwGpuOptions::default())
+    }
+
+    pub fn with_options(spot: Arc<MwSpot>, algo: Algorithm, opts: &MwGpuOptions) -> Result<MwGpuSolver, String> {
+        Self::build(spot, algo, None, opts)
     }
 
     /// Continue from a CPU solver's state (any storage; locks unsupported).
     pub fn from_solver(s: &MwSolver) -> Result<MwGpuSolver, String> {
+        Self::from_solver_with(s, &MwGpuOptions::default())
+    }
+
+    pub fn from_solver_with(s: &MwSolver, opts: &MwGpuOptions) -> Result<MwGpuSolver, String> {
         if !s.locks.is_empty() {
             return Err("the GPU solver does not support node locks yet".into());
         }
-        let mut g = Self::build(s.spot.clone(), s.algo, Some(s))?;
+        let mut g = Self::build(s.spot.clone(), s.algo, Some(s), opts)?;
         g.iteration = s.iteration;
         Ok(g)
     }
 
-    fn build(spot: Arc<MwSpot>, algo: Algorithm, init: Option<&MwSolver>) -> Result<MwGpuSolver, String> {
-        let plan = Plan::build(&spot)?;
+    fn build(spot: Arc<MwSpot>, algo: Algorithm, init: Option<&MwSolver>, opts: &MwGpuOptions) -> Result<MwGpuSolver, String> {
+        let layout = Layout::build(&spot)?;
+        let term = terminals(&spot, &layout);
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // One stream: cross-stream event tracking is unnecessary and its
         // events would break graph capture.
         unsafe { ctx.disable_event_tracking() };
-
-        let nh: [usize; NP] = std::array::from_fn(|p| spot.hands[p].len());
-        let nh_max = *nh.iter().max().unwrap();
-        let ds = spot.tree.data_size;
-        let arena_bytes: u64 = ds.iter().sum::<u64>() * 4 * if algo == Algorithm::PcfrPlus { 3 } else { 2 };
-        let reach_bytes: u64 = (0..NP).map(|k| (plan.reach_slots[k] * nh[k] * 4) as u64).sum();
-        let cfv_bytes = (plan.cfv_slots * nh_max * 4) as u64;
-        let nn = spot.tree.nodes.len() as u64;
-        let table_bytes = nn * 48
-            + spot.tree.children.len() as u64 * 4
-            + plan.rank_pair.len() as u64 * 4
-            + (0..NP).map(|k| (plan.srt_str[k].len() * 8 + plan.cpos[k].len() * 4 + plan.cpos_off[k].len() * 4) as u64).sum::<u64>();
-        let device_bytes = arena_bytes + reach_bytes + cfv_bytes + table_bytes;
-        let (free, total) = ctx.mem_get_info().map_err(e)?;
-        if device_bytes + HEADROOM > free as u64 {
-            return Err(format!(
-                "spot needs {:.2} GB of GPU memory ({:.2} GB arenas, {:.2} GB reach, {:.2} GB values); {:.2} of {:.2} GB free",
-                device_bytes as f64 / 1e9,
-                arena_bytes as f64 / 1e9,
-                reach_bytes as f64 / 1e9,
-                cfv_bytes as f64 / 1e9,
-                free as f64 / 1e9,
-                total as f64 / 1e9
-            ));
-        }
+        let (free, _total) = ctx.mem_get_info().map_err(e)?;
+        let budget = opts.budget_bytes.unwrap_or((free as u64).saturating_sub(HEADROOM));
+        let (storage, groups, bytes) = choose(&spot, &layout, algo, budget, opts, term.river_keys.len())?;
+        let plan = Plan::build(&spot, &layout, term, &groups)?;
+        drop(layout);
 
         let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
         let arch: &'static str = Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
@@ -502,12 +861,13 @@ impl MwGpuSolver {
                 .map_err(|err| format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}"))?;
         }
 
-        let up32 = |v: &[u32]| stream.clone_htod(v).map_err(e);
-        let upi = |v: &[i32]| stream.clone_htod(v).map_err(e);
-        let up64 = |v: &[u64]| stream.clone_htod(v).map_err(e);
-        let upf = |v: &[f32]| stream.clone_htod(v).map_err(e);
-        let nonempty32 = |v: &[u32]| if v.is_empty() { vec![0u32] } else { v.to_vec() };
+        let up32 = |v: &[u32]| upload(&stream, v, 1);
+        let upi = |v: &[i32]| upload(&stream, v, 1);
+        let up64 = |v: &[u64]| upload(&stream, v, 1);
+        let upf = |v: &[f32]| upload(&stream, v, 1);
 
+        let nh: [usize; NP] = std::array::from_fn(|p| spot.hands[p].len());
+        let nh_max = *nh.iter().max().unwrap();
         let hands = &spot.hands;
         let c1: [Vec<u32>; NP] = std::array::from_fn(|k| hands[k].iter().map(|h| h.c1 as u32).collect());
         let c2: [Vec<u32>; NP] = std::array::from_fn(|k| hands[k].iter().map(|h| h.c2 as u32).collect());
@@ -528,36 +888,16 @@ impl MwGpuSolver {
                 .collect()
         });
 
-        let arena = |p: usize, which: usize| -> Result<CudaSlice<f32>, String> {
-            let len = ds[p].max(1) as usize;
-            match init {
-                None => stream.alloc_zeros::<f32>(len).map_err(e),
-                Some(s) => {
-                    let store = match which {
-                        0 => &s.regrets[p],
-                        1 => &s.strat[p],
-                        _ => match &s.preds {
-                            Some(pr) => &pr[p],
-                            None => return stream.alloc_zeros::<f32>(len).map_err(e),
-                        },
-                    };
-                    let host = store_to_f32(&spot, p, store, len);
-                    stream.clone_htod(&host).map_err(e)
-                }
-            }
-        };
-        let regrets = [arena(0, 0)?, arena(1, 0)?, arena(2, 0)?];
-        let strat = [arena(0, 1)?, arena(1, 1)?, arena(2, 1)?];
-        let preds = if algo == Algorithm::PcfrPlus { Some([arena(0, 2)?, arena(1, 2)?, arena(2, 2)?]) } else { None };
-
+        let arenas = upload_arenas(&stream, &spot, storage, algo, init)?;
+        let nn = spot.tree.nodes.len();
         let bufs = Bufs {
-            action: up32(&nonempty32(&plan.action))?,
-            chance: up32(&nonempty32(&plan.chance))?,
-            edge_par: up32(&nonempty32(&plan.edge_par))?,
-            edge_chi: up32(&nonempty32(&plan.edge_chi))?,
-            edge_card: up32(&nonempty32(&plan.edge_card))?,
-            fold: up32(&nonempty32(&plan.fold))?,
-            show: up32(&nonempty32(&plan.show))?,
+            action: up32(&plan.action)?,
+            chance: up32(&plan.chance)?,
+            edge_par: up32(&plan.edge_par)?,
+            edge_chi: up32(&plan.edge_chi)?,
+            edge_card: up32(&plan.edge_card)?,
+            fold: up32(&plan.fold)?,
+            show: up32(&plan.show)?,
             node_player: upi(&plan.node_player)?,
             node_na: upi(&plan.node_na)?,
             node_off: up64(&plan.node_off)?,
@@ -565,9 +905,9 @@ impl MwGpuSolver {
             node_cdiv: upf(&plan.node_cdiv)?,
             node_class: upi(&plan.node_class)?,
             node_river: upi(&plan.node_river)?,
-            children: up32(&nonempty32(&spot.tree.children))?,
+            children: up32(&spot.tree.children)?,
             cfv_slot: up32(&plan.cfv_slot)?,
-            cfv: stream.alloc_zeros::<f32>(plan.cfv_slots * nh_max).map_err(e)?,
+            cfv: stream.alloc_zeros::<f32>(plan.cfv_slots.max(1) * nh_max).map_err(e)?,
             reach_slot: [up32(&plan.reach_slot[0])?, up32(&plan.reach_slot[1])?, up32(&plan.reach_slot[2])?],
             reach: [
                 stream.alloc_zeros::<f32>(plan.reach_slots[0] * nh[0]).map_err(e)?,
@@ -586,35 +926,31 @@ impl MwGpuSolver {
             cpos_off: [up32(&plan.cpos_off[0])?, up32(&plan.cpos_off[1])?, up32(&plan.cpos_off[2])?],
             cpos: [up32(&plan.cpos[0])?, up32(&plan.cpos[1])?, up32(&plan.cpos[2])?],
             rank_pair: up32(&plan.rank_pair)?,
-            lock_off: stream.clone_htod(&vec![-1i64; nn as usize]).map_err(e)?,
+            lock_off: stream.clone_htod(&vec![-1i64; nn]).map_err(e)?,
             lock_sigma: stream.alloc_zeros::<f32>(1).map_err(e)?,
-            disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
-            regrets,
-            strat,
-            preds,
+            disc: stream.alloc_zeros::<f32>(4).map_err(e)?,
+            arenas,
         };
 
         Ok(MwGpuSolver {
             iteration: 0,
             algo,
+            storage,
             f_copy_root: func("mw_copy_root")?,
             f_down_action: func("mw_down_action")?,
+            f_down_action_q: func("mw_down_action_q")?,
             f_down_chance: func("mw_down_chance")?,
             f_up_fold: func("mw_up_fold")?,
             f_up_show,
             f_up_chance: func("mw_up_chance")?,
             f_up_action: func("mw_up_action")?,
-            num_levels: plan.num_levels,
-            action_spans: plan.action_spans,
-            chance_spans: plan.chance_spans,
-            edge_spans: plan.edge_spans,
-            fold_spans: plan.fold_spans,
-            show_spans: plan.show_spans,
+            f_up_action_q: func("mw_up_action_q")?,
+            sweeps: plan.sweeps,
             nh: nh.map(|x| x as i32),
             nh_max: nh_max as i32,
             max_sorted: plan.max_sorted,
             bufs,
-            device_bytes,
+            bytes,
             reach_current: false,
             graphs: None,
             spot,
@@ -631,7 +967,24 @@ impl MwGpuSolver {
     }
 
     pub fn device_bytes(&self) -> u64 {
-        self.device_bytes
+        self.bytes.total()
+    }
+
+    /// Groups the subtrees below the first chance layer are swept in.
+    pub fn num_groups(&self) -> usize {
+        self.sweeps.len() - 1
+    }
+
+    pub fn describe(&self) -> String {
+        let s = match self.storage {
+            Storage::F32 => "f32",
+            Storage::Compressed => "16-bit",
+        };
+        let groups = match self.num_groups() {
+            0 | 1 => String::new(),
+            g => format!(", {g} card groups"),
+        };
+        format!("CUDA, {s} arenas, {:.2} GB on the GPU{groups}", self.device_bytes() as f64 / 1e9)
     }
 
     fn cfg(blocks: i32, shared: usize) -> LaunchConfig {
@@ -642,51 +995,82 @@ impl MwGpuSolver {
         ptr(s, &self.stream)
     }
 
-    /// Down sweep. mode 0 uses current strategies, 1 average strategies.
-    /// only >= 0 recomputes just that player's reach (root reach included).
-    fn down(&self, mode: i32, only: i32) -> Result<(), String> {
+    fn copy_root(&self) -> Result<(), String> {
+        let b = &self.bufs;
+        let [nh0, nh1, nh2] = self.nh;
+        launch!(self.stream, &self.f_copy_root, Self::cfg(8, 0), [
+            self.p(&b.weights[0]), self.p(&b.weights[1]), self.p(&b.weights[2]),
+            self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2]), nh0, nh1, nh2,
+        ])
+    }
+
+    fn down_edges(&self, sp: Span, only: i32) -> Result<(), String> {
+        if sp.count == 0 {
+            return Ok(());
+        }
+        let b = &self.bufs;
+        let [nh0, nh1, nh2] = self.nh;
+        launch!(self.stream, &self.f_down_chance, Self::cfg(sp.count, 0), [
+            self.p(&b.edge_par), self.p(&b.edge_chi), self.p(&b.edge_card), sp.start, sp.count, only,
+            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
+            self.p(&b.mask[0]), self.p(&b.mask[1]), self.p(&b.mask[2]),
+            self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2]), nh0, nh1, nh2,
+        ])
+    }
+
+    /// Down sweep of one sweep. mode 0 uses current strategies, 1 average
+    /// strategies. only >= 0 recomputes just that player's reach.
+    fn down(&self, s: usize, mode: i32, only: i32) -> Result<(), String> {
         let b = &self.bufs;
         let [nh0, nh1, nh2] = self.nh;
         let reach = [self.p(&b.reach[0]), self.p(&b.reach[1]), self.p(&b.reach[2])];
-        if only < 0 {
-            launch!(self.stream, &self.f_copy_root, Self::cfg(8, 0), [
-                self.p(&b.weights[0]), self.p(&b.weights[1]), self.p(&b.weights[2]),
-                reach[0], reach[1], reach[2], nh0, nh1, nh2,
-            ])?;
-        }
         let null = 0u64;
-        let preds = |k: usize| b.preds.as_ref().map(|pr| self.p(&pr[k])).unwrap_or(null);
-        for l in 0..self.num_levels {
-            let sp = self.action_spans[l];
+        let sw = &self.sweeps[s];
+        self.down_edges(sw.entry, only)?;
+        for ls in &sw.levels {
+            let sp = ls.action;
             if sp.count > 0 {
-                launch!(self.stream, &self.f_down_action, Self::cfg(sp.count, 0), [
-                    self.p(&b.action), sp.start, sp.count, mode, only,
-                    self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                    self.p(&b.children),
-                    self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
-                    self.p(&b.regrets[0]), self.p(&b.regrets[1]), self.p(&b.regrets[2]),
-                    preds(0), preds(1), preds(2),
-                    self.p(&b.strat[0]), self.p(&b.strat[1]), self.p(&b.strat[2]),
-                    self.p(&b.lock_sigma), self.p(&b.lock_off),
-                    reach[0], reach[1], reach[2], nh0, nh1, nh2,
-                ])?;
+                match &b.arenas {
+                    DevArenas::F32 { reg, str, prd } => {
+                        let pr = |k: usize| prd.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
+                        launch!(self.stream, &self.f_down_action, Self::cfg(sp.count, 0), [
+                            self.p(&b.action), sp.start, sp.count, mode, only,
+                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
+                            self.p(&b.children),
+                            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
+                            self.p(&reg[0]), self.p(&reg[1]), self.p(&reg[2]),
+                            pr(0), pr(1), pr(2),
+                            self.p(&str[0]), self.p(&str[1]), self.p(&str[2]),
+                            self.p(&b.lock_sigma), self.p(&b.lock_off),
+                            reach[0], reach[1], reach[2], nh0, nh1, nh2,
+                        ])?;
+                    }
+                    DevArenas::Q { reg, str, prd, rsc, psc, .. } => {
+                        let pr = |k: usize| prd.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
+                        let ps = |k: usize| psc.as_ref().map(|x| self.p(&x[k])).unwrap_or(null);
+                        launch!(self.stream, &self.f_down_action_q, Self::cfg(sp.count, 0), [
+                            self.p(&b.action), sp.start, sp.count, mode, only,
+                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
+                            self.p(&b.children),
+                            self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
+                            self.p(&reg[0]), self.p(&reg[1]), self.p(&reg[2]),
+                            pr(0), pr(1), pr(2),
+                            self.p(&str[0]), self.p(&str[1]), self.p(&str[2]),
+                            self.p(&rsc[0]), self.p(&rsc[1]), self.p(&rsc[2]),
+                            ps(0), ps(1), ps(2),
+                            reach[0], reach[1], reach[2], nh0, nh1, nh2,
+                        ])?;
+                    }
+                }
             }
-            let sp = self.edge_spans[l];
-            if sp.count > 0 {
-                launch!(self.stream, &self.f_down_chance, Self::cfg(sp.count, 0), [
-                    self.p(&b.edge_par), self.p(&b.edge_chi), self.p(&b.edge_card), sp.start, sp.count, only,
-                    self.p(&b.reach_slot[0]), self.p(&b.reach_slot[1]), self.p(&b.reach_slot[2]),
-                    self.p(&b.mask[0]), self.p(&b.mask[1]), self.p(&b.mask[2]),
-                    reach[0], reach[1], reach[2], nh0, nh1, nh2,
-                ])?;
-            }
+            self.down_edges(ls.edge, only)?;
         }
         Ok(())
     }
 
-    /// Up sweep for traverser p. mode 0: CFR update, 1: best response,
-    /// 2: average strategy. Leaves the root values in cfv slot 0.
-    fn up(&self, p: usize, mode: i32) -> Result<(), String> {
+    /// Up sweep of one sweep for traverser p. mode 0: CFR update, 1: best
+    /// response, 2: average strategy. The root's values end in cfv slot 0.
+    fn up(&self, s: usize, p: usize, mode: i32) -> Result<(), String> {
         let b = &self.bufs;
         let (q, r) = others(p);
         let (pi, qi, ri) = (p as i32, q as i32, r as i32);
@@ -694,9 +1078,8 @@ impl MwGpuSolver {
         let fold_shared = 2 * 2704 * 4;
         let show_shared = Self::show_shared_bytes(&self.max_sorted, p);
         let null = 0u64;
-        let prd = b.preds.as_ref().map(|pr| self.p(&pr[p])).unwrap_or(null);
-        for l in (0..self.num_levels).rev() {
-            let sp = self.fold_spans[l];
+        for ls in self.sweeps[s].levels.iter().rev() {
+            let sp = ls.fold;
             if sp.count > 0 {
                 launch!(self.stream, &self.f_up_fold, Self::cfg(sp.count, fold_shared), [
                     self.p(&b.fold), sp.start, sp.count, pi, qi, ri,
@@ -709,7 +1092,7 @@ impl MwGpuSolver {
                     self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
                 ])?;
             }
-            let sp = self.show_spans[l];
+            let sp = ls.show;
             if sp.count > 0 {
                 launch!(self.stream, &self.f_up_show, Self::cfg(sp.count, show_shared), [
                     self.p(&b.show), sp.start, sp.count, pi, qi, ri,
@@ -728,7 +1111,7 @@ impl MwGpuSolver {
                     self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
                 ])?;
             }
-            let sp = self.chance_spans[l];
+            let sp = ls.chance;
             if sp.count > 0 {
                 launch!(self.stream, &self.f_up_chance, Self::cfg(sp.count, 0), [
                     self.p(&b.chance), sp.start, sp.count,
@@ -736,42 +1119,82 @@ impl MwGpuSolver {
                     self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
                 ])?;
             }
-            let sp = self.action_spans[l];
+            let sp = ls.action;
             if sp.count > 0 {
-                launch!(self.stream, &self.f_up_action, Self::cfg(sp.count, 0), [
-                    self.p(&b.action), sp.start, sp.count, pi, mode,
-                    self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
-                    self.p(&b.children),
-                    self.p(&b.regrets[p]), prd, self.p(&b.strat[p]),
-                    self.p(&b.lock_sigma), self.p(&b.lock_off),
-                    self.p(&b.reach_slot[p]), self.p(&b.reach[p]),
-                    self.p(&b.disc),
-                    self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
-                ])?;
+                match &b.arenas {
+                    DevArenas::F32 { reg, str, prd } => {
+                        let prd = prd.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
+                        launch!(self.stream, &self.f_up_action, Self::cfg(sp.count, 0), [
+                            self.p(&b.action), sp.start, sp.count, pi, mode,
+                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
+                            self.p(&b.children),
+                            self.p(&reg[p]), prd, self.p(&str[p]),
+                            self.p(&b.lock_sigma), self.p(&b.lock_off),
+                            self.p(&b.reach_slot[p]), self.p(&b.reach[p]),
+                            self.p(&b.disc),
+                            self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
+                        ])?;
+                    }
+                    DevArenas::Q { reg, str, prd, rsc, ssc, psc } => {
+                        let prd = prd.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
+                        let psc = psc.as_ref().map(|x| self.p(&x[p])).unwrap_or(null);
+                        launch!(self.stream, &self.f_up_action_q, Self::cfg(sp.count, 0), [
+                            self.p(&b.action), sp.start, sp.count, pi, mode,
+                            self.p(&b.node_player), self.p(&b.node_na), self.p(&b.node_off), self.p(&b.node_cs),
+                            self.p(&b.children),
+                            self.p(&reg[p]), prd, self.p(&str[p]), self.p(&rsc[p]), psc, self.p(&ssc[p]),
+                            self.p(&b.reach_slot[p]), self.p(&b.reach[p]),
+                            self.p(&b.disc),
+                            self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_max,
+                        ])?;
+                    }
+                }
             }
         }
         Ok(())
     }
 
+    /// Group reaches persist between traversals only with a single group.
+    fn groups_resident(&self) -> bool {
+        self.sweeps.len() <= 2
+    }
+
+    /// Whole-tree down sweep for every player.
+    fn down_all(&self, mode: i32) -> Result<(), String> {
+        self.copy_root()?;
+        for s in 0..self.sweeps.len() {
+            self.down(s, mode, -1)?;
+        }
+        Ok(())
+    }
+
     /// Traversal p of one iteration: refresh the reach of the player updated
-    /// last, then the CFR up sweep.
+    /// last, then the CFR up sweep (groups first, then the root part).
     fn traversal(&self, p: usize) -> Result<(), String> {
-        self.down(0, ((p + 2) % NP) as i32)?;
-        self.up(p, 0)
+        let refresh = ((p + 2) % NP) as i32;
+        self.down(0, 0, refresh)?;
+        let group_only = if self.groups_resident() { refresh } else { -1 };
+        for s in 1..self.sweeps.len() {
+            self.down(s, 0, group_only)?;
+            self.up(s, p, 0)?;
+        }
+        self.up(0, p, 0)
     }
 
     pub fn iterate(&mut self) -> Result<(), String> {
         self.iteration += 1;
         let d = Discounts::for_iteration(self.algo, self.iteration);
-        self.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut self.bufs.disc).map_err(e)?;
+        self.stream
+            .memcpy_htod(&[d.pos, d.neg, d.strat, f32::from_bits(self.iteration)], &mut self.bufs.disc)
+            .map_err(e)?;
         if !self.reach_current {
-            self.down(0, -1)?;
+            self.down_all(0)?;
             self.reach_current = true;
         }
         if self.graphs.is_none() && self.iteration > 1 {
             // The first iteration ran eagerly (module JIT, lazy loading);
-            // capture the three traversals. Kernels read the discounts from
-            // device memory, so the graphs stay valid.
+            // capture the three traversals. Kernels read the discounts and
+            // the iteration from device memory, so the graphs stay valid.
             let mut graphs = Vec::with_capacity(NP);
             for p in 0..NP {
                 self.stream
@@ -816,21 +1239,38 @@ impl MwGpuSolver {
         Ok(out)
     }
 
+    /// Root values for traverser p under the average strategies (mode 1: p
+    /// best responds, 2: p plays its average).
+    fn eval_values(&self, p: usize, mode: i32) -> Result<Vec<f32>, String> {
+        for s in 1..self.sweeps.len() {
+            if !self.groups_resident() {
+                self.down(s, 1, -1)?;
+            }
+            self.up(s, p, mode)?;
+        }
+        self.up(0, p, mode)?;
+        self.root_values(p)
+    }
+
     /// Root EVs and best-response gaps (chips) under the average strategy,
     /// computed on the device. Matches `MwSolver::exploitability`.
     pub fn exploitability(&mut self) -> Result<([f64; NP], [f64; NP]), String> {
-        self.down(1, -1)?;
         self.reach_current = false;
+        self.copy_root()?;
+        self.down(0, 1, -1)?;
+        if self.groups_resident() {
+            for s in 1..self.sweeps.len() {
+                self.down(s, 1, -1)?;
+            }
+        }
         let denom = self.spot.root_triple_mass();
         let mut evs = [0f64; NP];
         let mut gaps = [0f64; NP];
         for p in 0..NP {
             let w = &self.spot.weights[p];
             let dot = |v: &[f32]| w.iter().zip(v).map(|(&a, &b)| a as f64 * b as f64).sum::<f64>() / denom;
-            self.up(p, 1)?;
-            let br = dot(&self.root_values(p)?);
-            self.up(p, 2)?;
-            let ev = dot(&self.root_values(p)?);
+            let br = dot(&self.eval_values(p, 1)?);
+            let ev = dot(&self.eval_values(p, 2)?);
             evs[p] = ev;
             gaps[p] = (br - ev).max(0.0);
         }
@@ -850,35 +1290,147 @@ impl MwGpuSolver {
         })
     }
 
-    /// Downloads the arenas into a CPU solver (f32 storage) for queries,
-    /// saves or further CPU iterations.
+    /// Downloads the arenas into a CPU solver (same storage as the device)
+    /// for queries, saves or further CPU iterations.
     pub fn to_cpu(&self) -> Result<MwSolver, String> {
-        let mut s = MwSolver::new(self.spot.clone(), Storage::F32);
+        let mut s = MwSolver::new(self.spot.clone(), self.storage);
         s.algo = self.algo;
         s.iteration = self.iteration;
         let ds = self.spot.tree.data_size;
-        for p in 0..NP {
-            let len = ds[p] as usize;
-            if len == 0 {
-                continue;
-            }
-            for (dev, store) in [(&self.bufs.regrets[p], &mut s.regrets[p]), (&self.bufs.strat[p], &mut s.strat[p])] {
-                let Store::F32(buf) = store else { unreachable!() };
-                self.stream.memcpy_dtoh(&dev.slice(0..len), buf.as_mut_slice()).map_err(e)?;
-            }
-        }
-        if let Some(pr) = &self.bufs.preds {
-            let mut host: [Store; NP] = std::array::from_fn(|p| Store::f32(ds[p]));
-            for p in 0..NP {
-                let len = ds[p] as usize;
-                if len > 0 {
-                    let Store::F32(buf) = &mut host[p] else { unreachable!() };
-                    self.stream.memcpy_dtoh(&pr[p].slice(0..len), buf.as_mut_slice()).map_err(e)?;
+        let nn = self.spot.tree.nodes.len();
+        let st = &self.stream;
+        let mut preds: Option<[Store; NP]> = None;
+        match &self.bufs.arenas {
+            DevArenas::F32 { reg, str, prd } => {
+                for p in 0..NP {
+                    let len = ds[p] as usize;
+                    if len == 0 {
+                        continue;
+                    }
+                    for (dev, store) in [(&reg[p], &mut s.regrets[p]), (&str[p], &mut s.strat[p])] {
+                        let Store::F32(buf) = store else { unreachable!() };
+                        st.memcpy_dtoh(&dev.slice(0..len), buf.as_mut_slice()).map_err(e)?;
+                    }
+                }
+                if let Some(pr) = prd {
+                    let mut host: [Store; NP] = std::array::from_fn(|p| Store::f32(ds[p]));
+                    for p in 0..NP {
+                        let len = ds[p] as usize;
+                        if len > 0 {
+                            let Store::F32(buf) = &mut host[p] else { unreachable!() };
+                            st.memcpy_dtoh(&pr[p].slice(0..len), buf.as_mut_slice()).map_err(e)?;
+                        }
+                    }
+                    preds = Some(host);
                 }
             }
-            s.preds = Some(Box::new(host));
+            DevArenas::Q { reg, str, prd, rsc, ssc, psc } => {
+                for p in 0..NP {
+                    let len = ds[p] as usize;
+                    let Store::I16 { q, scale } = &mut s.regrets[p] else { unreachable!() };
+                    if len > 0 {
+                        st.memcpy_dtoh(&reg[p].slice(0..len), q.as_mut_slice()).map_err(e)?;
+                    }
+                    st.memcpy_dtoh(&rsc[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
+                    let Store::U16 { q, scale } = &mut s.strat[p] else { unreachable!() };
+                    if len > 0 {
+                        st.memcpy_dtoh(&str[p].slice(0..len), q.as_mut_slice()).map_err(e)?;
+                    }
+                    st.memcpy_dtoh(&ssc[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
+                }
+                if let (Some(pr), Some(ps)) = (prd, psc) {
+                    let mut host: [Store; NP] = std::array::from_fn(|p| Store::i16(ds[p], nn));
+                    for p in 0..NP {
+                        let Store::I16 { q, scale } = &mut host[p] else { unreachable!() };
+                        if ds[p] > 0 {
+                            st.memcpy_dtoh(&pr[p].slice(0..ds[p] as usize), q.as_mut_slice()).map_err(e)?;
+                        }
+                        st.memcpy_dtoh(&ps[p].slice(0..nn), scale.as_mut_slice()).map_err(e)?;
+                    }
+                    preds = Some(host);
+                }
+            }
         }
+        s.preds = preds.map(Box::new);
         Ok(s)
+    }
+}
+
+/// Device arenas: zeros, or uploaded from a CPU solver (converted to the
+/// device storage when the modes differ).
+fn upload_arenas(
+    stream: &Arc<CudaStream>,
+    spot: &MwSpot,
+    storage: Storage,
+    algo: Algorithm,
+    init: Option<&MwSolver>,
+) -> Result<DevArenas, String> {
+    let ds = spot.tree.data_size;
+    let nn = spot.tree.nodes.len();
+    let pcfr = algo == Algorithm::PcfrPlus;
+    // which: 0 regrets, 1 strategy sums, 2 predictions
+    let source = |p: usize, which: usize| -> Option<&Store> {
+        let s = init?;
+        match which {
+            0 => Some(&s.regrets[p]),
+            1 => Some(&s.strat[p]),
+            _ => s.preds.as_ref().map(|pr| &pr[p]),
+        }
+    };
+    match storage {
+        Storage::F32 => {
+            let arena = |p: usize, which: usize| -> Result<CudaSlice<f32>, String> {
+                let len = ds[p] as usize;
+                match source(p, which) {
+                    None => upload::<f32>(stream, &[], len),
+                    Some(store) => upload(stream, &store_to_f32(spot, p, store, len), len),
+                }
+            };
+            let three = |which: usize| -> Result<[CudaSlice<f32>; NP], String> {
+                Ok([arena(0, which)?, arena(1, which)?, arena(2, which)?])
+            };
+            Ok(DevArenas::F32 { reg: three(0)?, str: three(1)?, prd: if pcfr { Some(three(2)?) } else { None } })
+        }
+        Storage::Compressed => {
+            let signed = |p: usize, which: usize| -> Result<(CudaSlice<i16>, CudaSlice<f32>), String> {
+                let len = ds[p] as usize;
+                match source(p, which) {
+                    None => Ok((upload::<i16>(stream, &[], len)?, upload::<f32>(stream, &[], nn)?)),
+                    Some(Store::I16 { q, scale }) => Ok((upload(stream, q.as_slice(), len)?, upload(stream, scale.as_slice(), nn)?)),
+                    Some(store) => {
+                        let (q, sc) = encode_signed(spot, p, store);
+                        Ok((upload(stream, &q, len)?, upload(stream, &sc, nn)?))
+                    }
+                }
+            };
+            let unsigned = |p: usize| -> Result<(CudaSlice<u16>, CudaSlice<f32>), String> {
+                let len = ds[p] as usize;
+                match source(p, 1) {
+                    None => Ok((upload::<u16>(stream, &[], len)?, upload::<f32>(stream, &[], nn)?)),
+                    Some(Store::U16 { q, scale }) => Ok((upload(stream, q.as_slice(), len)?, upload(stream, scale.as_slice(), nn)?)),
+                    Some(store) => {
+                        let (q, sc) = encode_unsigned(spot, p, store);
+                        Ok((upload(stream, &q, len)?, upload(stream, &sc, nn)?))
+                    }
+                }
+            };
+            let [r0, r1, r2] = [signed(0, 0)?, signed(1, 0)?, signed(2, 0)?];
+            let [s0, s1, s2] = [unsigned(0)?, unsigned(1)?, unsigned(2)?];
+            let (prd, psc) = if pcfr {
+                let [p0, p1, p2] = [signed(0, 2)?, signed(1, 2)?, signed(2, 2)?];
+                (Some([p0.0, p1.0, p2.0]), Some([p0.1, p1.1, p2.1]))
+            } else {
+                (None, None)
+            };
+            Ok(DevArenas::Q {
+                reg: [r0.0, r1.0, r2.0],
+                rsc: [r0.1, r1.1, r2.1],
+                str: [s0.0, s1.0, s2.0],
+                ssc: [s0.1, s1.1, s2.1],
+                prd,
+                psc,
+            })
+        }
     }
 }
 
@@ -887,26 +1439,49 @@ fn store_to_f32(spot: &MwSpot, p: usize, store: &Store, len: usize) -> Vec<f32> 
     let mut out = vec![0f32; len];
     match store {
         Store::F32(b) => out[..b.len()].copy_from_slice(b.as_slice()),
-        _ => {
-            let nh = spot.hands[p].len();
-            for (i, n) in spot.tree.nodes.iter().enumerate() {
-                if n.kind == KIND_ACTION && n.player as usize == p {
-                    let k = n.num_children as usize * nh;
-                    let off = n.data_offset as usize;
-                    unsafe { store.read_f32(i as u32, n.data_offset, k, &mut out[off..off + k]) };
-                }
-            }
-        }
+        _ => for_nodes(spot, p, |i, off, k| unsafe { store.read_f32(i, off as u64, k, &mut out[off..off + k]) }),
     }
     out
+}
+
+fn for_nodes(spot: &MwSpot, p: usize, mut f: impl FnMut(u32, usize, usize)) {
+    let nh = spot.hands[p].len();
+    for (i, n) in spot.tree.nodes.iter().enumerate() {
+        if n.kind == KIND_ACTION && n.player as usize == p {
+            f(i as u32, n.data_offset as usize, n.num_children as usize * nh);
+        }
+    }
+}
+
+fn encode_signed(spot: &MwSpot, p: usize, store: &Store) -> (Vec<i16>, Vec<f32>) {
+    let mut q = vec![0i16; spot.tree.data_size[p] as usize];
+    let mut sc = vec![0f32; spot.tree.nodes.len()];
+    let mut buf = Vec::new();
+    for_nodes(spot, p, |i, off, k| {
+        buf.resize(k, 0f32);
+        unsafe { store.read_f32(i, off as u64, k, &mut buf) };
+        sc[i as usize] = crate::store::encode_i16(&buf, &mut q[off..off + k]);
+    });
+    (q, sc)
+}
+
+fn encode_unsigned(spot: &MwSpot, p: usize, store: &Store) -> (Vec<u16>, Vec<f32>) {
+    let mut q = vec![0u16; spot.tree.data_size[p] as usize];
+    let mut sc = vec![0f32; spot.tree.nodes.len()];
+    let mut buf = Vec::new();
+    for_nodes(spot, p, |i, off, k| {
+        buf.resize(k, 0f32);
+        unsafe { store.read_f32(i, off as u64, k, &mut buf) };
+        sc[i as usize] = crate::store::encode_u16(&buf, &mut q[off..off + k]);
+    });
+    (q, sc)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::multiway::MwSpotConfig;
+    use crate::multiway::{MwSpotConfig, MwTreeConfig};
     use crate::tree::parse_sizes;
-    use crate::multiway::MwTreeConfig;
 
     /// PTX compiles (needs libnvrtc, not a device).
     #[test]
@@ -931,180 +1506,163 @@ mod tests {
         Arc::new(MwSpot::new(c).unwrap())
     }
 
-    /// GPU iterations match full-traversal CPU iterations: strategies after a
-    /// few iterations, and the device exploitability matches the CPU's on
-    /// the downloaded arenas.
-    fn check(spot: Arc<MwSpot>, algo: Algorithm, iters: u32) {
-        let mut g = MwGpuSolver::new(spot.clone(), algo).expect("gpu init");
-        let mut c = MwSolver::new(spot.clone(), Storage::F32);
+    fn opts(storage: Storage, group: Option<usize>) -> MwGpuOptions {
+        MwGpuOptions { storage: Some(storage), budget_bytes: None, max_cards_per_group: group }
+    }
+
+    /// Device exploitability equals the CPU's on the downloaded arenas.
+    fn assert_eval_matches(g: &mut MwGpuSolver, label: &str) {
+        let tol = 2e-4 * g.spot.tree.config.starting_pot;
+        let (ev_g, gap_g) = g.exploitability().unwrap();
+        let (ev_c, gap_c) = g.to_cpu().unwrap().exploitability();
+        for p in 0..NP {
+            assert!((ev_g[p] - ev_c[p]).abs() < tol, "{label} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
+            assert!((gap_g[p] - gap_c[p]).abs() < tol, "{label} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
+        }
+    }
+
+    /// A CPU solver with random strategy sums (regrets zero).
+    fn random_strategies(sp: &Arc<MwSpot>, seed: u64) -> MwSolver {
+        let mut c = MwSolver::new(sp.clone(), Storage::F32);
+        c.use_isomorphism = false;
+        let mut x = 0x9E37_79B9_7F4A_7C15u64 ^ seed;
+        for p in 0..NP {
+            let Store::F32(b) = &mut c.strat[p] else { unreachable!() };
+            for v in b.as_mut_slice() {
+                x ^= x << 13;
+                x ^= x >> 7;
+                x ^= x << 17;
+                *v = (x >> 40) as f32 / (1u64 << 24) as f32;
+            }
+        }
+        c
+    }
+
+    fn eval_cases() -> Vec<Arc<MwSpot>> {
+        vec![
+            spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0),
+            spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05),
+            spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
+            spot("QsQd3c3h", [100.0; 3], "33 a", "a", 0.05),
+        ]
+    }
+
+    /// Terminal and traversal math alone: random strategy sums, then BR and
+    /// EV values on both engines (no CFR dynamics involved), for every
+    /// storage and with the river cards swept in groups.
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_eval_matches_cpu_random_strategies() {
+        for (ci, sp) in eval_cases().into_iter().enumerate() {
+            let c = random_strategies(&sp, ci as u64);
+            let (ev_c, gap_c) = c.exploitability();
+            let tol = 2e-4 * sp.tree.config.starting_pot;
+            let mut g = MwGpuSolver::from_solver_with(&c, &opts(Storage::F32, None)).unwrap();
+            let (ev_g, gap_g) = g.exploitability().unwrap();
+            for p in 0..NP {
+                assert!((ev_g[p] - ev_c[p]).abs() < tol, "case {ci} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
+                assert!((gap_g[p] - gap_c[p]).abs() < tol, "case {ci} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
+            }
+            for (storage, group) in [(Storage::F32, Some(5)), (Storage::Compressed, None), (Storage::Compressed, Some(3))] {
+                let mut g = MwGpuSolver::from_solver_with(&c, &opts(storage, group)).unwrap();
+                let label = format!("case {ci} {storage:?} groups {}", g.num_groups());
+                assert_eval_matches(&mut g, &label);
+            }
+        }
+    }
+
+    /// Iterations: for each storage and grouping, the device's
+    /// exploitability matches the CPU's on its arenas, before and after
+    /// further iterations (reach refresh after an evaluation), and the run
+    /// tracks the CPU solver's convergence.
+    fn check(sp: Arc<MwSpot>, algo: Algorithm, iters: u32) {
+        let mut c = MwSolver::new(sp.clone(), Storage::F32);
         c.algo = algo;
         c.use_isomorphism = false;
         for _ in 0..iters {
-            g.iterate().unwrap();
             c.iterate();
         }
-        let d = g.to_cpu().unwrap();
-        let mut worst = 0f32;
-        for (i, n) in spot.tree.nodes.iter().enumerate() {
-            if n.kind == KIND_ACTION && n.street == spot.tree.root_street {
-                let x = d.average_strategy(i as u32);
-                let y = c.average_strategy(i as u32);
-                for (u, v) in x.iter().zip(&y) {
-                    worst = worst.max((u - v).abs());
-                }
-            }
-        }
-        assert!(worst < 2e-3, "average strategies differ by {worst}");
-        let (ev_g, gap_g) = g.exploitability().unwrap();
-        let (ev_c, gap_c) = d.exploitability();
-        for p in 0..NP {
-            let tol = 1e-3 * spot.tree.config.starting_pot;
-            assert!((ev_g[p] - ev_c[p]).abs() < tol, "ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
-            assert!((gap_g[p] - gap_c[p]).abs() < tol, "gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
-        }
-        // Iterating after an evaluation keeps working (reach refresh).
-        g.iterate().unwrap();
-        c.iterate();
-        let e_g = g.progress(0.0).unwrap().exploit_pct_pot;
         let e_c = c.progress(0.0).exploit_pct_pot;
-        assert!((e_g - e_c).abs() < 0.05 * (1.0 + e_c), "after eval: gpu {e_g} cpu {e_c}");
+        for (storage, group) in [(Storage::F32, None), (Storage::F32, Some(4)), (Storage::Compressed, None), (Storage::Compressed, Some(4))] {
+            let mut g = MwGpuSolver::with_options(sp.clone(), algo, &opts(storage, group)).unwrap();
+            let label = format!("{algo:?} {storage:?} groups {}", g.num_groups());
+            for _ in 0..iters {
+                g.iterate().unwrap();
+            }
+            assert_eval_matches(&mut g, &label);
+            let e_g = g.progress(0.0).unwrap().exploit_pct_pot;
+            println!("{label}: gpu {e_g:.4}% cpu {e_c:.4}% after {iters}");
+            assert!((e_g - e_c).abs() < 0.1 * e_c + 0.05, "{label}: gpu {e_g}% cpu {e_c}% pot");
+            g.iterate().unwrap();
+            assert_eval_matches(&mut g, &format!("{label} after eval"));
+        }
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_river() {
-        check(spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0), Algorithm::Dcfr, 3);
+        check(spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0), Algorithm::Dcfr, 30);
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_side_pots_rake() {
-        check(spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05), Algorithm::Dcfr, 3);
+        check(spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05), Algorithm::Dcfr, 30);
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_pcfr() {
-        check(spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus, 3);
+        check(spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus, 30);
     }
 
     #[test]
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_paired_turn() {
-        check(spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr, 3);
+        check(spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr, 30);
     }
 
-    /// Terminal and traversal math alone: random strategy sums, then BR and
-    /// EV values on both engines (no CFR dynamics involved).
+    /// Grouped sweeps do the same arithmetic as resident ones, so f32 runs
+    /// agree to rounding.
     #[test]
     #[ignore = "needs a CUDA device"]
-    fn gpu_eval_matches_cpu_random_strategies() {
-        let cases = [
-            spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0),
-            spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05),
-            spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
-            spot("QsQd3c3h", [100.0; 3], "33 a", "a", 0.05),
-        ];
-        for (ci, sp) in cases.into_iter().enumerate() {
-            let mut c = MwSolver::new(sp.clone(), Storage::F32);
-            c.use_isomorphism = false;
-            let mut x = 0x9E37_79B9_7F4A_7C15u64 ^ ci as u64;
-            for p in 0..NP {
-                let Store::F32(b) = &mut c.strat[p] else { unreachable!() };
-                for v in b.as_mut_slice() {
-                    x ^= x << 13;
-                    x ^= x >> 7;
-                    x ^= x << 17;
-                    *v = (x >> 40) as f32 / (1u64 << 24) as f32;
-                }
-            }
-            let mut g = MwGpuSolver::from_solver(&c).unwrap();
-            let (ev_g, gap_g) = g.exploitability().unwrap();
-            let (ev_c, gap_c) = c.exploitability();
-            for p in 0..NP {
-                let tol = 2e-4 * sp.tree.config.starting_pot;
-                assert!((ev_g[p] - ev_c[p]).abs() < tol, "case {ci} ev p{p}: gpu {} cpu {}", ev_g[p], ev_c[p]);
-                assert!((gap_g[p] - gap_c[p]).abs() < tol, "case {ci} gap p{p}: gpu {} cpu {}", gap_g[p], gap_c[p]);
-            }
+    fn gpu_groups_match_resident() {
+        let sp = spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0);
+        let mut a = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, None)).unwrap();
+        let mut b = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::F32, Some(3))).unwrap();
+        assert!(b.num_groups() > 1);
+        for _ in 0..20 {
+            a.iterate().unwrap();
+            b.iterate().unwrap();
+        }
+        let (ea, ga) = a.exploitability().unwrap();
+        let (eb, gb) = b.exploitability().unwrap();
+        for p in 0..NP {
+            assert!((ea[p] - eb[p]).abs() < 1e-3 && (ga[p] - gb[p]).abs() < 1e-3, "p{p}: {ea:?} {ga:?} vs {eb:?} {gb:?}");
         }
     }
 
-    /// Dealt-card mask below the root for every node.
-    fn dealt_masks(spot: &MwSpot) -> Vec<u64> {
-        let mut m = vec![0u64; spot.tree.nodes.len()];
-        for (i, n) in spot.tree.nodes.iter().enumerate() {
-            match n.kind {
-                KIND_ACTION => {
-                    for a in 0..n.num_children as usize {
-                        m[spot.tree.child(n, a) as usize] = m[i];
-                    }
-                }
-                KIND_CHANCE => {
-                    for c in 0..52usize {
-                        let ch = spot.tree.children[n.children_start as usize + c];
-                        if ch != SENTINEL {
-                            m[ch as usize] = m[i] | 1u64 << c;
-                        }
-                    }
-                }
-                _ => {}
-            }
-        }
-        m
-    }
-
-    /// Regrets and strategy sums of every unblocked hand after 1 and 2
-    /// iterations, all streets. Prints the worst entry for diagnosis.
+    /// Compressed arenas move between host and device unchanged.
     #[test]
     #[ignore = "needs a CUDA device"]
-    fn gpu_arenas_match_cpu_early_iterations() {
-        for (name, sp, algo) in [
-            ("unpaired dcfr", spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::Dcfr),
-            ("paired dcfr", spot("9h9d8c8s", [60.0; 3], "75", "100", 0.0), Algorithm::Dcfr),
-            ("unpaired pcfr", spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0), Algorithm::PcfrPlus),
-        ] {
-            let dm = dealt_masks(&sp);
-            let mut g = MwGpuSolver::new(sp.clone(), algo).unwrap();
-            let mut c = MwSolver::new(sp.clone(), Storage::F32);
-            c.algo = algo;
-            c.use_isomorphism = false;
-            for it in 1..=2 {
-                g.iterate().unwrap();
-                c.iterate();
-                let d = g.to_cpu().unwrap();
-                for (which, label) in [(0, "regret"), (1, "strat")] {
-                    let mut worst = (0f64, 0usize, 0usize, 0f32, 0f32);
-                    for (i, n) in sp.tree.nodes.iter().enumerate() {
-                        if n.kind != KIND_ACTION {
-                            continue;
-                        }
-                        let p = n.player as usize;
-                        let nh = sp.hands[p].len();
-                        let k = n.num_children as usize * nh;
-                        let (mut x, mut y) = (vec![0f32; k], vec![0f32; k]);
-                        let (sx, sy) = if which == 0 { (&d.regrets[p], &c.regrets[p]) } else { (&d.strat[p], &c.strat[p]) };
-                        unsafe {
-                            sx.read_f32(i as u32, n.data_offset, k, &mut x);
-                            sy.read_f32(i as u32, n.data_offset, k, &mut y);
-                        }
-                        for e in 0..k {
-                            if sp.hands[p][e % nh].mask & dm[i] != 0 {
-                                continue;
-                            }
-                            let rel = (x[e] - y[e]).abs() as f64 / (1.0 + y[e].abs() as f64);
-                            if rel > worst.0 {
-                                worst = (rel, i, e, x[e], y[e]);
-                            }
-                        }
-                    }
-                    let (rel, i, e, x, y) = worst;
-                    let n = &sp.tree.nodes[i];
-                    println!(
-                        "{name} it {it} {label}: worst rel {rel:.3e} at node {i} (street {}, player {}, live {:b}, action {}, hand {}) gpu {x} cpu {y}",
-                        n.street, n.player, n.live, e / sp.hands[n.player as usize].len(), e % sp.hands[n.player as usize].len()
-                    );
-                }
-            }
+    fn gpu_compressed_round_trip() {
+        let sp = spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0);
+        let mut c = MwSolver::new(sp.clone(), Storage::Compressed);
+        c.algo = Algorithm::PcfrPlus;
+        for _ in 0..5 {
+            c.iterate();
+        }
+        let g = MwGpuSolver::from_solver_with(&c, &opts(Storage::Compressed, Some(6))).unwrap();
+        let d = g.to_cpu().unwrap();
+        let same = |x: &Store, y: &Store| match (x, y) {
+            (Store::I16 { q: a, scale: s }, Store::I16 { q: b, scale: t }) => a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice(),
+            (Store::U16 { q: a, scale: s }, Store::U16 { q: b, scale: t }) => a.as_slice() == b.as_slice() && s.as_slice() == t.as_slice(),
+            _ => false,
+        };
+        for p in 0..NP {
+            assert!(same(&c.regrets[p], &d.regrets[p]), "regrets p{p}");
+            assert!(same(&c.strat[p], &d.strat[p]), "strat p{p}");
+            assert!(same(&c.preds.as_ref().unwrap()[p], &d.preds.as_ref().unwrap()[p]), "preds p{p}");
         }
     }
 
@@ -1112,11 +1670,55 @@ mod tests {
     #[ignore = "needs a CUDA device"]
     fn gpu_turn_converges() {
         let s = spot("Ks9d4c7h", [90.0; 3], "66", "a", 0.0);
-        let mut g = MwGpuSolver::new(s, Algorithm::Dcfr).unwrap();
-        for _ in 0..150 {
+        for (storage, group) in [(Storage::F32, None), (Storage::Compressed, Some(5))] {
+            let mut g = MwGpuSolver::with_options(s.clone(), Algorithm::Dcfr, &opts(storage, group)).unwrap();
+            for _ in 0..150 {
+                g.iterate().unwrap();
+            }
+            let e = g.progress(0.0).unwrap().exploit_pct_pot;
+            assert!(e < 1.0, "{storage:?}: gpu turn exploitability {e}% pot");
+        }
+    }
+
+    /// A small flop: turn cards swept in groups on compressed arenas, the
+    /// layout big trees use.
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_flop_grouped_compressed() {
+        let sp = spot("Ks9d4c", [60.0; 3], "50", "a", 0.0);
+        let mut g = MwGpuSolver::with_options(sp.clone(), Algorithm::Dcfr, &opts(Storage::Compressed, Some(8))).unwrap();
+        println!("{}", g.describe());
+        assert!(g.num_groups() > 1);
+        for _ in 0..40 {
             g.iterate().unwrap();
         }
+        assert_eval_matches(&mut g, "flop");
         let e = g.progress(0.0).unwrap().exploit_pct_pot;
-        assert!(e < 1.0, "gpu turn exploitability {e}% pot");
+        println!("flop after 40: {e:.3}% pot");
+        assert!(e < 5.0, "flop exploitability {e}% pot");
+    }
+
+    /// Planning alone (no device): grouping kicks in under a small budget
+    /// and fails cleanly under a tiny one.
+    #[test]
+    fn plan_groups_under_budget() {
+        let sp = spot("Ks9d4c", [60.0; 3], "50", "a", 0.0);
+        let layout = Layout::build(&sp).unwrap();
+        let rivers = terminals(&sp, &layout).river_keys.len();
+        let o = MwGpuOptions::default();
+        let (full, min) = estimate_device_bytes(&sp, Algorithm::Dcfr);
+        assert!(min < full);
+        let (s, g, b) = choose(&sp, &layout, Algorithm::Dcfr, full, &o, rivers).unwrap();
+        assert_eq!((s, g.len()), (Storage::F32, 1));
+        assert!(b.total() <= full);
+        let (s, g, b) = choose(&sp, &layout, Algorithm::Dcfr, min, &o, rivers).unwrap();
+        println!("full {full}, min {min}: {s:?}, {} groups, {b:?}", g.len());
+        assert!(g.len() > 1 && b.total() <= min, "{} groups, {} > {}", g.len(), b.total(), min);
+        let plan = Plan::build(&sp, &layout, terminals(&sp, &layout), &g).unwrap();
+        assert_eq!(plan.sweeps.len(), g.len() + 1);
+        let c = MwGpuOptions { storage: Some(Storage::Compressed), ..Default::default() };
+        let (_, g, b) = choose(&sp, &layout, Algorithm::Dcfr, min, &c, rivers).unwrap();
+        assert!(b.total() <= min && g.len() <= 49);
+        assert!(choose(&sp, &layout, Algorithm::Dcfr, min / 4, &o, rivers).is_err());
     }
 }

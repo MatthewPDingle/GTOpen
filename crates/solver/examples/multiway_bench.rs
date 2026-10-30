@@ -4,7 +4,9 @@
 //! Usage: multiway_bench <config.json> [iterations] [check_every]
 //! Env: SOLVER_STORAGE=f32|i16 (default i16), SOLVER_ALGO=dcfr|cfr+|pcfr+,
 //!      SOLVER_ISO=0, SOLVER_GPU=1 (with --features gpu), SOLVER_VERIFY=1
-//!      (re-check the GPU result's exploitability on the CPU).
+//!      (re-check the GPU result's exploitability on the CPU),
+//!      SOLVER_GPU_STORAGE=f32|i16 and SOLVER_GPU_GROUP=<cards per group>
+//!      (override the GPU memory plan).
 
 use solver::multiway::{MwSolver, MwSpot, MwSpotConfig};
 use solver::{Algorithm, Storage};
@@ -41,8 +43,20 @@ fn main() {
     );
     #[cfg(feature = "gpu")]
     if std::env::var("SOLVER_GPU").as_deref() == Ok("1") {
-        let mut gpu = solver::multiway::gpu::MwGpuSolver::new(spot.clone(), algo).expect("gpu init");
-        println!("gpu: {:.2} GB device memory", gpu.device_bytes() as f64 / 1e9);
+        let (full, min) = solver::multiway::gpu::estimate_device_bytes(&spot, algo);
+        println!("gpu estimate: {:.2} GB resident f32, {:.2} GB minimum", full as f64 / 1e9, min as f64 / 1e9);
+        let opts = solver::multiway::gpu::MwGpuOptions {
+            storage: match std::env::var("SOLVER_GPU_STORAGE").as_deref() {
+                Ok("f32") => Some(Storage::F32),
+                Ok("i16") => Some(Storage::Compressed),
+                _ => None,
+            },
+            budget_bytes: None,
+            max_cards_per_group: std::env::var("SOLVER_GPU_GROUP").ok().and_then(|s| s.parse().ok()),
+        };
+        let ti = Instant::now();
+        let mut gpu = solver::multiway::gpu::MwGpuSolver::with_options(spot.clone(), algo, &opts).expect("gpu init");
+        println!("gpu: {} (init {:.1}s)", gpu.describe(), ti.elapsed().as_secs_f64());
         let t = Instant::now();
         let mut solve_time = 0.0;
         for it in 1..=iters {

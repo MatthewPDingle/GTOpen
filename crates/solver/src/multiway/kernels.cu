@@ -514,3 +514,201 @@ extern "C" __global__ void mw_up_action(
         cfv[(u64)cs[n] * nh_max + i] = v;
     }
 }
+
+// ---------------------------------------------------------------------------
+// Compressed arenas: i16 regrets / predictions and u16 strategy sums with a
+// per-node scale (the block max), quantized exactly like store.rs: one
+// counter-based rounding threshold per node, unbiased rounding, saturating
+// max entries.
+
+typedef short i16;
+typedef unsigned short u16;
+
+__device__ __forceinline__ float rounding_uniform(u64 seed) {
+    u64 bits = seed + 0x9E3779B97F4A7C15ull;
+    bits = (bits ^ (bits >> 30)) * 0xBF58476D1CE4E5B9ull;
+    bits = (bits ^ (bits >> 27)) * 0x94D049BB133111EBull;
+    bits ^= bits >> 31;
+    return (float)(bits >> 40) * (1.0f / 16777216.0f);
+}
+
+__device__ __forceinline__ float round_unbiased(float v, float u) {
+    float f = floorf(v);
+    return f + (u < v - f ? 1.f : 0.f);
+}
+
+// Unnormalized current-strategy weight (mode 0) or strategy sum (mode 1).
+__device__ __forceinline__ float qweight(
+    const i16* rq, const i16* pq, const u16* sq, float kr, float kp, int mode, u64 k)
+{
+    if (mode == 1) return (float)sq[k];
+    if (pq) return fmaxf(fmaxf((float)rq[k], 0.f) * kr + (float)pq[k] * kp, 0.f);
+    return fmaxf((float)rq[k], 0.f);
+}
+
+extern "C" __global__ void mw_down_action_q(
+    const u32* __restrict__ nodes, int start, int count, int mode, int only,
+    const int* __restrict__ node_player, const int* __restrict__ node_na,
+    const u64* __restrict__ node_off, const u32* __restrict__ node_cs,
+    const u32* __restrict__ children,
+    const u32* __restrict__ rs0, const u32* __restrict__ rs1, const u32* __restrict__ rs2,
+    const i16* rq0, const i16* rq1, const i16* rq2,
+    const i16* pq0, const i16* pq1, const i16* pq2,
+    const u16* sq0, const u16* sq1, const u16* sq2,
+    const float* rsc0, const float* rsc1, const float* rsc2,
+    const float* psc0, const float* psc1, const float* psc2,
+    float* reach0, float* reach1, float* reach2,
+    int nh0, int nh1, int nh2)
+{
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    int k = node_player[n];
+    if (only >= 0 && k != only) return;
+    int na = node_na[n];
+    int nh = k == 0 ? nh0 : (k == 1 ? nh1 : nh2);
+    const u32* rs = picku(rs0, rs1, rs2, k);
+    float* reach = pick(reach0, reach1, reach2, k);
+    const i16* rq = k == 0 ? rq0 : (k == 1 ? rq1 : rq2);
+    const i16* pq = k == 0 ? pq0 : (k == 1 ? pq1 : pq2);
+    const u16* sq = k == 0 ? sq0 : (k == 1 ? sq1 : sq2);
+    float kr = 0.f, kp = 0.f;
+    if (pq) {
+        kr = (k == 0 ? rsc0 : (k == 1 ? rsc1 : rsc2))[n] / 32767.f;
+        kp = (k == 0 ? psc0 : (k == 1 ? psc1 : psc2))[n] / 32767.f;
+    }
+    u64 off = node_off[n];
+    const float* src = reach + (u64)rs[n] * nh;
+    for (int i = threadIdx.x; i < nh; i += blockDim.x) {
+        float r = src[i];
+        float sum = 0.f;
+        for (int a = 0; a < na; a++) sum += qweight(rq, pq, sq, kr, kp, mode, off + (u64)a * nh + i);
+        bool uni = !(sum > (mode == 0 ? 1e-12f : 0.f));
+        for (int a = 0; a < na; a++) {
+            float sg = uni ? 1.f / na : qweight(rq, pq, sq, kr, kp, mode, off + (u64)a * nh + i) / sum;
+            u32 c = children[node_cs[n] + a];
+            reach[(u64)rs[c] * nh + i] = r * sg;
+        }
+    }
+}
+
+__device__ float block_max(float v, float* scratch) {
+    scratch[threadIdx.x] = v;
+    __syncthreads();
+    for (int s = blockDim.x >> 1; s > 0; s >>= 1) {
+        if (threadIdx.x < (u32)s) scratch[threadIdx.x] = fmaxf(scratch[threadIdx.x], scratch[threadIdx.x + s]);
+        __syncthreads();
+    }
+    float r = scratch[0];
+    __syncthreads();
+    return r;
+}
+
+// Up sweep on compressed arenas; same modes as mw_up_action. The CFR update
+// runs twice per hand: once to find the block maxima, once to quantize.
+extern "C" __global__ void mw_up_action_q(
+    const u32* __restrict__ nodes, int start, int count, int p, int mode,
+    const int* __restrict__ node_player, const int* __restrict__ node_na,
+    const u64* __restrict__ node_off, const u32* __restrict__ node_cs,
+    const u32* __restrict__ children,
+    i16* rq, i16* pq, u16* sq, float* rsc, float* psc, float* ssc,
+    const u32* __restrict__ rsp, const float* __restrict__ reach_p,
+    const float* __restrict__ disc,
+    const u32* __restrict__ cs, float* cfv, int nh_p, int nh_max)
+{
+    __shared__ float red[256];
+    // disc = {pos, neg, strat, iteration (bits)}
+    unsigned int iteration = __float_as_uint(disc[3]);
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    int na = node_na[n];
+    const u32* ch = children + node_cs[n];
+    if (node_player[n] != p) {
+        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+            float v = 0.f;
+            for (int a = 0; a < na; a++) v += cfv[(u64)cs[ch[a]] * nh_max + i];
+            cfv[(u64)cs[n] * nh_max + i] = v;
+        }
+        return;
+    }
+    u64 off = node_off[n];
+    float kr = rsc[n] / 32767.f;
+    float kp = pq ? psc[n] / 32767.f : 0.f;
+    float dpos = disc[0], dneg = disc[1], dstr = disc[2];
+    float kss = ssc[n] / 65535.f * dstr;
+    const float* rp = reach_p + (u64)rsp[n] * nh_p;
+    int smode = mode == 2 ? 1 : 0;
+    float rmax = 0.f, smax = 0.f, pmax = 0.f;
+    for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+        float v;
+        if (mode == 1) {
+            v = -3.0e38f;
+            for (int a = 0; a < na; a++) v = fmaxf(v, cfv[(u64)cs[ch[a]] * nh_max + i]);
+        } else {
+            float sum = 0.f;
+            for (int a = 0; a < na; a++) sum += qweight(rq, pq, sq, kr, kp, smode, off + (u64)a * nh_p + i);
+            bool uni = !(sum > (smode == 0 ? 1e-12f : 0.f));
+            v = 0.f;
+            for (int a = 0; a < na; a++) {
+                float sg = uni ? 1.f / na : qweight(rq, pq, sq, kr, kp, smode, off + (u64)a * nh_p + i) / sum;
+                v += sg * cfv[(u64)cs[ch[a]] * nh_max + i];
+            }
+            if (mode == 0) {
+                float rr = rp[i];
+                for (int a = 0; a < na; a++) {
+                    u64 k = off + (u64)a * nh_p + i;
+                    float sg = uni ? 1.f / na : qweight(rq, pq, sq, kr, kp, 0, k) / sum;
+                    float d = cfv[(u64)cs[ch[a]] * nh_max + i] - v;
+                    float q = (float)rq[k];
+                    float nr = q * kr * (q > 0.f ? dpos : dneg) + d;
+                    float s = (float)sq[k] * kss + rr * sg;
+                    rmax = fmaxf(rmax, fabsf(nr));
+                    smax = fmaxf(smax, s);
+                    pmax = fmaxf(pmax, fabsf(d));
+                }
+            }
+        }
+        cfv[(u64)cs[n] * nh_max + i] = v;
+    }
+    if (mode != 0) return;
+    rmax = block_max(rmax, red);
+    smax = block_max(smax, red);
+    if (pq) pmax = block_max(pmax, red);
+    u64 seed = ((u64)iteration << 32) | (u64)n;
+    float ur = rounding_uniform(seed);
+    float us = rounding_uniform(seed ^ 0xD1B54A32D192ED03ull);
+    bool rok = rmax > 0.f && isfinite(rmax), sok = smax > 0.f && isfinite(smax), pok = pmax > 0.f && isfinite(pmax);
+    float rk = rok ? 32767.f / rmax : 0.f, sk = sok ? 65535.f / smax : 0.f, pk = pok ? 32767.f / pmax : 0.f;
+    for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+        float v = cfv[(u64)cs[n] * nh_max + i];
+        float sum = 0.f;
+        for (int a = 0; a < na; a++) sum += qweight(rq, pq, sq, kr, kp, 0, off + (u64)a * nh_p + i);
+        bool uni = !(sum > 1e-12f);
+        float rr = rp[i];
+        // Every action's new values are computed from the old ones before
+        // any entry of this hand is overwritten.
+        float nrs[16], ss[16], ds[16];
+        for (int a = 0; a < na; a++) {
+            u64 k = off + (u64)a * nh_p + i;
+            float sg = uni ? 1.f / na : qweight(rq, pq, sq, kr, kp, 0, k) / sum;
+            float d = cfv[(u64)cs[ch[a]] * nh_max + i] - v;
+            float q = (float)rq[k];
+            nrs[a] = q * kr * (q > 0.f ? dpos : dneg) + d;
+            ss[a] = (float)sq[k] * kss + rr * sg;
+            ds[a] = d;
+        }
+        for (int a = 0; a < na; a++) {
+            u64 k = off + (u64)a * nh_p + i;
+            float nr = nrs[a], s = ss[a];
+            rq[k] = !rok ? 0 : (nr == rmax ? 32767 : (nr == -rmax ? -32767 : (i16)round_unbiased(nr * rk, ur)));
+            sq[k] = !sok ? 0 : (s == smax ? 65535 : (u16)round_unbiased(fmaxf(s, 0.f) * sk, us));
+            if (pq) pq[k] = !pok ? 0 : (i16)rintf(ds[a] * pk);
+        }
+    }
+    if (threadIdx.x == 0) {
+        rsc[n] = rok ? rmax : 0.f;
+        ssc[n] = sok ? smax : 0.f;
+        if (pq) psc[n] = pok ? pmax : 0.f;
+    }
+}
