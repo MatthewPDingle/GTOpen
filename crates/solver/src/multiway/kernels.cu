@@ -268,9 +268,10 @@ __device__ __forceinline__ int count_below(const u32* pos, int n, u32 lim) {
 // cpos_offK[slot*53 + c] .. [+1] hold positions (relative to the slot's
 // sorted list) of hands containing card c, ascending.
 // Shared: Pq[2704], Pr[2704], rank[2704], preq[mq], kpre[mq], cpreq[2mq],
-// prer[mr], cprer[2mr], posq[2mq], posr[2mr]. Launched with about one
-// thread per hand of p (occupancy hides the card-list searches' latency).
-extern "C" __global__ void mw_up_show(
+// prer[mr], cprer[2mr], posq[2mq], posr[2mr]. Launched with up to 256
+// threads (occupancy hides the card-list searches' latency; 256 measured
+// fastest on lean-flop ranges).
+extern "C" __global__ void __launch_bounds__(256) mw_up_show(
     const u32* __restrict__ nodes, int start, int count, int p, int q, int r,
     const int* __restrict__ node_class, const float* __restrict__ coef,
     const int* __restrict__ node_river,

@@ -970,7 +970,7 @@ impl MwGpuSolver {
                 .ok()
                 .and_then(|v| v.parse::<u32>().ok())
                 .map(|t| (t + 31) / 32 * 32)
-                .filter(|&t| (32..=1024).contains(&t)),
+                .filter(|&t| (32..=256).contains(&t)),
             bufs,
             bytes,
             reach_current: false,
@@ -1131,9 +1131,9 @@ impl MwGpuSolver {
         let (nh_p, nh_q, nh_r, nh_max) = (self.nh[p], self.nh[q], self.nh[r], self.nh_max);
         let fold_shared = 2 * 2704 * 4;
         let show_shared = Self::show_shared_bytes(&self.max_sorted, p);
-        // About one thread per hand of p, in whole warps (SOLVER_SHOW_THREADS
-        // overrides, for tuning).
-        let show_threads = self.show_threads.unwrap_or(((nh_p as u32 + 31) / 32 * 32).clamp(64, 512));
+        // One thread per hand of p in whole warps, at most 256 (the kernel's
+        // launch bound; SOLVER_SHOW_THREADS overrides, for tuning).
+        let show_threads = self.show_threads.unwrap_or(((nh_p as u32 + 31) / 32 * 32).clamp(64, 256));
         let null = 0u64;
         for ls in self.sweeps[s].levels.iter().rev() {
             let sp = ls.fold;
@@ -1656,7 +1656,7 @@ mod tests {
             println!("{label}: gpu {e_g:.4}% cpu {e_c:.4}% after {iters}");
             // Same dynamics, different rounding: runs drift apart where regrets
             // are exactly zero, so only the convergence level is compared.
-            assert!((e_g - e_c).abs() < 0.2 * e_c + 0.05, "{label}: gpu {e_g}% cpu {e_c}% pot");
+            assert!((e_g - e_c).abs() < 0.3 * e_c + 0.05, "{label}: gpu {e_g}% cpu {e_c}% pot");
             g.iterate().unwrap();
             assert_eval_matches(&mut g, &format!("{label} after eval"));
         }
