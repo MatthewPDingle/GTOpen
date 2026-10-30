@@ -320,8 +320,9 @@ report crawl on CPU; the report now logs the refusal and each board
 records its engine). Deliberately NOT stored: per-hand strategies at
 report nodes (open the flop in Browse) and per-turn-card rows across
 flops (the single-flop RUNOUTS REPORT covers a specific runout).
-Follow-ups if wanted: compare two reports side by side; profile-locked
-villain reports at the new node depth (the summaries already carry the
+Side-by-side comparison of two reports shipped 2026-10-30 (REPORTS →
+Compare: the second report's line is matched step by step by label or
+pot-relative size). Follow-ups if wanted: profile-locked villain reports at the new node depth (the summaries already carry the
 locked strategies, so it is a UI matter).
 
 Original item:

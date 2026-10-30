@@ -96,9 +96,10 @@ struct AppState {
     preflop: Mutex<Option<PreflopSession>>,
     report: Mutex<ReportStatus>,
     report_stop: Arc<AtomicBool>,
-    /// The most recently queried report's per-board line summaries, parsed
-    /// once (a 184-flop report is ~100 MB of JSON on disk).
-    report_cache: Mutex<Option<Arc<LoadedReport>>>,
+    /// The most recently queried reports' per-board line summaries, parsed
+    /// once (a 184-flop report is ~100 MB of JSON on disk). Holds two, most
+    /// recent last, so comparing two reports doesn't reload them in turn.
+    report_cache: Mutex<Vec<Arc<LoadedReport>>>,
 }
 
 /// A report's per-board line summaries (see solver::report), in memory.
@@ -1863,6 +1864,9 @@ struct ProfileLocksRequest {
     aggressor: Option<usize>,
     #[serde(default)]
     pot_type: Option<solver::query::PostflopPotType>,
+    /// Profile name for the undo history ("Profile locks · IP = Whale").
+    #[serde(default)]
+    name: Option<String>,
 }
 
 /// Compile a postflop stat profile into node locks across the villain's
@@ -1871,42 +1875,42 @@ async fn profile_locks(
     State(state): State<Arc<AppState>>,
     Json(req): Json<ProfileLocksRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, lock_gen) = {
-        let guard = state.session.lock().unwrap();
-        guard
-            .as_ref()
-            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
-            .ok_or_else(|| bad_request("no spot built yet"))?
-    };
-    let summary = tokio::task::spawn_blocking(move || {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (summary, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)
+        let who = if req.player == 0 { "OOP" } else { "IP" };
+        let label = match req.name.as_deref().map(str::trim).filter(|n| !n.is_empty()) {
+            Some(name) => format!("Profile locks · {who} = {name}"),
+            None => format!("Profile locks · {who}"),
+        };
+        let summary = s.record_lock_edit(|s| {
+            Ok((s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)?, label))
+        })?;
+        Ok::<_, String>((summary, s.lock_history()))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
-    Ok(Json(serde_json::json!(summary)))
+    let mut out = serde_json::json!(summary);
+    out["history"] = serde_json::json!(history);
+    Ok(Json(out))
 }
 
 async fn profile_locks_clear(
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, lock_gen) = {
-        let guard = state.session.lock().unwrap();
-        guard
-            .as_ref()
-            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
-            .ok_or_else(|| bad_request("no spot built yet"))?
-    };
-    let n = tokio::task::spawn_blocking(move || {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (n, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.clear_profile_locks()
+        let n = s.record_lock_edit(|s| Ok((s.clear_profile_locks(), "Clear profile locks".to_string())))?;
+        Ok::<_, String>((n, s.lock_history()))
     })
     .await
-    .map_err(|e| bad_request(e.to_string()))?;
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
-    Ok(Json(serde_json::json!({"cleared": n})))
+    Ok(Json(serde_json::json!({"cleared": n, "history": history})))
 }
 
 fn pf_game_path(name: &str) -> Result<std::path::PathBuf, String> {
@@ -2375,7 +2379,7 @@ async fn report_run(
                 "villain_lock": lock_summary,
             }));
             // a report that was open in the tab must not serve stale boards
-            app.report_cache.lock().unwrap().take();
+            app.report_cache.lock().unwrap().clear();
             if rows.len() % 8 == 0 {
                 let _ = write_report(&path, &req, &rows, false);
             }
@@ -2425,11 +2429,17 @@ struct ReportLinesRequest {
     line: String,
 }
 
+/// Reports kept parsed in memory: the one being read and one to compare.
+const REPORT_CACHE_SIZE: usize = 2;
+
 /// Load (or reuse) a report's per-board line summaries.
 fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, String> {
-    if let Some(r) = state.report_cache.lock().unwrap().as_ref() {
-        if r.name == name {
-            return Ok(r.clone());
+    {
+        let mut cache = state.report_cache.lock().unwrap();
+        if let Some(i) = cache.iter().position(|r| r.name == name) {
+            let r = cache.remove(i);
+            cache.push(r.clone());
+            return Ok(r);
         }
     }
     let path = report_path(name)?;
@@ -2457,7 +2467,12 @@ fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, 
         return Err("no per-board line summaries found for this report".into());
     }
     let loaded = Arc::new(LoadedReport { name: name.to_string(), flops });
-    *state.report_cache.lock().unwrap() = Some(loaded.clone());
+    let mut cache = state.report_cache.lock().unwrap();
+    cache.retain(|r| r.name != name);
+    if cache.len() >= REPORT_CACHE_SIZE {
+        cache.remove(0);
+    }
+    cache.push(loaded.clone());
     Ok(loaded)
 }
 
@@ -3021,50 +3036,116 @@ struct LockRequest {
     mode: solver::query::LockMode,
     #[serde(default)]
     label: String,
+    /// Also freeze (lock as solved) every unlocked earlier decision on the
+    /// line, so a re-solve can't shift the play leading up to this lock.
+    #[serde(default)]
+    lock_path: bool,
+}
+
+/// The session's postflop solver and its lock generation counter.
+fn session_solver(
+    state: &AppState,
+) -> Result<(Arc<Mutex<Solver>>, Arc<std::sync::atomic::AtomicU64>), ApiError> {
+    let guard = state.session.lock().unwrap();
+    guard
+        .as_ref()
+        .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+        .ok_or_else(|| bad_request("no spot built yet"))
+}
+
+/// History label for a lock request: what it did, then where.
+fn lock_edit_label(mode: &solver::query::LockMode, at: &str, frozen: usize) -> String {
+    use solver::query::LockMode;
+    let what = match mode {
+        LockMode::Freeze => "Lock as solved".to_string(),
+        LockMode::Range { .. } => "Lock frequencies".to_string(),
+        LockMode::Hands { edits } => match edits.as_slice() {
+            [one] => format!("Lock {}", one.combo),
+            many => format!("Lock {} combos", many.len()),
+        },
+    };
+    let line = match frozen {
+        0 => String::new(),
+        1 => " (+1 earlier decision frozen)".to_string(),
+        n => format!(" (+{n} earlier decisions frozen)"),
+    };
+    format!("{what} · {at}{line}")
 }
 
 async fn lock_node(
     State(state): State<Arc<AppState>>,
     Json(req): Json<LockRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, lock_gen) = {
-        let guard = state.session.lock().unwrap();
-        guard
-            .as_ref()
-            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
-            .ok_or_else(|| bad_request("no spot built yet"))?
-    };
-    tokio::task::spawn_blocking(move || {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (frozen, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.lock_node(&req.path, req.mode, req.label)
+        let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
+        let frozen = s.record_lock_edit(|s| {
+            let frozen = s.lock_node_on_line(&req.path, req.mode.clone(), at.clone(), req.lock_path)?;
+            Ok((frozen, lock_edit_label(&req.mode, &at, frozen)))
+        })?;
+        Ok::<_, String>((frozen, s.lock_history()))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
-    Ok(Json(serde_json::json!({"ok": true})))
+    Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "history": history})))
 }
 
 async fn unlock_node(
     State(state): State<Arc<AppState>>,
     Json(req): Json<NodeRequest>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let (solver, lock_gen) = {
-        let guard = state.session.lock().unwrap();
-        guard
-            .as_ref()
-            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
-            .ok_or_else(|| bad_request("no spot built yet"))?
-    };
-    let removed = tokio::task::spawn_blocking(move || {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (removed, history) = tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.unlock_node(&req.path)
+        let label = format!("Unlock · {}", s.path_description(&req.path)?);
+        let removed = s.record_lock_edit(|s| Ok((s.unlock_node(&req.path)?, label)))?;
+        Ok::<_, String>((removed, s.lock_history()))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
-    Ok(Json(serde_json::json!({"ok": true, "removed": removed})))
+    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "history": history})))
+}
+
+async fn lock_history(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<solver::LockHistoryView>, ApiError> {
+    let (solver, _) = session_solver(&state)?;
+    let view = tokio::task::spawn_blocking(move || lock_unpoisoned(&solver).lock_history())
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(view))
+}
+
+/// Undo (or redo) the most recent lock edit. `label` names the edit
+/// stepped over; null when there was nothing to step.
+async fn lock_history_step(state: Arc<AppState>, undo: bool) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (label, history) = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        let label = if undo { s.undo_lock_edit() } else { s.redo_lock_edit() };
+        // a refused step may have cleared the history: report it either way
+        label.map(|l| (l, s.lock_history())).map_err(|e| (e, s.lock_history()))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(|(e, _)| bad_request(e))?;
+    if label.is_some() {
+        lock_gen.fetch_add(1, Ordering::Relaxed);
+    }
+    Ok(Json(serde_json::json!({"ok": true, "label": label, "history": history})))
+}
+
+async fn lock_undo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+    lock_history_step(state, true).await
+}
+
+async fn lock_redo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+    lock_history_step(state, false).await
 }
 
 async fn list_locks(
@@ -3482,7 +3563,7 @@ async fn main() {
         preflop: Mutex::new(None),
         report: Mutex::new(ReportStatus::default()),
         report_stop: Arc::new(AtomicBool::new(false)),
-        report_cache: Mutex::new(None),
+        report_cache: Mutex::new(Vec::new()),
     });
 
     // The UI is a no-build set of ES modules; without a Cache-Control the
@@ -3517,6 +3598,9 @@ async fn main() {
         .route("/api/reports/delete", post(report_delete))
         .route("/api/unlock", post(unlock_node))
         .route("/api/locks", get(list_locks))
+        .route("/api/locks/history", get(lock_history))
+        .route("/api/locks/undo", post(lock_undo))
+        .route("/api/locks/redo", post(lock_redo))
         .route("/api/runouts", post(runouts))
         .route("/api/range/parse", post(parse_range))
         .route("/api/save", post(save_solve))
@@ -3720,6 +3804,71 @@ mod allin_threshold_tests {
         let status = response.status();
         let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
         (status, String::from_utf8(body.to_vec()).unwrap())
+    }
+
+    #[test]
+    fn lock_edit_labels_say_what_and_where() {
+        use solver::query::{HandEdit, LockMode};
+        assert_eq!(lock_edit_label(&LockMode::Freeze, "Ks7h2d root", 0), "Lock as solved · Ks7h2d root");
+        assert_eq!(lock_edit_label(&LockMode::Range { freqs: vec![1.0] }, "x", 1),
+            "Lock frequencies · x (+1 earlier decision frozen)");
+        let edits = |n: usize| (0..n).map(|_| HandEdit { combo: "AsAh".into(), freqs: vec![1.0] }).collect();
+        assert_eq!(lock_edit_label(&LockMode::Hands { edits: edits(1) }, "x", 2),
+            "Lock AsAh · x (+2 earlier decisions frozen)");
+        assert_eq!(lock_edit_label(&LockMode::Hands { edits: edits(4) }, "x", 0), "Lock 4 combos · x");
+    }
+
+    #[tokio::test]
+    async fn lock_edits_undo_and_redo_over_http() {
+        let state = Arc::new(AppState::default());
+        let app = Router::new()
+            .route("/api/spot", post(build_spot))
+            .route("/api/lock", post(lock_node))
+            .route("/api/unlock", post(unlock_node))
+            .route("/api/locks/undo", post(lock_undo))
+            .route("/api/locks/redo", post(lock_redo))
+            .with_state(state.clone());
+        let mut body: serde_json::Value = serde_json::from_str(BASE).unwrap();
+        body["board"] = serde_json::json!("Ks7h2d3c4s");
+        let (status, response) = post_json(app.clone(), "/api/spot", body).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        let locks = || lock_unpoisoned(&lock_unpoisoned(&state.session).as_ref().unwrap().solver).locks.len();
+        let json = |s: &str| serde_json::from_str::<serde_json::Value>(s).unwrap();
+
+        // OOP checks, IP's decision: lock it and freeze the check before it
+        let lock = serde_json::json!({"path": [{"type": "action", "index": 0}],
+            "mode": {"kind": "freeze"}, "lock_path": true});
+        let (status, response) = post_json(app.clone(), "/api/lock", lock).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        let out = json(&response);
+        assert_eq!(out["frozen"], 1);
+        assert_eq!(out["history"]["undo"][0], "Lock as solved · Ks7h2d3c4s Check (+1 earlier decision frozen)");
+        assert_eq!(locks(), 2);
+
+        let (status, response) = post_json(app.clone(), "/api/unlock", serde_json::json!({"path": []})).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        assert_eq!(json(&response)["history"]["undo"][0], "Unlock · Ks7h2d3c4s root");
+        assert_eq!(locks(), 1);
+
+        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        assert_eq!(json(&response)["label"], "Unlock · Ks7h2d3c4s root");
+        assert_eq!(locks(), 2);
+        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        assert_eq!(locks(), 0);
+        assert_eq!(json(&response)["history"]["redo"].as_array().unwrap().len(), 2);
+        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        assert!(json(&response)["label"].is_null(), "nothing left to undo");
+        let (_, response) = post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
+        assert!(json(&response)["label"].as_str().unwrap().starts_with("Lock as solved"));
+        assert_eq!(locks(), 2);
+
+        // a refused lock changes nothing and keeps redo
+        let bad = serde_json::json!({"path": [{"type": "action", "index": 9}], "mode": {"kind": "freeze"}});
+        let (status, _) = post_json(app.clone(), "/api/lock", bad).await;
+        assert_eq!(status, StatusCode::BAD_REQUEST);
+        let (_, response) = post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
+        assert_eq!(json(&response)["label"], "Unlock · Ks7h2d3c4s root");
+        assert_eq!(locks(), 1);
     }
 
     #[tokio::test]

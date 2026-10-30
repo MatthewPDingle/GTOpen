@@ -58,8 +58,8 @@ The first build takes longer. Large trees need substantial RAM; GPU solving also
 | **00 · Preflop Lab** | Build a 2–9-player game, choose blinds and raise sizes, assign optional player models, and solve. Follow an action line to a heads-up flop, then **Send to postflop setup**. |
 | **01 · Setup** | Enter or import both ranges, choose the board, and set pot, effective stack, rake, and bet sizes. |
 | **02 · Solve** | After **Build tree** in Setup, solve the selected board. Watch convergence, stop/resume, and save the session. |
-| **03 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. |
-| **04 · Reports** | Solve the Setup configuration across **47, 95, 184, or all 1,755 canonical flops**. Compare results by board, high card, hand class, or texture. |
+| **03 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. Undo and redo lock edits with the lock panel's buttons or Ctrl+Z / Ctrl+Shift+Z. |
+| **04 · Reports** | Solve the Setup configuration across **47, 95, 184, or all 1,755 canonical flops**. Compare results by board, high card, hand class, or texture, or put two reports side by side. |
 
 You can start directly in Setup if you already have ranges. Preflop Lab is optional.
 
@@ -85,6 +85,7 @@ Reports use the configuration in **Setup** and solve each flop independently. Yo
 
 - **Standard report sizes** replaces Setup's bet menu with a shared report menu. Turn it off to use your Setup sizes.
 - **Vs modeled villain** applies one available player model from the Preflop export. It does not copy Browse's manual locks or lock both players. The current selection prefers OOP when both players have models.
+- **Compare** reads a second report at the same point of the action line, over the flops both reports share. Each step of the line is matched by action label, or by the same kind of action at the nearest pot-relative size (within 5% of the pot), so a 50% bet in a 10bb pot matches a 50% bet in a 20bb pot. When the starting pots differ, EV is shown as a share of the pot. IP's EV change mirrors OOP's, so only OOP's is listed per flop.
 - **Open in Browse** rebuilds and solves the selected report spot; it does not load a stored full solve. Match the board, action line, sizes, and modeling assumptions when comparing frequencies. Different convergence targets can still produce differences.
 
 Use **Group by → High card** in Chart or Table, click column headings to sort, or switch to Hand classes and Textures. Hover a strategy bar for every action's frequency, including zeroes. Search and delete completed reports from the library.

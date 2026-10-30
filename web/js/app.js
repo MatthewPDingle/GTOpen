@@ -906,7 +906,7 @@ const reports = initReports({
     canvas: $('rep-canvas'), detail: $('rep-detail'),
     aggregate: $('rep-aggregate'), table: $('rep-table'), legend: $('rep-legend'),
     ribbon: $('rep-ribbon'), cats: $('rep-cats'), textures: $('rep-textures'),
-    features: $('rep-features'), stdSizes: $('rep-stdsizes'),
+    features: $('rep-features'), stdSizes: $('rep-stdsizes'), compare: $('rep-compare'),
   },
   toast,
   currentSpot: currentSpotRequest,

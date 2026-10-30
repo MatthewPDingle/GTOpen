@@ -13,6 +13,7 @@ pub mod cfr;
 mod contextual_postflop;
 pub mod evaluator;
 pub mod game;
+pub mod lock_history;
 #[cfg(feature = "gpu")]
 pub mod gpu;
 pub mod preflop;
@@ -28,6 +29,7 @@ pub mod tree;
 pub use cards::*;
 pub use cfr::{Algorithm, Progress, RunOptions, Solver};
 pub use game::{Spot, SpotConfig};
+pub use lock_history::LockHistoryView;
 pub use query::{LockMode, NodeView, PathStep};
 pub use range::Range;
 pub use store::Storage;

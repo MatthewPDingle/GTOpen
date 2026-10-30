@@ -716,6 +716,43 @@ textarea {
 #rep-table .rep-card { min-width: 24px; height: 18px; font-size: 11px; }
 #rep-cats .cnum:has(.rep-share) { position: relative; white-space: nowrap; }
 #rep-cats .cnum .rep-share { position: absolute; left: 0; bottom: -2px; height: 2px; margin: 0; border: 0; background: var(--accent); opacity: .6; max-width: 100%; }
+/* report comparison (Compare view): A = the open report, B = the one picked */
+.rep-compare-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 8px; }
+.rep-compare-head select { max-width: min(520px, 70vw); }
+.rep-compare-sum { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12px; overflow-wrap: anywhere; }
+.rep-compare-diff { font-size: 11px; margin: 4px 0 10px; line-height: 1.5; }
+.rep-cmp-tag { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex-shrink: 0;
+  border-radius: 3px; font: 600 10px var(--font-data); background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+.rep-cmp-tag.b { background: rgba(61,134,198,.14); color: #8fc3ee; border-color: var(--blue); }
+.rep-cmp-vs { color: var(--ink-faint); font-size: 11px; }
+.rep-cmp-overall { background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; padding: 10px 12px; margin-bottom: 4px; }
+.rep-cmp-bars { display: grid; grid-template-columns: 18px 1fr; gap: 6px 8px; align-items: center; }
+.rep-cmp-bars .cbar { display: flex; height: 12px; border-radius: 2px; overflow: hidden; background: var(--bg2); }
+.rep-cmp-bars .rep-cmp-none { font-size: 10px; align-items: center; padding-left: 6px; }
+.rep-cmp-stats { display: grid; grid-template-columns: minmax(110px, auto) repeat(3, minmax(64px, auto)); gap: 3px 16px;
+  margin-top: 10px; width: max-content; max-width: 100%; font: 11px var(--font-data); }
+.rep-cmp-stats > :not(:nth-child(4n + 1)) { text-align: right; }
+.rep-cmp-stats > b { font-size: 10px; color: var(--ink-dim); font-weight: 600; }
+.rep-delta-text.up { color: #6fd39a; }
+.rep-delta-text.down { color: #ef8a8a; }
+#rep-compare .combo-row { min-height: 24px; padding: 3px 8px; cursor: pointer; }
+#rep-compare .combo-row.head { cursor: default; }
+#rep-compare .combo-row.sel { outline: 1px solid var(--accent); }
+#rep-compare .combo-row .cname { width: 94px; min-width: 94px; }
+#rep-compare .combo-row .cbar { height: 10px; }
+#rep-compare .rep-card { min-width: 24px; height: 18px; font-size: 11px; }
+#rep-compare .combo-row.head .rep-cmp-col { background: none; height: auto; font-size: 10px; letter-spacing: .04em; }
+.rep-cmp-table { max-height: 560px; overflow: auto; }
+.rep-cmp-more { font-size: 11px; padding: 6px 2px; text-align: center; }
+/* Δ bet/raise: a bar growing right (more aggression in B) or left from the cell's middle */
+#rep-compare .rep-delta { display: flex; align-items: center; justify-content: flex-end; gap: 6px; min-width: 112px; }
+.rep-delta-track { position: relative; width: 56px; height: 8px; flex-shrink: 0;
+  background: linear-gradient(#666, #666) center / 1px 100% no-repeat; }
+.rep-delta-track > i { position: absolute; top: 0; height: 100%; border-radius: 1px; }
+.rep-delta-track > i.up { left: 50%; background: #e8484c; }
+.rep-delta-track > i.down { right: 50%; background: var(--c-check); }
+#rep-compare .rep-delta > span:last-child { min-width: 42px; text-align: right; }
+#rep-compare .combo-row.head .rep-delta-head { min-width: 112px; }
 @media (max-width: 1500px) {
   #rep-features .rep-feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -898,6 +935,13 @@ textarea {
 .lock-badge {
   font-size: 9px; letter-spacing: .1em; color: var(--accent);
   border: 1px solid var(--accent); border-radius: 3px; padding: 1px 5px;
+}
+.lock-history { margin-left: auto; display: flex; gap: 4px; }
+.lock-history .lock-step { font-family: var(--font-body); font-weight: 600; text-transform: none; letter-spacing: .02em; }
+.lock-history .lock-step:disabled { opacity: .4; cursor: default; }
+.lk-line {
+  flex-basis: 100%; display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--ink-dim); margin-bottom: 2px; cursor: pointer;
 }
 .lock-modes { width: max-content; margin-bottom: 9px; }
 .lk-help { font-size: 11px; color: var(--ink-faint); line-height: 1.45; margin-bottom: 8px; }

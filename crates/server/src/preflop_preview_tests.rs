@@ -216,7 +216,7 @@ async fn rejected_model_does_not_even_access_session_or_stop_path() {
     let state = Arc::new(AppState {
         session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
         preflop: Mutex::new(None), report:Mutex::new(ReportStatus::default()),
-        report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(None),
+        report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(Vec::new()),
     });
     // Any attempt to stop/join/build through the session path would panic.
     // Validation must return before accessing it, with no cache or solver work.

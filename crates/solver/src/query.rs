@@ -833,8 +833,7 @@ impl Solver {
             }
         };
 
-        self.locks.insert(walk.node_idx, sigma);
-        self.lock_labels.insert(walk.node_idx, label);
+        self.put_lock(walk.node_idx, sigma, label);
         // locks live outside the arenas: isomorphic siblings only see them
         // once ensure_symmetric re-materializes the branch copies
         self.mark_sym_dirty();
@@ -844,8 +843,7 @@ impl Solver {
     pub fn unlock_node(&mut self, path: &[PathStep]) -> Result<bool, String> {
         let path = &self.canonical_path(path);
         let walk = self.walk_path(path)?;
-        self.lock_labels.remove(&walk.node_idx);
-        let removed = self.locks.remove(&walk.node_idx).is_some();
+        let removed = self.take_lock(walk.node_idx);
         if removed {
             self.mark_sym_dirty();
         }
@@ -856,8 +854,12 @@ impl Solver {
         if !self.locks.is_empty() {
             self.mark_sym_dirty();
         }
-        self.locks.clear();
-        self.lock_labels.clear();
+        let mut keys: Vec<u32> = self.locks.keys().chain(self.lock_labels.keys()).copied().collect();
+        keys.sort_unstable();
+        keys.dedup();
+        for k in keys {
+            self.take_lock(k);
+        }
     }
 
     pub fn list_locks(&self) -> Vec<String> {
@@ -1224,7 +1226,7 @@ pub struct ProfileLockSummary {
     pub root_evidence: Option<ProfileRootEvidence>,
 }
 
-const PROFILE_LABEL: &str = "profile:";
+pub(crate) const PROFILE_LABEL: &str = "profile:";
 
 impl Solver {
     /// Remove every profile-generated lock (manual point-locks keep the
@@ -1236,9 +1238,8 @@ impl Solver {
             .filter(|(_, l)| l.starts_with(PROFILE_LABEL))
             .map(|(k, _)| *k)
             .collect();
-        for k in &keys {
-            self.locks.remove(k);
-            self.lock_labels.remove(k);
+        for &k in &keys {
+            self.take_lock(k);
         }
         if !keys.is_empty() {
             self.mark_sym_dirty();
@@ -1523,9 +1524,8 @@ impl Solver {
                     acc[7].1 += mass * evidence.achieved as f64 / 100.0;
                     *contextual_target += mass * evidence.target as f64 / 100.0;
                 }
-                self.lock_labels.insert(node_idx, format!("{PROFILE_LABEL} {} {} {:.1}% ({} observations; bounded, solved hand/size mix)",
+                self.put_lock(node_idx, sigma.clone(), format!("{PROFILE_LABEL} {} {} {:.1}% ({} observations; bounded, solved hand/size mix)",
                     ["flop", "turn", "river"][st], evidence.kind, evidence.achieved, evidence.opportunities));
-                self.locks.insert(node_idx, sigma.clone());
                 self.mark_sym_dirty();
                 *locked += 1;
                 if node_idx == 0 { *root_evidence = Some(evidence); }
@@ -1578,8 +1578,7 @@ impl Solver {
         let mut sigma = vec![0f32; na * nh];
         self.solved_strategy_into(node, &mut sigma);
         rake_to_target(&mut sigma, na, nh, reach, &target);
-        self.locks.insert(node_idx, sigma.clone());
-        self.lock_labels.insert(node_idx, label);
+        self.put_lock(node_idx, sigma.clone(), label);
         self.mark_sym_dirty();
         *locked += 1;
 
