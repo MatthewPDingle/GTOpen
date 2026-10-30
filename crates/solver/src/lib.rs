@@ -14,6 +14,7 @@ mod contextual_postflop;
 pub mod evaluator;
 pub mod game;
 pub mod lock_history;
+pub mod multiway;
 #[cfg(feature = "gpu")]
 pub mod gpu;
 pub mod preflop;
