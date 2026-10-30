@@ -157,9 +157,197 @@ pub struct GpuSolver {
     /// Cached+page-locked host staging for fast arena transfers.
     h_staging: PinnedBuf,
     arena_layout: [ArenaLayout; 2],
+    /// 16-bit learning state; when present the f32 arenas are placeholders.
+    q: Option<Box<QState>>,
 
     pub iteration: u32,
     pub algo: Algorithm,
+}
+
+/// 16-bit device learning state (see kernels_q.cu): i16 regrets and u16
+/// strategy sums per player, each node scaled by its block maximum.
+pub(crate) struct QState {
+    _module: Arc<CudaModule>,
+    f_down: CudaFunction,
+    f_up: CudaFunction,
+    f_eval: CudaFunction,
+    pub(crate) f_project: CudaFunction,
+    pub(crate) rq: [CudaSlice<i16>; 2],
+    pub(crate) sq: [CudaSlice<u16>; 2],
+    rsc: [CudaSlice<f32>; 2],
+    ssc: [CudaSlice<f32>; 2],
+    /// Arena lengths per player and node count (scale array length).
+    lens: [usize; 2],
+    nodes: usize,
+    /// Parked: the state lives here and the device arrays are placeholders.
+    host: Option<Box<QHost>>,
+}
+
+impl QState {
+    fn new(ctx: &Arc<CudaContext>, stream: &Arc<CudaStream>, len: [usize; 2], nodes: usize) -> Result<QState, String> {
+        static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> = std::sync::OnceLock::new();
+        let (major, minor) = ctx.compute_capability().map_err(e)?;
+        let ptx = PTX.get_or_init(|| {
+            let arch: &'static str = Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+            cudarc::nvrtc::compile_ptx_with_opts(include_str!("kernels_q.cu"),
+                cudarc::nvrtc::CompileOptions { arch: Some(arch), ..Default::default() }).map_err(e)
+        }).clone()?;
+        let module = ctx.load_module(ptx).map_err(e)?;
+        let f = |name: &str| module.load_function(name).map_err(e);
+        Ok(QState {
+            f_down: f("down_action_q")?,
+            f_up: f("up_action_q")?,
+            f_eval: f("up_action_eval_q")?,
+            f_project: f("continuation_project_q")?,
+            rq: [stream.alloc_zeros(len[0].max(1)).map_err(e)?, stream.alloc_zeros(len[1].max(1)).map_err(e)?],
+            sq: [stream.alloc_zeros(len[0].max(1)).map_err(e)?, stream.alloc_zeros(len[1].max(1)).map_err(e)?],
+            rsc: [stream.alloc_zeros(nodes).map_err(e)?, stream.alloc_zeros(nodes).map_err(e)?],
+            ssc: [stream.alloc_zeros(nodes).map_err(e)?, stream.alloc_zeros(nodes).map_err(e)?],
+            lens: len,
+            nodes,
+            host: None,
+            _module: module,
+        })
+    }
+
+    pub(crate) fn bytes(&self) -> u64 {
+        if self.host.is_some() { return 0; }
+        (0..2).map(|p| (self.rq[p].len() + self.sq[p].len()) as u64 * 2
+            + (self.rsc[p].len() + self.ssc[p].len()) as u64 * 4).sum()
+    }
+
+    /// Host bytes of a parked state.
+    pub(crate) fn host_bytes(&self) -> u64 {
+        self.host.as_ref().map_or(0, |_| (0..2).map(|p| self.lens[p] as u64 * 4 + self.nodes as u64 * 8).sum())
+    }
+
+    /// Moves the device arrays to zeroed pinned host memory (fresh state
+    /// only) and hands the device buffers to `shared`.
+    pub(crate) fn park_fresh(&mut self, ctx: &Arc<CudaContext>, stream: &Arc<CudaStream>,
+        shared: &mut SharedState) -> Result<(), String> {
+        fn zeroed<T: cudarc::driver::DeviceRepr + cudarc::driver::ValidAsZeroBits + Default + Copy>(
+            ctx: &Arc<CudaContext>, len: usize) -> Result<cudarc::driver::PinnedHostSlice<T>, String> {
+            let mut h = unsafe { ctx.alloc_pinned::<T>(len.max(1)) }.map_err(e)?;
+            h.as_mut_slice().map_err(e)?.fill(T::default());
+            Ok(h)
+        }
+        let host = QHost {
+            rq: [zeroed(ctx, self.lens[0])?, zeroed(ctx, self.lens[1])?],
+            sq: [zeroed(ctx, self.lens[0])?, zeroed(ctx, self.lens[1])?],
+            rsc: [zeroed(ctx, self.nodes)?, zeroed(ctx, self.nodes)?],
+            ssc: [zeroed(ctx, self.nodes)?, zeroed(ctx, self.nodes)?],
+        };
+        stream.synchronize().map_err(e)?;
+        let tiny16 = || stream.alloc_zeros::<i16>(1).map_err(e);
+        let tinyu = || stream.alloc_zeros::<u16>(1).map_err(e);
+        let tinyf = || stream.alloc_zeros::<f32>(1).map_err(e);
+        let rq = std::mem::replace(&mut self.rq, [tiny16()?, tiny16()?]);
+        let sq = std::mem::replace(&mut self.sq, [tinyu()?, tinyu()?]);
+        let rsc = std::mem::replace(&mut self.rsc, [tinyf()?, tinyf()?]);
+        let ssc = std::mem::replace(&mut self.ssc, [tinyf()?, tinyf()?]);
+        shared.absorb(rq, sq, rsc, ssc);
+        self.host = Some(Box::new(host));
+        Ok(())
+    }
+
+    /// Swaps `shared` into a parked state and uploads what `need` reads.
+    /// Always pair with `unload`, even when this fails. No-op when resident.
+    pub(crate) fn load(owner: &mut GpuSolver, shared: &mut SharedState, need: QNeed) -> Result<(), String> {
+        let stream = owner.stream.clone();
+        let Some(q) = owner.q.as_mut().filter(|q| q.host.is_some()) else { return Ok(()) };
+        let bufs = shared.bufs.as_mut().ok_or("shared device state is empty")?;
+        if (0..2).any(|p| bufs.0[p].len() < q.lens[p].max(1) || bufs.2[p].len() < q.nodes) {
+            return Err("shared device state smaller than this continuation needs".into());
+        }
+        q.swap(bufs);
+        let host = q.host.as_ref().unwrap();
+        let (l, nn) = (q.lens, q.nodes);
+        for p in 0..2 {
+            if need.regrets[p] {
+                stream.memcpy_htod(&host.rq[p], &mut q.rq[p].slice_mut(0..l[p].max(1))).map_err(e)?;
+                stream.memcpy_htod(&host.rsc[p], &mut q.rsc[p].slice_mut(0..nn)).map_err(e)?;
+            }
+            if need.sums[p] {
+                stream.memcpy_htod(&host.sq[p], &mut q.sq[p].slice_mut(0..l[p].max(1))).map_err(e)?;
+                stream.memcpy_htod(&host.ssc[p], &mut q.ssc[p].slice_mut(0..nn)).map_err(e)?;
+            }
+        }
+        Ok(())
+    }
+
+    /// Downloads player `need.back`'s updated arrays when `keep`, then
+    /// returns the shared buffers. No-op when resident.
+    pub(crate) fn unload(owner: &mut GpuSolver, shared: &mut SharedState, need: QNeed, keep: bool) -> Result<(), String> {
+        let stream = owner.stream.clone();
+        let Some(q) = owner.q.as_mut().filter(|q| q.host.is_some()) else { return Ok(()) };
+        let Some(bufs) = shared.bufs.as_mut() else { return Ok(()) };
+        if q.rq[0].len() < bufs.0[0].len() {
+            return Ok(()); // load failed before swapping in
+        }
+        let mut saved = Ok(());
+        if keep {
+            if let Some(p) = need.back {
+                let (l, nn) = (q.lens[p].max(1), q.nodes);
+                let host = q.host.as_mut().unwrap();
+                saved = stream.memcpy_dtoh(&q.rq[p].slice(0..l), &mut host.rq[p])
+                    .and_then(|_| stream.memcpy_dtoh(&q.sq[p].slice(0..l), &mut host.sq[p]))
+                    .and_then(|_| stream.memcpy_dtoh(&q.rsc[p].slice(0..nn), &mut host.rsc[p]))
+                    .and_then(|_| stream.memcpy_dtoh(&q.ssc[p].slice(0..nn), &mut host.ssc[p]))
+                    .map_err(e);
+            }
+        }
+        let synced = stream.synchronize().map_err(e);
+        q.swap(bufs);
+        saved?;
+        synced
+    }
+
+    fn swap(&mut self, bufs: &mut ([CudaSlice<i16>; 2], [CudaSlice<u16>; 2], [CudaSlice<f32>; 2], [CudaSlice<f32>; 2])) {
+        std::mem::swap(&mut self.rq, &mut bufs.0);
+        std::mem::swap(&mut self.sq, &mut bufs.1);
+        std::mem::swap(&mut self.rsc, &mut bufs.2);
+        std::mem::swap(&mut self.ssc, &mut bufs.3);
+    }
+}
+
+/// Which parts of a parked state a call reads, and whose arrays it updates.
+#[derive(Clone, Copy)]
+pub(crate) struct QNeed {
+    pub regrets: [bool; 2],
+    pub sums: [bool; 2],
+    pub back: Option<usize>,
+}
+
+struct QHost {
+    rq: [cudarc::driver::PinnedHostSlice<i16>; 2],
+    sq: [cudarc::driver::PinnedHostSlice<u16>; 2],
+    rsc: [cudarc::driver::PinnedHostSlice<f32>; 2],
+    ssc: [cudarc::driver::PinnedHostSlice<f32>; 2],
+}
+
+/// One device copy of 16-bit learning state, shared by every parked
+/// continuation of a game and sized to the largest of them.
+#[derive(Default)]
+pub struct SharedState {
+    bufs: Option<([CudaSlice<i16>; 2], [CudaSlice<u16>; 2], [CudaSlice<f32>; 2], [CudaSlice<f32>; 2])>,
+}
+
+impl SharedState {
+    pub fn bytes(&self) -> u64 {
+        self.bufs.as_ref().map_or(0, |b| (0..2).map(|p| (b.0[p].len() + b.1[p].len()) as u64 * 2
+            + (b.2[p].len() + b.3[p].len()) as u64 * 4).sum())
+    }
+    fn absorb(&mut self, rq: [CudaSlice<i16>; 2], sq: [CudaSlice<u16>; 2], rsc: [CudaSlice<f32>; 2], ssc: [CudaSlice<f32>; 2]) {
+        match &mut self.bufs {
+            None => self.bufs = Some((rq, sq, rsc, ssc)),
+            Some(b) => {
+                for (old, new) in b.0.iter_mut().zip(rq) { if new.len() > old.len() { *old = new; } }
+                for (old, new) in b.1.iter_mut().zip(sq) { if new.len() > old.len() { *old = new; } }
+                for (old, new) in b.2.iter_mut().zip(rsc) { if new.len() > old.len() { *old = new; } }
+                for (old, new) in b.3.iter_mut().zip(ssc) { if new.len() > old.len() { *old = new; } }
+            }
+        }
+    }
 }
 
 fn checks_with_setup<S,V:Send,F:FnOnce()->Result<S,String>,C:Fn()->V+Sync>(eligible:bool,setup:F,checks:C)->Result<(S,V),String>{
@@ -209,14 +397,19 @@ impl GpuSolver {
     /// Check the configured traversal's compact buffers before device allocation.
     /// Build the plan once and reuse it for both the budget check and upload.
     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
-        Self::new_with_options(solver, budget_bytes, true)
+        Self::new_with_options(solver, budget_bytes, true, false)
     }
 
     /// `allow_full = false` keeps the compact (orbit-representative) action
-    /// arenas even when the full arenas would fit the budget.
-    pub(crate) fn new_with_options(solver: &Solver, budget_bytes: u64, allow_full: bool) -> Result<GpuSolver, String> {
+    /// arenas even when the full arenas would fit the budget. `compressed`
+    /// starts fresh 16-bit device state instead of uploading the f32 arenas
+    /// (zero CFR+ arenas only, no locks; readback is unsupported).
+    pub(crate) fn new_with_options(solver: &Solver, budget_bytes: u64, allow_full: bool, compressed: bool) -> Result<GpuSolver, String> {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
+        }
+        if compressed && (!solver.locks.is_empty() || solver.iteration != 0 || allow_full) {
+            return Err("16-bit device state needs a fresh, unlocked, compact solve".into());
         }
 
         let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
@@ -279,7 +472,7 @@ impl GpuSolver {
         let module = ctx.load_module(ptx).map_err(e)?;
 
         let data_len = plan.arena_elements;
-        let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+        let mut h_staging = PinnedBuf::new(&ctx, if compressed { 1 } else { data_len[0].max(data_len[1]) })?;
         let mut arena_layout = [
             ArenaLayout::new(solver, &plan, 0),
             ArenaLayout::new(solver, &plan, 1),
@@ -297,14 +490,21 @@ impl GpuSolver {
         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
 
         let data_len = plan.arena_elements;
-        let d_regrets = [
-            arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]))?,
-            arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]))?,
-        ];
-        let d_strat = [
-            arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
-            arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
-        ];
+        let (d_regrets, d_strat, q) = if compressed {
+            let tiny = || stream.alloc_zeros::<f32>(1).map_err(e);
+            let q = QState::new(&ctx, &stream, data_len, plan.num_nodes)?;
+            ([tiny()?, tiny()?], [tiny()?, tiny()?], Some(Box::new(q)))
+        } else {
+            let d_regrets = [
+                arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]))?,
+                arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]))?,
+            ];
+            let d_strat = [
+                arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
+                arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
+            ];
+            (d_regrets, d_strat, None)
+        };
         let (lock_off, lock_sigma) = build_lock_table(solver);
 
         let n = plan.num_nodes;
@@ -407,6 +607,7 @@ impl GpuSolver {
             eval_warmed: [false; 2],
             graphs: None,
             h_staging,
+            q,
             iteration: solver.iteration,
             algo: solver.algo,
             _ctx: ctx,
@@ -598,6 +799,18 @@ impl GpuSolver {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
                 // average sigma comes from the strategy arenas
+                if let Some(q) = &self.q {
+                    unsafe {
+                        self.stream.launch_builder(&q.f_down)
+                            .arg(&self.d_action_nodes).arg(&start).arg(&count).arg(&1i32)
+                            .arg(&self.d_node_player).arg(&self.d_node_na).arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start).arg(&self.d_children)
+                            .arg(&self.d_rsrc[0]).arg(&self.d_rsrc[1])
+                            .arg(&q.rq[0]).arg(&q.rq[1]).arg(&q.sq[0]).arg(&q.sq[1])
+                            .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                            .launch(Self::cfg(sp.count, 0)).map_err(e)?;
+                    }
+                } else {
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_down_action)
@@ -621,6 +834,7 @@ impl GpuSolver {
                         .arg(&nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
+                }
                 }
             }
             let sp = self.chance_spans[l];
@@ -759,6 +973,17 @@ impl GpuSolver {
             if sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
+                if let Some(q) = &self.q {
+                    unsafe {
+                        self.stream.launch_builder(&q.f_eval)
+                            .arg(&self.d_action_nodes).arg(&start).arg(&count).arg(&pi).arg(&mode)
+                            .arg(&self.d_node_player).arg(&self.d_node_na).arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start).arg(&self.d_children).arg(&q.sq[p])
+                            .arg(&self.d_cfv_slot).arg(&mut self.d_cfv).arg(&nh_p).arg(&nh_max)
+                            .launch(Self::cfg(sp.count, 0)).map_err(e)?;
+                    }
+                    continue;
+                }
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_up_action_eval)
@@ -829,6 +1054,18 @@ impl GpuSolver {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
                 let t0 = profq(&prof);
+                if let Some(q) = &self.q {
+                    unsafe {
+                        self.stream.launch_builder(&q.f_down)
+                            .arg(&self.d_action_nodes).arg(&start).arg(&count).arg(&0i32)
+                            .arg(&self.d_node_player).arg(&self.d_node_na).arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start).arg(&self.d_children)
+                            .arg(&self.d_rsrc[0]).arg(&self.d_rsrc[1])
+                            .arg(&q.rq[0]).arg(&q.rq[1]).arg(&q.sq[0]).arg(&q.sq[1])
+                            .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&down_nh1)
+                            .launch(Self::cfg(sp.count, 0)).map_err(e)?;
+                    }
+                } else {
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_down_action)
@@ -852,6 +1089,7 @@ impl GpuSolver {
                         .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
+                }
                 }
                 prof_acc(&self.stream, &mut prof, 1, t0)?;
             }
@@ -993,6 +1231,23 @@ impl GpuSolver {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
                 let t0 = profq(&prof);
+                if let Some(q) = &mut self.q {
+                    let it = self.iteration;
+                    let QState { f_up, rq, sq, rsc, ssc, .. } = &mut **q;
+                    unsafe {
+                        self.stream.launch_builder(f_up)
+                            .arg(&self.d_action_nodes).arg(&start).arg(&count).arg(&pi)
+                            .arg(&self.d_node_player).arg(&self.d_node_na).arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start).arg(&self.d_children)
+                            .arg(&mut rq[p]).arg(&mut sq[p]).arg(&mut rsc[p]).arg(&mut ssc[p])
+                            .arg(&self.d_rsrc[p]).arg(&self.d_reach[p])
+                            .arg(&self.d_cfv_slot).arg(&mut self.d_cfv).arg(&self.d_disc).arg(&it)
+                            .arg(&nh_p).arg(&nh_max)
+                            .launch(Self::cfg(sp.count, 0)).map_err(e)?;
+                    }
+                    prof_acc(&self.stream, &mut prof, 6, t0)?;
+                    continue;
+                }
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_up_action)
@@ -1028,6 +1283,7 @@ impl GpuSolver {
     /// Copy GPU arenas back into the CPU solver (for queries/BR/saves).
     /// Works for both f32 and compressed CPU storage (encodes per node).
     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+        if self.q.is_some() { return Err("16-bit continuation state cannot be read back or locked".into()); }
         self.stream.synchronize().map_err(e)?;
         for p in 0..2 {
             let len = self.d_regrets[p].len();
@@ -1054,6 +1310,7 @@ impl GpuSolver {
     /// Copy only the cumulative strategy back — all that exploitability
     /// checks and strategy queries need; half the PCIe traffic.
     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
+        if self.q.is_some() { return Err("16-bit continuation state cannot be read back or locked".into()); }
         self.stream.synchronize().map_err(e)?;
         for p in 0..2 {
             let len = self.d_strat[p].len();
@@ -1077,6 +1334,7 @@ impl GpuSolver {
 
     /// Re-upload the lock table after `solver.locks` changed.
     pub fn update_locks(&mut self, solver: &Solver) -> Result<(), String> {
+        if self.q.is_some() { return Err("16-bit continuation state cannot be read back or locked".into()); }
         // Drain in-flight kernels before the assignments below drop (free) the
         // old device buffers. The server's mutex ordering already prevents an
         // overlap, but the safety of a device free shouldn't depend on it.

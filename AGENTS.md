@@ -177,8 +177,9 @@ web UI at :3737 drives all of it.
 `solver::fullgame` (feature `gpu`) solves SB vs BB from the preflop root to
 the river as one CFR+ game over a weighted flop panel; `fullgame-cli` runs it
 from a `FullGameConfig` JSON (`docs/fullgame/sb-vs-bb-100.json`). See
-`docs/fullgame/README.md`. Continuations stay resident in VRAM, so only a few
-flops fit with limps on; there are no server endpoints or saves yet.
+`docs/fullgame/README.md`. Postflop state is 16-bit on the GPU; flops that do
+not fit in VRAM are parked in pinned host memory and streamed each sweep.
+There are no server endpoints or saves yet.
 
 ## The standard study recipe (used for everything in gtopen-studies)
 

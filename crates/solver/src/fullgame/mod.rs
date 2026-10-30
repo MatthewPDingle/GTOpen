@@ -22,7 +22,7 @@ pub mod equity;
 
 use crate::cards::{combo_from_index, combo_index, rank, suit, NUM_COMBOS};
 use crate::cfr::{Algorithm, Discounts, Solver};
-use crate::gpu::{SharedScratch, SymmetricContinuationGpu};
+use crate::gpu::{SharedScratch, SharedState, SymmetricContinuationGpu};
 use crate::preflop::equity::{class_index, class_label, class_prob, EquityTable, NUM_CLASSES};
 use crate::preflop::{PreflopConfig, PreflopSolver, KIND_ACTION, KIND_FOLD_WIN, KIND_POT_SHARE};
 use crate::tree::{StreetSizing, TreeConfig};
@@ -49,6 +49,13 @@ pub struct FullGameConfig {
     pub allin_threshold: f64,
     #[serde(default)]
     pub add_allin: bool,
+    /// Keep postflop learning state in f32 instead of 16 bits per entry.
+    #[serde(default)]
+    pub f32_state: bool,
+    /// Park every panel flop from this index on in host memory. By default
+    /// continuations stay on the GPU until it is nearly full.
+    #[serde(default)]
+    pub resident_flops: Option<usize>,
     /// None keeps every class in every continuation.
     #[serde(default)]
     pub support: Option<SupportSeed>,
@@ -111,6 +118,16 @@ pub struct Evaluation {
     pub outside_support: f64,
 }
 
+/// GPU workspaces shared by every continuation of a game.
+#[derive(Default)]
+struct Device {
+    scratch: SharedScratch,
+    state: SharedState,
+    /// Largest single continuation state seen, for the parking reserve.
+    largest: u64,
+    parking: bool,
+}
+
 pub struct FullGame {
     pub config: FullGameConfig,
     nodes: Vec<Node>,
@@ -120,7 +137,7 @@ pub struct FullGame {
     pub leaves: Vec<FlopLeaf>,
     flops: Vec<(String, f64)>,
     tables: PairTables,
-    scratch: SharedScratch,
+    dev: Device,
     class_of: Vec<usize>,
     /// First combo of each class (class reach is shared by its combos).
     class_rep: Vec<usize>,
@@ -146,7 +163,7 @@ fn range_string(support: &[bool]) -> String {
 /// classes. Empty when either seat has no supported class: every pair then
 /// checks down.
 fn build_continuations(config: &FullGameConfig, flops: &[(String, f64)], pot: f64, behind: f64,
-    support: &[Vec<bool>; 2], scratch: &mut SharedScratch) -> Result<Vec<Continuation>, String> {
+    support: &[Vec<bool>; 2], dev: &mut Device) -> Result<Vec<Continuation>, String> {
     if support.iter().any(|s| !s.iter().any(|&x| x)) {
         return Ok(Vec::new());
     }
@@ -173,8 +190,26 @@ fn build_continuations(config: &FullGameConfig, flops: &[(String, f64)], pot: f6
         let mut host = Solver::new(spot.clone());
         host.algo = Algorithm::CfrPlus;
         host.use_isomorphism = true;
-        let gpu = SymmetricContinuationGpu::new_resident(&host, scratch)?;
+        if spot.tree.nodes.iter().any(|n| n.kind == crate::tree::KIND_ACTION && n.num_children > 16) {
+            return Err("postflop nodes may have at most 16 actions".into());
+        }
+        let mut gpu = SymmetricContinuationGpu::new_resident(&host, &mut dev.scratch, !config.f32_state)?;
         drop(host);
+        // Keep continuations on the GPU while there is room; after that, park
+        // each one in pinned host memory and stream it through one shared slot.
+        if !config.f32_state {
+            dev.largest = dev.largest.max(gpu.arena_bytes());
+            let reserve_mb = 3000 + 2 * dev.largest / 1_000_000;
+            if !dev.parking && crate::gpu::vram_info_mb().is_some_and(|(free, _)| free < reserve_mb) {
+                dev.parking = true;
+            }
+            if dev.parking || config.resident_flops.is_some_and(|n| f >= n) {
+                if crate::sysmem::avail_mem_mb().is_some_and(|m| m < 16_000.0) {
+                    return Err(format!("out of host memory parking {board}; use fewer flops or a smaller menu"));
+                }
+                gpu.park(&mut dev.state)?;
+            }
+        }
         let combos = std::array::from_fn(|p| {
             spot.hands[p].iter().map(|h| combo_index(h.c1, h.c2) as u16).collect()
         });
@@ -288,7 +323,7 @@ impl FullGame {
         let tables = PairTables::build(&flops)?;
         let z: f64 = tables.mass.iter().map(|&m| m as f64).sum();
 
-        let mut scratch = SharedScratch::default();
+        let mut dev = Device::default();
         let mut leaves = Vec::with_capacity(leaf_nodes.len());
         for (k, &(i, pot, behind)) in leaf_nodes.iter().enumerate() {
             let path = paths[i].clone().unwrap();
@@ -301,7 +336,7 @@ impl FullGame {
                 }
             }
             let support = supports[k].clone();
-            let conts = build_continuations(&config, &flops, pot, behind, &support, &mut scratch)?;
+            let conts = build_continuations(&config, &flops, pot, behind, &support, &mut dev)?;
             log(&format!("{}: pot {pot} behind {behind}, {} continuations", line.join(" "), conts.len()));
             leaves.push(FlopLeaf { path, line: line.join(" "), pot, behind, support, conts });
         }
@@ -322,7 +357,7 @@ impl FullGame {
             leaves,
             flops,
             tables,
-            scratch,
+            dev,
             class_of,
             class_rep,
             z,
@@ -370,10 +405,12 @@ impl FullGame {
                 continue;
             }
             let added: Vec<usize> = (0..2).map(|s| (0..NUM_CLASSES).filter(|&h| new[s][h] && !old[s][h]).count()).collect();
-            // Free the old continuations before allocating their replacements.
+            // Free the old continuations before allocating their replacements,
+            // and let the replacements use the GPU room that frees.
             self.leaves[k].conts = Vec::new();
+            self.dev.parking = false;
             let (pot, behind) = (self.leaves[k].pot, self.leaves[k].behind);
-            self.leaves[k].conts = build_continuations(&self.config, &self.flops, pot, behind, &new, &mut self.scratch)?;
+            self.leaves[k].conts = build_continuations(&self.config, &self.flops, pot, behind, &new, &mut self.dev)?;
             self.leaves[k].support = new;
             log(&format!("{}: support +{} SB / +{} BB classes, rebuilt", self.leaves[k].line, added[0], added[1]));
             rebuilt.push(k);
@@ -385,8 +422,19 @@ impl FullGame {
         self.leaves[leaf].conts.iter().map(|c| c.gpu.arena_bytes()).sum()
     }
 
+    /// Host bytes of the parked continuations.
+    pub fn host_bytes(&self) -> u64 {
+        self.leaves.iter().flat_map(|l| &l.conts).map(|c| c.gpu.host_bytes()).sum()
+    }
+
+    /// Parked continuations (streamed from host memory each sweep).
+    pub fn parked(&self) -> usize {
+        self.leaves.iter().flat_map(|l| &l.conts).filter(|c| c.gpu.host_bytes() > 0).count()
+    }
+
+    /// Shared device workspaces: traversal scratch plus the parked-state slot.
     pub fn scratch_bytes(&self) -> u64 {
-        self.scratch.bytes()
+        self.dev.scratch.bytes() + self.dev.state.bytes()
     }
 
     pub fn continuations(&self) -> usize {
@@ -394,7 +442,7 @@ impl FullGame {
     }
 
     pub fn device_bytes(&self) -> u64 {
-        self.scratch.bytes() + self.leaves.iter().flat_map(|l| &l.conts).map(|c| c.gpu.arena_bytes()).sum::<u64>()
+        self.scratch_bytes() + self.leaves.iter().flat_map(|l| &l.conts).map(|c| c.gpu.arena_bytes()).sum::<u64>()
     }
 
     /// One alternating CFR+ iteration over the whole game.
@@ -520,11 +568,11 @@ impl FullGame {
             }
             Node::Flop { leaf, net, inv } => {
                 let mut v = self.outside_value(p, leaf, net, inv[p], &reach[q]);
-                let FullGame { leaves, scratch, flops, .. } = self;
+                let FullGame { leaves, dev, flops, .. } = self;
                 for cont in &mut leaves[leaf].conts {
                     let own: Vec<f32> = cont.combos[p].iter().map(|&c| reach[p][c as usize] as f32).collect();
                     let opp: Vec<f32> = cont.combos[q].iter().map(|&c| reach[q][c as usize] as f32).collect();
-                    let vals = cont.gpu.sweep_shared(scratch, p, t, &own, &opp)?;
+                    let vals = cont.gpu.sweep_shared(&mut dev.scratch, &mut dev.state, p, t, &own, &opp)?;
                     let w = flops[cont.flop].1;
                     for (i, &c) in cont.combos[p].iter().enumerate() {
                         v[c as usize] += w * vals[i] as f64;
@@ -618,12 +666,12 @@ impl FullGame {
                     let inside = !l.conts.is_empty() && l.support[0][self.class_of[c]];
                     *outside += reach[0][c] * if inside { part[c] } else { all[c] };
                 }
-                let FullGame { leaves, scratch, flops, .. } = self;
+                let FullGame { leaves, dev, flops, .. } = self;
                 for cont in &mut leaves[leaf].conts {
                     let r: [Vec<f32>; 2] = std::array::from_fn(|q| {
                         cont.combos[q].iter().map(|&c| reach[q][c as usize] as f32).collect()
                     });
-                    let vals = cont.gpu.evaluate_shared(scratch, [&r[0], &r[1]])?;
+                    let vals = cont.gpu.evaluate_shared(&mut dev.scratch, &mut dev.state, [&r[0], &r[1]])?;
                     let w = flops[cont.flop].1;
                     for p in 0..2 {
                         for mode in 0..2 {

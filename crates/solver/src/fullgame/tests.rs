@@ -17,6 +17,14 @@ fn sizing(bet: &str) -> [StreetSizing; 3] {
 }
 
 fn game(bet: &str, support: Option<SupportSeed>) -> FullGame {
+    game_with(bet, support, false)
+}
+
+fn game_with(bet: &str, support: Option<SupportSeed>, f32_state: bool) -> FullGame {
+    game_parked(bet, support, f32_state, None)
+}
+
+fn game_parked(bet: &str, support: Option<SupportSeed>, f32_state: bool, resident_flops: Option<usize>) -> FullGame {
     let config = FullGameConfig {
         preflop: preflop(20.0),
         // Rainbow (no flop symmetry) and two-tone (one suit swap).
@@ -26,6 +34,8 @@ fn game(bet: &str, support: Option<SupportSeed>) -> FullGame {
         max_raises: 0,
         allin_threshold: 0.85,
         add_allin: false,
+        f32_state,
+        resident_flops,
         support,
     };
     FullGame::build(config, &mut |m| println!("{m}")).expect("test requires CUDA")
@@ -121,4 +131,49 @@ fn seeded_support_reports_outside_play() {
     let after = g.evaluate().unwrap();
     println!("{after:?}");
     assert!(after.outside_support < e.outside_support, "{} >= {}", after.outside_support, e.outside_support);
+}
+
+#[test]
+fn sixteen_bit_state_matches_f32() {
+    // Same game, learning state in 16 bits versus f32: both converge and
+    // agree on values and the SB's first decision.
+    let run = |f32_state: bool| {
+        let mut g = game_with("50", None, f32_state);
+        for _ in 0..300 {
+            g.iterate().unwrap();
+        }
+        let e = g.evaluate().unwrap();
+        let (_, _, root) = g.strategy(&[]).unwrap();
+        (e, root, g.device_bytes())
+    };
+    let (q, q_root, q_bytes) = run(false);
+    let (f, f_root, f_bytes) = run(true);
+    println!("16-bit {q:?} {q_bytes} B\nf32    {f:?} {f_bytes} B");
+    assert!(q.gap_total < 0.01 && f.gap_total < 0.01);
+    for s in 0..2 {
+        assert!((q.evs[s] - f.evs[s]).abs() < 0.01, "seat {s}: {} vs {}", q.evs[s], f.evs[s]);
+    }
+    let worst = q_root.iter().zip(&f_root).map(|(a, b)| (a - b).abs()).fold(0.0, f64::max);
+    assert!(worst < 0.1, "root strategy differs by {worst}");
+    assert!(q_bytes < f_bytes);
+}
+#[test]
+fn parked_continuations_match_resident_exactly() {
+    // Streaming state through the shared slot changes where it lives, not
+    // the arithmetic: results must be bit-identical.
+    let run = |resident: Option<usize>| {
+        let mut g = game_parked("50", None, false, resident);
+        for _ in 0..40 {
+            g.iterate().unwrap();
+        }
+        (g.evaluate().unwrap(), g.strategy(&[]).unwrap().2, g.parked())
+    };
+    let (a, a_root, a_parked) = run(None);
+    let (b, b_root, b_parked) = run(Some(1));
+    println!("resident {a:?}\nparked   {b:?} ({b_parked} parked)");
+    assert_eq!(a_parked, 0);
+    assert!(b_parked > 0);
+    assert_eq!(a.evs, b.evs);
+    assert_eq!(a.best_responses, b.best_responses);
+    assert_eq!(a_root, b_root);
 }

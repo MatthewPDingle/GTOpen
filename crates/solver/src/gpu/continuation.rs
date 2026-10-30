@@ -2,7 +2,7 @@
 //! external root reaches, used by `fullgame` and the preflop research.
 //! Keep the GPU private: asymmetric locks or imported policies would invalidate
 //! the chance plan even if the next supplied root ranges were symmetric.
-use super::GpuSolver;
+use super::{GpuSolver, QNeed, QState, SharedState};
 use crate::{Algorithm, Solver, Spot, store::Store};
 use std::sync::Arc;
 use cudarc::driver::{CudaFunction, CudaModule, CudaSlice, PushKernelArg};
@@ -40,15 +40,15 @@ pub struct SymmetricContinuationGpu {
 
 impl SymmetricContinuationGpu {
     pub fn new_with_budget(host: &Solver, budget: u64) -> Result<Self, String> {
-        Self::build(host,budget,true,true)
+        Self::build(host,budget,true,true,false)
     }
 
     /// Fully enumerated chance reference with the same internal policy tying.
     pub fn new_explicit_reference(host: &Solver, budget: u64) -> Result<Self, String> {
-        Self::build(host,budget,false,true)
+        Self::build(host,budget,false,true,false)
     }
 
-    fn build(host: &Solver, budget: u64, future_card_orbits: bool, allow_full: bool) -> Result<Self, String> {
+    fn build(host: &Solver, budget: u64, future_card_orbits: bool, allow_full: bool, compressed: bool) -> Result<Self, String> {
         if host.use_isomorphism != future_card_orbits || host.algo != Algorithm::CfrPlus
             || host.iteration != 0 || !host.locks.is_empty() || host.preds.is_some()
         {
@@ -68,7 +68,7 @@ impl SymmetricContinuationGpu {
         }}
         let metadata_bytes=host.spot.tree.nodes.len() as u64*if future_card_orbits {4} else {12};
         let gpu=GpuSolver::new_with_options(host,budget.checked_sub(metadata_bytes)
-            .ok_or("budget too small for symmetry metadata")?,allow_full)?;
+            .ok_or("budget too small for symmetry metadata")?,allow_full,compressed)?;
         let mut masks=vec![1u32;host.spot.tree.nodes.len()];
         let mut stack=vec![(0u32,crate::game::Dealt::default())];
         while let Some((i,d))=stack.pop() {
@@ -161,6 +161,19 @@ impl SymmetricContinuationGpu {
         let count=self.gpu.d_action_nodes.len() as i32;
         if count==0 || self.spot.suit_perms.len()<2 {return Ok(());}
         for broadcast in [0i32,1] {
+            if let Some(q) = &mut self.gpu.q {
+                let super::QState { f_project, rq, sq, .. } = &mut **q;
+                unsafe {
+                    self.gpu.stream.launch_builder(f_project)
+                        .arg(&self.gpu.d_action_nodes).arg(&count)
+                        .arg(&self.gpu.d_node_player).arg(&self.gpu.d_node_na).arg(&self.gpu.d_node_data_off)
+                        .arg(&self.stabilizers).arg(&self.gpu.d_hand_perm[p])
+                        .arg(&mut rq[p]).arg(&mut sq[p])
+                        .arg(&self.gpu.nh[p]).arg(&(p as i32)).arg(&broadcast)
+                        .launch(GpuSolver::cfg(count as u32,0)).map_err(super::e)?;
+                }
+                continue;
+            }
             unsafe {
                 self.gpu.stream.launch_builder(&self.project)
                     .arg(&self.gpu.d_action_nodes).arg(&count)
@@ -187,6 +200,7 @@ impl SymmetricContinuationGpu {
 
     /// Actual allocated device regret/average storage, excluding staging.
     pub fn arena_bytes(&self) -> u64 {
+        if let Some(q) = &self.gpu.q { return q.bytes(); }
         self.gpu.d_regrets.iter().chain(&self.gpu.d_strat).map(|a| a.len() as u64 * 4).sum()
     }
 
@@ -194,9 +208,8 @@ impl SymmetricContinuationGpu {
     /// no pinned host staging, and traversal scratch (reaches and values)
     /// moved into `scratch`, which every continuation of one game shares.
     /// The host solver's arenas are only read here and can be dropped after.
-    pub fn new_resident(host: &Solver, scratch: &mut SharedScratch) -> Result<Self, String> {
-        let mut g = Self::build(host, u64::MAX, true, false)?;
-        g.gpu.h_staging = super::PinnedBuf::new(&g.gpu._ctx, 1)?;
+    pub fn new_resident(host: &Solver, scratch: &mut SharedScratch, compressed: bool) -> Result<Self, String> {
+        let mut g = Self::build(host, u64::MAX, true, false, compressed)?;
         let [r0, r1] = &mut g.gpu.d_reach;
         let mut taken = Vec::with_capacity(3);
         for buf in [r0, r1, &mut g.gpu.d_cfv] {
@@ -234,38 +247,64 @@ impl SymmetricContinuationGpu {
         Ok(value)
     }
 
-    /// `sweep` on shared scratch.
-    pub fn sweep_shared(&mut self, scratch: &mut SharedScratch, p: usize, t: u32,
+    /// `sweep` on shared scratch, loading a parked state into `state` first.
+    pub fn sweep_shared(&mut self, scratch: &mut SharedScratch, state: &mut SharedState, p: usize, t: u32,
         own: &[f32], opponent: &[f32]) -> Result<Vec<f32>, String> {
-        self.with_scratch(scratch, |g| g.sweep(p, t, own, opponent))
+        let mut sums = [false; 2];
+        sums[p] = true;
+        let need = QNeed { regrets: [true; 2], sums, back: Some(p) };
+        self.with_scratch(scratch, |g| {
+            let loaded = QState::load(&mut g.gpu, state, need);
+            let result = loaded.and_then(|_| g.sweep(p, t, own, opponent));
+            QState::unload(&mut g.gpu, state, need, result.is_ok())?;
+            result
+        })
+    }
+
+    /// Moves this continuation's fresh 16-bit state to pinned host memory;
+    /// sweeps then stream it through `state`.
+    pub fn park(&mut self, state: &mut SharedState) -> Result<(), String> {
+        let ctx = self.gpu._ctx.clone();
+        let stream = self.gpu.stream.clone();
+        let q = self.gpu.q.as_mut().ok_or("only 16-bit continuations can be parked")?;
+        q.park_fresh(&ctx, &stream, state)
+    }
+
+    /// Pinned host bytes of a parked continuation (zero when resident).
+    pub fn host_bytes(&self) -> u64 {
+        self.gpu.q.as_ref().map_or(0, |q| q.host_bytes())
     }
 
     /// Root counterfactual values under the AVERAGE strategies for the given
     /// root reaches: `[p][0]` best response of p, `[p][1]` p's average play.
     /// Unnormalized, in the postflop half-pot convention, like `sweep`.
-    pub fn evaluate_shared(&mut self, scratch: &mut SharedScratch, reach: [&[f32]; 2])
+    pub fn evaluate_shared(&mut self, scratch: &mut SharedScratch, state: &mut SharedState, reach: [&[f32]; 2])
         -> Result<[[Vec<f32>; 2]; 2], String> {
         for q in 0..2 {
             if reach[q].len() != self.spot.hands[q].len() || reach[q].iter().any(|x| !x.is_finite() || *x < 0.) {
                 return Err("invalid continuation reaches".into());
             }
         }
+        let need = QNeed { regrets: [false; 2], sums: [true; 2], back: None };
         self.with_scratch(scratch, |g| {
             let gpu = &mut g.gpu;
-            for q in 0..2 { gpu.stream.memcpy_htod(reach[q], &mut gpu.d_weights[q]).map_err(super::e)?; }
-            gpu.eval_down()?;
-            let mut out: [[Vec<f32>; 2]; 2] = Default::default();
-            for p in 0..2 {
-                for mode in 0..2 {
-                    out[p][mode] = gpu.eval_root_cfv(p, mode as i32, mode == 0)?;
+            let run = |gpu: &mut GpuSolver| {
+                for q in 0..2 { gpu.stream.memcpy_htod(reach[q], &mut gpu.d_weights[q]).map_err(super::e)?; }
+                gpu.eval_down()?;
+                let mut out: [[Vec<f32>; 2]; 2] = Default::default();
+                for p in 0..2 {
+                    for mode in 0..2 {
+                        out[p][mode] = gpu.eval_root_cfv(p, mode as i32, mode == 0)?;
+                    }
                 }
-            }
-            Ok(out)
+                Ok(out)
+            };
+            let result = QState::load(gpu, state, need).and_then(|_| run(gpu));
+            QState::unload(gpu, state, need, result.is_ok())?;
+            result
         })
     }
 
-    /// Device bytes this continuation keeps resident (arenas and metadata
-    /// uploads are counted by the arenas; metadata is a small fraction).
     pub fn spot(&self) -> &Arc<Spot> { &self.spot }
 }
 

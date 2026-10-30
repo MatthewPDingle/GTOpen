@@ -41,7 +41,7 @@ fn main() {
         game.device_bytes() as f64 / 1e9,
         start.elapsed().as_secs_f64()
     );
-    println!("  shared scratch {:.2} GB", game.scratch_bytes() as f64 / 1e9);
+    println!("  shared scratch {:.2} GB; {} continuations parked in {:.2} GB of host memory", game.scratch_bytes() as f64 / 1e9, game.parked(), game.host_bytes() as f64 / 1e9);
     if let (Some(before), Some((after, _))) = (vram_before, solver::gpu::vram_info_mb()) {
         println!("  device memory in use: {:.2} GB", before.saturating_sub(after) as f64 / 1e3);
     }
@@ -63,8 +63,8 @@ fn main() {
             if seed.expand_at.contains(&t) {
                 let rebuilt = game.expand_support(seed.min_freq, &mut |m| println!("{m}"))
                     .unwrap_or_else(|e| panic!("expand support: {e}"));
-                println!("iter {t:>5}  support grown on {} lines; {:.2} GB on the GPU", rebuilt.len(),
-                    game.device_bytes() as f64 / 1e9);
+                println!("iter {t:>5}  support grown on {} lines; {:.2} GB on the GPU, {} continuations parked in {:.2} GB of host memory", rebuilt.len(),
+                    game.device_bytes() as f64 / 1e9, game.parked(), game.host_bytes() as f64 / 1e9);
             }
         }
         if t % every == 0 || t == iterations {

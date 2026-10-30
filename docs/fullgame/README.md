@@ -54,11 +54,23 @@ street), the gaps between them, and the outside-support probability, all in
 bb per hand. The gaps measure the panel game, not real poker: board sampling
 is the larger error (see the design doc).
 
+## Memory
+
+Postflop learning state is 16 bits per entry on the GPU (i16 regrets, u16
+strategy sums, one scale per node, as in the CPU's compressed storage); set
+`f32_state` for full precision. On the 2-flop reference game the two agree
+to 0.0001 bb, and the 16-bit game needs about 4.4 GB per flop once the support
+has grown (seven flop lines with limps) instead of about 8.
+
+Continuations stay on the GPU until it is nearly full. Later ones are parked
+in pinned host memory and streamed through one shared GPU slot each sweep:
+both players' regrets and the updating player's strategy sums go up, and the
+updating player's arrays come back. Parked and resident continuations give
+bit-identical results. `resident_flops` parks every flop from that panel
+index on. Streaming costs PCIe time, so parked flops are slower than resident
+ones.
+
 ## Limits in this version
 
-- Every continuation stays resident in VRAM as f32. With limps the reference
-  game has seven flop lines, and once the support has grown it needs roughly
-  6–9 GB per flop, so the RTX 5090 holds only a few flops. 16-bit device
-  arenas and streaming from host RAM are the next milestones.
 - Preflop all-ins use panel equity, not exact full-deck equity.
 - No saves, Browse integration or server endpoints yet.
