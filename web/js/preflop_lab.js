@@ -1251,6 +1251,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.legend.innerHTML =
         `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
+      if (v.exportable3 && !canon.on) {
+        els.exportBtn.disabled = false;
+        els.exportBtn.textContent = 'SEND TO 3-WAY SETUP';
+        els.gridCap.innerHTML =
+          'Three players see this flop. SEND TO 3-WAY SETUP drops their arriving ranges, ' +
+          'pot, stacks and rake into the 3-WAY tab (in postflop action order).';
+      }
       if (v.exportable) {
         els.exportBtn.disabled = false;
         els.gridCap.innerHTML =
@@ -2381,6 +2388,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.exportBtn.addEventListener('click', async () => {
     if (!canon.on && lastIter < 2) {
       return toast('Wait for a learned strategy snapshot before exporting ranges.', true);
+    }
+    if (S.view && S.view.exportable3 && !canon.on) {
+      try {
+        const ex = await api.pfExport3(S.cursor);
+        if (window.gtopenApplyThreeWay) window.gtopenApplyThreeWay(ex);
+      } catch (e) { toast(e.message, true); }
+      return;
     }
     try {
       const ex = canon.on

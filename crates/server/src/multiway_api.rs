@@ -406,7 +406,11 @@ async fn stop() -> Json<serde_json::Value> {
 }
 
 async fn status() -> Json<MwStatus> {
-    Json(lock_unpoisoned(&MW.status).clone())
+    let mut st = lock_unpoisoned(&MW.status).clone();
+    if st.state.is_empty() {
+        st.state = "idle".into();
+    }
+    Json(st)
 }
 
 fn session_solver() -> Result<Arc<Mutex<MwSolver>>, ApiError> {

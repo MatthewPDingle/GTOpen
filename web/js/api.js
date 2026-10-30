@@ -30,6 +30,7 @@ export const api = {
   pfSession: () => req('GET', '/api/preflop/session'),
   pfNode: path => req('POST', '/api/preflop/node', { path }),
   pfExport: path => req('POST', '/api/preflop/export', { path }),
+  pfExport3: path => req('POST', '/api/preflop/export3', { path }),
   pfTable: seats => req('POST', '/api/preflop/table', { seats }),
   pfGenerate: (seat, stats, name, adaptive_from = 0.25) => req('POST', '/api/preflop/generate', { seat, stats, name, adaptive_from }),
   pfContextualPreview: (version, cfg, seat, context) => req('POST', '/api/preflop/contextual-preview', { version, cfg, seat, context }),
