@@ -81,6 +81,8 @@ pub struct Solver {
     pub locks: std::collections::HashMap<u32, Vec<f32>>,
     /// Display labels for locked nodes (path descriptions), node index keyed.
     pub lock_labels: std::collections::HashMap<u32, String>,
+    /// Undo/redo history of lock edits (session only, never saved).
+    pub(crate) lock_history: crate::lock_history::LockHistory,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -166,6 +168,7 @@ impl Solver {
             algo: Algorithm::Dcfr,
             locks: std::collections::HashMap::new(),
             lock_labels: std::collections::HashMap::new(),
+            lock_history: Default::default(),
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]

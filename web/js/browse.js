@@ -27,6 +27,12 @@ const EQ_COLORS = ['#8edced', '#46b556'];
 // Equity chart margins (CSS px).
 const EQ_M = { L: 38, R: 10, T: 12, B: 24 };
 
+/** Toast suffix for a lock reply that also froze earlier decisions. */
+function frozenNote(out) {
+  const n = out?.frozen || 0;
+  return n ? ` (+${n} earlier decision${n > 1 ? 's' : ''} frozen too)` : '';
+}
+
 function betShade(amount, pot) {
   const pct = pot > 0 ? (amount / pot) * 100 : 100;
   if (pct <= 40) return BET_SHADES.small;
@@ -52,6 +58,10 @@ export class Browser {
     this.preflop = null;   // {oop, ip, potBb, effStackBb, segments} from preflop study setup, else null
     this.view = null;
     this._refreshGen = 0;  // serializes overlapping /api/node refreshes (stale-response guard)
+    this.lockHistory = null; // server's lock undo/redo stacks (labels), see setLockHistory
+    this.lockStepBusy = false;
+    this.freezeLine = false; // lock option: also freeze earlier decisions on the line
+    try { this.freezeLine = localStorage.getItem('gtopen.freezeLine') === '1'; } catch { /* storage off */ }
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
     this.exploit = null;          // /api/exploit payload for EXPLOIT mode
@@ -114,6 +124,13 @@ export class Browser {
       const browseActive = document.getElementById('view-browse')?.classList.contains('active');
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '');
       if (!browseActive || typing || !this.view) return;
+      // Ctrl/Cmd+Z undoes the last lock edit; +Shift (or Ctrl+Y) redoes it
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && !e.altKey && (e.key.toLowerCase() === 'z' || e.key.toLowerCase() === 'y')) {
+        e.preventDefault();
+        this.stepLockHistory(e.key.toLowerCase() === 'y' || e.shiftKey ? 'redo' : 'undo');
+        return;
+      }
       if (e.key === 'Backspace' && this.path.length) {
         e.preventDefault();
         this.viewDepth(this.path.length - 1); // step cursor back, keep the line
@@ -179,6 +196,8 @@ export class Browser {
     }
     if (gen !== this._refreshGen) return; // stale response: user navigated again mid-flight
     this.view = view;
+    // lock undo/redo labels: cheap, and kept off the critical path
+    api.lockHistory().then(h => { if (gen === this._refreshGen) this.setLockHistory(h); }).catch(() => {});
     this.exploit = null;        // stale for the new node/strategy state
     this._exploitGen++;         // ...and so is any BR request still in flight
     this._exploitHands = null;
@@ -249,6 +268,7 @@ export class Browser {
     this.preflop = null; // build handler re-sets this after reset when applicable
     this.villainLocked = null; // player index whose postflop profile is locked in
     this.villainLockEvidence = null;
+    this.lockHistory = null;   // server's lock undo/redo stacks (labels)
   }
 
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
@@ -556,7 +576,7 @@ export class Browser {
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}</div>
+      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}<span class="lock-history"></span></div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
           data-tip="Model a read about the whole range: 'folds 70% to this bet'. You set aggregate action frequencies and the solved strategy is rebalanced to hit them — each hand's mix is scaled proportionally, so the RIGHT hands do the extra folding/calling. This is the mode for pool tendencies.">Overall %</button>
@@ -565,6 +585,7 @@ export class Browser {
       </div>
       <div class="lock-body"></div>`;
     const body = wrap.querySelector('.lock-body');
+    this.paintLockHistory(wrap.querySelector('.lock-history'));
     wrap.querySelectorAll('.lock-modes button').forEach(b =>
       b.addEventListener('click', () => { this.lockMode = b.dataset.lm; this.renderActions(); }));
 
@@ -625,8 +646,8 @@ export class Browser {
         const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
         if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
         try {
-          await api.lock(this.path, { kind: 'range', freqs }, label);
-          toast('locked — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is'); this.refresh();
+          const out = await this.lockHere({ kind: 'range', freqs }, label);
+          toast(`locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
         } catch (e) { toast(e.message, true); }
       });
       foot.appendChild(lock);
@@ -664,8 +685,8 @@ export class Browser {
             if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
             const edits = combos.map(c => ({ combo: c, freqs }));
             try {
-              await api.lock(this.path, { kind: 'hands', edits }, label);
-              toast(`${info.label} locked — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
+              const out = await this.lockHere({ kind: 'hands', edits }, label);
+              toast(`${info.label} locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
             } catch (e) { toast(e.message, true); }
           });
           foot.appendChild(lock);
@@ -677,13 +698,104 @@ export class Browser {
     el.appendChild(wrap);
   }
 
+  /** Lock the current node with `mode`, freezing the earlier decisions on
+   *  the line too when that option is on. Returns the server's reply. */
+  async lockHere(mode, label) {
+    const out = await api.lock(this.path, mode, label, this.freezeLine && this.hasEarlierDecision());
+    this.setLockHistory(out.history);
+    return out;
+  }
+
+  /** True when the current node has a decision before it on the line. */
+  hasEarlierDecision() {
+    return this.path.some(step => step.type === 'action');
+  }
+
+  setLockHistory(h) {
+    if (!h) return;
+    this.lockHistory = h;
+    this.paintLockHistory(this.els.actionList?.querySelector('.lock-history'));
+  }
+
+  /** Undo / redo buttons in the lock panel head, labelled with the edit
+   *  each one would step over. */
+  paintLockHistory(el) {
+    if (!el) return;
+    const h = this.lockHistory || { undo: [], redo: [] };
+    el.innerHTML = '';
+    for (const [dir, glyph, word, list] of [['undo', '\u21b6', 'Undo', h.undo], ['redo', '\u21b7', 'Redo', h.redo]]) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn ghost xs lock-step';
+      b.textContent = `${glyph} ${word}`;
+      b.disabled = !list.length || !!this.lockStepBusy;
+      const key = dir === 'undo' ? 'Ctrl+Z' : 'Ctrl+Shift+Z';
+      b.setAttribute('aria-label', list.length ? `${word}: ${list[0]}` : `Nothing to ${word.toLowerCase()}`);
+      b.dataset.tip = list.length
+        ? `${word}: ${list[0]} (${key}).` + (list.length > 1 ? ` ${list.length - 1} more step${list.length > 2 ? 's' : ''} after this.` : '') +
+          ' Covers node locks, unlocks and villain profile locks in this session; RE-SOLVE afterwards to update the strategy.'
+        : `Nothing to ${word.toLowerCase()}. Lock edits made in this session can be undone and redone (${key}).`;
+      b.addEventListener('click', e => { e.stopPropagation(); this.stepLockHistory(dir); });
+      el.appendChild(b);
+    }
+  }
+
+  async stepLockHistory(dir) {
+    const list = this.lockHistory?.[dir];
+    if (this.lockStepBusy || !list?.length) return;
+    this.lockStepBusy = true;
+    this.setLockHistory(this.lockHistory);
+    try {
+      const out = await (dir === 'undo' ? api.lockUndo() : api.lockRedo());
+      this.lockStepBusy = false;
+      this.setLockHistory(out.history);
+      this.syncVillainLocked(out.history);
+      if (out.label) toast(`${dir === 'undo' ? 'undid' : 'redid'}: ${out.label} — RE-SOLVE to update the strategy`);
+      await this.refresh();
+    } catch (e) {
+      toast(e.message, true);
+      // a refused step clears the server's history: show what is left
+      api.lockHistory().then(h => this.setLockHistory(h)).catch(() => {});
+    } finally {
+      this.lockStepBusy = false;
+      this.renderVillainLocks();
+    }
+  }
+
+  /** Undo/redo can add or remove a villain's profile locks: keep the
+   *  villain-lock toggle in step with what the server holds. */
+  syncVillainLocked(h) {
+    const players = h?.profile_players || [];
+    if (this.villainLocked !== null && !players.includes(this.villainLocked)) {
+      this.villainLocked = null;
+      this.villainLockEvidence = null;
+    } else if (this.villainLocked === null && players.length) {
+      this.villainLocked = players[0];
+      this.villainLockEvidence = null;
+    }
+  }
+
   /** Shared "lock as solved" + "unlock" buttons for the lock panel footer. */
   appendLockFooter(foot, label, locked) {
+    if (this.hasEarlierDecision()) {
+      const line = document.createElement('label');
+      line.className = 'chk lk-line';
+      line.dataset.tip = 'Also LOCK AS SOLVED every earlier decision on this line that is not locked yet, for both players, in the same step. Without it, a lock deep in the tree can shift earlier play on RE-SOLVE (e.g. locking the response to a c-bet changes how often the c-bet happens). Locks already on the line are kept. One undo removes all of it.';
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = !!this.freezeLine;
+      box.addEventListener('change', () => {
+        this.freezeLine = box.checked;
+        try { localStorage.setItem('gtopen.freezeLine', box.checked ? '1' : '0'); } catch { /* storage off */ }
+      });
+      line.append(box, document.createTextNode(' freeze earlier decisions on this line'));
+      foot.prepend(line);
+    }
     const freeze = document.createElement('button');
     freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
     freeze.dataset.tip = 'The other kind of lock: freeze this node EXACTLY as currently solved \u2014 you change nothing, it just stops adapting. Use it to hold parts of the tree constant while you experiment elsewhere: lock earlier streets as solved, then edit/lock a later node and RE-SOLVE \u2014 only the unlocked parts adapt. (LOCK FREQUENCIES pins YOUR numbers; LOCK AS SOLVED pins the solver\u2019s.)';
     freeze.addEventListener('click', async () => {
-      try { await api.lock(this.path, { kind: 'freeze' }, label); toast('locked as solved — this node now stays fixed through re-solves'); this.refresh(); }
+      try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)} — this node now stays fixed through re-solves`); this.refresh(); }
       catch (e) { toast(e.message, true); }
     });
     foot.appendChild(freeze);
@@ -692,7 +804,7 @@ export class Browser {
       un.className = 'btn ghost'; un.textContent = 'UNLOCK';
       un.dataset.tip = 'Remove the lock: this node adapts again on the next RE-SOLVE.';
       un.addEventListener('click', async () => {
-        try { await api.unlock(this.path); toast('unlocked'); this.refresh(); }
+        try { const out = await api.unlock(this.path); this.setLockHistory(out.history); toast('unlocked'); this.refresh(); }
         catch (e) { toast(e.message, true); }
       });
       foot.appendChild(un);
@@ -1400,13 +1512,15 @@ export class Browser {
     const timer = setInterval(() => this.updateVillainLockElapsed(), 250);
     try {
       if (clearing) {
-        await api.profileLocksClear();
+        const out = await api.profileLocksClear();
+        this.setLockHistory(out.history);
         this.villainLocked = null;
         this.villainLockEvidence = null;
         toast('villain profile locks cleared');
       } else {
         const out = await api.profileLocks(p, v.stats,
-          this.preflop ? this.preflop.aggressor : null, this.preflop?.pot_type ?? null);
+          this.preflop ? this.preflop.aggressor : null, this.preflop?.pot_type ?? null, v.name);
+        this.setLockHistory(out.history);
         this.villainLocked = p;
         this.villainLockEvidence = out.root_evidence || null;
         const worst = (out.rows || []).reduce((w, r) =>

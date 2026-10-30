@@ -53,6 +53,12 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     loadingName: null,
     display: 'chart',
     grouping: 'flops',
+    // side-by-side comparison with a second report (lines mode, both):
+    // {name, report, cache: Map(line key -> lines payload), key, rows,
+    //  matched (B's line found by sizing rather than label), error}
+    cmp: null,
+    cmpSeq: 0,
+    cmpSort: { key: 'adbet', dir: 1 },
   };
 
   // ---------------------------------------------------------- helpers ----
@@ -88,8 +94,11 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     ['acehigh', 'A-HIGH'], ['broadway', 'K/Q-HIGH'], ['mid', 'MID'], ['low', 'LOW'],
   ];
 
-  const activeSort = () => S.display === 'textures' ? S.textureSort : S.display === 'hands' ? S.handSort : S.sort;
-  const sortOptions = () => S.display === 'textures'
+  const activeSort = () => S.display === 'textures' ? S.textureSort : S.display === 'hands' ? S.handSort
+    : S.display === 'compare' ? S.cmpSort : S.sort;
+  const sortOptions = () => S.display === 'compare'
+    ? ['adbet|Largest bet / raise change', 'dbet|Bet / raise change', 'dev0|OOP EV change', 'deqr0|OOP EQR change', 'rank|Board rank']
+    : S.display === 'textures'
     ? ['name|Texture', 'count|Flops', 'bet|Bet / raise %', 'ev0|OOP EV', 'ev1|IP EV', 'eq0|OOP equity', 'eqr0|OOP EQR']
     : S.display === 'hands'
       ? ['class|Hand class', 'share|Range share', 'ev|EV', 'eq|Equity']
@@ -279,6 +288,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         document.getElementById('rep-empty-state').classList.remove('hidden');
         render();
       }
+      if (S.cmp?.name === name) { ++S.cmpSeq; S.cmp = null; render(); }
       libraryData = libraryData.filter(r => r.name !== name);
       libraryNames = libraryNames.filter(n => n !== name);
       renderLibrary();
@@ -301,7 +311,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       S.line = '';
       S.lineData = null;
       S.rows = [];
+      if (S.cmp && (S.cmp.name === name || S.mode !== 'lines')) { ++S.cmpSeq; S.cmp = null; }
       if (S.mode === 'lines') await loadLine('');
+      if (S.cmp) await loadCompareLine();
       if (seq !== S.loadSeq) return;
       render();
     } catch (e) { if (seq === S.loadSeq) toast(e.message, true); }
@@ -316,7 +328,13 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     if (seq !== S.lineSeq) return; // superseded by a later click
     S.line = key;
     S.lineData = data;
-    S.rows = data.rows.map(r => {
+    S.rows = normalizeRows(data);
+    if (S.selected && !S.rows.some(r => r.board === S.selected)) S.selected = null;
+  }
+
+  /** Per-flop rows of a lines payload in the shape every view renders. */
+  function normalizeRows(data) {
+    return data.rows.map(r => {
       const s = r.s;
       const players = [0, 1].map(p => {
         const ps = (s.players || [])[p] || { w: 0, ev: 0 };
@@ -328,14 +346,101 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       } : null;
       return { board: r.board, weight: r.weight, exploit_pct: r.exploit_pct, players, strat, kind: s.kind, pot: s.pot, street: s.street };
     });
-    if (S.selected && !S.rows.some(r => r.board === S.selected)) S.selected = null;
   }
 
   async function setLine(key) {
     try {
       await loadLine(key);
+      if (S.cmp) await loadCompareLine();
       render();
     } catch (e) { toast(e.message, true); }
+  }
+
+  // ------------------------------------------------------- comparison ----
+
+  /** Pick (or clear, name = '') the report compared with the open one. */
+  async function setCompare(name) {
+    const seq = ++S.cmpSeq;
+    if (!name) { S.cmp = null; render(); return; }
+    try {
+      const report = await api.reportsGet(name);
+      if (seq !== S.cmpSeq) return;
+      if (!report.lines) throw new Error('that report predates line summaries; re-run it to compare it');
+      S.cmp = { name, report, cache: new Map(), key: null, rows: [], matched: false, error: null };
+      await loadCompareLine();
+      if (seq === S.cmpSeq) render();
+    } catch (e) {
+      if (seq === S.cmpSeq) { S.cmp = null; toast(e.message, true); render(); }
+    }
+  }
+
+  async function cmpFetch(key) {
+    const c = S.cmp;
+    if (!c.cache.has(key)) c.cache.set(key, await api.reportsLines(c.name, key));
+    return c.cache.get(key);
+  }
+
+  // Bet / raise size as a fraction of the pot it goes into, read from the
+  // engine's labels ("Bet 3.3 (33%)", "Raise 12", "All-in 40").
+  function sizeOf(label, pot) {
+    const amount = +(String(label).match(/[\d.]+/) || [NaN])[0];
+    return pot > 0 ? amount / pot : NaN;
+  }
+
+  /** Index of B's action matching A's action k at the same decision: the
+   *  same label, else the same kind at the nearest pot-relative size (within
+   *  5% of the pot), all-in to all-in. -1 when B has no counterpart. */
+  function matchAction(hA, k, hB) {
+    const exact = hB.actions.indexOf(hA.actions[k]);
+    if (exact >= 0) return exact;
+    const kind = hA.kinds[k];
+    const allIn = /^All-in/.test(hA.actions[k]);
+    const candidates = hB.actions.map((label, j) => ({ label, j, kind: hB.kinds[j] }))
+      .filter(c => c.kind === kind && /^All-in/.test(c.label) === allIn);
+    if (kind === 'fold' || kind === 'check' || kind === 'call' || allIn) return candidates.length === 1 ? candidates[0].j : -1;
+    const want = sizeOf(hA.actions[k], hA.pot);
+    let best = -1, gap = 0.05;
+    for (const c of candidates) {
+      const d = Math.abs(sizeOf(c.label, hB.pot) - want);
+      if (d <= gap) { best = c.j; gap = d; }
+    }
+    return best;
+  }
+
+  /** Follow the open report's line in the compared one, action by action,
+   *  and load the compared report's rows there. */
+  async function loadCompareLine() {
+    const c = S.cmp;
+    if (!c || !S.lineData) return;
+    const seq = S.cmpSeq;
+    const steps = S.line ? S.line.split(',') : [];
+    const histA = S.lineData.history;
+    const out = [];
+    let matched = false, error = null;
+    try {
+      for (let d = 0; d < steps.length && !error; d++) {
+        if (steps[d] === 'c') { out.push('c'); continue; }
+        const k = +steps[d].slice(1);
+        const hA = histA[d];
+        const dataB = await cmpFetch(out.join(','));
+        const hB = dataB.history[dataB.history.length - 1];
+        if (hB.kind !== 'action' || hB.actor !== hA.actor) {
+          error = `the compared report has no ${posName(hA.actor)} decision at this point`;
+          break;
+        }
+        const j = matchAction(hA, k, hB);
+        if (j < 0) { error = `the compared report has no “${hA.actions[k]}” here (${hB.actions.join(' / ')})`; break; }
+        if (hB.actions[j] !== hA.actions[k]) matched = true;
+        out.push(`a${j}`);
+      }
+      const key = out.join(',');
+      const data = error ? null : await cmpFetch(key);
+      if (seq !== S.cmpSeq || c !== S.cmp) return;
+      Object.assign(c, { key: error ? null : key, matched, error, rows: data ? normalizeRows(data) : [], lineData: data });
+    } catch (e) {
+      if (seq !== S.cmpSeq || c !== S.cmp) return;
+      Object.assign(c, { key: null, matched, error: e.message, rows: [], lineData: null });
+    }
   }
 
   // ------------------------------------------------------------- run ----
@@ -476,7 +581,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<div class="seg" id="rep-node">` +
       `<button data-n="root" class="${S.node === 'root' ? 'active' : ''}" data-tip="The first decision on the flop (OOP acting into the pot).">OOP ROOT</button>` +
       `<button data-n="vs_check" class="${S.node === 'vs_check' ? 'active' : ''}" data-tip="IP's reply after OOP checks — the c-bet view.">IP VS CHECK</button></div>`;
-    document.getElementById('rep-display').innerHTML = ['chart|Chart', 'table|Table', 'hands|Hand classes', 'textures|Textures']
+    document.getElementById('rep-display').innerHTML = ['chart|Chart', 'table|Table', 'hands|Hand classes', 'textures|Textures', 'compare|Compare']
       .map(item => { const [key, title] = item.split('|'); return `<button type="button" data-display="${key}" aria-pressed="${S.display === key}" class="${S.display === key ? 'active' : ''}">${title}</button>`; }).join('');
     document.querySelectorAll('#rep-display button').forEach(b => b.addEventListener('click', () => { S.display = b.dataset.display; render(); }));
     const groupedView = ['chart', 'table'].includes(S.display);
@@ -514,6 +619,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     renderLegend(rows);
     if (S.display === 'hands') renderCategories(rows);
     if (S.display === 'textures') { renderTextures(rows); renderFeatures(rows); }
+    if (S.display === 'compare') renderCompare(rows);
+    els.compare.classList.toggle('hidden', S.display !== 'compare');
+    els.aggregate.classList.toggle('hidden', S.display === 'compare');
+    els.legend.classList.toggle('hidden', S.display === 'compare');
     els.canvas.classList.toggle('hidden', S.display !== 'chart');
     els.table.classList.toggle('hidden', S.display !== 'table');
     els.cats.classList.toggle('hidden', S.display !== 'hands');
@@ -837,6 +946,165 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       more.textContent = `showing ${CAP} of ${rows.length} flops — refine the texture filter or re-sort to bring targets to the top (strip + averages cover all ${rows.length})`;
       el.appendChild(more);
     }
+  }
+
+  // ----- comparison with a second report -----
+
+  const SPOT_FIELDS = [
+    ['starting_pot', 'pot'], ['effective_stack', 'stack'], ['rake_pct', 'rake %'], ['rake_cap', 'rake cap'],
+    ['max_raises', 'raise cap'],
+  ];
+  const sizeText = spot => ['oop', 'ip'].map(side => (spot[side] || [])
+    .map((x, i) => `${['F', 'T', 'R'][i]} ${x.bet}${x.raise ? '/r' + x.raise : ''}${x.donk ? '/d' + x.donk : ''}`).join(' ')).join(' | ');
+
+  /** Settings that differ between the two reports, in words. */
+  function spotDifferences(a, b, va, vb) {
+    const out = [];
+    for (const [key, label] of SPOT_FIELDS) {
+      if ((a[key] ?? null) !== (b[key] ?? null)) out.push(`${label} ${a[key] ?? '—'} → ${b[key] ?? '—'}`);
+    }
+    if (a.range_oop !== b.range_oop) out.push('OOP range');
+    if (a.range_ip !== b.range_ip) out.push('IP range');
+    if (sizeText(a) !== sizeText(b)) out.push('bet sizes');
+    if ((va?.name || '') !== (vb?.name || '')) out.push(`villain ${va?.name || 'none'} → ${vb?.name || 'none'}`);
+    return out;
+  }
+
+  function renderCompare(rowsA) {
+    const el = els.compare;
+    const c = S.cmp;
+    const others = libraryData.filter(r => r.lines && r.name !== S.report.name);
+    const picker = `<label class="rep-sort-label">Compare with <select id="rep-compare-select" aria-label="Report to compare with">` +
+      `<option value="">Choose a report…</option>` +
+      others.map(r => {
+        const l = reportLabel(r.name, r.villain);
+        return `<option value="${esc(r.name)}" ${c?.name === r.name ? 'selected' : ''}>${esc(l.title)} · ${esc(reportTimestamp(r.created))}</option>`;
+      }).join('') + `</select></label>`;
+    const note = text => `<p class="rep-empty dim">${text}</p>`;
+    let body;
+    if (S.mode !== 'lines') body = note('This report predates line summaries. Re-run it to compare it with another report.');
+    else if (!others.length) body = note('No other report to compare with yet. Run a second one, for example the same spot at another stack depth, bet size or villain model.');
+    else if (!c) body = note('Pick a second report. Both are read at the point you are on in the ribbon, over the flops they share, so you can see where strategy and EV move.');
+    else if (c.error) body = note(`Can’t compare at this point: ${esc(c.error)}. Step back along the ribbon.`);
+    else body = compareBody(rowsA, c);
+    el.innerHTML = `<div class="rep-compare-head">${picker}</div>${body}`;
+    el.querySelector('#rep-compare-select').addEventListener('change', e => setCompare(e.target.value));
+    bindSortHeaders(el);
+    el.querySelectorAll('[data-board]').forEach(r => r.addEventListener('click', () => {
+      S.selected = r.dataset.board;
+      renderCompare(visibleRows());
+    }));
+  }
+
+  function compareBody(rowsA, c) {
+    const byBoard = new Map(c.rows.map(r => [r.board, r]));
+    const specA = S.report.spot, specB = c.report.spot;
+    // EV is pot-share chips; across different starting pots read it as % of
+    // the pot at this point instead, or every delta is mostly the pot change
+    const pctEv = specA.starting_pot !== specB.starting_pot;
+    const scale = row => !pctEv ? row : {
+      ...row, players: row.players.map(p => ({ ...p, ev: row.pot > 0 ? 100 * p.ev / row.pot : 0 })),
+    };
+    const pairs = rowsA.filter(r => byBoard.has(r.board)).map(a => ({ a: scale(a), b: scale(byBoard.get(a.board)) }));
+    const labelA = reportLabel(S.report.name, S.report.villain?.name).title;
+    const labelB = reportLabel(c.report.name, c.report.villain?.name).title;
+    const diffs = spotDifferences(specA, specB, S.report.villain, c.report.villain);
+    const evUnit = pctEv ? 'EV % pot' : 'EV';
+    const fmtEv = x => pctEv ? `${x.toFixed(1)}%` : x.toFixed(2);
+    // sign shown on the rounded value, so a tiny negative never reads "−0.0"
+    const signed = (x, digits) => {
+      const r = +x.toFixed(digits);
+      return `${r > 0 ? '+' : r < 0 ? '−' : '±'}${Math.abs(r).toFixed(digits)}`;
+    };
+
+    const head = `<div class="rep-compare-sum">` +
+      `<span class="rep-cmp-tag">A</span><b>${esc(labelA)}</b><span class="rep-cmp-vs">vs</span><span class="rep-cmp-tag b">B</span><b>${esc(labelB)}</b>` +
+      `<span class="dim">· ${pairs.length} shared flops of ${rowsA.length} shown${c.rows.length !== pairs.length ? ` (B has ${c.rows.length} here)` : ''}` +
+      `${c.matched ? ' · B’s line matched by bet size' : ''}</span></div>` +
+      `<div class="rep-compare-diff dim">${diffs.length ? `Differs: ${esc(diffs.join(' · '))}` : 'Same spot settings'}` +
+      `${pctEv ? ' · EV shown as % of the pot at this point, since the starting pots differ' : ''}</div>`;
+    if (!pairs.length) return head + `<p class="rep-empty dim">The two reports share no flops under this filter.</p>`;
+
+    const aggA = aggregate(pairs.map(p => p.a)), aggB = aggregate(pairs.map(p => p.b));
+    const bar = agg => agg.strat ? `<div class="cbar">${stackedBar(agg)}</div>` : `<div class="cbar rep-cmp-none dim">${esc(nodeCaption())}</div>`;
+    const aggrOf = agg => agg.strat ? agg.strat.freqs.reduce((t, f, i) =>
+      t + ((agg.strat.kinds[i] === 'bet' || agg.strat.kinds[i] === 'raise') ? f : 0), 0) : null;
+    // per-action change, A's actions matched to B's the same way as the line
+    let actionDeltas = '';
+    if (aggA.strat && aggB.strat) {
+      const potA = S.lineData.history[S.lineData.history.length - 1].pot;
+      const potB = c.lineData.history[c.lineData.history.length - 1].pot;
+      const hA = { ...aggA.strat, pot: potA }, hB = { ...aggB.strat, pot: potB };
+      const colors = stratColors(aggA.strat);
+      const colorsB = stratColors(aggB.strat);
+      const used = new Set();
+      actionDeltas = `<div class="rep-frequencies">` + revIdx(hA.actions.length).map(k => {
+        const j = matchAction(hA, k, hB);
+        const fa = 100 * hA.freqs[k];
+        if (j < 0) return `<span><i style="background:${colors[k]}"></i>${esc(hA.actions[k])} <b>${fa.toFixed(1)}%</b> <span class="dim">(not in B)</span></span>`;
+        used.add(j);
+        const fb = 100 * hB.freqs[j];
+        const same = hB.actions[j] === hA.actions[k] ? '' : ` <span class="dim">(B: ${esc(hB.actions[j])})</span>`;
+        return `<span><i style="background:${colors[k]}"></i>${esc(hA.actions[k])} <b>${fa.toFixed(1)}% → ${fb.toFixed(1)}%</b> <span class="rep-delta-text ${fb - fa > 0.05 ? 'up' : fb - fa < -0.05 ? 'down' : ''}">${signed(fb - fa, 1)}</span>${same}</span>`;
+      }).join('') + revIdx(hB.actions.length).filter(j => !used.has(j)).map(j =>
+        `<span><i style="background:${colorsB[j]}"></i>${esc(hB.actions[j])} <b>${(100 * hB.freqs[j]).toFixed(1)}%</b> <span class="dim">(B only)</span></span>`).join('') + `</div>`;
+    }
+    const metrics = [
+      ['Bet / raise', aggrOf(aggA), aggrOf(aggB), x => `${(100 * x).toFixed(1)}%`, d => signed(100 * d, 1)],
+      [`OOP ${evUnit}`, aggA.players[0].ev, aggB.players[0].ev, fmtEv, d => signed(d, pctEv ? 1 : 2)],
+      ['OOP equity', aggA.players[0].eq, aggB.players[0].eq, x => `${(100 * x).toFixed(1)}%`, d => signed(100 * d, 1)],
+      ['OOP EQR', aggA.players[0].eqr, aggB.players[0].eqr, x => `${(100 * x).toFixed(0)}%`, d => signed(100 * d, 0)],
+      ['IP EQR', aggA.players[1].eqr, aggB.players[1].eqr, x => `${(100 * x).toFixed(0)}%`, d => signed(100 * d, 0)],
+    ].filter(m => m[1] != null && m[2] != null);
+    const overall = `<div class="rep-cmp-overall">` +
+      `<div class="rep-cmp-bars"><span class="rep-cmp-tag">A</span>${bar(aggA)}<span class="rep-cmp-tag b">B</span>${bar(aggB)}</div>` +
+      actionDeltas +
+      `<div class="rep-cmp-stats"><span></span><b>A</b><b>B</b><b>B − A</b>` +
+      metrics.map(([label, a, b, fmt, fd]) => `<span class="dim">${label}</span><span>${fmt(a)}</span><span>${fmt(b)}</span><span class="rep-delta-text ${b - a > 1e-9 ? 'up' : b - a < -1e-9 ? 'down' : ''}">${fd(b - a)}</span>`).join('') +
+      `</div></div>`;
+
+    // per-flop rows
+    const rows = pairs.map(({ a, b }) => {
+      const ba = aggrPct(a), bb = aggrPct(b), act = !!(stratOf(a) && stratOf(b));
+      return {
+        a, b, board: a.board, act,
+        dbet: act ? bb - ba : 0, adbet: act ? Math.abs(bb - ba) : 0,
+        dev0: b.players[0].ev - a.players[0].ev, deqr0: b.players[0].eqr - a.players[0].eqr,
+        rank: metric(a, 'rank'),
+      };
+    });
+    const { key, dir } = S.cmpSort;
+    rows.sort((x, y) => dir * (y[key] - x[key]));
+    const cellBar = row => {
+      const st = stratOf(row);
+      if (!st) return '';
+      const colors = stratColors(st);
+      return revIdx(st.freqs.length).map(i => `<div style="width:${(100 * st.freqs[i]).toFixed(1)}%;background:${colors[i]}"></div>`).join('');
+    };
+    // diverging bar: right/red = more betting in B, left/green = less; a
+    // 50-point change fills the half-track
+    const deltaCell = r => !r.act ? `<span class="cnum dim rep-delta">—</span>` :
+      `<span class="cnum rep-delta" data-tip="Bet + raise frequency: A ${(100 * aggrPct(r.a)).toFixed(1)}% → B ${(100 * aggrPct(r.b)).toFixed(1)}%">` +
+      `<span class="rep-delta-track"><i class="${r.dbet < 0 ? 'down' : 'up'}" style="width:${Math.min(50, 100 * Math.abs(r.dbet)).toFixed(1)}%"></i></span>` +
+      `<span>${signed(100 * r.dbet, 1)}</span></span>`;
+    const CAP = 200;
+    const table = `<div class="rep-cmp-table"><div class="combo-row head">` +
+      sortHeading('rank', 'Flop', 'cname') +
+      `<span class="cbar rep-cmp-col">A strategy</span><span class="cbar rep-cmp-col">B strategy</span>` +
+      sortHeading('dbet', 'Δ bet/raise', 'cnum rep-delta-head') +
+      sortHeading('dev0', `Δ OOP ${pctEv ? 'EV%' : 'EV'}`, 'cnum') + sortHeading('deqr0', 'Δ OOP EQR', 'cnum') + `</div>` +
+      rows.slice(0, CAP).map(r => {
+        const ta = flopTooltip(r.a), tb = flopTooltip(r.b);
+        return `<div class="combo-row${r.board === S.selected ? ' sel' : ''}" data-board="${esc(r.board)}">` +
+          `<span class="cname mono rep-board">${boardTiles(r.board)}</span>` +
+          `<span class="cbar" ${tooltipAttributes(ta)}>${cellBar(r.a)}</span><span class="cbar" ${tooltipAttributes(tb)}>${cellBar(r.b)}</span>` +
+          deltaCell(r) +
+          `<span class="cnum">${signed(r.dev0, pctEv ? 1 : 2)}</span><span class="cnum">${signed(100 * r.deqr0, 0)}</span></div>`;
+      }).join('') +
+      (rows.length > CAP ? `<div class="dim mono rep-cmp-more">showing ${CAP} of ${rows.length} flops — sort or filter to bring others up (the summary covers all ${rows.length})</div>` : '') +
+      `</div>`;
+    return head + overall +
+      `<h3>BY FLOP <span class="info-dot" tabindex="0" data-tip="Each shared flop, A’s strategy beside B’s, sorted by the biggest change in bet + raise frequency by default. Δ = B − A. IP’s EV change is the mirror of OOP’s (the two EVs share the pot), so only OOP’s is shown. Hover a bar for that report’s frequencies and EVs.">?</span></h3>` + table;
   }
 
   // ----- hand-category breakdown (lines mode, action nodes) -----

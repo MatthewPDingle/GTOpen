@@ -199,7 +199,8 @@ Everything the UI does is plain JSON over HTTP — scriptable:
 `POST /api/spot`, `POST /api/solve`, `POST /api/stop`, `GET /api/status`,
 `POST /api/node {path}`, `POST /api/exploit {path, exploiter}` (per-hand best
 response + EV gain vs the current strategy), `POST /api/lock {path, mode}`,
-`POST /api/unlock`, `GET /api/locks`, `POST /api/runouts {path}`,
+`POST /api/unlock`, `GET /api/locks`, `GET /api/locks/history`,
+`POST /api/locks/undo`, `POST /api/locks/redo`, `POST /api/runouts {path}`,
 `POST /api/range/parse`, `POST /api/save|load {name}`, `GET /api/saves`,
 `GET /api/presets`.
 
@@ -210,6 +211,16 @@ Preflop lab: `POST /api/preflop/spot {config}`, `POST /api/preflop/solve`,
 `POST /api/preflop/save|load {name}` + `GET /api/preflop/saves` (whole-session
 snapshots: config, seat models, point locks, full solver state — loading
 resumes mid-convergence).
+
+**Lock history.** `/api/lock` (with optional `"lock_path": true`), `/api/unlock`
+and `/api/profile_locks` (POST and DELETE) each record one undoable edit and
+return the updated history as `history: {undo, redo, profile_players,
+locked_nodes}`, labels most recent first. `lock_path` also freezes (locks as
+solved) every unlocked earlier decision on the path in the same edit and
+reports how many as `frozen`. Undo restores the exact earlier lock strategies
+rather than rebuilding them from the current solve. History is per session,
+is not saved, and keeps at most 100 edits or 256 MB of lock data; an edit that
+fails is rolled back.
 
 Path steps: `{"type":"action","index":0}` / `{"type":"card","card":"Ah"}`.
 Browse deep links: `/#line=a1,a1,cQh` opens BROWSE at that node (`a<i>` =
