@@ -1307,6 +1307,53 @@ impl GpuSolver {
         Ok(())
     }
 
+    /// Copies 16-bit learning state (resident or parked) into a CPU solver
+    /// over the same spot, decoding each node block with its scale.
+    pub(crate) fn q_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+        let q = self.q.as_ref().ok_or("not a 16-bit state")?;
+        self._ctx.bind_to_thread().map_err(e)?;
+        self.stream.synchronize().map_err(e)?;
+        let player: Vec<i32> = self.stream.clone_dtoh(&self.d_node_player).map_err(e)?;
+        let na: Vec<i32> = self.stream.clone_dtoh(&self.d_node_na).map_err(e)?;
+        let off: Vec<u64> = self.stream.clone_dtoh(&self.d_node_data_off).map_err(e)?;
+        let nodes: Vec<u32> = self.stream.clone_dtoh(&self.d_action_nodes).map_err(e)?;
+        for p in 0..2 {
+            let (rq, sq, rsc, ssc): (Vec<i16>, Vec<u16>, Vec<f32>, Vec<f32>) = match &q.host {
+                Some(h) => (
+                    h.rq[p].as_slice().map_err(e)?.to_vec(), h.sq[p].as_slice().map_err(e)?.to_vec(),
+                    h.rsc[p].as_slice().map_err(e)?.to_vec(), h.ssc[p].as_slice().map_err(e)?.to_vec(),
+                ),
+                None => (
+                    self.stream.clone_dtoh(&q.rq[p]).map_err(e)?, self.stream.clone_dtoh(&q.sq[p]).map_err(e)?,
+                    self.stream.clone_dtoh(&q.rsc[p]).map_err(e)?, self.stream.clone_dtoh(&q.ssc[p]).map_err(e)?,
+                ),
+            };
+            let len = q.lens[p];
+            let nh = self.nh[p] as usize;
+            let mut regrets = vec![0f32; len];
+            let mut sums = vec![0f32; len];
+            for &n in &nodes {
+                let n = n as usize;
+                if player[n] != p as i32 || off[n] == u64::MAX {
+                    continue;
+                }
+                let (kr, ks) = (rsc[n] / 32767.0, ssc[n] / 65535.0);
+                let start = off[n] as usize;
+                for k in start..start + na[n] as usize * nh {
+                    regrets[k] = rq[k] as f32 * kr;
+                    sums[k] = sq[k] as f32 * ks;
+                }
+            }
+            self.arena_layout[p].write(solver, p, 0, &regrets);
+            self.arena_layout[p].write(solver, p, 1, &sums);
+        }
+        solver.iteration = self.iteration;
+        if self.iso_active {
+            solver.mark_sym_dirty();
+        }
+        Ok(())
+    }
+
     /// Copy only the cumulative strategy back — all that exploitability
     /// checks and strategy queries need; half the PCIe traffic.
     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {

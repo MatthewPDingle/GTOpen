@@ -853,6 +853,22 @@ initPreflopLab({
   },
   toast,
   gotoSetup: () => showTab('setup'),
+  // A full-game flop replaces the postflop session, like LOAD does.
+  canReplacePostflop: () => {
+    if (state.running && !confirm('A postflop solve is RUNNING. Opening this flop stops and replaces it. Continue?')) return false;
+    if (state.solved && !state.saved && !confirm('The current postflop solve has not been saved. Opening this flop replaces it. Continue?')) return false;
+    return true;
+  },
+  afterPostflopLoaded: async () => {
+    state.built = true; state.solved = true; state.saved = false;
+    browser.reset();
+    try {
+      const st = await api.status();
+      if (st && st.spot_request) await applySpotToSetup(st.spot_request);
+    } catch (e) { toast(`opened, but SETUP could not be synced to it: ${e.message}`, true); }
+    pollStatus();
+    showTab('browse');
+  },
   onExport: async (ex, lineText) => {
     ex.name = `${ex.oop_pos} vs ${ex.ip_pos} \u00b7 ${ex.pot_bb}bb pot \u00b7 ${lineText}`;
     const spots = pflSpots().filter(sp => sp.name !== ex.name);

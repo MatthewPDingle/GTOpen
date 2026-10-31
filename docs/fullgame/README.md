@@ -7,6 +7,17 @@ iteration updates the preflop strategy and every continuation together, so
 preflop and postflop play always come from the same ranges. It needs the
 `gpu` feature. Design and sizing: [Heads-up preflop-to-river solving: design](https://claude.ai/artifact/NMUajt25UbYmEVRe6epULC).
 
+**In the app:** in the Preflop Lab set Players to 2, pick **Ranges from: Solve
+through the river (2 players, GPU)**, choose flops, iterations and the
+postflop menu, and press SOLVE THROUGH RIVER. The grid and action ribbon on
+the right walk the solved preflop tree; at a called line's flop, pick a flop
+to open it in BROWSE (it replaces the postflop session). RELEASE MEMORY frees
+the GPU and pinned RAM the game holds. Server endpoints: `/api/fullgame/`
+`solve`, `status`, `stop`, `release`, `node` (shaped like
+`/api/preflop/node`) and `browse {leaf, flop}`.
+
+**From the command line:**
+
 ```sh
 cargo build --release -p solver --features gpu --bin fullgame-cli
 FULLGAME_PANEL=5 ./target/release/fullgame-cli docs/fullgame/sb-vs-bb-100.json 500 50 out.json
@@ -73,4 +84,6 @@ ones.
 ## Limits in this version
 
 - Preflop all-ins use panel equity, not exact full-deck equity.
-- No saves, Browse integration or server endpoints yet.
+- No saves yet: a full game lives until RELEASE MEMORY or a server restart.
+- Opening a flop in Browse right after a support rebuild (iterations 100
+  and 250 by default) shows a restarted postflop solve for that pot.

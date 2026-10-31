@@ -177,3 +177,29 @@ fn parked_continuations_match_resident_exactly() {
     assert_eq!(a.best_responses, b.best_responses);
     assert_eq!(a_root, b_root);
 }
+#[test]
+fn flop_export_reproduces_gpu_values_on_the_cpu() {
+    // Browse reads a continuation through a CPU solver: decoded state must
+    // give the same average-strategy values as the GPU evaluation.
+    let mut g = game_parked("50", None, false, Some(1));
+    for _ in 0..30 {
+        g.iterate().unwrap();
+    }
+    let view = g.node_view(&[]).unwrap();
+    assert_eq!(view["kind"], "action");
+    for (leaf, flop) in [(0usize, 0usize), (0, 1)] {
+        let host = g.flop_solver(leaf, flop).unwrap();
+        let reach: [Vec<f32>; 2] = std::array::from_fn(|p| host.spot.weights[p].clone());
+        let gpu = {
+            let FullGame { leaves, dev, .. } = &mut g;
+            leaves[leaf].conts[flop].gpu.evaluate_shared(&mut dev.scratch, &mut dev.state, [&reach[0], &reach[1]]).unwrap()
+        };
+        for p in 0..2 {
+            let cpu = host.traverse_avg(0, p, &reach[1 - p], crate::game::Dealt::default());
+            let scale = gpu[p][1].iter().map(|v| v.abs()).fold(1e-9f32, f32::max);
+            let worst = cpu.iter().zip(&gpu[p][1]).map(|(a, b)| (a - b).abs()).fold(0f32, f32::max) / scale;
+            println!("leaf {leaf} flop {flop} player {p}: max relative difference {worst:e}");
+            assert!(worst < 2e-3, "{worst}");
+        }
+    }
+}

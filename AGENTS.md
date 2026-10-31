@@ -179,7 +179,8 @@ the river as one CFR+ game over a weighted flop panel; `fullgame-cli` runs it
 from a `FullGameConfig` JSON (`docs/fullgame/sb-vs-bb-100.json`). See
 `docs/fullgame/README.md`. Postflop state is 16-bit on the GPU; flops that do
 not fit in VRAM are parked in pinned host memory and streamed each sweep.
-There are no server endpoints or saves yet.
+In the app it is the Preflop Lab's "Solve through the river" source
+(/api/fullgame/solve|status|stop|release|node|browse); no saves yet.
 
 ## The standard study recipe (used for everything in gtopen-studies)
 

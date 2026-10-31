@@ -217,6 +217,7 @@ async fn rejected_model_does_not_even_access_session_or_stop_path() {
         session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
         preflop: Mutex::new(None), report:Mutex::new(ReportStatus::default()),
         report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(Vec::new()),
+        #[cfg(feature = "gpu")] fullgame: Default::default(),
     });
     // Any attempt to stop/join/build through the session path would panic.
     // Validation must return before accessing it, with no cache or solver work.

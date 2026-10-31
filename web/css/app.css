@@ -1229,3 +1229,10 @@ textarea {
 .pfl-position-sizes td { padding:2px 3px; }
 .pfl-position-sizes input { width:100%; min-width:0; box-sizing:border-box; padding:4px; font-size:11px; }
 .pfl-saved-value-note { margin:8px 0; color:#e4c377; font-size:11px; line-height:1.4; }
+
+/* Preflop Lab, solve-through-river mode: hides the Lab's own build/solve/model controls */
+#pfl-solve-setup.fg-mode .pfl-lab-only { display: none; }
+.pfg-flops { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pfg-flops .btn { font-family: inherit; }
+.pfg-menu { display: grid; grid-template-columns: auto 1fr 1fr; gap: 4px 8px; align-items: center; margin-top: 6px; font-size: 11px; }
+.pfg-menu input { width: 100%; box-sizing: border-box; }

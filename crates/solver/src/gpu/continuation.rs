@@ -226,6 +226,8 @@ impl SymmetricContinuationGpu {
     /// Run `f` with the shared scratch swapped into this continuation.
     fn with_scratch<R>(&mut self, scratch: &mut SharedScratch,
         f: impl FnOnce(&mut Self) -> Result<R, String>) -> Result<R, String> {
+        // Callers may drive a game from several threads in turn.
+        self.gpu._ctx.bind_to_thread().map_err(super::e)?;
         let lens = self.scratch_lens.ok_or("continuation has no shared scratch")?;
         let bufs = scratch.bufs.as_mut().ok_or("shared scratch is empty")?;
         if bufs.iter().zip(lens).any(|(b, l)| b.len() < l) {
@@ -306,6 +308,22 @@ impl SymmetricContinuationGpu {
     }
 
     pub fn spot(&self) -> &Arc<Spot> { &self.spot }
+
+    /// Decodes 16-bit learning state into `host`, a CPU solver over a spot
+    /// with this continuation's tree and hands (weights may differ), and
+    /// materializes the suit-symmetric siblings.
+    pub fn export_to_cpu(&mut self, host: &mut Solver) -> Result<(), String> {
+        let (a, b) = (&self.spot, &host.spot);
+        let same_hands = (0..2).all(|p| a.hands[p].len() == b.hands[p].len()
+            && a.hands[p].iter().zip(&b.hands[p]).all(|(x, y)| x.mask == y.mask));
+        if a.tree.nodes.len() != b.tree.nodes.len() || !same_hands || a.board_mask != b.board_mask {
+            return Err("export target has a different tree or hand list".into());
+        }
+        self.gpu.q_to_cpu(host)?;
+        host.use_isomorphism = true;
+        host.ensure_symmetric();
+        Ok(())
+    }
 }
 
 /// Reach and value buffers shared by the resident continuations of one game,

@@ -68,12 +68,14 @@ const PRESETS = [
   },
 ];
 
-export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+export function initPreflopLab({ els, onExport, toast, gotoSetup, canReplacePostflop, afterPostflopLoaded }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // Range source: this game's solve, or Range Lab's canonical charts walked
   // as a tree (no build or solve). Each source keeps its own line.
   const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
+  // "Solve through the river" source: the server's full-game solve.
+  const fg = { on: false, status: null, timer: null, lastIter: 0 };
   const savedModelNote = document.createElement('div');
   savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
   savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
@@ -85,7 +87,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // Publication owns a full row; actor and evidence keep their existing row.
   els.nodeTitle.parentElement.before(previewBanner);
   const previewOption = document.createElement('label');
-  previewOption.className = 'pfl-preview-option';
+  previewOption.className = 'pfl-preview-option pfl-lab-only';
   previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
   previewOption.dataset.tip = 'Publish a real learned strategy after 2 iterations, then every 10. Early ranges are approximate; accuracy measurements and the convergence target remain unchanged.';
   const previewCheck = previewOption.querySelector('input');
@@ -176,7 +178,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   } catch {}
   const managerButton = document.createElement('button');
   managerButton.type = 'button';
-  managerButton.className = 'btn ghost xs pfl-model-manager-open';
+  managerButton.className = 'btn ghost xs pfl-model-manager-open pfl-lab-only';
   managerButton.textContent = 'Manage models';
   managerButton.setAttribute('aria-haspopup', 'dialog');
   const manager = document.createElement('dialog');
@@ -1008,6 +1010,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let refreshSeq = 0;
   async function refresh() {
     if (canon.on) return refreshCanonical();
+    if (fg.on) return refreshFullgame();
     if (!S.built) return;
     if (lastIter < 2) { clearRightPanel(); return; } // nothing meaningful before solving
     // poll-driven and click-driven refreshes race each other: an older
@@ -1251,7 +1254,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.legend.innerHTML =
         `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
-      if (v.exportable) {
+      if (fg.on && v.fullgame) {
+        renderFlopPicker(v.fullgame);
+      } else if (v.exportable) {
         els.exportBtn.disabled = false;
         els.gridCap.innerHTML =
           'The grid shows each player\u2019s arriving range \u2014 exactly the conditional ' +
@@ -2590,7 +2595,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   function setSource(on) {
-    els.source.value = on ? 'canonical' : 'solve';
+    els.source.value = on ? 'canonical' : fg.on ? 'fullgame' : 'solve';
     if (canon.on !== on) {
       canon.lines[canon.on ? 'canonical' : 'solve'] = { cursor: S.cursor, lineP: S.lineP };
       const next = canon.lines[on ? 'canonical' : 'solve'] || { cursor: [], lineP: [] };
@@ -2602,10 +2607,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     els.canonBox.classList.toggle('hidden', !on);
     els.solveSetup.classList.toggle('hidden', on);
-    els.solveSaved.classList.toggle('hidden', on);
+    els.solveSaved.classList.toggle('hidden', on || fg.on);
     els.rangeLab?.classList.toggle('hidden', on);
-    els.step5.innerHTML = on ? STEP5_CANON : STEP5_SOLVE;
-    if (pill) pill.textContent = on ? 'Range Lab charts · no solve' : PILL_SOLVE;
+    els.step5.innerHTML = on ? STEP5_CANON : fg.on ? STEP5_FULLGAME : STEP5_SOLVE;
+    if (pill) pill.textContent = on ? 'Range Lab charts · no solve' : fg.on ? 'heads-up · solved to the river' : PILL_SOLVE;
     saveCanonPrefs();
     if (on && !canon.summary) loadCanon();
     clearRightPanel();
@@ -2615,6 +2620,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const restartCanonLine = () => { S.cursor = []; S.lineP = []; saveCanonPrefs(); refresh(); };
   els.source.addEventListener('change', () => {
     if (els.source.value === 'canonical' && canon.summary && !canon.summary.total) canon.summary = null; // rescan the folders
+    setFullgame(els.source.value === 'fullgame');
     setSource(els.source.value === 'canonical');
   });
   els.canonGame.addEventListener('change', () => { canon.tag = els.canonGame.value; fillCanonAxes(); restartCanonLine(); });
@@ -2623,6 +2629,157 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.canonRakePct.addEventListener('change', saveCanonPrefs);
   els.canonRakeCap.addEventListener('change', saveCanonPrefs);
   if (canonPrefs.on) setSource(true);
+
+  // ----- SOLVE THROUGH THE RIVER (two-player full game) as the range source -----
+
+  const $id = id => document.getElementById(id);
+  const fgEls = {
+    box: $id('pfl-fullgame'), flops: $id('pfg-flops'), iters: $id('pfg-iters'), gap: $id('pfg-gap'),
+    minFreq: $id('pfg-minfreq'), solve: $id('pfg-solve'), more: $id('pfg-more'), stop: $id('pfg-stop'),
+    release: $id('pfg-release'), status: $id('pfg-status'),
+    menu: [['pfg-fb', 'pfg-fr'], ['pfg-tb', 'pfg-tr'], ['pfg-rb', 'pfg-rr']].map(r => r.map($id)),
+  };
+  const STEP5_FULLGAME = 'Walk the hand in the panel to the right: each segment of the action ribbon lists the actions with their solved frequencies. Click one to advance, or click an earlier action to branch. When the line reaches a flop, pick one of the solved flops to open it in <b>BROWSE</b> with its postflop strategy.';
+  const fgRunning = () => ['building', 'running'].includes(fg.status?.state);
+
+  function setFullgame(on) {
+    if (fg.on !== on) {
+      fg.on = on;
+      S.cursor = []; S.lineP = []; S.lineHist = null; S.view = null;
+      clearRightPanel();
+    }
+    fgEls.box.classList.toggle('hidden', !on);
+    els.solveSetup.classList.toggle('fg-mode', on);
+    els.exportBtn.classList.toggle('hidden', on);
+    if (on) {
+      els.step5.innerHTML = STEP5_FULLGAME;
+      if (pill) pill.textContent = 'heads-up · solved to the river';
+      pollFullgame();
+    } else if (!canon.on) {
+      els.step5.innerHTML = STEP5_SOLVE;
+      if (pill) pill.textContent = PILL_SOLVE;
+    }
+  }
+
+  async function refreshFullgame() {
+    if (!fg.status?.iteration) { clearRightPanel(); return; }
+    const seq = ++refreshSeq;
+    try {
+      const atEnd = S.cursor.length === S.lineP.length;
+      const lineView = await api.fullgameNode(S.lineP);
+      const view = atEnd ? lineView : await api.fullgameNode(S.cursor);
+      if (seq !== refreshSeq) return;
+      const cfg = { posts: lineView.posts };
+      S.view = formatPreflopView(view, cfg);
+      S.lineHist = formatPreflopView(lineView, cfg).history;
+    } catch (e) { if (seq === refreshSeq) toast(e.message, true); return; }
+    renderRibbon();
+    renderNode();
+  }
+
+  function renderFlopPicker(info) {
+    const cap = els.gridCap;
+    cap.innerHTML = '';
+    const p = document.createElement('p');
+    p.innerHTML = info.solved
+      ? `The grid shows each player's arriving range. This pot was solved through the river on ${info.flops.length} flops ` +
+        `(${info.support[0]} SB and ${info.support[1]} BB hand classes; rarer hands check down). Open a flop in <b>BROWSE</b> ` +
+        'to see its postflop strategy. It replaces the current postflop session.'
+      : 'No hand reaches this pot often enough to solve it postflop; every hand here checks down.';
+    cap.appendChild(p);
+    if (!info.solved) return;
+    const row = document.createElement('div');
+    row.className = 'pfg-flops';
+    info.flops.forEach((f, i) => {
+      const b = document.createElement('button');
+      b.className = 'btn ghost xs';
+      b.textContent = f.board;
+      b.dataset.tip = `Open ${f.board} (panel weight ${(f.weight * 100).toFixed(1)}%) in BROWSE`;
+      b.addEventListener('click', async () => {
+        if (canReplacePostflop && !canReplacePostflop()) return;
+        b.disabled = true;
+        try {
+          await api.fullgameBrowse(info.leaf, i);
+          await afterPostflopLoaded?.();
+        } catch (e) { toast(e.message, true); }
+        b.disabled = false;
+      });
+      row.appendChild(b);
+    });
+    cap.appendChild(row);
+  }
+
+  function renderFullgameStatus() {
+    const st = fg.status || {};
+    const running = fgRunning();
+    fgEls.solve.disabled = running;
+    fgEls.stop.classList.toggle('hidden', !running);
+    fgEls.more.classList.toggle('hidden', running || !st.iteration);
+    fgEls.release.classList.toggle('hidden', running || !st.config);
+    const lines = [];
+    if (+els.players.value !== 2) lines.push('Set Players to 2: this mode solves SB vs BB only.');
+    const ev = st.evaluation;
+    const gb = x => `${(x || 0).toFixed(1)} GB`;
+    if (st.state === 'building') lines.push(`building… ${st.log?.at(-1) || ''}`);
+    if (st.iteration) {
+      lines.push(`${st.state} · iteration ${st.iteration}${running ? ` of ${st.target_iterations}` : ''} · ${(st.seconds_per_iteration || 0).toFixed(2)} s/iteration`);
+      if (ev) lines.push(`gap ${ev.gap_total.toFixed(4)} bb · EV SB ${ev.evs[0] >= 0 ? '+' : ''}${ev.evs[0].toFixed(3)} · BB ${ev.evs[1] >= 0 ? '+' : ''}${ev.evs[1].toFixed(3)} bb/hand` +
+        (ev.outside_support > 0.001 ? ` · ${(ev.outside_support * 100).toFixed(1)}% of flops check down` : ''));
+      lines.push(`${st.flops?.length || 0} flops · ${st.lines?.length || 0} called lines · GPU ${gb(st.device_gb)}` +
+        (st.parked ? ` · ${st.parked} of ${st.continuations} flop solves streamed from ${gb(st.host_gb)} RAM` : ''));
+    }
+    if (st.state === 'error') lines.push(`error: ${st.error}`);
+    fgEls.status.innerHTML = lines.map(esc).join('<br>');
+  }
+
+  async function pollFullgame() {
+    clearTimeout(fg.timer);
+    try { fg.status = await api.fullgameStatus(); } catch { fg.status = null; }
+    renderFullgameStatus();
+    const it = fg.status?.iteration || 0;
+    // repaint the grid as the solve moves on, without hammering the engine
+    if (fg.on && it && (it !== fg.lastIter) && (!fgRunning() || it - fg.lastIter >= 25 || !fg.lastIter)) {
+      fg.lastIter = it;
+      refresh();
+    }
+    if (fg.on || fgRunning()) fg.timer = setTimeout(pollFullgame, fgRunning() ? 2000 : 8000);
+  }
+
+  async function startFullgame(resume) {
+    if (!resume && +els.players.value !== 2) return toast('Set Players to 2: solving through the river is SB vs BB only.', true);
+    const body = {
+      iterations: Math.max(1, +fgEls.iters.value || 500),
+      target_gap: Math.max(0, +fgEls.gap.value || 0),
+      min_freq: +fgEls.minFreq.value || 0.01,
+      menu: fgEls.menu.map(([b, r]) => [b.value.trim(), r.value.trim()]),
+      flops: +fgEls.flops.value || 4,
+    };
+    if (resume) body.resume = true; else body.preflop = config();
+    try {
+      fg.status = await api.fullgameSolve(body);
+      if (!resume) { fg.lastIter = 0; S.cursor = []; S.lineP = []; clearRightPanel(); }
+    } catch (e) { return toast(e.message, true); }
+    renderFullgameStatus();
+    pollFullgame();
+  }
+
+  fgEls.solve.addEventListener('click', () => startFullgame(false));
+  fgEls.more.addEventListener('click', () => startFullgame(true));
+  fgEls.stop.addEventListener('click', async () => {
+    try { fg.status = await api.fullgameStop(); } catch (e) { toast(e.message, true); }
+    renderFullgameStatus();
+  });
+  fgEls.release.addEventListener('click', async () => {
+    try { fg.status = await api.fullgameRelease(); } catch (e) { toast(e.message, true); }
+    fg.lastIter = 0;
+    clearRightPanel();
+    renderFullgameStatus();
+  });
+  els.players.addEventListener('change', () => { if (fg.on) renderFullgameStatus(); });
+  // A reload keeps showing a live or finished full game.
+  api.fullgameStatus().then(st => {
+    if (st?.state && st.state !== 'idle' && st.config) { setFullgame(true); setSource(false); }
+  }).catch(() => { /* older server or CPU build: the mode just stays off */ });
 
   // A reload must not hide a live or solved session: adopt the engine's
   // current game (config, seat models, iteration) the way LOAD does, so

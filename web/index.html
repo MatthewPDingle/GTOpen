@@ -254,7 +254,7 @@
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <span class="info-dot" tabindex="0" data-tip="Solves the configured preflop betting tree for 2–9 players, including limps and your chosen raise sizes. Postflop values are estimated automatically; future flop, turn and river betting is not solved here. All-in pots use showdown-equity estimates. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop with exactly two players can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</span></h2>
         <label class="pfl-row pfl-source" data-tip="SOLVE THIS GAME: build and solve any table you describe (limps, sizes, rake, seat count, player models). RANGE LAB CHARTS: use the canonical charts from Range Lab instead. No solve: pick the game, open size and stack, walk the line on the right, and send heads-up flops to the postflop solver.">Ranges from
-          <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical)</option></select></label>
+          <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical)</option><option value="fullgame">Solve through the river (2 players, GPU)</option></select></label>
         <div id="pfl-canon" class="hidden">
           <div class="pfl-step">1 · CHOOSE THE CHARTS</div>
           <label class="pfl-row" data-tip="The Range Lab game: its seat count, blinds, straddle or antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
@@ -296,7 +296,7 @@
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
           data-tip="Live tree size and CPU solver-arena RAM before you build; this is not total process memory or GPU VRAM. Limits follow this machine's available RAM (arenas may take ~40%; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB override). GPU fit is checked when solving. Branching multiplies: sizes x raise cap x limps x players."></div>
-        <div class="pfl-btncol">
+        <div class="pfl-btncol pfl-lab-only">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Build the game tree for the settings above (SOLVE does this automatically if you skip it).">BUILD GAME</button>
           <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="Progress toward the accuracy target (best-response gap 0.005 bb), measured every 50 iterations — on big games that measurement itself takes a while and the bar says 'measuring accuracy' during it. Solving stops at the target or at the 3000-iteration safety cap, whichever comes first."><i></i><span></span></div>
@@ -304,17 +304,40 @@
           <button id="pfl-solve" class="btn primary" data-tip="Run CFR on the built game; builds first when needed. Stops as soon as the accuracy target is reached (total best-response gap under 0.005 bb) — the 3000-iteration maximum is only a safety cap, not the destination.">SOLVE</button>
           <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Pause the solve — everything stays browsable and RE-SOLVE continues from here.">STOP</button>
         </div>
-        <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
-        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
-        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <span class="info-dot" tabindex="0" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting on every solve. FROZEN: pinned to whatever it played at the last solve. PROFILE (an archetype, HUD stats, or a saved player): plays like a real person. A profile's ranges are made by bending the CURRENT solve's equilibrium toward its stats — the hands the equilibrium likes most stay in longest — so the order matters: (1) SOLVE the plain game once. (2) Give every seat you want modeled its profile (edit = tweak stats, paint hands, set postflop tendencies; COPY TO ALL SEATS gives the whole table one player). (3) SOLVE again — the solver seats adapt to the new table; a changed table restarts convergence, so the grids show play against these opponents. (4) Pick a HERO (the seat you play) and SOLVE once more: hero freezes every other seat (profiles keep their profile, solver seats keep their last solved strategy) and re-solves only your seat, which turns your strategy into a maximum-exploit line; your own seat's profile is ignored while it is the hero. NOTE a profile seat is never solved — its grid shows its profile as is — so a table where EVERY seat is a profile has nothing to solve until you pick a HERO. 'bleeds X bb' beside a seat = what that seat loses per hand to a best response, i.e. the price of playing that way. Postflop tendencies only matter once a spot is SENT TO POSTFLOP. Everything, profiles included, solves on the GPU.">?</span></div>
-        <div id="pfl-model"></div>
-        <div id="pfl-editor" class="hidden"></div>
-        <div class="pfl-row" style="margin-top:6px">
+        <div id="pfl-buildinfo" class="mono dim pfl-lab-only" style="font-size:11px;margin-top:6px"></div>
+        <div id="pfl-status" class="mono dim pfl-lab-only" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
+        <div class="pfl-step pfl-lab-only">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <span class="info-dot" tabindex="0" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting on every solve. FROZEN: pinned to whatever it played at the last solve. PROFILE (an archetype, HUD stats, or a saved player): plays like a real person. A profile's ranges are made by bending the CURRENT solve's equilibrium toward its stats — the hands the equilibrium likes most stay in longest — so the order matters: (1) SOLVE the plain game once. (2) Give every seat you want modeled its profile (edit = tweak stats, paint hands, set postflop tendencies; COPY TO ALL SEATS gives the whole table one player). (3) SOLVE again — the solver seats adapt to the new table; a changed table restarts convergence, so the grids show play against these opponents. (4) Pick a HERO (the seat you play) and SOLVE once more: hero freezes every other seat (profiles keep their profile, solver seats keep their last solved strategy) and re-solves only your seat, which turns your strategy into a maximum-exploit line; your own seat's profile is ignored while it is the hero. NOTE a profile seat is never solved — its grid shows its profile as is — so a table where EVERY seat is a profile has nothing to solve until you pick a HERO. 'bleeds X bb' beside a seat = what that seat loses per hand to a best response, i.e. the price of playing that way. Postflop tendencies only matter once a spot is SENT TO POSTFLOP. Everything, profiles included, solves on the GPU.">?</span></div>
+        <div id="pfl-model" class="pfl-lab-only"></div>
+        <div id="pfl-editor" class="hidden pfl-lab-only"></div>
+        <div class="pfl-row pfl-lab-only" style="margin-top:6px">
           <label class="chk" style="flex:1" data-tip="Set this LAST — the rhythm is three solves: (1) baseline, (2) model seats + SOLVE so the table adapts, (3) pick HERO + SOLVE for the max exploit. Hero freezes everyone else: modeled seats play their profiles, unmodeled seats pin to their step-2 strategies (which is why the table must be solved first — shortcut: if every other seat is modeled, set hero right away). Your seat's learning resets on hero-set so the exploit chart converges clean.">HERO
             <select id="pfl-hero" style="flex:1;margin-left:6px"><option value="">off</option></select>
           </label>
           <button id="pfl-apply" class="btn" data-tip="Send the seat models to the solver. A CHANGED table resets the learning state so the next solve converges fresh against it (SOLVE does this apply automatically when you forget); re-applying an unchanged model costs nothing.">APPLY MODEL</button>
         </div>
+        </div>
+
+        <div id="pfl-fullgame" class="hidden">
+          <div class="pfl-step" tabindex="0" data-tip="Solves the two-player game above (SB vs BB) from the preflop root to the river as one game: every called pot is played out on a weighted sample of flops, and preflop and postflop strategies learn together. The SB is out of position postflop (blind battle). Uses most of the GPU; flops that do not fit stream from system RAM.">2 · SOLVE THROUGH THE RIVER</div>
+          <div class="pfl-grid2">
+            <label data-tip="How many canonical flops the game samples, chosen to match full-deck board frequencies. More flops = closer to real poker but more memory and time (about 4.4 GB per flop with limps; past about 6 flops they stream from RAM and each iteration slows down).">Flops <select id="pfg-flops"><option>2</option><option selected>4</option><option>6</option><option>8</option><option>12</option><option>16</option></select></label>
+            <label data-tip="Iterations to run. Each one updates preflop and every flop.">Iterations <input id="pfg-iters" type="number" value="1000" min="10" step="50"></label>
+            <label data-tip="Stop early once the whole-game best-response gap (both seats, bb per hand) falls below this. 0 = run all iterations.">Target gap (bb) <input id="pfg-gap" type="number" value="0.005" min="0" step="0.001"></label>
+            <label data-tip="A hand joins a pot's postflop solve when at least this share of its combos gets there. Rarer hands check down at full equity. Lower = more accurate, more memory.">Min. frequency <input id="pfg-minfreq" type="number" value="0.01" min="0.001" max="0.5" step="0.005"></label>
+          </div>
+          <div class="pfg-menu" data-tip="Postflop bet size (% pot) and raise size per street, as in SETUP: 3x = three times the bet, a = all-in. One raise per street.">
+            <span></span><span class="dim">bet %</span><span class="dim">raise</span>
+            <span>Flop</span><input id="pfg-fb" value="33"><input id="pfg-fr" value="3x">
+            <span>Turn</span><input id="pfg-tb" value="75"><input id="pfg-tr" value="a">
+            <span>River</span><input id="pfg-rb" value="75"><input id="pfg-rr" value="a">
+          </div>
+          <div class="btn-row" style="margin-top:6px">
+            <button id="pfg-solve" class="btn primary" data-tip="Build and solve the game above through the river. Building takes about half a minute; then the grid on the right fills in and keeps updating.">SOLVE THROUGH RIVER</button>
+            <button id="pfg-more" class="btn hidden" data-tip="Run more iterations on the current game, continuing where it stopped.">CONTINUE</button>
+            <button id="pfg-stop" class="btn danger hidden" data-tip="Stop after the current iteration. Everything stays browsable; CONTINUE resumes.">STOP</button>
+            <button id="pfg-release" class="btn ghost hidden" data-tip="Free the GPU and system memory this game holds, for other solves.">RELEASE MEMORY</button>
+          </div>
+          <div id="pfg-status" class="mono dim" style="font-size:11px;line-height:1.5;margin-top:6px" role="status"></div>
         </div>
 
         <div class="pfl-step">5 · SET UP THE PREFLOP ACTION</div>

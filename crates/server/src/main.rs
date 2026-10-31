@@ -17,6 +17,8 @@ use std::sync::{Arc, Mutex};
 type ApiError = (StatusCode, String);
 
 mod rangelab;
+#[cfg(feature = "gpu")]
+mod fullgame;
 
 #[cfg(all(test, feature = "gpu"))]
 mod report_tests;
@@ -102,6 +104,8 @@ struct AppState {
     /// once (a 184-flop report is ~100 MB of JSON on disk). Holds two, most
     /// recent last, so comparing two reports doesn't reload them in turn.
     report_cache: Mutex<Vec<Arc<LoadedReport>>>,
+    #[cfg(feature = "gpu")]
+    fullgame: fullgame::Slot,
 }
 
 /// A report's per-board line summaries (see solver::report), in memory.
@@ -3615,6 +3619,8 @@ async fn main() {
         report: Mutex::new(ReportStatus::default()),
         report_stop: Arc::new(AtomicBool::new(false)),
         report_cache: Mutex::new(Vec::new()),
+        #[cfg(feature = "gpu")]
+        fullgame: Default::default(),
     });
 
     // The UI is a no-build set of ES modules; without a Cache-Control the
@@ -3691,7 +3697,16 @@ async fn main() {
         .route("/api/preflop/scenarios/save", post(pf_scenario_save))
         .route("/api/preflop/scenarios/delete", post(pf_scenario_delete))
         .route("/api/preflop/lock", post(pf_lock))
-        .route("/api/preflop/unlock", post(pf_unlock))
+        .route("/api/preflop/unlock", post(pf_unlock));
+    #[cfg(feature = "gpu")]
+    let app = app
+        .route("/api/fullgame/solve", post(fullgame::solve))
+        .route("/api/fullgame/status", get(fullgame::status))
+        .route("/api/fullgame/stop", post(fullgame::stop))
+        .route("/api/fullgame/release", post(fullgame::release))
+        .route("/api/fullgame/node", post(fullgame::node))
+        .route("/api/fullgame/browse", post(fullgame::browse));
+    let app = app
         // Aggregate research artifacts share the app's local-only listener.
         .nest_service("/research/preflop-evolution", tower_http::services::ServeDir::new("research/preflop-evolution"))
         .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))

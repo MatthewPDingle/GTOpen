@@ -23,12 +23,13 @@ pub mod equity;
 use crate::cards::{combo_from_index, combo_index, rank, suit, NUM_COMBOS};
 use crate::cfr::{Algorithm, Discounts, Solver};
 use crate::gpu::{SharedScratch, SharedState, SymmetricContinuationGpu};
-use crate::preflop::equity::{class_index, class_label, class_prob, EquityTable, NUM_CLASSES};
+use crate::preflop::equity::{class_combos, class_index, class_label, class_prob, EquityTable, NUM_CLASSES};
 use crate::preflop::{PreflopConfig, PreflopSolver, KIND_ACTION, KIND_FOLD_WIN, KIND_POT_SHARE};
 use crate::tree::{StreetSizing, TreeConfig};
 use crate::{Spot, SpotConfig};
 use equity::PairTables;
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use std::sync::Arc;
 
 const N: usize = NUM_COMBOS;
@@ -130,6 +131,8 @@ struct Device {
 
 pub struct FullGame {
     pub config: FullGameConfig,
+    /// The Preflop Lab tree this game was built from (shape, sizes, labels).
+    tree: PreflopSolver,
     nodes: Vec<Node>,
     labels: Vec<Vec<String>>,
     regrets: Vec<f64>,
@@ -350,6 +353,7 @@ impl FullGame {
         }
         Ok(FullGame {
             config,
+            tree,
             nodes,
             labels,
             regrets: vec![0.0; arena],
@@ -707,6 +711,105 @@ impl FullGame {
             }
             _ => Err("path does not end at a decision".into()),
         }
+    }
+}
+
+impl FullGame {
+    /// The node at the end of `path`, shaped like /api/preflop/node: actions
+    /// with combo-weighted frequencies, the actor's average strategy and
+    /// arriving range, the line's history, and at a flop line the panel.
+    pub fn node_view(&self, path: &[usize]) -> Result<Value, String> {
+        let cfg = &self.config.preflop;
+        let mut node = 0usize;
+        let mut reach = [vec![1.0f64; NUM_CLASSES], vec![1.0f64; NUM_CLASSES]];
+        let mut history = Vec::new();
+        let actions_of = |i: usize, reach: &[Vec<f64>; 2]| -> (Vec<Value>, Option<Vec<f64>>) {
+            let nd = &self.tree.nodes[i];
+            let Node::Action { actor, data, children } = &self.nodes[i] else { return (Vec::new(), None) };
+            let sigma = self.average(*data, children.len());
+            let total: f64 = (0..NUM_CLASSES).map(|h| class_combos(h) as f64 * reach[*actor][h]).sum();
+            let acts = nd.actions.iter().enumerate().map(|(a, act)| {
+                let mass: f64 = (0..NUM_CLASSES).map(|h| class_combos(h) as f64 * reach[*actor][h] * sigma[a * NUM_CLASSES + h]).sum();
+                json!({"label": act.label, "kind": act.kind, "to": act.to,
+                       "freq": if total > 0.0 { mass / total } else { 0.0 }})
+            }).collect();
+            (acts, Some(sigma))
+        };
+        let kind_of = |i: usize| match self.tree.nodes[i].kind {
+            KIND_ACTION => "action", KIND_FOLD_WIN => "fold_win", _ => "pot_share",
+        };
+        for &a in path {
+            let Node::Action { actor, children, .. } = &self.nodes[node] else { return Err("bad path".into()) };
+            if a >= children.len() { return Err("bad path".into()); }
+            let (acts, sigma) = actions_of(node, &reach);
+            history.push(json!({"strategy_note": null, "kind": "action", "actor_pos": cfg.positions[*actor],
+                "pot": self.tree.nodes[node].pot, "actions": acts, "chosen": a}));
+            let sigma = sigma.unwrap();
+            for h in 0..NUM_CLASSES { reach[*actor][h] *= sigma[a * NUM_CLASSES + h]; }
+            node = children[a];
+        }
+        let nd = &self.tree.nodes[node];
+        let (acts, sigma) = actions_of(node, &reach);
+        let actor = match &self.nodes[node] { Node::Action { actor, .. } => Some(*actor), _ => None };
+        history.push(json!({"strategy_note": null, "kind": kind_of(node),
+            "actor_pos": actor.map(|a| cfg.positions[a].clone()).unwrap_or_default(), "pot": nd.pot, "actions": acts, "chosen": null}));
+        let live: Vec<bool> = (0..2).map(|s| nd.live & (1 << s) != 0).collect();
+        let flop = match &self.nodes[node] {
+            Node::Flop { leaf, .. } => {
+                let l = &self.leaves[*leaf];
+                Some(json!({"leaf": leaf, "line": l.line, "pot": l.pot, "behind": l.behind,
+                    "solved": !l.conts.is_empty(),
+                    "flops": self.flops.iter().map(|(b, w)| json!({"board": b, "weight": w})).collect::<Vec<_>>(),
+                    "support": l.support.iter().map(|s| s.iter().filter(|&&x| x).count()).collect::<Vec<_>>()}))
+            }
+            _ => None,
+        };
+        let behind = cfg.stack - nd.invested[0].max(nd.invested[1]);
+        Ok(json!({
+            "kind": kind_of(node),
+            "actor": actor,
+            "actor_pos": actor.map(|a| cfg.positions[a].clone()),
+            "positions": cfg.positions,
+            "posts": cfg.posts,
+            "pot": nd.pot,
+            "invested": nd.invested,
+            "live": live,
+            "actions": history.last().unwrap()["actions"].clone(),
+            "strategy": sigma,
+            "reach": actor.map(|a| reach[a].clone()),
+            "strategy_note": null,
+            "exportable": flop.as_ref().is_some_and(|f| f["solved"] == true),
+            "spr": flop.as_ref().map(|_| behind / nd.pot),
+            "history": history,
+            "reaches_all": reach.to_vec(),
+            "branch_probability": 1.0,
+            "low_reach": false,
+            "path": path,
+            "fullgame": flop,
+        }))
+    }
+
+    /// A CPU postflop solver holding flop `flop` of flop line `leaf`, with
+    /// the line's arriving ranges as weights, for Browse.
+    pub fn flop_solver(&mut self, leaf: usize, flop: usize) -> Result<Solver, String> {
+        let freq = self.leaf_frequencies().into_iter().nth(leaf).ok_or("no such flop line")?;
+        let l = self.leaves.get(leaf).ok_or("no such flop line")?;
+        if flop >= l.conts.len() {
+            return Err("that flop has no postflop solve (no supported hands reach it)".into());
+        }
+        let range = |s: usize| -> String {
+            (0..NUM_CLASSES).filter(|&h| l.support[s][h])
+                .map(|h| format!("{}:{:.6}", class_label(h), freq[s][h].clamp(1e-6, 1.0)))
+                .collect::<Vec<_>>().join(",")
+        };
+        let mut config = l.conts[flop].gpu.spot().config.clone();
+        config.range_oop = range(0);
+        config.range_ip = range(1);
+        let spot = Arc::new(Spot::new(config)?);
+        let mut host = Solver::with_storage(spot, crate::store::Storage::Compressed);
+        host.algo = Algorithm::CfrPlus;
+        self.leaves[leaf].conts[flop].gpu.export_to_cpu(&mut host)?;
+        Ok(host)
     }
 }
 
