@@ -4,8 +4,9 @@
 //!
 //! The config is a `FullGameConfig`; an empty `flops` list takes the first
 //! `panel` canonical flops by systematic sampling, where `panel` is the
-//! FULLGAME_PANEL env var (default 5). Writes the final evaluation and the
-//! SB's first decision to out.json when given.
+//! FULLGAME_PANEL env var (default 5); FULLGAME_PANEL_PART=k/m picks the k-th of m
+//! disjoint interleaved panels. Writes the final evaluation and every preflop
+//! decision's strategy to out.json when given.
 
 use solver::cards::canonical_flops_subset;
 use solver::fullgame::{FullGame, FullGameConfig};
@@ -23,8 +24,14 @@ fn main() {
     let iterations: u32 = args[2].parse().expect("iterations");
     let every: u32 = args.get(3).map(|s| s.parse().expect("eval_every")).unwrap_or(50);
     if config.flops.is_empty() {
-        let n = std::env::var("FULLGAME_PANEL").ok().and_then(|v| v.parse().ok()).unwrap_or(5);
-        config.flops = canonical_flops_subset(n).into_iter().map(|(b, w)| (b, w as f64)).collect();
+        let n: usize = std::env::var("FULLGAME_PANEL").ok().and_then(|v| v.parse().ok()).unwrap_or(5);
+        // FULLGAME_PANEL_PART=k/m: the k-th of m interleaved, disjoint panels of
+        // n flops each, cut from one systematic sample of n*m flops.
+        let (k, m) = std::env::var("FULLGAME_PANEL_PART").ok()
+            .and_then(|v| v.split_once('/').and_then(|(a, b)| Some((a.parse().ok()?, b.parse().ok()?))))
+            .unwrap_or((0usize, 1usize));
+        config.flops = canonical_flops_subset(n * m).into_iter().enumerate()
+            .filter(|(i, _)| i % m == k).map(|(_, (b, w))| (b, w as f64)).collect();
     }
     println!("flops: {}", config.flops.iter().map(|f| f.0.as_str()).collect::<Vec<_>>().join(" "));
 
@@ -100,8 +107,21 @@ fn main() {
                 "strategy": (0..labels.len()).map(|a| sigma[a * NUM_CLASSES + h]).collect::<Vec<_>>(),
             }))
             .collect();
+        // Every preflop decision, walked through the node views.
+        let mut nodes = Vec::new();
+        let mut todo = vec![Vec::<usize>::new()];
+        while let Some(p) = todo.pop() {
+            let v = game.node_view(&p).expect("node view");
+            if v["kind"] != "action" { continue; }
+            for a in 0..v["actions"].as_array().unwrap().len() {
+                let mut q = p.clone();
+                q.push(a);
+                todo.push(q);
+            }
+            nodes.push(v);
+        }
         let out = serde_json::json!({
-            "config": game.config, "evaluation": last, "root_actions": labels, "root": hands,
+            "config": game.config, "evaluation": last, "root_actions": labels, "root": hands, "nodes": nodes,
             "leaves": game.leaves.iter().map(|l| serde_json::json!({"line": l.line, "pot": l.pot, "behind": l.behind})).collect::<Vec<_>>(),
         });
         std::fs::write(path, serde_json::to_vec_pretty(&out).unwrap()).expect("write output");
