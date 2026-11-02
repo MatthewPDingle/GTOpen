@@ -126,6 +126,8 @@ struct Device {
     state: SharedState,
     /// Largest single continuation state seen, for the parking reserve.
     largest: u64,
+    /// Continuations of other lines still to be built after this line.
+    later: usize,
     parking: bool,
 }
 
@@ -202,7 +204,17 @@ fn build_continuations(config: &FullGameConfig, flops: &[(String, f64)], pot: f6
         // each one in pinned host memory and stream it through one shared slot.
         if !config.f32_state {
             dev.largest = dev.largest.max(gpu.arena_bytes());
-            let reserve_mb = 3000 + 2 * dev.largest / 1_000_000;
+            // Room for the shared slot's growth plus the metadata of every
+            // continuation still to come, parked or not.
+            let still = (flops.len() - f - 1 + dev.later) as u64;
+            // Tree metadata stays on the GPU even when the state is parked:
+            // about 50 MB per continuation on the reference game. (Measuring it
+            // from free memory fails: freed buffers stay in CUDA's pool.)
+            let reserve_mb = 3000 + 2 * dev.largest / 1_000_000 + 64 * still;
+            if std::env::var_os("FULLGAME_DEBUG").is_some() {
+                eprintln!("{board}: arena {} MB, still {still}, reserve {reserve_mb} MB, free {:?}",
+                    gpu.arena_bytes() / 1_000_000, crate::gpu::vram_info_mb());
+            }
             if !dev.parking && crate::gpu::vram_info_mb().is_some_and(|(free, _)| free < reserve_mb) {
                 dev.parking = true;
             }
@@ -339,6 +351,7 @@ impl FullGame {
                 }
             }
             let support = supports[k].clone();
+            dev.later = (leaf_nodes.len() - k - 1) * flops.len();
             let conts = build_continuations(&config, &flops, pot, behind, &support, &mut dev)?;
             log(&format!("{}: pot {pot} behind {behind}, {} continuations", line.join(" "), conts.len()));
             leaves.push(FlopLeaf { path, line: line.join(" "), pot, behind, support, conts });
@@ -413,6 +426,7 @@ impl FullGame {
             // and let the replacements use the GPU room that frees.
             self.leaves[k].conts = Vec::new();
             self.dev.parking = false;
+            self.dev.later = 0;
             let (pot, behind) = (self.leaves[k].pot, self.leaves[k].behind);
             self.leaves[k].conts = build_continuations(&self.config, &self.flops, pot, behind, &new, &mut self.dev)?;
             self.leaves[k].support = new;
