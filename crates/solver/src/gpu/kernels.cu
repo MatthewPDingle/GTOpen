@@ -475,6 +475,9 @@ extern "C" __global__ void up_action_eval(
         return;
     }
     long long loff = lock_off[n];
+    // A running least-exploitable fit (loff == -2) is the lock it will
+    // become: its average strategy, fixed for the best responder too.
+    if (loff == -2) mode = 1;
     if (loff >= 0) {
         // locked: fixed sigma in both modes (the best responder cannot
         // deviate at locked nodes)
@@ -514,4 +517,124 @@ extern "C" __global__ void up_action_eval(
             cfv[(u64)cfv_slot[n] * nh_max + i] = out;
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// Least-exploitable fits (see fit.rs). Each fit owns FIT_STRIDE floats:
+//   [0,8) target | [8,16) bounty | [16,24) push | [24,32) frequency sums |
+//   32 reach sum | [33,41) last frequency | 41 pot | 42 steps
+// Bounty and push are per unit of opponent reach at the node; the value
+// added to every hand's action-a counterfactual value is
+// (bounty[a] + push[a]) * sum_j reach_o[j]. Mirrors FitConstraint on the CPU.
+// ---------------------------------------------------------------------------
+#define FIT_STRIDE 48
+#define FIT_NA 8
+#define FIT_STEP_POT 0.05f
+#define FIT_PUSH_POT 1.0f
+#define FIT_BOUNTY_CAP_POT 4.0f
+
+// One block per fit owned by traverser p at this level, launched right
+// before up_action there: records the current-iterate frequency and biases
+// the child values up_action is about to combine.
+extern "C" __global__ void fit_apply(
+    const u32* __restrict__ fit_order, int start, int count,
+    const u32* __restrict__ fit_node, float* fit,
+    const int* __restrict__ node_na,
+    const u64* __restrict__ node_data_off,
+    const u32* __restrict__ node_children_start,
+    const u32* __restrict__ children,
+    const float* __restrict__ regrets_p,
+    const u32* __restrict__ rsrc_p, const float* __restrict__ reach_p_buf,
+    const u32* __restrict__ rsrc_o, const float* __restrict__ reach_o_buf,
+    const u32* __restrict__ cfv_slot, float* cfv,
+    int nh_p, int nh_o, int nh_max)
+{
+    __shared__ float red[FIT_NA + 2][128];
+    __shared__ float bias[FIT_NA];
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 k = fit_order[start + b];
+    u32 n = fit_node[k];
+    float* F = fit + (u64)k * FIT_STRIDE;
+    int na = node_na[n];
+    if (na > FIT_NA) return;
+    u64 doff = node_data_off[n];
+    u32 cs = node_children_start[n];
+    const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
+    const float* ro = reach_o_buf + (u64)rsrc_o[n] * nh_o;
+    int t = threadIdx.x;
+
+    float acc[FIT_NA];
+    for (int a = 0; a < FIT_NA; a++) acc[a] = 0.f;
+    float rsum = 0.f, osum = 0.f;
+    for (int j = t; j < nh_o; j += blockDim.x) osum += ro[j];
+    for (int i = t; i < nh_p; i += blockDim.x) {
+        float sum = 0.f;
+        for (int a = 0; a < na; a++) {
+            float r = regrets_p[doff + (u64)a * nh_p + i];
+            sum += r > 0.f ? r : 0.f;
+        }
+        float r_i = rp[i];
+        rsum += r_i;
+        for (int a = 0; a < na; a++) {
+            float r = regrets_p[doff + (u64)a * nh_p + i];
+            float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : 1.f / (float)na;
+            acc[a] += r_i * sig;
+        }
+    }
+    for (int a = 0; a < FIT_NA; a++) red[a][t] = acc[a];
+    red[FIT_NA][t] = rsum;
+    red[FIT_NA + 1][t] = osum;
+    __syncthreads();
+    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+        if (t < step)
+            for (int q = 0; q < FIT_NA + 2; q++) red[q][t] += red[q][t + step];
+        __syncthreads();
+    }
+    if (t == 0) {
+        for (int a = 0; a < na; a++) F[24 + a] += red[a][0];
+        F[32] += red[FIT_NA][0];
+    }
+    if (t < na) bias[t] = (F[8 + t] + F[16 + t]) * red[FIT_NA + 1][0];
+    __syncthreads();
+    for (int a = 0; a < na; a++) {
+        float add = bias[a];
+        if (add == 0.f) continue;
+        float* v = cfv + (u64)cfv_slot[children[cs + a]] * nh_max;
+        for (int i = t; i < nh_p; i += blockDim.x) v[i] += add;
+    }
+}
+
+// After both sweeps of an iteration: one damped dual-ascent step per fit
+// (FitConstraint::step_from), then clear the frequency sums.
+extern "C" __global__ void fit_dual(
+    float* fit, const u32* __restrict__ fit_node, const int* __restrict__ node_na, int count)
+{
+    int k = blockIdx.x * blockDim.x + threadIdx.x;
+    if (k >= count) return;
+    float* F = fit + (u64)k * FIT_STRIDE;
+    int na = node_na[fit_node[k]];
+    if (na > FIT_NA) return;
+    float reach = F[32];
+    if (reach > 1e-12f) {
+        float pot = F[41];
+        float cb = 0.f, cp = 0.f;
+        for (int a = 0; a < na; a++) {
+            float f = F[24 + a] / reach;
+            float err = F[a] - f;
+            F[33 + a] = f;
+            F[8 + a] += FIT_STEP_POT * pot * err;
+            F[16 + a] = FIT_PUSH_POT * pot * err;
+            cb += F[8 + a] * F[a];
+            cp += F[16 + a] * F[a];
+        }
+        float cap = FIT_BOUNTY_CAP_POT * fmaxf(pot, 1e-9f);
+        for (int a = 0; a < na; a++) {
+            F[8 + a] = fminf(fmaxf(F[8 + a] - cb, -cap), cap);
+            F[16 + a] -= cp;
+        }
+        F[42] += 1.f;
+    }
+    for (int a = 0; a < FIT_NA; a++) F[24 + a] = 0.f;
+    F[32] = 0.f;
 }

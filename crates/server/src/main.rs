@@ -241,6 +241,12 @@ struct StatusInfo {
     /// cleared when a new solve starts.
     #[serde(default)]
     error: String,
+    /// Least-exploitable fits the solve is steering (empty when none).
+    #[serde(default)]
+    fits: Vec<solver::fit::FitView>,
+    /// What happened to the fits when the last solve ended.
+    #[serde(default)]
+    fit_note: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -725,6 +731,7 @@ async fn start_solve(
         status.gpu_note = String::new();
         status.error = String::new();
         status.history.clear();
+        status.fit_note = String::new();
     }
 
     let handle = std::thread::spawn(move || {
@@ -781,6 +788,38 @@ async fn start_solve(
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+/// Lock every running least-exploitable fit as one undoable edit (called
+/// when a solve ends, however it ends). Returns the status note, or None
+/// when there were no fits.
+fn finish_fits(s: &mut Solver) -> Option<String> {
+    if !s.has_fits() {
+        return None;
+    }
+    let done = s.record_lock_edit(|s| {
+        let labels = s.materialize_fits()?;
+        let label = match labels.as_slice() {
+            [one] => format!("Least-exploitable lock · {one}"),
+            many => format!("Least-exploitable locks · {} nodes", many.len()),
+        };
+        Ok((labels, label))
+    });
+    Some(match done {
+        Ok(labels) => format!(
+            "locked {} least-exploitable fit{}",
+            labels.len(),
+            if labels.len() == 1 { "" } else { "s" }
+        ),
+        Err(e) => format!("least-exploitable fit could not be locked: {e}"),
+    })
+}
+
+fn end_fits_status(st: &mut StatusInfo, note: Option<String>) {
+    if let Some(note) = note {
+        st.fits.clear();
+        st.fit_note = note;
+    }
+}
+
 /// CPU solve loop. `base` is the solver's cumulative iteration at the start
 /// of THIS run: termination compares (iteration - base) against the request's
 /// max_iterations (per-run semantics, like report_solve), while the status
@@ -796,8 +835,14 @@ fn cpu_solve_loop(
     let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
     loop {
         if stop.load(Ordering::Relaxed) {
-            lock_unpoisoned(&solver).ensure_symmetric();
+            let note = {
+                let mut s = lock_unpoisoned(&solver);
+                let note = finish_fits(&mut s);
+                s.ensure_symmetric();
+                note
+            };
             let mut st = app.status.lock().unwrap();
+            end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
             break;
         }
@@ -809,9 +854,11 @@ fn cpu_solve_loop(
         let run_it = it.saturating_sub(base);
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
-            let e = {
+            let (e, fits, fit_err) = {
                 let s = lock_unpoisoned(&solver);
-                s.exploitability()
+                let fits = s.fits_view();
+                let err = fits.iter().map(|f| f.max_error as f64).fold(0.0, f64::max);
+                (s.exploitability(), fits, err)
             };
             let pct = e / pot * 100.0;
             let mut st = app.status.lock().unwrap();
@@ -823,10 +870,18 @@ fn cpu_solve_loop(
                 iteration: it,
                 exploit_pct: pct,
             });
-            if pct <= req.target_exploit_pct || run_it >= req.max_iterations {
+            st.fits = fits;
+            let on_target = fit_err <= solver::fit::FIT_TOLERANCE;
+            if (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations {
                 drop(st);
-                lock_unpoisoned(&solver).ensure_symmetric();
+                let note = {
+                    let mut s = lock_unpoisoned(&solver);
+                    let note = finish_fits(&mut s);
+                    s.ensure_symmetric();
+                    note
+                };
                 let mut st = app.status.lock().unwrap();
+                end_fits_status(&mut st, note);
                 st.state = "done".to_string();
                 break;
             }
@@ -861,7 +916,9 @@ fn gpu_solve_loop(
 ) -> Result<(), String> {
     use solver::gpu::GpuSolver;
     let (mut gpu, pot) = {
-        let s = lock_unpoisoned(&solver);
+        let mut s = lock_unpoisoned(&solver);
+        // fits restart their node's average before the arenas are uploaded
+        s.prepare_fits();
         let cap_mb = gpu_budget().0;
         (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
             s.spot.tree.config.starting_pot)
@@ -900,17 +957,25 @@ fn gpu_solve_inner(
         if stop.load(Ordering::Relaxed) {
             let mut s = lock_unpoisoned(&solver);
             gpu.sync_to_cpu(&mut s)?;
+            gpu.download_fits(&mut s)?;
+            let note = finish_fits(&mut s);
             s.ensure_symmetric();
             drop(s);
             let mut st = app.status.lock().unwrap();
+            end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
             return Ok(());
         }
         let g = lock_gen.load(Ordering::Relaxed);
         if g != seen_gen {
             seen_gen = g;
-            let s = lock_unpoisoned(&solver);
+            let mut s = lock_unpoisoned(&solver);
+            // keep the device's dual progress for fits that stay, then a fit
+            // added mid-solve restarts its node's average on both sides
+            gpu.download_fits(&mut s)?;
+            let fresh = s.prepare_fits();
             gpu.update_locks(&s)?;
+            gpu.update_fits(&s, &fresh)?;
         }
         gpu.iterate()?;
         let it = gpu.iteration;
@@ -920,15 +985,27 @@ fn gpu_solve_inner(
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             check_n += 1;
-            let (e, finished) = {
+            let (e, finished, fits, note) = {
                 let mut s = lock_unpoisoned(&solver);
                 // best response runs on the GPU (~50ms); the full arena
                 // download is only paid at checkpoints and when it ends
                 let e = gpu.exploitability(&s)?;
                 let pct = e / pot * 100.0;
-                let finished = pct <= req.target_exploit_pct || run_it >= req.max_iterations;
+                // running fits: their lines' arenas and bounties are tiny,
+                // so the readout and stopping rule stay fresh every check
+                let fits = if s.has_fits() {
+                    gpu.sync_fit_lines(&mut s)?;
+                    gpu.download_fits(&mut s)?;
+                    s.fits_view()
+                } else {
+                    Vec::new()
+                };
+                let on_target = fits.iter().all(|f| f.max_error as f64 <= solver::fit::FIT_TOLERANCE);
+                let finished = (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations;
+                let mut note = None;
                 if finished {
                     gpu.sync_to_cpu(&mut s)?;
+                    note = finish_fits(&mut s);
                     s.ensure_symmetric();
                 } else if check_n % 4 == 0 {
                     // FULL sync, not strategy-only: keeps mid-solve browsing
@@ -938,7 +1015,7 @@ fn gpu_solve_inner(
                     // fresh averages over stale regrets if the GPU dies)
                     gpu.sync_to_cpu(&mut s)?;
                 }
-                (e, finished)
+                (e, finished, fits, note)
             };
             let pct = e / pot * 100.0;
             let mut st = app.status.lock().unwrap();
@@ -950,6 +1027,8 @@ fn gpu_solve_inner(
                 iteration: it,
                 exploit_pct: pct,
             });
+            st.fits = fits;
+            end_fits_status(&mut st, note);
             if finished {
                 st.state = "done".to_string();
                 return Ok(());
@@ -3128,6 +3207,7 @@ fn lock_edit_label(mode: &solver::query::LockMode, at: &str, frozen: usize) -> S
     let what = match mode {
         LockMode::Freeze => "Lock as solved".to_string(),
         LockMode::Range { .. } => "Lock frequencies".to_string(),
+        LockMode::Fit { .. } => "Lock frequencies (least EV loss)".to_string(),
         LockMode::Hands { edits } => match edits.as_slice() {
             [one] => format!("Lock {}", one.combo),
             many => format!("Lock {} combos", many.len()),
@@ -3160,6 +3240,90 @@ async fn lock_node(
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
     Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "history": history})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FitRequest {
+    path: Vec<PathStep>,
+    /// Target overall frequency per action (normalized like a Range lock).
+    freqs: Vec<f32>,
+    #[serde(default)]
+    label: String,
+    /// Also freeze every unlocked earlier decision on the line first.
+    #[serde(default)]
+    lock_path: bool,
+}
+
+/// Start a least-exploitable (full) fit at a node. The next solve steers the
+/// node onto the targets and locks the result when it ends; frozen line
+/// decisions and a replaced lock are one undoable edit.
+async fn start_fit(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<FitRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (frozen, fits, history) = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
+        let fit_label = format!("{at} (least exploitable)");
+        let frozen = s.record_lock_edit(|s| {
+            let frozen = if req.lock_path { s.freeze_line(&req.path, &fit_label)? } else { 0 };
+            s.add_fit(&req.path, &req.freqs, fit_label.clone())?;
+            let line = match frozen {
+                0 => String::new(),
+                1 => " (+1 earlier decision frozen)".to_string(),
+                n => format!(" (+{n} earlier decisions frozen)"),
+            };
+            Ok((frozen, format!("Start least-exploitable fit · {at}{line}")))
+        })?;
+        Ok::<_, String>((frozen, s.fits_view(), s.lock_history()))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    state.status.lock().unwrap().fits = fits.clone();
+    Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "fits": fits, "history": history})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct FitCancelRequest {
+    /// The fit to drop; None drops every running fit.
+    #[serde(default)]
+    path: Option<Vec<PathStep>>,
+}
+
+async fn cancel_fit(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<FitCancelRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (removed, fits) = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        let removed = match &req.path {
+            Some(p) => s.remove_fit(p)? as usize,
+            None => s.clear_fits(),
+        };
+        Ok::<_, String>((removed, s.fits_view()))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    state.status.lock().unwrap().fits = fits.clone();
+    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "fits": fits})))
+}
+
+async fn list_fits(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<Vec<solver::fit::FitView>>, ApiError> {
+    let (solver, _) = session_solver(&state)?;
+    let fits = tokio::task::spawn_blocking(move || lock_unpoisoned(&solver).fits_view())
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(fits))
 }
 
 async fn unlock_node(
@@ -3666,6 +3830,9 @@ async fn main() {
         .route("/api/reports/lines", post(report_lines))
         .route("/api/reports/delete", post(report_delete))
         .route("/api/unlock", post(unlock_node))
+        .route("/api/fit", post(start_fit))
+        .route("/api/fit/cancel", post(cancel_fit))
+        .route("/api/fits", get(list_fits))
         .route("/api/locks", get(list_locks))
         .route("/api/locks/history", get(lock_history))
         .route("/api/locks/undo", post(lock_undo))

@@ -213,6 +213,9 @@ impl Solver {
         if self.algo == Algorithm::PcfrPlus && self.preds.is_none() {
             self.ensure_preds();
         }
+        if !self.fits.is_empty() {
+            self.prepare_fits();
+        }
         self.sym_dirty = true;
         self.iteration += 1;
         let disc = Discounts::for_iteration(self.algo, self.iteration);

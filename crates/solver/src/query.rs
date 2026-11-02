@@ -225,6 +225,8 @@ pub struct NodeView {
     pub available_cards: Option<Vec<String>>,
     pub players: [PlayerView; 2],
     pub locked: bool,
+    /// A least-exploitable fit running at this node (target, progress).
+    pub fit: Option<crate::fit::FitView>,
     /// One entry per node along the path, plus the current node (chosen=None).
     pub history: Vec<HistoryStep>,
 }
@@ -656,6 +658,13 @@ impl Solver {
                 let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
                 self.locks.contains_key(&idx)
             },
+            fit: if self.has_fits() {
+                let canon = self.canonical_path(path);
+                let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
+                self.fit_view_at(idx)
+            } else {
+                None
+            },
             history: self.build_history(path)?,
         })
     }
@@ -843,8 +852,6 @@ impl Solver {
             }
         };
 
-        // a hard lock replaces a running full fit at the node
-        self.fits.remove(&walk.node_idx);
         self.put_lock(walk.node_idx, sigma, label);
         // locks live outside the arenas: isomorphic siblings only see them
         // once ensure_symmetric re-materializes the branch copies

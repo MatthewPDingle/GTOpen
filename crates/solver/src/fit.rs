@@ -76,6 +76,9 @@ pub struct FitConstraint {
     pub(crate) push: Vec<f64>,
     /// Dual steps taken.
     pub steps: u32,
+    /// The node's average strategy still holds the old solve; `prepare_fits`
+    /// restarts it when the fitting solve begins.
+    pub(crate) fresh: bool,
     pub(crate) acc: Mutex<FitAcc>,
 }
 
@@ -102,6 +105,11 @@ pub struct FitView {
 }
 
 impl FitConstraint {
+    /// The proportional push currently applied on top of the bounty.
+    pub fn push_state(&self) -> &[f64] {
+        &self.push
+    }
+
     fn new(path: Vec<PathStep>, player: usize, target: Vec<f32>, bounty: Vec<f64>, pot: f64, label: String) -> Self {
         let na = target.len();
         let mut f = FitConstraint {
@@ -114,6 +122,7 @@ impl FitConstraint {
             last_freq: vec![f64::NAN; na],
             push: vec![0.0; na],
             steps: 0,
+            fresh: true,
             acc: Mutex::new(FitAcc { freq: vec![0.0; na], reach: 0.0 }),
         };
         f.center();
@@ -390,6 +399,9 @@ impl Solver {
             return Err("only action nodes can be locked".to_string());
         }
         let na = node.num_children as usize;
+        if na > 8 {
+            return Err("least-exploitable fits support up to 8 actions".to_string());
+        }
         let p = node.player as usize;
         let pot = node.put[0] + node.put[1];
         let target = normalize_freqs(freqs, na)?;
@@ -401,7 +413,6 @@ impl Solver {
         let bounty: Vec<f64> = lam.iter().map(|&l| l * scale).collect();
         let idx = walk.node_idx;
         self.take_lock(idx);
-        self.reset_node_average(idx);
         self.fits.insert(idx, FitConstraint::new(canon, p, target, bounty, pot, label));
         self.mark_sym_dirty();
         Ok(idx)
@@ -417,6 +428,19 @@ impl Solver {
         let n = node.num_children as usize * self.spot.hands[p].len();
         let zeros = vec![0f32; n];
         unsafe { self.strat[p].write_f32(idx, node.data_offset, n, &zeros) };
+    }
+
+    /// Restart the average strategy of every fit that has not started yet
+    /// (see `reset_node_average`). Returns the nodes restarted, so a GPU
+    /// solver holding its own arenas can do the same. `iterate` calls this;
+    /// call it before handing the solver to a GPU solve.
+    pub fn prepare_fits(&mut self) -> Vec<u32> {
+        let fresh: Vec<u32> = self.fits.iter().filter(|(_, f)| f.fresh).map(|(&k, _)| k).collect();
+        for &idx in &fresh {
+            self.reset_node_average(idx);
+            self.fits.get_mut(&idx).unwrap().fresh = false;
+        }
+        fresh
     }
 
     /// Drop the running fit at `path`, if any.
@@ -468,31 +492,34 @@ impl Solver {
             .collect())
     }
 
+    /// The running fit at a (canonical) node, if any.
+    pub fn fit_view_at(&self, idx: u32) -> Option<FitView> {
+        self.fits.get(&idx).map(|f| self.fit_view(f))
+    }
+
     /// Status of every running fit, sorted by label.
     pub fn fits_view(&self) -> Vec<FitView> {
-        let mut v: Vec<FitView> = self
-            .fits
-            .values()
-            .map(|f| {
-                let achieved = self.fit_achieved(f).unwrap_or_else(|_| vec![f32::NAN; f.target.len()]);
-                let max_error = achieved
-                    .iter()
-                    .zip(&f.target)
-                    .map(|(a, t)| (a - t).abs())
-                    .fold(0f32, f32::max);
-                FitView {
-                    label: f.label.clone(),
-                    path: f.path.clone(),
-                    player: f.player,
-                    target: f.target.clone(),
-                    achieved,
-                    bounty_pct_pot: f.bounty.iter().map(|b| (b / f.pot.max(1e-9) * 100.0) as f32).collect(),
-                    max_error,
-                }
-            })
-            .collect();
+        let mut v: Vec<FitView> = self.fits.values().map(|f| self.fit_view(f)).collect();
         v.sort_by(|a, b| a.label.cmp(&b.label));
         v
+    }
+
+    fn fit_view(&self, f: &FitConstraint) -> FitView {
+        let achieved = self.fit_achieved(f).unwrap_or_else(|_| vec![f32::NAN; f.target.len()]);
+        let max_error = achieved
+            .iter()
+            .zip(&f.target)
+            .map(|(a, t)| if a.is_finite() { (a - t).abs() } else { 1.0 })
+            .fold(0f32, f32::max);
+        FitView {
+            label: f.label.clone(),
+            path: f.path.clone(),
+            player: f.player,
+            target: f.target.clone(),
+            achieved,
+            bounty_pct_pot: f.bounty.iter().map(|b| (b / f.pot.max(1e-9) * 100.0) as f32).collect(),
+            max_error,
+        }
     }
 
     /// Largest per-action frequency miss over all running fits (0 if none).
@@ -533,13 +560,34 @@ impl Solver {
         v
     }
 
-    /// Overwrite a fit's dual state (bounty, last frequency, steps) from the
-    /// GPU solver.
-    pub fn set_fit_state(&mut self, node: u32, bounty: &[f64], last_freq: &[f64], steps: u32) {
+    /// Overwrite a fit's dual state from the GPU solver.
+    pub fn set_fit_state(&mut self, node: u32, bounty: &[f64], push: &[f64], last_freq: &[f64], steps: u32) {
         if let Some(f) = self.fits.get_mut(&node) {
             f.bounty.copy_from_slice(bounty);
+            f.push.copy_from_slice(push);
             f.last_freq.copy_from_slice(last_freq);
             f.steps = steps;
         }
+    }
+
+    /// Every action node on each running fit's (canonical) line, the fit
+    /// node included: what its readout reads.
+    pub fn fit_line_nodes(&self) -> Vec<u32> {
+        let mut out = Vec::new();
+        for fit in self.fits.values() {
+            for i in 0..=fit.path.len() {
+                if i < fit.path.len() && !matches!(fit.path[i], PathStep::Action { .. }) {
+                    continue;
+                }
+                if let Ok(w) = self.walk_path(&fit.path[..i]) {
+                    if self.spot.tree.nodes[w.node_idx as usize].kind == KIND_ACTION {
+                        out.push(w.node_idx);
+                    }
+                }
+            }
+        }
+        out.sort_unstable();
+        out.dedup();
+        out
     }
 }

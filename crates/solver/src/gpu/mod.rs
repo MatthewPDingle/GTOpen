@@ -32,6 +32,10 @@ use std::sync::Arc;
 use rayon::prelude::*;
 
 const BLOCK: u32 = 128;
+/// Floats per fit in `d_fit` (layout in kernels.cu).
+const FIT_STRIDE: usize = 48;
+/// Actions a fit node may have on the GPU.
+const FIT_NA: usize = 8;
 
 pub const KERNEL_NAMES: [&str; 7] = [
     "copy_root",
@@ -83,6 +87,8 @@ pub struct GpuSolver {
     f_up_chance: CudaFunction,
     f_up_action: CudaFunction,
     f_up_action_eval: CudaFunction,
+    f_fit_apply: CudaFunction,
+    f_fit_dual: CudaFunction,
 
     // plan metadata kept host-side
     num_levels: usize,
@@ -142,6 +148,18 @@ pub struct GpuSolver {
     // device: locks (rebuilt via update_locks)
     d_lock_off: CudaSlice<i64>,
     d_lock_sigma: CudaSlice<f32>,
+    // least-exploitable fits (rebuilt via update_fits; see fit.rs)
+    /// Device arena offset per node (u64::MAX = not traversed).
+    h_node_data_off: Vec<u64>,
+    /// Level of each traversed action node (u32::MAX otherwise).
+    h_node_level: Vec<u32>,
+    /// Fit nodes in device order.
+    fit_nodes: Vec<u32>,
+    /// Per player, per level: span of `d_fit_order` holding its fits.
+    fit_spans: [Vec<LevelSpan>; 2],
+    d_fit: CudaSlice<f32>,
+    d_fit_node: CudaSlice<u32>,
+    d_fit_order: CudaSlice<u32>,
     // device: solver state + staging
     d_regrets: [CudaSlice<f32>; 2],
     d_strat: [CudaSlice<f32>; 2],
@@ -327,7 +345,7 @@ impl GpuSolver {
             fold_card_off[p].push(fold_card_idx[p].len() as u32);
         }
 
-        Ok(GpuSolver {
+        let mut gpu = GpuSolver {
             f_copy_root: func("copy_root")?,
             f_down_action: func("down_action")?,
             f_down_chance: func("down_chance")?,
@@ -336,6 +354,23 @@ impl GpuSolver {
             f_up_chance: func("up_chance")?,
             f_up_action: func("up_action")?,
             f_up_action_eval: func("up_action_eval")?,
+            f_fit_apply: func("fit_apply")?,
+            f_fit_dual: func("fit_dual")?,
+            h_node_data_off: plan.node_data_off.clone(),
+            h_node_level: {
+                let mut lv = vec![u32::MAX; plan.num_nodes];
+                for (l, sp) in plan.action_spans.iter().enumerate() {
+                    for &nd in &plan.action_nodes[sp.start as usize..(sp.start + sp.count) as usize] {
+                        lv[nd as usize] = l as u32;
+                    }
+                }
+                lv
+            },
+            fit_nodes: Vec::new(),
+            fit_spans: [Vec::new(), Vec::new()],
+            d_fit: stream.alloc_zeros::<f32>(FIT_STRIDE).map_err(e)?,
+            d_fit_node: stream.alloc_zeros::<u32>(1).map_err(e)?,
+            d_fit_order: stream.alloc_zeros::<u32>(1).map_err(e)?,
             num_levels: plan.num_levels,
             nh: [nh[0] as i32, nh[1] as i32],
             nh_max: plan.nh_max as i32,
@@ -407,7 +442,11 @@ impl GpuSolver {
             _ctx: ctx,
             stream,
             _module: module,
-        })
+        };
+        if solver.has_fits() {
+            gpu.update_fits(solver, &[])?;
+        }
+        Ok(gpu)
     }
 
     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {
@@ -983,6 +1022,35 @@ impl GpuSolver {
                 }
                 prof_acc(&self.stream, &mut prof, 5, t0)?;
             }
+            if let Some(fsp) = self.fit_spans[p].get(l).copied().filter(|f| f.count > 0) {
+                let start = fsp.start as i32;
+                let count = fsp.count as i32;
+                unsafe {
+                    self.stream
+                        .launch_builder(&self.f_fit_apply)
+                        .arg(&self.d_fit_order)
+                        .arg(&start)
+                        .arg(&count)
+                        .arg(&self.d_fit_node)
+                        .arg(&mut self.d_fit)
+                        .arg(&self.d_node_na)
+                        .arg(&self.d_node_data_off)
+                        .arg(&self.d_node_children_start)
+                        .arg(&self.d_children)
+                        .arg(&self.d_regrets[p])
+                        .arg(&self.d_rsrc[p])
+                        .arg(&self.d_reach[p])
+                        .arg(&self.d_rsrc[1 - p])
+                        .arg(&self.d_reach[1 - p])
+                        .arg(&self.d_cfv_slot)
+                        .arg(&mut self.d_cfv)
+                        .arg(&nh_p)
+                        .arg(&nh_o)
+                        .arg(&nh_max)
+                        .launch(Self::cfg(fsp.count, 0))
+                        .map_err(e)?;
+                }
+            }
             let sp = self.action_spans[l];
             if sp.count > 0 {
                 let start = sp.start as i32;
@@ -1015,6 +1083,134 @@ impl GpuSolver {
                         .map_err(e)?;
                 }
                 prof_acc(&self.stream, &mut prof, 6, t0)?;
+            }
+        }
+        if p == 1 && !self.fit_nodes.is_empty() {
+            let count = self.fit_nodes.len() as i32;
+            unsafe {
+                self.stream
+                    .launch_builder(&self.f_fit_dual)
+                    .arg(&mut self.d_fit)
+                    .arg(&self.d_fit_node)
+                    .arg(&self.d_node_na)
+                    .arg(&count)
+                    .launch(LaunchConfig {
+                        grid_dim: ((count as u32).div_ceil(BLOCK), 1, 1),
+                        block_dim: (BLOCK, 1, 1),
+                        shared_mem_bytes: 0,
+                    })
+                    .map_err(e)?;
+            }
+        }
+        Ok(())
+    }
+
+    /// Upload the solver's running fits (targets and dual state) and
+    /// restart the device average strategy at `fresh` nodes (those whose CPU
+    /// average `Solver::prepare_fits` just restarted). Call after
+    /// `update_locks` whenever fits change; captured graphs are rebuilt.
+    pub fn update_fits(&mut self, solver: &Solver, fresh: &[u32]) -> Result<(), String> {
+        let entries = solver.fit_entries();
+        let nn = self.h_node_level.len();
+        let mut rows: Vec<(usize, u32, u32)> = Vec::new(); // (player, level, k)
+        let mut nodes = Vec::with_capacity(entries.len());
+        let mut data = vec![0f32; entries.len().max(1) * FIT_STRIDE];
+        for (k, (idx, fit)) in entries.iter().enumerate() {
+            let i = *idx as usize;
+            let na = fit.target.len();
+            if i >= nn || self.h_node_level[i] == u32::MAX || self.h_node_data_off[i] == u64::MAX {
+                return Err("the GPU plan does not traverse this fit's node".into());
+            }
+            if na > FIT_NA {
+                return Err(format!("least-exploitable fits support up to {FIT_NA} actions"));
+            }
+            let f = &mut data[k * FIT_STRIDE..(k + 1) * FIT_STRIDE];
+            for a in 0..na {
+                f[a] = fit.target[a];
+                f[8 + a] = fit.bounty[a] as f32;
+                f[16 + a] = fit.push_state()[a] as f32;
+                f[33 + a] = fit.last_freq[a] as f32;
+            }
+            f[41] = fit.pot as f32;
+            f[42] = fit.steps as f32;
+            nodes.push(*idx);
+            rows.push((fit.player, self.h_node_level[i], k as u32));
+        }
+        rows.sort();
+        let mut spans = [vec![LevelSpan::default(); self.num_levels], vec![LevelSpan::default(); self.num_levels]];
+        let mut order = Vec::with_capacity(rows.len().max(1));
+        for &(p, l, k) in &rows {
+            let sp = &mut spans[p][l as usize];
+            if sp.count == 0 {
+                sp.start = order.len() as u32;
+            }
+            sp.count += 1;
+            order.push(k);
+        }
+        if order.is_empty() {
+            order.push(0);
+        }
+        let mut node_buf = nodes.clone();
+        if node_buf.is_empty() {
+            node_buf.push(0);
+        }
+        self.d_fit = self.stream.clone_htod(&data).map_err(e)?;
+        self.d_fit_node = self.stream.clone_htod(&node_buf).map_err(e)?;
+        self.d_fit_order = self.stream.clone_htod(&order).map_err(e)?;
+        self.fit_spans = spans;
+        self.fit_nodes = nodes;
+        for &idx in fresh {
+            let node = &solver.spot.tree.nodes[idx as usize];
+            let p = node.player as usize;
+            let off = self.h_node_data_off[idx as usize];
+            if off == u64::MAX {
+                continue;
+            }
+            let len = node.num_children as usize * self.nh[p] as usize;
+            let mut view = self.d_strat[p].slice_mut(off as usize..off as usize + len);
+            self.stream.memset_zeros(&mut view).map_err(e)?;
+        }
+        // captured graphs hold pointers to the old fit buffers
+        self.graphs = None;
+        self.eval_graphs = [None, None];
+        Ok(())
+    }
+
+    /// Copy the fits' dual state (bounty, push, last frequency, steps) back
+    /// into the CPU solver.
+    pub fn download_fits(&mut self, solver: &mut Solver) -> Result<(), String> {
+        if self.fit_nodes.is_empty() {
+            return Ok(());
+        }
+        let data = self.stream.clone_dtoh(&self.d_fit).map_err(e)?;
+        for (k, &idx) in self.fit_nodes.iter().enumerate() {
+            let f = &data[k * FIT_STRIDE..(k + 1) * FIT_STRIDE];
+            let na = solver.spot.tree.nodes[idx as usize].num_children as usize;
+            let g = |o: usize| (0..na).map(|a| f[o + a] as f64).collect::<Vec<f64>>();
+            solver.set_fit_state(idx, &g(8), &g(16), &g(33), f[42] as u32);
+        }
+        Ok(())
+    }
+
+    /// Copy regrets and average strategy of every action node on each fit's
+    /// line (the nodes the fit readout walks) into the CPU solver. A few KB
+    /// per node, so a running fit's readout stays fresh between full syncs.
+    pub fn sync_fit_lines(&mut self, solver: &mut Solver) -> Result<(), String> {
+        let nodes = solver.fit_line_nodes();
+        self.stream.synchronize().map_err(e)?;
+        for idx in nodes {
+            let node = &solver.spot.tree.nodes[idx as usize];
+            let p = node.player as usize;
+            let off = self.h_node_data_off[idx as usize];
+            if off == u64::MAX {
+                continue;
+            }
+            let len = node.num_children as usize * self.nh[p] as usize;
+            let r = self.stream.clone_dtoh(&self.d_regrets[p].slice(off as usize..off as usize + len)).map_err(e)?;
+            let st = self.stream.clone_dtoh(&self.d_strat[p].slice(off as usize..off as usize + len)).map_err(e)?;
+            unsafe {
+                solver.regrets[p].write_f32(idx, node.data_offset, len, &r);
+                solver.strat[p].write_f32(idx, node.data_offset, len, &st);
             }
         }
         Ok(())
@@ -1147,6 +1343,13 @@ fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
     for (&node_idx, lock) in &solver.locks {
         off[node_idx as usize] = sigma.len() as i64;
         sigma.extend_from_slice(lock);
+    }
+    // running fits: -2 = learning, but fixed to its average for the best
+    // responder (see up_action_eval)
+    for (node_idx, _) in solver.fit_entries() {
+        if off[node_idx as usize] == -1 {
+            off[node_idx as usize] = -2;
+        }
     }
     if sigma.is_empty() {
         sigma.push(0.0); // avoid zero-length device buffer
