@@ -88,6 +88,8 @@ impl Solver {
     /// `take_lock` so an open edit can journal it.
     pub(crate) fn put_lock(&mut self, idx: u32, sigma: Vec<f32>, label: String) {
         self.journal_lock(idx);
+        // a hard lock replaces a running fit at the node
+        self.fits.remove(&idx);
         self.locks.insert(idx, sigma);
         self.lock_labels.insert(idx, label);
     }
@@ -127,6 +129,8 @@ impl Solver {
     fn restore_lock(&mut self, idx: u32, v: LockValue) {
         match v {
             Some((sigma, label)) => {
+                // a hard lock replaces a running fit at the node
+                self.fits.remove(&idx);
                 self.locks.insert(idx, sigma);
                 self.lock_labels.insert(idx, label);
             }
@@ -284,6 +288,14 @@ impl Solver {
         if !freeze_path {
             return Ok(0);
         }
+        self.freeze_line(path, &label)
+    }
+
+    /// Freeze (lock as solved) every unlocked decision on the line leading
+    /// to `path`, labelled as frozen on the line to `label`. Existing locks
+    /// are kept. Returns how many decisions were frozen. Call inside
+    /// `record_lock_edit` to make it part of one undoable edit.
+    pub fn freeze_line(&mut self, path: &[PathStep], label: &str) -> Result<usize, String> {
         let mut frozen = 0;
         for (i, step) in path.iter().enumerate() {
             if !matches!(step, PathStep::Action { .. }) {

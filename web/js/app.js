@@ -579,15 +579,19 @@ async function pollStatus() {
   $('btn-solve-top').classList.toggle('hidden', running);
   $('btn-stop-top').classList.toggle('hidden', !running);
   $('btn-solve-top').textContent = (st.state === 'done' || st.state === 'stopped') ? 'RE-SOLVE' : 'SOLVE';
+  const fits = st.fits || [];
+  const fitText = fits.length
+    ? ` · fitting ${fits.length} node${fits.length > 1 ? 's' : ''} (off by ${(Math.max(...fits.map(f => f.max_error)) * 100).toFixed(1)} pts)`
+    : '';
   $('solve-readout').textContent = built
-    ? `iter ${st.iteration}${st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}% pot` : ''}` : '';
+    ? `iter ${st.iteration}${st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}% pot` : ''}${fitText}` : '';
   // solve completion: toast once per run, and refresh an open Browse view so
   // the lock → re-solve → inspect loop shows the adapted strategies (the view
   // renders from a cached node payload until refreshed)
   if (st.state === 'done' || st.state === 'stopped') {
     if (!state.solved && st.iteration > 0) {
       state.solved = true;
-      toast(`solve ${st.state} — exploitability ${st.exploit_pct.toFixed(3)}% pot`);
+      toast(`solve ${st.state} — exploitability ${st.exploit_pct.toFixed(3)}% pot${st.fit_note ? ` · ${st.fit_note}` : ''}`);
       if ($('view-browse').classList.contains('active')) browser.refresh();
     }
     if (state.polling && st.state !== 'running') {

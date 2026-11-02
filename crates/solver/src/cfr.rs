@@ -83,6 +83,9 @@ pub struct Solver {
     pub lock_labels: std::collections::HashMap<u32, String>,
     /// Undo/redo history of lock edits (session only, never saved).
     pub(crate) lock_history: crate::lock_history::LockHistory,
+    /// Running least-exploitable fits (node index keyed; session only).
+    /// A fitted node keeps learning, steered by a bounty; see `fit.rs`.
+    pub(crate) fits: std::collections::HashMap<u32, crate::fit::FitConstraint>,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -169,6 +172,7 @@ impl Solver {
             locks: std::collections::HashMap::new(),
             lock_labels: std::collections::HashMap::new(),
             lock_history: Default::default(),
+            fits: std::collections::HashMap::new(),
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]
@@ -209,6 +213,9 @@ impl Solver {
         if self.algo == Algorithm::PcfrPlus && self.preds.is_none() {
             self.ensure_preds();
         }
+        if !self.fits.is_empty() {
+            self.prepare_fits();
+        }
         self.sym_dirty = true;
         self.iteration += 1;
         let disc = Discounts::for_iteration(self.algo, self.iteration);
@@ -224,6 +231,9 @@ impl Solver {
                 &disc,
                 &mut out,
             );
+        }
+        if !self.fits.is_empty() {
+            self.fit_dual_step();
         }
     }
 
@@ -534,6 +544,11 @@ impl Solver {
                             disc,
                             &mut vals[a * nh..(a + 1) * nh],
                         );
+                    }
+                    if !self.fits.is_empty() {
+                        if let Some(fit) = self.fits.get(&node_idx) {
+                            fit.apply(&sigma, reach_p, &mut vals, na, nh);
+                        }
                     }
                     for a in 0..na {
                         let sig = &sigma[a * nh..(a + 1) * nh];

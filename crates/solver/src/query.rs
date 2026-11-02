@@ -30,6 +30,10 @@ pub enum LockMode {
     Range { freqs: Vec<f32> },
     /// Set exact frequencies for specific combos; other hands keep current.
     Hands { edits: Vec<HandEdit> },
+    /// Target overall frequencies like `Range`, but move the hands that lose
+    /// the least EV by switching instead of scaling every hand (the quick
+    /// least-exploitable fit, see `fit.rs`). Only this node changes.
+    Fit { freqs: Vec<f32> },
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -39,7 +43,7 @@ pub struct HandEdit {
 }
 
 /// Validate and normalize a per-action frequency vector to sum 1.
-fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
+pub(crate) fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
     if freqs.len() != na {
         return Err(format!("expected {na} action frequencies, got {}", freqs.len()));
     }
@@ -67,7 +71,7 @@ fn normalize_freqs(freqs: &[f32], na: usize) -> Result<Vec<f32>, String> {
 /// frequency of each action matches `target`. Actions with a zero target are
 /// driven out; actions the solved strategy never uses can't be forced up
 /// (no probability mass to scale) — those stay near zero (use per-hand edits).
-fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
+pub(crate) fn rake_to_target(sigma: &mut [f32], na: usize, nh: usize, reach: &[f32], target: &[f32]) {
     // Most poker nodes have two or three choices. Constant action counts
     // let the compiler unroll their independent arithmetic without changing
     // the accumulation order for any hand or action.
@@ -221,6 +225,8 @@ pub struct NodeView {
     pub available_cards: Option<Vec<String>>,
     pub players: [PlayerView; 2],
     pub locked: bool,
+    /// A least-exploitable fit running at this node (target, progress).
+    pub fit: Option<crate::fit::FitView>,
     /// One entry per node along the path, plus the current node (chosen=None).
     pub history: Vec<HistoryStep>,
 }
@@ -652,6 +658,13 @@ impl Solver {
                 let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
                 self.locks.contains_key(&idx)
             },
+            fit: if self.has_fits() {
+                let canon = self.canonical_path(path);
+                let idx = self.walk_path(&canon).map(|w| w.node_idx).unwrap_or(walk.node_idx);
+                self.fit_view_at(idx)
+            } else {
+                None
+            },
             history: self.build_history(path)?,
         })
     }
@@ -752,6 +765,12 @@ impl Solver {
                 rake_to_target(&mut s, na, nh, &walk.reach[p], &target);
                 s
             }
+            // Least EV loss onto the targets, from the solved base and the
+            // current per-hand action EVs; idempotent like Range.
+            LockMode::Fit { freqs } => {
+                let target = normalize_freqs(&freqs, na)?;
+                self.quick_fit(&walk, &target).0
+            }
             // Override specific hands' frequencies on top of the CURRENT
             // strategy (the lock if one exists, else solved). Absolute
             // assignment, so successive per-hand edits accumulate cleanly.
@@ -843,7 +862,7 @@ impl Solver {
     pub fn unlock_node(&mut self, path: &[PathStep]) -> Result<bool, String> {
         let path = &self.canonical_path(path);
         let walk = self.walk_path(path)?;
-        let removed = self.take_lock(walk.node_idx);
+        let removed = self.take_lock(walk.node_idx) | self.fits.remove(&walk.node_idx).is_some();
         if removed {
             self.mark_sym_dirty();
         }
@@ -851,6 +870,7 @@ impl Solver {
     }
 
     pub fn clear_locks(&mut self) {
+        self.fits.clear();
         if !self.locks.is_empty() {
             self.mark_sym_dirty();
         }

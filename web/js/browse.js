@@ -576,7 +576,7 @@ export class Browser {
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}<span class="lock-history"></span></div>
+      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span></div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
           data-tip="Model a read about the whole range: 'folds 70% to this bet'. You set aggregate action frequencies and the solved strategy is rebalanced to hit them — each hand's mix is scaled proportionally, so the RIGHT hands do the extra folding/calling. This is the mode for pool tendencies.">Overall %</button>
@@ -634,23 +634,78 @@ export class Browser {
     if (this.lockMode === 'range') {
       const help = document.createElement('div');
       help.className = 'lk-help';
-      help.innerHTML = 'Set how often the <b>whole range</b> takes each action, then LOCK FREQUENCIES. ' +
-        'The solved strategy is rebalanced to hit your numbers (the pre-filled values are the current solution). ' +
+      help.innerHTML = 'Set how often the <b>whole range</b> takes each action, choose how to get there, then lock. ' +
+        'The pre-filled values are the current solution. ' +
         'Then <b>RE-SOLVE</b> to make the rest of the tree adapt to the read \u2014 or open <b>EXPLOIT</b> to punish it directly, no re-solve needed.';
       const ed = freqEditor(curFreq);
       body.append(help, ed.cont, ed.sumRow);
+      const fit = this.view.fit;
+      if (fit) {
+        // a least-exploitable fit is steering this node in the solve
+        const st = document.createElement('div');
+        st.className = 'lk-help lk-fit';
+        const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '\u2014';
+        st.innerHTML = '<b>Least-exploitable fit running.</b> ' + acts.map((a, k) =>
+          `${a.label} ${pct(fit.achieved[k])} \u2192 ${pct(fit.target[k])}`).join(' \u00b7 ') +
+          '. The solve steers this node onto the targets and locks the result when it ends (one undo removes it).';
+        body.appendChild(st);
+      }
+      const methods = [
+        ['rake', 'Scale', 'Rescale the solved strategy: every hand\u2019s mix is scaled by the same factor until the range hits your numbers. Hands that never took an action can\u2019t be scaled into it.'],
+        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes. Good for a quick read; a best response can still punish it, because the rest of the tree hasn\u2019t adapted.'],
+        ['full', 'Least exploitable', 'Find the play for the WHOLE tree that hits your numbers while giving away the least to a best response, by re-solving with a temporary per-action bounty at this node. Starts a RE-SOLVE; the result is locked when it ends.'],
+      ];
+      if (!methods.some(m => m[0] === this.fitMethod)) {
+        let saved = null;
+        try { saved = localStorage.getItem('gtopen.fitMethod'); } catch { /* storage off */ }
+        this.fitMethod = methods.some(m => m[0] === saved) ? saved : 'rake';
+      }
+      const seg = document.createElement('div');
+      seg.className = 'seg lk-method';
+      for (const [key, name, tip] of methods) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = name;
+        b.dataset.tip = tip;
+        b.className = this.fitMethod === key ? 'active' : '';
+        b.addEventListener('click', () => {
+          this.fitMethod = key;
+          try { localStorage.setItem('gtopen.fitMethod', key); } catch { /* storage off */ }
+          this.renderActions();
+        });
+        seg.appendChild(b);
+      }
+      body.appendChild(seg);
       const foot = document.createElement('div'); foot.className = 'btn-row';
-      const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = 'LOCK FREQUENCIES';
-      lock.dataset.tip = 'Pin this node to YOUR numbers (a read/assumption). Rebalances the solved strategy so the range hits these frequencies. Note: hands that never took an action in the solution can\u2019t be scaled into it \u2014 force those with Per hand.';
+      const lock = document.createElement('button'); lock.className = 'btn';
+      lock.textContent = this.fitMethod === 'full' ? 'FIT + RE-SOLVE' : 'LOCK FREQUENCIES';
+      lock.dataset.tip = methods.find(m => m[0] === this.fitMethod)[2];
       lock.addEventListener('click', async () => {
         const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
         if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
         try {
-          const out = await this.lockHere({ kind: 'range', freqs }, label);
-          toast(`locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
+          if (this.fitMethod === 'full') {
+            const out = await api.fit(this.path, freqs, label, this.freezeLine && this.hasEarlierDecision());
+            this.setLockHistory(out.history);
+            toast(`least-exploitable fit set${frozenNote(out)} — re-solving; the node is locked when the solve ends`);
+            document.getElementById('btn-solve-top')?.click();
+          } else {
+            const out = await this.lockHere({ kind: this.fitMethod === 'quick' ? 'fit' : 'range', freqs }, label);
+            toast(`locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`);
+          }
+          this.refresh();
         } catch (e) { toast(e.message, true); }
       });
       foot.appendChild(lock);
+      if (fit) {
+        const cancel = document.createElement('button'); cancel.className = 'btn ghost'; cancel.textContent = 'CANCEL FIT';
+        cancel.dataset.tip = 'Stop steering this node. It keeps learning freely in the solve, and nothing is locked.';
+        cancel.addEventListener('click', async () => {
+          try { await api.fitCancel(this.path); toast('fit cancelled'); this.refresh(); }
+          catch (e) { toast(e.message, true); }
+        });
+        foot.appendChild(cancel);
+      }
       this.appendLockFooter(foot, label, locked);
       body.appendChild(foot);
     } else {

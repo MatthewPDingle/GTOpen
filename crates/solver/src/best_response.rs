@@ -70,7 +70,16 @@ impl Solver {
                 let na = node.num_children as usize;
                 if node.player as usize == p {
                     let mut vals = Buf::for_overwrite(nh);
-                    if let Some(lock) = self.locks.get(&node_idx) {
+                    // A running fit is the lock it will become: its average
+                    // strategy, fixed for the best responder.
+                    let fitted = if !self.fits.is_empty() && self.fits.contains_key(&node_idx) {
+                        let mut s = vec![0f32; na * nh];
+                        self.solved_strategy_into(node, &mut s);
+                        Some(s)
+                    } else {
+                        None
+                    };
+                    if let Some(lock) = self.locks.get(&node_idx).or(fitted.as_ref()) {
                         // Locked nodes are constraints: the best responder
                         // cannot deviate there.
                         for a in 0..na {
