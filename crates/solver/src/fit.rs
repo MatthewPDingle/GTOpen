@@ -30,6 +30,7 @@
 //! its current average strategy, which is the lock it will become; the usual
 //! exploitability readout then measures the game being converged to.
 
+use crate::cards::card_mask;
 use crate::cfr::Solver;
 use crate::query::{normalize_freqs, rake_to_target, PathStep, Walk};
 use crate::tree::KIND_ACTION;
@@ -62,10 +63,17 @@ pub struct FitConstraint {
     pub path: Vec<PathStep>,
     pub player: usize,
     pub target: Vec<f32>,
-    /// Bounty per action, in chips per unit of opponent reach at the node.
-    /// The value added to action a's counterfactual values is
-    /// `bounty[a] * sum_j reach_o[j]`, the same for every hand.
+    /// Bounty per action, in chips per unit of `mass`. The value added to
+    /// action a's counterfactual values is `bounty[a] * mass`, the same for
+    /// every hand and every iteration.
     pub bounty: Vec<f64>,
+    /// The opponent's whole range at the node (root weights, minus combos
+    /// the path's cards block), ignoring the opponent's action
+    /// probabilities. A fixed scale: scaling the bounty by the opponent's
+    /// current reach instead makes it vanish wherever the opponent stops
+    /// reaching the node, while the regrets stored from earlier iterations
+    /// (when it did) keep the node's strategy frozen.
+    pub mass: f64,
     /// Pot at the node (chips), for step size and display.
     pub pot: f64,
     /// Lock label once materialized.
@@ -113,13 +121,14 @@ impl FitConstraint {
         &self.push
     }
 
-    fn new(path: Vec<PathStep>, player: usize, target: Vec<f32>, bounty: Vec<f64>, pot: f64, label: String) -> Self {
+    fn new(path: Vec<PathStep>, player: usize, target: Vec<f32>, bounty: Vec<f64>, mass: f64, pot: f64, label: String) -> Self {
         let na = target.len();
         let mut f = FitConstraint {
             path,
             player,
             target,
             bounty,
+            mass,
             pot,
             label,
             last_freq: vec![f64::NAN; na],
@@ -145,8 +154,7 @@ impl FitConstraint {
 
     /// CPU traversal hook at the node, traverser = owner: add the bounty to
     /// the action values and record the current-iterate frequency.
-    pub(crate) fn apply(&self, sigma: &[f32], reach_p: &[f32], reach_o: &[f32], vals: &mut [f32], na: usize, nh: usize) {
-        let opp: f64 = reach_o.iter().map(|&r| r as f64).sum();
+    pub(crate) fn apply(&self, sigma: &[f32], reach_p: &[f32], vals: &mut [f32], na: usize, nh: usize) {
         let mut freq = vec![0f64; na];
         let mut tot = 0f64;
         for i in 0..nh {
@@ -157,7 +165,7 @@ impl FitConstraint {
             }
         }
         for a in 0..na {
-            let add = ((self.bounty[a] + self.push[a]) * opp) as f32;
+            let add = ((self.bounty[a] + self.push[a]) * self.mass) as f32;
             if add != 0.0 {
                 for v in &mut vals[a * nh..(a + 1) * nh] {
                     *v += add;
@@ -409,14 +417,23 @@ impl Solver {
         let pot = node.put[0] + node.put[1];
         let target = normalize_freqs(freqs, na)?;
         let (_, lam, wbar) = self.quick_fit(&walk, &target);
-        let opp: f64 = walk.reach[1 - p].iter().map(|&r| r as f64).sum();
+        let mut blocked = 0u64;
+        for &c in &walk.dealt.cards[..walk.dealt.len as usize] {
+            blocked |= card_mask(c);
+        }
+        let mass: f64 = self.spot.hands[1 - p]
+            .iter()
+            .zip(&self.spot.weights[1 - p])
+            .filter(|(h, _)| h.mask & blocked == 0)
+            .map(|(_, &w)| w as f64)
+            .sum();
         // quick price = chips of per-hand EV, i.e. lam * wbar of counterfactual
-        // value per hand; the full fit adds bounty * opp
-        let scale = if opp > 1e-12 { wbar / opp } else { 0.0 };
+        // value per hand; the full fit adds bounty * mass
+        let scale = if mass > 1e-12 { wbar / mass } else { 0.0 };
         let bounty: Vec<f64> = lam.iter().map(|&l| l * scale).collect();
         let idx = walk.node_idx;
         self.take_lock(idx);
-        self.fits.insert(idx, FitConstraint::new(canon, p, target, bounty, pot, label));
+        self.fits.insert(idx, FitConstraint::new(canon, p, target, bounty, mass, pot, label));
         self.mark_sym_dirty();
         Ok(idx)
     }

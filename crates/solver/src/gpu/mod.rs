@@ -1040,12 +1040,9 @@ impl GpuSolver {
                         .arg(&self.d_regrets[p])
                         .arg(&self.d_rsrc[p])
                         .arg(&self.d_reach[p])
-                        .arg(&self.d_rsrc[1 - p])
-                        .arg(&self.d_reach[1 - p])
                         .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
-                        .arg(&nh_o)
                         .arg(&nh_max)
                         .launch(Self::cfg(fsp.count, 0))
                         .map_err(e)?;
@@ -1133,6 +1130,7 @@ impl GpuSolver {
             }
             f[41] = fit.pot as f32;
             f[42] = fit.steps as f32;
+            f[43] = fit.mass as f32;
             nodes.push(*idx);
             rows.push((fit.player, self.h_node_level[i], k as u32));
         }

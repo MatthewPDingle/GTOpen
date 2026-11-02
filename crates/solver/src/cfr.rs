@@ -547,7 +547,7 @@ impl Solver {
                     }
                     if !self.fits.is_empty() {
                         if let Some(fit) = self.fits.get(&node_idx) {
-                            fit.apply(&sigma, reach_p, reach_o, &mut vals, na, nh);
+                            fit.apply(&sigma, reach_p, &mut vals, na, nh);
                         }
                     }
                     for a in 0..na {

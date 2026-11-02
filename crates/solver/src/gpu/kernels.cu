@@ -522,10 +522,11 @@ extern "C" __global__ void up_action_eval(
 // ---------------------------------------------------------------------------
 // Least-exploitable fits (see fit.rs). Each fit owns FIT_STRIDE floats:
 //   [0,8) target | [8,16) bounty | [16,24) push | [24,32) frequency sums |
-//   32 reach sum | [33,41) last frequency | 41 pot | 42 steps
-// Bounty and push are per unit of opponent reach at the node; the value
-// added to every hand's action-a counterfactual value is
-// (bounty[a] + push[a]) * sum_j reach_o[j]. Mirrors FitConstraint on the CPU.
+//   32 reach sum | [33,41) last frequency | 41 pot | 42 steps | 43 opponent range mass
+// Bounty and push are per unit of the opponent's whole range at the node
+// (FitConstraint::mass); the value added to every hand's action-a
+// counterfactual value is (bounty[a] + push[a]) * mass. Mirrors
+// FitConstraint on the CPU.
 // ---------------------------------------------------------------------------
 #define FIT_STRIDE 48
 #define FIT_NA 8
@@ -545,11 +546,10 @@ extern "C" __global__ void fit_apply(
     const u32* __restrict__ children,
     const float* __restrict__ regrets_p,
     const u32* __restrict__ rsrc_p, const float* __restrict__ reach_p_buf,
-    const u32* __restrict__ rsrc_o, const float* __restrict__ reach_o_buf,
     const u32* __restrict__ cfv_slot, float* cfv,
-    int nh_p, int nh_o, int nh_max)
+    int nh_p, int nh_max)
 {
-    __shared__ float red[FIT_NA + 2][128];
+    __shared__ float red[FIT_NA + 1][128];
     __shared__ float bias[FIT_NA];
     int b = blockIdx.x;
     if (b >= count) return;
@@ -561,13 +561,11 @@ extern "C" __global__ void fit_apply(
     u64 doff = node_data_off[n];
     u32 cs = node_children_start[n];
     const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
-    const float* ro = reach_o_buf + (u64)rsrc_o[n] * nh_o;
     int t = threadIdx.x;
 
     float acc[FIT_NA];
     for (int a = 0; a < FIT_NA; a++) acc[a] = 0.f;
-    float rsum = 0.f, osum = 0.f;
-    for (int j = t; j < nh_o; j += blockDim.x) osum += ro[j];
+    float rsum = 0.f;
     for (int i = t; i < nh_p; i += blockDim.x) {
         float sum = 0.f;
         for (int a = 0; a < na; a++) {
@@ -584,18 +582,18 @@ extern "C" __global__ void fit_apply(
     }
     for (int a = 0; a < FIT_NA; a++) red[a][t] = acc[a];
     red[FIT_NA][t] = rsum;
-    red[FIT_NA + 1][t] = osum;
     __syncthreads();
     for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
         if (t < step)
-            for (int q = 0; q < FIT_NA + 2; q++) red[q][t] += red[q][t + step];
+            for (int q = 0; q < FIT_NA + 1; q++) red[q][t] += red[q][t + step];
         __syncthreads();
     }
     if (t == 0) {
         for (int a = 0; a < na; a++) F[24 + a] += red[a][0];
         F[32] += red[FIT_NA][0];
     }
-    if (t < na) bias[t] = (F[8 + t] + F[16 + t]) * red[FIT_NA + 1][0];
+    // bounty in chips per unit of the opponent's whole range at the node
+    if (t < na) bias[t] = (F[8 + t] + F[16 + t]) * F[43];
     __syncthreads();
     for (int a = 0; a < na; a++) {
         float add = bias[a];
