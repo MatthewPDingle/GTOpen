@@ -1,6 +1,6 @@
 //! Probe: trace a least-exploitable fit at a turn node below the flop's
 //! chance node (OOP, after check-check, 4c), on the CPU or the GPU.
-//!   cargo run --release -p solver --example fit_turn_probe -- [warm] [cpu|gpu] [small|bench]
+//!   cargo run --release -p solver --example fit_turn_probe -- [warm] [cpu|gpu] [small|bench] [max fit iterations]
 //! (gpu needs --features gpu)
 use solver::query::PathStep;
 use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
@@ -34,6 +34,36 @@ fn line(it: u32, s: &Solver, x: f64) {
     );
 }
 
+/// Per-hand picture at the fit node (average strategies, bounty excluded):
+/// how far apart the two actions' EVs are, in pots, by reach mass.
+fn diagnose(s: &Solver, path: &[PathStep]) {
+    let v = s.node_view(path).unwrap();
+    let p = v.player.unwrap() as usize;
+    let pot = v.pot;
+    let mut rows: Vec<(f64, f64, f64, String)> = Vec::new(); // (reach, ev gap bet-check in pots, bet freq, combo)
+    for h in &v.players[p].hands {
+        if let (Some(st), Some(evs)) = (&h.strategy, &h.evs) {
+            if let (Some(c), Some(b)) = (evs[0], evs[evs.len() - 1]) {
+                if h.reach > 0.0 {
+                    rows.push((h.reach as f64, (b - c) as f64 / pot, st[st.len() - 1] as f64, h.combo.clone()));
+                }
+            }
+        }
+    }
+    let tot: f64 = rows.iter().map(|r| r.0).sum();
+    println!("node pot {pot}, actions {:?}, {} hands with reach", v.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>(), rows.len());
+    for (lo, hi) in [(-1e9, -6.0), (-6.0, -2.0), (-2.0, -1.0), (-1.0, -0.25), (-0.25, -0.02), (-0.02, 0.02), (0.02, 0.25), (0.25, 1.0), (1.0, 1e9)] {
+        let sel: Vec<_> = rows.iter().filter(|r| r.1 >= lo && r.1 < hi).collect();
+        let m: f64 = sel.iter().map(|r| r.0).sum();
+        let bf: f64 = sel.iter().map(|r| r.0 * r.2).sum::<f64>() / m.max(1e-30);
+        println!("  gap [{lo:>6}, {hi:>6}) pots: reach share {:.3}, bet freq {:.3}", m / tot, bf);
+    }
+    rows.sort_by(|a, b| b.0.total_cmp(&a.0));
+    for r in rows.iter().take(12) {
+        println!("  {} reach {:.4} gap {:+.3} pots bet {:.3}", r.3, r.0 / tot, r.1, r.2);
+    }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let warm: u32 = args.get(1).map(|a| a.parse().unwrap()).unwrap_or(0);
@@ -45,6 +75,7 @@ fn main() {
     };
     let path = vec![PathStep::Action { index: 0 }, PathStep::Action { index: 0 }, PathStep::Card { card: "4c".into() }];
     let target = [0.66f32, 0.34];
+    let max: u32 = args.get(4).map(|a| a.parse().unwrap()).unwrap_or(2000);
     let mut s = Solver::new(Arc::new(Spot::new(cfg).unwrap()));
     let pot = s.spot.tree.config.starting_pot;
     println!("nodes {} warm {warm} {}", s.spot.tree.nodes.len(), if use_gpu { "gpu" } else { "cpu" });
@@ -62,7 +93,11 @@ fn main() {
                     break;
                 }
             }
+            if it == max {
+                break;
+            }
         }
+        diagnose(&s, &path);
         return;
     }
     #[cfg(feature = "gpu")]
@@ -91,7 +126,12 @@ fn main() {
                     break;
                 }
             }
+            if it == max {
+                break;
+            }
         }
+        gpu.sync_to_cpu(&mut s).unwrap();
+        diagnose(&s, &path);
     }
     #[cfg(not(feature = "gpu"))]
     panic!("build with --features gpu");
