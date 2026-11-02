@@ -29,8 +29,8 @@ fn small() -> SpotConfig {
 fn line(it: u32, s: &Solver, x: f64) {
     let f = &s.fits_view()[0];
     println!(
-        "{it}: x {x:.3}% achieved {:?} bounty%pot {:?} err {:.4}",
-        f.achieved, f.bounty_pct_pot, f.max_error
+        "{it}: x {x:.3}% achieved {:?} current {:?} bounty%pot {:?} err {:.4}",
+        f.achieved, f.current, f.bounty_pct_pot, f.max_error
     );
 }
 

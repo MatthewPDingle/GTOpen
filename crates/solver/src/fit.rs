@@ -102,6 +102,9 @@ pub struct FitView {
     pub bounty_pct_pot: Vec<f32>,
     /// Largest per-action miss, in frequency points (0..1).
     pub max_error: f32,
+    /// The current iterate's frequency in the last iteration (what the
+    /// dual ascent steers; the average follows it).
+    pub current: Vec<f32>,
 }
 
 impl FitConstraint {
@@ -519,6 +522,7 @@ impl Solver {
             achieved,
             bounty_pct_pot: f.bounty.iter().map(|b| (b / f.pot.max(1e-9) * 100.0) as f32).collect(),
             max_error,
+            current: f.last_freq.iter().map(|&x| x as f32).collect(),
         }
     }
 
