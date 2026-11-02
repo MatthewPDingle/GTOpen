@@ -58,9 +58,26 @@ fn diagnose(s: &Solver, path: &[PathStep]) {
         let bf: f64 = sel.iter().map(|r| r.0 * r.2).sum::<f64>() / m.max(1e-30);
         println!("  gap [{lo:>6}, {hi:>6}) pots: reach share {:.3}, bet freq {:.3}", m / tot, bf);
     }
+    // cumulative regrets at the node, in pot x opponent-reach units: what a
+    // bounty of b pots must outweigh, at b per iteration
+    let idx = s.walk_path(path).unwrap().node_idx;
+    let node = &s.spot.tree.nodes[idx as usize];
+    let nh = s.spot.hands[p].len();
+    let omega: f64 = v.players[1 - p].hands.iter().map(|h| h.reach as f64).sum();
+    let reg = match &s.regrets[p] {
+        solver::store::Store::F32(b) => unsafe { b.slice(node.data_offset, 2 * nh) }.to_vec(),
+        _ => vec![],
+    };
+    println!("  opponent reach mass {omega:.4}, iteration {}", s.iteration);
+    let combos: Vec<String> = s.spot.hands[p].iter().map(|h| solver::cards::combo_to_string(h.c1, h.c2)).collect();
     rows.sort_by(|a, b| b.0.total_cmp(&a.0));
     for r in rows.iter().take(12) {
-        println!("  {} reach {:.4} gap {:+.3} pots bet {:.3}", r.3, r.0 / tot, r.1, r.2);
+        let i = combos.iter().position(|c| *c == r.3);
+        let (rc, rb) = match i {
+            Some(i) if !reg.is_empty() => (reg[i] as f64 / (pot * omega), reg[nh + i] as f64 / (pot * omega)),
+            _ => (f64::NAN, f64::NAN),
+        };
+        println!("  {} reach {:.4} gap {:+.3} pots bet {:.3} | R_check {rc:+.2} R_bet {rb:+.2} (pot-iterations)", r.3, r.0 / tot, r.1, r.2);
     }
 }
 
@@ -68,10 +85,16 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     let warm: u32 = args.get(1).map(|a| a.parse().unwrap()).unwrap_or(0);
     let use_gpu = args.get(2).map(|a| a == "gpu").unwrap_or(false);
-    let cfg = if args.get(3).map(|a| a == "bench").unwrap_or(false) {
-        serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap()
-    } else {
-        small()
+    let cfg = match args.get(3).map(|a| a.as_str()) {
+        Some("bench") => serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap(),
+        Some("deep") => {
+            let mut c = small();
+            c.tree.effective_stack = 970.0;
+            c.tree.oop = [sz("33", "60"), sz("75", "60"), sz("75", "60")];
+            c.tree.ip = [sz("33", "60"), sz("75", "60"), sz("75", "60")];
+            c
+        }
+        _ => small(),
     };
     let path = vec![PathStep::Action { index: 0 }, PathStep::Action { index: 0 }, PathStep::Card { card: "4c".into() }];
     let target = [0.66f32, 0.34];
