@@ -28,7 +28,7 @@ impl Plan {
             if n.kind==KIND_ACTION {for a in (0..n.actions.len()).rev(){stack.push((s.child(i,a),ctx));}}
             else if ctx!=u32::MAX {
                 p.terms.push(i as u32);
-                if n.kind==KIND_POT_SHARE {p.spr[i]=(0..s.n).filter(|&q|n.live&(1<<q)!=0).map(|q|(s.cfg.stack-n.invested[q])/n.pot).fold(f64::INFINITY,f64::min).max(0.);}
+                if n.kind==KIND_POT_SHARE {p.spr[i]=(0..s.n).filter(|&q|n.live&(1<<q)!=0).map(|q|(s.cfg.stack_of(q)-n.invested[q])/n.pot).fold(f64::INFINITY,f64::min).max(0.);}
             }
         } p
     }

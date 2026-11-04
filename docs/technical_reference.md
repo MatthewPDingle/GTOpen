@@ -117,6 +117,17 @@ The API identifies the active model as `multiway_equity_model` in build/load res
 
 Games with `balanced` realization or separate 4-bet+ menus use `GTOPREFLOP4`, retaining both continuation models and all sizing overrides. Straddle games without those features use `GTOPREFLOP3`. Older binaries refuse unsupported versions.
 
+## Per-seat stacks and side pots
+
+`PreflopConfig.stacks` (optional, one bb amount per seat, before antes) gives each seat its own stack; `stack` stays as the all-equal default and should hold the deepest stack. Absent or all-equal `stacks` builds exactly the equal-stack tree, with bit-identical solves.
+
+- **Tree.** A seat that cannot cover the bet may call all-in for less (even with limping off). A raise is capped at the deepest stack still able to call it, so a big stack's "all-in" against shorter seats is labelled with the amount that can be called. No raise is offered when no one behind can put in more chips. An all-in for less than a full raise does not reopen raising for a seat that already acted, unless the raises since add up to a full one (standard no-limit rule); seats that have not acted keep their raise.
+- **Pots.** At a flop or showdown terminal the top contributor's uncalled chips are returned first. If live seats are all-in for different amounts, the pot is split into a main pot and side pots by all-in level (antes go to the main pot; folded chips go to every pot their contribution reaches). The node view lists them under `side_pots`.
+- **Payoffs.** Expected value is linear in the pots, so each pot pays its amount times the seat's chance of holding the best hand among the seats eligible for it. Two-way pots use the symmetrized pairwise equity table, so they pay out exactly what is in them; three or more use the game's multiway model. Rake is charged once on the whole pot and shared in proportion to pot size. Every side-pot terminal has a live all-in seat, so it is priced as showdown equity under every realization model.
+- **Exports.** SEND TO POSTFLOP uses the effective stack (the smaller of the two remaining stacks). SEND TO 3-WAY carries each seat's remaining stack. Neither is offered at a terminal with side pots or, for 3-way, when a live seat has no chips behind.
+- **GPU.** Trees that contain side-pot terminals solve on CPU for now; uncalled returns alone run on GPU unchanged.
+- **Saves.** Games with unequal stacks save as `GTOPREFLOP5` so older binaries refuse them rather than rebuild an equal-stack tree.
+
 ## Performance
 
 The coupled-deck seven-seat validation game (1,003,570 nodes, 200 bb, RTX

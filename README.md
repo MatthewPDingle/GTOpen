@@ -55,7 +55,7 @@ The first build takes longer. Large trees need substantial RAM; GPU solving also
 
 | Tab | What to do |
 | --- | --- |
-| **00 · Preflop Lab** | Build a 2–9-player game, choose blinds and raise sizes, assign optional player models, and solve. Follow an action line to a heads-up flop, then **Send to postflop setup**. |
+| **00 · Preflop Lab** | Build a 2–9-player game, choose blinds, stacks (equal or per seat) and raise sizes, assign optional player models, and solve. Follow an action line to a heads-up flop, then **Send to postflop setup**. |
 | **01 · Setup** | Enter or import both ranges, choose the board, and set pot, effective stack, rake, and bet sizes. |
 | **02 · Solve** | After **Build tree** in Setup, solve the selected board. Watch convergence, stop/resume, and save the session. |
 | **03 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. Undo and redo lock edits with the lock panel's buttons or Ctrl+Z / Ctrl+Shift+Z. |

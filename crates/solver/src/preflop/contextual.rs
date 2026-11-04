@@ -208,7 +208,7 @@ fn predict_impl(version: &str, cfg: &PreflopConfig, seat: usize, input: &Context
     if seat >= cfg.positions.len() { return Err("contextual seat out of range".into()); }
     if input.raises < 2 || input.raises > 32 { return Err("contextual preview needs 2–32 prior raises".into()); }
     if ![input.pot, input.invested, input.to_call].iter().all(|v| v.is_finite())
-        || input.invested < 0.0 || input.invested >= cfg.stack
+        || input.invested < 0.0 || input.invested >= cfg.stack_of(seat)
         || input.to_call <= input.invested || input.pot <= 0.0
         || input.pot + 1e-8 < input.invested + input.to_call {
         return Err("contextual amounts must describe a positive call with pot >= investment + faced total".into());
@@ -220,7 +220,7 @@ fn predict_impl(version: &str, cfg: &PreflopConfig, seat: usize, input: &Context
     } {
         return Err("cold entry must have only its blind invested; called/raised entry needs voluntary investment".into());
     }
-    let remaining = cfg.stack - input.invested;
+    let remaining = cfg.stack_of(seat) - input.invested;
     let call = (input.to_call - input.invested).min(remaining);
     if !(input.pot+call).is_finite() { return Err("contextual pot plus call is too large".into()); }
     let price = call / (input.pot + call);
@@ -234,7 +234,7 @@ fn predict_impl(version: &str, cfg: &PreflopConfig, seat: usize, input: &Context
     let depth = f64::from(input.raises >= 3);
     let price_z = (price - 0.3) / 0.15;
     let mut x = [0.0; 80];
-    for (i, value) in [1.0, depth, price_z, price_z*price_z, input.invested / cfg.stack,
+    for (i, value) in [1.0, depth, price_z, price_z*price_z, input.invested / cfg.stack_of(seat),
         (remaining.ln_1p() - 101.0f64.ln()) / 2.0].into_iter().enumerate() {
         x[i*3+entry] = value;
     }

@@ -22,7 +22,9 @@ export function formatPreflopView(view, config = {}) {
       if (action.kind === 'call') {
         const added = Math.max(0, action.to - (invested[step.actor_pos] ?? 0));
         const verb = previousRaise != null ? 'Call' : invested[step.actor_pos] > 0 ? 'Complete' : 'Limp';
-        return { ...action, label: `${verb} ${number(added)} bb`,
+        // A short stack's call is its whole stack (the engine labels it).
+        const allIn = action.label.startsWith('Call all-in') ? ' all-in' : '';
+        return { ...action, label: `${verb}${allIn} ${number(added)} bb`,
           sizingHint: `Add ${number(added)} bb to reach ${number(action.to)} bb total (excluding ante).` };
       }
       return { ...action };

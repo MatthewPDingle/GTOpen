@@ -868,6 +868,11 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
+        // Uncalled returns are already folded into node pots, but side-pot
+        // terminals need per-pot showdowns the kernels do not have yet.
+        if s.nodes.iter().any(|nd| !nd.side_pots.is_empty()) {
+            return Err("side pots from unequal stacks solve on CPU for now".into());
+        }
         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
             .filter(|&len| len <= u32::MAX as usize)
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
@@ -967,7 +972,7 @@ impl PreflopGpu {
                 let mut min_left = f64::MAX;
                 for q in 0..np {
                     if nd.live & (1 << q) != 0 {
-                        min_left = min_left.min(s.cfg.stack - nd.invested[q] + s.cfg.ante);
+                        min_left = min_left.min(s.cfg.left(q, nd.invested[q]));
                     }
                 }
                 let spr = (min_left / nd.pot).max(0.0);

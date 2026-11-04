@@ -71,7 +71,7 @@ impl PreflopSolver {
             normalized.push(reach.iter().map(|v| v / mass).collect::<Vec<_>>());
         }
         let live: Vec<usize> = (0..self.n).filter(|p| nd.live & (1 << p) != 0).collect();
-        let left = live.iter().map(|&p| self.cfg.stack - nd.invested[p] + self.cfg.ante)
+        let left = live.iter().map(|&p| self.cfg.left(p, nd.invested[p]))
             .fold(f64::INFINITY, f64::min).max(0.0);
         let all_in = left / nd.pot <= 1e-9;
         let calibrated = self.fit.is_some() && !all_in && self.cfg.realization == "calibrated";

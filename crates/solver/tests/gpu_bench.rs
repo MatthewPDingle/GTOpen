@@ -11,7 +11,7 @@ fn bench_gpu_six_max() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,

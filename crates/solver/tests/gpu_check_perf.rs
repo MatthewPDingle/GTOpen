@@ -11,7 +11,7 @@ fn config(n: usize) -> PreflopConfig {
     PreflopConfig {
         utg_straddle: false,
         positions: (0..n).map(|p| format!("P{p}")).collect(),
-        stack: if n == 8 { 150.0 } else { 100.0 },
+        stack: if n == 8 { 150.0 } else { 100.0 }, stacks: None,
         posts,
         ante: 0.0,
         limp: true,

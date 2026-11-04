@@ -145,7 +145,7 @@ impl PreflopSolver {
             children.extend((0..nd.actions.len()).map(|a|mapping[&self.child(node,a)] as u32));
             nodes.push(PNode{kind:nd.kind,actor:nd.actor,actions:nd.actions.clone(),child_start,
                 pot:nd.pot,invested:nd.invested.clone(),live:nd.live,winner:nd.winner,r:nd.r.clone(),data_off:arena_len,
-                aggressor:nd.aggressor,posf:nd.posf.clone(),bucket:nd.bucket,raises:nd.raises,raised:nd.raised});
+                aggressor:nd.aggressor,posf:nd.posf.clone(),bucket:nd.bucket,raises:nd.raises,raised:nd.raised,side_pots:nd.side_pots.clone()});
             arena_len+=nd.actions.len()*NUM_CLASSES;
             if let Some(lock)=self.point_locks.get(&(node as u32)){locks.insert(local as u32,lock.clone());}
         }
