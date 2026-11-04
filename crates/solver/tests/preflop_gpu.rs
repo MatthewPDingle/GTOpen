@@ -78,14 +78,15 @@ fn gpu_matches_cpu_side_pots() {
     }
 }
 
-/// Like run_equivalence, but compares pure decisions at 50 iterations. In the
-/// 3-way limp tree CPU and GPU averages fork after ~50 iterations (float
-/// noise amplified by near-indifferent spots), and the same tree with equal
-/// stacks forks the same way on master, so the long horizon checks only that
-/// both converge to the same exploitability.
+/// Like run_equivalence, with pure decisions compared at 50 iterations. In
+/// the 3-way limp tree, CPU and GPU regrets split apart between 20 and 50
+/// iterations and the averages fork later (float noise amplified by
+/// near-indifferent spots). The same tree with equal stacks does this on
+/// master too, so regrets are compared at 5 iterations and the long horizon
+/// checks only that both reach the same exploitability.
 fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
-    for _ in 0..50 {
+    for _ in 0..5 {
         cpu.iterate();
         g.iterate(&mut gs).unwrap();
     }
@@ -93,7 +94,12 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     let (cr, _) = cpu.arena_snapshot();
     let (gr, _) = gs.arena_snapshot();
     let worst = cr.iter().zip(gr.iter()).fold(0f32, |w, (x, y)| w.max((x - y).abs()));
-    assert!(worst < 2e-3, "side-pot regrets diverge within 50 iterations: {worst}");
+    assert!(worst < 1e-3, "side-pot regret math diverges beyond float noise: {worst}");
+    for _ in 5..50 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
     let (mut decisive, mut clash) = (0u32, 0u32);
     for i in 0..cpu.nodes.len() {
         if cpu.nodes[i].kind != 0 {
