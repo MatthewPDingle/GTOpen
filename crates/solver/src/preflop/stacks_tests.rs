@@ -261,14 +261,6 @@ fn estimate_matches_the_built_tree() {
     assert_eq!(est.nodes as usize, s.nodes.len());
 }
 
-#[cfg(feature = "gpu")]
-#[test]
-fn gpu_declines_side_pot_trees() {
-    let s = PreflopSolver::new(three([30.0, 10.0, 30.0], &[2.5]), table()).unwrap();
-    let err = gpu::PreflopGpu::new(&s, 2000).err().unwrap();
-    assert!(err.contains("side pots"), "{err}");
-}
-
 
 #[test]
 fn unequal_stack_saves_use_v5_and_round_trip() {

@@ -761,3 +761,158 @@ extern "C" __global__ void pf_discount_nodes(
         if (!frozen) strat[off + k] *= sd;
     }
 }
+
+// ---- Side pots (unequal stacks) -------------------------------------------
+// Mirrors side_pot_value() on the CPU. Expectation is linear in the pots, so
+// each pot pays amount x (chance of the best hand among its eligible seats).
+// Pot k of side-pot terminal t is amount[k], mask[k] for k in start[t]..start[t+1];
+// amounts already carry the terminal's rake scale. Heads-up pots use the
+// symmetrized pairwise table (bal), so they conserve chips; 3+ way pots use
+// the legacy pairwise product (eqtab) or, when the coupled model is on,
+// pf_side_pot_multiway adds them after each particle batch. This kernel runs
+// after pf_terminal and overwrites these terminals' values.
+extern "C" __global__ void pf_side_pot_terminal(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ invested,
+    const u32* __restrict__ start, const float* __restrict__ amount,
+    const int* __restrict__ mask, const float* __restrict__ bal,
+    const float* __restrict__ eqtab, const u32* __restrict__ reach_src,
+    const float* __restrict__ reach, const float* __restrict__ reach_mass,
+    int coupled, const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    __shared__ float prob;
+    if (threadIdx.x == 0) {
+        float value = 1.f;
+        for (int q = 0; q < np; q++)
+            if (q != p) value *= reach_mass[reach_src[(size_t)nd * np + q]];
+        prob = value;
+    }
+    __syncthreads();
+    int lv = live[nd];
+    float invp = invested[(size_t)nd * np + p];
+    u32 first = start[blockIdx.x], last = start[blockIdx.x + 1];
+    for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+        float v;
+        if (prob <= 0.f) {
+            v = 0.f;
+        } else if (!((lv >> p) & 1)) {
+            v = prob * (-invp);
+        } else {
+            float won = 0.f;
+            for (u32 k = first; k < last; k++) {
+                int m = mask[k];
+                if (!((m >> p) & 1)) continue;
+                int others = __popc((u32)m) - 1;
+                if (others >= 2 && coupled) continue;
+                const float* table = others == 1 ? bal : eqtab;
+                float share = 1.f;
+                for (int q = 0; q < np; q++) {
+                    if (q == p || !((m >> q) & 1)) continue;
+                    u32 block = reach_src[(size_t)nd * np + q];
+                    const float* rq = reach + (size_t)block * NC;
+                    float d = 0.f;
+                    for (int j = 0; j < NC; j++) d += table[(u32)j * NC + h] * rq[j];
+                    share *= d / reach_mass[block];
+                }
+                won += amount[k] * share;
+            }
+            v = prob * (won - invp);
+        }
+        val[(size_t)val_slot[nd] * NC + h] = v;
+    }
+}
+
+// One coupled-model pot: sum over this batch's particles of the Gauss-Legendre
+// tie-sharing integral, the same formula as pf_multiway_sum.
+template<int Q, int O>
+__device__ __forceinline__ float pf_side_pot_sum(
+    u32 h, const size_t* pot_bases, const float* cdf,
+    const u32* lower, const u32* upper, u32 sample_start, u32 sample_count)
+{
+    float total = 0.f;
+    for (u32 i = 0; i < sample_count; i++) {
+        size_t hand = (size_t)(sample_start + i) * NC + h;
+        u32 lo = lower[hand], hi = upper[hand];
+        float product[Q];
+        #pragma unroll
+        for (int t = 0; t < Q; t++) product[t] = 1.f;
+        #pragma unroll
+        for (int q = 0; q < O; q++) {
+            size_t row = pot_bases[q] + (size_t)i * (NC + 1);
+            float less = cdf[row + lo];
+            float equal = fmaxf(0.f, cdf[row + hi] - less);
+            #pragma unroll
+            for (int t = 0; t < Q; t++) {
+                float point = Q == 2 ? PF_MW_T2[t] : Q == 3 ? PF_MW_T3[t] : Q == 4 ? PF_MW_T4[t] : PF_MW_T[t];
+                product[t] *= less + point * equal;
+            }
+        }
+        #pragma unroll
+        for (int t = 0; t < Q; t++) {
+            float weight = Q == 2 ? PF_MW_W2[t] : Q == 3 ? PF_MW_W3[t] : Q == 4 ? PF_MW_W4[t] : PF_MW_W[t];
+            total += weight * product[t];
+        }
+    }
+    return total;
+}
+
+// Adds each 3+ way pot's coupled-model share to the side-pot terminals'
+// values, one particle batch at a time. terms/start are the first entries of
+// the side-pot list, the terminals with three or more live seats.
+extern "C" __global__ void pf_side_pot_multiway(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const u32* __restrict__ start,
+    const float* __restrict__ amount, const int* __restrict__ mask,
+    const u32* __restrict__ reach_src, const float* __restrict__ reach_mass,
+    const u32* __restrict__ slots, const u32* __restrict__ compact_slots,
+    u32 union_slots, int compact, const float* __restrict__ cdf,
+    const u32* __restrict__ lower, const u32* __restrict__ upper,
+    u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    if (!((live[nd] >> p) & 1)) return;
+    __shared__ float prob;
+    __shared__ size_t pot_bases[9];
+    __shared__ int pot_opponents;
+    if (threadIdx.x == 0) {
+        float value = 1.f;
+        for (int q = 0; q < np; q++)
+            if (q != p) value *= reach_mass[reach_src[(size_t)nd * np + q]];
+        prob = value;
+    }
+    __syncthreads();
+    if (prob <= 0.f) return;
+    for (u32 k = start[blockIdx.x]; k < start[blockIdx.x + 1]; k++) {
+        int m = mask[k];
+        if (!((m >> p) & 1) || __popc((u32)m) < 3) continue;
+        __syncthreads(); // the previous pot's readers are done with pot_bases
+        if (threadIdx.x == 0) {
+            int c = 0;
+            for (int q = 0; q < np; q++) {
+                if (q == p || !((m >> q) & 1)) continue;
+                u32 global_slot = slots[reach_src[(size_t)nd * np + q]];
+                u32 cdf_slot = compact
+                    ? compact_slots[(size_t)p * union_slots + global_slot] : global_slot;
+                pot_bases[c++] = (size_t)cdf_slot * batch_capacity * (NC + 1);
+            }
+            pot_opponents = c;
+        }
+        __syncthreads();
+        float scale = prob * amount[k];
+        for (u32 h = threadIdx.x; h < NC; h += blockDim.x) {
+            float sum;
+            switch (pot_opponents) {
+                case 2: sum = pf_side_pot_sum<2, 2>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                case 3: sum = pf_side_pot_sum<2, 3>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                case 4: sum = pf_side_pot_sum<3, 4>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                case 5: sum = pf_side_pot_sum<3, 5>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                case 6: sum = pf_side_pot_sum<4, 6>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                case 7: sum = pf_side_pot_sum<4, 7>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+                default: sum = pf_side_pot_sum<5, 8>(h, pot_bases, cdf, lower, upper, sample_start, sample_count); break;
+            }
+            val[(size_t)val_slot[nd] * NC + h] += scale * sum / (float)samples;
+        }
+    }
+}

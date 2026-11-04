@@ -46,6 +46,90 @@ fn gpu_matches_cpu_coupled_three_way() {
 }
 
 #[test]
+fn gpu_matches_cpu_side_pots() {
+    // Short stacks all in for less: main and side pots, dead money above the
+    // short stack, under both multiway equity models.
+    let mut three = hu25();
+    three.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    three.posts = vec![0.0, 0.5, 1.0];
+    three.stack = 40.0;
+    three.stacks = Some(vec![40.0, 3.0, 40.0]);
+    three.open_raises = vec![2.5];
+    three.realization = "raw".into();
+    let mut four = three.clone();
+    four.positions = vec!["CO".into(), "BTN".into(), "SB".into(), "BB".into()];
+    four.posts = vec![0.0, 0.0, 0.5, 1.0];
+    four.stacks = Some(vec![40.0, 8.0, 20.0, 40.0]);
+    four.max_raises = 1;
+    four.limp = false;
+    for cfg in [three, four] {
+        for model in ["coupled_deck_v1", "legacy_product"] {
+            let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+            let mut gs = PreflopSolver::new(cfg.clone(), table()).unwrap();
+            cpu.set_multiway_equity_model(model).unwrap();
+            gs.set_multiway_equity_model(model).unwrap();
+            assert!(cpu.nodes.iter().any(|n| !n.side_pots.is_empty()));
+            cpu.prune = false;
+            gs.prune = false;
+            let (_, selection) = PreflopGpu::new_throughput(&gs, 8_000).expect("side-pot trees run on the GPU");
+            assert_eq!(selection.mode, "normal_gpu");
+            run_side_pot_equivalence(cpu, gs);
+        }
+    }
+}
+
+/// Like run_equivalence, with pure decisions compared at 50 iterations. In
+/// the 3-way limp tree, CPU and GPU regrets split apart between 20 and 50
+/// iterations and the averages fork later (float noise amplified by
+/// near-indifferent spots). The same tree with equal stacks does this on
+/// master too, so regrets are compared at 5 iterations and the long horizon
+/// checks only that both reach the same exploitability.
+fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
+    let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
+    for _ in 0..5 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
+    let (cr, _) = cpu.arena_snapshot();
+    let (gr, _) = gs.arena_snapshot();
+    let worst = cr.iter().zip(gr.iter()).fold(0f32, |w, (x, y)| w.max((x - y).abs()));
+    assert!(worst < 1e-3, "side-pot regret math diverges beyond float noise: {worst}");
+    for _ in 5..50 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
+    let (mut decisive, mut clash) = (0u32, 0u32);
+    for i in 0..cpu.nodes.len() {
+        if cpu.nodes[i].kind != 0 {
+            continue;
+        }
+        for (x, y) in cpu.average_strategy(i).iter().zip(gs.average_strategy(i).iter()) {
+            if *x > 0.9 || *x < 0.1 {
+                decisive += 1;
+                if (x - y).abs() > 0.1 {
+                    clash += 1;
+                }
+            }
+        }
+    }
+    assert!(decisive > 1000, "sanity: expected many decisive entries, got {decisive}");
+    assert!((clash as f64) < decisive as f64 * 0.002, "pure decisions disagree at 50 iterations: {clash} of {decisive}");
+    for _ in 0..250 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
+    let gc: f64 = cpu.br_gaps().iter().sum();
+    let gg: f64 = gs.br_gaps().iter().sum();
+    assert!((gc - gg).abs() < 0.02, "BR gap mismatch: cpu {gc} vs gpu-synced {gg}");
+    let (gaps_dev, _) = g.gaps_and_evs().unwrap();
+    let gd: f64 = gaps_dev.iter().sum();
+    assert!((gd - gg).abs() < 0.02, "device gap computation disagrees: {gd} vs {gg}");
+}
+
+#[test]
 fn gpu_matches_cpu_live_utg_straddle() {
     for n in [3, 4] {
         let mut cfg = hu25();
