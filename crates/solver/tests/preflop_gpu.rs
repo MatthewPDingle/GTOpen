@@ -46,6 +46,39 @@ fn gpu_matches_cpu_coupled_three_way() {
 }
 
 #[test]
+fn gpu_matches_cpu_side_pots() {
+    // Short stacks all in for less: main and side pots, dead money above the
+    // short stack, under both multiway equity models.
+    let mut three = hu25();
+    three.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    three.posts = vec![0.0, 0.5, 1.0];
+    three.stack = 40.0;
+    three.stacks = Some(vec![40.0, 3.0, 40.0]);
+    three.open_raises = vec![2.5];
+    three.realization = "raw".into();
+    let mut four = three.clone();
+    four.positions = vec!["CO".into(), "BTN".into(), "SB".into(), "BB".into()];
+    four.posts = vec![0.0, 0.0, 0.5, 1.0];
+    four.stacks = Some(vec![40.0, 8.0, 20.0, 40.0]);
+    four.max_raises = 1;
+    four.limp = false;
+    for cfg in [three, four] {
+        for model in ["coupled_deck_v1", "legacy_product"] {
+            let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+            let mut gs = PreflopSolver::new(cfg.clone(), table()).unwrap();
+            cpu.set_multiway_equity_model(model).unwrap();
+            gs.set_multiway_equity_model(model).unwrap();
+            assert!(cpu.nodes.iter().any(|n| !n.side_pots.is_empty()));
+            cpu.prune = false;
+            gs.prune = false;
+            let (_, selection) = PreflopGpu::new_throughput(&gs, 8_000).expect("side-pot trees run on the GPU");
+            assert_eq!(selection.mode, "normal_gpu");
+            run_equivalence(cpu, gs);
+        }
+    }
+}
+
+#[test]
 fn gpu_matches_cpu_live_utg_straddle() {
     for n in [3, 4] {
         let mut cfg = hu25();

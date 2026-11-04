@@ -385,9 +385,11 @@ solver: log GPU fallback") and the memory file (SOLVER_THREADS).
   HANDS tab and the 2026-07-05 grid-hover popup — bypasses it). Route
   `cellHandData` through `handsFor` and both fix at once; check that
   `handIdx` combo→index mapping matches the exploit payload's hand order.
-- **Side pots on the GPU**: per-seat stacks and side pots solve on CPU
-  (docs/technical_reference.md, "Per-seat stacks and side pots"). Upload the
-  pot layers and accumulate them in `pf_terminal*` / `pf_multiway_terminal`.
+- **Side pots in the GPU throughput variants**: side-pot trees run on the
+  normal GPU plan; retained cohorts and static CDFs decline them
+  (docs/technical_reference.md, "Per-seat stacks and side pots").
+- **Exact 3-way all-in equity**: a precomputed 169^3 table for 3-way
+  all-in pots in place of the coupled model (feature #9, PR 3).
 - **External range import**: paste-parse the copy formats of popular
   solvers/trainers into the range editor (mostly compatible with the
   existing text syntax already).

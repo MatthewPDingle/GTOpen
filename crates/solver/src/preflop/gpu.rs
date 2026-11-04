@@ -25,6 +25,8 @@ mod terminal_unroll;
 mod narrow_offsets;
 mod adaptive_throughput;
 pub use adaptive_throughput::ThroughputSelection;
+#[cfg(test)]
+mod side_pot_tests;
 #[cfg(all(test, feature = "preflop-research"))]
 mod exact_reuse_inventory;
 #[cfg(all(test, feature = "preflop-research"))]
@@ -81,6 +83,8 @@ pub struct PreflopGpu {
     f_multiway_clear_active: CudaFunction,
     f_multiway_prepare: CudaFunction,
     f_multiway_terminal: CudaFunction,
+    f_side_pot_terminal: CudaFunction,
+    f_side_pot_multiway: CudaFunction,
     f_up: CudaFunction,
     f_discount: CudaFunction,
     // tree (immutable)
@@ -175,6 +179,15 @@ pub struct PreflopGpu {
     mw_batch: u32,
     mw_nterms: u32,
     use_multiway: i32,
+    // Side-pot terminals (see SidePots), coupled 3+ live-seat ones first.
+    d_sp_terms: CudaSlice<u32>,
+    d_sp_start: CudaSlice<u32>,
+    d_sp_amount: CudaSlice<f32>,
+    d_sp_mask: CudaSlice<i32>,
+    d_sp_bal: CudaSlice<f32>,
+    d_sp_prob: CudaSlice<f32>,
+    sp_nterms: u32,
+    sp_ncoupled: u32,
     d_cprob: CudaSlice<f32>,
     d_act_nodes: CudaSlice<u32>,
     d_terms: CudaSlice<u32>,
@@ -300,6 +313,57 @@ struct EquityCachePlan {
     work: Vec<u32>,
     spans: Vec<(u32, u32)>,
 }
+/// Side-pot terminals flattened for the GPU, priced as side_pot_value() on
+/// the CPU. Terminals with three or more live seats come first when the
+/// coupled model is on; `coupled` counts them (their main pot is 3+ way).
+struct SidePots {
+    terms: Vec<u32>,
+    start: Vec<u32>,
+    amount: Vec<f32>,
+    mask: Vec<i32>,
+    // Symmetrized pairwise equity, transposed like the equity table.
+    bal: Vec<f32>,
+    count: usize,
+    coupled: usize,
+}
+
+impl SidePots {
+    fn build(s: &PreflopSolver, coupled_model: bool) -> Self {
+        let mut nodes: Vec<usize> = (0..s.nodes.len()).filter(|&i| !s.nodes[i].side_pots.is_empty()).collect();
+        if coupled_model {
+            nodes.sort_by_key(|&i| s.nodes[i].live.count_ones() < 3);
+        }
+        let coupled = if coupled_model { nodes.iter().filter(|&&i| s.nodes[i].live.count_ones() >= 3).count() } else { 0 };
+        let mut start = vec![0u32];
+        let (mut amount, mut mask) = (Vec::new(), Vec::new());
+        for &i in &nodes {
+            let nd = &s.nodes[i];
+            let scale = if nd.pot > 0.0 { (nd.pot - s.rake_of(nd.pot)) / nd.pot } else { 0.0 };
+            for &(a, m) in &nd.side_pots {
+                amount.push((a * scale) as f32);
+                mask.push(m as i32);
+            }
+            start.push(amount.len() as u32);
+        }
+        let mut bal = vec![0f32; if nodes.is_empty() { 1 } else { NUM_CLASSES * NUM_CLASSES }];
+        if !nodes.is_empty() {
+            for h in 0..NUM_CLASSES {
+                for j in 0..NUM_CLASSES {
+                    bal[j * NUM_CLASSES + h] = s.balanced_raw_equity(h, j);
+                }
+            }
+        }
+        let count = nodes.len();
+        let mut terms: Vec<u32> = nodes.iter().map(|&i| i as u32).collect();
+        if terms.is_empty() { terms.push(0); amount.push(0.0); mask.push(0); }
+        Self { terms, start, amount, mask, bal, count, coupled }
+    }
+
+    fn bytes(&self) -> usize {
+        (self.terms.len() + self.start.len() + self.amount.len() + self.mask.len() + self.bal.len() + self.coupled.max(1)) * 4
+    }
+}
+
 impl EquityCachePlan {
     fn build(s: &PreflopSolver, sources: &[u32]) -> Self {
         Self::build_for(s, sources, false)
@@ -868,10 +932,10 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
-        // Uncalled returns are already folded into node pots, but side-pot
-        // terminals need per-pot showdowns the kernels do not have yet.
-        if s.nodes.iter().any(|nd| !nd.side_pots.is_empty()) {
-            return Err("side pots from unequal stacks solve on CPU for now".into());
+        // Side-pot terminals (unequal stacks) have their own kernels in the
+        // normal plan only; the shared-CDF throughput variants decline them.
+        if (cohorts || _narrow) && s.nodes.iter().any(|nd| !nd.side_pots.is_empty()) {
+            return Err("side pots use the normal GPU plan".into());
         }
         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
             .filter(|&len| len <= u32::MAX as usize)
@@ -1025,6 +1089,14 @@ impl PreflopGpu {
             .filter(|(_, nd)| s.multiway.is_some() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() >= 3)
             .map(|(i, _)| i as u32).collect();
         let use_multiway = !mw_terms.is_empty();
+        let sp = SidePots::build(s, use_multiway);
+        if sp.count > 0 {
+            need += sp.bytes() as f64 / 1e6;
+        }
+        // Side-pot terminals keep their CDF slots in the plans below, but the
+        // ordinary coupled kernel skips them: pf_side_pot_multiway prices them.
+        let mw_ordinary: Vec<u32> = mw_terms.iter().copied()
+            .filter(|&i| s.nodes[i as usize].side_pots.is_empty()).collect();
         if use_multiway && std::env::var("PREFLOP_MW_KEY_STATS").as_deref() == Ok("1") {
             multiway_terminal_key_stats(s, &reach_src, &mw_terms);
         }
@@ -1210,6 +1282,8 @@ impl PreflopGpu {
             f_multiway_clear_active: func("pf_multiway_clear_active")?,
             f_multiway_prepare: func("pf_multiway_prepare")?,
             f_multiway_terminal: func(if use_mw_prepared { "pf_multiway_terminal" } else { "pf_multiway_terminal_minimal" })?,
+            f_side_pot_terminal: func("pf_side_pot_terminal")?,
+            f_side_pot_multiway: func("pf_side_pot_multiway")?,
             f_up: func("pf_up")?,
             f_discount: func("pf_discount_nodes")?,
             d_kind: stream.clone_htod(&kind).map_err(e)?,
@@ -1291,12 +1365,20 @@ impl PreflopGpu {
             d_mw_compact: if use_mw_prepared { stream.clone_htod(&compact.map).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
             mw_union_slots: mw_plan.blocks.len() as u32,
             use_mw_compact: compact.enabled as i32,
-            d_mw_terms: stream.clone_htod(if mw_terms.is_empty() { &[0u32][..] } else { mw_terms.as_slice() }).map_err(e)?,
+            d_mw_terms: stream.clone_htod(if mw_ordinary.is_empty() { &[0u32][..] } else { mw_ordinary.as_slice() }).map_err(e)?,
             d_mw_active: if use_mw_prepared { stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
-            d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_terms.len().max(1)).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
+            d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_ordinary.len().max(1)).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
             mw_spans: mw_plan.spans,
             mw_batch: mw_batch as u32,
-            mw_nterms: mw_terms.len() as u32,
+            mw_nterms: mw_ordinary.len() as u32,
+            d_sp_terms: stream.clone_htod(&sp.terms).map_err(e)?,
+            d_sp_start: stream.clone_htod(&sp.start).map_err(e)?,
+            d_sp_amount: stream.clone_htod(&sp.amount).map_err(e)?,
+            d_sp_mask: stream.clone_htod(&sp.mask).map_err(e)?,
+            d_sp_bal: stream.clone_htod(&sp.bal).map_err(e)?,
+            d_sp_prob: stream.alloc_zeros::<f32>(sp.coupled.max(1)).map_err(e)?,
+            sp_nterms: sp.count as u32,
+            sp_ncoupled: sp.coupled as u32,
             use_multiway: use_multiway as i32,
             d_cprob: stream.clone_htod(&cprob).map_err(e)?,
             n_act: act_nodes.len() as u32,
@@ -1578,6 +1660,17 @@ impl PreflopGpu {
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
+            if self.sp_nterms > 0 {
+                self.stream.launch_builder(&self.f_side_pot_terminal)
+                    .arg(&self.d_sp_terms).arg(&p).arg(&self.np)
+                    .arg(&self.d_live).arg(&self.d_inv)
+                    .arg(&self.d_sp_start).arg(&self.d_sp_amount).arg(&self.d_sp_mask)
+                    .arg(&self.d_sp_bal).arg(&self.d_eq)
+                    .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass)
+                    .arg(&self.use_multiway).arg(&self.d_val_slot).arg(&mut self.d_val)
+                    .launch(LaunchConfig { grid_dim: (self.sp_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                    .map_err(e)?;
+            }
         }
         Ok(())
     }
@@ -1601,11 +1694,21 @@ impl PreflopGpu {
                         .arg(&mut self.d_mw_active).arg(&slot_count)
                         .launch(LaunchConfig { grid_dim: (slot_count.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                     }
+                    if self.mw_nterms > 0 {
                     self.stream.launch_builder(&self.f_multiway_prepare)
                         .arg(&self.d_mw_terms).arg(&self.mw_nterms).arg(&p).arg(&self.np)
                         .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
                         .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_mw_prob).arg(&gate)
                         .launch(LaunchConfig { grid_dim: (self.mw_nterms.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    }
+                    // Side-pot terminals mark the CDF slots their pots read.
+                    if self.sp_ncoupled > 0 {
+                    self.stream.launch_builder(&self.f_multiway_prepare)
+                        .arg(&self.d_sp_terms).arg(&self.sp_ncoupled).arg(&p).arg(&self.np)
+                        .arg(&self.d_live).arg(&self.d_reach_src).arg(&self.d_reach_mass)
+                        .arg(&self.d_mw_slots).arg(&mut self.d_mw_active).arg(&mut self.d_sp_prob).arg(&gate)
+                        .launch(LaunchConfig { grid_dim: (self.sp_ncoupled.div_ceil(256), 1, 1), block_dim: (256, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                    }
                     }
                     // Rebuild for every terminals call, even when evaluation disables
                     // active gating. Test/manual reach replacement must not reuse stale data.
@@ -1649,6 +1752,7 @@ impl PreflopGpu {
                             .launch(LaunchConfig { grid_dim: (work_count, sample_count.div_ceil(4), 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
                         #[cfg(test)]
                         self.phase_mark("coupled_terminals", p)?;
+                        if self.mw_nterms > 0 {
                         self.stream.launch_builder(&self.f_multiway_terminal)
                             .arg(&self.d_mw_terms).arg(&p).arg(&self.np)
                             .arg(&self.d_live).arg(&self.d_pots).arg(&self.d_inv)
@@ -1658,6 +1762,18 @@ impl PreflopGpu {
                             .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
                             .arg(&self.d_val_slot).arg(&mut self.d_val)
                             .launch(LaunchConfig { block_dim: (192, 1, 1), ..Self::cfg(self.mw_nterms) }).map_err(e)?;
+                        }
+                        if self.sp_ncoupled > 0 {
+                        self.stream.launch_builder(&self.f_side_pot_multiway)
+                            .arg(&self.d_sp_terms).arg(&p).arg(&self.np)
+                            .arg(&self.d_live).arg(&self.d_sp_start).arg(&self.d_sp_amount).arg(&self.d_sp_mask)
+                            .arg(&self.d_reach_src).arg(&self.d_reach_mass)
+                            .arg(&self.d_mw_slots).arg(&self.d_mw_compact).arg(&self.mw_union_slots).arg(&self.use_mw_compact).arg(&self.d_mw_cdf)
+                            .arg(&self.d_mw_lower).arg(&self.d_mw_upper)
+                            .arg(&sample_start).arg(&sample_count).arg(&self.mw_batch).arg(&samples)
+                            .arg(&self.d_val_slot).arg(&mut self.d_val)
+                            .launch(LaunchConfig { grid_dim: (self.sp_ncoupled, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 }).map_err(e)?;
+                        }
                     }
                     #[cfg(feature = "preflop-research")]
                     self.research_pair_correct(p,sample_start,sample_count,samples)?;
