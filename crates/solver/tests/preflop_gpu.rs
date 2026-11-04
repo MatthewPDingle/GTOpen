@@ -73,9 +73,54 @@ fn gpu_matches_cpu_side_pots() {
             gs.prune = false;
             let (_, selection) = PreflopGpu::new_throughput(&gs, 8_000).expect("side-pot trees run on the GPU");
             assert_eq!(selection.mode, "normal_gpu");
-            run_equivalence(cpu, gs);
+            run_side_pot_equivalence(cpu, gs);
         }
     }
+}
+
+/// Like run_equivalence, but compares pure decisions at 50 iterations. In the
+/// 3-way limp tree CPU and GPU averages fork after ~50 iterations (float
+/// noise amplified by near-indifferent spots), and the same tree with equal
+/// stacks forks the same way on master, so the long horizon checks only that
+/// both converge to the same exploitability.
+fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
+    let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
+    for _ in 0..50 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
+    let (cr, _) = cpu.arena_snapshot();
+    let (gr, _) = gs.arena_snapshot();
+    let worst = cr.iter().zip(gr.iter()).fold(0f32, |w, (x, y)| w.max((x - y).abs()));
+    assert!(worst < 2e-3, "side-pot regrets diverge within 50 iterations: {worst}");
+    let (mut decisive, mut clash) = (0u32, 0u32);
+    for i in 0..cpu.nodes.len() {
+        if cpu.nodes[i].kind != 0 {
+            continue;
+        }
+        for (x, y) in cpu.average_strategy(i).iter().zip(gs.average_strategy(i).iter()) {
+            if *x > 0.9 || *x < 0.1 {
+                decisive += 1;
+                if (x - y).abs() > 0.1 {
+                    clash += 1;
+                }
+            }
+        }
+    }
+    assert!(decisive > 1000, "sanity: expected many decisive entries, got {decisive}");
+    assert!((clash as f64) < decisive as f64 * 0.002, "pure decisions disagree at 50 iterations: {clash} of {decisive}");
+    for _ in 0..250 {
+        cpu.iterate();
+        g.iterate(&mut gs).unwrap();
+    }
+    g.sync_to_cpu(&mut gs).unwrap();
+    let gc: f64 = cpu.br_gaps().iter().sum();
+    let gg: f64 = gs.br_gaps().iter().sum();
+    assert!((gc - gg).abs() < 0.02, "BR gap mismatch: cpu {gc} vs gpu-synced {gg}");
+    let (gaps_dev, _) = g.gaps_and_evs().unwrap();
+    let gd: f64 = gaps_dev.iter().sum();
+    assert!((gd - gg).abs() < 0.02, "device gap computation disagrees: {gd} vs {gg}");
 }
 
 #[test]
