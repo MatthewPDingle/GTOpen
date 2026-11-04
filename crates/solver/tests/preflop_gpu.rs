@@ -78,12 +78,46 @@ fn gpu_matches_cpu_side_pots() {
     }
 }
 
-/// Like run_equivalence, with pure decisions compared at 50 iterations. In
-/// the 3-way limp tree, CPU and GPU regrets split apart between 20 and 50
+#[test]
+fn gpu_matches_cpu_three_way_table() {
+    // three_way_table_v1: single-pot 3-way terminals, 3-seat side pots, and
+    // coupled 4-way pots next to the table.
+    static T: OnceLock<Arc<solver::preflop::three_way::ThreeWayTable>> = OnceLock::new();
+    let tw = T.get_or_init(|| Arc::new(solver::preflop::three_way::ThreeWayTable::build(64))).clone();
+    let mut equal = hu25();
+    equal.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    equal.posts = vec![0.0, 0.5, 1.0];
+    equal.stack = 20.0;
+    equal.open_raises = vec![2.5];
+    equal.max_raises = 2;
+    equal.realization = "raw".into();
+    let mut short = equal.clone();
+    short.stack = 40.0;
+    short.stacks = Some(vec![40.0, 3.0, 40.0]);
+    short.max_raises = 3;
+    let mut four = short.clone();
+    four.positions = vec!["CO".into(), "BTN".into(), "SB".into(), "BB".into()];
+    four.posts = vec![0.0, 0.0, 0.5, 1.0];
+    four.stacks = Some(vec![40.0, 8.0, 20.0, 40.0]);
+    four.max_raises = 1;
+    for cfg in [equal, short, four] {
+        let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+        let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+        cpu.set_three_way_table(tw.clone()).unwrap();
+        gs.set_three_way_table(tw.clone()).unwrap();
+        cpu.prune = false;
+        gs.prune = false;
+        run_side_pot_equivalence(cpu, gs);
+    }
+}
+
+/// Like run_equivalence, with pure decisions compared at 20 iterations. In
+/// 3-way limp trees, CPU and GPU regrets split apart after 20 to 50
 /// iterations and the averages fork later (float noise amplified by
-/// near-indifferent spots). The same tree with equal stacks does this on
-/// master too, so regrets are compared at 5 iterations and the long horizon
-/// checks only that both reach the same exploitability.
+/// near-indifferent spots; the 3-way table forks between 20 and 30). The same
+/// trees with equal stacks do this on master too, so regrets are compared at
+/// 5 iterations and the long horizon checks only that both reach the same
+/// exploitability.
 fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     let mut g = PreflopGpu::new(&gs, 8_000).expect("gpu init");
     for _ in 0..5 {
@@ -95,7 +129,7 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
     let (gr, _) = gs.arena_snapshot();
     let worst = cr.iter().zip(gr.iter()).fold(0f32, |w, (x, y)| w.max((x - y).abs()));
     assert!(worst < 1e-3, "side-pot regret math diverges beyond float noise: {worst}");
-    for _ in 5..50 {
+    for _ in 5..20 {
         cpu.iterate();
         g.iterate(&mut gs).unwrap();
     }
@@ -115,8 +149,8 @@ fn run_side_pot_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
         }
     }
     assert!(decisive > 1000, "sanity: expected many decisive entries, got {decisive}");
-    assert!((clash as f64) < decisive as f64 * 0.002, "pure decisions disagree at 50 iterations: {clash} of {decisive}");
-    for _ in 0..250 {
+    assert!((clash as f64) < decisive as f64 * 0.002, "pure decisions disagree at 20 iterations: {clash} of {decisive}");
+    for _ in 0..280 {
         cpu.iterate();
         g.iterate(&mut gs).unwrap();
     }

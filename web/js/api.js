@@ -21,7 +21,7 @@ export const api = {
   status: () => req('GET', '/api/status'),
   node: path => req('POST', '/api/node', { path }),
   exploit: (path, exploiter) => req('POST', '/api/exploit', { path, exploiter }),
-  pfBuild: cfg => req('POST', '/api/preflop/spot', cfg),
+  pfBuild: (cfg, model) => req('POST', '/api/preflop/spot' + (model ? `?multiway_model=${encodeURIComponent(model)}` : ''), cfg),
   pfEstimate: cfg => req('POST', '/api/preflop/estimate', cfg),
   pfSolve: opts => req('POST', '/api/preflop/solve', opts || {}),
   pfStop: () => req('POST', '/api/preflop/stop'),

@@ -14,6 +14,7 @@
 
 pub mod equity;
 pub mod multiway;
+pub mod three_way;
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
@@ -691,6 +692,9 @@ pub struct PreflopSolver {
     /// surfaced through /api/preflop/status so the downgrade is never silent.
     pub realization_note: String,
     pub(crate) multiway: Option<Arc<multiway::CoupledDeck>>,
+    /// Jointly dealt 3-way showdown table (three_way_table_v1): replaces the
+    /// coupled model in pots with exactly three seats.
+    pub(crate) three_way: Option<Arc<three_way::ThreeWayTable>>,
     /// Cooperative stop for long traversals: checked at the parallel
     /// fan-out nodes (depth < PAR_DEPTH), so a stop request aborts a pass
     /// within a fraction of an iteration instead of after a whole one.
@@ -769,6 +773,7 @@ impl PreflopSolver {
             point_locks: std::collections::HashMap::new(),
             realization_note,
             multiway: Some(multiway::CoupledDeck::shared()),
+            three_way: None,
             stop_flag: None,
             contextual_cache: Default::default(),
         };
@@ -783,21 +788,42 @@ impl PreflopSolver {
 
     /// Versioned payoff identity; old saves retain their original model.
     pub fn multiway_equity_model(&self) -> &'static str {
-        if self.multiway.is_some() { multiway::MODEL } else { "legacy_product" }
+        if self.three_way.is_some() { three_way::MODEL }
+        else if self.multiway.is_some() { multiway::MODEL } else { "legacy_product" }
     }
 
     /// Only change payoffs before learning. Saved arenas must never be resumed
     /// against a different terminal game.
     pub fn set_multiway_equity_model(&mut self, model: &str) -> Result<(), String> {
-        if model != "legacy_product" && model != multiway::MODEL {
+        if model != "legacy_product" && model != multiway::MODEL && model != three_way::MODEL {
             return Err(format!("unsupported multiway equity model: {model}"));
         }
         if model == self.multiway_equity_model() { return Ok(()); }
         if self.iteration != 0 {
             return Err("rebuild the game before changing its multiway equity model".into());
         }
-        self.multiway = if model == multiway::MODEL { Some(multiway::CoupledDeck::shared()) } else { None };
+        self.multiway = if model == "legacy_product" { None } else { Some(multiway::CoupledDeck::shared()) };
+        self.three_way = if model == three_way::MODEL { Some(three_way::ThreeWayTable::shared()) } else { None };
         Ok(())
+    }
+
+    /// three_way_table_v1 with a specific table (tests and research use
+    /// coarse ones; the production table comes from the cache).
+    pub fn set_three_way_table(&mut self, table: Arc<three_way::ThreeWayTable>) -> Result<(), String> {
+        if self.iteration != 0 {
+            return Err("rebuild the game before changing its multiway equity model".into());
+        }
+        self.multiway = Some(multiway::CoupledDeck::shared());
+        self.three_way = Some(table);
+        Ok(())
+    }
+
+    /// Showdown shares against normalized opponents in a pot with 3+ seats.
+    fn multiway_shares(&self, model: &multiway::CoupledDeck, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
+        match (&self.three_way, opponents) {
+            (Some(table), [a, b]) => table.shares(a, b),
+            _ => model.equities(opponents),
+        }
     }
 
     /// Postflop acting order: seats with posts first (SB before BB by post
@@ -1759,7 +1785,7 @@ impl PreflopSolver {
                     }
                 }
                 if let (Some(model), true) = (&self.multiway, nd.live.count_ones() >= 3) {
-                    let equities = model.equities(&dists);
+                    let equities = self.multiway_shares(model, &dists);
                     for h in 0..NUM_CLASSES {
                         out[h] = (prob * (pot_eff * equities[h] - inv_p)) as f32;
                     }
@@ -1877,7 +1903,7 @@ impl PreflopSolver {
         }
         if opponents.len() >= 2 {
             if let Some(model) = &self.multiway {
-                return model.equities(opponents);
+                return self.multiway_shares(model, opponents);
             }
         }
         if let [dist] = opponents {
