@@ -20,7 +20,7 @@ impl PreflopGpu {
             if nd.kind!=KIND_POT_SHARE || nd.live.count_ones()!=2 {continue;}
             let mut live:Vec<_>=(0..s.n).filter(|&p|nd.live&(1<<p)!=0).collect();
             live.sort_by(|&a,&b|nd.posf[a].total_cmp(&nd.posf[b]));
-            let left=live.iter().map(|&p|s.cfg.stack-nd.invested[p]+s.cfg.ante).fold(f64::INFINITY,f64::min);
+            let left=live.iter().map(|&p|s.cfg.left(p,nd.invested[p])).fold(f64::INFINITY,f64::min);
             let ratio=left/nd.pot;
             if !(1.0..=20.0).contains(&ratio){outside+=1;continue;}
             terms.push(i as u32);seats.extend(live.into_iter().map(|p|p as i32));spr.push(ratio);

@@ -16,6 +16,10 @@ const MAGIC_LEGACY: &[u8] = b"GTOPREFLOP1\n";
 const MAGIC_COUPLED_DECK: &[u8] = b"GTOPREFLOP2\n";
 const MAGIC_BALANCED: &[u8] = b"GTOPREFLOP4\n";
 const MAGIC_STRADDLE: &[u8] = b"GTOPREFLOP3\n";
+// Per-seat stacks change the tree and its payoffs; older binaries would drop
+// the `stacks` field and rebuild an equal-stack game, so they must refuse.
+// A superset of v4: model and realization are both required.
+pub(super) const MAGIC_STACKS: &[u8] = b"GTOPREFLOP5\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -150,7 +154,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.realization == "balanced" || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
+        let magic = if self.cfg.unequal_stacks() {
+            MAGIC_STACKS
+        } else if self.cfg.realization == "balanced" || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
             MAGIC_BALANCED
         } else if self.cfg.utg_straddle {
             MAGIC_STRADDLE
@@ -194,7 +200,7 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS {
             return Err("not a preflop game save".to_string());
         }
         let mut line = Vec::new();
@@ -209,14 +215,17 @@ impl PreflopSolver {
         // V1 predates explicit model provenance; V2 must never silently
         // substitute that default when its required provenance is missing.
         let raw_header: serde_json::Value = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
-        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE || magic == MAGIC_BALANCED) && raw_header.get("multiway_equity_model").is_none() {
+        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE || magic == MAGIC_BALANCED || magic == MAGIC_STACKS) && raw_header.get("multiway_equity_model").is_none() {
             return Err("preflop v2 save is missing its multiway equity model".into());
         }
-        if magic == MAGIC_BALANCED && raw_header.get("config").and_then(|c| c.get("realization")).is_none() {
+        if (magic == MAGIC_BALANCED || magic == MAGIC_STACKS) && raw_header.get("config").and_then(|c| c.get("realization")).is_none() {
             return Err("preflop v4 save is missing its heads-up realization model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if magic != MAGIC_BALANCED && (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
+        if (magic == MAGIC_STACKS) != header.config.unequal_stacks() {
+            return Err("unequal-stack saves require preflop v5 format and their per-seat stacks".into());
+        }
+        if magic != MAGIC_BALANCED && magic != MAGIC_STACKS && (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
             return Err("UTG straddle saves require preflop v3 format and explicit straddle metadata".into());
         }
         let mut s = PreflopSolver::new(header.config.clone(), eq)?;
@@ -257,7 +266,7 @@ mod tests {
         let cfg = PreflopConfig {
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-            stack: 2.0, posts: vec![0.0, 0.5, 1.0], ante: 0.0,
+            stack: 2.0, stacks: None, posts: vec![0.0, 0.5, 1.0], ante: 0.0,
             limp: false, open_raises: vec![], raise_mults: vec![],
             max_raises: 1, add_allin: true, allin_threshold: 0.85,
             rake_pct: 0.0, rake_cap: 0.0, no_flop_no_drop: true,

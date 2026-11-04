@@ -19,6 +19,14 @@ export function lineTokens(history) {
     .map(h => TOKEN[h.actions[h.chosen].kind] || '?');
 }
 
+/** The acting seat's effective stack: its own, capped by the deepest other
+ *  seat (charts are indexed by one table depth). */
+export function effectiveStack(cfg, seat) {
+  if (!cfg.stacks || seat < 0) return cfg.stack;
+  const others = cfg.stacks.filter((_, i) => i !== seat);
+  return Math.min(cfg.stacks[seat], Math.max(...others));
+}
+
 /** What the matcher needs from a Preflop Lab action node and its config. */
 export function matchContext(view, cfg) {
   if (!view || view.kind !== 'action' || !cfg) return null;
@@ -29,7 +37,7 @@ export function matchContext(view, cfg) {
   const opens = (cfg.open_raises || []).filter(Number.isFinite);
   return {
     players: view.positions.length,
-    stack: cfg.stack,
+    stack: effectiveStack(cfg, view.positions.indexOf(view.actor_pos)),
     straddle: !!cfg.utg_straddle,
     ante: cfg.ante || 0,
     line: lineTokens(view.history),

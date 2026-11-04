@@ -71,7 +71,7 @@ fn hu25() -> PreflopConfig {
     PreflopConfig {
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 25.0,
+        stack: 25.0, stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -302,7 +302,7 @@ fn gpu_push_fold_anchors() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 10.0,
+        stack: 10.0, stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: false,

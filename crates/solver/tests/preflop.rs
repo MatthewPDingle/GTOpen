@@ -174,7 +174,7 @@ fn hu_push_fold_config(stack: f64) -> PreflopConfig {
     PreflopConfig {
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack,
+        stack, stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -363,7 +363,7 @@ fn six_max_limp_tree_sanity() {
             "SB".into(),
             "BB".into(),
         ],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -469,7 +469,7 @@ fn hu_limp_config() -> PreflopConfig {
     PreflopConfig {
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
-        stack: 25.0,
+        stack: 25.0, stacks: None,
         posts: vec![0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -820,7 +820,7 @@ fn unreached_bucket_falls_back_to_card_appeal() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 40.0,
+        stack: 40.0, stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -1524,7 +1524,7 @@ fn call_only_seat_never_raises() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -1576,7 +1576,7 @@ fn per_seat_size_menus() {
     let mut cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,
@@ -1639,7 +1639,7 @@ fn banded_vs_raise_tightens_vs_big_opens() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 40.0,
+        stack: 40.0, stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -2146,7 +2146,7 @@ fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,
@@ -2233,7 +2233,7 @@ fn six_max_cfg() -> PreflopConfig {
     PreflopConfig {
         utg_straddle: false,
         positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,

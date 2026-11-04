@@ -5,6 +5,7 @@
 
 import { api } from './api.js';
 import { createPositionSizing } from './preflop_sizing.js';
+import { createSeatStacks } from './preflop_stacks.js';
 import { branchWarning } from './preflop_reach.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
@@ -70,6 +71,7 @@ const PRESETS = [
 
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
+  const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // Range source: this game's solve, or Range Lab's canonical charts walked
   // as a tree (no build or solve). Each source keeps its own line.
@@ -318,6 +320,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.opens.value = p.opens;
     els.mult.value = p.mult;
     positionSizing.restore(p);
+    seatStacks.restore(p);
     els.maxRaises.value = p.maxRaises;
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
@@ -334,6 +337,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     straddle: els.straddleOn.checked ? +els.straddle.value : 0,
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     ...positionSizing.scenario(),
+    ...seatStacks.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
   });
@@ -341,7 +345,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const cur = currentScenario();
     const same = s => Object.entries(cur).every(([k, v]) =>
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
-      k === 'positionSizes' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
+      k === 'positionSizes' || k === 'seatStacks' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
       k === 'laterMult' ? String(s[k] || '') === String(v) :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
@@ -509,6 +513,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       open_raises: nums(els.opens.value),
       raise_mults: nums(els.mult.value),
       ...positionSizing.config(),
+      ...seatStacks.config(),
       max_raises: +els.maxRaises.value || 1,
       add_allin: els.allin.checked,
       rake_pct: +els.rakePct.value || 0,
@@ -747,6 +752,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.opens.value = (cfg.open_raises || []).join(',');
     els.mult.value = (cfg.raise_mults || []).join(',');
     positionSizing.load(cfg);
+    seatStacks.load(cfg);
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
@@ -1230,6 +1236,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const live = v.positions.filter((_, i) => v.live[i]);
       els.nodeTitle.textContent =
         `FLOP: ${live.join(' vs ')} · pot ${v.pot.toFixed(1)} bb` +
+        (v.side_pots?.length
+          ? ' · ' + v.side_pots.map((sp, k) => `${k ? `side pot ${k}` : 'main'} ${sp.amount.toFixed(1)} (${sp.seats.join(', ')})`).join(' · ')
+          : '') +
         (v.spr != null ? ` · SPR ${v.spr.toFixed(1)}` : '');
       // keep the hand grid up: it shows each live player's arriving range
       const liveSeats = v.positions.map((_, i) => i).filter(i => v.live[i]);

@@ -62,8 +62,14 @@ pub struct PreflopConfig {
     /// Seats clockwise from the usual first preflop seat (UTG..BTN,SB,BB).
     /// A live UTG straddle rotates first action, never these seat identities.
     pub positions: Vec<String>,
-    /// Starting stack in bb (v1: must be equal for all seats — no side pots).
+    /// Starting stack in bb, before antes (the ante is posted on top). With
+    /// `stacks` present this is ignored for play; keep it at the deepest stack.
     pub stack: f64,
+    /// Per-seat starting stacks in bb, aligned with `positions`. Absent (or
+    /// all equal to `stack`) is the equal-stack game; unequal stacks create
+    /// all-ins for less, uncalled returns and side pots.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stacks: Option<Vec<f64>>,
     /// Blind/straddle posted per seat, aligned with `positions` (counts
     /// toward calling); e.g. [0,0,0,0,0.5,1].
     pub posts: Vec<f64>,
@@ -123,6 +129,25 @@ pub struct PreflopConfig {
 fn is_false(value: &bool) -> bool { !*value }
 
 impl PreflopConfig {
+    /// Seat `seat`'s starting stack (bb, before antes).
+    #[inline]
+    pub fn stack_of(&self, seat: usize) -> f64 {
+        match &self.stacks { Some(v) => v[seat], None => self.stack }
+    }
+    /// The deepest starting stack at the table.
+    pub fn max_stack(&self) -> f64 {
+        match &self.stacks { Some(v) => v.iter().cloned().fold(f64::MIN, f64::max), None => self.stack }
+    }
+    /// True when some seat's stack differs from another's.
+    pub fn unequal_stacks(&self) -> bool {
+        self.stacks.as_ref().is_some_and(|v| v.iter().any(|&x| x != v[0]))
+    }
+    /// Chips seat `seat` still has behind given its total investment
+    /// (`invested` includes the dead ante, which is posted on top of the stack).
+    #[inline]
+    pub fn left(&self, seat: usize, invested: f64) -> f64 {
+        self.stack_of(seat) - invested + self.ante
+    }
     pub fn first_to_act(&self) -> usize { usize::from(self.utg_straddle) }
     pub fn unraised_winner(&self) -> Option<usize> {
         if self.utg_straddle {Some(0)} else {self.posts.iter().rposition(|p|*p>0.0)}
@@ -295,6 +320,10 @@ pub struct PNode {
     /// Exact prior raise depth and ever-raised seats, rebuilt from the action history.
     pub raises: u8,
     pub raised: u32,
+    /// POT_SHARE terminals with side pots: (amount in bb, eligible live-seat
+    /// mask) per pot, main pot first, summing to `pot`. Empty when the
+    /// terminal has a single pot (always the case with equal stacks).
+    pub side_pots: Vec<(f64, u32)>,
 }
 
 struct BuildState {
@@ -311,6 +340,10 @@ struct BuildState {
     next_seat: usize,
     /// Last raiser/jammer so far (255 = nobody — limped or unopened pot).
     aggressor: u8,
+    /// The TO amount each seat faced when it last acted (-1 = has not acted).
+    /// An all-in for less than a full raise does not reopen raising for a
+    /// seat that already acted, unless the raises since add up to a full one.
+    acted: Vec<f64>,
 }
 
 /// Situation buckets for player profiles (stored per action node).
@@ -813,7 +846,7 @@ impl PreflopSolver {
             let mut min_left = f64::MAX;
             for i in 0..self.n {
                 if live & (1 << i) != 0 {
-                    min_left = min_left.min(self.cfg.stack - invested[i] + self.cfg.ante);
+                    min_left = min_left.min(self.cfg.left(i, invested[i]));
                 }
             }
             (min_left / pot).max(0.0)
@@ -862,6 +895,7 @@ impl PreflopSolver {
                 posf: Vec::new(),
                 bucket: 0,
                 raises: st.raises, raised: st.raised,
+                side_pots: Vec::new(),
             });
             return Ok(idx);
         }
@@ -869,14 +903,21 @@ impl PreflopSolver {
         // action closed -> flop / showdown terminal
         let Some(actor) = self.next_actor(&st) else {
             let idx = self.nodes.len() as u32;
-            let r = self.realization_weights(live, &st.invested, pot);
+            let (invested, pot, side_pots) = match settle_pots(&self.cfg, &st.invested, live) {
+                Some((invested, side_pots)) => {
+                    let pot = invested.iter().sum();
+                    (invested, pot, side_pots)
+                }
+                None => (st.invested.clone(), pot, Vec::new()),
+            };
+            let r = self.realization_weights(live, &invested, pot);
             self.nodes.push(PNode {
                 kind: KIND_POT_SHARE,
                 actor: 0,
                 actions: Vec::new(),
                 child_start: 0,
                 pot,
-                invested: st.invested.clone(),
+                invested,
                 live,
                 winner: 0,
                 r,
@@ -885,6 +926,7 @@ impl PreflopSolver {
                 posf: self.pos_fracs(live),
                 bucket: 0,
                 raises: st.raises, raised: st.raised,
+                side_pots,
             });
             return Ok(idx);
         };
@@ -910,6 +952,7 @@ impl PreflopSolver {
             posf: Vec::new(),
             bucket: bucket_of(&st),
             raises: st.raises, raised: st.raised,
+            side_pots: Vec::new(),
         });
         self.arena_len += na * NUM_CLASSES;
         if self.nodes.len() as u64 > lim_nodes
@@ -979,7 +1022,7 @@ impl PreflopSolver {
             }
             if nd.bucket >= BUCKET_VS_RAISE
                 && prof.response.as_ref().and_then(|r| r.adaptive_from)
-                    .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack * f)
+                    .is_some_and(|f| self.faced_to(node) + 1e-9 >= self.cfg.stack_of(nd.actor as usize) * f)
             {
                 return None;
             }
@@ -1095,7 +1138,7 @@ impl PreflopSolver {
         let input = self.contextual_input(node)?;
         let seat = self.nodes[node].actor;
         let key = ContextualKey { seat, entry: input.entry, depth: input.raises >= 3,
-            pot: input.pot.to_bits(), invested: input.invested.to_bits(), faced: input.to_call.to_bits(), stack: self.cfg.stack.to_bits() };
+            pot: input.pot.to_bits(), invested: input.invested.to_bits(), faced: input.to_call.to_bits(), stack: self.cfg.stack_of(seat as usize).to_bits() };
         if let Some(policy) = self.contextual_cache.read().unwrap().get(&key) { return Some(policy.clone()); }
         let policy = Arc::new(contextual::predict(version, &self.cfg, seat as usize, &input).ok()?.policy?);
         let mut cache = self.contextual_cache.write().unwrap();
@@ -1112,12 +1155,12 @@ impl PreflopSolver {
         let response = profile.response.as_ref()?;
         let version = response.contextual_reraise.as_ref()?;
         let context = self.contextual_input(node)?;
-        let remaining = self.cfg.stack-context.invested;
+        let remaining = self.cfg.stack_of(nd.actor as usize)-context.invested;
         let call = (context.to_call-context.invested).min(remaining);
         let nominal_price = Some(call/(context.pot+call));
         let override_note = if self.point_locks.contains_key(&(node as u32)) { Some("Point lock takes precedence over the contextual model.".into()) }
             else if self.hero == Some(nd.actor as usize) { Some("Hero mode learns its response instead of using its contextual opponent model.".into()) }
-            else if response.adaptive_from.is_some_and(|f|context.to_call+1e-9>=self.cfg.stack*f) {
+            else if response.adaptive_from.is_some_and(|f|context.to_call+1e-9>=self.cfg.stack_of(nd.actor as usize)*f) {
                 Some(format!("Adaptive response: faced amount is at least {:.0}% of stack; the solver learns this response instead of forcing the contextual model.",response.adaptive_from.unwrap()*100.0))
             } else { contextual::support_note(&self.cfg) };
         if let Some(note) = override_note {
@@ -1701,6 +1744,10 @@ impl PreflopSolver {
                     out.iter_mut().for_each(|v| *v = (prob * -inv_p) as f32);
                     return;
                 }
+                if !nd.side_pots.is_empty() {
+                    self.side_pot_value(nd, p, reaches, prob, out);
+                    return;
+                }
                 // normalized opponent class distributions
                 let mut dists: Vec<Vec<f32>> = Vec::new();
                 for q in 0..self.n {
@@ -1747,7 +1794,7 @@ impl PreflopSolver {
                 for i in 0..self.n {
                     if nd.live & (1 << i) != 0 {
                         min_left =
-                            min_left.min(self.cfg.stack - nd.invested[i] + self.cfg.ante);
+                            min_left.min(self.cfg.left(i, nd.invested[i]));
                     }
                 }
                 let spr = (min_left / nd.pot).max(0.0);
@@ -1788,6 +1835,69 @@ impl PreflopSolver {
             }
             _ => unreachable!(),
         }
+    }
+
+    /// Payoff at a terminal with side pots. Expectation is linear in the
+    /// pots, so each pot pays its amount times the chance of holding the best
+    /// hand among the seats eligible for it, whatever happens to the others.
+    /// Rake comes off the whole pot once, shared in proportion to pot size.
+    /// A side-pot terminal always has a live all-in seat (zero SPR), so it is
+    /// priced as showdown equity under every realization model.
+    fn side_pot_value(&self, nd: &PNode, p: usize, reaches: &[Vec<f32>], prob: f64, out: &mut [f32]) {
+        let scale = if nd.pot > 0.0 { (nd.pot - self.rake_of(nd.pot)) / nd.pot } else { 0.0 };
+        let mut won = [0f64; NUM_CLASSES];
+        for &(amount, mask) in &nd.side_pots {
+            if mask & (1 << p) == 0 {
+                continue;
+            }
+            let opponents: Vec<Vec<f32>> = (0..self.n)
+                .filter(|&q| q != p && mask & (1 << q) != 0)
+                .map(|q| {
+                    let s: f32 = reaches[q].iter().sum();
+                    reaches[q].iter().map(|&x| x / s).collect()
+                })
+                .collect();
+            let shares = self.showdown_shares(&opponents);
+            for h in 0..NUM_CLASSES {
+                won[h] += amount * scale * shares[h];
+            }
+        }
+        for h in 0..NUM_CLASSES {
+            out[h] = (prob * (won[h] - nd.invested[p])) as f32;
+        }
+    }
+
+    /// Each hero class's expected share of one pot against normalized
+    /// opponent class distributions: the symmetrized pairwise table heads-up, the game's
+    /// multiway model (coupled deck, or the legacy pairwise product) 3+ way.
+    fn showdown_shares(&self, opponents: &[Vec<f32>]) -> [f64; NUM_CLASSES] {
+        let mut out = [1.0f64; NUM_CLASSES];
+        if opponents.is_empty() {
+            return out;
+        }
+        if opponents.len() >= 2 {
+            if let Some(model) = &self.multiway {
+                return model.equities(opponents);
+            }
+        }
+        if let [dist] = opponents {
+            // Symmetrized so a two-way pot pays out exactly what is in it
+            // despite sampling noise in the equity table.
+            for h in 0..NUM_CLASSES {
+                out[h] = (0..NUM_CLASSES)
+                    .map(|j| dist[j] as f64 * self.balanced_raw_equity(h, j) as f64)
+                    .sum();
+            }
+            return out;
+        }
+        let mut values = [0.0f32; NUM_CLASSES];
+        for dist in opponents {
+            self.eq.eqs_vs_dist(dist, &mut values);
+            for h in 0..NUM_CLASSES {
+                out[h] *= values[h] as f64;
+            }
+        }
+        out
     }
 
     /// CFR traversal for traverser `p`. `mode`: 0 = update regrets/strategy
@@ -2158,6 +2268,16 @@ pub struct PreflopNodeView {
     pub reaches_all: Vec<Vec<f32>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spr: Option<f64>,
+    /// pot_share terminals with side pots: main pot first.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub side_pots: Vec<PfSidePot>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PfSidePot {
+    pub amount: f64,
+    /// Positions of the live seats that can win this pot.
+    pub seats: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -2303,13 +2423,16 @@ impl PreflopSolver {
             (Vec::new(), None, None, None, None)
         };
         let strategy_note = self.strategy_note(node, &unreachable);
-        let exportable = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2;
-        let exportable3 = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3;
+        // The postflop solvers start from one pot with chips behind every seat.
+        let one_pot = nd.side_pots.is_empty();
+        let exportable = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && one_pot;
+        let exportable3 = unreachable.is_none() && nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && one_pot
+            && (0..self.n).all(|i| nd.live & (1 << i) == 0 || self.cfg.left(i, nd.invested[i]) > 1e-9);
         let spr = if nd.kind == KIND_POT_SHARE {
             let mut min_left = f64::MAX;
             for i in 0..self.n {
                 if nd.live & (1 << i) != 0 {
-                    min_left = min_left.min(self.cfg.stack - nd.invested[i] + self.cfg.ante);
+                    min_left = min_left.min(self.cfg.left(i, nd.invested[i]));
                 }
             }
             Some((min_left / nd.pot).max(0.0))
@@ -2352,6 +2475,11 @@ impl PreflopSolver {
             spr,
             history,
             reaches_all,
+            side_pots: nd.side_pots.iter().map(|&(amount, mask)| PfSidePot {
+                amount,
+                seats: (0..self.n).filter(|&i| mask & (1 << i) != 0)
+                    .map(|i| self.cfg.positions[i].clone()).collect(),
+            }).collect(),
         })
     }
 
@@ -2383,7 +2511,7 @@ impl PreflopSolver {
             positions: seats.iter().map(|&i| self.cfg.positions[i].clone()).collect(),
             ranges: seats.iter().map(|&i| range_of(i)).collect(),
             pot_bb: nd.pot,
-            stacks_bb: seats.iter().map(|&i| self.cfg.stack - nd.invested[i] + self.cfg.ante).collect(),
+            stacks_bb: seats.iter().map(|&i| self.cfg.left(i, nd.invested[i])).collect(),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
         })
@@ -2423,7 +2551,7 @@ impl PreflopSolver {
             range_oop: range_of(oop),
             range_ip: range_of(ip),
             pot_bb: nd.pot,
-            eff_stack_bb: self.cfg.stack - nd.invested[oop] + self.cfg.ante,
+            eff_stack_bb: self.cfg.left(oop, nd.invested[oop]).min(self.cfg.left(ip, nd.invested[ip])),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
         })
@@ -3048,7 +3176,7 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             return Err("UTG straddle requires 3+ seats, SB/BB in the last two seats, and posts[0] at least twice BB".into());
         }
         for sizes in std::iter::once(&cfg.open_raises).chain(cfg.open_raises_by_seat.iter().flatten()) {
-            if sizes.iter().any(|&to|to<2.0*cfg.posts[0]-1e-9 && to<cfg.stack-1e-9) {
+            if sizes.iter().any(|&to|to<2.0*cfg.posts[0]-1e-9 && to<cfg.max_stack()-1e-9) {
                 return Err(format!("With a {} bb UTG straddle, opening raises must be at least {} bb (or all-in)",cfg.posts[0],2.0*cfg.posts[0]));
             }
         }
@@ -3065,7 +3193,21 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         return Err(format!("ante must be finite and >= 0, got {}", cfg.ante));
     }
     let biggest_post = cfg.posts.iter().cloned().fold(0.0, f64::max);
-    if cfg.stack <= biggest_post {
+    if let Some(stacks) = &cfg.stacks {
+        if stacks.len() != n {
+            return Err(format!("stacks must have one entry per seat ({n})"));
+        }
+        if let Some(v) = stacks.iter().find(|v| !v.is_finite()) {
+            return Err(format!("stacks must be finite bb amounts, got {v}"));
+        }
+        if let Some(i) = (0..n).find(|&i| stacks[i] <= cfg.posts[i]) {
+            return Err(format!(
+                "{}'s {} bb stack must exceed its {} bb post",
+                cfg.positions[i], stacks[i], cfg.posts[i]
+            ));
+        }
+    }
+    if cfg.max_stack() <= biggest_post {
         return Err("stack must exceed the biggest blind".into());
     }
     if let Some(&s) = cfg.call_only_seats.iter().find(|&&s| s >= n) {
@@ -3087,10 +3229,10 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             }
             if name == "open_raises_by_seat" {
                 for sizes in per {
-                    if let Some(v) = sizes.iter().find(|v| **v > cfg.stack) {
+                    if let Some(v) = sizes.iter().find(|v| **v > cfg.max_stack()) {
                         return Err(format!(
                             "{name} size {v} exceeds the {} bb stack (enable add_allin for jams)",
-                            cfg.stack
+                            cfg.max_stack()
                         ));
                     }
                 }
@@ -3104,10 +3246,10 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
         if !o.is_finite() || o <= 0.0 {
             return Err(format!("open_raises sizes must be finite and > 0, got {o}"));
         }
-        if o > cfg.stack {
+        if o > cfg.max_stack() {
             return Err(format!(
                 "open_raises size {o} exceeds the {} bb stack (enable add_allin for jams)",
-                cfg.stack
+                cfg.max_stack()
             ));
         }
     }
@@ -3166,6 +3308,7 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         callers: 0,
         next_seat: cfg.first_to_act(),
         aggressor: 255,
+        acted: vec![-1.0; n],
     }
 }
 
@@ -3183,8 +3326,16 @@ fn next_actor_of(n: usize, st: &BuildState) -> Option<usize> {
 /// Legal actions for `actor` — the single source of truth shared by the
 /// real tree builder and the size estimator (ante is dead money: only
 /// invested-minus-ante counts toward matching the bet).
+///
+/// Stacks are per seat. A seat that cannot cover the bet calls all-in for
+/// less. A raise is capped at the deepest stack still able to call it (the
+/// rest would be returned uncalled), so it is offered only when someone
+/// behind can still put in chips. A seat that already acted may not re-raise
+/// an all-in for less than a full raise. With equal stacks every one of
+/// these rules reduces to the single-stack tree.
 fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<PAction> {
     let inv_live = st.invested[actor] - cfg.ante;
+    let own = cfg.stack_of(actor);
     let owed = (st.to_call - inv_live).max(0.0);
     let mut acts: Vec<PAction> = Vec::new();
     if owed > 1e-9 {
@@ -3193,14 +3344,19 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
             to: 0.0,
             label: "Fold".into(),
         });
-        // call (limp when no raise yet)
-        if st.raises > 0 || cfg.limp {
-            let label = if st.raises == 0 { "Limp" } else { "Call" };
-            acts.push(PAction {
-                kind: "call".into(),
-                to: st.to_call,
-                label: format!("{label} {}", trim(st.to_call)),
-            });
+        // call (limp when no raise yet). A seat too short to cover the
+        // blind can always call all-in: it has no raise to make instead.
+        let short = own < st.to_call - 1e-9;
+        if st.raises > 0 || cfg.limp || short {
+            let to = st.to_call.min(own);
+            let label = if short {
+                format!("Call all-in {}", trim(to))
+            } else if st.raises == 0 {
+                format!("Limp {}", trim(to))
+            } else {
+                format!("Call {}", trim(to))
+            };
+            acts.push(PAction { kind: "call".into(), to, label });
         }
     } else {
         acts.push(PAction {
@@ -3209,7 +3365,18 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
             label: "Check".into(),
         });
     }
-    if st.raises < cfg.max_raises && !cfg.call_only_seats.contains(&actor) {
+    // The most any other live seat could still match.
+    let cover = (0..st.invested.len())
+        .filter(|&q| q != actor && (st.folded | st.allin) & (1 << q) == 0)
+        .map(|q| cfg.stack_of(q))
+        .fold(0.0, f64::max);
+    let cap = own.min(cover);
+    let reopened = st.acted[actor] < 0.0 || st.to_call - st.acted[actor] >= st.last_raise - 1e-9;
+    if st.raises < cfg.max_raises
+        && !cfg.call_only_seats.contains(&actor)
+        && reopened
+        && cap > st.to_call + 1e-9
+    {
         let mut tos: Vec<f64> = Vec::new();
         if st.raises == 0 {
             tos.extend(cfg.opens_of(actor).iter().cloned());
@@ -3220,12 +3387,12 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
             }
         }
         if cfg.add_allin {
-            tos.push(cfg.stack);
+            tos.push(cap);
         }
         let mut seen: Vec<f64> = Vec::new();
         for mut to in tos {
-            if to >= cfg.allin_threshold * cfg.stack {
-                to = cfg.stack;
+            if to >= cfg.allin_threshold * cap {
+                to = cap;
             }
             if to <= st.to_call + 1e-9 {
                 continue;
@@ -3234,7 +3401,7 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
                 continue;
             }
             seen.push(to);
-            let jam = (to - cfg.stack).abs() < 1e-9;
+            let jam = (to - cap).abs() < 1e-9;
             acts.push(PAction {
                 kind: if jam { "jam" } else { "raise" }.into(),
                 to,
@@ -3272,14 +3439,18 @@ fn next_state_of(
         callers: st.callers,
         next_seat: (actor + 1) % n,
         aggressor: st.aggressor,
+        acted: st.acted.clone(),
     };
+    ns.acted[actor] = st.to_call;
+    let own = cfg.stack_of(actor);
     match a.kind.as_str() {
         "fold" => {
             ns.folded |= 1 << actor;
         }
         "check" | "call" => {
-            ns.invested[actor] = st.to_call + cfg.ante;
-            if (st.to_call - cfg.stack).abs() < 1e-9 {
+            // `a.to` is the faced amount, or the whole stack when short.
+            ns.invested[actor] = a.to + cfg.ante;
+            if (a.to - own).abs() < 1e-9 {
                 ns.allin |= 1 << actor;
             }
             if a.kind == "call" {
@@ -3292,13 +3463,18 @@ fn next_state_of(
         }
         _ => {
             ns.invested[actor] = a.to + cfg.ante;
-            ns.last_raise = a.to - st.to_call;
+            let all_in = (a.to - own).abs() < 1e-9;
+            // An all-in short of a full raise leaves the minimum raise as it was.
+            if !all_in || a.to - st.to_call >= st.last_raise - 1e-9 {
+                ns.last_raise = a.to - st.to_call;
+            }
             ns.aggressor = actor as u8;
             ns.to_call = a.to;
             ns.raises = st.raises + 1;
             ns.raised |= 1 << actor;
             ns.callers = 0; // a raise starts a fresh calling round
-            if (a.to - cfg.stack).abs() < 1e-9 {
+            ns.acted[actor] = a.to;
+            if all_in {
                 ns.allin |= 1 << actor;
             }
             // a raise re-opens action for every live player behind
@@ -3306,6 +3482,49 @@ fn next_state_of(
         }
     }
     ns
+}
+
+/// Settle a POT_SHARE terminal's money: return the top contributor's
+/// uncalled chips, then split the pot into a main pot and side pots by
+/// all-in level. Returns None when nothing changes and there is one pot
+/// (always so with equal stacks), so those terminals stay bit-identical.
+///
+/// Antes and folded seats' chips are dead money: antes go to the main pot,
+/// folded chips to every pot their contribution reaches. Each pot is
+/// (amount, mask of live seats eligible to win it).
+fn settle_pots(cfg: &PreflopConfig, invested: &[f64], live: u32) -> Option<(Vec<f64>, Vec<(f64, u32)>)> {
+    let n = invested.len();
+    let is_live = |i: usize| live & (1 << i) != 0;
+    let top = (0..n).filter(|&i| is_live(i))
+        .max_by(|&a, &b| invested[a].partial_cmp(&invested[b]).unwrap())?;
+    let second = (0..n).filter(|&q| q != top).map(|q| invested[q]).fold(f64::MIN, f64::max);
+    let mut inv = invested.to_vec();
+    let refunded = inv[top] > second + 1e-9;
+    if refunded {
+        inv[top] = second;
+    }
+    let mut levels: Vec<f64> = (0..n).filter(|&i| is_live(i)).map(|i| inv[i] - cfg.ante).collect();
+    levels.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    levels.dedup_by(|a, b| (*a - *b).abs() < 1e-9);
+    if levels.len() < 2 {
+        return if refunded { Some((inv, Vec::new())) } else { None };
+    }
+    let mut pots = Vec::with_capacity(levels.len());
+    let mut prev = 0.0;
+    for (k, &level) in levels.iter().enumerate() {
+        let mut amount: f64 = (0..n)
+            .map(|i| (inv[i] - cfg.ante - prev).clamp(0.0, level - prev))
+            .sum();
+        if k == 0 {
+            amount += cfg.ante * n as f64;
+        }
+        let mask = (0..n)
+            .filter(|&i| is_live(i) && inv[i] - cfg.ante >= level - 1e-9)
+            .fold(0u32, |m, i| m | (1 << i));
+        pots.push((amount, mask));
+        prev = level;
+    }
+    Some((inv, pots))
 }
 
 /// Available RAM in MB (Linux MemAvailable / Windows avail_phys; None elsewhere).
@@ -3824,3 +4043,5 @@ impl PreflopSolver {
 
 #[cfg(test)]
 mod checkpoint_tests;
+#[cfg(test)]
+mod stacks_tests;

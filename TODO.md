@@ -385,9 +385,9 @@ solver: log GPU fallback") and the memory file (SOLVER_THREADS).
   HANDS tab and the 2026-07-05 grid-hover popup — bypasses it). Route
   `cellHandData` through `handsFor` and both fix at once; check that
   `handIdx` combo→index mapping matches the exploit payload's hand order.
-- **Unequal stacks in the Preflop Lab**: `PreflopConfig.stack` is a single
-  value (no side pots by design). Support per-seat stacks + side-pot-aware
-  terminals if short-stack study becomes interesting.
+- **Side pots on the GPU**: per-seat stacks and side pots solve on CPU
+  (docs/technical_reference.md, "Per-seat stacks and side pots"). Upload the
+  pot layers and accumulate them in `pf_terminal*` / `pf_multiway_terminal`.
 - **External range import**: paste-parse the copy formats of popular
   solvers/trainers into the range editor (mostly compatible with the
   existing text syntax already).

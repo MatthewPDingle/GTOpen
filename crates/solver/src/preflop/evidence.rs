@@ -317,7 +317,7 @@ fn inspect_profile(cfg: &PreflopConfig, seat: usize, profile: &SeatProfile,
     let preview=if let Some(input)=&request.context {
         let version=response.and_then(|r|r.contextual_reraise.as_deref()).unwrap_or(contextual::MODEL_ID);
         let prediction=contextual::predict(version,cfg,seat,input)?;
-        if response.and_then(|r|r.adaptive_from).is_some_and(|f|input.to_call+1e-9>=cfg.stack*f) {
+        if response.and_then(|r|r.adaptive_from).is_some_and(|f|input.to_call+1e-9>=cfg.stack_of(seat)*f) {
             let mut e=solver_evidence(false,true);
             e.summary="Game uses adaptive solver; preview shows the underlying model estimate.".into();
             e.details.push("The preview is not a solved strategy. At this faced amount the game learns the response instead of forcing the preview probabilities.".into());
@@ -413,7 +413,7 @@ impl PreflopSolver {
                 return Some(fixed(&self.cfg,seat,profile,&c.policy,&format!("limps_{}_{limpers}",if free {"free"}else{"paid"}),false));
             }
         }
-        if nd.bucket>=BUCKET_VS_RAISE && response.and_then(|r|r.adaptive_from).is_some_and(|f|self.faced_to(node)+1e-9>=self.cfg.stack*f) {
+        if nd.bucket>=BUCKET_VS_RAISE && response.and_then(|r|r.adaptive_from).is_some_and(|f|self.faced_to(node)+1e-9>=self.cfg.stack_of(nd.actor as usize)*f) {
             return Some(solver_evidence(self.seat_frozen[seat],true));
         }
         let status=self.contextual_status(node);

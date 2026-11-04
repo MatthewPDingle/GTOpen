@@ -17,7 +17,7 @@ fn main() {
     let cfg = PreflopConfig {
         utg_straddle: false,
         positions: positions.iter().map(|s| s.to_string()).collect(),
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: false,

@@ -20,7 +20,7 @@ fn bench_pruning_six_max() {
             "SB".into(),
             "BB".into(),
         ],
-        stack: 100.0,
+        stack: 100.0, stacks: None,
         posts: vec![0.0, 0.0, 0.0, 0.0, 0.5, 1.0],
         ante: 0.0,
         limp: true,

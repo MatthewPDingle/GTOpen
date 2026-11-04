@@ -279,7 +279,7 @@ mod tests {
         let cfg = PreflopConfig {
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
-            stack: 4.0,
+            stack: 4.0, stacks: None,
             posts: vec![0.0, 0.5, 1.0],
             ante: 0.0,
             limp: true,
