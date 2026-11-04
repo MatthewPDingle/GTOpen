@@ -197,6 +197,7 @@ fn fresh_build_model_query_is_strict_and_defaults_to_reference() {
     let parse = |query: &str| Query::<PfBuildOptions>::try_from_uri(&format!("/api/preflop/spot{query}").parse().unwrap());
     assert_eq!(parse("").unwrap().0.model().unwrap(), "coupled_deck_v1");
     assert_eq!(parse("?multiway_model=coupled_deck_v1").unwrap().0.model().unwrap(), "coupled_deck_v1");
+    assert_eq!(parse("?multiway_model=three_way_table_v1").unwrap().0.model().unwrap(), "three_way_table_v1");
     assert!(parse("?model=coupled_preview64_v1").is_err());
     for model in ["unknown", "legacy_product", "coupled_preview32_v1", "coupled_preview32_v2", "coupled_preview64_v1", "coupled_preview128_v1", ""] {
         assert!(parse(&format!("?multiway_model={model}")).unwrap().0.model().is_err());
@@ -208,7 +209,7 @@ fn fresh_build_model_query_is_strict_and_defaults_to_reference() {
 async fn production_capabilities_do_not_offer_experimental_payoff_models() {
     let Json(caps)=pf_capabilities().await;
     assert_eq!(caps["early_preview_v1"],true);
-    assert_eq!(caps["fresh_build_multiway_models"],serde_json::json!(["coupled_deck_v1"]));
+    assert_eq!(caps["fresh_build_multiway_models"],serde_json::json!(["coupled_deck_v1","three_way_table_v1"]));
 }
 
 #[tokio::test]

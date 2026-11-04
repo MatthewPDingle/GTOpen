@@ -1211,8 +1211,8 @@ struct PfBuildOptions {
 impl PfBuildOptions {
     fn model(&self) -> Result<&str, ApiError> {
         match self.multiway_model.as_deref().unwrap_or("coupled_deck_v1") {
-            model @ "coupled_deck_v1" => Ok(model),
-            _ => Err(bad_request("unsupported fresh-build multiway_model; production builds support coupled_deck_v1 only")),
+            model @ ("coupled_deck_v1" | "three_way_table_v1") => Ok(model),
+            _ => Err(bad_request("unsupported fresh-build multiway_model; use coupled_deck_v1 or three_way_table_v1")),
         }
     }
 }
@@ -1899,7 +1899,7 @@ struct PfModelEvidenceRequest {
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
 async fn pf_capabilities() -> Json<serde_json::Value> {
-    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1"]}))
+    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1","three_way_table_v1"]}))
 }
 
 async fn pf_model_evidence(

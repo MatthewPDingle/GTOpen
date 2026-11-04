@@ -778,7 +778,8 @@ extern "C" __global__ void pf_side_pot_terminal(
     const int* __restrict__ mask, const float* __restrict__ bal,
     const float* __restrict__ eqtab, const u32* __restrict__ reach_src,
     const float* __restrict__ reach, const float* __restrict__ reach_mass,
-    int coupled, const u32* __restrict__ val_slot, float* val)
+    int coupled, int table, const float* __restrict__ ew, const float* __restrict__ w,
+    const u32* __restrict__ val_slot, float* val)
 {
     u32 nd = terms[blockIdx.x];
     __shared__ float prob;
@@ -804,15 +805,23 @@ extern "C" __global__ void pf_side_pot_terminal(
                 int m = mask[k];
                 if (!((m >> p) & 1)) continue;
                 int others = __popc((u32)m) - 1;
+                if (others == 2 && table) {
+                    u32 pair[2]; int c = 0;
+                    for (int q = 0; q < np; q++)
+                        if (q != p && ((m >> q) & 1)) pair[c++] = reach_src[(size_t)nd * np + q];
+                    won += amount[k] * pf_three_way_share(h, ew, w, reach + (size_t)pair[0] * NC,
+                        reach_mass[pair[0]], reach + (size_t)pair[1] * NC, reach_mass[pair[1]]);
+                    continue;
+                }
                 if (others >= 2 && coupled) continue;
-                const float* table = others == 1 ? bal : eqtab;
+                const float* table_ = others == 1 ? bal : eqtab;
                 float share = 1.f;
                 for (int q = 0; q < np; q++) {
                     if (q == p || !((m >> q) & 1)) continue;
                     u32 block = reach_src[(size_t)nd * np + q];
                     const float* rq = reach + (size_t)block * NC;
                     float d = 0.f;
-                    for (int j = 0; j < NC; j++) d += table[(u32)j * NC + h] * rq[j];
+                    for (int j = 0; j < NC; j++) d += table_[(u32)j * NC + h] * rq[j];
                     share *= d / reach_mass[block];
                 }
                 won += amount[k] * share;
@@ -869,7 +878,7 @@ extern "C" __global__ void pf_side_pot_multiway(
     u32 union_slots, int compact, const float* __restrict__ cdf,
     const u32* __restrict__ lower, const u32* __restrict__ upper,
     u32 sample_start, u32 sample_count, u32 batch_capacity, u32 samples,
-    const u32* __restrict__ val_slot, float* val)
+    int table, const u32* __restrict__ val_slot, float* val)
 {
     u32 nd = terms[blockIdx.x];
     if (!((live[nd] >> p) & 1)) return;
@@ -886,7 +895,7 @@ extern "C" __global__ void pf_side_pot_multiway(
     if (prob <= 0.f) return;
     for (u32 k = start[blockIdx.x]; k < start[blockIdx.x + 1]; k++) {
         int m = mask[k];
-        if (!((m >> p) & 1) || __popc((u32)m) < 3) continue;
+        if (!((m >> p) & 1) || __popc((u32)m) < 3 || (table && __popc((u32)m) == 3)) continue;
         __syncthreads(); // the previous pot's readers are done with pot_bases
         if (threadIdx.x == 0) {
             int c = 0;
@@ -914,5 +923,69 @@ extern "C" __global__ void pf_side_pot_multiway(
             }
             val[(size_t)val_slot[nd] * NC + h] += scale * sum / (float)samples;
         }
+    }
+}
+
+// ---- Exact 3-way table (three_way_table_v1) --------------------------------
+// Hero class h's share against opponent reach blocks qa, qb, as
+// ThreeWayTable::shares() on the CPU: sum_ab A[a] B[b] ew[h,a,b] over the same
+// sum with the compatible fractions w. ew/w are 169^3, index (h*169 + a)*169 + b.
+__device__ __forceinline__ float pf_three_way_share(
+    int h, const float* __restrict__ ew, const float* __restrict__ w,
+    const float* __restrict__ ra, float ma, const float* __restrict__ rb, float mb)
+{
+    float num = 0.f, den = 0.f;
+    for (int a = 0; a < NC; a++) {
+        float da = ra[a] / ma;
+        if (da == 0.f) continue;
+        size_t row = ((size_t)h * NC + a) * NC;
+        float n = 0.f, d = 0.f;
+        for (int b = 0; b < NC; b++) {
+            float db = rb[b] / mb;
+            n += ew[row + b] * db;
+            d += w[row + b] * db;
+        }
+        num += da * n;
+        den += da * d;
+    }
+    return den > 0.f ? num / den : 1.f / 3.f;
+}
+
+// Pot-share terminals with exactly three live seats and one pot. Runs after
+// pf_terminal and overwrites the live traverser's values.
+extern "C" __global__ void pf_three_way_terminal(
+    const u32* __restrict__ terms, int p, int np,
+    const int* __restrict__ live, const float* __restrict__ pots,
+    const float* __restrict__ invested, const float* __restrict__ ew,
+    const float* __restrict__ w, const u32* __restrict__ reach_src,
+    const float* __restrict__ reach, const float* __restrict__ reach_mass,
+    const u32* __restrict__ val_slot, float* val)
+{
+    u32 nd = terms[blockIdx.x];
+    int lv = live[nd];
+    if (!((lv >> p) & 1)) return; // pf_terminal already wrote -invested
+    __shared__ float prob;
+    __shared__ u32 opp[2];
+    if (threadIdx.x == 0) {
+        float value = 1.f;
+        int c = 0;
+        for (int q = 0; q < np; q++) {
+            if (q == p) continue;
+            u32 block = reach_src[(size_t)nd * np + q];
+            value *= reach_mass[block];
+            if ((lv >> q) & 1) opp[c++] = block;
+        }
+        prob = value;
+    }
+    __syncthreads();
+    float invp = invested[(size_t)nd * np + p];
+    for (int h = threadIdx.x; h < NC; h += blockDim.x) {
+        float v = 0.f;
+        if (prob > 0.f) {
+            float share = pf_three_way_share(h, ew, w, reach + (size_t)opp[0] * NC, reach_mass[opp[0]],
+                reach + (size_t)opp[1] * NC, reach_mass[opp[1]]);
+            v = prob * (pots[nd] * share - invp);
+        }
+        val[(size_t)val_slot[nd] * NC + h] = v;
     }
 }

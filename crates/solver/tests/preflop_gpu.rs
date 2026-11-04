@@ -78,6 +78,39 @@ fn gpu_matches_cpu_side_pots() {
     }
 }
 
+#[test]
+fn gpu_matches_cpu_three_way_table() {
+    // three_way_table_v1: single-pot 3-way terminals, 3-seat side pots, and
+    // coupled 4-way pots next to the table.
+    static T: OnceLock<Arc<solver::preflop::three_way::ThreeWayTable>> = OnceLock::new();
+    let tw = T.get_or_init(|| Arc::new(solver::preflop::three_way::ThreeWayTable::build(64))).clone();
+    let mut equal = hu25();
+    equal.positions = vec!["BTN".into(), "SB".into(), "BB".into()];
+    equal.posts = vec![0.0, 0.5, 1.0];
+    equal.stack = 20.0;
+    equal.open_raises = vec![2.5];
+    equal.max_raises = 2;
+    equal.realization = "raw".into();
+    let mut short = equal.clone();
+    short.stack = 40.0;
+    short.stacks = Some(vec![40.0, 3.0, 40.0]);
+    short.max_raises = 3;
+    let mut four = short.clone();
+    four.positions = vec!["CO".into(), "BTN".into(), "SB".into(), "BB".into()];
+    four.posts = vec![0.0, 0.0, 0.5, 1.0];
+    four.stacks = Some(vec![40.0, 8.0, 20.0, 40.0]);
+    four.max_raises = 1;
+    for cfg in [equal, short, four] {
+        let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+        let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+        cpu.set_three_way_table(tw.clone()).unwrap();
+        gs.set_three_way_table(tw.clone()).unwrap();
+        cpu.prune = false;
+        gs.prune = false;
+        run_side_pot_equivalence(cpu, gs);
+    }
+}
+
 /// Like run_equivalence, with pure decisions compared at 50 iterations. In
 /// the 3-way limp tree, CPU and GPU regrets split apart between 20 and 50
 /// iterations and the averages fork later (float noise amplified by

@@ -30,7 +30,7 @@ impl PreflopGpu {
             || self.research_normalized_regret.is_some() || self.research_learning_mask
             || self.research_root_ranges.is_some() {return false;}
         self.use_multiway!=0 && self.use_mw_normalized && self.use_mw_prepared && self.use_mw_compact!=0
-            && self.sp_nterms==0
+            && self.sp_nterms==0 && self.use_tw==0
     }
     #[cfg(feature = "preflop-research")]
     pub fn enable_research_exact_cdf_reuse(&mut self)->Result<(),String> {

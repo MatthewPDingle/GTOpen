@@ -113,12 +113,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderEquityModel(model) {
     const legacy = model === 'legacy_product';
     const coupled = model === 'coupled_deck_v1';
-    equityModelNote.classList.toggle('hidden', !legacy && !coupled);
+    const table = model === 'three_way_table_v1';
+    equityModelNote.classList.toggle('hidden', !legacy && !coupled && !table);
     equityModelNote.textContent = legacy
       ? 'Saved-game multiway estimate · rebuild the game to update'
-      : coupled ? 'Multiway equity · coupled-deck approximation' : '';
+      : coupled ? 'Multiway equity · coupled-deck approximation'
+      : table ? 'Multiway equity · exact 3-way table (beta), coupled-deck for 4+' : '';
     equityModelNote.dataset.tip = legacy
       ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
+      : table
+      ? 'Pots with exactly three players use showdown equity by hand class with all three hands dealt from one deck, so card removal between them is exact (Monte-Carlo boards). Pots with four or more players use coupled hand-strength samples. Heads-up continuation is unchanged. This does not solve the full postflop tree.'
       : 'Pots with 3+ players use coupled hand-strength samples and showdown value after rake. These are approximate, not jointly dealt cards: overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged. This does not solve the full postflop tree.';
   }
   const S = {
@@ -577,7 +581,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     tick();
     const timer = setInterval(tick, 150);
     try {
-      const info = await api.pfBuild(cfg);
+      const info = await api.pfBuild(cfg, els.eq3?.checked ? 'three_way_table_v1' : null);
       renderEquityModel(info.multiway_equity_model);
       const secs = (performance.now() - t0) / 1000;
       if (info.nodes > 20000 && secs > 0.2) {

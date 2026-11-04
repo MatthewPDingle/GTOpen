@@ -366,6 +366,7 @@
         <div class="pfl-row">
           <label class="chk" data-tip="Adds open-limping and limping behind — the spots preset libraries can't model. Limp chains grow the tree quickly on full tables."><input id="pfl-limp" type="checkbox"> allow limps</label>
           <label class="chk" data-tip="Adds jam as an action everywhere; configured raises that would commit most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
+          <label class="chk" data-tip="Beta. Pots with exactly three players use a table of 3-way showdown equity by hand class, with all three hands dealt from one deck, so card removal between the hands is exact. Pots with four or more players keep the coupled-deck model. The first build computes the table once (a few minutes) and caches it. Solves on CPU for now."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
           data-tip="Live tree size and CPU solver-arena RAM before you build; this is not total process memory or GPU VRAM. Limits follow this machine's available RAM (arenas may take ~40%; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB override). GPU fit is checked when solving. Branching multiplies: sizes x raise cap x limps x players."></div>

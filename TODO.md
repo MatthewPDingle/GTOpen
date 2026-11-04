@@ -388,8 +388,8 @@ solver: log GPU fallback") and the memory file (SOLVER_THREADS).
 - **Side pots in the GPU throughput variants**: side-pot trees run on the
   normal GPU plan; retained cohorts and static CDFs decline them
   (docs/technical_reference.md, "Per-seat stacks and side pots").
-- **Exact 3-way all-in equity**: a precomputed 169^3 table for 3-way
-  all-in pots in place of the coupled model (feature #9, PR 3).
+- **3-way table as the default?** `three_way_table_v1` is opt-in; decide
+  after comparing it with `coupled_deck_v1` on standard 3-handed spots.
 - **External range import**: paste-parse the copy formats of popular
   solvers/trainers into the range editor (mostly compatible with the
   existing text syntax already).
