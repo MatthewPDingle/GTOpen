@@ -762,6 +762,31 @@ extern "C" __global__ void pf_discount_nodes(
     }
 }
 
+// ---- Exact 3-way table (three_way_table_v1) --------------------------------
+// Hero class h's share against opponent reach blocks qa, qb, as
+// ThreeWayTable::shares() on the CPU: sum_ab A[a] B[b] ew[h,a,b] over the same
+// sum with the compatible fractions w. ew/w are 169^3, index (h*169 + a)*169 + b.
+__device__ __forceinline__ float pf_three_way_share(
+    int h, const float* __restrict__ ew, const float* __restrict__ w,
+    const float* __restrict__ ra, float ma, const float* __restrict__ rb, float mb)
+{
+    float num = 0.f, den = 0.f;
+    for (int a = 0; a < NC; a++) {
+        float da = ra[a] / ma;
+        if (da == 0.f) continue;
+        size_t row = ((size_t)h * NC + a) * NC;
+        float n = 0.f, d = 0.f;
+        for (int b = 0; b < NC; b++) {
+            float db = rb[b] / mb;
+            n += ew[row + b] * db;
+            d += w[row + b] * db;
+        }
+        num += da * n;
+        den += da * d;
+    }
+    return den > 0.f ? num / den : 1.f / 3.f;
+}
+
 // ---- Side pots (unequal stacks) -------------------------------------------
 // Mirrors side_pot_value() on the CPU. Expectation is linear in the pots, so
 // each pot pays amount x (chance of the best hand among its eligible seats).
@@ -926,31 +951,7 @@ extern "C" __global__ void pf_side_pot_multiway(
     }
 }
 
-// ---- Exact 3-way table (three_way_table_v1) --------------------------------
-// Hero class h's share against opponent reach blocks qa, qb, as
-// ThreeWayTable::shares() on the CPU: sum_ab A[a] B[b] ew[h,a,b] over the same
-// sum with the compatible fractions w. ew/w are 169^3, index (h*169 + a)*169 + b.
-__device__ __forceinline__ float pf_three_way_share(
-    int h, const float* __restrict__ ew, const float* __restrict__ w,
-    const float* __restrict__ ra, float ma, const float* __restrict__ rb, float mb)
-{
-    float num = 0.f, den = 0.f;
-    for (int a = 0; a < NC; a++) {
-        float da = ra[a] / ma;
-        if (da == 0.f) continue;
-        size_t row = ((size_t)h * NC + a) * NC;
-        float n = 0.f, d = 0.f;
-        for (int b = 0; b < NC; b++) {
-            float db = rb[b] / mb;
-            n += ew[row + b] * db;
-            d += w[row + b] * db;
-        }
-        num += da * n;
-        den += da * d;
-    }
-    return den > 0.f ? num / den : 1.f / 3.f;
-}
-
+// ---- Exact 3-way table: single-pot terminals --------------------------------
 // Pot-share terminals with exactly three live seats and one pot. Runs after
 // pf_terminal and overwrites the live traverser's values.
 extern "C" __global__ void pf_three_way_terminal(
