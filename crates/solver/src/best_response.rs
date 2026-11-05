@@ -10,13 +10,19 @@ impl Solver {
     /// Counterfactual values for player `p` when `p` plays a best response
     /// and the opponent plays the average strategy.
     pub fn traverse_br(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt) -> Vec<f32> {
+        self.traverse_br_view(node_idx, p, reach_o, dealt, false)
+    }
+
+    /// `traverse_br` under a lock view: `free` = the free villain's view
+    /// under "trust the read" (profile locks do not bind; see `rnr.rs`).
+    pub fn traverse_br_view(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool) -> Vec<f32> {
         let mut out = vec![0f32; self.spot.hands[p].len()];
-        self.br_into(node_idx, p, reach_o, dealt, &mut out);
+        self.br_into(node_idx, p, reach_o, dealt, free, &mut out);
         out
     }
 
     /// Best-response traversal writing into `out` (must be zeroed on entry).
-    fn br_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, out: &mut [f32]) {
+    fn br_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool, out: &mut [f32]) {
         // Exact for this read-only traversal: zero opponent reach gives zero CFVs.
         if reach_o.iter().all(|&r| r <= 0.0) {
             return;
@@ -60,7 +66,7 @@ impl Solver {
                     reach_o,
                     dealt,
                     out,
-                    |s, c, _rp, ro, d, o| s.br_into(c, p, ro, d, o),
+                    |s, c, _rp, ro, d, o| s.br_into(c, p, ro, d, free, o),
                 );
             }
             KIND_ACTION => {
@@ -76,13 +82,13 @@ impl Solver {
                     } else {
                         None
                     };
-                    if let Some(lock) = self.locks.get(&node_idx).or(fitted.as_ref()) {
+                    if let Some(lock) = self.lock_view(node_idx, free).or(fitted.as_ref()) {
                         // Locked nodes are constraints: the best responder
                         // cannot deviate there.
                         for a in 0..na {
                             let child = spot.tree.children[node.children_start as usize + a];
                             vals.fill(0.0);
-                            self.br_into(child, p, reach_o, dealt, &mut vals);
+                            self.br_into(child, p, reach_o, dealt, free, &mut vals);
                             let sig = &lock[a * nh..(a + 1) * nh];
                             for i in 0..nh {
                                 out[i] += sig[i] * vals[i];
@@ -92,7 +98,7 @@ impl Solver {
                         for a in 0..na {
                             let child = spot.tree.children[node.children_start as usize + a];
                             vals.fill(0.0);
-                            self.br_into(child, p, reach_o, dealt, &mut vals);
+                            self.br_into(child, p, reach_o, dealt, free, &mut vals);
                             if a == 0 {
                                 out.copy_from_slice(&vals);
                             } else {
@@ -108,7 +114,7 @@ impl Solver {
                     let o_pl = 1 - p;
                     let nh_o = spot.hands[o_pl].len();
                     let mut sigma = Buf::for_overwrite(na * nh_o);
-                    self.average_strategy_into(node_idx, node, &mut sigma);
+                    self.average_strategy_view(node_idx, node, &mut sigma, free);
                     let mut reach_buf = Buf::for_overwrite(nh_o);
                     let mut vals = Buf::for_overwrite(nh);
                     for a in 0..na {
@@ -118,7 +124,7 @@ impl Solver {
                         }
                         let child = spot.tree.children[node.children_start as usize + a];
                         vals.fill(0.0);
-                        self.br_into(child, p, &reach_buf, dealt, &mut vals);
+                        self.br_into(child, p, &reach_buf, dealt, free, &mut vals);
                         for i in 0..nh {
                             out[i] += vals[i];
                         }
@@ -132,13 +138,18 @@ impl Solver {
     /// Counterfactual values for player `p` when BOTH players play the
     /// average strategy.
     pub fn traverse_avg(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt) -> Vec<f32> {
+        self.traverse_avg_view(node_idx, p, reach_o, dealt, false)
+    }
+
+    /// `traverse_avg` under a lock view (see `traverse_br_view`).
+    pub fn traverse_avg_view(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool) -> Vec<f32> {
         let mut out = vec![0f32; self.spot.hands[p].len()];
-        self.avg_into(node_idx, p, reach_o, dealt, &mut out);
+        self.avg_into(node_idx, p, reach_o, dealt, free, &mut out);
         out
     }
 
     /// Average-strategy traversal writing into `out` (must be zeroed on entry).
-    fn avg_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, out: &mut [f32]) {
+    fn avg_into(&self, node_idx: u32, p: usize, reach_o: &[f32], dealt: Dealt, free: bool, out: &mut [f32]) {
         // Exact for this read-only traversal: zero opponent reach gives zero CFVs.
         if reach_o.iter().all(|&r| r <= 0.0) {
             return;
@@ -182,19 +193,19 @@ impl Solver {
                     reach_o,
                     dealt,
                     out,
-                    |s, c, _rp, ro, d, o| s.avg_into(c, p, ro, d, o),
+                    |s, c, _rp, ro, d, o| s.avg_into(c, p, ro, d, free, o),
                 );
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
                 if node.player as usize == p {
                     let mut sigma = Buf::for_overwrite(na * nh);
-                    self.average_strategy_into(node_idx, node, &mut sigma);
+                    self.average_strategy_view(node_idx, node, &mut sigma, free);
                     let mut vals = Buf::for_overwrite(nh);
                     for a in 0..na {
                         let child = spot.tree.children[node.children_start as usize + a];
                         vals.fill(0.0);
-                        self.avg_into(child, p, reach_o, dealt, &mut vals);
+                        self.avg_into(child, p, reach_o, dealt, free, &mut vals);
                         let sig = &sigma[a * nh..(a + 1) * nh];
                         for i in 0..nh {
                             out[i] += sig[i] * vals[i];
@@ -204,7 +215,7 @@ impl Solver {
                     let o_pl = 1 - p;
                     let nh_o = spot.hands[o_pl].len();
                     let mut sigma = Buf::for_overwrite(na * nh_o);
-                    self.average_strategy_into(node_idx, node, &mut sigma);
+                    self.average_strategy_view(node_idx, node, &mut sigma, free);
                     let mut reach_buf = Buf::for_overwrite(nh_o);
                     let mut vals = Buf::for_overwrite(nh);
                     for a in 0..na {
@@ -214,7 +225,7 @@ impl Solver {
                         }
                         let child = spot.tree.children[node.children_start as usize + a];
                         vals.fill(0.0);
-                        self.avg_into(child, p, &reach_buf, dealt, &mut vals);
+                        self.avg_into(child, p, &reach_buf, dealt, free, &mut vals);
                         for i in 0..nh {
                             out[i] += vals[i];
                         }
@@ -256,6 +267,10 @@ impl Solver {
     /// Exploitability of the current average strategy profile, in chips
     /// (average of both players' best-response gains).
     pub fn exploitability(&self) -> f64 {
+        if let Some(r) = self.rnr_active() {
+            // "trust the read": convergence of the trust game (rnr.rs)
+            return self.rnr_exploitability(&r);
+        }
         let spot = &*self.spot;
         let denom = self.pair_weight_sum();
         if denom <= 0.0 {

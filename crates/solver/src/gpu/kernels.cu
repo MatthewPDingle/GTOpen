@@ -636,3 +636,20 @@ extern "C" __global__ void fit_dual(
     for (int a = 0; a < FIT_NA; a++) F[24 + a] = 0.f;
     F[32] = 0.f;
 }
+
+// ---------------------------------------------------------------------------
+// "Trust the read" (rnr.rs). The read villain's reach is a second down sweep
+// into its own buffer (same slot layout as the villain's reach); before the
+// hero's up sweep it becomes the reach the hero faces:
+//   read = trust * read + (1 - trust) * free.
+// Terminal values are linear in the opponent reach, so this is exact.
+// ---------------------------------------------------------------------------
+extern "C" __global__ void rnr_mix(
+    float* read, const float* __restrict__ free_reach, float trust, long long n)
+{
+    float rest = 1.f - trust;
+    long long i = (long long)blockIdx.x * blockDim.x + threadIdx.x;
+    long long stride = (long long)gridDim.x * blockDim.x;
+    for (long long k = i; k < n; k += stride)
+        read[k] = trust * read[k] + rest * free_reach[k];
+}

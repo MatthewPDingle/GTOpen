@@ -86,6 +86,10 @@ pub struct Solver {
     /// Running least-exploitable fits (node index keyed; session only).
     /// A fitted node keeps learning, steered by a bounty; see `fit.rs`.
     pub(crate) fits: std::collections::HashMap<u32, crate::fit::FitConstraint>,
+    /// "Trust the read" (Restricted Nash Response, see `rnr.rs`): with
+    /// probability `trust` the profiled villain plays his profile locks,
+    /// otherwise he plays freely. `None` (or 1.0) = today's full exploit.
+    pub(crate) trust: Option<f32>,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -142,7 +146,7 @@ impl Solver {
         self.iteration = t;
         let mut out = vec![0.; own.len()];
         self.cfr(0, p, own, opponent, Dealt::default(),
-            &Discounts::for_iteration(self.algo, t), &mut out);
+            &Discounts::for_iteration(self.algo, t), false, &mut out);
         Ok(out)
     }
 
@@ -173,6 +177,7 @@ impl Solver {
             lock_labels: std::collections::HashMap::new(),
             lock_history: Default::default(),
             fits: std::collections::HashMap::new(),
+            trust: None,
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]
@@ -219,18 +224,35 @@ impl Solver {
         self.sym_dirty = true;
         self.iteration += 1;
         let disc = Discounts::for_iteration(self.algo, self.iteration);
+        let rnr = self.rnr_active();
         for p in 0..2usize {
             let nh = self.spot.hands[p].len();
             let mut out = Buf::zeroed(nh);
-            self.cfr(
-                0,
-                p,
-                &self.spot.weights[p],
-                &self.spot.weights[1 - p],
-                Dealt::default(),
-                &disc,
-                &mut out,
-            );
+            match rnr {
+                // the hero best-responds to the read/free mixture
+                Some(r) if p != r.villain => self.cfr_rnr_hero(&r, &disc, &mut out),
+                // the free villain learns everywhere the read is locked
+                Some(_) => self.cfr(
+                    0,
+                    p,
+                    &self.spot.weights[p],
+                    &self.spot.weights[1 - p],
+                    Dealt::default(),
+                    &disc,
+                    true,
+                    &mut out,
+                ),
+                None => self.cfr(
+                    0,
+                    p,
+                    &self.spot.weights[p],
+                    &self.spot.weights[1 - p],
+                    Dealt::default(),
+                    &disc,
+                    false,
+                    &mut out,
+                ),
+            }
         }
         if !self.fits.is_empty() {
             self.fit_dual_step();
@@ -283,10 +305,23 @@ impl Solver {
         self.spot.tree.children[node.children_start as usize + i]
     }
 
+    /// The lock in force at a node. `free` = the free villain's view under
+    /// "trust the read": profile locks (the read) do not bind him; manual
+    /// point locks still do.
+    #[inline]
+    pub(crate) fn lock_view(&self, node_idx: u32, free: bool) -> Option<&Vec<f32>> {
+        let lock = self.locks.get(&node_idx)?;
+        if free && self.is_read_lock(node_idx) {
+            None
+        } else {
+            Some(lock)
+        }
+    }
+
     /// Current strategy from regret matching (or the locked strategy),
-    /// written into `sigma` (na*nh).
-    fn current_strategy(&self, node_idx: u32, node: &Node, sigma: &mut [f32]) {
-        if let Some(lock) = self.locks.get(&node_idx) {
+    /// written into `sigma` (na*nh). `free`: see `lock_view`.
+    pub(crate) fn current_strategy(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+        if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;
         }
@@ -342,7 +377,7 @@ impl Solver {
     /// Apply the regret/strategy (and PCFR+ prediction) update at an action
     /// node owned by traverser `p`. `out` holds the sigma-weighted node value.
     #[allow(clippy::too_many_arguments)]
-    fn update_node(
+    pub(crate) fn update_node(
         &self,
         node_idx: u32,
         node: &Node,
@@ -468,6 +503,7 @@ impl Solver {
         reach_o: &[f32],
         dealt: Dealt,
         disc: &Discounts,
+        free: bool,
         out: &mut [f32],
     ) {
         #[cfg(test)]
@@ -515,16 +551,16 @@ impl Solver {
             }
             KIND_CHANCE => {
                 self.chance_node(node, p, reach_p, reach_o, dealt, out, |s, c, rp, ro, d, o| {
-                    s.cfr(c, p, rp, ro, d, disc, o)
+                    s.cfr(c, p, rp, ro, d, disc, free, o)
                 });
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
                 if node.player as usize == p {
                     let nh = spot.hands[p].len();
-                    let locked = self.locks.contains_key(&node_idx);
+                    let locked = self.lock_view(node_idx, free).is_some();
                     let mut sigma = Buf::for_overwrite(na * nh);
-                    self.current_strategy(node_idx, node, &mut sigma);
+                    self.current_strategy(node_idx, node, &mut sigma, free);
                     let mut vals = Buf::zeroed(na * nh);
                     let mut reach_buf = Buf::for_overwrite(nh);
                     for a in 0..na {
@@ -539,6 +575,7 @@ impl Solver {
                             reach_o,
                             dealt,
                             disc,
+                            free,
                             &mut vals[a * nh..(a + 1) * nh],
                         );
                     }
@@ -561,7 +598,7 @@ impl Solver {
                     let o = 1 - p;
                     let nh_o = spot.hands[o].len();
                     let mut sigma = Buf::for_overwrite(na * nh_o);
-                    self.current_strategy(node_idx, node, &mut sigma);
+                    self.current_strategy(node_idx, node, &mut sigma, free);
                     let nh = spot.hands[p].len();
                     let mut reach_buf = Buf::for_overwrite(nh_o);
                     let mut child_out = Buf::for_overwrite(nh);
@@ -578,6 +615,7 @@ impl Solver {
                             &reach_buf,
                             dealt,
                             disc,
+                            free,
                             &mut child_out,
                         );
                         for i in 0..nh {
@@ -595,7 +633,7 @@ impl Solver {
     /// distinguishes the two, with at most two streets and no per-node cache.
     /// Tests compare this classification with every descendant in built trees.
     #[inline]
-    fn action_free_runout(&self, node: &Node) -> bool {
+    pub(crate) fn action_free_runout(&self, node: &Node) -> bool {
         if node.kind != KIND_CHANCE {
             return false;
         }
@@ -707,9 +745,15 @@ impl Solver {
             for (i, h) in spot.hands[p].iter().enumerate() {
                 rp[i] = if h.mask & cm != 0 { 0.0 } else { reach_p[i] };
             }
-            let mut ro = Buf::for_overwrite(nh_o);
-            for (j, h) in spot.hands[1 - p].iter().enumerate() {
-                ro[j] = if h.mask & cm != 0 { 0.0 } else { reach_o[j] };
+            // `reach_o` may hold several stacked opponent reach blocks
+            // (the read and free villains under "trust the read").
+            let mut ro = Buf::for_overwrite(reach_o.len());
+            if nh_o > 0 {
+                for (dst, src) in ro.chunks_mut(nh_o).zip(reach_o.chunks(nh_o)) {
+                    for (j, h) in spot.hands[1 - p].iter().enumerate() {
+                        dst[j] = if h.mask & cm != 0 { 0.0 } else { src[j] };
+                    }
+                }
             }
             let mut child_out = Buf::zeroed(nh);
             recurse(self, child, &rp, &ro, dealt.push(c), &mut child_out);
@@ -754,7 +798,12 @@ impl Solver {
     /// Average strategy (normalized cumulative strategy) for a node, written
     /// into `sigma` (na*nh). Locked nodes return the locked strategy.
     pub fn average_strategy_into(&self, node_idx: u32, node: &Node, sigma: &mut [f32]) {
-        if let Some(lock) = self.locks.get(&node_idx) {
+        self.average_strategy_view(node_idx, node, sigma, false)
+    }
+
+    /// `average_strategy_into` under a lock view (see `lock_view`).
+    pub(crate) fn average_strategy_view(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+        if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;
         }

@@ -105,6 +105,38 @@ their tree configuration are unchanged.
   preflop CFR vs an independent fictitious-play Nash oracle on HU jam/fold,
   plus multiway limp-tree chip conservation and rake-drain direction.
 
+## Trust the read (postflop)
+
+A postflop profile lock fixes the villain's whole tree, and the hero's
+re-adapted strategy is a full best response to that read. `Solver::set_trust`
+adds Restricted Nash Response (Johanson, Zinkevich & Bowling 2007): with
+probability p the villain plays the profile locks, otherwise he plays freely
+and learns against the hero. The hero does not know which villain he faces,
+so his strategy keeps updating that belief along the hand; a line the profile
+never takes tells him he faces the free villain.
+
+- **Semantics**: profile locks are the read. Manual point locks and running
+  fits bind both villains. Nodes without a lock are shared, which in practice
+  is every node the read reaches, because the profile locks all of them.
+- **p = 1** (or unset) is today's lock-and-re-adapt solve; **p = 0** is the
+  unlocked solve, bit for bit on the CPU (`tests/rnr.rs`).
+- **Engine**: the free villain's pass is an ordinary pass with profile locks
+  off. The hero's pass carries the villain's reach as two stacked blocks
+  (read, free) and evaluates terminals against p × read + (1 − p) × free,
+  which is exact because terminal values are linear in the opponent reach.
+  The GPU keeps one extra copy of the villain's reach, filled by a second
+  down sweep and mixed before the hero's up sweep (`tests/gpu_rnr.rs`).
+- **Readout** (`Solver::trust_readout`, `GpuSolver::trust_readout`): the
+  hero's EV against the read and against the mixture, and the EV of a villain
+  who best-responds to the hero (profile locks off). In zero-sum games it
+  also gives the hero's worst-case EV, which is the pot minus that number.
+  While the dial is on, `exploitability` measures the trust game: the hero's
+  best-response gain against the mixture plus (1 − p) times the free
+  villain's gain, halved.
+- While the dial is on, the villain's solved strategy at profile nodes is the
+  free villain's. Re-applying a profile rakes from that strategy, not from the
+  pre-lock solve.
+
 ## Preflop continuation model
 
 New preflop games use `coupled_deck_v1` at leaves with **three or more live players**, including all-in showdowns. A deterministic table of 1,024 samples (seed 90210) assigns coupled latent hand strengths. Each sample awards the pot to its winning hand(s), so the players' shares sum to the pot after the configured rake. This replaces the old product of separate heads-up equities, which could substantially undervalue multiway calls.
