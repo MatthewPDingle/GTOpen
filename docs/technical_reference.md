@@ -116,26 +116,35 @@ so his strategy keeps updating that belief along the hand; a line the profile
 never takes tells him he faces the free villain.
 
 - **Semantics**: profile locks are the read. Manual point locks and running
-  fits bind both villains. Nodes without a lock are shared, which in practice
-  is every node the read reaches, because the profile locks all of them.
+  fits bind both villains. The read villain is today's locked villain: he
+  re-adapts wherever the profile leaves a node open (deep raise lines below
+  its mass cutoff, for example) in the main arenas. The free villain has his
+  own regret and strategy arenas while the dial is on, copied from the main
+  ones when it turns on. The two must not share open nodes: a shared node
+  learns only from the free villain's values while the read plays it too,
+  and on the deep bench flop trust 0.9 then stalled at 0.12% pot instead of
+  reaching 0.001%.
 - **p = 1** (or unset) is today's lock-and-re-adapt solve; **p = 0** is the
   unlocked solve, bit for bit on the CPU (`tests/rnr.rs`).
-- **Engine**: the free villain's pass is an ordinary pass with profile locks
-  off. The hero's pass carries the villain's reach as two stacked blocks
-  (read, free) and evaluates terminals against p × read + (1 − p) × free,
-  which is exact because terminal values are linear in the opponent reach.
-  The GPU keeps one extra copy of the villain's reach, filled by a second
-  down sweep and mixed before the hero's up sweep (`tests/gpu_rnr.rs`).
+- **Engine**: each iteration runs the hero's pass and two villain passes: the
+  read villain's (an ordinary locked pass) and the free villain's (profile
+  locks off, his own arenas). The hero's pass carries the villain's reach as
+  two stacked blocks (read, free) and evaluates terminals against
+  p × read + (1 − p) × free, which is exact because terminal values are
+  linear in the opponent reach. The GPU keeps the free villain's arenas and
+  one extra copy of the villain's reach, filled by a second down sweep and
+  mixed before the hero's up sweep (`tests/gpu_rnr.rs`).
 - **Readout** (`Solver::trust_readout`, `GpuSolver::trust_readout`): the
   hero's EV against the read and against the mixture, and the EV of a villain
   who best-responds to the hero (profile locks off). In zero-sum games it
   also gives the hero's worst-case EV, which is the pot minus that number.
   While the dial is on, `exploitability` measures the trust game: the hero's
-  best-response gain against the mixture plus (1 − p) times the free
-  villain's gain, halved.
-- While the dial is on, the villain's solved strategy at profile nodes is the
-  free villain's. Re-applying a profile rakes from that strategy, not from the
-  pre-lock solve.
+  best-response gain against the mixture plus p times the read villain's
+  gain and (1 − p) times the free villain's gain, halved.
+- **A new trust level** restarts the average strategy (`restart_averages`):
+  otherwise DCFR's t² weighting keeps iterates of the old game and a
+  warm-started sweep stalls. Locked nodes keep their pre-lock average, so
+  re-applying a profile still rakes from the solve.
 
 ## Preflop continuation model
 

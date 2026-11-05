@@ -653,3 +653,24 @@ extern "C" __global__ void rnr_mix(
     for (long long k = i; k < n; k += stride)
         read[k] = trust * read[k] + rest * free_reach[k];
 }
+
+// A new trust level restarts the average strategy (Solver::restart_averages)
+// except at locked nodes (lock_off >= 0): nothing learns there, and they keep
+// the pre-lock average a re-applied profile rakes from.
+extern "C" __global__ void restart_strat(
+    const u32* __restrict__ nodes, int count, int p,
+    const int* __restrict__ node_player,
+    const int* __restrict__ node_na,
+    const u64* __restrict__ node_data_off,
+    const long long* __restrict__ lock_off,
+    float* strat, int nh)
+{
+    for (int k = blockIdx.x; k < count; k += gridDim.x) {
+        const u32 n = nodes[k];
+        if (node_player[n] != p || lock_off[n] >= 0) continue;
+        const u64 off = node_data_off[n];
+        if (off == ~0ull) continue;
+        const long long len = (long long)node_na[n] * nh;
+        for (long long i = threadIdx.x; i < len; i += blockDim.x) strat[off + i] = 0.f;
+    }
+}

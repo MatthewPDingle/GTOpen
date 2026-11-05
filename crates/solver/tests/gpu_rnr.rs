@@ -160,6 +160,20 @@ fn gpu_dial_changes_mid_solve() {
     }
     let full = gpu.trust_readout(&host).unwrap();
     assert_eq!(full.trust, 1.0);
+    // the restart keeps the pre-lock average at locked nodes on the device
+    let solved = |s: &Solver| -> Vec<(u32, Vec<f32>)> {
+        let mut idx: Vec<u32> = s.locks.keys().copied().collect();
+        idx.sort();
+        idx.into_iter()
+            .map(|i| {
+                let node = &s.spot.tree.nodes[i as usize];
+                let mut v = vec![0f32; node.num_children as usize * s.spot.hands[node.player as usize].len()];
+                s.solved_strategy_into(node, &mut v);
+                (i, v)
+            })
+            .collect()
+    };
+    let before = solved(&host);
     host.set_trust(Some(0.3)).unwrap();
     gpu.update_locks(&host).unwrap();
     for _ in 0..600 {
@@ -178,6 +192,49 @@ fn gpu_dial_changes_mid_solve() {
     }
     let x = gpu.exploitability(&host).unwrap();
     gpu.sync_to_cpu(&mut host).unwrap();
+    assert_eq!(solved(&host), before, "locked nodes' averages survive the device restart");
     let xh = host.exploitability();
     assert!((pct(x) - pct(xh)).abs() < 0.01, "back to today's solve: gpu {x} vs cpu {xh}");
+}
+
+/// A read-reached villain node the profile leaves open: on the GPU too the
+/// read and the free villain learn it apart (the free villain's own device
+/// arenas), the CPU reads the same values after a sync, and the trust game
+/// converges with nothing left for the read villain to gain.
+#[test]
+fn gpu_free_villain_has_his_own_arenas() {
+    use solver::game::Dealt;
+    use solver::query::PathStep;
+    for storage in [Storage::F32, Storage::Compressed] {
+        let mut host = locked(river(), storage, 40, 1);
+        assert!(host.unlock_node(&[PathStep::Action { index: 0 }]).unwrap());
+        host.set_trust(Some(0.9)).unwrap();
+        let mut cpu = locked(river(), storage, 40, 1);
+        assert!(cpu.unlock_node(&[PathStep::Action { index: 0 }]).unwrap());
+        cpu.set_trust(Some(0.9)).unwrap();
+        let mut gpu = GpuSolver::new(&host).unwrap();
+        for _ in 0..600 {
+            gpu.iterate().unwrap();
+            cpu.iterate();
+        }
+        let g = gpu.trust_readout(&host).unwrap();
+        gpu.sync_to_cpu(&mut host).unwrap();
+        host.ensure_symmetric();
+        let h = host.trust_readout().unwrap();
+        let c = cpu.trust_readout().unwrap();
+        eprintln!("{storage:?}:\n  gpu  {g:?}\n  host {h:?}\n  cpu  {c:?}");
+        assert!((pct(g.exploitability) - pct(h.exploitability)).abs() < 0.01, "{g:?} vs {h:?}");
+        assert!((g.hero_ev_vs_mixture - h.hero_ev_vs_mixture).abs() < 0.01, "{g:?} vs {h:?}");
+        assert!((g.villain_best_response_ev - h.villain_best_response_ev).abs() < 0.01, "{g:?} vs {h:?}");
+        assert!(pct(g.exploitability) < 0.1 && pct(c.exploitability) < 0.1, "{g:?} / {c:?}");
+        assert!((g.hero_ev_vs_read - c.hero_ev_vs_read).abs() < 0.5, "{g:?} vs {c:?}");
+        // nothing left for the read villain at the open node
+        let w0 = &host.spot.weights[0];
+        let value = |s: &Solver, cfv: &[f32]| {
+            s.spot.weights[1].iter().zip(cfv).map(|(&w, &v)| w as f64 * v as f64).sum::<f64>() / s.pair_weight_sum()
+        };
+        let br = value(&host, &host.traverse_br_view(0, 1, w0, Dealt::default(), false));
+        let avg = value(&host, &host.traverse_avg_view(0, 1, w0, Dealt::default(), false));
+        assert!(br - avg < 0.1, "{storage:?}: the read villain could gain {} chips", br - avg);
+    }
 }

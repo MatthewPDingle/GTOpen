@@ -213,3 +213,62 @@ fn warm_started_sweep_converges_at_every_level() {
         assert!(x < 0.5, "trust {trust}: warm-started solve stuck at {x}% pot");
     }
 }
+
+#[test]
+fn read_and_free_villain_learn_apart_off_the_profile() {
+    // A read-reached villain node the profile leaves open (here unlocked by
+    // hand; deep raise lines in a real tree): the read re-adapts there for
+    // himself and the free villain for himself. Sharing one strategy there
+    // made the trust game stall at high trust.
+    for trust in [0.9f32, 0.5] {
+        let mut s = locked(river, 60);
+        assert!(s.unlock_node(CHECKED).unwrap());
+        s.set_trust(Some(trust)).unwrap();
+        let mut xs = Vec::new();
+        for k in 1..=600 {
+            s.iterate();
+            if k % 200 == 0 {
+                xs.push(s.exploitability());
+            }
+        }
+        eprintln!("trust {trust}: exploitability {xs:?} chips");
+        assert!(xs[2] < 0.05, "trust {trust}: trust game stuck at {} chips", xs[2]);
+        assert!(xs[2] < xs[0]);
+        // the read villain best-responds at the open node too: playing it
+        // like the free villain would leave him a gain there
+        let w0 = &s.spot.weights[0];
+        let value = |cfv: &[f32]| {
+            s.spot.weights[1].iter().zip(cfv).map(|(&w, &v)| w as f64 * v as f64).sum::<f64>() / s.pair_weight_sum()
+        };
+        let br = value(&s.traverse_br_view(0, 1, w0, Dealt::default(), false));
+        let avg = value(&s.traverse_avg_view(0, 1, w0, Dealt::default(), false));
+        eprintln!("trust {trust}: read villain gain {} chips", br - avg);
+        assert!(br - avg < 0.05, "trust {trust}: the read villain could gain {} chips", br - avg);
+    }
+}
+
+#[test]
+fn new_trust_level_keeps_the_pre_lock_average_at_locked_nodes() {
+    // a re-applied profile rakes from the solved strategy at its nodes
+    let mut s = locked(river, 30);
+    let solved = |s: &Solver| -> Vec<(u32, Vec<f32>)> {
+        let mut idx: Vec<u32> = s.locks.keys().copied().collect();
+        idx.sort();
+        idx.into_iter()
+            .map(|i| {
+                let node = &s.spot.tree.nodes[i as usize];
+                let mut v = vec![0f32; node.num_children as usize * s.spot.hands[node.player as usize].len()];
+                s.solved_strategy_into(node, &mut v);
+                (i, v)
+            })
+            .collect()
+    };
+    let before = solved(&s);
+    for trust in [0.5f32, 0.2] {
+        s.set_trust(Some(trust)).unwrap();
+        for _ in 0..50 {
+            s.iterate();
+        }
+        assert_eq!(solved(&s), before, "trust {trust}");
+    }
+}

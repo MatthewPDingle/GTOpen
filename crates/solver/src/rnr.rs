@@ -14,27 +14,45 @@
 //! hero knows from then on that he faces the free villain. A per-node blend
 //! of the two strategies cannot do that.
 //!
-//! Exact implementation on the existing engine, with no extra arenas:
-//! - Read and free villains share every node that is not profile locked
-//!   (the profile covers every node the read reaches, so in practice the
-//!   read plays the lock wherever it matters). Manual point locks and fits
-//!   bind both: they are facts, not the read.
-//! - The free villain's pass is an ordinary CFR pass with the profile locks
-//!   ignored (`free = true`): his regrets and average strategy at profile
-//!   locked nodes are his own.
+//! Exact implementation on the existing engine:
+//! - The read villain is today's locked villain: the profile locks bind and
+//!   he re-adapts everywhere else, in the main arenas. Manual point locks and
+//!   fits bind both villains: they are facts, not the read.
+//! - The free villain has his own regret and strategy arenas while the dial
+//!   is on (`FreeArenas`, copied from the main ones when it turns on) and
+//!   learns in an ordinary CFR pass with the profile locks ignored
+//!   (`free = true`). The two villains know who they are, so they must not
+//!   share a strategy anywhere: a shared node would learn only from the free
+//!   villain's values while the read villain plays it too, and the game would
+//!   stop being zero-sum (high trust levels then fail to converge).
 //! - The hero's pass carries the villain's reach as two stacked blocks
 //!   [read | free] and evaluates terminals against p * read + (1 - p) * free.
 //!   Terminal values are linear in the opponent reach, so this is exact and
 //!   costs one extra reach vector per villain node, not a second traversal.
 //! - p = 1 is today's solve (the dial is inactive); p = 0 is the unlocked
-//!   solve, bit for bit.
+//!   solve, bit for bit. One iteration costs an extra villain pass.
 
 use crate::cfr::{Discounts, Solver};
 use crate::game::{fold_cfv, showdown_cfv, Dealt};
 use crate::query::PROFILE_LABEL;
 use crate::scratch::Buf;
+use crate::store::Store;
 use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN};
 use serde::Serialize;
+
+/// The free villain's own arenas (same layout as the villain's main ones).
+pub(crate) struct FreeArenas {
+    pub villain: usize,
+    pub regrets: Store,
+    pub strat: Store,
+    pub preds: Option<Store>,
+}
+
+impl FreeArenas {
+    pub fn bytes(&self) -> u64 {
+        self.regrets.bytes() + self.strat.bytes() + self.preds.as_ref().map_or(0, Store::bytes)
+    }
+}
 
 /// The dial in force for one solve step.
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -93,10 +111,36 @@ impl Solver {
     }
 
     /// Warm restart: keep the regrets, clear the average strategy and start
-    /// the discount schedule again at iteration 0. A GPU solve picks this up
-    /// in `GpuSolver::update_locks`.
+    /// the discount schedule again at iteration 0. Locked nodes keep their
+    /// (pre-lock) average in the main arenas: nothing learns there, and
+    /// re-applying a profile rakes from it. A GPU solve picks this up in
+    /// `GpuSolver::update_locks`.
     pub fn restart_averages(&mut self) {
-        for store in self.strat.iter_mut() {
+        // the free villain restarts everywhere, his profile nodes included
+        self.sync_free_arenas(self.rnr_active());
+        let kept: Vec<(u32, usize, Vec<f32>)> = self
+            .locks
+            .keys()
+            .map(|&idx| {
+                let node = &self.spot.tree.nodes[idx as usize];
+                let p = node.player as usize;
+                let mut v = vec![0f32; node.num_children as usize * self.spot.hands[p].len()];
+                unsafe { self.strat[p].read_f32(idx, node.data_offset, v.len(), &mut v) };
+                (idx, p, v)
+            })
+            .collect();
+        self.clear_averages();
+        for (idx, p, v) in kept {
+            let off = self.spot.tree.nodes[idx as usize].data_offset;
+            unsafe { self.strat[p].write_f32(idx, off, v.len(), &v) };
+        }
+        self.iteration = 0;
+        self.average_epoch = self.average_epoch.wrapping_add(1);
+    }
+
+    fn clear_averages(&mut self) {
+        let free = self.free_arenas.as_deref_mut().map(|f| &mut f.strat);
+        for store in self.strat.iter_mut().chain(free) {
             match store {
                 crate::store::Store::F32(b) => b.as_mut_slice().fill(0.0),
                 crate::store::Store::U16 { q, scale } => {
@@ -109,8 +153,24 @@ impl Solver {
                 }
             }
         }
-        self.iteration = 0;
-        self.average_epoch = self.average_epoch.wrapping_add(1);
+    }
+
+    /// Give the free villain his own arenas while the dial is on (copies of
+    /// the villain's main arenas when it turns on); drop them when it is off.
+    pub(crate) fn sync_free_arenas(&mut self, rnr: Option<Trust>) {
+        match rnr {
+            Some(r) if self.free_arenas.as_ref().is_none_or(|f| f.villain != r.villain) => {
+                let v = r.villain;
+                self.free_arenas = Some(Box::new(FreeArenas {
+                    villain: v,
+                    regrets: self.regrets[v].duplicate(),
+                    strat: self.strat[v].duplicate(),
+                    preds: self.preds.as_ref().map(|b| b[v].duplicate()),
+                }));
+            }
+            Some(_) => {}
+            None => self.free_arenas = None,
+        }
     }
 
     pub fn trust(&self) -> Option<f32> {
@@ -239,20 +299,22 @@ impl Solver {
                         }
                     }
                     if !locked {
-                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc);
+                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc, false);
                     }
                 } else {
-                    // villain node: the read plays any lock, the free villain
-                    // ignores profile locks
+                    // villain node: the read plays any lock (else his main
+                    // regrets), the free villain ignores profile locks and
+                    // plays his own regrets
+                    let mut sig_read = Buf::for_overwrite(na * nh_o);
                     let mut sig_free = Buf::for_overwrite(na * nh_o);
+                    self.current_strategy(node_idx, node, &mut sig_read, false);
                     self.current_strategy(node_idx, node, &mut sig_free, true);
-                    let read_lock = self.lock_view(node_idx, false);
                     let nh = spot.hands[p].len();
                     let mut buf = Buf::for_overwrite(2 * nh_o);
                     let mut child_out = Buf::for_overwrite(nh);
                     for a in 0..na {
                         let sf = &sig_free[a * nh_o..(a + 1) * nh_o];
-                        let sr = read_lock.map_or(sf, |l| &l[a * nh_o..(a + 1) * nh_o]);
+                        let sr = &sig_read[a * nh_o..(a + 1) * nh_o];
                         for j in 0..nh_o {
                             buf[j] = reach_o2[j] * sr[j];
                             buf[nh_o + j] = reach_o2[nh_o + j] * sf[j];
@@ -396,6 +458,8 @@ impl Solver {
             ev_hero: mix(false),
             br_villain: self.traverse_br_view(0, v, w_h, Dealt::default(), true),
             ev_villain: self.traverse_avg_view(0, v, w_h, Dealt::default(), true),
+            br_read: self.traverse_br_view(0, v, w_h, Dealt::default(), false),
+            ev_read: self.traverse_avg_view(0, v, w_h, Dealt::default(), false),
             ev_hero_vs_read: if with_read {
                 self.traverse_avg(0, h, &self.spot.weights[v], Dealt::default())
             } else {
@@ -405,9 +469,11 @@ impl Solver {
     }
 
     /// Exploitability of the trust game from its root values: the hero's
-    /// best-response gain against the mixture plus the free villain's gain
-    /// (weighted by his chance 1 - p), halved like `exploitability`. At
-    /// p = 0 it is the ordinary exploitability of the unlocked game.
+    /// best-response gain against the mixture plus each villain's gain
+    /// (weighted by his chance, p for the read and 1 - p for the free
+    /// villain), halved like `exploitability`. At p = 0 it is the ordinary
+    /// exploitability of the unlocked game, and it tends to today's locked
+    /// exploitability as p tends to 1.
     pub fn rnr_exploitability_from(&self, r: &Trust, c: &RnrCfvs) -> f64 {
         let denom = self.pair_weight_sum();
         if denom <= 0.0 {
@@ -415,8 +481,10 @@ impl Solver {
         }
         let (v, h) = (r.villain, 1 - r.villain);
         let gap_h = self.root_value(h, &c.br_hero, denom) - self.root_value(h, &c.ev_hero, denom);
-        let gap_v = self.root_value(v, &c.br_villain, denom) - self.root_value(v, &c.ev_villain, denom);
-        (gap_h + (1.0 - r.trust as f64) * gap_v) / 2.0
+        let gap_free = self.root_value(v, &c.br_villain, denom) - self.root_value(v, &c.ev_villain, denom);
+        let gap_read = self.root_value(v, &c.br_read, denom) - self.root_value(v, &c.ev_read, denom);
+        let p = r.trust as f64;
+        (gap_h + p * gap_read + (1.0 - p) * gap_free) / 2.0
     }
 
     pub(crate) fn rnr_exploitability(&self, r: &Trust) -> f64 {
@@ -479,6 +547,10 @@ pub struct RnrCfvs {
     pub br_villain: Vec<f32>,
     /// Free villain's average strategy against the hero.
     pub ev_villain: Vec<f32>,
+    /// Read villain best response against the hero (profile locks bind).
+    pub br_read: Vec<f32>,
+    /// Read villain's average strategy against the hero.
+    pub ev_read: Vec<f32>,
     /// Hero's average strategy against the read alone (readouts only).
     pub ev_hero_vs_read: Vec<f32>,
 }
