@@ -22,6 +22,7 @@ pub mod dataset;
 pub mod contextual;
 pub mod evidence;
 mod continuation;
+pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
 #[cfg(feature = "gpu")]
@@ -621,7 +622,7 @@ fn bucket_of(st: &BuildState) -> u8 {
 /// node belongs to exactly one subtree of the parallel fan-out, so its
 /// regret/strategy block is touched by exactly one thread, and reads never
 /// cross into a sibling's subtree during the parallel section.
-struct Arena(UnsafeCell<Vec<f32>>);
+pub(crate) struct Arena(UnsafeCell<Vec<f32>>);
 unsafe impl Sync for Arena {}
 impl Arena {
     fn new(n: usize) -> Self {
@@ -712,6 +713,13 @@ pub struct PreflopSolver {
     /// Hard cap is 16,384 entries (33 MB vector payload); overflow stays correct
     /// by computing an uncached prediction. Old profiles allocate no entries.
     contextual_cache: std::sync::RwLock<std::collections::HashMap<ContextualKey, Arc<BucketPolicy>>>,
+    /// "Trust the read" in hero mode (see rnr.rs); None = plain hero mode.
+    pub(crate) trust: Option<f32>,
+    /// The free types' arenas while the dial is active.
+    pub(crate) pf_free: Option<Box<rnr::PfFree>>,
+    /// Bumped when a new trust level restarts the hero's average (the GPU
+    /// engine follows it).
+    pub(crate) trust_epoch: u32,
 }
 
 #[derive(PartialEq, Eq, Hash)]
@@ -785,6 +793,9 @@ impl PreflopSolver {
             icm: None,
             stop_flag: None,
             contextual_cache: Default::default(),
+            trust: None,
+            pf_free: None,
+            trust_epoch: 0,
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -1317,6 +1328,9 @@ impl PreflopSolver {
 
     /// Seats with learning decisions, including adaptive profile responses.
     pub fn live_seats(&self) -> Vec<bool> {
+        if let Some(live) = self.rnr_live() {
+            return live;
+        }
         (0..self.n)
             .map(|i| {
                 !self.seat_frozen[i]
@@ -2165,6 +2179,10 @@ impl PreflopSolver {
     /// seats already swept keep their (complete) updates, the rest just
     /// missed one pass, which CFR absorbs.
     pub fn try_iterate(&mut self) -> bool {
+        if self.rnr_active().is_some() {
+            return self.try_iterate_rnr();
+        }
+        self.pf_free = None;
         for p in 0..self.n {
             if self.seat_static(p) {
                 continue;
@@ -4111,6 +4129,9 @@ impl PreflopSolver {
     /// A canceled recursion is latched even if the stop flag is later cleared.
     fn checkpoint_gaps_and_evs(&self) -> Option<(Vec<f64>, Vec<f64>)> {
         if self.stop_requested() { return None; }
+        if self.rnr_active().is_some() && self.pf_free.is_some() {
+            return self.rnr_gaps_and_evs();
+        }
         let pairs: Vec<(f64, f64)> = (0..self.n).into_par_iter().map(|p| {
             let mut reaches = self.root_reaches();
             let values = self.traverse_checkpoint(0, p, &mut reaches,

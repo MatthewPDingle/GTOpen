@@ -52,12 +52,20 @@ impl PreflopGpu {
         s: &PreflopSolver, budget_mb: u64,
     ) -> Result<(Self, ThroughputSelection), String> {
         // ICM games keep the normal plan, whose terminal kernels read the
-        // per-traverser ICM coefficients.
-        if s.icm.is_some() {
+        // per-traverser ICM coefficients; so does the trust dial, whose
+        // passes swap the seat modes those kernels read.
+        let normal = if s.icm.is_some() {
+            Some("ICM games use the normal GPU plan")
+        } else if s.rnr_active().is_some() {
+            Some("the trust dial uses the normal GPU plan")
+        } else {
+            None
+        };
+        if let Some(reason) = normal {
             let g = Self::new(s, budget_mb)?;
             return Ok((g, ThroughputSelection {
                 mode: "normal_gpu", configured_budget_mb: budget_mb, cohort_limit_mb: None,
-                fallback_reason: Some("ICM games use the normal GPU plan".into()), narrow_offsets: false,
+                fallback_reason: Some(reason.into()), narrow_offsets: false,
                 static_cdf: false, static_cdf_fallback_reason: None,
             }));
         }

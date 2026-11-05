@@ -43,6 +43,7 @@ export const api = {
   rangeLabNode: request => req('POST', '/api/preflop/rangelab/node', request),
   rangeLabExport: request => req('POST', '/api/preflop/rangelab/export', request),
   pfHero: seat => req('POST', '/api/preflop/hero', { seat }),
+  pfTrust: trust => req('POST', '/api/preflop/trust', { trust }),
   pfProfiles: () => req('GET', '/api/preflop/profiles'),
   pfProfileSave: (name, profile) => req('POST', '/api/preflop/profiles/save', { name, profile }),
   pfProfileGet: name => req('POST', '/api/preflop/profiles/get', { name }),

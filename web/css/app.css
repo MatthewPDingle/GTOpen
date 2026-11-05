@@ -804,6 +804,9 @@ textarea {
 .trust-readout b { color: var(--ink); font-weight: 500; }
 .trust-chart { margin-top: 8px; max-width: 100%; overflow-x: auto; }
 .trust-chart svg { display: block; max-width: 100%; height: auto; }
+#pfl-trust { margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+#pfl-trust.hidden { display: none; }
+#pfl-trust .trust-row input.trust-slider { flex: 1 1 120px; width: auto; min-width: 100px; }
 .trust-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 11px; color: var(--ink-dim); margin-bottom: 4px; }
 .trust-legend i { display: inline-block; width: 14px; height: 2px; margin-right: 6px; vertical-align: middle; }
 .trust-legend i.dash { height: 0; border-top: 2px dashed; }

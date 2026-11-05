@@ -898,7 +898,7 @@ initPreflopLab({
     solveSetup: $('pfl-solve-setup'), solveSaved: $('pfl-solve-saved'), step5: $('pfl-step5'),
     fillSeg: $('pfl-fillseg'), estimate: $('pfl-estimate'),
     modelBox: $('pfl-model'), editor: $('pfl-editor'),
-    hero: $('pfl-hero'), applyBtn: $('pfl-apply'),
+    hero: $('pfl-hero'), applyBtn: $('pfl-apply'), trust: $('pfl-trust'),
     savedSel: $('pfl-savedsel'), saveGame: $('pfl-savegame'),
   },
   toast,
