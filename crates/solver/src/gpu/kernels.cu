@@ -675,10 +675,3 @@ extern "C" __global__ void restart_strat(
     }
 }
 
-// x *= f over a whole arena (warm regret rescale on a new trust level).
-extern "C" __global__ void scale_span(float* x, float f, long long n)
-{
-    long long i = (long long)blockIdx.x * blockDim.x + threadIdx.x;
-    long long stride = (long long)gridDim.x * blockDim.x;
-    for (long long k = i; k < n; k += stride) x[k] *= f;
-}

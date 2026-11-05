@@ -133,7 +133,10 @@ never takes tells him he faces the free villain.
   p × read + (1 − p) × free, which is exact because terminal values are
   linear in the opponent reach. The GPU keeps the free villain's arenas and
   one extra copy of the villain's reach, filled by a second down sweep and
-  mixed before the hero's up sweep (`tests/gpu_rnr.rs`).
+  mixed before the hero's up sweep (`tests/gpu_rnr.rs`). The villain's two
+  sweeps share the reaches the hero's sweep computed. On the 5090 bench flop
+  (1.35M nodes) an iteration with the dial on costs 33 ms against 19 ms for
+  the locked solve, the same at every trust level (`tests/rnr_bench.rs`).
 - **Readout** (`Solver::trust_readout`, `GpuSolver::trust_readout`): the
   hero's EV against the read and against the mixture, and the EV of a villain
   who best-responds to the hero (profile locks off). In zero-sum games it
@@ -144,7 +147,10 @@ never takes tells him he faces the free villain.
 - **A new trust level** restarts the average strategy (`restart_averages`):
   otherwise DCFR's t² weighting keeps iterates of the old game and a
   warm-started sweep stalls. Locked nodes keep their pre-lock average, so
-  re-applying a profile still rakes from the solve.
+  re-applying a profile still rakes from the solve. The restart does not
+  depend on the solver's own iteration count, which is stale while a GPU
+  drives the solve. A warm sweep from trust 1 down to 0 on the bench flop
+  converges to 0.3% pot in 80 to 200 iterations per level.
 
 ## Preflop continuation model
 

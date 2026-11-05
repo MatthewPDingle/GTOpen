@@ -53,29 +53,17 @@ fn run_to(gpu: &mut GpuSolver, host: &Solver, target: f64, every: u32, max: u32)
     }
 }
 
-/// Warm-start variants from RNR_WARM_KEEP (comma list of `none` or an
-/// iteration count for `Solver::warm_regret_keep`; default `none`).
-fn warm_keeps() -> Vec<Option<u32>> {
-    std::env::var("RNR_WARM_KEEP")
-        .unwrap_or_else(|_| "none".into())
-        .split(',')
-        .map(|k| if k.trim() == "none" { None } else { Some(k.trim().parse().unwrap()) })
-        .collect()
-}
-
 #[test]
 #[ignore]
 fn rnr_bench_flop() {
     let target = 0.3;
-    for keep in warm_keeps() {
+    {
         let mut host = Solver::new(bench_spot());
-        host.warm_regret_keep = keep;
         let pot = host.spot.tree.config.starting_pot;
 
         let mut gpu = GpuSolver::new(&host).unwrap();
         let (n, secs, x) = run_to(&mut gpu, &host, target, 20, 4000);
         let ms_plain = ms_per_iteration(&mut gpu, 20);
-        println!("warm_regret_keep {keep:?}");
         println!("plain solve: {n} iterations, {secs:.1} s, {x:.3}% pot; {ms_plain:.2} ms/iteration");
 
         gpu.sync_to_cpu(&mut host).unwrap();
