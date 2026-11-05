@@ -16,7 +16,7 @@ pub mod equity;
 pub mod multiway;
 pub mod three_way;
 pub mod icm;
-pub use icm::{IcmConfig, IcmSummary};
+pub use icm::{FieldGroup, IcmConfig, IcmSummary};
 pub mod reference;
 pub mod dataset;
 pub mod contextual;

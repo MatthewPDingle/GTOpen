@@ -32,7 +32,7 @@
 
 use super::equity::NUM_CLASSES;
 use super::{PNode, PreflopConfig, PreflopSolver, KIND_FOLD_WIN, KIND_POT_SHARE};
-use crate::icm::{icm_after_hand, malmuth_harville, MAX_EXACT_PLAYERS};
+use crate::icm::{icm_after_hand, malmuth_harville_groups, state_count, Group};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -49,9 +49,40 @@ pub struct IcmConfig {
     /// hand but share the remaining places.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub field: Vec<f64>,
+    /// More players at other tables, as counts of equal stacks (e.g. 144
+    /// players of 25bb). Equal stacks price exactly and cheaply.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub field_groups: Vec<FieldGroup>,
+}
+
+/// `count` players with `stack` bb each, at other tables.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct FieldGroup {
+    pub stack: f64,
+    pub count: usize,
 }
 
 impl IcmConfig {
+    /// Every off-table player as groups of equal stacks, in first-seen order.
+    pub fn groups(&self) -> Vec<Group> {
+        let mut out: Vec<Group> = Vec::new();
+        let all = self.field.iter().map(|&s| (s, 1)).chain(self.field_groups.iter().map(|g| (g.stack, g.count)));
+        for (stack, count) in all {
+            match out.iter_mut().find(|g| g.stack == stack) {
+                Some(g) => g.count += count,
+                None => out.push(Group { stack, count }),
+            }
+        }
+        out.retain(|g| g.count > 0);
+        out
+    }
+
+    /// Players still in the tournament: the table plus every field player.
+    pub fn players(&self, table: usize) -> usize {
+        table + self.groups().iter().map(|g| g.count).sum::<usize>()
+    }
+
     pub(super) fn validate(&self, cfg: &PreflopConfig, n: usize) -> Result<(), String> {
         if self.payouts.is_empty() {
             return Err("ICM needs at least one payout".into());
@@ -59,17 +90,18 @@ impl IcmConfig {
         if self.payouts.iter().any(|p| !p.is_finite() || *p < 0.0) {
             return Err("ICM payouts must be finite and not negative".into());
         }
-        let players = n + self.field.len();
-        if players > MAX_EXACT_PLAYERS {
-            return Err(format!(
-                "ICM is exact for up to {MAX_EXACT_PLAYERS} players (table plus field); this game has {players}"
-            ));
+        if self.field.iter().chain(self.field_groups.iter().map(|g| &g.stack)).any(|s| !s.is_finite() || *s <= 0.0) {
+            return Err("ICM field stacks must be positive bb amounts".into());
         }
+        let players = self.players(n);
         if self.payouts.iter().take(players).sum::<f64>() <= 0.0 {
             return Err("ICM payouts must pay something to the players still in".into());
         }
-        if self.field.iter().any(|s| !s.is_finite() || *s <= 0.0) {
-            return Err("ICM field stacks must be positive bb amounts".into());
+        if state_count(n, &self.groups(), self.payouts.len()).is_none() {
+            return Err(format!(
+                "this ICM field is too large to price exactly: give the players at other tables fewer distinct stacks ({} distinct now)",
+                self.groups().len()
+            ));
         }
         if cfg.rake_pct != 0.0 {
             return Err("ICM games have no rake: set rake_pct to 0".into());
@@ -95,6 +127,11 @@ pub(crate) struct IcmTables {
     pub scale: f64,
     /// Each seat's prize equity before the hand, in payout units.
     pub start_equity: Vec<f64>,
+    /// Off-table groups and each one's per-player equity before the hand.
+    pub groups: Vec<Group>,
+    pub group_equity: Vec<f64>,
+    /// Symmetrized heads-up equity, `bal[j * 169 + h]` = class h vs class j.
+    pub(crate) bal: Vec<f32>,
 }
 
 fn pots_of(nd: &PNode) -> Vec<(f64, u32)> {
@@ -133,14 +170,13 @@ fn enumerate(pots: &[(f64, u32)], k: usize, cur: &mut Vec<u8>, out: &mut Vec<Vec
 impl IcmTables {
     pub(super) fn build(s: &PreflopSolver, icm: &IcmConfig) -> IcmTables {
         let n = s.n;
-        let start: Vec<f64> = (0..n)
-            .map(|i| s.cfg.stack_of(i) + s.cfg.ante)
-            .chain(icm.field.iter().copied())
-            .collect();
-        let players = start.len();
+        let start: Vec<f64> = (0..n).map(|i| s.cfg.stack_of(i) + s.cfg.ante).collect();
+        let groups = icm.groups();
+        let players = icm.players(n);
         let prizes: f64 = icm.payouts.iter().take(players).sum();
-        let scale = start.iter().sum::<f64>() / prizes;
-        let start_equity = malmuth_harville(&start, &icm.payouts);
+        let chips = start.iter().sum::<f64>() + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
+        let scale = chips / prizes;
+        let (start_equity, group_equity) = malmuth_harville_groups(&start, &groups, &icm.payouts);
 
         let mut index = vec![u32::MAX; s.nodes.len()];
         let mut terms = Vec::new();
@@ -181,7 +217,7 @@ impl IcmTables {
             refs.push(term_refs);
         }
         let equities: Vec<Vec<f64>> =
-            finals.par_iter().map(|fin| icm_after_hand(&start, fin, &icm.payouts)).collect();
+            finals.par_iter().map(|fin| icm_after_hand(&start, fin, &groups, &icm.payouts).0).collect();
         for (term, ids) in terms.iter_mut().zip(refs) {
             for (outcome, id) in term.outcomes.iter_mut().zip(ids) {
                 outcome.1 = (0..n)
@@ -189,12 +225,72 @@ impl IcmTables {
                     .collect();
             }
         }
-        IcmTables { index, terms, scale, start_equity }
+        let mut bal = vec![0f32; NUM_CLASSES * NUM_CLASSES];
+        for j in 0..NUM_CLASSES {
+            for h in 0..NUM_CLASSES {
+                bal[j * NUM_CLASSES + h] = s.balanced_raw_equity(h, j);
+            }
+        }
+        IcmTables { index, terms, scale, start_equity, groups, group_equity, bal }
+    }
+
+    /// The tables flattened for the GPU (see `gpu/icm.rs`): one entry per
+    /// terminal in node order. `None` when a terminal has more than eight
+    /// pots, which the packed winner words cannot hold.
+    #[cfg_attr(not(feature = "gpu"), allow(dead_code))]
+    pub(crate) fn flat(&self, s: &PreflopSolver) -> Option<IcmFlat> {
+        let mut f = IcmFlat::default();
+        f.pot_start.push(0);
+        f.out_start.push(0);
+        for (node, &ti) in self.index.iter().enumerate() {
+            if ti == u32::MAX {
+                continue;
+            }
+            let term = &self.terms[ti as usize];
+            if term.pots.len() > 8 {
+                return None;
+            }
+            let nd = &s.nodes[node];
+            f.nodes.push(node as u32);
+            f.kinds.push(if nd.kind == KIND_FOLD_WIN { 0 } else if nd.side_pots.is_empty() { 1 } else { 2 });
+            f.masks.extend(term.pots.iter().map(|&(_, m)| m));
+            f.pot_start.push(f.masks.len() as u32);
+            for (w, value) in &term.outcomes {
+                f.winners.push(w.iter().enumerate().fold(0u32, |acc, (k, &x)| acc | (x as u32) << (4 * k)));
+                f.values.extend_from_slice(value);
+            }
+            f.out_start.push(f.winners.len() as u32);
+        }
+        f.bal = self.bal.clone();
+        Some(f)
+    }
+
+    #[cfg_attr(not(feature = "gpu"), allow(dead_code))]
+    pub(crate) fn terminal_count(&self) -> usize {
+        self.terms.len()
     }
 
     fn outcomes(&self) -> usize {
         self.terms.iter().map(|t| t.outcomes.len()).sum()
     }
+}
+
+/// ICM terminals flattened for the GPU, one entry per terminal.
+#[derive(Default)]
+#[cfg_attr(not(feature = "gpu"), allow(dead_code))]
+pub(crate) struct IcmFlat {
+    pub nodes: Vec<u32>,
+    /// 0 = fold win, 1 = one pot, 2 = side pots.
+    pub kinds: Vec<i32>,
+    /// Eligible-seat mask of each pot, terminal t's at `pot_start[t]..pot_start[t + 1]`.
+    pub pot_start: Vec<u32>,
+    pub masks: Vec<u32>,
+    /// Outcomes of terminal t at `out_start[t]..out_start[t + 1]`: winner of
+    /// pot k in bits 4k..4k+4, and each seat's prize change at `values[o * n + q]`.
+    pub out_start: Vec<u32>,
+    pub winners: Vec<u32>,
+    pub values: Vec<f32>,
+    pub bal: Vec<f32>,
 }
 
 /// What an ICM game's values mean, for API readers.
@@ -204,8 +300,9 @@ pub struct IcmSummary {
     pub bb_per_prize: f64,
     /// Each table seat's prize equity before the hand, in payout units.
     pub seat_equity: Vec<f64>,
-    /// Each field player's prize equity before the hand, in payout units.
-    pub field_equity: Vec<f64>,
+    /// Players at other tables as (stack, count, per-player prize equity
+    /// before the hand in payout units), equal stacks grouped.
+    pub field: Vec<(f64, usize, f64)>,
     /// Terminal outcomes priced when the game was built.
     pub outcomes: usize,
 }
@@ -216,17 +313,33 @@ impl PreflopSolver {
         let t = self.icm.as_ref()?;
         Some(IcmSummary {
             bb_per_prize: t.scale,
-            seat_equity: t.start_equity[..self.n].to_vec(),
-            field_equity: t.start_equity[self.n..].to_vec(),
+            seat_equity: t.start_equity.clone(),
+            field: t.groups.iter().zip(&t.group_equity).map(|(g, e)| (g.stack, g.count, *e)).collect(),
             outcomes: t.outcomes(),
         })
     }
 }
 
 impl PreflopSolver {
+    /// Chance that a hand from range `a` beats one from range `b` (both
+    /// normalized), ties split, from the symmetrized pairwise table.
+    fn icm_pair_odds(tables: &IcmTables, a: &[f32], b: &[f32]) -> f64 {
+        let mut total = 0f32;
+        for j in 0..NUM_CLASSES {
+            let db = b[j];
+            if db == 0.0 {
+                continue;
+            }
+            total += db * dot(&tables.bal[j * NUM_CLASSES..(j + 1) * NUM_CLASSES], a);
+        }
+        total as f64
+    }
+
     /// Range-against-range chance of each seat in `set` holding the best
-    /// hand among `set`, normalized to sum to one.
-    fn icm_range_odds(&self, dists: &[Option<Vec<f32>>], set: u32) -> Vec<f64> {
+    /// hand among `set`: the product of its heads-up chances against each
+    /// other seat, normalized to sum to one. `pairs[w * 9 + x]` caches the
+    /// heads-up chances (negative until computed).
+    fn icm_range_odds(&self, tables: &IcmTables, dists: &[Option<Vec<f32>>], set: u32, pairs: &mut [f64; 81]) -> Vec<f64> {
         let mut out = vec![0.0; self.n];
         let seats: Vec<usize> = (0..self.n).filter(|&q| set & (1 << q) != 0).collect();
         if let [only] = seats[..] {
@@ -234,11 +347,22 @@ impl PreflopSolver {
             return out;
         }
         for &w in &seats {
-            let Some(dw) = &dists[w] else { continue };
-            let others: Vec<Vec<f32>> =
-                seats.iter().filter(|&&q| q != w).filter_map(|&q| dists[q].clone()).collect();
-            let shares = self.showdown_shares(&others);
-            out[w] = (0..NUM_CLASSES).map(|h| dw[h] as f64 * shares[h]).sum();
+            let mut v = 1f64;
+            for &x in &seats {
+                if x == w {
+                    continue;
+                }
+                if pairs[w * 9 + x] < 0.0 {
+                    let r = match (&dists[w], &dists[x]) {
+                        (Some(a), Some(b)) => Self::icm_pair_odds(tables, a, b),
+                        _ => 0.5,
+                    };
+                    pairs[w * 9 + x] = r;
+                    pairs[x * 9 + w] = 1.0 - r;
+                }
+                v *= pairs[w * 9 + x];
+            }
+            out[w] = v;
         }
         let total: f64 = out.iter().sum();
         if total > 0.0 {
@@ -283,37 +407,15 @@ impl PreflopSolver {
         let m = pots.len();
         let j = pots.iter().take_while(|(_, mask)| mask & (1 << p) != 0).count();
 
-        // b[k][h]: chance class h holds the best hand among pot k's seats.
-        let mut b: Vec<Vec<f64>> = Vec::with_capacity(j);
-        if j > 0 && nd.side_pots.is_empty() {
-            // One pot: invert the chip-EV share, which carries the game's
-            // showdown or continuation model (the pot lottery at flop leaves).
-            let mut chip = vec![0f32; NUM_CLASSES];
-            self.chip_terminal_value(node, p, reaches, &mut chip);
-            let inv = nd.invested[p];
-            b.push(
-                chip.iter()
-                    .map(|&v| ((v as f64 / prob + inv) / nd.pot).clamp(0.0, 1.0))
-                    .collect(),
-            );
-        } else {
-            for &(_, mask) in &pots[..j] {
-                let opponents: Vec<Vec<f32>> = (0..self.n)
-                    .filter(|&q| q != p && mask & (1 << q) != 0)
-                    .filter_map(|q| dists[q].clone())
-                    .collect();
-                b.push(self.showdown_shares(&opponents).to_vec());
-            }
-        }
-
         // V[t]: average prize change given the traverser first wins pot t
         // (t = j: wins nothing), over how the other pots fall.
         let mut odds: Vec<(u32, Vec<f64>)> = Vec::new();
+        let mut pairs = [-1f64; 81];
         let mut odds_of = |set: u32| -> Vec<f64> {
             if let Some((_, v)) = odds.iter().find(|(s, _)| *s == set) {
                 return v.clone();
             }
-            let v = self.icm_range_odds(&dists, set);
+            let v = self.icm_range_odds(tables, &dists, set, &mut pairs);
             odds.push((set, v.clone()));
             v
         };
@@ -371,18 +473,51 @@ impl PreflopSolver {
             out.iter_mut().for_each(|x| *x = v);
             return;
         }
-        for h in 0..NUM_CLASSES {
-            let mut prev = 0f64;
-            let mut value = 0f64;
-            for t in 0..j {
-                let bt = b[t][h].max(prev);
-                value += (bt - prev) * v_t[t];
-                prev = bt;
+        // The value is linear in b[t][h], the chance class h holds the best
+        // hand among pot t's seats: V[j] + sum over t < j of b[t] (V[t] - V[t+1]).
+        // The GPU prices it with the chip-EV kernels by swapping the pot
+        // amounts for those coefficients, so the two must stay identical.
+        if nd.side_pots.is_empty() {
+            // One pot: b is the chip-EV share, which carries the game's
+            // showdown or continuation model (the pot lottery at flop leaves).
+            let mut chip = vec![0f32; NUM_CLASSES];
+            self.chip_terminal_value(node, p, reaches, &mut chip);
+            let inv = nd.invested[p];
+            let c = (v_t[0] - v_t[1]).max(0.0);
+            for h in 0..NUM_CLASSES {
+                out[h] = (prob * v_t[1] + (chip[h] as f64 + prob * inv) * c / nd.pot) as f32;
             }
-            value += (1.0 - prev).max(0.0) * v_t[j];
-            out[h] = (prob * value) as f32;
+            return;
+        }
+        let mut value = vec![v_t[j]; NUM_CLASSES];
+        for (t, &(_, mask)) in pots[..j].iter().enumerate() {
+            let opponents: Vec<Vec<f32>> = (0..self.n)
+                .filter(|&q| q != p && mask & (1 << q) != 0)
+                .filter_map(|q| dists[q].clone())
+                .collect();
+            let b = self.showdown_shares(&opponents);
+            let c = v_t[t] - v_t[t + 1];
+            for h in 0..NUM_CLASSES {
+                value[h] += b[h] * c;
+            }
+        }
+        for h in 0..NUM_CLASSES {
+            out[h] = (prob * value[h]) as f32;
         }
     }
+}
+
+/// Dot product in eight independent lanes, so it vectorizes.
+fn dot(a: &[f32], b: &[f32]) -> f32 {
+    let mut acc = [0f32; 8];
+    let (ca, cb) = (a.chunks_exact(8), b.chunks_exact(8));
+    let tail: f32 = ca.remainder().iter().zip(cb.remainder()).map(|(x, y)| x * y).sum();
+    for (x, y) in ca.zip(cb) {
+        for i in 0..8 {
+            acc[i] += x[i] * y[i];
+        }
+    }
+    acc.iter().sum::<f32>() + tail
 }
 
 #[cfg(test)]
