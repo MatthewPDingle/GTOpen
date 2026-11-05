@@ -17,8 +17,9 @@
 import { api } from './api.js';
 import { reportLabel, reportTimestamp } from './report_labels.js';
 import { MADE_LABELS, MADE_ORDER, DRAW_LABELS, DRAW_ORDER, EQA_LABELS } from './classify.js';
+import { RANKS, cardsOf, texOf, TEX } from './textures.js';
+import { initBestSizeView } from './best_size.js';
 
-const RANKS = '23456789TJQKA';
 const EQA_ORDER = Object.keys(EQA_LABELS);
 
 // The standard report bet-size menu: aggregated reports are only comparable
@@ -61,38 +62,24 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     cmpSort: { key: 'adbet', dir: 1 },
   };
 
+  // size-sweep reports open in their own Best size view
+  const bestSize = initBestSizeView(document.getElementById('rep-sweep-viewer'), {
+    toast,
+    openInBrowse: (spot, board) => openInBrowse(spot, board, []),
+    openVariant: async (name, board) => {
+      await loadReport(name);
+      if (board && S.report?.name === name) { S.selected = board; render(); }
+    },
+  });
+  const sweepToggle = document.getElementById('rep-sweep');
+  sweepToggle?.addEventListener('change', () =>
+    document.getElementById('rep-sweep-opts').classList.toggle('hidden', !sweepToggle.checked));
+
   // ---------------------------------------------------------- helpers ----
 
   // escape user-supplied text before interpolating into innerHTML/attributes
   const esc = s => String(s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-  const cardsOf = b => [b.slice(0, 2), b.slice(2, 4), b.slice(4, 6)];
-  function texOf(board) {
-    const cs = cardsOf(board);
-    const rs = cs.map(c => RANKS.indexOf(c[0])).sort((a, b) => b - a);
-    const suits = new Set(cs.map(c => c[1]));
-    const paired = new Set(rs).size < 3;
-    const span = rs[0] - rs[2];
-    return {
-      all: true,
-      rainbow: suits.size === 3,
-      twotone: suits.size === 2,
-      mono: suits.size === 1,
-      paired,
-      connected: !paired && span <= 4,
-      acehigh: rs[0] === 12,
-      broadway: rs[0] === 11 || rs[0] === 10,
-      mid: rs[0] >= 7 && rs[0] <= 9,
-      low: rs[0] <= 6,
-      _rs: rs, _span: span, _suits: suits.size,
-    };
-  }
-  const TEX = [
-    ['all', 'ALL'], ['rainbow', 'RAINBOW'], ['twotone', 'TWO-TONE'],
-    ['mono', 'MONO'], ['paired', 'PAIRED'], ['connected', 'CONNECTED'],
-    ['acehigh', 'A-HIGH'], ['broadway', 'K/Q-HIGH'], ['mid', 'MID'], ['low', 'LOW'],
-  ];
 
   const activeSort = () => S.display === 'textures' ? S.textureSort : S.display === 'hands' ? S.handSort
     : S.display === 'compare' ? S.cmpSort : S.sort;
@@ -242,19 +229,31 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<div class="dim rep-empty">${query ? 'No matching reports.' : 'No reports yet. Configure a spot in Setup, then create a report.'}</div>`;
       return;
     }
+    // a sweep's per-size reports sit right under their sweep, indented
+    const sizeOf = r => +(/ size (\d+(?:_\d+)?)$/.exec(r.name)?.[1] || '0').replace('_', '.');
+    const parents = new Set(list.filter(r => r.kind === 'sweep').map(r => r.name));
+    const ordered = [];
     for (const r of list) {
+      if (r.sweep_parent && parents.has(r.sweep_parent)) continue;
+      ordered.push(r);
+      if (r.kind === 'sweep')
+        ordered.push(...list.filter(v => v.sweep_parent === r.name).sort((a, b) => sizeOf(a) - sizeOf(b)));
+    }
+    for (const r of ordered) {
       const entry = document.createElement('div');
-      entry.className = 'report-entry';
+      entry.className = 'report-entry' + (r.sweep_parent && parents.has(r.sweep_parent) ? ' report-variant' : '');
       const row = document.createElement('button');
       row.type = 'button';
-      row.className = 'report-item' + (S.report?.name === r.name ? ' active' : '');
-      row.setAttribute('aria-pressed', String(S.report?.name === r.name));
+      const isOpen = S.report?.name === r.name || bestSize.name === r.name;
+      row.className = 'report-item' + (isOpen ? ' active' : '');
+      row.setAttribute('aria-pressed', String(isOpen));
       row.title = r.name;
       const label = reportLabel(r.name, r.villain);
       row.innerHTML = `<b>${esc(label.title)}</b>` +
         `<span class="report-context">${esc([label.context, label.model].filter(Boolean).join(' · '))}</span>` +
         `<span class="report-stamp">${esc(reportTimestamp(r.created))}</span>` +
-        `<span class="report-state">${r.n_flops} flops · ${r.complete ? 'Complete' : 'Partial'}${r.lines ? '' : ' · Legacy'}</span>`;
+        `<span class="report-state">${r.n_flops} flops · ${r.complete ? 'Complete' : 'Partial'}` +
+        `${r.kind === 'sweep' ? ' · Best size sweep' : r.sweep_parent ? ' · one size of a sweep' : r.lines ? '' : ' · Legacy'}</span>`;
       row.addEventListener('click', () => loadReport(r.name));
       const remove = document.createElement('button');
       remove.type = 'button';
@@ -273,7 +272,10 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const name = report.name;
     if (deletingReports.has(name)) return;
     const label = reportLabel(name, report.villain);
-    if (!confirm(`Delete “${label.title}”?\n${[label.context, label.model, reportTimestamp(report.created)].filter(Boolean).join(' · ')}\n\nThis permanently removes the report and its saved board summaries.`)) return;
+    const what = report.kind === 'sweep'
+      ? 'This permanently removes the sweep and its per-size reports.'
+      : 'This permanently removes the report and its saved board summaries.';
+    if (!confirm(`Delete “${label.title}”?\n${[label.context, label.model, reportTimestamp(report.created)].filter(Boolean).join(' · ')}\n\n${what}`)) return;
     deletingReports.add(name);
     renderLibrary();
     try {
@@ -289,6 +291,16 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         render();
       }
       if (S.cmp?.name === name) { ++S.cmpSeq; S.cmp = null; render(); }
+      if (bestSize.name === name) {
+        bestSize.render(null);
+        if (!S.report) document.getElementById('rep-empty-state').classList.remove('hidden');
+      }
+      if (report.kind === 'sweep' && S.report && libraryData.some(r => r.name === S.report.name && r.sweep_parent === name)) {
+        ++S.lineSeq;
+        S.report = null; S.selected = null; S.rows = []; S.lineData = null;
+        document.getElementById('rep-empty-state').classList.remove('hidden');
+        render();
+      }
       libraryData = libraryData.filter(r => r.name !== name);
       libraryNames = libraryNames.filter(n => n !== name);
       renderLibrary();
@@ -304,6 +316,17 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     try {
       const rep = await api.reportsGet(name);
       if (seq !== S.loadSeq) return;
+      if (rep.kind === 'sweep') {
+        ++S.lineSeq;
+        if (S.cmp) { ++S.cmpSeq; S.cmp = null; }
+        S.report = null; S.selected = null; S.rows = []; S.lineData = null;
+        render();
+        document.getElementById('rep-empty-state').classList.add('hidden');
+        bestSize.render(rep);
+        renderLibrary();
+        return;
+      }
+      bestSize.render(null);
       S.report = rep;
       renderLibrary();
       S.selected = null;
@@ -488,6 +511,17 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       max_iterations: 600,
       target: 0.35,
     };
+    if (sweepToggle?.checked) {
+      const sizes = [...new Set((document.getElementById('rep-sweep-sizes').value.match(/[\d.]+/g) || [])
+        .map(Number).filter(x => x > 0).map(x => +x.toFixed(3)))].sort((a, b) => a - b);
+      if (!sizes.length) return toast('best size sweep: give at least one size, % pot', true);
+      body.sweep = {
+        player: +document.getElementById('rep-sweep-player').value,
+        sizes,
+        refine: +document.getElementById('rep-sweep-refine').value,
+        keep_variants: document.getElementById('rep-sweep-keep').checked,
+      };
+    }
     if (els.vsVillain.checked) {
       const v = villains();
       if (!v) {
@@ -499,7 +533,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     try {
       await api.reportsRun(body);
       els.progress.textContent = `starting "${name}"…`;
-      toast(`report "${name}" running — ${body.flops} flops${body.villain ? ' vs ' + body.villain.name : ''}`);
+      toast(`${body.sweep ? 'best size sweep' : 'report'} "${name}" running — ${body.flops} flops` +
+        `${body.sweep ? ` × ${body.sweep.sizes.length + body.sweep.refine} solves` : ''}${body.villain ? ' vs ' + body.villain.name : ''}`);
       pollStatus(true);
     } catch (e) {
       els.progress.textContent = '';
@@ -524,7 +559,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         active = true;
         const eta = st.done > 0 ? ` · ~${((st.seconds / st.done) * (st.total - st.done) / 60).toFixed(0)} min left` : '';
         els.progress.textContent =
-          `${reportLabel(st.name).title}: ${st.done}/${st.total} · ${st.board} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
+          `${reportLabel(st.name).title}: ${st.done}/${st.total} · ${st.board}${st.step ? ` · ${st.step}` : ''} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
         els.progress.title = st.name;
       } else {
         if (active || els.progress.textContent) {

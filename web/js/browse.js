@@ -234,6 +234,7 @@ export class Browser {
     this.renderHistory();
     this.renderVillainLocks();
     this.renderActions();
+    this.onNodeChange?.(this.view, this.path); // e.g. Browse "find best size"
     this.renderMatrix();
     this.renderLegend();
     this.renderHandsPanel();
