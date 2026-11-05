@@ -149,3 +149,39 @@ fn trust_needs_hero_mode_and_a_profile_and_leaves_plain_play_alone() {
     assert!(s.trust_readout().is_err());
     assert!(s.trust_seats().is_empty());
 }
+
+/// Side pots (a short SB) and ICM payouts: the trust game still converges.
+#[test]
+fn side_pot_and_icm_games_still_solve_with_the_dial() {
+    let mut short = config();
+    short.stacks = Some(vec![20.0, 6.0, 14.0]);
+    let mut icm = short.clone();
+    icm.icm = Some(solver::preflop::IcmConfig {
+        payouts: vec![50.0, 30.0, 20.0], field: vec![], field_groups: vec![], stack_off: 1.0,
+    });
+    for (label, cfg) in [("side pots", short), ("ICM", icm)] {
+        let mut s = PreflopSolver::new(cfg, table()).unwrap();
+        s.prune = false;
+        assert!(s.nodes.iter().any(|n| !n.side_pots.is_empty()));
+        solve(&mut s, 200);
+        let mut profiles = vec![None; 3];
+        for (seat, name) in [(1, "Maniac"), (2, "Calling station")] {
+            let stats = archetypes().into_iter().find(|(n, _)| *n == name).unwrap().1;
+            profiles[seat] = Some(s.generate_profile(seat, &stats, name).unwrap().0);
+        }
+        s.set_table(vec![false; 3], profiles).unwrap();
+        solve(&mut s, 200);
+        s.set_hero(Some(0)).unwrap();
+        s.set_trust(Some(0.5)).unwrap();
+        solve(&mut s, 600);
+        let (gaps, _) = s.gaps_and_evs();
+        let total: f64 = gaps.iter().sum();
+        assert!(total < 0.05, "{label}: summed gap {total} ({gaps:?})");
+        let r = s.trust_readout().unwrap();
+        // the mixture sits between its pure cases (under ICM free seats that
+        // adapt can help the hero: prize equity is shared three ways)
+        let (lo, hi) = (r.hero_ev_vs_read.min(r.hero_ev_vs_adapting), r.hero_ev_vs_read.max(r.hero_ev_vs_adapting));
+        assert!(r.hero_ev_vs_mixture > lo - 1e-3 && r.hero_ev_vs_mixture < hi + 1e-3, "{label}: {r:?}");
+        println!("{label}: {r:?}");
+    }
+}

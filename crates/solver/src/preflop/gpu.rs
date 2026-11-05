@@ -25,6 +25,7 @@ mod terminal_unroll;
 mod narrow_offsets;
 mod adaptive_throughput;
 mod icm;
+mod rnr;
 pub use adaptive_throughput::ThroughputSelection;
 #[cfg(test)]
 mod side_pot_tests;
@@ -238,6 +239,8 @@ pub struct PreflopGpu {
     phase_trace: Option<PhaseEventTrace>,
     /// ICM terminal tables when the game pays tournament prizes.
     icm: Option<icm::IcmGpu>,
+    /// The trust dial's free types and mixtures (hero mode with a dial).
+    rnr: Option<Box<rnr::GpuRnr>>,
 }
 
 // Terminal values remain live across BR/average passes. Action values are
@@ -743,7 +746,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
         Err(_) => return f64::INFINITY,
     };
     minimum_vram_mb(s, ValuePlan::build(s).blocks)
-        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes + icm::IcmGpu::bytes(s)) as f64 / 1e6
+        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes + icm::IcmGpu::bytes(s) + rnr::bytes(s)) as f64 / 1e6
 }
 
 // Host-only, opt-in diagnostic. Does not modify source layouts, reaches, arenas,
@@ -965,6 +968,11 @@ impl PreflopGpu {
         if (cohorts || _narrow) && (s.three_way.is_some() || s.nodes.iter().any(|nd| !nd.side_pots.is_empty())) {
             return Err("side pots and the 3-way table use the normal GPU plan".into());
         }
+        // The trust dial swaps seat modes per pass, which only the normal
+        // plan's kernels read.
+        if s.rnr_active().is_some() && (cohorts || unrolled || _narrow) {
+            return Err("the trust dial uses the normal GPU plan".into());
+        }
         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
             .filter(|&len| len <= u32::MAX as usize)
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
@@ -1115,6 +1123,19 @@ impl PreflopGpu {
         let reach_src = reach_sources(s);
         let act_nodes = &values.action_nodes;
         let spans = values.spans.clone();
+        // trust dial: free arenas after the main ones, mixtures after the
+        // forced policies
+        let rnr_plan = if s.rnr_active().is_some() {
+            let plan = rnr::Plan::build(s, act_nodes, &spans, &off, &src, &foff, forced.len())?;
+            forced.resize(forced.len() + plan.mix_len, 0.0);
+            need += rnr::bytes(s) as f64 / 1e6;
+            if need > budget_mb as f64 {
+                return Err(format!("needs ~{need:.0} MB VRAM with the trust dial (budget {budget_mb} MB)"));
+            }
+            Some(plan)
+        } else {
+            None
+        };
 
         let mut eq_plan = EquityCachePlan::build(s, &reach_src);
         let mut mw_plan = EquityCachePlan::multiway(s, &reach_src);
@@ -1219,6 +1240,15 @@ impl PreflopGpu {
         let arena_len = s.arena_len;
         // SAFETY: exclusive access (no solve is running while we construct)
         let (regs, strat) = unsafe { (s.regrets.slice(), s.strat_sum.slice()) };
+        let (regs_dev, strat_dev) = match rnr_plan.as_ref() {
+            Some(p) => ([regs, &p.regrets].concat(), [strat, &p.strat].concat()),
+            None => (Vec::new(), Vec::new()),
+        };
+        let (regs_dev, strat_dev): (&[f32], &[f32]) = if rnr_plan.is_some() { (&regs_dev, &strat_dev) } else { (regs, strat) };
+        let rnr_gpu = match rnr_plan {
+            Some(p) => Some(Box::new(rnr::GpuRnr::new(&ctx, &stream, arch, p)?)),
+            None => None,
+        };
 
         let cohort_plan = if cohorts {
             if !use_multiway || !compact.enabled || !use_mw_normalized || !use_mw_prepared || mw_batch!=32 {
@@ -1442,8 +1472,8 @@ impl PreflopGpu {
             },
             static_seats,
             constrained_br: (0..np).map(|p| s.constrained_br(p)).collect(),
-            d_regrets: stream.clone_htod(regs).map_err(e)?,
-            d_strat: stream.clone_htod(strat).map_err(e)?,
+            d_regrets: stream.clone_htod(regs_dev).map_err(e)?,
+            d_strat: stream.clone_htod(strat_dev).map_err(e)?,
             d_reach_src: stream.clone_htod(&reach_src).map_err(e)?,
             d_reach: stream
                 .alloc_zeros::<f32>(reach_blocks * NUM_CLASSES)
@@ -1464,6 +1494,7 @@ impl PreflopGpu {
             #[cfg(test)]
             phase_trace: None,
             icm: icm_gpu,
+            rnr: rnr_gpu,
             _ctx: ctx,
             stream,
         };
@@ -1480,6 +1511,7 @@ impl PreflopGpu {
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
         if self.icm.is_some() { return Err("research experiments do not support ICM games".into()); }
+        if self.rnr.is_some() { return Err("research experiments do not support the trust dial".into()); }
         if self.learned.is_some() || self.interface.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
         if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
@@ -1926,6 +1958,9 @@ impl PreflopGpu {
         iteration: &mut u32,
         stop: Option<&AtomicBool>,
     ) -> Result<bool, String> {
+        if self.rnr.is_some() {
+            return self.try_iterate_rnr(iteration, stop);
+        }
         let stopped = || stop.map_or(false, |f| f.load(Ordering::Relaxed));
         #[cfg(feature = "preflop-research")]
         self.research_exploration_schedule(*iteration)?;
@@ -2034,6 +2069,9 @@ impl PreflopGpu {
     pub fn gaps_and_evs(&mut self) -> Result<(Vec<f64>, Vec<f64>), String> {
         #[cfg(feature = "preflop-research")]
         if self.research_learning_mask {return Err("research learning mask: evaluate using a fresh unmasked engine".into());}
+        if self.rnr.is_some() {
+            return self.rnr_gaps_and_evs();
+        }
         #[cfg(feature = "preflop-research")]
         self.research_tables(false)?;
         // The first check warms lazy-loaded kernels. Subsequent checks replay
@@ -2116,8 +2154,9 @@ impl PreflopGpu {
         let Some(buf) = snapshot.as_mut() else {
             // Page locking can be unavailable even when ordinary RAM is
             // available. Keep the original transactional download fallback.
-            let regs = self.stream.clone_dtoh(&self.d_regrets).map_err(e)?;
-            let strat = self.stream.clone_dtoh(&self.d_strat).map_err(e)?;
+            let regs = self.stream.clone_dtoh(&self.d_regrets.slice(0..self.arena_len)).map_err(e)?;
+            let strat = self.stream.clone_dtoh(&self.d_strat.slice(0..self.arena_len)).map_err(e)?;
+            self.rnr_sync_to_cpu(s)?;
             unsafe {
                 s.regrets.slice_mut().copy_from_slice(&regs);
                 s.strat_sum.slice_mut().copy_from_slice(&strat);
@@ -2125,15 +2164,23 @@ impl PreflopGpu {
             return Ok(());
         };
         let (regs, strat) = buf.as_mut_slice().split_at_mut(self.arena_len);
-        self.stream.memcpy_dtoh(&self.d_regrets, regs).map_err(e)?;
-        self.stream.memcpy_dtoh(&self.d_strat, strat).map_err(e)?;
+        // the main arenas only: the trust dial's free arenas follow them
+        self.stream.memcpy_dtoh(&self.d_regrets.slice(0..self.arena_len), regs).map_err(e)?;
+        self.stream.memcpy_dtoh(&self.d_strat.slice(0..self.arena_len), strat).map_err(e)?;
         self.stream.synchronize().map_err(e)?;
+        self.rnr_sync_to_cpu(s)?;
         // SAFETY: &mut PreflopSolver â†’ no concurrent traversal
         unsafe {
             s.regrets.slice_mut().copy_from_slice(regs);
             s.strat_sum.slice_mut().copy_from_slice(strat);
         }
         Ok(())
+    }
+
+    /// The trust dial's readout from the device (None off the dial).
+    pub fn trust_readout(&mut self) -> Option<Result<crate::preflop::rnr::PfTrustReadout, String>> {
+        self.rnr.as_ref()?;
+        Some(self.rnr_readout())
     }
 }
 

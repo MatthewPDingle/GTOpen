@@ -43,12 +43,6 @@ pub(crate) struct PfFree {
     pub len: usize,
 }
 
-impl PfFree {
-    pub fn bytes(&self) -> usize {
-        self.len * 8 + self.off.len() * 4
-    }
-}
-
 /// What a trust level buys and costs for the hero, in bb.
 #[derive(Debug, Clone, Serialize)]
 pub struct PfTrustReadout {
