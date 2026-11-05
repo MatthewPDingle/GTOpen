@@ -12,6 +12,8 @@ use std::io::{BufRead, BufReader, BufWriter, Read, Write};
 use std::sync::Arc;
 
 const MAGIC: &str = "GTOMW1";
+/// Tournament (ICM) saves: older binaries refuse them.
+const MAGIC_ICM: &str = "GTOMW2";
 
 #[derive(Serialize, Deserialize)]
 pub struct MwSaveHeader {
@@ -41,7 +43,8 @@ pub fn save(s: &MwSolver, exploit_pct_pot: Option<f64>, w: impl Write) -> Result
         exploit_pct_pot,
     };
     let io = |e: std::io::Error| e.to_string();
-    writeln!(w, "{MAGIC}").map_err(io)?;
+    let magic = if s.spot.config.tree.icm.is_some() { MAGIC_ICM } else { MAGIC };
+    writeln!(w, "{magic}").map_err(io)?;
     writeln!(w, "{}", serde_json::to_string(&hdr).map_err(|e| e.to_string())?).map_err(io)?;
     let spot = &*s.spot;
     let mut buf = Vec::new();
@@ -69,7 +72,7 @@ pub fn peek(r: impl Read) -> Result<MwSaveHeader, String> {
     let mut r = BufReader::new(r);
     let mut line = String::new();
     r.read_line(&mut line).map_err(|e| e.to_string())?;
-    if line.trim_end() != MAGIC {
+    if line.trim_end() != MAGIC && line.trim_end() != MAGIC_ICM {
         return Err("not a three-player save".into());
     }
     line.clear();
@@ -81,7 +84,7 @@ pub fn load(r: impl Read, storage: Storage) -> Result<(MwSolver, MwSaveHeader), 
     let mut r = BufReader::new(r);
     let mut line = String::new();
     r.read_line(&mut line).map_err(|e| e.to_string())?;
-    if line.trim_end() != MAGIC {
+    if line.trim_end() != MAGIC && line.trim_end() != MAGIC_ICM {
         return Err("not a three-player save".into());
     }
     line.clear();

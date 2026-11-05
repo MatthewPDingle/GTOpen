@@ -129,3 +129,31 @@ fn bubble_calls_tighter_than_chips() {
     assert!(icm_expl.is_finite() && icm_expl < 0.05, "bubble exploitability {icm_expl}");
     assert!(icm < chips - 0.05, "bubble call rate {icm} vs chips {chips}");
 }
+
+#[test]
+fn icm_saves_round_trip_under_their_own_magic() {
+    let tree = TreeConfig {
+        starting_pot: 10.0,
+        effective_stack: 20.0,
+        oop: sizing(&[], &[]),
+        ip: sizing(&[], &[]),
+        add_allin: true,
+        icm: Some(PostflopIcm { payouts: vec![50.0, 50.0], behind: Some(vec![20.0, 26.0]), others: vec![30.0], field_groups: vec![] }),
+        ..TreeConfig::default()
+    };
+    let s = spot("AsKd7c4h2s", "AA,KK,QJs", "AQ,KQ", tree);
+    let mut solver = Solver::new(s.clone());
+    for _ in 0..20 {
+        solver.iterate();
+    }
+    let dir = std::env::temp_dir().join(format!("gtopen-icm-save-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("icm.gto");
+    let path = path.to_str().unwrap();
+    solver.save(path).unwrap();
+    assert!(std::fs::read(path).unwrap().starts_with(b"GTOSOLVE3\n"));
+    let back = Solver::load(path).unwrap();
+    assert_eq!(back.spot.config.tree.icm, s.config.tree.icm);
+    assert!((back.exploitability() - solver.exploitability()).abs() < 1e-9);
+    std::fs::remove_dir_all(&dir).ok();
+}

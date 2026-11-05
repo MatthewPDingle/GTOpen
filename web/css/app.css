@@ -1263,3 +1263,9 @@ textarea {
 @media (max-width: 1100px) {
   .mw-grid, .mw-body { grid-template-columns: 1fr; }
 }
+
+/* Postflop tournament payouts (ICM) panel, SETUP and 3-WAY */
+.postflop-icm > label.check { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 12px; }
+.postflop-icm > label.check input { width: auto; }
+.postflop-icm .pfl-grid2 label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink-dim); }
+.postflop-icm textarea { width: 100%; box-sizing: border-box; resize: vertical; }

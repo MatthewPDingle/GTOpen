@@ -2352,6 +2352,10 @@ pub struct PreflopExport {
     /// Carried over so the postflop solve rakes the same game.
     pub rake_pct: f64,
     pub rake_cap: f64,
+    /// Tournament payouts, each flop player's chips behind and every other
+    /// player's stack, when the preflop game pays ICM.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icm: Option<crate::icm::postflop::PostflopIcm>,
 }
 
 /// A three-live flop exported to the 3-way postflop solver (postflop action
@@ -2364,9 +2368,32 @@ pub struct PreflopExport3 {
     pub stacks_bb: Vec<f64>,
     pub rake_pct: f64,
     pub rake_cap: f64,
+    /// Tournament payouts and every other player's stack (ICM games).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icm: Option<crate::icm::postflop::PostflopIcm>,
 }
 
 impl PreflopSolver {
+    /// The postflop ICM settings for a flop node: the game's payouts, the
+    /// flop players' chips behind (heads-up only; 3-way spots take them
+    /// from the tree) and the stacks of everyone else, folded players at
+    /// this table included.
+    fn export_icm(&self, nd: &PNode, flop: &[usize], with_behind: bool) -> Option<crate::icm::postflop::PostflopIcm> {
+        let icm = self.cfg.icm.as_ref()?;
+        let mut others: Vec<f64> = (0..self.n)
+            .filter(|i| !flop.contains(i))
+            .map(|i| self.cfg.left(i, nd.invested[i]))
+            .filter(|&x| x > 1e-9)
+            .collect();
+        others.extend(icm.field.iter().copied());
+        Some(crate::icm::postflop::PostflopIcm {
+            payouts: icm.payouts.clone(),
+            behind: with_behind.then(|| flop.iter().map(|&i| self.cfg.left(i, nd.invested[i])).collect()),
+            others,
+            field_groups: icm.field_groups.clone(),
+        })
+    }
+
     /// Reach-weighted aggregate frequency of each action at `node`.
     fn action_freqs(&self, node: usize, reaches: &[Vec<f32>]) -> Vec<PActionFreq> {
         let nd = &self.nodes[node];
@@ -2574,6 +2601,7 @@ impl PreflopSolver {
             stacks_bb: seats.iter().map(|&i| self.cfg.left(i, nd.invested[i])).collect(),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
+            icm: self.export_icm(nd, &seats, false),
         })
     }
 
@@ -2614,6 +2642,7 @@ impl PreflopSolver {
             eff_stack_bb: self.cfg.left(oop, nd.invested[oop]).min(self.cfg.left(ip, nd.invested[ip])),
             rake_pct: self.cfg.rake_pct,
             rake_cap: self.cfg.rake_cap,
+            icm: self.export_icm(nd, &[oop, ip], true),
         })
     }
 

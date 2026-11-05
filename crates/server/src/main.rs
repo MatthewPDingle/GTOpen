@@ -3516,6 +3516,8 @@ async fn save_solve(
 /// loading it (the full loader stays in solver::save and remains the single
 /// authority on the format).
 const SAVE_MAGIC: &[u8] = b"GTOSOLVE2\n";
+/// Tournament (ICM) saves.
+const SAVE_MAGIC_ICM: &[u8] = b"GTOSOLVE3\n";
 
 /// The subset of the save header load_solve needs for pre-validation;
 /// unknown header fields (labels, future additions) are ignored.
@@ -3544,7 +3546,7 @@ fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> 
     let mut r = std::io::BufReader::new(file);
     let mut magic = [0u8; 10];
     r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-    if magic != SAVE_MAGIC {
+    if magic != SAVE_MAGIC && magic != SAVE_MAGIC_ICM {
         return Err("not a solver save file".to_string());
     }
     let mut header_line = Vec::new();
