@@ -70,6 +70,9 @@ pub struct GpuPlan {
     pub node_twin: Vec<f32>,
     pub node_tlose: Vec<f32>,
     pub node_ttie: Vec<f32>,
+    /// Offset of player 1's terminal payoffs in node_twin/tlose/ttie: 0
+    /// when both players share the chip payoffs, the node count under ICM.
+    pub payoff_stride: usize,
     /// Chance nodes: 1 / (46 - street).
     pub node_cdiv: Vec<f32>,
     /// Showdown nodes: dense river slot; -1 elsewhere.
@@ -381,6 +384,14 @@ impl GpuPlan {
                 node_cdiv[ni] = 1.0 / (46 - node.street as i32) as f32;
             }
         }
+        // ICM: each player has its own payoffs, player 0's block first.
+        let mut payoff_stride = 0;
+        if let Some(icm) = &spot.icm {
+            node_twin = icm.win.concat();
+            node_tlose = icm.lose.concat();
+            node_ttie = icm.tie.concat();
+            payoff_stride = n;
+        }
 
         // Packing adds host copy/restore work. Keep direct whole-arena DMA
         // when unreachable blocks save less than 5% of action storage.
@@ -457,6 +468,7 @@ impl GpuPlan {
             node_twin,
             node_tlose,
             node_ttie,
+            payoff_stride,
             node_cdiv,
             node_river_slot,
             reach_src,

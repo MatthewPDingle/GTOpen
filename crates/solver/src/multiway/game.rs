@@ -70,6 +70,8 @@ pub struct MwSpot {
     /// Suit permutations fixing the board pointwise and all three ranges.
     pub suit_perms: Vec<[u8; 4]>,
     pub hand_perm: [Vec<Vec<u16>>; NP],
+    /// Tournament payoff tables when the spot pays ICM.
+    pub icm: Option<super::icm::MwIcm>,
 }
 
 impl MwSpot {
@@ -137,6 +139,17 @@ impl MwSpot {
             std::array::from_fn(|p| hands[p].len()),
             max_nodes,
         )?;
+        let icm = match &config.tree.icm {
+            Some(icm) => {
+                if icm.behind.is_some() {
+                    return Err("3-way ICM takes each player's stack from the tree: leave behind unset".into());
+                }
+                let min = config.tree.stacks.iter().copied().fold(f64::INFINITY, f64::min);
+                icm.validate(NP, min, config.tree.rake_pct)?;
+                Some(super::icm::MwIcm::build(&tree, icm))
+            }
+            None => None,
+        };
         let river = build_river_table(&board, board_mask, &hands);
         let (suit_perms, hand_perm) = suit_symmetries(&board, &hands, &combo_hand);
         Ok(MwSpot {
@@ -152,7 +165,17 @@ impl MwSpot {
             river,
             suit_perms,
             hand_perm,
+            icm,
         })
+    }
+
+    /// Player p's payoff table at a terminal: chips, or ICM values in bb
+    /// equivalents (see `tree::payoff_table` for the layout).
+    pub fn payoff_table(&self, node: &super::tree::MwNode, p: usize) -> [[f64; 3]; 3] {
+        match &self.icm {
+            Some(icm) => icm.table(node, p),
+            None => super::tree::payoff_table(node, p, self.tree.config.rake_pct, self.tree.config.rake_cap),
+        }
     }
 
     /// Solver arena bytes (regrets + strategy sums).

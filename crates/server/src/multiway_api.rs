@@ -110,6 +110,9 @@ pub struct MwSpotRequest {
     allin_threshold: Option<f64>,
     #[serde(default)]
     add_allin: bool,
+    /// Tournament payouts: terminals pay ICM prize-equity changes.
+    #[serde(default)]
+    icm: Option<solver::icm::postflop::PostflopIcm>,
 }
 
 fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
@@ -138,6 +141,7 @@ fn spot_config(req: &MwSpotRequest) -> Result<MwSpotConfig, String> {
         t.allin_threshold = a / 100.0;
     }
     t.add_allin = req.add_allin;
+    t.icm = req.icm.clone();
     Ok(MwSpotConfig { board: req.board.clone(), ranges: req.ranges.clone(), tree: t })
 }
 

@@ -96,6 +96,8 @@ pub struct Spot {
     /// hand_perm[p][k][i] = index in hands[p] of suit_perms[k] applied to
     /// hands[p][i] (the permuted combo is guaranteed to exist in range).
     pub hand_perm: [Vec<Vec<u16>>; 2],
+    /// Per-player terminal payoffs when the spot pays tournament prizes.
+    pub icm: Option<std::sync::Arc<crate::icm::postflop::HuIcmPayoffs>>,
 }
 
 impl Spot {
@@ -319,7 +321,15 @@ impl Spot {
             hand_perm[1].swap(0, id);
         }
 
+        let icm = match &config.tree.icm {
+            Some(icm) => {
+                icm.validate(2, config.tree.effective_stack, config.tree.rake_pct)?;
+                Some(std::sync::Arc::new(crate::icm::postflop::HuIcmPayoffs::build(&tree, icm)))
+            }
+            None => None,
+        };
         Ok(Spot {
+            icm,
             config,
             board,
             board_mask,
@@ -331,6 +341,30 @@ impl Spot {
             suit_perms,
             hand_perm,
         })
+    }
+
+    /// Player p's payoff at fold terminal `node_idx`: chips, or its ICM
+    /// prize change in bb equivalents.
+    #[inline]
+    pub fn fold_payoff(&self, node_idx: u32, node: &crate::tree::Node, p: usize) -> f32 {
+        match &self.icm {
+            Some(t) if node.player as usize == p => t.lose[p][node_idx as usize],
+            Some(t) => t.win[p][node_idx as usize],
+            None if node.player as usize == p => node.t_lose as f32,
+            None => node.t_win as f32,
+        }
+    }
+
+    /// Player p's (win, lose, tie) payoffs at showdown terminal `node_idx`.
+    #[inline]
+    pub fn showdown_payoffs(&self, node_idx: u32, node: &crate::tree::Node, p: usize) -> (f32, f32, f32) {
+        match &self.icm {
+            Some(t) => {
+                let i = node_idx as usize;
+                (t.win[p][i], t.lose[p][i], t.tie[p][i])
+            }
+            None => (node.t_win as f32, node.t_lose as f32, node.t_tie as f32),
+        }
     }
 
     /// Indices into suit_perms that fix every dealt card (the stabilizer of

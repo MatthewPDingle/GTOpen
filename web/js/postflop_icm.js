@@ -1,0 +1,126 @@
+// Tournament (ICM) payoffs for postflop spots: a collapsible panel that turns
+// the spot request's `icm` on and off. Shared by SETUP (heads-up) and the
+// 3-WAY tab; the Preflop Lab's flop exports fill it in.
+
+const parseNums = text => String(text || '').split(/[\s,]+/).filter(Boolean);
+
+/** "35, 22, 144x25" -> { others: [35, 22], field_groups: [{count: 144, stack: 25}] } */
+export function parseStacks(text) {
+  const others = [];
+  const field_groups = [];
+  for (const tok of parseNums(text)) {
+    const m = tok.match(/^(\d+)\s*[x×]\s*([\d.]+)$/i);
+    if (m) {
+      const count = Number(m[1]), stack = Number(m[2]);
+      if (!(count >= 1) || !(stack > 0)) throw new Error(`ICM: bad stack group "${tok}"`);
+      field_groups.push({ count, stack });
+    } else {
+      const x = Number(tok);
+      if (!(x > 0)) throw new Error(`ICM: other players' stacks must be positive numbers ("${tok}")`);
+      others.push(x);
+    }
+  }
+  return { others, field_groups };
+}
+
+export function formatStacks(icm) {
+  const parts = (icm.others || []).map(x => String(+x.toFixed(3)));
+  for (const g of icm.field_groups || []) parts.push(`${g.count}x${+g.stack.toFixed(3)}`);
+  return parts.join(', ');
+}
+
+/**
+ * Builds the panel after `anchor`. `seats` = 2 shows the chips-behind fields
+ * (heads-up spots have one effective stack); 3-way spots take each stack
+ * from the player rows. `onChange` runs after every edit.
+ */
+export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {}) {
+  const details = document.createElement('details');
+  details.className = 'pfl-position-sizes postflop-icm';
+  const summary = document.createElement('summary');
+  details.append(summary);
+  const note = document.createElement('p');
+  note.textContent = 'Tournament spots: every terminal pays each player the change in their share of the '
+    + 'prize pool (Malmuth–Harville ICM) instead of chips. EVs read in bb equivalents. Stacks use the same '
+    + 'units as the pot. Needs rake 0. A Preflop Lab export from an ICM game fills this in.';
+  details.append(note);
+  const on = document.createElement('label');
+  on.className = 'check';
+  const onBox = document.createElement('input');
+  onBox.type = 'checkbox';
+  on.append(onBox, ' use tournament payouts (ICM)');
+  details.append(on);
+  const grid = document.createElement('div');
+  grid.className = 'pfl-grid2';
+  const payouts = document.createElement('textarea');
+  payouts.rows = 2;
+  payouts.placeholder = 'e.g. 50, 30, 20';
+  payouts.setAttribute('aria-label', 'Prize for each place, first place first');
+  const payLabel = document.createElement('label');
+  payLabel.style.gridColumn = '1 / -1';
+  payLabel.append('Payouts, first place first ', payouts);
+  const others = document.createElement('textarea');
+  others.rows = 2;
+  others.placeholder = 'e.g. 35, 22, 144x25';
+  others.setAttribute('aria-label', 'Stacks of every other player still in');
+  const othersLabel = document.createElement('label');
+  othersLabel.style.gridColumn = '1 / -1';
+  othersLabel.dataset.tip = 'Everyone still in the tournament who is not in this hand: players who folded at '
+    + 'this table and players at other tables. "144x25" means 144 players with 25 each.';
+  othersLabel.append('Other players’ stacks ', others);
+  const behind = [];
+  if (seats === 2) {
+    for (const who of ['OOP', 'IP']) {
+      const input = document.createElement('input');
+      input.type = 'number'; input.min = '0'; input.step = 'any';
+      input.placeholder = 'effective stack';
+      const label = document.createElement('label');
+      label.dataset.tip = `${who}'s chips behind at the start of the solve, if more than the effective stack. `
+        + 'Chips past the effective stack are never at risk but count for ICM.';
+      label.append(`${who} chips behind `, input);
+      behind.push(input);
+      grid.append(label);
+    }
+  }
+  grid.append(payLabel, othersLabel);
+  details.append(grid);
+  anchor.after(details);
+
+  function render() {
+    grid.hidden = !onBox.checked;
+    summary.textContent = onBox.checked ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
+    if (onBox.checked) details.open = true;
+  }
+  const changed = () => { render(); onChange(); };
+  onBox.addEventListener('change', changed);
+  for (const el of [payouts, others, ...behind]) el.addEventListener('input', changed);
+  render();
+
+  return {
+    /** The request's `icm`, or undefined when off. Throws on bad input. */
+    request() {
+      if (!onBox.checked) return undefined;
+      const pay = parseNums(payouts.value).map(Number);
+      if (!pay.length || pay.some(p => !Number.isFinite(p) || p < 0)) {
+        throw new Error('ICM payouts must be a list of non-negative prizes, first place first.');
+      }
+      const icm = { payouts: pay, ...parseStacks(others.value) };
+      if (behind.length && behind.some(b => b.value.trim() !== '')) {
+        if (behind.some(b => b.value.trim() === '')) throw new Error('ICM: give both players’ chips behind, or neither.');
+        icm.behind = behind.map(b => Number(b.value));
+      }
+      return icm;
+    },
+    /** Fill from a request's or export's `icm` (falsy turns ICM off). */
+    set(icm) {
+      onBox.checked = !!icm;
+      if (icm) {
+        payouts.value = (icm.payouts || []).join(', ');
+        others.value = formatStacks(icm);
+        behind.forEach((b, i) => { b.value = icm.behind ? String(+icm.behind[i].toFixed(3)) : ''; });
+      }
+      render();
+    },
+    get on() { return onBox.checked; },
+  };
+}

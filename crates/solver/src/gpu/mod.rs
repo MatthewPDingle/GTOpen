@@ -117,6 +117,8 @@ pub struct GpuSolver {
     d_node_twin: CudaSlice<f32>,
     d_node_tlose: CudaSlice<f32>,
     d_node_ttie: CudaSlice<f32>,
+    /// See GpuPlan::payoff_stride.
+    payoff_stride: usize,
     d_node_cdiv: CudaSlice<f32>,
     d_node_river_slot: CudaSlice<i32>,
     d_cc_start: CudaSlice<u32>,
@@ -395,6 +397,7 @@ impl GpuSolver {
             d_node_twin: upf(&plan.node_twin)?,
             d_node_tlose: upf(&plan.node_tlose)?,
             d_node_ttie: upf(&plan.node_ttie)?,
+            payoff_stride: plan.payoff_stride,
             d_node_cdiv: upf(&plan.node_cdiv)?,
             d_node_river_slot: upi32(&plan.node_river_slot)?,
             d_cc_start: up32(&plan.cc_start)?,
@@ -533,7 +536,7 @@ impl GpuSolver {
                 .sum::<f64>()
                 / denom
         };
-        let raked = solver.spot.tree.config.rake_pct > 0.0;
+        let raked = solver.spot.tree.config.general_sum();
         let key = raked as usize;
         // Warm kernels eagerly once, then capture the fixed evaluation work.
         // Root copies remain on device until a single host download. Dot products
@@ -577,7 +580,7 @@ impl GpuSolver {
                 v[p] = dot(&roots[off..off + self.nh[p] as usize], p);
             }
         }
-        if solver.spot.tree.config.rake_pct > 0.0 {
+        if solver.spot.tree.config.general_sum() {
             // With rake the game is not zero-sum: compare against actual EVs.
             Ok(((br[0] - v[0]) + (br[1] - v[1])) / 2.0)
         } else {
@@ -705,8 +708,8 @@ impl GpuSolver {
                         .arg(&count)
                         .arg(&pi)
                         .arg(&self.d_node_player)
-                        .arg(&self.d_node_twin)
-                        .arg(&self.d_node_tlose)
+                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
                         .arg(&self.d_reach[0])
@@ -735,9 +738,9 @@ impl GpuSolver {
                         .arg(&self.d_show_nodes)
                         .arg(&start)
                         .arg(&count)
-                        .arg(&self.d_node_twin)
-                        .arg(&self.d_node_tlose)
-                        .arg(&self.d_node_ttie)
+                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
                         .arg(&self.d_node_river_slot)
                         .arg(&self.d_rsrc[1 - p])
                         .arg(&self.d_reach[1 - p])
@@ -933,8 +936,8 @@ impl GpuSolver {
                         .arg(&count)
                         .arg(&pi)
                         .arg(&self.d_node_player)
-                        .arg(&self.d_node_twin)
-                        .arg(&self.d_node_tlose)
+                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
                         .arg(&self.d_reach[0])
@@ -965,9 +968,9 @@ impl GpuSolver {
                         .arg(&self.d_show_nodes)
                         .arg(&start)
                         .arg(&count)
-                        .arg(&self.d_node_twin)
-                        .arg(&self.d_node_tlose)
-                        .arg(&self.d_node_ttie)
+                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
+                        .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
                         .arg(&self.d_node_river_slot)
                         .arg(&self.d_rsrc[1 - p])
                         .arg(&self.d_reach[1 - p])
@@ -1644,7 +1647,7 @@ mod tests {
             gpu.eval_down().unwrap();
             avg[p] = dot(gpu.eval_root_cfv(p, 1, true).unwrap());
         }
-        let expected = if s.spot.tree.config.rake_pct > 0.0 {
+        let expected = if s.spot.tree.config.general_sum() {
             ((br[0] - avg[0]) + (br[1] - avg[1])) / 2.0
         } else {
             (br[0] + br[1]) / 2.0

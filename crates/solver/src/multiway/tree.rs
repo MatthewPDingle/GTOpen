@@ -39,6 +39,10 @@ pub struct MwTreeConfig {
     /// Raises per street (an all-in still ends the action anyway).
     #[serde(default = "default_max_raises")]
     pub max_raises: u8,
+    /// Tournament payouts: terminals pay ICM prize-equity changes (see
+    /// `multiway::icm`). Stacks come from `stacks`, so `behind` must be unset.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icm: Option<crate::icm::postflop::PostflopIcm>,
 }
 
 fn default_allin_threshold() -> f64 {
@@ -61,6 +65,7 @@ impl MwTreeConfig {
             allin_threshold: default_allin_threshold(),
             add_allin: false,
             max_raises: default_max_raises(),
+            icm: None,
         }
     }
 }

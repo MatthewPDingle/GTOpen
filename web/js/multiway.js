@@ -4,6 +4,7 @@
 import { toast } from './api.js';
 import { cardChip } from './browse.js';
 import { cellInfo } from './cards.js';
+import { createPostflopIcm } from './postflop_icm.js';
 
 const $ = id => document.getElementById(id);
 
@@ -71,7 +72,11 @@ function renderPlayers() {
   });
 }
 
+// Tournament payouts (ICM), under the rake row.
+let mwIcm = null;
+
 function spotRequest() {
+  const icm = mwIcm ? mwIcm.request() : undefined;
   const sizes = [0, 1, 2].map(k => ({ bet: $(`mw-bet-${k}`).value.trim(), raise: $(`mw-raise-${k}`).value.trim() }));
   return {
     board: $('mw-board').value.replace(/[\s,]/g, ''),
@@ -84,6 +89,7 @@ function spotRequest() {
     max_raises: Number($('mw-maxraises').value),
     allin_threshold: Number($('mw-allinthr').value) || 85,
     add_allin: $('mw-addallin').checked,
+    ...(icm ? { icm } : {}),
   };
 }
 
@@ -347,6 +353,7 @@ export function applyThreeWayExport(ex) {
   $('mw-pot').value = fmt(ex.pot_bb, 2);
   $('mw-rake').value = ex.rake_pct;
   $('mw-rakecap').value = ex.rake_cap;
+  mwIcm?.set(ex.icm || null);
   document.querySelector('.tab[data-tab="threeway"]').click();
   toast('3-way spot loaded from the Preflop Lab: pick a board and BUILD TREE.');
 }
@@ -355,6 +362,7 @@ window.gtopenApplyThreeWay = applyThreeWayExport;
 // ------------------------------------------------------------------ init ---
 
 renderPlayers();
+mwIcm = createPostflopIcm($('mw-rake').closest('.field-grid'), { seats: 3 });
 $('mw-build').addEventListener('click', build);
 $('mw-solve').addEventListener('click', solve);
 $('mw-stop').addEventListener('click', () => req('POST', '/api/mw/stop').catch(e => toast(e.message, true)));

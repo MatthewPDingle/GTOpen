@@ -9,6 +9,7 @@ import { initPreflopLab } from './preflop_lab.js';
 import { exportPublicationLabel } from './preflop_preview.js';
 import { initReports } from './reports.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
+import { createPostflopIcm } from './postflop_icm.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
@@ -49,6 +50,9 @@ const state = {
 // ---------------------------------------------------------------------------
 // Range editor
 // ---------------------------------------------------------------------------
+
+// Tournament payouts (ICM) for the heads-up spot, under Pot & stack.
+const postflopIcm = createPostflopIcm(document.querySelector('#panel-money .field-grid'), { seats: 2 });
 
 const editor = new RangeEditor($('range-matrix'), {
   textEl: $('range-text'),
@@ -121,6 +125,7 @@ async function applyExportedSpot(ex) {
   $('cfg-stack').value = ex.eff_stack_bb;
   if (ex.rake_pct != null) $('cfg-rake').value = ex.rake_pct;
   if (ex.rake_cap != null) $('cfg-rakecap').value = ex.rake_cap;
+  postflopIcm.set(ex.icm || null);
   editor.setPlayer(1);
   await editor.setWeightsFromText(ex.range_ip);
   editor.setPlayer(0);
@@ -158,6 +163,7 @@ async function applySpotToSetup(spot, { ranges = true } = {}) {
   if (spot.rake_cap != null) $('cfg-rakecap').value = spot.rake_cap;
   if (spot.allin_threshold != null) $('cfg-allinthr').value = allinThresholdPercent(spot.allin_threshold);
   if (spot.add_allin != null) $('cfg-addallin').checked = !!spot.add_allin;
+  postflopIcm.set(spot.icm || null);
   if (spot.board) {
     state.board = spot.board.match(/.{2}/g) || state.board;
     renderBoardInput(); renderDeckPicker();
@@ -336,6 +342,8 @@ function computeText(st) {
  *  flop reports). Returns null when the config is incomplete. */
 function currentSpotRequest() {
   if (state.board.length < 3) return null;
+  let icm;
+  try { icm = postflopIcm.request(); } catch (e) { toast(e.message, true); return null; }
   return {
     board: state.board.join(''),
     range_oop: editor.textFor(0),
@@ -349,6 +357,7 @@ function currentSpotRequest() {
     max_raises: 10,
     oop: collectSizes('oop'),
     ip: collectSizes('ip'),
+    ...(icm ? { icm } : {}),
   };
 }
 
@@ -368,6 +377,7 @@ function spotFingerprint(req) {
     num(req.rake_pct), num(req.rake_cap), num(allinThresholdPercent(req.allin_threshold)),
     !!req.add_allin, +req.max_raises,
     sizes(req.oop), sizes(req.ip),
+    req.icm ? JSON.stringify(req.icm) : null,
   ]);
 }
 
@@ -376,7 +386,7 @@ function spotFingerprint(req) {
  *  reports' OPEN IN BROWSE build-then-solve. */
 async function buildTree() {
   const cfg = currentSpotRequest();
-  if (!cfg) { toast('pick at least a 3-card flop', true); return false; }
+  if (!cfg) { if (state.board.length < 3) toast('pick at least a 3-card flop', true); return false; }
   if (!cfg.range_oop) { toast('OOP range is empty', true); return false; }
   if (!cfg.range_ip) { toast('IP range is empty', true); return false; }
   // a running solve is destroyed by the session swap (the server stops it

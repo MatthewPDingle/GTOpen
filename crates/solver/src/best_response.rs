@@ -26,11 +26,7 @@ impl Solver {
         let nh = spot.hands[p].len();
         match node.kind {
             KIND_TERM_FOLD => {
-                let amount = if node.player as usize == p {
-                    node.t_lose
-                } else {
-                    node.t_win
-                } as f32;
+                let amount = spot.fold_payoff(node_idx, node, p);
                 fold_cfv(
                     &spot.hands[p],
                     &spot.hands[1 - p],
@@ -41,6 +37,7 @@ impl Solver {
                 );
             }
             KIND_TERM_SHOWDOWN => {
+                let (t_win, t_lose, t_tie) = spot.showdown_payoffs(node_idx, node, p);
                 showdown_cfv(
                     spot.river.get(&dealt),
                     p,
@@ -48,9 +45,9 @@ impl Solver {
                     &spot.hands[1 - p],
                     reach_o,
                     &spot.same_combo[p],
-                    node.t_win as f32,
-                    node.t_lose as f32,
-                    node.t_tie as f32,
+                    t_win,
+                    t_lose,
+                    t_tie,
                     out,
                 );
             }
@@ -151,11 +148,7 @@ impl Solver {
         let nh = spot.hands[p].len();
         match node.kind {
             KIND_TERM_FOLD => {
-                let amount = if node.player as usize == p {
-                    node.t_lose
-                } else {
-                    node.t_win
-                } as f32;
+                let amount = spot.fold_payoff(node_idx, node, p);
                 fold_cfv(
                     &spot.hands[p],
                     &spot.hands[1 - p],
@@ -166,6 +159,7 @@ impl Solver {
                 );
             }
             KIND_TERM_SHOWDOWN => {
+                let (t_win, t_lose, t_tie) = spot.showdown_payoffs(node_idx, node, p);
                 showdown_cfv(
                     spot.river.get(&dealt),
                     p,
@@ -173,9 +167,9 @@ impl Solver {
                     &spot.hands[1 - p],
                     reach_o,
                     &spot.same_combo[p],
-                    node.t_win as f32,
-                    node.t_lose as f32,
-                    node.t_tie as f32,
+                    t_win,
+                    t_lose,
+                    t_tie,
                     out,
                 );
             }
@@ -277,7 +271,7 @@ impl Solver {
                 .sum::<f64>()
                 / denom;
         }
-        if spot.tree.config.rake_pct > 0.0 {
+        if spot.tree.config.general_sum() {
             // With rake the game is not zero-sum: compare against actual EVs.
             let mut v = [0f64; 2];
             for p in 0..2 {

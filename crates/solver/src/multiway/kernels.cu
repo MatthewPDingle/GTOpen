@@ -734,3 +734,260 @@ extern "C" __global__ void mw_up_action_q(
         if (pq) psc[n] = pok ? pmax : 0.f;
     }
 }
+
+// ---------------------------------------------------------------------------
+// ICM: opponents' order (multiway/icm.rs, eval.rs order_masses). Adds, for
+// each hand h of p, sum over intervals of dw * W + dt * T, where W / T are
+// the reach of disjoint opponent pairs (a of q, b of r) strictly inside the
+// interval with a stronger than / tied with b. Intervals: above h, below h
+// (p live) or everything (p folded). Coefficients per class and player:
+// ocoef[(class * 3 + p) * 6 + {above w, above t, below w, below t, all w, all t}].
+// Shared: Pq[2704], Pr[2704], preq[mq], cpreq[2mq], prer[mr], cprer[2mr],
+// upre[mr], cupre[2mr], utpre[mr], cutpre[2mr].
+
+#define ICM_INF (1LL << 40)
+
+__device__ __forceinline__ int lb_ll(const u32* a, int n, long long v) {
+    if (v <= 0) return 0;
+    if (v > 0xffffffffLL) return n;
+    return lower_bound_u32(a, n, (u32)v);
+}
+// Sum of a sorted list's weights with strength < t (pre: inclusive prefix).
+__device__ __forceinline__ float all_below(const u32* str, int n, const float* pre, long long t) {
+    int k = lb_ll(str, n, t);
+    return k > 0 ? pre[k - 1] : 0.f;
+}
+// Same, over the hands holding card c (pos: their sorted positions,
+// ascending; cpre: inclusive prefix along the card list).
+__device__ __forceinline__ float card_below(const u32* str, int n, const u32* pos, const u32* off,
+                                            const float* cpre, int c, long long t) {
+    int k = lb_ll(str, n, t);
+    u32 o0 = off[c], o1 = off[c + 1];
+    int m = count_below(pos + o0, (int)(o1 - o0), (u32)k);
+    return m > 0 ? cpre[o0 + m - 1] : 0.f;
+}
+
+struct IcmSide {
+    const u32* str; int n; const float* pre; const u32* pos; const u32* off; const float* cpre;
+    __device__ float below(long long t) const { return all_below(str, n, pre, t); }
+    __device__ float cbelow(int c, long long t) const { return card_below(str, n, pos, off, cpre, c, t); }
+    __device__ float range(long long lo, long long hi) const { return hi <= lo + 1 ? 0.f : below(hi) - below(lo + 1); }
+    __device__ float crange(int c, long long lo, long long hi) const { return hi <= lo + 1 ? 0.f : cbelow(c, hi) - cbelow(c, lo + 1); }
+    __device__ float eq(long long t) const { return below(t + 1) - below(t); }
+    __device__ float ceq(int c, long long t) const { return cbelow(c, t + 1) - cbelow(c, t); }
+    __device__ float from(long long t) const { return (n > 0 ? pre[n - 1] : 0.f) - below(t); }
+    __device__ float cfrom(int c, long long t) const {
+        u32 o0 = off[c], o1 = off[c + 1];
+        return (o1 > o0 ? cpre[o1 - 1] : 0.f) - cbelow(c, t);
+    }
+};
+
+// (W, T) for hand (h1, h2) of strength sh over the interval (lo, hi).
+__device__ void icm_order_pair(const IcmSide& Q, const IcmSide& R, const IcmSide& U, const IcmSide& UT,
+                               const float* Pq, const float* Pr, const u32* rk,
+                               int h1, int h2, long long sh, long long lo, long long hi, float* W, float* T) {
+    auto inside = [&](long long t) { return lo < t && t < hi; };
+    float prh = Pr[h1 * 52 + h2], pqh = Pq[h1 * 52 + h2];
+    auto rh_range = [&](long long t) {
+        return R.range(lo, t) - R.crange(h1, lo, t) - R.crange(h2, lo, t) + ((lo < sh && sh < t) ? prh : 0.f);
+    };
+    auto rh_eq = [&](long long t) {
+        return R.eq(t) - R.ceq(h1, t) - R.ceq(h2, t) + (sh == t ? prh : 0.f);
+    };
+    float w = U.range(lo, hi) - U.crange(h1, lo, hi) - U.crange(h2, lo, hi);
+    float t = UT.range(lo, hi) - UT.crange(h1, lo, hi) - UT.crange(h2, lo, hi);
+    if (prh != 0.f && inside(sh)) {
+        // r's own copy of h: its u and ut, as for any hand of r.
+        w += prh * (Q.from(sh + 1) - Q.cfrom(h1, sh + 1) - Q.cfrom(h2, sh + 1));
+        t += prh * (Q.eq(sh) - Q.ceq(h1, sh) - Q.ceq(h2, sh) + pqh);
+    }
+    if (hi < ICM_INF) {
+        w -= Q.from(hi) * rh_range(hi);
+        for (int c = 0; c < 52; c++) {
+            if (c == h1 || c == h2) continue;
+            float qa = Q.cfrom(c, hi);
+            if (qa == 0.f) continue;
+            float rb = R.crange(c, lo, hi);
+            if (inside((long long)rk[c * 52 + h1])) rb -= Pr[c * 52 + h1];
+            if (inside((long long)rk[c * 52 + h2])) rb -= Pr[c * 52 + h2];
+            w += qa * rb;
+        }
+    }
+    // a holds a card of h.
+    for (int j = 0; j < 2; j++) {
+        int hj = j == 0 ? h1 : h2;
+        u32 o0 = Q.off[hj], o1 = Q.off[hj + 1];
+        for (u32 e = o0; e < o1; e++) {
+            u32 ps = Q.pos[e];
+            long long sa = Q.str[ps];
+            if (!inside(sa)) continue;
+            float wa = Q.cpre[e] - (e > o0 ? Q.cpre[e - 1] : 0.f);
+            if (wa == 0.f) continue;
+            w -= wa * rh_range(sa);
+            t -= wa * rh_eq(sa);
+        }
+    }
+    if (pqh != 0.f && inside(sh)) {
+        w += pqh * rh_range(sh);
+        t += pqh * rh_eq(sh);
+    }
+    // a pairs a card x of b with a card of h.
+    for (int j = 0; j < 2; j++) {
+        int hj = j == 0 ? h1 : h2;
+        for (int x = 0; x < 52; x++) {
+            if (x == h1 || x == h2) continue;
+            float wa = Pq[x * 52 + hj];
+            if (wa == 0.f) continue;
+            long long ta = rk[x * 52 + hj];
+            if (!inside(ta)) continue;
+            float rb = R.crange(x, lo, ta), re = R.ceq(x, ta);
+            for (int k = 0; k < 2; k++) {
+                int hk = k == 0 ? h1 : h2;
+                long long tb = rk[x * 52 + hk];
+                if (lo < tb && tb < ta) rb -= Pr[x * 52 + hk];
+                if (tb == ta) re -= Pr[x * 52 + hk];
+            }
+            w += wa * rb;
+            t += wa * re;
+        }
+    }
+    *W = w;
+    *T = t;
+}
+
+extern "C" __global__ void __launch_bounds__(256) mw_icm_order(
+    const u32* __restrict__ nodes, int start, int count, int p,
+    const int* __restrict__ node_class, const float* __restrict__ ocoef,
+    const int* __restrict__ node_river,
+    const u32* __restrict__ rsq, const u32* __restrict__ rsr,
+    const float* __restrict__ reach_q_buf, const float* __restrict__ reach_r_buf,
+    const u32* __restrict__ srt_offp, const u32* __restrict__ srt_strp, const u32* __restrict__ srt_idxp,
+    const u32* __restrict__ srt_offq, const u32* __restrict__ srt_strq, const u32* __restrict__ srt_idxq,
+    const u32* __restrict__ srt_offr, const u32* __restrict__ srt_strr, const u32* __restrict__ srt_idxr,
+    const u32* __restrict__ cpos_offq, const u32* __restrict__ cposq,
+    const u32* __restrict__ cpos_offr, const u32* __restrict__ cposr,
+    const u32* __restrict__ rank_pair,
+    const u32* __restrict__ c1p, const u32* __restrict__ c2p,
+    const u32* __restrict__ c1q, const u32* __restrict__ c2q,
+    const u32* __restrict__ c1r, const u32* __restrict__ c2r,
+    const u32* __restrict__ cs, float* cfv, int nh_q, int nh_r, int nh_max)
+{
+    extern __shared__ float sh[];
+    __shared__ float chunk_sum[257];
+    __shared__ float oc[6];
+    __shared__ u32 cqo[53], cro[53];
+    int b = blockIdx.x;
+    if (b >= count) return;
+    u32 n = nodes[start + b];
+    if (threadIdx.x < 6) oc[threadIdx.x] = ocoef[((u64)node_class[n] * 3 + p) * 6 + threadIdx.x];
+    __syncthreads();
+    bool any = false;
+    for (int k = 0; k < 6; k++) any |= oc[k] != 0.f;
+    if (!any) return;
+    int slot = node_river[n];
+    const float* rq = reach_q_buf + (u64)rsq[n] * nh_q;
+    const float* rr = reach_r_buf + (u64)rsr[n] * nh_r;
+    float* out = cfv + (u64)cs[n] * nh_max;
+    u32 oq = srt_offq[slot], orr = srt_offr[slot], op = srt_offp[slot];
+    int mq = srt_offq[slot + 1] - oq, mr = srt_offr[slot + 1] - orr, mp = srt_offp[slot + 1] - op;
+    const u32* strq = srt_strq + oq; const u32* idxq = srt_idxq + oq;
+    const u32* strr = srt_strr + orr; const u32* idxr = srt_idxr + orr;
+    const u32* cq_off = cpos_offq + (u64)slot * 53; const u32* cr_off = cpos_offr + (u64)slot * 53;
+    u32 cq_base = cq_off[0], cr_base = cr_off[0];
+    const u32* posq = cposq + cq_base;
+    const u32* posr = cposr + cr_base;
+    const u32* rk = rank_pair + (u64)slot * 2704;
+
+    float* Pq = sh;
+    float* Pr = Pq + 2704;
+    float* preq = Pr + 2704;
+    float* cpreq = preq + mq;
+    float* prer = cpreq + 2 * mq;
+    float* cprer = prer + mr;
+    float* upre = cprer + 2 * mr;
+    float* cupre = upre + mr;
+    float* utpre = cupre + 2 * mr;
+    float* cutpre = utpre + mr;
+
+    for (int k = threadIdx.x; k < 2 * 2704; k += blockDim.x) sh[k] = 0.f;
+    for (int k = threadIdx.x; k < 53; k += blockDim.x) { cqo[k] = cq_off[k] - cq_base; cro[k] = cr_off[k] - cr_base; }
+    __syncthreads();
+    for (int k = threadIdx.x; k < mq; k += blockDim.x) {
+        u32 j = idxq[k];
+        float w = rq[j];
+        preq[k] = w;
+        if (w != 0.f) { u32 a = c1q[j], c = c2q[j]; Pq[a * 52 + c] = w; Pq[c * 52 + a] = w; }
+    }
+    for (int k = threadIdx.x; k < mr; k += blockDim.x) {
+        u32 j = idxr[k];
+        float w = rr[j];
+        prer[k] = w;
+        if (w != 0.f) { u32 a = c1r[j], c = c2r[j]; Pr[a * 52 + c] = w; Pr[c * 52 + a] = w; }
+    }
+    __syncthreads();
+    for (int t = threadIdx.x; t < 104; t += blockDim.x) {
+        int c = t % 52;
+        bool isq = t < 52;
+        const u32* off = isq ? cqo : cro;
+        const u32* pos = isq ? posq : posr;
+        const float* raw = isq ? preq : prer;
+        float* dst = isq ? cpreq : cprer;
+        float acc = 0.f;
+        for (u32 e = off[c]; e < off[c + 1]; e++) { acc += raw[pos[e]]; dst[e] = acc; }
+    }
+    __syncthreads();
+    block_scan(preq, mq, chunk_sum);
+    block_scan(prer, mr, chunk_sum);
+    if (mq == 0 || mr == 0 || preq[mq - 1] == 0.f || prer[mr - 1] == 0.f) return;
+    IcmSide Q = { strq, mq, preq, posq, cqo, cpreq };
+    IcmSide R = { strr, mr, prer, posr, cro, cprer };
+    // Per hand b of r: reach times the q mass above b (u) and tied with b
+    // (ut), avoiding b's cards.
+    for (int k = threadIdx.x; k < mr; k += blockDim.x) {
+        u32 j = idxr[k];
+        float w = rr[j];
+        long long s = strr[k];
+        int b1 = c1r[j], b2 = c2r[j];
+        float u = 0.f, ut = 0.f;
+        if (w != 0.f) {
+            u = w * (Q.from(s + 1) - Q.cfrom(b1, s + 1) - Q.cfrom(b2, s + 1));
+            ut = w * (Q.eq(s) - Q.ceq(b1, s) - Q.ceq(b2, s) + Pq[b1 * 52 + b2]);
+        }
+        upre[k] = u;
+        utpre[k] = ut;
+    }
+    __syncthreads();
+    for (int t = threadIdx.x; t < 104; t += blockDim.x) {
+        int c = t % 52;
+        bool isu = t < 52;
+        const float* raw = isu ? upre : utpre;
+        float* dst = isu ? cupre : cutpre;
+        float acc = 0.f;
+        for (u32 e = cro[c]; e < cro[c + 1]; e++) { acc += raw[posr[e]]; dst[e] = acc; }
+    }
+    __syncthreads();
+    block_scan(upre, mr, chunk_sum);
+    block_scan(utpre, mr, chunk_sum);
+    IcmSide U = { strr, mr, upre, posr, cro, cupre };
+    IcmSide UT = { strr, mr, utpre, posr, cro, cutpre };
+
+    for (int k = threadIdx.x; k < mp; k += blockDim.x) {
+        u32 i = srt_idxp[op + k];
+        long long s = srt_strp[op + k];
+        int h1 = c1p[i], h2 = c2p[i];
+        float v = 0.f, W, T;
+        if (oc[0] != 0.f || oc[1] != 0.f) {
+            icm_order_pair(Q, R, U, UT, Pq, Pr, rk, h1, h2, s, s, ICM_INF, &W, &T);
+            v += oc[0] * W + oc[1] * T;
+        }
+        if (oc[2] != 0.f || oc[3] != 0.f) {
+            icm_order_pair(Q, R, U, UT, Pq, Pr, rk, h1, h2, s, -1, s, &W, &T);
+            v += oc[2] * W + oc[3] * T;
+        }
+        if (oc[4] != 0.f || oc[5] != 0.f) {
+            icm_order_pair(Q, R, U, UT, Pq, Pr, rk, h1, h2, s, -1, ICM_INF, &W, &T);
+            v += oc[4] * W + oc[5] * T;
+        }
+        out[i] += v;
+    }
+}

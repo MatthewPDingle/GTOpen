@@ -13,6 +13,9 @@ use std::io::{BufReader, BufWriter, Read, Write};
 use std::sync::Arc;
 
 const MAGIC: &[u8] = b"GTOSOLVE2\n";
+/// Tournament (ICM) saves: older binaries refuse them instead of continuing
+/// the arenas as a chip-EV game.
+const MAGIC_ICM: &[u8] = b"GTOSOLVE3\n";
 
 #[derive(Serialize, Deserialize)]
 struct Header {
@@ -107,7 +110,8 @@ impl Solver {
     fn write_save(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        w.write_all(MAGIC).map_err(|e| e.to_string())?;
+        let magic = if self.spot.config.tree.icm.is_some() { MAGIC_ICM } else { MAGIC };
+        w.write_all(magic).map_err(|e| e.to_string())?;
         let header = Header {
             config: self.spot.config.clone(),
             iteration: self.iteration,
@@ -151,7 +155,7 @@ impl Solver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 10];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC {
+        if magic != MAGIC && magic != MAGIC_ICM {
             return Err("not a solver save file".to_string());
         }
         let mut header_line = Vec::new();
