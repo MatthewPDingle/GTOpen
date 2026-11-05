@@ -20,6 +20,10 @@ const MAGIC_STRADDLE: &[u8] = b"GTOPREFLOP3\n";
 // the `stacks` field and rebuild an equal-stack game, so they must refuse.
 // A superset of v4: model and realization are both required.
 pub(super) const MAGIC_STACKS: &[u8] = b"GTOPREFLOP5\n";
+// ICM payouts change every terminal's payoff; older binaries would drop the
+// `icm` field and continue the arenas as a chip-EV game, so they must refuse.
+// A superset of v5 (stacks may be equal or not).
+pub(super) const MAGIC_ICM: &[u8] = b"GTOPREFLOP6\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -154,7 +158,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.unequal_stacks() {
+        let magic = if self.cfg.icm.is_some() {
+            MAGIC_ICM
+        } else if self.cfg.unequal_stacks() {
             MAGIC_STACKS
         } else if self.cfg.realization == "balanced" || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
             MAGIC_BALANCED
@@ -200,7 +206,7 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM {
             return Err("not a preflop game save".to_string());
         }
         let mut line = Vec::new();
@@ -215,17 +221,20 @@ impl PreflopSolver {
         // V1 predates explicit model provenance; V2 must never silently
         // substitute that default when its required provenance is missing.
         let raw_header: serde_json::Value = serde_json::from_slice(&line).map_err(|e| e.to_string())?;
-        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE || magic == MAGIC_BALANCED || magic == MAGIC_STACKS) && raw_header.get("multiway_equity_model").is_none() {
+        if (magic == MAGIC_COUPLED_DECK || magic == MAGIC_STRADDLE || magic == MAGIC_BALANCED || magic == MAGIC_STACKS || magic == MAGIC_ICM) && raw_header.get("multiway_equity_model").is_none() {
             return Err("preflop v2 save is missing its multiway equity model".into());
         }
-        if (magic == MAGIC_BALANCED || magic == MAGIC_STACKS) && raw_header.get("config").and_then(|c| c.get("realization")).is_none() {
+        if (magic == MAGIC_BALANCED || magic == MAGIC_STACKS || magic == MAGIC_ICM) && raw_header.get("config").and_then(|c| c.get("realization")).is_none() {
             return Err("preflop v4 save is missing its heads-up realization model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if (magic == MAGIC_STACKS) != header.config.unequal_stacks() {
+        if (magic == MAGIC_ICM) != header.config.icm.is_some() {
+            return Err("ICM saves require preflop v6 format and their payouts".into());
+        }
+        if magic != MAGIC_ICM && (magic == MAGIC_STACKS) != header.config.unequal_stacks() {
             return Err("unequal-stack saves require preflop v5 format and their per-seat stacks".into());
         }
-        if magic != MAGIC_BALANCED && magic != MAGIC_STACKS && (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
+        if magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM && (magic==MAGIC_STRADDLE)!=header.config.utg_straddle {
             return Err("UTG straddle saves require preflop v3 format and explicit straddle metadata".into());
         }
         let mut s = PreflopSolver::new(header.config.clone(), eq)?;
@@ -271,7 +280,7 @@ mod tests {
             max_raises: 1, add_allin: true, allin_threshold: 0.85,
             rake_pct: 0.0, rake_cap: 0.0, no_flop_no_drop: true,
             realization: "raw".into(), call_only_seats: vec![],
-            open_raises_by_seat: None, fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+            open_raises_by_seat: None, fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
         };
         PreflopSolver::new(cfg, EQ.get_or_init(|| Arc::new(EquityTable::build(8))).clone()).unwrap()
     }

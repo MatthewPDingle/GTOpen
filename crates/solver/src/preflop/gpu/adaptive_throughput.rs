@@ -51,6 +51,9 @@ impl PreflopGpu {
     pub fn new_throughput(
         s: &PreflopSolver, budget_mb: u64,
     ) -> Result<(Self, ThroughputSelection), String> {
+        if s.icm.is_some() {
+            return Err("ICM games solve on CPU".into());
+        }
         // Keep the primary context alive while the selected constructor acquires it.
         // Dropping the probe first tears it down and repeats CUDA initialization.
         let probe = CudaContext::new(0);

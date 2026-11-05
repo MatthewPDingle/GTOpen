@@ -1240,6 +1240,7 @@ async fn pf_build(
     let action_nodes = built.nodes.iter().filter(|n| n.kind == 0).count();
     let arena_mb = built.arena_mb();
     let multiway_equity_model = built.multiway_equity_model();
+    let icm = built.icm_summary();
     let mut status = PreflopStatus::default();
     status.state = "idle".into();
     status.hero = built.hero;
@@ -1258,7 +1259,7 @@ async fn pf_build(
     .await?;
     Ok(Json(serde_json::json!({
         "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb,
-        "multiway_equity_model": multiway_equity_model
+        "multiway_equity_model": multiway_equity_model, "icm": icm
     })))
 }
 
@@ -2060,6 +2061,7 @@ async fn pf_load_game(
     let out = serde_json::json!({
         "config": loaded.cfg,
         "multiway_equity_model": loaded.multiway_equity_model(),
+        "icm": loaded.icm_summary(),
         "nodes": loaded.nodes.len(),
         "action_nodes": loaded.nodes.iter().filter(|n| n.kind == 0).count(),
         "arena_mb": loaded.arena_mb(),
@@ -2120,6 +2122,7 @@ async fn pf_session_info(
             "frozen": s.seat_frozen,
             "realization_note": s.realization_note,
             "multiway_equity_model": s.multiway_equity_model(),
+            "icm": s.icm_summary(),
             "state": st.state,
         })
     })
