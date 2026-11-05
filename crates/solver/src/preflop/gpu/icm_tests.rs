@@ -12,7 +12,7 @@ fn table() -> Arc<EquityTable> {
 }
 
 fn icm(mut c: PreflopConfig, payouts: &[f64], field: &[f64]) -> PreflopConfig {
-    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec(), field_groups: vec![] });
+    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec(), field_groups: vec![], stack_off: 1.0 });
     c
 }
 

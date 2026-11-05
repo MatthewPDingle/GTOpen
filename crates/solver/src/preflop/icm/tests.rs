@@ -16,7 +16,7 @@ fn cfg(json: serde_json::Value) -> PreflopConfig {
 }
 
 fn with_icm(mut c: PreflopConfig, payouts: &[f64], field: &[f64]) -> PreflopConfig {
-    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec(), field_groups: vec![] });
+    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec(), field_groups: vec![], stack_off: 1.0 });
     c
 }
 
@@ -77,7 +77,57 @@ fn winner_take_all_reproduces_chip_ev() {
         if n <= 4 {
             assert!(side > 0, "expected side-pot terminals");
         }
+        let tables = icm.icm.as_ref().unwrap();
+        assert!(tables.terms.iter().any(|t| t.stack_off.is_some()), "expected flop pots with a stack-off");
     }
+}
+
+/// Flop pots with chips behind carry the risk of the stacks behind: the
+/// share of the pot a heads-up flat needs to break even rises with the
+/// stack-off rate.
+#[test]
+fn stack_off_raises_the_price_of_flop_calls() {
+    let break_even = |stack: f64, stack_off: f64| -> (f64, f64) {
+        let mut c = with_icm(
+            cfg(serde_json::json!({
+                "positions": ["CO", "BTN", "SB", "BB"], "posts": [0.0, 0.0, 0.5, 1.0], "stack": stack,
+                "ante": 0.125, "open_raises": [2.0], "raise_mults": [], "max_raises": 1,
+                "add_allin": false, "realization": "raw"
+            })),
+            &[50.0, 30.0, 20.0],
+            &[],
+        );
+        c.icm.as_mut().unwrap().stack_off = stack_off;
+        let s = PreflopSolver::new(c, table()).unwrap();
+        // CO folds, BTN opens, SB folds, BB calls: a heads-up flop pot.
+        let pick = |node: usize, kind: &str| {
+            let a = s.nodes[node].actions.iter().position(|a| a.kind == kind).unwrap();
+            s.child(node, a)
+        };
+        let t = pick(pick(pick(pick(0, "fold"), "raise"), "fold"), "call");
+        assert_eq!(s.nodes[t].live.count_ones(), 2);
+        let (bb, nd) = (3, &s.nodes[t]);
+        let w = weights(4);
+        let (mut chip, mut value) = ([0f32; NUM_CLASSES], [0f32; NUM_CLASSES]);
+        s.chip_terminal_value(t, bb, &w, &mut chip);
+        s.terminal_value(t, bb, &w, &mut value);
+        // Value is linear in the chip share b: fit it across classes.
+        let prob: f64 = (0..4).filter(|&q| q != bb).map(|q| w[q].iter().sum::<f32>() as f64).product();
+        let b: Vec<f64> = chip.iter().map(|&v| (v as f64 / prob + nd.invested[bb]) / nd.pot).collect();
+        let (lo, hi) = (0..NUM_CLASSES).fold((0, 0), |(lo, hi), h| {
+            (if b[h] < b[lo] { h } else { lo }, if b[h] > b[hi] { h } else { hi })
+        });
+        let slope = (value[hi] - value[lo]) as f64 / (b[hi] - b[lo]);
+        let at_zero = value[lo] as f64 / prob - slope / prob * b[lo];
+        (-at_zero / (slope / prob), nd.invested[bb] / nd.pot)
+    };
+    let ((plain, chip), (half, _), (full, _)) = (break_even(15.0, 0.0), break_even(15.0, 0.5), break_even(15.0, 1.0));
+    // ICM already charges a premium on the pot itself.
+    assert!(plain > chip + 0.005 && plain < chip + 0.1, "pot lottery break-even {plain} vs chip {chip}");
+    assert!(half > plain + 0.005 && full > half + 0.005, "{plain} {half} {full}");
+    let short = break_even(8.0, 1.0).0;
+    eprintln!("8bb stacks, stack-off 1: {short:.3}");
+    eprintln!("BB flat break-even: chip {chip:.3}, pot lottery {plain:.3}, stack-off 0.5 {half:.3}, 1 {full:.3}");
 }
 
 /// With equal stacks at a three-handed final table, a folded seat gains a

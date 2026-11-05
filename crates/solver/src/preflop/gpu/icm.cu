@@ -13,6 +13,10 @@
 // The chip kernels then return ICM values unchanged. The original amounts
 // are not needed again: the chip kernels are their only readers.
 //
+// A pot that sees the flop with chips behind may end all-in for them
+// (preflop/icm.rs StackOff): its value blends in the all-in's win-all and
+// lose-all values, still linear in the flop pot share.
+//
 // V[t] weighs how the other pots fall by the other seats' range-against-range
 // chances: the product of their heads-up chances, normalized, exactly as
 // icm_range_odds() on the CPU.
@@ -50,6 +54,50 @@ __device__ __forceinline__ float icm_odds(const float (*pr)[ICM_SEATS], u32 cand
     return total > 0.f ? mine / total : 1.f / (float)__popc(cand);
 }
 
+// The traverser's average prize change when it first wins pot tt of the m
+// pots at `masks` (tt = j: wins nothing), as icm_v() on the CPU.
+__device__ float icm_v(int tt, int j, int p, int np, const u32* __restrict__ masks, int m,
+    const u32* __restrict__ winners, const float* __restrict__ values, u32 o0, u32 o1,
+    const float (*pr)[ICM_SEATS])
+{
+    u32 me = 1u << p;
+    float num = 0.f, den = 0.f;
+    for (u32 o = o0; o < o1; o++) {
+        u32 wbits = winners[o];
+        float q = 1.f;
+        for (int k = 0; k < m && q > 0.f; k++) {
+            u32 mask = masks[k];
+            int wk = (wbits >> (4 * k)) & 15;
+            if (k > 0) {
+                int prev = (wbits >> (4 * (k - 1))) & 15;
+                if ((mask >> prev) & 1) {
+                    if (wk != prev) q = 0.f;
+                    continue;
+                }
+            }
+            u32 cand;
+            if (mask & me) {
+                if (k == tt) {
+                    if (wk != p) q = 0.f;
+                    continue;
+                }
+                if (tt == j) cand = mask & ~me;
+                else if (k < tt) cand = mask & ~masks[tt] & ~me;
+                else cand = 0; // the traverser already won a larger pot it is in
+            } else {
+                cand = mask;
+            }
+            if (!((cand >> wk) & 1)) { q = 0.f; break; }
+            if (__popc(cand) > 1) q *= icm_odds(pr, cand, wk, np);
+        }
+        if (q > 0.f) {
+            num += q * values[(size_t)o * np + p];
+            den += q;
+        }
+    }
+    return den > 0.f ? num / den : 0.f;
+}
+
 // One block of ICM_THREADS per ICM terminal, for traverser p.
 // kinds: 0 = fold win, 1 = one pot, 2 = side pots (sp_base[t] is where its
 // pots start in the side-pot amount list).
@@ -62,6 +110,11 @@ extern "C" __global__ void pf_icm_prepare(
     const float* __restrict__ bal, const int* __restrict__ live,
     const u32* __restrict__ reach_src, const float* __restrict__ reach,
     const float* __restrict__ reach_mass,
+    const u32* __restrict__ a_pot_start, const u32* __restrict__ a_masks,
+    const u32* __restrict__ a_out_start, const u32* __restrict__ a_winners,
+    const float* __restrict__ a_values, const float* __restrict__ weight,
+    const float* __restrict__ flop_pot, const float* __restrict__ commit,
+    const float* __restrict__ wins,
     float* pots, float* potg, float* invested, float* sp_amount)
 {
     u32 t = blockIdx.x;
@@ -69,7 +122,7 @@ extern "C" __global__ void pf_icm_prepare(
     u32 nd = nodes[t];
     int kind = kinds[t];
     size_t ip = (size_t)nd * np + p;
-    u32 o0 = out_start[t], o1 = out_start[t + 1];
+    u32 o0 = out_start[t];
     if (kind == 0) {
         // Fold wins pay a constant; potf is zeroed once on upload.
         if (threadIdx.x == 0) invested[ip] = -values[(size_t)o0 * np + p];
@@ -80,6 +133,7 @@ extern "C" __global__ void pf_icm_prepare(
     __shared__ int has[ICM_SEATS];
     __shared__ float scratch[ICM_THREADS / 32];
     __shared__ float vt[ICM_SEATS];
+    __shared__ float va[2];
     u32 others = (u32)live[nd] & ~(1u << p);
     if (__popc(others) >= 2) {
         for (int q = 0; q < np; q++) {
@@ -121,57 +175,47 @@ extern "C" __global__ void pf_icm_prepare(
     u32 me = 1u << p;
     int j = 0;
     while (j < m && (masks[first + j] & me)) j++;
-    // V[tt] for tt = 0..j, one thread each, as the CPU's loop over t.
+    // The stack-off all-in of a flop pot (empty range otherwise).
+    u32 afirst = a_pot_start[t];
+    int am = (int)(a_pot_start[t + 1] - afirst);
+    int ja = 0;
+    while (ja < am && (a_masks[afirst + ja] & me)) ja++;
+    // V[tt] for tt = 0..j, one thread each, as the CPU's icm_v; the all-in's
+    // win-all and lose-all values on threads 32 and 33.
     int tt = threadIdx.x;
     if (tt <= j) {
-        float num = 0.f, den = 0.f;
-        for (u32 o = o0; o < o1; o++) {
-            u32 wbits = winners[o];
-            float q = 1.f;
-            for (int k = 0; k < m && q > 0.f; k++) {
-                u32 mask = masks[first + k];
-                int wk = (wbits >> (4 * k)) & 15;
-                if (k > 0) {
-                    int prev = (wbits >> (4 * (k - 1))) & 15;
-                    if ((mask >> prev) & 1) {
-                        if (wk != prev) q = 0.f;
-                        continue;
-                    }
-                }
-                u32 cand;
-                if (mask & me) {
-                    if (k == tt) {
-                        if (wk != p) q = 0.f;
-                        continue;
-                    }
-                    if (tt == j) cand = mask & ~me;
-                    else if (k < tt) cand = mask & ~masks[first + tt] & ~me;
-                    else cand = 0; // the traverser already won a larger pot it is in
-                } else {
-                    cand = mask;
-                }
-                if (!((cand >> wk) & 1)) { q = 0.f; break; }
-                if (__popc(cand) > 1) q *= icm_odds(pr, cand, wk, np);
-            }
-            if (q > 0.f) {
-                num += q * values[(size_t)o * np + p];
-                den += q;
-            }
-        }
-        vt[tt] = den > 0.f ? num / den : 0.f;
+        vt[tt] = icm_v(tt, j, p, np, masks + first, m, winners, values, out_start[t], out_start[t + 1], pr);
+    } else if (am > 0 && (tt == 32 || tt == 33)) {
+        int at = tt == 32 ? 0 : ja;
+        va[tt - 32] = icm_v(at, ja, p, np, a_masks + afirst, am, a_winners, a_values,
+            a_out_start[t], a_out_start[t + 1], pr);
     }
     __syncthreads();
     if (threadIdx.x != 0) return;
+    // Blend in the stack-off all-in (weight 0 elsewhere), as on the CPU.
+    float base = j == 0 ? vt[0] : vt[1];
+    float c = j == 0 ? 0.f : vt[0] - vt[1];
+    if (am > 0) {
+        float w = weight[t];
+        if (ja == 0) {
+            base = (1.f - w) * base + w * va[0];
+        } else {
+            size_t tp = (size_t)t * np + p;
+            float win = va[0], lose = va[1], all = wins[tp];
+            base = (1.f - w) * base + w * (lose + commit[tp] / all * (win - lose));
+            c = (1.f - w) * c + w * flop_pot[t] / all * (win - lose);
+        }
+    }
     if (j == 0) {
-        invested[ip] = -vt[0];
+        invested[ip] = -base;
     } else if (kind == 1) {
-        float c = fmaxf(vt[0] - vt[1], 0.f);
+        c = fmaxf(c, 0.f);
         pots[nd] = c;
         potg[nd] = c;
-        invested[ip] = -vt[1];
+        invested[ip] = -base;
     } else {
-        u32 base = sp_base[t];
-        for (int k = 0; k < j; k++) sp_amount[base + k] = vt[k] - vt[k + 1];
+        u32 base_at = sp_base[t];
+        for (int k = 0; k < j; k++) sp_amount[base_at + k] = vt[k] - vt[k + 1];
         invested[ip] = -vt[j];
     }
 }
