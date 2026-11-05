@@ -18,6 +18,7 @@ type ApiError = (StatusCode, String);
 
 mod multiway_api;
 mod rangelab;
+mod sweep;
 
 #[cfg(all(test, feature = "gpu"))]
 mod report_tests;
@@ -125,6 +126,8 @@ struct ReportStatus {
     done: usize,
     total: usize,
     board: String,
+    /// Within-board progress of a size sweep, e.g. "size 50% (3/5)".
+    step: String,
     error: String,
     seconds: f64,
 }
@@ -2171,19 +2174,30 @@ struct ReportVillain {
     pot_type: Option<solver::query::PostflopPotType>,
 }
 
-#[derive(Deserialize)]
+#[derive(Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct ReportRequest {
     name: String,
     spot: SpotRequest,
     #[serde(default = "report_dflt_flops")]
     flops: usize,
+    /// Explicit boards (weight 1 each) instead of the canonical flop subset,
+    /// e.g. Browse's "find best size" on its one board.
+    #[serde(default)]
+    boards: Option<Vec<String>>,
     #[serde(default = "report_dflt_iters")]
     max_iterations: u32,
     #[serde(default = "report_dflt_target")]
     target: f64,
     #[serde(default)]
     villain: Option<ReportVillain>,
+    /// Size sweep: solve one single-size tree per candidate size of one
+    /// player's first bet and keep the best (see sweep.rs).
+    #[serde(default)]
+    sweep: Option<sweep::SweepSpec>,
+    /// Set on the per-size variant reports a sweep writes.
+    #[serde(skip)]
+    sweep_parent: Option<String>,
 }
 fn report_dflt_flops() -> usize {
     95
@@ -2296,26 +2310,19 @@ async fn report_run(
         }
     }
 
-    let flops = solver::cards::canonical_flops_subset(req.flops);
+    let flops = report_boards(&req).map_err(bad_request)?;
+    if let Some(spec) = &req.sweep {
+        sweep::validate(spec, &req).map_err(bad_request)?;
+        return sweep::start(state, req, path, flops);
+    }
     let lines_dir = report_lines_dir(&req.name).map_err(bad_request)?;
+    if state.report.lock().unwrap().running {
+        return Err((StatusCode::CONFLICT, "a report is already running".into()));
+    }
     // a re-run must not inherit boards from an older run of the same name
     let _ = std::fs::remove_dir_all(&lines_dir);
     std::fs::create_dir_all(&lines_dir).map_err(|e| bad_request(e.to_string()))?;
-    {
-        // check-and-set in ONE lock scope: two racing POSTs can't both pass
-        // the running check and spawn two workers over the same status/file
-        let mut r = state.report.lock().unwrap();
-        if r.running {
-            return Err((StatusCode::CONFLICT, "a report is already running".into()));
-        }
-        state.report_stop.store(false, Ordering::Relaxed);
-        *r = ReportStatus {
-            running: true,
-            name: req.name.clone(),
-            total: flops.len(),
-            ..Default::default()
-        };
-    }
+    claim_report(&state, &req.name, flops.len())?;
     let app = state.clone();
     std::thread::spawn(move || {
         let t0 = std::time::Instant::now();
@@ -2355,118 +2362,28 @@ async fn report_run(
                 r.board = board.clone();
                 r.seconds = t0.elapsed().as_secs_f64();
             }
-            let mut sr = req.spot.clone();
-            sr.board = board.clone();
-            let cfg = match sr.to_spot_config() {
-                Ok(c) => c,
-                Err(e) => {
+            let b = match solve_board(
+                &app.report_stop,
+                &req.spot,
+                board,
+                req.villain.as_ref(),
+                req.max_iterations,
+                req.target,
+                storage,
+                cap_mb,
+                Some(&lines_dir),
+            ) {
+                Ok(b) => b,
+                Err(BoardErr::Stopped) => {
+                    stopped = true;
+                    break;
+                }
+                Err(BoardErr::Failed(e)) => {
                     err = e;
                     break;
                 }
             };
-            // STRICT build (this is a new tree, not a saved one), under the
-            // node budget derived from the memory cap.
-            let node_cap = node_budget(cap_mb, &cfg, storage);
-            let spot = match Spot::new_with_limit(cfg, Some(node_cap)) {
-                Ok(s) => s,
-                Err(e) => {
-                    err = format!("{board}: {e}");
-                    break;
-                }
-            };
-            let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
-            if arena_mb > cap_mb {
-                err = format!(
-                    "{board}: tree too large ({arena_mb:.0} MB of solver data, \
-                     cap {cap_mb:.0} MB); reduce bet sizes or set SOLVER_MEM_MB to override"
-                );
-                break;
-            }
-            let mut solver = Solver::with_storage(Arc::new(spot), storage);
-            let bt0 = std::time::Instant::now();
-            let (iters, pct, engine) =
-                report_solve(&mut solver, req.max_iterations, req.target, &app.report_stop);
-            if pct < 0.0 {
-                // STOP arrived mid-solve (the -1 sentinel): the flop is
-                // unconverged — discard it instead of recording a garbage
-                // row, and mark the report partial below
-                stopped = true;
-                break;
-            }
-            let mut lock_summary = serde_json::Value::Null;
-            if let Some(v) = &req.villain {
-                match solver.lock_profile_context(v.player, &v.stats, v.aggressor, v.pot_type) {
-                    Ok(sm) => {
-                        lock_summary = serde_json::json!({
-                            "locked": sm.locked,
-                            "root_evidence": sm.root_evidence,
-                        });
-                        // hero re-adapts against the locked villain
-                        let (_, pct2, _) = report_solve(
-                            &mut solver,
-                            req.max_iterations / 2,
-                            req.target,
-                            &app.report_stop,
-                        );
-                        if pct2 < 0.0 {
-                            // STOP mid-re-adapt: hero is half-adapted to the
-                            // locked villain — discard this flop too
-                            stopped = true;
-                            break;
-                        }
-                    }
-                    Err(e) => {
-                        err = format!("villain lock failed on {board}: {e}");
-                        break;
-                    }
-                }
-            }
-            solver.ensure_symmetric();
-            let view = match solver.node_view(&[]) {
-                Ok(v) => v,
-                Err(e) => {
-                    err = e;
-                    break;
-                }
-            };
-            let pot = req.spot.starting_pot;
-            let (players, root_strat) = report_node_stats(&view, pot);
-            // IP's response after a root check, when the root has one
-            let mut vs_check = serde_json::Value::Null;
-            if let Some(ci) = view.actions.iter().position(|a| a.kind == "check") {
-                if let Ok(v2) = solver.node_view(&[solver::query::PathStep::Action { index: ci }])
-                {
-                    let (_, st2) = report_node_stats(&v2, pot);
-                    if let Some(st2) = st2 {
-                        vs_check = st2;
-                    }
-                }
-            }
-            // every recorded node of this board, for any-node aggregation
-            // (a few MB per board; the solve itself is never kept)
-            let lt0 = std::time::Instant::now();
-            let lines = solver.report_lines();
-            let lines_secs = lt0.elapsed().as_secs_f64();
-            match serde_json::to_string(&lines) {
-                Ok(text) => {
-                    let p = lines_dir.join(format!("{board}.json"));
-                    if let Err(e) = std::fs::write(&p, text) {
-                        err = format!("{board}: writing line summaries: {e}");
-                        break;
-                    }
-                }
-                Err(e) => {
-                    err = format!("{board}: serializing line summaries: {e}");
-                    break;
-                }
-            }
-            rows.push(serde_json::json!({
-                "board": board, "weight": weight, "iterations": iters,
-                "exploit_pct": pct, "seconds": bt0.elapsed().as_secs_f64(), "engine": engine,
-                "lines_seconds": lines_secs, "n_lines": lines.len(),
-                "players": players, "root": root_strat, "vs_check": vs_check,
-                "villain_lock": lock_summary,
-            }));
+            rows.push(b.row(board, *weight));
             // a report that was open in the tab must not serve stale boards
             app.report_cache.lock().unwrap().clear();
             if rows.len() % 8 == 0 {
@@ -2509,6 +2426,189 @@ async fn report_run(
     Ok(Json(serde_json::json!({"ok": true})))
 }
 
+/// The boards a report runs over: the explicit `boards` (weight 1, checked
+/// and deduplicated) or the canonical flop subset.
+fn report_boards(req: &ReportRequest) -> Result<Vec<(String, u32)>, String> {
+    let Some(boards) = &req.boards else {
+        return Ok(solver::cards::canonical_flops_subset(req.flops));
+    };
+    let mut out: Vec<(String, u32)> = Vec::new();
+    for b in boards {
+        let b = b.trim().to_string();
+        let cards = solver::cards::parse_cards(&b).map_err(|e| format!("board {b:?}: {e}"))?;
+        if !(3..=5).contains(&cards.len()) {
+            return Err(format!("board {b:?} must have 3 to 5 cards"));
+        }
+        for (i, c) in cards.iter().enumerate() {
+            if cards[..i].contains(c) {
+                return Err(format!("board {b:?} repeats a card"));
+            }
+        }
+        if !out.iter().any(|(x, _)| *x == b) {
+            out.push((b, 1));
+        }
+    }
+    if out.is_empty() {
+        return Err("give at least one board".into());
+    }
+    if out.len() > 2000 {
+        return Err("at most 2000 boards".into());
+    }
+    Ok(out)
+}
+
+/// Mark a report as running (check-and-set in ONE lock scope: two racing
+/// POSTs can't both pass the running check and spawn two workers over the
+/// same status/file).
+fn claim_report(state: &AppState, name: &str, total: usize) -> Result<(), ApiError> {
+    let mut r = state.report.lock().unwrap();
+    if r.running {
+        return Err((StatusCode::CONFLICT, "a report is already running".into()));
+    }
+    state.report_stop.store(false, Ordering::Relaxed);
+    *r = ReportStatus { running: true, name: name.to_string(), total, ..Default::default() };
+    Ok(())
+}
+
+/// Why a board's solve ended without a result.
+enum BoardErr {
+    /// STOP arrived mid-solve: the board is unconverged and is discarded.
+    Stopped,
+    Failed(String),
+}
+
+/// One solved board of a report: everything its row and a size sweep need.
+struct BoardSolve {
+    iterations: u32,
+    /// Exploitability of the (first, unlocked) solve, % pot.
+    exploit_pct: f64,
+    /// Exploitability after the hero re-adapted to a locked villain.
+    adapt_exploit_pct: Option<f64>,
+    engine: &'static str,
+    seconds: f64,
+    lines_seconds: f64,
+    n_lines: usize,
+    players: Vec<serde_json::Value>,
+    root: Option<serde_json::Value>,
+    vs_check: serde_json::Value,
+    villain_lock: serde_json::Value,
+}
+
+impl BoardSolve {
+    fn row(&self, board: &str, weight: u32) -> serde_json::Value {
+        serde_json::json!({
+            "board": board, "weight": weight, "iterations": self.iterations,
+            "exploit_pct": self.exploit_pct, "seconds": self.seconds, "engine": self.engine,
+            "lines_seconds": self.lines_seconds, "n_lines": self.n_lines,
+            "players": self.players, "root": self.root, "vs_check": self.vs_check,
+            "villain_lock": self.villain_lock,
+        })
+    }
+}
+
+/// Build, solve and summarize one board of a report: the spot config with
+/// `board` substituted, solved to `target` % pot (then, with a villain, his
+/// profile locked and the hero re-adapted), with the root stats and, when
+/// `lines_dir` is given, the per-node line summaries written beside the
+/// report.
+#[allow(clippy::too_many_arguments)]
+fn solve_board(
+    stop: &AtomicBool,
+    spot: &SpotRequest,
+    board: &str,
+    villain: Option<&ReportVillain>,
+    max_iterations: u32,
+    target: f64,
+    storage: Storage,
+    cap_mb: f64,
+    lines_dir: Option<&std::path::Path>,
+) -> Result<BoardSolve, BoardErr> {
+    let mut sr = spot.clone();
+    sr.board = board.to_string();
+    let cfg = sr.to_spot_config().map_err(BoardErr::Failed)?;
+    // STRICT build (this is a new tree, not a saved one), under the
+    // node budget derived from the memory cap.
+    let node_cap = node_budget(cap_mb, &cfg, storage);
+    let built = Spot::new_with_limit(cfg, Some(node_cap)).map_err(|e| BoardErr::Failed(format!("{board}: {e}")))?;
+    let arena_mb = built.arena_bytes_for(storage) as f64 / 1e6;
+    if arena_mb > cap_mb {
+        return Err(BoardErr::Failed(format!(
+            "{board}: tree too large ({arena_mb:.0} MB of solver data, \
+             cap {cap_mb:.0} MB); reduce bet sizes or set SOLVER_MEM_MB to override"
+        )));
+    }
+    let mut solver = Solver::with_storage(Arc::new(built), storage);
+    let bt0 = std::time::Instant::now();
+    let (iters, pct, engine) = report_solve(&mut solver, max_iterations, target, stop);
+    if pct < 0.0 {
+        // STOP arrived mid-solve (the -1 sentinel): the board is
+        // unconverged — discard it instead of recording a garbage row
+        return Err(BoardErr::Stopped);
+    }
+    let mut lock_summary = serde_json::Value::Null;
+    let mut adapt_pct = None;
+    if let Some(v) = villain {
+        match solver.lock_profile_context(v.player, &v.stats, v.aggressor, v.pot_type) {
+            Ok(sm) => {
+                lock_summary = serde_json::json!({
+                    "locked": sm.locked,
+                    "root_evidence": sm.root_evidence,
+                });
+                // hero re-adapts against the locked villain
+                let (_, pct2, _) = report_solve(&mut solver, max_iterations / 2, target, stop);
+                if pct2 < 0.0 {
+                    // STOP mid-re-adapt: hero is half-adapted to the
+                    // locked villain — discard this board too
+                    return Err(BoardErr::Stopped);
+                }
+                adapt_pct = Some(pct2);
+            }
+            Err(e) => return Err(BoardErr::Failed(format!("villain lock failed on {board}: {e}"))),
+        }
+    }
+    solver.ensure_symmetric();
+    let view = solver.node_view(&[]).map_err(BoardErr::Failed)?;
+    let pot = spot.starting_pot;
+    let (players, root_strat) = report_node_stats(&view, pot);
+    // IP's response after a root check, when the root has one
+    let mut vs_check = serde_json::Value::Null;
+    if let Some(ci) = view.actions.iter().position(|a| a.kind == "check") {
+        if let Ok(v2) = solver.node_view(&[solver::query::PathStep::Action { index: ci }]) {
+            let (_, st2) = report_node_stats(&v2, pot);
+            if let Some(st2) = st2 {
+                vs_check = st2;
+            }
+        }
+    }
+    let (mut lines_secs, mut n_lines) = (0.0, 0);
+    if let Some(dir) = lines_dir {
+        // every recorded node of this board, for any-node aggregation
+        // (a few MB per board; the solve itself is never kept)
+        let lt0 = std::time::Instant::now();
+        let lines = solver.report_lines();
+        lines_secs = lt0.elapsed().as_secs_f64();
+        n_lines = lines.len();
+        let text = serde_json::to_string(&lines)
+            .map_err(|e| BoardErr::Failed(format!("{board}: serializing line summaries: {e}")))?;
+        std::fs::write(dir.join(format!("{board}.json")), text)
+            .map_err(|e| BoardErr::Failed(format!("{board}: writing line summaries: {e}")))?;
+    }
+    let seconds = bt0.elapsed().as_secs_f64();
+    Ok(BoardSolve {
+        iterations: iters,
+        exploit_pct: pct,
+        adapt_exploit_pct: adapt_pct,
+        engine,
+        seconds,
+        lines_seconds: lines_secs,
+        n_lines,
+        players,
+        root: root_strat,
+        vs_check,
+        villain_lock: lock_summary,
+    })
+}
+
 #[derive(Deserialize)]
 struct ReportLinesRequest {
     name: String,
@@ -2534,6 +2634,9 @@ fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, 
     let path = report_path(name)?;
     let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
     let v: serde_json::Value = serde_json::from_str(&text).map_err(|e| e.to_string())?;
+    if v.get("kind").and_then(|x| x.as_str()) == Some("sweep") {
+        return Err("this is a size-sweep report: open its Best size view, or one of its size variants to browse by node".into());
+    }
     if v.get("lines").and_then(|x| x.as_bool()) != Some(true) {
         return Err("this report predates line summaries — re-run it to browse it by node".into());
     }
@@ -2736,6 +2839,7 @@ fn write_report(
         "target_pct": req.target,
         "complete": complete,
         "lines": true,
+        "sweep_parent": req.sweep_parent,
         "flops": rows,
     });
     let text = serde_json::to_string(&out).map_err(|e| e.to_string())?;
@@ -2791,6 +2895,8 @@ async fn report_list() -> Json<serde_json::Value> {
                         "complete": v.get("complete"),
                         "lines": v.get("lines").and_then(|x| x.as_bool()).unwrap_or(false),
                         "villain": v.get("villain").and_then(|x| x.get("name")),
+                        "kind": v.get("kind").and_then(|x| x.as_str()).unwrap_or("report"),
+                        "sweep_parent": v.get("sweep_parent"),
                         "board_sample": v.get("flops").and_then(|f| f.get(0)).and_then(|r| r.get("board")),
                     }));
                 }
@@ -2814,6 +2920,17 @@ async fn report_get(Json(req): Json<ReportName>) -> Result<Json<serde_json::Valu
 
 async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
     let path = report_path(&req.name).map_err(bad_request)?;
+    // a size sweep owns its per-size variant reports
+    if let Some(v) = std::fs::read_to_string(&path).ok().and_then(|t| serde_json::from_str::<serde_json::Value>(&t).ok()) {
+        if v.get("kind").and_then(|k| k.as_str()) == Some("sweep") {
+            for name in sweep::variant_names(&v) {
+                if let (Ok(p), Ok(dir)) = (report_path(&name), report_lines_dir(&name)) {
+                    let _ = std::fs::remove_dir_all(dir);
+                    let _ = std::fs::remove_file(p);
+                }
+            }
+        }
+    }
     if let Ok(dir) = report_lines_dir(&req.name) {
         let _ = std::fs::remove_dir_all(dir);
     }
