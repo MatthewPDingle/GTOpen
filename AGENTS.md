@@ -172,6 +172,23 @@ weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
 finished report at any node — `a<i>` per action, `c` per any-card step). The
 web UI at :3737 drives all of it.
 
+Size sweeps ("dynamic sizing", `crates/server/src/sweep.rs`,
+`crates/solver/src/size_sweep.rs`): `/api/reports/run` with
+`"sweep": {"player": 0|1, "sizes": [25,33,50,75,125], "target": 0.15,
+"refine": 3, "max_iterations": 1000, "keep_variants": true}` solves one
+single-size tree per candidate size of that player's FIRST bet on the root
+street (IP's = the bet after a check), everything else keeps the Setup menu.
+Best = highest root EV for that player; up to `refine` golden-section solves
+(log-size, 0.5% steps) between the best grid size's neighbours; sizes TIE when
+the EV gap is within the two solves' summed exploitability. The sweep file has
+`"kind": "sweep"`, per-board `points` + `verdict` (`best`, `ties`, `band`,
+`edge` = best grid size is the smallest/largest, no refinement) and a
+`summary` (EV lost by always using each grid size). `keep_variants` also writes
+`<name> size <label>` ordinary reports (`sweep_parent` set); deleting the
+sweep deletes them. `"boards": [...]` replaces the canonical flop subset (any
+report; Browse uses it for one board). A villain lock works (`villain.player`
+must not be the swept player): the hero re-adapts on every size.
+
 ## The standard study recipe (used for everything in gtopen-studies)
 
 1. Build the villain-realistic tree; solve a baseline (~400-500 iters); SAVE it.

@@ -25,6 +25,7 @@ pub mod range;
 pub mod report;
 pub mod save;
 pub mod scratch;
+pub mod size_sweep;
 pub mod store;
 pub mod sysmem;
 pub mod tree;
