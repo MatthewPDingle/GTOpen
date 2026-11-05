@@ -152,6 +152,19 @@ never takes tells him he faces the free villain.
   drives the solve. A warm sweep from trust 1 down to 0 on the bench flop
   converges to 0.3% pot in 80 to 200 iterations per level.
 
+**Server and UI.**
+
+- **Setting the dial.** `POST /api/trust {"trust": p}` sets the dial; `null` unsets it, which means full trust. A running solve picks the change up at once: a new level restarts the average strategy, and the iteration budget and the convergence chart start again. `/api/solve` also takes `trust` to set the dial before the run.
+- **Readout.** When a solve ends with a villain profile locked, `status.trust_readout` gives the level's `TrustReadout`, computed on the GPU when the solve ran there. Any lock edit clears it.
+- **Sweep.** `/api/solve` with `"sweep": [levels]` solves the levels in order, each warm-started from the last. An empty list means 1, 0.9, 0.8, 0.7, 0.5, 0.25, 0. `max_iterations` and the target apply to each level.
+  - A sweep needs a profile lock.
+  - `status.trust_sweep` lists the levels, the one being solved, and one point per finished level: the readout plus its iterations and seconds.
+  - STOP ends the sweep with the levels it finished.
+  - The curve stays through later plain solves, so you can pick a level and RE-SOLVE. A lock edit clears it.
+  - While a sweep runs, `/api/trust` is refused.
+- **Browse.** With a villain locked, the TRUST THE READ panel shows the slider (5% steps), the last readout and SWEEP. The sweep curve plots the hero's EV against the read (solid) and his worst case (dashed) over trust, and clicking a point sets that level.
+- **Reports.** A vs-villain report takes `villain.trust`. The hero then re-adapts at that level, and each flop's `villain_lock.trust` holds the readout. The REPORTS form adds the level to the villain's name, so the library and Compare show it.
+
 ## Preflop continuation model
 
 New preflop games use `coupled_deck_v1` at leaves with **three or more live players**, including all-in showdowns. A deterministic table of 1,024 samples (seed 90210) assigns coupled latent hand strengths. Each sample awards the pot to its winning hand(s), so the players' shares sum to the pot after the configured rake. This replaces the old product of separate heads-up equities, which could substantially undervalue multiway calls.

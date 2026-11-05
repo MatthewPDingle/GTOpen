@@ -30,6 +30,8 @@ mod preflop_preview_tests;
 
 #[cfg(test)]
 mod postflop_context_tests;
+#[cfg(test)]
+mod trust_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -250,7 +252,42 @@ struct StatusInfo {
     /// What happened to the fits when the last solve ended.
     #[serde(default)]
     fit_note: String,
+    /// "Trust the read" dial of the session (None = unset, plays as 1).
+    #[serde(default)]
+    trust: Option<f32>,
+    /// What the dial bought and cost when the last solve (or sweep level)
+    /// ended. Present once a villain profile is locked; cleared when the
+    /// locks change.
+    #[serde(default)]
+    trust_readout: Option<solver::rnr::TrustReadout>,
+    /// The last trust sweep (one warm-started solve per trust level).
+    #[serde(default)]
+    trust_sweep: Option<TrustSweep>,
 }
+
+/// A warm-started trust sweep: the levels to solve, in order, and the
+/// readout of each level solved so far.
+#[derive(Clone, Serialize, Default)]
+struct TrustSweep {
+    levels: Vec<f32>,
+    /// Index of the level being solved (== levels.len() once finished).
+    current: usize,
+    /// True while the sweep's solve is running.
+    running: bool,
+    points: Vec<SweepPoint>,
+}
+
+#[derive(Clone, Serialize)]
+struct SweepPoint {
+    #[serde(flatten)]
+    readout: solver::rnr::TrustReadout,
+    /// Iterations this level took.
+    iterations: u32,
+    seconds: f64,
+}
+
+/// Default sweep: full trust down to none (the hero's GTO play).
+const DEFAULT_SWEEP: [f32; 7] = [1.0, 0.9, 0.8, 0.7, 0.5, 0.25, 0.0];
 
 #[derive(Clone, Serialize, Deserialize)]
 struct HistoryPoint {
@@ -658,6 +695,14 @@ struct SolveRequest {
     /// "dcfr" (default), "cfr+" or "pcfr+".
     #[serde(default)]
     algorithm: Option<String>,
+    /// Set the "trust the read" dial (0..=1) before solving.
+    #[serde(default)]
+    trust: Option<f32>,
+    /// Trust sweep: solve each level in turn, warm-started, recording a
+    /// readout per level. Empty = the default levels. `max_iterations` and
+    /// the target apply to each level. Needs a villain profile lock.
+    #[serde(default)]
+    sweep: Option<Vec<f32>>,
 }
 
 fn default_max_iterations() -> u32 {
@@ -725,6 +770,34 @@ async fn start_solve(
         solver.algo = algo;
     }
 
+    // the dial and the sweep plan, set before the worker reads its base
+    // iteration (a new trust level restarts the solver's count)
+    let sweep_levels = match &req.sweep {
+        None => None,
+        Some(levels) => {
+            let levels = if levels.is_empty() { DEFAULT_SWEEP.to_vec() } else { levels.clone() };
+            if levels.len() > 21 {
+                return Err(bad_request("a trust sweep takes at most 21 levels"));
+            }
+            Some(levels)
+        }
+    };
+    let first_trust = sweep_levels.as_ref().map(|l| l[0]).or(req.trust);
+    {
+        let mut solver = lock_unpoisoned(&session.solver);
+        if sweep_levels.is_some() && solver.read_villain().is_none() {
+            return Err(bad_request("a trust sweep needs a villain profile lock: lock a villain first"));
+        }
+        if let Some(levels) = &sweep_levels {
+            if let Some(t) = levels.iter().find(|t| !t.is_finite() || !(0.0..=1.0).contains(*t)) {
+                return Err(bad_request(format!("trust must be between 0 and 1, got {t}")));
+            }
+        }
+        if let Some(t) = first_trust {
+            solver.set_trust(Some(t)).map_err(bad_request)?;
+        }
+    }
+
     session.stop.store(false, Ordering::Relaxed);
     let solver = session.solver.clone();
     let stop = session.stop.clone();
@@ -739,6 +812,12 @@ async fn start_solve(
         status.error = String::new();
         status.history.clear();
         status.fit_note = String::new();
+        if let Some(t) = first_trust {
+            status.trust = Some(t);
+        }
+        if let Some(levels) = sweep_levels {
+            status.trust_sweep = Some(TrustSweep { levels, current: 0, running: true, points: Vec::new() });
+        }
     }
 
     let handle = std::thread::spawn(move || {
@@ -789,6 +868,9 @@ async fn start_solve(
             let mut st = lock_unpoisoned(&app.status);
             st.state = "stopped".to_string();
             st.error = format!("solve crashed: {msg}");
+            if let Some(sw) = st.trust_sweep.as_mut() {
+                sw.running = false;
+            }
         }
     });
     session.worker = Some(handle);
@@ -827,6 +909,51 @@ fn end_fits_status(st: &mut StatusInfo, note: Option<String>) {
     }
 }
 
+/// A solve (or one trust-sweep level) reached its target or budget: record
+/// the trust readout, and when a sweep has another level, set it on the
+/// solver and return true (the caller keeps iterating; a GPU solve must
+/// `update_locks` first). Called with the solver locked.
+fn finish_level(
+    s: &mut Solver,
+    app: &AppState,
+    readout: Option<solver::rnr::TrustReadout>,
+    iterations: u32,
+    seconds: f64,
+) -> bool {
+    let mut st = app.status.lock().unwrap();
+    st.trust_readout = readout.clone();
+    let Some(sw) = st.trust_sweep.as_mut().filter(|w| w.running) else {
+        return false;
+    };
+    if let Some(r) = readout {
+        sw.points.push(SweepPoint { readout: r, iterations, seconds });
+    }
+    sw.current += 1;
+    if sw.current >= sw.levels.len() {
+        sw.running = false;
+        return false;
+    }
+    let t = sw.levels[sw.current];
+    if let Err(e) = s.set_trust(Some(t)) {
+        // validated when the sweep started; never expected
+        sw.running = false;
+        st.error = e;
+        return false;
+    }
+    st.trust = Some(t);
+    // each level converges from its own restart: a fresh chart per level
+    st.history.clear();
+    true
+}
+
+/// A solve ended before its target (STOP, or a crash): a running sweep ends
+/// with the levels it finished.
+fn end_sweep(app: &AppState) {
+    if let Some(sw) = app.status.lock().unwrap().trust_sweep.as_mut() {
+        sw.running = false;
+    }
+}
+
 /// CPU solve loop. `base` is the solver's cumulative iteration at the start
 /// of THIS run: termination compares (iteration - base) against the request's
 /// max_iterations (per-run semantics, like report_solve), while the status
@@ -836,9 +963,10 @@ fn cpu_solve_loop(
     stop: &AtomicBool,
     app: &Arc<AppState>,
     req: &SolveRequest,
-    base: u32,
+    mut base: u32,
 ) {
     let start = std::time::Instant::now();
+    let mut level_start = std::time::Instant::now();
     let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
     loop {
         if stop.load(Ordering::Relaxed) {
@@ -848,6 +976,7 @@ fn cpu_solve_loop(
                 s.ensure_symmetric();
                 note
             };
+            end_sweep(app);
             let mut st = app.status.lock().unwrap();
             end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
@@ -858,6 +987,13 @@ fn cpu_solve_loop(
             s.iterate();
             s.iteration
         };
+        if it <= base {
+            // the dial moved mid-solve (POST /api/trust): the new level
+            // restarted the count, so its budget and chart start again
+            base = it - 1;
+            level_start = std::time::Instant::now();
+            app.status.lock().unwrap().history.clear();
+        }
         let run_it = it.saturating_sub(base);
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
@@ -881,12 +1017,19 @@ fn cpu_solve_loop(
             let on_target = fit_err <= solver::fit::FIT_TOLERANCE;
             if (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations {
                 drop(st);
+                let mut s = lock_unpoisoned(&solver);
+                let readout = s.trust_readout().ok();
+                if finish_level(&mut s, app, readout, run_it, level_start.elapsed().as_secs_f64()) {
+                    base = s.iteration;
+                    level_start = std::time::Instant::now();
+                    continue;
+                }
                 let note = {
-                    let mut s = lock_unpoisoned(&solver);
                     let note = finish_fits(&mut s);
                     s.ensure_symmetric();
                     note
                 };
+                drop(s);
                 let mut st = app.status.lock().unwrap();
                 end_fits_status(&mut st, note);
                 st.state = "done".to_string();
@@ -954,10 +1097,11 @@ fn gpu_solve_inner(
     lock_gen: &std::sync::atomic::AtomicU64,
     app: &Arc<AppState>,
     req: &SolveRequest,
-    base: u32,
+    mut base: u32,
     pot: f64,
 ) -> Result<(), String> {
     let start = std::time::Instant::now();
+    let mut level_start = std::time::Instant::now();
     let mut seen_gen = lock_gen.load(Ordering::Relaxed);
     let mut check_n = 0u32;
     loop {
@@ -968,6 +1112,7 @@ fn gpu_solve_inner(
             let note = finish_fits(&mut s);
             s.ensure_symmetric();
             drop(s);
+            end_sweep(app);
             let mut st = app.status.lock().unwrap();
             end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
@@ -983,6 +1128,13 @@ fn gpu_solve_inner(
             let fresh = s.prepare_fits();
             gpu.update_locks(&s)?;
             gpu.update_fits(&s, &fresh)?;
+            if gpu.iteration < base {
+                // a new trust level (POST /api/trust) restarted the count:
+                // its budget and chart start again
+                base = gpu.iteration;
+                level_start = std::time::Instant::now();
+                app.status.lock().unwrap().history.clear();
+            }
         }
         gpu.iterate()?;
         let it = gpu.iteration;
@@ -992,6 +1144,7 @@ fn gpu_solve_inner(
         let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
         if check {
             check_n += 1;
+            let mut advanced = false;
             let (e, finished, fits, note) = {
                 let mut s = lock_unpoisoned(&solver);
                 // best response runs on the GPU (~50ms); the full arena
@@ -1008,7 +1161,19 @@ fn gpu_solve_inner(
                     Vec::new()
                 };
                 let on_target = fits.iter().all(|f| f.max_error as f64 <= solver::fit::FIT_TOLERANCE);
-                let finished = (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations;
+                let mut finished = (pct <= req.target_exploit_pct && on_target) || run_it >= req.max_iterations;
+                if finished {
+                    // readout on the device (~0.04 s); a sweep moves on to
+                    // its next level without a download
+                    let readout = gpu.trust_readout(&s).ok();
+                    if finish_level(&mut s, app, readout, run_it, level_start.elapsed().as_secs_f64()) {
+                        gpu.update_locks(&s)?;
+                        base = gpu.iteration;
+                        level_start = std::time::Instant::now();
+                        finished = false;
+                        advanced = true;
+                    }
+                }
                 let mut note = None;
                 if finished {
                     gpu.sync_to_cpu(&mut s)?;
@@ -1030,10 +1195,13 @@ fn gpu_solve_inner(
             st.exploit_chips = e;
             st.exploit_pct = pct;
             st.elapsed_secs = start.elapsed().as_secs_f64();
-            st.history.push(HistoryPoint {
-                iteration: it,
-                exploit_pct: pct,
-            });
+            if !advanced {
+                // (a new sweep level starts its chart afresh)
+                st.history.push(HistoryPoint {
+                    iteration: it,
+                    exploit_pct: pct,
+                });
+            }
             st.fits = fits;
             end_fits_status(&mut st, note);
             if finished {
@@ -1982,6 +2150,7 @@ async fn profile_locks(
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
+    clear_trust_readout(&state);
     let mut out = serde_json::json!(summary);
     out["history"] = serde_json::json!(history);
     Ok(Json(out))
@@ -2000,7 +2169,55 @@ async fn profile_locks_clear(
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
+    clear_trust_readout(&state);
     Ok(Json(serde_json::json!({"cleared": n, "history": history})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct TrustRequest {
+    /// Probability (0..=1) that the villain plays his profile; null unsets
+    /// the dial (full trust, today's lock-and-re-adapt solve).
+    trust: Option<f32>,
+}
+
+/// Set the "trust the read" dial. A running solve picks it up at once
+/// (a new level restarts the average strategy); otherwise it applies from
+/// the next SOLVE. Refused while a trust sweep runs.
+async fn set_trust(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<TrustRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    if state.status.lock().unwrap().trust_sweep.as_ref().is_some_and(|w| w.running) {
+        return Err((StatusCode::CONFLICT, "a trust sweep is running: stop it first".to_string()));
+    }
+    let (solver, lock_gen) = session_solver(&state)?;
+    let villain = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.set_trust(req.trust)?;
+        Ok::<_, String>(s.read_villain())
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    // the GPU loop re-reads the dial with the locks
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    let mut st = state.status.lock().unwrap();
+    st.trust = req.trust;
+    // the readout describes the old level until the next solve ends
+    st.trust_readout = None;
+    Ok(Json(serde_json::json!({"trust": req.trust, "villain": villain})))
+}
+
+/// Locks changed under the readout: it no longer describes the solve, and
+/// the last sweep curve no longer describes the read. (A plain solve keeps
+/// the curve: pick a level on it, then RE-SOLVE.)
+fn clear_trust_readout(state: &AppState) {
+    let mut st = state.status.lock().unwrap();
+    st.trust_readout = None;
+    if st.trust_sweep.as_ref().is_some_and(|w| !w.running) {
+        st.trust_sweep = None;
+    }
 }
 
 fn pf_game_path(name: &str) -> Result<std::path::PathBuf, String> {
@@ -2172,6 +2389,10 @@ struct ReportVillain {
     aggressor: Option<usize>,
     #[serde(default)]
     pot_type: Option<solver::query::PostflopPotType>,
+    /// "Trust the read" for the hero's re-adapt: the chance (0..=1) that
+    /// the villain plays this profile. Unset = full trust (max exploit).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    trust: Option<f32>,
 }
 
 #[derive(Clone, Deserialize)]
@@ -2304,6 +2525,9 @@ async fn report_run(
         }
         if v.aggressor.is_some_and(|p| p > 1) {
             return Err(bad_request("aggressor must be 0 (OOP) or 1 (IP)"));
+        }
+        if let Some(t) = v.trust.filter(|t| !t.is_finite() || !(0.0..=1.0).contains(t)) {
+            return Err(bad_request(format!("trust must be between 0 and 1, got {t}")));
         }
         if let Some(data) = &v.stats.contextual_betting {
             data.validate().map_err(bad_request)?;
@@ -2554,6 +2778,9 @@ fn solve_board(
                     "locked": sm.locked,
                     "root_evidence": sm.root_evidence,
                 });
+                if v.trust.is_some() {
+                    solver.set_trust(v.trust).map_err(BoardErr::Failed)?;
+                }
                 // hero re-adapts against the locked villain
                 let (_, pct2, _) = report_solve(&mut solver, max_iterations / 2, target, stop);
                 if pct2 < 0.0 {
@@ -2562,6 +2789,13 @@ fn solve_board(
                     return Err(BoardErr::Stopped);
                 }
                 adapt_pct = Some(pct2);
+                if v.trust.is_some() {
+                    // what the dial bought and cost on this board (CPU
+                    // traversals of the synced solve, a few seconds)
+                    if let Ok(r) = solver.trust_readout() {
+                        lock_summary["trust"] = serde_json::json!(r);
+                    }
+                }
             }
             Err(e) => return Err(BoardErr::Failed(format!("villain lock failed on {board}: {e}"))),
         }
@@ -3363,6 +3597,7 @@ async fn lock_node(
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
+    clear_trust_readout(&state);
     Ok(Json(serde_json::json!({"ok": true, "frozen": frozen, "history": history})))
 }
 
@@ -3465,6 +3700,7 @@ async fn unlock_node(
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
     lock_gen.fetch_add(1, Ordering::Relaxed);
+    clear_trust_readout(&state);
     Ok(Json(serde_json::json!({"ok": true, "removed": removed, "history": history})))
 }
 
@@ -3493,6 +3729,7 @@ async fn lock_history_step(state: Arc<AppState>, undo: bool) -> Result<Json<serd
     .map_err(|(e, _)| bad_request(e))?;
     if label.is_some() {
         lock_gen.fetch_add(1, Ordering::Relaxed);
+        clear_trust_readout(&state);
     }
     Ok(Json(serde_json::json!({"ok": true, "label": label, "history": history})))
 }
@@ -3949,6 +4186,7 @@ async fn main() {
         .route("/api/exploit", post(exploit_view))
         .route("/api/lock", post(lock_node))
         .route("/api/profile_locks", post(profile_locks).delete(profile_locks_clear))
+        .route("/api/trust", post(set_trust))
         .route("/api/reports/run", post(report_run))
         .route("/api/reports/status", get(report_status))
         .route("/api/reports/stop", post(report_stop_run))

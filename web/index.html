@@ -243,6 +243,7 @@
       <div id="villain-locks"></div>
       <div id="browse-pot" class="mono dim" tabindex="0" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
     </div>
+    <div id="trust-panel" class="hidden" aria-live="polite"></div>
     <div class="browse-grid">
       <section class="panel matrix-panel">
         <div id="browse-matrix" class="matrix browse"></div>
@@ -296,6 +297,7 @@
           <label class="chk" style="font-size:11px" data-tip="Also save each candidate size as an ordinary report you can browse by node (a few MB per flop per size)."><input type="checkbox" id="rep-sweep-keep" checked> keep per-size reports</label>
         </div>
         <label class="chk" style="font-size:11px" id="rep-villain-row" data-tip="Lock the villain to his postflop profile on every flop before measuring (extra solve per flop). Requires a lab export with a modeled seat."><input type="checkbox" id="rep-vsvillain"> vs modeled villain</label>
+        <label class="pfl-row" style="font-size:11px" id="rep-villain-trust-row" data-tip="Trust the read: how sure the hero is of the villain's profile. At p% the hero re-adapts against a villain who plays the profile p% of the time and otherwise adapts like a solver; 100% is the max exploit, 0% is GTO. Below 100% each flop also records the hero's EV against the read and his worst case. Only used with vs modeled villain.">Trust the read % <input type="number" id="rep-villain-trust" value="100" min="0" max="100" step="5" style="width:64px"></label>
         <div class="btn-row">
           <button id="rep-run" class="btn primary" data-tip="Start the report on the spot currently configured in SETUP.">RUN REPORT</button>
           <button id="rep-stop" class="btn danger hidden">STOP</button>

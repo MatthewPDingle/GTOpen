@@ -529,6 +529,14 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         return toast('vs modeled villain: no villain context in this session — rebuild the spot from a PREFLOP LAB export or untick the box', true);
       }
       body.villain = v;
+      const trust = Number(document.getElementById('rep-villain-trust')?.value ?? 100);
+      if (!Number.isFinite(trust) || trust < 0 || trust > 100) {
+        return toast('trust the read: give a percent from 0 to 100', true);
+      }
+      if (trust < 100) {
+        // the name labels the report's villain in the library and Compare
+        body.villain = { ...v, name: `${v.name} · trust ${trust}%`, trust: trust / 100 };
+      }
     }
     try {
       await api.reportsRun(body);
