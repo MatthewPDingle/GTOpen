@@ -24,11 +24,14 @@ mod cohort_reuse;
 mod terminal_unroll;
 mod narrow_offsets;
 mod adaptive_throughput;
+mod icm;
 pub use adaptive_throughput::ThroughputSelection;
 #[cfg(test)]
 mod side_pot_tests;
 #[cfg(test)]
 mod three_way_tests;
+#[cfg(test)]
+mod icm_tests;
 #[cfg(all(test, feature = "preflop-research"))]
 mod exact_reuse_inventory;
 #[cfg(all(test, feature = "preflop-research"))]
@@ -233,6 +236,8 @@ pub struct PreflopGpu {
     h_snapshot: Mutex<Option<PinnedBuf>>,
     #[cfg(test)]
     phase_trace: Option<PhaseEventTrace>,
+    /// ICM terminal tables when the game pays tournament prizes.
+    icm: Option<icm::IcmGpu>,
 }
 
 // Terminal values remain live across BR/average passes. Action values are
@@ -738,7 +743,7 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
         Err(_) => return f64::INFINITY,
     };
     minimum_vram_mb(s, ValuePlan::build(s).blocks)
-        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes) as f64 / 1e6
+        + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes + icm::IcmGpu::bytes(s)) as f64 / 1e6
 }
 
 // Host-only, opt-in diagnostic. Does not modify source layouts, reaches, arenas,
@@ -949,9 +954,10 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
-        // ICM payoffs are priced on the CPU only for now.
-        if s.icm.is_some() {
-            return Err("ICM games solve on CPU".into());
+        // ICM rewrites the terminal money per traverser, which only the
+        // normal plan's kernels read.
+        if s.icm.is_some() && (cohorts || unrolled || _narrow) {
+            return Err("ICM games use the normal GPU plan".into());
         }
         // Side-pot terminals (unequal stacks) and the 3-way table have their
         // own kernels in the normal plan only; the shared-CDF throughput
@@ -964,7 +970,8 @@ impl PreflopGpu {
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
         let values = ValuePlan::build(s);
         let eq_channels = if s.cfg.realization == "balanced" {3usize} else {1};
-        let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6;
+        let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
+            + icm::IcmGpu::bytes(s) as f64 / 1e6;
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -1050,6 +1057,10 @@ impl PreflopGpu {
             if nd.kind != KIND_ACTION {
                 terms.push(i as u32);
             }
+            // ICM fold wins pay -invested, which pf_icm_prepare sets per seat.
+            if s.icm.is_some() && nd.kind == super::KIND_FOLD_WIN {
+                potf[i] = 0.0;
+            }
             // Calibrated R applies exactly where terminal_value() applies it:
             // pot-share terminals, heads-up, with chips behind (spr > 0).
             // The fit was measured net-of-rake over the GROSS pot, so those
@@ -1118,6 +1129,7 @@ impl PreflopGpu {
                 .map(|(i, _)| i as u32).collect()
         } else { Vec::new() };
         let tw_table = s.three_way.as_ref().filter(|_| !tw_terms.is_empty() || sp.count > 0);
+        let icm_gpu = icm::IcmGpu::new(&ctx, &stream, s, arch, &sp.terms, &sp.start, sp.count)?;
         if let Some(t) = tw_table {
             need += (2 * t.arrays().0.len() * 4 + tw_terms.len() * 4) as f64 / 1e6;
         }
@@ -1451,6 +1463,7 @@ impl PreflopGpu {
             h_snapshot: Mutex::new(None),
             #[cfg(test)]
             phase_trace: None,
+            icm: icm_gpu,
             _ctx: ctx,
             stream,
         };
@@ -1466,6 +1479,7 @@ impl PreflopGpu {
     /// Isolated research only. Must be configured before any learning/graph capture.
     #[cfg(feature = "preflop-research")]
     pub fn configure_research(&mut self, experiment: super::convergence_research::Experiment) -> Result<(), String> {
+        if self.icm.is_some() { return Err("research experiments do not support ICM games".into()); }
         if self.learned.is_some() || self.interface.is_some() { return Err("learned continuation research cannot be combined with convergence experiments".into()); }
         if self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some() || self.research_rm_plus.is_some() || self.warmed || self.eval_warmed || self.research_history_units.is_some() || self.research_root_ranges.is_some() { return Err("configure research before learning or evaluation; compact roots require full particles".into()); }
         self.research = Some(experiment);
@@ -1653,6 +1667,7 @@ impl PreflopGpu {
     }
 
     fn terminals_masked(&mut self, p: i32, gate: i32) -> Result<(), String> {
+        self.icm_prepare(p)?;
         self.ordinary_terminals(p)?;
         #[cfg(feature = "preflop-research")]
         self.learned_terminals(p)?;

@@ -16,7 +16,7 @@ fn cfg(json: serde_json::Value) -> PreflopConfig {
 }
 
 fn with_icm(mut c: PreflopConfig, payouts: &[f64], field: &[f64]) -> PreflopConfig {
-    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec() });
+    c.icm = Some(IcmConfig { payouts: payouts.to_vec(), field: field.to_vec(), field_groups: vec![] });
     c
 }
 
@@ -113,7 +113,7 @@ fn folded_seat_collects_the_ladder() {
     let summary = s.icm_summary().unwrap();
     assert!((summary.bb_per_prize - 0.3).abs() < 1e-12);
     assert!(summary.seat_equity.iter().all(|e| (e - 100.0 / 3.0).abs() < 1e-9));
-    assert!(summary.field_equity.is_empty());
+    assert!(summary.field.is_empty());
 }
 
 fn brute_icm(stacks: &[f64], payouts: &[f64]) -> Vec<f64> {
@@ -317,7 +317,8 @@ fn icm_config_is_validated() {
     raked.rake_pct = 5.0;
     assert!(err(raked).contains("rake"));
     assert!(err(with_icm(base.clone(), &[], &[])).contains("payout"));
-    assert!(err(with_icm(base.clone(), &[1.0], &[10.0; 11])).contains("up to"));
+    let distinct: Vec<f64> = (1..=20).map(|k| k as f64).collect();
+    assert!(err(with_icm(base.clone(), &[1.0; 20], &distinct)).contains("too large"));
     assert!(err(with_icm(base.clone(), &[1.0], &[0.0])).contains("field"));
     assert!(err(with_icm(base, &[-1.0], &[])).contains("negative"));
     let bad: Result<PreflopConfig, _> = serde_json::from_value(serde_json::json!({
@@ -325,20 +326,4 @@ fn icm_config_is_validated() {
         "open_raises": [], "raise_mults": [], "icm": {"payouts": [1.0], "feild": [3.0]}
     }));
     assert!(bad.is_err());
-}
-
-#[cfg(feature = "gpu")]
-#[test]
-fn gpu_declines_icm_games() {
-    let c = with_icm(
-        cfg(serde_json::json!({
-            "positions": ["SB", "BB"], "posts": [0.5, 1.0], "stack": 10.0,
-            "open_raises": [], "raise_mults": [], "max_raises": 1, "add_allin": true
-        })),
-        &[50.0, 30.0, 20.0],
-        &[20.0],
-    );
-    let s = PreflopSolver::new(c, table()).unwrap();
-    assert!(gpu::PreflopGpu::new(&s, 4096).err().unwrap().contains("ICM"));
-    assert!(gpu::PreflopGpu::new_throughput(&s, 4096).err().unwrap().contains("ICM"));
 }

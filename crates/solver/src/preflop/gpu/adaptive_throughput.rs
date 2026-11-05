@@ -51,8 +51,15 @@ impl PreflopGpu {
     pub fn new_throughput(
         s: &PreflopSolver, budget_mb: u64,
     ) -> Result<(Self, ThroughputSelection), String> {
+        // ICM games keep the normal plan, whose terminal kernels read the
+        // per-traverser ICM coefficients.
         if s.icm.is_some() {
-            return Err("ICM games solve on CPU".into());
+            let g = Self::new(s, budget_mb)?;
+            return Ok((g, ThroughputSelection {
+                mode: "normal_gpu", configured_budget_mb: budget_mb, cohort_limit_mb: None,
+                fallback_reason: Some("ICM games use the normal GPU plan".into()), narrow_offsets: false,
+                static_cdf: false, static_cdf_fallback_reason: None,
+            }));
         }
         // Keep the primary context alive while the selected constructor acquires it.
         // Dropping the probe first tears it down and repeats CUDA initialization.

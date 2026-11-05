@@ -112,7 +112,7 @@ To update, finish or stop running jobs, save both sessions, and pull the latest 
 - **Postflop** solves the configured heads-up tree. Results depend on the ranges, sizes, rake, locks, and convergence target you choose.
 - **Preflop** uses an approximate continuation model. New games use coupled-deck equity for pots with three or more players; heads-up pots retain the configured realization model. It does not solve the full multiway game through the river, and overlapping tight ranges can still expose large card-removal errors. [Model details](docs/technical_reference.md#preflop-continuation-model).
 - **Player models** combine observations and inference. Sparse or unsupported situations need estimates; a dataset label is not proof that every displayed hand frequency was observed.
-- **Tournament (ICM) preflop** spots take payouts and optional other-table stacks through the API (`icm` in the game config) and solve on the CPU; the Preflop Lab controls and GPU support are not built yet. Postflop solves are chip EV. [ICM details](docs/technical_reference.md#icm-payoffs-tournaments).
+- **Tournament (ICM) preflop** spots take payouts and the players at other tables (Tournament payouts in the Preflop Lab, or `icm` in the game config) and solve on the GPU or CPU, from final tables to a 1,000-player bubble. Postflop solves are chip EV. [ICM details](docs/technical_reference.md#icm-payoffs-tournaments).
 - Saved solves use GTOpen's own format.
 
 Older preflop saves keep their original equity model. **Re-solve** continues that model; save your work, then **Build game → Solve** to use the updated model in a fresh game.

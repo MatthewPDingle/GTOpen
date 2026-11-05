@@ -3,90 +3,145 @@
 //! A player's chance of finishing first is their share of the chips; given
 //! the players placed above, the chance of taking the next place is their
 //! share of the chips still unplaced. Expected prize is the sum over places
-//! of payout times that probability. The exact sum over finishing orders is
-//! computed by dynamic programming over the set of players already placed
-//! (`2^N * N` work), which is instant for a final table and practical up to
-//! [`MAX_EXACT_PLAYERS`].
+//! of payout times that probability.
+//!
+//! The exact sum over finishing orders is computed by dynamic programming
+//! over who has been placed so far. Players with their own stacks (the table)
+//! are tracked individually; players at other tables come in groups of equal
+//! stacks, tracked only by how many of each group have been placed. Equal
+//! stacks are interchangeable under Malmuth–Harville, so this is exact, and a
+//! field of hundreds of equal stacks costs no more than a few dozen places.
+//! Only states with fewer players placed than there are paid places matter.
 
-/// Largest number of players (table plus field) priced exactly.
-pub const MAX_EXACT_PLAYERS: usize = 12;
+/// Largest dynamic-programming state count priced exactly (table subsets
+/// times group placements, capped at the paid places).
+pub const MAX_STATES: usize = 1 << 19;
 
-/// Expected prize of each player under Malmuth–Harville. `stacks` holds every
-/// player still in the tournament (all > 0); `payouts[k]` is the prize for
-/// place k+1. Places beyond the number of players are ignored, and missing
-/// places pay 0.
-pub fn malmuth_harville(stacks: &[f64], payouts: &[f64]) -> Vec<f64> {
+/// Players of equal stacks at other tables.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Group {
+    pub stack: f64,
+    pub count: usize,
+}
+
+/// Number of states [`malmuth_harville_groups`] would use, or None past
+/// [`MAX_STATES`].
+pub fn state_count(table: usize, groups: &[Group], payouts: usize) -> Option<usize> {
+    let players = table + groups.iter().map(|g| g.count).sum::<usize>();
+    let places = payouts.min(players);
+    let mut states = 1usize.checked_shl(table as u32).filter(|&s| s <= MAX_STATES)?;
+    for g in groups {
+        states = states.checked_mul(g.count.min(places.saturating_sub(1)) + 1)?;
+        if states > MAX_STATES {
+            return None;
+        }
+    }
+    Some(states)
+}
+
+/// Expected prize of each table player and of each player in each group.
+/// Every stack must be > 0; `payouts[k]` is the prize for place k+1, places
+/// beyond the number of players are ignored and missing places pay 0.
+pub fn malmuth_harville_groups(stacks: &[f64], groups: &[Group], payouts: &[f64]) -> (Vec<f64>, Vec<f64>) {
     let n = stacks.len();
-    assert!(n <= 20, "exact ICM over {n} players is too large");
-    let mut out = vec![0.0; n];
-    if n == 0 {
-        return out;
-    }
-    let places = payouts.len().min(n);
-    let total: f64 = stacks.iter().sum();
+    let groups: Vec<Group> = groups.iter().copied().filter(|g| g.count > 0).collect();
+    let mut table = vec![0.0; n];
+    let mut field = vec![0.0; groups.len()];
+    let players = n + groups.iter().map(|g| g.count).sum::<usize>();
+    let places = payouts.len().min(players);
+    let total: f64 = stacks.iter().sum::<f64>() + groups.iter().map(|g| g.stack * g.count as f64).sum::<f64>();
     if places == 0 || total <= 0.0 {
-        return out;
+        return (table, field);
     }
-    if n == 1 {
-        out[0] = payouts[0];
-        return out;
+    let states = state_count(n, &groups, payouts.len()).expect("ICM state space too large");
+    let radix: Vec<usize> = groups.iter().map(|g| g.count.min(places - 1) + 1).collect();
+    let mut mult = vec![1usize << n; groups.len()];
+    for g in 1..groups.len() {
+        mult[g] = mult[g - 1] * radix[g - 1];
     }
     let full = 1usize << n;
-    // f[mask]: probability that exactly `mask` occupies the top |mask| places.
-    let mut f = vec![0.0f64; full];
     let mut sum = vec![0.0f64; full];
     for mask in 1..full {
         let low = mask.trailing_zeros() as usize;
         sum[mask] = sum[mask & (mask - 1)] + stacks[low];
     }
+    // f[state]: probability that exactly this placement fills the top places.
+    let mut f = vec![0.0f64; states];
     f[0] = 1.0;
-    for mask in 0..full {
-        let pm = f[mask];
+    let mut placed_of = vec![0usize; groups.len()];
+    for idx in 0..states {
+        let pm = f[idx];
         if pm == 0.0 {
             continue;
         }
-        let placed = mask.count_ones() as usize;
-        if placed >= places {
-            continue;
+        let mask = idx & (full - 1);
+        let mut placed = mask.count_ones() as usize;
+        let mut rest = total - sum[mask];
+        for g in 0..groups.len() {
+            placed_of[g] = (idx / mult[g]) % radix[g];
+            placed += placed_of[g];
+            rest -= placed_of[g] as f64 * groups[g].stack;
         }
-        let rest = total - sum[mask];
-        if rest <= 0.0 {
+        if placed >= places || rest <= 0.0 {
             continue;
         }
         let pay = payouts[placed];
+        let more = placed + 1 < places;
         for i in 0..n {
             if mask & (1 << i) != 0 {
                 continue;
             }
             let p = pm * stacks[i] / rest;
-            out[i] += p * pay;
-            if placed + 1 < places {
-                f[mask | (1 << i)] += p;
+            table[i] += p * pay;
+            if more {
+                f[idx | (1 << i)] += p;
+            }
+        }
+        for g in 0..groups.len() {
+            let left = groups[g].count - placed_of[g];
+            if left == 0 {
+                continue;
+            }
+            let p = pm * left as f64 * groups[g].stack / rest;
+            field[g] += p * pay;
+            if more {
+                f[idx + mult[g]] += p;
             }
         }
     }
-    out
+    for (e, g) in field.iter_mut().zip(&groups) {
+        *e /= g.count as f64;
+    }
+    (table, field)
 }
 
-/// Expected prize of each player after a hand. `before` and `after` are
-/// every player's chips before and after the hand (all `before` > 0).
-/// Players who still have chips share the top places by Malmuth–Harville;
+/// Expected prize of each player under Malmuth–Harville, every player
+/// tracked individually (see [`malmuth_harville_groups`]).
+pub fn malmuth_harville(stacks: &[f64], payouts: &[f64]) -> Vec<f64> {
+    malmuth_harville_groups(stacks, &[], payouts).0
+}
+
+/// Expected prize of each table player after a hand, and of each player in
+/// each field group (whose stacks the hand doesn't change). `before` and
+/// `after` are the table players' chips before and after the hand (all
+/// `before` > 0). Players who still have chips share the top places;
 /// players who busted in this hand finish below them, a larger starting
 /// stack finishing higher, with equal starting stacks splitting the places
 /// they cover.
-pub fn icm_after_hand(before: &[f64], after: &[f64], payouts: &[f64]) -> Vec<f64> {
+pub fn icm_after_hand(before: &[f64], after: &[f64], groups: &[Group], payouts: &[f64]) -> (Vec<f64>, Vec<f64>) {
     let n = before.len();
     assert_eq!(after.len(), n);
     let alive: Vec<usize> = (0..n).filter(|&i| after[i] > 1e-9).collect();
     let mut out = vec![0.0; n];
     let alive_stacks: Vec<f64> = alive.iter().map(|&i| after[i]).collect();
-    for (k, v) in malmuth_harville(&alive_stacks, payouts).into_iter().enumerate() {
+    let (table, field) = malmuth_harville_groups(&alive_stacks, groups, payouts);
+    for (k, v) in table.into_iter().enumerate() {
         out[alive[k]] = v;
     }
     let mut busted: Vec<usize> = (0..n).filter(|&i| after[i] <= 1e-9).collect();
     busted.sort_by(|&a, &b| before[b].partial_cmp(&before[a]).unwrap());
     let pay = |place: usize| payouts.get(place).copied().unwrap_or(0.0);
-    let mut place = alive.len();
+    let mut place = alive.len() + groups.iter().map(|g| g.count).sum::<usize>();
     let mut i = 0;
     while i < busted.len() {
         let mut j = i + 1;
@@ -100,7 +155,7 @@ pub fn icm_after_hand(before: &[f64], after: &[f64], payouts: &[f64]) -> Vec<f64
         place += j - i;
         i = j;
     }
-    out
+    (out, field)
 }
 
 #[cfg(test)]
@@ -170,12 +225,51 @@ mod tests {
         // Two players bust in the same hand: the larger starting stack takes
         // the higher place; equal starting stacks split.
         let payouts = [50.0, 30.0, 20.0];
-        let v = icm_after_hand(&[10.0, 20.0, 30.0], &[60.0, 0.0, 0.0], &payouts);
+        let v = icm_after_hand(&[10.0, 20.0, 30.0], &[60.0, 0.0, 0.0], &[], &payouts).0;
         assert_eq!(v, vec![50.0, 20.0, 30.0]);
-        let v = icm_after_hand(&[30.0, 15.0, 15.0], &[60.0, 0.0, 0.0], &payouts);
+        let v = icm_after_hand(&[30.0, 15.0, 15.0], &[60.0, 0.0, 0.0], &[], &payouts).0;
         assert_eq!(v, vec![50.0, 25.0, 25.0]);
-        let v = icm_after_hand(&[30.0, 15.0, 15.0], &[30.0, 30.0, 0.0], &payouts);
+        let v = icm_after_hand(&[30.0, 15.0, 15.0], &[30.0, 30.0, 0.0], &[], &payouts).0;
         assert_eq!(v[2], 20.0);
         assert!((v[0] - 40.0).abs() < 1e-12 && (v[1] - 40.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn groups_match_individual_players() {
+        // Equal stacks are interchangeable: a group must price exactly like
+        // listing its players one by one.
+        let table = [12.0, 30.0, 7.5];
+        let payouts = [40.0, 25.0, 15.0, 10.0, 6.0, 4.0];
+        let groups = [Group { stack: 20.0, count: 4 }, Group { stack: 9.0, count: 3 }];
+        let (t, f) = malmuth_harville_groups(&table, &groups, &payouts);
+        let mut all = table.to_vec();
+        all.extend([20.0; 4]);
+        all.extend([9.0; 3]);
+        let v = malmuth_harville(&all, &payouts);
+        for i in 0..3 {
+            assert!((t[i] - v[i]).abs() < 1e-9, "{t:?} vs {v:?}");
+        }
+        assert!((f[0] - v[3]).abs() < 1e-9 && (f[1] - v[7]).abs() < 1e-9, "{f:?} vs {v:?}");
+        let paid: f64 = payouts.iter().sum();
+        assert!((t.iter().sum::<f64>() + 4.0 * f[0] + 3.0 * f[1] - paid).abs() < 1e-9);
+    }
+
+    #[test]
+    fn large_field_bubble_is_fast_and_sums_to_the_prizes() {
+        // 8 at the table, 144 elsewhere, 150 paid: the bubble.
+        let table = [25.0, 25.0, 10.0, 40.0, 25.0, 25.0, 3.0, 25.0];
+        let mut payouts: Vec<f64> = (0..150).map(|k| 1.0 / (k as f64 + 1.0).powf(0.9)).collect();
+        payouts.iter_mut().for_each(|p| *p = p.max(0.02));
+        let groups = [Group { stack: 25.0, count: 144 }];
+        assert!(state_count(8, &groups, 150).is_some());
+        let t0 = std::time::Instant::now();
+        let (t, f) = malmuth_harville_groups(&table, &groups, &payouts);
+        assert!(t0.elapsed().as_secs_f64() < 1.0);
+        let paid: f64 = payouts.iter().sum();
+        assert!((t.iter().sum::<f64>() + 144.0 * f[0] - paid).abs() < 1e-6 * paid);
+        // ICM favours the 3bb stack: worth more than its chip share.
+        let chip = 3.0 / (178.0 + 144.0 * 25.0) * paid;
+        assert!(t[6] > chip, "{} vs {chip}", t[6]);
+        assert_eq!(state_count(9, &[Group { stack: 20.0, count: 4000 }], 4000), None);
     }
 }

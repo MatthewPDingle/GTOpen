@@ -6,6 +6,7 @@
 import { api } from './api.js';
 import { createPositionSizing } from './preflop_sizing.js';
 import { createSeatStacks } from './preflop_stacks.js';
+import { createIcmControls } from './preflop_icm.js';
 import { branchWarning } from './preflop_reach.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
@@ -72,6 +73,7 @@ const PRESETS = [
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
+  const icmControls = createIcmControls(els, positionsFor, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // Range source: this game's solve, or Range Lab's canonical charts walked
   // as a tree (no build or solve). Each source keeps its own line.
@@ -325,6 +327,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.mult.value = p.mult;
     positionSizing.restore(p);
     seatStacks.restore(p);
+    icmControls.restore(p);
     els.maxRaises.value = p.maxRaises;
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
@@ -342,6 +345,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     ...positionSizing.scenario(),
     ...seatStacks.scenario(),
+    ...icmControls.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
   });
@@ -518,6 +522,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       raise_mults: nums(els.mult.value),
       ...positionSizing.config(),
       ...seatStacks.config(),
+      ...icmControls.config(),
       max_raises: +els.maxRaises.value || 1,
       add_allin: els.allin.checked,
       rake_pct: +els.rakePct.value || 0,
@@ -583,6 +588,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try {
       const info = await api.pfBuild(cfg, els.eq3?.checked ? 'three_way_table_v1' : null);
       renderEquityModel(info.multiway_equity_model);
+      icmControls.showSummary(info.icm);
       const secs = (performance.now() - t0) / 1000;
       if (info.nodes > 20000 && secs > 0.2) {
         localStorage.setItem('pfl-build-rate', String(Math.round(info.nodes / secs)));
@@ -757,6 +763,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.mult.value = (cfg.raise_mults || []).join(',');
     positionSizing.load(cfg);
     seatStacks.load(cfg);
+    icmControls.load(cfg);
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
@@ -811,6 +818,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModel();
     lastIter = out.iteration;
     renderEquityModel(out.multiway_equity_model);
+    icmControls.showSummary(out.icm);
     els.buildInfo.textContent =
       `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
     updateEstimate();
