@@ -53,6 +53,17 @@ pub struct IcmConfig {
     /// players of 25bb). Equal stacks price exactly and cheaply.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub field_groups: Vec<FieldGroup>,
+    /// How often a pot that sees the flop with chips behind is played for
+    /// them: it ends all-in with chance k / (k + SPR), SPR being the second
+    /// largest stack behind over the pot. 0 keeps the plain pot lottery.
+    /// The default 0.4 best matched the canonical Range Lab final table and
+    /// bubble charts' ICM shifts (BB folds vs a button open) in a sweep.
+    #[serde(default = "default_stack_off")]
+    pub stack_off: f64,
+}
+
+pub(crate) fn default_stack_off() -> f64 {
+    0.4
 }
 
 /// `count` players with `stack` bb each, at other tables.
@@ -103,6 +114,9 @@ impl IcmConfig {
                 self.groups().len()
             ));
         }
+        if !self.stack_off.is_finite() || self.stack_off < 0.0 {
+            return Err("ICM stack_off must be 0 or more".into());
+        }
         if cfg.rake_pct != 0.0 {
             return Err("ICM games have no rake: set rake_pct to 0".into());
         }
@@ -116,6 +130,23 @@ struct Term {
     pots: Vec<(f64, u32)>,
     /// Winner seat per pot, and each seat's prize change in bb equivalents.
     outcomes: Vec<(Vec<u8>, Vec<f32>)>,
+    /// Flop pots with chips behind: the all-in the hand can turn into.
+    stack_off: Option<StackOff>,
+}
+
+/// The all-in a flop pot turns into with chance `weight`: every live seat
+/// puts in up to the second largest stack behind. A seat that wins its
+/// share of the flop pot wins every pot it is eligible for here with the
+/// chance that keeps its chip EV unchanged, (b * pot + commit) / wins, so
+/// the stack-off moves prize equity, never chips.
+struct StackOff {
+    weight: f64,
+    pot: f64,
+    pots: Vec<(f64, u32)>,
+    outcomes: Vec<(Vec<u8>, Vec<f32>)>,
+    /// Chips each seat adds, and the total of the pots it is eligible for.
+    commit: Vec<f64>,
+    wins: Vec<f64>,
 }
 
 /// Precomputed prize changes for every terminal of an ICM game.
@@ -184,18 +215,15 @@ impl IcmTables {
         let mut keys: HashMap<Vec<u64>, usize> = HashMap::new();
         let mut finals: Vec<Vec<f64>> = Vec::new();
         let mut refs: Vec<Vec<usize>> = Vec::new();
-        for (node, nd) in s.nodes.iter().enumerate() {
-            if nd.kind != KIND_FOLD_WIN && nd.kind != KIND_POT_SHARE {
-                continue;
-            }
-            let pots = pots_of(nd);
+        // Price every way `pots` can fall after each seat has paid `paid`.
+        let mut outcomes_of = |pots: &[(f64, u32)], paid: &[f64]| -> (Vec<Vec<u8>>, Vec<usize>) {
             let mut winners = Vec::new();
-            enumerate(&pots, 0, &mut Vec::new(), &mut winners);
-            let mut term_refs = Vec::with_capacity(winners.len());
+            enumerate(pots, 0, &mut Vec::new(), &mut winners);
+            let mut ids = Vec::with_capacity(winners.len());
             for w in &winners {
                 let mut fin = start.clone();
                 for i in 0..n {
-                    fin[i] -= nd.invested[i];
+                    fin[i] -= paid[i];
                 }
                 for (k, &(amount, _)) in pots.iter().enumerate() {
                     fin[w[k] as usize] += amount;
@@ -206,23 +234,69 @@ impl IcmTables {
                     }
                 }
                 let key: Vec<u64> = fin.iter().map(|x| x.to_bits()).collect();
-                let id = *keys.entry(key).or_insert_with(|| {
+                ids.push(*keys.entry(key).or_insert_with(|| {
                     finals.push(fin);
                     finals.len() - 1
-                });
-                term_refs.push(id);
+                }));
+            }
+            (winners, ids)
+        };
+        let mut stack_off_refs: Vec<Option<Vec<usize>>> = Vec::new();
+        for (node, nd) in s.nodes.iter().enumerate() {
+            if nd.kind != KIND_FOLD_WIN && nd.kind != KIND_POT_SHARE {
+                continue;
+            }
+            let pots = pots_of(nd);
+            let (winners, term_refs) = outcomes_of(&pots, &nd.invested);
+            let mut stack_off = None;
+            let mut off_refs = None;
+            if nd.kind == KIND_POT_SHARE && nd.side_pots.is_empty() && icm.stack_off > 0.0 {
+                let live: Vec<usize> = (0..n).filter(|&q| nd.live & (1 << q) != 0).collect();
+                let mut behind: Vec<f64> = live.iter().map(|&q| s.cfg.left(q, nd.invested[q]).max(0.0)).collect();
+                behind.sort_by(|a, b| b.partial_cmp(a).unwrap());
+                let cover = behind.get(1).copied().unwrap_or(0.0);
+                if cover > 1e-9 && nd.pot > 0.0 {
+                    let commit: Vec<f64> = (0..n)
+                        .map(|q| if nd.live & (1 << q) != 0 { s.cfg.left(q, nd.invested[q]).max(0.0).min(cover) } else { 0.0 })
+                        .collect();
+                    let paid: Vec<f64> = (0..n).map(|q| nd.invested[q] + commit[q]).collect();
+                    let a_pots = super::settle_pots(&s.cfg, &paid, nd.live)
+                        .map(|(_, p)| p)
+                        .filter(|p| !p.is_empty())
+                        .unwrap_or_else(|| vec![(paid.iter().sum(), nd.live)]);
+                    let wins = (0..n)
+                        .map(|q| a_pots.iter().filter(|(_, m)| m & (1 << q) != 0).map(|(a, _)| a).sum())
+                        .collect();
+                    let (a_winners, a_ids) = outcomes_of(&a_pots, &paid);
+                    stack_off = Some(StackOff {
+                        weight: icm.stack_off / (icm.stack_off + cover / nd.pot),
+                        pot: nd.pot,
+                        pots: a_pots,
+                        outcomes: a_winners.into_iter().map(|w| (w, Vec::new())).collect(),
+                        commit,
+                        wins,
+                    });
+                    off_refs = Some(a_ids);
+                }
             }
             index[node] = terms.len() as u32;
-            terms.push(Term { pots, outcomes: winners.into_iter().map(|w| (w, Vec::new())).collect() });
+            terms.push(Term { pots, outcomes: winners.into_iter().map(|w| (w, Vec::new())).collect(), stack_off });
             refs.push(term_refs);
+            stack_off_refs.push(off_refs);
         }
         let equities: Vec<Vec<f64>> =
             finals.par_iter().map(|fin| icm_after_hand(&start, fin, &groups, &icm.payouts).0).collect();
-        for (term, ids) in terms.iter_mut().zip(refs) {
+        let price = |id: usize| -> Vec<f32> {
+            (0..n).map(|i| ((equities[id][i] - start_equity[i]) * scale) as f32).collect()
+        };
+        for ((term, ids), off_ids) in terms.iter_mut().zip(refs).zip(stack_off_refs) {
             for (outcome, id) in term.outcomes.iter_mut().zip(ids) {
-                outcome.1 = (0..n)
-                    .map(|i| ((equities[id][i] - start_equity[i]) * scale) as f32)
-                    .collect();
+                outcome.1 = price(id);
+            }
+            if let (Some(a), Some(ids)) = (term.stack_off.as_mut(), off_ids) {
+                for (outcome, id) in a.outcomes.iter_mut().zip(ids) {
+                    outcome.1 = price(id);
+                }
             }
         }
         let mut bal = vec![0f32; NUM_CLASSES * NUM_CLASSES];
@@ -242,21 +316,45 @@ impl IcmTables {
         let mut f = IcmFlat::default();
         f.pot_start.push(0);
         f.out_start.push(0);
+        f.a_pot_start.push(0);
+        f.a_out_start.push(0);
+        let pack = |w: &[u8]| w.iter().enumerate().fold(0u32, |acc, (k, &x)| acc | (x as u32) << (4 * k));
         for (node, &ti) in self.index.iter().enumerate() {
             if ti == u32::MAX {
                 continue;
             }
             let term = &self.terms[ti as usize];
-            if term.pots.len() > 8 {
+            if term.pots.len() > 8 || term.stack_off.as_ref().is_some_and(|a| a.pots.len() > 8) {
                 return None;
             }
             let nd = &s.nodes[node];
             f.nodes.push(node as u32);
             f.kinds.push(if nd.kind == KIND_FOLD_WIN { 0 } else if nd.side_pots.is_empty() { 1 } else { 2 });
+            match &term.stack_off {
+                Some(a) => {
+                    f.weight.push(a.weight as f32);
+                    f.pot.push(a.pot as f32);
+                    f.commit.extend(a.commit.iter().map(|&x| x as f32));
+                    f.wins.extend(a.wins.iter().map(|&x| x as f32));
+                    f.a_masks.extend(a.pots.iter().map(|&(_, m)| m));
+                    for (w, value) in &a.outcomes {
+                        f.a_winners.push(pack(w));
+                        f.a_values.extend_from_slice(value);
+                    }
+                }
+                None => {
+                    f.weight.push(0.0);
+                    f.pot.push(0.0);
+                    f.commit.extend(std::iter::repeat(0.0).take(s.n));
+                    f.wins.extend(std::iter::repeat(1.0).take(s.n));
+                }
+            }
+            f.a_pot_start.push(f.a_masks.len() as u32);
+            f.a_out_start.push(f.a_winners.len() as u32);
             f.masks.extend(term.pots.iter().map(|&(_, m)| m));
             f.pot_start.push(f.masks.len() as u32);
             for (w, value) in &term.outcomes {
-                f.winners.push(w.iter().enumerate().fold(0u32, |acc, (k, &x)| acc | (x as u32) << (4 * k)));
+                f.winners.push(pack(w));
                 f.values.extend_from_slice(value);
             }
             f.out_start.push(f.winners.len() as u32);
@@ -271,7 +369,7 @@ impl IcmTables {
     }
 
     fn outcomes(&self) -> usize {
-        self.terms.iter().map(|t| t.outcomes.len()).sum()
+        self.terms.iter().map(|t| t.outcomes.len() + t.stack_off.as_ref().map_or(0, |a| a.outcomes.len())).sum()
     }
 }
 
@@ -291,6 +389,18 @@ pub(crate) struct IcmFlat {
     pub winners: Vec<u32>,
     pub values: Vec<f32>,
     pub bal: Vec<f32>,
+    /// The stack-off all-in of each flop pot (empty ranges elsewhere): its
+    /// chance, the flop pot, each seat's added chips and eligible pots
+    /// (`[t * n + q]`), and its pots and outcomes laid out as above.
+    pub weight: Vec<f32>,
+    pub pot: Vec<f32>,
+    pub commit: Vec<f32>,
+    pub wins: Vec<f32>,
+    pub a_pot_start: Vec<u32>,
+    pub a_masks: Vec<u32>,
+    pub a_out_start: Vec<u32>,
+    pub a_winners: Vec<u32>,
+    pub a_values: Vec<f32>,
 }
 
 /// What an ICM game's values mean, for API readers.
@@ -404,7 +514,6 @@ impl PreflopSolver {
             })
             .collect();
         let pots = &term.pots;
-        let m = pots.len();
         let j = pots.iter().take_while(|(_, mask)| mask & (1 << p) != 0).count();
 
         // V[t]: average prize change given the traverser first wins pot t
@@ -420,56 +529,24 @@ impl PreflopSolver {
             v
         };
         let me = 1u32 << p;
-        let mut v_t = vec![0f64; j + 1];
-        for t in 0..=j {
-            let (mut num, mut den) = (0f64, 0f64);
-            for (w, value) in &term.outcomes {
-                let mut q = 1f64;
-                for k in 0..m {
-                    let mask = pots[k].1;
-                    let wk = w[k] as usize;
-                    if k > 0 && mask & (1 << w[k - 1]) != 0 {
-                        if w[k] != w[k - 1] {
-                            q = 0.0;
-                        }
-                        if q == 0.0 { break; }
-                        continue;
-                    }
-                    let cand = if mask & me != 0 {
-                        if k == t {
-                            if wk != p { q = 0.0; }
-                            if q == 0.0 { break; }
-                            continue;
-                        }
-                        if t == j {
-                            mask & !me
-                        } else if k < t {
-                            mask & !pots[t].1 & !me
-                        } else {
-                            0 // the traverser already won a larger pot it is in
-                        }
-                    } else {
-                        mask
-                    };
-                    if cand & (1 << wk) == 0 {
-                        q = 0.0;
-                        break;
-                    }
-                    if cand.count_ones() > 1 {
-                        q *= odds_of(cand)[wk];
-                    }
-                    if q == 0.0 { break; }
-                }
-                if q > 0.0 {
-                    num += q * value[p] as f64;
-                    den += q;
-                }
+        let v_t: Vec<f64> = (0..=j).map(|t| icm_v(pots, &term.outcomes, p, t, j, &mut odds_of)).collect();
+        // A flop pot that may end all-in: blend in the all-in's values.
+        let (mut base, mut c) = if j == 0 { (v_t[0], 0.0) } else { (v_t[1], v_t[0] - v_t[1]) };
+        if let Some(a) = &term.stack_off {
+            let ja = a.pots.iter().take_while(|(_, mask)| mask & me != 0).count();
+            let w = a.weight;
+            if ja == 0 {
+                base = (1.0 - w) * base + w * icm_v(&a.pots, &a.outcomes, p, 0, 0, &mut odds_of);
+            } else {
+                let win = icm_v(&a.pots, &a.outcomes, p, 0, ja, &mut odds_of);
+                let lose = icm_v(&a.pots, &a.outcomes, p, ja, ja, &mut odds_of);
+                base = (1.0 - w) * base + w * (lose + a.commit[p] / a.wins[p] * (win - lose));
+                c = (1.0 - w) * c + w * a.pot / a.wins[p] * (win - lose);
             }
-            v_t[t] = if den > 0.0 { num / den } else { 0.0 };
         }
 
         if j == 0 {
-            let v = (prob * v_t[0]) as f32;
+            let v = (prob * base) as f32;
             out.iter_mut().for_each(|x| *x = v);
             return;
         }
@@ -483,9 +560,9 @@ impl PreflopSolver {
             let mut chip = vec![0f32; NUM_CLASSES];
             self.chip_terminal_value(node, p, reaches, &mut chip);
             let inv = nd.invested[p];
-            let c = (v_t[0] - v_t[1]).max(0.0);
+            let c = c.max(0.0);
             for h in 0..NUM_CLASSES {
-                out[h] = (prob * v_t[1] + (chip[h] as f64 + prob * inv) * c / nd.pot) as f32;
+                out[h] = (prob * base + (chip[h] as f64 + prob * inv) * c / nd.pot) as f32;
             }
             return;
         }
@@ -505,6 +582,67 @@ impl PreflopSolver {
             out[h] = (prob * value[h]) as f32;
         }
     }
+}
+
+/// The traverser's average prize change when it first wins pot `t` of
+/// `pots` (t = j: wins nothing, j being how many pots it is eligible for),
+/// over how the other pots fall by the other seats' range odds.
+fn icm_v(
+    pots: &[(f64, u32)],
+    outcomes: &[(Vec<u8>, Vec<f32>)],
+    p: usize,
+    t: usize,
+    j: usize,
+    odds_of: &mut dyn FnMut(u32) -> Vec<f64>,
+) -> f64 {
+    let me = 1u32 << p;
+    let (mut num, mut den) = (0f64, 0f64);
+    for (w, value) in outcomes {
+        let mut q = 1f64;
+        for (k, &(_, mask)) in pots.iter().enumerate() {
+            let wk = w[k] as usize;
+            if k > 0 && mask & (1 << w[k - 1]) != 0 {
+                if w[k] != w[k - 1] {
+                    q = 0.0;
+                    break;
+                }
+                continue;
+            }
+            let cand = if mask & me != 0 {
+                if k == t {
+                    if wk != p {
+                        q = 0.0;
+                        break;
+                    }
+                    continue;
+                }
+                if t == j {
+                    mask & !me
+                } else if k < t {
+                    mask & !pots[t].1 & !me
+                } else {
+                    0 // the traverser already won a larger pot it is in
+                }
+            } else {
+                mask
+            };
+            if cand & (1 << wk) == 0 {
+                q = 0.0;
+                break;
+            }
+            if cand.count_ones() > 1 {
+                q *= odds_of(cand)[wk];
+            }
+            if q == 0.0 {
+                break;
+            }
+        }
+        if q > 0.0 {
+            num += q * value[p] as f64;
+            den += q;
+        }
+    }
+    if den > 0.0 { num / den } else { 0.0 }
 }
 
 /// Dot product in eight independent lanes, so it vectorizes.

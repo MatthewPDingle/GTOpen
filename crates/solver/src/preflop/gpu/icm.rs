@@ -16,6 +16,15 @@ pub(super) struct IcmGpu {
     d_winners: CudaSlice<u32>,
     d_values: CudaSlice<f32>,
     d_bal: CudaSlice<f32>,
+    d_a_pot_start: CudaSlice<u32>,
+    d_a_masks: CudaSlice<u32>,
+    d_a_out_start: CudaSlice<u32>,
+    d_a_winners: CudaSlice<u32>,
+    d_a_values: CudaSlice<f32>,
+    d_weight: CudaSlice<f32>,
+    d_pot: CudaSlice<f32>,
+    d_commit: CudaSlice<f32>,
+    d_wins: CudaSlice<f32>,
 }
 
 impl IcmGpu {
@@ -24,7 +33,7 @@ impl IcmGpu {
         let Some(t) = s.icm.as_ref() else { return 0 };
         let summary = s.icm_summary().map_or(0, |x| x.outcomes);
         let terms = t.terminal_count();
-        terms * 20 + summary * (4 + 4 * s.n) + terms * 8 * 4 + NUM_CLASSES * NUM_CLASSES * 4
+        terms * (36 + 8 * s.n) + summary * (4 + 4 * s.n) + terms * 16 * 4 + NUM_CLASSES * NUM_CLASSES * 4
     }
 
     /// `sp_terms`/`sp_start` are the side-pot list as uploaded, so each
@@ -59,6 +68,7 @@ impl IcmGpu {
             .clone()?;
         let module = ctx.load_module(ptx).map_err(e)?;
         let nonempty = |v: &[u32]| if v.is_empty() { vec![0u32] } else { v.to_vec() };
+        let nonempty_f = |v: &[f32]| if v.is_empty() { vec![0f32] } else { v.to_vec() };
         Ok(Some(Self {
             f_prepare: module.load_function("pf_icm_prepare").map_err(e)?,
             count: flat.nodes.len() as u32,
@@ -71,6 +81,15 @@ impl IcmGpu {
             d_winners: stream.clone_htod(&nonempty(&flat.winners)).map_err(e)?,
             d_values: stream.clone_htod(if flat.values.is_empty() { &[0f32][..] } else { &flat.values }).map_err(e)?,
             d_bal: stream.clone_htod(&flat.bal).map_err(e)?,
+            d_a_pot_start: stream.clone_htod(&flat.a_pot_start).map_err(e)?,
+            d_a_masks: stream.clone_htod(&nonempty(&flat.a_masks)).map_err(e)?,
+            d_a_out_start: stream.clone_htod(&flat.a_out_start).map_err(e)?,
+            d_a_winners: stream.clone_htod(&nonempty(&flat.a_winners)).map_err(e)?,
+            d_a_values: stream.clone_htod(&nonempty_f(&flat.a_values)).map_err(e)?,
+            d_weight: stream.clone_htod(&nonempty_f(&flat.weight)).map_err(e)?,
+            d_pot: stream.clone_htod(&nonempty_f(&flat.pot)).map_err(e)?,
+            d_commit: stream.clone_htod(&nonempty_f(&flat.commit)).map_err(e)?,
+            d_wins: stream.clone_htod(&nonempty_f(&flat.wins)).map_err(e)?,
         }))
     }
 }
@@ -90,6 +109,8 @@ impl PreflopGpu {
                 .arg(&icm.d_sp_base).arg(&icm.d_out_start).arg(&icm.d_winners).arg(&icm.d_values)
                 .arg(&icm.d_bal).arg(&self.d_live)
                 .arg(&self.d_reach_src).arg(&self.d_reach).arg(&self.d_reach_mass)
+                .arg(&icm.d_a_pot_start).arg(&icm.d_a_masks).arg(&icm.d_a_out_start).arg(&icm.d_a_winners)
+                .arg(&icm.d_a_values).arg(&icm.d_weight).arg(&icm.d_pot).arg(&icm.d_commit).arg(&icm.d_wins)
                 .arg(&mut self.d_pots).arg(&mut self.d_potg).arg(&mut self.d_inv).arg(&mut self.d_sp_amount)
                 .launch(LaunchConfig { grid_dim: (icm.count, 1, 1), block_dim: (128, 1, 1), shared_mem_bytes: 0 })
                 .map_err(e)?;

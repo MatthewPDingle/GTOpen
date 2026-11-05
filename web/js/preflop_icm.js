@@ -39,24 +39,30 @@ export function icmConfig(state, tableStack) {
   if (count < 0) throw new Error('Players at other tables must be 0 or more.');
   const stack = String(state.fieldStack ?? '').trim() ? Number(state.fieldStack) : tableStack;
   if (count > 0 && !(stack > 0)) throw new Error('Other tables need a positive average stack.');
-  return { payouts, ...(count > 0 ? { field_groups: [{ stack, count }] } : {}) };
+  const stackOff = String(state.stackOff ?? '').trim() ? Number(state.stackOff) : null;
+  if (stackOff !== null && !(stackOff >= 0)) throw new Error('Stack-off rate must be 0 or more.');
+  return {
+    payouts, ...(count > 0 ? { field_groups: [{ stack, count }] } : {}),
+    ...(stackOff !== null ? { stack_off: stackOff } : {}),
+  };
 }
 
 /** Panel fields from a saved config's `icm`. */
 export function icmFromConfig(cfg) {
   const icm = cfg.icm;
-  if (!icm) return { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '' };
+  if (!icm) return { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '' };
   const groups = [...(icm.field_groups || []), ...(icm.field || []).map(stack => ({ stack, count: 1 }))];
   const count = groups.reduce((a, g) => a + g.count, 0);
   const avg = count ? groups.reduce((a, g) => a + g.stack * g.count, 0) / count : '';
   return {
     on: true, payouts: icm.payouts.join(', '), stage: '',
     fieldCount: count ? String(count) : '', fieldStack: count ? String(+avg.toFixed(3)) : '',
+    stackOff: icm.stack_off === undefined ? '' : String(icm.stack_off),
   };
 }
 
 export function createIcmControls(els, positionsFor, changed) {
-  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '' };
+  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '' };
   const details = document.createElement('details');
   details.className = 'pfl-position-sizes pfl-icm';
   const summary = document.createElement('summary');
@@ -95,7 +101,13 @@ export function createIcmControls(els, positionsFor, changed) {
   fieldStack.type = 'number'; fieldStack.min = '0.5'; fieldStack.step = '0.5';
   const stackLabel = document.createElement('label');
   stackLabel.append('Their stack (bb) ', fieldStack);
-  grid.append(stageLabel, countLabel, stackLabel, payLabel);
+  const stackOff = document.createElement('input');
+  stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = '0.4';
+  const offLabel = document.createElement('label');
+  offLabel.dataset.tip = 'How often a pot that sees the flop is played for the stacks behind: it ends all-in with '
+    + 'chance k / (k + SPR). Higher makes flatting costlier under ICM; 0 prices flop pots as the pot alone.';
+  offLabel.append('Stack-off rate ', stackOff);
+  grid.append(stageLabel, countLabel, stackLabel, offLabel, payLabel);
   details.append(grid);
   const status = document.createElement('p');
   status.className = 'mono';
@@ -110,6 +122,7 @@ export function createIcmControls(els, positionsFor, changed) {
     payouts.value = state.payouts;
     fieldCount.value = state.fieldCount;
     fieldStack.value = state.fieldStack;
+    stackOff.value = state.stackOff ?? '';
     fieldStack.placeholder = els.stack.value || 'Stack';
     grid.hidden = !state.on;
     summary.textContent = state.on ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
@@ -134,6 +147,7 @@ export function createIcmControls(els, positionsFor, changed) {
   payouts.addEventListener('input', () => { state.payouts = payouts.value; state.stage = ''; stage.value = ''; changed(); });
   fieldCount.addEventListener('input', () => { state.fieldCount = fieldCount.value; state.stage = ''; stage.value = ''; changed(); });
   fieldStack.addEventListener('input', () => { state.fieldStack = fieldStack.value; changed(); });
+  stackOff.addEventListener('input', () => { state.stackOff = stackOff.value; changed(); });
   els.players.addEventListener('change', () => { if (state.stage) { applyStage(state.stage); render(); } });
   els.stack.addEventListener('input', () => { fieldStack.placeholder = els.stack.value || 'Stack'; });
   render();
