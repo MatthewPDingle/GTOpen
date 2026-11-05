@@ -65,6 +65,8 @@ fn icm_terminals_match_cpu() {
             gpu.d_reach = gpu.stream.clone_htod(&reaches).unwrap();
             unsafe { gpu.stream.launch_builder(&gpu.f_reach_mass).arg(&gpu.d_reach).arg(&mut gpu.d_reach_mass)
                 .launch(LaunchConfig { block_dim: (128, 1, 1), ..PreflopGpu::cfg((reaches.len() / NUM_CLASSES) as u32) }).unwrap(); }
+            // Heads-up pots read cached equities of the replaced reach.
+            gpu.refresh_eq_cache(s.n).unwrap();
             let mut worst = 0f32;
             // Twice through the seats: each pass must rewrite what the last left.
             for p in (0..s.n).chain(0..s.n) {

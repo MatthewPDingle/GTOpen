@@ -1639,8 +1639,14 @@ impl PreflopGpu {
         }
         #[cfg(feature = "preflop-research")]
         self.interface_prepare()?;
+        let which = if mode == 0 { p as usize } else { self.np as usize };
+        self.refresh_eq_cache(which)
+    }
+
+    /// Recompute the heads-up equity cache from the current reach for
+    /// span `which` (a seat's update pass, or `np` for every seat).
+    fn refresh_eq_cache(&mut self, which: usize) -> Result<(), String> {
         if self.use_eq_cache != 0 {
-            let which = if mode == 0 { p as usize } else { self.np as usize };
             let (start, count) = self.eq_spans[which];
             if count > 0 {
                 unsafe {
