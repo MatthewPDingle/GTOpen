@@ -56,12 +56,14 @@ pub struct IcmConfig {
     /// How often a pot that sees the flop with chips behind is played for
     /// them: it ends all-in with chance k / (k + SPR), SPR being the second
     /// largest stack behind over the pot. 0 keeps the plain pot lottery.
+    /// The default 0.4 best matched the canonical Range Lab final table and
+    /// bubble charts' ICM shifts (BB folds vs a button open) in a sweep.
     #[serde(default = "default_stack_off")]
     pub stack_off: f64,
 }
 
 pub(crate) fn default_stack_off() -> f64 {
-    1.0
+    0.4
 }
 
 /// `count` players with `stack` bb each, at other tables.
