@@ -104,7 +104,9 @@ impl Solver {
         }
         let changed = self.trust.unwrap_or(1.0) != trust.unwrap_or(1.0);
         self.trust = trust;
-        if changed && self.iteration > 0 && self.read_villain().is_some() {
+        // not gated on `iteration`: while a GPU solve runs, this solver's
+        // count is stale (often 0) and the device restarts by the epoch
+        if changed && self.read_villain().is_some() {
             self.restart_averages();
         }
         Ok(())

@@ -276,3 +276,17 @@ fn new_trust_level_keeps_the_pre_lock_average_at_locked_nodes() {
         assert_eq!(solved(&s), before, "trust {trust}");
     }
 }
+
+#[test]
+fn every_trust_change_restarts_even_when_a_gpu_drives_the_solve() {
+    // a GPU-driven solve leaves this solver's own iteration count stale (0
+    // after the first restart); the epoch must still move every time
+    let mut s = locked(river, 20);
+    let mut epoch = s.average_epoch;
+    for trust in [0.9f32, 0.8, 0.5, 0.0] {
+        s.set_trust(Some(trust)).unwrap();
+        assert_eq!(s.iteration, 0);
+        assert_ne!(s.average_epoch, epoch, "trust {trust}: no restart");
+        epoch = s.average_epoch;
+    }
+}
