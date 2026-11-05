@@ -204,7 +204,7 @@ fn hu25() -> PreflopConfig {
         realization: "static".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
     }
 }
 
@@ -435,7 +435,7 @@ fn gpu_push_fold_anchors() {
         realization: "raw".into(),
         call_only_seats: vec![],
         open_raises_by_seat: None,
-        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None,
+        fourbet_mults: None, fourbet_mults_by_seat: None, raise_mults_by_seat: None, icm: None,
     };
     let mut s = legacy_solver(cfg, eq).unwrap();
     let mut g = PreflopGpu::new(&s, 8_000).expect("gpu init");

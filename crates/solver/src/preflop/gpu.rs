@@ -949,6 +949,10 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
+        // ICM payoffs are priced on the CPU only for now.
+        if s.icm.is_some() {
+            return Err("ICM games solve on CPU".into());
+        }
         // Side-pot terminals (unequal stacks) and the 3-way table have their
         // own kernels in the normal plan only; the shared-CDF throughput
         // variants decline them.

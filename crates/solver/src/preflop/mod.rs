@@ -15,6 +15,8 @@
 pub mod equity;
 pub mod multiway;
 pub mod three_way;
+pub mod icm;
+pub use icm::{IcmConfig, IcmSummary};
 pub mod reference;
 pub mod dataset;
 pub mod contextual;
@@ -125,6 +127,10 @@ pub struct PreflopConfig {
     pub fourbet_mults: Option<Vec<f64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fourbet_mults_by_seat: Option<Vec<Vec<f64>>>,
+    /// Tournament payouts: when present every terminal pays the change in
+    /// Malmuth–Harville prize equity (in bb equivalents) instead of chips.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icm: Option<IcmConfig>,
 }
 
 fn is_false(value: &bool) -> bool { !*value }
@@ -695,6 +701,8 @@ pub struct PreflopSolver {
     /// Jointly dealt 3-way showdown table (three_way_table_v1): replaces the
     /// coupled model in pots with exactly three seats.
     pub(crate) three_way: Option<Arc<three_way::ThreeWayTable>>,
+    /// Per-terminal prize changes when the game has ICM payouts.
+    pub(crate) icm: Option<Arc<icm::IcmTables>>,
     /// Cooperative stop for long traversals: checked at the parallel
     /// fan-out nodes (depth < PAR_DEPTH), so a stop request aborts a pass
     /// within a fraction of an iteration instead of after a whole one.
@@ -774,6 +782,7 @@ impl PreflopSolver {
             realization_note,
             multiway: Some(multiway::CoupledDeck::shared()),
             three_way: None,
+            icm: None,
             stop_flag: None,
             contextual_cache: Default::default(),
         };
@@ -781,6 +790,9 @@ impl PreflopSolver {
         // limits sampled once — reading /proc/meminfo per action node costs
         // seconds on large builds
         s.build(init, lim_n, lim_mb)?;
+        if let Some(icm) = s.cfg.icm.clone() {
+            s.icm = Some(Arc::new(icm::IcmTables::build(&s, &icm)));
+        }
         s.regrets = Arena::new(s.arena_len);
         s.strat_sum = Arena::new(s.arena_len);
         Ok(s)
@@ -1735,11 +1747,33 @@ impl PreflopSolver {
         self.rake_of(nd.pot - uncalled)
     }
 
-    /// Terminal chip deltas for traverser p (per class), times the product of
-    /// the other players' reach mass.
+    /// Terminal values for traverser p (per class), times the product of the
+    /// other players' reach mass: chip deltas, or prize-equity changes in bb
+    /// equivalents when the game has ICM payouts.
     fn terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
         #[cfg(test)]
         checkpoint_tests::observe_terminal();
+        if let Some(tables) = &self.icm {
+            let mut prob = 1f64;
+            for q in 0..self.n {
+                if q != p {
+                    let s: f32 = reaches[q].iter().sum();
+                    prob *= s as f64;
+                }
+            }
+            if prob <= 0.0 {
+                out.iter_mut().for_each(|v| *v = 0.0);
+                return;
+            }
+            self.icm_terminal_value(tables, node, p, reaches, prob, out);
+            return;
+        }
+        self.chip_terminal_value(node, p, reaches, out);
+    }
+
+    /// Terminal chip deltas for traverser p (per class), times the product of
+    /// the other players' reach mass.
+    fn chip_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
         let nd = &self.nodes[node];
         let mut prob = 1f64;
         for q in 0..self.n {
@@ -3316,6 +3350,9 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             "no legal opening actions: enable limp, all-in or an open raise above the biggest blind"
                 .into(),
         );
+    }
+    if let Some(icm) = &cfg.icm {
+        icm.validate(cfg, n)?;
     }
     Ok(n)
 }
