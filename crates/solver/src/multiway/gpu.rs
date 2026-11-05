@@ -359,6 +359,8 @@ struct Terminals {
     node_class: Vec<i32>,
     node_river: Vec<i32>,
     coef: Vec<f32>,
+    /// ICM order coefficients, 6 per player per class (mw_icm_order).
+    ocoef: Vec<f32>,
     river_keys: Vec<usize>,
 }
 
@@ -369,6 +371,7 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
     let mut node_river = vec![-1i32; nn];
     let mut classes: HashMap<Vec<u32>, i32> = HashMap::new();
     let mut coef: Vec<f32> = Vec::new();
+    let mut ocoef: Vec<f32> = Vec::new();
     let mut river_slots: HashMap<usize, i32> = HashMap::new();
     let mut river_keys: Vec<usize> = Vec::new();
     for (n, node) in tree.nodes.iter().enumerate() {
@@ -384,10 +387,25 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
                 }
             }
         }
-        let key: Vec<u32> = c27.iter().map(|v| v.to_bits()).collect();
+        // Opponents' order under ICM: above / below p when p is live,
+        // over all hands when p has folded (see multiway::icm).
+        let mut o18 = [0f32; 18];
+        if let (Some(icm), KIND_TERM_SHOWDOWN) = (&spot.icm, node.kind) {
+            for p in 0..NP {
+                let o = icm.order(node, p);
+                let at = if node.live & (1 << p) == 0 { [4, 5, 99, 99] } else { [0, 1, 2, 3] };
+                for k in 0..4 {
+                    if at[k] < 6 {
+                        o18[p * 6 + at[k]] = o[k] as f32;
+                    }
+                }
+            }
+        }
+        let key: Vec<u32> = c27.iter().chain(&o18).map(|v| v.to_bits()).collect();
         let next = classes.len() as i32;
         node_class[n] = *classes.entry(key).or_insert_with(|| {
             coef.extend_from_slice(&c27);
+            ocoef.extend_from_slice(&o18);
             next
         });
         if node.kind == KIND_TERM_SHOWDOWN {
@@ -401,8 +419,9 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
     }
     if coef.is_empty() {
         coef.push(0.0);
+        ocoef.push(0.0);
     }
-    Terminals { node_class, node_river, coef, river_keys }
+    Terminals { node_class, node_river, coef, ocoef, river_keys }
 }
 
 /// Host-side layout of the tree for the kernels.
@@ -427,6 +446,7 @@ struct Plan {
     reach_slot: [Vec<u32>; NP],
     reach_slots: [usize; NP],
     coef: Vec<f32>,
+    ocoef: Vec<f32>,
     srt_off: [Vec<u32>; NP],
     srt_str: [Vec<u32>; NP],
     srt_idx: [Vec<u32>; NP],
@@ -660,6 +680,7 @@ impl Plan {
             reach_slot,
             reach_slots,
             coef: term.coef,
+            ocoef: term.ocoef,
             srt_off,
             srt_str,
             srt_idx,
@@ -752,6 +773,7 @@ struct Bufs {
     mask: [CudaSlice<u64>; NP],
     same: [CudaSlice<u32>; NP],
     coef: CudaSlice<f32>,
+    ocoef: CudaSlice<f32>,
     srt_off: [CudaSlice<u32>; NP],
     srt_str: [CudaSlice<u32>; NP],
     srt_idx: [CudaSlice<u32>; NP],
@@ -795,6 +817,8 @@ pub struct MwGpuSolver {
     f_down_chance: CudaFunction,
     f_up_fold: CudaFunction,
     f_up_show: CudaFunction,
+    /// ICM spots only: corrections for the opponents' order.
+    f_icm_order: Option<CudaFunction>,
     f_up_chance: CudaFunction,
     f_up_action: CudaFunction,
     f_up_action_q: CudaFunction,
@@ -876,6 +900,16 @@ impl MwGpuSolver {
         f_up_show
             .set_attribute(sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, show_need as i32)
             .map_err(|err| format!("showdown kernel needs {show_need} bytes of shared memory: {err:?}"))?;
+        let f_icm_order = match spot.icm {
+            Some(_) => {
+                let f = func("mw_icm_order")?;
+                let need = (0..NP).map(|p| Self::icm_order_shared_bytes(&plan.max_sorted, p)).max().unwrap();
+                f.set_attribute(sys::CUfunction_attribute::CU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES, need as i32)
+                    .map_err(|err| format!("ICM order kernel needs {need} bytes of shared memory: {err:?}"))?;
+                Some(f)
+            }
+            None => None,
+        };
 
         let up32 = |v: &[u32]| upload(&stream, v, 1);
         let upi = |v: &[i32]| upload(&stream, v, 1);
@@ -936,6 +970,7 @@ impl MwGpuSolver {
             mask: [up64(&mask[0])?, up64(&mask[1])?, up64(&mask[2])?],
             same: [up32(&same[0])?, up32(&same[1])?, up32(&same[2])?],
             coef: upf(&plan.coef)?,
+            ocoef: upf(&plan.ocoef)?,
             srt_off: [up32(&plan.srt_off[0])?, up32(&plan.srt_off[1])?, up32(&plan.srt_off[2])?],
             srt_str: [up32(&plan.srt_str[0])?, up32(&plan.srt_str[1])?, up32(&plan.srt_str[2])?],
             srt_idx: [up32(&plan.srt_idx[0])?, up32(&plan.srt_idx[1])?, up32(&plan.srt_idx[2])?],
@@ -958,6 +993,7 @@ impl MwGpuSolver {
             f_down_chance: func("mw_down_chance")?,
             f_up_fold: func("mw_up_fold")?,
             f_up_show,
+            f_icm_order,
             f_up_chance: func("mw_up_chance")?,
             f_up_action: func("mw_up_action")?,
             f_up_action_q: func("mw_up_action_q")?,
@@ -986,6 +1022,12 @@ impl MwGpuSolver {
     fn show_shared_bytes(max_sorted: &[usize; NP], p: usize) -> usize {
         let (q, r) = others(p);
         (3 * 2704 + 6 * max_sorted[q] + 5 * max_sorted[r]) * 4
+    }
+
+    /// Dynamic shared memory of the ICM order kernel for traverser p.
+    fn icm_order_shared_bytes(max_sorted: &[usize; NP], p: usize) -> usize {
+        let (q, r) = others(p);
+        (2 * 2704 + 3 * max_sorted[q] + 9 * max_sorted[r]) * 4
     }
 
     pub fn device_bytes(&self) -> u64 {
@@ -1171,6 +1213,28 @@ impl MwGpuSolver {
                     self.p(&b.same[p]),
                     self.p(&b.cfv_slot), self.p(&b.cfv), nh_p, nh_q, nh_r, nh_max,
                 ]))?;
+                if let Some(f) = &self.f_icm_order {
+                    let cfg = LaunchConfig {
+                        grid_dim: (sp.count as u32, 1, 1),
+                        block_dim: (show_threads, 1, 1),
+                        shared_mem_bytes: Self::icm_order_shared_bytes(&self.max_sorted, p) as u32,
+                    };
+                    self.timed("icm_order", || launch!(self.stream, f, cfg, [
+                        self.p(&b.show), sp.start, sp.count, pi,
+                        self.p(&b.node_class), self.p(&b.ocoef), self.p(&b.node_river),
+                        self.p(&b.reach_slot[q]), self.p(&b.reach_slot[r]),
+                        self.p(&b.reach[q]), self.p(&b.reach[r]),
+                        self.p(&b.srt_off[p]), self.p(&b.srt_str[p]), self.p(&b.srt_idx[p]),
+                        self.p(&b.srt_off[q]), self.p(&b.srt_str[q]), self.p(&b.srt_idx[q]),
+                        self.p(&b.srt_off[r]), self.p(&b.srt_str[r]), self.p(&b.srt_idx[r]),
+                        self.p(&b.cpos_off[q]), self.p(&b.cpos[q]),
+                        self.p(&b.cpos_off[r]), self.p(&b.cpos[r]),
+                        self.p(&b.rank_pair),
+                        self.p(&b.c1[p]), self.p(&b.c2[p]), self.p(&b.c1[q]), self.p(&b.c2[q]),
+                        self.p(&b.c1[r]), self.p(&b.c2[r]),
+                        self.p(&b.cfv_slot), self.p(&b.cfv), nh_q, nh_r, nh_max,
+                    ]))?;
+                }
             }
             let sp = ls.chance;
             if sp.count > 0 {
@@ -1567,6 +1631,17 @@ mod tests {
         Arc::new(MwSpot::new(c).unwrap())
     }
 
+    /// A tournament spot: payouts and the stacks of players outside the hand.
+    fn icm_spot(board: &str, stacks: [f64; 3], bets: &str, raises: &str, payouts: &[f64], others: &[f64]) -> Arc<MwSpot> {
+        let mut t = MwTreeConfig::uniform(30.0, stacks[0], &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
+        t.stacks = stacks;
+        t.icm = Some(crate::icm::postflop::PostflopIcm {
+            payouts: payouts.to_vec(), behind: None, others: others.to_vec(), field_groups: vec![],
+        });
+        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t };
+        Arc::new(MwSpot::new(c).unwrap())
+    }
+
     fn opts(storage: Storage, group: Option<usize>) -> MwGpuOptions {
         MwGpuOptions { storage: Some(storage), budget_bytes: None, max_cards_per_group: group }
     }
@@ -1605,6 +1680,9 @@ mod tests {
             spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05),
             spot("Ks9d4c7h2s", [100.0; 3], "50 100", "100", 0.0),
             spot("QsQd3c3h", [100.0; 3], "33 a", "a", 0.05),
+            // ICM: the opponents' order matters (busts, side pots, folds).
+            icm_spot("Ks9d4c7h2s", [25.0, 140.0, 60.0], "50 a", "a", &[50.0, 30.0, 20.0], &[]),
+            icm_spot("9h9d8c8s", [20.0, 60.0, 45.0], "75 a", "a", &[40.0, 25.0, 15.0, 10.0, 10.0], &[30.0, 50.0]),
         ]
     }
 
@@ -1671,6 +1749,12 @@ mod tests {
     #[ignore = "needs a CUDA device"]
     fn gpu_matches_cpu_turn_side_pots_rake() {
         check(spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", 0.05), Algorithm::Dcfr, 30);
+    }
+
+    #[test]
+    #[ignore = "needs a CUDA device"]
+    fn gpu_matches_cpu_icm_turn() {
+        check(icm_spot("Ks9d4c7h", [20.0, 120.0, 60.0], "50 a", "a", &[50.0, 30.0, 20.0], &[35.0]), Algorithm::Dcfr, 30);
     }
 
     #[test]
