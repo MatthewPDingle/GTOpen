@@ -1015,17 +1015,18 @@ impl GpuSolver {
         Ok(())
     }
 
-    /// read = trust * read + (1 - trust) * free, over the villain's whole
-    /// reach buffer (both share one slot layout).
+    /// free = trust * read + (1 - trust) * free, over the villain's whole
+    /// reach buffer `d_reach[villain]` (both share one slot layout): the
+    /// reach the hero faces. `d_reach_read` keeps the read's.
     fn rnr_mix(&mut self, r: crate::rnr::Trust) -> Result<(), String> {
-        let read = self.d_reach_read.as_mut().ok_or("trust the read: reach buffer missing")?;
+        let read = self.d_reach_read.as_ref().ok_or("trust the read: reach buffer missing")?;
         let n = read.len() as i64;
         let blocks = (n as u64).div_ceil(BLOCK as u64).clamp(1, 65_535) as u32;
         unsafe {
             self.stream
                 .launch_builder(&self.f_rnr_mix)
-                .arg(&mut *read)
-                .arg(&self.d_reach[r.villain])
+                .arg(&mut self.d_reach[r.villain])
+                .arg(read)
                 .arg(&r.trust)
                 .arg(&n)
                 .launch(Self::cfg(blocks, 0))
@@ -1064,9 +1065,9 @@ impl GpuSolver {
             Vec::new()
         };
         self.rnr_mix(r)?;
-        self.eval_up_with(h, 0, true, true, false)?;
+        self.eval_up_with(h, 0, true, false, false)?;
         let br_hero = root(self, h)?;
-        self.eval_up_with(h, 1, false, true, false)?;
+        self.eval_up_with(h, 1, false, false, false)?;
         let ev_hero = root(self, h)?;
         Ok(crate::rnr::RnrCfvs { br_hero, ev_hero, br_villain, ev_villain, br_read, ev_read, ev_hero_vs_read })
     }
@@ -1103,7 +1104,7 @@ impl GpuSolver {
         // Only the second sweep of an uninterrupted pair can reuse reach1:
         // p0 up updates player0 learning state and never writes either reach.
         // Every first sweep stays full, including after evaluation or resume.
-        let down_nh1 = if reuse_player1_reach { 0 } else { nh1 };
+        let mut down_nh = [nh0, if reuse_player1_reach { 0 } else { nh1 }];
         let nh_p = self.nh[p];
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
@@ -1122,6 +1123,17 @@ impl GpuSolver {
             _ => &self.d_regrets[q],
         };
         let (regrets0, regrets1) = (down_regrets(0), down_regrets(1));
+        // The villain's two sweeps share the reaches: the hero's does not
+        // change between them, the read villain's own reach is still the one
+        // the hero's sweep computed (`d_reach_read`; when the villain goes
+        // first, his read sweep computes it), and the free villain's sweep
+        // only refreshes the free reach.
+        let read_pass = matches!(rnr, Some(r) if r.villain == p) && !free_pass;
+        if let Some(r) = rnr.filter(|_| read_pass || free_pass) {
+            let skip = if read_pass { r.villain } else { 1 - r.villain };
+            down_nh[skip] = 0;
+        }
+        let (down_nh0, down_nh1) = (down_nh[0], down_nh[1]);
 
         let [reach0, reach1] = &mut self.d_reach;
         let t0 = profq(&prof);
@@ -1132,7 +1144,7 @@ impl GpuSolver {
                 .arg(&self.d_weights[1])
                 .arg(&mut *reach0)
                 .arg(&mut *reach1)
-                .arg(&nh0)
+                .arg(&down_nh0)
                 .arg(&down_nh1)
                 .launch(Self::cfg(4, 0))
                 .map_err(e)?;
@@ -1164,7 +1176,7 @@ impl GpuSolver {
                         .arg(&self.d_lock_sigma)
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
-                        .arg(&nh0)
+                        .arg(&down_nh0)
                         .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
@@ -1190,7 +1202,7 @@ impl GpuSolver {
                         .arg(&self.d_hand_mask[1])
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
-                        .arg(&nh0)
+                        .arg(&down_nh0)
                         .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
@@ -1200,21 +1212,26 @@ impl GpuSolver {
         }
 
         if let Some(r) = rnr.filter(|_| hero_vs_mix) {
+            // the read's reach, then d_reach[villain] = p * read + (1 - p) * free
             self.read_down(r.villain, false)?;
             self.rnr_mix(r)?;
+        } else if read_pass && p == 0 {
+            // the villain sweeps first: no hero sweep has computed it yet
+            self.read_down(p, false)?;
         }
         let up_locks = if free_pass { &self.d_lock_off_free } else { &self.d_lock_off };
         let (up_regrets, up_strat) = match self.d_free.as_mut().filter(|_| free_pass) {
             Some(f) => (&mut f.regrets, &mut f.strat),
             None => (&mut self.d_regrets[p], &mut self.d_strat[p]),
         };
-        // the opponent reach the traverser's terminals see
-        let opp_reach = match (&self.d_reach_read, hero_vs_mix) {
+        // the traverser's own reach (the read villain's is d_reach_read) and
+        // the opponent's (for the hero: the mixture, in d_reach[villain])
+        let own_reach = match (&self.d_reach_read, read_pass) {
             (Some(read), true) => read,
-            _ => &self.d_reach[1 - p],
+            _ => &self.d_reach[p],
         };
-        let (reach_arg0, reach_arg1) =
-            if p == 0 { (&self.d_reach[0], opp_reach) } else { (opp_reach, &self.d_reach[1]) };
+        let opp_reach = &self.d_reach[1 - p];
+        let (reach_arg0, reach_arg1) = if p == 0 { (own_reach, opp_reach) } else { (opp_reach, own_reach) };
 
         let pi = p as i32;
         let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
@@ -1338,7 +1355,7 @@ impl GpuSolver {
                         .arg(&self.d_children)
                         .arg(&*up_regrets)
                         .arg(&self.d_rsrc[p])
-                        .arg(&self.d_reach[p])
+                        .arg(own_reach)
                         .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
@@ -1367,7 +1384,7 @@ impl GpuSolver {
                         .arg(&mut *up_regrets)
                         .arg(&mut *up_strat)
                         .arg(&self.d_rsrc[p])
-                        .arg(&self.d_reach[p])
+                        .arg(own_reach)
                         .arg(up_locks)
                         .arg(&self.d_lock_sigma)
                         .arg(&self.d_cfv_slot)

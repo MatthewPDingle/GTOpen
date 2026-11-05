@@ -200,7 +200,7 @@ fn read_locks_still_shown_and_free_villain_differs_off_read() {
 fn warm_started_sweep_converges_at_every_level() {
     // the server's sweep: one solver, the dial stepped down, warm-started,
     // with and without the warm regret rescale
-    for keep in [None, Some(20)] {
+    for keep in [None, Some(20), Some(0)] {
         let mut s = locked(turn, 60);
         s.warm_regret_keep = keep;
         let pot = s.spot.tree.config.starting_pot;

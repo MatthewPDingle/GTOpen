@@ -574,10 +574,10 @@ pub struct RnrCfvs {
 }
 
 /// The regret scale for a warm restart after `old` iterations, if any:
-/// the history then weighs like `keep` iterations.
+/// the history then weighs like `keep` iterations (0 = a cold restart).
 pub(crate) fn warm_regret_factor(keep: Option<u32>, old: u32) -> Option<f32> {
     let keep = keep?;
-    (old > keep).then(|| keep.max(1) as f32 / old as f32)
+    (old > keep).then(|| keep as f32 / old as f32)
 }
 
 /// The villain's root reach stacked twice: [read | free].
