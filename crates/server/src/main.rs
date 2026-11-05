@@ -2209,9 +2209,15 @@ async fn set_trust(
     Ok(Json(serde_json::json!({"trust": req.trust, "villain": villain})))
 }
 
-/// Locks changed under the readout: it no longer describes the solve.
+/// Locks changed under the readout: it no longer describes the solve, and
+/// the last sweep curve no longer describes the read. (A plain solve keeps
+/// the curve: pick a level on it, then RE-SOLVE.)
 fn clear_trust_readout(state: &AppState) {
-    state.status.lock().unwrap().trust_readout = None;
+    let mut st = state.status.lock().unwrap();
+    st.trust_readout = None;
+    if st.trust_sweep.as_ref().is_some_and(|w| !w.running) {
+        st.trust_sweep = None;
+    }
 }
 
 fn pf_game_path(name: &str) -> Result<std::path::PathBuf, String> {

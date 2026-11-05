@@ -160,6 +160,7 @@ never takes tells him he faces the free villain.
   - A sweep needs a profile lock.
   - `status.trust_sweep` lists the levels, the one being solved, and one point per finished level: the readout plus its iterations and seconds.
   - STOP ends the sweep with the levels it finished.
+  - The curve stays through later plain solves, so you can pick a level and RE-SOLVE. A lock edit clears it.
   - While a sweep runs, `/api/trust` is refused.
 - **Browse.** With a villain locked, the TRUST THE READ panel shows the slider (5% steps), the last readout and SWEEP. The sweep curve plots the hero's EV against the read (solid) and his worst case (dashed) over trust, and clicking a point sets that level.
 - **Reports.** A vs-villain report takes `villain.trust`. The hero then re-adapts at that level, and each flop's `villain_lock.trust` holds the readout. The REPORTS form adds the level to the villain's name, so the library and Compare show it.

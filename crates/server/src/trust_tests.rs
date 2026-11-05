@@ -120,6 +120,16 @@ async fn trust_sweep_records_one_readout_per_level() {
     // and the solver ends at the last level
     let s = lock_unpoisoned(&state.session).as_ref().unwrap().solver.clone();
     assert_eq!(lock_unpoisoned(&s).trust(), Some(0.0));
+    // a plain solve keeps the curve (pick a level, then RE-SOLVE) ...
+    let st = solve(&state, serde_json::json!({"max_iterations": 400, "target_exploit_pct": 0.05, "trust": 0.5})).await;
+    assert_eq!(st.trust_sweep.unwrap().points.len(), 3);
+    // ... and a lock edit drops it: it described the old read
+    let response = app(&state)
+        .oneshot(Request::delete("/api/profile_locks").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    assert!(lock_unpoisoned(&state.status).trust_sweep.is_none());
 }
 
 #[tokio::test]
