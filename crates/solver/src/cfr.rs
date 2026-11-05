@@ -96,6 +96,12 @@ pub struct Solver {
     /// Bumped by `restart_averages`, so a GPU solve holding its own arenas
     /// can restart too (`GpuSolver::update_locks`).
     pub average_epoch: u32,
+    /// Warm start on a new trust level (`restart_averages`): scale every
+    /// cumulative regret so the old history weighs like this many
+    /// iterations. The current strategy is unchanged (regret matching is
+    /// scale-invariant), but the new game takes over quickly. `None` keeps
+    /// the regrets as they are.
+    pub warm_regret_keep: Option<u32>,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -186,6 +192,7 @@ impl Solver {
             trust: None,
             free_arenas: None,
             average_epoch: 0,
+            warm_regret_keep: None,
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]

@@ -91,6 +91,7 @@ pub struct GpuSolver {
     f_fit_dual: CudaFunction,
     f_rnr_mix: CudaFunction,
     f_restart_strat: CudaFunction,
+    f_scale_span: CudaFunction,
 
     // plan metadata kept host-side
     num_levels: usize,
@@ -393,6 +394,7 @@ impl GpuSolver {
             f_fit_dual: func("fit_dual")?,
             f_rnr_mix: func("rnr_mix")?,
             f_restart_strat: func("restart_strat")?,
+            f_scale_span: func("scale_span")?,
             h_node_data_off: plan.node_data_off.clone(),
             h_node_level: {
                 let mut lv = vec![u32::MAX; plan.num_nodes];
@@ -1628,6 +1630,22 @@ impl GpuSolver {
         self.sync_free()?;
         if solver.average_epoch != self.average_epoch {
             // Solver::restart_averages (a new trust level): same warm restart
+            if let Some(f) = crate::rnr::warm_regret_factor(solver.warm_regret_keep, self.iteration) {
+                let free = self.d_free.as_mut().map(|d| &mut d.regrets);
+                for buf in self.d_regrets.iter_mut().chain(free) {
+                    let n = buf.len() as i64;
+                    let blocks = (n as u64).div_ceil(BLOCK as u64).clamp(1, 65_535) as u32;
+                    unsafe {
+                        self.stream
+                            .launch_builder(&self.f_scale_span)
+                            .arg(&mut *buf)
+                            .arg(&f)
+                            .arg(&n)
+                            .launch(Self::cfg(blocks, 0))
+                            .map_err(e)?;
+                    }
+                }
+            }
             let count = self.d_action_nodes.len() as i32;
             for p in 0..2 {
                 let (pi, nh) = (p as i32, self.nh[p]);

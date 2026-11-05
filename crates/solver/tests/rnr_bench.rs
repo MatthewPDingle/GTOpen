@@ -53,49 +53,56 @@ fn run_to(gpu: &mut GpuSolver, host: &Solver, target: f64, every: u32, max: u32)
     }
 }
 
+/// Warm-start variants from RNR_WARM_KEEP (comma list of `none` or an
+/// iteration count for `Solver::warm_regret_keep`; default `none`).
+fn warm_keeps() -> Vec<Option<u32>> {
+    std::env::var("RNR_WARM_KEEP")
+        .unwrap_or_else(|_| "none".into())
+        .split(',')
+        .map(|k| if k.trim() == "none" { None } else { Some(k.trim().parse().unwrap()) })
+        .collect()
+}
+
 #[test]
 #[ignore]
 fn rnr_bench_flop() {
-    let mut cfg: SpotConfig = serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
-    cfg.board = "Ks7h2d".into();
     let target = 0.3;
-    let mut host = Solver::new(Arc::new(Spot::new(cfg).unwrap()));
-    let pot = host.spot.tree.config.starting_pot;
+    for keep in warm_keeps() {
+        let mut host = Solver::new(bench_spot());
+        host.warm_regret_keep = keep;
+        let pot = host.spot.tree.config.starting_pot;
 
-    let mut gpu = GpuSolver::new(&host).unwrap();
-    let (n, secs, x) = run_to(&mut gpu, &host, target, 20, 4000);
-    let ms_plain = ms_per_iteration(&mut gpu, 20);
-    println!("plain solve: {n} iterations, {secs:.1} s, {x:.3}% pot; {ms_plain:.2} ms/iteration");
-
-    gpu.sync_to_cpu(&mut host).unwrap();
-    host.ensure_symmetric();
-    let t = Instant::now();
-    let summary = host.lock_profile(1, &station_folder(), Some(1)).unwrap();
-    println!("profile lock on IP: {} nodes in {:.1} s", summary.locked, t.elapsed().as_secs_f64());
-    gpu.update_locks(&host).unwrap();
-    let ms_locked = ms_per_iteration(&mut gpu, 20);
-
-    println!("trust, iterations, seconds, exploit % pot, hero EV vs read, villain BR EV, hero worst case (chips; pot {pot})");
-    let mut ms_rnr = 0.0;
-    for (k, trust) in [1.0f32, 0.9, 0.8, 0.7, 0.5, 0.25, 0.0].into_iter().enumerate() {
-        host.set_trust(Some(trust)).unwrap();
-        gpu.update_locks(&host).unwrap();
-        if k == 1 {
-            ms_rnr = ms_per_iteration(&mut gpu, 20);
-        }
+        let mut gpu = GpuSolver::new(&host).unwrap();
         let (n, secs, x) = run_to(&mut gpu, &host, target, 20, 4000);
+        let ms_plain = ms_per_iteration(&mut gpu, 20);
+        println!("warm_regret_keep {keep:?}");
+        println!("plain solve: {n} iterations, {secs:.1} s, {x:.3}% pot; {ms_plain:.2} ms/iteration");
+
+        gpu.sync_to_cpu(&mut host).unwrap();
+        host.ensure_symmetric();
         let t = Instant::now();
-        let r = gpu.trust_readout(&host).unwrap();
-        let readout_s = t.elapsed().as_secs_f64();
-        println!(
-            "{trust:.2}, {n}, {secs:.1}, {x:.3}, {:.3}, {:.3}, {:?} (readout {readout_s:.2} s)",
-            r.hero_ev_vs_read, r.villain_best_response_ev, r.hero_worst_case_ev
-        );
+        let summary = host.lock_profile(1, &station_folder(), Some(1)).unwrap();
+        println!("profile lock on IP: {} nodes in {:.1} s", summary.locked, t.elapsed().as_secs_f64());
+        gpu.update_locks(&host).unwrap();
+        let ms_locked = ms_per_iteration(&mut gpu, 20);
+
+        println!("trust, iterations, seconds, exploit % pot, hero EV vs read, villain BR EV, hero worst case (chips; pot {pot}), ms/iteration");
+        for trust in [1.0f32, 0.9, 0.8, 0.7, 0.5, 0.25, 0.0] {
+            host.set_trust(Some(trust)).unwrap();
+            gpu.update_locks(&host).unwrap();
+            let (n, secs, x) = run_to(&mut gpu, &host, target, 20, 4000);
+            let t = Instant::now();
+            let r = gpu.trust_readout(&host).unwrap();
+            let readout_s = t.elapsed().as_secs_f64();
+            // pure iteration cost at this level (after the measured solve)
+            let ms = ms_per_iteration(&mut gpu, 20);
+            println!(
+                "{trust:.2}, {n}, {secs:.1}, {x:.3}, {:.3}, {:.3}, {:?}, {ms:.2} (readout {readout_s:.2} s)",
+                r.hero_ev_vs_read, r.villain_best_response_ev, r.hero_worst_case_ev
+            );
+        }
+        println!("ms/iteration: plain {ms_plain:.2}, locked {ms_locked:.2}");
     }
-    println!(
-        "ms/iteration: plain {ms_plain:.2}, locked {ms_locked:.2}, trust 0.9 {ms_rnr:.2} ({:+.1}% vs locked)",
-        (ms_rnr / ms_locked - 1.0) * 100.0
-    );
 }
 
 fn bench_spot() -> Arc<Spot> {

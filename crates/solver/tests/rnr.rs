@@ -198,19 +198,23 @@ fn read_locks_still_shown_and_free_villain_differs_off_read() {
 
 #[test]
 fn warm_started_sweep_converges_at_every_level() {
-    // the server's sweep: one solver, the dial stepped down, warm-started
-    let mut s = locked(turn, 60);
-    let pot = s.spot.tree.config.starting_pot;
-    for trust in [1.0f32, 0.9, 0.7, 0.4, 0.0] {
-        let epoch = s.average_epoch;
-        s.set_trust(Some(trust)).unwrap();
-        assert_eq!(s.average_epoch != epoch, trust != 1.0, "only a changed dial restarts");
-        for _ in 0..300 {
-            s.iterate();
+    // the server's sweep: one solver, the dial stepped down, warm-started,
+    // with and without the warm regret rescale
+    for keep in [None, Some(20)] {
+        let mut s = locked(turn, 60);
+        s.warm_regret_keep = keep;
+        let pot = s.spot.tree.config.starting_pot;
+        for trust in [1.0f32, 0.9, 0.7, 0.4, 0.0] {
+            let epoch = s.average_epoch;
+            s.set_trust(Some(trust)).unwrap();
+            assert_eq!(s.average_epoch != epoch, trust != 1.0, "only a changed dial restarts");
+            for _ in 0..300 {
+                s.iterate();
+            }
+            let x = s.exploitability() / pot * 100.0;
+            eprintln!("keep {keep:?} trust {trust}: {x:.3}% pot");
+            assert!(x < 0.5, "keep {keep:?} trust {trust}: warm-started solve stuck at {x}% pot");
         }
-        let x = s.exploitability() / pot * 100.0;
-        eprintln!("trust {trust}: {x:.3}% pot");
-        assert!(x < 0.5, "trust {trust}: warm-started solve stuck at {x}% pot");
     }
 }
 

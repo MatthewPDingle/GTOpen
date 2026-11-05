@@ -116,8 +116,12 @@ impl Solver {
     /// re-applying a profile rakes from it. A GPU solve picks this up in
     /// `GpuSolver::update_locks`.
     pub fn restart_averages(&mut self) {
+        let old_iterations = self.iteration;
         // the free villain restarts everywhere, his profile nodes included
         self.sync_free_arenas(self.rnr_active());
+        if let Some(f) = warm_regret_factor(self.warm_regret_keep, old_iterations) {
+            self.scale_regrets(f);
+        }
         let kept: Vec<(u32, usize, Vec<f32>)> = self
             .locks
             .keys()
@@ -136,6 +140,20 @@ impl Solver {
         }
         self.iteration = 0;
         self.average_epoch = self.average_epoch.wrapping_add(1);
+    }
+
+    /// Multiply every cumulative regret (both players, and the free villain's)
+    /// by `f`.
+    fn scale_regrets(&mut self, f: f32) {
+        let free = self.free_arenas.as_deref_mut().map(|a| &mut a.regrets);
+        for store in self.regrets.iter_mut().chain(free) {
+            match store {
+                Store::F32(b) => b.as_mut_slice().iter_mut().for_each(|x| *x *= f),
+                Store::I16 { scale, .. } | Store::U16 { scale, .. } => {
+                    scale.as_mut_slice().iter_mut().for_each(|x| *x *= f)
+                }
+            }
+        }
     }
 
     fn clear_averages(&mut self) {
@@ -553,6 +571,13 @@ pub struct RnrCfvs {
     pub ev_read: Vec<f32>,
     /// Hero's average strategy against the read alone (readouts only).
     pub ev_hero_vs_read: Vec<f32>,
+}
+
+/// The regret scale for a warm restart after `old` iterations, if any:
+/// the history then weighs like `keep` iterations.
+pub(crate) fn warm_regret_factor(keep: Option<u32>, old: u32) -> Option<f32> {
+    let keep = keep?;
+    (old > keep).then(|| keep.max(1) as f32 / old as f32)
 }
 
 /// The villain's root reach stacked twice: [read | free].
