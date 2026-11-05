@@ -32,6 +32,8 @@ mod preflop_preview_tests;
 mod postflop_context_tests;
 #[cfg(test)]
 mod trust_tests;
+#[cfg(test)]
+mod preflop_trust_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -194,6 +196,13 @@ struct PreflopStatus {
     /// Versioned multiway payoff model; saved games retain their original model.
     #[serde(default)]
     multiway_equity_model: String,
+    /// Hero mode's "trust the read" dial (None = unset, plays as 100%).
+    trust: Option<f32>,
+    /// Seats the dial applies to: the other seats with a profile, in hero
+    /// mode. Empty = the dial has nothing to act on.
+    trust_seats: Vec<usize>,
+    /// What the last measured level buys and costs the hero (bb/hand).
+    trust_readout: Option<solver::preflop::rnr::PfTrustReadout>,
 }
 
 struct Session {
@@ -1561,6 +1570,13 @@ impl PreflopStatus {
         self.gap_total = 0.0;
         self.stop_reason.clear();
         self.preview_note.clear();
+        self.trust_readout = None;
+    }
+
+    /// Mirror the dial's engine state (hero, profiles and trust shape it).
+    fn mirror_trust(&mut self, s: &solver::preflop::PreflopSolver) {
+        self.trust = s.trust();
+        self.trust_seats = s.trust_seats();
     }
 }
 #[derive(Serialize)]
@@ -1882,6 +1898,17 @@ async fn pf_solve(
                 };
                 #[cfg(not(feature = "gpu"))]
                 let (gaps, evs) = s.gaps_and_evs();
+                // the trust dial's readout (hero mode with a dial), measured
+                // on the same snapshot as the gaps
+                #[cfg(feature = "gpu")]
+                let trust_readout = match gpu.as_mut() {
+                    Some(g) => g.trust_readout().and_then(|r| {
+                        r.map_err(|err| println!("preflop gpu trust readout failed ({err})")).ok()
+                    }),
+                    None => s.trust_readout().ok(),
+                };
+                #[cfg(not(feature = "gpu"))]
+                let trust_readout = s.trust_readout().ok();
                 // Convergence is measured on the seats still LEARNING: a
                 // frozen or fully-ruled seat's gap is its bleed against its
                 // pinned strategy and never converges, so summing it made
@@ -1914,6 +1941,7 @@ async fn pf_solve(
                 st.gaps = gaps;
                 st.gap_total = total;
                 st.evs = evs;
+                st.trust_readout = trust_readout;
                 if total < req.target_gap || done >= max {
                     let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
                     drop(st);
@@ -2020,6 +2048,7 @@ async fn pf_table(
         st.hero = s.hero;
         st.frozen = s.seat_frozen.clone();
         st.invalidate_accuracy(s.iteration);
+        st.mirror_trust(&s);
         Ok::<bool, ApiError>(s.has_overrides())
     })
     .await
@@ -3259,11 +3288,47 @@ async fn pf_hero(
         st.hero = s.hero;
         st.frozen = s.seat_frozen.clone();
         st.invalidate_accuracy(s.iteration);
+        st.mirror_trust(&s);
         Ok::<(), ApiError>(())
     })
     .await
     .map_err(|e| bad_request(e.to_string()))??;
     Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+struct PfTrustRequest {
+    /// 0..1, or null to unset the dial (plain hero mode).
+    trust: Option<f32>,
+}
+
+/// Hero mode's "trust the read" dial: each other seat with a profile plays
+/// it with probability `trust` and otherwise adapts to the hero. A new
+/// level restarts the hero's average (RE-SOLVE to adapt).
+async fn pf_trust(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfTrustRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let mut s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        let before = s.trust().unwrap_or(1.0);
+        s.set_trust(req.trust).map_err(bad_request)?;
+        let mut st = status.lock().unwrap();
+        // a new level restarts the hero's average (iteration 0)
+        if s.trust().unwrap_or(1.0) != before {
+            st.invalidate_accuracy(s.iteration);
+        }
+        st.trust_readout = None;
+        st.mirror_trust(&s);
+        Ok::<_, ApiError>(serde_json::json!({
+            "ok": true, "trust": s.trust(), "seats": s.trust_seats(), "hero": s.hero,
+        }))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(out))
 }
 
 fn profile_path(name: &str) -> Result<std::path::PathBuf, String> {
@@ -4235,6 +4300,7 @@ async fn main() {
         .route("/api/preflop/load", post(pf_load_game))
         .route("/api/preflop/saves", get(pf_list_games))
         .route("/api/preflop/hero", post(pf_hero))
+        .route("/api/preflop/trust", post(pf_trust))
         .route("/api/preflop/profiles", get(pf_profiles_list))
         .route("/api/preflop/profiles/save", post(pf_profile_save).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/profiles/get", post(pf_profile_get))

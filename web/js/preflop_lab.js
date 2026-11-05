@@ -15,6 +15,7 @@ import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
+import { initPreflopTrust } from './preflop_trust.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -75,6 +76,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
   const icmControls = createIcmControls(els, positionsFor, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
+  // hero mode's trust dial, fed by every status poll
+  const trustDial = els.trust ? initPreflopTrust(els.trust, { toast, positions: () => S.positions || [] }) : null;
   // Range source: this game's solve, or Range Lab's canonical charts walked
   // as a tree (no build or solve). Each source keeps its own line.
   const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
@@ -856,6 +859,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (S.model && Array.isArray(st.frozen) && st.frozen.length === S.positions.length) {
       S.engineFrozen = st.frozen; // engine-truth lock badges for the ribbon
     }
+    trustDial?.update(st);
     const running = st.state === 'running';
     if (running !== S.solveRunning) {
       // the server refuses table/hero changes mid-solve (409) — mirror it

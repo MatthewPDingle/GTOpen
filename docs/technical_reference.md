@@ -165,6 +165,40 @@ never takes tells him he faces the free villain.
 - **Browse.** With a villain locked, the TRUST THE READ panel shows the slider (5% steps), the last readout and SWEEP. The sweep curve plots the hero's EV against the read (solid) and his worst case (dashed) over trust, and clicking a point sets that level.
 - **Reports.** A vs-villain report takes `villain.trust`. The hero then re-adapts at that level, and each flop's `villain_lock.trust` holds the readout. The REPORTS form adds the level to the villain's name, so the library and Compare show it.
 
+## Trust the read (preflop hero mode)
+
+In Preflop Lab hero mode every other seat is frozen, and a seat with a profile plays it (its "read"). `PreflopSolver::set_trust(Some(p))` turns on the same dial as postflop (`preflop/rnr.rs`). Each profiled seat other than the hero is, independently of the others, its read with probability p and otherwise a **free type** that ignores its profile and keeps learning against the hero. Point locks bind the free type too. Solver and frozen seats without a profile are not affected. The hero solves against the mixture without knowing which types he faces.
+
+- **Engine (CPU).**
+  - Each free type has its own arenas, seeded from its seat's table regrets.
+  - The traversal carries one extra reach per free type.
+  - Terminals see each ruled seat at t · read + (1 − t) · free.
+  - Each iteration runs the hero's pass, then one pass per free type, then discounts both arena sets.
+  - The mix is exact wherever the terminal value is multilinear in the opponents' ranges: fold wins, heads-up pots, the coupled-deck and legacy multiway models, and side pots in chip EV. `tests/preflop_rnr.rs` checks it against the expectation over the four type pairs of two seats.
+  - The 3-way table and ICM normalize the ranges they combine, so there the mixture is priced as one range. This is an approximation, and it matters only where two ruled seats meet in one pot.
+- **Engine (GPU).**
+  - Where a ruled seat does not traverse, it plays the behavioral mixture of its two types. `pf_rnr_mix` (`gpu/rnr.cu`) writes that mixture into the forced-policy table before each pass. The seat's reach is then exactly the mixed reach, so the down sweep and every terminal kernel (ICM and side pots included) run unchanged.
+  - The free arenas sit after the main ones.
+  - Each pass swaps in its own seat modes, forced offsets and arena offsets: all mixed for the hero, one seat free, or one seat read for evaluation.
+  - Only the normal plan does this; the throughput variants decline the dial.
+  - `tests/preflop_gpu_rnr.rs` matches the CPU in chip-EV, side-pot and ICM games.
+- **Anchors.**
+  - An unset dial is plain hero mode.
+  - At 100% the hero plays the max exploit, while the free types learn a response that carries no weight for the hero. That response is what the readout's "if they adapt" number measures.
+  - A new level restarts the hero's average (iteration 0).
+- **Readout** (`trust_readout`, bb/hand): the hero's EV against the reads, against the mix, and against seats that adapt.
+  - With three or more players an adapting seat maximizes its own EV, not the hero's loss. So "if they adapt" is not a strict worst case.
+  - Under ICM, adapting seats can even help the hero.
+  - While the dial is on, a ruled seat's gap is its free type's gap, and its EV is the trust-weighted EV of its two types.
+- **Server.**
+  - `POST /api/preflop/trust {"trust": p|null}` sets the dial; it is refused while a solve runs.
+  - `/api/preflop/status` mirrors `trust` and `trust_seats` (the seats it acts on), and `trust_readout` is measured at each accuracy check.
+  - Table, hero or lock changes clear the readout.
+- **UI.**
+  - Below HERO, the TRUST THE READ row appears in hero mode when another seat has a profile.
+  - It has a 5% slider, OFF, the seats it applies to, and the last readout.
+  - RE-SOLVE adapts the hero at the new level.
+
 ## Preflop continuation model
 
 New preflop games use `coupled_deck_v1` at leaves with **three or more live players**, including all-in showdowns. A deterministic table of 1,024 samples (seed 90210) assigns coupled latent hand strengths. Each sample awards the pot to its winning hand(s), so the players' shares sum to the pot after the configured rake. This replaces the old product of separate heads-up equities, which could substantially undervalue multiway calls.
