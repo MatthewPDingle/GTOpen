@@ -125,6 +125,7 @@ fn gpu_trust_zero_is_the_unlocked_solve() {
     for _ in 0..30 {
         plain.iterate();
     }
+    plain.restart_averages(); // as set_trust did for `host`
     let mut ga = GpuSolver::new(&host).unwrap();
     let mut gb = GpuSolver::new(&plain).unwrap();
     for _ in 0..100 {

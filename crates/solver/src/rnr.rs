@@ -72,14 +72,45 @@ impl Solver {
     /// Set the "trust the read" dial: `Some(p)` with p in [0, 1], or `None`
     /// for today's behaviour (equivalent to 1). Takes effect from the next
     /// iteration; it only does anything while a profile lock exists.
+    ///
+    /// Changing the dial changes the game, so while a profile lock exists the
+    /// average strategy restarts from the current regrets
+    /// (`restart_averages`): otherwise the average keeps iterates of the old
+    /// game, weighted by DCFR's t-squared schedule, and a warm-started trust
+    /// sweep stalls far from the new equilibrium.
     pub fn set_trust(&mut self, trust: Option<f32>) -> Result<(), String> {
         if let Some(t) = trust {
             if !t.is_finite() || !(0.0..=1.0).contains(&t) {
                 return Err(format!("trust must be between 0 and 1, got {t}"));
             }
         }
+        let changed = self.trust.unwrap_or(1.0) != trust.unwrap_or(1.0);
         self.trust = trust;
+        if changed && self.iteration > 0 && self.read_villain().is_some() {
+            self.restart_averages();
+        }
         Ok(())
+    }
+
+    /// Warm restart: keep the regrets, clear the average strategy and start
+    /// the discount schedule again at iteration 0. A GPU solve picks this up
+    /// in `GpuSolver::update_locks`.
+    pub fn restart_averages(&mut self) {
+        for store in self.strat.iter_mut() {
+            match store {
+                crate::store::Store::F32(b) => b.as_mut_slice().fill(0.0),
+                crate::store::Store::U16 { q, scale } => {
+                    q.as_mut_slice().fill(0);
+                    scale.as_mut_slice().fill(0.0);
+                }
+                crate::store::Store::I16 { q, scale } => {
+                    q.as_mut_slice().fill(0);
+                    scale.as_mut_slice().fill(0.0);
+                }
+            }
+        }
+        self.iteration = 0;
+        self.average_epoch = self.average_epoch.wrapping_add(1);
     }
 
     pub fn trust(&self) -> Option<f32> {

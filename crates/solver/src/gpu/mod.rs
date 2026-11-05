@@ -159,6 +159,8 @@ pub struct GpuSolver {
     /// The read villain's reach (same slot layout as his `d_reach`),
     /// allocated while the dial is active or a readout needs it.
     d_reach_read: Option<CudaSlice<f32>>,
+    /// `Solver::average_epoch` this solve's averages belong to.
+    average_epoch: u32,
     // least-exploitable fits (rebuilt via update_fits; see fit.rs)
     /// Device arena offset per node (u64::MAX = not traversed).
     h_node_data_off: Vec<u64>,
@@ -447,6 +449,7 @@ impl GpuSolver {
             d_lock_off_free: stream.clone_htod(&lock_off_free).map_err(e)?,
             rnr,
             d_reach_read,
+            average_epoch: solver.average_epoch,
             d_regrets,
             d_strat,
             arena_layout,
@@ -1506,6 +1509,14 @@ impl GpuSolver {
         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
         // the dial can change with the locks or on its own (set_trust)
         self.rnr = solver.rnr_active();
+        if solver.average_epoch != self.average_epoch {
+            // Solver::restart_averages (a new trust level): same warm restart
+            for p in 0..2 {
+                self.stream.memset_zeros(&mut self.d_strat[p]).map_err(e)?;
+            }
+            self.iteration = solver.iteration;
+            self.average_epoch = solver.average_epoch;
+        }
         match self.rnr {
             Some(r) => self.ensure_reach_read(r.villain)?,
             None => self.d_reach_read = None,

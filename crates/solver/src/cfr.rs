@@ -90,6 +90,9 @@ pub struct Solver {
     /// probability `trust` the profiled villain plays his profile locks,
     /// otherwise he plays freely. `None` (or 1.0) = today's full exploit.
     pub(crate) trust: Option<f32>,
+    /// Bumped by `restart_averages`, so a GPU solve holding its own arenas
+    /// can restart too (`GpuSolver::update_locks`).
+    pub average_epoch: u32,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -178,6 +181,7 @@ impl Solver {
             lock_history: Default::default(),
             fits: std::collections::HashMap::new(),
             trust: None,
+            average_epoch: 0,
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]
