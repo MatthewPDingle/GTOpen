@@ -260,6 +260,7 @@
           <div id="action-list"></div>
           <div id="card-picker" class="deck-picker hidden"></div>
           <div id="runouts-report"></div>
+          <div id="bestsize-browse" class="bs-browse hidden"></div>
         </section>
         <section class="panel" id="panel-hands">
           <div class="hands-tabs">
@@ -287,6 +288,13 @@
           <option>47</option><option>95</option><option selected>184</option><option value="1755">1755 (all)</option>
         </select></label>
         <label class="chk" style="font-size:11px" data-tip="Solve every report with one bet-size menu — flop 33% / 75%, turn 75%, river 75% (big river bets become all-ins via the threshold), raises 60% pot, 3 raises max — so reports stay comparable across spots. Untick to use SETUP's sizes instead."><input type="checkbox" id="rep-stdsizes" checked> standard report sizes</label>
+        <label class="chk" style="font-size:11px" data-tip="Best size sweep: instead of one report, solve one single-size tree per candidate size of ONE bet (the chosen player's first bet on the flop; IP's is the bet after a check) on every flop, to 0.15% pot, then refine between the best size's neighbours. Shows the best size per flop, sizes the solves can't separate (ties), and the EV lost by always using one size. Costs about (sizes + 3) solves per flop; the rest of the tree uses the menu above."><input type="checkbox" id="rep-sweep"> best size sweep</label>
+        <div id="rep-sweep-opts" class="hidden">
+          <label class="pfl-row" style="font-size:11px">Bet <select id="rep-sweep-player" style="flex:1"><option value="1">IP's flop bet after a check</option><option value="0">OOP's first flop bet</option></select></label>
+          <label class="pfl-row" style="font-size:11px" data-tip="Candidate sizes for that bet, % of the pot.">Sizes % pot <input type="text" id="rep-sweep-sizes" value="25 33 50 75 125" style="flex:1"></label>
+          <label class="pfl-row" style="font-size:11px" data-tip="Golden-section solves per flop between the best grid size's neighbours (0 = grid only). Skipped when the best size is the smallest or largest candidate.">Refine <select id="rep-sweep-refine" style="flex:1"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+          <label class="chk" style="font-size:11px" data-tip="Also save each candidate size as an ordinary report you can browse by node (a few MB per flop per size)."><input type="checkbox" id="rep-sweep-keep" checked> keep per-size reports</label>
+        </div>
         <label class="chk" style="font-size:11px" id="rep-villain-row" data-tip="Lock the villain to his postflop profile on every flop before measuring (extra solve per flop). Requires a lab export with a modeled seat."><input type="checkbox" id="rep-vsvillain"> vs modeled villain</label>
         <div class="btn-row">
           <button id="rep-run" class="btn primary" data-tip="Start the report on the spot currently configured in SETUP.">RUN REPORT</button>
@@ -318,6 +326,7 @@
         <div id="rep-features" class="rep-section hidden"></div>
         <div id="rep-compare" class="rep-section hidden"></div>
       </section>
+      <section class="panel hidden" id="rep-sweep-viewer"></section>
     </div>
   </main>
 

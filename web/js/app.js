@@ -8,6 +8,7 @@ import { initTooltips } from './tooltip.js';
 import { initPreflopLab } from './preflop_lab.js';
 import { exportPublicationLabel } from './preflop_preview.js';
 import { initReports } from './reports.js';
+import { initBrowseBestSize } from './best_size.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
 import { createPostflopIcm } from './postflop_icm.js';
 
@@ -414,6 +415,7 @@ async function buildTree() {
     const info = await api.buildSpot(cfg);
     state.built = true;
     state.builtFingerprint = spotFingerprint(cfg); // what the tree now solves
+    state.builtSpot = cfg;
     browser.reset(); // new tree: drop any stale browse line
     // Preflop context for Browse (position labels + ribbon prefix) comes from
     // the last Preflop Lab export — but only while SETUP still matches it. A
@@ -577,7 +579,10 @@ async function pollStatus() {
   // the built-tree fingerprint follows server truth (status echoes the
   // session's spot_request): it survives a page refresh, and a LOAD swaps it
   // to the loaded spot so SOLVE knows SETUP no longer describes the session
-  if ('spot_request' in st) state.builtFingerprint = spotFingerprint(st.spot_request);
+  if ('spot_request' in st) {
+    state.builtFingerprint = spotFingerprint(st.spot_request);
+    state.builtSpot = st.spot_request;
+  }
   state.running = st.state === 'running';
   const ci = $('compute-info');
   ci.textContent = computeText(st);
@@ -789,6 +794,14 @@ const browser = new Browser({
 });
 // expose for console debugging / tooling
 window.browser = browser;
+// Browse "find best size": a one-board size sweep of the bet at this node
+const browseBestSize = initBrowseBestSize($('bestsize-browse'), {
+  toast,
+  // the tree being browsed (not SETUP, which may have been edited since)
+  currentSpot: () => state.builtSpot ? JSON.parse(JSON.stringify(state.builtSpot)) : currentSpotRequest(),
+  openInBrowse: (spot, board) => openReportSpot(spot, board, []),
+});
+browser.onNodeChange = (view, path) => browseBestSize.update(view, path);
 
 $('seg-player').querySelectorAll('button').forEach(b =>
   b.addEventListener('click', () => {
