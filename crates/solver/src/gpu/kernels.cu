@@ -636,3 +636,42 @@ extern "C" __global__ void fit_dual(
     for (int a = 0; a < FIT_NA; a++) F[24 + a] = 0.f;
     F[32] = 0.f;
 }
+
+// ---------------------------------------------------------------------------
+// "Trust the read" (rnr.rs). The read villain's reach is a second down sweep
+// into its own buffer (same slot layout as the villain's reach); before the
+// hero's up sweep the villain's (free) reach becomes the reach the hero faces:
+//   free = trust * read + (1 - trust) * free.
+// Terminal values are linear in the opponent reach, so this is exact.
+// ---------------------------------------------------------------------------
+extern "C" __global__ void rnr_mix(
+    float* free_reach, const float* __restrict__ read, float trust, long long n)
+{
+    float rest = 1.f - trust;
+    long long i = (long long)blockIdx.x * blockDim.x + threadIdx.x;
+    long long stride = (long long)gridDim.x * blockDim.x;
+    for (long long k = i; k < n; k += stride)
+        free_reach[k] = trust * read[k] + rest * free_reach[k];
+}
+
+// A new trust level restarts the average strategy (Solver::restart_averages)
+// except at locked nodes (lock_off >= 0): nothing learns there, and they keep
+// the pre-lock average a re-applied profile rakes from.
+extern "C" __global__ void restart_strat(
+    const u32* __restrict__ nodes, int count, int p,
+    const int* __restrict__ node_player,
+    const int* __restrict__ node_na,
+    const u64* __restrict__ node_data_off,
+    const long long* __restrict__ lock_off,
+    float* strat, int nh)
+{
+    for (int k = blockIdx.x; k < count; k += gridDim.x) {
+        const u32 n = nodes[k];
+        if (node_player[n] != p || lock_off[n] >= 0) continue;
+        const u64 off = node_data_off[n];
+        if (off == ~0ull) continue;
+        const long long len = (long long)node_na[n] * nh;
+        for (long long i = threadIdx.x; i < len; i += blockDim.x) strat[off + i] = 0.f;
+    }
+}
+

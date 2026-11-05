@@ -23,6 +23,7 @@ pub mod preflop;
 pub mod query;
 pub mod range;
 pub mod report;
+pub mod rnr;
 pub mod save;
 pub mod scratch;
 pub mod size_sweep;

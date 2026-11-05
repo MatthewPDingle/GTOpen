@@ -89,6 +89,8 @@ pub struct GpuSolver {
     f_up_action_eval: CudaFunction,
     f_fit_apply: CudaFunction,
     f_fit_dual: CudaFunction,
+    f_rnr_mix: CudaFunction,
+    f_restart_strat: CudaFunction,
 
     // plan metadata kept host-side
     num_levels: usize,
@@ -150,6 +152,19 @@ pub struct GpuSolver {
     // device: locks (rebuilt via update_locks)
     d_lock_off: CudaSlice<i64>,
     d_lock_sigma: CudaSlice<f32>,
+    /// `d_lock_off` with the profile (read) locks removed: the free
+    /// villain's view under "trust the read" (rnr.rs).
+    d_lock_off_free: CudaSlice<i64>,
+    /// The dial while it changes the solve (`Solver::rnr_active`).
+    rnr: Option<crate::rnr::Trust>,
+    /// The read villain's reach (same slot layout as his `d_reach`),
+    /// allocated while the dial is active or a readout needs it.
+    d_reach_read: Option<CudaSlice<f32>>,
+    /// The free villain's own regret and strategy arenas while the dial is
+    /// on (`Solver`'s `FreeArenas`; same layout as his main arenas).
+    d_free: Option<FreeDev>,
+    /// `Solver::average_epoch` this solve's averages belong to.
+    average_epoch: u32,
     // least-exploitable fits (rebuilt via update_fits; see fit.rs)
     /// Device arena offset per node (u64::MAX = not traversed).
     h_node_data_off: Vec<u64>,
@@ -172,14 +187,21 @@ pub struct GpuSolver {
     eval_graphs: [Option<CudaGraph>; 2],
     eval_warmed: [bool; 2],
     d_disc: CudaSlice<f32>,
-    /// Captured iteration sweeps (one per traverser); rebuilt if locks change.
-    graphs: Option<[CudaGraph; 2]>,
+    /// Captured iteration sweeps (`sweep_list` order); rebuilt if locks change.
+    graphs: Option<Vec<CudaGraph>>,
     /// Cached+page-locked host staging for fast arena transfers.
     h_staging: PinnedBuf,
     arena_layout: [ArenaLayout; 2],
 
     pub iteration: u32,
     pub algo: Algorithm,
+}
+
+/// The free villain's device arenas ("trust the read").
+struct FreeDev {
+    villain: usize,
+    regrets: CudaSlice<f32>,
+    strat: CudaSlice<f32>,
 }
 
 fn checks_with_setup<S,V:Send,F:FnOnce()->Result<S,String>,C:Fn()->V+Sync>(eligible:bool,setup:F,checks:C)->Result<(S,V),String>{
@@ -246,7 +268,13 @@ impl GpuSolver {
             plan.use_full_action_arenas(&solver.spot);
         }
         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
-        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+        // "trust the read" keeps a second copy of the villain's reach
+        // and the free villain's own regret and strategy arenas
+        let read_bytes = solver.rnr_active().map_or(0, |r| {
+            (plan.reach_blocks[r.villain] * plan.nh[r.villain]) as u64 * 4
+                + plan.arena_elements[r.villain] as u64 * 8
+        });
+        let needed = plan.staging_bytes() + arena_bytes + read_bytes + 512 * 1024 * 1024;
         if needed > budget_bytes {
             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
@@ -320,7 +348,12 @@ impl GpuSolver {
             arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
             arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
         ];
-        let (lock_off, lock_sigma) = build_lock_table(solver);
+        let (lock_off, lock_off_free, lock_sigma) = build_lock_tables(solver);
+        let rnr = solver.rnr_active();
+        let d_reach_read = match rnr {
+            Some(r) => Some(stream.alloc_zeros::<f32>(plan.reach_blocks[r.villain] * plan.nh[r.villain]).map_err(e)?),
+            None => None,
+        };
 
         let n = plan.num_nodes;
         let nh = plan.nh;
@@ -358,6 +391,8 @@ impl GpuSolver {
             f_up_action_eval: func("up_action_eval")?,
             f_fit_apply: func("fit_apply")?,
             f_fit_dual: func("fit_dual")?,
+            f_rnr_mix: func("rnr_mix")?,
+            f_restart_strat: func("restart_strat")?,
             h_node_data_off: plan.node_data_off.clone(),
             h_node_level: {
                 let mut lv = vec![u32::MAX; plan.num_nodes];
@@ -425,6 +460,11 @@ impl GpuSolver {
             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
+            d_lock_off_free: stream.clone_htod(&lock_off_free).map_err(e)?,
+            rnr,
+            d_reach_read,
+            d_free: None,
+            average_epoch: solver.average_epoch,
             d_regrets,
             d_strat,
             arena_layout,
@@ -446,6 +486,17 @@ impl GpuSolver {
             stream,
             _module: module,
         };
+        // the free villain's arenas: the CPU solver's, or copies of the
+        // villain's main arenas when it has none yet
+        match (gpu.rnr, solver.free_arenas.as_deref()) {
+            (Some(r), Some(f)) if f.villain == r.villain => {
+                let v = r.villain;
+                let regrets = gpu.arena_layout[v].upload_store(&gpu.stream, solver, v, &f.regrets, gpu.h_staging.as_mut_slice())?;
+                let strat = gpu.arena_layout[v].upload_store(&gpu.stream, solver, v, &f.strat, gpu.h_staging.as_mut_slice())?;
+                gpu.d_free = Some(FreeDev { villain: v, regrets, strat });
+            }
+            _ => gpu.sync_free()?,
+        }
         if solver.has_fits() {
             gpu.update_fits(solver, &[])?;
         }
@@ -467,18 +518,19 @@ impl GpuSolver {
             .memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc)
             .map_err(e)?;
         let _ = &disc;
+        let sweeps = self.sweep_list();
         if self.graphs.is_none() && self.iteration > 1 {
-            // First iteration ran eagerly (JIT warm); capture the two sweeps
+            // First iteration ran eagerly (JIT warm); capture the sweeps
             // into CUDA graphs. Kernels read discounts from d_disc, so the
             // captured graphs stay valid for every later iteration.
-            let mut captured = Vec::with_capacity(2);
-            for p in 0..2 {
+            let mut captured = Vec::with_capacity(sweeps.len());
+            for &(p, reuse, free_pass) in &sweeps {
                 self.stream
                     .begin_capture(
                         sys::CUstreamCaptureMode::CU_STREAM_CAPTURE_MODE_THREAD_LOCAL,
                     )
                     .map_err(e)?;
-                let res = self.paired_sweep(p, None, p == 1);
+                let res = self.paired_sweep(p, None, reuse, free_pass);
                 let graph = self
                     .stream
                     .end_capture(
@@ -488,20 +540,38 @@ impl GpuSolver {
                 res?; // surface sweep errors only after capture mode is exited
                 captured.push(graph.ok_or_else(|| "graph capture failed".to_string())?);
             }
-            let g1 = captured.pop().unwrap();
-            let g0 = captured.pop().unwrap();
-            self.graphs = Some([g0, g1]);
+            self.graphs = Some(captured);
         }
         if let Some(graphs) = &self.graphs {
             for g in graphs {
                 g.launch().map_err(e)?;
             }
         } else {
-            for p in 0..2 {
-                self.paired_sweep(p, None, p == 1)?;
+            for (p, reuse, free_pass) in sweeps {
+                self.paired_sweep(p, None, reuse, free_pass)?;
             }
         }
         Ok(())
+    }
+
+    /// One iteration's sweeps as (traverser, reuse player 1's reach, free
+    /// villain pass). Plain: player 0 then player 1, the second reusing
+    /// reach1. "Trust the read" mirrors `Solver::iterate`: the hero's sweep
+    /// against the mixture, and the villain's read then free sweeps.
+    fn sweep_list(&self) -> Vec<(usize, bool, bool)> {
+        match self.rnr {
+            None => vec![(0, false, false), (1, true, false)],
+            Some(r) => {
+                let mut v = Vec::with_capacity(3);
+                for p in 0..2 {
+                    v.push((p, false, false));
+                    if p == r.villain {
+                        v.push((p, false, true));
+                    }
+                }
+                v
+            }
+        }
     }
 
     /// One iteration with a stream sync after every launch, accumulating wall
@@ -514,8 +584,8 @@ impl GpuSolver {
             .memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc)
             .map_err(e)?;
         let mut prof = Profile::default();
-        for p in 0..2 {
-            self.paired_sweep(p, Some(&mut prof), p == 1)?;
+        for (p, reuse, free_pass) in self.sweep_list() {
+            self.paired_sweep(p, Some(&mut prof), reuse, free_pass)?;
         }
         Ok(prof)
     }
@@ -524,6 +594,11 @@ impl GpuSolver {
     /// the GPU (best-response and, with rake, average-EV sweeps). Mirrors
     /// `Solver::exploitability`.
     pub fn exploitability(&mut self, solver: &Solver) -> Result<f64, String> {
+        if let Some(r) = self.rnr {
+            // "trust the read": convergence of the trust game (rnr.rs)
+            let c = self.rnr_root_cfvs(r, false)?;
+            return Ok(solver.rnr_exploitability_from(&r, &c));
+        }
         let denom = solver.pair_weight_sum();
         if denom <= 0.0 {
             return Ok(f64::NAN);
@@ -613,6 +688,18 @@ impl GpuSolver {
     }
 
     fn eval_down(&mut self) -> Result<(), String> {
+        self.eval_down_with(false)
+    }
+
+    /// `free`: play the free villain (profile locks off; "trust the read").
+    fn eval_down_with(&mut self, free: bool) -> Result<(), String> {
+        let locks = if free { &self.d_lock_off_free } else { &self.d_lock_off };
+        let free_dev = self.d_free.as_ref().filter(|_| free);
+        let strat = |q: usize| match free_dev {
+            Some(f) if f.villain == q => &f.strat,
+            _ => &self.d_strat[q],
+        };
+        let (strat0, strat1) = (strat(0), strat(1));
         let nh0 = self.nh[0];
         let nh1 = self.nh[1];
 
@@ -648,9 +735,9 @@ impl GpuSolver {
                         .arg(&self.d_children)
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
-                        .arg(&self.d_strat[0])
-                        .arg(&self.d_strat[1])
-                        .arg(&self.d_lock_off)
+                        .arg(strat0)
+                        .arg(strat1)
+                        .arg(locks)
                         .arg(&self.d_lock_sigma)
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
@@ -690,6 +777,25 @@ impl GpuSolver {
     }
 
     fn eval_up(&mut self, p: usize, mode: i32, terminals: bool) -> Result<(), String> {
+        self.eval_up_with(p, mode, terminals, false, false)
+    }
+
+    /// `opp_read`: the opponent reach is `d_reach_read` (the read, or the
+    /// read/free mixture after `rnr_mix`). `free`: the traverser's own
+    /// profile locks don't bind (the free villain's best response).
+    fn eval_up_with(&mut self, p: usize, mode: i32, terminals: bool, opp_read: bool, free: bool) -> Result<(), String> {
+        let locks = if free { &self.d_lock_off_free } else { &self.d_lock_off };
+        let own_strat = match self.d_free.as_ref() {
+            Some(f) if free && f.villain == p => &f.strat,
+            _ => &self.d_strat[p],
+        };
+        let opp_reach = match (&self.d_reach_read, opp_read) {
+            (Some(read), true) => read,
+            (None, true) => return Err("trust the read: reach buffer missing".into()),
+            _ => &self.d_reach[1 - p],
+        };
+        let (reach_arg0, reach_arg1) =
+            if p == 0 { (&self.d_reach[0], opp_reach) } else { (opp_reach, &self.d_reach[1]) };
         let nh_p = self.nh[p];
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
@@ -712,8 +818,8 @@ impl GpuSolver {
                         .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
-                        .arg(&self.d_reach[0])
-                        .arg(&self.d_reach[1])
+                        .arg(reach_arg0)
+                        .arg(reach_arg1)
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
                         .arg(&self.d_fold_card_off[1 - p])
@@ -743,7 +849,7 @@ impl GpuSolver {
                         .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
                         .arg(&self.d_node_river_slot)
                         .arg(&self.d_rsrc[1 - p])
-                        .arg(&self.d_reach[1 - p])
+                        .arg(opp_reach)
                         .arg(&self.d_riv_off[p])
                         .arg(&self.d_riv_cnt[p])
                         .arg(&self.d_riv_idx[p])
@@ -809,8 +915,8 @@ impl GpuSolver {
                         .arg(&self.d_node_data_off)
                         .arg(&self.d_node_children_start)
                         .arg(&self.d_children)
-                        .arg(&self.d_strat[p])
-                        .arg(&self.d_lock_off)
+                        .arg(own_strat)
+                        .arg(locks)
                         .arg(&self.d_lock_sigma)
                         .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
@@ -824,14 +930,171 @@ impl GpuSolver {
         Ok(())
     }
 
+    /// Down sweep of the read villain's reach into `d_reach_read`: every
+    /// lock binds (the read plays the profile); elsewhere he plays the
+    /// shared current strategy (regrets) or, for evaluation, the average.
+    fn read_down(&mut self, villain: usize, use_strat: bool) -> Result<(), String> {
+        let mut nh = [0i32; 2];
+        nh[villain] = self.nh[villain];
+        let (nh0, nh1) = (nh[0], nh[1]);
+        let read = self.d_reach_read.as_mut().ok_or("trust the read: reach buffer missing")?;
+        let [reach0, reach1] = &mut self.d_reach;
+        // the hero's buffer is passed with zero hands: never touched
+        let (r0, r1): (&mut CudaSlice<f32>, &mut CudaSlice<f32>) =
+            if villain == 0 { (read, reach1) } else { (reach0, read) };
+        let arenas = if use_strat { &self.d_strat } else { &self.d_regrets };
+        unsafe {
+            self.stream
+                .launch_builder(&self.f_copy_root)
+                .arg(&self.d_weights[0])
+                .arg(&self.d_weights[1])
+                .arg(&mut *r0)
+                .arg(&mut *r1)
+                .arg(&nh0)
+                .arg(&nh1)
+                .launch(Self::cfg(4, 0))
+                .map_err(e)?;
+        }
+        for l in 0..self.num_levels {
+            let sp = self.action_spans[l];
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                unsafe {
+                    self.stream
+                        .launch_builder(&self.f_down_action)
+                        .arg(&self.d_action_nodes)
+                        .arg(&start)
+                        .arg(&count)
+                        .arg(&self.d_node_player)
+                        .arg(&self.d_node_na)
+                        .arg(&self.d_node_data_off)
+                        .arg(&self.d_node_children_start)
+                        .arg(&self.d_children)
+                        .arg(&self.d_rsrc[0])
+                        .arg(&self.d_rsrc[1])
+                        .arg(&arenas[0])
+                        .arg(&arenas[1])
+                        .arg(&self.d_lock_off)
+                        .arg(&self.d_lock_sigma)
+                        .arg(&mut *r0)
+                        .arg(&mut *r1)
+                        .arg(&nh0)
+                        .arg(&nh1)
+                        .launch(Self::cfg(sp.count, 0))
+                        .map_err(e)?;
+                }
+            }
+            let sp = self.chance_spans[l];
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                unsafe {
+                    self.stream
+                        .launch_builder(&self.f_down_chance)
+                        .arg(&self.d_chance_parents)
+                        .arg(&self.d_chance_children)
+                        .arg(&self.d_chance_cards)
+                        .arg(&start)
+                        .arg(&count)
+                        .arg(&self.d_rsrc[0])
+                        .arg(&self.d_rsrc[1])
+                        .arg(&self.d_hand_mask[0])
+                        .arg(&self.d_hand_mask[1])
+                        .arg(&mut *r0)
+                        .arg(&mut *r1)
+                        .arg(&nh0)
+                        .arg(&nh1)
+                        .launch(Self::cfg(sp.count, 0))
+                        .map_err(e)?;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// free = trust * read + (1 - trust) * free, over the villain's whole
+    /// reach buffer `d_reach[villain]` (both share one slot layout): the
+    /// reach the hero faces. `d_reach_read` keeps the read's.
+    fn rnr_mix(&mut self, r: crate::rnr::Trust) -> Result<(), String> {
+        let read = self.d_reach_read.as_ref().ok_or("trust the read: reach buffer missing")?;
+        let n = read.len() as i64;
+        let blocks = (n as u64).div_ceil(BLOCK as u64).clamp(1, 65_535) as u32;
+        unsafe {
+            self.stream
+                .launch_builder(&self.f_rnr_mix)
+                .arg(&mut self.d_reach[r.villain])
+                .arg(read)
+                .arg(&r.trust)
+                .arg(&n)
+                .launch(Self::cfg(blocks, 0))
+                .map_err(e)?;
+        }
+        Ok(())
+    }
+
+    /// Root values of the trust game under average strategies (mirrors
+    /// `Solver::rnr_root_cfvs`), evaluated eagerly. The free villain's down
+    /// sweep comes last: the hero's mixture reuses it.
+    fn rnr_root_cfvs(&mut self, r: crate::rnr::Trust, with_read: bool) -> Result<crate::rnr::RnrCfvs, String> {
+        let (v, h) = (r.villain, 1 - r.villain);
+        self.ensure_reach_read(v)?;
+        let root = |gpu: &mut GpuSolver, p: usize| -> Result<Vec<f32>, String> {
+            let span = gpu.d_cfv.slice(0..gpu.nh[p] as usize);
+            gpu.stream.clone_dtoh(&span).map_err(e)
+        };
+        // the read villain: locks bind, main arenas
+        self.eval_down_with(false)?;
+        self.eval_up_with(v, 0, true, false, false)?;
+        let br_read = root(self, v)?;
+        self.eval_up_with(v, 1, false, false, false)?;
+        let ev_read = root(self, v)?;
+        // the free villain: profile locks off, his own arenas
+        self.eval_down_with(true)?;
+        self.eval_up_with(v, 0, true, false, true)?;
+        let br_villain = root(self, v)?;
+        self.eval_up_with(v, 1, false, false, true)?;
+        let ev_villain = root(self, v)?;
+        self.read_down(v, true)?;
+        let ev_hero_vs_read = if with_read {
+            self.eval_up_with(h, 1, true, true, false)?;
+            root(self, h)?
+        } else {
+            Vec::new()
+        };
+        self.rnr_mix(r)?;
+        self.eval_up_with(h, 0, true, false, false)?;
+        let br_hero = root(self, h)?;
+        self.eval_up_with(h, 1, false, false, false)?;
+        let ev_hero = root(self, h)?;
+        Ok(crate::rnr::RnrCfvs { br_hero, ev_hero, br_villain, ev_villain, br_read, ev_read, ev_hero_vs_read })
+    }
+
+    /// `Solver::trust_readout` on the GPU (current device strategies).
+    pub fn trust_readout(&mut self, solver: &Solver) -> Result<crate::rnr::TrustReadout, String> {
+        let r = solver.readout_trust()?;
+        let c = self.rnr_root_cfvs(r, true)?;
+        let exploit = if self.rnr.is_some() {
+            solver.rnr_exploitability_from(&r, &c)
+        } else {
+            if self.d_reach_read.is_some() && solver.rnr_active().is_none() {
+                self.d_reach_read = None; // only needed while the dial is on
+            }
+            self.exploitability(solver)?
+        };
+        solver.readout_from(&r, &c, exploit)
+    }
+
     // Standalone/continuation calls may follow changed roots or a workspace
     // swap, so even p=1 must refresh both players' reaches.
     fn sweep(&mut self, p: usize, prof: Option<&mut Profile>) -> Result<(), String> {
-        self.paired_sweep(p, prof, false)
+        self.paired_sweep(p, prof, false, false)
     }
 
+    /// One traverser sweep. `free_pass`: the free villain's sweep under
+    /// "trust the read" (profile locks off, his own arenas).
     fn paired_sweep(
-        &mut self, p: usize, mut prof: Option<&mut Profile>, reuse_player1_reach: bool,
+        &mut self, p: usize, mut prof: Option<&mut Profile>, reuse_player1_reach: bool, free_pass: bool,
     ) -> Result<(), String> {
         debug_assert!(!reuse_player1_reach || p == 1);
         let nh0 = self.nh[0];
@@ -839,10 +1102,36 @@ impl GpuSolver {
         // Only the second sweep of an uninterrupted pair can reuse reach1:
         // p0 up updates player0 learning state and never writes either reach.
         // Every first sweep stays full, including after evaluation or resume.
-        let down_nh1 = if reuse_player1_reach { 0 } else { nh1 };
+        let mut down_nh = [nh0, if reuse_player1_reach { 0 } else { nh1 }];
         let nh_p = self.nh[p];
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
+        // "trust the read": the hero's and the free villain's sweeps play the
+        // free villain down (profile locks off, his own arenas), and the
+        // hero's up sweep then faces the read/free mixture; the read
+        // villain's sweep is an ordinary locked sweep in the main arenas.
+        let rnr = self.rnr;
+        let hero_vs_mix = matches!(rnr, Some(r) if r.villain != p);
+        let free_pass = free_pass && matches!(rnr, Some(r) if r.villain == p);
+        let free_view = hero_vs_mix || free_pass;
+        let down_locks = if free_view { &self.d_lock_off_free } else { &self.d_lock_off };
+        let free_dev = self.d_free.as_ref().filter(|_| free_view);
+        let down_regrets = |q: usize| match free_dev {
+            Some(f) if f.villain == q => &f.regrets,
+            _ => &self.d_regrets[q],
+        };
+        let (regrets0, regrets1) = (down_regrets(0), down_regrets(1));
+        // The villain's two sweeps share the reaches: the hero's does not
+        // change between them, the read villain's own reach is still the one
+        // the hero's sweep computed (`d_reach_read`; when the villain goes
+        // first, his read sweep computes it), and the free villain's sweep
+        // only refreshes the free reach.
+        let read_pass = matches!(rnr, Some(r) if r.villain == p) && !free_pass;
+        if let Some(r) = rnr.filter(|_| read_pass || free_pass) {
+            let skip = if read_pass { r.villain } else { 1 - r.villain };
+            down_nh[skip] = 0;
+        }
+        let (down_nh0, down_nh1) = (down_nh[0], down_nh[1]);
 
         let [reach0, reach1] = &mut self.d_reach;
         let t0 = profq(&prof);
@@ -853,7 +1142,7 @@ impl GpuSolver {
                 .arg(&self.d_weights[1])
                 .arg(&mut *reach0)
                 .arg(&mut *reach1)
-                .arg(&nh0)
+                .arg(&down_nh0)
                 .arg(&down_nh1)
                 .launch(Self::cfg(4, 0))
                 .map_err(e)?;
@@ -879,13 +1168,13 @@ impl GpuSolver {
                         .arg(&self.d_children)
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
-                        .arg(&self.d_regrets[0])
-                        .arg(&self.d_regrets[1])
-                        .arg(&self.d_lock_off)
+                        .arg(regrets0)
+                        .arg(regrets1)
+                        .arg(down_locks)
                         .arg(&self.d_lock_sigma)
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
-                        .arg(&nh0)
+                        .arg(&down_nh0)
                         .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
@@ -911,7 +1200,7 @@ impl GpuSolver {
                         .arg(&self.d_hand_mask[1])
                         .arg(&mut *reach0)
                         .arg(&mut *reach1)
-                        .arg(&nh0)
+                        .arg(&down_nh0)
                         .arg(&down_nh1)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
@@ -919,6 +1208,28 @@ impl GpuSolver {
                 prof_acc(&self.stream, &mut prof, 2, t0)?;
             }
         }
+
+        if let Some(r) = rnr.filter(|_| hero_vs_mix) {
+            // the read's reach, then d_reach[villain] = p * read + (1 - p) * free
+            self.read_down(r.villain, false)?;
+            self.rnr_mix(r)?;
+        } else if read_pass && p == 0 {
+            // the villain sweeps first: no hero sweep has computed it yet
+            self.read_down(p, false)?;
+        }
+        let up_locks = if free_pass { &self.d_lock_off_free } else { &self.d_lock_off };
+        let (up_regrets, up_strat) = match self.d_free.as_mut().filter(|_| free_pass) {
+            Some(f) => (&mut f.regrets, &mut f.strat),
+            None => (&mut self.d_regrets[p], &mut self.d_strat[p]),
+        };
+        // the traverser's own reach (the read villain's is d_reach_read) and
+        // the opponent's (for the hero: the mixture, in d_reach[villain])
+        let own_reach = match (&self.d_reach_read, read_pass) {
+            (Some(read), true) => read,
+            _ => &self.d_reach[p],
+        };
+        let opp_reach = &self.d_reach[1 - p];
+        let (reach_arg0, reach_arg1) = if p == 0 { (own_reach, opp_reach) } else { (opp_reach, own_reach) };
 
         let pi = p as i32;
         let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
@@ -940,8 +1251,8 @@ impl GpuSolver {
                         .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
-                        .arg(&self.d_reach[0])
-                        .arg(&self.d_reach[1])
+                        .arg(reach_arg0)
+                        .arg(reach_arg1)
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
                         .arg(&self.d_fold_card_off[1 - p])
@@ -973,7 +1284,7 @@ impl GpuSolver {
                         .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
                         .arg(&self.d_node_river_slot)
                         .arg(&self.d_rsrc[1 - p])
-                        .arg(&self.d_reach[1 - p])
+                        .arg(opp_reach)
                         .arg(&self.d_riv_off[p])
                         .arg(&self.d_riv_cnt[p])
                         .arg(&self.d_riv_idx[p])
@@ -1040,9 +1351,9 @@ impl GpuSolver {
                         .arg(&self.d_node_data_off)
                         .arg(&self.d_node_children_start)
                         .arg(&self.d_children)
-                        .arg(&self.d_regrets[p])
+                        .arg(&*up_regrets)
                         .arg(&self.d_rsrc[p])
-                        .arg(&self.d_reach[p])
+                        .arg(own_reach)
                         .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
                         .arg(&nh_p)
@@ -1068,11 +1379,11 @@ impl GpuSolver {
                         .arg(&self.d_node_data_off)
                         .arg(&self.d_node_children_start)
                         .arg(&self.d_children)
-                        .arg(&mut self.d_regrets[p])
-                        .arg(&mut self.d_strat[p])
+                        .arg(&mut *up_regrets)
+                        .arg(&mut *up_strat)
                         .arg(&self.d_rsrc[p])
-                        .arg(&self.d_reach[p])
-                        .arg(&self.d_lock_off)
+                        .arg(own_reach)
+                        .arg(up_locks)
                         .arg(&self.d_lock_sigma)
                         .arg(&self.d_cfv_slot)
                         .arg(&mut self.d_cfv)
@@ -1085,7 +1396,9 @@ impl GpuSolver {
                 prof_acc(&self.stream, &mut prof, 6, t0)?;
             }
         }
-        if p == 1 && !self.fit_nodes.is_empty() {
+        // once per iteration, after its last sweep
+        let last_sweep = p == 1 && !(matches!(rnr, Some(r) if r.villain == 1) && !free_pass);
+        if last_sweep && !self.fit_nodes.is_empty() {
             let count = self.fit_nodes.len() as i32;
             unsafe {
                 self.stream
@@ -1234,6 +1547,7 @@ impl GpuSolver {
             self.stream.synchronize().map_err(e)?;
             self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
         }
+        self.sync_free_to_cpu(solver, true)?;
         solver.iteration = self.iteration;
         if self.iso_active {
             // only representative branches hold fresh data; queries/saves
@@ -1255,6 +1569,7 @@ impl GpuSolver {
             self.stream.synchronize().map_err(e)?;
             self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
         }
+        self.sync_free_to_cpu(solver, false)?;
         solver.iteration = self.iteration;
         if self.iso_active {
             solver.mark_sym_dirty();
@@ -1267,15 +1582,98 @@ impl GpuSolver {
         self.stream.synchronize().map_err(e)
     }
 
-    /// Re-upload the lock table after `solver.locks` changed.
+    /// `Solver::sync_free_arenas` on the device: the free villain gets copies
+    /// of the villain's arenas when the dial turns on, and loses them when
+    /// it turns off.
+    fn sync_free(&mut self) -> Result<(), String> {
+        match self.rnr {
+            Some(r) if self.d_free.as_ref().is_none_or(|f| f.villain != r.villain) => {
+                let v = r.villain;
+                let mut regrets = self.stream.alloc_zeros::<f32>(self.d_regrets[v].len()).map_err(e)?;
+                let mut strat = self.stream.alloc_zeros::<f32>(self.d_strat[v].len()).map_err(e)?;
+                self.stream.memcpy_dtod(&self.d_regrets[v], &mut regrets).map_err(e)?;
+                self.stream.memcpy_dtod(&self.d_strat[v], &mut strat).map_err(e)?;
+                self.d_free = Some(FreeDev { villain: v, regrets, strat });
+            }
+            Some(_) => {}
+            None => self.d_free = None,
+        }
+        Ok(())
+    }
+
+    /// Download the free villain's arenas into the CPU solver's.
+    fn sync_free_to_cpu(&mut self, solver: &mut Solver, regrets_too: bool) -> Result<(), String> {
+        solver.sync_free_arenas(self.rnr);
+        let (Some(f), Some(host)) = (self.d_free.as_ref(), solver.free_arenas.as_deref()) else {
+            return Ok(());
+        };
+        let v = f.villain;
+        for (which, dev, store) in [(0, &f.regrets, &host.regrets), (1, &f.strat, &host.strat)] {
+            if which == 0 && !regrets_too {
+                continue;
+            }
+            let len = dev.len();
+            self.stream.memcpy_dtoh(dev, &mut self.h_staging.as_mut_slice()[..len]).map_err(e)?;
+            self.stream.synchronize().map_err(e)?;
+            self.arena_layout[v].write_store(solver, v, which, store, &self.h_staging.as_slice()[..len]);
+        }
+        Ok(())
+    }
+
+    /// Allocate the read villain's reach buffer if it is missing.
+    fn ensure_reach_read(&mut self, villain: usize) -> Result<(), String> {
+        let len = self.d_reach[villain].len();
+        if self.d_reach_read.as_ref().is_none_or(|b| b.len() != len) {
+            self.d_reach_read = Some(self.stream.alloc_zeros::<f32>(len).map_err(e)?);
+        }
+        Ok(())
+    }
+
+    /// Re-upload the lock table after `solver.locks` changed, or after
+    /// `Solver::set_trust` (the "trust the read" dial).
     pub fn update_locks(&mut self, solver: &Solver) -> Result<(), String> {
         // Drain in-flight kernels before the assignments below drop (free) the
         // old device buffers. The server's mutex ordering already prevents an
         // overlap, but the safety of a device free shouldn't depend on it.
         self.stream.synchronize().map_err(e)?;
-        let (lock_off, lock_sigma) = build_lock_table(solver);
+        let (lock_off, lock_off_free, lock_sigma) = build_lock_tables(solver);
         self.d_lock_off = self.stream.clone_htod(&lock_off).map_err(e)?;
+        self.d_lock_off_free = self.stream.clone_htod(&lock_off_free).map_err(e)?;
         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
+        // the dial can change with the locks or on its own (set_trust)
+        self.rnr = solver.rnr_active();
+        self.sync_free()?;
+        if solver.average_epoch != self.average_epoch {
+            // Solver::restart_averages (a new trust level): same warm restart
+            let count = self.d_action_nodes.len() as i32;
+            for p in 0..2 {
+                let (pi, nh) = (p as i32, self.nh[p]);
+                unsafe {
+                    self.stream
+                        .launch_builder(&self.f_restart_strat)
+                        .arg(&self.d_action_nodes)
+                        .arg(&count)
+                        .arg(&pi)
+                        .arg(&self.d_node_player)
+                        .arg(&self.d_node_na)
+                        .arg(&self.d_node_data_off)
+                        .arg(&self.d_lock_off)
+                        .arg(&mut self.d_strat[p])
+                        .arg(&nh)
+                        .launch(Self::cfg((count.max(1) as u32).min(65_535), 0))
+                        .map_err(e)?;
+                }
+            }
+            if let Some(f) = self.d_free.as_mut() {
+                self.stream.memset_zeros(&mut f.strat).map_err(e)?;
+            }
+            self.iteration = solver.iteration;
+            self.average_epoch = solver.average_epoch;
+        }
+        match self.rnr {
+            Some(r) => self.ensure_reach_read(r.villain)?,
+            None => self.d_reach_read = None,
+        }
         // captured graphs hold pointers to the old lock buffers
         self.graphs = None;
         self.eval_graphs = [None, None];
@@ -1336,6 +1734,21 @@ pub fn vram_info_mb() -> Option<(u64, u64)> {
     Some((free as u64 / 1_000_000, total as u64 / 1_000_000))
 }
 
+/// Per-node offsets (-1 = unlocked) for every lock and for the free
+/// villain's view (profile locks removed; see rnr.rs), plus the
+/// concatenated locked sigmas they index.
+fn build_lock_tables(solver: &Solver) -> (Vec<i64>, Vec<i64>, Vec<f32>) {
+    let (off, sigma) = build_lock_table(solver);
+    let mut off_free = off.clone();
+    for &node_idx in solver.locks.keys() {
+        if solver.is_read_lock(node_idx) {
+            off_free[node_idx as usize] = -1;
+        }
+    }
+    // a running fit at a profile node can't exist (a lock replaces it)
+    (off, off_free, sigma)
+}
+
 /// Per-node offset (-1 = unlocked) plus concatenated locked sigmas.
 fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
     let n = solver.spot.tree.nodes.len();
@@ -1359,12 +1772,7 @@ fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
 }
 
 /// Write an f32 arena image into a CPU store (encoding if compressed).
-fn write_arena(solver: &Solver, which_strat: bool, p: usize, data: &[f32]) {
-    let store = if which_strat {
-        &solver.strat[p]
-    } else {
-        &solver.regrets[p]
-    };
+fn write_arena(solver: &Solver, store: &Store, p: usize, data: &[f32]) {
     match store {
         Store::F32(b) => unsafe { b.slice(0, data.len()) }.copy_from_slice(data),
         _ => {

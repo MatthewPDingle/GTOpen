@@ -86,6 +86,16 @@ pub struct Solver {
     /// Running least-exploitable fits (node index keyed; session only).
     /// A fitted node keeps learning, steered by a bounty; see `fit.rs`.
     pub(crate) fits: std::collections::HashMap<u32, crate::fit::FitConstraint>,
+    /// "Trust the read" (Restricted Nash Response, see `rnr.rs`): with
+    /// probability `trust` the profiled villain plays his profile locks,
+    /// otherwise he plays freely. `None` (or 1.0) = today's full exploit.
+    pub(crate) trust: Option<f32>,
+    /// The free villain's own arenas while the dial is on (`rnr.rs`); the
+    /// main arenas stay the read villain's (today's locked solve).
+    pub(crate) free_arenas: Option<Box<crate::rnr::FreeArenas>>,
+    /// Bumped by `restart_averages`, so a GPU solve holding its own arenas
+    /// can restart too (`GpuSolver::update_locks`).
+    pub average_epoch: u32,
     /// Exploit suit symmetries by traversing one chance branch per orbit.
     pub use_isomorphism: bool,
     /// Non-representative branches hold stale data until symmetrize() runs.
@@ -142,7 +152,7 @@ impl Solver {
         self.iteration = t;
         let mut out = vec![0.; own.len()];
         self.cfr(0, p, own, opponent, Dealt::default(),
-            &Discounts::for_iteration(self.algo, t), &mut out);
+            &Discounts::for_iteration(self.algo, t), false, &mut out);
         Ok(out)
     }
 
@@ -173,6 +183,9 @@ impl Solver {
             lock_labels: std::collections::HashMap::new(),
             lock_history: Default::default(),
             fits: std::collections::HashMap::new(),
+            trust: None,
+            free_arenas: None,
+            average_epoch: 0,
             use_isomorphism: true,
             sym_dirty: false,
             #[cfg(test)]
@@ -185,6 +198,9 @@ impl Solver {
         let mut total: u64 = self.regrets.iter().chain(self.strat.iter()).map(Store::bytes).sum();
         if let Some(preds) = &self.preds {
             total += preds.iter().map(Store::bytes).sum::<u64>();
+        }
+        if let Some(f) = &self.free_arenas {
+            total += f.bytes();
         }
         total
     }
@@ -219,18 +235,42 @@ impl Solver {
         self.sym_dirty = true;
         self.iteration += 1;
         let disc = Discounts::for_iteration(self.algo, self.iteration);
+        let rnr = self.rnr_active();
+        self.sync_free_arenas(rnr);
         for p in 0..2usize {
             let nh = self.spot.hands[p].len();
             let mut out = Buf::zeroed(nh);
-            self.cfr(
-                0,
-                p,
-                &self.spot.weights[p],
-                &self.spot.weights[1 - p],
-                Dealt::default(),
-                &disc,
-                &mut out,
-            );
+            match rnr {
+                // the hero best-responds to the read/free mixture
+                Some(r) if p != r.villain => self.cfr_rnr_hero(&r, &disc, &mut out),
+                // the read villain (locks bind, main arenas), then the free
+                // villain (profile locks off, his own arenas)
+                Some(_) => {
+                    for free in [false, true] {
+                        out.fill(0.0);
+                        self.cfr(
+                            0,
+                            p,
+                            &self.spot.weights[p],
+                            &self.spot.weights[1 - p],
+                            Dealt::default(),
+                            &disc,
+                            free,
+                            &mut out,
+                        );
+                    }
+                }
+                None => self.cfr(
+                    0,
+                    p,
+                    &self.spot.weights[p],
+                    &self.spot.weights[1 - p],
+                    Dealt::default(),
+                    &disc,
+                    false,
+                    &mut out,
+                ),
+            }
         }
         if !self.fits.is_empty() {
             self.fit_dual_step();
@@ -283,10 +323,36 @@ impl Solver {
         self.spot.tree.children[node.children_start as usize + i]
     }
 
+    /// The lock in force at a node. `free` = the free villain's view under
+    /// "trust the read": profile locks (the read) do not bind him; manual
+    /// point locks still do.
+    #[inline]
+    pub(crate) fn lock_view(&self, node_idx: u32, free: bool) -> Option<&Vec<f32>> {
+        let lock = self.locks.get(&node_idx)?;
+        if free && self.is_read_lock(node_idx) {
+            None
+        } else {
+            Some(lock)
+        }
+    }
+
+    /// The (regret, strategy, prediction) arenas player `p` learns in: the
+    /// free villain's own arenas under the free view while the dial is on,
+    /// otherwise the main arenas.
+    #[inline]
+    pub(crate) fn arenas(&self, p: usize, free: bool) -> (&Store, &Store, Option<&Store>) {
+        if free {
+            if let Some(f) = self.free_arenas.as_deref().filter(|f| f.villain == p) {
+                return (&f.regrets, &f.strat, f.preds.as_ref());
+            }
+        }
+        (&self.regrets[p], &self.strat[p], self.preds.as_deref().map(|b| &b[p]))
+    }
+
     /// Current strategy from regret matching (or the locked strategy),
-    /// written into `sigma` (na*nh).
-    fn current_strategy(&self, node_idx: u32, node: &Node, sigma: &mut [f32]) {
-        if let Some(lock) = self.locks.get(&node_idx) {
+    /// written into `sigma` (na*nh). `free`: see `lock_view`.
+    pub(crate) fn current_strategy(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+        if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;
         }
@@ -295,18 +361,15 @@ impl Solver {
         let na = node.num_children as usize;
         let n = na * nh;
         let off = node.data_offset;
-        let preds = if self.algo == Algorithm::PcfrPlus {
-            self.preds.as_deref()
-        } else {
-            None
-        };
-        match (&self.regrets[p], preds) {
+        let (regrets, _, preds) = self.arenas(p, free);
+        let preds = if self.algo == Algorithm::PcfrPlus { preds } else { None };
+        match (regrets, preds) {
             (Store::F32(rb), None) => {
                 regret_match(unsafe { rb.slice(off, n) }, na, nh, sigma);
             }
-            (Store::F32(rb), Some(preds)) => {
+            (Store::F32(rb), Some(pred)) => {
                 let r = unsafe { rb.slice(off, n) };
-                let pr = match &preds[p] {
+                let pr = match pred {
                     Store::F32(pb) => unsafe { pb.slice(off, n) },
                     _ => unreachable!("prediction store mismatch"),
                 };
@@ -320,10 +383,10 @@ impl Solver {
                 // match directly on the quantized values.
                 regret_match_q(unsafe { q.slice(off, n) }, na, nh, sigma);
             }
-            (Store::I16 { q, scale }, Some(preds)) => {
+            (Store::I16 { q, scale }, Some(pred)) => {
                 let qr = unsafe { q.slice(off, n) };
                 let kr = unsafe { scale.read_at(node_idx as usize) } / 32767.0;
-                let (qp, kp) = match &preds[p] {
+                let (qp, kp) = match pred {
                     Store::I16 { q, scale } => (
                         unsafe { q.slice(off, n) },
                         unsafe { scale.read_at(node_idx as usize) } / 32767.0,
@@ -342,7 +405,7 @@ impl Solver {
     /// Apply the regret/strategy (and PCFR+ prediction) update at an action
     /// node owned by traverser `p`. `out` holds the sigma-weighted node value.
     #[allow(clippy::too_many_arguments)]
-    fn update_node(
+    pub(crate) fn update_node(
         &self,
         node_idx: u32,
         node: &Node,
@@ -352,23 +415,21 @@ impl Solver {
         out: &[f32],
         reach_p: &[f32],
         disc: &Discounts,
+        free: bool,
     ) {
         let nh = self.spot.hands[p].len();
         let na = node.num_children as usize;
         let n = na * nh;
         let off = node.data_offset;
-        let preds = if self.algo == Algorithm::PcfrPlus {
-            self.preds.as_deref()
-        } else {
-            None
-        };
+        let (regret_store, strat_store, preds) = self.arenas(p, free);
+        let preds = if self.algo == Algorithm::PcfrPlus { preds } else { None };
         match self.storage {
             Storage::F32 => {
-                let regrets = match &self.regrets[p] {
+                let regrets = match regret_store {
                     Store::F32(b) => unsafe { b.slice(off, n) },
                     _ => unreachable!(),
                 };
-                let strat = match &self.strat[p] {
+                let strat = match strat_store {
                     Store::F32(b) => unsafe { b.slice(off, n) },
                     _ => unreachable!(),
                 };
@@ -383,7 +444,7 @@ impl Solver {
                     }
                 }
                 if let Some(preds) = preds {
-                    let pr = match &preds[p] {
+                    let pr = match preds {
                         Store::F32(b) => unsafe { b.slice(off, n) },
                         _ => unreachable!(),
                     };
@@ -397,11 +458,11 @@ impl Solver {
             }
             Storage::Compressed => {
                 // Fused decode+update+max pass, then one quantize pass.
-                let (rq, rscale) = match &self.regrets[p] {
+                let (rq, rscale) = match regret_store {
                     Store::I16 { q, scale } => (unsafe { q.slice(off, n) }, scale),
                     _ => unreachable!(),
                 };
-                let (sq, sscale) = match &self.strat[p] {
+                let (sq, sscale) = match strat_store {
                     Store::U16 { q, scale } => (unsafe { q.slice(off, n) }, scale),
                     _ => unreachable!(),
                 };
@@ -442,7 +503,7 @@ impl Solver {
                             pmax = pmax.max(delta.abs());
                         }
                     }
-                    let (pq, pscale) = match &preds[p] {
+                    let (pq, pscale) = match preds {
                         Store::I16 { q, scale } => (unsafe { q.slice(off, n) }, scale),
                         _ => unreachable!(),
                     };
@@ -468,6 +529,7 @@ impl Solver {
         reach_o: &[f32],
         dealt: Dealt,
         disc: &Discounts,
+        free: bool,
         out: &mut [f32],
     ) {
         #[cfg(test)]
@@ -515,16 +577,16 @@ impl Solver {
             }
             KIND_CHANCE => {
                 self.chance_node(node, p, reach_p, reach_o, dealt, out, |s, c, rp, ro, d, o| {
-                    s.cfr(c, p, rp, ro, d, disc, o)
+                    s.cfr(c, p, rp, ro, d, disc, free, o)
                 });
             }
             KIND_ACTION => {
                 let na = node.num_children as usize;
                 if node.player as usize == p {
                     let nh = spot.hands[p].len();
-                    let locked = self.locks.contains_key(&node_idx);
+                    let locked = self.lock_view(node_idx, free).is_some();
                     let mut sigma = Buf::for_overwrite(na * nh);
-                    self.current_strategy(node_idx, node, &mut sigma);
+                    self.current_strategy(node_idx, node, &mut sigma, free);
                     let mut vals = Buf::zeroed(na * nh);
                     let mut reach_buf = Buf::for_overwrite(nh);
                     for a in 0..na {
@@ -539,6 +601,7 @@ impl Solver {
                             reach_o,
                             dealt,
                             disc,
+                            free,
                             &mut vals[a * nh..(a + 1) * nh],
                         );
                     }
@@ -555,13 +618,13 @@ impl Solver {
                         }
                     }
                     if !locked {
-                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc);
+                        self.update_node(node_idx, node, p, &sigma, &vals, out, reach_p, disc, free);
                     }
                 } else {
                     let o = 1 - p;
                     let nh_o = spot.hands[o].len();
                     let mut sigma = Buf::for_overwrite(na * nh_o);
-                    self.current_strategy(node_idx, node, &mut sigma);
+                    self.current_strategy(node_idx, node, &mut sigma, free);
                     let nh = spot.hands[p].len();
                     let mut reach_buf = Buf::for_overwrite(nh_o);
                     let mut child_out = Buf::for_overwrite(nh);
@@ -578,6 +641,7 @@ impl Solver {
                             &reach_buf,
                             dealt,
                             disc,
+                            free,
                             &mut child_out,
                         );
                         for i in 0..nh {
@@ -595,7 +659,7 @@ impl Solver {
     /// distinguishes the two, with at most two streets and no per-node cache.
     /// Tests compare this classification with every descendant in built trees.
     #[inline]
-    fn action_free_runout(&self, node: &Node) -> bool {
+    pub(crate) fn action_free_runout(&self, node: &Node) -> bool {
         if node.kind != KIND_CHANCE {
             return false;
         }
@@ -707,9 +771,15 @@ impl Solver {
             for (i, h) in spot.hands[p].iter().enumerate() {
                 rp[i] = if h.mask & cm != 0 { 0.0 } else { reach_p[i] };
             }
-            let mut ro = Buf::for_overwrite(nh_o);
-            for (j, h) in spot.hands[1 - p].iter().enumerate() {
-                ro[j] = if h.mask & cm != 0 { 0.0 } else { reach_o[j] };
+            // `reach_o` may hold several stacked opponent reach blocks
+            // (the read and free villains under "trust the read").
+            let mut ro = Buf::for_overwrite(reach_o.len());
+            if nh_o > 0 {
+                for (dst, src) in ro.chunks_mut(nh_o).zip(reach_o.chunks(nh_o)) {
+                    for (j, h) in spot.hands[1 - p].iter().enumerate() {
+                        dst[j] = if h.mask & cm != 0 { 0.0 } else { src[j] };
+                    }
+                }
             }
             let mut child_out = Buf::zeroed(nh);
             recurse(self, child, &rp, &ro, dealt.push(c), &mut child_out);
@@ -754,21 +824,32 @@ impl Solver {
     /// Average strategy (normalized cumulative strategy) for a node, written
     /// into `sigma` (na*nh). Locked nodes return the locked strategy.
     pub fn average_strategy_into(&self, node_idx: u32, node: &Node, sigma: &mut [f32]) {
-        if let Some(lock) = self.locks.get(&node_idx) {
+        self.average_strategy_view(node_idx, node, sigma, false)
+    }
+
+    /// `average_strategy_into` under a lock view (see `lock_view`).
+    pub(crate) fn average_strategy_view(&self, node_idx: u32, node: &Node, sigma: &mut [f32], free: bool) {
+        if let Some(lock) = self.lock_view(node_idx, free) {
             sigma.copy_from_slice(lock);
             return;
         }
-        self.solved_strategy_into(node, sigma);
+        let p = node.player as usize;
+        self.strategy_from(self.arenas(p, free).1, node, sigma);
     }
 
     /// Average strategy from the accumulated strategy arena, IGNORING any lock
     /// on the node. This is the stable base for (re)computing a lock, so
     /// re-locking never compounds onto an already-locked strategy.
     pub fn solved_strategy_into(&self, node: &Node, sigma: &mut [f32]) {
+        self.strategy_from(&self.strat[node.player as usize], node, sigma)
+    }
+
+    /// Normalized cumulative strategy of `node` from the strategy arena `store`.
+    fn strategy_from(&self, store: &Store, node: &Node, sigma: &mut [f32]) {
         let p = node.player as usize;
         let nh = self.spot.hands[p].len();
         let na = node.num_children as usize;
-        match &self.strat[p] {
+        match store {
             Store::F32(b) => {
                 let strat = unsafe { b.slice(node.data_offset, na * nh) };
                 for i in 0..nh {
@@ -935,6 +1016,30 @@ impl Solver {
                     unsafe {
                         self.regrets[p].write_f32(dst_idx, dst.data_offset, n, &dst_r);
                         self.strat[p].write_f32(dst_idx, dst.data_offset, n, &dst_s);
+                    }
+                }
+                // the free villain's own arenas ("trust the read"): same
+                // transport, materializing only the locks that bind him
+                if let Some(f) = self.free_arenas.as_deref().filter(|f| f.villain == p) {
+                    let lock = self.lock_view(src_idx, true);
+                    let mut src_r = Buf::zeroed(n);
+                    let mut src_s = Buf::zeroed(n);
+                    unsafe {
+                        f.regrets.read_f32(src_idx, src.data_offset, n, &mut src_r);
+                        f.strat.read_f32(src_idx, src.data_offset, n, &mut src_s);
+                    }
+                    let mut dst_r = Buf::zeroed(n);
+                    let mut dst_s = Buf::zeroed(n);
+                    for a in 0..na {
+                        for i in 0..nh {
+                            let j = tbl[i] as usize;
+                            dst_r[a * nh + i] = src_r[a * nh + j];
+                            dst_s[a * nh + i] = lock.map_or(src_s[a * nh + j], |l| l[a * nh + j]);
+                        }
+                    }
+                    unsafe {
+                        f.regrets.write_f32(dst_idx, dst.data_offset, n, &dst_r);
+                        f.strat.write_f32(dst_idx, dst.data_offset, n, &dst_s);
                     }
                 }
                 for a in 0..na {

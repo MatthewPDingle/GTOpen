@@ -105,6 +105,53 @@ their tree configuration are unchanged.
   preflop CFR vs an independent fictitious-play Nash oracle on HU jam/fold,
   plus multiway limp-tree chip conservation and rake-drain direction.
 
+## Trust the read (postflop)
+
+A postflop profile lock fixes the villain's whole tree, and the hero's
+re-adapted strategy is a full best response to that read. `Solver::set_trust`
+adds Restricted Nash Response (Johanson, Zinkevich & Bowling 2007): with
+probability p the villain plays the profile locks, otherwise he plays freely
+and learns against the hero. The hero does not know which villain he faces,
+so his strategy keeps updating that belief along the hand; a line the profile
+never takes tells him he faces the free villain.
+
+- **Semantics**: profile locks are the read. Manual point locks and running
+  fits bind both villains. The read villain is today's locked villain: he
+  re-adapts wherever the profile leaves a node open (deep raise lines below
+  its mass cutoff, for example) in the main arenas. The free villain has his
+  own regret and strategy arenas while the dial is on, copied from the main
+  ones when it turns on. The two must not share open nodes: a shared node
+  learns only from the free villain's values while the read plays it too,
+  and on the deep bench flop trust 0.9 then stalled at 0.12% pot instead of
+  reaching 0.001%.
+- **p = 1** (or unset) is today's lock-and-re-adapt solve; **p = 0** is the
+  unlocked solve, bit for bit on the CPU (`tests/rnr.rs`).
+- **Engine**: each iteration runs the hero's pass and two villain passes: the
+  read villain's (an ordinary locked pass) and the free villain's (profile
+  locks off, his own arenas). The hero's pass carries the villain's reach as
+  two stacked blocks (read, free) and evaluates terminals against
+  p × read + (1 − p) × free, which is exact because terminal values are
+  linear in the opponent reach. The GPU keeps the free villain's arenas and
+  one extra copy of the villain's reach, filled by a second down sweep and
+  mixed before the hero's up sweep (`tests/gpu_rnr.rs`). The villain's two
+  sweeps share the reaches the hero's sweep computed. On the 5090 bench flop
+  (1.35M nodes) an iteration with the dial on costs 33 ms against 19 ms for
+  the locked solve, the same at every trust level (`tests/rnr_bench.rs`).
+- **Readout** (`Solver::trust_readout`, `GpuSolver::trust_readout`): the
+  hero's EV against the read and against the mixture, and the EV of a villain
+  who best-responds to the hero (profile locks off). In zero-sum games it
+  also gives the hero's worst-case EV, which is the pot minus that number.
+  While the dial is on, `exploitability` measures the trust game: the hero's
+  best-response gain against the mixture plus p times the read villain's
+  gain and (1 − p) times the free villain's gain, halved.
+- **A new trust level** restarts the average strategy (`restart_averages`):
+  otherwise DCFR's t² weighting keeps iterates of the old game and a
+  warm-started sweep stalls. Locked nodes keep their pre-lock average, so
+  re-applying a profile still rakes from the solve. The restart does not
+  depend on the solver's own iteration count, which is stale while a GPU
+  drives the solve. A warm sweep from trust 1 down to 0 on the bench flop
+  converges to 0.3% pot in 80 to 200 iterations per level.
+
 ## Preflop continuation model
 
 New preflop games use `coupled_deck_v1` at leaves with **three or more live players**, including all-in showdowns. A deterministic table of 1,024 samples (seed 90210) assigns coupled latent hand strengths. Each sample awards the pot to its winning hand(s), so the players' shares sum to the pot after the configured rake. This replaces the old product of separate heads-up equities, which could substantially undervalue multiway calls.

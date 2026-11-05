@@ -205,12 +205,53 @@ impl ArenaLayout {
         Ok(device)
     }
 
-    pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+    /// Upload an explicit store of player `p`'s layout (the free villain's
+    /// arenas). Inactive blocks are left out: the main upload's snapshots
+    /// restore them on download.
+    pub(super) fn upload_store(
+        &self, stream: &Arc<CudaStream>, solver: &Solver, p: usize, store: &Store, staging: &mut [f32],
+    ) -> Result<CudaSlice<f32>, String> {
+        let data = &mut staging[..self.len];
         if !self.compact {
-            write_arena(solver, which != 0, p, data);
+            if let Store::F32(b) = store {
+                return stream.clone_htod(b.as_slice()).map_err(e);
+            }
+            let nh = solver.spot.hands[p].len();
+            for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
+                if node.kind == KIND_ACTION && node.player as usize == p {
+                    let len = node.num_children as usize * nh;
+                    let off = node.data_offset as usize;
+                    unsafe { store.read_f32(i as u32, node.data_offset, len, &mut data[off..off + len]); }
+                }
+            }
+        } else if let Store::F32(buf) = store {
+            for span in &self.copies {
+                let host = span.host as usize;
+                data[span.device..span.device + span.len].copy_from_slice(&buf.as_slice()[host..host + span.len]);
+            }
+        } else {
+            for block in &self.active {
+                unsafe { store.read_f32(block.node, block.host, block.len, &mut data[block.device..block.device + block.len]); }
+            }
+        }
+        let device = stream.clone_htod(&data[..]).map_err(e)?;
+        stream.synchronize().map_err(e)?;
+        Ok(device)
+    }
+
+    pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+        self.write_store(solver, p, which, store, data);
+    }
+
+    /// `write` into an explicit store of player `p`'s layout (the free
+    /// villain's arenas under "trust the read"). Inactive blocks restore the
+    /// same snapshots: a device arena never changes them.
+    pub(super) fn write_store(&self, solver: &Solver, p: usize, which: usize, store: &Store, data: &[f32]) {
+        if !self.compact {
+            write_arena(solver, store, p, data);
             return;
         }
-        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
         if let Store::F32(buf) = store {
             // Host spans are disjoint, just like parallel CPU CFR arenas.
             self.copies.par_iter().for_each(|span| {

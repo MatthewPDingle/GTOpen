@@ -67,6 +67,7 @@ fn allin_runout(board: &str) {
             &zero,
             Dealt::default(),
             &Discounts::for_iteration(Algorithm::Dcfr, 1),
+            false,
             &mut out,
         );
         let visits = s.traversal_visits.load(Ordering::Relaxed);
@@ -89,6 +90,7 @@ fn allin_runout(board: &str) {
             &spot.weights[1],
             Dealt::default(),
             &Discounts::for_iteration(Algorithm::Dcfr, 1),
+            false,
             &mut out,
         );
         assert!(s.traversal_visits.load(Ordering::Relaxed) > 1);
@@ -131,6 +133,7 @@ fn zero_reach_betting_chance_keeps_own_averages() {
             &zero,
             Dealt::default(),
             &Discounts::for_iteration(Algorithm::Dcfr, 1),
+            false,
             &mut out,
         );
         assert!(s.traversal_visits.load(Ordering::Relaxed) > 1);

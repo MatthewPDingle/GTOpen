@@ -110,6 +110,20 @@ impl Store {
         }
     }
 
+    /// A copy of this arena (same mode and contents).
+    pub fn duplicate(&self) -> Store {
+        fn dup<T: Copy + Default>(b: &ArenaBuf<T>) -> ArenaBuf<T> {
+            let mut c = ArenaBuf::new(b.len());
+            c.as_mut_slice().copy_from_slice(b.as_slice());
+            c
+        }
+        match self {
+            Store::F32(b) => Store::F32(dup(b)),
+            Store::I16 { q, scale } => Store::I16 { q: dup(q), scale: dup(scale) },
+            Store::U16 { q, scale } => Store::U16 { q: dup(q), scale: dup(scale) },
+        }
+    }
+
     pub fn bytes(&self) -> u64 {
         match self {
             Store::F32(b) => b.len() as u64 * 4,
