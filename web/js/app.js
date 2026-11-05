@@ -9,6 +9,7 @@ import { initPreflopLab } from './preflop_lab.js';
 import { exportPublicationLabel } from './preflop_preview.js';
 import { initReports } from './reports.js';
 import { initBrowseBestSize } from './best_size.js';
+import { initTrust } from './trust.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
 import { createPostflopIcm } from './postflop_icm.js';
 
@@ -560,6 +561,7 @@ async function pollStatus() {
   updateIps(st);
   $('exploit-now').textContent = st.exploit_pct > 0 ? st.exploit_pct.toFixed(3) : '—';
   drawChart(st.history || []);
+  trustDial.update(st);
 
   // keep the SOLVE tab's tree line in sync with the server session — load
   // (and any other session swap) must not keep showing the previous build.
@@ -794,6 +796,27 @@ const browser = new Browser({
 });
 // expose for console debugging / tooling
 window.browser = browser;
+// Trust the read: the exploit dial under a villain profile lock
+const trustDial = initTrust($('trust-panel'), {
+  toast,
+  villain: () => browser.villainLocked,
+  posLabel: p => browser.posLabel(p),
+  startSweep: async () => {
+    await api.solve({
+      max_iterations: +$('run-iters').value,
+      target_exploit_pct: +$('run-target').value,
+      check_every: +$('run-check').value,
+      sweep: [],
+    });
+    state.solved = false;
+    state.saved = false;
+    toast('trust sweep: solving each level in turn…');
+    startPolling();
+  },
+});
+browser.onVillainLocksChange = () => trustDial.refresh();
+// lock edits clear the server's trust readout: resync once
+browser.onLockEdit = () => pollStatus();
 // Browse "find best size": a one-board size sweep of the bet at this node
 const browseBestSize = initBrowseBestSize($('bestsize-browse'), {
   toast,

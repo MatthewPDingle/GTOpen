@@ -687,7 +687,7 @@ export class Browser {
         try {
           if (this.fitMethod === 'full') {
             const out = await api.fit(this.path, freqs, label, this.freezeLine && this.hasEarlierDecision());
-            this.setLockHistory(out.history);
+            this.setLockHistory(out.history); this.onLockEdit?.();
             toast(`least-exploitable fit set${frozenNote(out)} — re-solving; the node is locked when the solve ends`);
             document.getElementById('btn-solve-top')?.click();
           } else {
@@ -758,7 +758,7 @@ export class Browser {
    *  the line too when that option is on. Returns the server's reply. */
   async lockHere(mode, label) {
     const out = await api.lock(this.path, mode, label, this.freezeLine && this.hasEarlierDecision());
-    this.setLockHistory(out.history);
+    this.setLockHistory(out.history); this.onLockEdit?.();
     return out;
   }
 
@@ -804,7 +804,7 @@ export class Browser {
     try {
       const out = await (dir === 'undo' ? api.lockUndo() : api.lockRedo());
       this.lockStepBusy = false;
-      this.setLockHistory(out.history);
+      this.setLockHistory(out.history); this.onLockEdit?.();
       this.syncVillainLocked(out.history);
       if (out.label) toast(`${dir === 'undo' ? 'undid' : 'redid'}: ${out.label} — RE-SOLVE to update the strategy`);
       await this.refresh();
@@ -860,7 +860,7 @@ export class Browser {
       un.className = 'btn ghost'; un.textContent = 'UNLOCK';
       un.dataset.tip = 'Remove the lock: this node adapts again on the next RE-SOLVE.';
       un.addEventListener('click', async () => {
-        try { const out = await api.unlock(this.path); this.setLockHistory(out.history); toast('unlocked'); this.refresh(); }
+        try { const out = await api.unlock(this.path); this.setLockHistory(out.history); this.onLockEdit?.(); toast('unlocked'); this.refresh(); }
         catch (e) { toast(e.message, true); }
       });
       foot.appendChild(un);
@@ -1498,6 +1498,7 @@ export class Browser {
    *  modeled seat, one click compiles that player's postflop stats into node
    *  locks across his whole tree (equilibrium distortion via Range rakes). */
   renderVillainLocks() {
+    this.onVillainLocksChange?.(); // the trust dial follows the villain lock
     const box = document.getElementById('villain-locks');
     if (!box) return;
     box.innerHTML = '';
@@ -1569,14 +1570,14 @@ export class Browser {
     try {
       if (clearing) {
         const out = await api.profileLocksClear();
-        this.setLockHistory(out.history);
+        this.setLockHistory(out.history); this.onLockEdit?.();
         this.villainLocked = null;
         this.villainLockEvidence = null;
         toast('villain profile locks cleared');
       } else {
         const out = await api.profileLocks(p, v.stats,
           this.preflop ? this.preflop.aggressor : null, this.preflop?.pot_type ?? null, v.name);
-        this.setLockHistory(out.history);
+        this.setLockHistory(out.history); this.onLockEdit?.();
         this.villainLocked = p;
         this.villainLockEvidence = out.root_evidence || null;
         const worst = (out.rows || []).reduce((w, r) =>

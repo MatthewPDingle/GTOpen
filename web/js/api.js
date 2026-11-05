@@ -62,6 +62,7 @@ export const api = {
   profileLocks: (player, stats, aggressor, pot_type = null, name = null) =>
     req('POST', '/api/profile_locks', { player, stats, aggressor, pot_type, name }),
   profileLocksClear: () => req('DELETE', '/api/profile_locks'),
+  trust: trust => req('POST', '/api/trust', { trust }),
   reportsRun: body => req('POST', '/api/reports/run', body),
   reportsStatus: () => req('GET', '/api/reports/status'),
   reportsStop: () => req('POST', '/api/reports/stop'),
