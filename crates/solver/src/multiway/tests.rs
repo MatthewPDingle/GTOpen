@@ -265,3 +265,60 @@ fn save_load_round_trip_and_browse() {
     assert_eq!(river.actor, Some(0));
 }
 
+
+// --- Tournament (ICM) payoffs -------------------------------------------
+
+fn icm_cfg(payouts: &[f64], others: &[f64]) -> crate::icm::postflop::PostflopIcm {
+    crate::icm::postflop::PostflopIcm { payouts: payouts.to_vec(), behind: None, others: others.to_vec(), field_groups: vec![] }
+}
+
+#[test]
+fn icm_winner_take_all_tables_are_chips() {
+    let mut c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a");
+    c.tree.icm = Some(icm_cfg(&[1.0], &[40.0, 75.0]));
+    let spot = MwSpot::new(c).unwrap();
+    let mut n = 0;
+    for node in spot.tree.nodes.iter().filter(|n| n.kind == KIND_TERM_SHOWDOWN || n.kind == KIND_TERM_FOLD) {
+        for p in 0..3 {
+            let (icm, chips) = (spot.payoff_table(node, p), payoff_table(node, p, 0.0, 0.0));
+            for x in 0..3 {
+                for y in 0..3 {
+                    assert!((icm[x][y] - chips[x][y]).abs() < 1e-6, "live {:b} p {p}: {icm:?} vs {chips:?}", node.live);
+                }
+            }
+        }
+        n += 1;
+    }
+    assert!(n > 20);
+}
+
+#[test]
+fn icm_terminals_match_brute_force() {
+    // Final-table payouts, side pots and a short stack that can bust.
+    let mut c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [20.0, 120.0, 60.0], "50 a", "a");
+    c.tree.icm = Some(icm_cfg(&[40.0, 25.0, 15.0, 10.0, 10.0], &[40.0, 75.0]));
+    check_terminals(c, 19);
+}
+
+#[test]
+fn icm_river_terminals_match_exact_three_hand_icm() {
+    // Deep, uneven stacks: who wins between the other two decides who busts.
+    let mut c = cfg("Ks9d4c7h2s", [R0, R1, R2], 30.0, [25.0, 140.0, 60.0], "50 a", "a");
+    c.tree.icm = Some(icm_cfg(&[50.0, 30.0, 20.0], &[]));
+    check_terminals(c, 23);
+}
+
+#[test]
+fn icm_river_solve_converges() {
+    let mut c = cfg("Ks9d4c7h2s", [R0, R1, R2], 6.0, [12.0, 30.0, 20.0], "50", "a");
+    c.tree.add_allin = true;
+    c.tree.icm = Some(icm_cfg(&[50.0, 30.0, 20.0], &[15.0]));
+    let (_, e10) = solve(c.clone(), 10, Storage::F32, true, Algorithm::Dcfr);
+    let (s, e) = solve(c, 300, Storage::F32, true, Algorithm::Dcfr);
+    let (evs, _) = s.exploitability();
+    eprintln!("3-way ICM river: {e10:.3}% -> {e:.3}% pot, EVs {evs:?}");
+    assert!(e < e10 && e < 1.0, "ICM river exploitability {e}% pot");
+    // Prize equity is conserved, but the players outside the hand gain when
+    // someone busts, so the three EVs sum to at most zero.
+    assert!(evs.iter().sum::<f64>() < 1e-3, "{evs:?}");
+}

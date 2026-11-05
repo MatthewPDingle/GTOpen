@@ -333,3 +333,49 @@ fn gpu_clairvoyance_closed_form() {
         sigma_ip[nh_ip + qq]
     );
 }
+
+/// ICM payoffs on the GPU: each player reads its own terminal values. A
+/// bubble flop solve must converge like the CPU's, and the GPU best response
+/// must agree with the CPU's on the same arenas.
+#[test]
+fn gpu_icm_matches_cpu() {
+    let config = SpotConfig {
+        board: "Th9h2c".to_string(),
+        range_oop: "QQ,JJ,TT,99,AhKh,AsKs,87s".to_string(),
+        range_ip: "AA,KK,AQs,JTs,T9s".to_string(),
+        tree: TreeConfig {
+            starting_pot: 6.0,
+            effective_stack: 20.0,
+            oop: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            ip: [sizing("50", ""), sizing("50", ""), sizing("50", "")],
+            add_allin: true,
+            icm: Some(solver::icm::postflop::PostflopIcm {
+                payouts: vec![50.0, 30.0, 20.0],
+                behind: Some(vec![20.0, 31.0]),
+                others: vec![12.0, 25.0],
+                field_groups: vec![],
+            }),
+            ..Default::default()
+        },
+    };
+    let mut cpu = Solver::new(Arc::new(Spot::new(config.clone()).unwrap()));
+    cpu.use_isomorphism = false;
+    for _ in 0..300 {
+        cpu.iterate();
+    }
+    let e_cpu = cpu.exploitability() / 6.0 * 100.0;
+
+    let mut host = Solver::new(Arc::new(Spot::new(config).unwrap()));
+    host.use_isomorphism = false;
+    let mut gpu = GpuSolver::new(&host).unwrap();
+    for _ in 0..300 {
+        gpu.iterate().unwrap();
+    }
+    gpu.sync_to_cpu(&mut host).unwrap();
+    let e_gpu = host.exploitability() / 6.0 * 100.0;
+    let e_gpu_own = gpu.exploitability(&host).unwrap() / 6.0 * 100.0;
+    eprintln!("ICM flop: cpu {e_cpu:.4}% pot, gpu {e_gpu:.4}% (gpu best response {e_gpu_own:.4}%)");
+    assert!(e_cpu < 1.0 && e_gpu < 1.0, "both should converge: cpu {e_cpu}, gpu {e_gpu}");
+    assert!(e_gpu < e_cpu + 0.15, "GPU should not lag CPU: {e_gpu}% vs {e_cpu}%");
+    assert!((e_gpu - e_gpu_own).abs() < 0.02, "GPU best response {e_gpu_own}% vs CPU {e_gpu}%");
+}

@@ -529,7 +529,7 @@ impl Solver {
                 for p in 0..2 {
                     if node.kind == KIND_TERM_FOLD {
                         let amount =
-                            if node.player as usize == p { node.t_lose } else { node.t_win } as f32;
+                            spot.fold_payoff(node_idx, node, p);
                         fold_cfv(
                             &spot.hands[p],
                             &spot.hands[1 - p],
@@ -539,6 +539,7 @@ impl Solver {
                             &mut cfv[p],
                         );
                     } else {
+                        let (t_win, t_lose, t_tie) = spot.showdown_payoffs(node_idx, node, p);
                         showdown_cfv(
                             spot.river.get(&dealt),
                             p,
@@ -546,9 +547,9 @@ impl Solver {
                             &spot.hands[1 - p],
                             reach[1 - p],
                             &spot.same_combo[p],
-                            node.t_win as f32,
-                            node.t_lose as f32,
-                            node.t_tie as f32,
+                            t_win,
+                            t_lose,
+                            t_tie,
                             &mut cfv[p],
                         );
                     }

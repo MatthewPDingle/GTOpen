@@ -15,7 +15,7 @@
 
 use super::game::MwSpot;
 use super::solver::{Dealt, MwProgress, MwSolver};
-use super::tree::{others, payoff_table, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
+use super::tree::{others, KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, NP};
 use crate::cfr::{Algorithm, Discounts};
 use crate::store::{Storage, Store};
 use crate::tree::SENTINEL;
@@ -364,7 +364,6 @@ struct Terminals {
 
 fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
     let tree = &spot.tree;
-    let cfg = &tree.config;
     let nn = tree.nodes.len();
     let mut node_class = vec![-1i32; nn];
     let mut node_river = vec![-1i32; nn];
@@ -378,7 +377,7 @@ fn terminals(spot: &MwSpot, layout: &Layout) -> Terminals {
         }
         let mut c27 = [0f32; 27];
         for p in 0..NP {
-            let cf = super::eval::basis_coeffs(&payoff_table(node, p, cfg.rake_pct, cfg.rake_cap));
+            let cf = super::eval::basis_coeffs(&spot.payoff_table(node, p));
             for x in 0..3 {
                 for y in 0..3 {
                     c27[p * 9 + x * 3 + y] = cf[x][y] as f32;

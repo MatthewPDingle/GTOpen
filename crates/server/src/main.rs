@@ -297,6 +297,9 @@ struct SpotRequest {
     /// [flop, turn, river]
     oop: Vec<SizesRequest>,
     ip: Vec<SizesRequest>,
+    /// Tournament payouts: terminals pay ICM prize-equity changes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    icm: Option<solver::icm::postflop::PostflopIcm>,
 }
 
 fn default_allin_threshold() -> f64 {
@@ -412,6 +415,7 @@ impl SpotRequest {
                 add_allin: self.add_allin,
                 max_raises: self.max_raises,
                 carry_aggressor_through_checks: None, // new build: Spot records Some(false)
+                icm: self.icm.clone(),
             },
         })
     }
@@ -3711,6 +3715,7 @@ fn spot_request_from_config(config: &SpotConfig) -> Option<SpotRequest> {
         max_raises: t.max_raises,
         oop: conv(&t.oop),
         ip: conv(&t.ip),
+        icm: t.icm.clone(),
     })
 }
 

@@ -103,6 +103,10 @@ pub struct TreeConfig {
     /// numbering still matches the arenas on disk.
     #[serde(default)]
     pub carry_aggressor_through_checks: Option<bool>,
+    /// Tournament payouts: terminals pay each player's ICM prize-equity
+    /// change instead of chips (see `icm::postflop`). The tree is unchanged.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub icm: Option<crate::icm::postflop::PostflopIcm>,
 }
 
 fn default_allin_threshold() -> f64 {
@@ -110,6 +114,14 @@ fn default_allin_threshold() -> f64 {
 }
 fn default_max_raises() -> u8 {
     10
+}
+
+impl TreeConfig {
+    /// Rake or ICM payoffs make the game general-sum: exploitability
+    /// compares best responses with the players' actual values.
+    pub fn general_sum(&self) -> bool {
+        self.rake_pct > 0.0 || self.icm.is_some()
+    }
 }
 
 impl Default for TreeConfig {
@@ -125,6 +137,7 @@ impl Default for TreeConfig {
             add_allin: false,
             max_raises: default_max_raises(),
             carry_aggressor_through_checks: None,
+            icm: None,
         }
     }
 }

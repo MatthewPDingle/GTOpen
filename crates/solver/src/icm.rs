@@ -13,6 +13,8 @@
 //! field of hundreds of equal stacks costs no more than a few dozen places.
 //! Only states with fewer players placed than there are paid places matter.
 
+pub mod postflop;
+
 /// Largest dynamic-programming state count priced exactly (table subsets
 /// times group placements, capped at the paid places).
 pub const MAX_STATES: usize = 1 << 19;
