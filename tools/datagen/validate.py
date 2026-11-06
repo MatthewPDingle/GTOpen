@@ -46,18 +46,46 @@ def default_cli():
 
 def block_base(cli, login, cache={}):
     if login not in cache:
-        out = subprocess.run([cli, "datagen", "block", login], capture_output=True, text=True, check=True)
-        cache[login] = int(out.stdout.strip())
+        out = subprocess.run([cli, "datagen", "block", login], capture_output=True, text=True, env=cuda_env())
+        try:
+            cache[login] = int(out.stdout.strip())
+        except ValueError:
+            raise ToolError(f"{cli} datagen block failed (exit code {out.returncode}): "
+                            f"{out.stderr.strip()[-400:]}") from None
     return cache[login]
+
+
+def cuda_env():
+    """Environment with the pip-installed CUDA runtime compiler on the search path."""
+    env = dict(os.environ)
+    if os.name == "nt":
+        d = os.path.join(ROOT, ".cuda-nvrtc", "nvidia", "cuda_nvrtc", "bin")
+        if os.path.isdir(d):
+            env["PATH"] = d + os.pathsep + env.get("PATH", "")
+        cuda = env.get("CUDA_PATH")
+        if cuda and os.path.isdir(os.path.join(cuda, "bin")):
+            env["PATH"] = os.path.join(cuda, "bin") + os.pathsep + env["PATH"]
+    else:
+        for d in (os.path.expanduser("~/.local/cuda-nvrtc/nvidia/cuda_nvrtc/lib"), "/usr/local/cuda/lib64"):
+            if os.path.isdir(d):
+                env["LD_LIBRARY_PATH"] = d + os.pathsep + env.get("LD_LIBRARY_PATH", "")
+    return env
+
+
+class ToolError(RuntimeError):
+    """solve-cli itself failed: a problem on this machine, not in the upload."""
 
 
 def verify_file(cli, path, sample):
     """Run solve-cli datagen verify on a plain .jsonl file; returns the summary dict."""
     proc = subprocess.run([cli, "datagen", "verify", path, "--sample", str(sample)],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, env=cuda_env())
     lines = [l for l in proc.stdout.splitlines() if l.startswith("{")]
     if not lines:
-        return {"ok": False, "errors": [f"verify crashed: {proc.stderr.strip()[-500:]}"]}
+        raise ToolError(
+            "solve-cli crashed while verifying (exit code %s): %s\n"
+            "On a GPU build, install the CUDA runtime compiler as in the README "
+            "(or set SOLVER_GPU=0 to re-solve on the CPU)." % (proc.returncode, proc.stderr.strip()[-400:]))
     return json.loads(lines[-1])
 
 
@@ -224,6 +252,13 @@ def run_prs(args):
 
 
 def main():
+    try:
+        real_main()
+    except ToolError as e:
+        sys.exit(f"stopped, nothing was merged or rejected: {e}")
+
+
+def real_main():
     cfg = load_config()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--repo", default=cfg["hf_repo"])

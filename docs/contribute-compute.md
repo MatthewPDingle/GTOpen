@@ -65,8 +65,9 @@ Stopping is safe at any time (Ctrl+C or closing the window). The job in
 progress restarts from its beginning next time; finished jobs are kept in
 `datagen_out/` until they are uploaded.
 
-A job is 100 examples. Most examples take a few seconds to half a minute
-on a recent GPU; wide, deep spots take longer.
+A job is 100 examples. On an RTX 5090 a job takes about 7 minutes: most
+examples solve in 1 to 8 seconds, wide limped spots in up to 20. Slower
+cards take proportionally longer.
 
 ### Using Claude Code or Codex
 
