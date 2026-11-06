@@ -9,7 +9,7 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 ![Training data progress](https://raw.githubusercontent.com/MatthewPDingle/GTOpen/datagen-progress/progress.svg)
 
 [Contributors](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md) ·
-[Dataset on Hugging Face](https://huggingface.co/datasets/huPAN6517/gtopen-leaf-values) ·
+[Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
 the graph updates every few hours.
 
 **Status: pilot.** The maintainer's RTX 5090 is generating the first
