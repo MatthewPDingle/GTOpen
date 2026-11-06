@@ -43,7 +43,7 @@ if ($py) {
 }
 if (-not $uploader) {
     Write-Host 'huggingface_hub is not installed: jobs will be saved but not uploaded.'
-    Write-Host 'Install it (python -m pip install huggingface_hub), run huggingface-cli login, then'
+    Write-Host 'Install it (python -m pip install huggingface_hub), run hf auth login, then'
     Write-Host "  python tools\datagen\upload.py --contributor $login"
 }
 try {

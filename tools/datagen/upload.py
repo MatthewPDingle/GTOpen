@@ -7,7 +7,7 @@ The maintainer's validator re-checks and merges it. A `.uploaded` marker
 next to each job file records what has gone up.
 
     pip install huggingface_hub
-    huggingface-cli login            # once, with a write token
+    hf auth login            # once, with a write token
     python tools/datagen/upload.py --contributor YOUR_GITHUB_LOGIN
     python tools/datagen/upload.py --contributor YOUR_GITHUB_LOGIN --watch 60
 
@@ -105,7 +105,7 @@ def main():
     try:
         who = api.whoami()["name"]
     except Exception:
-        sys.exit("not logged in to Hugging Face: run  huggingface-cli login  (a token with write access)")
+        sys.exit("not logged in to Hugging Face: run  hf auth login  (a token with write access)")
     print(f"Hugging Face user {who}, dataset {args.repo}, contributor {args.contributor}")
     while True:
         while upload_once(api, args.repo, args.out, args.contributor) == MAX_FILES_PER_PR:

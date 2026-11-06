@@ -36,7 +36,7 @@ if [ -n "$PY" ] && "$PY" -c "import huggingface_hub" 2>/dev/null; then
   trap '[ -n "$UPLOADER" ] && kill "$UPLOADER" 2>/dev/null || true' EXIT
 else
   echo "huggingface_hub is not installed: jobs will be saved but not uploaded."
-  echo "Install it (pip install huggingface_hub), run huggingface-cli login, then"
+  echo "Install it (pip install huggingface_hub), run hf auth login, then"
   echo "  python3 tools/datagen/upload.py --contributor $LOGIN"
 fi
 

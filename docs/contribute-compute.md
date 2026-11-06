@@ -42,7 +42,7 @@ target is **300,000 examples**.
 
    ```sh
    python -m pip install huggingface_hub
-   huggingface-cli login
+   hf auth login
    ```
 
 3. Start generating, with your GitHub login so you get credit:

@@ -13,7 +13,7 @@ dataset, which the GitHub progress graph reads.
     python tools/datagen/validate.py --watch 60           # every hour
 
 Needs a build of solve-cli (GPU build recommended) and, except with --local,
-`huggingface-cli login` with write access to the dataset.
+`hf auth login` with write access to the dataset.
 """
 
 import argparse
