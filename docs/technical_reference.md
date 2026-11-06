@@ -194,7 +194,8 @@ writes `saves/batch_<board>.gto` per board.
 
 **Datagen mode** (`solve-cli datagen run|job|inputs|spot|verify|block`)
 produces the pooled value-net training data: seeded random heads-up flop
-spots, solved to 0.5% pot, written as JSONL job files with per-class values.
+spots on the lean `lean-v2` menu, sized to the GPU (`--max-vram`), solved to
+0.5% pot, written as JSONL job files with per-class values.
 Datagen solves on the GPU by default in gpu-feature builds (`SOLVER_GPU=0`
 forces the CPU). See [Contribute compute](contribute-compute.md); the
 sampling and file format live in `crates/solver/src/datagen.rs`.

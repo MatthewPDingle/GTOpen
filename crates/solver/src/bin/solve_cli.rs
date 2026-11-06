@@ -385,7 +385,14 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
     #[cfg(feature = "gpu")]
     if use_gpu {
         // spots too big for VRAM fall back to the CPU engine, like the server
-        let mut gpu = match solver::gpu::GpuSolver::new(solver) {
+        // Budget from the card's real free memory (Windows reports free VRAM
+        // loosely, so also cap at 88% of the card): an oversized plan would
+        // otherwise spill into shared system memory and crawl.
+        let budget = match solver::gpu::vram_info_mb() {
+            Some((free, total)) => free.saturating_sub(1024).min(total * 88 / 100) * 1_000_000,
+            None => u64::MAX,
+        };
+        let mut gpu = match solver::gpu::GpuSolver::new_with_budget(solver, budget) {
             Ok(g) => g,
             Err(err) => {
                 eprintln!("  gpu unavailable ({err}) — solving on CPU");

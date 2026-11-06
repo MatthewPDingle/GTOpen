@@ -25,9 +25,9 @@ pub const FORMAT: &str = "gtopen-leaf-values";
 pub const FORMAT_VERSION: u32 = 1;
 /// Version of the sampling + menu + solver behaviour. Bump on any change
 /// that alters the inputs or values a given job number produces.
-pub const GENERATOR_VERSION: u32 = 1;
+pub const GENERATOR_VERSION: u32 = 2;
 /// Name of the fixed postflop bet menu (see [`menu_tree`]).
-pub const MENU: &str = "m5-srp-v1";
+pub const MENU: &str = "lean-v2";
 /// Chips per big blind in generated spots (the M5 configs' convention).
 pub const CHIPS_PER_BB: f64 = 10.0;
 /// Default examples per job.
@@ -118,6 +118,10 @@ pub struct ExampleInputs {
     /// 169-class range weights (preflop class index), 0 = OOP, 1 = IP.
     /// Rounded to 3 decimals so the range text round-trips exactly.
     pub range: [Vec<f32>; 2],
+    /// Draws rejected before this one because the tree was over the job's
+    /// memory cap (0 = first draw). Training can reweight by it.
+    #[serde(default)]
+    pub attempt: u32,
 }
 
 /// Strength score used only to order classes for range sampling.
@@ -250,7 +254,7 @@ pub fn sample_range(rng: &mut Rng) -> Vec<f32> {
     w.iter()
         .map(|&x| {
             let r = (x * 1000.0).round() / 1000.0;
-            if r < 0.005 { 0.0 } else { r as f32 }
+            if r < 0.02 { 0.0 } else { r as f32 }
         })
         .collect()
 }
@@ -271,9 +275,52 @@ pub fn range_text(w: &[f32]) -> String {
     parts.join(",")
 }
 
-/// The inputs of example `index` of job `job`.
+/// Largest stack-to-pot ratio sampled: deeper spots add tree size but
+/// little information (leaf values flatten out as SPR grows).
+pub const MAX_SPR: f64 = 40.0;
+/// Draws tried before a capped example gives up and keeps the smallest.
+const MAX_ATTEMPTS: u32 = 64;
+
+/// The inputs of example `index` of job `job` (no memory cap).
 pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
-    let mut rng = Rng::new(example_seed(job, index));
+    draw_inputs(job, index, 0)
+}
+
+/// The inputs of example `index` of job `job` for a contributor whose GPU
+/// holds trees up to `cap_gb` (estimated, see `Spot::vram_estimate_bytes`).
+/// Draws are rejected deterministically until one fits, so anyone can
+/// regenerate the same inputs from (job, index, cap).
+pub fn example_inputs_capped(job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
+    let Some(cap) = cap_gb else {
+        return example_inputs(job, index);
+    };
+    let mut best: Option<(u64, ExampleInputs)> = None;
+    for attempt in 0..MAX_ATTEMPTS {
+        let ex = draw_inputs(job, index, attempt);
+        let bytes = estimated_vram_bytes(&ex);
+        if bytes as f64 <= cap * 1e9 {
+            return ex;
+        }
+        if best.as_ref().map(|b| bytes < b.0).unwrap_or(true) {
+            best = Some((bytes, ex));
+        }
+    }
+    best.unwrap().1
+}
+
+/// Estimated GPU memory of an example's tree, in bytes.
+pub fn estimated_vram_bytes(ex: &ExampleInputs) -> u64 {
+    crate::Spot::new(ex.spot_config())
+        .map(|s| s.vram_estimate_bytes())
+        .unwrap_or(u64::MAX)
+}
+
+fn draw_inputs(job: u64, index: u32, attempt: u32) -> ExampleInputs {
+    let mut seed = example_seed(job, index);
+    if attempt > 0 {
+        seed = Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64();
+    }
+    let mut rng = Rng::new(seed);
     // Pot type: (name, probability, pot range in bb)
     let types: [(&str, f64, f64, f64); 4] = [
         ("limped", 0.15, 2.0, 3.5),
@@ -297,7 +344,7 @@ pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
     if start - pot_bb / 2.0 < 2.0 {
         start = pot_bb / 2.0 + rng.range(2.0, 20.0);
     }
-    let stack_bb = round2(start - pot_bb / 2.0);
+    let stack_bb = round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb));
     let (rake_pct, rake_cap_bb) = if rng.f64() < 0.5 { (0.0, 0.0) } else { (0.05, 3.0) };
     let canon = crate::cards::canonical_flops();
     let total: u64 = canon.iter().map(|x| x.1 as u64).sum();
@@ -321,6 +368,7 @@ pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
         rake_pct,
         rake_cap_bb,
         range,
+        attempt,
     }
 }
 
@@ -328,8 +376,9 @@ fn round2(x: f64) -> f64 {
     (x * 100.0).round() / 100.0
 }
 
-/// The fixed postflop menu: the M5 single-raised-pot menu (flop OOP 33%,
-/// IP 33/75%, turn and river 75%, raises 60%).
+/// The fixed postflop menu `lean-v2`: one bet size per street (flop 33%,
+/// turn and river 75%), raises to 60% of the pot, at most a bet and a raise
+/// per street. Kept lean so most spots fit an 8 to 16 GB GPU.
 pub fn menu_tree(pot_bb: f64, stack_bb: f64, rake_pct: f64, rake_cap_bb: f64) -> TreeConfig {
     let json = serde_json::json!({
         "starting_pot": pot_bb * CHIPS_PER_BB,
@@ -342,13 +391,13 @@ pub fn menu_tree(pot_bb: f64, stack_bb: f64, rake_pct: f64, rake_cap_bb: f64) ->
             { "bet": [{"PotPct": 75}], "raise": [{"PotPct": 60}], "donk": [] }
         ],
         "ip": [
-            { "bet": [{"PotPct": 33}, {"PotPct": 75}], "raise": [{"PotPct": 60}], "donk": [] },
+            { "bet": [{"PotPct": 33}], "raise": [{"PotPct": 60}], "donk": [] },
             { "bet": [{"PotPct": 75}], "raise": [{"PotPct": 60}], "donk": [] },
             { "bet": [{"PotPct": 75}], "raise": [{"PotPct": 60}], "donk": [] }
         ],
         "allin_threshold": 0.85,
         "add_allin": false,
-        "max_raises": 10
+        "max_raises": 2
     });
     serde_json::from_value(json).expect("menu json")
 }
@@ -449,10 +498,13 @@ pub struct JobHeader {
     pub max_iterations: u32,
     pub engine: String,
     pub gtopen_version: String,
+    /// Memory cap (GB) the examples were drawn under; None = uncapped.
+    #[serde(default)]
+    pub max_vram_gb: Option<f64>,
 }
 
 impl JobHeader {
-    pub fn new(job: u64, contributor: &str, examples: u32, target_pct: f64, max_iterations: u32, engine: &str) -> Self {
+    pub fn new(job: u64, contributor: &str, examples: u32, target_pct: f64, max_iterations: u32, engine: &str, max_vram_gb: Option<f64>) -> Self {
         JobHeader {
             kind: "header".into(),
             format: FORMAT.into(),
@@ -466,6 +518,7 @@ impl JobHeader {
             max_iterations,
             engine: engine.into(),
             gtopen_version: env!("CARGO_PKG_VERSION").into(),
+            max_vram_gb,
         }
     }
 }
@@ -549,6 +602,18 @@ mod tests {
             assert!(ex.pot_bb > 0.0 && ex.stack_bb > 0.0);
             let spot = crate::Spot::new(ex.spot_config());
             assert!(spot.is_ok(), "example {i}: {:?}", spot.err());
+        }
+    }
+
+    #[test]
+    fn capped_examples_fit_and_regenerate() {
+        for i in 0..8 {
+            let ex = example_inputs_capped(11, i, Some(4.0));
+            assert!(estimated_vram_bytes(&ex) as f64 <= 4.0e9 || ex.attempt == MAX_ATTEMPTS - 1);
+            assert_eq!(ex, example_inputs_capped(11, i, Some(4.0)));
+            if ex.attempt == 0 {
+                assert_eq!(ex, example_inputs(11, i));
+            }
         }
     }
 

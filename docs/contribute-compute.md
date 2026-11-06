@@ -20,8 +20,10 @@ target is **300,000 examples**.
 
 ## What you need
 
-- An NVIDIA GPU with 8 GB or more of VRAM. The generator also runs on a CPU,
-  but each example takes minutes instead of seconds.
+- An NVIDIA GPU, ideally with 12 GB or more of VRAM. The generator sizes
+  its spots to your card (trees up to 80% of its memory), so an 8 GB card
+  works but gets the smaller spots. It also runs on a CPU, but each example
+  takes minutes instead of seconds.
 - [Rust](https://www.rust-lang.org/tools/install) and Git, set up as in the
   [README](../README.md#get-started). On Windows, also install the CUDA
   runtime compiler as described there (`python -m pip install --target .cuda-nvrtc nvidia-cuda-nvrtc-cu12`).
@@ -63,8 +65,8 @@ Stopping is safe at any time (Ctrl+C or closing the window). The job in
 progress restarts from its beginning next time; finished jobs are kept in
 `datagen_out/` until they are uploaded.
 
-A job is 100 examples. On an RTX 5090 that is roughly 5 to 15 minutes
-(estimate, being measured in the pilot).
+A job is 100 examples. Most examples take a few seconds to half a minute
+on a recent GPU; wide, deep spots take longer.
 
 ### Using Claude Code or Codex
 
@@ -129,9 +131,11 @@ Each example is one line of JSON:
 | `eq` | Equity per class against the other range. |
 | `value` | Solved value per class, as a fraction of the pot (pot-share convention: the two players' range averages add up to about 1 minus rake). |
 | `iterations`, `exploit_pct_pot`, `seconds` | How the solve went. Solves stop at 0.5% of the pot. |
+| `attempt` | How many draws were skipped because their tree was over the job's memory cap (`max_vram_gb` in the file header). Training can reweight by it. |
 
-The postflop menu is fixed (`m5-srp-v1`): flop OOP bets 33%, IP 33% or 75%,
-turn and river 75%, raises 60% of the pot. Ranges are sampled broadly
+The postflop menu is fixed and lean (`lean-v2`): one bet size per street
+(33% on the flop, 75% on the turn and river), raises to 60% of the pot, and
+at most a bet and a raise per street. Stacks are capped at 40 times the pot. Ranges are sampled broadly
 (top-x% and capped ranges, DeepStack-style random ranges, polarized and
 mixed ranges) because the net has to be right on ranges the Preflop Lab
 may produce later, not just today's.

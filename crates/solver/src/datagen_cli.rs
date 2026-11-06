@@ -10,9 +10,10 @@ use std::sync::Arc;
 
 const USAGE: &str = "usage:
   solve-cli datagen run --contributor LOGIN [--out DIR] [--jobs N] [--hours H]
-                        [--worker I --workers W] [--per-job N] [--target PCT] [--max-iters N]
-  solve-cli datagen job JOB [--contributor LOGIN] [--out DIR] [--per-job N] [--target PCT] [--max-iters N]
-  solve-cli datagen inputs JOB [INDEX] [--per-job N]
+                        [--worker I --workers W] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
+  solve-cli datagen job JOB [--contributor LOGIN] [--out DIR] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
+  solve-cli datagen sizes JOB [--per-job N]   (estimated GPU memory per example)
+  solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
   solve-cli datagen block LOGIN";
@@ -31,6 +32,8 @@ struct Opts {
     sample: usize,
     max_mean: f64,
     max_diff: f64,
+    /// None = detect from the GPU; Some(0) = uncapped.
+    max_vram: Option<f64>,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -48,6 +51,7 @@ fn parse(rest: &[String]) -> Opts {
         sample: 3,
         max_mean: 0.01,
         max_diff: 0.06,
+        max_vram: None,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -77,6 +81,7 @@ fn parse(rest: &[String]) -> Opts {
             "--sample" => { o.sample = num(need(i), a); i += 1; }
             "--max-mean" => { o.max_mean = num(need(i), a); i += 1; }
             "--max-diff" => { o.max_diff = num(need(i), a); i += 1; }
+            "--max-vram" => { o.max_vram = Some(num(need(i), a)); i += 1; }
             _ if a.starts_with("--") => {
                 eprintln!("unknown option {a}\n{USAGE}");
                 std::process::exit(1);
@@ -86,6 +91,26 @@ fn parse(rest: &[String]) -> Opts {
         i += 1;
     }
     o
+}
+
+/// Tree-size cap for drawing examples: --max-vram, else 80% of the GPU's
+/// memory (whole GB), else 8 GB on a CPU-only machine.
+fn vram_cap(o: &Opts) -> Option<f64> {
+    match o.max_vram {
+        Some(x) if x <= 0.0 => None,
+        Some(x) => Some(x.floor()),
+        None => Some(detected_cap_gb()),
+    }
+}
+
+fn detected_cap_gb() -> f64 {
+    #[cfg(feature = "gpu")]
+    if use_gpu() {
+        if let Some((_free, total_mb)) = solver::gpu::vram_info_mb() {
+            return ((total_mb as f64 / 1000.0) * 0.8).floor().max(2.0);
+        }
+    }
+    8.0
 }
 
 fn use_gpu() -> bool {
@@ -125,11 +150,12 @@ fn run_job(job: u64, contributor: &str, o: &Opts, env: &EnvOpts) -> Result<PathB
     let part = path.with_extension("jsonl.part");
     let mut f = std::fs::File::create(&part).map_err(|e| format!("{}: {e}", part.display()))?;
     let engine = if use_gpu() { "gpu" } else { "cpu" };
-    let header = JobHeader::new(job, contributor, o.per_job, o.target, o.max_iters, engine);
+    let cap = vram_cap(o);
+    let header = JobHeader::new(job, contributor, o.per_job, o.target, o.max_iters, engine, cap);
     writeln!(f, "{}", serde_json::to_string(&header).unwrap()).map_err(|e| e.to_string())?;
     let t0 = std::time::Instant::now();
     for index in 0..o.per_job {
-        let inputs = datagen::example_inputs(job, index);
+        let inputs = datagen::example_inputs_capped(job, index, cap);
         let rec = solve_example(&inputs, o, env)?;
         println!(
             "  job {job} #{index:3}  {:8} {:6} pot {:6.2}bb stack {:6.1}bb  iter {:4}  exploit {:5.2}%  [{:.1}s]",
@@ -177,9 +203,25 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 None => (0..o.per_job).collect(),
             };
             for i in indices {
-                let ex = datagen::example_inputs(job, i);
+                let ex = datagen::example_inputs_capped(job, i, o.max_vram.filter(|&x| x > 0.0));
                 println!("{}", serde_json::to_string(&ex).unwrap());
             }
+        }
+        "sizes" => {
+            // Survey of tree sizes (estimated GPU memory) over a job's examples.
+            let job: u64 = o.positional.first().and_then(|s| s.parse().ok()).unwrap_or(1);
+            let mut rows = Vec::new();
+            for i in 0..o.per_job {
+                let ex = datagen::example_inputs(job, i);
+                let spot = Spot::new(ex.spot_config()).expect("spot");
+                let gb = spot.vram_estimate_bytes() as f64 / 1e9;
+                println!("{i:4} {:7} pot {:6.2} stack {:6.1} spr {:5.1} nodes {:8} vram {:6.2} GB",
+                    ex.pot_type, ex.pot_bb, ex.stack_bb, ex.stack_bb / ex.pot_bb, spot.tree.nodes.len(), gb);
+                rows.push(gb);
+            }
+            rows.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            let q = |f: f64| rows[((rows.len() - 1) as f64 * f) as usize];
+            println!("vram GB: median {:.2}  p90 {:.2}  p99 {:.2}  max {:.2}", q(0.5), q(0.9), q(0.99), q(1.0));
         }
         "spot" => {
             let (Some(job), Some(index)) = (
@@ -227,12 +269,13 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
     }
     let t0 = std::time::Instant::now();
     println!(
-        "datagen: contributor {login}, worker {}/{}, {} examples per job, target {}% pot, {} -> {}",
+        "datagen: contributor {login}, worker {}/{}, {} examples per job, target {}% pot, {}, trees up to {} -> {}",
         o.worker,
         o.workers,
         o.per_job,
         o.target,
         if use_gpu() { "GPU" } else { "CPU" },
+        vram_cap(o).map(|c| format!("{c} GB")).unwrap_or_else(|| "any size".into()),
         o.out.join(&login).display()
     );
     let mut done = 0u64;
@@ -344,7 +387,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
                 errors.push(format!("example {i}: job/index {}/{} out of order", r.inputs.job, r.inputs.index));
                 continue;
             }
-            let expect = datagen::example_inputs(h.job, i as u32);
+            let expect = datagen::example_inputs_capped(h.job, i as u32, h.max_vram_gb);
             if expect != r.inputs {
                 errors.push(format!("example {i}: inputs differ from job {} as generated", h.job));
             }
