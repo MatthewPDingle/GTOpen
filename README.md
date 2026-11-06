@@ -116,13 +116,19 @@ To update, finish or stop running jobs, save both sessions, and pull the latest 
 
 Older preflop saves keep their original equity model. **Re-solve** continues that model; save your work, then **Build game → Solve** to use the updated model in a fresh game.
 
+## Contribute compute
+
+Have an NVIDIA GPU that sits idle? GTOpen is pooling solves to train a small value network that gives the Preflop Lab real postflop-solved values at heads-up flops. One command builds the solver, generates examples and uploads them to a public dataset, with credit to your GitHub login. [How to contribute](docs/contribute-compute.md).
+
+[![Training data progress](https://raw.githubusercontent.com/MatthewPDingle/GTOpen/datagen-progress/progress.svg)](docs/contribute-compute.md)
+
 ## More detail
 
 | Topic | Guide |
 | --- | --- |
 | Model coverage | [Ignition](docs/ignition_models.md) · [CoinPoker](docs/coinpoker_models.md) · [Player types](docs/player_types.md) |
 | Model behavior | [Evidence labels](docs/model_evidence.md) · [Raise sizing](docs/preflop_action_sizing.md) · [Contextual preflop](docs/contextual_preflop.md) · [Contextual postflop](docs/postflop_contextual_model.md) |
-| Running studies | [Overnight reports](docs/overnight_reports.md) · [Research setup](research/autoresearch/setup.md) |
+| Running studies | [Overnight reports](docs/overnight_reports.md) · [Contribute compute](docs/contribute-compute.md) · [Research setup](research/autoresearch/setup.md) |
 | Development | [Engine, CLI, API, and runtime settings](docs/technical_reference.md) · [GPU benchmarks](research/autoresearch/gpu-pass.md) · [Preflop performance results](research/autoresearch/passes/03-preflop-20260910/README.md) · [Preflop research](research/preflop-evolution/README.md) |
 
 The code is organized into `crates/solver` (Rust engine), `crates/server` (HTTP API), and `web` (browser UI).

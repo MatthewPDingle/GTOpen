@@ -15,6 +15,9 @@ use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
+#[path = "../datagen_cli.rs"]
+mod datagen_cli;
+
 /// Settings every mode honors, parsed once before subcommand dispatch.
 struct EnvOpts {
     storage: Storage,
@@ -82,6 +85,7 @@ fn main() {
         eprintln!("usage: solve-cli <config.json> [max_iterations] [target_exploit_pct]");
         eprintln!("       solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
         eprintln!("       solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
+        eprintln!("       solve-cli datagen <run|job|inputs|verify|block> ...   (value-net training data)");
         eprintln!("       solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)");
         std::process::exit(1);
     }
@@ -92,6 +96,10 @@ fn main() {
     let env = EnvOpts::from_env();
     if args[1] == "flops" {
         run_flops(&args[2..]);
+        return;
+    }
+    if args[1] == "datagen" {
+        datagen_cli::run(&args[2..], &env);
         return;
     }
     if args[1] == "realization" {

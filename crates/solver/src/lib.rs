@@ -10,6 +10,7 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 pub mod best_response;
 pub mod cards;
 pub mod cfr;
+pub mod datagen;
 mod contextual_postflop;
 pub mod evaluator;
 pub mod fit;
