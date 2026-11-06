@@ -162,16 +162,30 @@ def tree_oids(api, repo, revision=None):
     return out
 
 
+def pr_diff(api, repo, num):
+    """A pull request's diff text. The Hub may leave it out of the discussion
+    details and serve it separately at .../discussions/N/files.diff."""
+    details = api.get_discussion_details(repo, num, repo_type="dataset")
+    if details.diff:
+        return details.diff
+    import urllib.request
+    from huggingface_hub.utils import build_hf_headers
+    url = f"{api.endpoint}/datasets/{repo}/discussions/{num}/files.diff"
+    req = urllib.request.Request(url, headers=build_hf_headers(token=api.token))
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return resp.read().decode("utf-8", "replace")
+
+
 def pr_changes(api, repo, num):
     """(added paths, other touched paths) from a pull request's diff."""
-    details = api.get_discussion_details(repo, num, repo_type="dataset")
+    diff = pr_diff(api, repo, num)
     added, other, path, is_new = [], [], None, False
 
     def flush():
         if path is not None:
             (added if is_new else other).append(path)
 
-    for line in (details.diff or "").splitlines():
+    for line in diff.splitlines():
         if line.startswith("diff --git "):
             flush()
             path = line.split(" b/", 1)[1] if " b/" in line else line
