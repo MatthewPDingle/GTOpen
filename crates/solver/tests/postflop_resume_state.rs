@@ -9,7 +9,11 @@ use std::sync::Arc;
 fn hash(bytes: &[u8]) -> String {
     format!("{:016x}", bytes.iter().fold(0xcbf29ce484222325u64, |h,b| (h ^ *b as u64).wrapping_mul(0x100000001b3)))
 }
-fn state(s: &Solver, stage: &str, file: &std::path::Path) -> serde_json::Value {
+/// Fingerprint one stage: the in-RAM arenas (`raw_hash`, taken before any
+/// save) and the save the stage produces (`save_hash`). `save` materializes
+/// isomorphic siblings, so it mutates `s`; every stage after the first
+/// therefore hashes already-materialized inactive branches.
+fn state(s: &mut Solver, stage: &str, file: &std::path::Path) -> serde_json::Value {
     let mut bytes = Vec::new();
     for p in 0..2 {
         for store in [&s.regrets[p], &s.strat[p]] {
@@ -69,11 +73,11 @@ fn postflop_resume_state() {
                         }
                     }
                     if iso { assert!(inactive > 0, "control must exercise inactive suit branches"); }
-                    let mut states = vec![state(&s,"initial",&file)];
+                    let mut states = vec![state(&mut s,"initial",&file)];
                     let mut gpu = GpuSolver::new(&s).unwrap();
                     for _ in 0..7 { gpu.iterate().unwrap(); }
                     gpu.sync_to_cpu(&mut s).unwrap();
-                    states.push(state(&s,"first_sync",&file));
+                    states.push(state(&mut s,"first_sync",&file));
                     s.ensure_symmetric();
                     let mut queries = Vec::new();
                     for card in ["Ac", "Ah"] {
@@ -81,19 +85,19 @@ fn postflop_resume_state() {
                         let view = s.node_view(&path).unwrap();
                         queries.push(hash(&serde_json::to_vec(&view).unwrap()));
                     }
-                    states.push(state(&s,"materialized",&file));
+                    states.push(state(&mut s,"materialized",&file));
                     // Readback must restore untouched GPU initial state even after CPU queries.
                     gpu.sync_strategy(&mut s).unwrap();
-                    states.push(state(&s,"strategy_resync",&file));
+                    states.push(state(&mut s,"strategy_resync",&file));
                     gpu.sync_to_cpu(&mut s).unwrap();
-                    states.push(state(&s,"full_resync",&file));
+                    states.push(state(&mut s,"full_resync",&file));
                     s.ensure_symmetric();
                     s.lock_node(&[PathStep::Action{index:0}],LockMode::Freeze,"resume control".into()).unwrap();
                     gpu.update_locks(&s).unwrap();
                     for _ in 0..9 { gpu.iterate().unwrap(); }
                     gpu.sync_to_cpu(&mut s).unwrap();
                     let exploit_bits = gpu.exploitability(&s).unwrap().to_bits();
-                    states.push(state(&s,"locked_sync",&file));
+                    states.push(state(&mut s,"locked_sync",&file));
                     drop(gpu);
                     let mut loaded = Solver::load_with_storage(file.to_str().unwrap(),storage).unwrap();
                     loaded.use_isomorphism = iso;
@@ -101,7 +105,7 @@ fn postflop_resume_state() {
                     for _ in 0..5 { resumed.iterate().unwrap(); }
                     resumed.sync_to_cpu(&mut loaded).unwrap();
                     let resumed_exploit_bits = resumed.exploitability(&loaded).unwrap().to_bits();
-                    states.push(state(&loaded,"resumed",&file));
+                    states.push(state(&mut loaded,"resumed",&file));
                     println!("METRIC_JSON {}",serde_json::json!({"metrics":{},"board":board,
                         "storage":format!("{storage:?}"),"iso":iso,"warm":warm,"inactive":inactive,
                         "resume_states":states,"queries":queries,"exploit_bits":exploit_bits,

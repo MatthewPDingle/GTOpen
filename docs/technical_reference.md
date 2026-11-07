@@ -304,16 +304,36 @@ reuse reduce device allocation by different amounts on different trees.
 ## CLI
 
 ```bash
-./target/release/solve-cli spot.json [max_iterations] [target_exploit_pct]
+./target/release/solve-cli spot.json [max_iterations] [target_exploit_pct] [--save out.gto]
+./target/release/solve-cli resume base.gto [iteration_delta] [target_exploit_pct] [--save next.gto]
 ./target/release/solve-cli batch spot.json boards.txt [max_iterations] [target]
 ```
 
 `spot.json` matches the `SpotConfig` JSON schema (see `bench_spot.json`).
 Env: `SOLVER_STORAGE=f32|i16` (default i16), `SOLVER_ALGO=dcfr|cfr+|pcfr+`
 (default dcfr), `SOLVER_ISO=0`, `SOLVER_THREADS=N`, `SOLVER_GPU=1`
-(gpu-feature builds) — all of them apply to every mode (single spot, batch,
-realization). Batch rows report range-average root EVs weighted by
-reach × valid (the app's convention, so `ev_oop + ev_ip = pot`).
+(gpu-feature builds). Storage and threads apply to every mode; the algorithm
+and isomorphism switch apply to a fresh solve and to batch, realization and
+datagen, while `resume` keeps the values the save recorded. Batch rows report
+range-average root EVs weighted by reach × valid (the app's convention, so
+`ev_oop + ev_ip = pot`).
+
+**Saves and resume.** `--save` writes a `GTOSOLVE2` save after the run (an ICM
+tree writes `GTOSOLVE3`, which older binaries refuse rather than continue as a
+chip-EV game). The header records the spot config, the iteration count, any
+locks and labels, and the algorithm and isomorphism switch; the four arenas
+are full-precision f32 on disk whatever the in-RAM storage. `save`
+materializes the isomorphic sibling branches first, so the file is
+self-contained and reads correctly with isomorphism either on or off.
+`resume` reloads a save and continues it: its iteration positional is a
+**delta added to** the save's own count (default 300; zero is rejected). This
+extends a saved solve, or a locked variant the app saved, without re-solving it
+from iteration 0. Saves written before the header carried
+`algo`/`use_isomorphism` resume as dcfr with isomorphism on;
+`SOLVER_ALGO`/`SOLVER_ISO` override the recorded values only when explicitly
+set, and warn when they do. PCFR+ prediction arenas are not part of a save, so
+a resumed PCFR+ run restarts them for one iteration; dcfr and cfr+ resume
+exactly.
 
 **Batch mode** solves the same ranges/tree across many boards (file with one
 board per line, or an inline `b1,b2,..` list), prints one row per board

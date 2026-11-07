@@ -1,13 +1,24 @@
 //! Minimal CLI: solve a spot from a JSON config file and print progress.
 //!
-//! Usage: solve-cli <config.json> [max_iterations] [target_exploit_pct]
+//! Usage: solve-cli <config.json> [max_iterations] [target_exploit_pct] [--save PATH]
+//!        solve-cli resume <save.gto> [iteration_delta] [target_exploit_pct] [--save PATH]
+//!
+//! `--save` writes a GTOpen save after the run (magic `GTOSOLVE2`, or
+//! `GTOSOLVE3` for an ICM tree, which older binaries refuse rather than
+//! continue as a chip-EV game); `resume` continues one. On resume the
+//! iteration positional is a DELTA added to the save's iteration count
+//! (default 300, zero rejected). The save header carries the algorithm and the
+//! isomorphism switch, which a resume adopts; SOLVER_ALGO/SOLVER_ISO override
+//! them only when set explicitly. `--` ends option parsing, for paths that
+//! start with `--`.
 //!
 //! Env vars:
 //!   SOLVER_STORAGE=f32|i16   arena storage (default i16 compressed)
-//!   SOLVER_ALGO=dcfr|cfr+|pcfr+   algorithm (default dcfr)
-//!   SOLVER_ISO=0             disable suit isomorphism
+//!   SOLVER_ALGO=dcfr|cfr+|pcfr+   algorithm (default dcfr; on resume: the save's)
+//!   SOLVER_ISO=0             disable suit isomorphism (on resume: the save's)
 //!   SOLVER_THREADS=N         rayon thread count (default: rayon's own)
-//!   (all of the above apply to every mode: single spot, batch, realization)
+//!   (storage/threads apply to every mode; algo/iso apply to a fresh solve and
+//!    batch/realization/datagen)
 //!   SOLVER_GPU=1             solve on the GPU (requires `--features gpu`
 //!                            build; forces f32 storage)
 
@@ -22,7 +33,11 @@ mod datagen_cli;
 struct EnvOpts {
     storage: Storage,
     algo: Algorithm,
+    /// Whether SOLVER_ALGO was present, not just equal to the default: a
+    /// resumed save keeps its recorded algorithm unless the user opts in.
+    algo_explicit: bool,
     iso: bool,
+    iso_explicit: bool,
 }
 
 impl EnvOpts {
@@ -45,15 +60,21 @@ impl EnvOpts {
                 Storage::Compressed
             }
         };
-        let algo = match std::env::var("SOLVER_ALGO") {
-            Ok(s) => Algorithm::parse(&s).unwrap_or_else(|e| {
-                eprintln!("bad SOLVER_ALGO: {e}");
-                std::process::exit(1)
-            }),
-            Err(_) => Algorithm::Dcfr,
+        let (algo, algo_explicit) = match std::env::var("SOLVER_ALGO") {
+            Ok(s) => (
+                Algorithm::parse(&s).unwrap_or_else(|e| {
+                    eprintln!("bad SOLVER_ALGO: {e}");
+                    std::process::exit(1)
+                }),
+                true,
+            ),
+            Err(_) => (Algorithm::Dcfr, false),
         };
-        let iso = std::env::var("SOLVER_ISO").map(|v| v != "0").unwrap_or(true);
-        EnvOpts { storage, algo, iso }
+        let (iso, iso_explicit) = match std::env::var("SOLVER_ISO") {
+            Ok(v) => (v != "0", true),
+            Err(_) => (true, false),
+        };
+        EnvOpts { storage, algo, algo_explicit, iso, iso_explicit }
     }
 
     /// The GPU engine needs full-precision arenas; otherwise the env choice.
@@ -82,17 +103,11 @@ fn peak_rss_mb() -> f64 {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2 {
-        eprintln!("usage: solve-cli <config.json> [max_iterations] [target_exploit_pct]");
-        eprintln!("       solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
-        eprintln!("       solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
-        eprintln!("       solve-cli datagen <run|job|inputs|verify|block> ...   (value-net training data)");
-        eprintln!("       solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)");
+        usage();
         std::process::exit(1);
     }
-    // The env-var settings are CLI-wide: read them BEFORE dispatching, so
-    // batch, realization and flops modes honor them too (they used to run
-    // on rayon's default of all logical CPUs with plain DCFR and compressed
-    // storage, whatever the env said).
+    // The env-var settings are CLI-wide: read them before dispatching, so
+    // batch, realization and flops modes honor them too.
     let env = EnvOpts::from_env();
     if args[1] == "flops" {
         run_flops(&args[2..]);
@@ -110,57 +125,301 @@ fn main() {
         run_batch(&args[2..], &env);
         return;
     }
+
+    let opts = match parse(&args[1..]) {
+        Ok(o) => o,
+        Err(err) => {
+            eprintln!("{err}");
+            std::process::exit(1);
+        }
+    };
+
     let use_gpu = std::env::var("SOLVER_GPU").map(|v| v == "1").unwrap_or(false);
     let storage = env.storage_for(use_gpu);
-    let algo = env.algo;
 
-    let config_text = std::fs::read_to_string(&args[1]).expect("cannot read config");
-    let config: SpotConfig = serde_json::from_str(&config_text).expect("invalid config JSON");
+    // A save rebuilds its spot from the header config; a JSON config builds
+    // one. A fresh solve applies the env switches; resume keeps whatever the
+    // save recorded unless the env was set explicitly (see `resume_settings`).
+    let mut solver = match &opts.mode {
+        Mode::Config(path) => {
+            let config_text = std::fs::read_to_string(path).expect("cannot read config");
+            let config: SpotConfig =
+                serde_json::from_str(&config_text).expect("invalid config JSON");
+            let t0 = std::time::Instant::now();
+            let spot = Spot::new(config).expect("failed to build spot");
+            let mut solver = Solver::with_storage(Arc::new(spot), storage);
+            solver.algo = env.algo;
+            solver.use_isomorphism = env.iso;
+            print_stats("tree built", t0.elapsed().as_secs_f64(), &solver, storage);
+            solver
+        }
+        Mode::Resume(path) => {
+            let t0 = std::time::Instant::now();
+            let mut solver = match Solver::load_with_storage(path, storage) {
+                Ok(s) => s,
+                Err(err) => {
+                    eprintln!("cannot load {path}: {err}");
+                    std::process::exit(1);
+                }
+            };
+            resume_settings(&mut solver, &env);
+            print_stats(
+                &format!("loaded {path}"),
+                t0.elapsed().as_secs_f64(),
+                &solver,
+                storage,
+            );
+            solver
+        }
+    };
 
-    let t0 = std::time::Instant::now();
-    let spot = Spot::new(config).expect("failed to build spot");
-    let mut solver = Solver::with_storage(Arc::new(spot), storage);
-    solver.algo = algo;
-    solver.use_isomorphism = env.iso;
+    // `resume`'s positional is a delta: `Solver::run` stops at an ABSOLUTE
+    // iteration, so a base save at 300 with the default 300 would otherwise
+    // run zero iterations and report the NaN fallback.
+    let stop_iteration = match &opts.mode {
+        Mode::Config(_) => opts.iterations,
+        Mode::Resume(_) => {
+            let saved = solver.iteration;
+            let Some(stop) = saved.checked_add(opts.iterations) else {
+                eprintln!(
+                    "resume: saved iteration {saved} + {} overflows u32",
+                    opts.iterations
+                );
+                std::process::exit(1);
+            };
+            println!(
+                "resume: saved iteration {saved}, running up to {} more (stop iteration {stop}, or earlier on target {}% pot)",
+                opts.iterations, opts.target_exploit_pct,
+            );
+            stop
+        }
+    };
+
+    let run_opts = RunOptions {
+        max_iterations: stop_iteration,
+        target_exploit_pct: opts.target_exploit_pct,
+        check_every: 10,
+    };
+
+    if use_gpu {
+        run_gpu(&mut solver, &run_opts);
+    } else {
+        let stop = AtomicBool::new(false);
+        let final_progress = solver.run(&run_opts, &stop, |p| {
+            println!(
+                "iter {:5}  exploitability {:8.4} chips ({:.3}% pot)  [{:.1}s]",
+                p.iteration, p.exploit_chips, p.exploit_pct_pot, p.elapsed_secs
+            );
+        });
+        println!(
+            "done: iter {} exploitability {:.3}% pot in {:.1}s  peak_rss {:.0} MB",
+            final_progress.iteration,
+            final_progress.exploit_pct_pot,
+            final_progress.elapsed_secs,
+            peak_rss_mb(),
+        );
+    }
+
+    if let Some(save_path) = &opts.save {
+        match solver.save(save_path) {
+            Ok(()) => println!(
+                "saved {save_path}: iter {}, {:.1} MB on disk",
+                solver.iteration,
+                std::fs::metadata(save_path)
+                    .map(|m| m.len() as f64 / 1e6)
+                    .unwrap_or(f64::NAN),
+            ),
+            Err(err) => {
+                eprintln!("save failed: {err}");
+                std::process::exit(1);
+            }
+        }
+    }
+}
+
+const USAGE: &str = "\
+usage: solve-cli <config.json> [max_iterations] [target_exploit_pct] [--save PATH]
+       solve-cli resume <save.gto> [iteration_delta] [target_exploit_pct] [--save PATH]
+       solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]
+       solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]
+       solve-cli datagen <run|job|inputs|verify|block> ...   (value-net training data)
+       solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)
+
+defaults: max_iterations 300 for a fresh solve and batch, 1000 for realization;
+resume iteration_delta 300, added to the save's iteration; target_exploit_pct 0.3.
+For a fresh solve or resume, the iteration count must be at least 1 and
+target_exploit_pct a finite percentage >= 0. --save may appear anywhere before
+--; -- ends option parsing (for paths starting with --).";
+
+fn usage() {
+    eprintln!("{USAGE}");
+}
+
+/// Single-spot invocation, shared by a fresh config solve and `resume`.
+#[derive(Debug, PartialEq)]
+enum Mode {
+    Config(String),
+    Resume(String),
+}
+
+#[derive(Debug, PartialEq)]
+struct Opts {
+    mode: Mode,
+    /// Fresh: absolute iteration cap. Resume: iterations ADDED to the saved
+    /// count, so `run` always has at least one iteration to perform.
+    iterations: u32,
+    target_exploit_pct: f64,
+    save: Option<String>,
+}
+
+/// Parse `[--] [resume] <path> [iters] [target] [--save PATH]`. Errors are
+/// user-facing messages; `main` prints and exits, tests inspect them.
+fn parse(rest: &[String]) -> Result<Opts, String> {
+    let mut positional: Vec<&str> = Vec::new();
+    let mut save: Option<String> = None;
+    // `--` ends option parsing, so a positional path may start with `--`.
+    let mut options_done = false;
+    let mut i = 0;
+    while i < rest.len() {
+        let a = rest[i].as_str();
+        if options_done {
+            positional.push(a);
+        } else {
+            match a {
+                "--" => options_done = true,
+                "--save" => {
+                    let value = need(rest, i, a)?;
+                    set_save(&mut save, value)?;
+                    i += 1; // skip the value too
+                }
+                _ if a.starts_with("--") => return Err(format!("unknown option {a}\n{USAGE}")),
+                _ => positional.push(a),
+            }
+        }
+        i += 1;
+    }
+
+    let Some(&first) = positional.first() else {
+        return Err(format!("missing a spot config or save path\n{USAGE}"));
+    };
+    let (mode, next) = if first == "resume" {
+        let Some(&path) = positional.get(1) else {
+            return Err(format!("resume needs a save path\n{USAGE}"));
+        };
+        (Mode::Resume(path.to_string()), 2)
+    } else {
+        (Mode::Config(first.to_string()), 1)
+    };
+    let resuming = matches!(mode, Mode::Resume(_));
+    let iters_label = if resuming { "iteration delta" } else { "max_iterations" };
+    let iterations: u32 = match positional.get(next) {
+        None => 300,
+        Some(text) => count(text, iters_label)?,
+    };
+    if iterations == 0 {
+        // `Solver::run`'s loop is `iteration < max_iterations`, so zero would
+        // run nothing and report the NaN fallback as if it were a result.
+        return Err(if resuming {
+            "resume: iteration delta must be at least 1".into()
+        } else {
+            "max_iterations must be at least 1".into()
+        });
+    }
+    let target_exploit_pct = match positional.get(next + 1) {
+        None => 0.3,
+        Some(text) => {
+            let target: f64 = num(text, "target_exploit_pct")?;
+            // f64 parsing accepts "nan"/"inf"; NaN silently disables the
+            // early stop and infinity stops at the first check, so refuse
+            // both rather than run something other than what was asked.
+            if !target.is_finite() || target < 0.0 {
+                return Err(format!(
+                    "target_exploit_pct {text:?} must be a finite percentage >= 0"
+                ));
+            }
+            target
+        }
+    };
+    let extra = positional.get(next + 2..).unwrap_or_default();
+    if !extra.is_empty() {
+        return Err(format!("too many positional arguments: {extra:?}\n{USAGE}"));
+    }
+    Ok(Opts { mode, iterations, target_exploit_pct, save })
+}
+
+fn need<'a>(rest: &'a [String], i: usize, flag: &str) -> Result<&'a str, String> {
+    rest.get(i + 1)
+        .map(String::as_str)
+        .ok_or_else(|| format!("{flag} needs a value\n{USAGE}"))
+}
+
+/// Record the `--save` destination, rejecting the shapes that would otherwise
+/// be silently ignored or misinterpreted.
+fn set_save(slot: &mut Option<String>, value: &str) -> Result<(), String> {
+    if let Some(prev) = slot {
+        return Err(format!(
+            "--save given more than once (already {prev:?}, then {value:?})\n{USAGE}"
+        ));
+    }
+    if value.is_empty() {
+        return Err(format!("--save needs a non-empty path\n{USAGE}"));
+    }
+    if value.starts_with("--") {
+        return Err(format!(
+            "--save value {value:?} looks like an option, not a path; write --save ./{value} for a file with that literal name"
+        ));
+    }
+    *slot = Some(value.to_string());
+    Ok(())
+}
+
+fn num<T: std::str::FromStr>(text: &str, name: &str) -> Result<T, String> {
+    text.parse()
+        .map_err(|_| format!("{name} {text:?} is not a valid number"))
+}
+
+/// Iteration counts: parse as u64 first so an overflow names the limit
+/// instead of the generic "not a valid number" (and negatives still fail).
+fn count(text: &str, name: &str) -> Result<u32, String> {
+    let n: u64 = text
+        .parse()
+        .map_err(|_| format!("{name} {text:?} is not a valid number"))?;
+    u32::try_from(n).map_err(|_| format!("{name} {text} is too large (max {})", u32::MAX))
+}
+
+/// Keep the save header's algorithm/isomorphism unless the user opted in via
+/// an explicitly set env var; a defaulted env value must not silently re-price
+/// a resumed game.
+fn resume_settings(solver: &mut Solver, env: &EnvOpts) {
+    if env.algo_explicit && solver.algo != env.algo {
+        eprintln!(
+            "warning: SOLVER_ALGO={} overrides the save's algorithm {}",
+            env.algo.name(),
+            solver.algo.name()
+        );
+        solver.algo = env.algo;
+    }
+    if env.iso_explicit && solver.use_isomorphism != env.iso {
+        eprintln!(
+            "warning: SOLVER_ISO={} overrides the save's isomorphism setting {}",
+            env.iso as u8, solver.use_isomorphism as u8
+        );
+        solver.use_isomorphism = env.iso;
+    }
+}
+
+fn print_stats(prefix: &str, elapsed: f64, solver: &Solver, storage: Storage) {
     println!(
-        "tree built in {:.2}s: {} nodes ({} action nodes), hands {}/{}, arenas {:.1} MB, storage {:?}, algo {:?}",
-        t0.elapsed().as_secs_f64(),
+        "{prefix} in {elapsed:.2}s: iter {}, {} nodes ({} action nodes), hands {}/{}, arenas {:.1} MB, storage {:?}, algo {:?}, isomorphism {}",
+        solver.iteration,
         solver.spot.tree.nodes.len(),
         solver.spot.num_action_nodes(),
         solver.spot.hands[0].len(),
         solver.spot.hands[1].len(),
         solver.arena_bytes() as f64 / 1e6,
         storage,
-        algo,
-    );
-
-    let opts = RunOptions {
-        max_iterations: args
-            .get(2)
-            .and_then(|s| s.parse().ok())
-            .unwrap_or(300),
-        target_exploit_pct: args.get(3).and_then(|s| s.parse().ok()).unwrap_or(0.3),
-        check_every: 10,
-    };
-
-    if use_gpu {
-        run_gpu(&mut solver, &opts);
-        return;
-    }
-
-    let stop = AtomicBool::new(false);
-    let final_progress = solver.run(&opts, &stop, |p| {
-        println!(
-            "iter {:5}  exploitability {:8.4} chips ({:.3}% pot)  [{:.1}s]",
-            p.iteration, p.exploit_chips, p.exploit_pct_pot, p.elapsed_secs
-        );
-    });
-    println!(
-        "done: iter {} exploitability {:.3}% pot in {:.1}s  peak_rss {:.0} MB",
-        final_progress.iteration,
-        final_progress.exploit_pct_pot,
-        final_progress.elapsed_secs,
-        peak_rss_mb(),
+        solver.algo,
+        if solver.use_isomorphism { "on" } else { "off" },
     );
 }
 
@@ -168,6 +427,10 @@ fn main() {
 /// one row per board and writing batch_results.json. The basis for
 /// multi-flop aggregate analysis.
 fn run_batch(rest: &[String], env: &EnvOpts) {
+    if let Some(flag) = rest.iter().find(|a| a.starts_with("--")) {
+        eprintln!("{flag}: options are not accepted in batch mode; --save applies only to single-spot or resume mode (batch writes batch_results.json; use SOLVER_BATCH_SAVE=1 for per-board saves)");
+        std::process::exit(1);
+    }
     if rest.len() < 2 {
         eprintln!("usage: solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]");
         std::process::exit(1);
@@ -287,6 +550,10 @@ fn run_flops(rest: &[String]) {
 /// its class rows. R is conditional on the bet-size menu, so the header
 /// carries the full config.
 fn run_realization(rest: &[String], env: &EnvOpts) {
+    if let Some(flag) = rest.iter().find(|a| a.starts_with("--")) {
+        eprintln!("{flag}: options are not accepted in realization mode; --save applies only to single-spot or resume mode (realization writes observations to realization_obs.jsonl)");
+        std::process::exit(1);
+    }
     if rest.len() < 2 {
         eprintln!("usage: solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]");
         std::process::exit(1);
@@ -432,7 +699,17 @@ fn run_gpu(_solver: &mut Solver, _opts: &RunOptions) {
 #[cfg(feature = "gpu")]
 fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
     let pot = solver.spot.tree.config.starting_pot;
-    let mut gpu = solver::gpu::GpuSolver::new(solver).expect("gpu init failed");
+    // A save can record an algorithm the GPU engine cannot run (pcfr+) or a
+    // tree the device cannot hold; report that instead of panicking through
+    // `expect`.
+    let mut gpu = match solver::gpu::GpuSolver::new(solver) {
+        Ok(gpu) => gpu,
+        Err(err) => {
+            eprintln!("cannot start the GPU solver: {err}");
+            std::process::exit(1);
+        }
+    };
+    let start_iteration = gpu.iteration;
 
     if std::env::var("SOLVER_GPU_PROFILE").map(|v| v == "1").unwrap_or(false) {
         // warm up (JIT + caches), then profile a few iterations
@@ -460,6 +737,11 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
             );
         }
         println!("{:>12}: {:8.1} ms", "TOTAL", sum);
+        // The caller still expects a usable host solver (and may pass
+        // `--save`): without this the save would write the iteration-0
+        // arenas that are still on the host while the device holds the
+        // profiled ones.
+        gpu.sync_to_cpu(solver).expect("gpu sync failed");
         return;
     }
     let start = std::time::Instant::now();
@@ -490,17 +772,178 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
             );
             if pct <= opts.target_exploit_pct || gpu.iteration >= opts.max_iterations {
                 gpu.sync_to_cpu(solver).expect("gpu sync failed");
+                // A resumed solve starts at the saved iteration, so divide by
+                // the iterations THIS invocation ran, not the cumulative count.
+                let ran = gpu.iteration.saturating_sub(start_iteration).max(1);
                 println!(
                     "done: iter {} exploitability {:.3}% pot in {:.1}s (gpu kernels {:.2}s = {:.0} ms/iter)  peak_rss {:.0} MB",
                     gpu.iteration,
                     pct,
                     start.elapsed().as_secs_f64(),
                     gpu_secs,
-                    gpu_secs * 1000.0 / gpu.iteration as f64,
+                    gpu_secs * 1000.0 / ran as f64,
                     peak_rss_mb(),
                 );
                 break;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_args(args: &[&str]) -> Result<Opts, String> {
+        parse(&args.iter().map(|a| a.to_string()).collect::<Vec<_>>())
+    }
+
+    #[test]
+    fn config_mode_defaults() {
+        let o = parse_args(&["spot.json"]).unwrap();
+        assert_eq!(o.mode, Mode::Config("spot.json".into()));
+        assert_eq!(o.iterations, 300);
+        assert_eq!(o.target_exploit_pct, 0.3);
+        assert_eq!(o.save, None);
+    }
+
+    #[test]
+    fn config_mode_explicit_iters_target_and_save() {
+        let o = parse_args(&["spot.json", "500", "0.2", "--save", "out.gto"]).unwrap();
+        assert_eq!(o.mode, Mode::Config("spot.json".into()));
+        assert_eq!(o.iterations, 500);
+        assert_eq!(o.target_exploit_pct, 0.2);
+        assert_eq!(o.save.as_deref(), Some("out.gto"));
+    }
+
+    #[test]
+    fn resume_mode_delta_and_save() {
+        let o = parse_args(&["resume", "base.gto", "25", "0.1", "--save", "next.gto"]).unwrap();
+        assert_eq!(o.mode, Mode::Resume("base.gto".into()));
+        assert_eq!(o.iterations, 25);
+        assert_eq!(o.target_exploit_pct, 0.1);
+        assert_eq!(o.save.as_deref(), Some("next.gto"));
+    }
+
+    #[test]
+    fn resume_mode_defaults_to_300_more() {
+        let o = parse_args(&["resume", "base.gto"]).unwrap();
+        assert_eq!(o.mode, Mode::Resume("base.gto".into()));
+        assert_eq!(o.iterations, 300);
+        assert_eq!(o.target_exploit_pct, 0.3);
+    }
+
+    #[test]
+    fn save_needs_a_value() {
+        let err = parse_args(&["spot.json", "--save"]).unwrap_err();
+        assert!(err.contains("--save needs a value"), "{err}");
+    }
+
+    #[test]
+    fn resume_rejects_zero_delta() {
+        let err = parse_args(&["resume", "base.gto", "0"]).unwrap_err();
+        assert!(err.contains("iteration delta must be at least 1"), "{err}");
+    }
+
+    #[test]
+    fn fresh_rejects_zero_iterations() {
+        // `Solver::run` would perform no iteration and return its NaN
+        // progress fallback, printing it as the result.
+        let err = parse_args(&["spot.json", "0"]).unwrap_err();
+        assert!(err.contains("max_iterations must be at least 1"), "{err}");
+    }
+
+    #[test]
+    fn duplicate_save_is_rejected() {
+        let err = parse_args(&["spot.json", "--save", "a.gto", "--save", "b.gto"]).unwrap_err();
+        assert!(err.contains("--save given more than once"), "{err}");
+        assert!(err.contains("a.gto"), "should name the first value: {err}");
+        // Repeating the same path is just as likely a scripting bug.
+        let err = parse_args(&["spot.json", "--save", "a.gto", "--save", "a.gto"]).unwrap_err();
+        assert!(err.contains("--save given more than once"), "{err}");
+    }
+
+    #[test]
+    fn save_value_that_looks_like_an_option_is_rejected() {
+        let err = parse_args(&["spot.json", "--save", "--oops"]).unwrap_err();
+        assert!(err.contains("looks like an option"), "{err}");
+        assert!(err.contains("./--oops"), "should suggest the literal form: {err}");
+        let err = parse_args(&["spot.json", "--save", ""]).unwrap_err();
+        assert!(err.contains("non-empty path"), "{err}");
+    }
+
+    #[test]
+    fn double_dash_ends_option_parsing() {
+        let o = parse_args(&["--", "--weird.json", "10", "0.2"]).unwrap();
+        assert_eq!(o.mode, Mode::Config("--weird.json".into()));
+        assert_eq!(o.iterations, 10);
+        // A literal `--save` after `--` is a positional: here it lands in the
+        // iterations slot and fails as a number, proving it was not a flag.
+        let err = parse_args(&["--", "spot.json", "--save", "x.gto"]).unwrap_err();
+        assert!(err.contains("max_iterations"), "{err}");
+        let err = parse_args(&["--", "spot.json", "10", "0.2", "--save", "x.gto"]).unwrap_err();
+        assert!(err.contains("too many positional arguments"), "{err}");
+        // A single-dash path was already positional and stays that way.
+        let o = parse_args(&["-spot.json"]).unwrap();
+        assert_eq!(o.mode, Mode::Config("-spot.json".into()));
+    }
+
+    #[test]
+    fn target_must_be_finite_and_non_negative() {
+        for bad in ["nan", "NaN", "inf", "-inf", "-0.1", "-1"] {
+            let err = parse_args(&["spot.json", "10", bad]).unwrap_err();
+            assert!(err.contains("target_exploit_pct"), "{bad}: {err}");
+            assert!(err.contains("finite"), "{bad}: {err}");
+        }
+        // 0 is the established "never stop early" value.
+        assert_eq!(parse_args(&["spot.json", "10", "0"]).unwrap().target_exploit_pct, 0.0);
+        assert_eq!(
+            parse_args(&["spot.json", "10", "1e6"]).unwrap().target_exploit_pct,
+            1e6
+        );
+    }
+
+    #[test]
+    fn iteration_overflow_names_the_limit() {
+        let err = parse_args(&["spot.json", "4294967296"]).unwrap_err();
+        assert!(err.contains("too large"), "{err}");
+        assert!(err.contains(&u32::MAX.to_string()), "{err}");
+        let err = parse_args(&["resume", "base.gto", "4294967296"]).unwrap_err();
+        assert!(err.contains("iteration delta"), "{err}");
+    }
+
+    #[test]
+    fn too_many_positionals_are_rejected() {
+        let err = parse_args(&["spot.json", "10", "0.3", "extra"]).unwrap_err();
+        assert!(err.contains("too many positional arguments"), "{err}");
+        let err = parse_args(&["resume", "base.gto", "10", "0.3", "extra"]).unwrap_err();
+        assert!(err.contains("too many positional arguments"), "{err}");
+    }
+
+    #[test]
+    fn unknown_option_is_rejected() {
+        let err = parse_args(&["spot.json", "--foo"]).unwrap_err();
+        assert!(err.contains("unknown option --foo"), "{err}");
+        // A bare `--load` is an unknown option, not a path to solve.
+        let err = parse_args(&["--load", "base.gto"]).unwrap_err();
+        assert!(err.contains("unknown option --load"), "{err}");
+    }
+
+    #[test]
+    fn missing_paths_are_rejected() {
+        let err = parse_args(&["--save", "out.gto"]).unwrap_err();
+        assert!(err.contains("missing a spot config or save path"), "{err}");
+        let err = parse_args(&["resume"]).unwrap_err();
+        assert!(err.contains("resume needs a save path"), "{err}");
+    }
+
+    #[test]
+    fn bad_numbers_name_the_positional() {
+        let err = parse_args(&["spot.json", "many"]).unwrap_err();
+        assert!(err.contains("max_iterations"), "{err}");
+        let err = parse_args(&["spot.json", "10", "soon"]).unwrap_err();
+        assert!(err.contains("target_exploit_pct"), "{err}");
+        let err = parse_args(&["resume", "base.gto", "many"]).unwrap_err();
+        assert!(err.contains("iteration delta"), "{err}");
     }
 }

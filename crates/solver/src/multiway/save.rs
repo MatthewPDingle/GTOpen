@@ -25,21 +25,13 @@ pub struct MwSaveHeader {
     pub exploit_pct_pot: Option<f64>,
 }
 
-fn algo_name(a: Algorithm) -> &'static str {
-    match a {
-        Algorithm::Dcfr => "dcfr",
-        Algorithm::CfrPlus => "cfr+",
-        Algorithm::PcfrPlus => "pcfr+",
-    }
-}
-
 /// Writes `s` (call `ensure_symmetric` first when it uses isomorphism).
 pub fn save(s: &MwSolver, exploit_pct_pot: Option<f64>, w: impl Write) -> Result<(), String> {
     let mut w = BufWriter::new(w);
     let hdr = MwSaveHeader {
         config: s.spot.config.clone(),
         iteration: s.iteration,
-        algo: Some(algo_name(s.algo).into()),
+        algo: Some(s.algo.name().into()),
         exploit_pct_pot,
     };
     let io = |e: std::io::Error| e.to_string();

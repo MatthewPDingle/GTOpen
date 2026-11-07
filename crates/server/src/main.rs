@@ -3922,7 +3922,6 @@ async fn save_solve(
     let path_str = path.to_str().unwrap().to_string();
     tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.ensure_symmetric();
         s.save(&path_str)
     })
     .await
@@ -3946,6 +3945,15 @@ struct SaveHeaderPeek {
     #[serde(default)]
     #[allow(dead_code)]
     iteration: u32,
+    /// Typed here only so peek rejects a malformed value; `Solver::load`
+    /// applies it. Anything load can refuse must fail in the peek, or the
+    /// validate-then-swap path drops the current session for a bad file.
+    #[serde(default)]
+    #[allow(dead_code)]
+    algo: Option<String>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    use_isomorphism: Option<bool>,
     #[serde(default)]
     locks: Vec<(u32, Vec<f32>)>,
 }
@@ -3980,6 +3988,11 @@ fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> 
     }
     let header: SaveHeaderPeek =
         serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
+    // The real loader refuses an unknown engine tag; do it here, while the
+    // current session still exists.
+    if let Some(tag) = &header.algo {
+        Algorithm::parse(tag).map_err(|e| format!("bad header: {e}"))?;
+    }
     let node_cap = node_budget(cap_mb, &header.config, storage);
     // a save without the shape switch predates the check-through fix (the
     // loader in solver::save does the same): rebuild it the way it was built
