@@ -331,9 +331,13 @@ extends a saved solve, or a locked variant the app saved, without re-solving it
 from iteration 0. Saves written before the header carried
 `algo`/`use_isomorphism` resume as dcfr with isomorphism on;
 `SOLVER_ALGO`/`SOLVER_ISO` override the recorded values only when explicitly
-set, and warn when they do. PCFR+ prediction arenas are not part of a save, so
-a resumed PCFR+ run restarts them for one iteration; dcfr and cfr+ resume
-exactly.
+set, and warn when they do. PCFR+ prediction arenas are not part of a save,
+so resuming PCFR+ is a **warm start**, not an exact continuation. The CLI warns
+about this: restarting predictions can change the trajectory beyond the first
+resumed iteration. DCFR and CFR+ retain their continuation state; keep the same
+storage and engine settings when comparing an uninterrupted run. The server
+checks the PCFR+ prediction-arena RAM budget even when the solve request keeps
+the algorithm inherited from a save.
 
 **Batch mode** solves the same ranges/tree across many boards (file with one
 board per line, or an inline `b1,b2,..` list), prints one row per board

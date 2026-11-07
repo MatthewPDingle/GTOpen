@@ -163,6 +163,11 @@ fn main() {
                 }
             };
             resume_settings(&mut solver, &env);
+            if solver.algo == Algorithm::PcfrPlus && solver.iteration > 0 && !solver.has_preds() {
+                eprintln!(
+                    "warning: PCFR+ prediction state is not stored in saves; this is a warm start and may differ from an uninterrupted run, including after the first resumed iteration"
+                );
+            }
             print_stats(
                 &format!("loaded {path}"),
                 t0.elapsed().as_secs_f64(),

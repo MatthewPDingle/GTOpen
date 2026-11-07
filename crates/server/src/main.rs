@@ -34,6 +34,8 @@ mod postflop_context_tests;
 mod trust_tests;
 #[cfg(test)]
 mod preflop_trust_tests;
+#[cfg(test)]
+mod save_resume_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -740,9 +742,12 @@ async fn start_solve(
         }
     }
 
-    if let Some(name) = &req.algorithm {
-        let algo = Algorithm::parse(name).map_err(bad_request)?;
+    {
         let mut solver = lock_unpoisoned(&session.solver);
+        // A loaded save can already select PCFR+ without prediction arenas.
+        // Gate the effective algorithm even when the request omits it.
+        let algo = req.algorithm.as_deref().map(Algorithm::parse)
+            .transpose().map_err(bad_request)?.unwrap_or(solver.algo);
         // PCFR+ allocates a third, regret-sized arena pair on its first
         // iteration — outside the build-time gate, which sized the spot for
         // two. Re-check the cap here so a spot admitted near the limit can't
@@ -3937,12 +3942,11 @@ const SAVE_MAGIC: &[u8] = b"GTOSOLVE2\n";
 /// Tournament (ICM) saves.
 const SAVE_MAGIC_ICM: &[u8] = b"GTOSOLVE3\n";
 
-/// The subset of the save header load_solve needs for pre-validation;
-/// unknown header fields (labels, future additions) are ignored.
+/// Match the loader's known header fields before replacing a live session;
+/// unknown future fields are still ignored.
 #[derive(Deserialize)]
 struct SaveHeaderPeek {
     config: SpotConfig,
-    #[serde(default)]
     #[allow(dead_code)]
     iteration: u32,
     /// Typed here only so peek rejects a malformed value; `Solver::load`
@@ -3956,6 +3960,9 @@ struct SaveHeaderPeek {
     use_isomorphism: Option<bool>,
     #[serde(default)]
     locks: Vec<(u32, Vec<f32>)>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    lock_labels: Vec<(u32, String)>,
 }
 
 /// Validate a .gto save WITHOUT allocating solver arenas: file exists, magic

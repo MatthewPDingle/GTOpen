@@ -78,6 +78,16 @@ fn assert_ok(out: &Output) {
     );
 }
 
+/// RSS is unavailable (NaN) on some platforms. Check the actual result,
+/// not unrelated diagnostics on the same line.
+fn assert_finite_exploitability(done: &str) {
+    let value = done.split("exploitability ").nth(1)
+        .and_then(|s| s.split('%').next())
+        .and_then(|s| s.parse::<f64>().ok())
+        .expect("done line must contain exploitability");
+    assert!(value.is_finite(), "non-finite exploitability: {done}");
+}
+
 fn load(path: &Path) -> Solver {
     Solver::load(path.to_str().unwrap()).unwrap()
 }
@@ -129,7 +139,7 @@ fn fresh_save_then_resume_adds_the_delta() {
         done.contains(&format!("done: iter {}", first + 4)),
         "done line should report the stop iteration:\n{stdout}"
     );
-    assert!(!done.contains("NaN"), "a short delta must not report NaN:\n{stdout}");
+    assert_finite_exploitability(done);
     assert_eq!(load(&dir.join("next.gto")).iteration, first + 4);
 }
 
@@ -252,10 +262,7 @@ fn fresh_save_records_env_and_resume_keeps_it() {
         "nothing was overridden, so there should be no warning:\n{stderr}"
     );
     let done = stdout.lines().find(|l| l.starts_with("done:")).unwrap_or("");
-    assert!(
-        !done.contains("NaN"),
-        "a 1-iteration resume must still measure exploitability:\n{stdout}"
-    );
+    assert_finite_exploitability(done);
     let next = load(&dir.join("next.gto"));
     assert_eq!(next.algo, Algorithm::CfrPlus);
     assert!(!next.use_isomorphism);
@@ -353,4 +360,30 @@ fn resume_continues_the_arenas_not_restarts_them() {
         std::fs::read(dir.join("continuous.gto")).unwrap(),
         "a resumed solve must produce the same state as one uninterrupted run"
     );
+}
+
+/// PCFR+ saves omit predictions. Continuing succeeds, but cannot promise
+/// the same trajectory as an uninterrupted run, even with f32 storage.
+#[test]
+fn pcfr_resume_warns_about_missing_predictions() {
+    let dir = workdir("pcfr-warning");
+    let env = &[("SOLVER_ALGO", "pcfr+"), ("SOLVER_STORAGE", "f32")];
+    assert_ok(&solve_cli_env(
+        &dir, &["spot.json", "3", "0", "--save", "base.gto"], env,
+    ));
+    let out = solve_cli_env(
+        &dir, &["resume", "base.gto", "1", "0", "--save", "next.gto"],
+        &[("SOLVER_STORAGE", "f32")],
+    );
+    assert_ok(&out);
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(stderr.contains("PCFR+ prediction state is not stored"), "{stderr}");
+    assert!(stderr.contains("may differ from an uninterrupted run"), "{stderr}");
+    assert_eq!(load(&dir.join("next.gto")).iteration, 4);
+
+    let out = solve_cli_env(
+        &dir, &["resume", "base.gto", "1", "0"], &[("SOLVER_ALGO", "dcfr")],
+    );
+    assert_ok(&out);
+    assert!(!String::from_utf8_lossy(&out.stderr).contains("prediction state"));
 }
