@@ -40,7 +40,14 @@ else
   echo "  python3 tools/datagen/upload.py --contributor $LOGIN"
 fi
 
-./target/release/solve-cli datagen run --contributor "$LOGIN" "$@"
+# The generator exits non-zero when it is interrupted or killed; keep going
+# so the jobs it finished still get their final upload. A handler (not an
+# ignore) for Ctrl+C keeps this script alive while the generator still gets
+# the default signal.
+trap 'echo' INT
+./target/release/solve-cli datagen run --contributor "$LOGIN" "$@" || echo "generator stopped (exit $?)"
 if [ -n "$UPLOADER" ]; then
+  kill "$UPLOADER" 2>/dev/null || true
+  echo "uploading finished jobs..."
   "$PY" tools/datagen/upload.py --contributor "$LOGIN" || true
 fi
