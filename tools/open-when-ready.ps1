@@ -1,9 +1,10 @@
 param([int]$Port = 3737, [int]$TimeoutSec = 120)
 . "$PSScriptRoot\server-status.ps1"
+$endpoint = Get-GTOpenEndpoint $Port
 $deadline = (Get-Date).AddSeconds($TimeoutSec)
 do {
-    if ((Get-GTOpenServerState $Port) -eq 'Ready') {
-        Start-Process "http://127.0.0.1:$Port"
+    if ((Get-GTOpenServerState $Port -Endpoint $endpoint) -eq 'Ready') {
+        Start-Process $endpoint.Url
         exit 0
     }
     Start-Sleep -Milliseconds 300

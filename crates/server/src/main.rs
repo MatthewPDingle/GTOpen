@@ -11,7 +11,7 @@ use solver::query::PathStep;
 use solver::range::Range;
 use solver::store::Storage;
 use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
@@ -4229,6 +4229,18 @@ fn bind_addr(host: Option<&str>, port: u16) -> Result<SocketAddr, String> {
     Ok(SocketAddr::new(ip, port))
 }
 
+/// Use a reachable loopback URL for wildcard listeners without assuming that
+/// an IPv6 socket also accepts IPv4 connections (it does not on Windows).
+fn browser_addr(mut addr: SocketAddr) -> SocketAddr {
+    if addr.ip().is_unspecified() {
+        addr.set_ip(match addr.ip() {
+            IpAddr::V4(_) => IpAddr::V4(Ipv4Addr::LOCALHOST),
+            IpAddr::V6(_) => IpAddr::V6(Ipv6Addr::LOCALHOST),
+        });
+    }
+    addr
+}
+
 #[tokio::main]
 async fn main() {
     init_rayon();
@@ -4353,12 +4365,7 @@ async fn main() {
              this port can run solves, change locks, write saves and read docs/ and research/."
         );
     }
-    // A wildcard bind is reachable at loopback, so that is the URL to hand out.
-    let shown = if addr.ip().is_unspecified() {
-        SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), port)
-    } else {
-        addr
-    };
+    let shown = browser_addr(addr);
     println!("GTO solver running at http://{shown}");
     let listener = match tokio::net::TcpListener::bind(addr).await {
         Ok(listener) => listener,
@@ -4639,6 +4646,41 @@ mod bind_addr_tests {
         ] {
             let resolved = bind_addr(host, 3737).unwrap();
             assert_eq!(resolved.to_string(), expected, "{host:?}");
+        }
+    }
+
+    #[test]
+    fn browser_urls_preserve_address_family_and_port() {
+        for (bound, expected) in [
+            ("0.0.0.0:3737", "127.0.0.1:3737"),
+            ("[::]:4242", "[::1]:4242"),
+            ("127.0.0.1:3737", "127.0.0.1:3737"),
+            ("[::1]:3737", "[::1]:3737"),
+            ("192.0.2.1:3737", "192.0.2.1:3737"),
+            ("[2001:db8::1]:3737", "[2001:db8::1]:3737"),
+        ] {
+            assert_eq!(browser_addr(bound.parse().unwrap()).to_string(), expected);
+        }
+    }
+
+    #[tokio::test]
+    async fn wildcard_browser_addresses_reach_the_listener() {
+        for host in ["0.0.0.0", "::"] {
+            let addr = bind_addr(Some(host), 0).unwrap();
+            let listener = match tokio::net::TcpListener::bind(addr).await {
+                Ok(listener) => listener,
+                Err(error) if host == "::" && matches!(
+                    error.kind(),
+                    std::io::ErrorKind::AddrNotAvailable | std::io::ErrorKind::Unsupported
+                ) => {
+                    eprintln!("IPv6 unavailable on this host: {error}");
+                    continue;
+                }
+                Err(error) => panic!("cannot bind {addr}: {error}"),
+            };
+            let shown = browser_addr(listener.local_addr().unwrap());
+            std::net::TcpStream::connect_timeout(&shown, std::time::Duration::from_secs(1))
+                .unwrap_or_else(|error| panic!("advertised address {shown} is unreachable: {error}"));
         }
     }
 
