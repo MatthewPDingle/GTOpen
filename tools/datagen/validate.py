@@ -196,6 +196,41 @@ def pr_changes(api, repo, num):
     return added, other
 
 
+def merge_time(api, repo, num):
+    """When a dataset pull request was merged (UTC ISO), from its event log."""
+    details = api.get_discussion_details(repo, num, repo_type="dataset")
+    when = None
+    for ev in details.events:
+        if getattr(ev, "type", None) == "status-change" and getattr(ev, "new_status", None) == "merged":
+            when = ev.created_at
+        elif when is None and getattr(ev, "type", None) == "comment" and \
+                str(getattr(ev, "content", "")).startswith("Validated "):
+            when = ev.created_at  # the validator's merge comment, posted as it merges
+    if when is None:
+        return None
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=datetime.timezone.utc)
+    return when.astimezone(datetime.timezone.utc).isoformat(timespec="seconds")
+
+
+def backfill_times(api, repo, progress):
+    """Give older progress entries (date only) the exact time their PR was merged."""
+    cache, filled = {}, 0
+    for e in progress.get("events", []):
+        if e.get("time") or "pr" not in e:
+            continue
+        if e["pr"] not in cache:
+            try:
+                cache[e["pr"]] = merge_time(api, repo, e["pr"])
+            except Exception as err:
+                print(f"   could not read the merge time of PR #{e['pr']}: {err}")
+                cache[e["pr"]] = None
+        if cache[e["pr"]]:
+            e["time"] = cache[e["pr"]]
+            filled += 1
+    return filled
+
+
 def run_prs(args):
     from huggingface_hub import HfApi, hf_hub_download
     api = HfApi()
@@ -252,17 +287,24 @@ def run_prs(args):
         api.merge_pull_request(repo, pr.num, repo_type="dataset",
                                comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!")
         main_oids.update({p: "" for p in new})
-        today = datetime.date.today().isoformat()
+        now = datetime.datetime.now(datetime.timezone.utc)
         for login in logins:
             mine = [j for j in jobs if j[0] == login]
-            merged_events.append({"date": today, "contributor": login, "jobs": len(mine),
+            merged_events.append({"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
+                                  "contributor": login, "jobs": len(mine),
                                   "examples": sum(j[2] for j in mine), "pr": pr.num})
-    if merged_events:
+    if merged_events or not args.dry_run:
         progress = load_progress(api, repo)
+        filled = 0 if args.dry_run else backfill_times(api, repo, progress)
         progress["events"] += merged_events
         n = sum(e["examples"] for e in merged_events)
-        save_progress(api, repo, progress, f"progress: +{n} examples")
-        print(f"progress.json updated: +{n} examples")
+        if merged_events:
+            save_progress(api, repo, progress, f"progress: +{n} examples")
+            print(f"progress.json updated: +{n} examples")
+        elif filled:
+            save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
+        if filled:
+            print(f"progress.json: added merge times to {filled} older entries")
 
 
 def main():
