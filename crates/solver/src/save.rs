@@ -4,7 +4,7 @@
 //! storage mode, so files written by compressed and uncompressed solvers are
 //! interchangeable (and older saves keep loading).
 
-use crate::cfr::Solver;
+use crate::cfr::{Algorithm, Solver};
 use crate::game::{Spot, SpotConfig};
 use crate::store::{Storage, Store};
 use crate::tree::KIND_ACTION;
@@ -21,6 +21,15 @@ const MAGIC_ICM: &[u8] = b"GTOSOLVE3\n";
 struct Header {
     config: SpotConfig,
     iteration: u32,
+    // The algorithm and isomorphism switch are runtime settings, not tree
+    // shape, but they decide how the arenas are updated: resuming a CFR+ or
+    // non-isomorphic solve in a process with different defaults silently
+    // continues the wrong update. `None` marks a save from before the fields
+    // existed, which ran dcfr with isomorphism on.
+    #[serde(default)]
+    algo: Option<String>,
+    #[serde(default)]
+    use_isomorphism: Option<bool>,
     // Locked sigmas live only in the solver's maps (CFR freezes the arenas at
     // locked nodes), so they must ride along. serde defaults keep pre-lock
     // saves loading, and old readers ignore the extra fields.
@@ -92,7 +101,15 @@ impl Solver {
         buf
     }
 
-    pub fn save(&self, path: &str) -> Result<(), String> {
+    /// Write the solved spot to `path`.
+    ///
+    /// Takes `&mut self` because it materializes the isomorphic sibling
+    /// branches first: CFR traverses only orbit representatives, so without
+    /// this a save is a valid-looking file whose non-canonical runouts hold
+    /// stale data. `ensure_symmetric` is idempotent, so callers that already
+    /// materialized (or disabled isomorphism) pay nothing.
+    pub fn save(&mut self, path: &str) -> Result<(), String> {
+        self.ensure_symmetric();
         // Stage into `{path}.tmp`, then rename over the destination (the
         // idiom the server's report writer uses): creating the destination
         // directly truncates the previous valid save BEFORE the new bytes
@@ -112,11 +129,22 @@ impl Solver {
         let mut w = BufWriter::new(file);
         let magic = if self.spot.config.tree.icm.is_some() { MAGIC_ICM } else { MAGIC };
         w.write_all(magic).map_err(|e| e.to_string())?;
+        // Node-index order, not HashMap order: the header is part of the file
+        // identity, and a load-then-save round trip must reproduce it byte for
+        // byte even with several locks.
+        let mut locks: Vec<(u32, Vec<f32>)> =
+            self.locks.iter().map(|(k, v)| (*k, v.clone())).collect();
+        locks.sort_unstable_by_key(|(idx, _)| *idx);
+        let mut lock_labels: Vec<(u32, String)> =
+            self.lock_labels.iter().map(|(k, v)| (*k, v.clone())).collect();
+        lock_labels.sort_unstable_by_key(|(idx, _)| *idx);
         let header = Header {
             config: self.spot.config.clone(),
             iteration: self.iteration,
-            locks: self.locks.iter().map(|(k, v)| (*k, v.clone())).collect(),
-            lock_labels: self.lock_labels.iter().map(|(k, v)| (*k, v.clone())).collect(),
+            algo: Some(self.algo.name().to_string()),
+            use_isomorphism: Some(self.use_isomorphism),
+            locks,
+            lock_labels,
         };
         let hjson = serde_json::to_string(&header).map_err(|e| e.to_string())?;
         w.write_all(hjson.as_bytes()).map_err(|e| e.to_string())?;
@@ -182,6 +210,15 @@ impl Solver {
         validate_locks(&spot, &header.locks).map_err(|e| format!("bad lock section: {e}"))?;
         let mut solver = Solver::with_storage(Arc::new(spot), storage);
         solver.iteration = header.iteration;
+        // A save without these fields predates them and was solved with the
+        // engine defaults, so leave today's defaults in place. An unknown
+        // tag is corruption, not an invitation to guess a different update.
+        if let Some(tag) = &header.algo {
+            solver.algo = Algorithm::parse(tag).map_err(|e| format!("bad header: {e}"))?;
+        }
+        if let Some(use_isomorphism) = header.use_isomorphism {
+            solver.use_isomorphism = use_isomorphism;
+        }
         solver.locks = header.locks.into_iter().collect();
         solver.lock_labels = header.lock_labels.into_iter().collect();
         if !solver.locks.is_empty() {

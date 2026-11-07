@@ -35,6 +35,8 @@ mod postflop_context_tests;
 mod trust_tests;
 #[cfg(test)]
 mod preflop_trust_tests;
+#[cfg(test)]
+mod save_resume_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -741,9 +743,12 @@ async fn start_solve(
         }
     }
 
-    if let Some(name) = &req.algorithm {
-        let algo = Algorithm::parse(name).map_err(bad_request)?;
+    {
         let mut solver = lock_unpoisoned(&session.solver);
+        // A loaded save can already select PCFR+ without prediction arenas.
+        // Gate the effective algorithm even when the request omits it.
+        let algo = req.algorithm.as_deref().map(Algorithm::parse)
+            .transpose().map_err(bad_request)?.unwrap_or(solver.algo);
         // PCFR+ allocates a third, regret-sized arena pair on its first
         // iteration — outside the build-time gate, which sized the spot for
         // two. Re-check the cap here so a spot admitted near the limit can't
@@ -3923,7 +3928,6 @@ async fn save_solve(
     let path_str = path.to_str().unwrap().to_string();
     tokio::task::spawn_blocking(move || {
         let mut s = lock_unpoisoned(&solver);
-        s.ensure_symmetric();
         s.save(&path_str)
     })
     .await
@@ -3939,16 +3943,27 @@ const SAVE_MAGIC: &[u8] = b"GTOSOLVE2\n";
 /// Tournament (ICM) saves.
 const SAVE_MAGIC_ICM: &[u8] = b"GTOSOLVE3\n";
 
-/// The subset of the save header load_solve needs for pre-validation;
-/// unknown header fields (labels, future additions) are ignored.
+/// Match the loader's known header fields before replacing a live session;
+/// unknown future fields are still ignored.
 #[derive(Deserialize)]
 struct SaveHeaderPeek {
     config: SpotConfig,
-    #[serde(default)]
     #[allow(dead_code)]
     iteration: u32,
+    /// Typed here only so peek rejects a malformed value; `Solver::load`
+    /// applies it. Anything load can refuse must fail in the peek, or the
+    /// validate-then-swap path drops the current session for a bad file.
+    #[serde(default)]
+    #[allow(dead_code)]
+    algo: Option<String>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    use_isomorphism: Option<bool>,
     #[serde(default)]
     locks: Vec<(u32, Vec<f32>)>,
+    #[serde(default)]
+    #[allow(dead_code)]
+    lock_labels: Vec<(u32, String)>,
 }
 
 /// Validate a .gto save WITHOUT allocating solver arenas: file exists, magic
@@ -3981,6 +3996,11 @@ fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> 
     }
     let header: SaveHeaderPeek =
         serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
+    // The real loader refuses an unknown engine tag; do it here, while the
+    // current session still exists.
+    if let Some(tag) = &header.algo {
+        Algorithm::parse(tag).map_err(|e| format!("bad header: {e}"))?;
+    }
     let node_cap = node_budget(cap_mb, &header.config, storage);
     // a save without the shape switch predates the check-through fix (the
     // loader in solver::save does the same): rebuild it the way it was built
