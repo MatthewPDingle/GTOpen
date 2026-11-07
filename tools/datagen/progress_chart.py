@@ -53,16 +53,35 @@ def nice_ceiling(x):
     return x, x / 6
 
 
+UTC = datetime.timezone.utc
+
+
+def event_time(e):
+    """When an entry was merged (UTC). Older entries carry only a date: noon that day."""
+    if e.get("time"):
+        t = datetime.datetime.fromisoformat(e["time"].replace("Z", "+00:00"))
+        return t.replace(tzinfo=UTC) if t.tzinfo is None else t.astimezone(UTC)
+    d = datetime.date.fromisoformat(e["date"])
+    return datetime.datetime(d.year, d.month, d.day, 12, tzinfo=UTC)
+
+
 def series(progress):
-    """[(date, cumulative examples)] by day."""
-    per_day = {}
+    """[(merge time, cumulative examples)], one point per merge."""
+    per_time = {}
     for e in progress.get("events", []):
-        per_day[e["date"]] = per_day.get(e["date"], 0) + int(e["examples"])
+        t = event_time(e)
+        per_time[t] = per_time.get(t, 0) + int(e["examples"])
     out, total = [], 0
-    for d in sorted(per_day):
-        total += per_day[d]
-        out.append((datetime.date.fromisoformat(d), total))
+    for t in sorted(per_time):
+        total += per_time[t]
+        out.append((t, total))
     return out
+
+
+def time_label(t, span_s):
+    if span_s <= 2 * 86400:
+        return t.strftime("%b %d %H:%M UTC").replace(" 0", " ")
+    return t.strftime("%b %d").replace(" 0", " ")
 
 
 def render_svg(progress, cfg):
@@ -72,17 +91,18 @@ def render_svg(progress, cfg):
     total = pts[-1][1] if pts else 0
     n_contrib = len({e["contributor"] for e in progress.get("events", [])})
     ymax, ystep = nice_ceiling(max(goal, total) * 1.05)
-    today = datetime.date.today()
+    now = datetime.datetime.now(UTC)
     if pts:
-        x0 = pts[0][0] - datetime.timedelta(days=1)
-        x1 = max(today, pts[-1][0])
+        x1 = max(now, pts[-1][0])
+        # lead-in before the first merge: a tenth of the span, at least an hour
+        x0 = pts[0][0] - max((x1 - pts[0][0]) / 10, datetime.timedelta(hours=1))
     else:
-        x0, x1 = today - datetime.timedelta(days=7), today
-    span = max((x1 - x0).days, 1)
+        x0, x1 = now - datetime.timedelta(days=7), now
+    span = max((x1 - x0).total_seconds(), 1)
     pw, ph = W - L - R, H - T - B
 
-    def X(d):
-        return L + pw * (d - x0).days / span
+    def X(t):
+        return L + pw * (t - x0).total_seconds() / span
 
     def Y(v):
         return T + ph * (1 - v / ymax)
@@ -107,7 +127,8 @@ def render_svg(progress, cfg):
 </style>""")
     o.append(f'<rect class="bg" width="{W}" height="{H}" rx="8"/>')
     o.append(f'<text class="t1" x="{L}" y="28" font-size="17" font-weight="600">{escape(title)}</text>')
-    sub = (f"{pct:.1f}% of the {fmt_k(goal)} goal · updated {progress.get('updated', 'never')[:10]}"
+    updated = progress.get("updated", "never")[:16].replace("T", " ")
+    sub = (f"{pct:.1f}% of the {fmt_k(goal)} goal · updated {updated}{' UTC' if updated != 'never' else ''}"
            if pts else "Pilot starting: no validated examples yet")
     o.append(f'<text class="t2" x="{L}" y="48" font-size="12.5">{escape(sub)}</text>')
     # grid + y labels
@@ -118,16 +139,16 @@ def render_svg(progress, cfg):
         o.append(f'<text class="t2" x="{L - 8}" y="{y + 4:.1f}" font-size="11" text-anchor="end">{fmt_k(v)}</text>')
         v += ystep
     o.append(f'<line class="axis" x1="{L}" x2="{L + pw}" y1="{Y(0):.1f}" y2="{Y(0):.1f}" stroke-width="1"/>')
-    # x labels: first, middle, last date
-    for d in sorted({x0, x0 + datetime.timedelta(days=span // 2), x1}):
-        o.append(f'<text class="t2" x="{X(d):.1f}" y="{T + ph + 18}" font-size="11" text-anchor="middle">'
-                 f'{d.strftime("%b %-d") if os.name != "nt" else d.strftime("%b %d")}</text>')
+    # x labels: start, middle, now
+    for t, anchor in ((x0, "start"), (x0 + datetime.timedelta(seconds=span / 2), "middle"), (x1, "end")):
+        o.append(f'<text class="t2" x="{X(t):.1f}" y="{T + ph + 18}" font-size="11" text-anchor="{anchor}">'
+                 f'{time_label(t, span)}</text>')
     # go/no-go and goal marks
     for val, label in ((gate, f"Go/no-go check {fmt_k(gate)}"), (goal, f"Goal {fmt_k(goal)}")):
         y = Y(val)
         o.append(f'<line class="mark" x1="{L}" x2="{L + pw}" y1="{y:.1f}" y2="{y:.1f}" stroke-width="1.5"/>')
         o.append(f'<text class="t2" x="{L + pw + 8}" y="{y + 4:.1f}" font-size="11.5">{escape(label)}</text>')
-    # series (steps: the total holds until the next validated batch)
+    # series (steps: the total holds until the next merge)
     if pts:
         path = [(X(x0), Y(0))]
         for d, c in pts:
