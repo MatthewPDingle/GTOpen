@@ -13,6 +13,7 @@ GitHub Action needs no installs. A missing progress.json renders an empty
 import argparse
 import datetime
 import json
+import sys
 import os
 import urllib.request
 from xml.sax.saxutils import escape
@@ -172,7 +173,10 @@ def main():
         with open(args.progress) as f:
             progress = json.load(f)
     else:
-        progress = fetch_progress(args.repo) or {"events": []}
+        progress = fetch_progress(args.repo)
+        if progress is None:
+            # Don't replace a good graph with an empty one on a network blip.
+            sys.exit(f"could not fetch progress.json from {args.repo}; graph left unchanged")
     os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "progress.svg"), "w") as f:
         f.write(render_svg(progress, cfg))
