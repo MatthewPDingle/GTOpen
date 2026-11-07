@@ -10,6 +10,7 @@ Optional environment:
 | var | default | meaning |
 |---|---|---|
 | `PORT` | 3737 | HTTP port |
+| `GTOPEN_HOST` | `127.0.0.1` | HTTP bind address: an IPv4/IPv6 literal, not a hostname. A non-loopback value exposes the unauthenticated API (solves, locks, saves, the served `docs/`/`research/` files) to the network. For WSL2/LAN use `0.0.0.0`: the Windows launcher opens `127.0.0.1:$PORT`, which only reaches a loopback or wildcard bind |
 | `SOLVER_THREADS` | physical cores | rayon worker threads (SMT hurts this workload; 12–16 is the sweet spot on a 5950X) |
 | `SOLVER_COMPRESS` | 1 | `0` = full-precision f32 arenas instead of 16-bit compressed |
 | `SOLVER_GPU` | 1 (if built with `gpu`) | `0` forces the CPU engine even when CUDA is available |

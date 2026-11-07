@@ -11,6 +11,7 @@ use solver::query::PathStep;
 use solver::range::Range;
 use solver::store::Storage;
 use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
@@ -4213,6 +4214,21 @@ fn init_rayon() {
     println!("solver threads: {threads}");
 }
 
+/// Resolve the HTTP listen address from `GTOPEN_HOST` (an IPv4/IPv6 literal,
+/// loopback by default) and `PORT`. Hostnames are rejected: resolving one can
+/// yield several addresses, and the loopback default already covers
+/// `localhost`.
+fn bind_addr(host: Option<&str>, port: u16) -> Result<SocketAddr, String> {
+    let host = host
+        .map(str::trim)
+        .filter(|host| !host.is_empty())
+        .unwrap_or("127.0.0.1");
+    let ip: IpAddr = host.parse().map_err(|_| {
+        format!("GTOPEN_HOST={host:?} is not an IP address (use an IPv4 or IPv6 literal)")
+    })?;
+    Ok(SocketAddr::new(ip, port))
+}
+
 #[tokio::main]
 async fn main() {
     init_rayon();
@@ -4323,10 +4339,38 @@ async fn main() {
         .ok()
         .and_then(|s| s.parse().ok())
         .unwrap_or(3737);
-    let addr = format!("127.0.0.1:{port}");
-    println!("GTO solver running at http://{addr}");
-    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let host = std::env::var("GTOPEN_HOST").ok();
+    let addr = match bind_addr(host.as_deref(), port) {
+        Ok(addr) => addr,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(2);
+        }
+    };
+    if !addr.ip().is_loopback() {
+        eprintln!(
+            "warning: listening on {addr} without authentication. Anyone who can reach \
+             this port can run solves, change locks, write saves and read docs/ and research/."
+        );
+    }
+    // A wildcard bind is reachable at loopback, so that is the URL to hand out.
+    let shown = if addr.ip().is_unspecified() {
+        SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), port)
+    } else {
+        addr
+    };
+    println!("GTO solver running at http://{shown}");
+    let listener = match tokio::net::TcpListener::bind(addr).await {
+        Ok(listener) => listener,
+        Err(error) => {
+            eprintln!("cannot bind {addr}: {error}");
+            std::process::exit(1);
+        }
+    };
+    if let Err(error) = axum::serve(listener, app).await {
+        eprintln!("server error: {error}");
+        std::process::exit(1);
+    }
 }
 
 #[cfg(test)]
@@ -4574,6 +4618,35 @@ mod allin_threshold_tests {
             body["allin_threshold"] = serde_json::from_str(literal).unwrap();
             let (status, response) = post_json(app.clone(), "/api/spot", body.clone()).await;
             assert_eq!(status, StatusCode::OK, "{literal}: {response}");
+        }
+    }
+}
+
+#[cfg(test)]
+mod bind_addr_tests {
+    use super::*;
+
+    #[test]
+    fn defaults_to_loopback_and_accepts_ip_literals() {
+        for (host, expected) in [
+            (None, "127.0.0.1:3737"),
+            (Some(""), "127.0.0.1:3737"),
+            (Some("   "), "127.0.0.1:3737"),
+            (Some("0.0.0.0"), "0.0.0.0:3737"),
+            (Some(" 192.168.1.5 "), "192.168.1.5:3737"),
+            (Some("::1"), "[::1]:3737"),
+            (Some("::"), "[::]:3737"),
+        ] {
+            let resolved = bind_addr(host, 3737).unwrap();
+            assert_eq!(resolved.to_string(), expected, "{host:?}");
+        }
+    }
+
+    #[test]
+    fn rejects_hostnames_and_malformed_addresses() {
+        for host in ["localhost", "example.com", "1.2.3.4:5", "not an ip"] {
+            let error = bind_addr(Some(host), 3737).unwrap_err();
+            assert!(error.contains("is not an IP address"), "{host:?}: {error}");
         }
     }
 }
