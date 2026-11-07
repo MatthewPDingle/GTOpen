@@ -23,6 +23,15 @@ pub enum Algorithm {
 }
 
 impl Algorithm {
+    /// Canonical tag for save headers; [`Algorithm::parse`] accepts it back.
+    pub fn name(self) -> &'static str {
+        match self {
+            Algorithm::Dcfr => "dcfr",
+            Algorithm::CfrPlus => "cfr+",
+            Algorithm::PcfrPlus => "pcfr+",
+        }
+    }
+
     pub fn parse(s: &str) -> Result<Algorithm, String> {
         match s.to_ascii_lowercase().replace(['-', '_', '+'], "").as_str() {
             "dcfr" => Ok(Algorithm::Dcfr),
