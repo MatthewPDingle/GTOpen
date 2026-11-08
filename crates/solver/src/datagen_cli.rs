@@ -16,7 +16,8 @@ const USAGE: &str = "usage:
   solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
-  solve-cli datagen block LOGIN";
+  solve-cli datagen block LOGIN
+  solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)";
 
 struct Opts {
     positional: Vec<String>,
@@ -248,12 +249,72 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 }
             }
         }
+        "baseline" => baseline(),
         "run" => run_loop(&o, env),
         "verify" => verify(&o, env),
         _ => {
             eprintln!("{USAGE}");
             std::process::exit(1);
         }
+    }
+}
+
+/// For each example line on stdin, the per-class values today's Preflop Lab
+/// realization models give the same heads-up flop (no board: the models
+/// price the preflop matchup). One output line per input line, in order:
+/// {"job","index","models":{name:[oop values, ip values]}}. Used by
+/// tools/datagen/gonogo.py to score a trained net against these models.
+fn baseline() {
+    use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
+    let samples = std::env::var("PREFLOP_EQ_SAMPLES").ok().and_then(|v| v.parse().ok()).unwrap_or(20_000);
+    let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", samples));
+    let models = ["static", "balanced", "calibrated", "raw"];
+    let mut solvers: Vec<PreflopSolver> = models.iter().map(|m| {
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions": ["SB", "BB"], "stack": 100.0, "posts": [0.5, 1.0], "limp": false,
+            "open_raises": [2.5], "raise_mults": [3.0], "max_raises": 1, "add_allin": false,
+            "rake_pct": 0.0, "rake_cap": 0.0, "realization": m,
+        })).expect("baseline config");
+        let s = PreflopSolver::new(cfg, eq.clone()).unwrap_or_else(|e| {
+            eprintln!("baseline: {e}");
+            std::process::exit(1)
+        });
+        if !s.realization_note.is_empty() {
+            eprintln!("baseline: {} (run from the GTOpen folder)", s.realization_note);
+            std::process::exit(1);
+        }
+        s
+    }).collect();
+    let stdout = std::io::stdout();
+    let mut out = std::io::BufWriter::new(stdout.lock());
+    for (n, line) in std::io::stdin().lock().lines().enumerate() {
+        let line = line.expect("stdin");
+        if line.trim().is_empty() {
+            continue;
+        }
+        let ex: ExampleInputs = match serde_json::from_str(&line) {
+            Ok(x) => x,
+            Err(e) => {
+                eprintln!("baseline: line {}: {e}", n + 1);
+                std::process::exit(1)
+            }
+        };
+        let mut by_model = serde_json::Map::new();
+        for (m, s) in models.iter().zip(solvers.iter_mut()) {
+            match s.hu_leaf_values([&ex.range[0], &ex.range[1]], ex.pot_bb, ex.stack_bb,
+                                     ex.rake_pct * 100.0, ex.rake_cap_bb) { // datagen rake is a fraction
+                Ok(v) => {
+                    let r = |x: &Vec<f32>| x.iter().map(|&y| (y as f64 * 1e5).round() / 1e5).collect::<Vec<_>>();
+                    by_model.insert(m.to_string(), serde_json::json!([r(&v[0]), r(&v[1])]));
+                }
+                Err(e) => {
+                    eprintln!("baseline: job {} #{}: {e}", ex.job, ex.index);
+                    std::process::exit(1)
+                }
+            }
+        }
+        let row = serde_json::json!({"job": ex.job, "index": ex.index, "models": by_model});
+        writeln!(out, "{row}").expect("stdout");
     }
 }
 

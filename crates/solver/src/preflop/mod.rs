@@ -730,6 +730,57 @@ impl PreflopSolver {
         // Sampling noise must not create/destroy chips, including identical classes.
         if h == j {0.5} else {0.5*(self.eq.eq(h,j)+(1.0-self.eq.eq(j,h)))}
     }
+    /// Heads-up flop leaf values under this solver's realization model, for
+    /// scoring the model against solved flops (datagen go/no-go). `ranges[0]`
+    /// is out of position. Both players have put `pot / 2` in and have
+    /// `behind` left; ranges are per-class frequencies (0..1), as in datagen
+    /// examples. Returns each class's value as a fraction of the pot
+    /// (pot-share convention, as in datagen examples) per player, out of
+    /// position first. Only for a plain two-seat game without ICM.
+    pub fn hu_leaf_values(&mut self, ranges: [&[f32]; 2], pot: f64, behind: f64, rake_pct: f64,
+                          rake_cap: f64) -> Result<[Vec<f32>; 2], String> {
+        if self.n != 2 || self.icm.is_some() {
+            return Err("hu_leaf_values needs a plain two-seat game".into());
+        }
+        let saved = (self.cfg.stack, self.cfg.stacks.take(), self.cfg.rake_pct, self.cfg.rake_cap);
+        self.cfg.stack = pot / 2.0 + behind - self.cfg.ante;
+        self.cfg.rake_pct = rake_pct;
+        self.cfg.rake_cap = rake_cap;
+        let order = self.postflop_order();
+        let (oop, ip) = (order[0], order[1]);
+        let live = 0b11u32;
+        let invested = vec![pot / 2.0; 2];
+        let node = PNode {
+            kind: KIND_POT_SHARE, actor: 0, actions: Vec::new(), child_start: 0, pot,
+            r: self.realization_weights(live, &invested, pot), invested, live, winner: 0,
+            data_off: 0, aggressor: 255, posf: self.pos_fracs(live), bucket: 0, raises: 0, raised: 0,
+            side_pots: Vec::new(),
+        };
+        let mut reaches = vec![Vec::new(), Vec::new()];
+        for (seat, range) in [(oop, ranges[0]), (ip, ranges[1])] {
+            // range weights are per-class frequencies; reaches are combo mass
+            let mass: f32 = range.iter().enumerate().map(|(k, w)| w * class_prob(k)).sum();
+            if range.len() != NUM_CLASSES || !(mass > 0.0) {
+                (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
+                return Err("each range needs 169 weights with positive mass".into());
+            }
+            reaches[seat] = range.iter().enumerate().map(|(k, w)| w * class_prob(k) / mass).collect();
+        }
+        self.nodes.push(node);
+        let idx = self.nodes.len() - 1;
+        let mut out = [vec![0f32; NUM_CLASSES], vec![0f32; NUM_CLASSES]];
+        for (k, seat) in [oop, ip].into_iter().enumerate() {
+            let mut v = [0f32; NUM_CLASSES];
+            self.terminal_value(idx, seat, &reaches, &mut v);
+            for h in 0..NUM_CLASSES {
+                out[k][h] = ((v[h] as f64 + pot / 2.0) / pot) as f32;
+            }
+        }
+        self.nodes.pop();
+        (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
+        Ok(out)
+    }
+
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
         let mut realization_note = String::new();
         let fit = if cfg.realization == "calibrated" || cfg.realization == "balanced" {

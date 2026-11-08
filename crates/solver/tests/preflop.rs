@@ -2595,3 +2595,39 @@ fn observed_open_sizes_preserve_mass_and_unreachable_views_hide_placeholders() {
     s.set_table(vec![false;2],vec![Some(modified),None]).unwrap();
     let v=s.node_view(&[]).unwrap();assert!((v.actions.iter().find(|a|a.to==5.0).unwrap().freq-0.6).abs()<1e-6);
 }
+
+#[test]
+fn hu_leaf_values_price_a_flop_like_the_terminal_model() {
+    // datagen go/no-go baseline: a flop leaf priced in isolation.
+    let mk = |realization: &str| {
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions": ["SB", "BB"], "stack": 100.0, "posts": [0.5, 1.0], "limp": false,
+            "open_raises": [2.5], "raise_mults": [3.0], "max_raises": 1, "add_allin": false,
+            "rake_pct": 0.0, "rake_cap": 0.0, "realization": realization,
+        })).unwrap();
+        PreflopSolver::new(cfg, table()).unwrap()
+    };
+    let wide = vec![1.0f32; NUM_CLASSES];
+    let mut tight = vec![0.0f32; NUM_CLASSES];
+    for k in 0..20 { tight[k * 7] = 1.0; }
+    let range_value = |v: &[f32], r: &[f32]| {
+        let m: f64 = (0..NUM_CLASSES).map(|k| class_prob(k) as f64 * r[k] as f64).sum();
+        (0..NUM_CLASSES).map(|k| class_prob(k) as f64 * r[k] as f64 * v[k] as f64).sum::<f64>() / m
+    };
+    // raw and balanced split the pot exactly (no rake): range values add to 1
+    for m in ["raw", "balanced"] {
+        let mut s = mk(m);
+        let v = s.hu_leaf_values([&wide, &tight], 6.0, 50.0, 0.0, 0.0).unwrap();
+        let total = range_value(&v[0], &wide) + range_value(&v[1], &tight);
+        assert!((total - 1.0).abs() < 0.02, "{m}: {total}");
+        assert!(range_value(&v[1], &tight) > 0.5, "{m}: the tight range is ahead");
+    }
+    // rake comes off: 5% capped at 3bb of a 6bb pot
+    let mut s = mk("raw");
+    let v = s.hu_leaf_values([&wide, &wide], 6.0, 50.0, 5.0, 3.0).unwrap();
+    let total = range_value(&v[0], &wide) + range_value(&v[1], &wide);
+    assert!((total - 0.95).abs() < 0.02, "raked total {total}");
+    // the solver is unchanged afterwards
+    assert_eq!(s.cfg.stack, 100.0);
+    assert_eq!(s.cfg.rake_pct, 0.0);
+}
