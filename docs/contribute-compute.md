@@ -12,7 +12,7 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 
 [Contributors](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md) ·
 [Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
-the count above updates as soon as uploads are validated; the graph usually redraws within an hour.
+the count and the graph update as soon as uploads are validated.
 
 **Status: collecting toward the first checkpoint.** At **50,000 examples** a first net is trained and checked against
 held-out solves. If it isn't clearly better than the current model, the
@@ -156,7 +156,8 @@ python tools/datagen/validate.py --local datagen_out   # check local files only
 ```
 
 `validate.py` needs a Hugging Face token with write access to the dataset.
-The progress graph is redrawn by `.github/workflows/datagen-progress.yml`
-from the dataset's `progress.json` and published on the `datagen-progress`
-branch. The dataset name, the go/no-go point and the goal live in
+After each merge it redraws the progress graph and force-pushes it to the
+`datagen-progress` branch with your git credentials (`--no-graph` skips
+this). `.github/workflows/datagen-progress.yml` does the same on a schedule
+as a fallback, but GitHub often skips scheduled runs for hours. The dataset name, the go/no-go point and the goal live in
 `tools/datagen/config.json`.

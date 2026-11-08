@@ -152,6 +152,55 @@ def save_progress(api, repo, progress, message):
                     repo_type="dataset", commit_message=message)
 
 
+def publish_graph(progress):
+    """Redraw the GitHub progress graph now and push it to the datagen-progress
+    branch, as the scheduled GitHub Action does. GitHub often skips scheduled
+    runs for hours, so the validator publishes right after each merge with this
+    machine's git credentials. Best effort: a failure only prints a warning."""
+    sys.path.insert(0, HERE)
+    import progress_chart
+    git = ["git", "-c", "user.name=datagen validator",
+           "-c", "user.email=datagen-validator@users.noreply.github.com"]
+    env = dict(os.environ, GIT_TERMINAL_PROMPT="0")
+    stage = tempfile.mkdtemp(prefix="gtopen-graph-")
+    try:
+        url = subprocess.run(["git", "remote", "get-url", "origin"], cwd=ROOT, capture_output=True,
+                             text=True, check=True).stdout.strip()
+        m = re.search(r"github\.com[:/]+([^/]+/[^/]+?)(?:\.git)?/?$", url)
+        if not m:
+            raise RuntimeError(f"origin {url!r} is not a GitHub repository")
+        slug = m.group(1)
+        cfg = load_config()
+        def out(name):
+            return open(os.path.join(stage, name), "w", newline="\n")  # same bytes as the Action
+        with out("progress.svg") as f:
+            f.write(progress_chart.render_svg(progress, cfg))
+        with out("contributors.md") as f:
+            f.write(progress_chart.render_table(progress))
+        with out("progress.json") as f:
+            json.dump(progress, f, indent=1)
+        with out("README.md") as f:
+            f.write("# Value-net training data progress\n\n"
+                    "Generated automatically from the dataset's `progress.json` (by `tools/datagen/validate.py` "
+                    "after each merge, and by `.github/workflows/datagen-progress.yml`). See\n"
+                    f"[docs/contribute-compute.md](https://github.com/{slug}/blob/master/docs/contribute-compute.md).\n\n"
+                    "![Progress](progress.svg)\n\n[Contributors](contributors.md)\n")
+        stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+        for cmd in (["init", "-q", "-b", "datagen-progress"], ["add", "-A"],
+                    ["commit", "-q", "-m", f"Progress graph {stamp}"],
+                    ["push", "-q", "--force", url, "datagen-progress"]):
+            proc = subprocess.run(git + cmd, cwd=stage, capture_output=True, text=True, env=env, timeout=120)
+            if proc.returncode:
+                raise RuntimeError(f"git {cmd[0]} failed: {(proc.stderr or proc.stdout).strip()[-300:]}")
+        print(f"GitHub graph updated: https://github.com/{slug}/tree/datagen-progress")
+    except Exception as err:
+        print(f"   could not update the GitHub graph (the scheduled Action will catch up): {err}")
+    finally:
+        # git marks its object files read-only, which stops rmtree on Windows
+        retry = lambda fn, path, _: (os.chmod(path, 0o700), fn(path))
+        shutil.rmtree(stage, **({"onexc": retry} if sys.version_info >= (3, 12) else {"onerror": retry}))
+
+
 def tree_oids(api, repo, revision=None):
     """path -> blob id for every file at a revision."""
     out = {}
@@ -305,6 +354,8 @@ def run_prs(args):
             save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
         if filled:
             print(f"progress.json: added merge times to {filled} older entries")
+        if (merged_events or filled) and args.publish_graph:
+            publish_graph(progress)
 
 
 def main():
@@ -321,6 +372,8 @@ def real_main():
     ap.add_argument("--solve-cli", default=default_cli())
     ap.add_argument("--sample", type=int, default=3, help="examples re-solved per job")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-graph", dest="publish_graph", action="store_false",
+                    help="don't push the progress graph to GitHub after merging")
     ap.add_argument("--local", help="check job files in a local folder instead of pull requests")
     ap.add_argument("--watch", type=float, default=0, help="repeat every N minutes")
     args = ap.parse_args()
