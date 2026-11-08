@@ -172,7 +172,7 @@ def publish_graph(progress):
         slug = m.group(1)
         cfg = load_config()
         def out(name):
-            return open(os.path.join(stage, name), "w", newline="\n")  # same bytes as the Action
+            return open(os.path.join(stage, name), "w", encoding="utf-8", newline="\n")  # same bytes as the Action
         with out("progress.svg") as f:
             f.write(progress_chart.render_svg(progress, cfg))
         with out("contributors.md") as f:

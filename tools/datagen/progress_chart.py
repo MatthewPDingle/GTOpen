@@ -199,9 +199,9 @@ def main():
             # Don't replace a good graph with an empty one on a network blip.
             sys.exit(f"could not fetch progress.json from {args.repo}; graph left unchanged")
     os.makedirs(args.out, exist_ok=True)
-    with open(os.path.join(args.out, "progress.svg"), "w") as f:
+    with open(os.path.join(args.out, "progress.svg"), "w", encoding="utf-8") as f:
         f.write(render_svg(progress, cfg))
-    with open(os.path.join(args.out, "contributors.md"), "w") as f:
+    with open(os.path.join(args.out, "contributors.md"), "w", encoding="utf-8") as f:
         f.write(render_table(progress))
     with open(os.path.join(args.out, "progress.json"), "w") as f:
         json.dump(progress, f, indent=1)
