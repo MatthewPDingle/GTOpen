@@ -271,7 +271,8 @@ pub struct FlopLeaf {
     pub raises: u8,
     /// Per-class frequencies (largest 1), out of position first.
     pub range: [Vec<f32>; 2],
-    /// Chance both players get here with any hands (product of their reach masses).
+    /// Chance the hand follows this line: every seat's reach mass multiplied,
+    /// folded seats included (a line that needs an unlikely fold is unlikely).
     pub reach: f64,
 }
 
@@ -307,7 +308,8 @@ impl PreflopSolver {
             });
             out.push(FlopLeaf {
                 node, path: path.clone(), positions: [0, 1].map(|side| self.cfg.positions[live[side]].clone()),
-                pot_bb: nd.pot, stack_bb: stack, raises: nd.raises, range, reach: mass[0] as f64 * mass[1] as f64,
+                pot_bb: nd.pot, stack_bb: stack, raises: nd.raises, range,
+                reach: reaches.iter().map(|r| r.iter().sum::<f32>() as f64).product(),
             });
             return;
         }
@@ -470,6 +472,43 @@ mod tests {
             assert!(l.range.iter().all(|r| r.iter().cloned().fold(0f32, f32::max) == 1.0));
             assert!(l.reach > 0.0 && l.pot_bb > 0.0 && l.stack_bb > 0.0 && !l.path.is_empty());
         }
+    }
+
+    #[test]
+    fn flop_leaf_reach_counts_the_seats_that_folded() {
+        let mut s = game("leafnet", 3);
+        for _ in 0..20 {
+            s.iterate();
+        }
+        let leaves = s.hu_flop_leaves();
+        // Lines are disjoint, so their probabilities add up to at most 1.
+        let total: f64 = leaves.iter().map(|l| l.reach).sum();
+        assert!(total > 0.0 && total <= 1.0 + 1e-5, "total reach {total}");
+        // Replay every leaf's line from the root: the chance of a line is the
+        // product over all seats, folded ones included, of the chance that
+        // seat's hand takes its actions on the line.
+        let mut checked_folds = 0;
+        for l in &leaves {
+            let mut seat = vec![(0..NUM_CLASSES).map(|h| class_prob(h) as f64).collect::<Vec<f64>>(); 3];
+            let mut node = 0;
+            for step in &l.path {
+                let nd = &s.nodes[node];
+                let actor = nd.actor as usize;
+                let a = nd.actions.iter()
+                    .position(|x| format!("{} {}", s.cfg.positions[actor], x.label) == *step)
+                    .expect("path step is an action");
+                let sigma = s.average_strategy(node);
+                for h in 0..NUM_CLASSES {
+                    seat[actor][h] *= sigma[a * NUM_CLASSES + h] as f64;
+                }
+                node = s.child(node, a);
+            }
+            assert_eq!(node, l.node);
+            let want: f64 = seat.iter().map(|v| v.iter().sum::<f64>()).product();
+            assert!((l.reach - want).abs() <= 1e-5 * want.max(1e-9), "{:?}: {} vs {want}", l.path, l.reach);
+            checked_folds += l.path.iter().any(|x| x.ends_with("Fold")) as usize;
+        }
+        assert!(checked_folds > 0, "some leaves follow a fold");
     }
 
     #[test]
