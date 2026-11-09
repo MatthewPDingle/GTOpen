@@ -76,7 +76,8 @@ impl PreflopSolver {
         let all_in = left / nd.pot <= 1e-9;
         let calibrated = self.fit.is_some() && !all_in && self.cfg.realization == "calibrated";
         let model = if all_in { "all_in_equity" } else if calibrated { "calibrated" }
-            else if self.cfg.realization == "balanced" { "balanced" }
+            else if self.leaf_correction(node, (0..self.n).find(|q| nd.live & (1 << q) != 0)?).is_some() { "leafnet" }
+            else if super::balanced_family(&self.cfg.realization) { "balanced" }
             else if self.cfg.realization == "raw" { "raw" } else { "static" };
         let mut players = Vec::with_capacity(2);
         for p in live {
@@ -95,6 +96,8 @@ impl PreflopSolver {
         let total_value_bb = players.iter().map(|p| p.value_bb).sum::<f64>();
         let note = if calibrated {
             "The calibrated model embeds its training rake; this heads-up continuation does not respond to the requested rake. The unallocated amount combines embedded rake and model error, so it is not an expected-rake estimate. Send to postflop setup to solve a selected board with the requested rake."
+        } else if model == "leafnet" {
+            "Balanced hand values plus a learned correction from exact flop solves (beta), with requested rake deducted once from the starting pot. The correction was trained on random ranges and is refreshed from the current strategies during the solve. Future betting is not solved."
         } else if model == "balanced" {
             "Relative hand values divide one pot, with requested rake deducted once from the starting pot. Historical calibration supplies relative hand weights only; this is not a retrained rake-free postflop model. Future betting and its rake are not solved."
         } else if all_in {

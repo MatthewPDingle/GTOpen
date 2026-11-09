@@ -787,6 +787,31 @@ __device__ __forceinline__ float pf_three_way_share(
     return den > 0.f ? num / den : 1.f / 3.f;
 }
 
+// ---- Learned flop correction (realization "leafnet") ------------------------
+// Mirrors leaf_correction() in chip_terminal_value(): runs after pf_terminal
+// has priced these heads-up terminals as balanced and adds
+// prob x gross pot x corr[class] for the traverser when it is one of the two
+// live seats. corr is terminal-major: [leaf][oop, ip][169].
+extern "C" __global__ void pf_leaf_terminal(
+    const u32* __restrict__ terms, u32 count, int p, int np,
+    const int* __restrict__ seats, const float* __restrict__ potg,
+    const u32* __restrict__ reach_src, const float* __restrict__ reach_mass,
+    const float* __restrict__ corr, const u32* __restrict__ val_slot, float* val)
+{
+    if (blockIdx.x >= count) return;
+    int side = seats[2 * blockIdx.x] == p ? 0 : (seats[2 * blockIdx.x + 1] == p ? 1 : -1);
+    if (side < 0) return;
+    u32 nd = terms[blockIdx.x];
+    float prob = 1.f;
+    for (int q = 0; q < np; q++)
+        if (q != p) prob *= reach_mass[reach_src[(size_t)nd * np + q]];
+    if (prob <= 0.f) return;
+    const float* c = corr + ((size_t)blockIdx.x * 2 + side) * NC;
+    float g = prob * potg[nd];
+    float* out = val + (size_t)val_slot[nd] * NC;
+    for (int h = threadIdx.x; h < NC; h += blockDim.x) out[h] += g * c[h];
+}
+
 // ---- Side pots (unequal stacks) -------------------------------------------
 // Mirrors side_pot_value() on the CPU. Expectation is linear in the pots, so
 // each pot pays amount x (chance of the best hand among its eligible seats).

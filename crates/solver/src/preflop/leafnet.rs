@@ -171,6 +171,23 @@ impl LeafNet {
     }
 }
 
+/// A net whose output ignores its input: `bias[k]` for output k (oop 169
+/// then ip 169). For tests of the solver's use of the net.
+#[cfg(test)]
+pub(crate) fn constant_net(bias: &[f32]) -> LeafNet {
+    let inputs = 4 * NUM_CLASSES + META;
+    assert_eq!(bias.len(), 2 * NUM_CLASSES);
+    LeafNet {
+        header: serde_json::json!({"sizes": [inputs, 1, 2 * NUM_CLASSES]}),
+        mu: vec![0.0; inputs],
+        sd: vec![1.0; inputs],
+        layers: vec![
+            Layer { rows: inputs, cols: 1, w: vec![0.0; inputs], b: vec![0.0] },
+            Layer { rows: 1, cols: 2 * NUM_CLASSES, w: vec![0.0; 2 * NUM_CLASSES], b: bias.to_vec() },
+        ],
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

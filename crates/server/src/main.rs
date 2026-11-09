@@ -1774,8 +1774,22 @@ async fn pf_solve(
                         drop(s);
                         let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
                         s = lock_unpoisoned(&solver);
-                        if let Err(err) = result {
-                            failed = Some(err);
+                        match result {
+                            Err(err) => failed = Some(err),
+                            // learned realization: refresh the flop
+                            // corrections from the device's averages
+                            Ok(true) if s.leaf_refresh_due(gpu_iteration) => {
+                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                                    Ok(()) => {
+                                        s.refresh_leaf_values();
+                                        if let Err(err) = g.upload_leaf_corr(&s) {
+                                            failed = Some(format!("learned correction upload failed: {err}"));
+                                        }
+                                    }
+                                    Err(err) => failed = Some(format!("learned correction sync failed: {err}")),
+                                }
+                            }
+                            Ok(_) => {}
                         }
                     }
                     None => {

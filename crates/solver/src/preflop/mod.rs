@@ -22,6 +22,7 @@ pub mod dataset;
 pub mod contextual;
 pub mod evidence;
 pub mod leafnet;
+mod leaf_model;
 mod continuation;
 pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
@@ -109,7 +110,9 @@ pub struct PreflopConfig {
     pub rake_cap: f64,
     #[serde(default = "default_true")]
     pub no_flop_no_drop: bool,
-    /// "raw" (R = 1) or "static" (positional realization vs SPR).
+    /// "raw" (R = 1), "static" (positional realization vs SPR), "balanced",
+    /// "calibrated" (legacy) or "leafnet" (balanced plus the learned flop
+    /// correction, see leaf_model.rs).
     #[serde(default = "default_realization")]
     pub realization: String,
     /// Seats that may never raise: their action menus keep fold/limp/call/check
@@ -199,6 +202,11 @@ fn default_true() -> bool {
 }
 fn default_realization() -> String {
     "static".to_string()
+}
+/// "balanced" and "leafnet" share the balanced heads-up pricing; "leafnet"
+/// adds the learned correction on top.
+pub(crate) fn balanced_family(realization: &str) -> bool {
+    realization == "balanced" || realization == "leafnet"
 }
 
 /// One situation bucket of a player profile: per-class mass on the passive
@@ -721,6 +729,8 @@ pub struct PreflopSolver {
     /// Bumped when a new trust level restarts the hero's average (the GPU
     /// engine follows it).
     pub(crate) trust_epoch: u32,
+    /// The learned flop correction under realization "leafnet".
+    pub(crate) leaf: Option<Box<leaf_model::LeafState>>,
 }
 
 #[derive(PartialEq, Eq, Hash)]
@@ -784,7 +794,7 @@ impl PreflopSolver {
 
     pub fn new(cfg: PreflopConfig, eq: Arc<EquityTable>) -> Result<Self, String> {
         let mut realization_note = String::new();
-        let fit = if cfg.realization == "calibrated" || cfg.realization == "balanced" {
+        let fit = if cfg.realization == "calibrated" || balanced_family(&cfg.realization) {
             match RealizationFit::load_default() {
                 Ok(f) => Some(Arc::new(f)),
                 Err(e) => {
@@ -848,6 +858,7 @@ impl PreflopSolver {
             trust: None,
             pf_free: None,
             trust_epoch: 0,
+            leaf: None,
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -855,6 +866,9 @@ impl PreflopSolver {
         s.build(init, lim_n, lim_mb)?;
         if let Some(icm) = s.cfg.icm.clone() {
             s.icm = Some(Arc::new(icm::IcmTables::build(&s, &icm)));
+        }
+        if s.cfg.realization == "leafnet" {
+            s.install_leaf_model()?;
         }
         s.regrets = Arena::new(s.arena_len);
         s.strat_sum = Arena::new(s.arena_len);
@@ -1891,7 +1905,8 @@ impl PreflopSolver {
                     }
                     return;
                 }
-                if self.cfg.realization == "balanced" && nd.live.count_ones() == 2 {
+                if balanced_family(&self.cfg.realization) && nd.live.count_ones() == 2 {
+                    let corr = self.leaf_correction(node, p);
                     let w = nd.r[p];
                     let blend = ((w - 1.0).abs() / 0.08).min(1.0);
                     let dist = &dists[0];
@@ -1905,7 +1920,8 @@ impl PreflopSolver {
                             relative_share += dist[j] * relative;
                         }
                         let share = raw_share + blend * (relative_share-raw_share);
-                        out[h] = (prob * (pot_eff * share as f64 - inv_p)) as f32;
+                        let learned = corr.map_or(0.0, |c| nd.pot * c[h] as f64);
+                        out[h] = (prob * (pot_eff * share as f64 + learned - inv_p)) as f32;
                     }
                     return;
                 }
@@ -2231,6 +2247,14 @@ impl PreflopSolver {
     /// seats already swept keep their (complete) updates, the rest just
     /// missed one pass, which CFR absorbs.
     pub fn try_iterate(&mut self) -> bool {
+        let done = self.try_iterate_inner();
+        if done && self.leaf_refresh_due(self.iteration) {
+            self.refresh_leaf_values();
+        }
+        done
+    }
+
+    fn try_iterate_inner(&mut self) -> bool {
         if self.rnr_active().is_some() {
             return self.try_iterate_rnr();
         }
