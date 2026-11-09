@@ -6,7 +6,7 @@ Preflop Lab real postflop-solved values at every heads-up flop, instead of
 today's realization model. Each example is one full flop solve, so the
 dataset is far more than one desktop can produce quickly. Every GPU helps.
 
-![Validated examples](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FGTOpen%2Fgtopen-leaf-values%2Fresolve%2Fmain%2Fprogress.json&query=%24.total_examples&label=validated%20examples&suffix=%20of%2050%2C000&color=2f81f7&cacheSeconds=600)
+![Validated examples](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FGTOpen%2Fgtopen-leaf-values%2Fresolve%2Fmain%2Fprogress.json&query=%24.total_examples&label=validated%20examples&suffix=%20of%20300%2C000&color=2f81f7&cacheSeconds=600)
 
 ![Training data progress](https://raw.githubusercontent.com/MatthewPDingle/GTOpen/datagen-progress/progress.svg)
 
@@ -14,10 +14,12 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 [Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
 the count and the graph update as soon as uploads are validated.
 
-**Status: collecting toward the first checkpoint.** At **50,000 examples** a first net is trained and checked against
-held-out solves. If it isn't clearly better than the current model, the
-project stops and says so here, and the data stays public. If it is, the
-target is **300,000 examples**.
+**Status: first checkpoint passed (2026-11-09), collecting toward 300,000 examples.**
+At 57,400 examples a first net was trained and scored on 56 held-out jobs it
+never saw. It beat every realization model Preflop Lab uses today, at both the
+hand-class and whole-range level, removing about 10% of the pot (RMS) of the
+default model's error. The next goal is **300,000 examples** while the net is
+wired into the Preflop Lab.
 
 ## What you need
 
