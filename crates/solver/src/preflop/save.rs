@@ -162,7 +162,7 @@ impl PreflopSolver {
             MAGIC_ICM
         } else if self.cfg.unequal_stacks() {
             MAGIC_STACKS
-        } else if self.cfg.realization == "balanced" || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
+        } else if super::balanced_family(&self.cfg.realization) || self.cfg.fourbet_mults.is_some() || self.cfg.fourbet_mults_by_seat.is_some() {
             MAGIC_BALANCED
         } else if self.cfg.utg_straddle {
             MAGIC_STRADDLE
@@ -260,6 +260,11 @@ impl PreflopSolver {
             read_slice(&mut r, &mut regrets)?;
             read_slice(&mut r, &mut sums)?;
             s.set_hero_backup(Some(super::HeroBackup { seat, iteration, regrets, sums }));
+        }
+        // The learned correction is not saved: recompute it from the loaded
+        // averages (a fresh start, without the blend of earlier refreshes).
+        if s.iteration > 0 {
+            s.refresh_leaf_values();
         }
         Ok(s)
     }

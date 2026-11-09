@@ -33,6 +33,8 @@ mod side_pot_tests;
 mod three_way_tests;
 #[cfg(test)]
 mod icm_tests;
+#[cfg(test)]
+mod leaf_tests;
 #[cfg(all(test, feature = "preflop-research"))]
 mod exact_reuse_inventory;
 #[cfg(all(test, feature = "preflop-research"))]
@@ -90,6 +92,7 @@ pub struct PreflopGpu {
     f_multiway_prepare: CudaFunction,
     f_multiway_terminal: CudaFunction,
     f_side_pot_terminal: CudaFunction,
+    f_leaf_terminal: CudaFunction,
     f_side_pot_multiway: CudaFunction,
     f_three_way_terminal: CudaFunction,
     f_up: CudaFunction,
@@ -195,6 +198,13 @@ pub struct PreflopGpu {
     d_sp_prob: CudaSlice<f32>,
     sp_nterms: u32,
     sp_ncoupled: u32,
+    // Learned flop terminals (realization "leafnet"): node, (oop, ip) seats
+    // and the per-class corrections the host refreshes (see leaf_model.rs).
+    d_leaf_terms: CudaSlice<u32>,
+    d_leaf_seats: CudaSlice<i32>,
+    d_leaf_corr: CudaSlice<f32>,
+    leaf_nterms: u32,
+    leaf_version: u32,
     // 3-way table (three_way_table_v1): single-pot 3-live terminals and the
     // 169^3 share x compatibility / compatibility arrays.
     d_tw_terms: CudaSlice<u32>,
@@ -973,13 +983,18 @@ impl PreflopGpu {
         if s.rnr_active().is_some() && (cohorts || unrolled || _narrow) {
             return Err("the trust dial uses the normal GPU plan".into());
         }
+        // The learned correction is added by a kernel of the normal plan.
+        if s.leaf_terminals().is_some() && (cohorts || unrolled || _narrow) {
+            return Err("the learned realization uses the normal GPU plan".into());
+        }
         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
             .filter(|&len| len <= u32::MAX as usize)
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
         let values = ValuePlan::build(s);
-        let eq_channels = if s.cfg.realization == "balanced" {3usize} else {1};
+        let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
+        let leaf_bytes = s.leaf_terminals().map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
         let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
-            + icm::IcmGpu::bytes(s) as f64 / 1e6;
+            + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6;
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -1060,7 +1075,7 @@ impl PreflopGpu {
             potg[i] = nd.pot as f32;
             for q in 0..np {
                 inv[i * np + q] = nd.invested[q] as f32;
-                rw[i * np + q] = if s.cfg.realization == "balanced" && s.fit.is_none() {1.0} else if nd.r.is_empty() { 0.0 } else { nd.r[q] };
+                rw[i * np + q] = if super::balanced_family(&s.cfg.realization) && s.fit.is_none() {1.0} else if nd.r.is_empty() { 0.0 } else { nd.r[q] };
             }
             if nd.kind != KIND_ACTION {
                 terms.push(i as u32);
@@ -1082,7 +1097,7 @@ impl PreflopGpu {
                 }
                 let spr = (min_left / nd.pot).max(0.0);
                 if spr > 1e-9 {
-                    calib[i] = if s.cfg.realization == "balanced" {2} else {1};
+                    calib[i] = if super::balanced_family(&s.cfg.realization) {2} else {1};
                 }
             }
         }
@@ -1144,6 +1159,16 @@ impl PreflopGpu {
             .map(|(i, _)| i as u32).collect();
         let use_multiway = !mw_terms.is_empty();
         let sp = SidePots::build(s, use_multiway);
+        // learned terminals start from the host's corrections (zero before
+        // the first refresh, which prices exactly balanced)
+        let (leaf_terms, leaf_seats, leaf_corr) = match s.leaf_terminals() {
+            Some((nodes, seats, corr)) => (
+                nodes,
+                seats.iter().flat_map(|p| [p[0] as i32, p[1] as i32]).collect::<Vec<i32>>(),
+                if corr.is_empty() { vec![0f32; nodes.len().max(1) * 2 * NUM_CLASSES] } else { corr.to_vec() },
+            ),
+            None => (&[][..], vec![0i32; 2], vec![0f32; 1]),
+        };
         let tw_terms: Vec<u32> = if s.three_way.is_some() {
             s.nodes.iter().enumerate()
                 .filter(|(_, nd)| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && nd.side_pots.is_empty())
@@ -1356,6 +1381,7 @@ impl PreflopGpu {
             f_multiway_prepare: func("pf_multiway_prepare")?,
             f_multiway_terminal: func(if use_mw_prepared { "pf_multiway_terminal" } else { "pf_multiway_terminal_minimal" })?,
             f_side_pot_terminal: func("pf_side_pot_terminal")?,
+            f_leaf_terminal: func("pf_leaf_terminal")?,
             f_side_pot_multiway: func("pf_side_pot_multiway")?,
             f_three_way_terminal: func("pf_three_way_terminal")?,
             f_up: func("pf_up")?,
@@ -1453,6 +1479,11 @@ impl PreflopGpu {
             d_sp_prob: stream.alloc_zeros::<f32>(sp.coupled.max(1)).map_err(e)?,
             sp_nterms: sp.count as u32,
             sp_ncoupled: sp.coupled as u32,
+            d_leaf_terms: stream.clone_htod(if leaf_terms.is_empty() { &[0u32][..] } else { leaf_terms }).map_err(e)?,
+            d_leaf_seats: stream.clone_htod(&leaf_seats).map_err(e)?,
+            d_leaf_corr: stream.clone_htod(&leaf_corr).map_err(e)?,
+            leaf_nterms: leaf_terms.len() as u32,
+            leaf_version: s.leaf_refreshes(),
             d_tw_terms: stream.clone_htod(if tw_terms.is_empty() { &[0u32][..] } else { tw_terms.as_slice() }).map_err(e)?,
             d_tw_ew: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().0)).map_err(e)?,
             d_tw_w: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().1)).map_err(e)?,
@@ -1760,6 +1791,15 @@ impl PreflopGpu {
                     .arg(&self.use_multiway).arg(&self.use_tw).arg(&self.d_tw_ew).arg(&self.d_tw_w)
                     .arg(&self.d_val_slot).arg(&mut self.d_val)
                     .launch(LaunchConfig { grid_dim: (self.sp_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
+                    .map_err(e)?;
+            }
+            if self.leaf_nterms > 0 {
+                self.stream.launch_builder(&self.f_leaf_terminal)
+                    .arg(&self.d_leaf_terms).arg(&self.leaf_nterms).arg(&p).arg(&self.np)
+                    .arg(&self.d_leaf_seats).arg(&self.d_potg)
+                    .arg(&self.d_reach_src).arg(&self.d_reach_mass).arg(&self.d_leaf_corr)
+                    .arg(&self.d_val_slot).arg(&mut self.d_val)
+                    .launch(LaunchConfig { grid_dim: (self.leaf_nterms, 1, 1), block_dim: (192, 1, 1), shared_mem_bytes: 0 })
                     .map_err(e)?;
             }
             if self.tw_nterms > 0 {
@@ -2174,6 +2214,23 @@ impl PreflopGpu {
             s.regrets.slice_mut().copy_from_slice(regs);
             s.strat_sum.slice_mut().copy_from_slice(strat);
         }
+        Ok(())
+    }
+
+    /// Upload the host's learned corrections after `refresh_leaf_values`
+    /// (no-op when they have not changed since the last upload). Captured
+    /// sweeps read the same buffer, so they see the new values.
+    pub fn upload_leaf_corr(&mut self, s: &PreflopSolver) -> Result<(), String> {
+        let Some((nodes, _, corr)) = s.leaf_terminals() else { return Ok(()) };
+        if s.leaf_refreshes() == self.leaf_version || corr.is_empty() {
+            return Ok(());
+        }
+        if nodes.len() as u32 != self.leaf_nterms || corr.len() != self.d_leaf_corr.len() {
+            return Err("learned terminals changed under the GPU engine".into());
+        }
+        self.stream.memcpy_htod(corr, &mut self.d_leaf_corr).map_err(e)?;
+        self.stream.synchronize().map_err(e)?;
+        self.leaf_version = s.leaf_refreshes();
         Ok(())
     }
 
