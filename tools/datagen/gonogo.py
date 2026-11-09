@@ -402,8 +402,9 @@ def main():
         f"The net changes the balanced model's class values by {100 * moved:.1f}% of the pot (RMS), and "
         f"held-out solves confirm it removes {100 * fixed:.1f}% of the pot of the balanced model's error "
         "(the square root of the drop in class error).",
-        f"Net vs balanced: class error {100 * gain_cls:+.1f}%, range error {100 * gain_rng:+.1f}% lower "
-        "(most of the remaining class error is flop-to-flop spread no flop-blind model can remove).",
+        f"Net vs balanced: class error {100 * gain_cls:.1f}% lower, range error {100 * gain_rng:.1f}% lower "
+        "(negative = higher; most of the remaining class error is flop-to-flop spread no flop-blind "
+        "model can remove).",
         f"95% interval of balanced minus net, by resampling held-out jobs: class "
         f"[{ci_bal[0][0]:.6f}, {ci_bal[0][1]:.6f}], range [{ci_bal[1][0]:.6f}, {ci_bal[1][1]:.6f}].",
         f"Best current model: {best_model}; best minus net: class "
