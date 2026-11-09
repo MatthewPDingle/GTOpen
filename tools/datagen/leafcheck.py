@@ -105,6 +105,15 @@ def main():
             "range_error": {"balanced": float(b[2] / max(b[3], 1)), "net": float(n[2] / max(n[3], 1))},
         })
     better = sum(r["class_error"]["net"] < r["class_error"]["balanced"] for r in rows)
+    kinds = np.array([r["pot_type"] for r in records])
+    by_type = {}
+    for t in ["limped", "srp", "3bet", "4bet"]:
+        sel = kinds == t
+        if not sel.any():
+            continue
+        tot = {m: totals({j: s for j, s in sums[m].items() if j in set(jobs[sel].tolist())}) for m in ("balanced", "net")}
+        by_type[t] = {"leaves": len(set(jobs[sel].tolist())), "flops": int(sel.sum()),
+                      "class_error": {m: v[0] for m, v in tot.items()}, "range_error": {m: v[1] for m, v in tot.items()}}
     beats = ci[0][0] > 0 and ci[1][0] > 0
     loses = ci[0][1] < 0 and ci[1][1] < 0
     verdict = ("the net is closer to the exact solves than balanced" if beats else
@@ -117,7 +126,7 @@ def main():
         "class_error": {m: s[0] for m, s in scores.items()}, "range_error": {m: s[1] for m, s in scores.items()},
         "balanced_minus_net_ci95": {"class": ci[0], "range": ci[1]},
         "fixed_pct_pot": 100 * fixed, "worse_pct_pot": 100 * worse, "moved_pct_pot": 100 * moved,
-        "leaves_where_net_better": better, "verdict": verdict, "per_leaf": rows,
+        "leaves_where_net_better": better, "verdict": verdict, "by_pot_type": by_type, "per_leaf": rows,
     }
     with open(os.path.join(args.dir, "report.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(report, f, indent=1)
@@ -144,6 +153,14 @@ def main():
                  f"it moves values by {100 * moved:.1f}% of the pot.")
     L.append(f"The net is closer on {better} of {len(rows)} leaves. One leaf's few flops are noisy, so "
              "read single rows loosely.")
+    L.append("")
+    L.append("By pot type (class error, then range error):")
+    L.append("")
+    L.append("| pot type | leaves | flops | class balanced | class net | range balanced | range net |")
+    L.append("|---|---|---|---|---|---|---|")
+    for t, d in by_type.items():
+        L.append(f"| {t} | {d['leaves']} | {d['flops']} | {d['class_error']['balanced']:.4f} | "
+                 f"{d['class_error']['net']:.4f} | {d['range_error']['balanced']:.5f} | {d['range_error']['net']:.5f} |")
     L.append("")
     L.append("| leaf | oop / ip | pot | chips | flops | class err balanced | net | range err balanced | net |")
     L.append("|---|---|---|---|---|---|---|---|---|")

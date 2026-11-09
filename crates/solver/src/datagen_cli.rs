@@ -371,8 +371,10 @@ fn fail(msg: String) -> ! {
 /// Export a solved preflop game's heads-up flop leaves (the ones the learned
 /// model corrects) as datagen examples, so exact flop solves can score the
 /// realization models on the ranges a real preflop solution produces
-/// (tools/datagen/leafcheck.py). The `--leaves` leaves that carry the most
-/// chips (reach x pot) each get `--boards` random flops.
+/// (tools/datagen/leafcheck.py). The leaves are split evenly over the pot
+/// types (limped, single-raised, 3-bet, 4-bet), taking the ones that carry
+/// the most chips (reach x pot) within each type, since by chips alone a
+/// deep-stacked game is mostly 4-bet pots. Each gets `--boards` random flops.
 fn leaves(o: &Opts) {
     use solver::preflop::{equity::EquityTable, leafnet::POT_TYPES, PreflopSolver};
     let game = o.positional.first().unwrap_or_else(|| fail(USAGE.into()));
@@ -382,7 +384,23 @@ fn leaves(o: &Opts) {
     let mut all = s.hu_flop_leaves();
     let total: f64 = all.iter().map(|l| l.reach * l.pot_bb).sum();
     all.sort_by(|a, b| (b.reach * b.pot_bb).partial_cmp(&(a.reach * a.pot_bb)).unwrap());
-    all.truncate(o.leaves);
+    // even split over pot types; a type with fewer leaves passes its share on
+    let mut by_type: Vec<Vec<_>> = vec![Vec::new(); POT_TYPES.len()];
+    for leaf in all {
+        by_type[leaf.raises.min(3) as usize].push(leaf);
+    }
+    let mut quota = vec![0usize; POT_TYPES.len()];
+    let mut left = o.leaves;
+    while left > 0 && (0..POT_TYPES.len()).any(|t| quota[t] < by_type[t].len()) {
+        for t in 0..POT_TYPES.len() {
+            if left > 0 && quota[t] < by_type[t].len() {
+                quota[t] += 1;
+                left -= 1;
+            }
+        }
+    }
+    let mut all: Vec<_> = by_type.into_iter().zip(&quota).flat_map(|(v, &q)| v.into_iter().take(q)).collect();
+    all.sort_by(|a, b| (b.reach * b.pot_bb).partial_cmp(&(a.reach * a.pot_bb)).unwrap());
     let covered: f64 = all.iter().map(|l| l.reach * l.pot_bb).sum();
     std::fs::create_dir_all(&o.out).unwrap_or_else(|e| fail(format!("{}: {e}", o.out.display())));
     let r3 = |w: &[f32]| w.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect::<Vec<f32>>();
@@ -420,8 +438,9 @@ fn leaves(o: &Opts) {
     };
     write("inputs.jsonl", inputs);
     write("leaves.json", serde_json::to_string_pretty(&summary).unwrap());
-    println!("{} leaves x {} boards ({:.0}% of the chips that reach heads-up flops) -> {}",
-             all.len(), o.boards, 100.0 * covered / total.max(1e-12), o.out.join("inputs.jsonl").display());
+    let per_type: Vec<String> = POT_TYPES.iter().zip(&quota).map(|(t, q)| format!("{q} {t}")).collect();
+    println!("{} leaves ({}) x {} boards ({:.0}% of the chips that reach heads-up flops) -> {}",
+             all.len(), per_type.join(", "), o.boards, 100.0 * covered / total.max(1e-12), o.out.join("inputs.jsonl").display());
 }
 
 /// Solve every example of DIR/inputs.jsonl into DIR/solved.jsonl, skipping
