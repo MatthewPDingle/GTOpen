@@ -44,7 +44,7 @@ fn main() -> Result<(), String> {
         let (gaps, evs) = s.gaps_and_evs();
         println!("{realization}: {iterations} iterations in {:.1}s (leaf {:.1}s), gaps {:?}, evs {:?}",
                  t0.elapsed().as_secs_f64(), leaf_secs,
-                 gaps.iter().map(|g| (g * 1000.0).round() / 1000.0).collect::<Vec<_>>(),
+                 gaps.iter().map(|g| (g * 100000.0).round() / 100000.0).collect::<Vec<_>>(),
                  evs.iter().map(|g| (g * 1000.0).round() / 1000.0).collect::<Vec<_>>());
         solved.push(s);
     }

@@ -731,6 +731,17 @@ pub struct PreflopSolver {
     pub(crate) trust_epoch: u32,
     /// The learned flop correction under realization "leafnet".
     pub(crate) leaf: Option<Box<leaf_model::LeafState>>,
+    /// Pairwise balanced-model shares, filled on first use (see balanced_tables).
+    balanced_cache: std::sync::OnceLock<Arc<BalancedTables>>,
+}
+
+/// The balanced model's pairwise shares for every class pair, row h then
+/// column j: the symmetrized raw equity, and the relative share for hero
+/// out of position and in position. Exactly the values chip_terminal_value
+/// used to compute pair by pair.
+pub(crate) struct BalancedTables {
+    pub raw: Vec<f32>,
+    pub rel: [Vec<f32>; 2],
 }
 
 #[derive(PartialEq, Eq, Hash)]
@@ -740,6 +751,23 @@ impl PreflopSolver {
     pub(super) fn balanced_raw_equity(&self, h: usize, j: usize) -> f32 {
         // Sampling noise must not create/destroy chips, including identical classes.
         if h == j {0.5} else {0.5*(self.eq.eq(h,j)+(1.0-self.eq.eq(j,h)))}
+    }
+    /// The balanced pairwise tables, computed once per solver.
+    pub(crate) fn balanced_tables(&self) -> &BalancedTables {
+        self.balanced_cache.get_or_init(|| {
+            let mut raw = vec![0f32; NUM_CLASSES * NUM_CLASSES];
+            let mut rel = [raw.clone(), raw.clone()];
+            for h in 0..NUM_CLASSES {
+                for j in 0..NUM_CLASSES {
+                    let eq = self.balanced_raw_equity(h, j);
+                    raw[h * NUM_CLASSES + j] = eq;
+                    for (side, oop) in [(0, true), (1, false)] {
+                        rel[side][h * NUM_CLASSES + j] = self.fit.as_ref().map_or(eq, |f| f.balanced_share(eq, h, j, oop));
+                    }
+                }
+            }
+            Arc::new(BalancedTables { raw, rel })
+        })
     }
     /// Heads-up flop leaf values under this solver's realization model, for
     /// scoring the model against solved flops (datagen go/no-go). `ranges[0]`
@@ -859,6 +887,7 @@ impl PreflopSolver {
             pf_free: None,
             trust_epoch: 0,
             leaf: None,
+            balanced_cache: Default::default(),
         };
         let init = root_state(&s.cfg, n);
         // limits sampled once — reading /proc/meminfo per action node costs
@@ -1910,14 +1939,15 @@ impl PreflopSolver {
                     let w = nd.r[p];
                     let blend = ((w - 1.0).abs() / 0.08).min(1.0);
                     let dist = &dists[0];
+                    let tables = self.balanced_tables();
+                    let rel = &tables.rel[if w < 1.0 { 0 } else { 1 }];
                     for h in 0..NUM_CLASSES {
                         let mut raw_share = 0.0f32;
                         let mut relative_share = 0.0f32;
+                        let (raw_row, rel_row) = (&tables.raw[h * NUM_CLASSES..][..NUM_CLASSES], &rel[h * NUM_CLASSES..][..NUM_CLASSES]);
                         for j in 0..NUM_CLASSES {
-                            let eq = self.balanced_raw_equity(h,j);
-                            let relative = self.fit.as_ref().map_or(eq, |f| f.balanced_share(eq,h,j,w<1.0));
-                            raw_share += dist[j] * eq;
-                            relative_share += dist[j] * relative;
+                            raw_share += dist[j] * raw_row[j];
+                            relative_share += dist[j] * rel_row[j];
                         }
                         let share = raw_share + blend * (relative_share-raw_share);
                         let learned = corr.map_or(0.0, |c| nd.pot * c[h] as f64);

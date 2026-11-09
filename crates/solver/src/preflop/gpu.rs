@@ -983,10 +983,6 @@ impl PreflopGpu {
         if s.rnr_active().is_some() && (cohorts || unrolled || _narrow) {
             return Err("the trust dial uses the normal GPU plan".into());
         }
-        // The learned correction is added by a kernel of the normal plan.
-        if s.leaf_terminals().is_some() && (cohorts || unrolled || _narrow) {
-            return Err("the learned realization uses the normal GPU plan".into());
-        }
         let reach_blocks = s.nodes.len().checked_add(s.n - 1)
             .filter(|&len| len <= u32::MAX as usize)
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
