@@ -11,7 +11,7 @@ value beat today's model clearly enough to keep collecting toward 300k?
     python tools/datagen/gonogo.py --data datagen_out   # local job files (testing)
 
 Writes datagen_gonogo/report.md (the verdict), report.json and the trained
-net (net.npz). Needs numpy, huggingface_hub (except with --data) and a build
+net (net.npz, and leaf_net.bin in the format solve-cli loads). Needs numpy, huggingface_hub (except with --data) and a build
 of solve-cli. Runs on the CPU; the generator can keep using the GPU.
 
 How it scores. Each example is one exact flop solve: per-class values for
@@ -45,6 +45,7 @@ except ImportError:
     sys.exit("numpy is needed:  python -m pip install numpy")
 
 from validate import cuda_env, default_cli, load_config  # noqa: E402
+import leafnet_io  # noqa: E402
 
 MODELS = ["balanced", "static", "calibrated", "raw"]
 POT_TYPES = ["limped", "srp", "3bet", "4bet"]
@@ -137,12 +138,8 @@ def arrays(records):
     mask = np.isfinite(values).astype(np.float32)
     y = np.nan_to_num(values).astype(np.float32)
     reach = np.asarray([r["reach"] for r in records], np.float32)
-    meta = []
-    for r in records:
-        pot, stack, rake = float(r["pot_bb"]), float(r["stack_bb"]), float(r["rake_pct"])
-        meta.append([np.log(pot), np.log(stack), np.log(stack / pot), 10 * rake,
-                     float(r["rake_cap_bb"]) / pot, 1.0 if rake > 0 else 0.0]
-                    + [1.0 if r["pot_type"] == t else 0.0 for t in POT_TYPES])
+    meta = [leafnet_io.meta_features(float(r["pot_bb"]), float(r["stack_bb"]), float(r["rake_pct"]),
+                                     float(r["rake_cap_bb"]), r["pot_type"]) for r in records]
     meta = np.asarray(meta, np.float32)
     mass = reach.sum(axis=2, keepdims=True)
     weight = reach / np.maximum(mass, 1e-12) * NC * mask
@@ -384,6 +381,9 @@ def main():
     }
     with open(os.path.join(args.out, "report.json"), "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1)
+    leafnet_io.write(os.path.join(args.out, "leaf_net.bin"), net.W, net.b, mu, sd, extra={
+        "trained_examples": int(tr.sum()), "dataset_examples": len(rows), "dataset": args.repo, "trained": report["when"],
+        "held_out": {"class_error": report["class_error"], "range_error": report["range_error"]}})
     lines = [
         f"# Leaf-value net go/no-go: {verdict}", "",
         f"{len(rows):,} solved flops from {sum(n_jobs.values())} jobs; "
