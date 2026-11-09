@@ -23,6 +23,7 @@ pub mod contextual;
 pub mod evidence;
 pub mod leafnet;
 mod leaf_model;
+pub use leaf_model::{FlopLeaf, LeafRefresh};
 mod continuation;
 pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};

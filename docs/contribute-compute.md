@@ -165,6 +165,19 @@ solve-cli loads; `tools/datagen/export_net.py` converts an older `net.npz`).
 `solve-cli datagen leafnet NET.bin < examples.jsonl` prints a net's values
 per example.
 
+To check a net on the ranges a real Preflop Lab solution reaches (rather
+than the generator's), export a solved game's heads-up flop leaves, solve
+them exactly and score them:
+
+```
+solve-cli datagen leaves GAME.bin --out datagen_leafcheck --leaves 40 --boards 8
+solve-cli datagen solve datagen_leafcheck      # resumes if interrupted
+python tools/datagen/leafcheck.py datagen_leafcheck
+```
+
+The report (`datagen_leafcheck/report.md`) compares the net with today's
+models leaf by leaf.
+
 `validate.py` needs a Hugging Face token with write access to the dataset.
 After each merge it redraws the progress graph and force-pushes it to the
 `datagen-progress` branch with your git credentials (`--no-graph` skips

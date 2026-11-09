@@ -18,7 +18,10 @@ const USAGE: &str = "usage:
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
   solve-cli datagen block LOGIN
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
-  solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)";
+  solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)
+  solve-cli datagen leaves GAME.bin [--out DIR] [--leaves N] [--boards M] [--seed S]
+                        (a solved preflop game's heads-up flop leaves as examples: DIR/inputs.jsonl, DIR/leaves.json)
+  solve-cli datagen solve DIR [--target PCT] [--max-iters N]   (solve DIR/inputs.jsonl into DIR/solved.jsonl; resumes)";
 
 struct Opts {
     positional: Vec<String>,
@@ -36,6 +39,9 @@ struct Opts {
     max_diff: f64,
     /// None = detect from the GPU; Some(0) = uncapped.
     max_vram: Option<f64>,
+    leaves: usize,
+    boards: u32,
+    seed: u64,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -54,6 +60,9 @@ fn parse(rest: &[String]) -> Opts {
         max_mean: 0.01,
         max_diff: 0.06,
         max_vram: None,
+        leaves: 40,
+        boards: 8,
+        seed: 1,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -84,6 +93,9 @@ fn parse(rest: &[String]) -> Opts {
             "--max-mean" => { o.max_mean = num(need(i), a); i += 1; }
             "--max-diff" => { o.max_diff = num(need(i), a); i += 1; }
             "--max-vram" => { o.max_vram = Some(num(need(i), a)); i += 1; }
+            "--leaves" => { o.leaves = num::<usize>(need(i), a).max(1); i += 1; }
+            "--boards" => { o.boards = num::<u32>(need(i), a).max(1); i += 1; }
+            "--seed" => { o.seed = num(need(i), a); i += 1; }
             _ if a.starts_with("--") => {
                 eprintln!("unknown option {a}\n{USAGE}");
                 std::process::exit(1);
@@ -262,6 +274,8 @@ pub fn run(rest: &[String], env: &EnvOpts) {
             });
             baseline(Some(net));
         }
+        "leaves" => leaves(&o),
+        "solve" => solve_dir(&o, env),
         "run" => run_loop(&o, env),
         "verify" => verify(&o, env),
         _ => {
@@ -343,6 +357,121 @@ fn baseline(net: Option<solver::preflop::leafnet::LeafNet>) {
             row["residual"] = serde_json::json!(residual);
         }
         writeln!(out, "{row}").expect("stdout");
+    }
+}
+
+/// Job numbers of leaf-check examples (far above contributor blocks).
+const LEAF_JOB_BASE: u64 = 900_000_000_000;
+
+fn fail(msg: String) -> ! {
+    eprintln!("{msg}");
+    std::process::exit(1)
+}
+
+/// Export a solved preflop game's heads-up flop leaves (the ones the learned
+/// model corrects) as datagen examples, so exact flop solves can score the
+/// realization models on the ranges a real preflop solution produces
+/// (tools/datagen/leafcheck.py). The leaves are split evenly over the pot
+/// types (limped, single-raised, 3-bet, 4-bet), taking the ones that carry
+/// the most chips (reach x pot) within each type, since by chips alone a
+/// deep-stacked game is mostly 4-bet pots. Each gets `--boards` random flops.
+fn leaves(o: &Opts) {
+    use solver::preflop::{equity::EquityTable, leafnet::POT_TYPES, PreflopSolver};
+    let game = o.positional.first().unwrap_or_else(|| fail(USAGE.into()));
+    let samples = std::env::var("PREFLOP_EQ_SAMPLES").ok().and_then(|v| v.parse().ok()).unwrap_or(20_000);
+    let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", samples));
+    let s = PreflopSolver::load_game(game, eq).unwrap_or_else(|e| fail(format!("{game}: {e}")));
+    let mut all = s.hu_flop_leaves();
+    let total: f64 = all.iter().map(|l| l.reach * l.pot_bb).sum();
+    all.sort_by(|a, b| (b.reach * b.pot_bb).partial_cmp(&(a.reach * a.pot_bb)).unwrap());
+    // even split over pot types; a type with fewer leaves passes its share on
+    let mut by_type: Vec<Vec<_>> = vec![Vec::new(); POT_TYPES.len()];
+    for leaf in all {
+        by_type[leaf.raises.min(3) as usize].push(leaf);
+    }
+    let mut quota = vec![0usize; POT_TYPES.len()];
+    let mut left = o.leaves;
+    while left > 0 && (0..POT_TYPES.len()).any(|t| quota[t] < by_type[t].len()) {
+        for t in 0..POT_TYPES.len() {
+            if left > 0 && quota[t] < by_type[t].len() {
+                quota[t] += 1;
+                left -= 1;
+            }
+        }
+    }
+    let mut all: Vec<_> = by_type.into_iter().zip(&quota).flat_map(|(v, &q)| v.into_iter().take(q)).collect();
+    all.sort_by(|a, b| (b.reach * b.pot_bb).partial_cmp(&(a.reach * a.pot_bb)).unwrap());
+    let covered: f64 = all.iter().map(|l| l.reach * l.pot_bb).sum();
+    std::fs::create_dir_all(&o.out).unwrap_or_else(|e| fail(format!("{}: {e}", o.out.display())));
+    let r3 = |w: &[f32]| w.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect::<Vec<f32>>();
+    let r2 = |x: f64| (x * 100.0).round() / 100.0;
+    let mut inputs = String::new();
+    let mut described = Vec::new();
+    for (rank, leaf) in all.iter().enumerate() {
+        let job = LEAF_JOB_BASE + rank as u64;
+        for index in 0..o.boards {
+            let mut rng = datagen::Rng::new(o.seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ job.wrapping_mul(31) ^ index as u64);
+            let ex = ExampleInputs {
+                job, index, board: datagen::random_flop(&mut rng),
+                pot_type: POT_TYPES[leaf.raises.min(3) as usize].to_string(),
+                pot_bb: r2(leaf.pot_bb), stack_bb: r2(leaf.stack_bb),
+                rake_pct: s.cfg.rake_pct / 100.0, rake_cap_bb: s.cfg.rake_cap,
+                range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0,
+            };
+            inputs.push_str(&serde_json::to_string(&ex).unwrap());
+            inputs.push('\n');
+        }
+        described.push(serde_json::json!({
+            "job": job, "path": leaf.path, "positions": leaf.positions, "pot_bb": leaf.pot_bb,
+            "stack_bb": leaf.stack_bb, "raises": leaf.raises, "reach": leaf.reach,
+            "chip_share": leaf.reach * leaf.pot_bb / total.max(1e-12),
+        }));
+    }
+    let summary = serde_json::json!({
+        "game": game, "realization": s.cfg.realization, "iteration": s.iteration, "positions": s.cfg.positions,
+        "leaves_in_game": s.hu_flop_leaves().len(), "exported": all.len(), "boards_per_leaf": o.boards,
+        "chip_share_covered": covered / total.max(1e-12), "leaves": described,
+    });
+    let write = |name: &str, text: String| {
+        let p = o.out.join(name);
+        std::fs::write(&p, text).unwrap_or_else(|e| fail(format!("{}: {e}", p.display())));
+    };
+    write("inputs.jsonl", inputs);
+    write("leaves.json", serde_json::to_string_pretty(&summary).unwrap());
+    let per_type: Vec<String> = POT_TYPES.iter().zip(&quota).map(|(t, q)| format!("{q} {t}")).collect();
+    println!("{} leaves ({}) x {} boards ({:.0}% of the chips that reach heads-up flops) -> {}",
+             all.len(), per_type.join(", "), o.boards, 100.0 * covered / total.max(1e-12), o.out.join("inputs.jsonl").display());
+}
+
+/// Solve every example of DIR/inputs.jsonl into DIR/solved.jsonl, skipping
+/// the ones already there (so an interrupted run resumes).
+fn solve_dir(o: &Opts, env: &EnvOpts) {
+    let dir = PathBuf::from(o.positional.first().unwrap_or_else(|| fail(USAGE.into())));
+    let text = std::fs::read_to_string(dir.join("inputs.jsonl"))
+        .unwrap_or_else(|e| fail(format!("{}: {e}", dir.join("inputs.jsonl").display())));
+    let out = dir.join("solved.jsonl");
+    let mut done = std::collections::HashSet::new();
+    if let Ok(old) = std::fs::read_to_string(&out) {
+        for line in old.lines() {
+            if let Ok(r) = serde_json::from_str::<ExampleRecord>(line) {
+                done.insert((r.inputs.job, r.inputs.index));
+            }
+        }
+    }
+    let todo: Vec<ExampleInputs> = text.lines().filter(|l| !l.trim().is_empty())
+        .map(|l| serde_json::from_str(l).unwrap_or_else(|e| fail(format!("inputs.jsonl: {e}"))))
+        .filter(|ex: &ExampleInputs| !done.contains(&(ex.job, ex.index))).collect();
+    println!("{} to solve ({} already in {})", todo.len(), done.len(), out.display());
+    let mut f = std::fs::OpenOptions::new().create(true).append(true).open(&out)
+        .unwrap_or_else(|e| fail(format!("{}: {e}", out.display())));
+    let t0 = std::time::Instant::now();
+    for (n, ex) in todo.iter().enumerate() {
+        let rec = solve_example(ex, o, env).unwrap_or_else(|e| fail(format!("job {} #{}: {e}", ex.job, ex.index)));
+        writeln!(f, "{}", serde_json::to_string(&rec).unwrap()).unwrap_or_else(|e| fail(e.to_string()));
+        f.flush().ok();
+        println!("  {}/{}  leaf {} board {} {:8} pot {:6.2}bb  iter {:4}  exploit {:5.2}%  [{:.1}s, {:.0}s total]",
+                 n + 1, todo.len(), ex.job - LEAF_JOB_BASE, ex.index, ex.board, ex.pot_bb, rec.iterations,
+                 rec.exploit_pct_pot, rec.seconds, t0.elapsed().as_secs_f64());
     }
 }
 
