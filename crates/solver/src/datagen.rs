@@ -11,7 +11,8 @@
 //! job's inputs from its number, which is what lets pooled community
 //! uploads be checked (`solve-cli datagen verify`). Bump
 //! [`GENERATOR_VERSION`] whenever sampling, the menu or the solver changes
-//! the values a job produces, so old and new data are never blended.
+//! the inputs or values a job produces; older versions' sampling stays in
+//! the code so their uploads can still be regenerated and checked.
 
 use crate::cards::{rank, suit};
 use crate::preflop::equity::{class_index, class_label, class_parts, NUM_CLASSES};
@@ -25,7 +26,21 @@ pub const FORMAT: &str = "gtopen-leaf-values";
 pub const FORMAT_VERSION: u32 = 1;
 /// Version of the sampling + menu + solver behaviour. Bump on any change
 /// that alters the inputs or values a given job number produces.
-pub const GENERATOR_VERSION: u32 = 2;
+///
+/// - v2: pot types limped 15% / single-raised 45% / 3-bet 28% / 4-bet 12%,
+///   rake either none or 5% capped at 3 bb.
+/// - v3: pot types 10% / 65% / 15% / 10% (close to how often each reaches
+///   a heads-up flop in a 6-max solve); 20% of pots scaled up 1.6x to 2.6x
+///   to cover straddled games and big live opens; rake none, 5% (cap 2 to
+///   4 bb), 10% (cap 6 to 10 bb) or anything from 3% to 10% (cap 1 to 10 bb).
+pub const GENERATOR_VERSION: u32 = 3;
+/// Generator versions whose uploads are still accepted: the current one and
+/// the one before, so jobs finished just before an update still count.
+pub const ACCEPTED_GENERATORS: [u32; 2] = [2, 3];
+/// Where this version's jobs start inside each contributor block, so a new
+/// version never reuses a job number (and file name) an older one uploaded.
+/// v2 used offset 0.
+const VERSION_JOB_OFFSET: u64 = 1 << 23;
 /// Name of the fixed postflop bet menu (see [`menu_tree`]).
 pub const MENU: &str = "lean-v2";
 /// Chips per big blind in generated spots (the M5 configs' convention).
@@ -90,11 +105,11 @@ pub fn contributor_base(login: &str) -> u64 {
 
 /// The `k`-th job of a contributor's block.
 pub fn contributor_job(login: &str, k: u64) -> u64 {
-    contributor_base(login) + (k % (1u64 << BLOCK_BITS))
+    contributor_base(login) + ((k + VERSION_JOB_OFFSET) % (1u64 << BLOCK_BITS))
 }
 
-fn example_seed(job: u64, index: u32) -> u64 {
-    let mut r = Rng::new(job ^ ((GENERATOR_VERSION as u64) << 56));
+fn example_seed(version: u32, job: u64, index: u32) -> u64 {
+    let mut r = Rng::new(job ^ ((version as u64) << 56));
     let a = r.next_u64();
     let mut r2 = Rng::new(a ^ (index as u64).wrapping_mul(0xA24B_AED4_963E_E407));
     r2.next_u64()
@@ -122,6 +137,18 @@ pub struct ExampleInputs {
     /// memory cap (0 = first draw). Training can reweight by it.
     #[serde(default)]
     pub attempt: u32,
+    /// How much the pot range of `pot_type` was scaled up (v3: 1.6 to 2.6
+    /// for straddled games and big live opens; 1 = not scaled, omitted).
+    #[serde(default = "one", skip_serializing_if = "is_one")]
+    pub pot_scale: f64,
+}
+
+fn one() -> f64 {
+    1.0
+}
+
+fn is_one(x: &f64) -> bool {
+    *x == 1.0
 }
 
 /// Strength score used only to order classes for range sampling.
@@ -283,7 +310,7 @@ const MAX_ATTEMPTS: u32 = 64;
 
 /// The inputs of example `index` of job `job` (no memory cap).
 pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
-    draw_inputs(job, index, 0)
+    draw_inputs(GENERATOR_VERSION, job, index, 0)
 }
 
 /// The inputs of example `index` of job `job` for a contributor whose GPU
@@ -291,12 +318,18 @@ pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
 /// Draws are rejected deterministically until one fits, so anyone can
 /// regenerate the same inputs from (job, index, cap).
 pub fn example_inputs_capped(job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
+    example_inputs_for(GENERATOR_VERSION, job, index, cap_gb)
+}
+
+/// [`example_inputs_capped`] as generator `version` drew it (one of
+/// [`ACCEPTED_GENERATORS`]), for checking uploads made before an update.
+pub fn example_inputs_for(version: u32, job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
     let Some(cap) = cap_gb else {
-        return example_inputs(job, index);
+        return draw_inputs(version, job, index, 0);
     };
     let mut best: Option<(u64, ExampleInputs)> = None;
     for attempt in 0..MAX_ATTEMPTS {
-        let ex = draw_inputs(job, index, attempt);
+        let ex = draw_inputs(version, job, index, attempt);
         let bytes = estimated_vram_bytes(&ex);
         if bytes as f64 <= cap * 1e9 {
             return ex;
@@ -315,51 +348,105 @@ pub fn estimated_vram_bytes(ex: &ExampleInputs) -> u64 {
         .unwrap_or(u64::MAX)
 }
 
-fn draw_inputs(job: u64, index: u32, attempt: u32) -> ExampleInputs {
-    let mut seed = example_seed(job, index);
+fn draw_inputs(version: u32, job: u64, index: u32, attempt: u32) -> ExampleInputs {
+    let mut seed = example_seed(version, job, index);
     if attempt > 0 {
         seed = Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64();
     }
     let mut rng = Rng::new(seed);
-    // Pot type: (name, probability, pot range in bb)
-    let types: [(&str, f64, f64, f64); 4] = [
-        ("limped", 0.15, 2.0, 3.5),
-        ("srp", 0.45, 4.5, 7.5),
-        ("3bet", 0.28, 15.0, 26.0),
-        ("4bet", 0.12, 38.0, 55.0),
-    ];
+    let mut ex = if version == 2 { draw_v2(&mut rng) } else { draw_v3(&mut rng) };
+    ex.job = job;
+    ex.index = index;
+    ex.attempt = attempt;
+    ex
+}
+
+/// Pot type: (name, probability, pot range in bb).
+type PotTypes = [(&'static str, f64, f64, f64); 4];
+
+fn pick_pot_type(rng: &mut Rng, types: &PotTypes) -> (&'static str, f64, f64, f64) {
     let u = rng.f64();
     let mut acc = 0.0;
     let mut chosen = types[1];
-    for t in types {
+    for &t in types {
         acc += t.1;
         if u < acc {
             chosen = t;
             break;
         }
     }
-    let pot_bb = round2(rng.range(chosen.2, chosen.3));
-    // starting stack (bb) log-uniform; each player put in half the pot
+    chosen
+}
+
+/// Stack behind at the flop: starting stack log-uniform 25 to 200 bb, each
+/// player having put in half the pot, SPR capped at [`MAX_SPR`].
+fn draw_stack(rng: &mut Rng, pot_bb: f64) -> f64 {
     let mut start = rng.log_range(25.0, 200.0);
     if start - pot_bb / 2.0 < 2.0 {
         start = pot_bb / 2.0 + rng.range(2.0, 20.0);
     }
-    let stack_bb = round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb));
-    let (rake_pct, rake_cap_bb) = if rng.f64() < 0.5 { (0.0, 0.0) } else { (0.05, 3.0) };
-    let board = random_flop(&mut rng);
-    let range = [sample_range(&mut rng), sample_range(&mut rng)];
+    round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb))
+}
+
+fn finish(rng: &mut Rng, pot_type: &str, pot_bb: f64, pot_scale: f64, stack_bb: f64, rake: (f64, f64)) -> ExampleInputs {
+    let board = random_flop(rng);
+    let range = [sample_range(rng), sample_range(rng)];
     ExampleInputs {
-        job,
-        index,
+        job: 0,
+        index: 0,
         board,
-        pot_type: chosen.0.to_string(),
+        pot_type: pot_type.to_string(),
         pot_bb,
         stack_bb,
-        rake_pct,
-        rake_cap_bb,
+        rake_pct: rake.0,
+        rake_cap_bb: rake.1,
         range,
-        attempt,
+        attempt: 0,
+        pot_scale,
     }
+}
+
+/// Generator v2 sampling, kept so v2 uploads can still be checked.
+fn draw_v2(rng: &mut Rng) -> ExampleInputs {
+    let types: PotTypes = [
+        ("limped", 0.15, 2.0, 3.5),
+        ("srp", 0.45, 4.5, 7.5),
+        ("3bet", 0.28, 15.0, 26.0),
+        ("4bet", 0.12, 38.0, 55.0),
+    ];
+    let chosen = pick_pot_type(rng, &types);
+    let pot_bb = round2(rng.range(chosen.2, chosen.3));
+    let stack_bb = draw_stack(rng, pot_bb);
+    let rake = if rng.f64() < 0.5 { (0.0, 0.0) } else { (0.05, 3.0) };
+    finish(rng, chosen.0, pot_bb, 1.0, stack_bb, rake)
+}
+
+/// Generator v3 sampling (see [`GENERATOR_VERSION`]).
+fn draw_v3(rng: &mut Rng) -> ExampleInputs {
+    let types: PotTypes = [
+        ("limped", 0.10, 2.0, 3.5),
+        ("srp", 0.65, 4.5, 7.5),
+        ("3bet", 0.15, 15.0, 26.0),
+        ("4bet", 0.10, 38.0, 55.0),
+    ];
+    let chosen = pick_pot_type(rng, &types);
+    // Straddled games (2x) and big live opens (7.5 bb opens make 15+ bb
+    // single-raised pots) play every pot type bigger than the blinds suggest.
+    let pot_scale = if rng.f64() < 0.2 { round2(rng.range(1.6, 2.6)) } else { 1.0 };
+    let pot_bb = round2(rng.range(chosen.2, chosen.3) * pot_scale);
+    let stack_bb = draw_stack(rng, pot_bb);
+    let u = rng.f64();
+    let round1 = |x: f64| (x * 10.0).round() / 10.0;
+    let rake = if u < 0.30 {
+        (0.0, 0.0)
+    } else if u < 0.65 {
+        (0.05, round1(rng.range(2.0, 4.0)))
+    } else if u < 0.85 {
+        (0.10, round1(rng.range(6.0, 10.0)))
+    } else {
+        ((rng.range(0.03, 0.10) * 1000.0).round() / 1000.0, round1(rng.log_range(1.0, 10.0)))
+    };
+    finish(rng, chosen.0, pot_bb, pot_scale, stack_bb, rake)
 }
 
 /// A flop drawn with each strategically distinct flop weighted by how
@@ -622,11 +709,52 @@ mod tests {
         }
     }
 
+    /// v2 uploads are checked by regenerating their inputs, so the v2 draws
+    /// must never change: this hash was taken before v3 was added.
+    #[test]
+    fn v2_inputs_are_unchanged() {
+        let mut s = String::new();
+        for job in [42u64, 16861638950914, 900_000_000_123] {
+            for i in 0..40 {
+                s.push_str(&serde_json::to_string(&example_inputs_for(2, job, i, None)).unwrap());
+                s.push_str(&serde_json::to_string(&example_inputs_for(2, job, i, Some(6.0))).unwrap());
+            }
+        }
+        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0xf3b9_96f0_c8bb_a227, 413_200));
+    }
+
+    #[test]
+    fn v3_mix_matches_its_description() {
+        let n = 4000;
+        let mut count = std::collections::HashMap::new();
+        let (mut scaled, mut raked10) = (0, 0);
+        for i in 0..n {
+            let ex = example_inputs(7, i);
+            *count.entry(ex.pot_type.clone()).or_insert(0) += 1;
+            scaled += (ex.pot_scale > 1.0) as usize;
+            raked10 += (ex.rake_pct == 0.10) as usize;
+            assert!(ex.pot_scale == 1.0 || (1.6..=2.6).contains(&ex.pot_scale));
+            assert!(ex.stack_bb > 0.0 && ex.stack_bb <= MAX_SPR * ex.pot_bb + 1e-9);
+            assert!((0.0..=0.10).contains(&ex.rake_pct) && ex.rake_cap_bb <= 10.0);
+        }
+        let share = |t: &str| count.get(t).copied().unwrap_or(0) as f64 / n as f64;
+        for (t, want) in [("limped", 0.10), ("srp", 0.65), ("3bet", 0.15), ("4bet", 0.10)] {
+            assert!((share(t) - want).abs() < 0.025, "{t}: {}", share(t));
+        }
+        assert!((scaled as f64 / n as f64 - 0.2).abs() < 0.025);
+        assert!((raked10 as f64 / n as f64 - 0.2).abs() < 0.025);
+        // An unscaled v3 record serializes without pot_scale, like v2 ones.
+        let plain = (0..n).map(|i| example_inputs(7, i)).find(|e| e.pot_scale == 1.0).unwrap();
+        assert!(!serde_json::to_string(&plain).unwrap().contains("pot_scale"));
+    }
+
     #[test]
     fn contributor_blocks_differ() {
         assert_ne!(contributor_base("alice"), contributor_base("bob"));
         assert_eq!(contributor_base("Alice"), contributor_base("alice"));
-        assert_eq!(contributor_job("alice", 3), contributor_base("alice") + 3);
+        assert_eq!(contributor_job("alice", 3), contributor_base("alice") + VERSION_JOB_OFFSET + 3);
+        // v3 jobs never land on the job numbers v2 handed out (k below 2^23).
+        assert!(contributor_job("alice", 0) - contributor_base("alice") >= 1 << 23);
     }
 
     #[test]
@@ -664,3 +792,4 @@ mod tests {
         assert!((total - 1.0).abs() < 0.15, "total {total}");
     }
 }
+

@@ -417,7 +417,7 @@ fn leaves(o: &Opts) {
                 pot_type: POT_TYPES[leaf.raises.min(3) as usize].to_string(),
                 pot_bb: r2(leaf.pot_bb), stack_bb: r2(leaf.stack_bb),
                 rake_pct: s.cfg.rake_pct / 100.0, rake_cap_bb: s.cfg.rake_cap,
-                range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0,
+                range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0, pot_scale: 1.0,
             };
             inputs.push_str(&serde_json::to_string(&ex).unwrap());
             inputs.push('\n');
@@ -583,13 +583,13 @@ fn verify(o: &Opts, env: &EnvOpts) {
     if let Some(h) = &header {
         if h.format != datagen::FORMAT
             || h.format_version != datagen::FORMAT_VERSION
-            || h.generator_version != datagen::GENERATOR_VERSION
+            || !datagen::ACCEPTED_GENERATORS.contains(&h.generator_version)
             || h.menu != datagen::MENU
         {
             errors.push(format!(
-                "header is {} v{} generator v{} menu {}; this build expects {} v{} generator v{} menu {}",
+                "header is {} v{} generator v{} menu {}; this build expects {} v{} generator {:?} menu {}",
                 h.format, h.format_version, h.generator_version, h.menu,
-                datagen::FORMAT, datagen::FORMAT_VERSION, datagen::GENERATOR_VERSION, datagen::MENU
+                datagen::FORMAT, datagen::FORMAT_VERSION, datagen::ACCEPTED_GENERATORS, datagen::MENU
             ));
         }
         if records.len() as u32 != h.examples {
@@ -606,7 +606,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
                 errors.push(format!("example {i}: job/index {}/{} out of order", r.inputs.job, r.inputs.index));
                 continue;
             }
-            let expect = datagen::example_inputs_capped(h.job, i as u32, h.max_vram_gb);
+            let expect = datagen::example_inputs_for(h.generator_version, h.job, i as u32, h.max_vram_gb);
             if expect != r.inputs {
                 errors.push(format!("example {i}: inputs differ from job {} as generated", h.job));
             }
