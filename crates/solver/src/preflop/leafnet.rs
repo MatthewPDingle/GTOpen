@@ -158,6 +158,40 @@ impl LeafNet {
         h
     }
 
+    /// `residual` for many inputs at once (`xs` holds them back to back).
+    /// Each weight row is read once per batch instead of once per input,
+    /// which is several times faster for the thousands of leaves of a big
+    /// preflop tree. Same numbers as calling `residual` on each input.
+    pub fn residual_batch(&self, xs: &[f32]) -> Vec<f32> {
+        let inputs = self.mu.len();
+        let n = xs.len() / inputs;
+        let mut h: Vec<f32> = xs.chunks_exact(inputs)
+            .flat_map(|x| x.iter().zip(&self.mu).zip(&self.sd).map(|((v, m), s)| (v - m) / s))
+            .collect();
+        for (k, layer) in self.layers.iter().enumerate() {
+            let mut out: Vec<f32> = (0..n).flat_map(|_| layer.b.iter().cloned()).collect();
+            for i in 0..layer.rows {
+                let row = &layer.w[i * layer.cols..(i + 1) * layer.cols];
+                for s in 0..n {
+                    let xi = h[s * layer.rows + i];
+                    if xi == 0.0 {
+                        continue;
+                    }
+                    for (o, w) in out[s * layer.cols..(s + 1) * layer.cols].iter_mut().zip(row) {
+                        *o += xi * w;
+                    }
+                }
+            }
+            if k + 1 < self.layers.len() {
+                for o in &mut out {
+                    *o = o.max(0.0);
+                }
+            }
+            h = out;
+        }
+        h
+    }
+
     /// Predicted per-class values (fraction of the pot), out of position first.
     pub fn values(&self, spot: &LeafSpot) -> [Vec<f32>; 2] {
         let r = self.residual(&Self::features(spot));
@@ -234,6 +268,14 @@ mod tests {
         // residual is the difference from balanced
         let res = net.residual(&x);
         assert!((v[1][5] - (0.4 + res[NUM_CLASSES + 5])).abs() < 1e-6);
+        // a batch gives exactly the per-input numbers
+        let b2 = vec![0.1f32; NUM_CLASSES];
+        let other = LeafSpot { balanced: [&b2, &b], pot_bb: 20.0, pot_type: 2, ..spot };
+        let mut xs = x.clone();
+        xs.extend(LeafNet::features(&other));
+        let batch = net.residual_batch(&xs);
+        assert_eq!(&batch[..2 * NUM_CLASSES], &res[..]);
+        assert_eq!(&batch[2 * NUM_CLASSES..], &net.residual(&LeafNet::features(&other))[..]);
     }
 
     #[test]

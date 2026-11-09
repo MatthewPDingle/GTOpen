@@ -4,8 +4,8 @@
 //! plus a per-class correction (fraction of the pot) predicted by the leaf
 //! net (leafnet.rs) from both players' ranges at that terminal. The ranges
 //! move while the solve runs, so the corrections are recomputed from the
-//! average strategies every few iterations and blended with the previous
-//! ones, which keeps the pricing from jumping between refreshes.
+//! average strategies every few iterations and blended into the previous
+//! ones with a shrinking weight, so the pricing settles as the solve does.
 use super::equity::{class_prob, NUM_CLASSES};
 use super::leafnet::{pot_type_for_raises, LeafNet, LeafSpot};
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
@@ -13,8 +13,13 @@ use rayon::prelude::*;
 use std::sync::Arc;
 
 const NO_SLOT: u32 = u32::MAX;
-/// Weight of the newest net output when blending refreshes.
-const BLEND: f32 = 0.5;
+/// Weight of the newest net output at refresh k (1-based): 2/(k+1), a
+/// linearly weighted average of all refreshes so far. Later strategies
+/// count more, and the step shrinks, so the corrections settle and the
+/// solve converges on them instead of chasing a moving target.
+fn blend(k: u32) -> f32 {
+    std::env::var("PREFLOP_LEAF_BLEND").ok().and_then(|v| v.parse().ok()).unwrap_or(2.0 / (k as f32 + 1.0))
+}
 
 pub(crate) struct LeafState {
     pub(crate) net: Arc<LeafNet>,
@@ -129,6 +134,7 @@ impl PreflopSolver {
             st.corr = vec![0f32; st.nodes.len() * 2 * NUM_CLASSES];
         }
         let mut stats = LeafRefresh { terminals: st.nodes.len(), ..Default::default() };
+        let w = blend(st.refreshes + 1);
         let (mut weighted, mut weight) = (0f64, 0f64);
         let (mut excess, mut excess_w) = (0f64, 0f64);
         for (k, pred) in fresh.into_iter().enumerate() {
@@ -136,7 +142,7 @@ impl PreflopSolver {
             stats.priced += 1;
             let block = &mut st.corr[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES];
             for (c, n) in block.iter_mut().zip(&new) {
-                *c = if first { *n } else { (1.0 - BLEND) * *c + BLEND * n };
+                *c = if first { *n } else { (1.0 - w) * *c + w * n };
                 stats.max_abs = stats.max_abs.max(c.abs() as f64);
             }
             let mut added = 0f64;
@@ -167,7 +173,9 @@ impl PreflopSolver {
         let mut at: Vec<Option<[Vec<f32>; 2]>> = vec![None; st.nodes.len()];
         let mut reaches: Vec<Vec<f32>> = self.root_reaches();
         self.leaf_walk(0, &mut reaches, st, &mut at);
-        at.into_par_iter().enumerate().map(|(k, pair)| {
+        // inputs of every reached terminal
+        struct Leaf { k: usize, x: Vec<f32>, balanced: Vec<f32>, room: f32, norm: [Vec<f32>; 2], joint: f64 }
+        let leaves: Vec<Leaf> = at.into_par_iter().enumerate().filter_map(|(k, pair)| {
             let pair = pair?;
             let node = st.nodes[k] as usize;
             let nd = &self.nodes[node];
@@ -199,20 +207,29 @@ impl PreflopSolver {
                 stack_bb: stack, rake_frac: self.cfg.rake_pct / 100.0, rake_cap_bb: self.cfg.rake_cap,
                 pot_type: pot_type_for_raises(nd.raises),
             };
-            let mut corr = st.net.residual(&LeafNet::features(&spot));
+            let x = LeafNet::features(&spot);
+            let [b0, b1] = balanced;
+            let balanced: Vec<f32> = b0.into_iter().chain(b1).collect();
+            let norm = [std::mem::take(&mut norm[seats[0] as usize]), std::mem::take(&mut norm[seats[1] as usize])];
+            Some(Leaf { k, x, balanced, room: (stack / nd.pot) as f32, norm, joint: mass[0] as f64 * mass[1] as f64 })
+        }).collect();
+        // the net, in batches (each weight row is read once per batch)
+        const BATCH: usize = 32;
+        let corrs: Vec<Vec<f32>> = leaves.par_chunks(BATCH).flat_map_iter(|chunk| {
+            let xs: Vec<f32> = chunk.iter().flat_map(|l| l.x.iter().cloned()).collect();
+            let out = st.net.residual_batch(&xs);
+            out.chunks_exact(2 * NUM_CLASSES).map(|c| c.to_vec()).collect::<Vec<_>>()
+        }).collect();
+        let mut result: Vec<Option<(Vec<f32>, [Vec<f32>; 2], f64)>> = (0..st.nodes.len()).map(|_| None).collect();
+        for (leaf, mut corr) in leaves.into_iter().zip(corrs) {
             // A class can lose at most what is behind and win at most the pot
             // plus what is behind: keep balanced + correction in that band.
-            let room = (stack / nd.pot) as f32;
-            for side in 0..2 {
-                for h in 0..NUM_CLASSES {
-                    let b = balanced[side][h];
-                    let c = &mut corr[side * NUM_CLASSES + h];
-                    *c = if c.is_finite() { c.clamp(-room - b, 1.0 + room - b) } else { 0.0 };
-                }
+            for (c, &b) in corr.iter_mut().zip(&leaf.balanced) {
+                *c = if c.is_finite() { c.clamp(-leaf.room - b, 1.0 + leaf.room - b) } else { 0.0 };
             }
-            let joint = mass[0] as f64 * mass[1] as f64;
-            Some((corr, [norm[seats[0] as usize].clone(), norm[seats[1] as usize].clone()], joint))
-        }).collect()
+            result[leaf.k] = Some((corr, leaf.norm, leaf.joint));
+        }
+        result
     }
 
     fn leaf_walk(&self, node: usize, reaches: &mut [Vec<f32>], st: &LeafState, at: &mut [Option<[Vec<f32>; 2]>]) {
@@ -330,7 +347,8 @@ mod tests {
         s.leaf.as_mut().unwrap().net = Arc::new(constant_net(&vec![0.06; 2 * NUM_CLASSES]));
         s.refresh_leaf_values().unwrap();
         let corr = &s.leaf.as_ref().unwrap().corr;
-        assert!(corr.iter().all(|&c| (c - 0.04).abs() < 1e-6), "half old, half new");
+        // second refresh: weight 2/3 on the new output
+        assert!(corr.iter().all(|&c| (c - (0.02 / 3.0 + 0.06 * 2.0 / 3.0)).abs() < 1e-6), "blend {}", corr[0]);
         // an absurd net output is held to what a hand can win or lose
         s.leaf.as_mut().unwrap().net = Arc::new(constant_net(&vec![50.0; 2 * NUM_CLASSES]));
         s.leaf.as_mut().unwrap().corr.clear();
