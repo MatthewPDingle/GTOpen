@@ -17,7 +17,8 @@ const USAGE: &str = "usage:
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
   solve-cli datagen block LOGIN
-  solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)";
+  solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
+  solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)";
 
 struct Opts {
     positional: Vec<String>,
@@ -249,7 +250,18 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 }
             }
         }
-        "baseline" => baseline(),
+        "baseline" => baseline(None),
+        "leafnet" => {
+            let path = o.positional.first().unwrap_or_else(|| {
+                eprintln!("{USAGE}");
+                std::process::exit(1)
+            });
+            let net = solver::preflop::leafnet::LeafNet::load(path).unwrap_or_else(|e| {
+                eprintln!("leafnet: {e}");
+                std::process::exit(1)
+            });
+            baseline(Some(net));
+        }
         "run" => run_loop(&o, env),
         "verify" => verify(&o, env),
         _ => {
@@ -264,7 +276,9 @@ pub fn run(rest: &[String], env: &EnvOpts) {
 /// price the preflop matchup). One output line per input line, in order:
 /// {"job","index","models":{name:[oop values, ip values]}}. Used by
 /// tools/datagen/gonogo.py to score a trained net against these models.
-fn baseline() {
+/// With a leaf net, the line also has "leafnet" values and the raw
+/// "residual" (net output) for checking against the numpy net.
+fn baseline(net: Option<solver::preflop::leafnet::LeafNet>) {
     use solver::preflop::{equity::EquityTable, PreflopConfig, PreflopSolver};
     let samples = std::env::var("PREFLOP_EQ_SAMPLES").ok().and_then(|v| v.parse().ok()).unwrap_or(20_000);
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", samples));
@@ -313,7 +327,21 @@ fn baseline() {
                 }
             }
         }
-        let row = serde_json::json!({"job": ex.job, "index": ex.index, "models": by_model});
+        let mut row = serde_json::json!({"job": ex.job, "index": ex.index, "models": by_model});
+        if let Some(net) = &net {
+            use solver::preflop::leafnet::{LeafNet, LeafSpot, POT_TYPES};
+            let bal: Vec<Vec<f32>> = row["models"]["balanced"].as_array().unwrap().iter()
+                .map(|v| v.as_array().unwrap().iter().map(|x| x.as_f64().unwrap() as f32).collect()).collect();
+            let spot = LeafSpot {
+                range: [&ex.range[0], &ex.range[1]], balanced: [&bal[0], &bal[1]],
+                pot_bb: ex.pot_bb, stack_bb: ex.stack_bb, rake_frac: ex.rake_pct, rake_cap_bb: ex.rake_cap_bb,
+                pot_type: POT_TYPES.iter().position(|t| *t == ex.pot_type).unwrap_or(1),
+            };
+            let residual = net.residual(&LeafNet::features(&spot));
+            let values = net.values(&spot);
+            row["leafnet"] = serde_json::json!(values);
+            row["residual"] = serde_json::json!(residual);
+        }
         writeln!(out, "{row}").expect("stdout");
     }
 }

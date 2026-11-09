@@ -160,7 +160,10 @@ At the first checkpoint, `tools/datagen/gonogo.py --wait 50000` waits for
 50,000 validated examples, downloads the dataset, trains a small leaf-value
 net on most jobs and scores it on held-out jobs against the realization
 models Preflop Lab uses today. It writes the verdict to
-`datagen_gonogo/report.md`.
+`datagen_gonogo/report.md`, plus the net as `leaf_net.bin` (the format
+solve-cli loads; `tools/datagen/export_net.py` converts an older `net.npz`).
+`solve-cli datagen leafnet NET.bin < examples.jsonl` prints a net's values
+per example.
 
 `validate.py` needs a Hugging Face token with write access to the dataset.
 After each merge it redraws the progress graph and force-pushes it to the
