@@ -23,6 +23,9 @@ import { initPreflopTrust } from './preflop_trust.js';
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
 const DEFAULT_REALIZATION = 'balanced';
+// Opt-in: balanced plus the learned flop correction (beta).
+const LEARNED_REALIZATION = 'leafnet';
+const currentModel = (m) => m === DEFAULT_REALIZATION || m === LEARNED_REALIZATION;
 
 function positionsFor(nPlayers) {
   const NAMED = {
@@ -339,7 +342,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = p.rakeCap;
     // Scenarios configure fresh games; old scenario model choices are retired.
     // Explicitly choosing a preset also starts fresh when an older solve is loaded.
-    if (S.built && S.activeModel !== DEFAULT_REALIZATION) S.formCfg = null;
+    if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
@@ -531,7 +534,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rake_pct: +els.rakePct.value || 0,
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
-      realization: DEFAULT_REALIZATION,
+      realization: els.leaf?.checked ? LEARNED_REALIZATION : DEFAULT_REALIZATION,
     };
   }
 
@@ -774,7 +777,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
     S.activeModel = cfg.realization || 'static';
-    savedModelNote.hidden = S.activeModel === DEFAULT_REALIZATION;
+    if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
+    savedModelNote.hidden = currentModel(S.activeModel);
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
@@ -890,7 +894,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // Keep fallback diagnostics without reintroducing retired model choices.
     const realizationNote = (st.realization_note || '').replace(
       'balanced uses raw equity; legacy calibrated uses positional values',
-      S.activeModel === DEFAULT_REALIZATION
+      currentModel(S.activeModel)
         ? 'using showdown-equity estimates until the fit is available'
         : 'using the saved game’s fallback values until the fit is available');
     const rnote = realizationNote ? ` \u00b7 ${realizationNote}` : '';
