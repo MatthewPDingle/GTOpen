@@ -258,6 +258,77 @@ impl PreflopSolver {
     }
 }
 
+/// A heads-up flop leaf of a solved game, as the learned model sees it.
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct FlopLeaf {
+    pub node: usize,
+    /// Action labels from the root, e.g. "UTG Raise 2.5", "BB Call 2.5".
+    pub path: Vec<String>,
+    /// Out of position first.
+    pub positions: [String; 2],
+    pub pot_bb: f64,
+    pub stack_bb: f64,
+    pub raises: u8,
+    /// Per-class frequencies (largest 1), out of position first.
+    pub range: [Vec<f32>; 2],
+    /// Chance both players get here with any hands (product of their reach masses).
+    pub reach: f64,
+}
+
+impl PreflopSolver {
+    /// Every heads-up flop leaf with chips behind and no side pots (the ones
+    /// "leafnet" corrects), with both ranges under the average strategies.
+    pub fn hu_flop_leaves(&self) -> Vec<FlopLeaf> {
+        let order = self.postflop_order();
+        let mut out = Vec::new();
+        let mut reaches = self.root_reaches();
+        let mut path = Vec::new();
+        self.flop_leaf_walk(0, &mut reaches, &mut path, &order, &mut out);
+        out
+    }
+
+    fn flop_leaf_walk(&self, node: usize, reaches: &mut [Vec<f32>], path: &mut Vec<String>, order: &[usize],
+                      out: &mut Vec<FlopLeaf>) {
+        let nd = &self.nodes[node];
+        if nd.kind != KIND_ACTION {
+            if nd.kind != KIND_POT_SHARE || nd.live.count_ones() != 2 || !nd.side_pots.is_empty() {
+                return;
+            }
+            let live: Vec<usize> = order.iter().cloned().filter(|&q| nd.live & (1 << q) != 0).collect();
+            let stack = live.iter().map(|&q| self.cfg.left(q, nd.invested[q])).fold(f64::MAX, f64::min);
+            let mass = [reaches[live[0]].iter().sum::<f32>(), reaches[live[1]].iter().sum::<f32>()];
+            if !(stack / nd.pot > 1e-9) || !(mass[0] > 1e-12 && mass[1] > 1e-12) {
+                return;
+            }
+            let range = [0, 1].map(|side| {
+                let f: Vec<f32> = (0..NUM_CLASSES).map(|h| reaches[live[side]][h] / class_prob(h)).collect();
+                let max = f.iter().cloned().fold(0f32, f32::max);
+                f.iter().map(|v| v / max).collect::<Vec<f32>>()
+            });
+            out.push(FlopLeaf {
+                node, path: path.clone(), positions: [0, 1].map(|side| self.cfg.positions[live[side]].clone()),
+                pot_bb: nd.pot, stack_bb: stack, raises: nd.raises, range, reach: mass[0] as f64 * mass[1] as f64,
+            });
+            return;
+        }
+        let actor = nd.actor as usize;
+        if reaches[actor].iter().all(|&v| v <= 0.0) {
+            return;
+        }
+        let sigma = self.average_strategy(node);
+        let saved = reaches[actor].clone();
+        for a in 0..nd.actions.len() {
+            for h in 0..NUM_CLASSES {
+                reaches[actor][h] = saved[h] * sigma[a * NUM_CLASSES + h];
+            }
+            path.push(format!("{} {}", self.cfg.positions[actor], nd.actions[a].label));
+            self.flop_leaf_walk(self.child(node, a), reaches, path, order, out);
+            path.pop();
+        }
+        reaches[actor] = saved;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -381,6 +452,24 @@ mod tests {
         assert_eq!(loaded.cfg.realization, "leafnet");
         assert_eq!(loaded.leaf_refreshes(), 1, "corrections are recomputed on load");
         assert_eq!(loaded.arena_snapshot(), s.arena_snapshot());
+    }
+
+    #[test]
+    fn flop_leaves_match_the_learned_terminals() {
+        let mut s = game("leafnet", 3);
+        for _ in 0..20 {
+            s.iterate();
+        }
+        let leaves = s.hu_flop_leaves();
+        let st = s.leaf.as_ref().unwrap();
+        assert!(!leaves.is_empty() && leaves.len() <= st.nodes.len());
+        for l in &leaves {
+            let k = st.slot[l.node] as usize;
+            assert!(k < st.nodes.len(), "every exported leaf is a learned terminal");
+            assert_eq!(l.positions[0], s.cfg.positions[st.seats[k][0] as usize], "out of position first");
+            assert!(l.range.iter().all(|r| r.iter().cloned().fold(0f32, f32::max) == 1.0));
+            assert!(l.reach > 0.0 && l.pot_bb > 0.0 && l.stack_bb > 0.0 && !l.path.is_empty());
+        }
     }
 
     #[test]

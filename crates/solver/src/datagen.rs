@@ -346,17 +346,7 @@ fn draw_inputs(job: u64, index: u32, attempt: u32) -> ExampleInputs {
     }
     let stack_bb = round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb));
     let (rake_pct, rake_cap_bb) = if rng.f64() < 0.5 { (0.0, 0.0) } else { (0.05, 3.0) };
-    let canon = crate::cards::canonical_flops();
-    let total: u64 = canon.iter().map(|x| x.1 as u64).sum();
-    let mut pick = rng.below(total);
-    let mut board = canon[0].0.clone();
-    for (b, wt) in &canon {
-        if pick < *wt as u64 {
-            board = b.clone();
-            break;
-        }
-        pick -= *wt as u64;
-    }
+    let board = random_flop(&mut rng);
     let range = [sample_range(&mut rng), sample_range(&mut rng)];
     ExampleInputs {
         job,
@@ -370,6 +360,21 @@ fn draw_inputs(job: u64, index: u32, attempt: u32) -> ExampleInputs {
         range,
         attempt,
     }
+}
+
+/// A flop drawn with each strategically distinct flop weighted by how
+/// many deals it stands for.
+pub fn random_flop(rng: &mut Rng) -> String {
+    let canon = crate::cards::canonical_flops();
+    let total: u64 = canon.iter().map(|x| x.1 as u64).sum();
+    let mut pick = rng.below(total);
+    for (b, wt) in &canon {
+        if pick < *wt as u64 {
+            return b.clone();
+        }
+        pick -= *wt as u64;
+    }
+    canon[0].0.clone()
 }
 
 fn round2(x: f64) -> f64 {
