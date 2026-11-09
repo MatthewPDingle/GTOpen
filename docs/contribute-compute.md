@@ -18,8 +18,7 @@ the count and the graph update as soon as uploads are validated.
 At 57,400 examples a first net was trained and scored on 56 held-out jobs it
 never saw. It beat every realization model Preflop Lab uses today, at both the
 hand-class and whole-range level, removing about 10% of the pot (RMS) of the
-default model's error. The next goal is **300,000 examples** while the net is
-wired into the Preflop Lab.
+default model's error. The next goal is **300,000 examples**.
 
 ## What you need
 
