@@ -108,8 +108,15 @@ def main():
         sys.exit("not logged in to Hugging Face: run  hf auth login  (a token with write access)")
     print(f"Hugging Face user {who}, dataset {args.repo}, contributor {args.contributor}")
     while True:
-        while upload_once(api, args.repo, args.out, args.contributor) == MAX_FILES_PER_PR:
-            pass
+        try:
+            while upload_once(api, args.repo, args.out, args.contributor) == MAX_FILES_PER_PR:
+                pass
+        except Exception as e:
+            if args.watch <= 0:
+                raise
+            # a network or Hub hiccup must not end an overnight run: the
+            # unsent jobs stay unmarked and go up next round
+            print(f"upload failed, will retry in {args.watch:g} min: {type(e).__name__}: {e}", flush=True)
         if args.watch <= 0:
             break
         time.sleep(args.watch * 60)

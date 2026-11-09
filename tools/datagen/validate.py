@@ -289,73 +289,77 @@ def run_prs(args):
                                                discussion_status="open")]
     print(f"{repo}: {len(prs)} open pull requests")
     merged_events = []
-    for pr in prs:
-        rev = f"refs/pr/{pr.num}"
-        new, other = pr_changes(api, repo, pr.num)
-        errors, jobs = [], []
-        other += [p for p in new if p in main_oids]  # "new" file already in main: a duplicate
-        new = [p for p in new if p not in main_oids]
-        if other:
-            errors.append("changes or deletes existing files: " + ", ".join(sorted(other)[:10]))
-        stage = tempfile.mkdtemp(prefix="gtopen-validate-")
-        try:
-            if not new:
-                errors.append("no new files")
-            for path in new:
-                m = PATH_RE.match(path)
-                if not m:
-                    errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz)")
-                    continue
-                login, job = m.group(1), int(m.group(2))
-                gz = hf_hub_download(repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
-                plain = os.path.join(stage, f"job-{job}.jsonl")
-                with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
-                    shutil.copyfileobj(src, dst)
-                errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
-                errors += [f"{path}: {e}" for e in errs]
-                jobs.append((login, job, summary.get("examples", 0)))
-        finally:
-            shutil.rmtree(stage, ignore_errors=True)
-        logins = sorted({j[0] for j in jobs})
-        examples = sum(j[2] for j in jobs)
-        if errors:
-            print(f"PR #{pr.num} ({pr.title}): REJECT")
-            for e in errors[:20]:
-                print(f"   {e}")
-            if not args.dry_run:
-                body = "Thanks for contributing! The validator could not accept this upload:\n\n" + \
-                       "\n".join(f"- {e}" for e in errors[:30]) + \
-                       "\n\nPlease update GTOpen (git pull, rebuild) and run the generator again. " \
-                       "See docs/contribute-compute.md."
-                api.comment_discussion(repo, pr.num, body, repo_type="dataset")
-                api.change_discussion_status(repo, pr.num, "closed", repo_type="dataset")
-            continue
-        print(f"PR #{pr.num} ({pr.title}): OK, {len(jobs)} jobs, {examples} examples")
-        if args.dry_run:
-            continue
-        api.merge_pull_request(repo, pr.num, repo_type="dataset",
-                               comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!")
-        main_oids.update({p: "" for p in new})
-        now = datetime.datetime.now(datetime.timezone.utc)
-        for login in logins:
-            mine = [j for j in jobs if j[0] == login]
-            merged_events.append({"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
-                                  "contributor": login, "jobs": len(mine),
-                                  "examples": sum(j[2] for j in mine), "pr": pr.num})
-    if merged_events or not args.dry_run:
-        progress = load_progress(api, repo)
-        filled = 0 if args.dry_run else backfill_times(api, repo, progress)
-        progress["events"] += merged_events
-        n = sum(e["examples"] for e in merged_events)
-        if merged_events:
-            save_progress(api, repo, progress, f"progress: +{n} examples")
-            print(f"progress.json updated: +{n} examples")
-        elif filled:
-            save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
-        if filled:
-            print(f"progress.json: added merge times to {filled} older entries")
-        if (merged_events or filled) and args.publish_graph:
-            publish_graph(progress)
+    try:
+        for pr in prs:
+            rev = f"refs/pr/{pr.num}"
+            new, other = pr_changes(api, repo, pr.num)
+            errors, jobs = [], []
+            other += [p for p in new if p in main_oids]  # "new" file already in main: a duplicate
+            new = [p for p in new if p not in main_oids]
+            if other:
+                errors.append("changes or deletes existing files: " + ", ".join(sorted(other)[:10]))
+            stage = tempfile.mkdtemp(prefix="gtopen-validate-")
+            try:
+                if not new:
+                    errors.append("no new files")
+                for path in new:
+                    m = PATH_RE.match(path)
+                    if not m:
+                        errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz)")
+                        continue
+                    login, job = m.group(1), int(m.group(2))
+                    gz = hf_hub_download(repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
+                    plain = os.path.join(stage, f"job-{job}.jsonl")
+                    with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
+                        shutil.copyfileobj(src, dst)
+                    errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
+                    errors += [f"{path}: {e}" for e in errs]
+                    jobs.append((login, job, summary.get("examples", 0)))
+            finally:
+                shutil.rmtree(stage, ignore_errors=True)
+            logins = sorted({j[0] for j in jobs})
+            examples = sum(j[2] for j in jobs)
+            if errors:
+                print(f"PR #{pr.num} ({pr.title}): REJECT")
+                for e in errors[:20]:
+                    print(f"   {e}")
+                if not args.dry_run:
+                    body = "Thanks for contributing! The validator could not accept this upload:\n\n" + \
+                           "\n".join(f"- {e}" for e in errors[:30]) + \
+                           "\n\nPlease update GTOpen (git pull, rebuild) and run the generator again. " \
+                           "See docs/contribute-compute.md."
+                    api.comment_discussion(repo, pr.num, body, repo_type="dataset")
+                    api.change_discussion_status(repo, pr.num, "closed", repo_type="dataset")
+                continue
+            print(f"PR #{pr.num} ({pr.title}): OK, {len(jobs)} jobs, {examples} examples")
+            if args.dry_run:
+                continue
+            api.merge_pull_request(repo, pr.num, repo_type="dataset",
+                                   comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!")
+            main_oids.update({p: "" for p in new})
+            now = datetime.datetime.now(datetime.timezone.utc)
+            for login in logins:
+                mine = [j for j in jobs if j[0] == login]
+                merged_events.append({"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
+                                      "contributor": login, "jobs": len(mine),
+                                      "examples": sum(j[2] for j in mine), "pr": pr.num})
+    finally:
+        # record merges even when a later pull request fails, so none go uncounted
+        failed = sys.exc_info()[0] is not None
+        if merged_events or (not args.dry_run and not failed):
+            progress = load_progress(api, repo)
+            filled = 0 if args.dry_run or failed else backfill_times(api, repo, progress)
+            progress["events"] += merged_events
+            n = sum(e["examples"] for e in merged_events)
+            if merged_events:
+                save_progress(api, repo, progress, f"progress: +{n} examples")
+                print(f"progress.json updated: +{n} examples")
+            elif filled:
+                save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
+            if filled:
+                print(f"progress.json: added merge times to {filled} older entries")
+            if (merged_events or filled) and args.publish_graph:
+                publish_graph(progress)
 
 
 def main():
@@ -382,7 +386,15 @@ def real_main():
     if args.local:
         sys.exit(0 if run_local(args) else 2)
     while True:
-        run_prs(args)
+        try:
+            run_prs(args)
+        except ToolError:
+            raise
+        except Exception as e:
+            if args.watch <= 0:
+                raise
+            # a network or Hub hiccup must not end an overnight run
+            print(f"pass failed, will retry in {args.watch:g} min: {type(e).__name__}: {e}", flush=True)
         if args.watch <= 0:
             break
         time.sleep(args.watch * 60)
