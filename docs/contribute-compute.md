@@ -18,7 +18,15 @@ the count and the graph update as soon as uploads are validated.
 At 57,400 examples a first net was trained and scored on 56 held-out jobs it
 never saw. It beat every realization model Preflop Lab uses today, at both the
 hand-class and whole-range level, removing about 10% of the pot (RMS) of the
-default model's error. The next goal is **300,000 examples**.
+default model's error. The next goal is **300,000 examples**. The plan from
+here (data mix, the architecture search, what comes after 300k) is in
+[leafnet_plan.md](leafnet_plan.md).
+
+**Generator v3 (2026-11-09):** spots now follow how often each pot type
+reaches a heads-up flop, a quarter come from straddled games, and rake
+includes live 10% levels. Please `git pull` and rebuild. Jobs you finished
+under v2 still upload and validate, and v3 jobs use new job numbers, so
+nothing is lost or duplicated.
 
 ## What you need
 
@@ -117,8 +125,9 @@ Anyone can upload, so every upload is checked before it is merged:
   the upload, and a contributor caught sending bad data has all of their
   data removed.
 - **Versions are pinned.** Each file records the generator version and bet
-  menu. When they change, older uploads are rejected with a note asking
-  you to `git pull` and rebuild.
+  menu. The validator accepts the versions it can regenerate exactly
+  (currently v2 and v3); anything else is rejected with a note asking you
+  to `git pull` and rebuild.
 
 Rejected uploads get a comment on their Hugging Face pull request saying why.
 
@@ -128,7 +137,8 @@ Each example is one line of JSON:
 
 | Field | Meaning |
 | --- | --- |
-| `board`, `pot_type`, `pot_bb`, `stack_bb`, `rake_pct`, `rake_cap_bb` | The spot. Stacks are behind at the flop; 5% rake is capped at 3 bb. |
+| `board`, `pot_type`, `pot_bb`, `stack_bb`, `rake_pct`, `rake_cap_bb` | The spot. Stacks are behind at the flop. `pot_type` counts preflop raises (limped, srp, 3bet, 4bet). |
+| `straddle` | Present and `true` when the pot came from a straddled game (generator v3). |
 | `range` | Two lists of 169 class weights (OOP, IP) in the Preflop Lab class order. |
 | `reach` | Combo mass per class after board card removal. |
 | `eq` | Equity per class against the other range. |
@@ -138,14 +148,20 @@ Each example is one line of JSON:
 
 The postflop menu is fixed and lean (`lean-v2`): one bet size per street
 (33% on the flop, 75% on the turn and river), raises to 60% of the pot, and
-at most a bet and a raise per street. Stacks are capped at 40 times the pot. Ranges are sampled broadly
+at most a bet and a raise per street. Stacks are capped at 40 times the pot.
+Generator v3 draws limped 17%, single-raised 58%, 3-bet 15% and 4-bet 10%
+pots; 25% of them straddled (bigger pots for the same pot type); and rake
+none (30%), 5% capped at 1–4 bb (35%) or 10% capped at 2–10 bb (35%).
+v2 drew 15/45/28/12 with no straddles and rake of none or 5% capped at 3 bb.
+Ranges are sampled broadly
 (top-x% and capped ranges, DeepStack-style random ranges, polarized and
 mixed ranges) because the net has to be right on ranges the Preflop Lab
 may produce later, not just today's.
 
 To regenerate an example's inputs yourself:
 `solve-cli datagen inputs JOB INDEX`, or `solve-cli datagen spot JOB INDEX`
-for a config that `solve-cli` can solve directly.
+for a config that `solve-cli` can solve directly. Add `--generator 2` for
+a job made by generator v2.
 
 ## For the maintainer
 

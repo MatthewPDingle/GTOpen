@@ -12,9 +12,10 @@ const USAGE: &str = "usage:
   solve-cli datagen run --contributor LOGIN [--out DIR] [--jobs N] [--hours H]
                         [--worker I --workers W] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
   solve-cli datagen job JOB [--contributor LOGIN] [--out DIR] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
-  solve-cli datagen sizes JOB [--per-job N]   (estimated GPU memory per example)
-  solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
-  solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
+  solve-cli datagen sizes JOB [--per-job N] [--generator V]   (estimated GPU memory per example)
+  solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB] [--generator V]
+  solve-cli datagen spot JOB INDEX [--generator V]   (the example as a solve-cli spot config)
+      (--generator: regenerate under an older supported generator version, e.g. 2)
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
   solve-cli datagen block LOGIN
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
@@ -42,6 +43,8 @@ struct Opts {
     leaves: usize,
     boards: u32,
     seed: u64,
+    /// Generator version for `inputs`, `spot` and `sizes` (default: this build's).
+    generator: u32,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -63,6 +66,7 @@ fn parse(rest: &[String]) -> Opts {
         leaves: 40,
         boards: 8,
         seed: 1,
+        generator: datagen::GENERATOR_VERSION,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -96,6 +100,14 @@ fn parse(rest: &[String]) -> Opts {
             "--leaves" => { o.leaves = num::<usize>(need(i), a).max(1); i += 1; }
             "--boards" => { o.boards = num::<u32>(need(i), a).max(1); i += 1; }
             "--seed" => { o.seed = num(need(i), a); i += 1; }
+            "--generator" => {
+                o.generator = num(need(i), a);
+                if !datagen::SUPPORTED_GENERATOR_VERSIONS.contains(&o.generator) {
+                    eprintln!("--generator: this build regenerates versions {:?}", datagen::SUPPORTED_GENERATOR_VERSIONS);
+                    std::process::exit(1);
+                }
+                i += 1;
+            }
             _ if a.starts_with("--") => {
                 eprintln!("unknown option {a}\n{USAGE}");
                 std::process::exit(1);
@@ -217,7 +229,7 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 None => (0..o.per_job).collect(),
             };
             for i in indices {
-                let ex = datagen::example_inputs_capped(job, i, o.max_vram.filter(|&x| x > 0.0));
+                let ex = datagen::example_inputs_capped_v(o.generator, job, i, o.max_vram.filter(|&x| x > 0.0));
                 println!("{}", serde_json::to_string(&ex).unwrap());
             }
         }
@@ -226,11 +238,12 @@ pub fn run(rest: &[String], env: &EnvOpts) {
             let job: u64 = o.positional.first().and_then(|s| s.parse().ok()).unwrap_or(1);
             let mut rows = Vec::new();
             for i in 0..o.per_job {
-                let ex = datagen::example_inputs(job, i);
+                let ex = datagen::example_inputs_v(o.generator, job, i);
                 let spot = Spot::new(ex.spot_config()).expect("spot");
                 let gb = spot.vram_estimate_bytes() as f64 / 1e9;
-                println!("{i:4} {:7} pot {:6.2} stack {:6.1} spr {:5.1} nodes {:8} vram {:6.2} GB",
-                    ex.pot_type, ex.pot_bb, ex.stack_bb, ex.stack_bb / ex.pot_bb, spot.tree.nodes.len(), gb);
+                println!("{i:4} {:7}{} pot {:6.2} stack {:6.1} spr {:5.1} nodes {:8} vram {:6.2} GB",
+                    ex.pot_type, if ex.straddle { " (straddled)" } else { "" }, ex.pot_bb, ex.stack_bb,
+                    ex.stack_bb / ex.pot_bb, spot.tree.nodes.len(), gb);
                 rows.push(gb);
             }
             rows.sort_by(|a, b| a.partial_cmp(b).unwrap());
@@ -245,7 +258,7 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 eprintln!("{USAGE}");
                 std::process::exit(1)
             };
-            let cfg = datagen::example_inputs(job, index).spot_config();
+            let cfg = datagen::example_inputs_v(o.generator, job, index).spot_config();
             println!("{}", serde_json::to_string_pretty(&cfg).unwrap());
         }
         "job" => {
@@ -417,6 +430,7 @@ fn leaves(o: &Opts) {
                 pot_bb: r2(leaf.pot_bb), stack_bb: r2(leaf.stack_bb),
                 rake_pct: s.cfg.rake_pct / 100.0, rake_cap_bb: s.cfg.rake_cap,
                 range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0,
+                straddle: s.cfg.utg_straddle,
             };
             inputs.push_str(&serde_json::to_string(&ex).unwrap());
             inputs.push('\n');
@@ -582,13 +596,14 @@ fn verify(o: &Opts, env: &EnvOpts) {
     if let Some(h) = &header {
         if h.format != datagen::FORMAT
             || h.format_version != datagen::FORMAT_VERSION
-            || h.generator_version != datagen::GENERATOR_VERSION
+            || !datagen::SUPPORTED_GENERATOR_VERSIONS.contains(&h.generator_version)
             || h.menu != datagen::MENU
         {
             errors.push(format!(
-                "header is {} v{} generator v{} menu {}; this build expects {} v{} generator v{} menu {}",
+                "header is {} v{} generator v{} menu {}; this build expects {} v{} generator {} menu {}",
                 h.format, h.format_version, h.generator_version, h.menu,
-                datagen::FORMAT, datagen::FORMAT_VERSION, datagen::GENERATOR_VERSION, datagen::MENU
+                datagen::FORMAT, datagen::FORMAT_VERSION,
+                datagen::SUPPORTED_GENERATOR_VERSIONS.map(|v| format!("v{v}")).join(" or "), datagen::MENU
             ));
         }
         if records.len() as u32 != h.examples {
@@ -605,7 +620,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
                 errors.push(format!("example {i}: job/index {}/{} out of order", r.inputs.job, r.inputs.index));
                 continue;
             }
-            let expect = datagen::example_inputs_capped(h.job, i as u32, h.max_vram_gb);
+            let expect = datagen::example_inputs_capped_v(h.generator_version, h.job, i as u32, h.max_vram_gb);
             if expect != r.inputs {
                 errors.push(format!("example {i}: inputs differ from job {} as generated", h.job));
             }
