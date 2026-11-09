@@ -373,8 +373,9 @@ fn fail(msg: String) -> ! {
 /// realization models on the ranges a real preflop solution produces
 /// (tools/datagen/leafcheck.py). The leaves are split evenly over the pot
 /// types (limped, single-raised, 3-bet, 4-bet), taking the ones that carry
-/// the most chips (reach x pot) within each type, since by chips alone a
-/// deep-stacked game is mostly 4-bet pots. Each gets `--boards` random flops.
+/// the most chips within each type (the chance of the line, with every
+/// seat's actions counted, folds included, times the pot), so rarer pot
+/// types are still checked. Each gets `--boards` random flops.
 fn leaves(o: &Opts) {
     use solver::preflop::{equity::EquityTable, leafnet::POT_TYPES, PreflopSolver};
     let game = o.positional.first().unwrap_or_else(|| fail(USAGE.into()));
