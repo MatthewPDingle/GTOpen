@@ -3,9 +3,15 @@
 //! Heads-up flop terminals with chips behind are priced as under "balanced",
 //! plus a per-class correction (fraction of the pot) predicted by the leaf
 //! net (leafnet.rs) from both players' ranges at that terminal. The ranges
-//! move while the solve runs, so the corrections are recomputed from the
-//! average strategies every few iterations and blended into the previous
-//! ones with a shrinking weight, so the pricing settles as the solve does.
+//! move while the solve runs, so the net is run again on the average
+//! strategies every few iterations and its output replaces the corrections
+//! the solve prices with (or is blended into them, see `refresh_weight`).
+//!
+//! Accuracy is always measured against the net's output at the strategies
+//! being measured (`leaf_measure_begin`), whatever the solve is iterating
+//! on, and a finished solve is left priced that way (`leaf_settle`). A save
+//! does not store corrections, so this is also what a reload computes: a
+//! loaded game shows the EVs and the gap the solve reported.
 use super::equity::{class_prob, NUM_CLASSES};
 use super::leafnet::{pot_type_for_raises, LeafNet, LeafSpot};
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
@@ -13,12 +19,29 @@ use rayon::prelude::*;
 use std::sync::Arc;
 
 const NO_SLOT: u32 = u32::MAX;
-/// Weight of the newest net output at refresh k (1-based): 2/(k+1), a
-/// linearly weighted average of all refreshes so far. Later strategies
-/// count more, and the step shrinks, so the corrections settle and the
-/// solve converges on them instead of chasing a moving target.
-fn blend(k: u32) -> f32 {
-    std::env::var("PREFLOP_LEAF_BLEND").ok().and_then(|v| v.parse().ok()).unwrap_or(2.0 / (k as f32 + 1.0))
+/// Weight of the newest net output at a refresh (None: 2/(k+1) at refresh
+/// k, a linearly weighted average of all refreshes so far).
+///
+/// The default, 1, replaces the corrections with the net's output at the
+/// average strategies. On the usual 6-max game with the loop 4 net (GPU)
+/// the gap against the net's output at the current strategies then falls
+/// steadily: 0.0041 bb at 2,000 iterations, 0.0019 at 4,000, 0.0010 at
+/// 8,000. Weights of 0.3 and 0.5 gave 0.011 at 2,000 and 0.006 at 4,000,
+/// and 0.3 jumped to 0.019 at 8,000 when one seat's blended values fell
+/// behind its ranges. The linear average used before 2026-11 gave 0.033 at
+/// 2,000 while the status showed 0.010. On 3-handed CPU games with the v1
+/// net (examples/leaf_settle.rs) the weights from 0.3 to 1 end within
+/// noise of each other, 0.001 to 0.003 by 6,000 iterations, once pruning
+/// is off (see install_leaf_net). Env PREFLOP_LEAF_BLEND: a fixed weight
+/// in (0, 1], or "lin" for the linear average.
+const REFRESH_WEIGHT: f32 = 1.0;
+
+fn refresh_weight() -> Option<f32> {
+    match std::env::var("PREFLOP_LEAF_BLEND") {
+        Ok(v) if v.trim() == "lin" => None,
+        Ok(v) => Some(v.trim().parse().ok().filter(|w: &f32| *w > 0.0 && *w <= 1.0).unwrap_or(REFRESH_WEIGHT)),
+        Err(_) => Some(REFRESH_WEIGHT),
+    }
 }
 
 pub(crate) struct LeafState {
@@ -33,6 +56,17 @@ pub(crate) struct LeafState {
     pub(crate) corr: Vec<f32>,
     pub(crate) refreshes: u32,
     pub(crate) interval: u32,
+    /// Weight of the newest net output at a refresh (None: 2/(k+1)).
+    pub(crate) weight: Option<f32>,
+    /// The net's output at the average strategies of iteration `fresh_at`,
+    /// laid out like `corr` (zero where a player does not reach the
+    /// terminal). Empty until first computed.
+    pub(crate) latest: Vec<f32>,
+    pub(crate) fresh_at: Option<u32>,
+    /// The blended corrections, put aside while `latest` prices a measurement.
+    pub(crate) aside: Option<Vec<f32>>,
+    /// Bumped whenever `corr` changes (the GPU engine re-uploads then).
+    pub(crate) version: u32,
 }
 
 /// Iterations between refreshes (env PREFLOP_LEAF_REFRESH, default 50).
@@ -92,8 +126,19 @@ impl PreflopSolver {
             nodes.push(i as u32);
             seats.push([live[0] as u8, live[1] as u8]);
         }
+        // Regret-based pruning (CPU engine) leaves the average strategies
+        // inside a line nobody currently takes as they were when it died.
+        // The corrections there are then priced from stale ranges, and a
+        // best response finds a gain in that line that the solve never
+        // sees: a 3-handed 60 bb game stayed at 0.016 bb from iteration
+        // 1,000 on (the button's aces, limping), against 0.0016 unpruned.
+        // The GPU engine does not prune. PREFLOP_PRUNE=1 forces it here.
+        if std::env::var("PREFLOP_PRUNE").is_err() {
+            self.prune = false;
+        }
         self.leaf = Some(Box::new(LeafState { net, slot, nodes, seats, corr: Vec::new(), refreshes: 0,
-                                              interval: refresh_interval() }));
+                                              interval: refresh_interval(), weight: refresh_weight(), latest: Vec::new(), fresh_at: None, aside: None,
+                                              version: 0 }));
         Ok(())
     }
 
@@ -114,35 +159,171 @@ impl PreflopSolver {
         self.leaf.as_ref().map_or(false, |st| iteration > 0 && iteration % st.interval == 0)
     }
 
+    /// Iterations between refreshes and the weight of the newest net output
+    /// at each (None: 2/(k+1) at refresh k). Research: the defaults are
+    /// PREFLOP_LEAF_REFRESH and PREFLOP_LEAF_BLEND.
+    pub fn set_leaf_schedule(&mut self, interval: u32, weight: Option<f32>) {
+        if let Some(st) = self.leaf.as_mut() {
+            st.interval = interval.max(1);
+            st.weight = weight;
+        }
+    }
+
+    /// True when the average strategies have moved on since the net was last
+    /// run on them (always false without a learned model).
+    pub fn leaf_values_stale(&self) -> bool {
+        self.leaf_values_stale_at(self.iteration)
+    }
+
+    /// `leaf_values_stale` for the strategies of `iteration` (a GPU engine
+    /// can be ahead of the host's snapshot).
+    pub fn leaf_values_stale_at(&self, iteration: u32) -> bool {
+        self.leaf.as_ref().map_or(false, |st| iteration > 0 && st.fresh_at != Some(iteration))
+    }
+
+    /// The net's output at the current average strategies as a corrections
+    /// table (zero where a player does not reach the terminal), and how far
+    /// the stored corrections are from it: the reach-weighted mean absolute
+    /// difference, as a fraction of the pot.
+    fn leaf_fresh_table(&self, st: &LeafState) -> (Vec<f32>, f64) {
+        let mut table = vec![0f32; st.nodes.len() * 2 * NUM_CLASSES];
+        let stored = st.aside.as_ref().unwrap_or(&st.corr);
+        let (mut diff, mut weight) = (0f64, 0f64);
+        for (k, pred) in self.leaf_predictions(st).into_iter().enumerate() {
+            let Some((new, reach, joint)) = pred else { continue };
+            let at = k * 2 * NUM_CLASSES;
+            for side in 0..2 {
+                for h in 0..NUM_CLASSES {
+                    let i = side * NUM_CLASSES + h;
+                    let w = joint * reach[side][h] as f64;
+                    diff += w * (new[i] - stored.get(at + i).copied().unwrap_or(0.0)).abs() as f64;
+                    weight += w;
+                }
+            }
+            table[at..at + 2 * NUM_CLASSES].copy_from_slice(&new);
+        }
+        (table, if weight > 0.0 { diff / weight } else { 0.0 })
+    }
+
+    /// Run the net on the current average strategies if it has not been
+    /// (the corrections the solve prices with are left as they are).
+    fn leaf_bring_latest(&mut self) {
+        if !self.leaf_values_stale() {
+            return;
+        }
+        let Some(mut st) = self.leaf.take() else { return };
+        st.latest = self.leaf_fresh_table(&st).0;
+        st.fresh_at = Some(self.iteration);
+        self.leaf = Some(st);
+    }
+
+    /// Before an accuracy measurement: price with the net's output at the
+    /// current average strategies until `leaf_measure_end`, instead of the
+    /// blend of earlier refreshes the solve iterates on. The gap is then
+    /// the gap of these strategies under the values the net gives for them,
+    /// which is what a reload of this snapshot reports. A GPU engine needs
+    /// `upload_leaf_corr` after this and after `leaf_measure_end`. Does
+    /// nothing without a learned model.
+    pub fn leaf_measure_begin(&mut self) {
+        self.leaf_bring_latest();
+        if let Some(st) = self.leaf.as_mut() {
+            if st.aside.is_none() && !st.latest.is_empty() && st.latest != st.corr {
+                st.aside = Some(std::mem::replace(&mut st.corr, st.latest.clone()));
+                st.version += 1;
+            }
+        }
+    }
+
+    /// After the measurement: back to the corrections the solve iterates on.
+    pub fn leaf_measure_end(&mut self) {
+        if let Some(st) = self.leaf.as_mut() {
+            if let Some(blend) = st.aside.take() {
+                st.corr = blend;
+                st.version += 1;
+            }
+        }
+    }
+
+    /// When a solve ends: leave the game priced with the net's output at
+    /// its final average strategies, as a reload prices it. `force` runs
+    /// the net even when the iteration has not moved (the table's rules may
+    /// have changed the strategies).
+    pub fn leaf_settle(&mut self, force: bool) {
+        self.leaf_measure_end();
+        if force {
+            if let Some(st) = self.leaf.as_mut() {
+                st.fresh_at = None;
+            }
+        }
+        self.leaf_bring_latest();
+        if let Some(st) = self.leaf.as_mut() {
+            if !st.latest.is_empty() && st.corr != st.latest {
+                st.corr = st.latest.clone();
+                st.version += 1;
+            }
+        }
+    }
+
+    /// Best-response gaps and EVs measured as a solve reports them (see
+    /// `leaf_measure_begin`), and how far the corrections the solve iterates
+    /// on are from the net's output at the current strategies (reach-weighted
+    /// mean absolute difference, fraction of the pot). The solve's state is
+    /// left as it was. None without a learned model. For research
+    /// (examples/leaf_settle.rs) and tests.
+    pub fn consistent_gaps_and_evs(&mut self) -> Option<(Vec<f64>, Vec<f64>, f64)> {
+        let mut st = self.leaf.take()?;
+        let (table, drift) = self.leaf_fresh_table(&st);
+        st.latest = table;
+        st.fresh_at = Some(self.iteration);
+        self.leaf = Some(st);
+        self.leaf_measure_begin();
+        let (gaps, evs) = self.gaps_and_evs();
+        self.leaf_measure_end();
+        Some((gaps, evs, drift))
+    }
+
     /// Learned terminals: node indices, (oop, ip) seats and the current
     /// corrections (empty before the first refresh). For the GPU engine.
     pub fn leaf_terminals(&self) -> Option<(&[u32], &[[u8; 2]], &[f32])> {
         self.leaf.as_ref().map(|st| (st.nodes.as_slice(), st.seats.as_slice(), st.corr.as_slice()))
     }
 
-    /// Number of refreshes so far (the GPU engine re-uploads when it changes).
+    /// Number of refreshes so far.
     pub fn leaf_refreshes(&self) -> u32 {
         self.leaf.as_ref().map_or(0, |st| st.refreshes)
     }
 
-    /// Recompute the corrections from the current average strategies.
+    /// Changes whenever the corrections do (the GPU engine re-uploads then).
+    pub fn leaf_version(&self) -> u32 {
+        self.leaf.as_ref().map_or(0, |st| st.version)
+    }
+
+    /// A scheduled refresh: run the net on the current average strategies
+    /// and blend its output into the corrections the solve prices with.
     pub fn refresh_leaf_values(&mut self) -> Option<LeafRefresh> {
+        self.leaf_measure_end();
         let mut st = self.leaf.take()?;
         let fresh = self.leaf_predictions(&st);
+        let n = st.nodes.len() * 2 * NUM_CLASSES;
         let first = st.corr.is_empty();
-        if first {
-            st.corr = vec![0f32; st.nodes.len() * 2 * NUM_CLASSES];
-        }
         let mut stats = LeafRefresh { terminals: st.nodes.len(), ..Default::default() };
-        let w = blend(st.refreshes + 1);
+        let w = st.weight.unwrap_or(2.0 / (st.refreshes as f32 + 2.0));
+        let replace = first || w >= 1.0;
+        if replace {
+            // The corrections then depend on the current average strategies
+            // alone; a terminal that a player does not reach is plain balanced.
+            st.corr = vec![0f32; n];
+        }
+        let mut latest = vec![0f32; n];
         let (mut weighted, mut weight) = (0f64, 0f64);
         let (mut excess, mut excess_w) = (0f64, 0f64);
         for (k, pred) in fresh.into_iter().enumerate() {
             let Some((new, reach, joint)) = pred else { continue };
             stats.priced += 1;
+            latest[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES].copy_from_slice(&new);
             let block = &mut st.corr[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES];
             for (c, n) in block.iter_mut().zip(&new) {
-                *c = if first { *n } else { (1.0 - w) * *c + w * n };
+                *c = if replace { *n } else { (1.0 - w) * *c + w * n };
                 stats.max_abs = stats.max_abs.max(c.abs() as f64);
             }
             let mut added = 0f64;
@@ -160,6 +341,9 @@ impl PreflopSolver {
         stats.mean_abs = if weight > 0.0 { weighted / weight } else { 0.0 };
         stats.mean_excess = if excess_w > 0.0 { excess / excess_w } else { 0.0 };
         st.refreshes += 1;
+        st.version += 1;
+        st.latest = latest;
+        st.fresh_at = Some(self.iteration);
         self.leaf = Some(st);
         Some(stats)
     }
@@ -360,9 +544,33 @@ mod tests {
         (0..2 * NUM_CLASSES).map(|k| scale * (((k * 7) % 11) as f32 - 5.0) / 5.0 + if k < NUM_CLASSES { 0.01 } else { -0.02 }).collect()
     }
 
+    /// With pruning on, this solve stays at 0.016 bb: the button's limp dies,
+    /// the strategies behind it keep their old averages, and a best response
+    /// limps aces into values the solve never sees.
+    #[test]
+    fn a_dead_line_leaves_no_phantom_gap() {
+        assert!(game("balanced", 3).prune, "other models keep pruning");
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions": ["BTN", "SB", "BB"], "stack": 60.0, "posts": [0.0, 0.5, 1.0], "limp": true, "open_raises": [2.5],
+            "raise_mults": [3.0], "max_raises": 4, "add_allin": false, "rake_pct": 5.0, "rake_cap": 3.0,
+            "no_flop_no_drop": true, "realization": "leafnet",
+        })).unwrap();
+        // the shipped equity table: the line dies with it
+        let eq = EquityTable::load_or_build(concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin"), 20_000);
+        let mut s = PreflopSolver::new(cfg, Arc::new(eq)).unwrap();
+        assert!(!s.prune);
+        for _ in 0..800 {
+            s.iterate();
+        }
+        let (gaps, _, _) = s.consistent_gaps_and_evs().unwrap();
+        // pruned: 0.0136 for the button, 0.0178 in all
+        assert!(gaps[0] < 0.004 && gaps.iter().sum::<f64>() < 0.01, "{gaps:?}");
+    }
+
     #[test]
     fn a_zero_net_prices_exactly_balanced() {
         let mut bal = game("balanced", 3);
+        bal.prune = false; // as the learned model solves (see install_leaf_net)
         let mut leaf = game("leafnet", 3);
         leaf.install_leaf_net(Arc::new(constant_net(&vec![0.0; 2 * NUM_CLASSES]))).unwrap();
         leaf.leaf.as_mut().unwrap().interval = 10;
@@ -411,17 +619,27 @@ mod tests {
 
     #[test]
     fn refreshes_blend_and_stay_in_the_possible_range() {
-        let mut s = game("leafnet", 2);
-        s.install_leaf_net(Arc::new(constant_net(&vec![0.02; 2 * NUM_CLASSES]))).unwrap();
-        for _ in 0..10 {
-            s.iterate();
+        let two_refreshes = |weight: Option<f32>| {
+            let mut s = game("leafnet", 2);
+            s.install_leaf_net(Arc::new(constant_net(&vec![0.02; 2 * NUM_CLASSES]))).unwrap();
+            s.set_leaf_schedule(50, weight);
+            for _ in 0..10 {
+                s.iterate();
+            }
+            s.refresh_leaf_values().unwrap();
+            s.leaf.as_mut().unwrap().net = Arc::new(constant_net(&vec![0.06; 2 * NUM_CLASSES]));
+            s.refresh_leaf_values().unwrap();
+            s
+        };
+        // a fixed weight on the newest output; 1 replaces
+        for (weight, want) in [(Some(0.25f32), 0.03f32), (Some(1.0), 0.06), (None, 0.02 / 3.0 + 0.06 * 2.0 / 3.0)] {
+            let s = two_refreshes(weight);
+            let st = s.leaf.as_ref().unwrap();
+            assert!(st.corr.iter().all(|&c| (c - want).abs() < 1e-6), "weight {weight:?}: {}", st.corr[0]);
+            // whatever the blend, the newest output is kept for measurements
+            assert!(st.latest.iter().all(|&c| (c - 0.06).abs() < 1e-6));
         }
-        s.refresh_leaf_values().unwrap();
-        s.leaf.as_mut().unwrap().net = Arc::new(constant_net(&vec![0.06; 2 * NUM_CLASSES]));
-        s.refresh_leaf_values().unwrap();
-        let corr = &s.leaf.as_ref().unwrap().corr;
-        // second refresh: weight 2/3 on the new output
-        assert!(corr.iter().all(|&c| (c - (0.02 / 3.0 + 0.06 * 2.0 / 3.0)).abs() < 1e-6), "blend {}", corr[0]);
+        let mut s = two_refreshes(Some(1.0));
         // an absurd net output is held to what a hand can win or lose
         s.leaf.as_mut().unwrap().net = Arc::new(constant_net(&vec![50.0; 2 * NUM_CLASSES]));
         s.leaf.as_mut().unwrap().corr.clear();
@@ -443,6 +661,7 @@ mod tests {
             s.iterate();
         }
         assert_eq!(s.leaf_refreshes(), 4);
+        s.leaf_settle(false); // as a finished solve is left
         let (gaps, evs) = s.gaps_and_evs();
         assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()));
         assert!(s.leaf.as_ref().unwrap().corr.iter().any(|&c| c.abs() > 1e-3), "the net corrects something");
@@ -454,6 +673,85 @@ mod tests {
         assert_eq!(loaded.cfg.realization, "leafnet");
         assert_eq!(loaded.leaf_refreshes(), 1, "corrections are recomputed on load");
         assert_eq!(loaded.arena_snapshot(), s.arena_snapshot());
+        // the solve refreshed at its last iteration, so the reload prices and measures the same
+        assert!(!s.leaf_values_stale() && !loaded.leaf_values_stale());
+        assert_eq!(loaded.leaf.as_ref().unwrap().corr, s.leaf.as_ref().unwrap().corr);
+        assert_eq!(loaded.gaps_and_evs(), (gaps, evs));
+    }
+
+    #[test]
+    fn accuracy_is_measured_at_the_current_strategies() {
+        for weight in [Some(1.0f32), Some(0.3), None] {
+            let mut s = game("leafnet", 3);
+            s.set_leaf_schedule(25, weight);
+            for _ in 0..90 {
+                s.iterate();
+            }
+            // 15 iterations after the last refresh the net has not seen these strategies
+            assert!(s.leaf_values_stale());
+            let iterating = s.gaps_and_evs();
+            let blend = s.leaf.as_ref().unwrap().corr.clone();
+            let version = s.leaf_version();
+            // a measurement prices with the net's output at these strategies ...
+            s.leaf_measure_begin();
+            assert!(!s.leaf_values_stale() && s.leaf_version() > version, "weight {weight:?}");
+            let measured = s.gaps_and_evs();
+            assert_ne!(measured, iterating);
+            // ... and hands the solve back the corrections it was iterating on
+            s.leaf_measure_end();
+            assert_eq!(s.leaf.as_ref().unwrap().corr, blend);
+            assert_eq!(s.gaps_and_evs(), iterating);
+            let (gaps, evs, drift) = s.consistent_gaps_and_evs().unwrap();
+            assert_eq!((gaps, evs), measured);
+            assert!(drift > 0.0);
+            assert_eq!(s.leaf.as_ref().unwrap().corr, blend);
+            // a finished solve is left priced as it was measured, and its save reloads that way
+            s.leaf_settle(false);
+            assert_eq!(s.gaps_and_evs(), measured);
+            assert_eq!(s.consistent_gaps_and_evs().unwrap().2, 0.0);
+            let path = std::env::temp_dir().join(format!("leafnet_gap_{}_{:?}.bin", std::process::id(), weight.map(|w| (w * 10.0) as u32)));
+            let path = path.to_str().unwrap();
+            s.save_game(path).unwrap();
+            let loaded = PreflopSolver::load_game(path, table()).unwrap();
+            std::fs::remove_file(path).ok();
+            assert_eq!(loaded.leaf.as_ref().unwrap().corr, s.leaf.as_ref().unwrap().corr);
+            assert_eq!(loaded.gaps_and_evs(), measured);
+        }
+    }
+
+    #[test]
+    fn a_measurement_right_after_a_replacing_refresh_changes_nothing() {
+        let mut s = game("leafnet", 3);
+        s.set_leaf_schedule(25, Some(1.0));
+        for _ in 0..50 {
+            s.iterate();
+        }
+        let (version, before) = (s.leaf_version(), s.gaps_and_evs());
+        s.leaf_measure_begin();
+        assert_eq!((s.leaf_version(), s.gaps_and_evs()), (version, before.clone()));
+        s.leaf_measure_end();
+        s.leaf_settle(false);
+        assert_eq!((s.leaf_version(), s.gaps_and_evs()), (version, before));
+        // with a blend the corrections are behind even then, and the GPU must be told
+        let mut s = game("leafnet", 3);
+        s.set_leaf_schedule(25, Some(0.3));
+        for _ in 0..50 {
+            s.iterate();
+        }
+        let (version, iterating) = (s.leaf_version(), s.gaps_and_evs());
+        s.leaf_measure_begin();
+        assert!(s.leaf_version() > version && s.gaps_and_evs() != iterating);
+        s.leaf_measure_end();
+        assert!(s.leaf_version() > version + 1);
+        assert_eq!(s.gaps_and_evs(), iterating);
+        // changed rules at the same iteration: only a forced settle looks again
+        let fresh_at = s.leaf.as_ref().unwrap().fresh_at;
+        s.leaf.as_mut().unwrap().latest.iter_mut().for_each(|c| *c = 9.0);
+        s.leaf_settle(false);
+        assert!(s.leaf.as_ref().unwrap().corr.iter().all(|&c| c == 9.0));
+        s.leaf_settle(true);
+        assert!(s.leaf.as_ref().unwrap().corr.iter().all(|&c| c != 9.0));
+        assert_eq!(s.leaf.as_ref().unwrap().fresh_at, fresh_at);
     }
 
     #[test]

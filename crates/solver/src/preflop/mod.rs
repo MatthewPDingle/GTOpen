@@ -693,7 +693,9 @@ pub struct PreflopSolver {
     arena_len: usize,
     pub iteration: u32,
     /// Regret-based pruning of zero-mass action subtrees (PREFLOP_PRUNE=0
-    /// disables; tests that mirror traversals bit-for-bit turn it off).
+    /// disables; tests that mirror traversals bit-for-bit turn it off, and
+    /// so does the learned realization unless PREFLOP_PRUNE is set: see
+    /// install_leaf_net).
     pub prune: bool,
     /// Loaded for calibrated or balanced; fallbacks preserve each model's semantics.
     pub fit: Option<Arc<RealizationFit>>,

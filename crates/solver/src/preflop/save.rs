@@ -262,7 +262,9 @@ impl PreflopSolver {
             s.set_hero_backup(Some(super::HeroBackup { seat, iteration, regrets, sums }));
         }
         // The learned correction is not saved: recompute it from the loaded
-        // averages (a fresh start, without the blend of earlier refreshes).
+        // averages. A solve measures against exactly these values and is
+        // left priced with them when it ends (leaf_settle), so the loaded
+        // game shows the EVs and the gap the solve reported.
         if s.iteration > 0 {
             s.refresh_leaf_values();
         }
