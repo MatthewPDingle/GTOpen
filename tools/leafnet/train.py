@@ -91,13 +91,18 @@ CONFIG = {
     "t_lr": 1e-3,
     "t_wd": 1e-5,
     "t_eq": 1.0,            # weight of the teacher's auxiliary flop-equity output
+    "t_arch": "pool",       # teacher: "flops" (flops.Teacher) or "pool" (PoolTeacher: range-against-range pooling)
+    "t_pool": [24, 8, 128], # PoolTeacher sizes: rank R, bilinear features K, width of the class embedders
+    "t_schedule": "plateau",  # teacher lr: "plateau" (x0.3 on stale validation) or "cosine" (to 1% over t_steps)
     "t_cache": True,        # reuse the teacher's targets for the same snapshot, seed and teacher settings
     "val_cv": True,         # early-stop on validation targets with the teacher's flop luck removed
     "max_steps": 40000,     # student step cap (the harness's own budget is 60,000)
     "n_syn": 60000,         # teacher-labelled synthetic leaves (mixes of two training leaves) added to training
+    "syn_kind": "mix",      # synthetic leaves: "mix" (blends of two training leaves) or "fresh" (new ranges from
+                            # a port of the generator's range sampler, table and rake of one training leaf)
     "syn_lam_min": 0.0,     # smallest weight of the first leaf's ranges in a mix (0 = any blend)
     "syn_weight": 1.0,      # weight of the synthetic-leaf loss
-    "t_ens": [0, 1, 2, 3, 4],  # average the real leaves' targets over the teachers of these seeds ([] = this run's only)
+    "t_ens": [0, 1, 2],     # average the real leaves' targets over the teachers of these seeds ([] = this run's only)
     "schedule": "plateau",  # "plateau": drop and stop on stale validation; "cosine": lr falls to 1% over max_steps
     "syn_seed": 0,          # whose teacher cache and synthetic leaves to use (None = the run's own seed)
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
@@ -129,8 +134,116 @@ def subset_tag(data):
     return f"-n{len(sel)}-{hashlib.sha256(np.asarray(sel, np.int64).tobytes()).hexdigest()[:8]}"
 
 
+class PoolTeacher(Teacher):
+    """flops.Teacher plus an explicit range-against-range interaction (loop 4). Every class gets an
+    embedding on each flop (from how it connects with the flop, a learned class vector and the flop).
+    Each player's range is pooled into one vector with its reach weights; K low-rank bilinear features
+    between a hero class's embedding and the pooled opponent (and own) range feed the shared per-class
+    head and, directly, the value and equity outputs: the shape of "equity against a range". It halves
+    the teacher's error with the flop (0.0033 -> 0.0018 on snap-73k)."""
+
+    def __init__(self, n_in, tabs, width=768, fuse=1024, H=32, R=24, K=8, gh=128, emb=16):
+        super().__init__(n_in, tabs, width=width, fuse=fuse, H=H)
+        L, Re, S = torch.nn.Linear, torch.nn.ReLU, torch.nn.Sequential
+        nf = self.hs.shape[2] + emb + 16
+        self.R, self.K = R, K
+        self.cls_emb = torch.nn.Parameter(torch.randn(NC, emb) * 0.1)
+        self.fproj = L(512, 16)
+        self.gA = S(L(nf, gh), Re(), L(gh, K * 2 * R))
+        self.gB = S(L(nf, gh), Re(), L(gh, R))
+        self.Wk = L(K, H, bias=False)
+        self.Wd = L(K, 2, bias=False)
+        torch.nn.init.normal_(self.Wd.weight, std=0.05)
+
+    def class_feats(self, e, hs):
+        """(..., 169, nf) from the flop branch's output e (..., 512) and the hand-on-flop rows hs (..., 169, 12)."""
+        fp = self.fproj(e).unsqueeze(-2).expand(*hs.shape[:-1], 16)
+        ce = self.cls_emb.expand(*hs.shape[:-1], self.cls_emb.shape[1])
+        return torch.cat([hs, ce, fp], dim=-1)
+
+    def forward(self, xn, rng, fid):
+        B = len(xn)
+        e = self.flop(self.flopfeat[fid])
+        z = torch.relu(self.W(torch.relu(self.U(self.trunk(xn)) + self.V(e))))
+        dense = self.O(z).view(B, 2, 2, NC)
+        A_f = self.avail[fid]
+        pos = self.pos(rng, A_f, self.order[fid], self.rank[fid])
+        cf = self.class_feats(e, self.hs[fid])
+        ga = self.gA(cf).view(B, NC, self.K, 2 * self.R)
+        gb = self.gB(cf)
+        r = rng * A_f[:, None, :]
+        rt = r / r.sum(-1, keepdim=True).clamp_min(1e-6)
+        pool = rt @ gb                                                      # (B, 2, R): each player's own range
+        ph = torch.cat([pool.flip(1), pool], dim=-1)                        # a hero sees the opponent's, then its own
+        bil = torch.einsum("bckr,bpr->bpck", ga, ph)                        # (B, 2, 169, K)
+        hid = self.Wc(self.C(z).view(B, 2, 16))[:, :, None, :] + self.cls_bias[None] + self.WLs(self.hs[fid])[:, None]
+        hid = hid + pos.flip(1)[..., None] * self.wl[0] + pos[..., None] * self.wl[1] + rng[..., None] * self.wl[2]
+        hid = hid + self.Wk(bil)
+        loc = self.Wo(torch.relu(hid)) + self.Wd(bil)
+        return (dense[:, 0] + loc[..., 0]).reshape(B, 2 * NC), (dense[:, 1] + loc[..., 1]).reshape(B, 2 * NC)
+
+    @torch.no_grad()
+    def marginal(self, xn, rng, chunk=3):
+        # chunk 3: the per-flop class embeddings already take about 0.5 GB of the 3 GB cap
+        Ef = self.flop(self.flopfeat)
+        E = self.V(Ef)
+        Sx = self.WLs(self.hs)
+        cf = self.class_feats(Ef, self.hs)
+        F = len(E)
+        ga = self.gA(cf).view(F, NC, self.K, 2 * self.R)
+        gb = self.gB(cf)
+        Ov, bv = self.O.weight[:2 * NC], self.O.bias[:2 * NC]
+        outs, wbars = [], []
+        for i in range(0, len(xn), chunk):
+            x, r0 = xn[i:i + chunk].float(), rng[i:i + chunk]
+            B = len(x)
+            z = torch.relu(self.W(torch.relu(self.U(self.trunk(x))[:, None] + E[None])))
+            val = (z @ Ov.T + bv).view(B, F, 2, NC)
+            pos = self.pos(r0[:, None], self.avail[None], self.order[None], self.rank[None])
+            r = r0[:, None] * self.avail[None, :, None, :]
+            rt = r / r.sum(-1, keepdim=True).clamp_min(1e-6)
+            ph = torch.einsum("bfpd,fdr->bfpr", rt, gb)
+            ph = torch.cat([ph.flip(2), ph], dim=-1)
+            bil = torch.einsum("fckr,bfpr->bfpck", ga, ph)                  # (B, F, 2, 169, K)
+            hid = self.Wc(self.C(z).view(B, F, 2, 16))[:, :, :, None, :] + self.cls_bias
+            hid += Sx[None, :, None]
+            hid.addcmul_(pos.flip(2)[..., None], self.wl[0])
+            hid.addcmul_(pos[..., None], self.wl[1])
+            hid.addcmul_(r0[:, None, :, :, None].expand(B, F, 2, NC, 1), self.wl[2])
+            hid += bil @ self.Wk.weight.T
+            val += torch.relu_(hid) @ self.Wo.weight[0] + self.Wo.bias[0]
+            val += bil @ self.Wd.weight[0]
+            del hid, bil
+            M = (r0 @ self.avail.T).permute(0, 2, 1).clamp_min(1e-6)
+            q = (self.mult[None, :, None, None] * self.avail[None, :, None, :]) / M[..., None]
+            qs = q.sum(1)
+            outs.append(((q * val).sum(1) / qs.clamp_min(1e-12)).reshape(B, 2 * NC))
+            wbars.append((NC * r0 * qs / self.mult.sum()).reshape(B, 2 * NC))
+        return torch.cat(outs), torch.cat(wbars)
+
+
+def make_teacher(cfg, n_in, tabs):
+    """The teacher class of cfg["t_arch"]: "flops" (flops.Teacher) or "pool" (PoolTeacher, sizes in t_pool)."""
+    if cfg.get("t_arch", "flops") == "pool":
+        R, K, gh = cfg.get("t_pool", [24, 8, 128])
+        return PoolTeacher(n_in, tabs, R=int(R), K=int(K), gh=int(gh))
+    return Teacher(n_in, tabs)
+
+
 def teacher_tag(cfg):
-    return "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
+    """Cache-name part with every setting that changes a teacher (the first recipe keeps its old names)."""
+    tag = "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
+    if cfg.get("t_arch", "flops") != "flops":
+        tag += "-" + cfg["t_arch"] + "x".join(str(int(v)) for v in cfg.get("t_pool", [24, 8, 128]))
+    if cfg.get("t_schedule", "plateau") != "plateau":
+        tag += "-" + cfg["t_schedule"]
+    return tag
+
+
+def syn_kind_tag(cfg):
+    """Cache-name part for the kind of synthetic leaves (the first kind, "mix", keeps its old names)."""
+    kind = cfg.get("syn_kind", "mix")
+    return "" if kind == "mix" else "-" + kind
 
 
 def teacher_files(cfg, data, cache_dir):
@@ -141,7 +254,7 @@ def teacher_files(cfg, data, cache_dir):
     lam_min = float(cfg.get("syn_lam_min", 0.0))
     return {"targets": os.path.join(cache_dir, f"teacher2-{stem}.pt"),
             "model": os.path.join(cache_dir, f"teacher2-model-{stem}.pt"),
-            "syn": os.path.join(cache_dir, f"syn-{stem}-{n_syn}" + (f"-lam{lam_min}" if lam_min else "") + ".pt"),
+            "syn": os.path.join(cache_dir, f"syn-{stem}-{n_syn}" + (f"-lam{lam_min}" if lam_min else "") + syn_kind_tag(cfg) + ".pt"),
             "old": os.path.join(cache_dir, f"teacher-{stem}.pt")}
 
 
@@ -149,7 +262,7 @@ def synens_file(cfg, data, cache_dir, n_syn):
     """Cache file of the synthetic leaves of cfg["seed"] labelled by the teachers of cfg["t_ens"]."""
     lam_min = float(cfg.get("syn_lam_min", 0.0))
     name = (f"synens-{data.snapshot}-s{cfg['seed']}-{teacher_tag(cfg)}{subset_tag(data)}-{n_syn}"
-            + (f"-lam{lam_min}" if lam_min else "") + "-t" + "_".join(str(int(s)) for s in cfg["t_ens"]) + ".pt")
+            + (f"-lam{lam_min}" if lam_min else "") + syn_kind_tag(cfg) + "-t" + "_".join(str(int(s)) for s in cfg["t_ens"]) + ".pt")
     return os.path.join(cache_dir, name)
 
 
@@ -187,7 +300,8 @@ def teacher_targets(cfg, data, generator):
     assert int(f_tr.min()) >= 0 and int(f_va.min()) >= 0
     eq_tr = torch.from_numpy(eq[tr].reshape(len(tr), -1)).to(dev)           # float16
     rng_va = rng_of(data.x_val)
-    model = Teacher(data.n_in, tabs).to(dev)
+    model = make_teacher(cfg, data.n_in, tabs).to(dev)
+    t_cosine = cfg.get("t_schedule", "plateau") == "cosine"   # lr falls to 1% over t_steps; no early stop
     weights = [p for n, p in model.named_parameters() if n.endswith("weight")]
     others = [p for n, p in model.named_parameters() if not n.endswith("weight")]
     opt = torch.optim.Adam([{"params": weights, "weight_decay": cfg["t_wd"]},
@@ -211,6 +325,9 @@ def teacher_targets(cfg, data, generator):
         for i in range(0, n - bs + 1, bs):
             idx = perm[i:i + bs]
             x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), data.w_train[idx].float()
+            if t_cosine:
+                for g in opt.param_groups:
+                    g["lr"] = cfg["t_lr"] * (0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(step / cfg["t_steps"], 1.0))))
             val, e = model(x, rng_of(x), f_tr[idx])
             ws = w.sum().clamp_min(1e-9)
             loss = (w * (val - r) ** 2).sum() / ws + cfg["t_eq"] * (w * (e - (eq_tr[idx].float() - 0.5)) ** 2).sum() / ws
@@ -222,12 +339,13 @@ def teacher_targets(cfg, data, generator):
                 v = val_loss()
                 if v < best * (1 - 1e-4):
                     best, stale, best_state = v, 0, copy.deepcopy(model.state_dict())
-                else:
+                elif not t_cosine:
                     stale += 1
                     if stale == 4:
                         for g in opt.param_groups:
                             g["lr"] *= 0.3
-                log(f"teacher step {step}: flop-aware validation error {v:.5f} (best {best:.5f})")
+                if step % 2000 == 0:
+                    log(f"teacher step {step}: flop-aware validation error {v:.5f} (best {best:.5f})")
                 if stale >= 8 or step >= cfg["t_steps"]:
                     done = True
                     break
@@ -261,10 +379,83 @@ def teacher_targets(cfg, data, generator):
     return z
 
 
+def _class_parts(k):
+    a, b = divmod(k, 13)
+    if a == b:
+        return a, a, False
+    return (a, b, True) if a > b else (b, a, False)
+
+
+def _class_strength(k):
+    hi, lo, suited = _class_parts(k)
+    if hi == lo:
+        return 10.0 + 2.2 * hi
+    s = 1.6 * hi + 0.75 * lo - 0.9 * min(max(hi - lo - 1.0, 0.0), 4.0)
+    return s + (3.0 if suited else 0.0) + (2.5 if hi == 12 else 0.0)
+
+
+_STRENGTH = np.array([_class_strength(k) for k in range(169)])
+_COMBOS = np.array([6.0 if _class_parts(k)[0] == _class_parts(k)[1] else (4.0 if _class_parts(k)[2] else 12.0)
+                    for k in range(169)])
+
+
+def _threshold_weights(order, frac, edge):
+    c = _COMBOS[order]
+    mid = (np.cumsum(c) - c / 2.0) / c.sum()
+    x = (mid <= frac).astype(np.float64) if edge <= 1e-9 else np.clip(0.5 - (mid - frac) / edge, 0.0, 1.0)
+    w = np.zeros(len(order))
+    w[order] = x
+    return w
+
+
+def sample_range(r):
+    """One random 169-class range drawn like the generator draws them: a port of sample_range in
+    crates/solver/src/datagen.rs (same four families and constants; numpy's random stream, so the same
+    distribution, not the same ranges). Checked against the training rows' ranges in loop 4."""
+    log_range = lambda lo, hi: float(np.exp(r.uniform(np.log(lo), np.log(hi))))
+    pick, noise = r.random(), r.uniform(0.0, 4.0)
+    order = np.lexsort((np.arange(169), -(_STRENGTH + noise * r.standard_normal(169))))
+    if pick < 0.40:                                   # a "top x%" range, sometimes capped at the very top
+        frac, edge = log_range(0.03, 0.9), r.uniform(0.0, 0.15)
+        w = _threshold_weights(order, frac, edge)
+        if r.random() < 0.4:
+            top = _threshold_weights(order, frac * r.uniform(0.05, 0.35), 0.0)
+            w[top > 0] *= r.uniform(0.0, 0.5)
+    elif pick < 0.80:                                 # recursive split of the mass over the ordered classes
+        spread = r.uniform(0.15, 1.0)
+        w = np.zeros(169)
+
+        def split(o, mass):
+            if len(o) == 1:
+                w[o[0]] = mass / _COMBOS[o[0]]
+                return
+            mid = len(o) // 2
+            u = 0.5 + (r.random() - 0.5) * spread
+            split(o[:mid], mass * u)
+            split(o[mid:], mass * (1.0 - u))
+        split(order, 1.0)
+    elif pick < 0.90:                                 # polarized: a value block and a bluff block lower down
+        value = log_range(0.03, 0.3)
+        bluff_lo = value + r.uniform(0.1, 0.5)
+        bluff_hi = min(bluff_lo + r.uniform(0.03, 0.2), 1.0)
+        a, b, c = (_threshold_weights(order, f, 0.02) for f in (value, bluff_hi, bluff_lo))
+        w = a + r.uniform(0.2, 1.0) * np.maximum(b - c, 0.0)
+    else:                                             # noisy mixed frequencies inside a threshold
+        base = _threshold_weights(order, log_range(0.1, 1.0), 0.1)
+        w = base * r.random(169) ** r.uniform(1.0, 4.0)
+    mx = w.max()
+    w = np.ones(169) if mx <= 0 else w / mx
+    w = np.round(w * 1000.0) / 1000.0
+    w[w < 0.02] = 0.0
+    return w
+
+
 def synth_leaves(cfg, data, model, n_syn):
-    """Extra training leaves labelled by the teacher's flop average: mixes of two training leaves of the
-    same pot type (ranges blended, pot and stack interpolated on a log scale, rake from one of the two),
-    priced with the balanced model by solve-cli like any real leaf. Only training leaves are mixed."""
+    """Extra training leaves labelled by the teacher's flop average, priced with the balanced model by
+    solve-cli like any real leaf. Kind "mix": mixes of two training leaves of the same pot type (ranges
+    blended, pot and stack interpolated on a log scale, rake from one of the two). Kind "fresh": two new
+    ranges from the generator's own sampler with the pot, stack, pot type and rake of one training leaf.
+    Only training leaves are read."""
     sys.path.insert(0, os.path.join(harness.ROOT, "tools", "datagen"))
     import gonogo
     import leafnet_io
@@ -276,18 +467,23 @@ def synth_leaves(cfg, data, model, n_syn):
     rng, meta = xtr[:, :2 * NC].reshape(-1, 2, NC), xtr[:, -10:]
     pt = meta[:, 6:10].argmax(1)
     a = r_.integers(0, len(tr), n_syn)
-    b = np.zeros(n_syn, np.int64)
-    for t in range(4):
-        sel = pt[a] == t
-        b[sel] = r_.choice(np.nonzero(pt == t)[0], int(sel.sum()))
-    lo = float(cfg.get("syn_lam_min", 0.0))    # 0: any blend of the two ranges; near 1: stays close to the first leaf
-    lam = np.where(r_.random(n_syn) < 0.7, lo + (1 - lo) * r_.random(n_syn), 1.0)[:, None, None]
-    mix = lam * rng[a] + (1 - lam) * rng[b]
-    mix = np.round(mix / np.maximum(mix.max(axis=2, keepdims=True), 1e-9), 5)
-    u = r_.random(n_syn)
-    pot = np.exp(u * meta[a, 0] + (1 - u) * meta[b, 0])
-    stack = np.exp(u * meta[a, 1] + (1 - u) * meta[b, 1])
-    src = np.where(r_.random(n_syn) < 0.5, a, b)
+    if cfg.get("syn_kind", "mix") == "fresh":
+        # both ranges drawn anew like the generator draws them; pot, stack, pot type and rake of one training leaf
+        mix = np.stack([np.stack([sample_range(r_), sample_range(r_)]) for _ in range(n_syn)])
+        pot, stack, src = np.exp(meta[a, 0]), np.exp(meta[a, 1]), a
+    else:
+        b = np.zeros(n_syn, np.int64)
+        for t in range(4):
+            sel = pt[a] == t
+            b[sel] = r_.choice(np.nonzero(pt == t)[0], int(sel.sum()))
+        lo = float(cfg.get("syn_lam_min", 0.0))    # 0: any blend of the two ranges; near 1: stays close to the first leaf
+        lam = np.where(r_.random(n_syn) < 0.7, lo + (1 - lo) * r_.random(n_syn), 1.0)[:, None, None]
+        mix = lam * rng[a] + (1 - lam) * rng[b]
+        mix = np.round(mix / np.maximum(mix.max(axis=2, keepdims=True), 1e-9), 5)
+        u = r_.random(n_syn)
+        pot = np.exp(u * meta[a, 0] + (1 - u) * meta[b, 0])
+        stack = np.exp(u * meta[a, 1] + (1 - u) * meta[b, 1])
+        src = np.where(r_.random(n_syn) < 0.5, a, b)
     rake, cap = meta[src, 3] / 10, meta[src, 4] * np.exp(meta[src, 0])
     recs = [{"job": 0, "index": i, "board": "2c7d9h", "pot_type": leafnet_io.POT_TYPES[pt[a[i]]],
              "pot_bb": float(pot[i]), "stack_bb": float(stack[i]), "rake_pct": float(rake[i]),
@@ -332,7 +528,7 @@ def ensemble_syn_labels(cfg, data, xs, Ts_own):
         mp = teacher_files(dict(cfg, seed=s), data, cache_dir)["model"]
         if not os.path.exists(mp):
             raise FileNotFoundError(f"no saved teacher for seed {s}: run `train.py --prepare` first ({mp})")
-        model = Teacher(data.n_in, tabs).to(dev)
+        model = make_teacher(cfg, data.n_in, tabs).to(dev)
         model.load_state_dict(torch.load(mp, map_location=dev))
         model.eval()
         for i in range(0, len(xs), 4096):
