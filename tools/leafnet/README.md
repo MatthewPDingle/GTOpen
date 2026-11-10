@@ -12,6 +12,7 @@ generator. The plan behind it is the [leaf net plan](https://claude.ai/artifact/
 | `sweep.py` | Optuna over train.py's numeric CONFIG | frozen |
 | `program.md` | the autoresearch loop's rules | frozen |
 | `scaling.py` | net size x data fraction grid and the fitted scaling law (WORK/scaling/) | frozen |
+| `report.py` | the loop's progress and the training data as one self-contained HTML page (WORK/dashboard.html); read-only | anyone |
 
 ## Setup (once)
 
@@ -50,6 +51,7 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\scaling.py run                               # size x data grid (~1 h), outside the keep rule
 & $py tools\leafnet\scaling.py fit                               # fit error = E + A/N^a + B/D^b, predict milestones
 & $py tools\leafnet\harness.py status
+& $py tools\leafnet\report.py                                    # WORK/dashboard.html: every run, the kept runs, the data
 & $py tools\leafnet\harness.py final                             # milestones only: the test split
 ```
 
