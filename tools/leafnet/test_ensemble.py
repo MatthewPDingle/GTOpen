@@ -3,6 +3,7 @@
     python tools/leafnet/test_ensemble.py
 """
 import contextlib
+import gc
 import hashlib
 import io
 import json
@@ -67,7 +68,10 @@ class EnsembleTests(unittest.TestCase):
 
     def tearDown(self):
         harness.rust_residuals = self.real_rust
-        shutil.rmtree(self.work)
+        # the real-leaf arrays are memory-mapped, and Windows will not delete a file that is still mapped
+        self.sets = None
+        gc.collect()
+        shutil.rmtree(self.work, ignore_errors=True)
 
     def write_set(self, folder, rng, split=False):
         os.makedirs(folder)
