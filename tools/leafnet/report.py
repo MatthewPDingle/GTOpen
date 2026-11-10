@@ -228,7 +228,10 @@ def chart_progress(runs, ref_v1, ref_bal):
                + f"\n{r['desc']}\ntraining examples: {fmt_n(r.get('train_n'))}\n"
                f"val class {y:.6f}, range {r.get('val_range')}\n"
                f"verdict: {r['verdict']}" + (f" ({r['reason']})" if r.get("reason") else ""))
-        cls = {"keep": "dot keep", "discard": "dot discard", "sweep": "dot sweep"}.get(r["verdict"], "dot reject")
+        # a near miss and its seed replicates are not kept on their own: draw them like discarded runs and
+        # sweep trials (only "rejected" means not deployable)
+        cls = {"keep": "dot keep", "discard": "dot discard", "near": "dot discard", "sweep": "dot sweep",
+               "replicate": "dot sweep"}.get(r["verdict"], "dot reject")
         clip = " clipped" if y > hi else ""
         body.append(f'<circle cx="{sx(i):.1f}" cy="{sy(yc):.1f}" r="{5 if r["verdict"] == "keep" else 3.5}" '
                     f'class="{cls}{clip}"><title>{E(tip)}</title></circle>')
