@@ -8,7 +8,8 @@ it serves is the agreed leaf net plan
 ## What you may change
 
 - **Only `tools/leafnet/train.py`.** Never edit `prepare.py`, `harness.py`,
-  `sweep.py`, this file, the data, or anything under WORK. The harness is
+  `referee.py`, `flops.py`, `sweep.py`, this file, the data, or anything
+  under WORK. (train.py may define its own variants of what flops.py has.) The harness is
   the referee: if you think it is wrong, stop and say so instead of
   working around it.
 - `train.py` may change anything inside it: the architecture, the loss,
@@ -61,13 +62,17 @@ A run is kept only if all of these hold:
 
 - it exports and passes the Rust parity check, within the cost limit;
 - the paired bootstrap over validation jobs puts its class-error gain over
-  the current best above zero (95% interval);
+  the current best above zero (95% interval). The score is `val_cv` when
+  the snapshot has a referee (validation targets with the flop luck taken
+  out, so small real gains are visible), else raw validation; the log line
+  and the reason say which (`[val_cv]`);
 - the gain is larger than the measured seed spread (`harness.py noise`),
   or, for a near miss confirmed on three seeds, larger than the spread
   scaled for seed averages (`harness.py confirm`);
 - its range error is not significantly worse;
 - it is not significantly worse on any real-leaf set (the leaves real
-  Preflop Lab solutions reach).
+  Preflop Lab solutions reach), nor, when the score is val_cv, on raw
+  validation.
 
 Never look at the test split. `harness.py final` is for milestones and is
 run by a person.

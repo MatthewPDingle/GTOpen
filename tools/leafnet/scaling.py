@@ -146,7 +146,8 @@ def seed_means(rows, key):
 def fit_report(rows, manifest, cap_params, min_fraction=DEFAULT_MIN_FRACTION):
     """Fits and checks for every error measure in rows; the law is fitted on points with at least
     min_fraction of the most training examples in rows (all points are still listed)."""
-    keys = ["val_class"] + sorted({k for r in rows for k in r if k.startswith("leaf_class:")})
+    keys = ["val_class"] + (["val_cv_class"] if any("val_cv_class" in r for r in rows) else []) \
+        + sorted({k for r in rows for k in r if k.startswith("leaf_class:")})
     total = manifest["examples"]
     train_share = manifest["examples_by_split"]["train"] / total
     out = {}
@@ -270,7 +271,7 @@ def cmd_run(args):
     data = harness.Data(args.work, args.snapshot)
     split = np.load(os.path.join(data.dir, "split.npy"))
     train_jobs = np.load(os.path.join(data.dir, "jobs.npy"))[split == harness.SPLITS["train"]]
-    sets = {"val": data.val, **{f"leaf:{k}": v for k, v in data.leaf.items()}}
+    sets = harness.eval_sets(data)
     grid = [(d, w, fr, s) for fr in args.fractions for (d, w) in args.sizes for s in range(args.seeds)]
     todo = [g for g in grid if (trainer_sha, g[0], g[1], g[2], g[3]) not in done]
     harness.log(f"scaling grid: {len(grid)} runs, {len(grid) - len(todo)} already done; trainer {args.trainer} "
@@ -290,6 +291,8 @@ def cmd_run(args):
                "macs": harness.macs(sizes), "fraction": frac, "train_examples": view.n_train, "seed": seed,
                "steps": getattr(model, "steps_taken", None), "seconds": round(time.time() - t0, 1),
                "val_class": scored["val"][1][0], "val_range": scored["val"][1][1]}
+        if "val_cv" in scored:
+            row["val_cv_class"], row["val_cv_range"] = scored["val_cv"][1]
         for k, (_, (c, r)) in scored.items():
             if k.startswith("leaf:"):
                 row[f"leaf_class:{k[5:]}"], row[f"leaf_range:{k[5:]}"] = c, r
