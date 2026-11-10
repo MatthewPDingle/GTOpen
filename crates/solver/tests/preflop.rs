@@ -171,7 +171,7 @@ fn published_ignition_responses_generate_and_roundtrip_for_all_table_sizes() {
 }
 
 fn hu_push_fold_config(stack: f64) -> PreflopConfig {
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack, stacks: None,
@@ -353,7 +353,7 @@ fn hu_push_fold_matches_oracle() {
 #[test]
 fn six_max_limp_tree_sanity() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec![
             "UTG".into(),
@@ -466,7 +466,7 @@ use solver::preflop::{
 };
 
 fn hu_limp_config() -> PreflopConfig {
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 25.0, stacks: None,
@@ -817,7 +817,7 @@ fn generated_profiles_match_stats()  {
 #[test]
 fn unreached_bucket_falls_back_to_card_appeal() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 40.0, stacks: None,
@@ -1521,7 +1521,7 @@ fn failed_save_leaves_previous_game_intact() {
 #[test]
 fn call_only_seat_never_raises() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0, stacks: None,
@@ -1573,7 +1573,7 @@ fn call_only_seat_never_raises() {
 #[test]
 fn per_seat_size_menus() {
     let eq = table();
-    let mut cfg = PreflopConfig {
+    let mut cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0, stacks: None,
@@ -1636,7 +1636,7 @@ fn per_seat_size_menus() {
 #[test]
 fn banded_vs_raise_tightens_vs_big_opens() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 40.0, stacks: None,
@@ -2143,7 +2143,7 @@ fn ruled_seat_frozen_as_solved_keeps_its_play() {
 #[test]
 fn cold_vs_3bet_is_gated_by_the_3betting_hands() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0, stacks: None,
@@ -2230,7 +2230,7 @@ fn reach_freq(s: &PreflopSolver, path: &[usize], act_pred: impl Fn(&str) -> bool
 }
 
 fn six_max_cfg() -> PreflopConfig {
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0, stacks: None,

@@ -60,7 +60,7 @@ pub struct LeafRefresh {
 impl PreflopSolver {
     /// Load the net and find the learned terminals (called from `new`).
     pub(super) fn install_leaf_model(&mut self) -> Result<(), String> {
-        let net = LeafNet::load_default()
+        let net = LeafNet::load_named(self.cfg.leaf_net.as_deref())
             .map_err(|e| format!("the learned realization needs its leaf net ({e}); set LEAF_NET or pick another realization"))?;
         self.install_leaf_net(Arc::new(net))
     }

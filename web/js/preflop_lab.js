@@ -16,6 +16,7 @@ import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
+import { createLeafNetPicker } from './preflop_leafnet.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -78,6 +79,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
   const icmControls = createIcmControls(els, positionsFor, () => estSoon());
+  const leafNets = createLeafNetPicker(els, () => estSoon());
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // hero mode's trust dial, fed by every status poll
   const trustDial = els.trust ? initPreflopTrust(els.trust, { toast, positions: () => S.positions || [] }) : null;
@@ -535,6 +537,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
       realization: els.leaf?.checked ? LEARNED_REALIZATION : DEFAULT_REALIZATION,
+      ...leafNets.config(),
     };
   }
 
@@ -778,6 +781,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = cfg.rake_cap || 0;
     S.activeModel = cfg.realization || 'static';
     if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
+    leafNets.load(cfg);
     savedModelNote.hidden = currentModel(S.activeModel);
     S.built = true;
     syncScenarioSelection();

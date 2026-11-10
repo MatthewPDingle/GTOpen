@@ -11,7 +11,7 @@ fn config(n: usize) -> PreflopConfig {
     let mut posts = vec![0.0; n];
     posts[n - 2] = 0.5;
     posts[n - 1] = 1.0;
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: (0..n).map(|p| format!("P{p}")).collect(),
         stack: if n == 8 { 150.0 } else { 100.0 }, stacks: None,

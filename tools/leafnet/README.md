@@ -52,6 +52,15 @@ Every run is appended to `WORK/results.tsv`. The current best's net is
 `WORK/runs/<snapshot>/best_leaf_net.bin`, in the format the Preflop Lab
 loads (`cache/leaf_net_v1.bin` is v1).
 
+## Using a kept net in the Preflop Lab
+
+Tick "learned flop values" and pick a net under it: v1, or any run the keep
+rule kept (each snapshot's best is starred). The server finds the work
+folder through `LEAFNET_WORK`, else `leafnet_work/` in the repo,
+`../leafnet-work` or `../GTOpen-research/leafnet-work`. Nets are named
+`SNAPSHOT/RUN` and saves keep that name, so a saved game reloads with the
+net it was solved with as long as the run folder is still there.
+
 ## Sharing the GPU with the generator
 
 - The harness caps its own VRAM at 3 GB (`torch.cuda.set_per_process_memory_fraction`).

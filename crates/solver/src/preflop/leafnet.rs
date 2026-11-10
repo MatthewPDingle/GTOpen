@@ -110,6 +110,30 @@ impl LeafNet {
         Self::load("cache/leaf_net_v1.bin").or_else(|_| Self::load("../../cache/leaf_net_v1.bin"))
     }
 
+    /// The net a game names (`PreflopConfig::leaf_net`): None or "v1" is
+    /// [`Self::load_default`]; "SNAPSHOT/RUN" is a net the leaf-net harness
+    /// kept (see leafnet_catalog.rs).
+    pub fn load_named(name: Option<&str>) -> Result<Self, String> {
+        match name {
+            None | Some("") | Some(super::leafnet_catalog::SHIPPED) => Self::load_default(),
+            Some(n) => Self::load(super::leafnet_catalog::research_net_path(n)?),
+        }
+    }
+
+    /// The file bytes (tests).
+    #[cfg(test)]
+    pub(crate) fn to_bytes(&self) -> Vec<u8> {
+        let blob = serde_json::to_vec(&self.header).unwrap();
+        let mut bytes = MAGIC.to_vec();
+        bytes.extend((blob.len() as u32).to_le_bytes());
+        bytes.extend(&blob);
+        let vals = self.mu.iter().chain(&self.sd).chain(self.layers.iter().flat_map(|l| l.w.iter().chain(&l.b)));
+        for v in vals {
+            bytes.extend(v.to_le_bytes());
+        }
+        bytes
+    }
+
     /// The input vector, exactly as tools/datagen/gonogo.py builds it.
     pub fn features(spot: &LeafSpot) -> Vec<f32> {
         let mut x = Vec::with_capacity(4 * NUM_CLASSES + META);

@@ -8,7 +8,7 @@ use std::time::Instant;
 #[ignore] // manual benchmark: cargo test --release --features gpu --test gpu_bench -- --ignored --nocapture
 fn bench_gpu_six_max() {
     let eq = Arc::new(EquityTable::build(20000));
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["UTG".into(), "HJ".into(), "CO".into(), "BTN".into(), "SB".into(), "BB".into()],
         stack: 100.0, stacks: None,

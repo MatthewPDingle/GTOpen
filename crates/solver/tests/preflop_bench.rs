@@ -10,7 +10,7 @@ use std::time::Instant;
 #[ignore]
 fn bench_pruning_six_max() {
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 20000));
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec![
             "UTG".into(),

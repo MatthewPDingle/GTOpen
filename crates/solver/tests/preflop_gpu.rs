@@ -186,7 +186,7 @@ fn gpu_matches_cpu_live_utg_straddle() {
     }
 }
 fn hu25() -> PreflopConfig {
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 25.0, stacks: None,
@@ -417,7 +417,7 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
 #[test]
 fn gpu_push_fold_anchors() {
     let eq = table();
-    let cfg = PreflopConfig {
+    let cfg = PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 10.0, stacks: None,
