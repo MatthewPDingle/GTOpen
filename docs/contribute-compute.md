@@ -67,7 +67,10 @@ default model's error. The next goal is **300,000 examples**.
 **The name.** Your GitHub login is the natural choice, but you don't need a
 GitHub account: nothing checks GitHub. The name picks your own block of job
 numbers, so your spots never overlap anyone else's, and it is how you are
-credited. Keep using the same name on every machine and every run. It is
+credited. It may contain letters, digits, `-` and `_` only. Keep using the
+same name on every machine and every run, and don't pick a name another
+contributor already uses: the same name gives the same job numbers, and a
+job that is already in the dataset is rejected as a duplicate. The name is
 public: it is written into every file you upload and listed on the
 [contributors page](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md),
 so use a handle rather than your real name if you prefer. The contributors
@@ -88,10 +91,11 @@ tools/datagen/contribute.sh YOUR_NAME --jobs 1         # Linux / WSL
 ```
 
 It builds the solver (a few minutes the first time), solves one job, uploads
-it, and exits. A job takes about 7 minutes on an RTX 5090 and roughly 10 to
-15 on an RTX 5070 Ti or 4080-class card. The upload needs the free Hugging
-Face account from step 2. Without one, the finished job is saved in
-`datagen_out/`, and you can send that file to the maintainer instead.
+it, and exits. A job takes about 7 minutes on an RTX 5090; expect roughly 10
+to 20 on an RTX 5070 Ti or 4080-class card (an estimate, not measured yet).
+The upload needs the free Hugging Face account from step 2. Without one, the
+finished job is saved as `datagen_out/YOUR_NAME/job-NUMBER.jsonl`, and you
+can send that file to the maintainer instead.
 
 Stopping is safe at any time (Ctrl+C or closing the window). The job in
 progress restarts from its beginning next time; finished jobs are kept in
@@ -199,6 +203,16 @@ cargo build --release -p solver --features gpu --bin solve-cli
 python tools/datagen/validate.py --dry-run     # check open pull requests
 python tools/datagen/validate.py --watch 60    # check, merge, update progress.json hourly
 python tools/datagen/validate.py --local datagen_out   # check local files only
+```
+
+A job file sent in by someone without a Hugging Face account: keep it as
+`FOLDER/NAME/job-NUMBER.jsonl` (NAME is the contributor name in its first
+line), check it, then upload it for them. It goes up under your Hugging Face
+account and is still credited to NAME.
+
+```sh
+python tools/datagen/validate.py --local FOLDER
+python tools/datagen/upload.py --contributor NAME --out FOLDER
 ```
 
 At the first checkpoint, `tools/datagen/gonogo.py --wait 50000` waits for
