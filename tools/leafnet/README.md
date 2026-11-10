@@ -8,6 +8,8 @@ generator. The plan behind it is the [leaf net plan](https://claude.ai/artifact/
 |---|---|---|
 | `prepare.py` | freezes a data snapshot, prices it once with the realization models, caches prices per job file | frozen |
 | `harness.py` | data on the GPU under a VRAM cap, scoring, paired bootstrap, keep rule, export + Rust parity, results.tsv, test-split evaluation | frozen |
+| `referee.py` | once per snapshot: a flop-aware referee teacher and validation targets with the flop luck taken out (`val_cv`, the keep rule's low-noise score) | frozen |
+| `flops.py` | flop tables, the flop-aware Teacher model, each example's flop (used by referee.py and train.py) | frozen |
 | `train.py` | CONFIG + `run()`: the model and how it is trained | the agent / you |
 | `sweep.py` | Optuna over train.py's numeric CONFIG | frozen |
 | `program.md` | the autoresearch loop's rules | frozen |
@@ -43,7 +45,9 @@ $env:LEAFNET_WORK = "..\leafnet-work"
 $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\prepare.py                                   # download/refresh the dataset, freeze a snapshot
 & $py tools\leafnet\prepare.py --attach --name SNAP --leafcheck datagen_leafcheck_v2   # add a real-leaf test set
+& $py tools\leafnet\referee.py                                   # low-noise validation targets (GPU, ~10 min), before noise
 & $py tools\leafnet\harness.py noise --seeds 5                   # seed spread of the current CONFIG (also sets the first best)
+& $py tools\leafnet\harness.py rescore                         # snapshot that had runs before its referee: add val_cv to them
 & $py tools\leafnet\train.py --desc "what changed"               # one run: trained, scored, kept or discarded
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
 & $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
