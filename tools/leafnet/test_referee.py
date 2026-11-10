@@ -137,6 +137,26 @@ class RefereeTests(unittest.TestCase):
         self.assertTrue(any("raw validation" in p for p in problems), problems)
         self.assertFalse(near)
 
+    def test_results_tsv_gains_the_new_column(self):
+        path = os.path.join(self.work, "results.tsv")
+        old_cols = harness.TSV_COLS[:-1]
+        old_row = "\t".join(f"v{i}" for i in range(len(old_cols)))
+        with open(path, "w", newline="\n") as f:
+            f.write("\t".join(old_cols) + "\n" + old_row + "\n")
+        harness.append_tsv(self.work, {"run": "r2", "val_class": "0.138135", "val_cv_class": "0.003218"})
+        with open(path) as f:
+            lines = f.read().splitlines()
+        self.assertEqual(lines[0].split("\t"), harness.TSV_COLS)
+        self.assertEqual(lines[1], old_row)                       # older rows are untouched
+        new = dict(zip(harness.TSV_COLS, lines[2].split("\t")))
+        self.assertEqual((new["run"], new["val_cv_class"]), ("r2", "0.003218"))
+        # a file this harness did not write is left alone
+        with open(path, "w", newline="\n") as f:
+            f.write("something\telse\n")
+        harness.upgrade_tsv_header(path)
+        with open(path) as f:
+            self.assertEqual(f.read(), "something\telse\n")
+
 
 if __name__ == "__main__":
     unittest.main()
