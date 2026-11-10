@@ -15,34 +15,55 @@ Flop-aware teachers (CONFIG["teacher"], flops.py). Every training example is
 one leaf solved on ONE uniformly random flop, so most of its target is flop
 luck. A teacher that also sees the flop, how each hand class connects with it
 and where the class sits in both ranges on that flop explains almost all of
-that luck (validation error about 0.003 against 0.139 flop-blind). Its
-prediction averaged over all 1,755 distinct flops with the scoring weights is
-a flop-blind target without the luck. Only training jobs teach a teacher (in
-a scaling-grid data fraction, only that fraction's jobs); validation jobs
-stop it early, as they stop the net; test jobs are never read. This file
-never reads the referee's files (snapshots/.../referee/).
+that luck. Its prediction averaged over all 1,755 distinct flops with the
+scoring weights is a flop-blind target without the luck. Only training jobs
+teach a teacher (in a scaling-grid data fraction, only that fraction's jobs);
+validation jobs stop it early, as they stop the net; test jobs are never
+read. This file never reads the referee's files (snapshots/.../referee/).
+
+Teacher kinds (CONFIG["t_arch"]):
+- "flops": flops.Teacher. Validation error with the flop about 0.0033.
+- "pool" (kept since loop 4): PoolTeacher below adds a range-against-range
+  interaction (classes embedded on each flop, each range pooled by reach,
+  low-rank class-by-range features). Error with the flop 0.0018. One such
+  teacher's flop average scores 0.00300 on the referee's validation targets
+  where a flops.Teacher scores 0.00316, and its value-minus-luck target has
+  half the noise. Two further variants (pooled ranges into the fusion layer,
+  a second pooling round) were 11% better with the flop but no better in the
+  flop average, so they are not here.
 
 What the net is trained on (CONFIG["mode"] and CONFIG["distill_mix"]):
-- "distill": the mean flop average of several teachers (CONFIG["t_ens"],
-  seeds 0-4), for the real leaves and, with "syn_ens", for the synthetic
-  leaves. The net's error against that target was the same on training and
-  validation leaves: it was underfitting, not overfitting. So the kept net
-  is wide and shallow (2x768), lightly regularised and trained long; deeper
-  nets (4x512, 5x512) and one very wide layer (1x1536) fit worse.
+- "distill": the mean flop average of the teachers of CONFIG["t_ens"], for
+  the real leaves and, with "syn_ens", for the synthetic leaves.
 - "cv": the solved value minus the teachers' flop luck (value - (teachers on
   this flop - teachers' flop average)). Unbiased whatever the teachers get
-  wrong, but it keeps their residual noise. Alone it is the better choice
-  for a small net (the 2x256 of loop 2).
-- Kept since loop 3: mode "cv" with distill_mix 0.8, i.e. on the real leaves
-  80% of the loss is on the teachers' flop average and 20% on value minus
-  flop luck, which corrects a little of what the teachers get wrong. A 50/50
-  mix scored better on validation but worse on the real-leaf range error.
+  wrong; its noise is the teachers' error with the flop.
+- distill_mix is the share of the real-leaf loss on the flop average; the
+  rest is on value minus luck. Kept since loop 4: 0.2 with a bank of three
+  pooling teachers. The cleaner the teachers are with the flop, the more
+  weight the unbiased target deserves: with the flops.Teacher bank 0.8 was
+  kept (0.5 failed the real-leaf range guard); with the pooling bank 0.8,
+  0.5, 0.2 and 0 score 0.003005, 0.002980, 0.002966 and 0.002971 on val_cv.
+  The net then scores better than its own bank's flop average (0.002982).
 
-Synthetic leaves (CONFIG["n_syn"]): mixes of two training leaves of the same
-pot type (ranges blended, pot and stack interpolated on a log scale, rake
-from one of the two), priced with the balanced model by solve-cli like any
-real leaf and labelled with the teachers' flop average. Leaving them out
-costs accuracy on validation and on real leaves.
+The net (kept since loop 4): 2x1334, the widest two-layer net under the 4x
+size limit, learning rate 8e-4, cosine schedule to 1% over 40,000 steps.
+With loop 3's settings (learning rate 1.95e-3, one drop on a plateau) wider
+nets fit their target WORSE, even in-sample; the settings were the limit,
+not the width. 2x768 with the same recipe scores 0.002972 against 0.002966
+at 2.3 times fewer multiply-adds. Deeper nets and one very wide layer fit
+worse (loop 3). Did not help: 60,000 steps, a running average of the
+weights ("ema"), more synthetic leaves.
+
+Synthetic leaves (CONFIG["n_syn"], CONFIG["syn_kind"]), priced with the
+balanced model by solve-cli like any real leaf and labelled with the
+teachers' flop average:
+- "mix" (kept): mixes of two training leaves of the same pot type (ranges
+  blended, pot and stack interpolated on a log scale, rake from one of the
+  two). Leaving them out costs accuracy on validation and on real leaves.
+- "fresh": both ranges drawn anew by a port of the generator's range sampler,
+  with the pot, stack, pot type and rake of one training leaf. Same result as
+  "mix"; "mix+fresh" (both, n_syn of each) gains 0.000003, not kept.
 
 Seeds. With "t_ens" every seed shares the same teachers, and "syn_seed" also
 shares the synthetic leaves, so seed replicates differ only in the net's
@@ -50,11 +71,13 @@ initialisation and batch order.
 
 Cost. Side data (flops, teacher targets and models, synthetic leaves) is
 cached in leafnet-loop2/ next to WORK. prepare() builds the teachers of
-"t_ens" (about 9 minutes each, each with its own seed), the synthetic leaves
-and their labels. The harness calls it before a run's clock starts, and
-`train.py --prepare` runs it alone, so a new snapshot, a scaling-grid data
-fraction or new teacher settings cost one preparation (about 50 minutes for
-five teachers) and every run after it about 6 minutes.
+"t_ens" (about 11 minutes each for a pooling teacher with its flop averages,
+each with its own seed), the synthetic leaves and their labels: about 40
+minutes for the kept recipe. The harness calls it before a run's clock
+starts, and `train.py --prepare` runs it alone, so a new snapshot, a
+scaling-grid data fraction or new teacher settings cost one preparation and
+every run after it about 6 minutes. The pooling teacher's flop average runs
+in slices of 3 leaves to stay under a 3 GB memory cap.
 
 CONFIG["teacher"] = False gives back the plain recipe of the first loop.
 """
@@ -97,7 +120,7 @@ CONFIG = {
     "t_cache": True,        # reuse the teacher's targets for the same snapshot, seed and teacher settings
     "val_cv": True,         # early-stop on validation targets with the teacher's flop luck removed
     "max_steps": 40000,     # student step cap (the harness's own budget is 60,000)
-    "n_syn": 60000,         # teacher-labelled synthetic leaves (mixes of two training leaves) added to training
+    "n_syn": 60000,         # teacher-labelled synthetic leaves added to training (of each kind in syn_kind)
     "syn_kind": "mix",      # synthetic leaves: "mix" (blends of two training leaves) or "fresh" (new ranges from
                             # a port of the generator's range sampler, table and rake of one training leaf)
     "syn_lam_min": 0.0,     # smallest weight of the first leaf's ranges in a mix (0 = any blend)
