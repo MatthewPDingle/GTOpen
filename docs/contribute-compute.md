@@ -49,19 +49,49 @@ default model's error. The next goal is **300,000 examples**.
    hf auth login
    ```
 
-3. Start generating, with your GitHub login so you get credit:
+3. Start generating, with the name you want credit under:
 
    ```powershell
-   tools\datagen\contribute.cmd YOUR_GITHUB_LOGIN            # Windows
+   tools\datagen\contribute.cmd YOUR_NAME            # Windows
    ```
 
    ```sh
-   tools/datagen/contribute.sh YOUR_GITHUB_LOGIN             # Linux / WSL
+   tools/datagen/contribute.sh YOUR_NAME             # Linux / WSL
    ```
 
    The script builds the solver, generates until you stop it, and uploads
    finished jobs every 30 minutes. Add `--hours 8` to stop after eight
-   hours, or `--jobs 5` to stop after five jobs.
+   hours, or `--jobs 5` to stop after five jobs. When it stops, it uploads
+   whatever is finished.
+
+**The name.** Your GitHub login is the natural choice, but you don't need a
+GitHub account: nothing checks GitHub. The name picks your own block of job
+numbers, so your spots never overlap anyone else's, and it is how you are
+credited. Keep using the same name on every machine and every run. It is
+public: it is written into every file you upload and listed on the
+[contributors page](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md),
+so use a handle rather than your real name if you prefer. The contributors
+page links each name to `github.com/NAME`, so if you have no GitHub account,
+pick a handle that no one uses on GitHub, or the link will point to a
+stranger's profile.
+
+### Just trying it: 100 solves
+
+To test with a single job (100 examples) and stop:
+
+```powershell
+tools\datagen\contribute.cmd YOUR_NAME --jobs 1       # Windows
+```
+
+```sh
+tools/datagen/contribute.sh YOUR_NAME --jobs 1         # Linux / WSL
+```
+
+It builds the solver (a few minutes the first time), solves one job, uploads
+it, and exits. A job takes about 7 minutes on an RTX 5090 and roughly 10 to
+15 on an RTX 5070 Ti or 4080-class card. The upload needs the free Hugging
+Face account from step 2. Without one, the finished job is saved in
+`datagen_out/`, and you can send that file to the maintainer instead.
 
 Stopping is safe at any time (Ctrl+C or closing the window). The job in
 progress restarts from its beginning next time; finished jobs are kept in
@@ -76,10 +106,14 @@ cards take proportionally longer.
 An agent can do the setup for you. A prompt like this works:
 
 > Read docs/contribute-compute.md in this repository and set up GTOpen
-> training data generation on this machine for GitHub login YOUR_LOGIN.
+> training data generation on this machine for contributor name YOUR_NAME.
 > Install what's missing, run one test job with
-> `solve-cli datagen run --contributor YOUR_LOGIN --jobs 1`, then start
+> `solve-cli datagen run --contributor YOUR_NAME --jobs 1`, then start
 > `tools/datagen/contribute` in the background and stop watching it.
+
+For a one-off test of 100 solves, end the prompt with this instead: "then
+run `tools/datagen/contribute YOUR_NAME --jobs 1` (the .cmd on Windows) and
+tell me when it has uploaded."
 
 The generation itself is a long-running command and needs no agent, so
 there is no reason to keep an agent session open (it only spends tokens).
@@ -89,9 +123,9 @@ there is no reason to keep an agent session open (it only spends tokens).
 Run one generator per GPU, each with its own slot:
 
 ```sh
-CUDA_VISIBLE_DEVICES=0 ./target/release/solve-cli datagen run --contributor YOUR_LOGIN --worker 0 --workers 2
-CUDA_VISIBLE_DEVICES=1 ./target/release/solve-cli datagen run --contributor YOUR_LOGIN --worker 1 --workers 2
-python tools/datagen/upload.py --contributor YOUR_LOGIN --watch 30
+CUDA_VISIBLE_DEVICES=0 ./target/release/solve-cli datagen run --contributor YOUR_NAME --worker 0 --workers 2
+CUDA_VISIBLE_DEVICES=1 ./target/release/solve-cli datagen run --contributor YOUR_NAME --worker 1 --workers 2
+python tools/datagen/upload.py --contributor YOUR_NAME --watch 30
 ```
 
 ## What runs on your machine and what is uploaded
@@ -99,7 +133,7 @@ python tools/datagen/upload.py --contributor YOUR_LOGIN --watch 30
 `solve-cli datagen` solves random heads-up flop spots and nothing else. Each
 uploaded job file holds the spot inputs (board, pot, stack, rake, both
 ranges), the solved per-class values, equities and reach for both players,
-the solve's accuracy and time, your GitHub login, the GTOpen version and
+the solve's accuracy and time, your contributor name, the GTOpen version and
 whether it ran on GPU or CPU. Nothing else from your computer is read or
 sent. Uploads go to a public dataset under the
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license, so by
