@@ -4,14 +4,14 @@
 //! plus a per-class correction (fraction of the pot) predicted by the leaf
 //! net (leafnet.rs) from both players' ranges at that terminal. The ranges
 //! move while the solve runs, so the net is run again on the average
-//! strategies every few iterations and its output is blended into the
-//! corrections the solve prices with.
+//! strategies every few iterations and its output replaces the corrections
+//! the solve prices with (or is blended into them, see `refresh_weight`).
 //!
 //! Accuracy is always measured against the net's output at the strategies
-//! being measured (`leaf_measure_begin`), not against that blend, and a
-//! finished solve is left priced that way (`leaf_settle`). A save does not
-//! store corrections, so this is also what a reload computes: a loaded game
-//! shows the EVs and the gap the solve reported.
+//! being measured (`leaf_measure_begin`), whatever the solve is iterating
+//! on, and a finished solve is left priced that way (`leaf_settle`). A save
+//! does not store corrections, so this is also what a reload computes: a
+//! loaded game shows the EVs and the gap the solve reported.
 use super::equity::{class_prob, NUM_CLASSES};
 use super::leafnet::{pot_type_for_raises, LeafNet, LeafSpot};
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
@@ -22,19 +22,19 @@ const NO_SLOT: u32 = u32::MAX;
 /// Weight of the newest net output at a refresh (None: 2/(k+1) at refresh
 /// k, a linearly weighted average of all refreshes so far).
 ///
-/// The corrections follow the strategies and the strategies follow the
-/// corrections, so the weight is a damping factor. Measured as the gap
-/// against the net's output at the current strategies, on four 3-handed
-/// games and a 4-handed one with the v1 net (examples/leaf_settle.rs),
-/// averaged over iterations 4,000 to 6,000: replacing the corrections
-/// (weight 1) can lock a solve in place (a 60 bb game stayed at 0.016 bb
-/// from iteration 1,000 on) and gives 0.001 to 0.003 elsewhere; the linear
-/// average used before 2026-11 lags and gives 0.003 to 0.006; 0.5 gives
-/// 0.001 to 0.006 and 0.3 gives 0.001 to 0.004, the lowest worst case;
-/// 0.15 is slower than 0.3. On the 4-handed game no weight keeps falling
-/// (about 0.0035 with 0.3). Env PREFLOP_LEAF_BLEND: a fixed weight in
-/// (0, 1], or "lin" for the linear average.
-const REFRESH_WEIGHT: f32 = 0.3;
+/// The default, 1, replaces the corrections with the net's output at the
+/// average strategies. On the usual 6-max game with the loop 4 net (GPU)
+/// the gap against the net's output at the current strategies then falls
+/// steadily: 0.0041 bb at 2,000 iterations, 0.0019 at 4,000, 0.0010 at
+/// 8,000. Weights of 0.3 and 0.5 gave 0.011 at 2,000 and 0.006 at 4,000,
+/// and 0.3 jumped to 0.019 at 8,000 when one seat's blended values fell
+/// behind its ranges. The linear average used before 2026-11 gave 0.033 at
+/// 2,000 while the status showed 0.010. On 3-handed CPU games with the v1
+/// net (examples/leaf_settle.rs) the weights from 0.3 to 1 end within
+/// noise of each other, 0.001 to 0.003 by 6,000 iterations, once pruning
+/// is off (see install_leaf_net). Env PREFLOP_LEAF_BLEND: a fixed weight
+/// in (0, 1], or "lin" for the linear average.
+const REFRESH_WEIGHT: f32 = 1.0;
 
 fn refresh_weight() -> Option<f32> {
     match std::env::var("PREFLOP_LEAF_BLEND") {
@@ -125,6 +125,16 @@ impl PreflopSolver {
             slot[i] = nodes.len() as u32;
             nodes.push(i as u32);
             seats.push([live[0] as u8, live[1] as u8]);
+        }
+        // Regret-based pruning (CPU engine) leaves the average strategies
+        // inside a line nobody currently takes as they were when it died.
+        // The corrections there are then priced from stale ranges, and a
+        // best response finds a gain in that line that the solve never
+        // sees: a 3-handed 60 bb game stayed at 0.016 bb from iteration
+        // 1,000 on (the button's aces, limping), against 0.0016 unpruned.
+        // The GPU engine does not prune. PREFLOP_PRUNE=1 forces it here.
+        if std::env::var("PREFLOP_PRUNE").is_err() {
+            self.prune = false;
         }
         self.leaf = Some(Box::new(LeafState { net, slot, nodes, seats, corr: Vec::new(), refreshes: 0,
                                               interval: refresh_interval(), weight: refresh_weight(), latest: Vec::new(), fresh_at: None, aside: None,
@@ -534,9 +544,33 @@ mod tests {
         (0..2 * NUM_CLASSES).map(|k| scale * (((k * 7) % 11) as f32 - 5.0) / 5.0 + if k < NUM_CLASSES { 0.01 } else { -0.02 }).collect()
     }
 
+    /// With pruning on, this solve stays at 0.016 bb: the button's limp dies,
+    /// the strategies behind it keep their old averages, and a best response
+    /// limps aces into values the solve never sees.
+    #[test]
+    fn a_dead_line_leaves_no_phantom_gap() {
+        assert!(game("balanced", 3).prune, "other models keep pruning");
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions": ["BTN", "SB", "BB"], "stack": 60.0, "posts": [0.0, 0.5, 1.0], "limp": true, "open_raises": [2.5],
+            "raise_mults": [3.0], "max_raises": 4, "add_allin": false, "rake_pct": 5.0, "rake_cap": 3.0,
+            "no_flop_no_drop": true, "realization": "leafnet",
+        })).unwrap();
+        // the shipped equity table: the line dies with it
+        let eq = EquityTable::load_or_build(concat!(env!("CARGO_MANIFEST_DIR"), "/../../cache/preflop_eq169.bin"), 20_000);
+        let mut s = PreflopSolver::new(cfg, Arc::new(eq)).unwrap();
+        assert!(!s.prune);
+        for _ in 0..800 {
+            s.iterate();
+        }
+        let (gaps, _, _) = s.consistent_gaps_and_evs().unwrap();
+        // pruned: 0.0136 for the button, 0.0178 in all
+        assert!(gaps[0] < 0.004 && gaps.iter().sum::<f64>() < 0.01, "{gaps:?}");
+    }
+
     #[test]
     fn a_zero_net_prices_exactly_balanced() {
         let mut bal = game("balanced", 3);
+        bal.prune = false; // as the learned model solves (see install_leaf_net)
         let mut leaf = game("leafnet", 3);
         leaf.install_leaf_net(Arc::new(constant_net(&vec![0.0; 2 * NUM_CLASSES]))).unwrap();
         leaf.leaf.as_mut().unwrap().interval = 10;
