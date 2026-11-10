@@ -9,6 +9,7 @@ program.md); it edits train.py only.
     python tools/leafnet/harness.py status                 # snapshot, best run, seed spread
     python tools/leafnet/harness.py confirm RUN RUN RUN    # seed-averaged keep rule for a near miss
     python tools/leafnet/harness.py rescore                # add the referee's val_cv score to existing runs
+    python tools/leafnet/harness.py ensemble               # average the best's seed copies into one net file
     python tools/leafnet/harness.py final RUN_ID           # the ONLY command that reads the test split
 
 Scoring is gonogo.py's: per-class squared error weighted by combo mass
@@ -42,6 +43,17 @@ the same rule to per-job errors averaged over the candidate's seeds and the
 best's seeds, with the spread threshold shrunk for the averaging:
 spread x sqrt((1/n + 1/m) / 2) for n candidate and m best seeds, which is
 the spread itself when n = m = 1.
+
+Ensembles. `harness.py ensemble` writes one net file holding several kept
+runs (by default the best and its seed replicates); the solver's output for
+it is the mean of the members' outputs. Seed copies of one recipe disagree
+at a solve's leaves by more than recipes now improve on each other, so the
+mean is what to deploy: steadier ranges and a slightly better score. An
+ensemble is not a keep-rule candidate and never becomes the best: recipes
+are still compared net against net. It is checked for parity with
+solve-cli, must score no worse than its members' average on every set, and
+may hold up to 16x v1's multiply-adds in total (the net runs once per
+refresh of a solve's leaf values, not per iteration).
 """
 
 import argparse
@@ -51,6 +63,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import shutil
 import subprocess
 import sys
@@ -72,6 +85,8 @@ from validate import cuda_env, default_cli  # noqa: E402
 V1_SIZES = [686, 512, 512, 2 * NC]           # leaf net v1 (cache/leaf_net_v1.bin)
 MAX_MACS_X = 4                               # size limit, in multiples of v1's multiply-adds per leaf
 MAX_MACS = MAX_MACS_X * sum(a * b for a, b in zip(V1_SIZES, V1_SIZES[1:]))
+MAX_ENSEMBLE_MACS_X = 16                     # an ensemble's limit, all members together
+MAX_ENSEMBLE_MACS = MAX_ENSEMBLE_MACS_X * sum(a * b for a, b in zip(V1_SIZES, V1_SIZES[1:]))
 VRAM_CAP_GB = 3.0                            # hard cap: never push a datagen solve out of VRAM
 STEP_BUDGET = 60_000                         # optimizer steps per run cap (~5 min for 2x512 at batch 256 on the 5090)
 WALL_CAP_S = 15 * 60                         # a run over this is discarded
@@ -144,6 +159,20 @@ def eval_sets(data):
     """Every set a run is scored on: validation, the referee's val_cv if any, the real-leaf sets."""
     return {"val": data.val, **({"val_cv": data.val_cv} if data.val_cv is not None else {}),
             **{f"leaf:{k}": v for k, v in data.leaf.items()}}
+
+
+def scoring_sets(work, snapshot):
+    """(snapshot folder, {set: EvalSet}) for scoring an exported net with numpy alone: validation, the
+    referee's val_cv if any and the real-leaf sets. No GPU, no training data, no test split."""
+    sdir = os.path.join(work, "snapshots", snapshot)
+    with open(os.path.join(sdir, "manifest.json"), encoding="utf-8") as f:
+        manifest = json.load(f)
+    val = EvalSet(sdir, np.load(os.path.join(sdir, "split.npy")) == SPLITS["val"])
+    val_cv = load_val_cv(sdir, val)
+    sets = {"val": val, **({"val_cv": val_cv} if val_cv is not None else {})}
+    for s in manifest.get("leaf_sets", []):
+        sets[f"leaf:{s['name']}"] = EvalSet(os.path.join(sdir, "leaf", s["name"]))
+    return sdir, sets
 
 
 class Data:
@@ -283,8 +312,8 @@ def predict(model, x_norm):
     return np.concatenate(out).reshape(len(x_norm), 2, NC)
 
 
-def parity(cli, net_path, inputs_path, model, data, count=PARITY_EXAMPLES):
-    """Max |Rust residual - torch residual| over the first validation examples."""
+def rust_residuals(cli, net_path, inputs_path, count=PARITY_EXAMPLES):
+    """The Rust loader's residuals (n, 2, 169) for the first `count` validation examples."""
     with open(inputs_path, encoding="utf-8") as f:
         lines = [l for l in f if l.strip()][:count]
     proc = subprocess.run([cli, "datagen", "leafnet", net_path], input="".join(lines), capture_output=True,
@@ -292,8 +321,21 @@ def parity(cli, net_path, inputs_path, model, data, count=PARITY_EXAMPLES):
     got = [json.loads(l) for l in proc.stdout.splitlines() if l.startswith("{")]
     if proc.returncode != 0 or len(got) != len(lines):
         raise ValueError(f"solve-cli datagen leafnet failed: {proc.stderr.strip()[-400:]}")
-    rust = np.asarray([g["residual"] for g in got], dtype=np.float32).reshape(len(got), 2, NC)
-    mine = predict(model, (data.val.x[:len(got)] - data.mu) / data.sd)
+    return np.asarray([g["residual"] for g in got], dtype=np.float32).reshape(len(got), 2, NC)
+
+
+def parity(cli, net_path, inputs_path, model, data, count=PARITY_EXAMPLES):
+    """Max |Rust residual - torch residual| over the first validation examples."""
+    rust = rust_residuals(cli, net_path, inputs_path, count)
+    mine = predict(model, (data.val.x[:len(rust)] - data.mu) / data.sd)
+    return float(np.abs(rust - mine).max())
+
+
+def file_parity(cli, net_path, inputs_path, val, count=PARITY_EXAMPLES):
+    """Max |Rust residual - numpy residual| of a net file (plain or ensemble) over the first validation examples."""
+    rust = rust_residuals(cli, net_path, inputs_path, count)
+    _, members = leafnet_io.read_members(net_path)
+    mine = leafnet_io.forward_members(members, val.x[:len(rust)]).reshape(len(rust), 2, NC)
     return float(np.abs(rust - mine).max())
 
 
@@ -305,6 +347,16 @@ def score_model(model, data, sets):
     for name, es in sets.items():
         pred = es.base["balanced"] + predict(model, (es.x - data.mu) / data.sd)
         s = es.sums(pred)
+        out[name] = (s, totals(s))
+    return out
+
+
+def score_file(net_path, sets):
+    """{set: (per-job sums, (class error, range error))} for a net file (plain or ensemble), numpy only."""
+    _, members = leafnet_io.read_members(net_path)
+    out = {}
+    for name, es in sets.items():
+        s = es.sums(es.base["balanced"] + leafnet_io.forward_members(members, es.x).reshape(es.n, 2, NC))
         out[name] = (s, totals(s))
     return out
 
@@ -686,9 +738,7 @@ def cmd_rescore(args):
             d = json.load(f)
         if "val_cv" in d and not args.force:
             continue
-        _, Ws, bs, mu, sd = leafnet_io.read(net)
-        pred = val.base["balanced"] + leafnet_io.forward(Ws, bs, mu, sd, val.x).reshape(val.n, 2, NC)
-        d["val_cv"] = sums_to_json(val_cv.sums(pred))
+        d["val_cv"] = sums_to_json(score_file(net, {"val_cv": val_cv})["val_cv"][0])
         with open(sp, "w", encoding="utf-8", newline="\n") as f:
             json.dump(d, f)
         done += 1
@@ -716,7 +766,8 @@ def cmd_status(args):
         m = json.load(f)
     print(json.dumps({"snapshot": snap, "examples": m["examples"], "examples_by_split": m["examples_by_split"],
                       "leaf_sets": [s["name"] for s in m.get("leaf_sets", [])], "best": st.s.get("best"),
-                      "best_seeds": st.best_seeds(), "seed_spread": st.s.get("seed_spread")}, indent=1))
+                      "best_seeds": st.best_seeds(), "ensembles": st.s.get("ensembles", []),
+                      "seed_spread": st.s.get("seed_spread")}, indent=1))
 
 
 def cmd_confirm(args):
@@ -737,6 +788,8 @@ def cmd_confirm(args):
     for r in runs + against:
         if not os.path.exists(os.path.join(st.dir, r, "sums.json")):
             sys.exit(f"{r}: no scored run in {st.dir}")
+        if r in st.s.get("ensembles", []):
+            sys.exit(f"{r} is an ensemble: the keep rule compares single nets (confirm its members instead)")
     spread = st.s.get("seed_spread", {})
     best, cand = st.group_sums(against), st.group_sums(runs)
     key = score_key(best, cand)
@@ -769,17 +822,106 @@ def cmd_confirm(args):
     print(f"VERDICT: {verdict}")
 
 
+def cmd_ensemble(args):
+    """One net file whose output is the mean of several kept runs' outputs (default: the best and its
+    seed replicates). Scored like a run and checked against its members' average; never judged by the
+    keep rule and never the best."""
+    work = args.work
+    snap = args.snapshot or current_snapshot(work)
+    st = State(work, snap)
+    runs = list(dict.fromkeys(args.runs or st.best_seeds()))
+    if len(runs) < 2:
+        sys.exit("an ensemble needs at least two runs: train seed copies of the best first "
+                 "(train.py --seed N --replicate RUN --desc ...)")
+    members = []
+    for r in runs:
+        net = os.path.join(st.dir, r, "leaf_net.bin")
+        if not (os.path.exists(net) and os.path.exists(os.path.join(st.dir, r, "sums.json"))):
+            sys.exit(f"{r}: no scored run in {st.dir}")
+        ms = leafnet_io.read_members(net)[1]
+        if len(ms) != 1:
+            sys.exit(f"{r} is an ensemble itself: list its members instead")
+        members.append(ms[0])
+    total = sum(macs(leafnet_io.layer_sizes(m[0])) for m in members)
+    if total > MAX_ENSEMBLE_MACS:
+        sys.exit(f"{total:,} multiply-adds per leaf is over the ensemble limit {MAX_ENSEMBLE_MACS:,} "
+                 f"({MAX_ENSEMBLE_MACS_X}x v1)")
+    ens_id = args.name or f"ens{len(runs)}-{runs[0]}"
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", ens_id):
+        sys.exit(f"--name {ens_id!r}: letters, digits, '.', '_' and '-' only")
+    rdir = os.path.join(st.dir, ens_id)
+    cfg_path = os.path.join(rdir, "config.json")
+    if os.path.exists(rdir):
+        # a net's name is permanent (saved games refer to it): the same members may be rebuilt, others may not
+        had = None
+        if os.path.exists(cfg_path):
+            with open(cfg_path, encoding="utf-8") as f:
+                had = json.load(f).get("ensemble")
+        if had != runs:
+            sys.exit(f"{ens_id} already exists with other contents: pick another --name")
+    os.makedirs(rdir, exist_ok=True)
+    net_path, tmp = os.path.join(rdir, "leaf_net.bin"), os.path.join(rdir, "leaf_net.bin.tmp")
+    desc = f"ensemble: mean of {len(runs)} nets ({', '.join(runs)})"
+    row = {"time": datetime.datetime.now().isoformat(timespec="seconds"), "snapshot": snap, "run": ens_id,
+           "desc": desc, "seed": "ens", "macs": total}
+    row["commit"], row["dirty"] = git_rev()
+    leafnet_io.write_ensemble(tmp, members, extra={"snapshot": snap, "run": ens_id, "members": runs,
+                                                   "trainer": "tools/leafnet/harness.py ensemble"})
+    sdir, sets = scoring_sets(work, snap)
+    try:
+        row["parity"] = f"{file_parity(args.solve_cli, tmp, os.path.join(sdir, 'inputs_val.jsonl'), sets['val']):.2e}"
+        if float(row["parity"]) > PARITY_TOL:
+            raise ValueError(f"Rust and numpy outputs differ by {row['parity']} (> {PARITY_TOL})")
+        scored = score_file(tmp, sets)
+        cand = {k: v[0] for k, v in scored.items()}
+        # squared error is convex, so a mean of nets can never score worse than its members' average:
+        # anything else means the file is not the mean of these runs
+        problems, _, stats = judge(st.group_sums(runs), cand, 0.0)
+        if problems:
+            raise ValueError("worse than its members' average: " + "; ".join(problems))
+    except ValueError as e:
+        os.remove(tmp)
+        row.update(verdict="rejected", reason=str(e))
+        append_tsv(work, row)
+        log(f"REJECTED: {e}")
+        print("VERDICT: rejected")
+        return
+    key = score_key(cand, cand)
+    row["val_class"], row["val_range"] = (f"{x:.6f}" for x in scored["val"][1])
+    if "val_cv" in scored:
+        row["val_cv_class"] = f"{scored['val_cv'][1][0]:.6f}"
+    leaf = [k for k in scored if k.startswith("leaf:")]
+    if leaf:
+        row["leaf_class"] = " ".join(f"{scored[k][1][0]:.5f}" for k in leaf)
+        row["leaf_range"] = " ".join(f"{scored[k][1][1]:.6f}" for k in leaf)
+    row.update({k: f"{v:.6f}" for k, v in stats.items()})
+    reason = (f"[{key}] {stats['gain_class']:.6f} better than its members' average "
+              f"(interval {stats['ci_class_lo']:+.6f} to {stats['ci_class_hi']:+.6f})")
+    row.update(verdict="ensemble", reason=reason)
+    with open(os.path.join(rdir, "sums.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump({k: sums_to_json(v[0]) for k, v in scored.items()}, f)
+    with open(cfg_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"ensemble": runs, "desc": desc, "macs": total, "scores": {k: v[1] for k, v in scored.items()}},
+                  f, indent=1)
+    os.replace(tmp, net_path)
+    st.s["ensembles"] = [e for e in st.s.get("ensembles", []) if e != ens_id] + [ens_id]
+    st.save()
+    append_tsv(work, row)
+    log(f"ENSEMBLE {ens_id}: {key} class {scored[key][1][0]:.6f}, val class {row['val_class']} range {row['val_range']}"
+        + (f", real leaves class {row['leaf_class']}" if leaf else "") + f" -- {reason}")
+    print("VERDICT: ensemble")
+
+
 def cmd_final(args):
     """Score a run's exported net on the test split and the real-leaf sets, against today's models."""
     data = Data(args.work, args.snapshot, device="cpu", with_test=True)
     st = State(args.work, data.snapshot)
     run = args.run or st.s.get("best")
-    header, Ws, bs, mu, sd = leafnet_io.read(os.path.join(st.dir, run, "leaf_net.bin"))
     sets = {"test": data.test, **{f"leaf:{k}": v for k, v in data.leaf.items()}}
+    scored = score_file(os.path.join(st.dir, run, "leaf_net.bin"), sets)
     report = {"run": run, "snapshot": data.snapshot}
     for name, es in sets.items():
-        pred = es.base["balanced"] + leafnet_io.forward(Ws, bs, mu, sd, es.x).reshape(es.n, 2, NC)
-        sums = {"net": es.sums(pred), **{m: es.sums(es.base[m]) for m in MODELS}}
+        sums = {"net": scored[name][0], **{m: es.sums(es.base[m]) for m in MODELS}}
         ci = bootstrap(sums["balanced"], sums["net"], BOOTSTRAP_REPS, 0)
         report[name] = {"jobs": len(set(es.jobs.tolist())), "examples": es.n,
                         "class_error": {k: totals(v)[0] for k, v in sums.items()},
@@ -804,11 +946,14 @@ def cli():
     c.add_argument("--against", nargs="+", help="the best's seed runs (default: the best and its replicates)")
     r = sub.add_parser("rescore", help="add the referee's val_cv score to every run, and its seed spread")
     r.add_argument("--force", action="store_true", help="rescore runs that already have val_cv")
+    e = sub.add_parser("ensemble", help="one net file that averages several kept runs (default: the best's seeds)")
+    e.add_argument("runs", nargs="*", help="the runs to average (default: the best and its seed replicates)")
+    e.add_argument("--name", help="the ensemble's run id (default: ensN-FIRSTRUN)")
     f = sub.add_parser("final", help="score a run on the TEST split (milestones only)")
     f.add_argument("run", nargs="?")
     args = ap.parse_args()
     {"noise": cmd_noise, "status": cmd_status, "confirm": cmd_confirm, "rescore": cmd_rescore,
-     "final": cmd_final}[args.cmd](args)
+     "ensemble": cmd_ensemble, "final": cmd_final}[args.cmd](args)
 
 
 if __name__ == "__main__":

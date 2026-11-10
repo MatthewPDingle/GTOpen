@@ -53,6 +53,7 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
 & $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
 & $py tools\leafnet\harness.py confirm RUN RUN_S1 RUN_S2           # keep rule on seed averages (near misses)
+& $py tools\leafnet\harness.py ensemble                         # one net file that averages the best's seed copies (CPU, a minute)
 & $py tools\leafnet\scaling.py run                               # size x data grid (~1.5 h plain, hours with the teacher), outside the keep rule
 & $py tools\leafnet\scaling.py fit                               # fit error = E + A/N^a + B/D^b, predict milestones
                                                                  # (fractions >= 0.25 only; check the full-data miss before trusting a prediction)
@@ -67,12 +68,38 @@ loads (`cache/leaf_net_v1.bin` is v1).
 
 ## Using a kept net in the Preflop Lab
 
-Tick "learned flop values" and pick a net under it: v1, or any run the keep
-rule kept (each snapshot's best is starred). The server finds the work
+Tick "learned flop values" and pick a net under it: v1, any run the keep
+rule kept (each snapshot's best is starred), or an ensemble ("mean of 3
+nets", starred when it averages the best's seed copies). The server finds the work
 folder through `LEAFNET_WORK`, else `leafnet_work/` in the repo,
 `../leafnet-work` or `../GTOpen-research/leafnet-work`. Nets are named
 `SNAPSHOT/RUN` and saves keep that name, so a saved game reloads with the
 net it was solved with as long as the run folder is still there.
+
+## Ensembles: averaging seed copies
+
+Seed copies of one recipe (same train.py, different `--seed`) disagree at a
+real solve's leaves by about 1.2% of the pot, which moves borderline hands
+by as much as a whole loop's improvement does. Their average is steadier
+and scores a little better, so that is what to solve with:
+
+```powershell
+& $py tools\leafnet\harness.py ensemble                 # the best and its seed replicates
+& $py tools\leafnet\harness.py ensemble RUN RUN RUN --name my-ens   # any kept runs
+```
+
+It writes `WORK/runs/<snapshot>/ens3-<best run>/leaf_net.bin`: one file
+holding every member (`leafnet_io.write_ensemble`), which the solver loads
+like any net and evaluates as the mean of the members' outputs. The file
+is checked against solve-cli, scored on validation, val_cv and the
+real-leaf sets, and logged to results.tsv with the verdict `ensemble`. It
+must score no worse than its members' average on every set (it always
+does unless the file is wrong, because squared error is convex) and may
+hold up to 16x v1's multiply-adds in total. Solve time grows with the
+total size only through the leaf-value refresh, which runs on the CPU
+once every 50 iterations.
+
+An ensemble never becomes the best and is not a keep-rule candidate.
 
 ## Sharing the GPU with the generator
 

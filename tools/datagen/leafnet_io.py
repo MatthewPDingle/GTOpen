@@ -11,6 +11,11 @@ The header records the layer sizes and the feature layout. Inputs are
 features() below; the output is the solved value minus the balanced model's
 value, out of position 169 classes then in position 169 classes, as a
 fraction of the pot.
+
+An ensemble file holds several nets: its header has "ensemble", the list of
+every member's layer sizes ("sizes" repeats the first member's), and each
+member's mean, scale and layers follow back to back. Its output is the mean
+of the members' outputs (write_ensemble, read_members, forward_members).
 """
 
 import json
@@ -30,44 +35,78 @@ def meta_features(pot_bb, stack_bb, rake_frac, rake_cap_bb, pot_type):
             rake_cap_bb / pot_bb, 1.0 if rake_frac > 0 else 0.0] + [1.0 if pot_type == t else 0.0 for t in POT_TYPES]
 
 
-def write(path, weights, biases, mu, sd, extra=None):
-    sizes = [int(weights[0].shape[0])] + [int(W.shape[1]) for W in weights]
-    header = {"format": "gtopen-leaf-net", "version": 1, "sizes": sizes, "activation": "relu",
-              "features": FEATURES, "output": "solved minus balanced value, oop 169 then ip 169, fraction of pot"}
-    header.update(extra or {})
+def layer_sizes(weights):
+    return [int(weights[0].shape[0])] + [int(W.shape[1]) for W in weights]
+
+
+def _write(path, header, members):
     blob = json.dumps(header).encode()
     with open(path, "wb") as f:
         f.write(MAGIC)
         f.write(struct.pack("<I", len(blob)))
         f.write(blob)
-        for a in [mu, sd] + [x for pair in zip(weights, biases) for x in pair]:
-            f.write(np.ascontiguousarray(a, dtype="<f4").tobytes())
+        for weights, biases, mu, sd in members:
+            for a in [mu, sd] + [x for pair in zip(weights, biases) for x in pair]:
+                f.write(np.ascontiguousarray(a, dtype="<f4").tobytes())
 
 
-def read(path):
+def write(path, weights, biases, mu, sd, extra=None):
+    header = {"format": "gtopen-leaf-net", "version": 1, "sizes": layer_sizes(weights), "activation": "relu",
+              "features": FEATURES, "output": "solved minus balanced value, oop 169 then ip 169, fraction of pot"}
+    header.update(extra or {})
+    _write(path, header, [(weights, biases, mu, sd)])
+
+
+def write_ensemble(path, members, extra=None):
+    """Several nets in one file: `members` is a list of (weights, biases, mu, sd). The loader's output
+    is the mean of the members' outputs."""
+    if len(members) < 2:
+        raise ValueError("an ensemble needs at least two members")
+    sizes = [layer_sizes(m[0]) for m in members]
+    header = {"format": "gtopen-leaf-net", "version": 2, "sizes": sizes[0], "ensemble": sizes, "activation": "relu",
+              "features": FEATURES,
+              "output": "mean over the members of solved minus balanced value, oop 169 then ip 169, fraction of pot"}
+    header.update(extra or {})
+    _write(path, header, members)
+
+
+def read_members(path):
+    """(header, [(weights, biases, mu, sd), ...]): one member for a plain net, several for an ensemble."""
     with open(path, "rb") as f:
         if f.read(8) != MAGIC:
             raise ValueError(f"{path} is not a GTOpen leaf net")
         (n,) = struct.unpack("<I", f.read(4))
         header = json.loads(f.read(n))
         data = np.frombuffer(f.read(), dtype="<f4")
-    sizes = header["sizes"]
     pos = 0
 
     def take(count, shape=None):
         nonlocal pos
         a = data[pos:pos + count]
+        if len(a) != count:
+            raise ValueError(f"{path}: the data is truncated")
         pos += count
         return a.reshape(shape) if shape else a
 
-    mu, sd = take(sizes[0]), take(sizes[0])
-    weights, biases = [], []
-    for a, b in zip(sizes, sizes[1:]):
-        weights.append(take(a * b, (a, b)))
-        biases.append(take(b))
+    members = []
+    for sizes in header.get("ensemble") or [header["sizes"]]:
+        mu, sd = take(sizes[0]), take(sizes[0])
+        weights, biases = [], []
+        for a, b in zip(sizes, sizes[1:]):
+            weights.append(take(a * b, (a, b)))
+            biases.append(take(b))
+        members.append((weights, biases, mu, sd))
     if pos != len(data):
         raise ValueError(f"{path}: {len(data) - pos} unexpected trailing values")
-    return header, weights, biases, mu, sd
+    return header, members
+
+
+def read(path):
+    """(header, weights, biases, mu, sd) of a plain net (an ensemble has several: read_members)."""
+    header, members = read_members(path)
+    if len(members) != 1:
+        raise ValueError(f"{path} is an ensemble of {len(members)} nets: use read_members")
+    return (header,) + members[0]
 
 
 def forward(weights, biases, mu, sd, x):
@@ -77,3 +116,12 @@ def forward(weights, biases, mu, sd, x):
         if i < len(weights) - 1:
             x = np.maximum(x, 0)
     return x
+
+
+def forward_members(members, x, batch=4096):
+    """The net's output for raw inputs x: the mean over `members` (from read_members)."""
+    x = np.asarray(x, np.float32)
+    out = []
+    for i in range(0, len(x), batch):
+        out.append(np.mean([forward(*m, x[i:i + batch]) for m in members], axis=0))
+    return np.concatenate(out) if out else np.zeros((0, len(members[0][1][-1])), np.float32)

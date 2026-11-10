@@ -1,5 +1,7 @@
-//! Which leaf nets the Preflop Lab can use: the shipped v1 and every net the
-//! leaf-net harness (tools/leafnet) kept.
+//! Which leaf nets the Preflop Lab can use: the shipped v1, every net the
+//! leaf-net harness (tools/leafnet) kept and every ensemble it built
+//! (`harness.py ensemble`: one file whose output is the mean of several
+//! kept nets).
 //!
 //! The harness writes each run to `WORK/runs/SNAPSHOT/RUN/leaf_net.bin` and
 //! never changes it afterwards, so "SNAPSHOT/RUN" names a net for good and a
@@ -121,6 +123,17 @@ pub fn list() -> Value {
             if !best.is_empty() && !kept.iter().any(|k| k == best) {
                 kept.insert(0, best.to_string()); // the seed-0 noise run that set the first bar
             }
+            // ensembles the harness built from kept runs
+            let ensembles: Vec<String> = state
+                .get("ensembles")
+                .and_then(Value::as_array)
+                .map(|e| e.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                .unwrap_or_default();
+            for e in ensembles {
+                if !kept.contains(&e) {
+                    kept.push(e);
+                }
+            }
             let manifest = read_json(&work.join("snapshots").join(&snap_name).join("manifest.json"));
             let train_examples = manifest.as_ref().and_then(|m| m.pointer("/examples_by_split/train").cloned());
             for run in kept {
@@ -131,12 +144,19 @@ pub fn list() -> Value {
                 let Some(header) = read_header(&path) else { continue };
                 let row = by_run.get(&(snap_name.as_str(), run.as_str()));
                 let cfg = read_json(&snap.path().join(&run).join("config.json"));
+                // an ensemble: how many nets it averages, and whether the best run is one of them
+                let members = header.get("ensemble").and_then(Value::as_array).map(Vec::len);
+                let averages_best = members.is_some() && !best.is_empty()
+                    && header.get("members").and_then(Value::as_array)
+                        .map_or(false, |m| m.iter().any(|v| v.as_str() == Some(best)));
                 nets.push(json!({
                     "id": format!("{snap_name}/{run}"),
                     "kind": "research",
                     "snapshot": snap_name,
                     "run": run,
                     "best": run == best,
+                    "members": members,
+                    "averages_best": averages_best,
                     "time": row.and_then(|r| r.get("time")),
                     "desc": row.and_then(|r| r.get("desc")).cloned()
                         .or_else(|| cfg.as_ref().and_then(|c| c.get("desc")?.as_str().map(String::from))),
@@ -190,7 +210,14 @@ mod tests {
             let net = crate::preflop::leafnet::constant_net(&vec![0.0; 2 * crate::preflop::equity::NUM_CLASSES]);
             std::fs::write(snap.join(run).join("leaf_net.bin"), net.to_bytes()).unwrap();
         }
-        std::fs::write(snap.join("state.json"), r#"{"best": "r3", "history": ["r1", "r3"]}"#).unwrap();
+        // an ensemble of r2 and r3, as `harness.py ensemble` writes it
+        let mut ens = LeafNet::ensemble(
+            [0.1f32, 0.3].iter().map(|&b| crate::preflop::leafnet::constant_net(&vec![b; 2 * crate::preflop::equity::NUM_CLASSES])).collect(),
+        );
+        ens.header["members"] = json!(["r2", "r3"]);
+        std::fs::create_dir_all(snap.join("ens2-r3")).unwrap();
+        std::fs::write(snap.join("ens2-r3").join("leaf_net.bin"), ens.to_bytes()).unwrap();
+        std::fs::write(snap.join("state.json"), r#"{"best": "r3", "history": ["r1", "r3"], "ensembles": ["ens2-r3"]}"#).unwrap();
         std::fs::create_dir_all(work.join("snapshots").join("snap-1k")).unwrap();
         std::fs::write(work.join("snapshots/snap-1k/manifest.json"), r#"{"examples_by_split": {"train": 800}}"#).unwrap();
         std::fs::write(
@@ -198,18 +225,29 @@ mod tests {
             "time\tsnapshot\trun\tdesc\tval_class\tverdict\n\
              2026-11-10T01:00:00\tsnap-1k\tr1\tfirst\t0.15\tkeep\n\
              2026-11-10T02:00:00\tsnap-1k\tr2\tworse\t0.16\tdiscard\n\
-             2026-11-10T03:00:00\tsnap-1k\tr3\twider\t0.14\tkeep\n",
+             2026-11-10T03:00:00\tsnap-1k\tr3\twider\t0.14\tkeep\n\
+             2026-11-10T04:00:00\tsnap-1k\tens2-r3\tensemble: mean of 2 nets (r2, r3)\t0.139\tensemble\n",
         )
         .unwrap();
         // LEAFNET_WORK is process-wide: this is the only test that sets it
         std::env::set_var("LEAFNET_WORK", &work);
         let out = list();
         let ids: Vec<&str> = out["nets"].as_array().unwrap().iter().map(|n| n["id"].as_str().unwrap()).collect();
-        assert_eq!(ids, ["snap-1k/r3", "snap-1k/r1", "v1"]);
-        assert_eq!(out["nets"][0]["best"], true);
-        assert_eq!(out["nets"][0]["desc"], "wider");
-        assert_eq!(out["nets"][0]["val_class"], 0.14);
-        assert_eq!(out["nets"][0]["train_examples"], 800);
+        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v1"]);
+        assert_eq!(out["nets"][0]["members"], 2);
+        assert_eq!(out["nets"][0]["averages_best"], true);
+        assert_eq!(out["nets"][0]["best"], false);
+        assert_eq!(out["nets"][0]["val_class"], 0.139);
+        assert_eq!(out["nets"][1]["best"], true);
+        assert_eq!(out["nets"][1]["members"], Value::Null);
+        assert_eq!(out["nets"][1]["desc"], "wider");
+        assert_eq!(out["nets"][1]["val_class"], 0.14);
+        assert_eq!(out["nets"][1]["train_examples"], 800);
+        // the solver loads an ensemble by name like any other net, and prices with the members' mean
+        let ens = LeafNet::load_named(Some("snap-1k/ens2-r3")).unwrap();
+        assert_eq!(ens.members(), 2);
+        let x = vec![0f32; 4 * crate::preflop::equity::NUM_CLASSES + 10];
+        assert!(ens.residual(&x).iter().all(|v| (v - 0.2).abs() < 1e-6));
         assert!(LeafNet::load_named(Some("snap-1k/r1")).is_ok());
         assert!(LeafNet::load_named(Some("snap-1k/missing")).is_err());
 

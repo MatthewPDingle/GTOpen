@@ -91,6 +91,11 @@ A run is kept only if all of these hold:
 Never look at the test split. `harness.py final` is for milestones and is
 run by a person.
 
+`harness.py ensemble` is also run by a person, after a loop: it averages
+the best's seed copies into one net file for the Preflop Lab. An ensemble
+is how the best recipe is deployed, never a candidate: keep comparing
+single nets, and don't try to pass an averaged model through the keep rule.
+
 ## Good habits
 
 - One change per run, so the result says what helped.
