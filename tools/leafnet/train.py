@@ -86,7 +86,7 @@ CONFIG = {
     "last_layer_scale": 0.347,
     "teacher": True,        # flop-aware teacher, marginalized over all flops (see the module docstring)
     "mode": "cv",              # "cv": value minus the teacher's flop luck; "distill": the teacher's flop average
-    "distill_mix": 0.5,     # weight of the pure flop-average loss next to the cv loss
+    "distill_mix": 0.2,     # weight of the pure flop-average loss next to the cv loss
     "t_steps": 16000,       # teacher step cap
     "t_lr": 1e-3,
     "t_wd": 1e-5,
