@@ -44,6 +44,8 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\harness.py noise --seeds 5                   # seed spread of the current CONFIG (also sets the first best)
 & $py tools\leafnet\train.py --desc "what changed"               # one run: trained, scored, kept or discarded
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
+& $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
+& $py tools\leafnet\harness.py confirm RUN RUN_S1 RUN_S2           # keep rule on seed averages (near misses)
 & $py tools\leafnet\harness.py status
 & $py tools\leafnet\harness.py final                             # milestones only: the test split
 ```
@@ -80,4 +82,10 @@ net it was solved with as long as the run folder is still there.
   than the best on validation class error (paired bootstrap over jobs) by
   more than the seed spread, not significantly worse on range error, and not
   significantly worse on any real-leaf set.
+- A run that passes all of that except the seed spread is a `near` miss.
+  Train two more seeds of it with `--replicate`, then `harness.py confirm`
+  applies the same rule to seed averages. It compares with the best's own
+  seeds, and the spread threshold scales by sqrt((1/n + 1/m) / 2), which is
+  about 0.58x for three seeds against three. That way small but steady
+  gains aren't lost to the single-run threshold.
 - `harness.py final` is the only command that reads the test split.

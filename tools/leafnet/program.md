@@ -38,8 +38,18 @@ it serves is the agreed leaf net plan
    `python tools/leafnet/train.py --desc "<one line: what changed>"`.
    Every run gets the same fixed step budget and wall-clock cap from the
    harness. Respect `budget.done(step)`.
-4. Read the last line: `VERDICT: keep`, `discard` or `rejected`.
-   - **keep**: `git commit -m "leafnet: <desc> (val class X, gain Y)" -- tools/leafnet/train.py`.
+4. Read the last line: `VERDICT: keep`, `near`, `discard` or `rejected`.
+   - **keep**: `git commit -m "leafnet: <desc> (val class X, gain Y)" -- tools/leafnet/train.py`,
+     then train the same train.py with `--seed 1 --replicate RUN` and
+     `--seed 2 --replicate RUN` (RUN = the kept run's id), so the new best
+     has three seeds for later confirmations.
+   - **near**: a small gain that passed everything but the seed spread. Don't
+     throw it away: train `--seed 1 --replicate RUN` and
+     `--seed 2 --replicate RUN`, then
+     `python tools/leafnet/harness.py confirm RUN RUN_S1 RUN_S2`. It compares
+     the seed averages with the best's seeds, with the spread threshold
+     shrunk for the averaging. On `VERDICT: keep`, commit as above; on
+     `discard`, check out train.py.
    - **discard** or **rejected**: `git checkout -- tools/leafnet/train.py`.
      The run stays in results.tsv, so nobody tries it again blindly.
 5. Repeat. Every ~10 runs, write two lines in `WORK/notes.md`: what has
@@ -52,7 +62,9 @@ A run is kept only if all of these hold:
 - it exports and passes the Rust parity check, within the cost limit;
 - the paired bootstrap over validation jobs puts its class-error gain over
   the current best above zero (95% interval);
-- the gain is larger than the measured seed spread (`harness.py noise`);
+- the gain is larger than the measured seed spread (`harness.py noise`),
+  or, for a near miss confirmed on three seeds, larger than the spread
+  scaled for seed averages (`harness.py confirm`);
 - its range error is not significantly worse;
 - it is not significantly worse on any real-leaf set (the leaves real
   Preflop Lab solutions reach).
@@ -63,7 +75,8 @@ run by a person.
 ## Good habits
 
 - One change per run, so the result says what helped.
-- A gain smaller than the seed spread is noise, however good it looks.
+- A single run's gain smaller than the seed spread may be noise. A gain that
+  holds on every seed is not: that's what `near` and `confirm` are for.
 - If something wins by a lot, rerun it with `--seed 1` and `--seed 2`
   before building on it.
 - When the snapshot changes (a new data milestone), the first runs re-train

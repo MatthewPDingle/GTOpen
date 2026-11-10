@@ -6,6 +6,7 @@ program.md); it edits train.py only.
     python tools/leafnet/train.py --desc "baseline"        # one run, scored and logged (via harness.main)
     python tools/leafnet/harness.py noise --seeds 5        # seed spread of train.py's CONFIG
     python tools/leafnet/harness.py status                 # snapshot, best run, seed spread
+    python tools/leafnet/harness.py confirm RUN RUN RUN    # seed-averaged keep rule for a near miss
     python tools/leafnet/harness.py final RUN_ID           # the ONLY command that reads the test split
 
 Scoring is gonogo.py's: per-class squared error weighted by combo mass
@@ -22,6 +23,15 @@ Keep rule (all must hold):
      and the gain is larger than the measured seed spread;
   4. its validation range error is not significantly worse than the best's;
   5. on every real-leaf set it is not significantly worse than the best.
+
+A run that passes everything except the seed spread (interval above zero,
+gain positive but small) is a "near" miss, not noise yet: train it with
+`--seed 1` and `--seed 2` (`--replicate` keeps those runs out of the
+keep rule) and run `harness.py confirm` on the three. Confirmation applies
+the same rule to per-job errors averaged over the candidate's seeds and the
+best's seeds, with the spread threshold shrunk for the averaging:
+spread x sqrt((1/n + 1/m) / 2) for n candidate and m best seeds, which is
+the spread itself when n = m = 1.
 """
 
 import argparse
@@ -283,9 +293,64 @@ class State:
         b = self.s.get("best")
         if not b:
             return None
-        with open(os.path.join(self.dir, b, "sums.json"), encoding="utf-8") as f:
-            d = json.load(f)
-        return {k: sums_from_json(v) for k, v in d.items()}
+        return self.group_sums([b])
+
+    def best_seeds(self):
+        """The best run and its seed replicates (one setup, different seeds)."""
+        b = self.s.get("best")
+        seeds = [r for r in self.s.get("best_seeds", []) if r != b]
+        return ([b] + seeds) if b else []
+
+    def group_sums(self, runs):
+        """Per-job sums averaged over `runs` (seed replicates of one setup),
+        for every evaluation set all of them were scored on."""
+        loaded = []
+        for r in runs:
+            with open(os.path.join(self.dir, r, "sums.json"), encoding="utf-8") as f:
+                loaded.append(json.load(f))
+        out = {}
+        for name in sorted(set.intersection(*(set(d) for d in loaded))):
+            per = [sums_from_json(d[name]) for d in loaded]
+            out[name] = {k: np.mean([p[k] for p in per], axis=0) for k in per[0]}
+        return out
+
+
+def judge(best, cand, need, spread_measured=True):
+    """The keep rule's statistics: candidate sums vs best sums (both
+    {set: per-job sums}). Returns (problems, near, stats); `near` means only
+    the seed-spread condition failed."""
+    (c_lo, c_hi), (r_lo, r_hi) = bootstrap(best["val"], cand["val"], BOOTSTRAP_REPS, 0)
+    gain = totals(best["val"])[0] - totals(cand["val"])[0]
+    stats = {"gain_class": gain, "ci_class_lo": c_lo, "ci_class_hi": c_hi, "ci_range_lo": r_lo, "ci_range_hi": r_hi}
+    problems, small = [], False
+    if c_lo <= 0:
+        problems.append(f"class gain not significant (interval {c_lo:+.6f} to {c_hi:+.6f})")
+    if gain <= need:
+        small = True
+        problems.append(f"gain {gain:.6f} not above the seed spread {need:.6f}"
+                        + ("" if spread_measured else " (run `harness.py noise` to measure it)"))
+    if r_hi < 0:
+        problems.append(f"range error significantly worse (interval {r_lo:+.6f} to {r_hi:+.6f})")
+    for k in cand:
+        if k.startswith("leaf:") and k in best:
+            (l_lo, l_hi), (lr_lo, lr_hi) = bootstrap(best[k], cand[k], BOOTSTRAP_REPS, 1)
+            if l_hi < 0 or lr_hi < 0:
+                problems.append(f"significantly worse on real leaves {k[5:]}")
+    near = small and len(problems) == 1 and gain > 0
+    return problems, near, stats
+
+
+def seed_need(spread_class, n_cand, n_best):
+    """Seed-spread threshold for a difference of seed means (= the spread for 1 vs 1)."""
+    return spread_class * ((1 / n_cand + 1 / n_best) / 2) ** 0.5
+
+
+def make_best(state, run_id, seeds):
+    state.s["best"] = run_id
+    state.s["best_seeds"] = list(seeds)
+    state.s.setdefault("history", []).append(run_id)
+    state.save()
+    shutil.copy(os.path.join(state.dir, run_id, "leaf_net.bin"), os.path.join(state.dir, "best_leaf_net.bin"))
 
 
 TSV_COLS = ["time", "snapshot", "run", "commit", "dirty", "desc", "seed", "steps", "seconds", "macs",
@@ -335,7 +400,8 @@ def train_once(run_fn, cfg, data, seed):
     return model, budget
 
 
-def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decide=True, run_id=None):
+def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decide=True, run_id=None,
+                 label="sweep"):
     """Export, check, score and (optionally) apply the keep rule; logs to results.tsv."""
     run_id = run_id or datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + f"-s{seed}"
     rdir = os.path.join(state.dir, run_id)
@@ -379,37 +445,24 @@ def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decid
     best = state.best_sums()
     spread = state.s.get("seed_spread", {})
     if not decide:
-        verdict, reason = "sweep", ""
+        verdict, reason = label, ""
     elif best is None:
         verdict, reason = "keep", "first run on this snapshot: becomes the best"
     else:
-        (c_lo, c_hi), (r_lo, r_hi) = bootstrap(best["val"], scored["val"][0], BOOTSTRAP_REPS, 0)
-        b_cls, _ = totals(best["val"])
-        gain = b_cls - scored["val"][1][0]
-        row.update(gain_class=f"{gain:.6f}", ci_class_lo=f"{c_lo:.6f}", ci_class_hi=f"{c_hi:.6f}",
-                   ci_range_lo=f"{r_lo:.6f}", ci_range_hi=f"{r_hi:.6f}")
-        need = float(spread.get("class", 0.0))
-        problems = []
-        if c_lo <= 0:
-            problems.append(f"class gain not significant (interval {c_lo:+.6f} to {c_hi:+.6f})")
-        if gain <= need:
-            problems.append(f"gain {gain:.6f} not above the seed spread {need:.6f}"
-                            + ("" if spread else " (run `harness.py noise` to measure it)"))
-        if r_hi < 0:
-            problems.append(f"range error significantly worse (interval {r_lo:+.6f} to {r_hi:+.6f})")
-        for k in leaf_names:
-            if k in best:
-                (l_lo, l_hi), (lr_lo, lr_hi) = bootstrap(best[k], scored[k][0], BOOTSTRAP_REPS, 1)
-                if l_hi < 0 or lr_hi < 0:
-                    problems.append(f"significantly worse on real leaves {k[5:]}")
-        verdict = "keep" if not problems else "discard"
-        reason = "; ".join(problems) or f"gain {gain:.6f} (interval {c_lo:+.6f} to {c_hi:+.6f})"
+        cand = {k: v[0] for k, v in scored.items()}
+        problems, near, st = judge(best, cand, float(spread.get("class", 0.0)), bool(spread))
+        row.update({k: f"{v:.6f}" for k, v in st.items()})
+        verdict = "keep" if not problems else ("near" if near else "discard")
+        reason = "; ".join(problems) or f"gain {st['gain_class']:.6f} " \
+                                        f"(interval {st['ci_class_lo']:+.6f} to {st['ci_class_hi']:+.6f})"
+        if near:
+            reason += f"; near miss: train --seed 1 and --seed 2 with --replicate {run_id}, then harness.py confirm"
     row.update(verdict=verdict, reason=reason)
     if verdict == "keep":
-        state.s["best"] = run_id
-        state.s.setdefault("history", []).append(run_id)
+        make_best(state, run_id, [run_id])
+    elif verdict == "replicate" and state.s.get("best") and desc.startswith(f"replicate of {state.s['best']}"):
+        state.s["best_seeds"] = state.best_seeds() + [run_id]
         state.save()
-        shutil.copy(os.path.join(rdir, "leaf_net.bin"), os.path.join(state.dir, "best_leaf_net.bin"))
     append_tsv(data.work, row)
     log(f"{verdict.upper()}: val class {row['val_class']} range {row['val_range']}"
         + (f", real leaves class {row['leaf_class']}" if leaf_names else "") + (f" -- {reason}" if reason else ""))
@@ -421,6 +474,9 @@ def main(run_fn, config):
     ap = argparse.ArgumentParser(description="Train one leaf net with train.py's CONFIG and apply the keep rule.")
     ap.add_argument("--desc", required=True, help="one line: what this run changes")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--replicate", metavar="RUN",
+                    help="this is another seed of RUN (same train.py): scored and logged, not judged; "
+                         "replicates of the best count toward its seed average")
     ap.add_argument("--snapshot")
     ap.add_argument("--work", default=work_dir())
     ap.add_argument("--solve-cli", default=default_cli())
@@ -433,7 +489,13 @@ def main(run_fn, config):
     if budget.elapsed() > WALL_CAP_S * 1.05:
         log("over the wall-clock cap: discarded")
         sys.exit(1)
-    verdict, _ = evaluate_run(model, data, config, args.seed, steps, budget.elapsed(), args.desc, args.solve_cli, state)
+    if args.replicate:
+        desc = f"replicate of {args.replicate} seed {args.seed}: {args.desc}"
+        verdict, _ = evaluate_run(model, data, config, args.seed, steps, budget.elapsed(), desc, args.solve_cli,
+                                  state, decide=False, label="replicate")
+    else:
+        verdict, _ = evaluate_run(model, data, config, args.seed, steps, budget.elapsed(), args.desc,
+                                  args.solve_cli, state)
     print(f"VERDICT: {verdict}")
 
 
@@ -475,6 +537,7 @@ def cmd_noise(args):
         # seed 0 (the default seed of train.py runs) is the bar: like for like, not the luckiest seed
         best = results[0]["run"]
         state.s["best"] = best
+        state.s["best_seeds"] = [r["run"] for r in results]   # same setup: all of them are the best's seeds
         shutil.copy(os.path.join(state.dir, best, "leaf_net.bin"), os.path.join(state.dir, "best_leaf_net.bin"))
     state.save()
     print(json.dumps(spread, indent=1))
@@ -488,7 +551,53 @@ def cmd_status(args):
         m = json.load(f)
     print(json.dumps({"snapshot": snap, "examples": m["examples"], "examples_by_split": m["examples_by_split"],
                       "leaf_sets": [s["name"] for s in m.get("leaf_sets", [])], "best": st.s.get("best"),
-                      "seed_spread": st.s.get("seed_spread")}, indent=1))
+                      "best_seeds": st.best_seeds(), "seed_spread": st.s.get("seed_spread")}, indent=1))
+
+
+def cmd_confirm(args):
+    """The keep rule on seed averages: candidate runs (one setup, several seeds) vs the best's seeds."""
+    work = args.work
+    snap = args.snapshot or current_snapshot(work)
+    st = State(work, snap)
+    if not st.s.get("best"):
+        sys.exit("no best run on this snapshot yet")
+    against = args.against or st.best_seeds()
+    if st.s["best"] not in against:
+        sys.exit(f"--against must include the current best {st.s['best']}")
+    runs = list(dict.fromkeys(args.runs))
+    if len(runs) < 2:
+        sys.exit("confirm needs at least two seeds of the candidate")
+    if set(runs) & set(against):
+        sys.exit("a run can't be both candidate and best")
+    for r in runs + against:
+        if not os.path.exists(os.path.join(st.dir, r, "sums.json")):
+            sys.exit(f"{r}: no scored run in {st.dir}")
+    spread = st.s.get("seed_spread", {})
+    need = seed_need(float(spread.get("class", 0.0)), len(runs), len(against))
+    best, cand = st.group_sums(against), st.group_sums(runs)
+    problems, _, stats = judge(best, cand, need, bool(spread))
+    singles = sorted((totals(st.group_sums([r])["val"])[0], r) for r in runs)
+    chosen = singles[(len(singles) - 1) // 2][1]   # the median seed: neither the luckiest nor the unluckiest
+    verdict = "keep" if not problems else "discard"
+    reason = "; ".join(problems) or (f"seed-averaged gain {stats['gain_class']:.6f} "
+                                     f"(interval {stats['ci_class_lo']:+.6f} to {stats['ci_class_hi']:+.6f}), "
+                                     f"need {need:.6f}")
+    cls, rng = totals(cand["val"])
+    leaf = [k for k in cand if k.startswith("leaf:")]
+    row = {"time": datetime.datetime.now().isoformat(timespec="seconds"), "snapshot": snap, "run": chosen,
+           "desc": f"confirm {len(runs)} seeds ({', '.join(runs)}) vs {len(against)} ({', '.join(against)})",
+           "seed": "mean", "val_class": f"{cls:.6f}", "val_range": f"{rng:.6f}",
+           "leaf_class": " ".join(f"{totals(cand[k])[0]:.5f}" for k in leaf),
+           "leaf_range": " ".join(f"{totals(cand[k])[1]:.6f}" for k in leaf),
+           **{k: f"{v:.6f}" for k, v in stats.items()}, "verdict": verdict, "reason": reason}
+    row["commit"], row["dirty"] = git_rev()
+    row["macs"] = macs(leafnet_io.read(os.path.join(st.dir, chosen, "leaf_net.bin"))[0]["sizes"])
+    if verdict == "keep":
+        make_best(st, chosen, runs)
+    append_tsv(work, row)
+    log(f"{verdict.upper()}: seed-averaged val class {cls:.6f} vs {totals(best['val'])[0]:.6f} -- {reason}"
+        + (f"; new best {chosen}" if verdict == "keep" else ""))
+    print(f"VERDICT: {verdict}")
 
 
 def cmd_final(args):
@@ -521,10 +630,13 @@ def cli():
     n = sub.add_parser("noise", help="train train.py's CONFIG with several seeds; store the seed spread")
     n.add_argument("--seeds", type=int, default=5)
     sub.add_parser("status")
+    c = sub.add_parser("confirm", help="keep rule on seed averages: seeds of a near miss vs the best's seeds")
+    c.add_argument("runs", nargs="+", help="the candidate's runs (same train.py, different seeds)")
+    c.add_argument("--against", nargs="+", help="the best's seed runs (default: the best and its replicates)")
     f = sub.add_parser("final", help="score a run on the TEST split (milestones only)")
     f.add_argument("run", nargs="?")
     args = ap.parse_args()
-    {"noise": cmd_noise, "status": cmd_status, "final": cmd_final}[args.cmd](args)
+    {"noise": cmd_noise, "status": cmd_status, "confirm": cmd_confirm, "final": cmd_final}[args.cmd](args)
 
 
 if __name__ == "__main__":
