@@ -1479,7 +1479,7 @@ impl PreflopGpu {
             d_leaf_seats: stream.clone_htod(&leaf_seats).map_err(e)?,
             d_leaf_corr: stream.clone_htod(&leaf_corr).map_err(e)?,
             leaf_nterms: leaf_terms.len() as u32,
-            leaf_version: s.leaf_refreshes(),
+            leaf_version: s.leaf_version(),
             d_tw_terms: stream.clone_htod(if tw_terms.is_empty() { &[0u32][..] } else { tw_terms.as_slice() }).map_err(e)?,
             d_tw_ew: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().0)).map_err(e)?,
             d_tw_w: stream.clone_htod(tw_table.map_or(&[0f32][..], |t| t.arrays().1)).map_err(e)?,
@@ -2213,12 +2213,13 @@ impl PreflopGpu {
         Ok(())
     }
 
-    /// Upload the host's learned corrections after `refresh_leaf_values`
-    /// (no-op when they have not changed since the last upload). Captured
+    /// Upload the host's learned corrections after `refresh_leaf_values`,
+    /// `leaf_measure_begin` or `leaf_measure_end` (no-op when they have not
+    /// changed since the last upload). Captured
     /// sweeps read the same buffer, so they see the new values.
     pub fn upload_leaf_corr(&mut self, s: &PreflopSolver) -> Result<(), String> {
         let Some((nodes, _, corr)) = s.leaf_terminals() else { return Ok(()) };
-        if s.leaf_refreshes() == self.leaf_version || corr.is_empty() {
+        if s.leaf_version() == self.leaf_version || corr.is_empty() {
             return Ok(());
         }
         if nodes.len() as u32 != self.leaf_nterms || corr.len() != self.d_leaf_corr.len() {
@@ -2226,7 +2227,7 @@ impl PreflopGpu {
         }
         self.stream.memcpy_htod(corr, &mut self.d_leaf_corr).map_err(e)?;
         self.stream.synchronize().map_err(e)?;
-        self.leaf_version = s.leaf_refreshes();
+        self.leaf_version = s.leaf_version();
         Ok(())
     }
 

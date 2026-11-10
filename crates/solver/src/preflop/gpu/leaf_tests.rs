@@ -1,5 +1,6 @@
 //! The learned flop correction on the GPU must price as leaf_correction()
-//! does on the CPU, before and after the host refreshes and re-uploads it.
+//! does on the CPU, before and after the host refreshes and re-uploads it,
+//! and while an accuracy measurement prices with the net's newest output.
 use super::*;
 use crate::preflop::equity::EquityTable;
 use crate::preflop::leafnet::constant_net;
@@ -36,7 +37,7 @@ fn learned_corrections_match_the_cpu() {
             })).unwrap();
             let mut s = PreflopSolver::new(cfg, table()).unwrap();
             s.install_leaf_net(Arc::new(constant_net(&pattern(0.04, 0.01)))).unwrap();
-            s.leaf.as_mut().unwrap().interval = u32::MAX; // refreshes driven here
+            s.set_leaf_schedule(u32::MAX, Some(0.3)); // refreshes driven here, each blended in
             for _ in 0..20 {
                 s.iterate();
             }
@@ -70,6 +71,26 @@ fn learned_corrections_match_the_cpu() {
             g.sync_to_cpu(&mut s).unwrap();
             let (cpu, gpu) = (s.gaps_and_evs(), g.gaps_and_evs().unwrap());
             assert!(close(&cpu, &gpu), "{n} seats, {name} plan, after learning: cpu {cpu:?} gpu {gpu:?}");
+
+            // a measurement prices with the net's output at the strategies as they
+            // are now, not with the blend, and the blend comes back afterwards
+            let blend = s.leaf_terminals().unwrap().2.to_vec();
+            s.leaf_measure_begin();
+            assert_ne!(s.leaf_terminals().unwrap().2, &blend[..], "{n} seats: the blend already is the net's output");
+            g.upload_leaf_corr(&s).unwrap();
+            let (cpu_now, gpu_now) = (s.gaps_and_evs(), g.gaps_and_evs().unwrap());
+            assert!(close(&cpu_now, &gpu_now), "{n} seats, {name} plan, measuring: cpu {cpu_now:?} gpu {gpu_now:?}");
+            assert!(!close(&cpu_now, &cpu), "{n} seats: measuring at the current strategies changes nothing");
+            s.leaf_measure_end();
+            assert_eq!(s.leaf_terminals().unwrap().2, &blend[..]);
+            g.upload_leaf_corr(&s).unwrap();
+            let gpu_back = g.gaps_and_evs().unwrap();
+            assert!(close(&cpu, &gpu_back), "{n} seats, {name} plan, after measuring: cpu {cpu:?} gpu {gpu_back:?}");
+            // a finished solve keeps the measured values
+            s.leaf_settle(false);
+            g.upload_leaf_corr(&s).unwrap();
+            let gpu_end = g.gaps_and_evs().unwrap();
+            assert!(close(&cpu_now, &gpu_end), "{n} seats, {name} plan, settled: cpu {cpu_now:?} gpu {gpu_end:?}");
         }
     }
 }

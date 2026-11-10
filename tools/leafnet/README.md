@@ -97,7 +97,8 @@ must score no worse than its members' average on every set (it always
 does unless the file is wrong, because squared error is convex) and may
 hold up to 16x v1's multiply-adds in total. Solve time grows with the
 total size only through the leaf-value refresh, which runs on the CPU
-once every 50 iterations.
+once every 50 iterations and before an accuracy measurement that does
+not fall on one of those.
 
 An ensemble never becomes the best and is not a keep-rule candidate.
 

@@ -1521,6 +1521,16 @@ fn pf_publish_gpu_snapshot(
     Ok(())
 }
 
+/// Best-response gaps and EVs on the CPU as a solve reports them. Under the
+/// learned realization they are measured against the net's output at the
+/// strategies being measured, not the blend the solve iterates on.
+fn pf_measured_gaps(s: &mut solver::preflop::PreflopSolver) -> (Vec<f64>, Vec<f64>) {
+    s.leaf_measure_begin();
+    let out = s.gaps_and_evs();
+    s.leaf_measure_end();
+    out
+}
+
 /// Caller holds the solver mutex. Publish terminal state only after clearing
 /// cancellation, so a reader observing stopped/done cannot receive canceled
 /// zero-valued evaluations. Interrupted native arenas retain existing counter
@@ -1760,6 +1770,9 @@ async fn pf_solve(
                     }
                 }
                 let mut s = lock_unpoisoned(&solver);
+                // learned realization: leave the game priced with the net's
+                // output at the strategies it stops with, as a reload prices it
+                s.leaf_settle(false);
                 pf_finish_preflop(&mut s, &status, "stopped", true, None);
                 return;
             }
@@ -1875,23 +1888,53 @@ async fn pf_solve(
                     let mut gpu_err: Option<String> = None;
                     let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
                     if let Some(g) = gpu.as_mut() {
-                        // Accuracy uses device buffers only. Readers may keep
-                        // using the previous host snapshot while it is measured.
-                        drop(s);
-                        let measured = g.gaps_and_evs();
-                        s = lock_unpoisoned(&solver);
-                        match measured {
-                            Ok(ge) => {
-                                // keep browse/export in sync with the device
-                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
-                                    Ok(()) => ge_gpu = Some(ge),
-                                    Err(err) => {
-                                        gpu_err =
-                                            Some(format!("checkpoint sync failed: {err}"))
+                        // Learned realization: measure against the net's output
+                        // at this snapshot's strategies (the gap a reload of it
+                        // reports), not the blend the solve iterates on.
+                        let leaf_ready = if s.leaf_terminals().is_some() {
+                            let synced = if s.leaf_values_stale_at(gpu_iteration) {
+                                pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s))
+                                    .map_err(|err| format!("learned correction sync failed: {err}"))
+                            } else {
+                                Ok(())
+                            };
+                            synced.and_then(|()| {
+                                s.leaf_measure_begin();
+                                g.upload_leaf_corr(&s)
+                                    .map_err(|err| format!("learned correction upload failed: {err}"))
+                            })
+                        } else {
+                            Ok(())
+                        };
+                        match leaf_ready {
+                            Err(err) => {
+                                s.leaf_measure_end();
+                                gpu_err = Some(err);
+                            }
+                            Ok(()) => {
+                                // Accuracy uses device buffers only. Readers may keep
+                                // using the previous host snapshot while it is measured.
+                                drop(s);
+                                let measured = g.gaps_and_evs();
+                                s = lock_unpoisoned(&solver);
+                                // back to the corrections the solve iterates on
+                                s.leaf_measure_end();
+                                let restored = g.upload_leaf_corr(&s)
+                                    .map_err(|err| format!("learned correction upload failed: {err}"));
+                                match measured.and_then(|ge| restored.map(|()| ge)) {
+                                    Ok(ge) => {
+                                        // keep browse/export in sync with the device
+                                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                                            Ok(()) => ge_gpu = Some(ge),
+                                            Err(err) => {
+                                                gpu_err =
+                                                    Some(format!("checkpoint sync failed: {err}"))
+                                            }
+                                        }
                                     }
+                                    Err(err) => gpu_err = Some(err),
                                 }
                             }
-                            Err(err) => gpu_err = Some(err),
                         }
                     }
                     if let Some(err) = gpu_err {
@@ -1908,16 +1951,16 @@ async fn pf_solve(
                         st.gpu = false;
                         st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
                         drop(st);
-                        s.gaps_and_evs()
+                        pf_measured_gaps(&mut s)
                     } else {
                         match ge_gpu {
                             Some(ge) => ge,
-                            None => s.gaps_and_evs(),
+                            None => pf_measured_gaps(&mut s),
                         }
                     }
                 };
                 #[cfg(not(feature = "gpu"))]
-                let (gaps, evs) = s.gaps_and_evs();
+                let (gaps, evs) = pf_measured_gaps(&mut s);
                 // the trust dial's readout (hero mode with a dial), measured
                 // on the same snapshot as the gaps
                 #[cfg(feature = "gpu")]
@@ -1965,6 +2008,9 @@ async fn pf_solve(
                 if total < req.target_gap || done >= max {
                     let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
                     drop(st);
+                    // learned realization: the finished game is priced as it
+                    // was just measured, and as a reload will price it
+                    s.leaf_settle(false);
                     pf_finish_preflop(&mut s, &status, reason, false, None);
                     return;
                 }
@@ -2036,8 +2082,11 @@ async fn pf_evaluate(
 ) -> Result<Json<serde_json::Value>, ApiError> {
     let (solver, _, status) = pf_session(&state)?;
     let out = tokio::task::spawn_blocking(move || {
-        let s = pf_solver_lock(&solver);
+        let mut s = pf_solver_lock(&solver);
         pf_reject_if_running(&status)?;
+        // learned realization: the table's rules may have changed since the
+        // flop corrections were computed, so price the strategies as they are now
+        s.leaf_settle(true);
         let (gaps, evs) = s.gaps_and_evs();
         Ok::<serde_json::Value, ApiError>(
             serde_json::json!({ "iteration": s.iteration, "gaps": gaps, "evs": evs }),
