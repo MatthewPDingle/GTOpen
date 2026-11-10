@@ -19,8 +19,10 @@ luck (validation error about 0.003 against 0.139 flop-blind). Its prediction
 is averaged over all 1,755 distinct flops with the scoring weights, and the
 deployed flop-blind net is trained on the solved value with the teacher's
 flop luck removed ("cv": value - (teacher on this flop - teacher's flop
-average)): same mean, far less noise. Only training jobs teach the teacher;
-validation jobs stop it early, as they stop the net; test jobs are never read.
+average)): same mean, far less noise. Only training jobs teach the teacher
+(in a scaling-grid data fraction, only that fraction's jobs: it never sees a
+label the net may not); validation jobs stop it early, as they stop the net;
+test jobs are never read.
 
 Synthetic leaves (CONFIG["n_syn"]). With clean targets the limit is how many
 distinct leaves the net sees. The teacher labels extra leaves for free: mixes
@@ -44,6 +46,7 @@ generator, inside the harness's 15-minute cap.
 
 import copy
 import gzip
+import hashlib
 import itertools
 import json
 import os
@@ -322,12 +325,31 @@ class Teacher(torch.nn.Module):
         return torch.cat(outs), torch.cat(wbars)
 
 
+def train_rows(data, split):
+    """Snapshot rows of the examples the student trains on, in data.x_train's order: the whole training
+    split, or the part of it a scaling-grid data fraction keeps (data.train_index)."""
+    tr = np.nonzero(split == harness.SPLITS["train"])[0]
+    sel = getattr(data, "train_index", None)
+    rows = tr if sel is None else tr[sel]
+    assert len(rows) == data.n_train, "training rows do not match the training tensors"
+    return rows
+
+
+def subset_tag(data):
+    """Cache-name suffix for a data fraction (empty for the whole training split), so the teacher and its
+    synthetic leaves are never shared between fractions."""
+    sel = getattr(data, "train_index", None)
+    if sel is None:
+        return ""
+    return f"-n{len(sel)}-{hashlib.sha256(np.asarray(sel, np.int64).tobytes()).hexdigest()[:8]}"
+
+
 def teacher_targets(cfg, data, generator):
     """Trains the teacher and returns, for the training rows: its flop average (n, 338), its prediction
     on each row's own flop (n, 338) and the flop-averaged weights (n, 338)."""
     flop, eq, cache_dir = load_side(data)
     tag = "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
-    stem = f"{data.snapshot}-s{cfg['seed']}-{tag}"
+    stem = f"{data.snapshot}-s{cfg['seed']}-{tag}{subset_tag(data)}"
     n_syn = int(cfg.get("n_syn", 0))
     cache = os.path.join(cache_dir, f"teacher2-{stem}.pt")
     model_path = os.path.join(cache_dir, f"teacher2-model-{stem}.pt")
@@ -351,7 +373,7 @@ def teacher_targets(cfg, data, generator):
         z = None
     dev = data.device
     split = np.load(os.path.join(data.dir, "split.npy"))
-    tr, va = np.nonzero(split == harness.SPLITS["train"])[0], np.nonzero(split == harness.SPLITS["val"])[0]
+    tr, va = train_rows(data, split), np.nonzero(split == harness.SPLITS["val"])[0]
     t0 = time.time()
     tabs = flop_tables()
     log(f"flop tables in {time.time() - t0:.0f} s")
@@ -445,8 +467,7 @@ def synth_leaves(cfg, data, model, n_syn):
     from validate import default_cli
     t0 = time.time()
     r_ = np.random.default_rng(1000 + int(cfg["seed"]))
-    split = np.load(os.path.join(data.dir, "split.npy"))
-    tr = np.nonzero(split == harness.SPLITS["train"])[0]
+    tr = train_rows(data, np.load(os.path.join(data.dir, "split.npy")))
     xtr = np.asarray(np.load(os.path.join(data.dir, "x.npy"), mmap_mode="r")[tr], np.float64)
     rng, meta = xtr[:, :2 * NC].reshape(-1, 2, NC), xtr[:, -10:]
     pt = meta[:, 6:10].argmax(1)
