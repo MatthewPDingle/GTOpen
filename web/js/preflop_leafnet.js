@@ -1,6 +1,7 @@
-// Which leaf net "learned flop values" uses: the shipped v1 or a net the
-// leaf-net harness (tools/leafnet) kept. The list comes from the server,
-// which reads the harness's work folder; saves remember the net by name.
+// Which leaf net "learned flop values" uses: the shipped v1, a net the
+// leaf-net harness (tools/leafnet) kept, or an ensemble it built (one file
+// that averages several kept nets). The list comes from the server, which
+// reads the harness's work folder; saves remember the net by name.
 import { api } from './api.js';
 
 const SHIPPED = 'v1';
@@ -15,15 +16,22 @@ function label(net) {
   }
   const parts = [`${(/^snap-(\d+k)/.exec(net.snapshot || '') || [])[1] || net.snapshot} data`];
   if (net.val_class != null) parts.push(`error ${net.val_class.toFixed(4)}`);
-  if (net.desc) parts.push(net.desc.length > 48 ? `${net.desc.slice(0, 47)}…` : net.desc);
-  return `${net.best ? '★ ' : ''}${parts.join(' · ')}`;
+  if (net.members) {
+    // an ensemble: its description only lists the member runs, which the tip shows
+    parts.unshift(`mean of ${net.members} nets`);
+  } else if (net.desc) {
+    parts.push(net.desc.length > 48 ? `${net.desc.slice(0, 47)}…` : net.desc);
+  }
+  return `${net.best || net.averages_best ? '★ ' : ''}${parts.join(' · ')}`;
 }
 
 function tip(net) {
   if (net.kind === 'shipped') return 'The net shipped with GTOpen.';
   const lines = [`${net.snapshot}/${net.run}`, net.time ? `kept ${net.time.replace('T', ' ')}` : ''];
   if (net.train_examples) lines.push(`trained on ${net.train_examples.toLocaleString()} examples`);
-  if (net.sizes) lines.push(`layers ${net.sizes.join(' → ')}`);
+  if (net.members) lines.push(`the mean of ${net.members} nets${net.averages_best ? ' (seed copies of the best run)' : ''}`);
+  if (net.members && net.desc) lines.push(net.desc);
+  if (net.sizes) lines.push(`layers ${net.sizes.join(' → ')}${net.members ? ' each' : ''}`);
   if (net.leaf_class) lines.push(`real-leaf class error ${net.leaf_class}`);
   return lines.filter(Boolean).join('\n');
 }
