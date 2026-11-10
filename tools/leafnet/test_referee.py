@@ -157,6 +157,20 @@ class RefereeTests(unittest.TestCase):
         with open(path) as f:
             self.assertEqual(f.read(), "something\telse\n")
 
+    def test_prepare_runs_before_the_clock_and_gets_a_copy_of_the_config(self):
+        self.assertEqual(harness.prepare_once(None, {"a": 1}, object()), 0.0)   # a trainer without prepare()
+        seen = []
+
+        def prepare(cfg, data):
+            seen.append((dict(cfg), data))
+            cfg["a"] = 2                       # must not leak into the run's config
+
+        cfg, data = {"a": 1}, object()
+        seconds = harness.prepare_once(prepare, cfg, data)
+        self.assertEqual(seen, [({"a": 1}, data)])
+        self.assertEqual(cfg, {"a": 1})
+        self.assertGreaterEqual(seconds, 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

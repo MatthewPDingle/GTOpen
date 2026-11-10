@@ -190,7 +190,7 @@ def fit_report(rows, manifest, cap_params, min_fraction=DEFAULT_MIN_FRACTION):
 def markdown(snapshot, report, cap_params):
     lines = [f"# Leaf-net scaling fit: {snapshot}", "",
              "error(N, D) = E + A / N^a + B / D^b, N = parameters, D = training examples. "
-             f"Deployment cap ~ {cap_params:,} parameters (2x v1's multiply-adds).", ""]
+             f"Deployment cap ~ {cap_params:,} parameters ({harness.MAX_MACS_X}x v1's multiply-adds).", ""]
     for key, rep in report.items():
         f = rep["fit"]
         n_fit = sum(p["fitted"] for p in rep["points"])
@@ -280,6 +280,8 @@ def cmd_run(args):
     for i, (depth, hidden, frac, seed) in enumerate(todo, 1):
         if frac not in views:
             views[frac] = Subset(data, subset_mask(train_jobs, frac)) if frac < 1 else data
+            # the recipe's shared side data for this fraction (its teachers, say), outside the runs' budget
+            harness.prepare_once(getattr(trainer, "prepare", None), trainer.CONFIG, views[frac])
         view = views[frac]
         cfg = dict(trainer.CONFIG, depth=depth, hidden=hidden)
         sizes = [data.n_in] + [hidden] * depth + [data.n_out]

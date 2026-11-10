@@ -48,6 +48,7 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\referee.py                                   # low-noise validation targets (GPU, ~10 min), before noise
 & $py tools\leafnet\harness.py noise --seeds 5                   # seed spread of the current CONFIG (also sets the first best)
 & $py tools\leafnet\harness.py rescore                         # snapshot that had runs before its referee: add val_cv to them
+& $py tools\leafnet\train.py --prepare                         # build the recipe's shared side data (its teachers): ~50 min on a new snapshot, nothing when cached
 & $py tools\leafnet\train.py --desc "what changed"               # one run: trained, scored, kept or discarded
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
 & $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
@@ -87,7 +88,7 @@ net it was solved with as long as the run folder is still there.
 - Splits are gonogo.py's (job hash: 0 test, 1 validation, rest train), so
   held-out jobs never change as the data grows. Real-leaf sets are test
   sets and are never trained on.
-- A run is kept only if it is deployable (plain Linear/ReLU stack within 2x
+- A run is kept only if it is deployable (plain Linear/ReLU stack within 4x
   v1's multiply-adds, reproduced by the Rust loader), significantly better
   than the best on validation class error (paired bootstrap over jobs) by
   more than the seed spread, not significantly worse on range error, and not
