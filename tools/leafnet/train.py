@@ -86,7 +86,7 @@ CONFIG = {
     "last_layer_scale": 0.347,
     "teacher": True,        # flop-aware teacher, marginalized over all flops (see the module docstring)
     "mode": "cv",              # "cv": value minus the teacher's flop luck; "distill": the teacher's flop average
-    "distill_mix": 0.8,     # weight of the pure flop-average loss next to the cv loss
+    "distill_mix": 0.5,     # weight of the pure flop-average loss next to the cv loss
     "t_steps": 16000,       # teacher step cap
     "t_lr": 1e-3,
     "t_wd": 1e-5,
@@ -104,6 +104,7 @@ CONFIG = {
     "syn_weight": 1.0,      # weight of the synthetic-leaf loss
     "t_ens": [0, 1, 2],     # average the real leaves' targets over the teachers of these seeds ([] = this run's only)
     "schedule": "cosine",   # "plateau": drop and stop on stale validation; "cosine": lr falls to 1% over max_steps
+    "ema": 0.0,             # decay of an average of the net's weights that is validated and returned (0 = off)
     "syn_seed": 0,          # whose teacher cache and synthetic leaves to use (None = the run's own seed)
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
 }
@@ -238,6 +239,11 @@ def teacher_tag(cfg):
     if cfg.get("t_schedule", "plateau") != "plateau":
         tag += "-" + cfg["t_schedule"]
     return tag
+
+
+def syn_kinds(cfg):
+    """The kinds of synthetic leaves a recipe trains on: "mix", "fresh" or several joined by "+"."""
+    return str(cfg.get("syn_kind", "mix")).split("+")
 
 
 def syn_kind_tag(cfg):
@@ -559,27 +565,30 @@ def prepare(cfg, data):
     seeds = [int(s) for s in cfg["t_ens"]]
     if syn_seed is not None and syn_seed not in seeds:
         seeds.insert(0, syn_seed)
+    kinds = syn_kinds(cfg)
     for s in seeds:
         labels = n_syn if s == syn_seed else 0           # only syn_seed's teacher makes the synthetic leaves
-        tcfg = dict(cfg, seed=s, n_syn=labels, val_cv=False)
-        files = teacher_files(tcfg, data, cache_dir)
-        need = [files["targets"], files["model"]] + ([files["syn"]] if labels else [])
-        if all(os.path.exists(f) for f in need):
-            continue
-        log(f"prepare: teacher of seed {s}" + (f" and its {labels:,} synthetic leaves" if labels else ""))
-        harness.seed_everything(s)
-        teacher_targets(tcfg, data, torch.Generator().manual_seed(s))
-        torch.cuda.empty_cache()
-        missing = [f for f in need if not os.path.exists(f)]
-        if missing:
-            raise RuntimeError(f"prepare: seed {s} is still missing {missing} (an old-format cache file in the way?)")
-    if syn_seed is not None and n_syn and cfg.get("syn_ens"):
-        tcfg = dict(cfg, seed=syn_seed)
-        if not os.path.exists(synens_file(tcfg, data, cache_dir, n_syn)):
-            z = teacher_targets(tcfg, data, torch.Generator().manual_seed(syn_seed))    # read from the cache
-            ensemble_syn_labels(tcfg, data, z["xs"], z["Ts"])
-            del z
+        for kind in (kinds if labels else kinds[:1]):
+            tcfg = dict(cfg, seed=s, n_syn=labels, val_cv=False, syn_kind=kind)
+            files = teacher_files(tcfg, data, cache_dir)
+            need = [files["targets"], files["model"]] + ([files["syn"]] if labels else [])
+            if all(os.path.exists(f) for f in need):
+                continue
+            log(f"prepare: teacher of seed {s}" + (f" and its {labels:,} synthetic leaves ({kind})" if labels else ""))
+            harness.seed_everything(s)
+            teacher_targets(tcfg, data, torch.Generator().manual_seed(s))
             torch.cuda.empty_cache()
+            missing = [f for f in need if not os.path.exists(f)]
+            if missing:
+                raise RuntimeError(f"prepare: seed {s} is still missing {missing} (an old-format cache file in the way?)")
+    if syn_seed is not None and n_syn and cfg.get("syn_ens"):
+        for kind in kinds:
+            tcfg = dict(cfg, seed=syn_seed, syn_kind=kind)
+            if not os.path.exists(synens_file(tcfg, data, cache_dir, n_syn)):
+                z = teacher_targets(tcfg, data, torch.Generator().manual_seed(syn_seed))    # read from the cache
+                ensemble_syn_labels(tcfg, data, z["xs"], z["Ts"])
+                del z
+                torch.cuda.empty_cache()
 
 
 # --------------------------------------------------------------- student ----
@@ -604,6 +613,8 @@ def run(cfg, data, budget, generator):
         # the teachers' side data (and the synthetic leaves) of cfg["syn_seed"] when set, so seed replicates share
         # their targets and differ only in the net's initialisation and batch order
         tcfg = cfg if cfg.get("syn_seed") is None else dict(cfg, seed=int(cfg["syn_seed"]))
+        kinds = syn_kinds(cfg)                   # "mix+fresh": n_syn leaves of each kind
+        tcfg = dict(tcfg, syn_kind=kinds[0])
         z = teacher_targets(tcfg, data, generator)
         T, own, wbar = z["T"], z["own"], z["wbar"]
         if cfg.get("n_syn"):
@@ -616,6 +627,12 @@ def run(cfg, data, budget, generator):
             del zs
             if cfg.get("syn_ens") and xs is not None:
                 Ts = ensemble_syn_labels(tcfg, data, xs, Ts)
+        for kind in kinds[1:] if xs is not None else []:
+            kcfg = dict(tcfg, syn_kind=kind)
+            zk = teacher_targets(kcfg, data, generator)
+            Tk = ensemble_syn_labels(kcfg, data, zk["xs"], zk["Ts"]) if cfg.get("t_ens") and cfg.get("syn_ens") else zk["Ts"]
+            xs, Ts, ws = torch.cat([xs, zk["xs"]]), torch.cat([Ts, Tk]), torch.cat([ws, zk["ws"]])
+            del zk
         if cfg.get("val_cv"):
             # early stopping on validation targets with the teacher's flop luck removed (far less noisy)
             r_val_cv = data.r_val - (z["ownv"] - z["Tv"]) * (data.w_val > 0)
@@ -636,6 +653,8 @@ def run(cfg, data, budget, generator):
                             {"params": biases, "weight_decay": 0.0}], lr=cfg["lr"])
     best, best_state, stale, step = float("inf"), None, 0, 0
     n, bs, mix = data.n_train, cfg["batch"], cfg.get("distill_mix", 0.0)
+    ema_decay = float(cfg.get("ema", 0.0))
+    avg = copy.deepcopy(model) if ema_decay else None      # running average of the weights: validated and returned
     cosine = cfg.get("schedule", "plateau") == "cosine"   # lr falls to 1% over max_steps; no early stop
     ema = None
     model.train()
@@ -678,12 +697,17 @@ def run(cfg, data, budget, generator):
             loss.backward()
             opt.step()
             step += 1
+            if avg is not None:
+                with torch.no_grad():
+                    d = min(ema_decay, step / (step + 10.0))
+                    for pa, pm in zip(avg.parameters(), model.parameters()):
+                        pa.lerp_(pm, 1.0 - d)
             if step % cfg["eval_every"] == 0:
-                va = val_loss(model)
+                va = val_loss(model if avg is None else avg)
                 if step % (10 * cfg["eval_every"]) == 0 and ema is not None:
                     log(f"step {step}: training loss on the real leaves {ema:.6f}, early-stopping loss {va:.6f}")
                 if va < best * (1 - cfg.get("min_rel_gain", 1e-4)):
-                    best, stale, best_state = va, 0, copy.deepcopy(model.state_dict())
+                    best, stale, best_state = va, 0, copy.deepcopy((model if avg is None else avg).state_dict())
                 elif not cosine:
                     stale += 1
                     if stale == cfg["patience"] // 2:
