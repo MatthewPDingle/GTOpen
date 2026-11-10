@@ -11,6 +11,7 @@ generator. The plan behind it is the [leaf net plan](https://claude.ai/artifact/
 | `train.py` | CONFIG + `run()`: the model and how it is trained | the agent / you |
 | `sweep.py` | Optuna over train.py's numeric CONFIG | frozen |
 | `program.md` | the autoresearch loop's rules | frozen |
+| `scaling.py` | net size x data fraction grid and the fitted scaling law (WORK/scaling/) | frozen |
 
 ## Setup (once)
 
@@ -46,6 +47,8 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
 & $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
 & $py tools\leafnet\harness.py confirm RUN RUN_S1 RUN_S2           # keep rule on seed averages (near misses)
+& $py tools\leafnet\scaling.py run                               # size x data grid (~1 h), outside the keep rule
+& $py tools\leafnet\scaling.py fit                               # fit error = E + A/N^a + B/D^b, predict milestones
 & $py tools\leafnet\harness.py status
 & $py tools\leafnet\harness.py final                             # milestones only: the test split
 ```
