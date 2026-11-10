@@ -4,6 +4,7 @@ export and logging. The autoresearch agent never edits this file (see
 program.md); it edits train.py only.
 
     python tools/leafnet/train.py --desc "baseline"        # one run, scored and logged (via harness.main)
+    python tools/leafnet/train.py --prepare                # only build the recipe's shared side data (its prepare())
     python tools/leafnet/harness.py noise --seeds 5        # seed spread of train.py's CONFIG
     python tools/leafnet/harness.py status                 # snapshot, best run, seed spread
     python tools/leafnet/harness.py confirm RUN RUN RUN    # seed-averaged keep rule for a near miss
@@ -26,7 +27,7 @@ referee existed, and the val_cv seed spread from the noise runs.
 Keep rule (all must hold):
   1. the model exports to the GTOLEAF format (plain Linear/ReLU stack) and
      `solve-cli datagen leafnet` reproduces its outputs (parity);
-  2. it costs at most 2x leaf net v1's multiply-adds per leaf;
+  2. it costs at most 4x leaf net v1's multiply-adds per leaf;
   3. the 95% bootstrap interval of (best - candidate) class error on the
      score is above 0, and the gain is larger than the measured seed spread;
   4. its range error on the score is not significantly worse than the best's;
@@ -69,7 +70,8 @@ from validate import cuda_env, default_cli  # noqa: E402
 
 # ----------------------------------------------------------- fixed rules ----
 V1_SIZES = [686, 512, 512, 2 * NC]           # leaf net v1 (cache/leaf_net_v1.bin)
-MAX_MACS = 2 * sum(a * b for a, b in zip(V1_SIZES, V1_SIZES[1:]))
+MAX_MACS_X = 4                               # size limit, in multiples of v1's multiply-adds per leaf
+MAX_MACS = MAX_MACS_X * sum(a * b for a, b in zip(V1_SIZES, V1_SIZES[1:]))
 VRAM_CAP_GB = 3.0                            # hard cap: never push a datagen solve out of VRAM
 STEP_BUDGET = 60_000                         # optimizer steps per run cap (~5 min for 2x512 at batch 256 on the 5090)
 WALL_CAP_S = 15 * 60                         # a run over this is discarded
@@ -462,6 +464,19 @@ def seed_everything(seed):
     torch.backends.cuda.matmul.allow_tf32 = False
 
 
+def prepare_once(prepare_fn, cfg, data):
+    """Runs the trainer's optional prepare(cfg, data) before a run's clock starts: side data that the
+    recipe's runs share and cache (a bank of teachers, say). Returns the seconds it took."""
+    if prepare_fn is None:
+        return 0.0
+    t0 = time.time()
+    prepare_fn(dict(cfg), data)
+    seconds = time.time() - t0
+    if seconds >= 1:
+        log(f"prepared the recipe's shared side data in {seconds:.0f} s (outside the run's budget)")
+    return seconds
+
+
 def train_once(run_fn, cfg, data, seed):
     import torch
     seed_everything(seed)
@@ -489,7 +504,7 @@ def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decid
         if sizes[0] != data.n_in or sizes[-1] != data.n_out:
             raise ValueError(f"sizes {sizes} do not match {data.n_in} inputs / {data.n_out} outputs")
         if row["macs"] > MAX_MACS:
-            raise ValueError(f"{row['macs']:,} multiply-adds per leaf is over the limit {MAX_MACS:,} (2x v1)")
+            raise ValueError(f"{row['macs']:,} multiply-adds per leaf is over the limit {MAX_MACS:,} ({MAX_MACS_X}x v1)")
         net_path = os.path.join(rdir, "leaf_net.bin")
         leafnet_io.write(net_path, Ws, bs, data.mu, data.sd,
                          extra={"snapshot": data.snapshot, "run": run_id, "trainer": "tools/leafnet/train.py"})
@@ -546,10 +561,13 @@ def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decid
     return verdict, row
 
 
-def main(run_fn, config):
-    """Entry point used by train.py: one run, scored against the best and logged."""
+def main(run_fn, config, prepare_fn=None):
+    """Entry point used by train.py: one run, scored against the best and logged. prepare_fn is the
+    trainer's optional prepare(cfg, data): it runs first, outside the run's budget."""
     ap = argparse.ArgumentParser(description="Train one leaf net with train.py's CONFIG and apply the keep rule.")
-    ap.add_argument("--desc", required=True, help="one line: what this run changes")
+    ap.add_argument("--desc", help="one line: what this run changes (required for a run)")
+    ap.add_argument("--prepare", action="store_true",
+                    help="only build the recipe's shared side data (the trainer's prepare()), then exit")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--replicate", metavar="RUN",
                     help="this is another seed of RUN (same train.py): scored and logged, not judged; "
@@ -558,7 +576,13 @@ def main(run_fn, config):
     ap.add_argument("--work", default=work_dir())
     ap.add_argument("--solve-cli", default=default_cli())
     args = ap.parse_args()
+    if not args.prepare and not args.desc:
+        ap.error("--desc is required")
     data = Data(args.work, args.snapshot)
+    prepare_once(prepare_fn, config, data)
+    if args.prepare:
+        print("PREPARED" if prepare_fn is not None else "PREPARED: this trainer has no prepare()")
+        return
     state = State(args.work, data.snapshot)
     model, budget = train_once(run_fn, config, data, args.seed)
     steps = getattr(model, "steps_taken", "")
@@ -584,6 +608,7 @@ def cmd_noise(args):
     state = State(args.work, data.snapshot)
     results = []
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")   # a new noise round never overwrites an older one
+    prepare_once(getattr(train, "prepare", None), train.CONFIG, data)
     for seed in range(args.seeds):
         model, budget = train_once(train.run, train.CONFIG, data, seed)
         steps = getattr(model, "steps_taken", "")

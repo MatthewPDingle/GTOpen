@@ -59,6 +59,7 @@ def main():
             sys.exit(f"cannot sweep {k!r}: it must be in both SPACE and train.CONFIG")
     data = harness.Data(args.work, args.snapshot)
     state = harness.State(args.work, data.snapshot)
+    harness.prepare_once(getattr(train, "prepare", None), train.CONFIG, data)   # shared side data, outside the trials
     storage = "sqlite:///" + os.path.join(state.dir, "sweeps.db").replace("\\", "/")
     study = optuna.create_study(study_name=args.study, storage=storage, direction="minimize", load_if_exists=True,
                                 sampler=optuna.samplers.TPESampler(seed=args.seed))

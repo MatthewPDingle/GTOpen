@@ -49,11 +49,12 @@ shares the synthetic leaves, so seed replicates differ only in the net's
 initialisation and batch order.
 
 Cost. Side data (flops, teacher targets and models, synthetic leaves) is
-cached in leafnet-loop2/ next to WORK. The teachers of "t_ens" must be in
-that cache: each comes from a run of this file with that seed and "t_ens":
-[] (about 9 minutes each). With them cached, a run takes about 6 minutes.
-Training all five teachers inside one run would not fit the harness's
-15-minute cap.
+cached in leafnet-loop2/ next to WORK. prepare() builds the teachers of
+"t_ens" (about 9 minutes each, each with its own seed), the synthetic leaves
+and their labels. The harness calls it before a run's clock starts, and
+`train.py --prepare` runs it alone, so a new snapshot, a scaling-grid data
+fraction or new teacher settings cost one preparation (about 50 minutes for
+five teachers) and every run after it about 6 minutes.
 
 CONFIG["teacher"] = False gives back the plain recipe of the first loop.
 """
@@ -128,18 +129,37 @@ def subset_tag(data):
     return f"-n{len(sel)}-{hashlib.sha256(np.asarray(sel, np.int64).tobytes()).hexdigest()[:8]}"
 
 
+def teacher_tag(cfg):
+    return "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
+
+
+def teacher_files(cfg, data, cache_dir):
+    """Cache files of the teacher of cfg["seed"]: its targets, its saved model, its synthetic leaves, and
+    the first format's targets file (no validation side, no saved model)."""
+    stem = f"{data.snapshot}-s{cfg['seed']}-{teacher_tag(cfg)}{subset_tag(data)}"
+    n_syn = int(cfg.get("n_syn", 0))
+    lam_min = float(cfg.get("syn_lam_min", 0.0))
+    return {"targets": os.path.join(cache_dir, f"teacher2-{stem}.pt"),
+            "model": os.path.join(cache_dir, f"teacher2-model-{stem}.pt"),
+            "syn": os.path.join(cache_dir, f"syn-{stem}-{n_syn}" + (f"-lam{lam_min}" if lam_min else "") + ".pt"),
+            "old": os.path.join(cache_dir, f"teacher-{stem}.pt")}
+
+
+def synens_file(cfg, data, cache_dir, n_syn):
+    """Cache file of the synthetic leaves of cfg["seed"] labelled by the teachers of cfg["t_ens"]."""
+    lam_min = float(cfg.get("syn_lam_min", 0.0))
+    name = (f"synens-{data.snapshot}-s{cfg['seed']}-{teacher_tag(cfg)}{subset_tag(data)}-{n_syn}"
+            + (f"-lam{lam_min}" if lam_min else "") + "-t" + "_".join(str(int(s)) for s in cfg["t_ens"]) + ".pt")
+    return os.path.join(cache_dir, name)
+
+
 def teacher_targets(cfg, data, generator):
     """Trains the teacher and returns, for the training rows: its flop average (n, 338), its prediction
     on each row's own flop (n, 338) and the flop-averaged weights (n, 338)."""
     flop, eq, cache_dir = load_side(data)
-    tag = "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
-    stem = f"{data.snapshot}-s{cfg['seed']}-{tag}{subset_tag(data)}"
+    files = teacher_files(cfg, data, cache_dir)
+    cache, model_path, syn_cache, old = files["targets"], files["model"], files["syn"], files["old"]
     n_syn = int(cfg.get("n_syn", 0))
-    cache = os.path.join(cache_dir, f"teacher2-{stem}.pt")
-    model_path = os.path.join(cache_dir, f"teacher2-model-{stem}.pt")
-    lam_min = float(cfg.get("syn_lam_min", 0.0))
-    syn_cache = os.path.join(cache_dir, f"syn-{stem}-{n_syn}" + (f"-lam{lam_min}" if lam_min else "") + ".pt")
-    old = os.path.join(cache_dir, f"teacher-{stem}.pt")   # first format: no validation side, no saved teacher
     z = None
     for path in (cache, old):
         if cfg.get("t_cache") and os.path.exists(path) and not (path == old and (cfg.get("val_cv") or n_syn)):
@@ -293,12 +313,8 @@ def ensemble_syn_labels(cfg, data, xs, Ts_own):
     """The synthetic leaves' labels averaged over the teachers of cfg["t_ens"] (this run's own teacher's
     labels are Ts_own; the others are loaded from their saved models). Cached like the other side data."""
     _, _, cache_dir = load_side(data)
-    tag = "-".join(str(cfg[k]) for k in ("t_steps", "t_lr", "t_wd", "t_eq"))
-    lam_min = float(cfg.get("syn_lam_min", 0.0))
     seeds = [int(s) for s in cfg["t_ens"]]
-    name = (f"synens-{data.snapshot}-s{cfg['seed']}-{tag}{subset_tag(data)}-{len(xs)}"
-            + (f"-lam{lam_min}" if lam_min else "") + "-t" + "_".join(map(str, seeds)) + ".pt")
-    path = os.path.join(cache_dir, name)
+    path = synens_file(cfg, data, cache_dir, len(xs))
     if cfg.get("t_cache") and os.path.exists(path):
         log(f"ensemble labels for the synthetic leaves from {path}")
         return torch.load(path, map_location=data.device)
@@ -313,9 +329,9 @@ def ensemble_syn_labels(cfg, data, xs, Ts_own):
             total += Ts_own.float().cpu()
             n_models += 1
             continue
-        mp = os.path.join(cache_dir, f"teacher2-model-{data.snapshot}-s{s}-{tag}{subset_tag(data)}.pt")
+        mp = teacher_files(dict(cfg, seed=s), data, cache_dir)["model"]
         if not os.path.exists(mp):
-            raise FileNotFoundError(f"no saved teacher for seed {s}: run that seed once first ({mp})")
+            raise FileNotFoundError(f"no saved teacher for seed {s}: run `train.py --prepare` first ({mp})")
         model = Teacher(data.n_in, tabs).to(dev)
         model.load_state_dict(torch.load(mp, map_location=dev))
         model.eval()
@@ -331,6 +347,43 @@ def ensemble_syn_labels(cfg, data, xs, Ts_own):
     if cfg.get("t_cache"):
         torch.save(out, path)
     return out
+
+
+def prepare(cfg, data):
+    """Builds the cached side data that this recipe's runs share, before a run's clock starts (the harness
+    calls it before every run; `train.py --prepare` runs it alone): the teachers of cfg["t_ens"], each
+    trained with its own seed exactly as a run of that seed trains its teacher, the synthetic leaves of
+    cfg["syn_seed"] and their ensemble labels. Does nothing when the cache is complete, and nothing for a
+    recipe whose teacher is trained inside the run (no "t_ens", or "t_cache" off)."""
+    if not (cfg.get("teacher") and cfg.get("t_ens") and cfg.get("t_cache")):
+        return
+    cache_dir = load_side(data)[2]
+    n_syn = int(cfg.get("n_syn", 0))
+    syn_seed = None if cfg.get("syn_seed") is None else int(cfg["syn_seed"])
+    seeds = [int(s) for s in cfg["t_ens"]]
+    if syn_seed is not None and syn_seed not in seeds:
+        seeds.insert(0, syn_seed)
+    for s in seeds:
+        labels = n_syn if s == syn_seed else 0           # only syn_seed's teacher makes the synthetic leaves
+        tcfg = dict(cfg, seed=s, n_syn=labels, val_cv=False)
+        files = teacher_files(tcfg, data, cache_dir)
+        need = [files["targets"], files["model"]] + ([files["syn"]] if labels else [])
+        if all(os.path.exists(f) for f in need):
+            continue
+        log(f"prepare: teacher of seed {s}" + (f" and its {labels:,} synthetic leaves" if labels else ""))
+        harness.seed_everything(s)
+        teacher_targets(tcfg, data, torch.Generator().manual_seed(s))
+        torch.cuda.empty_cache()
+        missing = [f for f in need if not os.path.exists(f)]
+        if missing:
+            raise RuntimeError(f"prepare: seed {s} is still missing {missing} (an old-format cache file in the way?)")
+    if syn_seed is not None and n_syn and cfg.get("syn_ens"):
+        tcfg = dict(cfg, seed=syn_seed)
+        if not os.path.exists(synens_file(tcfg, data, cache_dir, n_syn)):
+            z = teacher_targets(tcfg, data, torch.Generator().manual_seed(syn_seed))    # read from the cache
+            ensemble_syn_labels(tcfg, data, z["xs"], z["Ts"])
+            del z
+            torch.cuda.empty_cache()
 
 
 # --------------------------------------------------------------- student ----
@@ -450,4 +503,4 @@ def run(cfg, data, budget, generator):
 
 
 if __name__ == "__main__":
-    harness.main(run, CONFIG)
+    harness.main(run, CONFIG, prepare)

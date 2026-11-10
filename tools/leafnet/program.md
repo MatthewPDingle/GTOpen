@@ -15,13 +15,27 @@ it serves is the agreed leaf net plan
 - `train.py` may change anything inside it: the architecture, the loss,
   the optimizer, the schedule, the batch size, regularization, input
   handling inside the model, ensembling, distillation.
+- **Shared side data goes in `prepare(cfg, data)`.** If the recipe needs
+  something every run shares and that takes longer than a run may (a bank
+  of teachers), build and cache it in `train.py`'s `prepare()`. The harness
+  calls it before a run's clock starts, and `train.py --prepare` runs it
+  alone. It must do nothing when the cache is complete, give each cached
+  piece its own fixed seed (never the run's), name its cache files by every
+  setting that changes them, and read only training and validation data.
+  A change that needs a new bank costs GPU time next to the generator: say
+  so in the run's `--desc`, and keep one preparation under about an hour.
 - **Stay deployable.** `run()` must return a `torch.nn.Sequential` of
   `Linear` and `ReLU` layers (Dropout and Identity are ignored). Fold
   anything else into Linear layers before returning: batch norm folds into
   the neighbouring Linear layer, and averaged ensembles become one wider
-  block-diagonal stack. The model must cost at most 2x leaf net v1's
+  block-diagonal stack. The model must cost at most 4x leaf net v1's
   multiply-adds per leaf (the harness enforces both, and checks that the
   Rust loader reproduces the outputs).
+- **Accuracy comes before speed.** A bigger net inside the limit is fine
+  when it passes the keep rule; don't shrink a net to save solve time.
+  When a kept net is larger than the best it replaces, say so in the
+  `--desc` and give the error of the best net at the old size next to it,
+  so the cost of the extra accuracy stays visible.
 - New input features or layer types the Rust loader can't run are out of
   scope for the loop. Write them up as a proposal instead (they need
   leafnet.rs and leafnet_io.py changes with a parity test first).
