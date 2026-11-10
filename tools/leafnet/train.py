@@ -11,37 +11,47 @@ the pot. Anything else (batch norm, other activations, ensembles) must be
 folded into such a stack before returning, or the harness rejects the run as
 not deployable. The harness scores it, applies the keep rule and logs it.
 
-Flop-aware teacher (CONFIG["teacher"]). Every training example is one leaf
-solved on ONE uniformly random flop, so most of its target is flop luck. A
-teacher that also sees the flop, how each hand class connects with it and
-where the class sits in both ranges on that flop explains almost all of that
-luck (validation error about 0.003 against 0.139 flop-blind). Its prediction
-is averaged over all 1,755 distinct flops with the scoring weights, and the
-deployed flop-blind net is trained on the solved value with the teacher's
-flop luck removed ("cv": value - (teacher on this flop - teacher's flop
-average)): same mean, far less noise. Only training jobs teach the teacher
-(in a scaling-grid data fraction, only that fraction's jobs: it never sees a
-label the net may not); validation jobs stop it early, as they stop the net;
-test jobs are never read.
+Flop-aware teachers (CONFIG["teacher"], flops.py). Every training example is
+one leaf solved on ONE uniformly random flop, so most of its target is flop
+luck. A teacher that also sees the flop, how each hand class connects with it
+and where the class sits in both ranges on that flop explains almost all of
+that luck (validation error about 0.003 against 0.139 flop-blind). Its
+prediction averaged over all 1,755 distinct flops with the scoring weights is
+a flop-blind target without the luck. Only training jobs teach a teacher (in
+a scaling-grid data fraction, only that fraction's jobs); validation jobs
+stop it early, as they stop the net; test jobs are never read. This file
+never reads the referee's files (snapshots/.../referee/).
 
-Synthetic leaves (CONFIG["n_syn"]). With clean targets the limit is how many
-distinct leaves the net sees. The teacher labels extra leaves for free: mixes
-of two training leaves of the same pot type (ranges blended, pot and stack
-interpolated on a log scale, rake from one of the two), priced with the
-balanced model by solve-cli like any real leaf and labelled with the
-teacher's flop average. 60,000 of them are on in the kept configuration
-(confirmed on seeds 0, 1 and 2 with `harness.py confirm`).
+What the net is trained on (CONFIG["mode"]):
+- "distill" (kept since loop 3): the mean flop average of several teachers
+  (CONFIG["t_ens"], seeds 0-4), for the real leaves and, with "syn_ens", for
+  the synthetic leaves. The net's error against that target was the same on
+  training and validation leaves: it was underfitting, not overfitting. So
+  the kept net is wide and shallow (2x768), lightly regularised and trained
+  long; deeper nets (4x512, 5x512) and one very wide layer (1x1536) fit worse.
+- "cv" (loop 2): the solved value minus one teacher's flop luck (value -
+  (teacher on this flop - teacher's flop average)). Unbiased whatever the
+  teacher gets wrong, but it keeps the teacher's residual noise; the better
+  choice for a small net (2x256).
 
-Options that are off in the kept configuration: early stopping on validation
-targets with the flop luck removed (val_cv), targets averaged over several
-teachers (t_ens), mixes that stay close to one real leaf (syn_lam_min), and
-the pure flop average as the target (mode "distill"). CONFIG["teacher"] =
-False gives back the plain recipe of the first loop (4x512, Adam, L2).
+Synthetic leaves (CONFIG["n_syn"]): mixes of two training leaves of the same
+pot type (ranges blended, pot and stack interpolated on a log scale, rake
+from one of the two), priced with the balanced model by solve-cli like any
+real leaf and labelled with the teachers' flop average. Leaving them out
+costs accuracy on validation and on real leaves.
 
-Side data (flop of each example, flop tables, teacher targets, synthetic
-leaves) is cached in leafnet-loop2/ next to WORK. A run from scratch
-(teacher and synthetic leaves included) takes about 10 minutes next to the
-generator, inside the harness's 15-minute cap.
+Seeds. With "t_ens" every seed shares the same teachers, and "syn_seed" also
+shares the synthetic leaves, so seed replicates differ only in the net's
+initialisation and batch order.
+
+Cost. Side data (flops, teacher targets and models, synthetic leaves) is
+cached in leafnet-loop2/ next to WORK. The teachers of "t_ens" must be in
+that cache: each comes from a run of this file with that seed and "t_ens":
+[] (about 9 minutes each). With them cached, a run takes about 6 minutes.
+Training all five teachers inside one run would not fit the harness's
+15-minute cap.
+
+CONFIG["teacher"] = False gives back the plain recipe of the first loop.
 """
 
 import copy
@@ -60,8 +70,8 @@ import torch  # noqa: E402
 import harness  # noqa: E402
 
 CONFIG = {
-    "hidden": 512,          # width of each hidden layer
-    "depth": 4,             # hidden layers
+    "hidden": 768,          # width of each hidden layer
+    "depth": 2,             # hidden layers
     "lr": 1.953e-3,
     "weight_decay": 4.23e-6,  # L2 on weights (not biases), added to the gradient as in gonogo's numpy Adam
     "batch": 512,
@@ -83,6 +93,8 @@ CONFIG = {
     "syn_lam_min": 0.0,     # smallest weight of the first leaf's ranges in a mix (0 = any blend)
     "syn_weight": 1.0,      # weight of the synthetic-leaf loss
     "t_ens": [0, 1, 2, 3, 4],  # average the real leaves' targets over the teachers of these seeds ([] = this run's only)
+    "schedule": "plateau",  # "plateau": drop and stop on stale validation; "cosine": lr falls to 1% over max_steps
+    "syn_seed": 0,          # whose teacher cache and synthetic leaves to use (None = the run's own seed)
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
 }
 
@@ -336,7 +348,10 @@ def build(cfg, n_in, n_out):
 def run(cfg, data, budget, generator):
     T = own = wbar = r_val_cv = xs = Ts = ws = None
     if cfg.get("teacher"):
-        z = teacher_targets(cfg, data, generator)
+        # the teachers' side data (and the synthetic leaves) of cfg["syn_seed"] when set, so seed replicates share
+        # their targets and differ only in the net's initialisation and batch order
+        tcfg = cfg if cfg.get("syn_seed") is None else dict(cfg, seed=int(cfg["syn_seed"]))
+        z = teacher_targets(tcfg, data, generator)
         T, own, wbar = z["T"], z["own"], z["wbar"]
         if cfg.get("n_syn"):
             xs, Ts, ws = z["xs"], z["Ts"], z["ws"]
@@ -347,7 +362,7 @@ def run(cfg, data, budget, generator):
             own = torch.stack([q["own"].float() for q in zs]).mean(0).half()
             del zs
             if cfg.get("syn_ens") and xs is not None:
-                Ts = ensemble_syn_labels(cfg, data, xs, Ts)
+                Ts = ensemble_syn_labels(tcfg, data, xs, Ts)
         if cfg.get("val_cv"):
             # early stopping on validation targets with the teacher's flop luck removed (far less noisy)
             r_val_cv = data.r_val - (z["ownv"] - z["Tv"]) * (data.w_val > 0)
@@ -397,7 +412,8 @@ def run(cfg, data, budget, generator):
                         loss = (1 - mix) * loss + mix * (wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9)
                 else:
                     loss = (wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9)
-                ema = float(loss) if ema is None else 0.99 * ema + 0.01 * float(loss)   # real leaves only
+                lv = float(loss.detach())                                   # real leaves only
+                ema = lv if ema is None else 0.99 * ema + 0.01 * lv
                 if xs is not None:
                     wj = ws[j].float()
                     loss = loss + cfg.get("syn_weight", 1.0) * (wj * (ps - Ts[j].float()) ** 2).sum() / wj.sum().clamp_min(1e-9)
