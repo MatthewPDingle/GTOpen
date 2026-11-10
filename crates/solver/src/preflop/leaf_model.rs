@@ -24,16 +24,16 @@ const NO_SLOT: u32 = u32::MAX;
 ///
 /// The corrections follow the strategies and the strategies follow the
 /// corrections, so the weight is a damping factor. Measured as the gap
-/// against the net's output at the current strategies, on 3- and 4-handed
-/// games with the v1 net (examples/leaf_settle.rs): replacing the
-/// corrections (weight 1) can lock a solve in place (a 60 bb game stayed
-/// at 0.016 bb from iteration 1,000 on, against 0.002 with 0.3 or 0.5);
-/// the linear average used before 2026-11 lags and stays at 0.003 to
-/// 0.006; 0.15 is slower than 0.3. Between 0.3 and 0.5 there is little to
-/// choose (0.001 to 0.003 by 6,000 iterations, each ahead on some games);
-/// 0.3 is the one further from the weight that sticks. Env
-/// PREFLOP_LEAF_BLEND: a fixed weight in (0, 1], or "lin" for the linear
-/// average.
+/// against the net's output at the current strategies, on four 3-handed
+/// games and a 4-handed one with the v1 net (examples/leaf_settle.rs),
+/// averaged over iterations 4,000 to 6,000: replacing the corrections
+/// (weight 1) can lock a solve in place (a 60 bb game stayed at 0.016 bb
+/// from iteration 1,000 on) and gives 0.001 to 0.003 elsewhere; the linear
+/// average used before 2026-11 lags and gives 0.003 to 0.006; 0.5 gives
+/// 0.001 to 0.006 and 0.3 gives 0.001 to 0.004, the lowest worst case;
+/// 0.15 is slower than 0.3. On the 4-handed game no weight keeps falling
+/// (about 0.0035 with 0.3). Env PREFLOP_LEAF_BLEND: a fixed weight in
+/// (0, 1], or "lin" for the linear average.
 const REFRESH_WEIGHT: f32 = 0.3;
 
 fn refresh_weight() -> Option<f32> {
