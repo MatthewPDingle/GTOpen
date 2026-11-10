@@ -12,7 +12,7 @@ fn table() -> Arc<EquityTable> {
 
 /// 3-handed 20bb: BTN opens 2.5 or jams, one re-raise level.
 fn config() -> PreflopConfig {
-    PreflopConfig {
+    PreflopConfig { leaf_net: None,
         utg_straddle: false,
         positions: vec!["BTN".into(), "SB".into(), "BB".into()],
         stack: 20.0,

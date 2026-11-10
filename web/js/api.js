@@ -26,6 +26,7 @@ export const api = {
   pfSolve: opts => req('POST', '/api/preflop/solve', opts || {}),
   pfStop: () => req('POST', '/api/preflop/stop'),
   pfCapabilities: () => req('GET', '/api/preflop/capabilities'),
+  pfLeafNets: () => req('GET', '/api/preflop/leafnets'),
   pfStatus: () => req('GET', '/api/preflop/status'),
   pfSession: () => req('GET', '/api/preflop/session'),
   pfNode: path => req('POST', '/api/preflop/node', { path }),

@@ -2123,6 +2123,15 @@ struct PfModelEvidenceRequest {
 }
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
+/// Leaf nets realization "leafnet" can use: the shipped v1 and every net the
+/// leaf-net harness kept (see solver::preflop::leafnet_catalog).
+async fn pf_leafnets() -> Result<Json<serde_json::Value>, ApiError> {
+    tokio::task::spawn_blocking(solver::preflop::leafnet_catalog::list)
+        .await
+        .map(Json)
+        .map_err(|e| bad_request(e.to_string()))
+}
+
 async fn pf_capabilities() -> Json<serde_json::Value> {
     Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1","three_way_table_v1"]}))
 }
@@ -4351,6 +4360,7 @@ async fn main() {
         .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
         .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
         .route("/api/preflop/capabilities", get(pf_capabilities))
+        .route("/api/preflop/leafnets", get(pf_leafnets))
         .route("/api/preflop/archetypes", get(pf_archetypes))
         .route("/api/preflop/rangelab", get(rl_summary))
         .route("/api/preflop/rangelab/situations", post(rl_situations))

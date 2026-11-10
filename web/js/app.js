@@ -884,6 +884,7 @@ initPreflopLab({
     opens: $('pfl-opens'), mult: $('pfl-mult'), maxRaises: $('pfl-maxraises'),
     ante: $('pfl-ante'), rakePct: $('pfl-rakepct'), rakeCap: $('pfl-rakecap'),
     limp: $('pfl-limp'), allin: $('pfl-allin'), eq3: $('pfl-eq3'), leaf: $('pfl-leaf'),
+    leafNet: $('pfl-leafnet'), leafNetRow: $('pfl-leafnet-row'),
     build: $('pfl-build'), solve: $('pfl-solve'), stop: $('pfl-stopbtn'),
     prog: $('pfl-prog'),
     buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),
