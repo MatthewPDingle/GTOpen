@@ -75,9 +75,9 @@ import torch  # noqa: E402
 import harness  # noqa: E402
 
 CONFIG = {
-    "hidden": 768,          # width of each hidden layer
+    "hidden": 1334,         # width of each hidden layer
     "depth": 2,             # hidden layers
-    "lr": 1.953e-3,
+    "lr": 8e-4,
     "weight_decay": 4.23e-6,  # L2 on weights (not biases), added to the gradient as in gonogo's numpy Adam
     "batch": 512,
     "eval_every": 250,      # steps between validation checks
@@ -103,7 +103,7 @@ CONFIG = {
     "syn_lam_min": 0.0,     # smallest weight of the first leaf's ranges in a mix (0 = any blend)
     "syn_weight": 1.0,      # weight of the synthetic-leaf loss
     "t_ens": [0, 1, 2],     # average the real leaves' targets over the teachers of these seeds ([] = this run's only)
-    "schedule": "plateau",  # "plateau": drop and stop on stale validation; "cosine": lr falls to 1% over max_steps
+    "schedule": "cosine",   # "plateau": drop and stop on stale validation; "cosine": lr falls to 1% over max_steps
     "syn_seed": 0,          # whose teacher cache and synthetic leaves to use (None = the run's own seed)
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
 }
