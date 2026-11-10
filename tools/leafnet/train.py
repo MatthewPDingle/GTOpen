@@ -59,8 +59,8 @@ import torch  # noqa: E402
 import harness  # noqa: E402
 
 CONFIG = {
-    "hidden": 512,          # width of each hidden layer
-    "depth": 4,             # hidden layers
+    "hidden": 256,          # width of each hidden layer
+    "depth": 2,             # hidden layers
     "lr": 1.953e-3,
     "weight_decay": 4.23e-5,  # L2 on weights (not biases), added to the gradient as in gonogo's numpy Adam
     "batch": 512,
