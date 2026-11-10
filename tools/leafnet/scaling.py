@@ -3,8 +3,8 @@
 and training data.
 
     python tools/leafnet/scaling.py run  [--trainer tools/leafnet/train.py] [--sizes 1x128,2x512,...]
-                                         [--fractions 0.0625,0.125,0.25,0.5,1] [--seeds 2]
-    python tools/leafnet/scaling.py fit  [--snapshot SNAP]
+                                         [--fractions 0.0625,0.125,0.25,0.35,0.5,0.7,1] [--seeds 2]
+    python tools/leafnet/scaling.py fit  [--snapshot SNAP] [--min-fraction 0.25]
 
 `run` trains the trainer's recipe (its run() and CONFIG, with "depth" and
 "hidden" overridden) at every net size x data fraction x seed on the current
@@ -26,9 +26,12 @@ error, the form used for language-model scaling (Hoffmann et al. 2022):
     error(N, D) = E + A / N^a + B / D^b
 
 with N = parameters, D = training examples, by least squares on the seed
-means (exponents by grid search, E, A, B >= 0 linear). It writes fit.json
-and scaling.md with the fitted terms, a hold-out check (fit without the full
-data fraction, predict it), and predictions at the next data milestones.
+means (exponents by grid search, E, A, B >= 0 linear), using only data
+fractions of --min-fraction (0.25) and up. It writes fit.json and scaling.md
+with the fitted terms (flagging exponents stuck at the end of the search
+range), the fit's miss at full data for every size, a hold-out check (fit
+without the full data fraction, predict it), and predictions at the next data
+milestones. A prediction is only as good as the full-data miss next to it.
 Sizes above the deployment cost cap may be in the grid on purpose: they show
 whether the cap is what limits the net.
 """
@@ -50,7 +53,13 @@ import numpy as np  # noqa: E402
 import harness  # noqa: E402
 
 DEFAULT_SIZES = "1x128,1x256,2x256,2x512,4x512,4x768,4x1024"
-DEFAULT_FRACTIONS = "0.0625,0.125,0.25,0.5,1"
+DEFAULT_FRACTIONS = "0.0625,0.125,0.25,0.35,0.5,0.7,1"
+# The law is fitted on these fractions of the full data and up: below them the
+# recipe (tuned at full data) is erratic and the large errors dominate the fit.
+DEFAULT_MIN_FRACTION = 0.25
+# Exponent search range (log-spaced). A fitted exponent on either end means the
+# data did not pin it down.
+EXPONENTS = np.exp(np.linspace(np.log(0.02), np.log(4.0), 200))
 # Total validated examples at the next data milestones; the train split is
 # the same share of them as in the fitted snapshot.
 MILESTONES = [100_000, 150_000, 300_000, 1_000_000]
@@ -98,8 +107,9 @@ def _nnls3(X, y):
     return best
 
 
-def fit_law(N, D, err, exps=np.arange(0.05, 1.501, 0.01)):
-    """Fit err = E + A N^-a + B D^-b. Returns dict(E, A, a, B, b, rmse)."""
+def fit_law(N, D, err, exps=EXPONENTS):
+    """Fit err = E + A N^-a + B D^-b. Returns dict(E, A, a, B, b, rmse, at_edge), at_edge naming the
+    exponents that ended on the end of the search range (not pinned down by the data)."""
     N, D, err = (np.asarray(v, dtype=float) for v in (N, D, err))
     # scale N and D so the coefficients are of order one
     n0, d0 = N.max(), D.max()
@@ -112,8 +122,11 @@ def fit_law(N, D, err, exps=np.arange(0.05, 1.501, 0.01)):
             if best is None or sse < best[0]:
                 best = (sse, c, a, b)
     sse, (E, A, B), a, b = best
+    lo, hi = float(np.min(exps)), float(np.max(exps))
+    # an exponent whose term is zero is not fitted at all: only flag the ones in use
+    edge = [k for k, v, c in (("a", a, A), ("b", b, B)) if c > 0 and (np.isclose(v, lo) or np.isclose(v, hi))]
     return {"E": float(E), "A": float(A * n0 ** a), "a": float(a), "B": float(B * d0 ** b), "b": float(b),
-            "rmse": float(np.sqrt(sse / len(err)))}
+            "rmse": float(np.sqrt(sse / len(err))), "at_edge": edge}
 
 
 def predict_law(f, N, D):
@@ -130,8 +143,9 @@ def seed_means(rows, key):
     return [(n, d, float(np.mean(v)), len(v)) for (n, d), v in sorted(groups.items())]
 
 
-def fit_report(rows, manifest, cap_params):
-    """Fits and checks for every error measure in rows."""
+def fit_report(rows, manifest, cap_params, min_fraction=DEFAULT_MIN_FRACTION):
+    """Fits and checks for every error measure in rows; the law is fitted on points with at least
+    min_fraction of the most training examples in rows (all points are still listed)."""
     keys = ["val_class"] + sorted({k for r in rows for k in r if k.startswith("leaf_class:")})
     total = manifest["examples"]
     train_share = manifest["examples_by_split"]["train"] / total
@@ -140,11 +154,19 @@ def fit_report(rows, manifest, cap_params):
         pts = seed_means(rows, key)
         if len(pts) < 6:
             continue
-        N, D, err, _ = map(np.array, zip(*pts))
+        N_all, D_all, err_all, _ = map(np.array, zip(*pts))
+        # job fractions give a little more or less than the fraction of examples: allow 10%
+        used = D_all >= 0.9 * min_fraction * D_all.max()
+        if used.sum() < 6:
+            continue
+        N, D, err = N_all[used], D_all[used], err_all[used]
         f = fit_law(N, D, err)
-        rep = {"fit": f, "points": [{"params": int(n), "train_examples": int(d), "error": e, "seeds": s}
-                                    for n, d, e, s in pts]}
+        rep = {"fit": f, "min_fraction": min_fraction,
+               "points": [{"params": int(n), "train_examples": int(d), "error": e, "seeds": s, "fitted": bool(u)}
+                          for (n, d, e, s), u in zip(pts, used)]}
         full = D == D.max()
+        rep["full_data"] = [{"params": int(n), "measured": float(e), "fitted": float(predict_law(f, n, D.max())),
+                             "miss": float(predict_law(f, n, D.max()) - e)} for n, e in zip(N[full], err[full])]
         if (~full).sum() >= 6 and len(set(D[~full])) >= 2:
             h = fit_law(N[~full], D[~full], err[~full])
             pred = predict_law(h, N[full], D[full])
@@ -152,6 +174,8 @@ def fit_report(rows, manifest, cap_params):
                                         "mean_abs_error": float(np.abs(pred - err[full]).mean())}
         sizes = sorted(set(N.tolist()))
         deploy = max([n for n in sizes if n <= cap_params], default=max(sizes))
+        miss = {p["params"]: p["miss"] for p in rep["full_data"]}
+        rep["deployable_full_data_miss"] = miss.get(int(deploy))
         rep["predictions"] = [
             {"examples": m, "train_examples": int(m * train_share),
              "at_cap": float(predict_law(f, cap_params, m * train_share)),
@@ -168,21 +192,35 @@ def markdown(snapshot, report, cap_params):
              f"Deployment cap ~ {cap_params:,} parameters (2x v1's multiply-adds).", ""]
     for key, rep in report.items():
         f = rep["fit"]
+        n_fit = sum(p["fitted"] for p in rep["points"])
         lines += [f"## {key}", "",
                   f"E = {f['E']:.6f} (floor), A = {f['A']:.4g}, a = {f['a']:.2f}, B = {f['B']:.4g}, "
-                  f"b = {f['b']:.2f}; fit RMSE {f['rmse']:.6f} over {len(rep['points'])} points.", ""]
+                  f"b = {f['b']:.2f}; fit RMSE {f['rmse']:.6f} over {n_fit} points (data fractions of "
+                  f"{rep['min_fraction']:g} and up).", ""]
+        if f["at_edge"]:
+            lines += [f"**Warning:** exponent {' and '.join(f['at_edge'])} ended on the end of the search range "
+                      f"({EXPONENTS[0]:.2f} to {EXPONENTS[-1]:.1f}): the data does not pin it down, so do not "
+                      "trust the floor or the predictions.", ""]
+        lines += ["Fit at full data, every size (miss = fitted - measured):", "",
+                  "| params | measured | fitted | miss |", "|---|---|---|---|"]
+        lines += [f"| {p['params']:,} | {p['measured']:.6f} | {p['fitted']:.6f} | {p['miss']:+.6f} |"
+                  for p in rep["full_data"]]
+        lines.append("")
         if "holdout_full_data" in rep:
             h = rep["holdout_full_data"]
             lines += [f"Hold-out check (fit without the full data, predict it): mean |error| "
                       f"{h['mean_abs_error']:.6f}, max {h['max_abs_error']:.6f}.", ""]
+        if rep.get("deployable_full_data_miss") is not None:
+            lines += [f"The fit misses the largest deployable size at full data by "
+                      f"{rep['deployable_full_data_miss']:+.6f}; read the predictions with that in mind.", ""]
         lines += ["| examples (train) | at the cap | largest deployable size in grid | unlimited size |",
                   "|---|---|---|---|"]
         for p in rep["predictions"]:
             lines.append(f"| {p['examples']:,} ({p['train_examples']:,}) | {p['at_cap']:.5f} | "
                          f"{p['largest_deployable_in_grid']:.5f} | {p['infinite_net']:.5f} |")
-        lines += ["", "| params | train examples | mean error | seeds |", "|---|---|---|---|"]
-        lines += [f"| {p['params']:,} | {p['train_examples']:,} | {p['error']:.6f} | {p['seeds']} |"
-                  for p in rep["points"]]
+        lines += ["", "| params | train examples | mean error | seeds | in the fit |", "|---|---|---|---|---|"]
+        lines += [f"| {p['params']:,} | {p['train_examples']:,} | {p['error']:.6f} | {p['seeds']} | "
+                  f"{'yes' if p['fitted'] else 'no'} |" for p in rep["points"]]
         lines.append("")
     return "\n".join(lines)
 
@@ -274,7 +312,7 @@ def cmd_fit(args):
     with open(os.path.join(args.work, "snapshots", args.snapshot, "manifest.json"), encoding="utf-8") as f:
         manifest = json.load(f)
     cap = harness.MAX_MACS  # params ~ multiply-adds for an MLP (biases aside)
-    report = fit_report(rows, manifest, cap)
+    report = fit_report(rows, manifest, cap, args.min_fraction)
     with open(os.path.join(out_dir, "fit.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump({"snapshot": args.snapshot, "trainer_sha": shas.pop() if shas else None,
                    "cap_params": cap, "measures": report}, f, indent=1)
@@ -297,6 +335,8 @@ def main():
     r.add_argument("--seeds", type=int, default=2)
     f = sub.add_parser("fit", help="fit the scaling law to the finished runs")
     f.add_argument("--trainer-sha", help="use only runs of this trainer version")
+    f.add_argument("--min-fraction", type=float, default=DEFAULT_MIN_FRACTION,
+                   help="fit only data fractions of this much of the full data and up")
     args = ap.parse_args()
     args.snapshot = args.snapshot or harness.current_snapshot(args.work)
     {"run": cmd_run, "fit": cmd_fit}[args.cmd](args)

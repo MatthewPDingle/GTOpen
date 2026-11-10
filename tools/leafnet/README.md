@@ -48,8 +48,9 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 & $py tools\leafnet\sweep.py --trials 20                         # Optuna over numeric CONFIG
 & $py tools\leafnet\train.py --seed 1 --replicate RUN --desc "seed 1"   # another seed of RUN (not judged)
 & $py tools\leafnet\harness.py confirm RUN RUN_S1 RUN_S2           # keep rule on seed averages (near misses)
-& $py tools\leafnet\scaling.py run                               # size x data grid (~1 h), outside the keep rule
+& $py tools\leafnet\scaling.py run                               # size x data grid (~1.5 h plain, hours with the teacher), outside the keep rule
 & $py tools\leafnet\scaling.py fit                               # fit error = E + A/N^a + B/D^b, predict milestones
+                                                                 # (fractions >= 0.25 only; check the full-data miss before trusting a prediction)
 & $py tools\leafnet\harness.py status
 & $py tools\leafnet\report.py                                    # WORK/dashboard.html: every run, the kept runs, the data
 & $py tools\leafnet\harness.py final                             # milestones only: the test split
