@@ -564,11 +564,12 @@ def cmd_noise(args):
     data = Data(args.work, args.snapshot)
     state = State(args.work, data.snapshot)
     results = []
+    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")   # a new noise round never overwrites an older one
     for seed in range(args.seeds):
         model, budget = train_once(train.run, train.CONFIG, data, seed)
         steps = getattr(model, "steps_taken", "")
         _, row = evaluate_run(model, data, train.CONFIG, seed, steps, budget.elapsed(), f"noise seed {seed}",
-                              args.solve_cli, state, decide=False, run_id=f"noise-{datetime.date.today()}-s{seed}")
+                              args.solve_cli, state, decide=False, run_id=f"noise-{stamp}-s{seed}")
         results.append(row)
     cls = np.array([float(r["val_class"]) for r in results])
     rng = np.array([float(r["val_range"]) for r in results])
