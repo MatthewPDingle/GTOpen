@@ -22,17 +22,21 @@ a scaling-grid data fraction, only that fraction's jobs); validation jobs
 stop it early, as they stop the net; test jobs are never read. This file
 never reads the referee's files (snapshots/.../referee/).
 
-What the net is trained on (CONFIG["mode"]):
-- "distill" (kept since loop 3): the mean flop average of several teachers
-  (CONFIG["t_ens"], seeds 0-4), for the real leaves and, with "syn_ens", for
-  the synthetic leaves. The net's error against that target was the same on
-  training and validation leaves: it was underfitting, not overfitting. So
-  the kept net is wide and shallow (2x768), lightly regularised and trained
-  long; deeper nets (4x512, 5x512) and one very wide layer (1x1536) fit worse.
-- "cv" (loop 2): the solved value minus one teacher's flop luck (value -
-  (teacher on this flop - teacher's flop average)). Unbiased whatever the
-  teacher gets wrong, but it keeps the teacher's residual noise; the better
-  choice for a small net (2x256).
+What the net is trained on (CONFIG["mode"] and CONFIG["distill_mix"]):
+- "distill": the mean flop average of several teachers (CONFIG["t_ens"],
+  seeds 0-4), for the real leaves and, with "syn_ens", for the synthetic
+  leaves. The net's error against that target was the same on training and
+  validation leaves: it was underfitting, not overfitting. So the kept net
+  is wide and shallow (2x768), lightly regularised and trained long; deeper
+  nets (4x512, 5x512) and one very wide layer (1x1536) fit worse.
+- "cv": the solved value minus the teachers' flop luck (value - (teachers on
+  this flop - teachers' flop average)). Unbiased whatever the teachers get
+  wrong, but it keeps their residual noise. Alone it is the better choice
+  for a small net (the 2x256 of loop 2).
+- Kept since loop 3: mode "cv" with distill_mix 0.8, i.e. on the real leaves
+  80% of the loss is on the teachers' flop average and 20% on value minus
+  flop luck, which corrects a little of what the teachers get wrong. A 50/50
+  mix scored better on validation but worse on the real-leaf range error.
 
 Synthetic leaves (CONFIG["n_syn"]): mixes of two training leaves of the same
 pot type (ranges blended, pot and stack interpolated on a log scale, rake
@@ -80,8 +84,8 @@ CONFIG = {
     "lr_drop": 0.114,       # lr multiplier at patience // 2 stale checks
     "last_layer_scale": 0.347,
     "teacher": True,        # flop-aware teacher, marginalized over all flops (see the module docstring)
-    "mode": "distill",         # "cv": value minus the teacher's flop luck; "distill": the teacher's flop average
-    "distill_mix": 0.0,     # weight of the pure flop-average loss next to the cv loss
+    "mode": "cv",              # "cv": value minus the teacher's flop luck; "distill": the teacher's flop average
+    "distill_mix": 0.8,     # weight of the pure flop-average loss next to the cv loss
     "t_steps": 16000,       # teacher step cap
     "t_lr": 1e-3,
     "t_wd": 1e-5,
