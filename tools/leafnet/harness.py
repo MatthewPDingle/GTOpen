@@ -410,7 +410,8 @@ def make_best(state, run_id, seeds):
 
 TSV_COLS = ["time", "snapshot", "run", "commit", "dirty", "desc", "seed", "steps", "seconds", "macs",
             "val_class", "val_range", "gain_class", "ci_class_lo", "ci_class_hi", "ci_range_lo", "ci_range_hi",
-            "leaf_class", "leaf_range", "parity", "verdict", "reason"]
+            "leaf_class", "leaf_range", "parity", "verdict", "reason",
+            "val_cv_class"]    # new columns go at the end: older rows simply lack them
 
 
 def git_rev():
@@ -423,9 +424,25 @@ def git_rev():
         return "?", True
 
 
+def upgrade_tsv_header(path):
+    """A results.tsv written before a column was added gets the current header (its rows keep fewer fields)."""
+    with open(path, encoding="utf-8", newline="") as f:
+        text = f.read()
+    head, sep, rest = text.partition("\n")
+    cols = head.rstrip("\r").split("\t")
+    if cols == TSV_COLS or cols != TSV_COLS[:len(cols)]:
+        return                      # current already, or not a header this harness wrote: leave it alone
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8", newline="") as f:
+        f.write("\t".join(TSV_COLS) + sep + rest)
+    os.replace(tmp, path)
+
+
 def append_tsv(work, row):
     path = os.path.join(work, "results.tsv")
     new = not os.path.exists(path)
+    if not new:
+        upgrade_tsv_header(path)
     with open(path, "a", encoding="utf-8", newline="\n") as f:
         if new:
             f.write("\t".join(TSV_COLS) + "\n")
@@ -487,6 +504,8 @@ def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decid
         return "rejected", row
     scored = score_model(model, data, eval_sets(data))
     row["val_class"], row["val_range"] = (f"{x:.6f}" for x in scored["val"][1])
+    if "val_cv" in scored:
+        row["val_cv_class"] = f"{scored['val_cv'][1][0]:.6f}"
     leaf_names = [k for k in scored if k.startswith("leaf:")]
     if leaf_names:
         row["leaf_class"] = " ".join(f"{scored[k][1][0]:.5f}" for k in leaf_names)
@@ -712,6 +731,8 @@ def cmd_confirm(args):
            "leaf_class": " ".join(f"{totals(cand[k])[0]:.5f}" for k in leaf),
            "leaf_range": " ".join(f"{totals(cand[k])[1]:.6f}" for k in leaf),
            **{k: f"{v:.6f}" for k, v in stats.items()}, "verdict": verdict, "reason": reason}
+    if "val_cv" in cand:
+        row["val_cv_class"] = f"{totals(cand['val_cv'])[0]:.6f}"
     row["commit"], row["dirty"] = git_rev()
     row["macs"] = macs(leafnet_io.read(os.path.join(st.dir, chosen, "leaf_net.bin"))[0]["sizes"])
     if verdict == "keep":

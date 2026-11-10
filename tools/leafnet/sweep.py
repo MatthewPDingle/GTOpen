@@ -5,7 +5,9 @@
 
 Each trial trains train.run with one sampled CONFIG under the same fixed
 budget, scores it on the validation split, and logs it to results.tsv with
-verdict "sweep". Sweeps never change the best run: apply the winning values
+verdict "sweep". The sweep minimizes the keep rule's score: the referee's
+low-noise val_cv class error when the snapshot has a referee, else the raw
+validation class error. Sweeps never change the best run: apply the winning values
 to CONFIG in train.py and run train.py normally, so the keep rule decides.
 Configurations over the harness's multiply-add limit are skipped without
 training. The study is stored in WORK/runs/<snapshot>/sweeps.db, so a sweep
@@ -79,11 +81,12 @@ def main():
                                             state, decide=False)
         if verdict == "rejected":
             raise optuna.TrialPruned(row.get("reason", "rejected"))
-        return float(row["val_class"])
+        return float(row.get("val_cv_class") or row["val_class"])
 
     study.optimize(objective, n_trials=args.trials)
     best = study.best_trial
-    print(f"best trial {best.number}: val class error {best.value:.6f}")
+    score = "val_cv" if data.val_cv is not None else "val"
+    print(f"best trial {best.number}: {score} class error {best.value:.6f}")
     print("apply to train.py CONFIG, then run train.py so the keep rule decides:")
     for k, v in best.params.items():
         print(f"    {k!r}: {v!r},")
