@@ -5,14 +5,16 @@
     python tools/leafnet/realrange.py compare --snapshot SNAP --arm pool=RUN,RUN,RUN --arm real=RUN,RUN,RUN
 
 Why. The pool's ranges are drawn by a sampler. The ranges a preflop solve
-brings to a flop are not, and the nets (their teachers more so) undervalue
-them: on the leaves of a real 6-max solve both players together get about
-1.4% of the pot too little, which tightens the solved ranges by half a point
-to a point. The cure is training data on the ranges preflop solves produce:
-solve preflop games, export their heads-up flop leaves (`solve-cli datagen
-leaves`), solve those exactly (`solve-cli datagen solve`) and train on them
-next to the pool. Whole games are held out for checking, never single
-leaves, because one game's leaves share their ranges' ancestry.
+brings to a flop are not, and a solve steers them toward the leaves where
+its net pays too much: each net is too generous on the ranges of its own
+solves (loop 4's nets by 0.9% of the pot on six games solved with them, v1
+by 3.6% on a game solved with v1) and reads lower on another net's. The cure
+is training data on the ranges a net's own solves produce: solve preflop
+games, export their heads-up flop leaves (`solve-cli datagen leaves`), solve
+those exactly (`solve-cli datagen solve`), train on them next to the pool,
+and check by solving again with the retrained net. Whole games are held out
+for checking, never single leaves, because one game's leaves share their
+ranges' ancestry.
 
 pack reads PILOT_ROOT/manifest.json,
 
@@ -44,9 +46,11 @@ its nets are seed copies, and its errors are the per-leaf errors averaged
 over them (or, with --ensemble, the errors of the nets' mean output, which is
 what a solve uses). A net is a run id of any snapshot, a run folder or a net
 file, so nets trained on another snapshot are scored on the same examples.
-Besides the harness's class and range error it reports the shortfall
-("total"): both players' predicted range values minus the exact solve's, in
-percent of the pot. Zero is right; negative means the ranges are undervalued.
+Besides the harness's class and range error it reports the "total": both
+players' predicted range values minus the exact solve's, in percent of the
+pot. Zero is right; negative means the ranges are undervalued. A real-leaf
+set's total belongs to the net whose solve chose the ranges: the same net
+scores differently on the leaves of another net's solve.
 Intervals resample whole leaves (jobs); differences are against the first arm.
 """
 

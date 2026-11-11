@@ -104,11 +104,17 @@ An ensemble never becomes the best and is not a keep-rule candidate.
 
 ## Real-range data: exact solves of the ranges preflop solves produce
 
-The pool's ranges come from a sampler. On the leaves of a real preflop
-solve the nets give both players together about 1.4% of the pot too little
-(their teachers 2.5 to 3.4%), which tightens solved ranges by half a point
-to a point. Teacher labels cannot fix that, so the cure is exact solves of
-such ranges, trained on next to the pool:
+The pool's ranges come from a sampler; the ranges a preflop solve brings
+to a flop do not. A solve also steers its ranges toward the leaves where
+its net pays too much, so a net is too generous on the ranges of its own
+solves. On six games solved with the loop 4 nets those nets give both
+players together 0.9% of the pot too much and v1 0.2%; on the leaves of a
+game solved with v1 it is v1 that gives 3.6% too much and loop 4 1.7% too
+little. A set of real leaves therefore measures the net whose solve chose
+its ranges, and says little about any other. Teacher labels cannot fix
+this (the teachers are further off than the nets), so the cure is exact
+solves of the ranges a net's own solves produce, trained on next to the
+pool, and checked by solving again with the retrained net:
 
 ```powershell
 # per preflop game (solved and saved in the Preflop Lab): export its heads-up flop leaves, solve them exactly
@@ -136,9 +142,11 @@ such ranges, trained on next to the pool:
   snapshot alone: the experiment's runs name theirs with `--snapshot`.
 - `compare` scores any nets on one snapshot's sets with numpy alone, so the
   pool-only nets (trained on SNAP) and the new ones meet on the same
-  examples: class error, range error and the shortfall ("total": both
-  players' predicted range values minus the solve's, % of the pot), per pot
-  type and per held-out game, with intervals over leaves.
+  examples: class error, range error and the "total" (both players'
+  predicted range values minus the solve's, % of the pot; zero is right),
+  per pot type and per held-out game, with intervals over leaves. Read a
+  real-leaf set's total next to the net that solved its games: the same
+  net scores differently on another net's ranges.
 - `train.py`'s `real_weight` and `real_distill_mix` change how much, and on
   which target, the net's loss counts those rows.
 - **Ranges solved by GTOpen stay on the machine.** A pack is never added to
