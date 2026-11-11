@@ -5,6 +5,7 @@ autoresearch agent never edits this file).
     python tools/leafnet/prepare.py                      # download/refresh the dataset, freeze it
     python tools/leafnet/prepare.py --data DIR           # freeze local job files instead
     python tools/leafnet/prepare.py --leafcheck datagen_leafcheck_v2   # also add a real-leaf test set
+    python tools/leafnet/prepare.py --files-from SNAP --extra DIR      # SNAP's job files plus more (real ranges)
 
 A snapshot is the sorted list of job files plus a SHA-256 manifest, so a run
 can always say exactly which data it saw. Every example is priced once with
@@ -15,6 +16,15 @@ held-out jobs are the go/no-go's: hash 0 = test, 1 = validation, the rest
 train. Real-leaf sets (`--leafcheck DIR`, a `datagen leaves` + `datagen
 solve` folder) are priced the same way and kept as test sets: they are
 never trained on.
+
+More training data (`--extra DIR`, repeatable): job files from outside the
+pool, added after the pool's. `realrange.py pack` writes exact solves of real
+preflop ranges that way, one file per leaf, marked generator version 100
+(REAL_GENERATOR), with job numbers that land in the training split, so the
+validation and test jobs stay the pool's. `--files-from SNAP` takes exactly
+the pool files SNAP lists (hashes checked) instead of everything downloaded
+since, so two snapshots that differ only in their extra files have the same
+validation and test examples in the same rows.
 
 Writes WORK/snapshots/<name>/ with:
     manifest.json   files, hashes, counts, split sizes, solve-cli used
@@ -53,6 +63,7 @@ from validate import cuda_env, default_cli, load_config  # noqa: E402
 
 POT_TYPES = ["limped", "srp", "3bet", "4bet"]
 SPLIT_CODE = {"train": 0, "val": 1, "test": 2}
+REAL_GENERATOR = 100    # generator.npy for exact solves of real preflop ranges (realrange.py pack); the pool's are 1..3
 
 
 def work_dir():
@@ -220,9 +231,16 @@ def main():
     cfg = load_config()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", help="local folder of job files (default: download the dataset into WORK/dataset)")
+    ap.add_argument("--files-from", metavar="SNAPSHOT",
+                    help="take exactly the job files that snapshot lists (its folder unless --data; hashes checked), "
+                         "not everything in the folder")
+    ap.add_argument("--extra", action="append", default=[], metavar="DIR",
+                    help="more job files to add after those (a `realrange.py pack` folder's train/); repeatable")
     ap.add_argument("--repo", default=cfg["hf_repo"])
     ap.add_argument("--name", help="snapshot name (default: snap-<examples>-<date>)")
     ap.add_argument("--leafcheck", action="append", default=[], help="real-leaf folder(s) to add as test sets")
+    ap.add_argument("--side", action="store_true",
+                    help="an experiment's snapshot: do not make it the current one (runs name it with --snapshot)")
     ap.add_argument("--solve-cli", default=default_cli())
     ap.add_argument("--work", default=work_dir())
     ap.add_argument("--attach", action="store_true",
@@ -247,19 +265,55 @@ def main():
             json.dump(manifest, f, indent=1)
         return
 
-    if args.data:
-        folder = args.data
+    expect = {}
+    if args.files_from:
+        with open(os.path.join(args.work, "snapshots", args.files_from, "manifest.json"), encoding="utf-8") as f:
+            prev = json.load(f)
+        folder = args.data or prev["source"]
+        listed = [fm for fm in prev["files_manifest"] if not fm.get("extra")]
+        paths = [os.path.join(folder, fm["file"]) for fm in listed]
+        expect = {p: fm["sha256"] for p, fm in zip(paths, listed)}
+        gone = [p for p in paths if not os.path.exists(p)]
+        if gone:
+            sys.exit(f"{len(gone)} of {args.files_from}'s {len(paths)} job files are not in {folder} (first: {gone[0]})")
     else:
-        from huggingface_hub import snapshot_download
-        dest = os.path.join(args.work, "dataset")
-        log(f"refreshing {args.repo} in {dest}")
-        snapshot_download(args.repo, repo_type="dataset", allow_patterns=["data/*/*.jsonl.gz"], local_dir=dest)
-        folder = os.path.join(dest, "data")
-    paths = job_files(folder)
+        if args.data:
+            folder = args.data
+        else:
+            from huggingface_hub import snapshot_download
+            dest = os.path.join(args.work, "dataset")
+            log(f"refreshing {args.repo} in {dest}")
+            snapshot_download(args.repo, repo_type="dataset", allow_patterns=["data/*/*.jsonl.gz"], local_dir=dest)
+            folder = os.path.join(dest, "data")
+        paths = job_files(folder)
     if not paths:
         sys.exit(f"no job files in {folder}")
+    extra = []
+    for d in args.extra:
+        found = [os.path.abspath(p) for p in job_files(d)]
+        if not found:
+            sys.exit(f"no job files in {d}")
+        extra += found
+    if set(extra) & {os.path.abspath(p) for p in paths}:
+        sys.exit("--extra repeats job files of the main folder")
+    n_main = len(paths)
+    paths = paths + extra
     records, headers, base, rows = priced_files(args.solve_cli, paths, cache_dir)
+    changed = [r["file"] for r in rows if expect.get(r["file"], r["sha256"]) != r["sha256"]]
+    if changed:
+        sys.exit(f"{len(changed)} job files differ from the ones {args.files_from} froze (first: {changed[0]})")
+    for k, r in enumerate(rows):
+        r["extra"] = k >= n_main
     n = len(records)
+    extra_row = np.repeat([r["extra"] for r in rows], [r["examples"] for r in rows]).astype(bool)
+    all_jobs = np.array([int(r["job"]) for r in records], dtype=np.int64)
+    shared = sorted(set(all_jobs[extra_row].tolist()) & set(all_jobs[~extra_row].tolist()))
+    if shared:
+        sys.exit(f"--extra job numbers repeat the main folder's (first: {shared[0]}): splits and scores are per job")
+    stray = sorted({int(j) for j in all_jobs[extra_row].tolist() if split_of(int(j)) != "train"})
+    if stray:
+        sys.exit(f"{len(stray)} --extra jobs fall in the validation or test split (first: {stray[0]}): "
+                 "extra files are training data only, so the held-out examples stay the main folder's")
     name = args.name or f"snap-{n // 1000}k-{datetime.date.today().isoformat()}"
     snap = os.path.join(args.work, "snapshots", name)
     if os.path.exists(snap):
@@ -269,7 +323,11 @@ def main():
     write_inputs(os.path.join(snap, "inputs_val.jsonl"), val_records)
     leafsets = [add_leafcheck(args.solve_cli, snap, cache_dir, d) for d in args.leafcheck]
 
-    manifest_lines = "\n".join(f"{os.path.relpath(r['file'], folder)} {r['sha256']}" for r in rows)
+    # a file's name in the manifest: relative to the main folder, or its full path for an --extra file
+    # (flops.load_side joins it to "source", and a full path stands on its own)
+    listed_as = lambda r: r["file"] if r["extra"] else os.path.relpath(r["file"], folder)
+    hashed_as = lambda r: "extra:" + os.path.basename(r["file"]) if r["extra"] else os.path.relpath(r["file"], folder)
+    manifest_lines = "\n".join(f"{hashed_as(r)} {r['sha256']}" for r in rows)
     counts = {s: int((split == c).sum()) for s, c in SPLIT_CODE.items()}
     job_counts = {s: len(set(jobs[split == c].tolist())) for s, c in SPLIT_CODE.items()}
     manifest = {
@@ -280,14 +338,27 @@ def main():
         "generator_versions": {str(v): int((np.array([r.get("generator_version") or 0 for r in rows]) == v).sum())
                                for v in sorted({r.get("generator_version") or 0 for r in rows})},
         "solve_cli": os.path.abspath(args.solve_cli), "leaf_sets": leafsets,
-        "files_manifest": [{"file": os.path.relpath(r["file"], folder), "sha256": r["sha256"],
-                            "examples": r["examples"], "generator_version": r.get("generator_version")} for r in rows],
+        "files_manifest": [{"file": listed_as(r), "sha256": r["sha256"], "examples": r["examples"],
+                            "generator_version": r.get("generator_version"), **({"extra": True} if r["extra"] else {})}
+                           for r in rows],
     }
+    if args.files_from:
+        manifest["files_from"] = args.files_from
+    if extra:
+        manifest["extra_sources"] = [os.path.abspath(d) for d in args.extra]
+        manifest["extra_examples_by_split"] = {s: int((extra_row & (split == c)).sum()) for s, c in SPLIT_CODE.items()}
     with open(os.path.join(snap, "manifest.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(manifest, f, indent=1)
     log(f"snapshot {name}: {n:,} examples from {len(rows)} files; "
         f"train {counts['train']:,} / val {counts['val']:,} ({job_counts['val']} jobs) / test {counts['test']:,} "
         f"({job_counts['test']} jobs); {len(leafsets)} real-leaf set(s) -> {snap}")
+    if extra:
+        by = manifest["extra_examples_by_split"]
+        log(f"   of those, {int(extra_row.sum()):,} examples from {len(extra)} --extra files: "
+            f"train {by['train']:,} / val {by['val']:,} / test {by['test']:,}")
+    if args.side:
+        log("--side: CURRENT_SNAPSHOT is unchanged; pass --snapshot " + name + " to train.py and harness.py")
+        return
     with open(os.path.join(args.work, "CURRENT_SNAPSHOT"), "w", encoding="utf-8") as f:
         f.write(name + "\n")
 

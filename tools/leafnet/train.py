@@ -65,6 +65,17 @@ teachers' flop average:
   with the pot, stack, pot type and rake of one training leaf. Same result as
   "mix"; "mix+fresh" (both, n_syn of each) gains 0.000003, not kept.
 
+Real-range rows (CONFIG["real_weight"], CONFIG["real_distill_mix"]). A
+snapshot can hold exact solves of ranges that preflop solves produce
+(`realrange.py pack`, `prepare.py --extra`; generator version 100 in
+generator.npy). They are few next to the pool, and they are where the
+teachers are least trusted: on such ranges a teacher's flop average was 2 to
+3% of the pot low before any were trained on. "real_weight" multiplies those
+rows' weight in the net's loss (1 = like any row); "real_distill_mix" is
+their own distill_mix (None = the same; 0 = only the unbiased value minus
+luck target). Both leave the teachers, the synthetic leaves and every pool
+row's loss as they are, and do nothing on a snapshot without such rows.
+
 Seeds. With "t_ens" every seed shares the same teachers, and "syn_seed" also
 shares the synthetic leaves, so seed replicates differ only in the net's
 initialisation and batch order.
@@ -130,6 +141,8 @@ CONFIG = {
     "ema": 0.0,             # decay of an average of the net's weights that is validated and returned (0 = off)
     "syn_seed": 0,          # whose teacher cache and synthetic leaves to use (None = the run's own seed)
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
+    "real_weight": 1.0,     # loss weight of real-range rows (exact solves of preflop-solve ranges), 1 = like any row
+    "real_distill_mix": None,  # distill_mix of real-range rows (None = distill_mix; 0 = value minus luck only)
 }
 
 from flops import NC, Teacher, flop_tables, load_side  # noqa: E402
@@ -147,6 +160,16 @@ def train_rows(data, split):
     rows = tr if sel is None else tr[sel]
     assert len(rows) == data.n_train, "training rows do not match the training tensors"
     return rows
+
+
+def real_rows(data):
+    """Which training rows (in data.x_train's order) are real-range rows, or None when the snapshot has none."""
+    from prepare import REAL_GENERATOR
+    path = os.path.join(data.dir, "generator.npy")
+    if not os.path.exists(path):
+        return None
+    real = np.load(path)[train_rows(data, np.load(os.path.join(data.dir, "split.npy")))] == REAL_GENERATOR
+    return real if real.any() else None
 
 
 def subset_tag(data):
@@ -676,6 +699,21 @@ def run(cfg, data, budget, generator):
                             {"params": biases, "weight_decay": 0.0}], lr=cfg["lr"])
     best, best_state, stale, step = float("inf"), None, 0, 0
     n, bs, mix = data.n_train, cfg["batch"], cfg.get("distill_mix", 0.0)
+    # real-range rows: their own loss weight and their own distill_mix, as columns over the training rows
+    # (both None on a snapshot without such rows or with the settings at their defaults: the loss is unchanged)
+    row_w = row_mix = None
+    real_w = float(cfg.get("real_weight", 1.0))
+    real_mix = mix if cfg.get("real_distill_mix") is None else float(cfg["real_distill_mix"])
+    real = real_rows(data) if (real_w != 1.0 or real_mix != mix) else None
+    if real is not None:
+        is_real = torch.from_numpy(real).to(data.device)
+        if real_w != 1.0:
+            row_w = torch.ones(n, 1, device=data.device)
+            row_w[is_real] = real_w
+        if real_mix != mix and T is not None and cfg["mode"] == "cv":
+            row_mix = torch.full((n, 1), float(mix), device=data.device)
+            row_mix[is_real] = real_mix
+        log(f"{int(real.sum()):,} real-range rows of {n:,}: weight {real_w:g}, distill mix {real_mix:g} (others {mix:g})")
     ema_decay = float(cfg.get("ema", 0.0))
     avg = copy.deepcopy(model) if ema_decay else None      # running average of the weights: validated and returned
     cosine = cfg.get("schedule", "plateau") == "cosine"   # lr falls to 1% over max_steps; no early stop
@@ -690,6 +728,8 @@ def run(cfg, data, budget, generator):
                 break
             idx = perm[i:i + bs]
             x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), data.w_train[idx].float()
+            if row_w is not None:
+                w = w * row_w[idx]
             if xs is not None:
                 j = torch.randint(0, len(xs), (bs,), generator=generator).to(data.device)
                 both = model(torch.cat([x, xs[j].float()]))
@@ -700,11 +740,19 @@ def run(cfg, data, budget, generator):
                 loss = (w * (pred - r) ** 2).sum() / w.sum().clamp_min(1e-9)
             else:
                 t, wb = T[idx].float(), wbar[idx].float()
+                if row_w is not None:
+                    wb = wb * row_w[idx]
                 if cfg["mode"] == "cv":
                     target = r - (own[idx].float() - t)
-                    loss = (w * (pred - target) ** 2).sum() / w.sum().clamp_min(1e-9)
-                    if mix:
-                        loss = (1 - mix) * loss + mix * (wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9)
+                    if row_mix is not None:
+                        # the same two terms with each row's own mix (equal to the lines below when all rows share one)
+                        m = row_mix[idx]
+                        loss = (((1 - m) * w * (pred - target) ** 2).sum() / w.sum().clamp_min(1e-9)
+                                + (m * wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9))
+                    else:
+                        loss = (w * (pred - target) ** 2).sum() / w.sum().clamp_min(1e-9)
+                        if mix:
+                            loss = (1 - mix) * loss + mix * (wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9)
                 else:
                     loss = (wb * (pred - t) ** 2).sum() / wb.sum().clamp_min(1e-9)
                 lv = float(loss.detach())                                   # real leaves only

@@ -102,6 +102,57 @@ not fall on one of those.
 
 An ensemble never becomes the best and is not a keep-rule candidate.
 
+## Real-range data: exact solves of the ranges preflop solves produce
+
+The pool's ranges come from a sampler; the ranges a preflop solve brings
+to a flop do not. A solve also steers its ranges toward the leaves where
+its net pays too much, so a net is too generous on the ranges of its own
+solves. On six games solved with the loop 4 nets those nets give both
+players together 0.9% of the pot too much and v1 0.2%; on the leaves of a
+game solved with v1 it is v1 that gives 3.6% too much and loop 4 1.7% too
+little. A set of real leaves therefore measures the net whose solve chose
+its ranges, and says little about any other. Teacher labels cannot fix
+this (the teachers are further off than the nets), so the cure is exact
+solves of the ranges a net's own solves produce, trained on next to the
+pool, and checked by solving again with the retrained net:
+
+```powershell
+# per preflop game (solved and saved in the Preflop Lab): export its heads-up flop leaves, solve them exactly
+.\target\release\solve-cli.exe datagen leaves SAVE --leaves 70 --boards 2 --seed 1 --out PILOT\g01
+.\target\release\solve-cli.exe datagen solve PILOT\g01
+# PILOT\manifest.json lists the games: {"games": [{"id", "folder", "held_out", "source", "config"}, ...]}
+& $py tools\leafnet\realrange.py pack PILOT --out PACK
+& $py tools\leafnet\prepare.py --files-from SNAP --extra PACK\train --leafcheck datagen_leafcheck_v2 `
+      --leafcheck PACK\realrange-heldout --name SNAP-real --side
+& $py tools\leafnet\referee.py --snapshot SNAP-real
+& $py tools\leafnet\train.py --snapshot SNAP-real --prepare          # this snapshot's teachers
+& $py tools\leafnet\train.py --snapshot SNAP-real --desc "..."      # and --seed 1, --seed 2 with --replicate
+& $py tools\leafnet\realrange.py compare --snapshot SNAP-real --arm pool=RUN,RUN,RUN --arm real=RUN,RUN,RUN --out compare.md
+```
+
+- Whole games are held out (`"held_out": true`), never single leaves: a
+  game's leaves share their ranges' ancestry. `pack` turns the training
+  games' leaves into job files that land in the training split and the
+  held-out games into one real-leaf check set, and refuses a held-out game
+  whose twin (the same config solved under another realization) would be
+  trained on.
+- `--files-from SNAP` freezes exactly SNAP's pool files, so the new
+  snapshot has SNAP's validation and test examples in the same rows and
+  differs only by the extra training rows. `--side` leaves the current
+  snapshot alone: the experiment's runs name theirs with `--snapshot`.
+- `compare` scores any nets on one snapshot's sets with numpy alone, so the
+  pool-only nets (trained on SNAP) and the new ones meet on the same
+  examples: class error, range error and the "total" (both players'
+  predicted range values minus the solve's, % of the pot; zero is right),
+  per pot type and per held-out game, with intervals over leaves. Read a
+  real-leaf set's total next to the net that solved its games: the same
+  net scores differently on another net's ranges.
+- `train.py`'s `real_weight` and `real_distill_mix` change how much, and on
+  which target, the net's loss counts those rows.
+- **Ranges solved by GTOpen stay on the machine.** A pack is never added to
+  the public dataset, and reference charts from anywhere else are never
+  training data.
+
 ## Sharing the GPU with the generator
 
 - The harness caps its own VRAM at 3 GB (`torch.cuda.set_per_process_memory_fraction`).
