@@ -149,9 +149,20 @@ pool, and checked by solving again with the retrained net:
   net scores differently on another net's ranges.
 - `train.py`'s `real_weight` and `real_distill_mix` change how much, and on
   which target, the net's loss counts those rows.
-- **Ranges solved by GTOpen stay on the machine.** A pack is never added to
-  the public dataset, and reference charts from anywhere else are never
-  training data.
+- **Publishing.** `realrange.py publish PILOT --contributor NAME --set round1
+  --out PUBLISH` writes one game file per solved game
+  (`PUBLISH/real/NAME/round1/<game>.jsonl`: the solved examples as they are,
+  under a header with the game's config, its model and net, the exported
+  lines and the held-out flag). `tools/datagen/upload.py --real PUBLISH`
+  sends them to the public dataset and the validator re-solves a sample, see
+  [docs/contribute-compute.md](../../docs/contribute-compute.md#real-range-game-files).
+  `pack` also reads a folder of such files (a download of the dataset's
+  `real/` tree) when there is no manifest, taking each game's held-out flag
+  and its place in the manifest from its header: a set packs to the same
+  files from its published games as from the solver's folders.
+- **Only ranges GTOpen solved are published or trained on.** Reference
+  charts from anywhere else are never training data and never uploaded;
+  `publish` refuses a folder that did not come from `datagen leaves`.
 
 ## Sharing the GPU with the generator
 

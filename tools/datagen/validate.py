@@ -12,6 +12,14 @@ dataset, which the GitHub progress graph reads.
     python tools/datagen/validate.py --local datagen_out  # check local files only
     python tools/datagen/validate.py --watch 60           # every hour
 
+Besides pooled jobs (data/<login>/job-<n>.jsonl.gz, inputs regenerated from the
+job number) it accepts real-range game files (real/<login>/<set>/<game>.jsonl.gz:
+exact flop solves of the ranges a GTOpen preflop solve produced, from
+`tools/leafnet/realrange.py publish`). Their inputs cannot be regenerated, so
+they are taken only from the logins in config.json's real_contributors, checked
+for plausibility, and a sample is re-solved like any other upload
+(--real-max-vram keeps the biggest trees off a shared GPU).
+
 Needs a build of solve-cli (GPU build recommended) and, except with --local,
 `hf auth login` with write access to the dataset.
 """
@@ -31,6 +39,8 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 PATH_RE = re.compile(r"^data/([A-Za-z0-9_-]+)/job-(\d+)\.jsonl\.gz$")
+REAL_PATH_RE = re.compile(r"^real/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)\.jsonl\.gz$")
+REAL_FORMAT = "gtopen-real-range"
 BLOCK = 1 << 24
 
 
@@ -76,10 +86,12 @@ class ToolError(RuntimeError):
     """solve-cli itself failed: a problem on this machine, not in the upload."""
 
 
-def verify_file(cli, path, sample):
+def verify_file(cli, path, sample, max_vram=None):
     """Run solve-cli datagen verify on a plain .jsonl file; returns the summary dict."""
-    proc = subprocess.run([cli, "datagen", "verify", path, "--sample", str(sample)],
-                          capture_output=True, text=True, env=cuda_env())
+    cmd = [cli, "datagen", "verify", path, "--sample", str(sample)]
+    if max_vram:
+        cmd += ["--max-vram", str(max_vram)]
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=cuda_env())
     lines = [l for l in proc.stdout.splitlines() if l.startswith("{")]
     if not lines:
         raise ToolError(
@@ -103,15 +115,57 @@ def check_job(cli, login, job, local_jsonl, sample):
     return errors, summary
 
 
+def is_game_file(path):
+    """True for a real-range game file (plain .jsonl), by its header."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            head = json.loads(f.readline())
+    except (OSError, ValueError):
+        return False
+    return isinstance(head, dict) and head.get("format") == REAL_FORMAT
+
+
+def check_game(cli, login, set_name, game, local_jsonl, sample, max_vram=None, allowed=None):
+    """Check one real-range game file against where it sits (real/<login>/<set>/<game>)."""
+    errors = []
+    if allowed is not None and login not in allowed:
+        errors.append(f"real-range files are accepted from {', '.join(sorted(allowed)) or 'nobody'} only for now "
+                      f"(their ranges cannot be regenerated from a job number), not from {login}")
+        return errors, {}
+    summary = verify_file(cli, local_jsonl, sample, max_vram)
+    if summary.get("kind") != "real":
+        errors.append("not a real-range game file")
+    for key, want in (("contributor", login), ("set", set_name), ("game", game)):
+        if summary.get(key) != want:
+            errors.append(f"header {key} {summary.get(key)!r} does not match the path ({want!r})")
+    errors += summary.get("errors", [])
+    return errors, summary
+
+
 def run_local(args):
     total, bad = 0, 0
     for dirpath, _, files in os.walk(args.local):
         for name in sorted(files):
+            path = os.path.join(dirpath, name)
+            if name.endswith(".jsonl") and not name.startswith("job-") and is_game_file(path):
+                # real/<login>/<set>/<game>.jsonl as realrange.py publish writes it
+                set_name = os.path.basename(dirpath)
+                login = os.path.basename(os.path.dirname(dirpath))
+                errors, summary = check_game(args.solve_cli, login, set_name, name[:-len(".jsonl")], path,
+                                             args.sample, args.real_max_vram)
+                diffs = ", ".join(f"#{r['index']} mean {r['mean_abs_diff']:.4f} max {r['max_abs_diff']:.4f}"
+                                  for r in summary.get("resolved", []))
+                print(f"{'ok ' if not errors else 'BAD'} real {login}/{set_name}/{name}: "
+                      f"{summary.get('examples', 0)} examples  {diffs}")
+                for e in errors:
+                    print(f"     {e}")
+                total += 1
+                bad += bool(errors)
+                continue
             m = re.match(r"^job-(\d+)\.jsonl$", name)
             if not m:
                 continue
             login = os.path.basename(dirpath)
-            path = os.path.join(dirpath, name)
             errors, summary = check_job(args.solve_cli, login, int(m.group(1)), path, args.sample)
             diffs = ", ".join(f"#{r['index']} mean {r['mean_abs_diff']:.4f} max {r['max_abs_diff']:.4f}"
                               for r in summary.get("resolved", []))
@@ -144,6 +198,7 @@ def save_progress(api, repo, progress, message):
     for e in events:
         by[e["contributor"]] = by.get(e["contributor"], 0) + e["examples"]
     progress["contributors"] = dict(sorted(by.items(), key=lambda kv: -kv[1]))
+    progress["real_examples"] = sum(e["examples"] for e in events if e.get("kind") == "real")
     progress["go_no_go_examples"] = cfg["go_no_go_examples"]
     progress["goal_examples"] = cfg["goal_examples"]
     progress["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
@@ -199,6 +254,41 @@ def publish_graph(progress):
         # git marks its object files read-only, which stops rmtree on Windows
         retry = lambda fn, path, _: (os.chmod(path, 0o700), fn(path))
         shutil.rmtree(stage, **({"onexc": retry} if sys.version_info >= (3, 12) else {"onerror": retry}))
+
+
+NOTES_BEGIN, NOTES_END = "<!-- real-range notes: begin -->", "<!-- real-range notes: end -->"
+
+
+def card_with_notes(card, section):
+    """The dataset card with the real-range section put in (or replaced, if an earlier run put one in)."""
+    block = f"{NOTES_BEGIN}\n{section.strip()}\n{NOTES_END}"
+    if NOTES_BEGIN in card and NOTES_END in card:
+        a, b = card.index(NOTES_BEGIN), card.index(NOTES_END) + len(NOTES_END)
+        return card[:a] + block + card[b:]
+    return card.rstrip("\n") + "\n\n" + block + "\n"
+
+
+def publish_notes(args):
+    """Put the real-range notes into the dataset: real/README.md, and a section of the dataset card."""
+    from huggingface_hub import HfApi, hf_hub_download
+    api = HfApi()
+    with open(os.path.join(HERE, "dataset_real_readme.md"), encoding="utf-8") as f:
+        readme = f.read()
+    with open(os.path.join(HERE, "dataset_card_section.md"), encoding="utf-8") as f:
+        section = f.read()
+    with open(hf_hub_download(args.repo, "README.md", repo_type="dataset", force_download=True), encoding="utf-8") as f:
+        card = f.read()
+    new_card = card_with_notes(card, section)
+    if args.dry_run:
+        print(new_card)
+        print(f"--- dry run: {args.repo} was not changed (real/README.md would be {len(readme)} characters)")
+        return
+    api.upload_file(path_or_fileobj=readme.encode(), path_in_repo="real/README.md", repo_id=args.repo,
+                    repo_type="dataset", commit_message="Describe the real-range game files")
+    if new_card != card:
+        api.upload_file(path_or_fileobj=new_card.encode(), path_in_repo="README.md", repo_id=args.repo,
+                        repo_type="dataset", commit_message="Dataset card: real-range game files")
+    print(f"{args.repo}: real/README.md written, dataset card {'updated' if new_card != card else 'already up to date'}")
 
 
 def tree_oids(api, repo, revision=None):
@@ -284,6 +374,7 @@ def run_prs(args):
     from huggingface_hub import HfApi, hf_hub_download
     api = HfApi()
     repo = args.repo
+    cfg = load_config()
     main_oids = tree_oids(api, repo)
     prs = [d for d in api.get_repo_discussions(repo, repo_type="dataset", discussion_type="pull_request",
                                                discussion_status="open")]
@@ -302,22 +393,29 @@ def run_prs(args):
             try:
                 if not new:
                     errors.append("no new files")
-                for path in new:
-                    m = PATH_RE.match(path)
-                    if not m:
-                        errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz)")
+                for n, path in enumerate(new):
+                    m, real = PATH_RE.match(path), REAL_PATH_RE.match(path)
+                    if not m and not real:
+                        errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz "
+                                      "and real/<login>/<set>/<game>.jsonl.gz)")
                         continue
-                    login, job = m.group(1), int(m.group(2))
                     gz = hf_hub_download(repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
-                    plain = os.path.join(stage, f"job-{job}.jsonl")
+                    plain = os.path.join(stage, f"file-{n}.jsonl")
                     with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
                         shutil.copyfileobj(src, dst)
-                    errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
+                    if real:
+                        login = real.group(1)
+                        errs, summary = check_game(args.solve_cli, login, real.group(2), real.group(3), plain,
+                                                   args.sample, args.real_max_vram, set(cfg.get("real_contributors", [])))
+                        jobs.append((login, "real", summary.get("examples", 0)))
+                    else:
+                        login, job = m.group(1), int(m.group(2))
+                        errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
+                        jobs.append((login, "pool", summary.get("examples", 0)))
                     errors += [f"{path}: {e}" for e in errs]
-                    jobs.append((login, job, summary.get("examples", 0)))
             finally:
                 shutil.rmtree(stage, ignore_errors=True)
-            logins = sorted({j[0] for j in jobs})
+            groups = sorted({(j[0], j[1]) for j in jobs})
             examples = sum(j[2] for j in jobs)
             if errors:
                 print(f"PR #{pr.num} ({pr.title}): REJECT")
@@ -338,11 +436,14 @@ def run_prs(args):
                                    comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!")
             main_oids.update({p: "" for p in new})
             now = datetime.datetime.now(datetime.timezone.utc)
-            for login in logins:
-                mine = [j for j in jobs if j[0] == login]
-                merged_events.append({"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
-                                      "contributor": login, "jobs": len(mine),
-                                      "examples": sum(j[2] for j in mine), "pr": pr.num})
+            for login, kind in groups:
+                mine = [j for j in jobs if (j[0], j[1]) == (login, kind)]
+                event = {"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
+                         "contributor": login, "jobs": len(mine),
+                         "examples": sum(j[2] for j in mine), "pr": pr.num}
+                if kind == "real":
+                    event["kind"] = "real"  # jobs = game files here
+                merged_events.append(event)
     finally:
         # record merges even when a later pull request fails, so none go uncounted
         failed = sys.exc_info()[0] is not None
@@ -380,7 +481,15 @@ def real_main():
                     help="don't push the progress graph to GitHub after merging")
     ap.add_argument("--local", help="check job files in a local folder instead of pull requests")
     ap.add_argument("--watch", type=float, default=0, help="repeat every N minutes")
+    ap.add_argument("--real-max-vram", type=float, default=0, metavar="GB",
+                    help="in real-range game files, re-solve only trees estimated to fit this much GPU memory "
+                         "(0 = any size); a file with no such tree is rejected")
+    ap.add_argument("--publish-notes", action="store_true",
+                    help="write the real-range notes into the dataset (real/README.md and a section of the "
+                         "dataset card) and stop; with --dry-run, print the card instead")
     args = ap.parse_args()
+    if args.publish_notes:
+        return publish_notes(args)
     if not os.path.exists(args.solve_cli):
         sys.exit(f"{args.solve_cli} not found: build it with  cargo build --release -p solver --features gpu --bin solve-cli")
     if args.local:

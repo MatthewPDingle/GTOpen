@@ -2,7 +2,7 @@
 //! data (see `solver::datagen` and docs/contribute-compute.md).
 
 use super::{solve_quiet, EnvOpts};
-use solver::datagen::{self, ExampleInputs, ExampleRecord, JobHeader};
+use solver::datagen::{self, ExampleInputs, ExampleRecord, JobHeader, RealHeader};
 use solver::{Solver, Spot};
 use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
@@ -15,7 +15,8 @@ const USAGE: &str = "usage:
   solve-cli datagen sizes JOB [--per-job N]   (estimated GPU memory per example)
   solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
-  solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D]
+  solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D] [--max-vram GB]
+                        (a pooled job file or a real-range game file; --max-vram: re-solve only trees that fit)
   solve-cli datagen block LOGIN
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
   solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)
@@ -361,7 +362,7 @@ fn baseline(net: Option<solver::preflop::leafnet::LeafNet>) {
 }
 
 /// Job numbers of leaf-check examples (far above contributor blocks).
-const LEAF_JOB_BASE: u64 = 900_000_000_000;
+const LEAF_JOB_BASE: u64 = datagen::LEAF_JOB_BASE;
 
 fn fail(msg: String) -> ! {
     eprintln!("{msg}");
@@ -546,6 +547,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
         std::process::exit(1)
     }));
     let mut header: Option<JobHeader> = None;
+    let mut real: Option<RealHeader> = None;
     let mut records: Vec<ExampleRecord> = Vec::new();
     let mut done_seen = false;
     for (n, line) in reader.lines().enumerate() {
@@ -567,6 +569,12 @@ fn verify(o: &Opts, env: &EnvOpts) {
             }
         };
         match v["type"].as_str() {
+            Some("header") if n == 0 && v["format"].as_str() == Some(datagen::REAL_FORMAT) => {
+                match serde_json::from_value::<RealHeader>(v) {
+                    Ok(h) => real = Some(h),
+                    Err(e) => errors.push(format!("bad header: {e}")),
+                }
+            }
             Some("header") if n == 0 => match serde_json::from_value::<JobHeader>(v) {
                 Ok(h) => header = Some(h),
                 Err(e) => errors.push(format!("bad header: {e}")),
@@ -578,6 +586,9 @@ fn verify(o: &Opts, env: &EnvOpts) {
             Some("done") => done_seen = true,
             _ => errors.push(format!("line {}: unexpected record", n + 1)),
         }
+    }
+    if let Some(h) = &real {
+        verify_real(file, h, &records, done_seen, errors, o, env);
     }
     let mut resolved = Vec::new();
     if let Some(h) = &header {
@@ -629,28 +640,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
             }
             let ro = Opts { target: h.target_pct, max_iters: h.max_iterations, ..parse(&[]) };
             for i in picks {
-                let r = &records[i];
-                match solve_example(&r.inputs, &ro, env) {
-                    Ok(mine) => {
-                        let (mean, max) = datagen::compare_values(&mine.values, &r.values);
-                        let reach_ok = mine
-                            .values
-                            .reach
-                            .iter()
-                            .zip(r.values.reach.iter())
-                            .all(|(a, b)| a.iter().zip(b.iter()).all(|(x, y)| (x - y).abs() <= 1e-3 * x.abs().max(1.0)));
-                        if !reach_ok {
-                            errors.push(format!("example {i}: reach differs from a re-solve"));
-                        }
-                        if mean > o.max_mean || max > o.max_diff {
-                            errors.push(format!(
-                                "example {i}: re-solve differs (mean {mean:.4}, max {max:.4} pot)"
-                            ));
-                        }
-                        resolved.push(datagen::VerifyResult { index: i as u32, mean_abs_diff: mean, max_abs_diff: max });
-                    }
-                    Err(e) => errors.push(format!("example {i}: re-solve failed ({e})")),
-                }
+                resolve_check(i, &records[i], &ro, o, env, &mut errors, &mut resolved);
             }
         }
     } else {
@@ -670,6 +660,132 @@ fn verify(o: &Opts, env: &EnvOpts) {
     if !errors.is_empty() {
         std::process::exit(2);
     }
+}
+
+/// Solve example `i` again and compare it with the uploaded record.
+fn resolve_check(i: usize, r: &ExampleRecord, ro: &Opts, o: &Opts, env: &EnvOpts,
+                 errors: &mut Vec<String>, resolved: &mut Vec<datagen::VerifyResult>) {
+    match solve_example(&r.inputs, ro, env) {
+        Ok(mine) => {
+            let (mean, max) = datagen::compare_values(&mine.values, &r.values);
+            let reach_ok = mine
+                .values
+                .reach
+                .iter()
+                .zip(r.values.reach.iter())
+                .all(|(a, b)| a.iter().zip(b.iter()).all(|(x, y)| (x - y).abs() <= 1e-3 * x.abs().max(1.0)));
+            if !reach_ok {
+                errors.push(format!("example {i}: reach differs from a re-solve"));
+            }
+            if mean > o.max_mean || max > o.max_diff {
+                errors.push(format!("example {i}: re-solve differs (mean {mean:.4}, max {max:.4} pot)"));
+            }
+            resolved.push(datagen::VerifyResult { index: i as u32, mean_abs_diff: mean, max_abs_diff: max });
+        }
+        Err(e) => errors.push(format!("example {i}: re-solve failed ({e})")),
+    }
+}
+
+/// Check a real-range game file (`datagen::REAL_FORMAT`): the header, every
+/// example's inputs and values for plausibility, and a re-solve of a
+/// sample. The ranges come from a preflop solve, so there is nothing to
+/// regenerate them from; any ranges are valid inputs, and what a re-solve
+/// protects is the values. With --max-vram only trees estimated to fit
+/// that many GB are re-solved (the others still get the cheap checks), so
+/// a validator that shares its GPU can keep the biggest trees off it.
+fn verify_real(file: &str, h: &RealHeader, records: &[ExampleRecord], done_seen: bool,
+               mut errors: Vec<String>, o: &Opts, env: &EnvOpts) -> ! {
+    if h.format_version != datagen::REAL_FORMAT_VERSION || h.menu != datagen::MENU {
+        errors.push(format!(
+            "header is {} v{} menu {}; this build expects v{} menu {}",
+            h.format, h.format_version, h.menu, datagen::REAL_FORMAT_VERSION, datagen::MENU
+        ));
+    }
+    for (what, name) in [("contributor", &h.contributor), ("set", &h.set), ("game", &h.game)] {
+        if !datagen::plain_name(name) {
+            errors.push(format!("{what} {name:?} is not a plain name (letters, digits, - or _)"));
+        }
+    }
+    if records.len() as u32 != h.examples {
+        errors.push(format!("{} examples, header says {}", records.len(), h.examples));
+    }
+    if records.is_empty() {
+        errors.push("no examples".into());
+    }
+    if h.target_pct > 1.0 {
+        errors.push(format!("accuracy target {}% pot is looser than 1%", h.target_pct));
+    }
+    if !done_seen {
+        errors.push("file is incomplete (no done line)".into());
+    }
+    let mut seen = std::collections::HashSet::new();
+    for (i, r) in records.iter().enumerate() {
+        if r.inputs.job < LEAF_JOB_BASE || !seen.insert((r.inputs.job, r.inputs.index)) {
+            errors.push(format!("example {i}: leaf/board {}/{} repeats or is not a leaf number", r.inputs.job, r.inputs.index));
+            continue;
+        }
+        if let Some(msg) = datagen::check_real_inputs(&r.inputs) {
+            errors.push(format!("example {i}: {msg}"));
+            continue;
+        }
+        if let Some(msg) = sanity(r) {
+            errors.push(format!("example {i}: {msg}"));
+        }
+        if r.exploit_pct_pot > h.target_pct * 1.5 && r.iterations < h.max_iterations {
+            errors.push(format!("example {i}: exploitability {}% above target", r.exploit_pct_pot));
+        }
+    }
+    let mut resolved = Vec::new();
+    let mut over_cap = 0usize;
+    if errors.is_empty() {
+        // a fixed shuffle of the examples, from the game's name: the same file is always sampled the same way
+        let mut seed = 0xcbf2_9ce4_8422_2325u64;
+        for b in h.set.bytes().chain(h.game.bytes()) {
+            seed = (seed ^ b as u64).wrapping_mul(0x0000_0100_0000_01b3);
+        }
+        let mut rng = datagen::Rng::new(seed ^ 0x5EED ^ records.len() as u64);
+        let mut order: Vec<usize> = (0..records.len()).collect();
+        for i in (1..order.len()).rev() {
+            order.swap(i, rng.below(i as u64 + 1) as usize);
+        }
+        let cap = o.max_vram.filter(|&x| x > 0.0);
+        let ro = Opts { target: h.target_pct, max_iters: h.max_iterations, ..parse(&[]) };
+        for i in order {
+            if resolved.len() >= o.sample {
+                break;
+            }
+            if let Some(gb) = cap {
+                if datagen::estimated_vram_bytes(&records[i].inputs) as f64 / 1e9 > gb {
+                    over_cap += 1;
+                    continue;
+                }
+            }
+            let before = resolved.len();
+            resolve_check(i, &records[i], &ro, o, env, &mut errors, &mut resolved);
+            if resolved.len() == before {
+                break; // the re-solve itself failed: reported above
+            }
+        }
+        if errors.is_empty() && resolved.is_empty() && o.sample > 0 {
+            // nothing else stands behind a real-range file's values
+            errors.push(format!("no example was re-solved: none of the {} fits --max-vram", records.len()));
+        }
+    }
+    let summary = serde_json::json!({
+        "file": file,
+        "ok": errors.is_empty(),
+        "kind": "real",
+        "contributor": h.contributor,
+        "set": h.set,
+        "game": h.game,
+        "examples": records.len(),
+        "errors": errors,
+        "resolved": resolved,
+        "skipped_over_cap": over_cap,
+    });
+    println!("{summary}");
+    std::io::stdout().flush().ok();
+    std::process::exit(if errors.is_empty() { 0 } else { 2 })
 }
 
 /// Cheap plausibility checks on one record.

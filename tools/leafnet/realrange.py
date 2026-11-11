@@ -2,6 +2,7 @@
 """Exact flop solves of real preflop ranges, as leaf-net training data and check sets.
 
     python tools/leafnet/realrange.py pack PILOT_ROOT --out DIR
+    python tools/leafnet/realrange.py publish PILOT_ROOT --contributor LOGIN --set NAME --out DIR
     python tools/leafnet/realrange.py compare --snapshot SNAP --arm pool=RUN,RUN,RUN --arm real=RUN,RUN,RUN
 
 Why. The pool's ranges are drawn by a sampler. The ranges a preflop solve
@@ -37,8 +38,17 @@ training (the same config under another realization or net) is refused. The
 job files' headers say generator version 100 (prepare.REAL_GENERATOR), which
 is how train.py finds these rows ("real_weight", "real_distill_mix").
 
-Nothing here uploads anything. Ranges solved by GTOpen stay on the machine
-that solved them: never add a pack folder to the public dataset.
+publish writes the same games as one file each for the public dataset,
+
+    DIR/real/<LOGIN>/<NAME>/<game>.jsonl    header (the game's config, model and net, lines, held-out flag),
+                                            the solved examples unchanged, a done line
+
+which `tools/datagen/upload.py --real DIR` uploads and the validator checks
+(`solve-cli datagen verify` re-solves a sample). A file that has gone up is
+never rewritten. pack reads a folder of such files, plain or gzipped, when
+ROOT has no manifest.json, so a download of the dataset's real/ tree packs
+the same way. Nothing here uploads by itself, and only the leaves of games
+GTOpen solved are ever published: never ranges from anywhere else.
 
 compare scores net files on every scoring set of a snapshot (validation, the
 referee's val_cv, the real-leaf sets), with numpy alone. An arm is one recipe:
@@ -73,6 +83,10 @@ import leafnet_io  # noqa: E402
 from gonogo import NC, range_values, split_of  # noqa: E402
 from prepare import POT_TYPES, REAL_GENERATOR, work_dir  # noqa: E402
 
+REAL_FORMAT = "gtopen-real-range"   # solver::datagen::REAL_FORMAT: one published file per solved game
+REAL_FORMAT_VERSION = 1
+MENU = "lean-v2"                 # solver::datagen::MENU, the bet menu `datagen solve` uses
+NAME_OK = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 TRAIN_BASE = 910_000_000_000     # above the leaf-check jobs (900e9 + rank), far above contributor blocks
 HELD_BASE = 920_000_000_000
 PER_GAME = 1_000_000
@@ -118,6 +132,98 @@ def count_inputs(folder):
         return sum(1 for line in f if line.strip())
 
 
+def plain_name(name):
+    """True for a name that can be one path component of the dataset (the verifier's rule)."""
+    return bool(name) and len(name) <= 64 and all(c in NAME_OK for c in name)
+
+
+def open_text(path):
+    return gzip.open(path, "rt", encoding="utf-8") if path.endswith(".gz") else open(path, encoding="utf-8")
+
+
+def game_header(path):
+    """A published game file's header, or None when the file is something else."""
+    try:
+        with open_text(path) as f:
+            head = json.loads(f.readline())
+    except (OSError, ValueError, EOFError):
+        return None
+    return head if isinstance(head, dict) and head.get("format") == REAL_FORMAT else None
+
+
+def read_game_file(path):
+    """(solved, leaves, asked) of a published game file, in the shapes read_solved / read_leaves / count_inputs give."""
+    by, head = {}, None
+    with open_text(path) as f:
+        for line in f:
+            if not line.strip():
+                continue
+            rec = json.loads(line)
+            if rec.get("type") == "header":
+                head = rec
+            elif rec.get("type") == "example" and "value" in rec:
+                by.setdefault(int(rec["job"]), {}).setdefault(int(rec["index"]), rec)
+    solved = {j: [b[i] for i in sorted(b)] for j, b in sorted(by.items())}
+    return solved, {int(l["job"]): l for l in (head or {}).get("leaves", [])}, (head or {}).get("asked")
+
+
+def public_games(root):
+    """Manifest entries for the published game files under a folder (a download of the dataset's real/ tree):
+    what each header says about its game. Ids are the games' own when they are unique, else contributor-set-game.
+
+    The games come in their publisher's order: a header's `position` is the game's place in the manifest it was
+    published from, and `pack` numbers a game's jobs by that place, so a set packs to the same bytes from its
+    published files as from the solver's folders. Sets follow each other by contributor and set name, each one
+    numbered after the last. A set with a file that has no usable position is ordered by game name."""
+    sets = {}
+    for dirpath, _, files in os.walk(root):
+        for name in sorted(files):
+            if name.endswith((".jsonl", ".jsonl.gz")):
+                head = game_header(os.path.join(dirpath, name))
+                if head is not None:
+                    sets.setdefault((str(head.get("contributor", "")), str(head.get("set", ""))), []).append(
+                        (str(head.get("game", "")), os.path.join(dirpath, name), head))
+    found, start = [], 0
+    for (who, st), games in sorted(sets.items()):
+        places = [h.get("position") for _, _, h in games]
+        if all(isinstance(q, int) and not isinstance(q, bool) and q >= 0 for q in places) \
+                and len(set(places)) == len(places):
+            games = sorted(games, key=lambda t: t[2]["position"])
+        else:
+            games = sorted(games, key=lambda t: t[0])
+            places = None
+        for k, (game, path, head) in enumerate(games):
+            found.append((who, st, game, path, head, start + (head["position"] if places else k)))
+        start = found[-1][5] + 1
+    unique = len({t[2] for t in found}) == len(found)
+    return [{"id": game if unique else f"{who}-{st}-{game}", "file": path, "held_out": bool(head.get("held_out")),
+             "source": head.get("source"), "config": head.get("config"), "place": place}
+            for who, st, game, path, head, place in found]
+
+
+def load_games(root, manifest):
+    """The games to pack: a manifest's, or the published game files under ROOT when there is no manifest."""
+    path = manifest or os.path.join(root, "manifest.json")
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)["games"]
+    if manifest:
+        sys.exit(f"{manifest} not found")
+    games = public_games(root)
+    if not games:
+        sys.exit(f"{root}: no manifest.json and no published game files ({REAL_FORMAT})")
+    return games
+
+
+def game_data(g, root):
+    """(solved, leaves, asked, where) of a manifest entry: a `datagen solve` folder or a published game file."""
+    if g.get("file"):
+        path = g["file"] if os.path.isabs(g["file"]) else os.path.join(root, g["file"])
+        return (*read_game_file(path), path)
+    folder = g["folder"] if os.path.isabs(g["folder"]) else os.path.join(root, g["folder"])
+    return read_solved(folder), read_leaves(folder), count_inputs(folder), folder
+
+
 def game_key(config):
     """A game's identity whatever it was solved under: its config without the realization and the net's name."""
     return json.dumps({k: v for k, v in (config or {}).items() if k not in ("realization", "leaf_net")}, sort_keys=True)
@@ -143,8 +249,7 @@ def write_job_file(path, header, records):
 
 def cmd_pack(args):
     root = os.path.abspath(args.root)
-    with open(args.manifest or os.path.join(root, "manifest.json"), encoding="utf-8") as f:
-        games = json.load(f)["games"]
+    games = load_games(root, args.manifest)
     ids = [g["id"] for g in games]
     if len(set(ids)) != len(ids):
         sys.exit("manifest: game ids repeat")
@@ -159,8 +264,8 @@ def cmd_pack(args):
     held_dir = os.path.join(args.out, args.held_name)
     held_records, held_leaves, summary, exploit = [], [], [], []
     for gi, g in enumerate(games):
-        folder = g["folder"] if os.path.isabs(g["folder"]) else os.path.join(root, g["folder"])
-        solved, leaves, asked = read_solved(folder), read_leaves(folder), count_inputs(folder)
+        gi = g.get("place", gi)       # published files carry their place in the publisher's manifest
+        solved, leaves, asked, folder = game_data(g, root)
         n = sum(len(v) for v in solved.values())
         row = {"id": g["id"], "held_out": bool(g.get("held_out")), "source": g.get("source"),
                "leaves": len(solved), "examples": n, "inputs": asked}
@@ -212,6 +317,79 @@ def cmd_pack(args):
         f"90th percentile {pack['exploit_pct_pot']['p90']:.2f}, max {pack['exploit_pct_pot']['max']:.2f}")
     return pack
 
+
+
+# --------------------------------------------------------------- publish ----
+
+def leaf_folder_summary(folder):
+    path = os.path.join(folder, "leaves.json")
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def game_file_lines(g, folder, contributor, set_name, target, max_iters, position):
+    """The lines of one game's published file (header, examples by leaf and board, done), or None with nothing solved.
+    `position` is the game's place in the manifest: `pack` numbers the game's jobs by it."""
+    solved, summary = read_solved(folder), leaf_folder_summary(folder)
+    records = [r for recs in solved.values() for r in recs]
+    if not records:
+        return None
+    if "iteration" not in summary or "realization" not in summary:
+        sys.exit(f"{g['id']}: {folder} has no leaves.json from `solve-cli datagen leaves`: only the leaves of a "
+                 "preflop game GTOpen solved are published, never ranges from anywhere else")
+    header = {
+        "type": "header", "format": REAL_FORMAT, "format_version": REAL_FORMAT_VERSION, "menu": MENU,
+        "contributor": contributor, "set": set_name, "game": g["id"], "position": position, "examples": len(records),
+        "asked": count_inputs(folder), "target_pct": target, "max_iterations": max_iters,
+        "held_out": bool(g.get("held_out")), "source": g.get("source"), "config": g.get("config"),
+        # the local path of the save is left out on purpose
+        "preflop": {k: summary.get(k) for k in ("realization", "iteration", "positions", "leaves_in_game", "exported",
+                                                "boards_per_leaf", "chip_share_covered")},
+        "leaves": [l for l in summary.get("leaves", []) if int(l["job"]) in solved],
+    }
+    return [header] + records + [{"type": "done", "examples": len(records)}]
+
+
+def cmd_publish(args):
+    root = os.path.abspath(args.root)
+    with open(args.manifest or os.path.join(root, "manifest.json"), encoding="utf-8") as f:
+        games = json.load(f)["games"]
+    for what, name in [("--contributor", args.contributor), ("--set", args.set)] + [("game id", g["id"]) for g in games]:
+        if not plain_name(name):
+            sys.exit(f"{what} {name!r}: letters, digits, - and _ only (it becomes part of a path in the dataset)")
+    out = os.path.join(args.out, "real", args.contributor, args.set)
+    wrote = kept = examples = 0
+    for position, g in enumerate(games):
+        folder = g["folder"] if os.path.isabs(g["folder"]) else os.path.join(root, g["folder"])
+        lines = game_file_lines(g, folder, args.contributor, args.set, args.target, args.max_iters, position)
+        if lines is None:
+            log(f"{g['id']}: nothing solved in {folder}: skipped")
+            continue
+        n, asked = lines[0]["examples"], lines[0]["asked"]
+        data = "".join(json.dumps(rec, separators=(",", ":")) + "\n" for rec in lines).encode()
+        path = os.path.join(out, g["id"] + ".jsonl")
+        if os.path.exists(path):
+            with open(path, "rb") as f:
+                same = f.read() == data
+            if same:
+                kept += 1
+                examples += n
+                continue
+            if os.path.exists(path + ".uploaded"):
+                sys.exit(f"{path} was uploaded already and the game's solves have changed since: a published file "
+                         "is never changed. Publish the new solves as another set.")
+        os.makedirs(out, exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(data)
+        wrote += 1
+        examples += n
+        if asked is not None and n < asked:
+            log(f"{g['id']}: {n} of {asked} examples solved: published as they are")
+    log(f"{wrote} game files written, {kept} unchanged, {examples:,} examples -> {out}")
+    log(f"check them:  python tools/datagen/validate.py --local {os.path.join(args.out, 'real')}")
+    log(f"upload them: python tools/datagen/upload.py --contributor {args.contributor} --real {args.out}")
 
 # --------------------------------------------------------------- compare ----
 
@@ -387,11 +565,21 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("pack", help="solved game folders -> training job files and a held-out check set")
-    p.add_argument("root", help="the folder with manifest.json and the games' folders")
+    p.add_argument("root", help="the folder with manifest.json and the games' folders, or a folder of published "
+                                "game files (a download of the dataset's real/ tree)")
     p.add_argument("--out", required=True, help="a new folder for the pack")
     p.add_argument("--manifest", help="the manifest (default: ROOT/manifest.json)")
     p.add_argument("--held-name", default="realrange-heldout", help="the held-out check set's name")
     p.set_defaults(fn=cmd_pack)
+    u = sub.add_parser("publish", help="solved game folders -> one game file each, ready for the public dataset")
+    u.add_argument("root", help="the folder with manifest.json and the games' folders")
+    u.add_argument("--contributor", required=True, help="your GitHub login, as for datagen run")
+    u.add_argument("--set", required=True, help="a name for this batch of games, e.g. round1")
+    u.add_argument("--out", required=True, help="where to write real/<contributor>/<set>/<game>.jsonl")
+    u.add_argument("--manifest", help="the manifest (default: ROOT/manifest.json)")
+    u.add_argument("--target", type=float, default=0.5, help="the accuracy target `datagen solve` ran with, %% of pot")
+    u.add_argument("--max-iters", type=int, default=1000, help="the iteration limit `datagen solve` ran with")
+    u.set_defaults(fn=cmd_publish)
     c = sub.add_parser("compare", help="score groups of nets on a snapshot's scoring sets")
     c.add_argument("--arm", action="append", required=True, metavar="NAME=NET[,NET...]",
                    help="one recipe's nets (run ids, run folders or net files); the first arm is the reference")
