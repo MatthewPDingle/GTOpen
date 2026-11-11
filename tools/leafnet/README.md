@@ -158,7 +158,8 @@ pool, and checked by solving again with the retrained net:
   [docs/contribute-compute.md](../../docs/contribute-compute.md#real-range-game-files).
   `pack` also reads a folder of such files (a download of the dataset's
   `real/` tree) when there is no manifest, taking each game's held-out flag
-  from its header.
+  and its place in the manifest from its header: a set packs to the same
+  files from its published games as from the solver's folders.
 - **Only ranges GTOpen solved are published or trained on.** Reference
   charts from anywhere else are never training data and never uploaded;
   `publish` refuses a folder that did not come from `datagen leaves`.

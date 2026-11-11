@@ -75,9 +75,10 @@ def config(stack, realization="leafnet"):
     return dict(cfg, leaf_net="snap/ens3") if realization == "leafnet" else cfg
 
 
-def pilot(root, rng, held=("h1",)):
-    """Four games: g1 solved under two realizations, g2 half solved, h1 held out."""
-    games = [("g1", config(100)), ("g1-bal", config(100, "balanced")), ("g2", config(60)), ("h1", config(150))]
+def pilot(root, rng, held=("h1",), order=("g1", "g1-bal", "g2", "h1")):
+    """Four games: g1 solved under two realizations, g2 half solved, h1 held out; `order` is the manifest's."""
+    games = {"g1": config(100), "g1-bal": config(100, "balanced"), "g2": config(60), "h1": config(150)}
+    games = [(gid, games[gid]) for gid in order]
     for gid, _ in games:
         write_game(os.path.join(root, gid), rng, leaves=6, solved=7 if gid == "g2" else None)
     with open(os.path.join(root, "manifest.json"), "w") as f:
@@ -218,6 +219,7 @@ class PublishTests(unittest.TestCase):
         self.assertEqual(rows[-1], {"type": "done", "examples": 7})
         self.assertEqual([l["job"] for l in head["leaves"]], sorted({r["job"] for r in solved}))  # solved leaves only
         self.assertEqual(head["config"], config(60))
+        self.assertEqual(head["position"], 2)                               # third in the manifest
         self.assertEqual(head["preflop"]["iteration"], 2000)
         self.assertTrue(self.rows(os.path.join(out, "h1.jsonl"))[0]["held_out"])
         self.assertEqual(self.rows(os.path.join(out, "g1-bal.jsonl"))[0]["source"], "balanced")
@@ -275,26 +277,89 @@ class PublishTests(unittest.TestCase):
                 publish(self.root, os.path.join(self.tmp, "pub"), **kw)
         self.assertFalse(os.path.exists(os.path.join(self.tmp, "pub")))
 
-    def test_a_pack_from_the_published_files_is_the_pack_from_the_folders(self):
-        out = publish(self.root, os.path.join(self.tmp, "pub"))
-        for name in ("g1.jsonl", "h1.jsonl"):                               # as downloaded from the dataset
+    def tree(self, folder):
+        """Every file under a pack except pack.json (which records when and from where it was packed)."""
+        out = {}
+        for dirpath, _, files in os.walk(folder):
+            for name in files:
+                if name != "pack.json":
+                    with open(os.path.join(dirpath, name), "rb") as f:
+                        out[os.path.relpath(os.path.join(dirpath, name), folder)] = f.read()
+        return out
+
+    def gz(self, out, names):
+        for name in names:                                                  # as downloaded from the dataset
             with open(os.path.join(out, name), "rb") as src, gzip.open(os.path.join(out, name + ".gz"), "wb") as dst:
                 dst.write(src.read())
             os.remove(os.path.join(out, name))
+
+    def test_a_pack_from_the_published_files_is_the_pack_from_the_folders(self):
+        out = publish(self.root, os.path.join(self.tmp, "pub"))
+        self.gz(out, ("g1.jsonl", "h1.jsonl"))
         a, b = os.path.join(self.tmp, "a"), os.path.join(self.tmp, "b")
         info_a = pack(self.root, a)
         info_b = pack(os.path.join(self.tmp, "pub"), b)                     # no manifest there: the headers are read
         self.assertEqual(info_a["train"], info_b["train"])
         self.assertEqual(info_a["held_out"], info_b["held_out"])
-        # the manifest lists g1, g1-bal, g2, h1 and the files sort the same way, so the numbering is the same
-        names = lambda d: [os.path.relpath(p, d) for p in job_files(d)]
-        self.assertEqual(names(a), names(b))
-        for pa, pb in zip(job_files(a), job_files(b)):
-            with open(pa, "rb") as fa, open(pb, "rb") as fb:
-                self.assertEqual(fa.read(), fb.read())
-        with open(os.path.join(a, "realrange-heldout", "solved.jsonl"), "rb") as fa, \
-                open(os.path.join(b, "realrange-heldout", "solved.jsonl"), "rb") as fb:
-            self.assertEqual(fa.read(), fb.read())
+        self.assertEqual([g["id"] for g in info_a["games"]], [g["id"] for g in info_b["games"]])
+        self.assertEqual(len(job_files(a)), 6 + 6 + 4)                      # g1, g1-bal and the solved leaves of g2
+        self.assertEqual(self.tree(a), self.tree(b))
+
+    def test_the_published_files_keep_the_manifests_order(self):
+        """A manifest need not list its games by name (the pilot's has every second solve at the end), and a
+        game's job numbers come from its place in the list: the published files carry that place."""
+        root = os.path.join(self.tmp, "late")
+        os.makedirs(root)
+        pilot(root, np.random.default_rng(5), order=("g2", "h1", "g1", "g1-bal"))
+        out = publish(root, os.path.join(self.tmp, "publ"))
+        self.assertEqual({n: self.rows(os.path.join(out, n))[0]["position"] for n in sorted(os.listdir(out))},
+                         {"g1-bal.jsonl": 3, "g1.jsonl": 2, "g2.jsonl": 0, "h1.jsonl": 1})
+        self.gz(out, ("g2.jsonl",))
+        a, b = os.path.join(self.tmp, "a"), os.path.join(self.tmp, "b")
+        info_a, info_b = pack(root, a), pack(os.path.join(self.tmp, "publ"), b)
+        self.assertEqual([g["id"] for g in info_b["games"]], ["g2", "h1", "g1", "g1-bal"])
+        self.assertEqual([g.get("jobs") for g in info_a["games"]], [g.get("jobs") for g in info_b["games"]])
+        self.assertEqual(self.tree(a), self.tree(b))
+
+    def test_a_game_with_nothing_solved_keeps_its_place(self):
+        root = os.path.join(self.tmp, "gap")
+        os.makedirs(root)
+        pilot(root, np.random.default_rng(5), order=("g2", "g1", "h1", "g1-bal"))
+        open(os.path.join(root, "g1", "solved.jsonl"), "w").close()         # second in the manifest, nothing solved yet
+        out = publish(root, os.path.join(self.tmp, "pubg"))
+        self.assertEqual(sorted(os.listdir(out)), ["g1-bal.jsonl", "g2.jsonl", "h1.jsonl"])
+        a, b = os.path.join(self.tmp, "a"), os.path.join(self.tmp, "b")
+        pack(root, a)
+        pack(os.path.join(self.tmp, "pubg"), b)
+        self.assertEqual(self.tree(a), self.tree(b))
+
+    def test_a_second_set_is_numbered_after_the_first(self):
+        first = publish(self.root, os.path.join(self.tmp, "pub"), set_name="round-1")
+        root = os.path.join(self.tmp, "more")
+        os.makedirs(root)
+        rng = np.random.default_rng(8)
+        write_game(os.path.join(root, "g7"), rng, leaves=3)
+        with open(os.path.join(root, "manifest.json"), "w") as f:
+            json.dump({"games": [{"id": "g7", "folder": "g7", "held_out": False, "source": "leafnet",
+                                  "config": config(80)}]}, f)
+        publish(root, os.path.join(self.tmp, "pub"), set_name="round-2")
+        info = pack(os.path.join(self.tmp, "pub"), os.path.join(self.tmp, "both"))
+        self.assertEqual([g["id"] for g in info["games"]], ["g1", "g1-bal", "g2", "h1", "g7"])
+        alone = pack(first, os.path.join(self.tmp, "one"))
+        self.assertEqual([g["jobs"] for g in info["games"][:4]], [g["jobs"] for g in alone["games"]])
+        jobs = [g["jobs"] for g in info["games"]]
+        self.assertEqual(len({j[0] // realrange.PER_GAME for j in jobs if j}), 5)   # five blocks, none shared
+        self.assertGreater(jobs[4][0], max(j[1] for j in jobs[:3]))
+
+    def test_files_without_a_position_are_ordered_by_name(self):
+        out = publish(self.root, os.path.join(self.tmp, "pub"))
+        for name in os.listdir(out):
+            rows = self.rows(os.path.join(out, name))
+            del rows[0]["position"]
+            with open(os.path.join(out, name), "w", encoding="utf-8") as f:
+                f.write("".join(json.dumps(r) + "\n" for r in rows))
+        info = pack(os.path.join(self.tmp, "pub"), os.path.join(self.tmp, "b"))
+        self.assertEqual([g["id"] for g in info["games"]], ["g1", "g1-bal", "g2", "h1"])
 
     def test_a_published_twin_of_a_held_out_game_is_still_refused(self):
         root = os.path.join(self.tmp, "twin")

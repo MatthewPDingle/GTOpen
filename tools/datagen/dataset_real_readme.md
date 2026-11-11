@@ -28,6 +28,7 @@ The first line is the header:
 | --- | --- |
 | `format`, `format_version`, `menu` | `gtopen-real-range`, 1, and the flop bet menu the solves used. |
 | `contributor`, `set`, `game` | Where the file sits. |
+| `position` | The game's place in its set, counted from 0. `pack` numbers a game's training jobs by it, so a set packs to the same files wherever it is packed. |
 | `examples`, `asked` | Examples in the file, and how many the export asked for (a game can be published before every tree is solved). |
 | `target_pct`, `max_iterations` | The accuracy target and iteration limit of the flop solves. |
 | `config` | The preflop game: seats, stacks, sizes, rake, the realization model and, under `leaf_net`, the name of the net it was solved with. |
@@ -67,7 +68,8 @@ python tools/leafnet/realrange.py pack FOLDER_WITH_THE_DOWNLOADED_FILES --out PA
 ```
 
 turns the games into training job files and one held-out check set, following
-each header's `held_out` flag. `tools/leafnet/README.md` in the
+each header's `held_out` flag and `position` (sets follow each other by
+contributor and set name). `tools/leafnet/README.md` in the
 [GTOpen repository](https://github.com/MatthewPDingle/GTOpen) has the rest.
 
 Licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), like the

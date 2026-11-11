@@ -169,20 +169,36 @@ def read_game_file(path):
 
 def public_games(root):
     """Manifest entries for the published game files under a folder (a download of the dataset's real/ tree):
-    what each header says about its game. Ids are the games' own when they are unique, else contributor-set-game."""
-    found = []
+    what each header says about its game. Ids are the games' own when they are unique, else contributor-set-game.
+
+    The games come in their publisher's order: a header's `position` is the game's place in the manifest it was
+    published from, and `pack` numbers a game's jobs by that place, so a set packs to the same bytes from its
+    published files as from the solver's folders. Sets follow each other by contributor and set name, each one
+    numbered after the last. A set with a file that has no usable position is ordered by game name."""
+    sets = {}
     for dirpath, _, files in os.walk(root):
         for name in sorted(files):
             if name.endswith((".jsonl", ".jsonl.gz")):
                 head = game_header(os.path.join(dirpath, name))
                 if head is not None:
-                    found.append((head.get("contributor", ""), head.get("set", ""), head.get("game", ""),
-                                  os.path.join(dirpath, name), head))
-    found.sort(key=lambda t: t[:3])
+                    sets.setdefault((str(head.get("contributor", "")), str(head.get("set", ""))), []).append(
+                        (str(head.get("game", "")), os.path.join(dirpath, name), head))
+    found, start = [], 0
+    for (who, st), games in sorted(sets.items()):
+        places = [h.get("position") for _, _, h in games]
+        if all(isinstance(q, int) and not isinstance(q, bool) and q >= 0 for q in places) \
+                and len(set(places)) == len(places):
+            games = sorted(games, key=lambda t: t[2]["position"])
+        else:
+            games = sorted(games, key=lambda t: t[0])
+            places = None
+        for k, (game, path, head) in enumerate(games):
+            found.append((who, st, game, path, head, start + (head["position"] if places else k)))
+        start = found[-1][5] + 1
     unique = len({t[2] for t in found}) == len(found)
     return [{"id": game if unique else f"{who}-{st}-{game}", "file": path, "held_out": bool(head.get("held_out")),
-             "source": head.get("source"), "config": head.get("config")}
-            for who, st, game, path, head in found]
+             "source": head.get("source"), "config": head.get("config"), "place": place}
+            for who, st, game, path, head, place in found]
 
 
 def load_games(root, manifest):
@@ -248,6 +264,7 @@ def cmd_pack(args):
     held_dir = os.path.join(args.out, args.held_name)
     held_records, held_leaves, summary, exploit = [], [], [], []
     for gi, g in enumerate(games):
+        gi = g.get("place", gi)       # published files carry their place in the publisher's manifest
         solved, leaves, asked, folder = game_data(g, root)
         n = sum(len(v) for v in solved.values())
         row = {"id": g["id"], "held_out": bool(g.get("held_out")), "source": g.get("source"),
@@ -312,8 +329,9 @@ def leaf_folder_summary(folder):
         return json.load(f)
 
 
-def game_file_lines(g, folder, contributor, set_name, target, max_iters):
-    """The lines of one game's published file (header, examples by leaf and board, done), or None with nothing solved."""
+def game_file_lines(g, folder, contributor, set_name, target, max_iters, position):
+    """The lines of one game's published file (header, examples by leaf and board, done), or None with nothing solved.
+    `position` is the game's place in the manifest: `pack` numbers the game's jobs by it."""
     solved, summary = read_solved(folder), leaf_folder_summary(folder)
     records = [r for recs in solved.values() for r in recs]
     if not records:
@@ -323,7 +341,7 @@ def game_file_lines(g, folder, contributor, set_name, target, max_iters):
                  "preflop game GTOpen solved are published, never ranges from anywhere else")
     header = {
         "type": "header", "format": REAL_FORMAT, "format_version": REAL_FORMAT_VERSION, "menu": MENU,
-        "contributor": contributor, "set": set_name, "game": g["id"], "examples": len(records),
+        "contributor": contributor, "set": set_name, "game": g["id"], "position": position, "examples": len(records),
         "asked": count_inputs(folder), "target_pct": target, "max_iterations": max_iters,
         "held_out": bool(g.get("held_out")), "source": g.get("source"), "config": g.get("config"),
         # the local path of the save is left out on purpose
@@ -343,9 +361,9 @@ def cmd_publish(args):
             sys.exit(f"{what} {name!r}: letters, digits, - and _ only (it becomes part of a path in the dataset)")
     out = os.path.join(args.out, "real", args.contributor, args.set)
     wrote = kept = examples = 0
-    for g in games:
+    for position, g in enumerate(games):
         folder = g["folder"] if os.path.isabs(g["folder"]) else os.path.join(root, g["folder"])
-        lines = game_file_lines(g, folder, args.contributor, args.set, args.target, args.max_iters)
+        lines = game_file_lines(g, folder, args.contributor, args.set, args.target, args.max_iters, position)
         if lines is None:
             log(f"{g['id']}: nothing solved in {folder}: skipped")
             continue
