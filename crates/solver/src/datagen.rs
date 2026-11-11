@@ -464,6 +464,62 @@ pub fn random_flop(rng: &mut Rng) -> String {
     canon[0].0.clone()
 }
 
+/// A preflop line as one string (its actions in order), the name a leaf keeps from solve to solve.
+pub fn line_key(path: &[String]) -> String {
+    path.join(" | ")
+}
+
+/// The `index`-th flop of a preflop line under `seed`, drawn from the line's name. A leaf's rank in an export
+/// changes from solve to solve; its line does not, so two exports of one game give a line the same flops.
+pub fn line_flop(seed: u64, line: &str, index: u32) -> String {
+    let mut h = 0xcbf2_9ce4_8422_2325u64; // FNV-1a over the line
+    for b in line.bytes() {
+        h = (h ^ b as u64).wrapping_mul(0x0000_0100_0000_01b3);
+    }
+    let mut rng = Rng::new(seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ h ^ (index as u64 + 1).wrapping_mul(0xD6E8_FEB8_6659_FD93));
+    random_flop(&mut rng)
+}
+
+/// What an earlier leaf export gave one line: the leaf's pot and stack (to tell another game apart) and its
+/// flops in index order.
+#[derive(Clone, Debug, PartialEq)]
+pub struct LineBoards {
+    pub pot_bb: f64,
+    pub stack_bb: f64,
+    pub boards: Vec<String>,
+}
+
+/// The flops of an earlier leaf export by line, from the text of its leaves.json and inputs.jsonl, so a
+/// later export of the same game (solved again, or with another model) can put the same flops under the same
+/// lines and the two can be compared flop for flop. Also returns the export's seat names.
+pub fn leaf_boards(leaves_json: &str, inputs_jsonl: &str) -> Result<(Vec<String>, std::collections::HashMap<String, LineBoards>), String> {
+    let v: serde_json::Value = serde_json::from_str(leaves_json).map_err(|e| format!("leaves.json: {e}"))?;
+    let positions: Vec<String> = v["positions"].as_array().map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let mut by_job: std::collections::HashMap<u64, Vec<(u32, String)>> = std::collections::HashMap::new();
+    for (n, line) in inputs_jsonl.lines().enumerate().filter(|(_, l)| !l.trim().is_empty()) {
+        let ex: ExampleInputs = serde_json::from_str(line).map_err(|e| format!("inputs.jsonl line {}: {e}", n + 1))?;
+        by_job.entry(ex.job).or_default().push((ex.index, ex.board));
+    }
+    let mut out = std::collections::HashMap::new();
+    for leaf in v["leaves"].as_array().ok_or("leaves.json has no leaves")? {
+        let path: Vec<String> = leaf["path"].as_array().ok_or("a leaf has no path (not written by `datagen leaves`)")?
+            .iter().map(|x| x.as_str().map(String::from).unwrap_or_else(|| x.to_string())).collect();
+        let job = leaf["job"].as_u64().ok_or("a leaf has no job number")?;
+        let mut boards = by_job.remove(&job).unwrap_or_default();
+        boards.sort();
+        let entry = LineBoards {
+            pot_bb: leaf["pot_bb"].as_f64().unwrap_or(0.0),
+            stack_bb: leaf["stack_bb"].as_f64().unwrap_or(0.0),
+            boards: boards.into_iter().map(|(_, b)| b).collect(),
+        };
+        if out.insert(line_key(&path), entry).is_some() {
+            return Err(format!("leaves.json lists the line {} twice", line_key(&path)));
+        }
+    }
+    Ok((positions, out))
+}
+
 fn round2(x: f64) -> f64 {
     (x * 100.0).round() / 100.0
 }
@@ -746,6 +802,57 @@ mod tests {
         assert!(bad(&|ex| ex.range[1][5] = 1.5).unwrap().contains("outside 0..1"));
         assert!(bad(&|ex| ex.range[1][5] = f32::NAN).unwrap().contains("outside 0..1"));
         assert!(bad(&|ex| ex.range[0].iter_mut().for_each(|w| *w = 0.0)).unwrap().contains("empty"));
+    }
+
+    #[test]
+    fn a_line_keeps_its_flops_whatever_its_rank() {
+        let line = line_key(&["UTG Raise 2.5".to_string(), "BB Call 2.5".to_string()]);
+        assert_eq!(line, "UTG Raise 2.5 | BB Call 2.5");
+        // the same line, seed and index always give the same flop; nothing else goes in
+        assert_eq!(line_flop(1000, &line, 0), line_flop(1000, &line, 0));
+        let canon: std::collections::HashSet<String> = crate::cards::canonical_flops().into_iter().map(|x| x.0).collect();
+        let mut seen = std::collections::HashSet::new();
+        for index in 0..40 {
+            let flop = line_flop(1000, &line, index);
+            assert!(canon.contains(&flop), "{flop}");
+            seen.insert(flop);
+        }
+        assert!(seen.len() >= 35, "40 draws gave only {} flops", seen.len());
+        // another seed or another line draws other flops
+        let same = |a: &dyn Fn(u32) -> String| (0..40).filter(|&i| a(i) == line_flop(1000, &line, i)).count();
+        assert!(same(&|i| line_flop(1001, &line, i)) <= 3);
+        assert!(same(&|i| line_flop(1000, "UTG Raise 2.5 | SB Call 2.5", i)) <= 3);
+    }
+
+    #[test]
+    fn an_earlier_exports_flops_are_read_by_line() {
+        let leaves = serde_json::json!({
+            "positions": ["BTN", "SB", "BB"],
+            "leaves": [
+                {"job": LEAF_JOB_BASE, "path": ["BTN Raise 2.5", "BB Call 2.5"], "pot_bb": 5.5, "stack_bb": 97.5},
+                {"job": LEAF_JOB_BASE + 1, "path": ["SB Raise 3", "BB Call 3"], "pot_bb": 6.0, "stack_bb": 97.0},
+                {"job": LEAF_JOB_BASE + 2, "path": ["BTN Limp 1", "BB Check"], "pot_bb": 2.5, "stack_bb": 99.0},
+            ]
+        }).to_string();
+        let mut ex = example_inputs(42, 7);
+        let mut inputs = String::new();
+        for (job, index, board) in [(1, 1, "KsQs2d"), (0, 0, "AsKd7c"), (1, 0, "9h8h7h"), (0, 1, "2c2d5s")] {
+            ex.job = LEAF_JOB_BASE + job;
+            ex.index = index;
+            ex.board = board.to_string();
+            inputs.push_str(&serde_json::to_string(&ex).unwrap());
+            inputs.push('\n');
+        }
+        let (positions, kept) = leaf_boards(&leaves, &inputs).unwrap();
+        assert_eq!(positions, ["BTN", "SB", "BB"]);
+        assert_eq!(kept.len(), 3);
+        assert_eq!(kept["BTN Raise 2.5 | BB Call 2.5"],
+                   LineBoards { pot_bb: 5.5, stack_bb: 97.5, boards: vec!["AsKd7c".into(), "2c2d5s".into()] });
+        assert_eq!(kept["SB Raise 3 | BB Call 3"].boards, ["9h8h7h", "KsQs2d"]);      // in index order
+        assert!(kept["BTN Limp 1 | BB Check"].boards.is_empty());                     // a leaf without examples
+        assert!(leaf_boards("{}", "").unwrap_err().contains("no leaves"));
+        let twice = serde_json::json!({"leaves": [{"job": 1, "path": ["a"]}, {"job": 2, "path": ["a"]}]}).to_string();
+        assert!(leaf_boards(&twice, "").unwrap_err().contains("twice"));
     }
 
     #[test]
