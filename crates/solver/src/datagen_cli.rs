@@ -20,8 +20,9 @@ const USAGE: &str = "usage:
   solve-cli datagen block LOGIN
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
   solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)
-  solve-cli datagen leaves GAME.bin [--out DIR] [--leaves N] [--boards M] [--seed S]
-                        (a solved preflop game's heads-up flop leaves as examples: DIR/inputs.jsonl, DIR/leaves.json)
+  solve-cli datagen leaves GAME.bin [--out DIR] [--leaves N] [--boards M] [--seed S] [--boards-from EARLIER_DIR]
+                        (a solved preflop game's heads-up flop leaves as examples: DIR/inputs.jsonl, DIR/leaves.json;
+                         --boards-from: give each line the flops an earlier export of the same game gave it)
   solve-cli datagen solve DIR [--target PCT] [--max-iters N]   (solve DIR/inputs.jsonl into DIR/solved.jsonl; resumes)";
 
 struct Opts {
@@ -43,6 +44,7 @@ struct Opts {
     leaves: usize,
     boards: u32,
     seed: u64,
+    boards_from: Option<PathBuf>,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -64,6 +66,7 @@ fn parse(rest: &[String]) -> Opts {
         leaves: 40,
         boards: 8,
         seed: 1,
+        boards_from: None,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -97,6 +100,7 @@ fn parse(rest: &[String]) -> Opts {
             "--leaves" => { o.leaves = num::<usize>(need(i), a).max(1); i += 1; }
             "--boards" => { o.boards = num::<u32>(need(i), a).max(1); i += 1; }
             "--seed" => { o.seed = num(need(i), a); i += 1; }
+            "--boards-from" => { o.boards_from = Some(PathBuf::from(need(i))); i += 1; }
             _ if a.starts_with("--") => {
                 eprintln!("unknown option {a}\n{USAGE}");
                 std::process::exit(1);
@@ -377,6 +381,13 @@ fn fail(msg: String) -> ! {
 /// the most chips within each type (the chance of the line, with every
 /// seat's actions counted, folds included, times the pot), so rarer pot
 /// types are still checked. Each gets `--boards` random flops.
+///
+/// With `--boards-from EARLIER_DIR` a line that an earlier export of the same
+/// game holds gets that export's flops, and every other flop is drawn from the
+/// line's name instead of the leaf's rank. Solve a game again (with another
+/// net, say) and its leaves can then be compared flop for flop with the
+/// earlier solve's: without this most of the difference between two exports
+/// is which flops each leaf happened to draw.
 fn leaves(o: &Opts) {
     use solver::preflop::{equity::EquityTable, leafnet::POT_TYPES, PreflopSolver};
     let game = o.positional.first().unwrap_or_else(|| fail(USAGE.into()));
@@ -404,6 +415,15 @@ fn leaves(o: &Opts) {
     let mut all: Vec<_> = by_type.into_iter().zip(&quota).flat_map(|(v, &q)| v.into_iter().take(q)).collect();
     all.sort_by(|a, b| (b.reach * b.pot_bb).partial_cmp(&(a.reach * a.pot_bb)).unwrap());
     let covered: f64 = all.iter().map(|l| l.reach * l.pot_bb).sum();
+    let earlier = o.boards_from.as_ref().map(|dir| {
+        let text = |name: &str| std::fs::read_to_string(dir.join(name)).unwrap_or_else(|e| fail(format!("{}: {e}", dir.join(name).display())));
+        let (positions, kept) = datagen::leaf_boards(&text("leaves.json"), &text("inputs.jsonl")).unwrap_or_else(|e| fail(format!("{}: {e}", dir.display())));
+        if positions != s.cfg.positions {
+            fail(format!("{}: an export of another game (seats {positions:?}, this game {:?})", dir.display(), s.cfg.positions));
+        }
+        kept
+    });
+    let (mut kept_leaves, mut kept_boards) = (0usize, 0usize);
     std::fs::create_dir_all(&o.out).unwrap_or_else(|e| fail(format!("{}: {e}", o.out.display())));
     let r3 = |w: &[f32]| w.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect::<Vec<f32>>();
     let r2 = |x: f64| (x * 100.0).round() / 100.0;
@@ -411,10 +431,29 @@ fn leaves(o: &Opts) {
     let mut described = Vec::new();
     for (rank, leaf) in all.iter().enumerate() {
         let job = LEAF_JOB_BASE + rank as u64;
+        let line = datagen::line_key(&leaf.path);
+        let before = earlier.as_ref().and_then(|k| k.get(&line));
+        if let Some(b) = before {
+            if (b.pot_bb - leaf.pot_bb).abs() > 0.011 || (b.stack_bb - leaf.stack_bb).abs() > 0.011 {
+                fail(format!("{}: an export of another game (the line {line} has pot {} and stack {} there, {} and {} here)",
+                             o.boards_from.as_ref().unwrap().display(), b.pot_bb, b.stack_bb, leaf.pot_bb, leaf.stack_bb));
+            }
+            kept_leaves += 1;
+        }
         for index in 0..o.boards {
-            let mut rng = datagen::Rng::new(o.seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ job.wrapping_mul(31) ^ index as u64);
+            let board = match (before.and_then(|b| b.boards.get(index as usize)), &earlier) {
+                (Some(board), _) => {
+                    kept_boards += 1;
+                    board.clone()
+                }
+                (None, Some(_)) => datagen::line_flop(o.seed, &line, index),
+                (None, None) => {
+                    let mut rng = datagen::Rng::new(o.seed.wrapping_mul(0x9E37_79B9_7F4A_7C15) ^ job.wrapping_mul(31) ^ index as u64);
+                    datagen::random_flop(&mut rng)
+                }
+            };
             let ex = ExampleInputs {
-                job, index, board: datagen::random_flop(&mut rng),
+                job, index, board,
                 pot_type: POT_TYPES[leaf.raises.min(3) as usize].to_string(),
                 pot_bb: r2(leaf.pot_bb), stack_bb: r2(leaf.stack_bb),
                 rake_pct: s.cfg.rake_pct / 100.0, rake_cap_bb: s.cfg.rake_cap,
@@ -429,11 +468,15 @@ fn leaves(o: &Opts) {
             "chip_share": leaf.reach * leaf.pot_bb / total.max(1e-12),
         }));
     }
-    let summary = serde_json::json!({
+    let mut summary = serde_json::json!({
         "game": game, "realization": s.cfg.realization, "iteration": s.iteration, "positions": s.cfg.positions,
         "leaves_in_game": s.hu_flop_leaves().len(), "exported": all.len(), "boards_per_leaf": o.boards,
         "chip_share_covered": covered / total.max(1e-12), "leaves": described,
     });
+    if earlier.is_some() {
+        // how much of this export can be compared flop for flop with the earlier one
+        summary["boards_kept"] = serde_json::json!({"leaves": kept_leaves, "examples": kept_boards});
+    }
     let write = |name: &str, text: String| {
         let p = o.out.join(name);
         std::fs::write(&p, text).unwrap_or_else(|e| fail(format!("{}: {e}", p.display())));
@@ -443,6 +486,9 @@ fn leaves(o: &Opts) {
     let per_type: Vec<String> = POT_TYPES.iter().zip(&quota).map(|(t, q)| format!("{q} {t}")).collect();
     println!("{} leaves ({}) x {} boards ({:.0}% of the chips that reach heads-up flops) -> {}",
              all.len(), per_type.join(", "), o.boards, 100.0 * covered / total.max(1e-12), o.out.join("inputs.jsonl").display());
+    if earlier.is_some() {
+        println!("{kept_leaves} of the {} lines are in the earlier export and keep its flops ({kept_boards} examples)", all.len());
+    }
 }
 
 /// Solve every example of DIR/inputs.jsonl into DIR/solved.jsonl, skipping

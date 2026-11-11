@@ -149,6 +149,19 @@ pool, and checked by solving again with the retrained net:
   net scores differently on another net's ranges.
 - `train.py`'s `real_weight` and `real_distill_mix` change how much, and on
   which target, the net's loss counts those rows.
+- **Solving the held-out games again.** The check that counts is a net on
+  the ranges of its own solves: solve the held-out games again with the
+  retrained net, export and solve their leaves, and score the net there.
+  Export the second time with `--boards-from` the first export's folder
+  (`datagen leaves SAVE2 --leaves 70 --boards 2 --seed 1 --boards-from
+  PILOT\g01 --out PILOT2\g01`): every preflop line the first export holds
+  keeps its flops, so the two solves are compared flop for flop. Without it
+  a leaf's flops follow its rank in the export, most leaves draw other flops
+  the second time, and a 4-bet leaf's reading moves by several percent of
+  the pot between two flops. On the pilot (six held-out games, 244 leaves)
+  that left a change of 0.3% of the pot between two rounds undetectable
+  (+/- 0.45); on the 78 leaves that happened to keep their flops the same
+  comparison was good to +/- 0.25.
 - **Publishing.** `realrange.py publish PILOT --contributor NAME --set round1
   --out PUBLISH` writes one game file per solved game
   (`PUBLISH/real/NAME/round1/<game>.jsonl`: the solved examples as they are,
