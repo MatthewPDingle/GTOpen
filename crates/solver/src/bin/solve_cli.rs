@@ -87,17 +87,56 @@ impl EnvOpts {
     }
 }
 
-fn peak_rss_mb() -> f64 {
-    std::fs::read_to_string("/proc/self/status")
+#[cfg(target_os = "linux")]
+fn peak_rss_mb() -> Option<f64> {
+    let status = std::fs::read_to_string("/proc/self/status").ok()?;
+    parse_peak_rss_mb(&status)
+}
+
+#[cfg(any(target_os = "linux", test))]
+fn parse_peak_rss_mb(status: &str) -> Option<f64> {
+    let kb = status
+        .lines()
+        .find(|line| line.starts_with("VmHWM:"))?
+        .split_whitespace()
+        .nth(1)?
+        .parse::<u64>()
+        .ok()?;
+    Some(kb as f64 / 1024.0)
+}
+
+#[cfg(target_os = "macos")]
+fn peak_rss_mb() -> Option<f64> {
+    let mut usage = std::mem::MaybeUninit::<libc::rusage>::uninit();
+    // SAFETY: usage points to writable, correctly aligned storage. getrusage
+    // initializes it on success; we do not read it when the call fails.
+    if unsafe { libc::getrusage(libc::RUSAGE_SELF, usage.as_mut_ptr()) } != 0 {
+        return None;
+    }
+    // SAFETY: the successful getrusage call initialized usage.
+    let usage = unsafe { usage.assume_init() };
+    macos_peak_rss_mb(usage.ru_maxrss)
+}
+
+#[cfg(any(target_os = "macos", test))]
+fn macos_peak_rss_mb(bytes: i64) -> Option<f64> {
+    // Darwin reports ru_maxrss in bytes, unlike Linux's KiB. Keep the CLI's
+    // existing binary-megabyte conversion and MB label.
+    u64::try_from(bytes)
         .ok()
-        .and_then(|s| {
-            s.lines()
-                .find(|l| l.starts_with("VmHWM:"))
-                .and_then(|l| l.split_whitespace().nth(1))
-                .and_then(|kb| kb.parse::<f64>().ok())
-        })
-        .map(|kb| kb / 1024.0)
-        .unwrap_or(f64::NAN)
+        .map(|bytes| bytes as f64 / (1024.0 * 1024.0))
+}
+
+#[cfg(not(any(target_os = "linux", target_os = "macos")))]
+fn peak_rss_mb() -> Option<f64> {
+    None
+}
+
+fn format_peak_rss(mb: Option<f64>) -> String {
+    match mb {
+        Some(mb) => format!("peak_rss {mb:.0} MB"),
+        None => "peak_rss unavailable".to_string(),
+    }
 }
 
 fn main() {
@@ -217,11 +256,11 @@ fn main() {
             );
         });
         println!(
-            "done: iter {} exploitability {:.3}% pot in {:.1}s  peak_rss {:.0} MB",
+            "done: iter {} exploitability {:.3}% pot in {:.1}s  {}",
             final_progress.iteration,
             final_progress.exploit_pct_pot,
             final_progress.elapsed_secs,
-            peak_rss_mb(),
+            format_peak_rss(peak_rss_mb()),
         );
     }
 
@@ -781,13 +820,13 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
                 // the iterations THIS invocation ran, not the cumulative count.
                 let ran = gpu.iteration.saturating_sub(start_iteration).max(1);
                 println!(
-                    "done: iter {} exploitability {:.3}% pot in {:.1}s (gpu kernels {:.2}s = {:.0} ms/iter)  peak_rss {:.0} MB",
+                    "done: iter {} exploitability {:.3}% pot in {:.1}s (gpu kernels {:.2}s = {:.0} ms/iter)  {}",
                     gpu.iteration,
                     pct,
                     start.elapsed().as_secs_f64(),
                     gpu_secs,
                     gpu_secs * 1000.0 / ran as f64,
-                    peak_rss_mb(),
+                    format_peak_rss(peak_rss_mb()),
                 );
                 break;
             }
@@ -798,6 +837,46 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn peak_rss_macos_converts_bytes_to_mb() {
+        assert_eq!(macos_peak_rss_mb(1_048_576), Some(1.0));
+        assert_eq!(macos_peak_rss_mb(1_572_864), Some(1.5));
+        assert_eq!(macos_peak_rss_mb(0), Some(0.0));
+        assert_eq!(macos_peak_rss_mb(-1), None);
+    }
+
+    #[test]
+    fn peak_rss_linux_parses_high_water_mark_in_kib() {
+        let status = "Name:\tsolve-cli\nVmHWM:\t1536 kB\nVmRSS:\t1024 kB\n";
+        assert_eq!(parse_peak_rss_mb(status), Some(1.5));
+        for status in [
+            "",
+            "VmRSS: 1024 kB",
+            "VmHWM:",
+            "VmHWM: invalid kB",
+            "VmHWM: -1 kB",
+        ] {
+            assert_eq!(parse_peak_rss_mb(status), None);
+        }
+    }
+
+    #[test]
+    fn peak_rss_formats_measurement_or_explicit_unavailable() {
+        assert_eq!(format_peak_rss(Some(12.0)), "peak_rss 12 MB");
+        assert_eq!(format_peak_rss(None), "peak_rss unavailable");
+        assert_eq!(
+            format_peak_rss(parse_peak_rss_mb("")),
+            "peak_rss unavailable"
+        );
+    }
+
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    #[test]
+    fn peak_rss_current_process_is_available() {
+        let mb = peak_rss_mb().expect("current process peak RSS should be available");
+        assert!(mb.is_finite() && mb > 0.0, "unexpected peak RSS: {mb}");
+    }
 
     fn parse_args(args: &[&str]) -> Result<Opts, String> {
         parse(&args.iter().map(|a| a.to_string()).collect::<Vec<_>>())
