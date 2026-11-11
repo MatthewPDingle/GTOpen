@@ -615,6 +615,80 @@ impl JobHeader {
     }
 }
 
+/// Format name of a real-range game file: the exact flop solves of one
+/// solved preflop game's heads-up flop leaves (`solve-cli datagen leaves`
+/// then `datagen solve`, gathered by `tools/leafnet/realrange.py publish`).
+/// Its ranges come from a preflop solve, so unlike a pooled job its inputs
+/// cannot be regenerated from a number: every example carries them, and
+/// `datagen verify` checks them for sanity and re-solves a sample.
+pub const REAL_FORMAT: &str = "gtopen-real-range";
+/// Version of the real-range file layout.
+pub const REAL_FORMAT_VERSION: u32 = 1;
+/// First job number `datagen leaves` gives a game's leaves (leaf rank is
+/// added); real-range examples keep those numbers inside their game file.
+pub const LEAF_JOB_BASE: u64 = 900_000_000_000;
+
+/// Header line of a real-range game file. The file also describes the game
+/// (its preflop config, the model and net it was solved with, the leaves'
+/// lines): readers use those, the verifier does not need them.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RealHeader {
+    #[serde(rename = "type")]
+    pub kind: String,
+    pub format: String,
+    pub format_version: u32,
+    pub menu: String,
+    pub contributor: String,
+    /// The contributor's name for a batch of games (one round of solves).
+    pub set: String,
+    /// The game's id within the set.
+    pub game: String,
+    pub examples: u32,
+    pub target_pct: f64,
+    pub max_iterations: u32,
+}
+
+/// True for names that are safe as one path component of the dataset.
+pub fn plain_name(s: &str) -> bool {
+    !s.is_empty() && s.len() <= 64 && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
+/// Plausibility of a real-range example's inputs (they cannot be
+/// regenerated): a real flop, two usable 169-class ranges, sane sizes.
+pub fn check_real_inputs(ex: &ExampleInputs) -> Option<String> {
+    match crate::cards::parse_cards(&ex.board) {
+        Ok(cards) if cards.len() == 3 && cards[0] != cards[1] && cards[0] != cards[2] && cards[1] != cards[2] => {}
+        _ => return Some(format!("board {:?} is not a flop", ex.board)),
+    }
+    if !crate::preflop::leafnet::POT_TYPES.contains(&ex.pot_type.as_str()) {
+        return Some(format!("unknown pot type {:?}", ex.pot_type));
+    }
+    if !(ex.pot_bb.is_finite() && ex.pot_bb > 0.0 && ex.pot_bb <= 10_000.0) {
+        return Some(format!("pot {} bb out of range", ex.pot_bb));
+    }
+    if !(ex.stack_bb.is_finite() && ex.stack_bb > 0.0 && ex.stack_bb <= 10_000.0) {
+        return Some(format!("stack {} bb out of range", ex.stack_bb));
+    }
+    if !(ex.rake_pct.is_finite() && (0.0..=0.25).contains(&ex.rake_pct)) {
+        return Some(format!("rake {} out of range (a fraction of the pot)", ex.rake_pct));
+    }
+    if !(ex.rake_cap_bb.is_finite() && ex.rake_cap_bb >= 0.0) {
+        return Some(format!("rake cap {} bb out of range", ex.rake_cap_bb));
+    }
+    for p in 0..2 {
+        if ex.range[p].len() != NUM_CLASSES {
+            return Some(format!("range {p} has {} classes", ex.range[p].len()));
+        }
+        if ex.range[p].iter().any(|w| !w.is_finite() || !(0.0..=1.0).contains(w)) {
+            return Some(format!("range {p} has a weight outside 0..1"));
+        }
+        if ex.range[p].iter().all(|&w| w <= 0.0) {
+            return Some(format!("range {p} is empty"));
+        }
+    }
+    None
+}
+
 /// Comparison of a re-solve against an uploaded example.
 #[derive(Debug, Clone, Serialize)]
 pub struct VerifyResult {
@@ -648,6 +722,42 @@ pub fn compare_values(a: &ExampleValues, b: &ExampleValues) -> (f64, f64) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn real_range_inputs_are_checked_for_plausibility() {
+        // a generated example passes whatever job number it carries
+        let mut ok = example_inputs(42, 7);
+        ok.job = LEAF_JOB_BASE + 3;
+        assert_eq!(check_real_inputs(&ok), None);
+        let bad = |change: &dyn Fn(&mut ExampleInputs)| {
+            let mut ex = ok.clone();
+            change(&mut ex);
+            check_real_inputs(&ex)
+        };
+        assert!(bad(&|ex| ex.board = "AcAc5h".into()).unwrap().contains("not a flop"));
+        assert!(bad(&|ex| ex.board = "Ac5h".into()).unwrap().contains("not a flop"));
+        assert!(bad(&|ex| ex.board = "Ac5h7d9s".into()).unwrap().contains("not a flop"));
+        assert!(bad(&|ex| ex.pot_type = "5bet".into()).unwrap().contains("pot type"));
+        assert!(bad(&|ex| ex.pot_bb = 0.0).unwrap().contains("pot"));
+        assert!(bad(&|ex| ex.stack_bb = f64::NAN).unwrap().contains("stack"));
+        assert!(bad(&|ex| ex.rake_pct = 5.0).unwrap().contains("rake"));
+        assert!(bad(&|ex| ex.rake_cap_bb = -1.0).unwrap().contains("rake cap"));
+        assert!(bad(&|ex| ex.range[0].truncate(100)).unwrap().contains("classes"));
+        assert!(bad(&|ex| ex.range[1][5] = 1.5).unwrap().contains("outside 0..1"));
+        assert!(bad(&|ex| ex.range[1][5] = f32::NAN).unwrap().contains("outside 0..1"));
+        assert!(bad(&|ex| ex.range[0].iter_mut().for_each(|w| *w = 0.0)).unwrap().contains("empty"));
+    }
+
+    #[test]
+    fn plain_names_are_single_path_components() {
+        for good in ["g01", "g02-bal", "round_1", "MatthewPDingle"] {
+            assert!(plain_name(good), "{good}");
+        }
+        for bad in ["", "..", "a/b", "a\\b", "round 1", "g01.jsonl", "é"] {
+            assert!(!plain_name(bad), "{bad}");
+        }
+        assert!(!plain_name(&"x".repeat(65)));
+    }
 
     #[test]
     fn inputs_are_deterministic_and_vary() {

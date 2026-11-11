@@ -150,6 +150,8 @@ Anyone can upload, so every upload is checked before it is merged:
 - **Inputs are not chosen by contributors.** A job number determines all of
   its spots, and each login gets its own block of job numbers. The
   validator regenerates every example's inputs and rejects any mismatch.
+  (The one exception is the [real-range game files](#real-range-game-files),
+  which only the maintainers upload for now.)
 - **A sample is re-solved.** The maintainer's machine re-solves three
   examples of every job and compares the values. A failed check rejects
   the upload, and a contributor caught sending bad data has all of their
@@ -196,6 +198,33 @@ To regenerate an example's inputs yourself:
 `solve-cli datagen inputs JOB INDEX`, or `solve-cli datagen spot JOB INDEX`
 for a config that `solve-cli` can solve directly.
 
+### Real-range game files
+
+The pooled jobs use random ranges on purpose. A second, smaller part of the
+dataset, under `real/`, holds exact flop solves of the ranges GTOpen's own
+preflop solves produce: a preflop game is solved in the Preflop Lab, the
+heads-up flop situations that carry the most chips are exported with a few
+random flops each, and each is solved with the same bet menu and accuracy
+target as a pooled example. There is one file per solved preflop game,
+`real/<contributor>/<set>/<game>.jsonl.gz`. Its examples have the fields
+above, and its header describes the game (its preflop settings, the model
+and net it was solved with, the exported lines, and whether GTOpen's own
+training holds the game out as a check).
+
+They exist because a net is least accurate exactly where its own solves go:
+a preflop solve steers ranges toward the flop situations its value model
+overrates. Exact solves of those ranges are what corrects that.
+
+No ranges from charts, other solvers or any other outside source are ever
+uploaded. Every range in the dataset is either drawn by the generator or the
+output of a GTOpen solve.
+
+These inputs cannot be regenerated from a job number, so the validator takes
+game files only from the logins in `tools/datagen/config.json`
+(`real_contributors`), checks every example's inputs and values for
+plausibility and re-solves a sample. `real/README.md` in the dataset has the
+field list.
+
 ## For the maintainer
 
 ```sh
@@ -236,6 +265,22 @@ python tools/datagen/leafcheck.py datagen_leafcheck
 
 The report (`datagen_leafcheck/report.md`) compares the net with today's
 models leaf by leaf.
+
+To publish real-range game files from a folder of solved games (a
+`manifest.json` plus one `datagen leaves` + `datagen solve` folder per game,
+see `tools/leafnet/README.md`):
+
+```sh
+python tools/leafnet/realrange.py publish PILOT --contributor NAME --set round1 --out PUBLISH
+python tools/datagen/validate.py --local PUBLISH/real      # the same checks the validator runs
+python tools/datagen/upload.py --contributor NAME --real PUBLISH
+python tools/datagen/validate.py --publish-notes           # once: real/README.md and the card's section
+```
+
+A published game file is never changed: solves that finish later go up as
+another set. On a GPU that is shared with a generator, give the validator
+`--real-max-vram 8` so it re-solves only trees that fit in 8 GB (a file with
+no such tree is rejected rather than merged unchecked).
 
 `validate.py` needs a Hugging Face token with write access to the dataset.
 After each merge it redraws the progress graph and force-pushes it to the
