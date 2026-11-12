@@ -1082,7 +1082,9 @@ textarea {
   display: flex; flex-wrap: nowrap; gap: 6px; flex: 1; min-width: 0;
   overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--line2) var(--panel);
 }
-#pfl-ribbon:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+/* Keyboard focus only (clicks do not focus the strip), and not in the accent colour: the one green
+   border in the ribbon is the spot being viewed. */
+#pfl-ribbon:focus-visible { outline: 1px dotted var(--ink-faint); outline-offset: 2px; }
 #pfl-ribbon-wrap .hist-nav:disabled { opacity: .3; cursor: default; }
 #pfl-ribbon .hist-seg { cursor: pointer; }
 .pfl-nodehead { display: flex; justify-content: space-between; align-items: baseline; margin: 4px 0; }
@@ -1256,8 +1258,21 @@ textarea {
 .pfl-straddle-post { opacity:.8; border-style:dashed; cursor:default; }
 
 /* Flag rare branches without adding a separate study workflow. */
-.pfl-reach-warning { margin:6px 0 10px; }
-.pfl-reach-note { color:#e4c377; font-size:12px; }
+/* A line the solution (almost) never plays is not solved (web/js/preflop_reach.js). */
+.pfl-reach-warning { margin: 6px 0 10px; font-size: 12px; line-height: 1.5; color: #cec7b9; }
+.pfl-reach-warning strong { color: #efca80; margin-right: 6px; }
+.pfl-reach-warning em { display: block; margin-top: 4px; font-style: normal; color: #e6e6e6; }
+.pfl-reach-warning.seldom { color: #e4c377; }
+.pfl-reach-warning.unsolved { padding: 9px 12px; border: 1px solid #74603d; border-left: 3px solid #e0a43a; border-radius: 4px; background: #28251e; }
+.pfl-reach-warning.unsolved strong { display: block; font-size: 13px; margin: 0 0 2px; }
+/* its ranges stay readable, but no longer look like a result */
+#pfl-grid.pfl-unsolved, #pfl-legend.pfl-unsolved { opacity: .45; filter: saturate(.45); }
+#pfl-ribbon .hist-chip.rare-step { color: var(--ink-faint); }
+#pfl-ribbon .hist-chip.rare-step .hist-frequency { color: #c9a45c; }
+#pfl-ribbon .hist-chip.taken.rare-step { background: #4b3a1a; color: #f3dfb2; }
+#pfl-ribbon .hist-chip.taken.rare-step .hist-frequency { color: #f3dfb2; }
+#pfl-ribbon .hist-seg.unsolved { border-style: dashed; }
+#pfl-ribbon .hist-seg.unsolved .hist-head, #pfl-ribbon .hist-seg.unsolved .hist-chip { opacity: .6; }
 
 .pfl-position-sizes { margin:8px 0; border:1px solid var(--line); border-radius:4px; padding:7px; }
 .pfl-position-sizes summary { cursor:pointer; color:var(--accent); font-size:12px; }

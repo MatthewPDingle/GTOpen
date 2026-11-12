@@ -198,6 +198,14 @@ must not be the swept player): the hero re-adapts on every size.
    read `status.evs[hero]` and walk `node` for ranges.
 4. Iterate hero seats; reload the saved baseline before regenerating profiles.
 
+Do not read strategy off a rare line. `node` returns `branch_probability` (how
+often the line comes up) and each `history` step's action frequencies. Behind a
+step taken under 0.1% of the time, or below a `branch_probability` of 1e-6, the
+ranges are not solved (two solves of one game differ by tens of points there);
+below 1e-4 they are rough. The UI marks these spots (`web/js/preflop_reach.js`,
+`node tools/test_preflop_reach.mjs`). To study such a line, rule the seat with
+a profile or lock that takes the action and solve again.
+
 Caveats to carry into any writeup: EVs vs frozen profiles are ceilings;
 calibrated HU realization is pessimistic on no-initiative flatting (call ranges
 are the soft numbers; folds and value-raises are robust); ordinary villain fold-vs-raise remains fixed per bucket/band. New app-generated

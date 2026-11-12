@@ -7,7 +7,7 @@ import { api } from './api.js';
 import { createPositionSizing } from './preflop_sizing.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
-import { branchWarning } from './preflop_reach.js';
+import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, segmentLevels } from './preflop_reach.js';
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
@@ -110,6 +110,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }).catch(() => false);
   const reachWarning = document.createElement('div');
   reachWarning.className = 'pfl-reach-warning hidden';
+  reachWarning.setAttribute('role', 'status');
   previewBanner.after(reachWarning);
   const nodeEvidence = document.createElement('div');
   nodeEvidence.id = 'pfl-node-evidence';
@@ -1009,6 +1010,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }));
   }
   els.ribbon.addEventListener('scroll', updateRibbonScroll, { passive: true });
+  // A click must not leave focus on the strip: the next key press of any kind would then draw its
+  // focus outline around the whole ribbon, a second border outside the spot being viewed. Focus from
+  // the keyboard stays (the arrow keys scroll a long line).
+  els.ribbon.addEventListener('mousedown', () => setTimeout(() => {
+    if (document.activeElement === els.ribbon) els.ribbon.blur();
+  }, 0));
   // Trackpads and the native scrollbar work directly. A vertical mouse wheel
   // also moves a long ribbon, but still scrolls the page at either end.
   els.ribbon.addEventListener('wheel', event => {
@@ -1024,6 +1031,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function clearRightPanel() {
     previewBanner.classList.add('hidden');
+    reachWarning.className = 'pfl-reach-warning hidden';
     els.ribbon.innerHTML = '';
     ribbonCursor = null;
     updateRibbonScroll();
@@ -1089,9 +1097,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     const hist = S.lineHist || [];
     const cursor = S.cursor.length;
+    // spots the solve never really worked on (Range Lab charts are not a solve: no marks)
+    const levels = canon.on ? [] : segmentLevels(hist);
     hist.forEach((h, d) => {
       const seg = document.createElement('div');
-      seg.className = 'hist-seg' + (d === cursor ? ' current' : '');
+      const unsolved = levels[d] === 'unsolved';
+      seg.className = 'hist-seg' + (d === cursor ? ' current' : '') + (unsolved ? ' unsolved' : '');
       const head = document.createElement('div');
       head.className = 'hist-head';
       if (h.kind === 'action') {
@@ -1115,6 +1126,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       seg.dataset.tip = d === cursor
         ? 'The point you are viewing.'
         : 'Click to view this point (the line is kept).';
+      if (unsolved) seg.dataset.tip += ' Not solved: the line that leads here is one the solution almost never plays.';
       if (h.forced) {
         seg.classList.add('forced');
         seg.dataset.tip = `Range Lab has no chart for ${h.actor_pos} here; its later charts assume ${h.actor_pos} folds.`;
@@ -1125,19 +1137,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (h.kind === 'action') {
         h.actions.forEach((a, k) => {
           const chip = document.createElement('div');
-          chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
+          const rare = !canon.on && !h.strategy_note && !(a.freq >= RARE_STEP);
+          chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '') + (rare ? ' rare-step' : '');
           chip.classList.add('has-frequency');
           const actionLabel = document.createElement('span');
           actionLabel.textContent = a.label;
           const frequency = document.createElement('span');
           frequency.className = 'hist-frequency';
-          frequency.textContent = h.strategy_note ? "—" : `${(a.freq * 100).toFixed(0)}%`;
+          frequency.textContent = h.strategy_note ? "—" : frequencyText(a.freq);
           chip.append(actionLabel, frequency);
           chip.dataset.tip = h.chosen === k
-            ? `${h.actor_pos} takes ${a.label} ${(a.freq * 100).toFixed(1)}% of the time here — the line follows this action. Click to view the moment just after it.`
-            : `${h.actor_pos}: ${a.label} ${(a.freq * 100).toFixed(1)}% of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
+            ? `${h.actor_pos} takes ${a.label} ${frequencyDetail(a.freq)} of the time here — the line follows this action. Click to view the moment just after it.`
+            : `${h.actor_pos}: ${a.label} ${frequencyDetail(a.freq)} of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
           if (h.strategy_note) chip.dataset.tip = h.strategy_note;
           else if (a.freq === 0) chip.dataset.tip += ' This action has exactly zero modeled frequency; its continuation may have no solved strategy.';
+          else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, give ${h.actor_pos} a player model or a lock that takes it, then solve again.`;
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1184,10 +1198,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderNode() {
     const v = S.view;
     previewBanner.textContent = publicationLabel(v.publication);
+    // a line the solution (almost) never plays is not solved: say so above the grid, in words
     reachWarning.replaceChildren();
-    const warning = branchWarning(v);
-    reachWarning.classList.toggle('hidden', !warning);
-    if (warning) { const note=document.createElement('span'); note.className='pfl-reach-note'; note.textContent=warning; reachWarning.append(note); }
+    const lineWarning = canon.on || v.strategy_note ? null : lineNote(lineStatus(v));
+    reachWarning.className = `pfl-reach-warning ${lineWarning ? lineWarning.level : 'hidden'}`;
+    if (lineWarning) {
+      for (const [tag, text] of [['strong', lineWarning.title], ['span', lineWarning.text], ['em', lineWarning.fix]]) {
+        if (!text) continue;
+        const part = document.createElement(tag);
+        part.textContent = text;
+        reachWarning.append(part);
+      }
+    }
+    for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
     previewBanner.classList.toggle('hidden', !v.publication);
     previewBanner.classList.toggle('converged', !!v.publication?.converged);
     els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
