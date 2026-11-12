@@ -1,17 +1,69 @@
 // Thin API layer.
 
+/** Longest error detail the UI will show — the first line of an error body,
+ *  clamped, never a whole HTML response. */
+const MAX_DETAIL = 180;
+
+/** Plain text out of a body that may be an HTML error page. */
+function stripMarkup(text) {
+  if (!text) return '';
+  if (!/<[a-z!/]/i.test(text)) return text;
+  try {
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    return doc.body ? (doc.body.textContent || '') : '';
+  } catch {
+    return text.replace(/<[^>]*>/g, ' ');
+  }
+}
+
+/** First non-empty line of an error body, whitespace collapsed and clamped. */
+function summarize(text) {
+  const first = stripMarkup(text)
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .find(Boolean) || '';
+  const clean = first.replace(/\s+/g, ' ').trim();
+  if (!clean) return '';
+  return clean.length > MAX_DETAIL ? `${clean.slice(0, MAX_DETAIL - 1).trimEnd()}…` : clean;
+}
+
+/** A failed API call: HTTP status (0 = no response) plus a clamped detail. */
+export class ApiError extends Error {
+  constructor(status, detail, url) {
+    super(status ? `${status} — ${detail || 'request failed'}` : (detail || 'server unreachable'));
+    this.name = 'ApiError';
+    this.status = status;
+    this.url = url;
+  }
+}
+
+/** Coerce anything thrown into an Error with a presentation-ready message. */
+export function normalizeError(e) {
+  if (e instanceof Error) return e;
+  return new Error(summarize(String(e)) || 'unknown error');
+}
+
 async function req(method, url, body) {
   const opts = { method, headers: {} };
   if (body !== undefined) {
     opts.headers['Content-Type'] = 'application/json';
     opts.body = JSON.stringify(body);
   }
-  const res = await fetch(url, opts);
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `HTTP ${res.status}`);
+  let res;
+  try {
+    res = await fetch(url, opts);
+  } catch {
+    throw new ApiError(0, 'server unreachable', url);
   }
-  return res.json();
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new ApiError(res.status, summarize(text), url);
+  }
+  try {
+    return await res.json();
+  } catch {
+    throw new ApiError(res.status, 'invalid JSON response', url);
+  }
 }
 
 export const api = {

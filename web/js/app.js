@@ -1,6 +1,6 @@
 // App bootstrap: tabs, setup form, solve dashboard, browser wiring.
 
-import { api, toast } from './api.js';
+import { api, toast, normalizeError } from './api.js';
 import { RangeEditor } from './range_editor.js';
 import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
@@ -25,11 +25,13 @@ function showTab(name) {
   tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.view').forEach(v =>
     v.classList.toggle('active', v.id === `view-${name}`));
+  $('spot-strip').classList.toggle('hidden', !STRIP_TABS.has(name));
   // gate on built, not solved: a built tree is browsable even mid-solve (the
   // server keeps mid-solve browse data fresh) — gating on solved showed the
   // PREVIOUS tree's solution until the first solve finished
   if (name === 'browse' && state.built) browser.refresh();
   if (name === 'solve') drawChart(chartHistory); // canvas can't size/draw while hidden
+  renderStrip();
 }
 tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
 
@@ -38,14 +40,20 @@ const state = {
   solved: false,
   saved: false,         // current solve persisted via save/load (gates discard confirms)
   running: false,       // last /api/status was "running" (gates discard confirms)
+  building: false,      // a BUILD request is in flight
+  drift: false,         // SETUP no longer describes the built tree
+  status: null,         // last /api/status payload (strip + run state derive from it)
   builtFingerprint: null, // canonical fingerprint of the spot the built tree solves
   pendingPreflop: null, // last PREFLOP LAB export applied to SETUP
   pendingPreflopKey: null, // SETUP fingerprint of that export (staleness check)
-  treeStamp: null,      // board:nodes of the tree behind #tree-summary
 
   board: [],          // card strings
   polling: null,
 };
+
+/** Postflop screens that show the shared spot strip (the Preflop Lab and the
+ *  3-way tab have their own sessions). */
+const STRIP_TABS = new Set(['setup', 'solve', 'browse', 'reports']);
 
 // ---------------------------------------------------------------------------
 // Range editor
@@ -70,7 +78,10 @@ document.querySelectorAll('.rtab').forEach(b => {
 });
 $('range-clear').addEventListener('click', () => editor.clear());
 $('range-all').addEventListener('click', () => editor.fillAll());
-$('range-apply-text').addEventListener('click', () => editor.applyText());
+$('range-apply-text').addEventListener('click', async () => {
+  await editor.applyText();
+  refreshSession();
+});
 
 // Range presets are Preflop Lab exports: each one restores both ranges,
 // pot, stack and rake in one click (SEND TO POSTFLOP creates them).
@@ -149,6 +160,7 @@ async function applyExportedSpot(ex) {
     rtabs[1].textContent = `${ex.ip_pos} \u00b7 IP`;
   }
   showTab('setup');
+  refreshSession();
 }
 
 /** Put a spot request (the shape /api/spot takes and /api/status echoes as
@@ -185,6 +197,7 @@ async function applySpotToSetup(spot, { ranges = true } = {}) {
     document.querySelectorAll('.rtab').forEach(x =>
       x.classList.toggle('active', x.dataset.player === '0'));
   }
+  refreshSession();
 }
 
 // last-built spot from a previous session (the rest of it is restored into
@@ -207,6 +220,7 @@ editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
   editor.setPlayer(0);
   document.querySelectorAll('.rtab').forEach(x =>
     x.classList.toggle('active', x.dataset.player === '0'));
+  refreshSession();
 });
 
 // ---------------------------------------------------------------------------
@@ -338,12 +352,24 @@ function computeText(st) {
   return ''; // built/loaded, not solved yet — #mem-info shows estimates and budget
 }
 
+/** The one detail line left under the Run controls: decision points, hands,
+ *  memory and the engine note (the strip owns board/nodes/iter/exploit). */
+function detailLine(info, st) {
+  const compute = computeText(st);
+  return `${info.action_nodes.toLocaleString()} decisions · hands ${info.hands_oop}/${info.hands_ip} · ` +
+    `${memSummary(info)}${compute ? ` · ${compute}` : ''}`;
+}
+
 /** The SETUP page's current spot as a SpotRequest (shared by BUILD and
- *  flop reports). Returns null when the config is incomplete. */
-function currentSpotRequest() {
+ *  flop reports). Returns null when the config is incomplete. Quiet skips the
+ *  error surface (used by live drift checks). */
+function currentSpotRequest({ quiet = false } = {}) {
   if (state.board.length < 3) return null;
   let icm;
-  try { icm = postflopIcm.request(); } catch (e) { toast(e.message, true); return null; }
+  try { icm = postflopIcm.request(); } catch (e) {
+    if (!quiet) reportError(e);
+    return null;
+  }
   return {
     board: state.board.join(''),
     range_oop: editor.textFor(0),
@@ -374,21 +400,261 @@ function spotFingerprint(req) {
   return JSON.stringify([
     req.board, req.range_oop, req.range_ip,
     num(req.starting_pot), num(req.effective_stack),
-    num(req.rake_pct), num(req.rake_cap), num(allinThresholdPercent(req.allin_threshold)),
+    num(req.rake_pct), num(req.rake_cap),
+    num(allinThresholdPercent(req.allin_threshold)),
     !!req.add_allin, +req.max_raises,
     sizes(req.oop), sizes(req.ip),
     req.icm ? JSON.stringify(req.icm) : null,
   ]);
 }
 
+// ---------------------------------------------------------------------------
+// Session strip + SETUP drift + one error surface
+// ---------------------------------------------------------------------------
+
+/** The last failed action, shown in the persistent error bar with a retry. */
+let lastFailure = null;
+
+function reportError(e, retry = null, prefix = '') {
+  const err = normalizeError(e);
+  lastFailure = { message: prefix ? `${prefix} · ${err.message}` : err.message, retry };
+  $('error-text').textContent = lastFailure.message;
+  $('error-retry').classList.toggle('hidden', !retry);
+  $('error-bar').classList.remove('hidden');
+}
+
+function clearError() {
+  lastFailure = null;
+  $('error-bar').classList.add('hidden');
+}
+
+$('error-dismiss').addEventListener('click', clearError);
+$('error-retry').addEventListener('click', () => {
+  const failure = lastFailure;
+  if (!failure?.retry) return;
+  clearError();
+  try {
+    const out = failure.retry();
+    if (out && typeof out.catch === 'function') out.catch(err => reportError(err, failure.retry));
+  } catch (err) {
+    reportError(err, failure.retry);
+  }
+});
+
+/** SETUP's fingerprint right now, or null when the spot is incomplete. */
+function setupFingerprintNow() {
+  return spotFingerprint(currentSpotRequest({ quiet: true }));
+}
+
+let setupTimer = null;
+/** Recompute drift after an edit (debounced: range text is serialized). */
+function scheduleSessionRefresh() {
+  clearTimeout(setupTimer);
+  setupTimer = setTimeout(refreshSession, 150);
+}
+
+/** Recompute the strip, the run-state line and the action labels from the
+ *  live SETUP + last /api/status. Cheap enough to run on every poll. */
+function refreshSession() {
+  const sig = setupFingerprintNow();
+  state.drift = !!(state.built && state.builtFingerprint && sig !== state.builtFingerprint);
+  renderStrip();
+  syncRunState();
+  syncSolveActions();
+}
+
+// The strip describes the LOADED spot; while SETUP drifts it keeps showing
+// what the tree actually solved, and the state pill says they disagree.
+function stripSource() {
+  if (state.built && state.builtSpot) return state.builtSpot;
+  return currentSpotRequest({ quiet: true }) || {
+    board: state.board.join(''),
+    starting_pot: +$('cfg-pot').value,
+    effective_stack: +$('cfg-stack').value,
+    rake_pct: +$('cfg-rake').value,
+    rake_cap: +$('cfg-rakecap').value,
+    oop: collectSizes('oop'),
+    ip: collectSizes('ip'),
+  };
+}
+
+/** "33/75" or "33/75·75·75": streets separated by ·, sizes by /. */
+function sizeSeq(rows, kind) {
+  const streets = (rows || []).map(r => (r?.[kind] || '').trim().replace(/\s+/g, '/'));
+  const present = streets.filter(Boolean);
+  if (!present.length) return '';
+  if (present.length === 3 && present.every(s => s === present[0])) return present[0];
+  return streets.map(s => s || '—').join('·');
+}
+
+function sizeSummary(spot) {
+  const parts = [];
+  for (const who of ['oop', 'ip']) {
+    const rows = spot[who] || [];
+    const bits = [];
+    const bets = sizeSeq(rows, 'bet');
+    const raises = sizeSeq(rows, 'raise');
+    const donks = who === 'oop' ? sizeSeq(rows, 'donk') : '';
+    if (bets) bits.push(`b ${bets}`);
+    if (raises) bits.push(`r ${raises}`);
+    if (donks) bits.push(`d ${donks}`);
+    if (bits.length) parts.push(`${who.toUpperCase()} ${bits.join(' ')}`);
+  }
+  return parts.join(' · ');
+}
+
+function posLabel(i) {
+  const text = (document.querySelectorAll('.rtab')[i]?.textContent || '').trim();
+  const [pos, side] = text.split(' · ');
+  return pos && side ? `${side} ${pos}` : (pos || side || '');
+}
+
+function renderStripBoard(board) {
+  const el = $('ss-board');
+  el.replaceChildren();
+  const cards = (board || '').match(/.{2}/g) || [];
+  if (!cards.length) {
+    el.textContent = 'no board';
+    return;
+  }
+  for (const cs of cards) {
+    const span = document.createElement('span');
+    span.className = `ss-card suit-${cs[1]}`;
+    span.textContent = cs[0] + SUIT_GLYPH[cs[1]];
+    el.append(span);
+  }
+}
+
+function renderStrip() {
+  const spot = stripSource();
+  renderStripBoard(spot.board);
+  const pos = [posLabel(0), posLabel(1)].filter(Boolean).join(' · ');
+  $('ss-pos').textContent = pos;
+  const amount = x => Number.isFinite(+x) ? +x : '—';
+  const money = [`pot ${amount(spot.starting_pot)}`, `stack ${amount(spot.effective_stack)}`];
+  if (+spot.rake_pct > 0) {
+    money.push(`rake ${+spot.rake_pct}%${+spot.rake_cap > 0 ? ` cap ${+spot.rake_cap}` : ''}`);
+  }
+  $('ss-money').textContent = money.join(' · ');
+  $('ss-sizes').textContent = sizeSummary(spot);
+
+  const info = stripStateInfo();
+  const btn = $('ss-state');
+  btn.textContent = info.text;
+  btn.dataset.tone = info.tone;
+  btn.setAttribute('aria-label', `Loaded spot: ${info.text}. Go to the control that sets it.`);
+}
+
+function engineToken(st) {
+  if (!st?.tree) return '';
+  if (st.gpu) return 'GPU · ';
+  if (st.state === 'running' || st.gpu_note) return 'CPU · ';
+  return '';
+}
+
+function stripStateInfo() {
+  const st = state.status;
+  if (state.building) return { text: 'building…', tone: 'warn', target: 'setup' };
+  if (state.drift) return { text: 'SETUP changed', tone: 'warn', target: 'setup' };
+  if (!state.built) return { text: 'not built', tone: '', target: 'setup' };
+  const iter = st?.iteration || 0;
+  const pct = st?.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
+  const fits = st?.fits?.length ? ` · fitting ${st.fits.length}` : '';
+  if (st?.state === 'running') {
+    return { text: `${engineToken(st)}iter ${iter.toLocaleString()}${pct}`, tone: 'live', target: 'solve' };
+  }
+  if (iter > 0) {
+    const word = st?.state === 'stopped' ? 'stopped' : 'solved';
+    return { text: `${engineToken(st)}${word} · iter ${iter.toLocaleString()}${pct}${fits}`, tone: 'ok', target: 'solve' };
+  }
+  return {
+    text: st?.tree?.nodes
+      ? `${engineToken(st)}built ${st.tree.nodes.toLocaleString()} nodes`
+      : `${engineToken(st)}built`,
+    tone: 'ok',
+    target: 'setup',
+  };
+}
+
+/** One short line beside SOLVE/STOP: why STOP is unavailable, or how far the
+ *  run got. Same numbers as the strip, local to the controls that use them. */
+function syncRunState() {
+  const st = state.status;
+  const running = st?.state === 'running';
+  const el = $('run-state');
+  let text = '', tone = '';
+  if (state.building) { text = 'building…'; tone = 'warn'; }
+  else if (state.drift) { text = 'SETUP changed'; tone = 'warn'; }
+  else if (!state.built) { text = 'not built'; tone = 'warn'; }
+  else if (running) {
+    const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
+    text = `${engineToken(st)}iter ${st.iteration.toLocaleString()}${pct}`;
+    tone = 'live';
+  } else if ((st?.iteration || 0) > 0) {
+    const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
+    const fits = st.fits?.length
+      ? ` · fitting ${st.fits.length} (off ${(Math.max(...st.fits.map(f => f.max_error)) * 100).toFixed(1)} pts)`
+      : '';
+    text = `${engineToken(st)}${st.state} · iter ${st.iteration.toLocaleString()}${pct}${fits}`;
+    tone = 'ok';
+  } else {
+    text = 'built · not solved';
+  }
+  el.textContent = text;
+  el.dataset.tone = tone;
+  $('setup-drift').classList.toggle('hidden', !state.drift);
+}
+
+/** SOLVE/RE-SOLVE/REBUILD & SOLVE, and the controls that only apply mid-run. */
+function syncSolveActions() {
+  const st = state.status;
+  const running = st?.state === 'running';
+  const done = !!st && st.iteration > 0 && (st.state === 'done' || st.state === 'stopped');
+  const label = state.drift ? 'REBUILD & SOLVE' : done ? 'RE-SOLVE' : 'SOLVE';
+  for (const id of ['btn-solve', 'btn-solve-top']) {
+    if ($(id).textContent !== label) $(id).textContent = label;
+  }
+  $('solve-controls').classList.toggle('hidden', !state.built);
+  $('btn-solve-top').classList.toggle('hidden', running);
+  $('btn-stop-top').classList.toggle('hidden', !running);
+  $('btn-stop-top').disabled = !running;
+  $('btn-solve').disabled = running;
+  $('btn-stop').disabled = !running;
+}
+
+// Clicking the state goes to the control that owns it: BUILD TREE for
+// built/not-built/SETUP-changed, the Run panel for a run in progress.
+$('ss-state').addEventListener('click', () => {
+  const info = stripStateInfo();
+  if (info.target === 'solve') {
+    showTab('solve');
+    $('panel-run').scrollIntoView({ block: 'nearest' });
+    $('btn-solve').focus({ preventScroll: true });
+  } else {
+    showTab('setup');
+    ($('setup-drift').classList.contains('hidden') ? $('btn-build') : $('btn-rebuild')).focus();
+  }
+});
+
+// SETUP is the source of truth: any edit re-checks drift. Range painting only
+// commits on mouseup, so that is the event the matrix can be watched through.
+for (const ev of ['input', 'change', 'click']) {
+  $('view-setup').addEventListener(ev, scheduleSessionRefresh);
+}
+window.addEventListener('mouseup', scheduleSessionRefresh);
+
 /** Build the tree from SETUP. Resolves true when the build landed — shared by
  *  the BUILD TREE button, SOLVE's auto-rebuild on a changed SETUP, and the
  *  reports' OPEN IN BROWSE build-then-solve. */
 async function buildTree() {
+  if (state.building) return false;
   const cfg = currentSpotRequest();
-  if (!cfg) { if (state.board.length < 3) toast('pick at least a 3-card flop', true); return false; }
-  if (!cfg.range_oop) { toast('OOP range is empty', true); return false; }
-  if (!cfg.range_ip) { toast('IP range is empty', true); return false; }
+  if (!cfg) {
+    if (state.board.length < 3) reportError(new Error('pick at least a 3-card flop'));
+    return false;
+  }
+  if (!cfg.range_oop) { reportError(new Error('OOP range is empty')); return false; }
+  if (!cfg.range_ip) { reportError(new Error('IP range is empty')); return false; }
   // a running solve is destroyed by the session swap (the server stops it
   // once the new spot validates) — never do that unprompted
   if (state.running &&
@@ -399,20 +665,35 @@ async function buildTree() {
       !confirm('The current solve has not been saved — building a new tree discards it. Continue?')) {
     return false;
   }
+  // node locks live only in the session, so a saved solve can still lose
+  // irreversible work to a rebuild. Ask only for that case; editing a field
+  // never raises a modal on its own (the drift notice carries it).
+  if (state.solved && state.saved && state.built) {
+    const locks = await api.locks().catch(() => []);
+    if (locks.length && !confirm(
+      `The current solve has ${locks.length} node lock${locks.length > 1 ? 's' : ''} — rebuilding discards them. Continue?`)) {
+      return false;
+    }
+  }
   $('btn-build').disabled = true;
-  const prevBuildInfo = $('build-info').textContent;
-  $('build-info').textContent = 'building…';
+  $('btn-build').textContent = 'BUILDING…';
   // the server validates the new spot BEFORE swapping sessions, so the old
   // tree (and any solve on it) survives until the build actually lands. Reset
   // the client's claims optimistically for the in-flight build, but keep the
   // old values to restore if the build is refused.
   const prevBuilt = state.built;
   const prevSolved = state.solved;
+  const prevBuiltSpot = state.builtSpot;
+  const prevFingerprint = state.builtFingerprint;
+  state.building = true;
   state.built = false;
   state.solved = false;
+  refreshSession();
   try {
     const info = await api.buildSpot(cfg);
+    clearError();
     state.built = true;
+    state.running = false; // the server reset its session to "ready"
     state.builtFingerprint = spotFingerprint(cfg); // what the tree now solves
     state.builtSpot = cfg;
     browser.reset(); // new tree: drop any stale browse line
@@ -436,16 +717,11 @@ async function buildTree() {
       browser.preflop = null;
     }
     localStorage.setItem('gtopen-last-spot', JSON.stringify(cfg));
-    const summary = `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ` +
-      `hands ${info.hands_oop}/${info.hands_ip}`;
-    $('build-info').textContent = `${summary} · ${memSummary(info)}`;
-    $('tree-summary').textContent = `board ${info.board} · ${summary}`;
-    state.treeStamp = `${info.board}:${info.nodes}`; // pollStatus keeps this text for the same tree
-    $('mem-info').textContent = memSummary(info);
-    $('compute-info').textContent = '';
     // the server reset its status to "ready" (iteration 0, no history): resync
-    // the pill, readouts, chart and header solve bar — after a finished solve
-    // nothing polls any more, so they kept describing the previous solve
+    // the pill, strip, readouts, chart and header solve bar — after a finished
+    // solve nothing polls any more, so they kept describing the previous solve
+    state.building = false;
+    refreshSession();
     pollStatus();
     toast('tree built');
     showTab('solve');
@@ -453,45 +729,46 @@ async function buildTree() {
   } catch (e) {
     // validate-then-swap on the server: a refused build leaves the previous
     // session — tree, and any completed solve — fully intact. Restore the
-    // client's claims to match (state.treeStamp and the tree/mem displays
-    // still describe that surviving session, so they stay). Restoring
-    // `solved` BEFORE pollStatus is what keeps the completion branch there
-    // from mistaking the surviving done session for a fresh solve and
-    // toasting 'solve done' over this error toast (plus a needless Browse
-    // refresh) — the toast must fire only when a run actually finishes.
+    // client's claims to match. Restoring `solved` BEFORE pollStatus is what
+    // keeps the completion branch there from mistaking the surviving done
+    // session for a fresh solve and toasting 'solve done' over this failure
+    // (plus a needless Browse refresh) — that toast must fire only when a run
+    // actually finishes.
     state.built = prevBuilt;
     state.solved = prevSolved;
-    $('build-info').textContent = prevBuildInfo;
-    toast(`build failed: ${e.message}`, true);
+    state.builtSpot = prevBuiltSpot;
+    state.builtFingerprint = prevFingerprint;
+    state.building = false;
+    reportError(e, buildTree);
+    refreshSession();
     pollStatus(); // resync pill + header solve bar with the surviving session
     return false;
   } finally {
     $('btn-build').disabled = false;
+    $('btn-build').textContent = 'BUILD TREE';
+    state.building = false;
   }
 }
 $('btn-build').addEventListener('click', () => { buildTree(); });
+$('btn-rebuild').addEventListener('click', () => { buildTree(); });
 
 // ---------------------------------------------------------------------------
 // Solve dashboard
 // ---------------------------------------------------------------------------
 
-$('btn-solve').addEventListener('click', async () => {
+/** SOLVE: rebuild first when SETUP no longer describes the tree, then run.
+ *  buildTree carries the only discard confirms (running/unsaved/locks); an
+ *  edited field alone never raises a modal — the drift notice shows it. */
+async function startSolve() {
+  if (state.running || state.building) return;
   // SETUP is the source of truth: board clicks and range/stakes/size edits
   // touch no build state, so after build-A-then-edit-to-B a bare solve would
   // silently study A while the UI shows B. Mirror the Preflop Lab: when the
   // SETUP fingerprint no longer matches the built tree (or nothing is built),
   // SOLVE rebuilds first — buildTree carries the discard confirms — and a
   // refused or failed build aborts the solve.
-  const cur = currentSpotRequest();
+  const cur = currentSpotRequest({ quiet: true });
   if (!state.built || !cur || spotFingerprint(cur) !== state.builtFingerprint) {
-    // A solved session that SETUP no longer describes (a LOAD whose spot
-    // could not be mirrored into SETUP, or edits after a save) must never be
-    // replaced silently — the "saved" discard-guard inside buildTree does
-    // not cover node locks and locks are not on disk.
-    if (state.built && state.solved && cur &&
-        !confirm('SETUP no longer matches the current solve — rebuild from SETUP and discard the current solve (and its locks)?')) {
-      return;
-    }
     if (!await buildTree()) return;
   }
   try {
@@ -500,6 +777,7 @@ $('btn-solve').addEventListener('click', async () => {
       target_exploit_pct: +$('run-target').value,
       check_every: +$('run-check').value,
     });
+    clearError();
     // a fresh run: completion (toast + Browse refresh below) keys on this
     // transition, and the new strategies aren't on disk yet
     state.solved = false;
@@ -507,17 +785,18 @@ $('btn-solve').addEventListener('click', async () => {
     toast('solving…');
     startPolling();
   } catch (e) {
-    toast(e.message, true);
+    reportError(e, startSolve);
   }
-});
+}
+$('btn-solve').addEventListener('click', startSolve);
 
 $('btn-stop').addEventListener('click', async () => {
-  await api.stop().catch(() => {});
+  try { await api.stop(); } catch (e) { reportError(e, () => api.stop()); }
 });
 
 // Header solve controls — solve/stop/monitor from any screen, so Browse is the
 // operational home and re-solving (e.g. after a node lock) never needs a tab switch.
-$('btn-solve-top').addEventListener('click', () => $('btn-solve').click());
+$('btn-solve-top').addEventListener('click', startSolve);
 $('btn-stop-top').addEventListener('click', () => $('btn-stop').click());
 let firstPoll = true;
 
@@ -547,6 +826,7 @@ function startPolling() {
 async function pollStatus() {
   let st;
   try { st = await api.status(); } catch { return; }
+  state.status = st;
   const pill = $('status-pill');
   pill.className = '';
   if (st.state === 'running') pill.classList.add('running');
@@ -561,45 +841,18 @@ async function pollStatus() {
   drawChart(st.history || []);
   trustDial.update(st);
 
-  // keep the SOLVE tab's tree line in sync with the server session — load
-  // (and any other session swap) must not keep showing the previous build.
-  // The stamp keeps BUILD's richer summary in place for the same tree.
-  if (st.tree) {
-    state.built = true;
-    const stamp = `${st.tree.board}:${st.tree.nodes}`;
-    if (state.treeStamp !== stamp) {
-      state.treeStamp = stamp;
-      $('tree-summary').textContent =
-        `board ${st.tree.board} · ${st.tree.nodes.toLocaleString()} nodes · ${(st.tree.arena_mb/1000).toFixed(2)} GB`;
-    }
-    $('mem-info').textContent = memSummary(st.tree);
-  } else {
-    state.built = false;
-  }
-  // the built-tree fingerprint follows server truth (status echoes the
-  // session's spot_request): it survives a page refresh, and a LOAD swaps it
-  // to the loaded spot so SOLVE knows SETUP no longer describes the session
+  // The strip, run state and action labels all derive from server truth:
+  // load (and any other session swap) must not keep describing the previous
+  // build. `spot_request` follows the session too, so SOLVE knows when SETUP
+  // no longer describes it.
+  state.built = !!st.tree;
   if ('spot_request' in st) {
     state.builtFingerprint = spotFingerprint(st.spot_request);
     state.builtSpot = st.spot_request;
   }
   state.running = st.state === 'running';
-  const ci = $('compute-info');
-  ci.textContent = computeText(st);
-  ci.className = 'mono' + (st.gpu ? ' gpu-on' : (st.gpu_note ? ' gpu-fallback' : ' dim'));
-
-  // header solve bar: present once a tree exists; solve from anywhere
-  const built = !!st.tree, running = st.state === 'running';
-  $('solve-controls').classList.toggle('hidden', !built);
-  $('btn-solve-top').classList.toggle('hidden', running);
-  $('btn-stop-top').classList.toggle('hidden', !running);
-  $('btn-solve-top').textContent = (st.state === 'done' || st.state === 'stopped') ? 'RE-SOLVE' : 'SOLVE';
-  const fits = st.fits || [];
-  const fitText = fits.length
-    ? ` · fitting ${fits.length} node${fits.length > 1 ? 's' : ''} (off by ${(Math.max(...fits.map(f => f.max_error)) * 100).toFixed(1)} pts)`
-    : '';
-  $('solve-readout').textContent = built
-    ? `iter ${st.iteration}${st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}% pot` : ''}${fitText}` : '';
+  $('mem-info').textContent = st.tree ? detailLine(st.tree, st) : '';
+  refreshSession();
   // solve completion: toast once per run, and refresh an open Browse view so
   // the lock → re-solve → inspect loop shows the adapted strategies (the view
   // renders from a cached node payload until refreshed)
@@ -728,22 +981,24 @@ refreshSaves();
 // stays authoritative (it sanitizes again).
 const sanitizeSaveName = s => String(s).replace(/[^\p{L}\p{N} ._-]/gu, '').trim();
 
-$('btn-save').addEventListener('click', async () => {
+async function saveSolve() {
   const name = sanitizeSaveName($('save-name').value);
-  if (!name) return toast('enter a save name (letters, digits, - _ . space)', true);
+  if (!name) return reportError(new Error('enter a save name (letters, digits, - _ . space)'));
   if (saveNames.includes(name) &&
       !confirm(`"${name}" already exists — overwrite it?`)) return;
   try {
     await api.save(name);
+    clearError();
     state.saved = true;
     toast('saved');
     refreshSaves();
-  } catch (e) { toast(e.message, true); }
-});
+  } catch (e) { reportError(e, saveSolve); }
+}
+$('btn-save').addEventListener('click', saveSolve);
 
-$('btn-load').addEventListener('click', async () => {
+async function loadSolve() {
   const name = $('load-select').value;
-  if (!name) return toast('pick a save', true);
+  if (!name) return reportError(new Error('pick a save'));
   // a running solve is stopped and dropped by the session swap — confirm it
   // (state.solved is false mid-run, so the unsaved check below can't fire)
   if (state.running &&
@@ -752,7 +1007,9 @@ $('btn-load').addEventListener('click', async () => {
       !confirm('The current solve has not been saved — loading discards it. Continue?')) return;
   try {
     await api.load(name);
+    clearError();
     state.built = true; state.solved = true;
+    state.running = false; // the loaded session is settled, not running
     state.saved = true; // it IS the on-disk copy
     browser.reset(); // different solve: drop any stale browse line
     // SETUP must describe the loaded solve: SOLVE compares SETUP's
@@ -763,11 +1020,12 @@ $('btn-load').addEventListener('click', async () => {
     try {
       const st = await api.status();
       if (st && st.spot_request) await applySpotToSetup(st.spot_request);
-    } catch (e) { toast(`loaded, but SETUP still shows the old spot: ${e.message}`, true); }
+    } catch (e) { reportError(e, null, 'SETUP not updated'); }
     toast('loaded — go to BROWSE');
     pollStatus(); // also refreshes the SOLVE tab's tree line from the new session
-  } catch (e) { toast(e.message, true); }
-});
+  } catch (e) { reportError(e, loadSolve); }
+}
+$('btn-load').addEventListener('click', loadSolve);
 
 // ---------------------------------------------------------------------------
 // Browser
@@ -940,11 +1198,12 @@ async function openReportSpot(spot, board, steps = []) {
   editor.setPlayer(0);
   await editor.setWeightsFromText(spot.range_oop);
   showTab('setup');
+  refreshSession();
   toast(`report spot loaded on ${board} — building…`);
   // await the build directly (polling a client flag raced against in-flight
   // builds), then solve, then land in Browse
   if (!await buildTree()) return;
-  $('btn-solve').click();
+  startSolve();
   // land at the report's line on this flop (its action steps up to the
   // first card; the tree is browsable mid-solve)
   if (steps.length) browser.path = steps.map(i => ({ type: 'action', index: i }));
@@ -978,6 +1237,52 @@ const reports = initReports({
 });
 void reports;
 
+// ---------------------------------------------------------------------------
+// State lines for controls this file does not drive
+// ---------------------------------------------------------------------------
+
+/** SEND TO POSTFLOP SETUP is disabled until the lab's line reaches an
+ *  exportable flop; the line must say so instead of leaving a dead button. */
+const exportBtn = $('pfl-export');
+const exportState = $('pfl-export-state');
+function syncExportState() {
+  const ready = !exportBtn.disabled;
+  exportState.textContent = ready
+    ? (exportBtn.textContent.trim() === 'SEND TO 3-WAY SETUP' ? '3-way flop ready' : 'flop line ready')
+    : 'needs a heads-up flop line';
+  exportState.dataset.tone = ready ? 'ok' : 'warn';
+}
+new MutationObserver(syncExportState).observe(exportBtn, {
+  attributes: true, attributeFilter: ['disabled'], childList: true, characterData: true, subtree: true,
+});
+syncExportState();
+
+/** BUILD TREE (3-WAY) has no tree until multiway.js fills its info line. */
+const mwBuildInfo = $('mw-build-info');
+const mwBuildState = $('mw-build-state');
+function syncMwBuildState() {
+  const info = mwBuildInfo.textContent.trim();
+  mwBuildState.textContent = info ? '' : 'not built';
+  mwBuildState.dataset.tone = info ? '' : 'warn';
+}
+new MutationObserver(syncMwBuildState).observe(mwBuildInfo, {
+  childList: true, characterData: true, subtree: true,
+});
+syncMwBuildState();
+
+/** SOLVE/STOP (3-WAY) follow the live status line multiway.js keeps there. */
+const mwProgress = $('mw-progress');
+function syncMwRunState() {
+  const text = mwProgress.textContent.trim();
+  if (!text) return; // no status yet: leave both controls as they were
+  const running = text.startsWith('running');
+  $('mw-solve').disabled = running;
+  $('mw-stop').disabled = !running;
+}
+new MutationObserver(syncMwRunState).observe(mwProgress, {
+  childList: true, characterData: true, subtree: true,
+});
+syncMwRunState();
 // restore last config if present (the ranges were restored with the editor
 // bootstrap above, so a rebuild really reproduces the saved spot)
 try {

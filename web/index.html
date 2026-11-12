@@ -24,13 +24,31 @@
     </nav>
     <div id="hdr-right">
       <div id="solve-controls" class="hidden">
-        <span id="solve-readout" class="mono dim" tabindex="0" data-tip="Iterations completed · exploitability (% of pot)."></span>
-        <button id="btn-solve-top" class="btn primary sm" data-tip="Works from any screen — re-solve (e.g. after locking a node) without leaving Browse.">SOLVE</button>
-        <button id="btn-stop-top" class="btn danger sm hidden" data-tip="The current solution stays browsable.">STOP</button>
+        <button id="btn-solve-top" class="btn primary sm">SOLVE</button>
+        <button id="btn-stop-top" class="btn danger sm hidden">STOP</button>
       </div>
-      <div id="status-pill" tabindex="0"><span class="dot"></span><span id="status-text">idle</span></div>
+      <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
     </div>
   </header>
+
+  <!-- Loaded spot + tree/solve state, shared by SETUP, SOLVE, BROWSE, REPORTS -->
+  <div id="spot-strip" class="hidden" role="group" aria-label="Loaded spot">
+    <span class="ss-k">SPOT</span>
+    <span id="ss-board" class="ss-board"></span>
+    <span id="ss-pos" class="ss-pos"></span>
+    <span class="ss-sep"></span>
+    <span id="ss-money" class="ss-money"></span>
+    <span class="ss-sep"></span>
+    <span id="ss-sizes" class="ss-sizes"></span>
+    <span class="ss-grow"></span>
+    <span class="ss-live" aria-live="polite" aria-atomic="true"><button id="ss-state" class="ss-state" type="button">not built</button></span>
+  </div>
+
+  <div id="error-bar" class="hidden" role="alert">
+    <span id="error-text"></span>
+    <button id="error-retry" class="btn xs">RETRY</button>
+    <button id="error-dismiss" class="btn ghost xs" aria-label="Dismiss error">✕</button>
+  </div>
 
   <!-- ============================== SETUP =============================== -->
   <main id="view-setup" class="view">
@@ -38,13 +56,17 @@
       <div><h1>Postflop setup</h1></div>
       <span class="setup-format">HEADS-UP · FLOP / TURN / RIVER</span>
     </div>
+    <div id="setup-drift" class="drift-notice hidden" role="status">
+      <span>SETUP changed</span>
+      <button id="btn-rebuild" class="btn sm">REBUILD</button>
+    </div>
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
         <h2><span class="setup-step">01</span> Ranges <span class="info-dot" tabindex="0" data-tip="Click or drag to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above = suited, below = offsuit.">?</span></h2>
         <div class="range-tabs">
           <button class="rtab active" data-player="0" data-tip="Out of position — acts first on every street (e.g. the big blind caller).">OOP</button>
           <button class="rtab" data-player="1" data-tip="In position — acts last on every street (e.g. the button raiser).">IP</button>
-          <select id="preset-select" data-tip="Loads both ranges, pot, stack and rake from a Preflop Lab export."><option value="">from Preflop Lab…</option></select>
+          <select id="preset-select" aria-label="Load a Preflop Lab spot" data-tip="Loads both ranges, pot, stack and rake from a Preflop Lab export."><option value="">from Preflop Lab…</option></select>
         </div>
         <div class="range-editor-wrap">
           <div id="range-matrix" class="matrix editor"></div>
@@ -75,13 +97,22 @@
 
       <section class="panel" id="panel-money">
         <h2><span class="setup-step">03</span> Pot &amp; stack <span class="info-dot" tabindex="0" data-tip="Amounts are unitless — chips or bb, but keep pot and stack in the same unit. Example: pot 6.5, stack 97.5 in bb.">?</span></h2>
-        <div class="field-grid">
-          <label data-tip="Both players' previous bets plus any dead money.">Starting pot <input type="number" id="cfg-pot" value="60" min="1"></label>
-          <label data-tip="The smaller of the two stacks behind.">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
-          <label data-tip="Taken from the final pot at showdown or fold. Tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
-          <label data-tip="0 = uncapped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
-          <label data-tip="A bet or raise committing this much of the remaining stack becomes all-in; 100 = only a full-stack commitment.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="0" max="100" step="any"></label>
-          <label class="check"><input type="checkbox" id="cfg-addallin"> add all-in</label>
+        <div class="field-grid field-groups">
+          <fieldset class="field-group">
+            <legend>Pot &amp; stack</legend>
+            <label data-tip="Both players' previous bets plus any dead money.">Starting pot <input type="number" id="cfg-pot" value="60" min="1"></label>
+            <label data-tip="The smaller of the two stacks behind.">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
+          </fieldset>
+          <fieldset class="field-group">
+            <legend>Rake</legend>
+            <label data-tip="Taken from the final pot at showdown or fold. Tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
+            <label data-tip="0 = uncapped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
+          </fieldset>
+          <fieldset class="field-group">
+            <legend>All-in</legend>
+            <label data-tip="A bet or raise committing this much of the remaining stack becomes all-in; 100 = only a full-stack commitment.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="0" max="100" step="any"></label>
+            <label class="check"><input type="checkbox" id="cfg-addallin"> add all-in</label>
+          </fieldset>
         </div>
       </section>
 
@@ -92,8 +123,7 @@
           <tbody id="sizes-body"></tbody>
         </table>
         <div class="build-row">
-          <button id="btn-build" class="btn primary" data-tip="Shows tree size and memory before solving. SOLVE rebuilds automatically when SETUP changed.">BUILD TREE</button>
-          <span id="build-info" class="mono dim"></span>
+          <button id="btn-build" class="btn primary">BUILD TREE</button>
         </div>
       </section>
       </div>
@@ -115,12 +145,18 @@
             <label data-tip="Each player is treated as having put in a third.">Starting pot <input type="number" id="mw-pot" value="80" min="1"></label>
           </div>
           <div id="mw-players"></div>
-          <div class="field-grid" style="margin-top:8px">
-            <label data-tip="Taken from the contested pot; uncalled bets are returned first.">rake % <input type="number" id="mw-rake" value="0" min="0" max="10" step="0.5"></label>
-            <label data-tip="0 = uncapped.">rake cap <input type="number" id="mw-rakecap" value="0" min="0"></label>
-            <label data-tip="Committing this much of the remaining stack makes it all-in.">All-in threshold % <input type="number" id="mw-allinthr" value="85" min="1" max="100"></label>
-            <label data-tip="Bet = 0 raises.">max raises <input type="number" id="mw-maxraises" value="2" min="0" max="4"></label>
-            <label class="check"><input type="checkbox" id="mw-addallin"> add all-in</label>
+          <div class="field-grid field-groups" style="margin-top:8px">
+            <fieldset class="field-group">
+              <legend>Rake</legend>
+              <label data-tip="Taken from the contested pot; uncalled bets are returned first.">rake % <input type="number" id="mw-rake" value="0" min="0" max="10" step="0.5"></label>
+              <label data-tip="0 = uncapped.">rake cap <input type="number" id="mw-rakecap" value="0" min="0"></label>
+            </fieldset>
+            <fieldset class="field-group">
+              <legend>All-in &amp; raises</legend>
+              <label data-tip="Committing this much of the remaining stack makes it all-in.">All-in threshold % <input type="number" id="mw-allinthr" value="85" min="1" max="100"></label>
+              <label data-tip="Bet = 0 raises.">max raises <input type="number" id="mw-maxraises" value="2" min="0" max="4"></label>
+              <label class="check"><input type="checkbox" id="mw-addallin"> add all-in</label>
+            </fieldset>
           </div>
           <table class="sizes-table" style="margin-top:8px">
             <thead><tr><th></th><th>bet % pot</th><th>raise % pot</th></tr></thead>
@@ -131,7 +167,8 @@
             </tbody>
           </table>
           <div class="build-row">
-            <button id="mw-build" class="btn primary" data-tip="Shows tree size and memory before solving.">BUILD TREE</button>
+            <button id="mw-build" class="btn primary">BUILD TREE</button>
+            <span id="mw-build-state" class="ctl-state">not built</span>
             <span id="mw-build-info" class="mono dim"></span>
           </div>
         </section>
@@ -174,6 +211,7 @@
 
   <!-- ============================== SOLVE =============================== -->
   <main id="view-solve" class="view">
+    <h1 class="sr-only">Solve</h1>
     <div class="solve-grid">
       <section class="panel" id="panel-run">
         <h2>Run</h2>
@@ -184,11 +222,10 @@
         </div>
         <div class="btn-row">
           <button id="btn-solve" class="btn primary">SOLVE</button>
-          <button id="btn-stop" class="btn danger" data-tip="Solution stays browsable; SOLVE continues from where it stopped.">STOP</button>
+          <button id="btn-stop" class="btn danger" disabled>STOP</button>
+          <span id="run-state" class="ctl-state"></span>
         </div>
-        <div id="tree-summary" class="mono dim"></div>
         <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in RAM, not total process memory. GPU VRAM is a conservative full-tree estimate; actual fit is checked at solve time, with CPU fallback."></div>
-        <div id="compute-info" class="mono"></div>
         <h2 style="margin-top:24px">Persistence <span class="info-dot" tabindex="0" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</span></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
@@ -214,6 +251,7 @@
 
   <!-- ============================== BROWSE ============================== -->
   <main id="view-browse" class="view">
+    <h1 class="sr-only">Browse</h1>
     <div id="history-wrap">
       <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left">‹</button>
       <div id="history-bar" tabindex="0" data-tip="Each panel is a decision point. Click any action to jump to that line, including roads not taken, or click a turn/river card to change the runout. Scroll with the arrows, wheel, or drag."></div>
@@ -307,7 +345,7 @@
         <input type="search" id="rep-search" placeholder="Search reports…" aria-label="Search reports">
         <div id="rep-library"></div>
       </section>
-      <div id="rep-empty-state" class="panel rep-empty-state"><h2>Aggregate reports</h2><p>Select a report from the library.</p></div>
+      <div id="rep-empty-state" class="panel rep-empty-state"><h1>Aggregate reports</h1><p>Select a report from the library.</p></div>
       <section class="panel hidden" id="rep-viewer">
         <div class="pfl-nodehead"><h1 id="rep-title"></h1></div>
         <div id="rep-context"></div>
@@ -333,6 +371,7 @@
 
   <!-- =========================== PREFLOP LAB ============================ -->
   <main id="view-preflop" class="view active">
+    <h1 class="sr-only">Preflop Lab</h1>
     <div class="pfl-layout">
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <span class="info-dot" tabindex="0" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</span></h2>
@@ -415,6 +454,7 @@
         <div class="pfl-step" tabindex="0" data-tip="Sends both conditional ranges, pot, effective stack and rake into SETUP.">6 · SEND IT POSTFLOP</div>
         <button id="pfl-export" class="btn primary" disabled>
           SEND TO POSTFLOP SETUP</button>
+        <div id="pfl-export-state" class="ctl-state">needs a heads-up flop line</div>
         <div id="pfl-solve-saved">
         <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="Stores config, seat models, point locks and solver state.">SAVED GAMES</div>
         <div class="btn-row">

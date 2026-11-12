@@ -104,7 +104,68 @@ b { font-weight: inherit; }
 #solve-controls.hidden { display: none; }
 #btn-solve-top.hidden, #btn-stop-top.hidden { display: none; }
 .btn.sm { padding: 4px 12px; font-size: 11px; letter-spacing: .08em; }
-#solve-readout { font-family: var(--font-data); font-size: 11px; letter-spacing: .04em; white-space: nowrap; }
+
+/* --------------------------- spot / session strip --------------------------- */
+/* One place for what is loaded, on every postflop screen. Values come from the
+   built spot and /api/status; the state button owns the jump to its control. */
+#spot-strip {
+  position: sticky; top: 46px; z-index: 45;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 4px 16px; min-height: 30px;
+  background: var(--bg2); border-bottom: 1px solid var(--line);
+  font: 11px var(--font-data); letter-spacing: .02em; color: var(--ink-dim);
+}
+#spot-strip.hidden { display: none; }
+#spot-strip .ss-k {
+  font-family: var(--font-disp); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--ink-faint);
+}
+#spot-strip .ss-board { display: flex; gap: 5px; }
+#spot-strip .ss-card { font-weight: 600; }
+#spot-strip .ss-pos { color: var(--ink); }
+#spot-strip .ss-sep { width: 1px; height: 12px; background: var(--line2); }
+#spot-strip .ss-sizes { color: var(--ink-faint); }
+#spot-strip .ss-grow { flex: 1 1 auto; }
+#spot-strip .ss-live { display: flex; }
+#spot-strip .ss-state {
+  font-family: var(--font-data); font-size: 11px; letter-spacing: .03em;
+  background: var(--panel2); color: var(--ink-dim);
+  border: 1px solid var(--line2); border-radius: 999px;
+  padding: 3px 11px; cursor: pointer; transition: all .12s;
+}
+#spot-strip .ss-state:hover { border-color: var(--accent); color: var(--accent); }
+#spot-strip .ss-state[data-tone="warn"] { color: #e0a33a; border-color: #74603d; }
+#spot-strip .ss-state[data-tone="live"] { color: var(--accent); border-color: var(--accent); }
+#spot-strip .ss-state[data-tone="ok"] { color: var(--green); }
+
+/* one local status line for a control that can be unavailable */
+.ctl-state { font: 10px var(--font-data); letter-spacing: .04em; color: var(--ink-faint); }
+.ctl-state:empty { display: none; }
+.ctl-state[data-tone="warn"] { color: #e0a33a; }
+.ctl-state[data-tone="live"] { color: var(--accent); }
+.ctl-state[data-tone="ok"] { color: var(--green); }
+
+/* the last failure: persistent, dismissible, retryable — toasts are confirmations */
+#error-bar {
+  position: fixed; top: 84px; left: 50%; transform: translateX(-50%); z-index: 90;
+  display: flex; align-items: center; gap: 10px;
+  max-width: min(760px, calc(100vw - 24px)); padding: 7px 9px 7px 12px;
+  background: #2a1c1c; border: 1px solid var(--red); border-radius: 5px;
+  color: #f0b4b4; font: 12px var(--font-data); line-height: 1.4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+}
+#error-bar.hidden { display: none; }
+#error-bar #error-text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 980px) {
+  #spot-strip { position: static; }
+  #error-bar { top: 116px; }
+}
+
+/* accessibility-only text (one h1 for screens that have no visible heading) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 
 /* ------------------------------- layout ------------------------------- */
 
@@ -139,6 +200,15 @@ b { font-weight: inherit; }
 .setup-heading h1 { font: 600 18px var(--font-disp); color: var(--ink); }
 .setup-heading p { color: var(--ink-dim); font-size: 12px; margin-top: 5px; }
 .setup-format { font: 10px var(--font-data); color: var(--ink-faint); letter-spacing: .08em; }
+.drift-notice {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 12px; padding: 8px 12px;
+  background: rgba(224, 163, 58, .1); border: 1px solid #74603d;
+  border-left: 3px solid #e0a33a; border-radius: 4px;
+  color: #e4c377; font: 11px var(--font-data); letter-spacing: .04em;
+}
+.drift-notice.hidden { display: none; }
+.drift-notice .btn { margin-left: auto; }
 #view-setup .panel { padding: 14px; min-width: 0; }
 #view-setup .panel h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   margin-bottom: 12px; padding-bottom: 10px; }
@@ -168,7 +238,6 @@ b { font-weight: inherit; }
 #view-setup .build-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
   flex-wrap: wrap; }
 #view-setup #btn-build { padding: 10px 20px; flex: 1; }
-#view-setup #build-info:empty { display: none; }
 
 /* preflop segments in the browse history ribbon (read-only) */
 .hist-seg.hist-preflop { border-style: dashed; opacity: .82; }
@@ -205,6 +274,19 @@ input[type="number"], input[type="text"], select, textarea {
 input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 12px; }
+/* labelled groups (rake, all-in, raises): the legend names the fields, the
+   group keeps its own two-column layout inside the panel's flow */
+.field-groups { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 10px; align-items: flex-start; }
+.field-group {
+  flex: 1 1 210px; min-width: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 7px 12px;
+  border: 0; padding: 0; margin: 0;
+}
+.field-group > legend {
+  grid-column: 1 / -1; padding: 0; margin-bottom: 1px;
+  font-family: var(--font-disp); font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint);
+}
 .field-grid label {
   display: flex; flex-direction: column; gap: 5px;
   font-size: 11px; color: var(--ink-dim); letter-spacing: .04em;
@@ -370,11 +452,8 @@ textarea {
 
 /* ------------------------------- solve -------------------------------- */
 
-#tree-summary { margin-top: 8px; }
-#mem-info { margin-top: 3px; font-size: 11px; }
-#compute-info { margin-top: 4px; font-size: 11px; min-height: 14px; }
-#compute-info.gpu-on { color: var(--accent); }
-#compute-info.gpu-fallback { color: #e0a33a; }
+#mem-info { margin-top: 8px; font-size: 11px; line-height: 1.6; }
+#mem-info:empty { display: none; }
 
 .solve-grid { display: grid; grid-template-columns: 330px 1fr; gap: 8px; }
 .bignum-row { display: flex; gap: 28px; margin-bottom: 14px; }
@@ -385,7 +464,6 @@ textarea {
 .bignum div { font-size: 34px; font-weight: 500; color: var(--accent); line-height: 1.1; }
 .bignum span { font-size: 10px; }
 #convergence-chart { width: 100%; height: 320px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; }
-#tree-summary { margin-top: 10px; font-size: 11px; line-height: 1.6; }
 
 /* ------------------------------- browse ------------------------------- */
 
@@ -605,6 +683,11 @@ textarea {
 #rep-progress { overflow-wrap: anywhere; }
 .rep-empty { padding: 18px 8px; font-size: 12px; }
 .rep-empty-state { padding: 28px; color: var(--ink-dim); }
+.rep-empty-state h1 {
+  font-family: var(--font-disp); font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--ink-dim);
+  margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid var(--line);
+}
 #rep-viewer { padding: 18px; min-width: 0; }
 #rep-title { font: 600 18px var(--font-body); line-height: 1.4; overflow-wrap: anywhere; }
 #rep-context { margin: 6px 0 10px; color: var(--ink-dim); font-size: 12px; }
