@@ -44,6 +44,7 @@ const S = {
   view: null,
   polling: null,
   built: false,
+  live: null,    // the loaded session: { name, tree, iteration, exploit, gate }
 };
 
 function fmt(x, d = 1) {
@@ -104,8 +105,45 @@ function treeText(t) {
     `RAM ${fmt(t.arena_mb_compressed / 1000, 2)} GB${gpu} · hands ${t.hands.join('/')}`;
 }
 
+// The status payload does not echo the built spot (ranges, stacks, pot,
+// sizes, rake), so the setup form cannot be mirrored from a loaded save.
+// Instead the loaded session is stated read-only, and BUILD admits that it
+// replaces it.
+let liveEl = null;
+function renderLive() {
+  if (!liveEl) return;
+  const L = S.live;
+  liveEl.hidden = !L;
+  if (!L) return;
+  const board = $('mw-board').value.replace(/[\s,]/g, '');
+  const bits = [
+    `live session${L.name ? ` · ${L.name}` : ''}`,
+    L.tree?.board || '',
+    L.tree ? `${L.tree.nodes.toLocaleString()} nodes` : '',
+    L.iteration ? `iter ${L.iteration}` : '',
+    L.exploit != null ? `${fmt(L.exploit, 2)}% pot` : '',
+  ].filter(Boolean);
+  if (L.tree && board !== L.tree.board) bits.push('board differs');
+  liveEl.textContent = bits.join(' · ');
+}
+
+function disarm() {
+  const btn = $('mw-build');
+  delete btn.dataset.armed;
+  btn.textContent = 'BUILD TREE';
+}
+
 async function build() {
   const btn = $('mw-build');
+  // A loaded session is not described by the form: the first click only
+  // asks, so BUILD never silently replaces someone else's saved solve.
+  if (S.live?.gate && !btn.dataset.armed) {
+    btn.dataset.armed = '1';
+    btn.textContent = 'REPLACE LIVE SESSION';
+    $('mw-build-info').textContent = 'click again to build over it';
+    return;
+  }
+  disarm();
   btn.classList.add('busy');
   $('mw-build-info').textContent = 'building…';
   try {
@@ -113,6 +151,8 @@ async function build() {
     const info = await req('POST', '/api/mw/spot', spotRequest());
     $('mw-build-info').textContent = treeText(info);
     S.built = true;
+    S.live = { name: null, tree: info, iteration: 0, exploit: null, gate: false };
+    renderLive();
     resetBrowse();
     await refreshNode();
   } catch (e) {
@@ -160,6 +200,11 @@ async function poll() {
     : st.state;
   $('mw-engine-note').textContent = st.error ? `error: ${st.error}` : st.note;
   if (st.tree && !$('mw-build-info').textContent) $('mw-build-info').textContent = treeText(st.tree);
+  if (S.live) {
+    S.live.iteration = st.iteration;
+    if (st.exploit_pct != null) S.live.exploit = st.exploit_pct;
+    renderLive();
+  }
   if (st.state !== 'running') {
     clearInterval(S.polling);
     S.polling = null;
@@ -354,6 +399,8 @@ export function applyThreeWayExport(ex) {
   $('mw-rake').value = ex.rake_pct;
   $('mw-rakecap').value = ex.rake_cap;
   mwIcm?.set(ex.icm || null);
+  disarm();
+  renderLive();
   document.querySelector('.tab[data-tab="threeway"]').click();
   toast('3-way spot loaded: pick a board and BUILD TREE.');
 }
@@ -363,6 +410,15 @@ window.gtopenApplyThreeWay = applyThreeWayExport;
 
 renderPlayers();
 mwIcm = createPostflopIcm($('mw-rake').closest('.field-grid'), { seats: 3 });
+liveEl = document.createElement('div');
+liveEl.id = 'mw-live';
+liveEl.className = 'dim mono';
+liveEl.style.cssText = 'font-size:10px;margin-top:4px';
+liveEl.hidden = true;
+$('mw-build-info').closest('.build-row').after(liveEl);
+for (const id of ['mw-board', 'mw-pot', 'mw-rake', 'mw-rakecap']) {
+  $(id)?.addEventListener('input', () => { disarm(); renderLive(); });
+}
 $('mw-build').addEventListener('click', build);
 $('mw-solve').addEventListener('click', solve);
 $('mw-stop').addEventListener('click', () => req('POST', '/api/mw/stop').catch(e => toast(e.message, true)));
@@ -383,6 +439,9 @@ $('mw-load').addEventListener('click', async () => {
     S.built = true;
     $('mw-build-info').textContent = treeText(st.tree);
     $('mw-board').value = st.tree.board;
+    S.live = { name, tree: st.tree, iteration: st.iteration, exploit: st.exploit_pct, gate: true };
+    disarm();
+    renderLive();
     resetBrowse();
     await poll();
     await refreshNode();
@@ -397,6 +456,8 @@ req('GET', '/api/mw/status').then(st => {
   if (st.tree) {
     S.built = true;
     $('mw-build-info').textContent = treeText(st.tree);
+    S.live = { name: null, tree: st.tree, iteration: st.iteration, exploit: st.exploit_pct, gate: true };
+    renderLive();
     if (st.state === 'running') startPolling();
   }
 }).catch(() => {});

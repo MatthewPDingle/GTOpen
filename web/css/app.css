@@ -1103,11 +1103,13 @@ textarea {
   display: inline-flex; align-items: center; justify-content: center;
   width: 15px; height: 15px; border-radius: 50%;
   border: 1px solid var(--ink-faint); color: var(--ink-dim);
+  background: none; padding: 0; line-height: 1;
   font-size: 10px; margin-left: 7px; cursor: help;
   font-family: var(--font-body); font-weight: 600;
   letter-spacing: 0; text-transform: none; vertical-align: 1px;
 }
 .info-dot:hover { border-color: var(--accent); color: var(--accent); }
+.info-dot:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 
 /* toast */
 #toast {
@@ -1300,17 +1302,28 @@ textarea {
 .model-evidence { margin: 6px 0; border: 1px solid var(--line2); border-radius: 4px; background: var(--panel2); font-size: 11px; color: var(--ink-dim); }
 .model-evidence summary { cursor: pointer; padding: 6px 8px; line-height: 1.5; overflow-wrap: anywhere; }
 .model-evidence summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.model-evidence-prefix { color: var(--ink-faint); margin-right: 7px; }
+.model-evidence-prefix { color: var(--ink-faint); }
+.model-evidence-kind { font-family: var(--font-data); font-size: 10px; letter-spacing: .04em; color: var(--ink-faint);
+  text-transform: none; }
 .model-evidence-part { display: inline-block; margin-right: 14px; }
 .model-evidence-part:last-child { margin-right: 0; }
 .model-evidence strong { color: #a8c6d7; font-size: 11px; font-weight: 600; }
-.model-evidence[data-kind="extrapolated"] strong, .model-evidence[data-kind="fallback"] strong { color: #dfbd81; }
-.model-evidence[data-kind="contextual_estimate"] strong { color: #c0ade0; }
-.model-evidence[data-kind="manual_lock"] strong, .model-evidence[data-kind="saved_policy"] strong { color: #bcbcbc; }
-.model-evidence-summary { margin-left: 9px; }
-.model-evidence-part[data-kind="measured"] strong { color: #a8c6d7; }
-.model-evidence-part[data-kind="extrapolated"] strong, .model-evidence-part[data-kind="fallback"] strong, .model-evidence-part[data-kind="assumption"] strong { color: #dfbd81; }
-.model-evidence-part[data-kind="stored_policy"] strong { color: #bcbcbc; }
+/* one colour per kind, on both the badge and each part; the kind is always
+   spelled out beside the label too, so colour is never the only signal */
+.model-evidence[data-kind="measured"] strong, .model-evidence-part[data-kind="measured"] strong { color: #a8c6d7; }
+.model-evidence[data-kind="extrapolated"] strong, .model-evidence-part[data-kind="extrapolated"] strong { color: #dfbd81; }
+.model-evidence[data-kind="fallback"] strong, .model-evidence-part[data-kind="fallback"] strong { color: #d08b5b; }
+.model-evidence[data-kind="contextual_estimate"] strong,
+.model-evidence-part[data-kind="contextual_estimate"] strong { color: #c0ade0; }
+.model-evidence[data-kind="stat_derived"] strong, .model-evidence-part[data-kind="stat_derived"] strong { color: #7fc7b0; }
+.model-evidence[data-kind="saved_policy"] strong, .model-evidence-part[data-kind="saved_policy"] strong { color: #bcbcbc; }
+.model-evidence[data-kind="solver"] strong, .model-evidence-part[data-kind="solver"] strong { color: #7cc47f; }
+.model-evidence[data-kind="adaptive"] strong, .model-evidence-part[data-kind="adaptive"] strong { color: #b9d36a; }
+.model-evidence[data-kind="manual_lock"] strong, .model-evidence-part[data-kind="manual_lock"] strong { color: #d69bb8; }
+.model-evidence[data-kind="frozen_solver"] strong, .model-evidence-part[data-kind="frozen_solver"] strong { color: #6fa8b8; }
+.model-evidence[data-kind="unavailable"] strong, .model-evidence-part[data-kind="unavailable"] strong { color: #e08a8a; }
+.model-evidence[data-kind="pending"] strong, .model-evidence-part[data-kind="pending"] strong { color: #a0a0a0; }
+.model-evidence-summary { margin-left: 0; }
 .model-evidence-sizing { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); }
 .model-evidence-body { border-top: 1px solid var(--line); padding: 5px 10px 7px; line-height: 1.45; }
 .model-evidence-body p { margin: 4px 0; overflow-wrap: anywhere; }

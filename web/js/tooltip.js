@@ -3,6 +3,16 @@
 // hover AND on keyboard focus, and their text is live: if the element's
 // data-tip attribute changes while its tip is up (e.g. an updating readout),
 // the tip re-reads and repositions.
+//
+// Contract: while a tip is up the tip element is role="tooltip" and the
+// target carries aria-describedby="tip", so assistive tech reads the same
+// text the pointer shows; both are removed on hide. Keyboard focus shows at
+// once (no hover delay). Escape hides.
+//
+// An explanatory dot is a real button, not a focusable span:
+//   <button type="button" class="info-dot" aria-label="WHAT THIS EXPLAINS"
+//     data-tip="THE EXPLANATION">?</button>
+// (aria-label names the subject; the tip stays the explanation.)
 
 let tipEl = null;
 let showTimer = null;
@@ -13,18 +23,20 @@ let pointer = null;
 export function initTooltips() {
   tipEl = document.createElement('div');
   tipEl.id = 'tip';
+  tipEl.setAttribute('role', 'tooltip');
   document.body.appendChild(tipEl);
   tipObserver = new MutationObserver(() => {
     if (currentTarget && tipEl.classList.contains('show')) show(currentTarget);
   });
 
   const tipTarget = n => n instanceof Element ? n.closest('[data-tip]') : null;
-  const enter = t => {
+  const enter = (t, immediate = false) => {
     if (t === currentTarget) return;
     hide();
     if (!t) return;
     currentTarget = t;
-    showTimer = setTimeout(() => show(t), 400);
+    if (immediate) show(t);
+    else showTimer = setTimeout(() => show(t), 400);
   };
   const leave = (t, next) => {
     if (t && t === currentTarget && !(next instanceof Element && t.contains(next))) hide();
@@ -45,20 +57,41 @@ export function initTooltips() {
   });
   document.addEventListener('mouseout', e => leave(tipTarget(e.target), e.relatedTarget));
   // keyboard: focused elements (buttons, tabindexed surfaces) get the same
-  // tips — but only when the focus is keyboard-driven (:focus-visible
+  // tips at once — but only when the focus is keyboard-driven (:focus-visible
   // semantics). Clicks also move focus (buttons, and the tabindexed
   // containers via any non-focusable child), and without this gate the
   // focusin that follows every mousedown would resurrect the very tip the
   // mousedown just hid, parking it over whatever the user clicked.
   let keyboardFocus = false;
-  document.addEventListener('keydown', () => { keyboardFocus = true; }, true);
+  document.addEventListener('keydown', e => {
+    keyboardFocus = true;
+    if (e.key === 'Escape') hide();
+  }, true);
   document.addEventListener('pointerdown', () => { keyboardFocus = false; }, true);
-  document.addEventListener('focusin', e => { if (keyboardFocus) { pointer = null; enter(tipTarget(e.target)); } });
+  document.addEventListener('focusin', e => {
+    if (keyboardFocus) { pointer = null; enter(tipTarget(e.target), true); }
+  });
   document.addEventListener('focusout', e => leave(tipTarget(e.target), e.relatedTarget));
   document.addEventListener('mousedown', hide, true);
   window.addEventListener('scroll', hide, true);
   window.addEventListener('resize', hide);
   document.addEventListener('close', hide, true);
+}
+
+function describe(t) {
+  const prior = t.getAttribute('aria-describedby');
+  const ids = (prior || '').split(/\s+/).filter(Boolean);
+  if (ids.includes(tipEl.id)) return;
+  t.dataset.tipDescribed = prior || '';
+  t.setAttribute('aria-describedby', [...ids, tipEl.id].join(' '));
+}
+
+function undescribe() {
+  if (!currentTarget) return;
+  const prior = currentTarget.dataset.tipDescribed;
+  delete currentTarget.dataset.tipDescribed;
+  if (prior) currentTarget.setAttribute('aria-describedby', prior);
+  else currentTarget.removeAttribute('aria-describedby');
 }
 
 function show(t) {
@@ -76,6 +109,8 @@ function show(t) {
   const html = t.dataset.tipHtml;
   if (html) tipEl.innerHTML = html;
   else tipEl.textContent = text;
+  if (currentTarget !== t) { undescribe(); currentTarget = t; }
+  describe(t);
   tipEl.classList.add('show');
   // live content: re-invoke show() when this element's data-tip changes
   // (re-observing the same node just replaces the options — no duplicates)
@@ -99,6 +134,7 @@ function position(t) {
 
 function hide() {
   clearTimeout(showTimer);
+  undescribe();
   currentTarget = null;
   if (tipObserver) tipObserver.disconnect();
   if (tipEl) tipEl.classList.remove('show');

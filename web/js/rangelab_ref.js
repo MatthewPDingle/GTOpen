@@ -84,6 +84,7 @@ export function initRangeLabRef(host) {
         <label>Stack <select class="rl-depth"></select></label>
         <label class="rl-spot-wrap">Spot <select class="rl-spot"></select></label>
       </div>
+      <div class="rl-match mono dim hidden" role="status"></div>
       <div class="rl-title"></div>
       <div class="rl-note dim"></div>
       <div class="matrix browse rl-grid hidden"></div>
@@ -93,7 +94,7 @@ export function initRangeLabRef(host) {
   const el = {
     follow: q('.rl-follow'), game: q('.rl-game'), variant: q('.rl-variant'), depth: q('.rl-depth'),
     spot: q('.rl-spot'), spotWrap: q('.rl-spot-wrap'), title: q('.rl-title'), note: q('.rl-note'),
-    grid: q('.rl-grid'), legend: q('.rl-legend'),
+    match: q('.rl-match'), grid: q('.rl-grid'), legend: q('.rl-legend'),
   };
   const cells = [];
   for (let i = 0; i < 13; i++) {
@@ -106,7 +107,7 @@ export function initRangeLabRef(host) {
     }
   }
 
-  const S = { summary: null, ctx: null, gameChosen: false, seq: 0, spot: null };
+  const S = { summary: null, ctx: null, gameChosen: false, seq: 0, spot: null, miss: false };
   const game = () => S.summary?.games.find(g => g.tag === el.game.value) || null;
   const options = (sel, list, value) => {
     sel.innerHTML = list.map(o => `<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
@@ -115,10 +116,13 @@ export function initRangeLabRef(host) {
 
   function clear(message) {
     S.spot = null;
+    S.miss = false;
     el.title.textContent = '';
     el.note.innerHTML = message || '';
     el.grid.classList.add('hidden');
     el.legend.innerHTML = '';
+    el.match.textContent = 'matching: none';
+    syncMode();
   }
 
   function fillDepths(keepDepth) {
@@ -138,9 +142,22 @@ export function initRangeLabRef(host) {
 
   function syncMode() {
     const follow = el.follow.checked;
-    el.variant.disabled = follow;
-    el.depth.disabled = follow;
-    el.spotWrap.classList.toggle('hidden', follow);
+    // Following replaces the chart pickers with a read-only matching row; a
+    // miss hands the pickers back so there is a way out of the dead end.
+    const manual = !follow || S.miss;
+    el.variant.closest('label').hidden = !manual;
+    el.depth.closest('label').hidden = !manual;
+    el.spotWrap.hidden = !manual;
+    el.match.hidden = !follow;
+  }
+
+  /** The chart a follow request landed on, in words. */
+  function matchingRow(spot) {
+    if (!spot) { el.match.textContent = 'matching: none'; return; }
+    const v = game()?.variants.find(x => x.key === spot.variant);
+    const open = v?.open_bb != null ? `open ${num(v.open_bb)}×` : (spot.variant_label || spot.variant);
+    const depths = v?.depths?.length || 1;
+    el.match.textContent = `matching: ${open} · ${num(spot.depth)} bb${depths > 1 ? ` · nearest of ${depths}` : ''}`;
   }
 
   async function load() {
@@ -171,8 +188,22 @@ export function initRangeLabRef(host) {
     render(spot);
   }
 
+  /** The nearest chart the pickers offer: closest open size, then closest
+   *  depth. Used when a followed line has no chart. */
+  function pickNearest(g) {
+    const variants = g.variants || [];
+    if (!variants.length) return;
+    const open = S.ctx?.open_to;
+    const near = open == null ? variants[0] : variants.reduce((a, b) =>
+      Math.abs((b.open_bb ?? 1e9) - open) < Math.abs((a.open_bb ?? 1e9) - open) ? b : a);
+    el.variant.value = near.key;
+    fillDepths(S.ctx?.stack);
+  }
+
   async function follow() {
+    const seq = ++S.seq;
     const g = game();
+    S.miss = false;
     if (!S.ctx) { clear('Pick a decision point in the ribbon above to see its chart.'); return; }
     if (!g || g.players !== S.ctx.players) {
       clear(`Range Lab has no ${S.ctx.players}-handed charts in this game. Its charts are ` +
@@ -181,8 +212,14 @@ export function initRangeLabRef(host) {
     }
     const req = { tag: g.tag, players: S.ctx.players, line: S.ctx.line, stack: S.ctx.stack };
     if (S.ctx.open_to != null) req.open_to = S.ctx.open_to;
-    await show(api.rangeLabMatch(req).then(r => r.spot),
-      `No ${esc(g.label)} chart for this line. Range Lab covers unopened pots, single raises (with one caller for squeezes), 3-bets and 4-bets, and the big blind against a small-blind limp.`);
+    let spot = null;
+    try { spot = (await api.rangeLabMatch(req)).spot; } catch (e) { if (seq === S.seq) clear(esc(e.message)); return; }
+    if (seq !== S.seq) return; // superseded while the matcher was in flight
+    if (spot) { render(spot); return; }
+    // No chart for this line: show the nearest one instead of emptying the panel.
+    S.miss = true;
+    pickNearest(g);
+    browse(null);
   }
 
   async function browse(keepSpot) {
@@ -216,11 +253,19 @@ export function initRangeLabRef(host) {
     S.spot = spot;
     if (el.follow.checked) {
       fillGameAxes(spot.variant, spot.depth);
+      matchingRow(spot);
+    } else {
+      matchingRow(null);
     }
+    syncMode();
     const colors = actionColors(spot.actions);
     const na = spot.actions.length;
     el.title.textContent = `${spot.label} · ${spot.family_label} · ${spot.variant_label} · ${num(spot.depth)} bb`;
     const notes = [`${esc(spot.game)}${spot.hist ? ` · line <span class="mono">${esc(spot.hist)}</span>` : ' · first to act'}`];
+    if (S.miss) {
+      notes.unshift(`no chart for this line — nearest chart: <b>${esc(spot.label)}</b> · ` +
+        `${esc(spot.variant_label)} · ${num(spot.depth)} bb`);
+    }
     if (el.follow.checked && S.ctx) {
       const off = [];
       if (Math.abs(spot.depth - S.ctx.stack) > 1e-6) off.push(`stack ${num(spot.depth)} bb vs your ${num(S.ctx.stack)} bb`);
@@ -276,17 +321,23 @@ export function initRangeLabRef(host) {
   }
 
   el.follow.addEventListener('change', () => {
+    S.miss = false;
     syncMode();
     if (el.follow.checked) follow(); else browse(S.spot);
   });
   el.game.addEventListener('change', () => {
     S.gameChosen = true;
+    S.miss = false;
     fillGameAxes(S.spot?.variant, S.spot?.depth);
     if (el.follow.checked) follow(); else browse(S.spot);
   });
-  el.variant.addEventListener('change', () => { fillDepths(Number(el.depth.value)); browse(S.spot); });
-  el.depth.addEventListener('change', () => browse(S.spot));
-  el.spot.addEventListener('change', () => show(api.rangeLabSpot(Number(el.spot.value)), 'Chart not found.'));
+  // Picking a chart by hand takes over from the followed line.
+  const manual = () => {
+    if (el.follow.checked) { el.follow.checked = false; S.miss = false; syncMode(); }
+  };
+  el.variant.addEventListener('change', () => { manual(); fillDepths(Number(el.depth.value)); browse(S.spot); });
+  el.depth.addEventListener('change', () => { manual(); browse(S.spot); });
+  el.spot.addEventListener('change', () => { manual(); S.miss = false; show(api.rangeLabSpot(Number(el.spot.value)), 'Chart not found.'); });
   // Reopening the panel rescans the folders (new or changed data files).
   q('details').addEventListener('toggle', e => { if (e.target.open && !S.summary?.total) load(); });
 
