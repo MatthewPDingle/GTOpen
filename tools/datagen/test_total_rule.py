@@ -106,6 +106,13 @@ class TotalRule(unittest.TestCase):
         self.assertAlmostEqual(w_oop[qq], 2 / 3)
         self.assertAlmostEqual(w_ip[aks], 1.0)
         self.assertAlmostEqual(float(together), 0.75 * 1326 / 1225)
+        # the same two ranges and numbers as the Rust test (blocking_drops_what_the_other_range_holds)
+        oop = np.array([(h * 37) % 11 + 1 if h % 2 == 0 else 0 for h in range(169)], float)
+        ip = np.array([(g * 53) % 7 for g in range(169)], float)
+        w_oop, w_ip, together = leafnet_io.dealt_weights(oop, ip)
+        for got, want in [(w_oop[168], 0.0039421507), (w_oop[0], 0.0019710754), (w_ip[1], 0.0079351133),
+                          (w_ip[160], 0.0058782930), (together, 1.0004269767)]:
+            self.assertAlmostEqual(float(got), want, places=9)
         # two full ranges: every class by its combos, dealt together as often as the deck says; rows in a batch
         w_oop, w_ip, together = leafnet_io.dealt_weights(np.stack([combos, combos]), np.stack([combos, combos]))
         np.testing.assert_allclose(w_oop[1], combos / 1326)

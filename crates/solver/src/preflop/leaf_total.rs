@@ -265,15 +265,15 @@ pub fn leaf_total(rule: Option<&TotalRule>, pot_bb: f64, stack_bb: f64, rake_fra
 /// For every pair of classes, the share of their combo pairs that share no
 /// card: `[h * 169 + g]`. Pocket aces against pocket aces is 1/6, against
 /// pocket kings 1.
-pub fn disjoint_share() -> &'static [f32] {
-    static TABLE: OnceLock<Vec<f32>> = OnceLock::new();
+pub fn disjoint_share() -> &'static [f64] {
+    static TABLE: OnceLock<Vec<f64>> = OnceLock::new();
     TABLE.get_or_init(|| {
         let combos: Vec<Vec<u64>> = (0..NUM_CLASSES).map(class_card_masks).collect();
-        let mut table = vec![0f32; NUM_CLASSES * NUM_CLASSES];
+        let mut table = vec![0f64; NUM_CLASSES * NUM_CLASSES];
         for h in 0..NUM_CLASSES {
             for g in h..NUM_CLASSES {
                 let free = combos[h].iter().map(|a| combos[g].iter().filter(|&&b| a & b == 0).count()).sum::<usize>();
-                let share = free as f32 / (combos[h].len() * combos[g].len()) as f32;
+                let share = free as f64 / (combos[h].len() * combos[g].len()) as f64;
                 table[h * NUM_CLASSES + g] = share;
                 table[g * NUM_CLASSES + h] = share;
             }
@@ -330,8 +330,8 @@ impl Blocking {
             let a = oop[h] as f64 / so;
             let mut sum = 0f64;
             for g in 0..NUM_CLASSES {
-                sum += ip[g] as f64 * row[g] as f64;
-                free[1][g] += a * row[g] as f64;
+                sum += ip[g] as f64 * row[g];
+                free[1][g] += a * row[g];
             }
             free[0][h] = sum / si;
         }
@@ -484,15 +484,12 @@ mod tests {
         let at = |a: usize, b: usize| t[a * NUM_CLASSES + b];
         let (aa, kk) = (class_index(12, 12, false), class_index(11, 11, false));
         let (aks, ako) = (class_index(12, 11, true), class_index(12, 11, false));
-        assert!((at(aa, aa) - 1.0 / 6.0).abs() < 1e-6);
-        assert_eq!(at(aa, kk), 1.0);
-        assert!((at(aks, aks) - 12.0 / 16.0).abs() < 1e-6);
-        assert!((at(ako, ako) - 7.0 / 12.0).abs() < 1e-6);
-        assert!((at(aa, aks) - 0.5).abs() < 1e-6 && at(aa, aks) == at(aks, aa));
+        assert_eq!((at(aa, aa), at(aa, kk), at(aks, aks), at(ako, ako)), (1.0 / 6.0, 1.0, 12.0 / 16.0, 7.0 / 12.0));
+        assert!(at(aa, aks) == 0.5 && at(aa, aks) == at(aks, aa));
         // any two cards leave 1,225 of the 1,326 combos for the other player
         for h in 0..NUM_CLASSES {
-            let free: f64 = (0..NUM_CLASSES).map(|g| class_combos(g) as f64 * at(h, g) as f64).sum();
-            assert!((free - 1225.0).abs() < 1e-3, "class {h}: {free}");
+            let free: f64 = (0..NUM_CLASSES).map(|g| class_combos(g) as f64 * at(h, g)).sum();
+            assert!((free - 1225.0).abs() < 1e-9, "class {h}: {free}");
         }
     }
 
@@ -518,8 +515,17 @@ mod tests {
         // two full ranges: every class counts as it is, and they meet as often as the deck says
         let full: Vec<f32> = (0..NUM_CLASSES).map(class_combos).collect();
         let b = Blocking::of(&full, &full).unwrap();
-        assert!(b.rel.iter().flatten().all(|r| (r - 1.0).abs() < 1e-6) && (b.together - 1.0).abs() < 1e-6);
+        assert!(b.rel.iter().flatten().all(|r| (r - 1.0).abs() < 1e-9) && (b.together - 1.0).abs() < 1e-9);
         assert!(Blocking::of(&vec![0.0; NUM_CLASSES], &ip).is_none());
+        // the same two ranges and numbers as tools/datagen/test_total_rule.py (test_dealt_weights)
+        let oop: Vec<f32> = (0..NUM_CLASSES).map(|h| if h % 2 == 0 { ((h * 37) % 11 + 1) as f32 } else { 0.0 }).collect();
+        let ip: Vec<f32> = (0..NUM_CLASSES).map(|g| ((g * 53) % 7) as f32).collect();
+        let b = Blocking::of(&oop, &ip).unwrap();
+        let w = b.weights(&oop, &ip);
+        for (got, want) in [(w[0][168], 0.0039421507), (w[0][0], 0.0019710754), (w[1][1], 0.0079351133),
+                            (w[1][160], 0.0058782930), (b.together, 1.0004269767)] {
+            assert!((got - want).abs() < 1e-9, "{got} vs {want}");
+        }
         // both sides' weights always add up to 1
         let mut next = noise(5);
         let (oop, ip): (Vec<f32>, Vec<f32>) = (0..NUM_CLASSES).map(|h| (next(), if h % 4 == 0 { 0.0 } else { next() })).unzip();
