@@ -1271,7 +1271,7 @@ textarea {
 #pfl-ribbon .hist-chip.rare-step .hist-frequency { color: #c9a45c; }
 #pfl-ribbon .hist-chip.taken.rare-step { background: #4b3a1a; color: #f3dfb2; }
 #pfl-ribbon .hist-chip.taken.rare-step .hist-frequency { color: #f3dfb2; }
-#pfl-ribbon .hist-seg.unsolved { border-style: dashed; }
+#pfl-ribbon .hist-seg.unsolved:not(.current) { border-style: dashed; }
 #pfl-ribbon .hist-seg.unsolved .hist-head, #pfl-ribbon .hist-seg.unsolved .hist-chip { opacity: .6; }
 
 .pfl-position-sizes { margin:8px 0; border:1px solid var(--line); border-radius:4px; padding:7px; }
