@@ -10,12 +10,12 @@
 // still open in the legacy OOP ROOT / IP VS CHECK view.
 //
 // Chart = one thin stacked frequency bar per flop (the app's semantic
-// action colors, aggressive→passive fixed order), hover tooltips, click
-// to inspect + open in Browse. Table + legend ship alongside (identity
+// action colors, aggressive→passive fixed order), hover tooltips, click or
+// ← → to inspect + open in Browse. Table + legend ship alongside (identity
 // is never color-alone).
 
 import { api } from './api.js';
-import { reportLabel, reportTimestamp } from './report_labels.js';
+import { fmtNum, modelLabel, reportCardFacts, reportTimestamp } from './report_labels.js';
 import { MADE_LABELS, MADE_ORDER, DRAW_LABELS, DRAW_ORDER, EQA_LABELS } from './classify.js';
 import { RANKS, cardsOf, texOf, TEX } from './textures.js';
 import { initBestSizeView } from './best_size.js';
@@ -49,9 +49,11 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     catPlayer: null,   // category panel: 0 | 1 | null (= the actor)
     selected: null,    // board string
     polling: null,
+    running: null,     // the live /api/reports/status while a run writes a file
     lineSeq: 0,        // stale-response guard for line fetches
     loadSeq: 0,
     loadingName: null,
+    ribbonKey: null,   // last line the ribbon scrolled to
     display: 'chart',
     grouping: 'flops',
     // side-by-side comparison with a second report (lines mode, both):
@@ -210,27 +212,104 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
   let libraryNames = [];
   let libraryData = [];
+  let libraryError = false;
   const deletingReports = new Set();
   document.getElementById('rep-search').addEventListener('input', renderLibrary);
-  async function refreshLibrary() {
-    let list = [];
-    try { list = await api.reportsList(); } catch { return; }
-    libraryNames = list.map(r => r.name);
-    libraryData = list;
-    renderLibrary();
+
+  const metaOf = name => libraryData.find(r => r.name === name) || null;
+  /** A report's display title, from the list endpoint's normalized summary. */
+  const titleOf = name => metaOf(name)?.summary?.title || String(name ?? '');
+  const summaryOf = report => report?.summary || {};
+  /** A sweep's size variants share one title; the swept size tells them apart. */
+  const cardLabel = report => {
+    const summary = summaryOf(report);
+    const size = summary.size;
+    return `${summary.title || report.name || ''}${size != null ? ` · ${fmtNum(size)}%` : ''}`;
+  };
+  /** A card label for a run named only in the status payload. */
+  const runLabel = name => metaOf(name) ? cardLabel(metaOf(name)) : String(name ?? '');
+
+  /** No library, no selection and a failed refresh are different states; the
+   *  error never borrows the empty-state copy. */
+  let emptyStateKey = null;
+  function paintEmptyState() {
+    const el = document.getElementById('rep-empty-state');
+    if (!el) return;
+    const open = !!(S.report || bestSize.name);
+    const key = [open, libraryError, S.loadingName, open ? '' : titleOf(S.loadingName), libraryData.length].join('|');
+    if (key === emptyStateKey) return;
+    emptyStateKey = key;
+    el.classList.toggle('hidden', open);
+    if (open) return;
+    if (libraryError) {
+      el.innerHTML = `<h2>Aggregate reports</h2><p>Couldn't refresh the library — <button type="button" class="btn ghost xs" id="rep-empty-retry">retry</button></p>`;
+      el.querySelector('#rep-empty-retry').addEventListener('click', refreshLibrary);
+    } else if (S.loadingName) {
+      el.innerHTML = `<h2>Aggregate reports</h2><p>Loading ${esc(titleOf(S.loadingName))}…</p>`;
+    } else if (!libraryData.length) {
+      el.innerHTML = `<h2>Aggregate reports</h2><p>No reports yet. Create one under New report.</p>`;
+    } else {
+      el.innerHTML = `<h2>Aggregate reports</h2><p>Select a report from the library.</p>`;
+    }
   }
+
+  async function refreshLibrary() {
+    try {
+      const list = await api.reportsList();
+      libraryData = list;
+      libraryNames = list.map(r => r.name);
+      libraryError = false;
+    } catch {
+      libraryError = true;   // keep the stale list; the retry line names the failure
+    }
+    renderLibrary();
+    paintEmptyState();
+  }
+
+  /** A report that is being written is running, never merely partial. */
+  function reportState(r) {
+    const live = S.running?.name === r.name ? S.running : null;
+    const size = summaryOf(r).size;
+    const n = r.n_flops ?? 0;
+    return [
+      live ? `running · ${live.done}/${live.total}` : `${n} flop${n === 1 ? '' : 's'} · ${r.complete ? 'Complete' : 'Partial'}`,
+      r.kind === 'sweep' ? 'sweep' : size != null ? `size ${fmtNum(size)}%` : r.lines ? '' : 'legacy',
+    ].filter(Boolean).join(' · ');
+  }
+  /** Re-label cards only: a poll tick must not rebuild the list under the user. */
+  function paintRunning() {
+    els.library.querySelectorAll('[data-name]').forEach(row => {
+      const report = libraryData.find(r => r.name === row.dataset.name);
+      const state = row.querySelector('.report-state');
+      if (report && state) state.textContent = reportState(report);
+    });
+  }
+
   function renderLibrary() {
     const query = document.getElementById('rep-search').value.trim().toLowerCase();
-    const list = libraryData.filter(r => `${r.name} ${r.villain || ''} ${reportTimestamp(r.created)}`.toLowerCase().includes(query));
+    const list = libraryData.filter(r => {
+      const facts = reportCardFacts(summaryOf(r));
+      return `${r.name} ${summaryOf(r).title || ''} ${r.villain || ''} ${reportTimestamp(r.created)} ${facts.context}`
+        .toLowerCase().includes(query);
+    });
     document.getElementById('rep-library-count').textContent = `${list.length}`;
     els.library.innerHTML = '';
+    if (libraryError) {
+      const warn = document.createElement('div');
+      warn.className = 'dim rep-empty';
+      warn.innerHTML = `Couldn't refresh the library · <button type="button" class="btn ghost xs">retry</button>`;
+      warn.querySelector('button').addEventListener('click', refreshLibrary);
+      els.library.append(warn);
+    }
     if (!list.length) {
-      els.library.innerHTML =
-        `<div class="dim rep-empty">${query ? 'No matching reports.' : 'No reports yet. Configure a spot in Setup, then create a report.'}</div>`;
+      if (!libraryError) {
+        els.library.insertAdjacentHTML('beforeend',
+          `<div class="dim rep-empty">${query ? 'No matching reports.' : 'No reports yet. Create one under New report.'}</div>`);
+      }
       return;
     }
     // a sweep's per-size reports sit right under their sweep, indented
-    const sizeOf = r => +(/ size (\d+(?:_\d+)?)$/.exec(r.name)?.[1] || '0').replace('_', '.');
+    const sizeOf = r => summaryOf(r).size ?? 0;
     const parents = new Set(list.filter(r => r.kind === 'sweep').map(r => r.name));
     const ordered = [];
     for (const r of list) {
@@ -247,19 +326,20 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       const isOpen = S.report?.name === r.name || bestSize.name === r.name;
       row.className = 'report-item' + (isOpen ? ' active' : '');
       row.setAttribute('aria-pressed', String(isOpen));
-      row.title = r.name;
-      const label = reportLabel(r.name, r.villain);
-      row.innerHTML = `<b>${esc(label.title)}</b>` +
-        `<span class="report-context">${esc([label.context, label.model].filter(Boolean).join(' · '))}</span>` +
+      const facts = reportCardFacts(summaryOf(r));
+      if (facts.detail) row.dataset.tip = facts.detail;
+      const title = summaryOf(r).title || r.name;
+      row.dataset.name = r.name;
+      row.innerHTML = `<b>${esc(title)}</b>` +
+        `<span class="report-context">${esc([facts.context, modelLabel(r.villain)].filter(Boolean).join(' · '))}</span>` +
         `<span class="report-stamp">${esc(reportTimestamp(r.created))}</span>` +
-        `<span class="report-state">${r.n_flops} flops · ${r.complete ? 'Complete' : 'Partial'}` +
-        `${r.kind === 'sweep' ? ' · Best size sweep' : r.sweep_parent ? ' · one size of a sweep' : r.lines ? '' : ' · Legacy'}</span>`;
+        `<span class="report-state">${esc(reportState(r))}</span>`;
       row.addEventListener('click', () => loadReport(r.name));
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'report-delete';
       remove.disabled = deletingReports.has(r.name);
-      remove.setAttribute('aria-label', `Delete report: ${label.title} · ${reportTimestamp(r.created)}`);
+      remove.setAttribute('aria-label', `Delete report: ${title} · ${reportTimestamp(r.created)}`);
       remove.dataset.tip = remove.disabled ? 'Deleting report…' : 'Delete report';
       remove.innerHTML = remove.disabled ? '…' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 10v8M14 10v8"/></svg>';
       remove.addEventListener('click', () => deleteReport(r));
@@ -271,11 +351,14 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   async function deleteReport(report) {
     const name = report.name;
     if (deletingReports.has(name)) return;
-    const label = reportLabel(name, report.villain);
+    const title = titleOf(name);
+    const facts = reportCardFacts(summaryOf(report));
+    const sizes = report.kind === 'sweep'
+      ? libraryData.filter(r => r.sweep_parent === name).length : 0;
     const what = report.kind === 'sweep'
-      ? 'This permanently removes the sweep and its per-size reports.'
-      : 'This permanently removes the report and its saved board summaries.';
-    if (!confirm(`Delete “${label.title}”?\n${[label.context, label.model, reportTimestamp(report.created)].filter(Boolean).join(' · ')}\n\n${what}`)) return;
+      ? `Permanently deletes the sweep${sizes ? ` and its ${sizes} size report${sizes === 1 ? '' : 's'}` : ''}.`
+      : 'Permanently deletes the report and its board summaries.';
+    if (!confirm(`Delete “${title}”?\n${[facts.context, modelLabel(report.villain), reportTimestamp(report.created)].filter(Boolean).join(' · ')}\n\n${what}`)) return;
     deletingReports.add(name);
     renderLibrary();
     try {
@@ -287,24 +370,22 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (S.report?.name === name) {
         ++S.lineSeq;
         S.report = null; S.selected = null; S.rows = []; S.lineData = null;
-        document.getElementById('rep-empty-state').classList.remove('hidden');
         render();
       }
       if (S.cmp?.name === name) { ++S.cmpSeq; S.cmp = null; render(); }
       if (bestSize.name === name) {
         bestSize.render(null);
-        if (!S.report) document.getElementById('rep-empty-state').classList.remove('hidden');
+        paintEmptyState();
       }
       if (report.kind === 'sweep' && S.report && libraryData.some(r => r.name === S.report.name && r.sweep_parent === name)) {
         ++S.lineSeq;
         S.report = null; S.selected = null; S.rows = []; S.lineData = null;
-        document.getElementById('rep-empty-state').classList.remove('hidden');
         render();
       }
       libraryData = libraryData.filter(r => r.name !== name);
       libraryNames = libraryNames.filter(n => n !== name);
       renderLibrary();
-      toast(`Deleted “${label.title}”`);
+      toast(`Deleted “${title}”${sizes ? ` and ${sizes} size reports` : ''}`);
       await refreshLibrary();
     } catch (e) { toast(e.message, true); }
     finally { deletingReports.delete(name); renderLibrary(); }
@@ -313,6 +394,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   async function loadReport(name) {
     const seq = ++S.loadSeq;
     S.loadingName = name;
+    paintEmptyState();
     try {
       const rep = await api.reportsGet(name);
       if (seq !== S.loadSeq) return;
@@ -321,8 +403,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         if (S.cmp) { ++S.cmpSeq; S.cmp = null; }
         S.report = null; S.selected = null; S.rows = []; S.lineData = null;
         render();
-        document.getElementById('rep-empty-state').classList.add('hidden');
         bestSize.render(rep);
+        paintEmptyState();
         renderLibrary();
         return;
       }
@@ -340,7 +422,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (seq !== S.loadSeq) return;
       render();
     } catch (e) { if (seq === S.loadSeq) toast(e.message, true); }
-    finally { if (seq === S.loadSeq) S.loadingName = null; }
+    finally {
+      if (seq === S.loadSeq) { S.loadingName = null; paintEmptyState(); }
+    }
   }
 
   /** Fetch one node of the current report (lines mode) and normalize its
@@ -395,6 +479,20 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     } catch (e) {
       if (seq === S.cmpSeq) { S.cmp = null; toast(e.message, true); render(); }
     }
+  }
+
+  /** A ⇄ B: read the compared report as A and the open one as B, keeping the
+   *  current line when the new A also recorded it. */
+  async function swapCompare() {
+    const c = S.cmp;
+    if (!c || !S.report) return;
+    const aName = S.report.name, bName = c.name, line = S.line;
+    await loadReport(bName);   // loadReport clears the comparison it replaces
+    if (S.report?.name !== bName) return;
+    if (line && S.mode === 'lines') {
+      try { await loadLine(line); } catch { /* stay at the root when B lacks this line */ }
+    }
+    await setCompare(aName);
   }
 
   async function cmpFetch(key) {
@@ -473,15 +571,67 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   // dropping the villain from the run.
   const villainRow = els.vsVillain.closest('label') || els.vsVillain.parentElement;
   const villainTip = villainRow ? villainRow.dataset.tip : '';
+  const trustRow = document.getElementById('rep-villain-trust-row');
+  const trustInput = document.getElementById('rep-villain-trust');
+  const trustTip = trustRow ? trustRow.dataset.tip : '';
+  const NO_VILLAIN = 'No modeled villain in this session — build the spot from a PREFLOP LAB export first.';
   function updateVillainGate() {
     const has = !!villains();
     els.vsVillain.disabled = !has;
     if (!has) els.vsVillain.checked = false;
     if (villainRow) {
       villainRow.classList.toggle('dim', !has);
-      villainRow.dataset.tip = has ? villainTip :
-        'No modeled villain in this session — build the spot from a PREFLOP LAB export first.';
+      villainRow.dataset.tip = has ? villainTip : NO_VILLAIN;
     }
+    // the trust dial is only a decision while the run uses a villain
+    if (trustRow) {
+      trustRow.classList.toggle('hidden', !els.vsVillain.checked);
+      trustRow.classList.toggle('dim', !has);
+      trustRow.dataset.tip = has ? trustTip : NO_VILLAIN;
+    }
+    if (trustInput) trustInput.disabled = !has;
+  }
+  els.vsVillain.addEventListener('change', updateVillainGate);
+
+  // STOP used to sit inside the collapsible "New report" panel while the
+  // progress line stayed outside it: put the control beside the run it stops.
+  {
+    const runState = document.createElement('div');
+    runState.id = 'rep-run-state';
+    runState.style.cssText = 'display:flex;align-items:center;gap:8px;margin-top:6px';
+    els.progress.parentNode.insertBefore(runState, els.progress);
+    runState.append(els.stop, els.progress);
+    els.progress.style.marginTop = '0';
+  }
+
+  // A toast that carries its own action; api.js's toast is text-only.
+  let actionToastTimer = null;
+  function toastAction(msg, label, action) {
+    const el = document.getElementById('toast');
+    if (!el) return;
+    clearTimeout(actionToastTimer);
+    const wrap = document.createElement('span');
+    wrap.style.cssText = 'display:inline-flex;align-items:center;gap:10px';
+    const text = document.createElement('span');
+    text.textContent = msg;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn ghost xs';
+    button.textContent = label;
+    button.addEventListener('click', () => {
+      el.className = '';
+      el.textContent = '';
+      action();
+    });
+    wrap.append(text, button);
+    el.textContent = '';
+    el.append(wrap);
+    el.className = 'show';
+    actionToastTimer = setTimeout(() => {
+      if (!wrap.isConnected) return;   // a later toast replaced this one
+      el.className = '';
+      el.textContent = '';
+    }, 8000);
   }
 
   // The server strips filename-hostile characters before writing (main.rs
@@ -564,17 +714,29 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       els.stop.classList.toggle('hidden', !st.running);
       els.run.classList.toggle('hidden', st.running);
       if (st.running) {
+        const started = S.running?.name !== st.name;
         active = true;
+        S.running = st;
         const eta = st.done > 0 ? ` · ~${((st.seconds / st.done) * (st.total - st.done) / 60).toFixed(0)} min left` : '';
         els.progress.textContent =
-          `${reportLabel(st.name).title}: ${st.done}/${st.total} · ${st.board}${st.step ? ` · ${st.step}` : ''} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
+          `${runLabel(st.name)}: ${st.done}/${st.total} · ${st.board}${st.step ? ` · ${st.step}` : ''} · ${(st.seconds / 60).toFixed(1)} min${eta}`;
         els.progress.title = st.name;
+        if (started) refreshLibrary();   // the run's file has to list as running
+        else paintRunning();
       } else {
+        S.running = null;
         if (active || els.progress.textContent) {
           els.progress.textContent = st.error ? `failed: ${st.error}` : '';
           if (st.error) { toast(st.error, true); refreshLibrary(); }
-          else if (st.name) { toast(`report "${st.name}" done`); refreshLibrary(); loadReport(st.name); }
+          else if (st.name) {
+            refreshLibrary();
+            const open = S.report?.name || bestSize.name;
+            if (open === st.name) loadReport(st.name);      // opened while it was writing
+            else if (!open) { toast(`report "${st.name}" done`); loadReport(st.name); }
+            else toastAction(`“${runLabel(st.name)}” done`, 'OPEN', () => loadReport(st.name));
+          }
         }
+        paintRunning();
         clearInterval(S.polling);
         S.polling = null;
       }
@@ -585,6 +747,25 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
 
   const posName = p => (p === 0 ? 'OOP' : 'IP');
   const STREET = ['FLOP', 'TURN', 'RIVER'];
+
+  // The canvas caption is a real element: the strip's own fillText is not in
+  // the accessibility tree and the table cannot carry it. The live region
+  // announces the flop the arrow keys land on.
+  const chartCaption = document.createElement('div');
+  chartCaption.id = 'rep-chart-caption';
+  chartCaption.className = 'dim mono';
+  chartCaption.style.cssText = 'font-size:10px;margin:2px 0 4px';
+  const chartLive = document.createElement('div');
+  chartLive.id = 'rep-chart-live';
+  chartLive.setAttribute('role', 'status');
+  chartLive.setAttribute('aria-live', 'polite');
+  chartLive.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';
+  els.canvas.insertAdjacentElement('beforebegin', chartCaption);
+  els.canvas.insertAdjacentElement('afterend', chartLive);
+  els.canvas.tabIndex = 0;
+  els.canvas.setAttribute('role', 'group');
+  els.canvas.setAttribute('aria-label', 'Flop strategy chart');
+  els.canvas.setAttribute('aria-describedby', 'rep-chart-caption');
 
   /** Where the report is being read, in words (strip caption, tooltips). */
   function nodeCaption() {
@@ -600,13 +781,15 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   function render() {
     const rep = S.report;
     els.viewer.classList.toggle('hidden', !rep);
+    paintEmptyState();
     if (!rep) return;
-    const label = reportLabel(rep.name, rep.villain?.name);
-    els.title.textContent = label.title;
+    const summary = summaryOf(metaOf(rep.name));
+    const facts = reportCardFacts(summary);
+    els.title.textContent = summary.title || rep.name;
     els.title.title = rep.name;
     document.getElementById('rep-context').textContent =
-      [label.context, label.model, `${rep.flops.length} flops`, reportTimestamp(rep.created)].filter(Boolean).join(' · ');
-    document.getElementById('rep-empty-state').classList.add('hidden');
+      [facts.context, modelLabel(rep.villain?.name), `${rep.flops.length} flops`, reportTimestamp(rep.created)]
+        .filter(Boolean).join(' · ');
     const sz = (rep.spot.oop || []).map((s, i) => `${['F', 'T', 'R'][i]} ${s.bet}${s.raise ? ' / r' + s.raise : ''}`).join(' · ');
     // Recorded engine only: CPU can be selected explicitly or used after CUDA fallback.
     const cpuBoards = rep.flops.filter(f => f.engine === 'cpu').length;
@@ -667,12 +850,19 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     els.aggregate.classList.toggle('hidden', S.display === 'compare');
     els.legend.classList.toggle('hidden', S.display === 'compare');
     els.canvas.classList.toggle('hidden', S.display !== 'chart');
+    chartCaption.classList.toggle('hidden', S.display !== 'chart');
     els.table.classList.toggle('hidden', S.display !== 'table');
     els.cats.classList.toggle('hidden', S.display !== 'hands');
     els.textures.classList.toggle('hidden', S.display !== 'textures');
     els.features.classList.toggle('hidden', S.display !== 'textures');
     if (S.display === 'hands' && !els.cats.innerHTML) els.cats.innerHTML = '<p class="rep-empty dim">No hand-class data at this node.</p>';
-    if (S.display === 'chart') drawStrip(displayRows(rows));
+    if (S.display === 'chart') {
+      const shown = displayRows(rows);
+      chartCaption.textContent = shown.length
+        ? `${shown.length} ${S.grouping === 'high' ? 'high-card groups' : 'flops'} · ${nodeCaption()} · hover or ← → to inspect`
+        : 'No flops match this filter.';
+      drawStrip(shown);
+    }
   }
 
   // ----- action ribbon (lines mode) -----
@@ -685,32 +875,41 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     el.classList.remove('hidden');
     const hist = S.lineData.history;
     const steps = S.line ? S.line.split(',') : [];
+    // the head is the step-back control; per-action chips are their own
+    // buttons, so the segment itself stays a container (no nested buttons)
+    const buttonStyle = 'background:none;border:0;padding:0;text-align:left;cursor:pointer';
     hist.forEach((h, d) => {
       const seg = document.createElement('div');
       seg.className = 'hist-seg' + (d === hist.length - 1 ? ' current' : '');
-      const head = document.createElement('div');
+      seg.style.cursor = 'default';   // only the head and the chips act
+      const head = document.createElement('button');
+      head.type = 'button';
       head.className = 'hist-head';
+      head.style.cssText = buttonStyle + ';width:100%';
+      if (d === hist.length - 1) head.style.cursor = 'default';
+      const carried = Number.isFinite(h.n_flops) ? ` · ${h.n_flops} flops` : '';
       if (h.kind === 'action') {
-        head.innerHTML = `<span>${posName(h.actor)} · ${STREET[h.street]}</span><b>${(+h.pot).toFixed(1)}</b>`;
+        head.innerHTML = `<span>${posName(h.actor)} · ${STREET[h.street]}${carried}</span><b>${(+h.pot).toFixed(1)}</b>`;
       } else if (h.kind === 'chance') {
-        head.innerHTML = `<span>${STREET[h.street]} CARD</span><b>${(+h.pot).toFixed(1)}</b>`;
+        head.innerHTML = `<span>${STREET[h.street]} CARD${carried}</span><b>${(+h.pot).toFixed(1)}</b>`;
       } else {
-        head.innerHTML = `<span>END</span><b>${(+h.pot).toFixed(1)}</b>`;
+        head.innerHTML = `<span>END${carried}</span><b>${(+h.pot).toFixed(1)}</b>`;
       }
+      if (d === hist.length - 1) head.setAttribute('aria-current', 'step');
       seg.appendChild(head);
       seg.dataset.tip = d === hist.length - 1
         ? `The point you are reading (${h.n_flops} flops carry it). EV OOP ${(+h.ev[0]).toFixed(2)} · IP ${(+h.ev[1]).toFixed(2)}.`
         : `Click to read the report at this earlier point. EV OOP ${(+h.ev[0]).toFixed(2)} · IP ${(+h.ev[1]).toFixed(2)}.`;
-      seg.addEventListener('click', () => {
+      head.addEventListener('click', () => {
         if (d !== hist.length - 1) setLine(steps.slice(0, d).join(','));
       });
       const next = steps[d]; // the step taken from this point, if any
       if (h.kind === 'action') {
         h.actions.forEach((label, k) => {
-          const chip = document.createElement('div');
+          const chip = document.createElement('button');
+          chip.type = 'button';
           const taken = next === `a${k}`;
-          chip.className = 'hist-chip' + (taken ? ' taken' : '');
-          chip.classList.add('has-frequency');
+          chip.className = 'hist-chip' + (taken ? ' taken' : '') + ' has-frequency';
           const actionLabel = document.createElement('span');
           actionLabel.textContent = label;
           const frequency = document.createElement('span');
@@ -718,30 +917,36 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
           frequency.textContent = `${(h.freqs[k] * 100).toFixed(0)}%`;
           chip.append(actionLabel, frequency);
           chip.dataset.tip = `${(h.freqs[k] * 100).toFixed(1)}% of the time (all flops, pooled). Click to read the report after this action.`;
-          chip.addEventListener('click', e => {
-            e.stopPropagation();
+          chip.addEventListener('click', () => {
             setLine([...steps.slice(0, d), `a${k}`].join(','));
           });
           seg.appendChild(chip);
         });
       } else if (h.kind === 'chance') {
-        const chip = document.createElement('div');
+        const chip = document.createElement('button');
+        chip.type = 'button';
         chip.className = 'hist-chip' + (next === 'c' ? ' taken' : '');
         chip.textContent = `any ${STREET[h.street].toLowerCase()} ▸`;
         chip.dataset.tip = `Continue onto the ${STREET[h.street].toLowerCase()}: pooled over every card, on every flop. For one runout, open the flop in Browse and use its RUNOUTS REPORT.`;
-        chip.addEventListener('click', e => {
-          e.stopPropagation();
+        chip.addEventListener('click', () => {
           setLine([...steps.slice(0, d), 'c'].join(','));
         });
         seg.appendChild(chip);
       } else {
-        const chip = document.createElement('div');
+        const chip = document.createElement('span');
         chip.className = 'hist-chip taken';
+        chip.style.cursor = 'default';
         chip.textContent = h.kind === 'terminal_fold' ? 'fold — hand over' : 'showdown';
         seg.appendChild(chip);
       }
       el.appendChild(seg);
     });
+    // navigating the ribbon can put the current point outside the strip
+    const current = el.querySelector('.hist-seg.current');
+    if (current && S.ribbonKey !== S.line) {
+      S.ribbonKey = S.line;
+      current.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    }
   }
 
   function renderLegend(rows) {
@@ -829,8 +1034,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         ctx.strokeRect(x - 0.5, top, bw + 1, plotH);
       }
     });
-    ctx.fillStyle = '#93999e';
-    ctx.fillText(`${rows.length} ${grouped ? 'high-card groups' : 'flops'} · ${nodeCaption()} · hover for frequencies, click to inspect`, left, H - 10);
+    // the caption line lives in #rep-chart-caption (render()), not fillText
   }
 
   function rowAt(ev) {
@@ -868,13 +1072,44 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   });
   els.canvas.addEventListener('click', ev => {
     const r = rowAt(ev);
-    if (r) { S.selected = r.board; render(); }
+    if (r) { S.selected = r.board; render(); announceRow(r); }
+  });
+  // The canvas is the default view, so it must be readable by keyboard too:
+  // ← → walk the same hitmap the pointer uses and the live region announces
+  // the selected flop.
+  els.canvas.addEventListener('keydown', ev => {
+    const step = ev.key === 'ArrowLeft' ? -1 : ev.key === 'ArrowRight' ? 1 : 0;
+    if (!step && ev.key !== 'Home' && ev.key !== 'End') return;
+    const rows = displayRows(visibleRows());
+    if (!rows.length) return;
+    ev.preventDefault();
+    let i = rows.findIndex(r => r.board === S.selected);
+    if (i < 0) i = step > 0 ? -1 : rows.length;
+    const next = ev.key === 'Home' ? 0 : ev.key === 'End' ? rows.length - 1
+      : Math.max(0, Math.min(rows.length - 1, i + step));
+    const row = rows[next];
+    S.selected = row.board;
+    render();
+    announceRow(row);
+  });
+  els.canvas.addEventListener('focus', () => {
+    if (!S.selected) chartLive.textContent = 'Use the left and right arrow keys to inspect flops.';
   });
 
   const SUIT_GLYPH = { c: '♣', d: '♦', h: '♥', s: '♠' };
   const fmtBoard = b => cardsOf(b).map(c => c[0] + SUIT_GLYPH[c[1]]).join('');
   const boardTiles = b => cardsOf(b).map(c =>
     `<span class="rep-card suit-${esc(c[1])}">${esc(c[0])}${SUIT_GLYPH[c[1]] || ''}</span>`).join('');
+
+  /** One short line for screen readers when the chart selection moves. */
+  function announceRow(row) {
+    if (!row) return;
+    const st = stratOf(row);
+    const top = st ? st.actions.map((a, i) => ({ a, f: st.freqs[i] })).sort((x, y) => y.f - x.f)[0] : null;
+    chartLive.textContent = `${row.group ? `${row.label} · ${row.n} flops` : fmtBoard(row.board)} · ${nodeCaption()}` +
+      (top ? ` · ${top.a} ${(100 * top.f).toFixed(0)}%` : '') +
+      ` · EV OOP ${row.players[0].ev.toFixed(2)} · IP ${row.players[1].ev.toFixed(2)}`;
+  }
 
   function strategyTooltipRows(st) {
     const colors = st ? stratColors(st) : [];
@@ -994,44 +1229,76 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   // ----- comparison with a second report -----
 
   const SPOT_FIELDS = [
-    ['starting_pot', 'pot'], ['effective_stack', 'stack'], ['rake_pct', 'rake %'], ['rake_cap', 'rake cap'],
-    ['max_raises', 'raise cap'],
+    ['starting_pot', 'pot', ''], ['effective_stack', 'stack', ''], ['rake_pct', 'rake', '%'],
+    ['rake_cap', 'rake cap', ''], ['max_raises', 'raise cap', ''],
   ];
-  const sizeText = spot => ['oop', 'ip'].map(side => (spot[side] || [])
-    .map((x, i) => `${['F', 'T', 'R'][i]} ${x.bet}${x.raise ? '/r' + x.raise : ''}${x.donk ? '/d' + x.donk : ''}`).join(' ')).join(' | ');
+  const STREETS = ['F', 'T', 'R'];
+  const stepText = x => x ? `${x.bet || ''}${x.raise ? '/r' + x.raise : ''}${x.donk ? '/d' + x.donk : ''}` : '';
+  const valueText = (x, unit) => x == null ? '—' : `${fmtNum(x)}${unit}`;
+  /** The stored villain name doubles as the trust label; split it so the
+   *  trust percentage can be compared on its own. */
+  const villainName = v => String(v?.name ?? 'none').replace(/\s*·\s*trust\s*\d+%\s*$/i, '');
 
-  /** Settings that differ between the two reports, in words. */
-  function spotDifferences(a, b, va, vb) {
+  /** Settings that differ between the two reports, with both values. */
+  function spotDifferences(a, b) {
+    const sa = a.spot || {}, sb = b.spot || {};
     const out = [];
-    for (const [key, label] of SPOT_FIELDS) {
-      if ((a[key] ?? null) !== (b[key] ?? null)) out.push(`${label} ${a[key] ?? '—'} → ${b[key] ?? '—'}`);
+    for (const [key, label, unit] of SPOT_FIELDS) {
+      if ((sa[key] ?? null) !== (sb[key] ?? null))
+        out.push(`${label} ${valueText(sa[key], unit)} vs ${valueText(sb[key], unit)}`);
     }
-    if (a.range_oop !== b.range_oop) out.push('OOP range');
-    if (a.range_ip !== b.range_ip) out.push('IP range');
-    if (sizeText(a) !== sizeText(b)) out.push('bet sizes');
-    if ((va?.name || '') !== (vb?.name || '')) out.push(`villain ${va?.name || 'none'} → ${vb?.name || 'none'}`);
+    for (const side of ['oop', 'ip']) {
+      const rowsA = sa[side] || [], rowsB = sb[side] || [];
+      const streets = [];
+      for (let i = 0; i < Math.max(rowsA.length, rowsB.length); i++) {
+        const x = stepText(rowsA[i]), y = stepText(rowsB[i]);
+        if (x !== y) streets.push(`${STREETS[i] || i + 1} ${x || '—'} vs ${y || '—'}`);
+      }
+      if (streets.length) out.push(`${side === 'ip' ? 'IP ' : ''}sizes ${streets.join(', ')}`);
+    }
+    if ((sa.range_oop ?? '') !== (sb.range_oop ?? '')) out.push('OOP range');
+    if ((sa.range_ip ?? '') !== (sb.range_ip ?? '')) out.push('IP range');
+    if ((a.target_pct ?? null) !== (b.target_pct ?? null))
+      out.push(`target ${valueText(a.target_pct, '%')} vs ${valueText(b.target_pct, '%')}`);
+    if (villainName(a.villain) !== villainName(b.villain))
+      out.push(`villain ${villainName(a.villain)} vs ${villainName(b.villain)}`);
+    const trustA = a.villain?.trust ?? 1, trustB = b.villain?.trust ?? 1;
+    if (trustA !== trustB)
+      out.push(`villain trust ${Math.round(100 * trustA)}% vs ${Math.round(100 * trustB)}%`);
     return out;
   }
+
+  /** Reports without line summaries cannot be read at a shared node. */
+  const compareBlocker = r => r.kind === 'sweep' ? 'best size sweep — pick a size report'
+    : !r.lines ? 'no line summaries' : '';
 
   function renderCompare(rowsA) {
     const el = els.compare;
     const c = S.cmp;
-    const others = libraryData.filter(r => r.lines && r.name !== S.report.name);
+    const others = libraryData.filter(r => r.name !== S.report.name);
+    const usable = others.filter(r => !compareBlocker(r));
+    const blocked = others.filter(compareBlocker);
+    const option = r => `<option value="${esc(r.name)}" ${c?.name === r.name ? 'selected' : ''}>` +
+      `${esc(cardLabel(r))} · ${esc(reportTimestamp(r.created))}</option>`;
     const picker = `<label class="rep-sort-label">Compare with <select id="rep-compare-select">` +
       `<option value="">Choose a report…</option>` +
-      others.map(r => {
-        const l = reportLabel(r.name, r.villain);
-        return `<option value="${esc(r.name)}" ${c?.name === r.name ? 'selected' : ''}>${esc(l.title)} · ${esc(reportTimestamp(r.created))}</option>`;
-      }).join('') + `</select></label>`;
+      usable.map(option).join('') +
+      (blocked.length ? `<optgroup label="Can't compare">` + blocked.map(r =>
+        `<option disabled>${esc(cardLabel(r))} · ${esc(compareBlocker(r))}</option>`).join('') + `</optgroup>` : '') +
+      `</select></label>` +
+      `<button type="button" class="btn ghost xs" id="rep-cmp-swap" ${c ? '' : 'disabled'} data-tip="Read B as A and A as B">A ⇄ B</button>`;
     const note = text => `<p class="rep-empty dim">${text}</p>`;
     let body;
     if (S.mode !== 'lines') body = note('This report predates line summaries — re-run it to compare.');
-    else if (!others.length) body = note('No other report to compare with yet. Run a second one, for example the same spot at another stack depth, bet size or villain model.');
-    else if (!c) body = note('Pick a second report. Both are read at the ribbon point, over the flops they share.');
+    else if (!usable.length) body = note(others.length
+      ? 'No report with line summaries to compare yet.'
+      : 'No second report yet. Run one for another stack, size or villain.');
+    else if (!c) body = note('Pick a second report. Both are read at the ribbon point, over shared flops.');
     else if (c.error) body = note(`Can’t compare at this point: ${esc(c.error)}. Step back along the ribbon.`);
     else body = compareBody(rowsA, c);
     el.innerHTML = `<div class="rep-compare-head">${picker}</div>${body}`;
     el.querySelector('#rep-compare-select').addEventListener('change', e => setCompare(e.target.value));
+    el.querySelector('#rep-cmp-swap').addEventListener('click', swapCompare);
     bindSortHeaders(el);
     el.querySelectorAll('[data-board]').forEach(r => r.addEventListener('click', () => {
       S.selected = r.dataset.board;
@@ -1049,9 +1316,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       ...row, players: row.players.map(p => ({ ...p, ev: row.pot > 0 ? 100 * p.ev / row.pot : 0 })),
     };
     const pairs = rowsA.filter(r => byBoard.has(r.board)).map(a => ({ a: scale(a), b: scale(byBoard.get(a.board)) }));
-    const labelA = reportLabel(S.report.name, S.report.villain?.name).title;
-    const labelB = reportLabel(c.report.name, c.report.villain?.name).title;
-    const diffs = spotDifferences(specA, specB, S.report.villain, c.report.villain);
+    const labelA = titleOf(S.report.name);
+    const labelB = titleOf(c.report.name);
+    const diffs = spotDifferences(S.report, c.report);
     const evUnit = pctEv ? 'EV % pot' : 'EV';
     const fmtEv = x => pctEv ? `${x.toFixed(1)}%` : x.toFixed(2);
     // sign shown on the rounded value, so a tiny negative never reads "−0.0"
@@ -1243,10 +1510,12 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const value = g => key === 'count' ? g.n : key === 'bet' ? aggr(g) : metric({ ...g.agg, group: true }, key);
     groups.sort((a, b) => dir * (key === 'name' ? b.l.localeCompare(a.l) : value(b) - value(a)));
     el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="Groups overlap — a flop can belong to several. Strategy and EV are pooled within the current filter.">?</span><span class="rep-section-note">${rows.length} flops · click a texture name to view its flops</span></h3>` +
+      // Strategy and Bet % are one quantity: one sortable heading, one arrow,
+      // one sort state (the number keeps its column for alignment only).
       `<div class="combo-row head">` + sortHeading('name', 'Texture', 'cname', 'min-width:90px') + sortHeading('count', 'Flops', 'cnum', 'min-width:48px') + sortHeading('bet', 'Strategy', 'cbar') +
-      sortHeading('bet', 'Bet %', 'cnum') + sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') + sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum') + '</div>' +
+      `<span class="cnum" aria-hidden="true"></span>` + sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') + sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum') + '</div>' +
       groups.map(g =>
-        `<div class="combo-row rep-texrow" data-texture="${g.k}" ${tooltipAttributes(flopTooltip({ ...g.agg, group: true, label: g.l, n: g.n }))}><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Filter Table to ${g.l.toLowerCase()} (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
+        `<div class="combo-row" ${tooltipAttributes(flopTooltip({ ...g.agg, group: true, label: g.l, n: g.n }))}><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Filter Table to ${g.l.toLowerCase()} (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
         `<span class="cbar">${stackedBar(g.agg)}</span><span class="cnum">${(100 * aggr(g)).toFixed(0)}%</span>` +
         `<span class="cnum">${g.agg.players[0].ev.toFixed(2)}</span><span class="cnum">${g.agg.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * g.agg.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * g.agg.players[0].eqr).toFixed(0)}%</span></div>`).join('');
