@@ -300,7 +300,7 @@ export class Browser {
       for (const sg of this.preflop.segments) {
         const s = document.createElement('div');
         s.className = 'hist-seg hist-preflop';
-        s.dataset.tip = 'Preflop action that produced this spot (from the preflop study panel or the PREFLOP LAB) — context only, not part of the solved postflop tree.';
+        s.dataset.tip = 'Preflop action that produced this spot — not part of the solved postflop tree.';
         const h = document.createElement('div');
         h.className = 'hist-head';
         h.innerHTML = `<span>${sg.pos}</span>`;
@@ -343,7 +343,6 @@ export class Browser {
     {
       const s = seg(null);
       s.classList.add('hist-board');
-      s.dataset.tip = 'The starting board. Click any past node to view it without losing the rest of the line.';
       head(s, STREETS[Math.max(0, initLen - 3)], fmt(rootPot));
       const row = document.createElement('div');
       row.className = 'hist-cards';
@@ -359,14 +358,13 @@ export class Browser {
       const isCursor = i === cursor;
       if (h.kind === 'action') {
         const s = seg(i, isCursor ? 'current' : '');
-        s.dataset.tip = `${this.posLabel(h.player)} decision. Click to view this node; click a different action to branch the line here.`;
         head(s, this.posLabel(h.player), fmt(h.stack));
         h.actions.forEach((a, k) => {
           const chip = document.createElement('button');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
           chip.textContent = a.label;
           chip.dataset.tip = h.chosen === k
-            ? 'The action taken in this line — click to view this node.'
+            ? ''
             : `Branch the line: take ${a.label.toLowerCase()} from here instead.`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -379,7 +377,7 @@ export class Browser {
         });
       } else if (h.kind === 'card') {
         const s = seg(i, isCursor ? 'current' : '');
-        s.dataset.tip = 'Card dealt. Click to view this point; change the card from the panel below.';
+        s.dataset.tip = 'Click to view this point; pick another card in the panel to change the runout.';
         head(s, STREETS[h.street], fmt(h.pot));
         const row = document.createElement('div');
         row.className = 'hist-cards';
@@ -475,7 +473,7 @@ export class Browser {
         const tile = document.createElement('div');
         tile.className = 'act-tile' + (this.actionFilter === k ? ' sel' : '');
         tile.style.background = colors[k];
-        tile.dataset.tip = `${a.label}: ${(freq * 100).toFixed(1)}% of the range, ${freqs[k].toFixed(1)} combos${ev != null ? `, avg EV ${fmt(ev)}` : ''}. Click to show only this action's range on the grid.`;
+        tile.dataset.tip = `${a.label}: avg EV ${ev != null ? fmt(ev) : '—'} — click to show only this action's range on the grid.`;
         tile.innerHTML = `
           <div class="at-label">${a.label}</div>
           <div class="at-foot">
@@ -541,7 +539,7 @@ export class Browser {
       btn.className = 'btn';
       btn.style.marginTop = '12px';
       btn.textContent = 'RUNOUTS REPORT';
-      btn.dataset.tip = 'Strategy and equity for every possible next card at once — spot which cards favor which player and which runouts get barreled.';
+      btn.dataset.tip = 'Strategy and equity for every possible next card.';
       btn.addEventListener('click', () => this.loadRunouts(btn));
       el.appendChild(btn);
     } else {
@@ -577,12 +575,12 @@ export class Browser {
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span></div>
+      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins this node's strategy so the solver stops adapting it; it persists until UNLOCK, covers all suit-equivalent runouts, and re-locking replaces the previous lock.">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span></div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
-          data-tip="Model a read about the whole range: 'folds 70% to this bet'. You set aggregate action frequencies and the solved strategy is rebalanced to hit them — each hand's mix is scaled proportionally, so the RIGHT hands do the extra folding/calling. This is the mode for pool tendencies.">Overall %</button>
+          data-tip="Model a whole-range read: 'folds 70% to this bet'. Each hand's mix is scaled proportionally, so the right hands do the extra folding or calling.">Overall %</button>
         <button data-lm="hands" class="${this.lockMode === 'hands' ? 'active' : ''}"
-          data-tip="Surgical edits: set exact action frequencies for one hand class (click a cell to pin it). Every other hand keeps its current strategy. Use when the read is hand-specific — 'always slowplays sets here' — rather than about the whole range.">Per hand</button>
+          data-tip="Set exact action frequencies for one hand class (click a cell to pin it); other hands keep their current strategy.">Per hand</button>
       </div>
       <div class="lock-body"></div>`;
     const body = wrap.querySelector('.lock-body');
@@ -635,9 +633,9 @@ export class Browser {
     if (this.lockMode === 'range') {
       const help = document.createElement('div');
       help.className = 'lk-help';
-      help.innerHTML = 'Set how often the <b>whole range</b> takes each action, choose how to get there, then lock. ' +
+      help.innerHTML = 'Set how often the <b>whole range</b> takes each action. ' +
         'The pre-filled values are the current solution. ' +
-        'Then <b>RE-SOLVE</b> to make the rest of the tree adapt to the read \u2014 or open <b>EXPLOIT</b> to punish it directly, no re-solve needed.';
+        'Locking changes only this node: <b>RE-SOLVE</b> adapts the rest of the tree, or open <b>EXPLOIT</b> to punish the read as-is.';
       const ed = freqEditor(curFreq);
       body.append(help, ed.cont, ed.sumRow);
       const fit = this.view.fit;
@@ -648,13 +646,13 @@ export class Browser {
         const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '\u2014';
         st.innerHTML = '<b>Least-exploitable fit running.</b> ' + acts.map((a, k) =>
           `${a.label} ${pct(fit.achieved[k])} \u2192 ${pct(fit.target[k])}`).join(' \u00b7 ') +
-          '. The solve steers this node onto the targets and locks the result when it ends (one undo removes it).';
+          '. Locked when the solve ends; one undo removes it.';
         body.appendChild(st);
       }
       const methods = [
-        ['rake', 'Scale', 'Rescale the solved strategy: every hand\u2019s mix is scaled by the same factor until the range hits your numbers. Hands that never took an action can\u2019t be scaled into it.'],
-        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes. Good for a quick read; a best response can still punish it, because the rest of the tree hasn\u2019t adapted.'],
-        ['full', 'Least exploitable', 'Find the play for the WHOLE tree that hits your numbers while giving away the least to a best response, by re-solving with a temporary per-action bounty at this node. Starts a RE-SOLVE; the result is locked when it ends.'],
+        ['rake', 'Scale', 'Scale every hand\u2019s mix by the same factor until the range hits your numbers. Hands that never take an action can\u2019t be scaled in.'],
+        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes, and a best response can still punish it.'],
+        ['full', 'Least exploitable', 'Find the play for the whole tree that hits your numbers while giving away the least to a best response. Starts a RE-SOLVE; the result is locked when it ends.'],
       ];
       if (!methods.some(m => m[0] === this.fitMethod)) {
         let saved = null;
@@ -700,7 +698,7 @@ export class Browser {
       foot.appendChild(lock);
       if (fit) {
         const cancel = document.createElement('button'); cancel.className = 'btn ghost'; cancel.textContent = 'CANCEL FIT';
-        cancel.dataset.tip = 'Stop steering this node. It keeps learning freely in the solve, and nothing is locked.';
+        cancel.dataset.tip = 'Stop steering this node; nothing is locked.';
         cancel.addEventListener('click', async () => {
           try { await api.fitCancel(this.path); toast('fit cancelled'); this.refresh(); }
           catch (e) { toast(e.message, true); }
@@ -731,11 +729,11 @@ export class Browser {
         } else {
           const cur = cagg.map(x => ct > 1e-9 ? x / ct : 1 / na);
           const help = document.createElement('div'); help.className = 'lk-help';
-          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}). Other hands are unchanged.`;
+          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}).`;
           const ed = freqEditor(cur);
           body.append(help, ed.cont, ed.sumRow);
           const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = `LOCK ${info.label}`;
-          lock.dataset.tip = 'Pin exact frequencies for just this hand class; the rest of the range keeps playing its current strategy. Applies on top of any Overall % lock at this node.';
+          lock.dataset.tip = 'Applies on top of any Overall % lock at this node.';
           lock.addEventListener('click', async () => {
             const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
             if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
@@ -789,8 +787,8 @@ export class Browser {
       b.setAttribute('aria-label', list.length ? `${word}: ${list[0]}` : `Nothing to ${word.toLowerCase()}`);
       b.dataset.tip = list.length
         ? `${word}: ${list[0]} (${key}).` + (list.length > 1 ? ` ${list.length - 1} more step${list.length > 2 ? 's' : ''} after this.` : '') +
-          ' Covers node locks, unlocks and villain profile locks in this session; RE-SOLVE afterwards to update the strategy.'
-        : `Nothing to ${word.toLowerCase()}. Lock edits made in this session can be undone and redone (${key}).`;
+          ' RE-SOLVE afterwards to update the strategy.'
+        : `Nothing to ${word.toLowerCase()}.`;
       b.addEventListener('click', e => { e.stopPropagation(); this.stepLockHistory(dir); });
       el.appendChild(b);
     }
@@ -836,7 +834,7 @@ export class Browser {
     if (this.hasEarlierDecision()) {
       const line = document.createElement('label');
       line.className = 'chk lk-line';
-      line.dataset.tip = 'Also LOCK AS SOLVED every earlier decision on this line that is not locked yet, for both players, in the same step. Without it, a lock deep in the tree can shift earlier play on RE-SOLVE (e.g. locking the response to a c-bet changes how often the c-bet happens). Locks already on the line are kept. One undo removes all of it.';
+      line.dataset.tip = 'Also LOCK AS SOLVED every earlier decision on this line, for both players, so a RE-SOLVE can\u2019t shift earlier play. Locks already there are kept; one undo removes all of it.';
       const box = document.createElement('input');
       box.type = 'checkbox';
       box.checked = !!this.freezeLine;
@@ -849,7 +847,7 @@ export class Browser {
     }
     const freeze = document.createElement('button');
     freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
-    freeze.dataset.tip = 'The other kind of lock: freeze this node EXACTLY as currently solved \u2014 you change nothing, it just stops adapting. Use it to hold parts of the tree constant while you experiment elsewhere: lock earlier streets as solved, then edit/lock a later node and RE-SOLVE \u2014 only the unlocked parts adapt. (LOCK FREQUENCIES pins YOUR numbers; LOCK AS SOLVED pins the solver\u2019s.)';
+    freeze.dataset.tip = 'Freeze this node exactly as currently solved \u2014 you change nothing, it just stops adapting. Use it to hold parts of the tree constant while you experiment elsewhere. (LOCK FREQUENCIES pins your numbers; LOCK AS SOLVED pins the solver\u2019s.)';
     freeze.addEventListener('click', async () => {
       try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)} — this node now stays fixed through re-solves`); this.refresh(); }
       catch (e) { toast(e.message, true); }
@@ -858,7 +856,7 @@ export class Browser {
     if (locked) {
       const un = document.createElement('button');
       un.className = 'btn ghost'; un.textContent = 'UNLOCK';
-      un.dataset.tip = 'Remove the lock: this node adapts again on the next RE-SOLVE.';
+      un.dataset.tip = 'This node adapts again on the next RE-SOLVE.';
       un.addEventListener('click', async () => {
         try { const out = await api.unlock(this.path); this.setLockHistory(out.history); this.onLockEdit?.(); toast('unlocked'); this.refresh(); }
         catch (e) { toast(e.message, true); }
@@ -925,12 +923,12 @@ export class Browser {
         brick: !flushy && !paired && !over && !straighty };
     };
     const TEX = [
-      ['all', 'ALL', 'Every possible next card.'],
+      ['all', 'ALL', ''],
       ['flushy', 'FLUSH', 'Cards bringing a third (or fourth) card of a suit.'],
-      ['paired', 'PAIRS', 'Cards pairing the board.'],
-      ['straighty', 'STRAIGHTY', 'Cards landing within 3 ranks of two or more board cards — straights and big draws arrive.'],
+      ['paired', 'PAIRS', ''],
+      ['straighty', 'STRAIGHTY', 'Cards within 3 ranks of two or more board cards.'],
       ['over', 'OVER', 'Overcards to the board.'],
-      ['brick', 'BRICK', 'None of the above — the blanks.'],
+      ['brick', 'BRICK', 'None of the above.'],
     ];
 
     const valOf = (row, col) =>
@@ -951,9 +949,9 @@ export class Browser {
     const bar = document.createElement('div');
     bar.className = 'ro-controls';
     const MET = [
-      ['eq', 'EQ', 'Average equity on each runout.'],
+      ['eq', 'EQ', ''],
       ['ev', 'EV', 'Average EV on each runout (pot-share: EV OOP + EV IP = pot).'],
-      ['eqr', 'EQR', 'Equity realization = EV / (pot \u00d7 equity). 1.00 = converting exactly your equity share; above 1 = over-realizing (position, playability), below = under.'],
+      ['eqr', 'EQR', 'Equity realization = EV / (pot \u00d7 equity). 1.00 = exactly your equity share; above 1 over-realizes, below under-realizes.'],
     ];
     bar.innerHTML =
       `<div class="seg">${MET.map(([k, l, t]) =>
@@ -973,10 +971,10 @@ export class Browser {
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
-      `<span class="cname ${cls('card')}" data-sort="card" data-tip="Sort by card (rank then suit). Click again to flip direction.">card${arrow('card')}</span>` +
-      `<span class="cbar ${cls('strat')}" data-sort="strat" style="background:none" data-tip="Sort by total betting frequency — spot which runouts get barreled most. Click again to flip.">${stratLabel}${arrow('strat')}</span>` +
-      `<span class="cnum ${cls('oop')}" data-sort="oop" data-tip="Sort by OOP ${mname}. Click again to flip.">OOP ${mname}${arrow('oop')}</span>` +
-      `<span class="cnum ${cls('ip')}" data-sort="ip" data-tip="Sort by IP ${mname}. Click again to flip.">IP ${mname}${arrow('ip')}</span>`;
+      `<span class="cname ${cls('card')}" data-sort="card">card${arrow('card')}</span>` +
+      `<span class="cbar ${cls('strat')}" data-sort="strat" style="background:none" data-tip="Sort by combined bet and raise frequency.">${stratLabel}${arrow('strat')}</span>` +
+      `<span class="cnum ${cls('oop')}" data-sort="oop">OOP ${mname}${arrow('oop')}</span>` +
+      `<span class="cnum ${cls('ip')}" data-sort="ip">IP ${mname}${arrow('ip')}</span>`;
     el.appendChild(head);
 
     // aggregate over the visible (filtered) cards, equal weight per card
@@ -1518,10 +1516,10 @@ export class Browser {
       b.disabled = !!task;
       if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${this.posLabel(p)}…`;
       b.dataset.tip = on
-        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment. Click to clear.`
+        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment.`
         : hasContextualBetting(v.stats)
-          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve. Then RE-SOLVE to adapt.`
-          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets. Then RE-SOLVE or EXPLOIT.`;
+          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve.`
+          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets.`;
       b.addEventListener('click', () => this.toggleVillainLock(p, v));
       box.appendChild(b);
     }
@@ -1586,7 +1584,7 @@ export class Browser {
           (worst ? ` (worst fit: ${worst.label} ${worst.achieved.toFixed(0)}% vs target ${worst.target.toFixed(0)}%)` : '') +
           ' \u2014 RE-SOLVE to adapt, then EXPLOIT');
       }
-      this.villainLockTask.phase = 'Refreshing strategy display…';
+      this.villainLockTask.phase = 'Refreshing…';
       this.renderVillainLocks();
       await this.refresh(); // keep feedback visible through the EV query too
     } catch (e) { toast(e.message, true); }
@@ -1787,7 +1785,7 @@ export class Browser {
           `<div style="width:${((s / a.reach) * 100).toFixed(1)}%;background:${colors[k]}"></div>`).join('');
       }
       return `<div class="filter-row${sel ? ' sel' : ''}" data-key="${key}"
-        data-tip="Click to filter the matrix by this category. The bar shows how these hands play here.">
+        data-tip="The bar shows how these hands play here.">
         <span class="fname">${label}</span>
         <span class="fpct">${pct.toFixed(1)}%</span>
         <span class="fbar">${bar}</span></div>`;
@@ -1819,12 +1817,10 @@ export class Browser {
     content.innerHTML = `
       <div class="filter-top">
         <div class="seg">
-          <button data-fmode="include" class="${this.filterMode === 'include' ? 'active' : ''}"
-            data-tip="Matrix shows ONLY hands matching the selected filters.">INCLUDE</button>
-          <button data-fmode="exclude" class="${this.filterMode === 'exclude' ? 'active' : ''}"
-            data-tip="Matrix hides hands matching the selected filters.">EXCLUDE</button>
+          <button data-fmode="include" class="${this.filterMode === 'include' ? 'active' : ''}">INCLUDE</button>
+          <button data-fmode="exclude" class="${this.filterMode === 'exclude' ? 'active' : ''}">EXCLUDE</button>
         </div>
-        <button class="btn ghost" id="filter-clear" data-tip="Clear all active filters.">clear</button>
+        <button class="btn ghost" id="filter-clear">clear</button>
       </div>
       <div class="filter-suits">
         <span class="dim">Offsuit</span>${offsuitBtns}
@@ -1925,7 +1921,7 @@ export class Browser {
       const avgEv = evW > 1e-12 ? ev / evW : null;
       const avgEq = eqW > 1e-12 ? eq / eqW : null;
       const eqr = avgEv != null && avgEq > 1e-9 ? avgEv / (avgEq * pot) : null;
-      return `<div class="eqstat" data-tip="${this.posLabel(p)} at this node. EQR = equity realization: EV as a fraction of (equity × pot). Under 100% means this range under-realizes its equity — typical for out-of-position or capped ranges.">
+      return `<div class="eqstat" data-tip="EQR = equity realization: EV as a fraction of (equity × pot). Under 100% this range under-realizes its equity.">
         <div class="eqstat-head"><i style="background:${EQ_COLORS[p]}"></i>${this.posLabel(p)}</div>
         <div class="eqstat-grid">
           <span><label>EV</label><div>${avgEv != null ? fmt(avgEv) : '—'}</div></span>
@@ -2107,11 +2103,11 @@ export class Browser {
       k === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
     const header =
       `<div class="blocker-row head" style="grid-template-columns:52px repeat(${na},1fr)">` +
-      `<span class="bk-head${sortCol === 'card' ? ' sorted' : ''}" data-sort="card" ` +
-      `data-tip="Sort by card (rank, then suit). Click again to flip direction.">cards${arrow('card')}</span>` +
+      `<span class="bk-head${sortCol === 'card' ? ' sorted' : ''}" data-sort="card"` +
+      `>cards${arrow('card')}</span>` +
       acts.map((a, k) =>
-        `<span class="bk-head${k === sortCol ? ' sorted' : ''}" data-sort="${k}" ` +
-        `data-tip="Sort by this action's blocker shift — descending puts the strongest positive effect on top; click again for ascending (strongest negative)."><i style="background:${colors[k]}"></i>${a.label}${arrow(k)}</span>`
+        `<span class="bk-head${k === sortCol ? ' sorted' : ''}" data-sort="${k}"` +
+        `><i style="background:${colors[k]}"></i>${a.label}${arrow(k)}</span>`
       ).join('') + `</div>`;
 
     const body = rows.map(r => {
@@ -2129,7 +2125,7 @@ export class Browser {
 
     content.innerHTML =
       `<div class="dim" style="font-size:11px;margin-bottom:8px">How holding each card shifts ` +
-      `${this.posLabel(p)}'s strategy vs the range average — the essence of blocker selection.</div>` +
+      `${this.posLabel(p)}'s strategy vs the range average.</div>` +
       header + `<div class="blocker-body">${body}</div>`;
 
     content.querySelectorAll('.bk-head').forEach(h =>

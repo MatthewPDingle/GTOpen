@@ -99,7 +99,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
   function sortHeading(key, label, cls, style = '') {
     const sort = activeSort(), selected = sort.key === key;
     const hint = key === 'bet' ? 'Sort by total bet and raise frequency' : `Sort by ${label}`;
-    return `<button type="button" class="rep-column ${cls}${selected ? ' sorted' : ''}" data-sort="${key}" style="${style}" aria-label="${hint}${selected ? (sort.dir === -1 ? ', ascending' : ', descending') : ''}" data-tip="${hint}. Click again to reverse.">${label}<span class="rep-sort-arrow" aria-hidden="true">${selected ? (sort.dir === -1 ? '↑' : '↓') : '↕'}</span></button>`;
+    return `<button type="button" class="rep-column ${cls}${selected ? ' sorted' : ''}" data-sort="${key}" style="${style}" aria-label="${hint}${selected ? (sort.dir === -1 ? ', ascending' : ', descending') : ''}" data-tip="${hint}">${label}<span class="rep-sort-arrow" aria-hidden="true">${selected ? (sort.dir === -1 ? '↑' : '↓') : '↕'}</span></button>`;
   }
   function bindSortHeaders(el) {
     el.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => changeSort(b.dataset.sort)));
@@ -281,7 +281,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     try {
       const status = await api.reportsStatus();
       if (status.running && sanitizeReportName(status.name) === sanitizeReportName(name))
-        throw new Error('This report is still running. Stop the report before deleting it.');
+        throw new Error('This report is still running — stop it before deleting.');
       await api.reportsDelete(name);
       if (S.loadingName === name) { ++S.loadSeq; S.loadingName = null; }
       if (S.report?.name === name) {
@@ -388,7 +388,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     try {
       const report = await api.reportsGet(name);
       if (seq !== S.cmpSeq) return;
-      if (!report.lines) throw new Error('that report predates line summaries; re-run it to compare it');
+      if (!report.lines) throw new Error('That report predates line summaries — re-run it to compare');
       S.cmp = { name, report, cache: new Map(), key: null, rows: [], matched: false, error: null };
       await loadCompareLine();
       if (seq === S.cmpSeq) render();
@@ -480,7 +480,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     if (villainRow) {
       villainRow.classList.toggle('dim', !has);
       villainRow.dataset.tip = has ? villainTip :
-        'No modeled villain in this session — build the spot from a PREFLOP LAB export first (villain context does not survive a reload).';
+        'No modeled villain in this session — build the spot from a PREFLOP LAB export first.';
     }
   }
 
@@ -540,7 +540,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     }
     try {
       await api.reportsRun(body);
-      els.progress.textContent = `starting "${name}"…`;
+      els.progress.textContent = 'starting…';
       toast(`${body.sweep ? 'best size sweep' : 'report'} "${name}" running — ${body.flops} flops` +
         `${body.sweep ? ` × ${body.sweep.sizes.length + body.sweep.refine} solves` : ''}${body.villain ? ' vs ' + body.villain.name : ''}`);
       pollStatus(true);
@@ -622,8 +622,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     // controls (idempotent rebuild)
     const nodeSeg = S.mode === 'lines' ? '' :
       `<div class="seg" id="rep-node">` +
-      `<button data-n="root" class="${S.node === 'root' ? 'active' : ''}" data-tip="The first decision on the flop (OOP acting into the pot).">OOP ROOT</button>` +
-      `<button data-n="vs_check" class="${S.node === 'vs_check' ? 'active' : ''}" data-tip="IP's reply after OOP checks — the c-bet view.">IP VS CHECK</button></div>`;
+      `<button data-n="root" class="${S.node === 'root' ? 'active' : ''}">OOP ROOT</button>` +
+      `<button data-n="vs_check" class="${S.node === 'vs_check' ? 'active' : ''}" data-tip="The c-bet view.">IP VS CHECK</button></div>`;
     document.getElementById('rep-display').innerHTML = ['chart|Chart', 'table|Table', 'hands|Hand classes', 'textures|Textures', 'compare|Compare']
       .map(item => { const [key, title] = item.split('|'); return `<button type="button" data-display="${key}" aria-pressed="${S.display === key}" class="${S.display === key ? 'active' : ''}">${title}</button>`; }).join('');
     document.querySelectorAll('#rep-display button').forEach(b => b.addEventListener('click', () => { S.display = b.dataset.display; render(); }));
@@ -636,7 +636,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       `<label class="rep-sort-label">Sort <select id="rep-sort">` +
       sortOptions().map(o => { const [k, l] = o.split('|'); return `<option value="${k}" ${sort.key === k ? 'selected' : ''}>${l}</option>`; }).join('') +
       `</select></label><button type="button" class="btn ghost xs" id="rep-sort-direction" aria-label="${sort.dir === -1 ? 'Ascending' : 'Descending'} sort; reverse order" data-tip="Reverse sort order">${sort.dir === -1 ? '↑' : '↓'}</button></div>` +
-      `<div class="rep-filter-controls"><span class="dim">Filter flops</span><div class="seg" id="rep-tex" aria-label="Filter flops in all report views">` +
+      `<div class="rep-filter-controls"><span class="dim">Filter flops</span><div class="seg" id="rep-tex" aria-label="Filter flops">` +
       TEX.map(([k, l]) => `<button type="button" data-t="${k}" aria-pressed="${S.tex === k}" class="${S.tex === k ? 'active' : ''}">${l}</button>`).join('') +
       `</div></div>`;
     els.controls.querySelectorAll('#rep-node button').forEach(b =>
@@ -671,7 +671,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     els.cats.classList.toggle('hidden', S.display !== 'hands');
     els.textures.classList.toggle('hidden', S.display !== 'textures');
     els.features.classList.toggle('hidden', S.display !== 'textures');
-    if (S.display === 'hands' && !els.cats.innerHTML) els.cats.innerHTML = '<p class="rep-empty dim">Hand-class data is not available at this node in this report.</p>';
+    if (S.display === 'hands' && !els.cats.innerHTML) els.cats.innerHTML = '<p class="rep-empty dim">No hand-class data at this node.</p>';
     if (S.display === 'chart') drawStrip(displayRows(rows));
   }
 
@@ -717,7 +717,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
           frequency.className = 'hist-frequency';
           frequency.textContent = `${(h.freqs[k] * 100).toFixed(0)}%`;
           chip.append(actionLabel, frequency);
-          chip.dataset.tip = `${posName(h.actor)}: ${label} ${(h.freqs[k] * 100).toFixed(1)}% of the time (all flops, pooled). Click to read the report after this action.`;
+          chip.dataset.tip = `${(h.freqs[k] * 100).toFixed(1)}% of the time (all flops, pooled). Click to read the report after this action.`;
           chip.addEventListener('click', e => {
             e.stopPropagation();
             setLine([...steps.slice(0, d), `a${k}`].join(','));
@@ -728,7 +728,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         const chip = document.createElement('div');
         chip.className = 'hist-chip' + (next === 'c' ? ' taken' : '');
         chip.textContent = `any ${STREET[h.street].toLowerCase()} ▸`;
-        chip.dataset.tip = `Continue onto the ${STREET[h.street].toLowerCase()}: what follows is pooled over every card that can come, on every flop. For a specific runout open the flop in Browse and use its RUNOUTS REPORT.`;
+        chip.dataset.tip = `Continue onto the ${STREET[h.street].toLowerCase()}: pooled over every card, on every flop. For one runout, open the flop in Browse and use its RUNOUTS REPORT.`;
         chip.addEventListener('click', e => {
           e.stopPropagation();
           setLine([...steps.slice(0, d), 'c'].join(','));
@@ -939,7 +939,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       (st ? st.actions.map((a, i) => `${esc(a)} ${(100 * st.freqs[i]).toFixed(1)}%`).join(' · ') : '') +
       ` · OOP ev ${r.players[0].ev.toFixed(2)} eq ${(100 * r.players[0].eq).toFixed(1)} eqr ${(100 * r.players[0].eqr).toFixed(0)}%` +
       ` · IP ev ${r.players[1].ev.toFixed(2)} eq ${(100 * r.players[1].eq).toFixed(1)} eqr ${(100 * r.players[1].eqr).toFixed(0)}%</span> ` +
-      `<button class="btn ghost xs" id="rep-open" data-tip="Load this exact spot + board into SETUP, build and solve it, then study it in Browse${browseSteps().length ? ' at this line' : ''}.">OPEN IN BROWSE</button>`;
+      `<button class="btn ghost xs" id="rep-open" data-tip="Load this spot + board into SETUP, solve it, then open Browse${browseSteps().length ? ' at this line' : ''}.">OPEN IN BROWSE</button>`;
     els.detail.querySelector('#rep-open').addEventListener('click', () =>
       openInBrowse(S.report.spot, r.board, browseSteps()));
   }
@@ -986,7 +986,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       const more = document.createElement('div');
       more.className = 'dim mono';
       more.style.cssText = 'font-size:11px;padding:6px 2px;text-align:center';
-      more.textContent = `showing ${CAP} of ${rows.length} flops — refine the texture filter or re-sort to bring targets to the top (strip + averages cover all ${rows.length})`;
+      more.textContent = `showing ${CAP} of ${rows.length} flops — filter or sort to bring others up (strip + averages cover all ${rows.length})`;
       el.appendChild(more);
     }
   }
@@ -1017,7 +1017,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const el = els.compare;
     const c = S.cmp;
     const others = libraryData.filter(r => r.lines && r.name !== S.report.name);
-    const picker = `<label class="rep-sort-label">Compare with <select id="rep-compare-select" aria-label="Report to compare with">` +
+    const picker = `<label class="rep-sort-label">Compare with <select id="rep-compare-select">` +
       `<option value="">Choose a report…</option>` +
       others.map(r => {
         const l = reportLabel(r.name, r.villain);
@@ -1025,9 +1025,9 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       }).join('') + `</select></label>`;
     const note = text => `<p class="rep-empty dim">${text}</p>`;
     let body;
-    if (S.mode !== 'lines') body = note('This report predates line summaries. Re-run it to compare it with another report.');
+    if (S.mode !== 'lines') body = note('This report predates line summaries — re-run it to compare.');
     else if (!others.length) body = note('No other report to compare with yet. Run a second one, for example the same spot at another stack depth, bet size or villain model.');
-    else if (!c) body = note('Pick a second report. Both are read at the point you are on in the ribbon, over the flops they share, so you can see where strategy and EV move.');
+    else if (!c) body = note('Pick a second report. Both are read at the ribbon point, over the flops they share.');
     else if (c.error) body = note(`Can’t compare at this point: ${esc(c.error)}. Step back along the ribbon.`);
     else body = compareBody(rowsA, c);
     el.innerHTML = `<div class="rep-compare-head">${picker}</div>${body}`;
@@ -1147,7 +1147,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       (rows.length > CAP ? `<div class="dim mono rep-cmp-more">showing ${CAP} of ${rows.length} flops — sort or filter to bring others up (the summary covers all ${rows.length})</div>` : '') +
       `</div>`;
     return head + overall +
-      `<h3>BY FLOP <span class="info-dot" tabindex="0" data-tip="Each shared flop, A’s strategy beside B’s, sorted by the biggest change in bet + raise frequency by default. Δ = B − A. IP’s EV change is the mirror of OOP’s (the two EVs share the pot), so only OOP’s is shown. Hover a bar for that report’s frequencies and EVs.">?</span></h3>` + table;
+      `<h3>BY FLOP <span class="info-dot" tabindex="0" data-tip="Δ = B − A. IP’s EV change mirrors OOP’s (the two share the pot), so only OOP’s is shown.">?</span></h3>` + table;
   }
 
   // ----- hand-category breakdown (lines mode, action nodes) -----
@@ -1183,8 +1183,8 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const head =
       `<div class="rep-cats-head">` +
       `<div class="seg">${dims.map(d => `<button data-d="${d[0]}" class="${S.catDim === d[0] ? 'active' : ''}">${d[1]}</button>`).join('')}</div>` +
-      `<div class="seg">${[0, 1].map(p => `<button data-p="${p}" class="${player === p ? 'active' : ''}" data-tip="${p === actor ? 'The player acting here: share of range, strategy and EV per hand class.' : 'The other player: share of range and EV per hand class (no decision here).'}">${posName(p)}${p === actor ? ' · ACTING' : ''}</button>`).join('')}</div>` +
-      `<span class="dim" style="font-size:10px">${esc(posName(player))}'s range at this point, by hand class — pooled over ${withCats.length} flops</span>` +
+      `<div class="seg">${[0, 1].map(p => `<button data-p="${p}" class="${player === p ? 'active' : ''}" data-tip="${p === actor ? 'The acting player — strategy included.' : 'The other player — no decision here, so no strategy.'}">${posName(p)}${p === actor ? ' · ACTING' : ''}</button>`).join('')}</div>` +
+      `<span class="dim" style="font-size:10px">${esc(posName(player))}'s range at this point · pooled over ${withCats.length} flops</span>` +
       `</div>`;
     const hrow = `<div class="combo-row head">` + sortHeading('class', 'Class', 'cname', 'min-width:120px') + sortHeading('share', 'Share', 'cnum', 'min-width:52px') +
       `<span class="cbar" style="background:none">${isActor ? 'strategy' : ''}</span>` + sortHeading('ev', 'EV', 'cnum') + sortHeading('eq', 'EQ', 'cnum') + '</div>';
@@ -1212,7 +1212,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         `<span class="cbar">${bar}</span>` +
         `<span class="cnum">${(a.ev / a.w).toFixed(2)}</span><span class="cnum">${(100 * a.eq / a.w).toFixed(1)}</span></div>`;
     }).join('');
-    el.innerHTML = `<h3>HAND CLASSES <span class="info-dot" tabindex="0" data-tip="How each hand class plays at this point, pooled across the flops shown (each class weighted by how much of it reaches here on each flop). Share = fraction of the range; the strategy bar is the class’s action mix; EV in pot-share chips.">?</span></h3>` + head + hrow + body;
+    el.innerHTML = `<h3>HAND CLASSES <span class="info-dot" tabindex="0" data-tip="Each class is weighted by how much of it reaches this point on each flop.">?</span></h3>` + head + hrow + body;
     bindSortHeaders(el);
     el.querySelectorAll('.rep-cats-head [data-d]').forEach(b => b.addEventListener('click', () => { S.catDim = b.dataset.d; render(); }));
     el.querySelectorAll('.rep-cats-head [data-p]').forEach(b => b.addEventListener('click', () => { S.catPlayer = +b.dataset.p; render(); }));
@@ -1242,11 +1242,11 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     const { key, dir } = S.textureSort;
     const value = g => key === 'count' ? g.n : key === 'bet' ? aggr(g) : metric({ ...g.agg, group: true }, key);
     groups.sort((a, b) => dir * (key === 'name' ? b.l.localeCompare(a.l) : value(b) - value(a)));
-    el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="Strategy and EV pooled within the current flop filter. Groups overlap: a flop can belong to several. Strategy sorts by total bet/raise frequency.">?</span><span class="rep-section-note">${rows.length} flops · overlapping groups · click a texture name to view its flops</span></h3>` +
+    el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="Groups overlap — a flop can belong to several. Strategy and EV are pooled within the current filter.">?</span><span class="rep-section-note">${rows.length} flops · click a texture name to view its flops</span></h3>` +
       `<div class="combo-row head">` + sortHeading('name', 'Texture', 'cname', 'min-width:90px') + sortHeading('count', 'Flops', 'cnum', 'min-width:48px') + sortHeading('bet', 'Strategy', 'cbar') +
       sortHeading('bet', 'Bet %', 'cnum') + sortHeading('ev0', 'OOP EV', 'cnum') + sortHeading('ev1', 'IP EV', 'cnum') + sortHeading('eq0', 'OOP EQ', 'cnum') + sortHeading('eqr0', 'OOP EQR', 'cnum') + '</div>' +
       groups.map(g =>
-        `<div class="combo-row rep-texrow" data-texture="${g.k}" ${tooltipAttributes(flopTooltip({ ...g.agg, group: true, label: g.l, n: g.n }))}><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Open Table with the ${g.l.toLowerCase()} filter (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
+        `<div class="combo-row rep-texrow" data-texture="${g.k}" ${tooltipAttributes(flopTooltip({ ...g.agg, group: true, label: g.l, n: g.n }))}><button type="button" class="cname rep-texture-link" style="min-width:90px" data-t="${g.k}" data-tip="Filter Table to ${g.l.toLowerCase()} (replaces the current filter)">${g.l}</button><span class="cnum" style="min-width:48px">${g.n}</span>` +
         `<span class="cbar">${stackedBar(g.agg)}</span><span class="cnum">${(100 * aggr(g)).toFixed(0)}%</span>` +
         `<span class="cnum">${g.agg.players[0].ev.toFixed(2)}</span><span class="cnum">${g.agg.players[1].ev.toFixed(2)}</span>` +
         `<span class="cnum">${(100 * g.agg.players[0].eq).toFixed(1)}</span><span class="cnum">${(100 * g.agg.players[0].eqr).toFixed(0)}%</span></div>`).join('');
@@ -1277,7 +1277,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         ['wide (9+)', r => { const t = texOf(r.board); return !t.paired && t._span >= 9; }]] },
     ];
     const actorName = posName(st0.actor);
-    el.innerHTML = `<h3>${esc(actorName)} AGGRESSION BY FLOP FEATURE <span class="info-dot" tabindex="0" data-tip="Bet + raise frequency of the acting player at this point, pooled within each flop feature group, with OOP’s EV beside it. Reads the report the way an aggregated-report summary does: where does aggression rise and fall.">?</span></h3>` +
+    el.innerHTML = `<h3>${esc(actorName)} AGGRESSION BY FLOP FEATURE <span class="info-dot" tabindex="0" data-tip="Bet + raise frequency of the acting player, pooled within each feature group; OOP’s EV beside it.">?</span></h3>` +
       `<div class="rep-feat-grid">` + charts.map(ch => {
         const rowsHtml = ch.groups.map(([label, pred]) => {
           const rs = rows.filter(pred);

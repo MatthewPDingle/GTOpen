@@ -15,8 +15,6 @@ import { createPostflopIcm } from './postflop_icm.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
-$('status-pill').dataset.tip =
-  'Solver state: idle (no tree) → ready (tree built) → running → done/stopped. The iteration counter ticks while solving.';
 
 // ---------------------------------------------------------------------------
 // Tabs
@@ -92,7 +90,7 @@ function refreshPresetDropdown() {
   if (!labs.length) {
     const o = document.createElement('option');
     o.disabled = true;
-    o.textContent = 'nothing yet \u2014 SEND TO POSTFLOP in the Preflop Lab saves spots here';
+    o.textContent = 'SEND TO POSTFLOP in the Preflop Lab saves spots here';
     sel.appendChild(o);
     return;
   }
@@ -272,11 +270,11 @@ const SIZE_ROWS = [
   ['IP bet', 'ip', 'bet'], ['IP raise', 'ip', 'raise'],
 ];
 const SIZE_TIPS = {
-  'OOP bet': 'Sizes OOP may bet when no one has bet yet this street (e.g. a c-bet after raising, or a lead after a check-through). % of pot, space-separated.',
-  'OOP raise': 'Sizes OOP may raise when facing a bet. % of pot after a hypothetical call, or 2.5x = 2.5 times the bet faced.',
-  'OOP donk': 'Sizes for leading INTO the previous street&#39;s aggressor (e.g. betting the turn after check-calling the flop). Leave empty for standard trees where OOP just checks to the raiser.',
-  'IP bet': 'Sizes IP may bet when checked to (or betting first after a check-through). % of pot, space-separated.',
-  'IP raise': 'Sizes IP may raise when facing a bet or donk. % of pot after a call, or 2.5x multiples.',
+  'OOP bet': 'Sizes OOP may bet when no one has bet yet this street (e.g. a c-bet after raising, or a lead after a check-through).',
+  'OOP raise': 'Sizes OOP may raise when facing a bet: % of pot after a hypothetical call, or a 2.5x multiple.',
+  'OOP donk': 'Sizes for leading INTO the previous street&#39;s aggressor (e.g. betting the turn after check-calling the flop).',
+  'IP bet': 'Sizes IP may bet when checked to (or betting first after a check-through).',
+  'IP raise': 'Sizes IP may raise when facing a bet or donk: % of pot after a call, or a 2.5x multiple.',
 };
 const DEFAULT_SIZES = {
   oop: { bet: ['33', '75', '75'], raise: ['60', '60', '60'], donk: ['', '', ''] },
@@ -320,7 +318,7 @@ function gpuPlanText(info) {
   if (info.gpu_available === undefined) return ''; // server too old to report it
   if (!info.gpu_available) return 'GPU off — solves on CPU';
   const budget = (info.gpu_cap_mb / 1000).toFixed(1);
-  if (!info.vram_mb) return `GPU fit checked at solve · ${budget} GB budget`;
+  if (!info.vram_mb) return `GPU budget ${budget} GB`;
   if (info.vram_mb <= info.gpu_cap_mb) return `GPU estimate within budget (${budget} GB)`;
   return `GPU estimate above budget · final fit checked at solve (${budget} GB)`;
 }
@@ -449,7 +447,7 @@ async function buildTree() {
     // the pill, readouts, chart and header solve bar — after a finished solve
     // nothing polls any more, so they kept describing the previous solve
     pollStatus();
-    toast('tree built — go to SOLVE');
+    toast('tree built');
     showTab('solve');
     return true;
   } catch (e) {
@@ -491,7 +489,7 @@ $('btn-solve').addEventListener('click', async () => {
     // replaced silently — the "saved" discard-guard inside buildTree does
     // not cover node locks and locks are not on disk.
     if (state.built && state.solved && cur &&
-        !confirm('SETUP no longer matches the current solve — rebuild from SETUP and discard the current solve (and its locks)? Cancel to keep it.')) {
+        !confirm('SETUP no longer matches the current solve — rebuild from SETUP and discard the current solve (and its locks)?')) {
       return;
     }
     if (!await buildTree()) return;
@@ -765,7 +763,7 @@ $('btn-load').addEventListener('click', async () => {
     try {
       const st = await api.status();
       if (st && st.spot_request) await applySpotToSetup(st.spot_request);
-    } catch (e) { toast(`loaded, but SETUP could not be synced to it: ${e.message}`, true); }
+    } catch (e) { toast(`loaded, but SETUP still shows the old spot: ${e.message}`, true); }
     toast('loaded — go to BROWSE');
     pollStatus(); // also refreshes the SOLVE tab's tree line from the new session
   } catch (e) { toast(e.message, true); }
@@ -810,7 +808,7 @@ const trustDial = initTrust($('trust-panel'), {
     });
     state.solved = false;
     state.saved = false;
-    toast('trust sweep: solving each level in turn…');
+    toast('trust sweep: solving each level…');
     startPolling();
   },
 });

@@ -26,12 +26,10 @@ function label(net) {
 }
 
 function tip(net) {
-  if (net.kind === 'shipped') return 'The net shipped with GTOpen.';
+  if (net.kind === 'shipped') return '';
   const lines = [`${net.snapshot}/${net.run}`, net.time ? `kept ${net.time.replace('T', ' ')}` : ''];
   if (net.train_examples) lines.push(`trained on ${net.train_examples.toLocaleString()} examples`);
-  if (net.members) lines.push(`the mean of ${net.members} nets${net.averages_best ? ' (seed copies of the best run)' : ''}`);
   if (net.members && net.desc) lines.push(net.desc);
-  if (net.sizes) lines.push(`layers ${net.sizes.join(' → ')}${net.members ? ' each' : ''}`);
   if (net.leaf_class) lines.push(`real-leaf class error ${net.leaf_class}`);
   return lines.filter(Boolean).join('\n');
 }

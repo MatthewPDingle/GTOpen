@@ -9,7 +9,7 @@ async function req(method, url, body) {
   const res = await fetch(url, opts);
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || `${res.status}`);
+    throw new Error(text || `HTTP ${res.status}`);
   }
   return res.json();
 }

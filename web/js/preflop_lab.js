@@ -88,7 +88,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
   const savedModelNote = document.createElement('div');
   savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
-  savedModelNote.textContent = 'This saved game retains its original value assumptions. Re-solve continues it; Build Game starts afresh with the current model.';
+  savedModelNote.textContent = 'Saved game: keeps its original value model. RE-SOLVE continues it; BUILD GAME starts with the current model.';
   els.mult.closest('.pfl-grid2').after(savedModelNote);
   const previewBanner = document.createElement('div');
   previewBanner.id = 'pfl-publication';
@@ -99,7 +99,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const previewOption = document.createElement('label');
   previewOption.className = 'pfl-preview-option';
   previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
-  previewOption.dataset.tip = 'Publish a real learned strategy after 2 iterations, then every 10. Early ranges are approximate; accuracy measurements and the convergence target remain unchanged.';
+  previewOption.dataset.tip = 'Publish a learned strategy after 2 iterations, then every 10. Early ranges are approximate; the accuracy target is unchanged.';
   const previewCheck = previewOption.querySelector('input');
   previewCheck.disabled = true;
   els.solve.parentElement.after(previewOption);
@@ -127,14 +127,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const table = model === 'three_way_table_v1';
     equityModelNote.classList.toggle('hidden', !legacy && !coupled && !table);
     equityModelNote.textContent = legacy
-      ? 'Saved-game multiway estimate · rebuild the game to update'
+      ? 'Multiway equity · legacy saved-game estimate'
       : coupled ? 'Multiway equity · coupled-deck approximation'
       : table ? 'Multiway equity · exact 3-way table (beta), coupled-deck for 4+' : '';
     equityModelNote.dataset.tip = legacy
-      ? 'This saved game retains its original product-of-heads-up equity approximation. RE-SOLVE continues that model. Save it first, then BUILD GAME and SOLVE to use coupled-deck equity.'
+      ? 'This saved game keeps its original product-of-heads-up equity approximation; RE-SOLVE continues it.'
       : table
-      ? 'Pots with exactly three players use showdown equity by hand class with all three hands dealt from one deck, so card removal between them is exact (Monte-Carlo boards). Pots with four or more players use coupled hand-strength samples. Heads-up continuation is unchanged. This does not solve the full postflop tree.'
-      : 'Pots with 3+ players use coupled hand-strength samples and showdown value after rake. These are approximate, not jointly dealt cards: overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged. This does not solve the full postflop tree.';
+      ? 'Three-player pots: showdown equity by hand class, all three hands from one deck, so card removal is exact (Monte-Carlo boards). Four or more: coupled hand-strength samples. Heads-up continuation is unchanged; the full postflop tree is not solved.'
+      : 'Three or more players: coupled hand-strength samples and showdown value after rake. Approximate, not jointly dealt cards \u2014 overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged; the full postflop tree is not solved.';
   }
   const S = {
     built: false,
@@ -199,7 +199,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const manager = document.createElement('dialog');
   manager.className = 'pfl-model-manager';
   manager.setAttribute('aria-labelledby', 'pfl-model-manager-title');
-  manager.innerHTML = '<div class="pfl-model-manager-heading"><h2 id="pfl-model-manager-title">Manage models</h2><button type="button" class="btn ghost xs" data-close-manager aria-label="Close model manager">Close</button></div><p class="dim">Remove models from the menus in this browser. Existing games keep their profiles. Use Show removed to restore a model.</p>' +
+  manager.innerHTML = '<div class="pfl-model-manager-heading"><h2 id="pfl-model-manager-title">Manage models</h2><button type="button" class="btn ghost xs" data-close-manager aria-label="Close model manager">Close</button></div><p class="dim">Removes models from the seat menus in this browser. Existing games keep their profiles; Show removed restores a removed model.</p>' +
     '<input type="search" class="pfl-model-search" placeholder="Find a model…" aria-label="Find player models">' +
     '<div class="pfl-model-manager-actions"><button type="button" class="btn primary xs" data-new-model>New model</button><button type="button" class="btn ghost xs" data-clear-generated>Remove generated archetypes</button><label><input type="checkbox" data-show-deleted> Show removed</label></div><div class="pfl-model-library"></div><div class="pfl-model-manager-status dim" role="status" aria-live="polite"></div>';
   const libraryPane = document.createElement('div');
@@ -235,7 +235,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     catch { manager.querySelector('[role="status"]').textContent = 'Could not save model-menu preferences in this browser.'; return; }
     deletedModels = next;
     renderModel();
-    const message = remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed. Use Show removed to restore.` : 'Model restored';
+    const message = remove ? `${keys.length === 1 ? 'Model' : `${keys.length} models`} removed.` : 'Model restored';
     if (manager.open) manager.querySelector('[role="status"]').textContent = message;
     else toast(message);
   }
@@ -472,14 +472,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.estimate.classList.toggle('warn', borderline);
     const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
       `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
-      `These are CPU arena limits, not a GPU-memory estimate. GPU fit is checked when solving. ` +
-      `Tree size multiplies: open sizes \u00d7 re-raises \u00d7 raise cap \u00d7 limps \u00d7 players.`;
+      `CPU arena limits, not GPU memory; GPU fit is checked when solving.`;
     const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
     if (e.ok && borderline) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
         `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits, <b>barely</b> \u26a0` +
-        dot(capsTip + ' With this little headroom the build may still refuse if memory tightens \u2014 close big apps or trim a size.');
+        dot(capsTip + ' Little headroom: the build may still refuse if memory tightens \u2014 close big apps or trim a size.');
     } else if (e.ok) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
@@ -489,8 +488,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.estimate.innerHTML = (e.truncated
         ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB CPU arenas \u2014 too big \u2717`
         : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 too big \u2717`) +
-        dot((e.truncated ? 'Counting stopped early \u2014 hopelessly past the cap. ' : '') +
-          capsTip + ' Trim open sizes, re-raise multipliers, the raise cap, or limps.');
+        dot(capsTip + ' Trim open sizes, re-raise multipliers, the raise cap, or limps.');
     }
   }
   window.addEventListener('focus', () => estSoon());
@@ -503,7 +501,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.straddle.disabled = !els.straddleOn.checked;
     els.straddleNote.hidden = !els.straddleOn.checked;
     const amount = +els.straddle.value, positions = positionsFor(n);
-    els.straddleNote.textContent = `${positions[0]} posts ${amount} bb · ${positions[1]} acts first · minimum open ${2 * amount} bb. Stack and sizes stay in the original bb.`;
+    els.straddleNote.textContent = `${positions[0]} posts ${amount} bb · ${positions[1]} acts first · minimum open ${2 * amount} bb.`;
   }
   [els.players, els.straddleOn, els.straddle].forEach(el => el.addEventListener('change', syncStraddleControls));
   els.straddle.addEventListener('input', syncStraddleControls);
@@ -590,7 +588,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const secs = (performance.now() - t0) / 1000;
       const pct = expected > 0 ? Math.min(94, (100 * secs * rate) / expected) : Math.min(94, secs * 12);
       progressSet(pct, eqCold
-        ? 'building — loading the equity cache, or computing it if missing…'
+        ? 'building — loading the equity cache (first build computes it)…'
         : `building ${expected.toLocaleString()} nodes · ~${Math.round(pct)}%`);
     };
     tick();
@@ -628,7 +626,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       renderModel();
       els.buildInfo.textContent =
         `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB CPU arenas`;
-      progressSet(100, 'built ✓ — SOLVE to fill in the strategies');
+      progressSet(100, 'built ✓');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
       lastIter = 0;
       clearRightPanel(); // uniform pre-solve strategies aren't worth showing
@@ -670,7 +668,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // learn: the grids will just show the profiles. Say so — silently
       // "converging" in 0 iterations reads like a broken solve.
       if (S.model && S.model.hero == null && S.model.seats.every(m => m.mode !== 'live')) {
-        toast('Every seat is a profile or frozen and no HERO is set \u2014 there is nothing to solve, the grids will show the profiles as they are. Pick a HERO (your seat) and SOLVE to get your exploit strategy against this table.', true);
+        toast('Every seat is a profile or frozen and no HERO is set \u2014 there is nothing to solve; the grids show the profiles as they are. Pick a HERO and SOLVE to solve your seat only.', true);
       }
       progressDock(els.stop); // solving: the bar belongs to step 3
       progressSet(0, 'solving…');
@@ -1124,9 +1122,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       seg.appendChild(head);
       seg.dataset.tip = d === cursor
-        ? 'The point you are viewing.'
+        ? ''
         : 'Click to view this point (the line is kept).';
-      if (unsolved) seg.dataset.tip += ' Not solved: the line that leads here is one the solution almost never plays.';
+      if (unsolved) seg.dataset.tip = (seg.dataset.tip ? seg.dataset.tip + ' ' : '') +
+        'Not solved: the line that leads here is one the solution almost never plays.';
       if (h.forced) {
         seg.classList.add('forced');
         seg.dataset.tip = `Range Lab has no chart for ${h.actor_pos} here; its later charts assume ${h.actor_pos} folds.`;
@@ -1147,10 +1146,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           frequency.textContent = h.strategy_note ? "—" : frequencyText(a.freq);
           chip.append(actionLabel, frequency);
           chip.dataset.tip = h.chosen === k
-            ? `${h.actor_pos} takes ${a.label} ${frequencyDetail(a.freq)} of the time here — the line follows this action. Click to view the moment just after it.`
+            ? `${h.actor_pos} takes ${a.label} ${frequencyDetail(a.freq)} of the time here. Click to view the moment just after it.`
             : `${h.actor_pos}: ${a.label} ${frequencyDetail(a.freq)} of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
           if (h.strategy_note) chip.dataset.tip = h.strategy_note;
-          else if (a.freq === 0) chip.dataset.tip += ' This action has exactly zero modeled frequency; its continuation may have no solved strategy.';
+          else if (a.freq === 0) chip.dataset.tip += ' Zero modeled frequency: its continuation may have no solved strategy.';
           else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, give ${h.actor_pos} a player model or a lock that takes it, then solve again.`;
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
@@ -1241,7 +1240,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         : lastAggr && lastAggr.pos === v.actor_pos
           ? '' // their own raise came back around (someone called/limped behind)
           : past.length ? ' — unraised pot' : ' — first to act';
-      els.nodeTitle.textContent = `${v.actor_pos} to act${facing} · pick actions in the ribbon above`;
+      els.nodeTitle.textContent = `${v.actor_pos} to act${facing}`;
       S.colors = colors;
       els.rangeSeg.innerHTML = '';
       els.grid.classList.remove('hidden');
@@ -1249,15 +1248,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       paintGrid();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
-        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand AT THIS POINT. ` +
-        `Bar colors = how often the hand takes each action; <b>dim cells</b> = hands ` +
-        `${esc(v.actor_pos)} rarely still holds here, filtered out by its own earlier actions ` +
-        `(hover a cell for exact numbers).`;
+        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand at this point. ` +
+        `Hover a cell for exact numbers.`;
       if (canon.on) {
         els.gridCap.innerHTML =
           `Grid = <b>${esc(v.actor_pos)}</b>'s Range Lab chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
           (v.chart ? `: <b>${esc(v.chart.family_label)}</b>, ${esc(v.chart.label)}` : '') +
-          `. <b>Dim cells</b> = hands ${esc(v.actor_pos)} rarely still holds, after its own earlier chart actions.` +
+          `.` +
           (v.note ? `<div class="pfl-context-note">${esc(v.note)}</div>` : '');
       }
       if (v.contextual_prediction && !v.model_evidence) {
@@ -1311,15 +1308,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         els.exportBtn.disabled = false;
         els.exportBtn.textContent = 'SEND TO 3-WAY SETUP';
         els.gridCap.innerHTML =
-          'Three players see this flop. SEND TO 3-WAY SETUP drops their arriving ranges, ' +
-          'pot, stacks and rake into the 3-WAY tab (in postflop action order).';
+          'SEND TO 3-WAY SETUP carries the arriving ranges, pot, stacks and rake into the ' +
+          '3-WAY tab (in postflop action order).';
       }
       if (v.exportable) {
         els.exportBtn.disabled = false;
         els.gridCap.innerHTML =
-          'The grid shows each player\u2019s arriving range \u2014 exactly the conditional ' +
-          'ranges that step 5 (SEND TO POSTFLOP SETUP) drops into SETUP, along with ' +
-          'this pot, stack and rake.';
+          'The grid shows each player\u2019s arriving range \u2014 the conditional ranges ' +
+          'SEND TO POSTFLOP SETUP carries into SETUP, with this pot, stack and rake.';
         if (v.continuation) {
           const estimate = v.continuation;
           const estimateNote = estimate.model === 'calibrated'
@@ -1344,10 +1340,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       } else {
         // 3+ players see the flop: the postflop solver is heads-up only
         els.gridCap.innerHTML =
-          `This line goes <b>${live.length}-way</b> to the flop, and the postflop solver ` +
-          `is heads-up only. Branch the ribbon above onto a line where exactly two ` +
-          `players see the flop (step 6 unlocks there), or set a spot up ` +
-          `manually with your own ranges in SETUP. `;
+          `The postflop solver is heads-up only; this line reaches the flop ` +
+          `<b>${live.length}-way</b>. Branch the ribbon onto a line where exactly two ` +
+          `players see the flop, or set up a spot with your own ranges in SETUP. `;
         const b = document.createElement('button');
         b.className = 'btn ghost';
         b.textContent = 'GO TO SETUP →';
@@ -1363,11 +1358,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const PCOLORS = { fold: '#4a78c8', call: '#5ca75f', raise: '#e8484c', jam: '#7d3ca3' };
   const BUCKET_NAMES = ['UNOPENED', 'VS LIMPS', 'VS RAISE', 'SQUEEZE', 'VS 3-BET+'];
   const BUCKET_TIPS = [
-    'Nobody has entered yet (first in, or only folds so far): open-limp, open-raise, or fold.',
+    'Nobody has entered yet: open-limp, open-raise, or fold.',
     'Facing limper(s), no raise: limp behind, raise, or fold.',
-    'Facing a single raise, no callers. One range for ALL open sizes \u2014 a modeled seat defends the same vs a small and a big open (solver-played seats stay size-aware).',
-    'Facing a raise PLUS caller(s) \u2014 the squeeze spot.',
-    'Facing a re-raise: use Situation to distinguish cold defense (no voluntary entry yet) from responses after limping, calling or raising. Measured models supply a separate cold policy; older generated profiles gate cold defense by their VS RAISE raising slice. After-entry frequencies are conditional on reaching the decision, and re-raise depths are pooled.',
+    'Facing a single raise, no callers. One range covers every open size; solver-played seats stay size-aware.',
+    'Facing a raise plus caller(s) \u2014 the squeeze spot.',
+    'Facing a re-raise. Cold defense (no voluntary entry yet) and after-entry responses are separate; Situation picks which one you inspect. After-entry frequencies are conditional on reaching the decision, and re-raise depths are pooled.',
   ];
 
   // Reuse a color for every seat using the same named model. Keep existing
@@ -1441,9 +1436,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       sel.innerHTML = html;
       sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) \u00b7 ' +
         'Frozen = pinned to its current strategy (needs a solve first) \u00b7 ' +
-        'archetypes GENERATE a profile by distorting the current solve \u2014 set up every modeled seat ' +
-        'before applying, so they all distort the same baseline \u00b7 saved profiles reuse a player ' +
-        'from disk on any seat of any game.';
+        'a profile is generated from the current solve \u00b7 saved profiles load a player ' +
+        'from disk onto any seat of any game.';
       const want = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
       if (!Array.from(sel.options).some(o => o.value === want)) {
         // the seat's profile matches no option (e.g. a loaded game's
@@ -1474,7 +1468,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       row.appendChild(info);
       if (m.mode === 'ruled') {
         const ed = document.createElement('button');
-        ed.dataset.tip = 'Open this profile\u2019s editor: HUD stats \u2192 GENERATE, per-bucket painting grid, postflop tendencies.';
         ed.className = 'btn ghost xs';
         ed.textContent = S.editSeat === i ? 'editing…' : 'edit';
         ed.addEventListener('click', () => openEditor(i));
@@ -1741,15 +1734,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="pfe-layout"><div class="pfe-settings">
       ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
-      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.response_policies?.length ? 'measured preflop ranges' : st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">Disabled fields show pooled source rates; the dataset supplies the corresponding hand policies. Each range tab identifies measured probabilities or an inferred fallback. Uncheck to edit those rates and generate reference-ordered ranges.</div>` : ''}
-      <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots BEFORE the flop. Each number is a frequency over the hands he is dealt in that situation; the ranges are cut from a GTO reference ordering (a clean 9-max solve: what it opens, defends and 3-bets with) to hit these numbers, re-ordered toward raw card appeal by naiveté, separately for each of the five situations you can paint below.">PREFLOP TENDENCIES</div>
+      ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.response_policies?.length ? 'measured preflop ranges' : st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">Disabled fields show pooled source rates; the dataset supplies the matching hand policies. Uncheck to edit those rates and generate reference-ordered ranges.</div>` : ''}
+      <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots before the flop. Each number is a frequency over the hands dealt in that situation; ranges are cut from a GTO reference ordering, re-ordered toward card appeal by naiveté.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
         <label data-tip="PFR: of all hands dealt, how often he raises at least once preflop (opening, isolating, or re-raising). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
-        <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Sets the raise slice of his first-in range directly. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
+        <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
         <label data-tip="Open-limp (first in): when it is folded to him, how often he limps. Blank = VPIP − PFR, which over-limps regs (a 17/12 TAG open-limps ~2%: his gap is calls and blind defence) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
         <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. With measured ranges enabled, the hand policies supply the responses instead of a uniform rate. Cold defense is separate; the Vs 3-bet+ Situation menu shows which policy you are inspecting.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
+        <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. Measured ranges supply the hand policies instead of one rate; cold defense is a separate policy.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
         <label data-tip="Fold vs raise (COLD): he has put nothing in yet and faces a single raise — how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little. Leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues).">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Fold vs raise AFTER LIMPING: he limped (first-in or behind) and a raise comes — how often he folds his limp range. This decides how much dead money a raise over limpers steals, so it drives the whole exploit in a limpy game. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold. Blank = use the cold number after limping too, which makes limpers far too foldy.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100" placeholder="blank = cold"></label>
@@ -1759,19 +1752,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
         <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested, how often he folds rather than calling or squeezing. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
-        <label data-tip="Fallback sizing for raises without a measured size distribution: smallest or largest. Measured non-jam size mixes take precedence; jam explicitly converts raising mass to all-in.">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        <label data-tip="Fallback sizing for raises with no measured size mix: min, max, or jam (all-in).">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
         ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
       </div>
       <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
         <input id="pfe-adaptive" type="number" min="1" max="100" step="1" placeholder="blank = fixed" value="${m.profile.response?.adaptive_from != null ? m.profile.response.adaptive_from * 100 : ''}">
       </label>
-      <div class="dim" style="font-size:10px;line-height:1.4">At or above this raise-to amount, opponents learn their responses. This is a modeling assumption for large bets, not measured behavior. Default: 25% of stack, including shoves. Leave HERO off and your seat on Solver. Blank retains fixed responses.</div>
-      <div class="pfl-step" style="margin-top:10px" data-tip="The same player after the flop. These numbers are only used when a spot is SENT TO POSTFLOP SETUP: there they become node locks across his whole postflop tree, bending the SOLVED strategy to the targets (his natural betting hands keep betting — never hand-blind). 'Initiative' below means he was the last player to bet or raise so far in the hand (the preflop raiser has it arriving at the flop; a check does not pass it on).">POSTFLOP TENDENCIES</div>
+      <div class="dim" style="font-size:10px;line-height:1.4">At or above this raise-to amount, opponents learn their responses \u2014 a modeling assumption for large bets, not measured behavior. Blank keeps fixed responses.</div>
+      <div class="pfl-step" style="margin-top:10px" data-tip="The same player after the flop. Only used when a spot is sent to postflop SETUP, where the numbers become node locks on his postflop tree. 'Initiative' means he was the last to bet or raise so far in the hand.">POSTFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-pf" style="margin:6px 0">
         <label data-tip="C-bet: on the flop, when he has the initiative (he was the preflop raiser), how often he bets when it is his turn to act and nobody has bet yet.">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
         <label data-tip="Turn barrel: on the turn, when he STILL has the initiative, how often he bets into an unbet pot. That means: he bet the flop and got called (the classic double barrel) — or he was the preflop raiser and the flop checked through, since a check doesn't hand the initiative over (a delayed c-bet). It is NOT independent of the flop: if the opponent bet or raised the flop, the initiative is theirs and this number no longer applies to him.">turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
         <label data-tip="River barrel: on the river, when he still has the initiative (he made the last bet or raise in the hand so far), how often he bets into an unbet pot — the triple barrel, or a delayed barrel after streets that checked through.">river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
-        <label data-tip="Fold vs bet, flop: when he faces a bet or raise on the flop, how often he folds — at every raise depth and (for now) regardless of the size faced. The rest of his hands continue (call, or raise per 'raise vs bet').">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
+        <label data-tip="Fold vs bet, flop: when he faces a bet or raise on the flop, how often he folds — at every raise depth and regardless of the size faced. The rest of his hands continue (call, or raise per 'raise vs bet').">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
         <label data-tip="Fold vs bet, turn: when he faces a bet or raise on the turn, how often he folds — any depth, any size.">fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
         <label data-tip="Fold vs bet, river: when he faces a bet or raise on the river, how often he folds — any depth, any size.">fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
         <label data-tip="Raise vs bet: when he faces a bet or raise (any street, any depth), how often he raises — a share of ALL the hands facing it, alongside the fold number (fold + raise + call = 100). His strongest continuing hands raise first.">raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
@@ -1779,11 +1772,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <label data-tip="Which size his postflop bets and raises use: the smallest or the largest of whatever the postflop tree offers at each node.">bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
       </div>
       <div class="btn-row" style="margin-top:8px">
-        <button class="btn" id="pfe-gen" data-tip="Rebuild this seat's preflop ranges from the PREFLOP TENDENCIES above (cut from the GTO reference ordering, re-ordered toward card appeal by naiveté). Ranges already rebuild automatically as you edit the numbers; you only need this button after HAND-PAINTING, because a rebuild replaces painted edits — it lights up when stats and paint disagree.">GENERATE FROM STATS</button>
-        <button class="btn ghost" id="pfe-copyall" data-tip="Give EVERY other seat this player: both the PREFLOP and POSTFLOP tendencies above are copied to each seat and each seat's ranges are generated from them (each seat gets its own positional version — a 30/20 player opens tighter from UTG than from the BTN). Then set HERO if you want one and SOLVE. Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
+        <button class="btn" id="pfe-gen" data-tip="Rebuild this seat's ranges from the tendencies above. Numbers rebuild automatically; after hand-painting, this replaces the painted edits. It lights up when the stats and paint disagree.">GENERATE FROM STATS</button>
+        <button class="btn ghost" id="pfe-copyall" data-tip="Copies the preflop and postflop tendencies above to every other seat and generates each seat's own positional ranges (a 30/20 player opens tighter from UTG than from the BTN). Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
       </div>
-      <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the generated preflop ranges actually imply, measured from the ranges — sanity-check it against the HUD numbers you typed."></div>
-      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="These grids ARE the player: exactly what this seat does with every hand in each preflop situation (pick one below). They are built from the PREFLOP TENDENCIES by GENERATE FROM STATS (which runs by itself whenever you change a number). Painting is optional: pick a brush and click hands to overrule the generated ranges \u2014 painted edits stay until you press GENERATE FROM STATS again.">THE RANGES THIS PLAYER PLAYS</div>
+      <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="Frequencies measured from the generated ranges — compare with the stats above."></div>
+      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with every hand in each preflop situation. Built from the tendencies above; pick a brush and click hands to overrule any cell. Painted edits stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
       <div id="pfe-rangenote"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
@@ -1807,19 +1800,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       </div>
       <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
-          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots) at the brush weight.">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
+          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots).">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
         </div>
         <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
       </div>
       <div id="pfe-not-applicable" class="pfe-not-applicable hidden" role="status">
         <strong>Not applicable — everyone folded; the last live blind wins</strong>
-        <p>The hand ends without a decision from the last live blind. There is no opening or calling range here.</p>
+        <p>There is no opening or calling range here.</p>
         <p>Choose <b>Vs Limps</b> for checks and raises, or a defensive tab for responses to bets.</p>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
       </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
         <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved player (saving under an existing name replaces it).">
-        <button class="btn" id="pfe-save" data-tip="Store the whole player \u2014 the HUD stats and postflop tendencies exactly as entered, plus the generated / painted ranges \u2014 in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game; open its editor to see the numbers again or GENERATE FROM STATS to re-fit the ranges to a new game.">SAVE PLAYER</button>
+        <button class="btn" id="pfe-save" data-tip="Stores the stats, postflop tendencies and generated or painted ranges in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game.">SAVE PLAYER</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
     for (const id of ['pfe-context-invested','pfe-context-to','pfe-context-pot']) {
@@ -1843,12 +1836,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const legacy = document.getElementById('pfe-donk');
       legacy.disabled = true;
       legacy.closest('label').firstChild.textContent = 'legacy donk / stab % ';
-      legacy.closest('label').dataset.tip = 'Reference only. Contextual profiles use separate street and pot-type estimates; this pooled number does not set their betting targets.';
-      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'Preferred size for other profile bets and raises. Contextual betting without initiative retains the solved mix of available bet sizes.';
+      legacy.closest('label').dataset.tip = 'Reference only: contextual profiles estimate betting by street and pot type, so this pooled number sets no targets.';
+      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'Preferred size for other bets and raises. Betting without initiative keeps the solved bet-size mix.';
       const note = document.createElement('div');
       note.className = 'dim';
       note.style.cssText = 'font-size:10px;line-height:1.4;margin:4px 0';
-      note.textContent = 'Betting without initiative: donks, bets after checks, later-street leads and probes are estimated separately by street and pot type. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection and size mix come from the solve; these safeguards are modeling assumptions.';
+      note.textContent = 'Betting without initiative (donks, bets after checks, later-street leads and probes) is estimated by street and pot type. Sparse evidence stays closer to the solved strategy; hand selection and size mix come from the solve. These safeguards are modeling assumptions.';
       note.dataset.tip = pf.contextual_betting.source || '';
       document.getElementById('pfe-pf').before(note);
     }
@@ -2017,7 +2010,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         m.postflop = pf;
         S.postflopDirty = true;
         renderModel();
-        editorMessage(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'} — pick a HERO if you want one, then SOLVE`);
+        editorMessage(`"${label}" tendencies copied to ${n} seat${n === 1 ? '' : 's'}`);
       } finally {
         btn.classList.remove('busy');
       }
@@ -2094,7 +2087,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         await api.pfProfileSave(name, m.profile);
         SAVED_PROFILES = await api.pfProfiles();
         if (deletedModels.has(`saved:${name}`)) updateDeletedModels([`saved:${name}`], false);
-        editorMessage(`Model "${name}" saved — available under saved profiles in every seat menu`);
+        editorMessage(`Model "${name}" saved`);
         renderModel();
       } catch (e) { manager.querySelector('[role="status"]').textContent = e.message; }
       finally { button.disabled = false; }
@@ -2258,10 +2251,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     };
     document.getElementById('pfe-contextual-fields').classList.toggle('hidden', !contextual);
     document.getElementById('pfe-reraise-explanation').textContent = contextual
-      ? `Contextual v1 · ${editorContextualConfig().stack}bb starting stack. Inspect a situation below; the game uses its actual history and amounts. Frequencies are conditional on arriving here, not the share of all dealt hands. This preview is read-only.`
+      ? `Contextual v1 · ${editorContextualConfig().stack}bb starting stack. Frequencies are conditional on arriving here, not a share of all dealt hands. This preview is read-only.`
       : editorColdReraise()
-      ? 'No chips invested voluntarily yet: e.g. an open and a 3-bet before BB acts. This is the separate cold-response policy used in the game.'
-      : 'Conditional on having already limped, called or raised. A 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed. Use the game ribbon to see the actual arriving range.';
+      ? 'No chips invested voluntarily yet \u2014 e.g. an open and a 3-bet before the BB acts.'
+      : 'Conditional on having already limped, called or raised \u2014 a 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed.';
     if (contextual) {
       refreshContextualPreview();
       if (contextualPreview) {
@@ -2580,7 +2573,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   const CANON_KEY = 'pfl-canon';
   const STEP5_SOLVE = els.step5.innerHTML;
-  const STEP5_CANON = 'Walk the hand in the panel to the right: each segment of the action ribbon lists the chart’s actions with their frequencies. Click one to advance, or click an earlier action to branch. Seats without a chart fold automatically, as Range Lab’s own lines assume. When the line reaches the flop <b>heads-up</b>, step 6 unlocks.';
+  const STEP5_CANON = 'Each segment of the action ribbon lists the chart’s actions with their frequencies. Click one to advance, or click an earlier action to branch. Seats without a chart fold automatically.';
   const pill = els.canonBox.closest('.pfl-side').querySelector('h2 .pill');
   const PILL_SOLVE = pill?.textContent;
   const canonPrefs = (() => { try { return JSON.parse(localStorage.getItem(CANON_KEY)) || {}; } catch { return {}; } })();

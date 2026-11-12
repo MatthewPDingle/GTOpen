@@ -88,12 +88,12 @@ export function initTrust(panel, { toast, villain, posLabel, startSweep }) {
     const hero = posLabel(1 - v), vill = posLabel(v);
     panel.innerHTML = `
       <div class="trust-row">
-        <span class="trust-head">TRUST THE READ <span class="info-dot" tabindex="0" data-tip="How sure are you of ${esc(vill)}'s profile? At p% the solve assumes he plays the profile p% of the time and otherwise adapts to you like a solver. 100% = max exploit (the profile is a fact); 0% = GTO. In between, ${esc(hero)} keeps most of the exploit's EV while risking much less if the read is wrong. Manual node locks stay facts at every level.">?</span></span>
+        <span class="trust-head">TRUST THE READ <span class="info-dot" tabindex="0" data-tip="At p% ${esc(vill)} plays the profile p% of the time and otherwise adapts to ${esc(hero)}. 100% = max exploit; 0% = GTO. Manual node locks stay facts at every level.">?</span></span>
         <input type="range" class="trust-slider" min="0" max="100" step="5" value="${Math.round(t * 100)}"
           aria-label="Trust the read, percent" ${sweeping || S.busy ? 'disabled' : ''}>
         <span class="trust-val mono">${pct(t)}</span>
         <button class="btn ghost sm trust-sweep" ${S.running ? 'disabled' : ''}
-          data-tip="Solve 100%, 90%, 80%, 70%, 50%, 25% and 0% in a row (each warm-starts from the last; uses the SOLVE tab's target and max iterations per level) and chart EV vs the read against the worst case. Click a point to pick that level.">${sweeping ? `SWEEPING ${S.sweep.current + 1}/${S.sweep.levels.length}…` : 'SWEEP'}</button>
+          data-tip="Solve 100%, 90%, 80%, 70%, 50%, 25% and 0% and chart EV against the read versus the worst case.">${sweeping ? `SWEEPING ${S.sweep.current + 1}/${S.sweep.levels.length}…` : 'SWEEP'}</button>
         <span class="trust-readout mono">${readoutText()}</span>
       </div>
       ${S.sweep && S.sweep.points.length ? `<details class="trust-curve"${S.showCurve ? ' open' : ''}>

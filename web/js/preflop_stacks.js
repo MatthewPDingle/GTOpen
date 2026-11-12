@@ -32,9 +32,7 @@ export function createSeatStacks(els, positionsFor, changed) {
   summary.textContent = 'Stacks by seat';
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Starting stacks in bb, before antes. Blank seats use the Stack above. '
-    + 'Short stacks call or shove all-in for less; extra chips are returned uncalled, and '
-    + 'all-ins for different amounts make side pots, each won by the best hand among the seats in it.';
+  note.textContent = 'Starting stacks in bb, before antes.';
   details.append(note);
   const table = document.createElement('table');
   table.innerHTML = '<thead><tr><th>Seat</th><th>Stack · bb</th></tr></thead><tbody></tbody>';

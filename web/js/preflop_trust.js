@@ -20,10 +20,8 @@ const esc = s => String(s).replace(/[&<>"']/g, c =>
 const pct = t => `${Math.round(t * 100)}%`;
 const bb = x => (x == null ? '—' : `${x >= 0 ? '+' : ''}${(+x).toFixed(3)}`);
 
-const TIP = 'How sure you are of the profiled seats’ reads. At p% each profiled seat plays its '
-  + 'profile p% of the time and otherwise adapts to your strategy like a solver seat (each seat on its own). '
-  + '100% is the max exploit; lower levels give up some EV against the reads for safety if they are wrong. '
-  + 'A new level restarts your seat’s average: RE-SOLVE to adapt. Solver and frozen seats are not affected.';
+const TIP = 'At p% each profiled seat plays its read p% of the time and otherwise adapts to you, independently. '
+  + '100% is the max exploit; lower levels give up EV against the read for safety.';
 
 /**
  * @param {HTMLElement} panel  the #pfl-trust container
@@ -84,7 +82,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
           aria-label="Trust the read, percent" ${running || S.busy ? 'disabled' : ''}>
         <span class="trust-val">${pct(t)}</span>
         ${st.trust != null ? `<button class="btn ghost xs" data-act="off" ${running || S.busy ? 'disabled' : ''}
-          data-tip="Turn the dial off: the hero plays the max exploit against the profiles.">off</button>` : ''}
+          data-tip="Off: max exploit against the profiles.">off</button>` : ''}
         <span class="dim">applies to ${names}</span>
       </div>
       <div class="trust-row"><span class="trust-readout">${readoutHtml(st)}</span></div>`;

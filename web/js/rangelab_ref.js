@@ -75,9 +75,9 @@ const num = x => String(Number(Number(x).toFixed(2)));
 export function initRangeLabRef(host) {
   host.innerHTML = `
     <details class="rl-ref" open>
-      <summary>RANGE LAB REFERENCE <span class="dim">· canonical charts from Range Lab</span></summary>
+      <summary>RANGE LAB REFERENCE</summary>
       <div class="rl-controls">
-        <label class="chk" data-tip="Show the chart for the decision you are viewing in the ribbon: same action sequence (fold, check, call, raise), then the nearest open size and stack depth. Untick to browse every chart.">
+        <label class="chk" data-tip="Match the decision in the ribbon: same action sequence (fold, check, call, raise), then the nearest open size and stack depth.">
           <input type="checkbox" class="rl-follow" checked> Follow the line</label>
         <label>Game <select class="rl-game"></select></label>
         <label>Open / stage <select class="rl-variant"></select></label>
@@ -150,7 +150,7 @@ export function initRangeLabRef(host) {
       const bad = sm.files.filter(f => f.error).map(f => `${esc(f.path)} (${esc(f.error)})`);
       clear(`No Range Lab data found. Put <code>data.js</code> and <code>cash-data.js</code> (or crawl JSON) in ` +
         sm.dirs.map(d => `<code>${esc(d)}</code>`).join(' or ') +
-        ` (or set <code>GTOPEN_RANGELAB_DIR</code>) and reopen this panel. The charts stay on this machine; they are never committed.` +
+        ` (or set <code>GTOPEN_RANGELAB_DIR</code>) and reopen this panel.` +
         (bad.length ? `<br>Skipped: ${bad.join('; ')}` : ''));
       return;
     }
@@ -173,7 +173,7 @@ export function initRangeLabRef(host) {
 
   async function follow() {
     const g = game();
-    if (!S.ctx) { clear('Pick a decision point in the ribbon above to see the matching chart, or untick “Follow the line” to browse.'); return; }
+    if (!S.ctx) { clear('Pick a decision point in the ribbon above to see its chart.'); return; }
     if (!g || g.players !== S.ctx.players) {
       clear(`Range Lab has no ${S.ctx.players}-handed charts in this game. Its charts are ` +
         S.summary.games.map(x => `${esc(x.label)} (${x.players}-handed)`).join(', ') + '.');
@@ -182,7 +182,7 @@ export function initRangeLabRef(host) {
     const req = { tag: g.tag, players: S.ctx.players, line: S.ctx.line, stack: S.ctx.stack };
     if (S.ctx.open_to != null) req.open_to = S.ctx.open_to;
     await show(api.rangeLabMatch(req).then(r => r.spot),
-      `No ${esc(g.label)} chart for this line. Range Lab covers unopened pots, single raises (with one caller for squeezes), 3-bets and 4-bets, and the big blind against a small-blind limp; limped and multi-caller pots have no chart.`);
+      `No ${esc(g.label)} chart for this line. Range Lab covers unopened pots, single raises (with one caller for squeezes), 3-bets and 4-bets, and the big blind against a small-blind limp.`);
   }
 
   async function browse(keepSpot) {
@@ -227,7 +227,7 @@ export function initRangeLabRef(host) {
       const ob = Number.parseFloat(spot.variant);
       if (S.ctx.open_to != null && Number.isFinite(ob) && Math.abs(ob - S.ctx.open_to) > 1e-6) off.push(`open ${num(ob)} bb vs your ${num(S.ctx.open_to)} bb`);
       if (off.length) notes.push(`Closest chart: ${off.join(', ')}.`);
-      notes.push("Range Lab's game (open sizes, rake, stacks) differs from your solve; compare shapes, not exact frequencies.");
+      notes.push("Range Lab's game differs from your solve; compare shapes, not exact frequencies.");
     }
     el.note.innerHTML = notes.join('<br>');
     el.grid.classList.remove('hidden');

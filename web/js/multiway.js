@@ -15,7 +15,7 @@ async function req(method, url, body) {
     opts.body = JSON.stringify(body);
   }
   const res = await fetch(url, opts);
-  if (!res.ok) throw new Error((await res.text()) || `${res.status}`);
+  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`);
   return res.json();
 }
 
@@ -355,7 +355,7 @@ export function applyThreeWayExport(ex) {
   $('mw-rakecap').value = ex.rake_cap;
   mwIcm?.set(ex.icm || null);
   document.querySelector('.tab[data-tab="threeway"]').click();
-  toast('3-way spot loaded from the Preflop Lab: pick a board and BUILD TREE.');
+  toast('3-way spot loaded: pick a board and BUILD TREE.');
 }
 window.gtopenApplyThreeWay = applyThreeWayExport;
 

@@ -40,9 +40,9 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   const summary = document.createElement('summary');
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Tournament spots: every terminal pays each player the change in their share of the '
-    + 'prize pool (Malmuth–Harville ICM) instead of chips. EVs read in bb equivalents. Stacks use the same '
-    + 'units as the pot. Needs rake 0. A Preflop Lab export from an ICM game fills this in.';
+  note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
+    + 'instead of chips; EVs read in bb equivalents, stacks use the pot’s units. Needs rake 0. '
+    + 'A Preflop Lab ICM export fills this in.';
   details.append(note);
   const on = document.createElement('label');
   on.className = 'check';
@@ -65,8 +65,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   others.setAttribute('aria-label', 'Stacks of every other player still in');
   const othersLabel = document.createElement('label');
   othersLabel.style.gridColumn = '1 / -1';
-  othersLabel.dataset.tip = 'Everyone still in the tournament who is not in this hand: players who folded at '
-    + 'this table and players at other tables. "144x25" means 144 players with 25 each.';
+  othersLabel.dataset.tip = 'Everyone still in the tournament but not in this hand: players who folded at '
+    + 'this table, and players at other tables. "144x25": 144 players with 25 each.';
   othersLabel.append('Other players’ stacks ', others);
   const behind = [];
   if (seats === 2) {
@@ -75,8 +75,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
       input.type = 'number'; input.min = '0'; input.step = 'any';
       input.placeholder = 'effective stack';
       const label = document.createElement('label');
-      label.dataset.tip = `${who}'s chips behind at the start of the solve, if more than the effective stack. `
-        + 'Chips past the effective stack are never at risk but count for ICM.';
+      label.dataset.tip = `${who} chips behind at the start of the solve. Chips past the effective stack `
+        + 'are never at risk but count for ICM.';
       label.append(`${who} chips behind `, input);
       behind.push(input);
       grid.append(label);

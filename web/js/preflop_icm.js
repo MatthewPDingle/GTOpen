@@ -68,10 +68,9 @@ export function createIcmControls(els, positionsFor, changed) {
   const summary = document.createElement('summary');
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Tournament spots: every pot pays the change in each player’s share of the prize pool '
-    + '(Malmuth–Harville ICM) instead of chips. EVs read in bb equivalents. Stage presets use an '
-    + 'approximate standard 1,000-player payout structure and give everyone at other tables the table stack, '
-    + 'like the Range Lab ICM charts. Needs rake 0.';
+  note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
+    + 'instead of chips; EVs read in bb equivalents. Stage presets use an approximate 1,000-player payout '
+    + 'structure and give other tables the table stack. Needs rake 0.';
   details.append(note);
   const on = document.createElement('label');
   on.className = 'chk';
@@ -104,8 +103,8 @@ export function createIcmControls(els, positionsFor, changed) {
   const stackOff = document.createElement('input');
   stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = '0.4';
   const offLabel = document.createElement('label');
-  offLabel.dataset.tip = 'How often a pot that sees the flop is played for the stacks behind: it ends all-in with '
-    + 'chance k / (k + SPR). Higher makes flatting costlier under ICM; 0 prices flop pots as the pot alone.';
+  offLabel.dataset.tip = 'How often a pot that sees the flop is played for the stacks behind: all-in with '
+    + 'chance k / (k + SPR). 0 prices a flop pot as the pot alone.';
   offLabel.append('Stack-off rate ', stackOff);
   grid.append(stageLabel, countLabel, stackLabel, offLabel, payLabel);
   details.append(grid);

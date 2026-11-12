@@ -210,11 +210,11 @@ export function initBestSizeView(el, ctx) {
     const tiles = `<div class="bs-tiles">` +
       tile('Best single size', bestFixed ? fmtSize(bestFixed.size) : '—',
         bestFixed ? `loses ${fmtPct(bestFixed.lost)} pot vs each flop's best` : '',
-        'The one size that loses the least EV, on average over the shown flops, against using each flop’s own best size.') +
+        'EV lost on average against using each flop’s own best size.') +
       tile('Per-flop sizing gain', bestFixed ? `+${fmtPct(bestFixed.lostGrid)}` : '—', 'pot, best grid size per flop',
-        'What choosing the best grid size flop by flop gains over always using the best single size, as % of the pot. Compare it with the solves’ target accuracy before reading much into it.') +
+        'Gained by choosing the best grid size flop by flop instead of always using the best single size. Compare it with the solves’ target accuracy before reading much into it.') +
       tile('Refinement gain', `+${fmtPct(sum.gain)}`, 'pot over the best grid size',
-        'Extra EV the golden-section search found between the best grid size’s neighbours. Usually inside solver noise.') +
+        'Extra EV found by refining between the best grid size’s neighbours. Usually inside solver noise.') +
       tile('Every size ties', fmtPct(100 * sum.allTie, 0), 'of flops',
         'Flops where every candidate size is within the solves’ combined exploitability of the best: the solves cannot separate the sizes.') +
       `</div>`;
@@ -333,8 +333,8 @@ export function initBestSizeView(el, ctx) {
           `<td class="mono">${fmtPct(p.ev_pct, 3)}</td><td class="mono">${near(p.size, v.best) ? 'best' : `−${fmtPct(v.best_ev_pct - p.ev_pct, 3)}${tied ? ' · tie' : ''}`}</td>` +
           `<td class="mono">${fmtPct(p.exploit_pct, 3)}</td><td class="mono">${p.bet_freq != null ? fmtPct(100 * p.bet_freq, 1) : '—'}</td>` +
           `<td class="mono">${p.iterations}</td><td>${esc(p.engine || '')}</td>` +
-          `<td><button type="button" class="btn ghost xs" data-browse="${p.size}" data-board="${esc(r.board)}" data-tip="Load the spot with this size into SETUP, build, solve and open it in Browse.">BROWSE</button>` +
-          (vname ? ` <button type="button" class="btn ghost xs" data-variant="${esc(vname)}" data-board="${esc(r.board)}" data-tip="Open this size's report at this flop.">REPORT</button>` : '') +
+          `<td><button type="button" class="btn ghost xs" data-browse="${p.size}" data-board="${esc(r.board)}" data-tip="Load this size into SETUP, build and solve, then open it in Browse.">BROWSE</button>` +
+          (vname ? ` <button type="button" class="btn ghost xs" data-variant="${esc(vname)}" data-board="${esc(r.board)}">REPORT</button>` : '') +
           `</td></tr>`;
       }).join('') + `</tbody></table></div>`;
   }
@@ -397,7 +397,7 @@ export function initBrowseBestSize(el, ctx) {
     const who = S.player != null ? posName(S.player) : '';
     el.innerHTML = `<div class="bs-browse-head"><b>Find best size</b>` +
       (S.key != null ? ` <span class="dim">${who}'s bet here</span>` : '') +
-      ` <span class="info-dot" tabindex="0" data-tip="Solves this board once per candidate size of this bet (the rest of the tree keeps the menu of the tree you are browsing), to 0.15% pot, plus up to 3 refinement solves between the best size's neighbours. Sizes whose EV gap is within the solves' combined exploitability count as tied. Runs in the background like a report.">?</span></div>` +
+      ` <span class="info-dot" tabindex="0" data-tip="Solves this board once per candidate size of this bet (the rest of the tree keeps the menu of the tree you are browsing), to 0.15% pot, plus up to 3 refinement solves between the best size's neighbours. Sizes whose EV gap is within the solves' combined exploitability count as tied. Runs in the background.">?</span></div>` +
       `<div class="bs-browse-row"><label>sizes % pot <input type="text" id="bsb-sizes" value="${esc(sizes)}"></label>` +
       (S.running ? `<button type="button" class="btn danger xs" id="bsb-stop">STOP</button>`
         : `<button type="button" class="btn xs" id="bsb-run" ${S.key == null ? 'disabled' : ''}>FIND</button>`) + `</div>` + body;

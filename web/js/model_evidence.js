@@ -72,7 +72,7 @@ export function renderModelEvidence(host, evidence, extraDetails = []) {
   }
   const caveat = document.createElement('p');
   caveat.className = 'model-evidence-caveat';
-  caveat.textContent = 'Evidence describes where the frequencies came from; it is not a confidence score or proof of an optimal strategy.';
+  caveat.textContent = 'Not a confidence score or proof of an optimal strategy.';
   body.appendChild(caveat);
   details.append(summary, body);
   host.appendChild(details);
