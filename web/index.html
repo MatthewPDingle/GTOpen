@@ -64,7 +64,7 @@
     </div>
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
-        <h2><span class="setup-step">01</span> Ranges <span class="info-dot" tabindex="0" data-tip="Click or drag to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above = suited, below = offsuit.">?</span></h2>
+        <h2><span class="setup-step">01</span> Ranges <button type="button" class="info-dot" aria-label="How range painting works" data-tip="Click or drag to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above = suited, below = offsuit.">?</button></h2>
         <div class="range-tabs">
           <button class="rtab active" data-player="0" data-tip="Out of position — acts first on every street (e.g. the big blind caller).">OOP</button>
           <button class="rtab" data-player="1" data-tip="In position — acts last on every street (e.g. the button raiser).">IP</button>
@@ -92,13 +92,13 @@
 
       <div class="setup-details">
       <section class="panel" id="panel-board">
-        <h2><span class="setup-step">02</span> Board <span class="info-dot" tabindex="0" data-tip="Cards where the solve starts. 3 = flop, turn and river; 4 = turn and river; 5 = river only.">?</span></h2>
+        <h2><span class="setup-step">02</span> Board <button type="button" class="info-dot" aria-label="Board cards" data-tip="Cards where the solve starts. 3 = flop, turn and river; 4 = turn and river; 5 = river only.">?</button></h2>
         <div class="setup-board-strip"><div id="board-input-cards" class="board-cards"></div><span id="setup-street" class="setup-street" aria-live="polite"></span></div>
         <div id="deck-picker" class="deck-picker"></div>
       </section>
 
       <section class="panel" id="panel-money">
-        <h2><span class="setup-step">03</span> Pot &amp; stack <span class="info-dot" tabindex="0" data-tip="Amounts are unitless — chips or bb, but keep pot and stack in the same unit. Example: pot 6.5, stack 97.5 in bb.">?</span></h2>
+        <h2><span class="setup-step">03</span> Pot &amp; stack <button type="button" class="info-dot" aria-label="Pot and stack units" data-tip="Amounts are unitless — chips or bb, but keep pot and stack in the same unit. Example: pot 6.5, stack 97.5 in bb.">?</button></h2>
         <div class="field-grid field-groups">
           <fieldset class="field-group">
             <legend>Pot &amp; stack</legend>
@@ -119,7 +119,7 @@
       </section>
 
       <section class="panel" id="panel-sizes">
-        <h2><span class="setup-step">04</span> Bet sizing <span class="dim">(% pot · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" tabindex="0" data-tip="Per player, per street. '33 75' = a third-pot and three-quarter-pot bet.">?</span></h2>
+        <h2><span class="setup-step">04</span> Bet sizing <span class="dim">(% pot · “a” = all-in · “2.5x” = raise multiple)</span> <button type="button" class="info-dot" aria-label="Bet size syntax" data-tip="Per player, per street. '33 75' = a third-pot and three-quarter-pot bet.">?</button></h2>
         <table class="sizes-table">
           <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
           <tbody id="sizes-body"></tbody>
@@ -141,7 +141,7 @@
     <div class="mw-grid">
       <div class="mw-left">
         <section class="panel">
-          <h2><span class="setup-step">01</span> Spot <span class="info-dot" tabindex="0" data-tip="Players are in postflop action order: P1 first, P3 last (e.g. BB, CO, BTN). Ranges use the usual text (AA, TT+, A5s-A2s, KQo:0.5…). Chips are unitless.">?</span></h2>
+          <h2><span class="setup-step">01</span> Spot <button type="button" class="info-dot" aria-label="3-way spot order and ranges" data-tip="Players are in postflop action order: P1 first, P3 last (e.g. BB, CO, BTN). Ranges use the usual text (AA, TT+, A5s-A2s, KQo:0.5…). Chips are unitless.">?</button></h2>
           <div class="field-grid">
             <label data-tip="3 cards = solve flop, turn and river; 4 = turn + river; 5 = river only.">Board <input type="text" id="mw-board" value="Ks7h2d" spellcheck="false"></label>
             <label data-tip="Each player is treated as having put in a third.">Starting pot <input type="number" id="mw-pot" value="80" min="1"></label>
@@ -198,7 +198,7 @@
         </section>
       </div>
       <section class="panel mw-browse">
-        <h2>Browse <span class="info-dot" tabindex="0" data-tip="Click an action to follow it, a card to deal it, or a step in the line to go back. Cells show the acting player's strategy per hand class; bar height = how much of the class reaches this spot.">?</span></h2>
+        <h2>Browse <button type="button" class="info-dot" aria-label="Browse navigation" data-tip="Click an action to follow it, a card to deal it, or a step in the line to go back. Cells show the acting player's strategy per hand class; bar height = how much of the class reaches this spot.">?</button></h2>
         <div id="mw-line" class="mw-line"></div>
         <div id="mw-head" class="mw-head mono"></div>
         <div id="mw-actions" class="mw-actions"></div>
@@ -228,7 +228,7 @@
           <span id="run-state" class="ctl-state"></span>
         </div>
         <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in RAM, not total process memory. GPU VRAM is a conservative full-tree estimate; actual fit is checked at solve time, with CPU fallback."></div>
-        <h2 style="margin-top:24px">Persistence <span class="info-dot" tabindex="0" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</span></h2>
+        <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
           <button id="btn-save" class="btn">save</button>
@@ -321,7 +321,7 @@
     <div class="reports-layout">
       <section class="panel rep-sidebar">
         <details class="rep-create"><summary>New report</summary>
-        <h2>New report <span class="info-dot" tabindex="0" data-tip="Solves the current SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background.">?</span></h2>
+        <h2>New report <button type="button" class="info-dot" aria-label="What a report solves" data-tip="Solves the current SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background.">?</button></h2>
         <label class="pfl-row" style="font-size:11px">Name <input type="text" id="rep-name" placeholder="BTN vs BB SRP…" style="flex:1"></label>
         <label class="pfl-row" style="font-size:11px" data-tip="47 for a quick look, 95 standard, 184 fine-grained; 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
           <option>47</option><option>95</option><option selected>184</option><option value="1755">1755 (all)</option>
@@ -375,7 +375,7 @@
     <h1 class="sr-only">Preflop Lab</h1>
     <div class="pfl-layout">
       <section class="panel pfl-side">
-        <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <span class="info-dot" tabindex="0" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</span></h2>
+        <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <button type="button" class="info-dot" aria-label="Preflop game model" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</button></h2>
         <label class="pfl-row pfl-source">Ranges from
           <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical)</option></select></label>
         <div id="pfl-canon" class="hidden">
@@ -434,7 +434,7 @@
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
         <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Iteration count and per-seat best-response gaps from the last checkpoint."></div>
-        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <span class="info-dot" tabindex="0" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting. FROZEN: pinned to what it played at the last solve. PROFILE (archetype, HUD stats or a saved player): plays like a real person; its ranges bend the current solve's equilibrium toward its stats, so solve the plain game before modelling seats. A profile seat is never solved — its grid shows the profile as is — so a table where every seat is a profile has nothing to solve until you pick a HERO; while a seat is the HERO its profile is ignored. 'bleeds X bb' = what that seat loses per hand to a best response. Postflop tendencies only matter once a spot is sent to postflop.">?</span></div>
+        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <button type="button" class="info-dot" aria-label="Seat types" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting. FROZEN: pinned to what it played at the last solve. PROFILE (archetype, HUD stats or a saved player): plays like a real person; its ranges bend the current solve's equilibrium toward its stats, so solve the plain game before modelling seats. A profile seat is never solved — its grid shows the profile as is — so a table where every seat is a profile has nothing to solve until you pick a HERO; while a seat is the HERO its profile is ignored. 'bleeds X bb' = what that seat loses per hand to a best response. Postflop tendencies only matter once a spot is sent to postflop.">?</button></div>
         <div id="pfl-model"></div>
         <div id="pfl-editor" class="hidden"></div>
         <div class="pfl-row" style="margin-top:6px">

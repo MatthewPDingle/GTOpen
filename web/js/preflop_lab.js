@@ -266,8 +266,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const two = headsUp && !!v.exportable && !three;
     const hasStrategy = canon.on ? !!v.exportable : !v.strategy_note;
     const strategyReady = canon.on ? !!v.exportable : hasStrategy && lastIter >= 2;
-    const ready = !!(flop && (two || three) && strategyReady);
+    // what the postflop solver gets: chips still behind the shallowest live
+    // seat (SPR × pot), not the game's starting stack or the chart's depth
+    const stack = v.spr != null ? v.spr * v.pot : canon.on ? v.game?.depth : (!canon.on && S.builtCfg ? JSON.parse(S.builtCfg).stack : null);
+    const chipsBehind = stack == null || Number(stack) > 1e-9;
+    const ready = !!(flop && (two || three) && strategyReady && chipsBehind);
     els.exportBtn.disabled = !ready;
+    els.exportBtn.dataset.dest = three ? '3-way' : '2-way';
     const tick = (ok, label) => `<div><span style="color:${ok ? '#8fbf8a' : '#c96a5f'}">${ok ? '\u2713' : '\u2717'}</span> ${label}</div>`;
     const cfg = !canon.on && S.builtCfg ? JSON.parse(S.builtCfg) : {};
     const dest = !flop ? 'POSTFLOP SETUP'
@@ -280,7 +285,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rows.push(['pot', `${v.pot.toFixed(1)} bb`]);
       // what the postflop solver gets: chips still behind the shallowest live
       // seat (SPR × pot), not the game's starting stack or the chart's depth
-      const stack = v.spr != null ? v.spr * v.pot : canon.on ? v.game?.depth : cfg.stack;
       if (stack != null) rows.push(['stack', `${Number(Number(stack).toFixed(2))} bb`]);
       const rakePct = canon.on ? Number(els.canonRakePct.value) || 0 : Number(cfg.rake_pct) || 0;
       const rakeCap = canon.on ? Number(els.canonRakeCap.value) || 0 : Number(cfg.rake_cap) || 0;
@@ -301,7 +305,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         ? 'This flop has side pots — the postflop solver starts from one pot with chips behind.'
         : live.length > 2
           ? `The postflop solver is heads-up only; this line reaches the flop <b>${live.length}-way</b>.`
-          : ''
+          : !chipsBehind
+            ? 'Nobody has chips behind — the postflop solver needs a stack to bet.'
+            : ''
       : '';
     exportBody.innerHTML =
       `<div class="pfl-step" style="margin:0 0 4px">${dest}</div>` +
@@ -310,7 +316,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         : tick(flop, 'flop reached') + tick(headsUp || three, three ? `${live.length} players` : 'heads-up, stacks left') +
           tick(strategyReady, hasStrategy
             ? `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`
-            : 'no solved strategy at this point')) +
+            : 'no solved strategy at this point') +
+          tick(chipsBehind, 'chips behind')) +
       (rows.length ? `<dl style="display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin:6px 0 0">` +
         rows.map(([k, val]) => `<dt class="dim" style="margin:0">${k}</dt><dd style="margin:0;text-align:right">${esc(String(val))}</dd>`).join('') +
         `</dl>` : '') +

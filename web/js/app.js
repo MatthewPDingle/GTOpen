@@ -1096,6 +1096,11 @@ const trustDial = initTrust($('trust-panel'), {
   villain: () => browser.villainLocked,
   posLabel: p => browser.posLabel(p),
   startSweep: async () => {
+    // A sweep is a solve: it replaces the session, so it needs the same
+    // guards as LOAD and BUILD rather than silently discarding work.
+    if (state.running && !confirm('A solve is RUNNING — starting the sweep discards it. Continue?')) return;
+    if (state.solved && !state.saved &&
+        !confirm('The current solve has not been saved — starting the sweep discards it. Continue?')) return;
     await api.solve({
       max_iterations: +$('run-iters').value,
       target_exploit_pct: +$('run-target').value,
@@ -1286,13 +1291,15 @@ const exportBtn = $('pfl-export');
 const exportState = $('pfl-export-state');
 function syncExportState() {
   const ready = !exportBtn.disabled;
+  // preflop_lab writes the destination it resolved (2-way vs 3-way); the
+  // button label stays "SEND" so the line does not depend on its text.
   exportState.textContent = ready
-    ? (exportBtn.textContent.trim() === 'SEND TO 3-WAY SETUP' ? '3-way flop ready' : 'flop line ready')
-    : 'needs a heads-up flop line';
+    ? (exportBtn.dataset.dest === '3-way' ? '3-way flop ready' : 'flop line ready')
+    : 'needs a flop line';
   exportState.dataset.tone = ready ? 'ok' : 'warn';
 }
 new MutationObserver(syncExportState).observe(exportBtn, {
-  attributes: true, attributeFilter: ['disabled'], childList: true, characterData: true, subtree: true,
+  attributes: true, attributeFilter: ['disabled', 'data-dest'], childList: true, characterData: true, subtree: true,
 });
 syncExportState();
 

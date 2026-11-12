@@ -1417,7 +1417,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
       (rows.length > CAP ? `<div class="dim mono rep-cmp-more">showing ${CAP} of ${rows.length} flops — sort or filter to bring others up (the summary covers all ${rows.length})</div>` : '') +
       `</div>`;
     return head + overall +
-      `<h3>BY FLOP <span class="info-dot" tabindex="0" data-tip="Δ = B − A. IP’s EV change mirrors OOP’s (the two share the pot), so only OOP’s is shown.">?</span></h3>` + table;
+      `<h3>BY FLOP <button type="button" class="info-dot" aria-label="What the deltas mean" data-tip="Δ = B − A. IP’s EV change mirrors OOP’s (the two share the pot), so only OOP’s is shown.">?</button></h3>` + table;
   }
 
   // ----- hand-category breakdown (lines mode, action nodes) -----
@@ -1482,7 +1482,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
         `<span class="cbar">${bar}</span>` +
         `<span class="cnum">${(a.ev / a.w).toFixed(2)}</span><span class="cnum">${(100 * a.eq / a.w).toFixed(1)}</span></div>`;
     }).join('');
-    el.innerHTML = `<h3>HAND CLASSES <span class="info-dot" tabindex="0" data-tip="Each class is weighted by how much of it reaches this point on each flop.">?</span></h3>` + head + hrow + body;
+    el.innerHTML = `<h3>HAND CLASSES <button type="button" class="info-dot" aria-label="How classes are weighted" data-tip="Each class is weighted by how much of it reaches this point on each flop.">?</button></h3>` + head + hrow + body;
     bindSortHeaders(el);
     el.querySelectorAll('.rep-cats-head [data-d]').forEach(b => b.addEventListener('click', () => { S.catDim = b.dataset.d; render(); }));
     el.querySelectorAll('.rep-cats-head [data-p]').forEach(b => b.addEventListener('click', () => { S.catPlayer = +b.dataset.p; render(); }));
@@ -1512,7 +1512,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
     const { key, dir } = S.textureSort;
     const value = g => key === 'count' ? g.n : key === 'bet' ? aggr(g) : metric({ ...g.agg, group: true }, key);
     groups.sort((a, b) => dir * (key === 'name' ? b.l.localeCompare(a.l) : value(b) - value(a)));
-    el.innerHTML = `<h3>BY TEXTURE <span class="info-dot" tabindex="0" data-tip="Groups overlap — a flop can belong to several. Strategy and EV are pooled within the current filter.">?</span><span class="rep-section-note">${rows.length} flops · click a texture name to view its flops</span></h3>` +
+    el.innerHTML = `<h3>BY TEXTURE <button type="button" class="info-dot" aria-label="Texture grouping" data-tip="Groups overlap — a flop can belong to several. Strategy and EV are pooled within the current filter.">?</button><span class="rep-section-note">${rows.length} flops · click a texture name to view its flops</span></h3>` +
       // Strategy and Bet % are one quantity: one sortable heading, one arrow,
       // one sort state (the number keeps its column for alignment only).
       `<div class="combo-row head">` + sortHeading('name', 'Texture', 'cname', 'min-width:90px') + sortHeading('count', 'Flops', 'cnum', 'min-width:48px') + sortHeading('bet', 'Strategy', 'cbar') +
@@ -1549,7 +1549,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
         ['wide (9+)', r => { const t = texOf(r.board); return !t.paired && t._span >= 9; }]] },
     ];
     const actorName = posName(st0.actor);
-    el.innerHTML = `<h3>${esc(actorName)} AGGRESSION BY FLOP FEATURE <span class="info-dot" tabindex="0" data-tip="Bet + raise frequency of the acting player, pooled within each feature group; OOP’s EV beside it.">?</span></h3>` +
+    el.innerHTML = `<h3>${esc(actorName)} AGGRESSION BY FLOP FEATURE <button type="button" class="info-dot" aria-label="What this chart pools" data-tip="Bet + raise frequency of the acting player, pooled within each feature group; OOP’s EV beside it.">?</button></h3>` +
       `<div class="rep-feat-grid">` + charts.map(ch => {
         const rowsHtml = ch.groups.map(([label, pred]) => {
           const rs = rows.filter(pred);

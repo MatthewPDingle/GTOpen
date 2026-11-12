@@ -955,7 +955,7 @@ export class Browser {
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="Pins this node's strategy until you unlock it. Covers all suit-equivalent runouts; re-locking replaces the previous lock.">?</span>${summary ? ` <span class="lock-badge" data-lock-summary>${summary}</span>` : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span>${locked ? '<button type="button" class="btn ghost xs lock-unlock" data-tip="clears this node\'s lock">unlock all</button>' : ''}</div>
+      <div class="lock-head">NODE LOCKING <button type="button" class="info-dot" aria-label="How node locking works" data-tip="Pins this node's strategy until you unlock it. Covers all suit-equivalent runouts; re-locking replaces the previous lock.">?</button>${summary ? ` <span class="lock-badge" data-lock-summary>${summary}</span>` : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span>${locked ? '<button type="button" class="btn ghost xs lock-unlock" data-tip="clears this node\'s lock">unlock all</button>' : ''}</div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
           data-tip="Model a whole-range read: 'folds 70% to this bet'. Each hand's mix is scaled proportionally, so the right hands do the extra folding or calling.">Overall %</button>
