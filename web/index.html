@@ -41,7 +41,9 @@
     <span class="ss-sep"></span>
     <span id="ss-sizes" class="ss-sizes"></span>
     <span class="ss-grow"></span>
-    <span class="ss-live" aria-live="polite" aria-atomic="true"><button id="ss-state" class="ss-state" type="button">not built</button></span>
+    <span class="ss-stateline"><button id="ss-state" class="ss-state" type="button">not built</button></span>
+    <!-- announces the state, not the numbers: those change on every poll -->
+    <span id="ss-live" class="sr-only" aria-live="polite" aria-atomic="true"></span>
   </div>
 
   <div id="error-bar" class="hidden" role="alert">
@@ -313,8 +315,7 @@
       </div>
     </div>
   </main>
-</div>
-<div id="toast"></div>
+
   <!-- ============================= REPORTS ============================== -->
   <main id="view-reports" class="view">
     <div class="reports-layout">
@@ -483,6 +484,8 @@
       </section>
     </div>
   </main>
+</div>
+<div id="toast"></div>
 
 <script type="module" src="js/app.js"></script>
 <script type="module" src="js/multiway.js"></script>

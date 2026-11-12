@@ -126,7 +126,7 @@ b { font-weight: inherit; }
 #spot-strip .ss-sep { width: 1px; height: 12px; background: var(--line2); }
 #spot-strip .ss-sizes { color: var(--ink-faint); }
 #spot-strip .ss-grow { flex: 1 1 auto; }
-#spot-strip .ss-live { display: flex; }
+#spot-strip .ss-stateline { display: flex; }
 #spot-strip .ss-state {
   font-family: var(--font-data); font-size: 11px; letter-spacing: .03em;
   background: var(--panel2); color: var(--ink-dim);
@@ -592,7 +592,6 @@ textarea {
   margin: 6px 0 2px; background: var(--bg2);
 }
 .act-sumbar i { display: block; height: 100%; }
-.act-filter-hint { font-size: 10px; color: var(--ink-faint); margin: 4px 0 2px; }
 
 /* exploit (max-exploit / best-response) mode */
 .exploit-banner {
@@ -668,7 +667,7 @@ textarea {
 
 /* flop reports */
 .reports-layout { display: grid; grid-template-columns: 286px minmax(0, 1fr); gap: 16px; align-items: start; }
-.rep-sidebar { position: sticky; top: 58px; max-height: calc(100vh - 76px); display: flex; flex-direction: column; padding: 12px; }
+.rep-sidebar { position: sticky; top: 85px; max-height: calc(100vh - 103px); display: flex; flex-direction: column; padding: 12px; }
 .rep-create { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .rep-create > summary { cursor: pointer; color: var(--accent); font: 600 12px var(--font-disp); padding: 5px 0; }
 .rep-create h2 { display: none; }
@@ -755,17 +754,15 @@ textarea {
 #rep-table .combo-row.sel { outline: 1px solid var(--accent); }
 /* report ribbon = the lab/browse action ribbon */
 #rep-ribbon { display: flex; flex-wrap: nowrap; gap: 6px; margin-bottom: 8px; overflow-x: auto; padding-bottom: 6px; }
-#rep-ribbon .hist-seg { flex-shrink: 0; }
-#rep-ribbon .hist-seg { cursor: pointer; }
+#rep-ribbon .hist-seg { flex-shrink: 0; cursor: default; }
+#rep-ribbon .hist-seg:hover { border-color: var(--line); }
+#rep-ribbon .hist-seg.current:hover { border-color: var(--accent); }
 .rep-section { margin-top: 14px; }
 .rep-section h3 { font-size: 10px; letter-spacing: .12em; color: var(--accent); margin: 0 0 6px; font-weight: 600; }
 .rep-cats-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
 .rep-cats-head .seg button { padding: 3px 8px; font-size: 10px; letter-spacing: .06em; }
 .combo-row .cnum .rep-share { display: inline-block; height: 8px; background: var(--accent-soft);
   border-right: 2px solid var(--accent); vertical-align: middle; margin-right: 4px; max-width: 40px; }
-.rep-texrow { cursor: pointer; }
-.rep-texrow:hover { background: var(--panel2); }
-.rep-texrow.sel { outline: 1px solid var(--accent); }
 .rep-feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
 .rep-feat { background: var(--panel2); border-radius: 4px; padding: 6px 8px; }
 .rep-feat-title { font-size: 10px; letter-spacing: .1em; color: var(--ink-dim); margin-bottom: 4px; font-weight: 600; }
@@ -791,7 +788,6 @@ textarea {
 #rep-viewer .rep-column:focus-visible, #rep-viewer .rep-texture-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 #rep-viewer .rep-texture-link { padding: 0; border: 0; background: none; font: inherit; color: var(--ink); text-align: left; letter-spacing: 0; }
 #rep-viewer .rep-texture-link:hover { color: var(--accent); text-decoration: underline; }
-.rep-texrow { cursor: default; }
 .rep-section-note { font: 400 10px var(--font-body); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: 10px; }
 #rep-table .combo-row, #rep-cats .combo-row { min-height: 22px; padding: 3px 8px; }
 #rep-table .combo-row .cbar, #rep-cats .combo-row .cbar { height: 10px; }

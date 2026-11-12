@@ -540,9 +540,19 @@ function renderStrip() {
 
   const info = stripStateInfo();
   const btn = $('ss-state');
-  btn.textContent = info.text;
+  // write only on change: a poll tick that repeats the same state must not
+  // churn the DOM (and must not re-announce)
+  if (btn.textContent !== info.text) btn.textContent = info.text;
   btn.dataset.tone = info.tone;
-  btn.setAttribute('aria-label', `Loaded spot: ${info.text}. Go to the control that sets it.`);
+  const label = `Loaded spot: ${info.text}. Go to the control that sets it.`;
+  if (btn.getAttribute('aria-label') !== label) btn.setAttribute('aria-label', label);
+  // The live region carries the phase, not the numbers: while solving, the
+  // iteration count changes every second and would be read out forever.
+  if (info.phase !== stripPhase) {
+    stripPhase = info.phase;
+    const live = $('ss-live');
+    if (live) live.textContent = STRIP_SAY[info.phase] || info.text;
+  }
 }
 
 function engineToken(st) {
@@ -552,20 +562,26 @@ function engineToken(st) {
   return '';
 }
 
+/** The strip's state: what to show, its tone, where clicking it should go, and
+ *  the phase to announce. `phase` changes only on a real state change, so the
+ *  live region does not read the iteration count on every poll. */
 function stripStateInfo() {
   const st = state.status;
-  if (state.building) return { text: 'building…', tone: 'warn', target: 'setup' };
-  if (state.drift) return { text: 'SETUP changed', tone: 'warn', target: 'setup' };
-  if (!state.built) return { text: 'not built', tone: '', target: 'setup' };
+  if (state.building) return { text: 'building…', tone: 'warn', target: 'setup', phase: 'building' };
+  if (state.drift) return { text: 'SETUP changed', tone: 'warn', target: 'setup', phase: 'drift' };
+  if (!state.built) return { text: 'not built', tone: '', target: 'setup', phase: 'unbuilt' };
   const iter = st?.iteration || 0;
   const pct = st?.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
   const fits = st?.fits?.length ? ` · fitting ${st.fits.length}` : '';
   if (st?.state === 'running') {
-    return { text: `${engineToken(st)}iter ${iter.toLocaleString()}${pct}`, tone: 'live', target: 'solve' };
+    return { text: `${engineToken(st)}iter ${iter.toLocaleString()}${pct}`, tone: 'live', target: 'solve', phase: 'running' };
   }
   if (iter > 0) {
     const word = st?.state === 'stopped' ? 'stopped' : 'solved';
-    return { text: `${engineToken(st)}${word} · iter ${iter.toLocaleString()}${pct}${fits}`, tone: 'ok', target: 'solve' };
+    return {
+      text: `${engineToken(st)}${word} · iter ${iter.toLocaleString()}${pct}${fits}`,
+      tone: 'ok', target: 'solve', phase: `solve-${word}`,
+    };
   }
   return {
     text: st?.tree?.nodes
@@ -573,8 +589,21 @@ function stripStateInfo() {
       : `${engineToken(st)}built`,
     tone: 'ok',
     target: 'setup',
+    phase: 'built',
   };
 }
+
+/** What the live region says for a phase: one short word, never the numbers. */
+const STRIP_SAY = {
+  building: 'building the tree',
+  drift: 'SETUP changed — the tree no longer matches it',
+  unbuilt: 'no tree built',
+  running: 'solving',
+  'solve-solved': 'solve finished',
+  'solve-stopped': 'solve stopped',
+  built: 'tree built',
+};
+let stripPhase = null;
 
 /** One short line beside SOLVE/STOP: why STOP is unavailable, or how far the
  *  run got. Same numbers as the strip, local to the controls that use them. */
@@ -1005,6 +1034,15 @@ async function loadSolve() {
       !confirm('A solve is RUNNING — loading a save stops and discards it. Continue?')) return;
   if (state.solved && !state.saved &&
       !confirm('The current solve has not been saved — loading discards it. Continue?')) return;
+  // node locks live only in the session: a saved solve still loses them. Same
+  // check as BUILD (buildTree) so neither swap is the quiet one.
+  if (state.solved && state.saved && state.built) {
+    const locks = await api.locks().catch(() => []);
+    if (locks.length && !confirm(
+      `The current solve has ${locks.length} node lock${locks.length > 1 ? 's' : ''} — loading a save discards them. Continue?`)) {
+      return;
+    }
+  }
   try {
     await api.load(name);
     clearError();
@@ -1049,7 +1087,7 @@ const browser = new Browser({
   eqStats: $('eqchart-stats'),
   segPlayer: $('seg-player'),
   segMode: $('seg-mode'),
-});
+}, { onError: reportError });
 // expose for console debugging / tooling
 window.browser = browser;
 // Trust the read: the exploit dial under a villain profile lock
@@ -1222,6 +1260,7 @@ const reports = initReports({
     features: $('rep-features'), stdSizes: $('rep-stdsizes'), compare: $('rep-compare'),
   },
   toast,
+  onError: reportError,
   currentSpot: currentSpotRequest,
   villains: () => {
     const pf = browser.preflop;

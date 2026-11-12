@@ -33,7 +33,11 @@ export const STANDARD_SIZES = {
   max_raises: 3,
 };
 
-export function initReports({ els, toast, currentSpot, villains, openInBrowse }) {
+export function initReports({ els, toast, onError, currentSpot, villains, openInBrowse }) {
+  /** A failed request or report action: the app's persistent error surface,
+   *  with a retry where one makes sense. Input prompts stay toasts. */
+  const fail = (e, retry = null) =>
+    onError ? onError(e, retry) : toast(e instanceof Error ? e.message : String(e), true);
   const S = {
     report: null,      // loaded report json
     mode: 'legacy',    // 'lines' when the report carries per-node summaries
@@ -242,14 +246,14 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     el.classList.toggle('hidden', open);
     if (open) return;
     if (libraryError) {
-      el.innerHTML = `<h2>Aggregate reports</h2><p>Couldn't refresh the library — <button type="button" class="btn ghost xs" id="rep-empty-retry">retry</button></p>`;
+      el.innerHTML = `<h1>Aggregate reports</h1><p>Couldn't refresh the library — <button type="button" class="btn ghost xs" id="rep-empty-retry">retry</button></p>`;
       el.querySelector('#rep-empty-retry').addEventListener('click', refreshLibrary);
     } else if (S.loadingName) {
-      el.innerHTML = `<h2>Aggregate reports</h2><p>Loading ${esc(titleOf(S.loadingName))}…</p>`;
+      el.innerHTML = `<h1>Aggregate reports</h1><p>Loading ${esc(titleOf(S.loadingName))}…</p>`;
     } else if (!libraryData.length) {
-      el.innerHTML = `<h2>Aggregate reports</h2><p>No reports yet. Create one under New report.</p>`;
+      el.innerHTML = `<h1>Aggregate reports</h1><p>No reports yet. Create one under New report.</p>`;
     } else {
-      el.innerHTML = `<h2>Aggregate reports</h2><p>Select a report from the library.</p>`;
+      el.innerHTML = `<h1>Aggregate reports</h1><p>Select a report from the library.</p>`;
     }
   }
 
@@ -387,7 +391,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       renderLibrary();
       toast(`Deleted “${title}”${sizes ? ` and ${sizes} size reports` : ''}`);
       await refreshLibrary();
-    } catch (e) { toast(e.message, true); }
+    } catch (e) { fail(e); }
     finally { deletingReports.delete(name); renderLibrary(); }
   }
 
@@ -421,7 +425,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       if (S.cmp) await loadCompareLine();
       if (seq !== S.loadSeq) return;
       render();
-    } catch (e) { if (seq === S.loadSeq) toast(e.message, true); }
+    } catch (e) { if (seq === S.loadSeq) fail(e, () => loadReport(name)); }
     finally {
       if (seq === S.loadSeq) { S.loadingName = null; paintEmptyState(); }
     }
@@ -460,7 +464,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       await loadLine(key);
       if (S.cmp) await loadCompareLine();
       render();
-    } catch (e) { toast(e.message, true); }
+    } catch (e) { fail(e, () => setLine(key)); }
   }
 
   // ------------------------------------------------------- comparison ----
@@ -477,7 +481,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       await loadCompareLine();
       if (seq === S.cmpSeq) render();
     } catch (e) {
-      if (seq === S.cmpSeq) { S.cmp = null; toast(e.message, true); render(); }
+      if (seq === S.cmpSeq) { S.cmp = null; fail(e, () => setCompare(name)); render(); }
     }
   }
 
@@ -696,7 +700,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       pollStatus(true);
     } catch (e) {
       els.progress.textContent = '';
-      toast(e.message, true);
+      fail(e, () => els.run.click());
       refreshLibrary();
     }
   });
@@ -727,7 +731,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
         S.running = null;
         if (active || els.progress.textContent) {
           els.progress.textContent = st.error ? `failed: ${st.error}` : '';
-          if (st.error) { toast(st.error, true); refreshLibrary(); }
+          if (st.error) { fail(st.error); refreshLibrary(); }
           else if (st.name) {
             refreshLibrary();
             const open = S.report?.name || bestSize.name;
@@ -881,7 +885,6 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
     hist.forEach((h, d) => {
       const seg = document.createElement('div');
       seg.className = 'hist-seg' + (d === hist.length - 1 ? ' current' : '');
-      seg.style.cursor = 'default';   // only the head and the chips act
       const head = document.createElement('button');
       head.type = 'button';
       head.className = 'hist-head';
@@ -1286,7 +1289,7 @@ export function initReports({ els, toast, currentSpot, villains, openInBrowse })
       (blocked.length ? `<optgroup label="Can't compare">` + blocked.map(r =>
         `<option disabled>${esc(cardLabel(r))} · ${esc(compareBlocker(r))}</option>`).join('') + `</optgroup>` : '') +
       `</select></label>` +
-      `<button type="button" class="btn ghost xs" id="rep-cmp-swap" ${c ? '' : 'disabled'} data-tip="Read B as A and A as B">A ⇄ B</button>`;
+      `<button type="button" class="btn ghost xs" id="rep-cmp-swap" ${c ? '' : 'disabled'} aria-label="A ⇄ B — swap the two reports" data-tip="Read B as A and A as B">A ⇄ B</button>`;
     const note = text => `<p class="rep-empty dim">${text}</p>`;
     let body;
     if (S.mode !== 'lines') body = note('This report predates line summaries — re-run it to compare.');

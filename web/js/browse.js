@@ -50,8 +50,11 @@ function isPrefix(a, b) {
 }
 
 export class Browser {
-  constructor(els) {
+  constructor(els, hooks = {}) {
     this.els = els;
+    /** The app's persistent failure surface (app.js reportError); falls back to
+     *  a toast when the browser is constructed on its own. */
+    this.onError = hooks.onError || null;
     this.path = [];        // the node currently VIEWED (a prefix of `line`)
     this.line = [];        // the full navigated line (cursor can sit anywhere on it)
     this.lineHistory = null; // cached node history for the whole line (ribbon source)
@@ -270,7 +273,7 @@ export class Browser {
       this.pendingBar.className = 'pending-locks';
       this.pendingBar.setAttribute('role', 'status');
       this.pendingBar.style.cssText =
-        'display:none;align-items:center;gap:10px;position:sticky;top:52px;z-index:40;' +
+        'display:none;align-items:center;gap:10px;position:sticky;top:80px;z-index:40;' +
         'margin:6px 0 2px;padding:5px 9px;font-size:11px;color:var(--ink);' +
         'background:var(--accent-soft);border:1px solid var(--line2);' +
         'border-left:3px solid var(--accent);border-radius:4px';
@@ -516,6 +519,14 @@ export class Browser {
     el.style.display = text ? '' : 'none';
   }
 
+  /** Route an operation failure to the app's persistent error surface. Short
+   *  validation prompts stay toasts (nothing failed yet); a failed request or
+   *  lock edit must stay on screen with its retry. */
+  fail(e, retry = null) {
+    if (this.onError) this.onError(e, retry);
+    else toast(e.message, true);
+  }
+
   async refresh() {
     // loading feedback: node EV queries can take a couple of seconds on big trees
     this.hideHandPop(); // stale combo popup would show the previous node
@@ -534,7 +545,7 @@ export class Browser {
     } catch (e) {
       if (gen !== this._refreshGen) return; // superseded: a newer refresh owns the UI
       this.loadingNode = false;
-      toast(`node error: ${e.message}`, true);
+      this.fail(e, () => this.refresh());
       if (this.path.length) { this.path = []; this.line = []; this.lineHistory = null; return this.refresh(); }
       this.view = null;
       if (this.els.matrix) this.els.matrix.style.opacity = '';
@@ -676,6 +687,9 @@ export class Browser {
     // at depth = this.path.length. Viewing a node never truncates the line.
     const hist = this.lineHistory || this.view.history || [];
     const cursor = this.path.length;
+    // what the freeze option would still hold: only dim when it would lock
+    // something (freezeCount skips decisions that already carry a lock)
+    const freezing = this.freezeLine && this.freezeCount() > 0;
     const STREETS = ['FLOP', 'TURN', 'RIVER'];
 
     const seg = (depth, cls = '') => {
@@ -719,7 +733,7 @@ export class Browser {
       if (h.kind === 'action') {
         const s = seg(i, isCursor ? 'current' : '');
         // what the freeze option would hold: dim the earlier decisions it locks
-        if (this.freezeLine && i < cursor && this.view.node_type === 'action') {
+        if (freezing && i < cursor && this.view.node_type === 'action') {
           s.style.opacity = '.45';
         }
         head(s, this.posLabel(h.player), fmt(h.stack), 'stack');
@@ -961,7 +975,7 @@ export class Browser {
         this.noteLockEdit();
         toast('unlocked');
         this.refresh();
-      } catch (e) { toast(e.message, true); }
+      } catch (e) { this.fail(e); }
     });
 
     // a per-action [ %] editor with a live total + normalize button
@@ -1079,7 +1093,7 @@ export class Browser {
             toast(`locked${frozenNote(out)}`);
           }
           this.refresh();
-        } catch (e) { toast(e.message, true); }
+        } catch (e) { this.fail(e); }
       });
       foot.appendChild(lock);
       if (fit) {
@@ -1087,7 +1101,7 @@ export class Browser {
         cancel.dataset.tip = 'Stop steering this node; nothing is locked.';
         cancel.addEventListener('click', async () => {
           try { await api.fitCancel(this.path); toast('fit cancelled'); this.refresh(); }
-          catch (e) { toast(e.message, true); }
+          catch (e) { this.fail(e); }
         });
         foot.appendChild(cancel);
       }
@@ -1131,7 +1145,7 @@ export class Browser {
               const out = await this.lockHere({ kind: 'hands', edits }, label);
               this.rememberLockedCell(sel, label);
               toast(`${info.label} locked${frozenNote(out)}`); this.refresh();
-            } catch (e) { toast(e.message, true); }
+            } catch (e) { this.fail(e); }
           });
           foot.appendChild(lock);
         }
@@ -1217,7 +1231,7 @@ export class Browser {
       if (out.label) toast(`${dir === 'undo' ? 'undid' : 'redid'}: ${out.label}`);
       await this.refresh();
     } catch (e) {
-      toast(e.message, true);
+      this.fail(e);
       // a refused step clears the server's history: show what is left
       api.lockHistory().then(h => this.setLockHistory(h)).catch(() => {});
     } finally {
@@ -1263,7 +1277,7 @@ export class Browser {
     freeze.dataset.tip = 'Freeze this node exactly as currently solved \u2014 it stops adapting while you experiment elsewhere. (LOCK FREQUENCIES pins your numbers; LOCK AS SOLVED pins the solver\u2019s.)';
     freeze.addEventListener('click', async () => {
       try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)}`); this.refresh(); }
-      catch (e) { toast(e.message, true); }
+      catch (e) { this.fail(e); }
     });
     foot.appendChild(freeze);
   }
@@ -1273,7 +1287,7 @@ export class Browser {
     const forPath = JSON.stringify(this.path); // guard against navigating away mid-compute
     let rep;
     try { rep = await api.runouts(this.path); }
-    catch (e) { toast(e.message, true); btn.disabled = false; btn.textContent = 'RUNOUTS REPORT'; return; }
+    catch (e) { this.fail(e); btn.disabled = false; btn.textContent = 'RUNOUTS REPORT'; return; }
     btn.disabled = false; btn.textContent = 'RUNOUTS REPORT';
     if (JSON.stringify(this.path) !== forPath) return; // stale: user moved on
     this.runoutRep = rep;
@@ -1558,7 +1572,7 @@ export class Browser {
         stale = true; // user navigated / toggled player / left exploit mid-flight
       }
     } catch (e) {
-      toast(e.message, true);
+      this.fail(e);
       this.els.matrix.style.opacity = ''; // un-dim; grid keeps its last paint
     }
     finally { this._exploitLoading = false; }
@@ -2023,7 +2037,7 @@ export class Browser {
       this.villainLockTask.phase = 'Refreshing…';
       this.renderVillainLocks();
       await this.refresh(); // keep feedback visible through the EV query too
-    } catch (e) { toast(e.message, true); }
+    } catch (e) { this.fail(e); }
     finally {
       clearInterval(timer);
       this.villainLockTask = null;
