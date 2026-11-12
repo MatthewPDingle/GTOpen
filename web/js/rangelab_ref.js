@@ -84,7 +84,7 @@ export function initRangeLabRef(host) {
         <label>Stack <select class="rl-depth"></select></label>
         <label class="rl-spot-wrap">Spot <select class="rl-spot"></select></label>
       </div>
-      <div class="rl-match mono dim hidden" role="status"></div>
+      <div class="rl-match mono dim" role="status"></div>
       <div class="rl-title"></div>
       <div class="rl-note dim"></div>
       <div class="matrix browse rl-grid hidden"></div>
@@ -157,7 +157,8 @@ export function initRangeLabRef(host) {
     const v = game()?.variants.find(x => x.key === spot.variant);
     const open = v?.open_bb != null ? `open ${num(v.open_bb)}×` : (spot.variant_label || spot.variant);
     const depths = v?.depths?.length || 1;
-    el.match.textContent = `matching: ${open} · ${num(spot.depth)} bb${depths > 1 ? ` · nearest of ${depths}` : ''}`;
+    // a miss still shows the nearest chart; say which one it is
+    el.match.textContent = `${S.miss ? 'nearest' : 'matching'}: ${open} · ${num(spot.depth)} bb${depths > 1 ? ` · nearest of ${depths}` : ''}`;
   }
 
   async function load() {

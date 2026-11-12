@@ -52,7 +52,10 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const r = st.trust_readout;
     if (!r) {
       if (st.state === 'running') return 'solving…';
-      return 'the hero plays the max exploit — RE-SOLVE to see what this level buys and costs';
+      // no readout yet: only the max-exploit level is already a finished answer
+      return (st.trust == null || st.trust >= 1)
+        ? 'the hero plays the max exploit — RE-SOLVE to see what this level buys and costs'
+        : 'RE-SOLVE to see what this level buys and costs';
     }
     return `EV vs the reads <b>${bb(r.hero_ev_vs_read)}</b> · vs the mix <b>${bb(r.hero_ev_vs_mixture)}</b>`
       + ` · if they adapt <b>${bb(r.hero_ev_vs_adapting)}</b> <span class="dim">bb/hand at ${pct(r.trust)}</span>`;
@@ -78,7 +81,8 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const names = seats.map(i => esc(positions()[i] ?? i)).join(', ');
     panel.innerHTML = `
       <div class="trust-row">
-        <span class="trust-head" data-tip="${esc(TIP)}">TRUST THE READ</span>
+        <span class="trust-head">TRUST THE READ<button type="button" class="info-dot"
+          aria-label="How the trust level works" data-tip="${esc(TIP)}">?</button></span>
         <input type="range" class="trust-slider" min="0" max="100" step="5" value="${Math.round(t * 100)}"
           aria-label="Trust the read, percent" ${running || S.busy ? 'disabled' : ''}>
         <span class="trust-val">${pct(t)}</span>

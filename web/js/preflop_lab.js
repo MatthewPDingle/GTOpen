@@ -257,10 +257,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     exportCard.classList.remove('hidden');
     const flop = v.kind === 'pot_share';
     const live = flop ? v.positions.filter((_, i) => v.live[i]) : [];
+    // exportable is false both for a multiway flop and when the engine has no
+    // published strategy at this point (a table change resets it), so the two
+    // preconditions are named separately: an unsolved point is not "not
+    // heads-up".
     const three = !canon.on && !!v.exportable3;
-    const two = !!v.exportable && !three;
-    const solved = canon.on ? !!v.exportable : lastIter >= 2;
-    const ready = !!(flop && (two || three) && solved);
+    const headsUp = flop && live.length === 2;
+    const two = headsUp && !!v.exportable && !three;
+    const hasStrategy = canon.on ? !!v.exportable : !v.strategy_note;
+    const strategyReady = canon.on ? !!v.exportable : hasStrategy && lastIter >= 2;
+    const ready = !!(flop && (two || three) && strategyReady);
     els.exportBtn.disabled = !ready;
     const tick = (ok, label) => `<div><span style="color:${ok ? '#8fbf8a' : '#c96a5f'}">${ok ? '\u2713' : '\u2717'}</span> ${label}</div>`;
     const cfg = !canon.on && S.builtCfg ? JSON.parse(S.builtCfg) : {};
@@ -272,8 +278,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (flop) {
       rows.push(['ranges', live.join(' · ')]);
       rows.push(['pot', `${v.pot.toFixed(1)} bb`]);
-      const stack = canon.on ? v.game?.depth : cfg.stack;
-      if (stack != null) rows.push(['stack', `${Number(stack)} bb`]);
+      // what the postflop solver gets: chips still behind the shallowest live
+      // seat (SPR × pot), not the game's starting stack or the chart's depth
+      const stack = v.spr != null ? v.spr * v.pot : canon.on ? v.game?.depth : cfg.stack;
+      if (stack != null) rows.push(['stack', `${Number(Number(stack).toFixed(2))} bb`]);
       const rakePct = canon.on ? Number(els.canonRakePct.value) || 0 : Number(cfg.rake_pct) || 0;
       const rakeCap = canon.on ? Number(els.canonRakeCap.value) || 0 : Number(cfg.rake_cap) || 0;
       rows.push(['rake', rakePct ? `${rakePct}%${rakeCap ? ` · cap ${rakeCap} bb` : ' · uncapped'}` : 'none']);
@@ -287,20 +295,28 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       takenSteps(S.cursor.length).forEach(st => { if (st.kind === 'raise' || st.kind === 'jam') aggressor = st.pos; });
       rows.push(['aggressor', aggressor || 'none']);
     }
+    // the single reason the export is not ready, in the order the checks run
+    const why = !ready && flop
+      ? v.side_pots?.length
+        ? 'This flop has side pots — the postflop solver starts from one pot with chips behind.'
+        : live.length > 2
+          ? `The postflop solver is heads-up only; this line reaches the flop <b>${live.length}-way</b>.`
+          : ''
+      : '';
     exportBody.innerHTML =
       `<div class="pfl-step" style="margin:0 0 4px">${dest}</div>` +
       (canon.on
         ? tick(flop, 'flop reached') + tick(!!v.exportable, 'Range Lab chart')
-        : tick(flop, 'flop reached') + tick(two || three, three ? `${live.length} players` : 'heads-up, stacks left') +
-          tick(lastIter >= 2, `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`)) +
+        : tick(flop, 'flop reached') + tick(headsUp || three, three ? `${live.length} players` : 'heads-up, stacks left') +
+          tick(strategyReady, hasStrategy
+            ? `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`
+            : 'no solved strategy at this point')) +
       (rows.length ? `<dl style="display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin:6px 0 0">` +
         rows.map(([k, val]) => `<dt class="dim" style="margin:0">${k}</dt><dd style="margin:0;text-align:right">${esc(String(val))}</dd>`).join('') +
         `</dl>` : '') +
-      (!ready && flop && !two && !three
-        ? `<div class="dim" style="margin-top:6px">The postflop solver is heads-up only; this line reaches the flop <b>${live.length}-way</b>.</div>`
-        : '') +
-      (!ready && flop && !solved && !canon.on ? `<div class="dim" style="margin-top:6px">Solve to iteration 2 first.</div>` : '');
-    if (!ready && flop && !two && !three) {
+      (why ? `<div class="dim" style="margin-top:6px">${why}</div>` : '') +
+      (!ready && flop && !strategyReady && hasStrategy && !canon.on ? `<div class="dim" style="margin-top:6px">Solve to iteration 2 first.</div>` : '');
+    if (!ready && flop && live.length > 2) {
       const b = document.createElement('button');
       b.className = 'btn ghost xs';
       b.textContent = 'GO TO SETUP \u2192';
@@ -315,6 +331,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   statusChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center';
   const statusWarn = document.createElement('div');
   statusWarn.id = 'pfl-status-warn';
+  statusWarn.className = 'hidden'; // poll() fills it, and unhides only when it has something to say
   statusWarn.setAttribute('role', 'status');
   statusWarn.style.cssText = 'margin-top:3px;line-height:1.4';
   els.status.replaceChildren(statusChips, statusWarn);
@@ -454,7 +471,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const rows = models.filter(m => deletedModels.has(m.key) === showDeleted && m.name.toLowerCase().includes(search));
       if (!rows.length) return '';
       return `<h4>${title} <span class="dim">${rows.length}</span></h4>` + rows.map(m =>
-        `<div class="pfl-library-model"><span data-tip="${esc(m.note || m.name)}">${esc(modelDisplayName(m.name))}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
+        `<div class="pfl-library-model"><span>${esc(modelDisplayName(m.name))}${m.note ? `<button type="button" class="info-dot"
+          aria-label="About ${esc(m.name)}" data-tip="${esc(m.note)}">?</button>` : ''}</span>${showDeleted ? '' : `<button type="button" class="btn ghost xs" data-edit-model="${esc(m.key)}" aria-label="Edit ${esc(m.name)}">Edit</button>`}<button type="button" class="btn ghost xs" data-model-key="${esc(m.key)}" aria-label="${showDeleted ? 'Restore' : 'Remove'} ${esc(m.name)}">${showDeleted ? 'Restore' : 'Remove'}</button></div>`).join('');
     }).join('') || '<p class="dim">No matching models.</p>';
     managerList.querySelectorAll('[data-edit-seat]').forEach(button => button.addEventListener('click', () => openEditor(+button.dataset.editSeat)));
     managerList.querySelectorAll('[data-edit-model]').forEach(button => button.addEventListener('click', () => openLibraryEditor(button.dataset.editModel)));
@@ -464,9 +482,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }));
   }
 
-  // The server refuses table/hero changes while a solve runs (HTTP 409); an
-  // empty 409 body surfaces from the API layer as the bare message "409".
-  const errText = e => e && e.message === '409'
+  // The server refuses table/hero changes while a solve runs (HTTP 409); the
+  // API layer formats that as "409 — …", so key off the status, not the text.
+  const errText = e => e && e.status === 409
     ? 'a solve is running — STOP it or let it finish before changing the table'
     : (e && e.message) || String(e);
 
@@ -515,13 +533,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.mult.value = p.mult;
     positionSizing.restore(p);
     seatStacks.restore(p);
-    icmControls.restore(p);
     els.maxRaises.value = p.maxRaises;
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
     els.ante.value = p.ante;
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
+    // after the rake fields: ICM re-reads them as the numbers to restore
+    icmControls.restore(p);
     // Scenarios configure fresh games; old scenario model choices are retired.
     // Explicitly choosing a preset also starts fresh when an older solve is loaded.
     if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
@@ -533,9 +552,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     ...positionSizing.scenario(),
     ...seatStacks.scenario(),
-    ...icmControls.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
     ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
+    // ICM owns the rake fields while it is on (they show 0): last, so its
+    // remembered numbers replace the zero the form is displaying
+    ...icmControls.scenario(),
   });
   function syncScenarioSelection() {
     const cur = currentScenario();
@@ -652,7 +673,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
       `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
       `CPU arena limits, not GPU memory; GPU fit is checked when solving.`;
-    const dot = t => ` <span class="info-dot" tabindex="0" data-tip="${t}">?</span>`;
+    const dot = t => ` <button type="button" class="info-dot" aria-label="How this tree-size estimate is measured" data-tip="${t}">?</button>`;
     if (e.ok && borderline) {
       els.estimate.classList.remove('bad');
       els.estimate.innerHTML =
@@ -957,13 +978,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.mult.value = (cfg.raise_mults || []).join(',');
     positionSizing.load(cfg);
     seatStacks.load(cfg);
-    icmControls.load(cfg);
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
     els.ante.value = cfg.ante || 0;
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
+    // after the rake fields: ICM shows 0 there while it is on, and reads the
+    // loaded numbers as the ones to give back when it is turned off
+    icmControls.load(cfg);
     S.activeModel = cfg.realization || 'static';
     if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
     leafNets.load(cfg);
@@ -1742,6 +1765,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!S.model) { toast('build a game first', true); return false; }
     const changedSeats = pendingSeats().length > 0;
     const heroTarget = S.model.hero ?? null;
+    const heroBefore = S.appliedHero ?? null;
     // pfTable can mutate hero: a CHANGED table leaves hero mode server-side
     // (an unchanged one keeps it), so the hero call below runs whenever the
     // engine's hero is not the staged one. Hold the hero epoch/busy guard
@@ -1797,10 +1821,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       toast(changedSeats
         ? 'table applied — the next solve converges fresh'
         : heroOn ? `hero ${S.positions[heroTarget]} — others frozen`
+        : heroBefore != null && heroTarget == null ? 'hero off — the table plays as solved'
         : 'table applied');
     }
     renderModel();
     refresh(); // ribbon gets its lock badges
+    // the engine's iteration, frozen mask and trust readout all moved: one
+    // status poll (it stops itself again when the run is not running)
+    startPolling();
     return true;
   }
   els.applyBtn.addEventListener('click', applyModel);

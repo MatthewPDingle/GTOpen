@@ -86,38 +86,51 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   details.append(grid);
   anchor.after(details);
   // ICM solves need rake 0 (the server refuses otherwise): show the zeroing
-  // on the spot panel's rake fields instead of asserting it in prose.
+  // on the spot panel's rake fields instead of asserting it in prose. The
+  // fields show 0 only while ICM is on; the numbers they held are kept here,
+  // so turning ICM off gives them back instead of leaving the 0 behind.
   const rakes = [...anchor.querySelectorAll('input[id*="rake"]')];
+  let rakeStash = null; // [{ el, value }] captured while the fields show 0
 
-  function zeroRake(on) {
+  function holdRake() {
+    if (rakeStash) return;
+    rakeStash = rakes.map(el => ({ el, value: el.value }));
     for (const el of rakes) {
-      if (on) {
-        if (!el.dataset.icmRake) {
-          el.dataset.icmRake = el.value;
-          el.value = '0';
-          el.disabled = true;
-          const tag = document.createElement('span');
-          tag.className = 'dim icm-rake';
-          tag.textContent = 'ICM · 0';
-          el.closest('label')?.append(' ', tag);
-        }
-      } else if (el.dataset.icmRake) {
-        el.value = el.dataset.icmRake;
-        el.disabled = false;
-        delete el.dataset.icmRake;
-        el.closest('label')?.querySelector('.icm-rake')?.remove();
+      el.value = '0';
+      el.disabled = true;
+      if (!el.closest('label')?.querySelector('.icm-rake')) {
+        const tag = document.createElement('span');
+        tag.className = 'dim icm-rake';
+        tag.textContent = 'ICM · 0';
+        el.closest('label')?.append(' ', tag);
       }
     }
   }
+  /** Give the fields back; `restore` puts the remembered numbers in, which is
+   *  what turning ICM off means. A newly loaded spot (set) must keep the
+   *  numbers it just wrote instead. */
+  function releaseRake(restore) {
+    if (!rakeStash) return;
+    for (const { el, value } of rakeStash) {
+      if (restore) el.value = value;
+      el.disabled = false;
+      el.closest('label')?.querySelector('.icm-rake')?.remove();
+    }
+    rakeStash = null;
+  }
 
   function render() {
-    zeroRake(onBox.checked);
+    if (onBox.checked) holdRake();
+    else releaseRake(false);
     grid.hidden = !onBox.checked;
     summary.textContent = onBox.checked ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
     if (onBox.checked) details.open = true;
   }
   const changed = () => { render(); onChange(); };
-  onBox.addEventListener('change', changed);
+  onBox.addEventListener('change', () => {
+    if (!onBox.checked) releaseRake(true); // the user turned ICM off
+    changed();
+  });
   for (const el of [payouts, others, ...behind]) el.addEventListener('input', changed);
   render();
 
@@ -138,6 +151,9 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
     },
     /** Fill from a request's or export's `icm` (falsy turns ICM off). */
     set(icm) {
+      // The spot's rake (if the caller just wrote one) is the new baseline:
+      // drop the previous spot's held numbers without putting them back.
+      releaseRake(false);
       onBox.checked = !!icm;
       if (icm) {
         payouts.value = (icm.payouts || []).join(', ');

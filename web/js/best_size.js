@@ -211,7 +211,9 @@ export function initBestSizeView(el, ctx) {
     const variants = new Map((r.variants || []).map(v => [v.size, v.name]));
 
     const head =
-      `<div class="pfl-nodehead"><h1 title="${esc(r.name)}">${esc(r.name)}</h1></div>` +
+      // one h1 per view (REPORTS owns it): the sweep's name is a section heading
+      `<div class="pfl-nodehead"><h2 class="bs-title" title="${esc(r.name)}" ` +
+      `style="font:600 18px var(--font-body);line-height:1.4;overflow-wrap:anywhere">${esc(r.name)}</h2></div>` +
       `<div class="bs-context">Best size of <b>${esc(sweepDecision(r))}</b> · sizes ${grid.map(fmtSize).join(' / ')} pot · ` +
       `${r.flops.length} flops${r.complete ? '' : ' · PARTIAL RUN'}${r.villain ? ` · vs ${esc(r.villain.name)}` : ''}</div>` +
       `<details class="rep-settings"><summary>Sweep settings</summary><div class="mono dim bs-settings">` +
