@@ -1207,7 +1207,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         if (!text) continue;
         const part = document.createElement(tag);
         part.textContent = text;
-        reachWarning.append(part);
+        reachWarning.append(part, ' '); // the space keeps the parts apart when read out or copied
       }
     }
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');

@@ -1266,12 +1266,13 @@ textarea {
 .pfl-reach-warning.unsolved { padding: 9px 12px; border: 1px solid #74603d; border-left: 3px solid #e0a43a; border-radius: 4px; background: #28251e; }
 .pfl-reach-warning.unsolved strong { display: block; font-size: 13px; margin: 0 0 2px; }
 /* its ranges stay readable, but no longer look like a result */
-#pfl-grid.pfl-unsolved, #pfl-legend.pfl-unsolved { opacity: .45; filter: saturate(.45); }
+#pfl-grid.pfl-unsolved { opacity: .45; filter: saturate(.45); }
+#pfl-legend.pfl-unsolved { opacity: .7; }
 #pfl-ribbon .hist-chip.rare-step { color: var(--ink-faint); }
 #pfl-ribbon .hist-chip.rare-step .hist-frequency { color: #c9a45c; }
 #pfl-ribbon .hist-chip.taken.rare-step { background: #4b3a1a; color: #f3dfb2; }
 #pfl-ribbon .hist-chip.taken.rare-step .hist-frequency { color: #f3dfb2; }
-#pfl-ribbon .hist-seg.unsolved:not(.current) { border-style: dashed; }
+#pfl-ribbon .hist-seg.unsolved:not(.current) { border-style: dashed; border-color: #74603d; }
 #pfl-ribbon .hist-seg.unsolved .hist-head, #pfl-ribbon .hist-seg.unsolved .hist-chip { opacity: .6; }
 
 .pfl-position-sizes { margin:8px 0; border:1px solid var(--line); border-radius:4px; padding:7px; }

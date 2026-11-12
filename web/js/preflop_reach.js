@@ -100,7 +100,7 @@ export function lineNote(status) {
     const rarest = status.rarest ? ` (rarest step: ${step(status.rarest)}, ${frequencyDetail(status.rarest.freq)})` : '';
     return {
       level: 'seldom',
-      title: 'Seldom played',
+      title: 'Seldom played.',
       text: `This line comes up ${often}${rarest}. ${WORK}, so read these ranges as rough.`,
       fix: '',
     };

@@ -84,7 +84,7 @@ assert.equal(lineStatus(rare()).level, 'seldom'); // 0.2 * 0.1 * 0.05 * 0.05 = 5
 assert.ok(Math.abs(lineStatus(rare()).chance - 5e-5) < 1e-12);
 const seldom = lineNote(lineStatus(rare()));
 assert.equal(seldom.level, 'seldom');
-assert.equal(seldom.title, 'Seldom played');
+assert.equal(seldom.title, 'Seldom played.'); // inline with its sentence: reads as two sentences when copied or spoken
 assert.match(seldom.text, /^This line comes up about once in 20,000 hands \(rarest step: CO 4-bet 3x, 5\.0%\)\./);
 assert.match(seldom.text, /read these ranges as rough\.$/);
 assert.equal(seldom.fix, '');
