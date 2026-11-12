@@ -41,7 +41,7 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   details.append(summary);
   const note = document.createElement('p');
   note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
-    + 'instead of chips; EVs read in bb equivalents, stacks use the pot’s units. Needs rake 0. '
+    + 'instead of chips; EVs read in bb equivalents, stacks use the pot’s units. '
     + 'A Preflop Lab ICM export fills this in.';
   details.append(note);
   const on = document.createElement('label');
@@ -85,8 +85,33 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   grid.append(payLabel, othersLabel);
   details.append(grid);
   anchor.after(details);
+  // ICM solves need rake 0 (the server refuses otherwise): show the zeroing
+  // on the spot panel's rake fields instead of asserting it in prose.
+  const rakes = [...anchor.querySelectorAll('input[id*="rake"]')];
+
+  function zeroRake(on) {
+    for (const el of rakes) {
+      if (on) {
+        if (!el.dataset.icmRake) {
+          el.dataset.icmRake = el.value;
+          el.value = '0';
+          el.disabled = true;
+          const tag = document.createElement('span');
+          tag.className = 'dim icm-rake';
+          tag.textContent = 'ICM · 0';
+          el.closest('label')?.append(' ', tag);
+        }
+      } else if (el.dataset.icmRake) {
+        el.value = el.dataset.icmRake;
+        el.disabled = false;
+        delete el.dataset.icmRake;
+        el.closest('label')?.querySelector('.icm-rake')?.remove();
+      }
+    }
+  }
 
   function render() {
+    zeroRake(onBox.checked);
     grid.hidden = !onBox.checked;
     summary.textContent = onBox.checked ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
     if (onBox.checked) details.open = true;

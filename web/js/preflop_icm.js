@@ -62,7 +62,7 @@ export function icmFromConfig(cfg) {
 }
 
 export function createIcmControls(els, positionsFor, changed) {
-  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '' };
+  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '', edited: false };
   const details = document.createElement('details');
   details.className = 'pfl-position-sizes pfl-icm';
   const summary = document.createElement('summary');
@@ -70,7 +70,7 @@ export function createIcmControls(els, positionsFor, changed) {
   const note = document.createElement('p');
   note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
     + 'instead of chips; EVs read in bb equivalents. Stage presets use an approximate 1,000-player payout '
-    + 'structure and give other tables the table stack. Needs rake 0.';
+    + 'structure and give other tables the table stack.';
   details.append(note);
   const on = document.createElement('label');
   on.className = 'chk';
@@ -83,8 +83,10 @@ export function createIcmControls(els, positionsFor, changed) {
   const stage = document.createElement('select');
   stage.innerHTML = '<option value="">Custom</option>'
     + ICM_STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+  const stageNote = document.createElement('span');
+  stageNote.className = 'dim';
   const stageLabel = document.createElement('label');
-  stageLabel.append('Stage ', stage);
+  stageLabel.append('Stage ', stage, ' ', stageNote);
   const payouts = document.createElement('textarea');
   payouts.rows = 2;
   payouts.placeholder = 'e.g. 50, 30, 20';
@@ -101,7 +103,7 @@ export function createIcmControls(els, positionsFor, changed) {
   const stackLabel = document.createElement('label');
   stackLabel.append('Their stack (bb) ', fieldStack);
   const stackOff = document.createElement('input');
-  stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = '0.4';
+  stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = 'off';
   const offLabel = document.createElement('label');
   offLabel.dataset.tip = 'How often a pot that sees the flop is played for the stacks behind: all-in with '
     + 'chance k / (k + SPR). 0 prices a flop pot as the pot alone.';
@@ -118,14 +120,38 @@ export function createIcmControls(els, positionsFor, changed) {
   function render() {
     onBox.checked = state.on;
     stage.value = state.stage || '';
+    stageNote.textContent = state.stage ? (state.edited ? 'edited' : 'preset') : '';
     payouts.value = state.payouts;
     fieldCount.value = state.fieldCount;
     fieldStack.value = state.fieldStack;
     stackOff.value = state.stackOff ?? '';
     fieldStack.placeholder = els.stack.value || 'Stack';
+    zeroRake(state.on);
     grid.hidden = !state.on;
     summary.textContent = state.on ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
     if (state.on) details.open = true;
+  }
+  // ICM solves need rake 0: show it instead of zeroing the field silently.
+  function zeroRake(on) {
+    for (const el of [els.rakePct, els.rakeCap]) {
+      if (!el) continue;
+      if (on) {
+        if (!el.dataset.icmRake) {
+          el.dataset.icmRake = el.value;
+          el.value = '0';
+          el.disabled = true;
+          const tag = document.createElement('span');
+          tag.className = 'dim icm-rake';
+          tag.textContent = 'ICM · 0';
+          el.closest('label')?.append(' ', tag);
+        }
+      } else if (el.dataset.icmRake) {
+        el.value = el.dataset.icmRake;
+        el.disabled = false;
+        delete el.dataset.icmRake;
+        el.closest('label')?.querySelector('.icm-rake')?.remove();
+      }
+    }
   }
   function applyStage(id) {
     const s = ICM_STAGES.find(x => x.id === id);
@@ -137,17 +163,23 @@ export function createIcmControls(els, positionsFor, changed) {
     state.fieldStack = '';
   }
   const edit = fn => () => { fn(); render(); changed(); };
+  const presetEdited = () => { state.edited = true; };
   onBox.addEventListener('change', edit(() => {
     state.on = onBox.checked;
     if (state.on && !state.payouts) { state.stage = 'ft'; applyStage('ft'); }
-    if (state.on && els.rakePct && +els.rakePct.value) els.rakePct.value = 0;
   }));
-  stage.addEventListener('change', edit(() => { state.stage = stage.value; applyStage(stage.value); }));
-  payouts.addEventListener('input', () => { state.payouts = payouts.value; state.stage = ''; stage.value = ''; changed(); });
-  fieldCount.addEventListener('input', () => { state.fieldCount = fieldCount.value; state.stage = ''; stage.value = ''; changed(); });
+  stage.addEventListener('change', edit(() => {
+    state.stage = stage.value;
+    state.edited = false;
+    applyStage(stage.value);
+  }));
+  payouts.addEventListener('input', () => { state.payouts = payouts.value; presetEdited(); changed(); });
+  fieldCount.addEventListener('input', () => { state.fieldCount = fieldCount.value; presetEdited(); changed(); });
   fieldStack.addEventListener('input', () => { state.fieldStack = fieldStack.value; changed(); });
-  stackOff.addEventListener('input', () => { state.stackOff = stackOff.value; changed(); });
-  els.players.addEventListener('change', () => { if (state.stage) { applyStage(state.stage); render(); } });
+  stackOff.addEventListener('input', () => { state.stackOff = stackOff.value; presetEdited(); changed(); });
+  els.players.addEventListener('change', () => {
+    if (state.stage && !state.edited) { applyStage(state.stage); render(); }
+  });
   els.stack.addEventListener('input', () => { fieldStack.placeholder = els.stack.value || 'Stack'; });
   render();
   return {
@@ -155,7 +187,12 @@ export function createIcmControls(els, positionsFor, changed) {
       const icm = icmConfig(state, +els.stack.value || 100);
       return icm ? { icm } : {};
     },
-    scenario: () => (state.on ? { icm: { ...state } } : {}),
+    scenario: () => (state.on ? {
+      icm: {
+        on: state.on, payouts: state.payouts, fieldCount: state.fieldCount,
+        fieldStack: state.fieldStack, stage: state.stage, stackOff: state.stackOff,
+      },
+    } : {}),
     restore: value => { state = value?.icm ? { ...value.icm } : { ...state, on: false }; render(); },
     load: cfg => { state = icmFromConfig(cfg); render(); },
     /** Show what the built game's values mean (the build response's `icm`). */

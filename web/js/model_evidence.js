@@ -1,5 +1,27 @@
 // Evidence describes provenance, not the probability that a strategy is correct.
 // Keep the short label visible; supporting detail remains keyboard accessible.
+// Every kind is named in the summary, so the colour is never the only signal.
+const KINDS = {
+  measured: 'measured',
+  extrapolated: 'extrapolated',
+  fallback: 'fallback',
+  contextual_estimate: 'contextual',
+  stat_derived: 'from stats',
+  saved_policy: 'saved policy',
+  stored_policy: 'saved policy',
+  solver: 'solver',
+  adaptive: 'adaptive',
+  manual_lock: 'manual lock',
+  frozen_solver: 'frozen solver',
+  unavailable: 'unavailable',
+  pending: 'pending',
+};
+const VOCABULARY = 'measured = real decisions · extrapolated = beyond the sample · fallback = a default fills in · '
+  + 'contextual = this situation’s model · from stats = generated from HUD numbers · saved policy = a stored range set · '
+  + 'solver = solved equilibrium · adaptive = responds to the solve · manual lock = hand-edited · '
+  + 'frozen solver = pinned strategy · unavailable, pending = transient states.';
+const kindOf = k => (k in KINDS ? k : 'saved_policy');
+
 const rendered = new WeakMap();
 export function renderModelEvidence(host, evidence, extraDetails = []) {
   if (!host) return;
@@ -13,20 +35,23 @@ export function renderModelEvidence(host, evidence, extraDetails = []) {
 
   const details = document.createElement('details');
   details.className = 'model-evidence';
-  const kinds = ['measured', 'extrapolated', 'fallback', 'contextual_estimate', 'stat_derived', 'saved_policy', 'solver', 'adaptive', 'manual_lock', 'frozen_solver', 'unavailable', 'pending'];
-  details.dataset.kind = kinds.includes(evidence.kind) ? evidence.kind : 'saved_policy';
+  details.dataset.kind = kindOf(evidence.kind);
   details.open = expanded;
   const summary = document.createElement('summary');
+  summary.dataset.tip = VOCABULARY;
   const addPart = (name, item) => {
     const part = document.createElement('span');
     part.className = 'model-evidence-part';
-    part.dataset.kind = item.kind || 'stored_policy';
+    part.dataset.kind = kindOf(item.kind);
     const prefix = document.createElement('span');
     prefix.className = 'model-evidence-prefix';
-    prefix.textContent = name;
+    prefix.textContent = `${name} · `;
+    const kind = document.createElement('span');
+    kind.className = 'model-evidence-kind';
+    kind.textContent = `${KINDS[kindOf(item.kind)]} · `;
     const label = document.createElement('strong');
     label.textContent = item.label || 'Source not recorded';
-    part.append(prefix, label);
+    part.append(prefix, kind, label);
     summary.appendChild(part);
   };
   addPart(evidence.sizing ? 'Hands' : 'Evidence', evidence);
@@ -34,7 +59,7 @@ export function renderModelEvidence(host, evidence, extraDetails = []) {
   else {
     const short = document.createElement('span');
     short.className = 'model-evidence-summary';
-    short.textContent = evidence.summary || '';
+    short.textContent = evidence.summary ? `\u00a0· ${evidence.summary}` : '';
     summary.appendChild(short);
   }
 
@@ -70,10 +95,12 @@ export function renderModelEvidence(host, evidence, extraDetails = []) {
     }
     body.appendChild(sizing);
   }
-  const caveat = document.createElement('p');
-  caveat.className = 'model-evidence-caveat';
-  caveat.textContent = 'Not a confidence score or proof of an optimal strategy.';
-  body.appendChild(caveat);
   details.append(summary, body);
   host.appendChild(details);
+  // One caveat per view: a single dim line under the badge, not in every body.
+  const caveat = document.createElement('p');
+  caveat.className = 'model-evidence-caveat';
+  caveat.setAttribute('role', 'note');
+  caveat.textContent = 'Provenance, not a confidence score.';
+  host.appendChild(caveat);
 }

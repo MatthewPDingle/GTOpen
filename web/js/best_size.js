@@ -114,20 +114,32 @@ export function spotWithSize(rep, board, size) {
 
 // ---------------------------------------------------------- EV sparkline ----
 
+/** A plain text button that inherits its cell's type (sort headers, cells). */
+const PLAIN_BTN = 'background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer';
+
 /** Small SVG of EV (% pot) against size (log scale) for one flop: grid
- *  points as dots, refined points as rings, the tie band shaded. */
-function evCurve(row, { width = 160, height = 34, colors, grid } = {}) {
+ *  points as dots, refined points as rings, the tie band shaded. The x axis
+ *  carries its size ticks and the y axis its top EV, so the chart needs no
+ *  caption sentence. */
+function evCurve(row, { width = 168, height = 44, colors, grid } = {}) {
   const pts = row.points.slice().sort((a, b) => a.size - b.size);
   if (!pts.length) return '';
   const lx = s => Math.log(s);
   const x0 = lx(pts[0].size), x1 = lx(pts[pts.length - 1].size);
   const evs = pts.map(p => p.ev_pct);
   const y0 = Math.min(...evs), y1 = Math.max(...evs);
-  const pad = 5;
+  const pad = 5, base = height - 12;
   const X = s => pad + (x1 > x0 ? (lx(s) - x0) / (x1 - x0) : 0.5) * (width - 2 * pad);
-  const Y = e => height - pad - (y1 > y0 ? (e - y0) / (y1 - y0) : 0.5) * (height - 2 * pad);
+  const Y = e => 8 + (1 - (y1 > y0 ? (e - y0) / (y1 - y0) : 0.5)) * (base - 12);
   const [b0, b1] = row.verdict.band;
-  const band = `<rect x="${X(b0) - 3}" y="1" width="${Math.max(6, X(b1) - X(b0) + 6)}" height="${height - 2}" rx="3" fill="var(--accent-soft)"/>`;
+  const band = `<rect x="${X(b0) - 3}" y="1" width="${Math.max(6, X(b1) - X(b0) + 6)}" height="${base}" rx="3" fill="var(--accent-soft)"/>`;
+  const axis = `<line x1="${pad}" x2="${width - pad}" y1="${base}" y2="${base}" stroke="var(--line2)"/>` +
+    `<line x1="${pad}" x2="${width - pad}" y1="${Y(y1)}" y2="${Y(y1)}" stroke="var(--line)" stroke-dasharray="2 3"/>`;
+  const ticks = [pts[0].size, pts[Math.floor(pts.length / 2)].size, pts[pts.length - 1].size]
+    .filter((s, i, a) => a.indexOf(s) === i)
+    .map(s => `<text x="${X(s)}" y="${height - 2}" text-anchor="middle" font-size="7" ` +
+      `font-family="var(--font-data)" fill="var(--ink-faint)">${fmtSize(s)}</text>`).join('') +
+    `<text x="${pad}" y="${Y(y1) - 2}" font-size="7" font-family="var(--font-data)" fill="var(--ink-faint)">${fmtPct(y1, 0)}</text>`;
   const line = `<polyline fill="none" stroke="var(--ink-dim)" stroke-width="1.5" points="${pts.map(p => `${X(p.size).toFixed(1)},${Y(p.ev_pct).toFixed(1)}`).join(' ')}"/>`;
   const dots = pts.map(p => {
     const gi = grid.findIndex(g => near(g, p.size));
@@ -135,8 +147,14 @@ function evCurve(row, { width = 160, height = 34, colors, grid } = {}) {
     const fill = p.refined ? 'var(--panel)' : (colors[gi] || 'var(--ink)');
     return `<circle cx="${X(p.size).toFixed(1)}" cy="${Y(p.ev_pct).toFixed(1)}" r="${best ? 4 : 3}" fill="${fill}" stroke="${best ? 'var(--accent)' : (p.refined ? 'var(--ink-dim)' : 'var(--panel)')}" stroke-width="${best ? 2 : 1.5}"/>`;
   }).join('');
-  return `<svg class="bs-curve" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">${band}${line}${dots}</svg>`;
+  return `<svg class="bs-curve" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">${band}${axis}${line}${dots}${ticks}</svg>`;
 }
+
+/** The sparkline's swatch legend: replaces the caption sentence. */
+const curveLegend = `<div class="legend bs-legend">` +
+  `<span><span class="bs-swatch" style="background:var(--accent-soft)"></span>tie band</span>` +
+  `<span><span class="bs-swatch bs-refined"></span>refinement</span>` +
+  `<span><span class="bs-swatch" style="background:var(--panel);border:2px solid var(--accent);box-sizing:border-box"></span>best</span></div>`;
 
 const bestPoint = row => row.points.find(p => near(p.size, row.verdict.best)) || row.points[0];
 const bandText = v => near(v.band[0], v.band[1]) ? fmtSize(v.best) : `${fmtSize(v.band[0])}–${fmtSize(v.band[1])}`;
@@ -220,19 +238,25 @@ export function initBestSizeView(el, ctx) {
       `</div>`;
 
     // EV lost by always using one size
-    const fixedTable = `<div class="rep-section"><h3>ALWAYS ONE SIZE <span class="rep-section-note">EV lost against the best size on each flop, % pot (weighted by flop frequency). Click a row to sort the flops by it.</span></h3>` +
+    const fixedTable = `<div class="rep-section"><h3>ALWAYS ONE SIZE <span class="rep-section-note">EV lost against the best size on each flop, % pot (weighted by flop frequency).</span></h3>` +
       `<table class="bs-table"><thead><tr><th>Size</th><th data-tip="Share of flops where this is the best grid size.">Best on</th>` +
       `<th data-tip="Share of flops where this size is inside the tie band: statistically as good as the best.">Tied best on</th>` +
-      `<th data-tip="Mean EV lost against each flop's best evaluated size (grid and refined).">EV lost</th>` +
+      sortHead('lost', 'EV lost', 'Mean EV lost against each flop’s best evaluated size (grid and refined). Sorts the flops.') +
       `<th data-tip="Mean EV lost against each flop's best grid size only.">vs best grid</th><th></th></tr></thead><tbody>` +
-      sum.fixed.map((f, i) => `<tr class="bs-fixed${near(f.size, S.fixed) ? ' active' : ''}" data-size="${f.size}">` +
-        `<td><span class="bs-swatch" style="background:${colors[i]}"></span>${fmtSize(f.size)}</td>` +
-        `<td>${fmtPct(100 * f.best, 0)}</td><td>${fmtPct(100 * f.tie, 0)}</td>` +
-        `<td class="mono">${fmtPct(f.lost)}</td><td class="mono">${fmtPct(f.lostGrid)}</td>` +
-        `<td>${variants.has(f.size) ? `<button type="button" class="btn ghost xs" data-variant="${esc(variants.get(f.size))}" data-tip="Open this size as an ordinary report: browse every node across the flops.">OPEN REPORT</button>` : ''}</td></tr>`).join('') +
+      sum.fixed.map((f, i) => {
+        const isFixed = near(f.size, S.fixed);
+        return `<tr class="bs-fixed${isFixed ? ' active' : ''}" data-size="${f.size}" style="cursor:default">` +
+          `<td><button type="button" class="bs-pick" data-size="${f.size}" aria-pressed="${isFixed}" ` +
+          `data-tip="Always use this size in the flop table." style="${PLAIN_BTN}">` +
+          `<span class="bs-swatch" style="background:${colors[i]}"></span>${fmtSize(f.size)}</button></td>` +
+          `<td>${fmtPct(100 * f.best, 0)}</td><td>${fmtPct(100 * f.tie, 0)}</td>` +
+          `<td class="mono">${fmtPct(f.lost)}</td><td class="mono">${fmtPct(f.lostGrid)}</td>` +
+          `<td>${variants.has(f.size) ? `<button type="button" class="btn ghost xs" data-variant="${esc(variants.get(f.size))}" data-tip="Open this size as an ordinary report: browse every node across the flops.">OPEN REPORT</button>` : ''}</td></tr>`;
+      }).join('') +
       `</tbody></table></div>`;
 
-    // best size mix by texture: stacked shares of the best grid size
+    // best size mix by texture: stacked shares of the best grid size, each
+    // row a pressed filter button
     const legend = `<div class="legend bs-legend">` + grid.map((g, i) =>
       `<span><span class="bs-swatch" style="background:${colors[i]}"></span>${fmtSize(g)}</span>`).join('') + `</div>`;
     const texRows = TEX.map(([k, label]) => {
@@ -252,24 +276,24 @@ export function initBestSizeView(el, ctx) {
         const tip = `${label}: best grid size ${fmtSize(grid[i])} on ${(100 * f).toFixed(0)}% of ${rs.length} flops`;
         return `<span class="bs-seg" style="flex:${f};background:${colors[i]};color:${rampInk(i, grid.length)}" data-tip="${esc(tip)}">${f >= 0.1 ? `${(100 * f).toFixed(0)}%` : ''}</span>`;
       }).join('');
-      return `<div class="bs-texrow${S.tex === k ? ' active' : ''}" data-t="${k}"><span class="bs-texname">${label}</span><span class="bs-bar">${segs}</span><span class="dim mono">${rs.length}</span></div>`;
+      return `<button type="button" class="bs-texrow${S.tex === k ? ' active' : ''}" data-t="${k}" ` +
+        `aria-pressed="${S.tex === k}" style="${PLAIN_BTN};display:grid;width:100%">` +
+        `<span class="bs-texname">${label}</span><span class="bs-bar">${segs}</span><span class="dim mono">${rs.length}</span></button>`;
     }).join('');
-    const texChart = `<div class="rep-section"><h3>BEST SIZE BY TEXTURE <span class="rep-section-note">Share of flops where each size is the best grid size. Click a texture to filter.</span></h3>${legend}<div class="bs-texchart">${texRows}</div></div>`;
+    const texChart = `<div class="rep-section" role="group" aria-label="Filter flops by texture"><h3>BEST SIZE BY TEXTURE <span class="rep-section-note">Share of flops where each size is the best grid size.</span></h3>${legend}<div class="bs-texchart">${texRows}</div></div>`;
 
-    // per-flop table
-    const sortOpts = [['rank', 'Board rank'], ['best', 'Best size'], ['width', 'Tie band width'], ['ev', 'EV at best'], ['lost', `EV lost by ${fmtSize(S.fixed)}`]];
-    const flopHead = `<div class="rep-section"><h3>FLOPS <span class="rep-section-note">${all.length} shown. The shaded band is the tie band; open rings are refinement solves.</span></h3>` +
-      `<div class="rep-order-controls"><label class="rep-sort-label">Sort <select id="bs-sort">` +
-      sortOpts.map(([k, l]) => `<option value="${k}" ${S.sort.key === k ? 'selected' : ''}>${l}</option>`).join('') +
-      `</select></label><button type="button" class="btn ghost xs" id="bs-sort-dir" data-tip="Reverse sort order">${S.sort.dir === -1 ? '↑' : '↓'}</button></div>`;
+    // per-flop table: every action lives on its column (sort buttons, the
+    // board button opens the detail), never on a whole row
+    const flopHead = `<div class="rep-section"><h3>FLOPS <span class="rep-section-note">${all.length} shown</span></h3>${curveLegend}`;
     const flopRows = all.map(r => {
       const v = r.verdict;
       const bp = bestPoint(r);
       const fp = r.points.find(q => !q.refined && near(q.size, S.fixed));
       const lost = fp ? v.best_ev_pct - fp.ev_pct : null;
       const sel = S.selected === r.board;
-      return `<tr class="bs-flop${sel ? ' active' : ''}" data-board="${esc(r.board)}">` +
-        `<td class="mono">${fmtBoard(r.board)}</td>` +
+      return `<tr class="bs-flop${sel ? ' active' : ''}" data-board="${esc(r.board)}" style="cursor:default">` +
+        `<td class="mono"><button type="button" class="bs-open" data-board="${esc(r.board)}" aria-expanded="${sel}" ` +
+        `data-tip="Show this flop's sizes, EVs and engines." style="${PLAIN_BTN}">${fmtBoard(r.board)}</button></td>` +
         `<td><b>${fmtSize(v.best)}</b>${v.edge ? ' <span class="dim" data-tip="Best at the edge of the grid: the true best may lie outside it.">edge</span>' : ''}</td>` +
         `<td>${bandText(v)}</td>` +
         `<td class="mono">${fmtPct(v.best_ev_pct)}</td>` +
@@ -279,10 +303,13 @@ export function initBestSizeView(el, ctx) {
         (sel ? `<tr class="bs-detail"><td colspan="7">${detail(r, grid, colors, variants)}</td></tr>` : '');
     }).join('');
     const flopTable = flopHead +
-      `<table class="bs-table bs-flops"><thead><tr><th>Board</th><th>Best</th><th data-tip="Sizes the solves cannot tell apart from the best.">Tie band</th>` +
-      `<th data-tip="${esc(posName(r.sweep.player))}'s EV at the best size, % of the starting pot.">EV</th>` +
+      `<table class="bs-table bs-flops"><thead><tr>` +
+      sortHead('rank', 'Board') +
+      sortHead('best', 'Best') +
+      sortHead('width', 'Tie band', 'Sizes the solves cannot tell apart from the best.') +
+      sortHead('ev', 'EV', `${posName(r.sweep.player)}'s EV at the best size, % of the starting pot.`) +
       `<th data-tip="How often ${esc(posName(r.sweep.player))} bets at the best size.">Bets</th>` +
-      `<th data-tip="EV lost on this flop by always using ${fmtSize(S.fixed)} (pick the size in ALWAYS ONE SIZE).">Lost by ${fmtSize(S.fixed)}</th>` +
+      sortHead('lost', `Lost by ${fmtSize(S.fixed)}`, `EV lost on this flop by always using ${fmtSize(S.fixed)} (pick the size in ALWAYS ONE SIZE).`) +
       `<th>EV by size</th></tr></thead><tbody>${flopRows || '<tr><td colspan="7" class="dim">No flops match this filter.</td></tr>'}</tbody></table></div>`;
 
     el.innerHTML = head + filters + tiles + fixedTable + texChart + flopTable;
@@ -291,28 +318,35 @@ export function initBestSizeView(el, ctx) {
       S.tex = S.tex === b.dataset.t && b.classList.contains('bs-texrow') ? 'all' : b.dataset.t;
       render();
     }));
-    el.querySelectorAll('.bs-fixed').forEach(tr => tr.addEventListener('click', e => {
-      if (e.target.closest('[data-variant]')) return;
-      S.fixed = +tr.dataset.size;
-      S.sort = { key: 'lost', dir: 1 };
+    el.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => {
+      const key = b.dataset.sort;
+      S.sort = { key, dir: S.sort.key === key ? -S.sort.dir : (['rank', 'best'].includes(key) ? -1 : 1) };
+      render();
+    }));
+    el.querySelectorAll('.bs-pick').forEach(b => b.addEventListener('click', () => {
+      S.fixed = +b.dataset.size;
       render();
     }));
     el.querySelectorAll('[data-variant]').forEach(b => b.addEventListener('click', () =>
       ctx.openVariant(b.dataset.variant, b.dataset.board || S.selected)));
-    el.querySelector('#bs-sort').addEventListener('change', e => {
-      const key = e.target.value;
-      S.sort = { key, dir: ['rank', 'best'].includes(key) ? -1 : 1 };
-      render();
-    });
-    el.querySelector('#bs-sort-dir').addEventListener('click', () => { S.sort.dir = -S.sort.dir; render(); });
-    el.querySelectorAll('.bs-flop').forEach(tr => tr.addEventListener('click', () => {
-      S.selected = S.selected === tr.dataset.board ? null : tr.dataset.board;
+    el.querySelectorAll('.bs-open').forEach(b => b.addEventListener('click', () => {
+      S.selected = S.selected === b.dataset.board ? null : b.dataset.board;
       render();
     }));
     el.querySelectorAll('[data-browse]').forEach(b => b.addEventListener('click', e => {
       e.stopPropagation();
       ctx.openInBrowse(spotWithSize(S.rep, b.dataset.board, +b.dataset.browse), b.dataset.board);
     }));
+  }
+
+  /** A sortable column header: the button reverses on a second click. */
+  function sortHead(key, label, tip) {
+    const active = S.sort.key === key;
+    const aria = active ? (S.sort.dir === 1 ? 'descending' : 'ascending') : 'none';
+    const arrow = active ? (S.sort.dir === 1 ? ' ↓' : ' ↑') : '';
+    return `<th aria-sort="${aria}"${tip ? ` data-tip="${esc(tip)}"` : ''}>` +
+      `<button type="button" class="bs-sort" data-sort="${key}" style="${PLAIN_BTN}">${label}` +
+      `<span aria-hidden="true">${arrow}</span></button></th>`;
   }
 
   function tile(label, value, sub, tip) {
@@ -343,6 +377,20 @@ export function initBestSizeView(el, ctx) {
 }
 
 // ------------------------------------------------------ Browse panel ----
+
+/** Switch to REPORTS and open a saved sweep by name. The library is
+ *  reports.js's; this only clicks the entry once it renders (best effort). */
+function openSavedReport(name) {
+  document.querySelector('.tab[data-tab="reports"]')?.click();
+  const find = () => [...document.querySelectorAll('#rep-library .report-item')].find(b => b.title === name);
+  const hit = find();
+  if (hit) return hit.click();
+  let tries = 0;
+  const timer = setInterval(() => {
+    const entry = find();
+    if (entry || ++tries > 20) { clearInterval(timer); entry?.click(); }
+  }, 100);
+}
 
 /** Browse "find best size": at the first bet decision of the root street
  *  (OOP's root, or IP after a check), run a one-board sweep of that bet on
@@ -389,20 +437,27 @@ export function initBrowseBestSize(el, ctx) {
         body += `<div class="bs-browse-result"><div><b>Best ${fmtSize(v.best)}</b> · tie band ${bandText(v)}${edgeNote(v, grid)}</div>` +
           `${evCurve(row, { width: 240, height: 44, colors, grid })}` +
           `<div class="bs-browse-points mono">` + row.points.slice().sort((a, b) => a.size - b.size).map(p =>
-            `<span class="${near(p.size, v.best) ? 'bs-best' : ''}">${fmtSize(p.size)} <b>${fmtPct(p.ev_pct)}</b>${p.refined ? '*' : ''}</span>`).join('') +
-          `</div><div class="dim bs-note">EV of ${posName(S.rep.sweep.player)} in % pot per size (* refinement). Saved in REPORTS as “${esc(S.rep.name)}”.</div>` +
+            `<span class="${near(p.size, v.best) ? 'bs-best' : ''}">${fmtSize(p.size)} <b>${fmtPct(p.ev_pct)}</b>` +
+            `${p.refined ? ' <span class="bs-swatch bs-refined"></span>' : ''}</span>`).join('') +
+          `</div><div class="legend bs-legend">` +
+          `<span><span class="bs-swatch bs-refined"></span>refinement</span>` +
+          `<span><span class="bs-swatch" style="background:var(--panel);border:2px solid var(--accent);box-sizing:border-box"></span>best</span>` +
+          `<span class="dim">EV of ${esc(posName(S.rep.sweep.player))} in % pot</span></div>` +
+          `<div class="bs-browse-report"><span class="dim">saved</span> ` +
+          `<button type="button" class="btn ghost xs" id="bsb-report" data-tip="Open this sweep in REPORTS">${esc(S.rep.name)}</button></div>` +
           `<button type="button" class="btn ghost xs" id="bsb-use">SOLVE WITH ${fmtSize(v.best)}</button></div>`;
       }
     }
     const who = S.player != null ? posName(S.player) : '';
     el.innerHTML = `<div class="bs-browse-head"><b>Find best size</b>` +
       (S.key != null ? ` <span class="dim">${who}'s bet here</span>` : '') +
-      ` <span class="info-dot" tabindex="0" data-tip="Solves this board once per candidate size of this bet (the rest of the tree keeps the menu of the tree you are browsing), to 0.15% pot, plus up to 3 refinement solves between the best size's neighbours. Sizes whose EV gap is within the solves' combined exploitability count as tied. Runs in the background.">?</span></div>` +
+      ` <button type="button" class="info-dot" aria-label="How the size sweep solves" data-tip="Solves this board once per candidate size of this bet (the rest of the tree keeps the menu of the tree you are browsing), to 0.15% pot, plus up to 3 refinement solves between the best size's neighbours. Sizes whose EV gap is within the solves' combined exploitability count as tied. Runs in the background.">?</button></div>` +
       `<div class="bs-browse-row"><label>sizes % pot <input type="text" id="bsb-sizes" value="${esc(sizes)}"></label>` +
       (S.running ? `<button type="button" class="btn danger xs" id="bsb-stop">STOP</button>`
         : `<button type="button" class="btn xs" id="bsb-run" ${S.key == null ? 'disabled' : ''}>FIND</button>`) + `</div>` + body;
     el.querySelector('#bsb-run')?.addEventListener('click', run);
     el.querySelector('#bsb-stop')?.addEventListener('click', () => api.reportsStop().catch(() => {}));
+    el.querySelector('#bsb-report')?.addEventListener('click', () => openSavedReport(S.rep.name));
     el.querySelector('#bsb-use')?.addEventListener('click', () => {
       const row = S.rep.flops[0];
       ctx.openInBrowse(spotWithSize(S.rep, row.board, row.verdict.best), row.board);
