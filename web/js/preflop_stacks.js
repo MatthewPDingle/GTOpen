@@ -41,7 +41,8 @@ export function createSeatStacks(els, positionsFor, changed) {
   function render() {
     const body = table.querySelector('tbody');
     body.replaceChildren();
-    for (const p of positionsFor(+els.players.value)) {
+    const seats = positionsFor(+els.players.value);
+    for (const p of seats) {
       const tr = document.createElement('tr');
       const th = document.createElement('th');
       th.textContent = p;
@@ -53,7 +54,9 @@ export function createSeatStacks(els, positionsFor, changed) {
       input.addEventListener('input', () => { rows[p] = input.value; changed(); });
       td.append(input); tr.append(th, td); body.append(tr);
     }
-    const custom = Object.values(rows).some(v => String(v ?? '').trim());
+    // only the seats on screen count: a leftover entry for a seat this table
+    // no longer has must not claim the game uses custom stacks
+    const custom = seats.some(p => String(rows[p] ?? '').trim());
     summary.textContent = custom ? 'Stacks by seat (custom)' : 'Stacks by seat';
     if (custom) details.open = true;
   }

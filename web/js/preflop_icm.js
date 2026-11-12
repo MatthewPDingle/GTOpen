@@ -62,7 +62,8 @@ export function icmFromConfig(cfg) {
 }
 
 export function createIcmControls(els, positionsFor, changed) {
-  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '', edited: false };
+  let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '', edited: false,
+    rakePct: '', rakeCap: '' };
   const details = document.createElement('details');
   details.className = 'pfl-position-sizes pfl-icm';
   const summary = document.createElement('summary');
@@ -132,23 +133,42 @@ export function createIcmControls(els, positionsFor, changed) {
     if (state.on) details.open = true;
   }
   // ICM solves need rake 0: show it instead of zeroing the field silently.
+  // The fields show 0 only while ICM is on; the numbers the user entered are
+  // kept in `state`, so turning ICM off (now, or after loading another
+  // scenario) gives them back instead of leaving the 0 behind.
+  let holdingRake = false;
+  const rakeFields = () => [els.rakePct, els.rakeCap].filter(Boolean);
+  function releaseRake() {
+    holdingRake = false;
+    for (const el of rakeFields()) {
+      el.disabled = false;
+      el.closest('label')?.querySelector('.icm-rake')?.remove();
+    }
+  }
   function zeroRake(on) {
-    for (const el of [els.rakePct, els.rakeCap]) {
-      if (!el) continue;
-      if (on) {
-        if (!el.dataset.icmRake) {
-          el.dataset.icmRake = el.value;
-          el.value = '0';
-          el.disabled = true;
+    if (on) {
+      if (!holdingRake) {
+        // whatever the fields hold now is the user's own rake
+        state.rakePct = els.rakePct?.value ?? '';
+        state.rakeCap = els.rakeCap?.value ?? '';
+        holdingRake = true;
+      }
+      for (const el of rakeFields()) {
+        el.value = '0';
+        el.disabled = true;
+        if (!el.closest('label')?.querySelector('.icm-rake')) {
           const tag = document.createElement('span');
           tag.className = 'dim icm-rake';
           tag.textContent = 'ICM · 0';
           el.closest('label')?.append(' ', tag);
         }
-      } else if (el.dataset.icmRake) {
-        el.value = el.dataset.icmRake;
+      }
+    } else if (holdingRake) {
+      holdingRake = false;
+      for (const [el, saved] of [[els.rakePct, state.rakePct], [els.rakeCap, state.rakeCap]]) {
+        if (!el) continue;
+        el.value = saved ?? '';
         el.disabled = false;
-        delete el.dataset.icmRake;
         el.closest('label')?.querySelector('.icm-rake')?.remove();
       }
     }
@@ -192,9 +212,28 @@ export function createIcmControls(els, positionsFor, changed) {
         on: state.on, payouts: state.payouts, fieldCount: state.fieldCount,
         fieldStack: state.fieldStack, stage: state.stage, stackOff: state.stackOff,
       },
+      // the rake fields are showing ICM's 0; the scenario keeps the numbers
+      // to go back to, so turning ICM off after a load restores them
+      rakePct: +(state.rakePct || 0), rakeCap: +(state.rakeCap || 0),
     } : {}),
-    restore: value => { state = value?.icm ? { ...value.icm } : { ...state, on: false }; render(); },
-    load: cfg => { state = icmFromConfig(cfg); render(); },
+    restore: value => {
+      state = value?.icm ? { ...value.icm, rakePct: '', rakeCap: '' } : { ...state, on: false };
+      // a scenario stores the rake the user entered, never ICM's displayed 0
+      if (value?.icm) {
+        if (els.rakePct) els.rakePct.value = String(value.rakePct ?? els.rakePct.value ?? '');
+        if (els.rakeCap) els.rakeCap.value = String(value.rakeCap ?? els.rakeCap.value ?? '');
+      }
+      releaseRake(); // the fields now hold this scenario's own numbers
+      render();
+    },
+    load: cfg => {
+      state = icmFromConfig(cfg);
+      // a saved game keeps the rake it was solved with (0 under ICM)
+      if (els.rakePct) els.rakePct.value = String(cfg.rake_pct ?? 0);
+      if (els.rakeCap) els.rakeCap.value = String(cfg.rake_cap ?? 0);
+      releaseRake();
+      render();
+    },
     /** Show what the built game's values mean (the build response's `icm`). */
     showSummary: info => {
       status.hidden = !info;
