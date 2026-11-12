@@ -28,6 +28,14 @@ const DEFAULT_REALIZATION = 'balanced';
 const LEARNED_REALIZATION = 'leafnet';
 const currentModel = (m) => m === DEFAULT_REALIZATION || m === LEARNED_REALIZATION;
 
+// One window-level pointer release for the paint grid. Registering it inside
+// buildPaintGrid added a fresh handler every time the editor opened.
+let onPaintRelease = null;
+window.addEventListener('mouseup', () => { if (onPaintRelease) onPaintRelease(); });
+
+const CHIP_STYLE = 'display:inline-block;padding:1px 6px;border:1px solid var(--line2);' +
+  'border-radius:9px;font-size:10px;line-height:1.5;white-space:nowrap';
+
 function positionsFor(nPlayers) {
   const NAMED = {
     2: ['SB', 'BB'], // HU: SB is the button, acts first pre
@@ -86,10 +94,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // Range source: this game's solve, or Range Lab's canonical charts walked
   // as a tree (no build or solve). Each source keeps its own line.
   const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
-  const savedModelNote = document.createElement('div');
-  savedModelNote.className = 'pfl-saved-value-note'; savedModelNote.hidden = true;
-  savedModelNote.textContent = 'Saved game: keeps its original value model. RE-SOLVE continues it; BUILD GAME starts with the current model.';
-  els.mult.closest('.pfl-grid2').after(savedModelNote);
   const previewBanner = document.createElement('div');
   previewBanner.id = 'pfl-publication';
   previewBanner.className = 'pfl-preview-note hidden';
@@ -116,31 +120,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
   els.nodeTitle.after(nodeEvidence);
-  const equityModelNote = document.createElement('div');
-  equityModelNote.id = 'pfl-equity-model';
-  equityModelNote.className = 'dim hidden';
-  equityModelNote.style.cssText = 'font-size:11px;margin-top:4px';
-  els.status.after(equityModelNote);
-  function renderEquityModel(model) {
-    const legacy = model === 'legacy_product';
-    const coupled = model === 'coupled_deck_v1';
-    const table = model === 'three_way_table_v1';
-    equityModelNote.classList.toggle('hidden', !legacy && !coupled && !table);
-    equityModelNote.textContent = legacy
-      ? 'Multiway equity · legacy saved-game estimate'
-      : coupled ? 'Multiway equity · coupled-deck approximation'
-      : table ? 'Multiway equity · exact 3-way table (beta), coupled-deck for 4+' : '';
-    equityModelNote.dataset.tip = legacy
-      ? 'This saved game keeps its original product-of-heads-up equity approximation; RE-SOLVE continues it.'
-      : table
-      ? 'Three-player pots: showdown equity by hand class, all three hands from one deck, so card removal is exact (Monte-Carlo boards). Four or more: coupled hand-strength samples. Heads-up continuation is unchanged; the full postflop tree is not solved.'
-      : 'Three or more players: coupled hand-strength samples and showdown value after rake. Approximate, not jointly dealt cards \u2014 overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged; the full postflop tree is not solved.';
-  }
   const S = {
     built: false,
     formCfg: null,  // visible settings at build/load; independent of saved model metadata
     builtCfg: null, // actual engine config, including a loaded game's original model
     gameSaved: false, // current solve persisted via SAVE GAME / load (gates discard confirms)
+    savedName: null,  // on-disk name behind gameSaved (the save chip)
     cursor: [],     // action indices to the node being VIEWED
     lineP: [],      // the full line (cursor is always a prefix of it)
     lineHist: null, // /api/preflop/node history for lineP (ribbon source)
@@ -155,11 +140,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     runPct: 0,       // monotonic progress within the current run
     model: null,     // per-seat {mode, profile, implied, label}; hero seat
     applied: null,   // last model actually sent to the solver (drives 🔒)
-    appliedSeatsSig: '', // seat part of the model the solver actually has
+    appliedSeatSigs: [], // per-seat signatures of what the engine has
     appliedHero: null,   // hero seat the ENGINE actually has (null = off)
     heroPending: false,  // hero chosen but deferred until a solve exists
+    lastApplyWasSolve: false, // the badge reads "applied with this solve"
+    activeModel: null, // value model of the built/loaded game
+    multiwayModel: null, // multiway equity version reported by the engine
     postflopDirty: false, // tendencies edited since the last table push —
-                          // excluded from seatsSig (a postflop-only re-send
+                          // excluded from the seat signature (a postflop-only re-send
                           // must not read as "table changed"), but SOLVE and
                           // SAVE GAME re-send the table when set
     engineFrozen: null,  // engine-truth frozen mask from /status, if reported
@@ -182,6 +170,197 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // interpolating into innerHTML or attribute strings
   const esc = s => String(s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // ----- step rail: numbered steps follow the range source -----
+  // The page ships one rail for both sources. Range Lab charts skip the
+  // build/solve/model steps, so the shared steps are renumbered rather than
+  // explained in prose.
+  const stepEls = {};
+  {
+    const wanted = [
+      ['charts', /^1\s*·\s*CHOOSE THE CHARTS/i],
+      ['scenario', /^1\s*·\s*SET UP/i],
+      ['build', /^2\s*·\s*BUILD/i],
+      ['solve', /^3\s*·\s*SOLVE/i],
+      ['model', /^4\s*·\s*MODEL/i],
+      ['walk', /^5\s*·\s*SET UP THE PREFLOP/i],
+      ['send', /^6\s*·\s*SEND/i],
+    ];
+    for (const el of document.querySelectorAll('#view-preflop .pfl-step')) {
+      const text = el.textContent.trim();
+      const hit = wanted.find(([, re]) => re.test(text));
+      if (hit && !stepEls[hit[0]]) stepEls[hit[0]] = el;
+    }
+  }
+  const STEP_LABELS = { scenario: 'SCENARIO', build: 'BUILD', solve: 'SOLVE', model: 'MODEL', walk: 'WALK', send: 'SEND', charts: 'CHARTS' };
+  const RAIL = {
+    solve: ['scenario', 'build', 'solve', 'model', 'walk', 'send'],
+    charts: ['charts', 'walk', 'send'],
+  };
+  const railOrder = () => RAIL[canon.on ? 'charts' : 'solve'];
+  function renderStepRail() {
+    const order = railOrder();
+    for (const [key, el] of Object.entries(stepEls)) {
+      const at = order.indexOf(key);
+      el.classList.toggle('hidden', at < 0);
+      if (at < 0) continue;
+      el.textContent = `${at + 1} · ${STEP_LABELS[key]}`;
+      // the rail names the step; the panel below carries the detail
+      delete el.dataset.tip;
+      el.removeAttribute('tabindex');
+    }
+  }
+
+  // ----- save state chip (the button says when it can run, the chip why) -----
+  const saveChip = document.createElement('div');
+  saveChip.id = 'pfl-save-state';
+  saveChip.className = 'dim mono';
+  saveChip.style.cssText = 'font-size:10px;margin-top:4px;display:flex;gap:5px;align-items:center;flex-wrap:wrap';
+  els.saveGame.closest('.btn-row').after(saveChip);
+  function renderSaveState() {
+    saveChip.classList.toggle('hidden', canon.on);
+    els.saveGame.classList.toggle('hidden', canon.on);
+    if (canon.on) return;
+    const solved = S.built && lastIter >= 1;
+    els.saveGame.disabled = !solved;
+    if (!solved) {
+      saveChip.textContent = S.built ? 'no solve yet · SAVE needs one' : 'nothing built yet';
+      saveChip.dataset.tip = 'A save stores the solved strategies.';
+      return;
+    }
+    const name = S.gameSaved && S.savedName ? S.savedName : `${S.positions.length}-max ${els.stack.value}bb`;
+    saveChip.innerHTML = `<span>${esc(name)}</span><span>·</span><span>iter ${lastIter}</span><span>·</span>` +
+      `<b style="color:${S.gameSaved ? '#8fbf8a' : '#e4c377'}">${S.gameSaved ? 'saved' : 'unsaved'}</b>`;
+    saveChip.dataset.tip = S.gameSaved
+      ? 'On disk. Solving or changing the table makes it unsaved.'
+      : 'Not on disk. SAVE writes the current solution.';
+  }
+
+  // ----- export card: preconditions + what is sent, in one place -----
+  const exportCard = document.createElement('div');
+  exportCard.id = 'pfl-export-card';
+  exportCard.style.cssText = 'margin-top:6px;padding:8px;border:1px solid var(--line2);border-radius:4px;font-size:11px;line-height:1.5';
+  els.exportBtn.after(exportCard);
+  const exportBody = document.createElement('div');
+  exportCard.append(exportBody, els.exportBtn);
+  els.exportBtn.textContent = 'SEND';
+  function renderExportCard(continuation = null) {
+    const v = S.view;
+    if (!v) {
+      exportBody.innerHTML = `<div class="pfl-step" style="margin:0 0 4px">POSTFLOP SETUP</div>` +
+        `<div><span style="color:#c96a5f">\u2717</span> flop reached</div>` +
+        `<div><span style="color:#c96a5f">\u2717</span> heads-up flop</div>` +
+        `<div><span style="color:#c96a5f">\u2717</span> strategy at iter \u2265 2</div>`;
+      els.exportBtn.disabled = true;
+      return;
+    }
+    exportCard.classList.remove('hidden');
+    const flop = v.kind === 'pot_share';
+    const live = flop ? v.positions.filter((_, i) => v.live[i]) : [];
+    const three = !canon.on && !!v.exportable3;
+    const two = !!v.exportable && !three;
+    const solved = canon.on ? !!v.exportable : lastIter >= 2;
+    const ready = !!(flop && (two || three) && solved);
+    els.exportBtn.disabled = !ready;
+    const tick = (ok, label) => `<div><span style="color:${ok ? '#8fbf8a' : '#c96a5f'}">${ok ? '\u2713' : '\u2717'}</span> ${label}</div>`;
+    const cfg = !canon.on && S.builtCfg ? JSON.parse(S.builtCfg) : {};
+    const dest = !flop ? 'POSTFLOP SETUP'
+      : three ? 'POSTFLOP · 3-WAY'
+      : live.length === 2 ? 'POSTFLOP · 2-WAY'
+      : `POSTFLOP · ${live.length}-WAY`;
+    const rows = [];
+    if (flop) {
+      rows.push(['ranges', live.join(' · ')]);
+      rows.push(['pot', `${v.pot.toFixed(1)} bb`]);
+      const stack = canon.on ? v.game?.depth : cfg.stack;
+      if (stack != null) rows.push(['stack', `${Number(stack)} bb`]);
+      const rakePct = canon.on ? Number(els.canonRakePct.value) || 0 : Number(cfg.rake_pct) || 0;
+      const rakeCap = canon.on ? Number(els.canonRakeCap.value) || 0 : Number(cfg.rake_cap) || 0;
+      rows.push(['rake', rakePct ? `${rakePct}%${rakeCap ? ` · cap ${rakeCap} bb` : ' · uncapped'}` : 'none']);
+      if (canon.on) rows.push(['source', 'Range Lab chart']);
+      else rows.push(['models', live.map(p => {
+        const i = S.positions.indexOf(p);
+        const m = i >= 0 ? S.model?.seats[i] : null;
+        return m && m.mode === 'ruled' ? `${p} ${m.label}` : `${p} solver`;
+      }).join(' · ')]);
+      let aggressor = null;
+      takenSteps(S.cursor.length).forEach(st => { if (st.kind === 'raise' || st.kind === 'jam') aggressor = st.pos; });
+      rows.push(['aggressor', aggressor || 'none']);
+    }
+    exportBody.innerHTML =
+      `<div class="pfl-step" style="margin:0 0 4px">${dest}</div>` +
+      (canon.on
+        ? tick(flop, 'flop reached') + tick(!!v.exportable, 'Range Lab chart')
+        : tick(flop, 'flop reached') + tick(two || three, three ? `${live.length} players` : 'heads-up, stacks left') +
+          tick(lastIter >= 2, `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`)) +
+      (rows.length ? `<dl style="display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin:6px 0 0">` +
+        rows.map(([k, val]) => `<dt class="dim" style="margin:0">${k}</dt><dd style="margin:0;text-align:right">${esc(String(val))}</dd>`).join('') +
+        `</dl>` : '') +
+      (!ready && flop && !two && !three
+        ? `<div class="dim" style="margin-top:6px">The postflop solver is heads-up only; this line reaches the flop <b>${live.length}-way</b>.</div>`
+        : '') +
+      (!ready && flop && !solved && !canon.on ? `<div class="dim" style="margin-top:6px">Solve to iteration 2 first.</div>` : '');
+    if (!ready && flop && !two && !three) {
+      const b = document.createElement('button');
+      b.className = 'btn ghost xs';
+      b.textContent = 'GO TO SETUP \u2192';
+      b.addEventListener('click', gotoSetup);
+      exportBody.append(b);
+    }
+    if (continuation) exportBody.appendChild(continuation);
+  }
+
+  // ----- status chips (state · iter · gap · measured · engine) -----
+  const statusChips = document.createElement('div');
+  statusChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center';
+  const statusWarn = document.createElement('div');
+  statusWarn.id = 'pfl-status-warn';
+  statusWarn.setAttribute('role', 'status');
+  statusWarn.style.cssText = 'margin-top:3px;line-height:1.4';
+  els.status.replaceChildren(statusChips, statusWarn);
+  delete els.status.dataset.tip; // the chips carry their own tips
+  els.applyBtn.dataset.tip = 'Sends the staged table and hero. A changed table resets learning; SOLVE does this automatically.';
+  function statusChip(label, tip) {
+    const el = document.createElement('span');
+    el.style.cssText = CHIP_STYLE;
+    el.textContent = label;
+    if (tip) el.dataset.tip = tip;
+    return el;
+  }
+
+  // ----- model strip: value model + multiway equity in one place -----
+  const modelStrip = document.createElement('div');
+  modelStrip.id = 'pfl-model-strip';
+  modelStrip.className = 'dim';
+  modelStrip.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin:4px 0 6px';
+  if (stepEls.model) stepEls.model.after(modelStrip);
+  else els.modelBox.before(modelStrip);
+  const MULTIWAY_LABEL = {
+    coupled_deck_v1: 'coupled-deck',
+    three_way_table_v1: 'exact 3-way (beta)',
+    legacy_product: 'legacy product',
+  };
+  const MULTIWAY_TIP = {
+    coupled_deck_v1: 'Three or more players: coupled hand-strength samples and showdown value after rake. Approximate, not jointly dealt cards \u2014 overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged; the full postflop tree is not solved.',
+    three_way_table_v1: 'Three-player pots: showdown equity by hand class, all three hands from one deck, so card removal is exact (Monte-Carlo boards). Four or more: coupled hand-strength samples. Heads-up continuation is unchanged; the full postflop tree is not solved.',
+    legacy_product: 'This saved game keeps its original product-of-heads-up equity approximation. BUILD GAME starts with the current model.',
+  };
+  function renderModelStrip() {
+    const visible = S.built && !canon.on;
+    modelStrip.classList.toggle('hidden', !visible);
+    if (!visible) return;
+    const value = S.activeModel || 'unknown';
+    const legacy = !currentModel(value);
+    modelStrip.replaceChildren(
+      statusChip(`value · ${value}${legacy ? ' · saved' : ''}`,
+        legacy
+          ? 'Saved game: keeps its original value model. RE-SOLVE continues it; BUILD GAME starts with the current model.'
+          : 'Value model of the built game.'),
+      ...(S.multiwayModel ? [statusChip(`multiway · ${MULTIWAY_LABEL[S.multiwayModel] || S.multiwayModel}`,
+        MULTIWAY_TIP[S.multiwayModel] || '')] : []),
+      ...(legacy ? [(() => { const el = statusChip('RE-SOLVE continues it'); el.style.borderStyle = 'dashed'; return el; })()] : []),
+    );
+  }
 
   // Model-library deletion is reversible and local to this browser. Keep the
   // source templates/files and profiles embedded in games intact.
@@ -542,24 +721,36 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   // ----- build / solve -----
 
-  // One progress bar serves both phases. Build progress is an estimate:
-  // expected node count from the size estimator divided by a build rate
-  // that self-calibrates from every real build (localStorage). Solve
-  // progress is real: iterations vs the requested maximum.
+  // One progress strip, always under the solve step. Solve progress is real
+  // (iterations and gap); a build cannot know its own progress, so it shows
+  // the phase, the planned size and elapsed time, never a percentage.
   const SOLVE_ITERS = 3000;
+  els.stop.after(els.prog); // stable position: under 3 · SOLVE, for build, load and resumed runs
+  els.prog.dataset.tip = 'Build: phase, nodes and elapsed time. Solve: iterations and gap toward 0.005 bb.';
   const progFill = els.prog.querySelector('i');
   const progLab = els.prog.querySelector('span');
-  function progressDock(afterEl) {
-    if (els.prog.previousElementSibling !== afterEl) {
-      afterEl.insertAdjacentElement('afterend', els.prog);
-    }
-  }
+  let progPulse = null;
   function progressSet(pct, label) {
+    clearInterval(progPulse); progPulse = null;
     els.prog.classList.remove('hidden');
     progFill.style.width = `${Math.max(0, Math.min(100, pct)).toFixed(1)}%`;
     progLab.textContent = label;
   }
+  // Indeterminate build: the bar sweeps while the label carries the facts.
+  function progressPulse(labelFn) {
+    clearInterval(progPulse);
+    els.prog.classList.remove('hidden');
+    const t0 = performance.now();
+    const tick = () => {
+      const el = performance.now() - t0;
+      progFill.style.width = `${(10 + (el % 1400) / 1400 * 80).toFixed(1)}%`;
+      progLab.textContent = labelFn(el);
+    };
+    tick();
+    progPulse = setInterval(tick, 150);
+  }
   function progressHide() {
+    clearInterval(progPulse); progPulse = null;
     els.prog.classList.add('hidden');
   }
 
@@ -578,34 +769,23 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.build.disabled = true;
     els.solve.disabled = true;
     els.buildInfo.textContent = '';
+    progressPulse(() => 'counting · tree size…');
     let expected = 0;
     try { expected = (await api.pfEstimate(cfg)).nodes || 0; } catch { /* build reports errors */ }
     const eqCold = !localStorage.getItem('pfl-eq-built');
-    const rate = +localStorage.getItem('pfl-build-rate') || 150000; // nodes/s
     const t0 = performance.now();
-    progressDock(els.build); // building: the bar belongs to step 2
-    const tick = () => {
-      const secs = (performance.now() - t0) / 1000;
-      const pct = expected > 0 ? Math.min(94, (100 * secs * rate) / expected) : Math.min(94, secs * 12);
-      progressSet(pct, eqCold
-        ? 'building — loading the equity cache (first build computes it)…'
-        : `building ${expected.toLocaleString()} nodes · ~${Math.round(pct)}%`);
-    };
-    tick();
-    const timer = setInterval(tick, 150);
+    progressPulse(el => `building · ${eqCold ? 'equity cache' : 'allocating'} · ` +
+      `${expected ? `${expected.toLocaleString()} nodes · ` : ''}${Math.round(el / 1000)} s`);
     try {
       const info = await api.pfBuild(cfg, els.eq3?.checked ? 'three_way_table_v1' : null);
-      renderEquityModel(info.multiway_equity_model);
+      S.multiwayModel = info.multiway_equity_model || S.multiwayModel;
+      renderModelStrip();
       icmControls.showSummary(info.icm);
-      const secs = (performance.now() - t0) / 1000;
-      if (info.nodes > 20000 && secs > 0.2) {
-        localStorage.setItem('pfl-build-rate', String(Math.round(info.nodes / secs)));
-      }
       localStorage.setItem('pfl-eq-built', '1');
       S.built = true;
       S.activeModel = cfg.realization;
-      savedModelNote.hidden = true;
       S.gameSaved = false; // fresh tree: nothing of it is on disk
+      S.savedName = null;
       S.builtCfg = JSON.stringify(cfg);
       S.formCfg = JSON.stringify(cfg);
       S.positions = cfg.positions;
@@ -616,9 +796,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         hero: null,
       };
       S.applied = null;
-      S.appliedSeatsSig = seatsSig();
+      S.appliedSeatSigs = S.model.seats.map(seatSigOf);
       S.appliedHero = null;
       S.heroPending = false;
+      S.lastApplyWasSolve = false;
       S.postflopDirty = false;
       S.engineFrozen = null;
       S.lastGaps = null;
@@ -626,9 +807,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       renderModel();
       els.buildInfo.textContent =
         `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB CPU arenas`;
-      progressSet(100, 'built ✓');
+      progressSet(100, 'built \u2713');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
       lastIter = 0;
+      renderSaveState();
+      renderModelStrip();
       clearRightPanel(); // uniform pre-solve strategies aren't worth showing
       startPolling();
       return true;
@@ -639,7 +822,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       updateEstimate(); // re-sync the size line with the caps that refused us
       return false;
     } finally {
-      clearInterval(timer);
+      clearInterval(progPulse); progPulse = null;
       els.build.disabled = false;
       els.solve.disabled = false;
     }
@@ -654,27 +837,28 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (!S.built || S.formCfg !== JSON.stringify(config())) {
         if (!(await buildGame())) return;
       }
-      // picking archetypes without APPLY MODEL then re-solving is the
-      // natural flow — make the button do the right thing, like auto-build.
-      // A deferred hero (pfHero refused pre-solve) also lands here: the
-      // table part no-ops and pfHero succeeds against the solved table.
-      // postflopDirty: tendencies edits don't count as "table changed" (no
-      // learning reset either side), but the engine's profile copy is stale
-      // until re-sent — push it so saves/exports carry the edited player.
-      if (S.model && (!modelSynced() || S.postflopDirty)) {
-        if (!(await applyModel())) return;
+      // staged table/hero edits apply here, so SOLVE is always one button:
+      // the table part no-ops when nothing changed. A deferred hero is
+      // re-applied when the run ends (the engine needs a solved table).
+      // postflopDirty: tendencies edits don't reset learning on either side,
+      // but the engine's profile copy is stale until re-sent — push it so
+      // saves/exports carry the edited player.
+      if (S.model && (pendingChanges().length || S.postflopDirty)) {
+        if (!(await applyModel({ fromSolve: true, quiet: true }))) return;
       }
+      // the table in the engine is the one being solved, whatever was staged
+      S.lastApplyWasSolve = true;
+      renderApplyState();
       // every seat modeled/frozen and no hero = the solver has nothing to
-      // learn: the grids will just show the profiles. Say so — silently
-      // "converging" in 0 iterations reads like a broken solve.
+      // learn: the grids will just show the profiles.
       if (S.model && S.model.hero == null && S.model.seats.every(m => m.mode !== 'live')) {
-        toast('Every seat is a profile or frozen and no HERO is set \u2014 there is nothing to solve; the grids show the profiles as they are. Pick a HERO and SOLVE to solve your seat only.', true);
+        toast('Every seat is fixed and no HERO is set — nothing to solve; the grids show those profiles.', true);
       }
-      progressDock(els.stop); // solving: the bar belongs to step 3
-      progressSet(0, 'solving…');
+      progressSet(0, 'solving');
       const request = { iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 };
       await api.pfSolve(earlyPreviewRequest(request, previewCheck.checked, await previewCapability));
       S.gameSaved = false; // strategies are moving away from any on-disk copy
+      renderSaveState();
       startPolling();
     } catch (e) { toast(errText(e), true); progressHide(); }
     finally { els.solve.disabled = false; }
@@ -710,6 +894,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   els.saveGame.addEventListener('click', async () => {
     if (!S.built || lastIter < 1) return toast('solve something first — a save stores the solved strategies', true);
+    if (pendingChanges().length) return toast('APPLY the unapplied table changes first — SAVE stores the engine’s table', true);
     const def = `${S.positions.length}-max ${els.stack.value}bb iter${lastIter}`;
     const raw = window.prompt('save game as…', def);
     if (!raw || !raw.trim()) return;
@@ -728,10 +913,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (S.postflopDirty && !(await applyModel())) return;
       const out = await api.pfSaveGame(name);
       S.gameSaved = true; // it IS the on-disk copy now
+      S.savedName = name;
+      renderSaveState();
       toast(`game saved — "${name}" (iter ${out.iteration})`);
       refreshSavedGames();
     } catch (e) { toast(e.message, true); }
-    finally { els.saveGame.disabled = false; }
+    finally { els.saveGame.disabled = false; renderSaveState(); }
   });
 
   els.savedSel.addEventListener('change', async () => {
@@ -746,12 +933,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         !confirm('The current game has not been saved — loading discards its solve. Continue?')) {
       return;
     }
-    progressDock(els.build);
     progressSet(40, `loading “${name}”…`);
     try {
       const out = await api.pfLoadGame(name);
       await applyLoadedGame(name, out);
-      progressSet(100, 'loaded ✓');
+      progressSet(100, 'loaded \u2713');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
     } catch (e) { progressHide(); toast(e.message, true); }
   });
@@ -781,10 +967,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.activeModel = cfg.realization || 'static';
     if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
     leafNets.load(cfg);
-    savedModelNote.hidden = currentModel(S.activeModel);
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
+    S.savedName = opts.onDisk !== false ? name : null;
     S.builtCfg = JSON.stringify(cfg);
     S.formCfg = JSON.stringify(config());
     S.positions = cfg.positions;
@@ -818,16 +1004,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       hero,
     };
     S.applied = S.model.seats.map(m => m.mode);
-    S.appliedSeatsSig = seatsSig();
+    S.appliedSeatSigs = S.model.seats.map(seatSigOf);
     S.appliedHero = hero; // adopted engine truth (frozen arrives via /status)
     S.heroPending = false;
+    S.lastApplyWasSolve = false;
     S.postflopDirty = false;
     S.engineFrozen = null;
     S.lastGaps = null;
+    S.multiwayModel = out.multiway_equity_model || null;
     closeEditor();
     renderModel();
+    renderModelStrip();
     lastIter = out.iteration;
-    renderEquityModel(out.multiway_equity_model);
+    renderSaveState();
     icmControls.showSummary(out.icm);
     els.buildInfo.textContent =
       `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
@@ -849,7 +1038,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     let st;
     try { st = await api.pfStatus(); } catch { return; }
     if (!st.state) return;
-    if (st.multiway_equity_model !== undefined) renderEquityModel(st.multiway_equity_model);
+    if (st.multiway_equity_model !== undefined && st.multiway_equity_model !== S.multiwayModel) {
+      S.multiwayModel = st.multiway_equity_model;
+      renderModelStrip();
+    }
     // Engine truth: newer servers report "hero" (number|null) and "frozen"
     // (bool array) on /status. Absent fields mean an older server — treat
     // them as unknown, never as hero-off.
@@ -858,8 +1050,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       if (S.heroPending) {
         // waiting for a deferred hero: clear the flag once the engine has it
         if (srvHero === S.model.hero) { S.heroPending = false; S.appliedHero = srvHero; }
-      } else if (srvHero !== S.model.hero) {
-        S.model.hero = srvHero; // resync the dropdown with the engine
+      } else if (S.model.hero === S.appliedHero) {
+        // nothing staged: adopt the engine's hero
+        if (srvHero !== S.model.hero) S.model.hero = srvHero;
+        S.appliedHero = srvHero;
+      } else {
+        // a staged hero stays chosen; record the engine's actual state
         S.appliedHero = srvHero;
       }
     }
@@ -875,23 +1071,20 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       previewCheck.disabled = running;
       if (!running) previewCapability.then(supported => { previewCheck.disabled = S.solveRunning || !supported; });
     }
-    let gaps = '';
+    let gapChip = null;
     if (st.gaps && st.gaps.length) {
-      gaps = st.gaps.length <= 2
-        ? ` · BR gap ${st.gap_total.toFixed(4)} bb (${st.gaps.map(g => g.toFixed(3)).join(' / ')})`
-        : ` · BR gap ${st.gap_total.toFixed(4)} bb (worst seat ${Math.max(...st.gaps).toFixed(3)})`;
-      els.status.dataset.tip =
-        'Best-response gap: how much each seat could gain by deviating (bb). The total counts only the seats still learning — ' +
-        'a frozen or ruled seat’s gap is its BLEED against its pinned strategy and never converges. ' +
-        st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · ');
+      gapChip = statusChip(`gap ${st.gap_total.toFixed(4)} \u2192 0.0050`,
+        'Best-response gap: how much each seat could still gain by deviating (bb). Only seats still learning converge; ' +
+        'a frozen or ruled seat’s gap is its BLEED against its pinned strategy. ' +
+        st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · '));
       S.lastGaps = st.gaps;
     } else if (st.accuracy_iteration === null) {
       S.lastGaps = null; // a changed model must not retain the old gap claim
     }
     renderModel(); // cheap: it skips unless its rendered state changed
-    const engine = st.gpu ? '\u26a1 GPU \u00b7 ' : '';
-    const note = !st.gpu && st.gpu_note ? ` \u00b7 ${st.gpu_note}` : '';
-    const err = st.error ? ` \u00b7 ${st.error}` : ''; // a crashed worker is not a STOP
+    const engine = st.gpu ? statusChip('\u26a1 GPU', 'Solving on CUDA.')
+      : statusChip('CPU', st.gpu_note || 'Solving on CPU.');
+    const err = st.error || ''; // a crashed worker is not a STOP
     // the engine could not load the calibrated fit and priced with the static
     // model: say so every time, and toast it once per session
     // Keep fallback diagnostics without reintroducing retired model choices.
@@ -900,16 +1093,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       currentModel(S.activeModel)
         ? 'using showdown-equity estimates until the fit is available'
         : 'using the saved game’s fallback values until the fit is available');
-    const rnote = realizationNote ? ` \u00b7 ${realizationNote}` : '';
     if (st.realization_note && S.lastRealizationNote !== st.realization_note) {
       S.lastRealizationNote = st.realization_note;
       toast(realizationNote, true);
     }
     const shown = publishedIteration(st);
-    const snapshot = st.published_iteration !== undefined ? ` · displayed ${shown}` : '';
-    const accuracyAt = st.accuracy_iteration != null ? ` · measured at ${st.accuracy_iteration}` : '';
-    els.status.textContent = `${engine}${st.state} · iter ${st.iteration}${snapshot}${gaps}${accuracyAt}${note}${err}${rnote}${st.preview_note ? ` · ${st.preview_note}` : ''}`;
-    els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? '3 · RE-SOLVE' : '3 · SOLVE';
+    const chips = [statusChip(st.state, 'Solver state.')];
+    chips.push(statusChip(`iter ${st.iteration}`, 'Iterations completed; the counter survives resumes and loads.'));
+    if (st.published_iteration !== undefined) {
+      chips.push(statusChip(`displayed ${shown}`, 'Iteration of the strategy snapshot on screen.'));
+    }
+    if (gapChip) chips.push(gapChip);
+    if (st.accuracy_iteration != null) {
+      chips.push(statusChip(`measured @ ${st.accuracy_iteration}`, 'Iteration of the last accuracy measurement.'));
+    }
+    chips.push(engine);
+    statusChips.replaceChildren(...chips);
+    const warnings = [err, realizationNote, st.preview_note || ''].filter(Boolean);
+    statusWarn.textContent = warnings.join(' \u00b7 ');
+    statusWarn.classList.toggle('hidden', !warnings.length);
+    statusWarn.style.color = err ? '#e8847a' : '';
+    els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? 'RE-SOLVE' : 'SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
     // run timer: wall-clock since this run started (or since the page found
@@ -917,7 +1121,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const secs = Math.max(0, Math.round((Date.now() - (S.runStart || Date.now())) / 1000));
     const clock = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
     if (st.state === 'running') {
-      progressDock(els.stop); // covers resumed sessions discovering a live solve
       if (S.lastState !== 'running') {
         S.gap0 = null;
         S.runPct = 0;
@@ -938,13 +1141,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
       let label;
       if (st.phase === 'publishing') {
-        label = `iter ${st.iteration} · ${clock} · publishing strategy preview…`;
+        label = `solving · iter ${st.iteration} · ${clock} · publishing preview…`;
       } else if (st.phase === 'measuring') {
-        label = `iter ${st.iteration} · ${clock} · measuring accuracy…`;
+        label = `solving · iter ${st.iteration} · ${clock} · measuring accuracy…`;
       } else if (st.gap_total > 0) {
-        label = `iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} → 0.0050 bb`;
+        label = `solving · iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} \u2192 0.0050`;
       } else {
-        label = `iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : previewCheck.checked ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
+        label = `solving · iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : previewCheck.checked ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
       }
       progressSet(S.runPct, label);
     } else if (S.lastState === 'running') {
@@ -957,7 +1160,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         progressSet(100, `stopped — ${st.error}`);
         toast(st.error, true);
       } else {
-        progressSet(100, `${solveCompletionLabel(st)} · ${clock}`);
+        progressSet(100, `done · ${solveCompletionLabel(st)} · ${clock}`);
       }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
@@ -969,6 +1172,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (nextPublicationKey !== lastPublicationKey && S.built) {
       lastPublicationKey = nextPublicationKey;
       lastIter = shown;
+      renderSaveState();
       refresh(); // only a coherent published snapshot changed
     }
     if (st.state !== 'running' && S.polling && shown === lastIter) {
@@ -1036,7 +1240,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.nodeTitle.textContent = '';
     renderModelEvidence(nodeEvidence, null);
     els.seats.innerHTML = '';
-    els.exportBtn.disabled = true;
+    S.view = null;
+    renderExportCard();
     hideGrid();
     rangeLab?.update(null);
   }
@@ -1212,8 +1417,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
     previewBanner.classList.toggle('hidden', !v.publication);
     previewBanner.classList.toggle('converged', !!v.publication?.converged);
-    els.exportBtn.textContent = v.publication && !v.publication.converged ? 'SEND PREVIEW TO POSTFLOP SETUP' : 'SEND TO POSTFLOP SETUP';
-    els.exportBtn.disabled = true;
     renderModelEvidence(nodeEvidence, v.model_evidence);
     rangeLab?.update(canon.on ? null : matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
@@ -1226,10 +1429,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
     if (v.strategy_note) {
       hideGrid();
+      renderExportCard();
       els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
       els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No Range Lab chart here" : v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
       return;
     }
+    let continuation = null;
     if (v.kind === 'action') {
       const colors = actionColors(v.actions);
       // headline: who acts, and what (if anything) they're facing
@@ -1248,8 +1453,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       paintGrid();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
-        `Grid = <b>${esc(v.actor_pos)}</b>'s play with every starting hand at this point. ` +
-        `Hover a cell for exact numbers.`;
+        `Grid = <b>${esc(v.actor_pos)}</b> · hover a cell for exact numbers.`;
       if (canon.on) {
         els.gridCap.innerHTML =
           `Grid = <b>${esc(v.actor_pos)}</b>'s Range Lab chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
@@ -1304,53 +1508,29 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.legend.innerHTML =
         `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
       els.gridCap.innerHTML = '';
-      if (v.exportable3 && !canon.on) {
-        els.exportBtn.disabled = false;
-        els.exportBtn.textContent = 'SEND TO 3-WAY SETUP';
-        els.gridCap.innerHTML =
-          'SEND TO 3-WAY SETUP carries the arriving ranges, pot, stacks and rake into the ' +
-          '3-WAY tab (in postflop action order).';
-      }
-      if (v.exportable) {
-        els.exportBtn.disabled = false;
-        els.gridCap.innerHTML =
-          'The grid shows each player\u2019s arriving range \u2014 the conditional ranges ' +
-          'SEND TO POSTFLOP SETUP carries into SETUP, with this pot, stack and rake.';
-        if (v.continuation) {
-          const estimate = v.continuation;
-          const estimateNote = estimate.model === 'calibrated'
-            ? estimate.note.replace('The calibrated model', 'This saved game’s value model')
-            : estimate.note;
-          const detail = document.createElement('details');
-          detail.className = 'pfl-continuation';
-          const rows = [
-            ['Pot', estimate.pot_bb],
-            ...estimate.players.map(p => [`${p.position} estimated value`, p.value_bb]),
-            ['Combined value', estimate.total_value_bb],
-            ['Unallocated amount', estimate.unallocated_bb],
-          ];
-          detail.innerHTML = `<summary>Preflop continuation estimate</summary>` +
-            `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
-              `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
-            `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
-            `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
-            `<p>${esc(estimateNote)}</p></div></div>`;
-          els.gridCap.appendChild(detail);
-        }
-      } else {
-        // 3+ players see the flop: the postflop solver is heads-up only
-        els.gridCap.innerHTML =
-          `The postflop solver is heads-up only; this line reaches the flop ` +
-          `<b>${live.length}-way</b>. Branch the ribbon onto a line where exactly two ` +
-          `players see the flop, or set up a spot with your own ranges in SETUP. `;
-        const b = document.createElement('button');
-        b.className = 'btn ghost';
-        b.textContent = 'GO TO SETUP →';
-        b.style.marginLeft = '6px';
-        b.addEventListener('click', gotoSetup);
-        els.gridCap.appendChild(b);
+      if (v.continuation) {
+        const estimate = v.continuation;
+        const estimateNote = estimate.model === 'calibrated'
+          ? estimate.note.replace('The calibrated model', 'This saved game’s value model')
+          : estimate.note;
+        const detail = document.createElement('details');
+        detail.className = 'pfl-continuation';
+        const rows = [
+          ['Pot', estimate.pot_bb],
+          ...estimate.players.map(p => [`${p.position} estimated value`, p.value_bb]),
+          ['Combined value', estimate.total_value_bb],
+          ['Unallocated amount', estimate.unallocated_bb],
+        ];
+        detail.innerHTML = `<summary>Preflop continuation estimate</summary>` +
+          `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
+            `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
+          `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
+          `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
+          `<p>${esc(estimateNote)}</p></div></div>`;
+        continuation = detail;
       }
     }
+    renderExportCard(continuation);
   }
 
   // ----- 4 · MODEL THE PLAYERS -----
@@ -1386,6 +1566,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let modelSigRendered = null;
   function renderModel() {
     if (!els.modelBox) return;
+    renderApplyState();
     renderModelManager();
     syncModelColors();
     els.ribbon.querySelectorAll('[data-model-seat]').forEach(el => {
@@ -1405,7 +1586,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       saved: SAVED_PROFILES,
       deleted: [...deletedModels],
       hero: S.model.hero,
-      pending: !!S.heroPending,
       running: !!S.solveRunning,
     });
     if (sig === modelSigRendered) return;
@@ -1434,10 +1614,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           '</optgroup>';
       }
       sel.innerHTML = html;
-      sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) \u00b7 ' +
-        'Frozen = pinned to its current strategy (needs a solve first) \u00b7 ' +
-        'a profile is generated from the current solve \u00b7 saved profiles load a player ' +
-        'from disk onto any seat of any game.';
+      sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) · ' +
+        'Frozen = pinned to its current strategy (needs a solve) · a profile bends the solve ' +
+        'to its stats · saved players load from disk.';
       const want = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
       if (!Array.from(sel.options).some(o => o.value === want)) {
         // the seat's profile matches no option (e.g. a loaded game's
@@ -1475,14 +1654,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       els.modelBox.appendChild(row);
     });
-    // hero options ("pending" = chosen, but the engine deferred it until a
-    // solve exists to freeze — it re-applies automatically after that pass)
+    // hero options: staged like every other table edit (the badge carries
+    // what is not on the engine yet)
     const hero = els.hero;
     const cur = S.model.hero == null ? '' : String(S.model.hero);
     hero.innerHTML = '<option value="">off</option>' +
-      S.positions.map((p, i) => `<option value="${i}">${
-        S.heroPending && S.model.hero === i ? `${esc(p)} (pending)` : esc(p)
-      }</option>`).join('');
+      S.positions.map((p, i) => `<option value="${i}">${esc(p)}</option>`).join('');
     hero.value = cur;
     hero.disabled = !!S.solveRunning; // hero changes are refused mid-solve
   }
@@ -1533,74 +1710,94 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       toast(errText(e), true);
     }
     if (S.editSeat === i && m.mode !== 'ruled') closeEditor();
+    S.lastApplyWasSolve = false;
     renderModel();
     if (S.editSeat === i) openEditor(i);
   }
 
-  const seatsSig = () => S.model ? JSON.stringify(
-    S.model.seats.map(m => ({ mode: m.mode, profile: m.mode === 'ruled' ? m.profile : null }))) : '';
-  // In sync when the engine has both the seat models AND the hero choice —
-  // a deferred/failed hero leaves appliedHero behind, so the next SOLVE
-  // knows to re-apply it (the engine only accepts hero on a solved table).
-  const modelSynced = () => seatsSig() === S.appliedSeatsSig &&
-    (S.model ? S.model.hero : null) === S.appliedHero && !S.heroPending;
+  // The engine's copy of a seat: mode + profile. Postflop tendencies are a
+  // separate dirty flag (they need a push but never reset learning).
+  const seatSigOf = m => JSON.stringify({
+    mode: m.mode,
+    profile: m.mode === 'ruled' ? m.profile : null,
+  });
+  const pendingSeats = () => !S.model ? [] : S.model.seats.map((_, i) => i)
+    .filter(i => seatSigOf(S.model.seats[i]) !== S.appliedSeatSigs[i]);
+  // Staged table edits: a seat whose model differs from the engine's copy,
+  // plus the hero choice. The postflop-only push rides along, uncounted.
+  const pendingChanges = () => {
+    const out = pendingSeats();
+    if (S.model && (S.model.hero ?? null) !== (S.appliedHero ?? null)) out.push('hero');
+    return out;
+  };
+  function renderApplyState() {
+    const n = S.model ? pendingChanges().length : 0;
+    els.applyBtn.disabled = !S.model || S.solveRunning || n === 0;
+    els.applyBtn.textContent = !S.model ? 'APPLY'
+      : n ? `${n} unapplied change${n === 1 ? '' : 's'} · APPLY`
+      : S.lastApplyWasSolve ? 'applied with this solve' : 'applied';
+  }
 
-  async function applyModel() {
+  async function applyModel({ fromSolve = false, quiet = false } = {}) {
     if (!S.model) { toast('build a game first', true); return false; }
-    const seatsChanged = seatsSig() !== S.appliedSeatsSig;
+    const changedSeats = pendingSeats().length > 0;
+    const heroTarget = S.model.hero ?? null;
     // pfTable can mutate hero: a CHANGED table leaves hero mode server-side
-    // (an unchanged one keeps it), and the heroCall below re-applies it —
-    // a no-op when the engine still has it. Hold the hero epoch/busy guard across
-    // the WHOLE transaction so poll() can't adopt a /status response fetched
-    // mid-apply (it would resync the dropdown to the transiently-cleared
-    // hero, and the `S.model.hero != null` check below would then skip the
-    // re-apply — hero silently off).
+    // (an unchanged one keeps it), so the hero call below runs whenever the
+    // engine's hero is not the staged one. Hold the hero epoch/busy guard
+    // across the WHOLE transaction so poll() can't adopt a /status response
+    // fetched mid-apply.
     heroBusy++; heroEpoch++;
     let heroOn = false;
     try {
-      try {
-        // postflop tendencies ride along on the profile, so SAVE GAME and
-        // exports keep the villain's whole player model, not just preflop
-        await api.pfTable(S.model.seats.map(m => ({
-          frozen: m.mode === 'frozen',
-          profile: m.mode === 'ruled' && m.profile
-            ? { ...m.profile, postflop: m.postflop || m.profile.postflop || null }
-            : null,
-        })));
-      } catch (e) { toast(errText(e), true); return false; }
-      S.applied = S.model.seats.map(m => m.mode);
-      S.appliedSeatsSig = seatsSig();
-      S.postflopDirty = false; // the push above carried the current tendencies
-      if (S.model.hero != null) {
+      if (changedSeats || S.postflopDirty) {
         try {
-          await heroCall(S.model.hero);
-          heroOn = true;
+          // postflop tendencies ride along on the profile, so SAVE GAME and
+          // exports keep the villain's whole player model, not just preflop
+          await api.pfTable(S.model.seats.map(m => ({
+            frozen: m.mode === 'frozen',
+            profile: m.mode === 'ruled' && m.profile
+              ? { ...m.profile, postflop: m.postflop || m.profile.postflop || null }
+              : null,
+          })));
+        } catch (e) { toast(errText(e), true); return false; }
+        S.applied = S.model.seats.map(m => m.mode);
+        S.appliedSeatSigs = S.model.seats.map(seatSigOf);
+        S.postflopDirty = false; // the push above carried the current tendencies
+        S.appliedHero = null; // a changed table drops hero server-side
+      }
+      if (heroTarget !== S.appliedHero) {
+        try {
+          await heroCall(heroTarget);
+          heroOn = heroTarget != null;
           S.heroPending = false;
-          S.appliedHero = S.model.hero;
+          S.appliedHero = heroTarget;
         } catch (e) {
           // The engine requires a solved table before hero can freeze the
-          // other seats (a changed table resets the solve, so this is the
-          // normal path). Defer: the coming solve runs the table first, then
-          // hero re-applies automatically (poll's run-end hook / next SOLVE).
-          S.heroPending = true;
-          S.appliedHero = null;
-          toast(`table applied, but hero ${S.positions[S.model.hero]} is NOT on yet — ` +
-            `${errText(e)} — hero re-applies automatically after the next solve`, true);
+          // other seats. Stay staged; the next solve runs the table first and
+          // the run-end hook applies it.
+          S.heroPending = heroTarget != null;
+          if (heroTarget != null) S.appliedHero = null;
+          if (!fromSolve) toast(heroTarget == null
+            ? `hero off failed — ${errText(e)}`
+            : `hero ${S.positions[heroTarget]} applies with the next SOLVE — ${errText(e)}`, true);
         }
       } else {
         S.heroPending = false;
-        S.appliedHero = null;
       }
     } finally {
       heroBusy--; heroEpoch++;
     }
-    if (!S.heroPending) {
-      toast(seatsChanged
-        ? 'model applied — the table changed, so the next solve converges fresh' +
-          (heroOn ? ` (hero: ${S.positions[S.model.hero]} max-exploit)` : '')
-        : heroOn
-          ? `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`
-          : 'model applied');
+    if (changedSeats || heroOn) {
+      S.gameSaved = false; // the engine no longer holds the on-disk strategies
+      renderSaveState();
+    }
+    S.lastApplyWasSolve = fromSolve && !pendingChanges().length;
+    if (!quiet && !S.heroPending) {
+      toast(changedSeats
+        ? 'table applied — the next solve converges fresh'
+        : heroOn ? `hero ${S.positions[heroTarget]} — others frozen`
+        : 'table applied');
     }
     renderModel();
     refresh(); // ribbon gets its lock badges
@@ -1608,7 +1805,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
   els.applyBtn.addEventListener('click', applyModel);
 
-  /** Deferred-hero recovery: called when a run ends with hero still pending
+  /** Deferred-hero recovery: called when a run ends with hero still staged
    *  (the engine refused it pre-solve because the table had no strategies to
    *  freeze — now it does). */
   async function reapplyHero() {
@@ -1618,35 +1815,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.heroPending = false;
       S.appliedHero = h;
       S.gameSaved = false; // the hero's block was just reset: not what's on disk
-      toast(`hero ${S.positions[h]} enabled — others frozen as solved; RE-SOLVE computes the max-exploit`);
+      S.lastApplyWasSolve = true;
+      toast(`hero ${S.positions[h]} — others frozen as solved`);
+      renderSaveState();
       startPolling(); // adopt the engine's reset iteration and repaint the grid
     } catch (e) { toast(errText(e), true); }
     renderModel();
   }
 
-  els.hero.addEventListener('change', async () => {
+  // Staging: the hero choice is part of the one unapplied-changes badge.
+  els.hero.addEventListener('change', () => {
     if (!S.model) return;
-    const v = els.hero.value;
-    S.model.hero = v === '' ? null : +v;
-    try {
-      await heroCall(S.model.hero);
-      S.heroPending = false;
-      S.appliedHero = S.model.hero;
-      // hero on zeroes the hero's block (iteration 0); hero off restores the
-      // seat's pre-hero strategy and the table's iteration — either way the
-      // grid/ribbon and the iteration-keyed guards (SAVE, EXPORT) must follow
-      // the engine, not the strategies painted before the change
-      S.gameSaved = false;
-      toast(S.model.hero == null
-        ? 'hero off — all seats live again, back on the solved table strategies'
-        : `hero ${S.positions[S.model.hero]} — others frozen; SOLVE computes the exploit`);
-      startPolling();
-    } catch (e) {
-      // not applied server-side: mark it pending (re-applies after a solve)
-      S.heroPending = S.model.hero != null;
-      S.appliedHero = null;
-      toast(errText(e) + (S.heroPending ? ' — hero re-applies automatically after the next solve' : ''), true);
-    }
+    S.model.hero = els.hero.value === '' ? null : +els.hero.value;
+    S.lastApplyWasSolve = false;
     renderModel();
   });
 
@@ -1662,6 +1843,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   let evidencePreviewRequest = 0;
   let editorCleanup = () => {};
   const editingModel = () => editDraft || S.model?.seats[S.editSeat];
+  // Per-bucket paint bookkeeping: `paintedBuckets` drives the badge,
+  // `paintBase`/`paintHistory` are the session's undo snapshots.
+  const resetPaint = m => { m.paintedBuckets = new Set(); m.paintBase = {}; m.paintHistory = {}; };
   const defaultModelStats = () => ({ vpip: 25, pfr: 18, threebet: 6, fold_to_3bet: 50, squeeze: 5, fourbet: null, flatten: 0.2, raise_size: 'min' });
   async function openLibraryEditor(key) {
     const request = ++editorEpoch;
@@ -1739,18 +1923,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
         <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
         <label data-tip="PFR: of all hands dealt, how often he raises at least once preflop (opening, isolating, or re-raising). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
-        <label data-tip="Open-raise (first in): when it is folded to him, how often he raises. Blank = PFR. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
-        <label data-tip="Open-limp (first in): when it is folded to him, how often he limps. Blank = VPIP − PFR, which over-limps regs (a 17/12 TAG open-limps ~2%: his gap is calls and blind defence) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
-        <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (his raise slice in the VS RAISE situation, always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
+        <label data-tip="Open-raise (first in): how often he raises when it is folded to him. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Open-limp (first in): how often he limps when it is folded to him. The derived number over-limps regs (a 17/12 TAG open-limps ~2%) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
         <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. Measured ranges supply the hand policies instead of one rate; cold defense is a separate policy.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
         <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold vs raise (COLD): he has put nothing in yet and faces a single raise — how often he folds. The rest continues (calls, or 3-bets per the 3-bet %). Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little. Leave it BLANK to derive it from VPIP (roughly: 65% of VPIP continues).">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
-        <label data-tip="Fold vs raise AFTER LIMPING: he limped (first-in or behind) and a raise comes — how often he folds his limp range. This decides how much dead money a raise over limpers steals, so it drives the whole exploit in a limpy game. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold. Blank = use the cold number after limping too, which makes limpers far too foldy.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100" placeholder="blank = cold"></label>
-        <label data-tip="Iso-raise: facing one or more limpers with nothing invested yet, how often he raises. Blank = PFR.">iso-raise vs limpers % <input id="pfe-ir" type="number" value="${st.iso_raise != null ? st.iso_raise : ''}" min="0" max="100" step="0.5" placeholder="= PFR"></label>
-        <label data-tip="Limp behind: facing limpers with nothing invested yet, how often he limps along. Blank = VPIP − PFR. Limpy live games hinge on this number: it is what builds the multiway pots.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5" placeholder="= VPIP − PFR"></label>
-        <label data-tip="Fold vs BIG raise: the same number when the raise he faces is TO at least the threshold on the right (bb). Real players fold more to big raises; without this every size gets the same fold rate and the exploit just picks the cheapest raise. Leave blank for size-blind.">fold vs big raise % <input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100" placeholder="blank = same"></label>
-        <label data-tip="A raise TO this many bb or more counts as big for the fold-vs-big-raise number (e.g. 8 when the game's opens are 7.5 and 10).">big raise \u2265 bb <input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb"></label>
-        <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested, how often he folds rather than calling or squeezing. Blank = derived from VPIP.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100" placeholder="auto"></label>
+        <label data-tip="Fold vs raise (COLD): nothing invested yet, facing a single raise. Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little.">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Fold vs raise AFTER LIMPING: he limped and a raise comes. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold, and this drives the whole exploit in a limpy game.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Iso-raise: facing one or more limpers with nothing invested yet, how often he raises.">iso-raise vs limpers % <input id="pfe-ir" type="number" value="${st.iso_raise != null ? st.iso_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Limp behind: facing limpers with nothing invested yet, how often he limps along. Limpy live games hinge on this number: it is what builds the multiway pots.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Fold vs a raise TO at least the bb amount beside it. Real players fold more to big raises; without a size band every size gets the same fold rate and the exploit picks the cheapest raise.">fold vs big raise % <span style="display:inline-flex;align-items:center;gap:3px"><input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100"><span class="dim">\u2265</span><input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb" style="width:56px"><span class="dim">bb</span></span><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
         <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
         <label data-tip="Fallback sizing for raises with no measured size mix: min, max, or jam (all-in).">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
         ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
@@ -1798,6 +1981,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           <p id="pfe-contextual-status" role="status" aria-live="polite"></p>
         </div>
       </div>
+      <div id="pfe-paint-state" class="dim" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:10px;margin-top:6px">
+        <span id="pfe-paint-caption"></span>
+        <span id="pfe-paint-badge" class="hidden" style="background:#4b3a1a;color:#f3dfb2;padding:1px 6px;border-radius:8px;font-size:9px;letter-spacing:.08em">painted</span>
+        <button type="button" class="btn ghost xs hidden" id="pfe-paint-undo" data-tip="Undo the last stroke in this bucket.">undo</button>
+        <button type="button" class="btn ghost xs hidden" id="pfe-paint-clear" data-tip="Discard every stroke in this bucket from this session.">clear</button>
+      </div>
       <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
         <div class="seg pfl-palette" id="pfe-palette">
           <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots).">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
@@ -1815,6 +2004,37 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn" id="pfe-save" data-tip="Stores the stats, postflop tendencies and generated or painted ranges in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game.">SAVE PLAYER</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
+    // Derived values live in the field that uses them: a blank first-in or
+    // fold field shows the number the engine would use, marked derived.
+    const numOf = id => { const v = document.getElementById(id)?.value; return v === '' || v == null ? null : +v; };
+    const derivedPlaceholders = {
+      'pfe-or': () => [numOf('pfe-pfr'), false],
+      'pfe-ol': () => [Math.max(0, (numOf('pfe-vpip') ?? 0) - (numOf('pfe-pfr') ?? 0)), false],
+      'pfe-ir': () => [numOf('pfe-pfr'), false],
+      'pfe-lb': () => [Math.max(0, (numOf('pfe-vpip') ?? 0) - (numOf('pfe-pfr') ?? 0)), false],
+      // the engine blends toward 65% of VPIP continuing vs a raise and 50%
+      // in the squeeze spot; shown as approximations
+      'pfe-fvr': () => [100 - 0.65 * (numOf('pfe-vpip') ?? 0), true],
+      'pfe-fsq': () => [100 - 0.5 * (numOf('pfe-vpip') ?? 0), true],
+      // blank = the cold number, after limping and for big raises
+      'pfe-fvrl': () => [numOf('pfe-fvr') ?? (100 - 0.65 * (numOf('pfe-vpip') ?? 0)), true],
+      'pfe-fvrb': () => [numOf('pfe-fvr') ?? (100 - 0.65 * (numOf('pfe-vpip') ?? 0)), true],
+    };
+    function syncDerived() {
+      for (const [id, value] of Object.entries(derivedPlaceholders)) {
+        const input = document.getElementById(id);
+        if (!input) continue;
+        const [v, approx] = value();
+        const usable = input.value.trim() === '' && !input.disabled && Number.isFinite(v);
+        input.placeholder = usable ? `${approx ? '\u2248' : ''}${Math.max(0, Math.min(100, v)).toFixed(1)}` : '';
+        const tag = input.closest('label')?.querySelector('.pfe-derived');
+        if (tag) tag.hidden = !usable;
+      }
+    }
+    for (const id of ['pfe-vpip', 'pfe-pfr', 'pfe-fvr', 'pfe-or', 'pfe-ol']) {
+      document.getElementById(id)?.addEventListener('input', syncDerived);
+    }
+    syncDerived();
     for (const id of ['pfe-context-invested','pfe-context-to','pfe-context-pot']) {
       document.getElementById(id).addEventListener('input', () => {
         refreshContextualPreview();
@@ -1860,7 +2080,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     });
     document.getElementById('pfe-pf').addEventListener('input', () => {
       m.postflop = collectPf();
-      // tendencies are outside seatsSig (deliberately: no learning-reset
+      // tendencies are outside the seat signature (deliberately: no learning-reset
       // messaging) — flag them so SOLVE/SAVE re-send the table anyway
       if (!draft) S.postflopDirty = true;
     });
@@ -1938,6 +2158,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         const out = await api.pfGenerate(i, stats, m.label, adaptive === '' ? null : Number(adaptive) / 100);
         if (epoch !== editorEpoch || seq !== m.genSeq || (!draft && S.model?.seats[i] !== m)) return false;
         Object.assign(m, { profile: out.profile, implied: out.implied, stats, painted: false, needsGeneration:false });
+        resetPaint(m);
         evidencePreviewKey = '';
         evidencePreview = null;
         ++evidencePreviewRequest;
@@ -2003,6 +2224,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
               stats: { ...stats }, postflop: JSON.parse(JSON.stringify(pf)),
               painted: false, selValue: `custom:${label}`,
             });
+            resetPaint(mj);
             n++;
           } catch (e) { editorMessage(`${S.positions[j]}: ${errText(e)}`); }
         }
@@ -2027,6 +2249,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       for (const id of ['pfe-3b','pfe-fvr','pfe-sq','pfe-fsq','pfe-f3b','pfe-fvrb','pfe-fvrthr',...(measuredBands || []).map((_,i)=>`pfe-band-${i}`)]) {
         document.getElementById(id).disabled = !!datasetToggle?.checked && !!responses;
       }
+      syncDerived();
     };
     datasetFields();
     datasetToggle?.addEventListener('change', () => {
@@ -2059,6 +2282,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         S.paintAction = b.dataset.a;
         document.querySelectorAll('#pfe-palette button').forEach(x =>
           x.classList.toggle('active', x === b));
+        renderPaintState();
       });
     });
     const w = document.getElementById('pfe-w');
@@ -2067,6 +2291,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     w.addEventListener('input', () => {
       S.paintWeight = +w.value / 100;
       document.getElementById('pfe-wv').textContent = `${w.value}%`;
+      renderPaintState();
+    });
+    document.getElementById('pfe-paint-undo').addEventListener('click', () => {
+      undoPaint(); paintBucket(); updateRangeNote();
+    });
+    document.getElementById('pfe-paint-clear').addEventListener('click', () => {
+      clearPaint(); paintBucket(); updateRangeNote();
     });
     document.getElementById('pfe-save').addEventListener('click', async () => {
       const name = document.getElementById('pfe-name').value.trim();
@@ -2113,14 +2344,36 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cell.className = 'cell';
         cell.innerHTML = `<div class="bars"></div><div class="fill"></div><div class="tag">${cellInfo(i, j).label}</div><div class="sub"></div>`;
         const idx = (12 - i) * 13 + (12 - j);
+        cell.dataset.idx = String(idx);
+        // roving tabindex: the grid is one tab stop, arrows move inside it
+        cell.tabIndex = paintCells.length ? -1 : 0;
+        cell.setAttribute('role', 'button');
         cell.addEventListener('mousedown', e => { e.preventDefault(); S.painting = true; paintClass(idx); });
         cell.addEventListener('mouseenter', () => { if (S.painting) paintClass(idx); });
         g.appendChild(cell);
         paintCells.push(cell);
       }
     }
-    window.addEventListener('mouseup', () => { S.painting = false; }, { once: false });
+    g.addEventListener('keydown', e => {
+      const cell = e.target.closest('.cell');
+      if (!cell || !g.contains(cell)) return;
+      const step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -13, ArrowDown: 13 }[e.key];
+      if (step) {
+        e.preventDefault();
+        const next = paintCells[paintCells.indexOf(cell) + step];
+        if (!next) return;
+        cell.tabIndex = -1;
+        next.tabIndex = 0;
+        next.focus();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        paintClass(+cell.dataset.idx);
+      }
+    });
   }
+  // The window-level mouseup lives at module scope (one handler, not one per
+  // editor open).
+  onPaintRelease = () => { S.painting = false; };
 
   function bucketPol(forPainting = false) {
     const m = editingModel();
@@ -2347,12 +2600,132 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModelEvidence(el, evidencePreview);
   }
 
+  // ----- paint state: the bucket badge, its caption, undo/clear -----
+  // A bucket key names the exact policy being painted (limp contexts and the
+  // two re-raise situations are separate policies).
+  const bucketKey = () => S.editBucket === 1 ? `limps:${S.editLimpContext || 0}`
+    : S.editBucket === 4 ? (editorColdReraise() ? 'reraise:cold' : 'reraise:entered')
+    : ['unopened', 'limps', 'raise', 'squeeze', 'reraise'][S.editBucket];
+  function paintSituation() {
+    const m = editingModel();
+    if (S.editBucket === 0) return editorWinsUnopened() ? 'UNOPENED · last blind' : 'UNOPENED · first in';
+    if (S.editBucket === 1) {
+      const c = m?.profile?.response?.limp_contexts?.[S.editLimpContext || 0];
+      return c ? `VS LIMPS · ${c.limpers === 3 ? '3+' : c.limpers} limper${c.limpers === 1 ? '' : 's'} · ${c.free_check ? 'check free' : 'call / complete'}` : 'VS LIMPS';
+    }
+    if (S.editBucket === 2) return 'VS RAISE · one raise';
+    if (S.editBucket === 3) return 'SQUEEZE · raise + callers';
+    if (editorContextualVersion()) {
+      const depth = document.getElementById('pfe-context-depth')?.value;
+      const entry = { cold: 'no voluntary entry', called: 'after limp / call', raised: 'after raising' }[S.editReraiseContext] || S.editReraiseContext;
+      return `VS 3-BET+ · ${entry} · ${depth === '3' ? '4-bet+' : '3-bet'}`;
+    }
+    return editorColdReraise() ? 'VS 3-BET+ · no voluntary entry' : 'VS 3-BET+ · after entering';
+  }
+  function bucketPolExists() {
+    const m = editingModel();
+    if (!m?.profile) return false;
+    if (S.editBucket === 4 && editorColdReraise()) return true;
+    if (S.editBucket === 1 && m.profile.response?.limp_contexts?.length) {
+      return !!(S.editLimpContext || 0) || !!m.profile.buckets[1];
+    }
+    return !!m.profile.buckets[S.editBucket];
+  }
+  function paintSnapshot() {
+    const m = editingModel();
+    const pol = bucketPol();
+    const bands = S.editBucket === 2 && m?.profile?.vs_raise_bands
+      ? m.profile.vs_raise_bands.map(([, b]) => [[...b.call], [...b.raise], [...b.jam]]) : null;
+    // A solver-managed bucket has no policy yet: the snapshot only records
+    // that undoing the first stroke must give it back to the solver.
+    if (!pol && !bands) return { bucket: S.editBucket, existed: bucketPolExists(), pol: null, bands: null };
+    return {
+      bucket: S.editBucket,
+      existed: bucketPolExists(),
+      pol,
+      call: pol ? [...pol.call] : null,
+      raise: pol ? [...pol.raise] : null,
+      jam: pol ? [...pol.jam] : null,
+      bands,
+    };
+  }
+  function restorePaint(snap) {
+    if (!snap) return;
+    const m = editingModel();
+    if (snap.pol && snap.call) {
+      snap.pol.call = [...snap.call];
+      snap.pol.raise = [...snap.raise];
+      snap.pol.jam = [...snap.jam];
+    }
+    if (!snap.existed && m?.profile?.buckets) {
+      delete m.profile.buckets[snap.bucket]; // back to solver-managed
+    }
+    if (snap.bands && m?.profile?.vs_raise_bands) {
+      m.profile.vs_raise_bands.forEach(([, b], k) => {
+        const s = snap.bands[k];
+        if (!s) return;
+        b.call = [...s[0]]; b.raise = [...s[1]]; b.jam = [...s[2]];
+      });
+    }
+  }
+  function undoPaint() {
+    const m = editingModel();
+    const key = bucketKey();
+    const history = m?.paintHistory?.[key];
+    if (!history?.length) return;
+    restorePaint(history.pop());
+    if (!history.length) {
+      delete m.paintHistory[key];
+      delete m.paintBase[key];
+      m.paintedBuckets?.delete(key);
+    }
+  }
+  function clearPaint() {
+    const m = editingModel();
+    const key = bucketKey();
+    const base = m?.paintBase?.[key];
+    if (!base) return;
+    restorePaint(base);
+    delete m.paintHistory[key];
+    delete m.paintBase[key];
+    m.paintedBuckets?.delete(key);
+  }
+  function renderPaintState() {
+    const caption = document.getElementById('pfe-paint-caption');
+    const badge = document.getElementById('pfe-paint-badge');
+    const undo = document.getElementById('pfe-paint-undo');
+    const clear = document.getElementById('pfe-paint-clear');
+    const m = editingModel();
+    if (!caption || !badge || !m) return;
+    const brush = S.paintAction === 'fold' ? 'fold' : `${S.paintAction} ${Math.round(S.paintWeight * 100)}%`;
+    caption.textContent = `Painting ${paintSituation()} · ${brush}`;
+    const key = bucketKey();
+    const painted = !!m.paintedBuckets?.has(key);
+    badge.classList.toggle('hidden', !painted);
+    undo.classList.toggle('hidden', !painted);
+    clear.classList.toggle('hidden', !painted);
+    const canClear = !!m.paintBase?.[key];
+    clear.disabled = !canClear;
+    clear.dataset.tip = canClear ? 'Discard every stroke in this bucket from this session.' : 'No pre-paint copy in this session.';
+  }
+
   function paintClass(idx) {
     if (editorUnopenedNotApplicable() || editingModel()?.needsGeneration || (S.editBucket === 4 && editorContextualVersion())) return;
+    const pm = editingModel();
+    const key = bucketKey();
+    const before = paintSnapshot();
     const pol = bucketPol(true);
     if (!pol) return;
-    const pm = editingModel();
-    if (pm) pm.painted = true; // stat edits now need explicit GENERATE
+    if (pm) {
+      pm.painted = true; // stat edits now need explicit GENERATE
+      if (before) {
+        const history = (pm.paintHistory ??= {})[key] ??= [];
+        history.push(before);
+        if (history.length > 40) history.shift();
+        (pm.paintBase ??= {})[key] ??= before;
+        (pm.paintedBuckets ??= new Set()).add(key);
+      }
+    }
     pol.call[idx] = 0;
     pol.raise[idx] = 0;
     pol.jam[idx] = 0;
@@ -2382,6 +2755,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     document.getElementById('pfe-paint-controls')?.classList.toggle('hidden', unavailable || contextual);
     document.getElementById('pfl-paint')?.classList.toggle('hidden', unavailable || (contextual && (!contextualPreview || !!contextualPreview.error)));
     renderEditorImplied();
+    renderPaintState();
     if (unavailable) {
       S.painting = false;
       document.getElementById('pfe-limp-context-row')?.classList.add('hidden');
@@ -2410,6 +2784,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cell.querySelector('.bars').replaceChildren();
         cell.classList.add('empty');
         cell.dataset.tip = 'Solver-managed range · paint a hand to create a fixed policy';
+        cell.setAttribute('aria-label', cell.dataset.tip);
       }
       return;
     }
@@ -2430,14 +2805,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         cell.classList.toggle('empty', c + r + jm < 0.002);
         cell.dataset.tip = `${cellInfo(i, j).label}: raise ${(r * 100).toFixed(0)}% · jam ${(jm * 100).toFixed(0)}% · ${freeLimp ? 'check' : 'call'} ${(c * 100).toFixed(0)}%${freeLimp ? '' : ` · fold ${(f * 100).toFixed(0)}%`}`;
         if (S.editBucket === 4) cell.dataset.tip += editorColdReraise() ? ' · facing a re-raise cold' : ' · conditional on prior entry';
+        cell.setAttribute('aria-label', cell.dataset.tip);
       }
     }
   }
 
   els.exportBtn.addEventListener('click', async () => {
-    if (!canon.on && lastIter < 2) {
-      return toast('Wait for a learned strategy snapshot before exporting ranges.', true);
-    }
     if (S.view && S.view.exportable3 && !canon.on) {
       try {
         const ex = await api.pfExport3(S.cursor);
@@ -2572,8 +2945,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // ----- RANGE LAB CHARTS as the range source -----
 
   const CANON_KEY = 'pfl-canon';
-  const STEP5_SOLVE = els.step5.innerHTML;
-  const STEP5_CANON = 'Each segment of the action ribbon lists the chart’s actions with their frequencies. Click one to advance, or click an earlier action to branch. Seats without a chart fold automatically.';
   const pill = els.canonBox.closest('.pfl-side').querySelector('h2 .pill');
   const PILL_SOLVE = pill?.textContent;
   const canonPrefs = (() => { try { return JSON.parse(localStorage.getItem(CANON_KEY)) || {}; } catch { return {}; } })();
@@ -2667,7 +3038,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.solveSetup.classList.toggle('hidden', on);
     els.solveSaved.classList.toggle('hidden', on);
     els.rangeLab?.classList.toggle('hidden', on);
-    els.step5.innerHTML = on ? STEP5_CANON : STEP5_SOLVE;
+    // charts have no solve to explain: the rail renumbers instead
+    els.step5.classList.toggle('hidden', on);
+    renderStepRail();
+    renderSaveState();
+    renderModelStrip();
+    renderApplyState();
+    renderExportCard();
     if (pill) pill.textContent = on ? 'Range Lab charts · no solve' : PILL_SOLVE;
     saveCanonPrefs();
     if (on && !canon.summary) loadCanon();
@@ -2700,9 +3077,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       await applyLoadedGame('current session', sess, { quiet: true, onDisk: false });
       els.buildInfo.textContent =
         `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB CPU arenas · session resumed at iter ${sess.iteration}`;
-      if (sess.state === 'running') { progressDock(els.stop); progressSet(0, 'solving…'); }
+      if (sess.state === 'running') { progressSet(0, 'solving'); }
     } catch (e) { console.warn('could not adopt the preflop session', e); }
   })();
+
+  renderStepRail();
+  renderSaveState();
+  renderModelStrip();
+  renderApplyState();
+  renderExportCard();
 
   return { refresh };
 }

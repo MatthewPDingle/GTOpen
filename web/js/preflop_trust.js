@@ -38,7 +38,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     try {
       await api.pfTrust(t);
       if (S.st) { S.st.trust = t; S.st.trust_readout = null; }
-      toast(t == null ? 'trust the read: off (max exploit)' : `trust the read: ${pct(t)} — RE-SOLVE to adapt`);
+      toast(`trust the read: ${pct(t)} — RE-SOLVE to adapt`);
     } catch (e) {
       toast(e.message, true);
     } finally {
@@ -52,7 +52,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const r = st.trust_readout;
     if (!r) {
       if (st.state === 'running') return 'solving…';
-      return st.trust == null ? 'off: the hero plays the max exploit' : 'RE-SOLVE to see what this level buys and costs';
+      return 'the hero plays the max exploit — RE-SOLVE to see what this level buys and costs';
     }
     return `EV vs the reads <b>${bb(r.hero_ev_vs_read)}</b> · vs the mix <b>${bb(r.hero_ev_vs_mixture)}</b>`
       + ` · if they adapt <b>${bb(r.hero_ev_vs_adapting)}</b> <span class="dim">bb/hand at ${pct(r.trust)}</span>`;
@@ -69,6 +69,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     }
     const running = st.state === 'running';
     if (!force && S.draft != null) return; // mid-drag: keep the slider
+    // null means the max-exploit level: one slider, one state, no "off".
     const t = st.trust == null ? 1 : st.trust;
     const stamp = JSON.stringify([st.trust, running, seats, st.trust_readout, S.busy]);
     if (!force && stamp === S.stamp) return;
@@ -81,8 +82,6 @@ export function initPreflopTrust(panel, { toast, positions }) {
         <input type="range" class="trust-slider" min="0" max="100" step="5" value="${Math.round(t * 100)}"
           aria-label="Trust the read, percent" ${running || S.busy ? 'disabled' : ''}>
         <span class="trust-val">${pct(t)}</span>
-        ${st.trust != null ? `<button class="btn ghost xs" data-act="off" ${running || S.busy ? 'disabled' : ''}
-          data-tip="Off: max exploit against the profiles.">off</button>` : ''}
         <span class="dim">applies to ${names}</span>
       </div>
       <div class="trust-row"><span class="trust-readout">${readoutHtml(st)}</span></div>`;
@@ -90,7 +89,6 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const val = panel.querySelector('.trust-val');
     slider.addEventListener('input', () => { S.draft = +slider.value / 100; val.textContent = pct(S.draft); });
     slider.addEventListener('change', () => setTrust(+slider.value / 100));
-    panel.querySelector('[data-act="off"]')?.addEventListener('click', () => setTrust(null));
   }
 
   return {
