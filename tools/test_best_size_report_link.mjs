@@ -66,16 +66,29 @@ assert.deepEqual(events, ['tab', 'refresh', `open:${NAME}`], 'a rendered card ne
 assert.equal(cardQueries, 0, 'a card-first hybrid would search here and can still fail on a stale row');
 assert.equal(timers, 0);
 
-// A failed direct load is surfaced to the caller, not downgraded to a card
-// click or retried behind its back.
+// A failed direct load is surfaced once, through the host's error surface,
+// and is not downgraded to a card click or retried behind its back.
 reset();
+const errors = [];
 rows = [{ dataset: { name: NAME }, click: () => events.push('card') }];
-await assert.rejects(openSavedReport(NAME, {
+await openSavedReport(NAME, {
   refreshReports: later(() => events.push('refresh')),
   openReport: async () => { events.push('open'); throw new Error('no such report'); },
-}), /no such report/, 'the loader error reaches the caller');
+  toast: (msg, isErr) => errors.push([msg, isErr]),
+});
 assert.deepEqual(events, ['tab', 'refresh', 'open'], 'a failed open is not retried as a card click');
+assert.deepEqual(errors, [['no such report', true]], 'the loader error reaches the user once');
+assert.equal(cardQueries, 0, 'a failed loader must not fall back to the card');
 assert.equal(timers, 0);
+
+// The library list is decoration: a failed refresh must not block the jump,
+// because the loader reads the report by name.
+reset();
+await openSavedReport(NAME, {
+  refreshReports: async () => { throw new Error('list down'); },
+  openReport: later(n => events.push(`open:${n}`)),
+});
+assert.deepEqual(events, ['tab', `open:${NAME}`], 'a stale library still opens the report');
 
 // A host without the direct loader still clicks a rendered card, after the
 // refresh that renders it — and needs no timer for a card already there.
@@ -86,12 +99,14 @@ assert.deepEqual(events, ['tab', 'refresh', 'card']);
 assert.equal(cardQueries, 1);
 assert.equal(timers, 0, 'the card is there after the refresh; no retry loop');
 
-// No loader and no rendered card: give up at once. The old retry timer kept
-// this case alive for two seconds before failing silently.
+// No loader and no rendered card: give up at once with a message. The old
+// retry timer kept this case alive for two seconds before failing silently.
 reset();
 rows = [];
-await openSavedReport(NAME, {});
+const noTarget = [];
+await openSavedReport(NAME, { toast: (msg, isErr) => noTarget.push([msg, isErr]) });
 assert.deepEqual(events, ['tab']);
+assert.deepEqual(noTarget, [[`couldn’t open “${NAME}” in Reports`, true]], 'the dead end is reported');
 assert.equal(timers, 0, 'nothing to wait for, so nothing is scheduled');
 
 // Leave the process as it was found, in case a runner imports several files.
