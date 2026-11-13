@@ -599,8 +599,8 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
   }
   els.vsVillain.addEventListener('change', updateVillainGate);
 
-  // STOP used to sit inside the collapsible "New report" panel while the
-  // progress line stayed outside it: put the control beside the run it stops.
+  // STOP sits inside the collapsible "New report" panel while the progress
+  // line is outside it: move the control beside the run it stops.
   {
     const runState = document.createElement('div');
     runState.id = 'rep-run-state';
@@ -754,7 +754,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
   const posName = p => (p === 0 ? 'OOP' : 'IP');
   const STREET = ['FLOP', 'TURN', 'RIVER'];
 
-  // The canvas caption is a real element: the strip's own fillText is not in
+  // The canvas caption is a real element: the chart's own fillText is not in
   // the accessibility tree and the table cannot carry it. The live region
   // announces the flop the arrow keys land on.
   const chartCaption = document.createElement('div');
@@ -773,7 +773,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
   els.canvas.setAttribute('aria-label', 'Flop strategy chart');
   els.canvas.setAttribute('aria-describedby', 'rep-chart-caption');
 
-  /** Where the report is being read, in words (strip caption, tooltips). */
+  /** Where the report is being read, in words (chart caption, tooltips). */
   function nodeCaption() {
     if (S.mode !== 'lines') return S.node === 'root' ? 'OOP root strategy' : 'IP vs check';
     const h = S.lineData && S.lineData.history;
@@ -946,7 +946,7 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
       }
       el.appendChild(seg);
     });
-    // navigating the ribbon can put the current point outside the strip
+    // navigating the ribbon can put the current point outside the visible ribbon
     const current = el.querySelector('.hist-seg.current');
     if (current && S.ribbonKey !== S.line) {
       S.ribbonKey = S.line;

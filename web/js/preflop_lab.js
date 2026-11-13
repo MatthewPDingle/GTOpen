@@ -1,6 +1,6 @@
 // PREFLOP LAB — UI for the multiway preflop solver (equity-model postflop).
 // Build a game (any limps/sizes/players), solve it, walk the action tree with
-// an action ribbon, and export any heads-up flop node straight into
+// an action ribbon, and export a heads-up or three-way flop node straight into
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
@@ -28,8 +28,8 @@ const DEFAULT_REALIZATION = 'balanced';
 const LEARNED_REALIZATION = 'leafnet';
 const currentModel = (m) => m === DEFAULT_REALIZATION || m === LEARNED_REALIZATION;
 
-// One window-level pointer release for the paint grid. Registering it inside
-// buildPaintGrid added a fresh handler every time the editor opened.
+// One window-level pointer release for the paint grid: a handler registered
+// per editor open would pile up one more copy on every open.
 let onPaintRelease = null;
 window.addEventListener('mouseup', () => { if (onPaintRelease) onPaintRelease(); });
 
@@ -141,7 +141,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     model: null,     // per-seat {mode, profile, implied, label}; hero seat
     applied: null,   // last model actually sent to the solver (drives 🔒)
     appliedSeatSigs: [], // per-seat signatures of what the engine has
-    appliedHero: null,   // hero seat the ENGINE actually has (null = off)
+    appliedHero: null,   // hero seat the ENGINE actually has (null = off, undefined = read failed)
     heroPending: false,  // hero chosen but deferred until a solve exists
     lastApplyWasSolve: false, // the badge reads "applied with this solve"
     activeModel: null, // value model of the built/loaded game
@@ -173,8 +173,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   // ----- step rail: numbered steps follow the range source -----
   // The page ships one rail for both sources. Range Lab charts skip the
-  // build/solve/model steps, so the shared steps are renumbered rather than
-  // explained in prose.
+  // build/solve/model steps, so the shared steps are renumbered.
   const stepEls = {};
   {
     const wanted = [
@@ -283,8 +282,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (flop) {
       rows.push(['ranges', live.join(' · ')]);
       rows.push(['pot', `${v.pot.toFixed(1)} bb`]);
-      // what the postflop solver gets: chips still behind the shallowest live
-      // seat (SPR × pot), not the game's starting stack or the chart's depth
       if (stack != null) rows.push(['stack', `${Number(Number(stack).toFixed(2))} bb`]);
       const rakePct = canon.on ? Number(els.canonRakePct.value) || 0 : Number(cfg.rake_pct) || 0;
       const rakeCap = canon.on ? Number(els.canonRakeCap.value) || 0 : Number(cfg.rake_cap) || 0;
@@ -548,8 +545,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = p.rakeCap;
     // after the rake fields: ICM re-reads them as the numbers to restore
     icmControls.restore(p);
-    // Scenarios configure fresh games; old scenario model choices are retired.
-    // Explicitly choosing a preset also starts fresh when an older solve is loaded.
+    // Scenarios configure fresh games and carry no model choice; picking one
+    // also starts fresh when the loaded game uses an older model.
     if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
   };
   const currentScenario = () => ({
@@ -1115,9 +1112,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const engine = st.gpu ? statusChip('\u26a1 GPU', 'Solving on CUDA.')
       : statusChip('CPU', st.gpu_note || 'Solving on CPU.');
     const err = st.error || ''; // a crashed worker is not a STOP
-    // the engine could not load the calibrated fit and priced with the static
-    // model: say so every time, and toast it once per session
-    // Keep fallback diagnostics without reintroducing retired model choices.
+    // the engine could not load its realization fit and priced with a fallback:
+    // reword its note for this game's model, show it every time, toast it once
     const realizationNote = (st.realization_note || '').replace(
       'balanced uses raw equity; legacy calibrated uses positional values',
       currentModel(S.activeModel)

@@ -147,10 +147,9 @@ export function createIcmControls(els, positionsFor, changed) {
     summary.textContent = state.on ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
     if (state.on) details.open = true;
   }
-  // ICM solves need rake 0: show it instead of zeroing the field silently.
-  // The fields show 0 only while ICM is on; the numbers the user entered are
-  // kept in `state`, so turning ICM off (now, or after loading another
-  // scenario) gives them back instead of leaving the 0 behind.
+  // ICM solves need rake 0, so the fields are driven to 0 and disabled, marked
+  // "ICM · 0". The numbers the user entered are kept in `state`, so turning ICM
+  // off (now, or after loading another scenario) gives them back.
   let holdingRake = false;
   const rakeFields = () => [els.rakePct, els.rakeCap].filter(Boolean);
   function releaseRake() {

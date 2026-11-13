@@ -119,8 +119,7 @@ const PLAIN_BTN = 'background:none;border:0;padding:0;margin:0;font:inherit;colo
 
 /** Small SVG of EV (% pot) against size (log scale) for one flop: grid
  *  points as dots, refined points as rings, the tie band shaded. The x axis
- *  carries its size ticks and the y axis its top EV, so the chart needs no
- *  caption sentence. */
+ *  carries its size ticks and the y axis its top EV. */
 function evCurve(row, { width = 168, height = 44, colors, grid } = {}) {
   const pts = row.points.slice().sort((a, b) => a.size - b.size);
   if (!pts.length) return '';
@@ -150,7 +149,7 @@ function evCurve(row, { width = 168, height = 44, colors, grid } = {}) {
   return `<svg class="bs-curve" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" aria-hidden="true">${band}${axis}${line}${dots}${ticks}</svg>`;
 }
 
-/** The sparkline's swatch legend: replaces the caption sentence. */
+/** The sparkline's swatch legend. */
 const curveLegend = `<div class="legend bs-legend">` +
   `<span><span class="bs-swatch" style="background:var(--accent-soft)"></span>tie band</span>` +
   `<span><span class="bs-swatch bs-refined"></span>refinement</span>` +
@@ -165,7 +164,7 @@ const edgeNote = (v, grid) => v.edge
 // ------------------------------------------------------------ the view ----
 
 /** The REPORTS Best size view. `ctx`: { toast, openInBrowse(spot, board),
- *  openVariant(name, board) }. Returns { render(rep) }. */
+ *  openVariant(name, board) }. Returns { render(rep), name }. */
 export function initBestSizeView(el, ctx) {
   const S = { rep: null, tex: 'all', sort: { key: 'rank', dir: -1 }, selected: null, fixed: null };
 
@@ -239,7 +238,6 @@ export function initBestSizeView(el, ctx) {
         'Flops where every candidate size is within the solves’ combined exploitability of the best: the solves cannot separate the sizes.') +
       `</div>`;
 
-    // EV lost by always using one size
     const fixedTable = `<div class="rep-section"><h3>ALWAYS ONE SIZE <span class="rep-section-note">EV lost against the best size on each flop, % pot (weighted by flop frequency).</span></h3>` +
       `<table class="bs-table"><thead><tr><th>Size</th><th data-tip="Share of flops where this is the best grid size.">Best on</th>` +
       `<th data-tip="Share of flops where this size is inside the tie band: statistically as good as the best.">Tied best on</th>` +
@@ -398,8 +396,9 @@ async function openSavedReport(name, ctx) {
 
 /** Browse "find best size": at the first bet decision of the root street
  *  (OOP's root, or IP after a check), run a one-board sweep of that bet on
- *  spot being browsed and show EV by size inline. `ctx`: { toast, currentSpot,
- *  openInBrowse(spot, board) }. Returns { update(view, path) }. */
+ *  the spot being browsed and show EV by size inline. `ctx`: { toast,
+ *  currentSpot, openInBrowse(spot, board), refreshReports }. Returns
+ *  { update(view, path) }. */
 export function initBrowseBestSize(el, ctx) {
   const S = { key: null, player: null, board: null, running: false, rep: null, poll: null, error: '' };
 

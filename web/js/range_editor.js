@@ -15,7 +15,7 @@ export class RangeEditor {
     this.player = 0;
     this.painting = false;
     this.paintValue = 1.0;
-    // parse failures stay under the box until the next edit (no toast)
+    // parse failures stay under the box until the next edit
     this.errorEl = document.createElement('p');
     this.errorEl.className = 'bs-error';
     this.errorEl.setAttribute('role', 'alert');

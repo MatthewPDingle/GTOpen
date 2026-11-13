@@ -1,5 +1,5 @@
 // Presentation only: a report's identity arrives normalized in the library
-// list (`summary`, built by /api/reports), so nothing here parses a name.
+// list (`summary`, built by /api/reports).
 
 const STREET = ['F', 'T', 'R'];
 

@@ -3223,8 +3223,8 @@ async fn report_stop_run(State(state): State<Arc<AppState>>) -> Json<serde_json:
 /// a report name or guesses a spot from it.
 #[derive(Default, Serialize)]
 struct ReportSummary {
-    /// Display title: the name without a run id, the game block in front of it
-    /// or the opponent/variant suffix.
+    /// Display title: the name with the run id, leading game block and
+    /// opponent/variant suffix removed.
     title: String,
     /// Table size, stakes and depth: only present when the name carried them
     /// (report files do not record blinds or seats).
@@ -3261,7 +3261,8 @@ struct ReportSummary {
     sweep_sizes: Vec<f64>,
 }
 
-/// "overnight-20261030-093012-abc123 " in front of study report names.
+/// Strip the "overnight-YYYYMMDD-HHMMSS-hex " prefix study runs put in front of
+/// report names.
 fn strip_run_id(s: &str) -> Option<&str> {
     let rest = s.strip_prefix("overnight-")?;
     let b = rest.as_bytes();
@@ -3277,7 +3278,7 @@ fn strip_run_id(s: &str) -> Option<&str> {
 
 /// "6-max 100bb 2-5: 1% rake BTN vs BB …" — the table size, stakes and depth
 /// the study tooling writes in front of a report name. Report files do not
-/// record blinds or seats, so this is the only source; parsed once here.
+/// record blinds or seats, so this is the only source.
 fn split_game(name: &str) -> Option<((u32, String, f64), &str)> {
     let (players, rest) = name.split_once(' ')?;
     let players: u32 = players.strip_suffix("-max")?.parse().ok()?;
@@ -3295,7 +3296,7 @@ fn split_game(name: &str) -> Option<((u32, String, f64), &str)> {
     Some(((players, format!("{small}/{big}"), bb), rest.trim_start()))
 }
 
-/// "1% rake " left between the game block's colon and the positions.
+/// Strip a leading "1% rake " between the game block's colon and the positions.
 fn strip_rake_prefix(s: &str) -> &str {
     let mut words = s.splitn(3, ' ');
     let first = words.next().unwrap_or("");
@@ -3305,6 +3306,7 @@ fn strip_rake_prefix(s: &str) -> &str {
     s
 }
 
+/// A report's display title and the game block its name carried, if any.
 fn report_title(name: &str) -> (Option<(u32, String, f64)>, String) {
     let body = strip_run_id(name.trim()).unwrap_or_else(|| name.trim());
     let mut title = body.to_string();

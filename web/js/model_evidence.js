@@ -97,7 +97,8 @@ export function renderModelEvidence(host, evidence, extraDetails = []) {
   }
   details.append(summary, body);
   host.appendChild(details);
-  // One caveat per view: a single dim line under the badge, not in every body.
+  // The caveat sits outside `details`: one line under the badge, visible
+  // while the evidence is collapsed.
   const caveat = document.createElement('p');
   caveat.className = 'model-evidence-caveat';
   caveat.setAttribute('role', 'note');

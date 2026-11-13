@@ -4,7 +4,7 @@
 // dial sets how sure the hero is of the read: with probability p the
 // villain plays the profile, otherwise he plays freely and adapts to the
 // hero (Restricted Nash Response, crates/solver/src/rnr.rs). 100% is the
-// max exploit (today's lock and re-adapt), 0% is GTO.
+// max exploit against the locked read, 0% is GTO.
 //
 // After each solve the server reports what the level buys and costs
 // (status.trust_readout): the hero's EV against the read, and his worst

@@ -72,7 +72,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     }
     const running = st.state === 'running';
     if (!force && S.draft != null) return; // mid-drag: keep the slider
-    // null means the max-exploit level: one slider, one state, no "off".
+    // a null level is the max exploit, shown as 100% on the slider
     const t = st.trust == null ? 1 : st.trust;
     const stamp = JSON.stringify([st.trust, running, seats, st.trust_readout, S.busy]);
     if (!force && stamp === S.stamp) return;

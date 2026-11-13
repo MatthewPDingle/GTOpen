@@ -343,17 +343,17 @@ function memSummary(info) {
   return `${ram}${vram}${plan ? ' · ' + plan : ''}`;
 }
 // live compute indicator from a poll status. Only asserts GPU/CPU once a solve
-// has actually started this session; before that the plan lives in #mem-info.
+// has actually started this session; until then the estimate line carries the plan.
 function computeText(st) {
   if (!st.tree) return '';
   if (st.gpu) return st.state === 'running' ? '⚡ computing on GPU' : '⚡ solved on GPU';
   if (st.gpu_note) return `△ ${st.gpu_note}`;
   if (st.state === 'running') return st.tree.gpu_available ? 'starting GPU…' : 'computing on CPU';
-  return ''; // built/loaded, not solved yet — #mem-info shows estimates and budget
+  return ''; // built/loaded, not solved: the estimate line already covers it
 }
 
-/** The one detail line left under the Run controls: decision points, hands,
- *  memory and the engine note (the strip owns board/nodes/iter/exploit). */
+/** The detail line under the Run controls: decision points, hands, memory
+ *  and the engine note (the strip owns board/nodes/iter/exploit). */
 function detailLine(info, st) {
   const compute = computeText(st);
   return `${info.action_nodes.toLocaleString()} decisions · hands ${info.hands_oop}/${info.hands_ip} · ` +
@@ -593,7 +593,7 @@ function stripStateInfo() {
   };
 }
 
-/** What the live region says for a phase: one short word, never the numbers. */
+/** What the live region says for a phase: one short phrase, never the numbers. */
 const STRIP_SAY = {
   building: 'building the tree',
   drift: 'SETUP changed — the tree no longer matches it',
@@ -896,8 +896,8 @@ async function pollStatus() {
       state.polling = null;
     }
   }
-  // land on Browse when there's already a solved spot to study (first poll
-  // only, AFTER state.solved is settled above so the tab switch renders)
+  // first poll after a reload: land on Browse when a solve has already
+  // finished (AFTER state.solved is settled above, so the tab switch renders)
   if (firstPoll) {
     firstPoll = false;
     if (st.tree) {
@@ -1051,10 +1051,9 @@ async function loadSolve() {
     state.saved = true; // it IS the on-disk copy
     browser.reset(); // different solve: drop any stale browse line
     // SETUP must describe the loaded solve: SOLVE compares SETUP's
-    // fingerprint against the session's and rebuilds on a mismatch, which
-    // used to throw the loaded solve (and its node locks) away without a
-    // word whenever SETUP still held the previous spot — RE-SOLVE after a
-    // LOAD then solved a different spot from scratch.
+    // fingerprint against the session's and rebuilds on a mismatch. Left
+    // holding the previous spot, that would throw the loaded solve (and its
+    // node locks) away and re-solve a different spot from scratch.
     try {
       const st = await api.status();
       if (st && st.spot_request) await applySpotToSetup(st.spot_request);
@@ -1096,8 +1095,8 @@ const trustDial = initTrust($('trust-panel'), {
   villain: () => browser.villainLocked,
   posLabel: p => browser.posLabel(p),
   startSweep: async () => {
-    // A sweep is a solve: it replaces the session, so it needs the same
-    // guards as LOAD and BUILD rather than silently discarding work.
+    // A sweep is a solve: it discards a running or unsaved solve, so it takes
+    // the same discard confirms as LOAD and BUILD rather than silently losing work.
     if (state.running && !confirm('A solve is RUNNING — starting the sweep discards it. Continue?')) return;
     if (state.solved && !state.saved &&
         !confirm('The current solve has not been saved — starting the sweep discards it. Continue?')) return;

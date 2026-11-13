@@ -6,10 +6,11 @@
 //
 // Contract: while a tip is up the tip element is role="tooltip" and the
 // target carries aria-describedby="tip", so assistive tech reads the same
-// text the pointer shows; both are removed on hide. Keyboard focus shows at
-// once (no hover delay). Escape hides.
+// text the pointer shows; the link is removed on hide. Keyboard focus shows
+// at once (no hover delay). Escape hides.
 //
-// An explanatory dot is a real button, not a focusable span:
+// An explanatory dot is a real button (a focusable span announces no button
+// role):
 //   <button type="button" class="info-dot" aria-label="WHAT THIS EXPLAINS"
 //     data-tip="THE EXPLANATION">?</button>
 // (aria-label names the subject; the tip stays the explanation.)

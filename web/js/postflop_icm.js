@@ -85,12 +85,11 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   grid.append(payLabel, othersLabel);
   details.append(grid);
   anchor.after(details);
-  // ICM solves need rake 0 (the server refuses otherwise): show the zeroing
-  // on the spot panel's rake fields instead of asserting it in prose. The
-  // fields show 0 only while ICM is on; the numbers they held are kept here,
-  // so turning ICM off gives them back instead of leaving the 0 behind.
+  // ICM solves need rake 0 (the server refuses otherwise), so the panel's
+  // rake fields are driven to 0 and disabled while ICM is on. What they held
+  // is kept here and given back when ICM goes off.
   const rakes = [...anchor.querySelectorAll('input[id*="rake"]')];
-  let rakeStash = null; // [{ el, value }] captured while the fields show 0
+  let rakeStash = null;
 
   function holdRake() {
     if (rakeStash) return;

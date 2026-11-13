@@ -107,6 +107,7 @@ export function initRangeLabRef(host) {
     }
   }
 
+  // S.miss = the shown chart is the nearest fallback, not a match for the line
   const S = { summary: null, ctx: null, gameChosen: false, seq: 0, spot: null, miss: false };
   const game = () => S.summary?.games.find(g => g.tag === el.game.value) || null;
   const options = (sel, list, value) => {

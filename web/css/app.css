@@ -83,8 +83,8 @@ b { font-weight: inherit; }
   background: var(--accent-soft);
 }
 
-/* right header cluster: solver controls live WITH the status pill — beside
-   the tab strip the SOLVE button read as a fifth navigation tab */
+/* right header cluster: solver controls sit WITH the status pill, away from
+   the tab strip where they would read as a fifth navigation tab */
 #hdr-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
 
 #status-pill {
@@ -106,8 +106,9 @@ b { font-weight: inherit; }
 .btn.sm { padding: 4px 12px; font-size: 11px; letter-spacing: .08em; }
 
 /* --------------------------- spot / session strip --------------------------- */
-/* One place for what is loaded, on every postflop screen. Values come from the
-   built spot and /api/status; the state button owns the jump to its control. */
+/* One place for what is loaded, on every heads-up postflop screen. Values come
+   from the built spot and /api/status; the state button owns the jump to its
+   control. */
 #spot-strip {
   position: sticky; top: 46px; z-index: 45;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;

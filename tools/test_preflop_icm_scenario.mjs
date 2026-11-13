@@ -17,8 +17,8 @@ const preset = icmScenario({ ...state, edited: false }, '0', '0');
 assert.equal(preset.icm.edited, false);
 assert.deepEqual([preset.rakePct, preset.rakeCap], [0, 0]);
 
-// Legacy scenarios have no `edited` key: they must load as "not edited" so
-// today's preset-refresh behaviour is unchanged.
+// Legacy scenarios have no `edited` key: they must load as "not edited" so a
+// player-count change still refreshes an untouched preset.
 const legacy = icmFromConfig({ icm: { payouts: [50, 30, 20], field_groups: [{ count: 144, stack: 25 }] } });
 assert.equal(legacy.edited, false);
 assert.equal(legacy.stage, '', 'config shapes carry no stage');

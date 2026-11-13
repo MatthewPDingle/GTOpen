@@ -313,8 +313,8 @@ export class Browser {
     }
   }
 
-  /** No-spot state: the tab used to render as an empty grid before a build.
-   *  A node fetch in flight is "loading", not "no spot". */
+  /** The tab's no-spot state before a build: a node fetch in flight is
+   *  "loading", not "no spot". */
   renderEmptyState() {
     if (!this.emptyEl) return;
     const empty = !this.view && !this.loadingNode;
@@ -363,8 +363,8 @@ export class Browser {
     el.appendChild(txt);
   }
 
-  /** Record a lock/fit edit: the displayed strategy is now stale until the
-   *  next solve. The bar replaces the reminder each toast used to repeat. */
+  /** Record a lock/fit edit: the displayed strategy is stale until the next
+   *  solve, and the bar keeps that reminder visible (a toast would vanish). */
   noteLockEdit() {
     this.pendingLockEdits += 1;
     if (this._pendingBase == null) {
@@ -373,7 +373,7 @@ export class Browser {
         if (gen === this._pendingGen && this._pendingBase == null) this._pendingBase = st.iteration;
       }).catch(() => { /* no baseline: the bar is still true */ });
     }
-    this.onLockEdit?.(); // existing hook (app.js resyncs the trust readout)
+    this.onLockEdit?.(); // app.js resyncs the server's trust readout
     this.renderPendingBar();
   }
 
@@ -916,10 +916,9 @@ export class Browser {
           b.innerHTML = `${RANKS[r]}<span class="suit-${SUITS[s]}">${glyph}</span>`;
           if (!avail.has(cs)) b.classList.add('used');
           b.addEventListener('click', () => {
-            // one pick per fetch: a second click mid-flight used to push a
-            // second card step onto the SAME path array, the server rejected
-            // the two-card path, and refresh()'s recovery dumped the user at
-            // the root with the whole navigated line gone
+            // one pick per fetch: a second card step on the same path is
+            // rejected by the server, and refresh()'s recovery would drop the
+            // whole navigated line
             if (this._pickerBusy) return;
             this._pickerBusy = true;
             picker.querySelectorAll('button').forEach(x => { x.disabled = true; });
