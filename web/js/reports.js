@@ -1569,5 +1569,5 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
   updateVillainGate();
   refreshLibrary();
   pollStatus();
-  return { refreshLibrary };
+  return { refreshLibrary, openReport: loadReport };
 }

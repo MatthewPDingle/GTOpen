@@ -380,18 +380,17 @@ export function initBestSizeView(el, ctx) {
 
 /** Switch to REPORTS and open a saved sweep by name. The library is
  *  reports.js's; refresh it first (a sweep started here does not touch the
- *  Reports poll), then click the entry once it renders. */
-async function openSavedReport(name, ctx) {
+ *  Reports poll). Open it through the Reports tab's direct loader: the library
+ *  filter can hide the card, and clicking a row that is not rendered used to
+ *  fail silently after retrying. */
+export async function openSavedReport(name, ctx) {
   document.querySelector('.tab[data-tab="reports"]')?.click();
   await ctx?.refreshReports?.();
+  if (ctx?.openReport) { await ctx.openReport(name); return; }
+  // no direct loader (older host): fall back to the rendered card if present
   const find = () => [...document.querySelectorAll('#rep-library .report-item')].find(b => b.dataset.name === name);
   const hit = find();
   if (hit) return hit.click();
-  let tries = 0;
-  const timer = setInterval(() => {
-    const entry = find();
-    if (entry || ++tries > 20) { clearInterval(timer); entry?.click(); }
-  }, 100);
 }
 
 /** Browse "find best size": at the first bet decision of the root street
