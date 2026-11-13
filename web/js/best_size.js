@@ -379,25 +379,32 @@ export function initBestSizeView(el, ctx) {
 // ------------------------------------------------------ Browse panel ----
 
 /** Switch to REPORTS and open a saved sweep by name. The library is
- *  reports.js's; refresh it first (a sweep started here does not touch the
- *  Reports poll). Open it through the Reports tab's direct loader: the library
- *  filter can hide the card, and clicking a row that is not rendered used to
- *  fail silently after retrying. */
+ *  reports.js's; refresh it first so the pane's card highlight is current (a
+ *  sweep started here does not touch the Reports poll). Open it through the
+ *  Reports tab's direct loader: the library filter can hide the card, and
+ *  clicking a row that is not rendered used to fail silently after retrying. */
 export async function openSavedReport(name, ctx) {
   document.querySelector('.tab[data-tab="reports"]')?.click();
-  await ctx?.refreshReports?.();
-  if (ctx?.openReport) { await ctx.openReport(name); return; }
-  // no direct loader (older host): fall back to the rendered card if present
-  const find = () => [...document.querySelectorAll('#rep-library .report-item')].find(b => b.dataset.name === name);
-  const hit = find();
-  if (hit) return hit.click();
+  // the loader reads the report by name; the list only decorates the pane, so
+  // a failed refresh must not block the jump (it reports itself in the pane)
+  try { await ctx?.refreshReports?.(); } catch { /* stale library is fine */ }
+  try {
+    if (ctx?.openReport) return await ctx.openReport(name);
+    // no direct loader (older host): fall back to the rendered card if present
+    const hit = [...document.querySelectorAll('#rep-library .report-item')].find(b => b.dataset.name === name);
+    if (hit) return hit.click();
+  } catch (e) {
+    return ctx?.toast?.(e instanceof Error ? e.message : String(e), true);
+  }
+  // no loader and no rendered card: the jump would otherwise do nothing
+  ctx?.toast?.(`couldn’t open “${name}” in Reports`, true);
 }
 
 /** Browse "find best size": at the first bet decision of the root street
  *  (OOP's root, or IP after a check), run a one-board sweep of that bet on
  *  the spot being browsed and show EV by size inline. `ctx`: { toast,
- *  currentSpot, openInBrowse(spot, board), refreshReports }. Returns
- *  { update(view, path) }. */
+ *  currentSpot, openInBrowse(spot, board), refreshReports, openReport(name) }.
+ *  Returns { update(view, path) }. */
 export function initBrowseBestSize(el, ctx) {
   const S = { key: null, player: null, board: null, running: false, rep: null, poll: null, error: '' };
 
