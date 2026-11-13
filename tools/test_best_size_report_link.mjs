@@ -1,34 +1,102 @@
 import assert from 'node:assert/strict';
 
-// Minimal DOM: the module touches document only when it renders or navigates.
-// `#rep-library .report-item` deliberately renders nothing — this is the
-// maintainer's case where the Reports search hides the sweep's card.
-const tabClick = [];
-const openCalls = [];
-globalThis.document = {
-  querySelector: sel => sel === '.tab[data-tab="reports"]' ? { click: () => tabClick.push(sel) } : null,
-  querySelectorAll: () => [],
-};
-
+// Browse's "find best size" opens the saved sweep in REPORTS. The regression:
+// the navigation was a search through the rendered library rows, so a Reports
+// search that filtered the sweep's card out left it clicking nothing (the old
+// code retried on a timer and then gave up silently).
+//
+// The module is imported before any DOM exists: best_size.js reaches for
+// document only when it navigates, never at import time.
 const { openSavedReport } = await import('../web/js/best_size.js');
 
-const name = 'Find best size Ks7h2d OOP';
-await openSavedReport(name, {
-  refreshReports: async () => { openCalls.push('refresh'); },
-  openReport: async n => { openCalls.push(n); },
+const NAME = 'Find best size Ks7h2d OOP';
+
+// What the navigation did, in order, plus what it was allowed to touch.
+let events = [];
+let cardQueries = 0;   // lookups of a rendered `#rep-library .report-item`
+let timers = 0;        // retry/poll timers a card-click navigation needs
+let rows = [];         // what the library renders; [] = the search hid the card
+
+globalThis.document = {
+  querySelector(sel) {
+    assert.equal(sel, '.tab[data-tab="reports"]', 'the tab is the only element it looks up');
+    return { click: () => events.push('tab') };
+  },
+  querySelectorAll(sel) {
+    cardQueries++;
+    assert.equal(sel, '#rep-library .report-item');
+    return rows;
+  },
+};
+
+// Count timers: the old navigation waited on one, and a stray one would keep
+// node alive after the run.
+const realSetInterval = globalThis.setInterval;
+const realSetTimeout = globalThis.setTimeout;
+globalThis.setInterval = (...a) => { timers++; return realSetInterval(...a); };
+globalThis.setTimeout = (...a) => { timers++; return realSetTimeout(...a); };
+
+const reset = () => { events = []; cardQueries = 0; timers = 0; };
+
+// Each hook yields twice before recording, so the order below also proves the
+// navigation awaits the refresh and the open: a hook it merely fired off
+// would still be pending when openSavedReport resolves.
+const later = fn => async (...a) => { await null; await null; return fn(...a); };
+const direct = () => ({
+  refreshReports: later(() => events.push('refresh')),
+  openReport: later(n => events.push(`open:${n}`)),
 });
 
-assert.deepEqual(tabClick, ['.tab[data-tab="reports"]'], 'switches to Reports first');
-assert.deepEqual(openCalls, ['refresh', name],
-  'opens the report through the direct loader, not by clicking a filtered-out card');
+// The maintainer's case: the Reports search hides the sweep, so no row is
+// rendered. The direct loader must be enough on its own.
+reset();
+rows = [];
+await openSavedReport(NAME, direct());
+assert.deepEqual(events, ['tab', 'refresh', `open:${NAME}`],
+  'switch to Reports, refresh the library, then open the report by name');
+assert.equal(cardQueries, 0, 'the direct loader must not search for the card the filter hid');
+assert.equal(timers, 0, 'and must not wait for it on a retry timer');
 
-// A host without the direct loader still falls back to a rendered card.
-const clicked = [];
-globalThis.document.querySelectorAll = () => [{
-  dataset: { name },
-  click: () => clicked.push(name),
-}];
-await openSavedReport(name, {});
-assert.deepEqual(clicked, [name], 'older hosts click the card when it is rendered');
+// The loader is the primary path, not a last resort: even with a card
+// rendered (say, one left over from an earlier search) it is not clicked.
+reset();
+rows = [{ dataset: { name: NAME }, click: () => events.push('card') }];
+await openSavedReport(NAME, direct());
+assert.deepEqual(events, ['tab', 'refresh', `open:${NAME}`], 'a rendered card never takes precedence');
+assert.equal(cardQueries, 0, 'a card-first hybrid would search here and can still fail on a stale row');
+assert.equal(timers, 0);
+
+// A failed direct load is surfaced to the caller, not downgraded to a card
+// click or retried behind its back.
+reset();
+rows = [{ dataset: { name: NAME }, click: () => events.push('card') }];
+await assert.rejects(openSavedReport(NAME, {
+  refreshReports: later(() => events.push('refresh')),
+  openReport: async () => { events.push('open'); throw new Error('no such report'); },
+}), /no such report/, 'the loader error reaches the caller');
+assert.deepEqual(events, ['tab', 'refresh', 'open'], 'a failed open is not retried as a card click');
+assert.equal(timers, 0);
+
+// A host without the direct loader still clicks a rendered card, after the
+// refresh that renders it — and needs no timer for a card already there.
+reset();
+rows = [{ dataset: { name: NAME }, click: () => events.push('card') }];
+await openSavedReport(NAME, { refreshReports: later(() => events.push('refresh')) });
+assert.deepEqual(events, ['tab', 'refresh', 'card']);
+assert.equal(cardQueries, 1);
+assert.equal(timers, 0, 'the card is there after the refresh; no retry loop');
+
+// No loader and no rendered card: give up at once. The old retry timer kept
+// this case alive for two seconds before failing silently.
+reset();
+rows = [];
+await openSavedReport(NAME, {});
+assert.deepEqual(events, ['tab']);
+assert.equal(timers, 0, 'nothing to wait for, so nothing is scheduled');
+
+// Leave the process as it was found, in case a runner imports several files.
+globalThis.setInterval = realSetInterval;
+globalThis.setTimeout = realSetTimeout;
+delete globalThis.document;
 
 console.log('test_best_size_report_link: ok');
