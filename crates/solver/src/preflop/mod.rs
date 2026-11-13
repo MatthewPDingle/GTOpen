@@ -24,6 +24,7 @@ pub mod evidence;
 pub mod leafnet;
 pub mod leafnet_catalog;
 mod leaf_model;
+pub mod leaf_fix;
 pub mod leaf_total;
 pub use leaf_model::{FlopLeaf, LeafRefresh, LeafTerminalSums};
 mod continuation;

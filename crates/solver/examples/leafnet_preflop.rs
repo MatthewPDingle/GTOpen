@@ -8,7 +8,8 @@
 //! moved most at the root's first decisions.
 //!
 //! The research settings PREFLOP_LEAF_PIN, PREFLOP_LEAF_PIN_SUM and
-//! PREFLOP_LEAF_BLOCKING apply (crates/solver/src/preflop/leaf_total.rs).
+//! PREFLOP_LEAF_BLOCKING apply (crates/solver/src/preflop/leaf_total.rs),
+//! and so does PREFLOP_LEAF_FIX (corrections from a file, leaf_fix.rs).
 //! With or without them, the learned solve ends with a table by pot type of
 //! what the leaves' values add up to against what they must add up to.
 use solver::preflop::leaf_total::LeafTotal;
@@ -45,9 +46,9 @@ fn main() -> Result<(), String> {
                 let r = s.refresh_leaf_values().unwrap();
                 leaf_secs += t.elapsed().as_secs_f64();
                 println!("it {i}: refreshed {}/{} terminals in {:.2}s, mean |corr| {:.4}, max {:.3}, pot added {:+.4}, \
-                          pinned {}, booked above the {} known totals {:+.4}",
+                          corrected from a file {}, pinned {}, booked above the {} known totals {:+.4}",
                          r.priced, r.terminals, t.elapsed().as_secs_f64(), r.mean_abs, r.max_abs, r.mean_excess,
-                         r.pinned, r.known, r.surplus);
+                         r.fixed, r.pinned, r.known, r.surplus);
             }
         }
         let (gaps, evs) = s.gaps_and_evs();
