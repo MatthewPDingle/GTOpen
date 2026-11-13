@@ -486,15 +486,17 @@ export function initReports({ els, toast, onError, currentSpot, villains, openIn
   }
 
   /** A ⇄ B: read the compared report as A and the open one as B, keeping the
-   *  current line when the new A also recorded it. */
+   *  decision the comparison is reading. `c.key` is already in B's action
+   *  space (loadCompareLine built it from B's indices), so it survives the
+   *  swap; S.line holds A's indices and would land on a different action. */
   async function swapCompare() {
     const c = S.cmp;
     if (!c || !S.report) return;
-    const aName = S.report.name, bName = c.name, line = S.line;
+    const aName = S.report.name, bName = c.name, line = c.key ?? '';
     await loadReport(bName);   // loadReport clears the comparison it replaces
     if (S.report?.name !== bName) return;
     if (line && S.mode === 'lines') {
-      try { await loadLine(line); } catch { /* stay at the root when B lacks this line */ }
+      try { await loadLine(line); } catch { /* stay at the root when A lacks this line */ }
     }
     await setCompare(aName);
   }

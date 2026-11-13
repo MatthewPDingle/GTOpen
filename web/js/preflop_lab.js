@@ -1735,6 +1735,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           stats: prof.response?.source_stats || (prof.stats ? { ...prof.stats } : null),
           postflop: prof.postflop || null, painted: true });
       }
+      // A pick replaces the seat's profile: its paint history belongs to the
+      // old one, and restorePaint would write those bands into the new model.
+      resetPaint(m);
     } catch (e) {
       if (!fresh()) return;
       toast(errText(e), true);
@@ -1795,7 +1798,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         S.applied = S.model.seats.map(m => m.mode);
         S.appliedSeatSigs = S.model.seats.map(seatSigOf);
         S.postflopDirty = false; // the push above carried the current tendencies
-        S.appliedHero = null; // a changed table drops hero server-side
+        // A changed preflop table clears hero server-side, but a postflop-only
+        // push (same table under the engine's comparison) keeps it. Adopt the
+        // engine's truth instead of assuming either; if that read fails, mark
+        // it unknown so the staged hero below is pushed regardless.
+        try {
+          const st = await api.pfStatus();
+          S.appliedHero = st?.hero ?? null;
+        } catch { S.appliedHero = undefined; }
       }
       if (heroTarget !== S.appliedHero) {
         try {

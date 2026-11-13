@@ -1122,6 +1122,8 @@ const browseBestSize = initBrowseBestSize($('bestsize-browse'), {
   // the tree being browsed (not SETUP, which may have been edited since)
   currentSpot: () => state.builtSpot ? JSON.parse(JSON.stringify(state.builtSpot)) : currentSpotRequest(),
   openInBrowse: (spot, board) => openReportSpot(spot, board, []),
+  // the saved sweep lives in the Reports library: refresh it before opening
+  refreshReports: () => reports.refreshLibrary(),
 });
 browser.onNodeChange = (view, path) => browseBestSize.update(view, path);
 

@@ -49,6 +49,21 @@ function isPrefix(a, b) {
   return a.length <= b.length && a.every((s, i) => stepEq(s, b[i]));
 }
 
+/** Earlier decisions a freeze-earlier lock would still freeze: action steps
+ *  on the line whose node (the prefix BEFORE the step, as freeze_line walks
+ *  it) carries no lock. Pure so the per-ancestor rule is testable: a lock at
+ *  the node being viewed must never make its ancestors look locked. */
+export function freezeableAncestors(path, pathLabels, board, isLocked) {
+  let n = 0;
+  for (let i = 0; i < path.length; i++) {
+    if (path[i].type !== 'action') continue;
+    const prefix = pathLabels.slice(0, i);
+    const desc = prefix.length ? `${board} ${prefix.join(' > ')}` : `${board} root`;
+    if (!isLocked(desc)) n++;
+  }
+  return n;
+}
+
 export class Browser {
   constructor(els, hooks = {}) {
     this.els = els;
@@ -426,7 +441,7 @@ export class Browser {
     if (!at) return null;
     const raw = (this.lockLabels || []).filter(l => lockLabelAtNode(l, at));
     if (!raw.length) {
-      if (this.view?.locked && this.lockHistory?.profile_players?.length) return { kind: 'profile', combos: 0 };
+      if (at === this.lockNodeLabel() && this.view?.locked && this.lockHistory?.profile_players?.length) return { kind: 'profile', combos: 0 };
       return null;
     }
     const hist = (this.lockHistory?.undo || []).filter(h => editLabelAtNode(h, at));
@@ -1176,15 +1191,7 @@ export class Browser {
    *  it) carries no lock yet. */
   freezeCount() {
     if (!this.view || !this.pathLabels || !this.hasEarlierDecision()) return 0;
-    const board = this.rootBoard();
-    let n = 0;
-    for (let i = 0; i < this.path.length; i++) {
-      if (this.path[i].type !== 'action') continue;
-      const prefix = this.pathLabels.slice(0, i);
-      const desc = prefix.length ? `${board} ${prefix.join(' > ')}` : `${board} root`;
-      if (!this.lockSummary(desc)) n++;
-    }
-    return n;
+    return freezeableAncestors(this.path, this.pathLabels, this.rootBoard(), d => !!this.lockSummary(d));
   }
 
   setLockHistory(h) {

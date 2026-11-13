@@ -47,15 +47,30 @@ export function icmConfig(state, tableStack) {
   };
 }
 
+/** The scenario block ICM contributes. `edited` must round-trip: a preset
+ *  whose payouts were customized must not be refreshed by the preset when the
+ *  table player count changes after a save/reload. The rake fields show ICM's
+ *  0, so the entered values ride along separately to be restored on turn-off. */
+export function icmScenario(state, rakePct, rakeCap) {
+  return {
+    icm: {
+      on: state.on, payouts: state.payouts, fieldCount: state.fieldCount,
+      fieldStack: state.fieldStack, stage: state.stage, stackOff: state.stackOff,
+      edited: !!state.edited,
+    },
+    rakePct: +(rakePct || 0), rakeCap: +(rakeCap || 0),
+  };
+}
+
 /** Panel fields from a saved config's `icm`. */
 export function icmFromConfig(cfg) {
   const icm = cfg.icm;
-  if (!icm) return { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '' };
+  if (!icm) return { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '', edited: false };
   const groups = [...(icm.field_groups || []), ...(icm.field || []).map(stack => ({ stack, count: 1 }))];
   const count = groups.reduce((a, g) => a + g.count, 0);
   const avg = count ? groups.reduce((a, g) => a + g.stack * g.count, 0) / count : '';
   return {
-    on: true, payouts: icm.payouts.join(', '), stage: '',
+    on: true, payouts: icm.payouts.join(', '), stage: '', edited: false,
     fieldCount: count ? String(count) : '', fieldStack: count ? String(+avg.toFixed(3)) : '',
     stackOff: icm.stack_off === undefined ? '' : String(icm.stack_off),
   };
@@ -207,17 +222,9 @@ export function createIcmControls(els, positionsFor, changed) {
       const icm = icmConfig(state, +els.stack.value || 100);
       return icm ? { icm } : {};
     },
-    scenario: () => (state.on ? {
-      icm: {
-        on: state.on, payouts: state.payouts, fieldCount: state.fieldCount,
-        fieldStack: state.fieldStack, stage: state.stage, stackOff: state.stackOff,
-      },
-      // the rake fields are showing ICM's 0; the scenario keeps the numbers
-      // to go back to, so turning ICM off after a load restores them
-      rakePct: +(state.rakePct || 0), rakeCap: +(state.rakeCap || 0),
-    } : {}),
+    scenario: () => (state.on ? icmScenario(state, state.rakePct, state.rakeCap) : {}),
     restore: value => {
-      state = value?.icm ? { ...value.icm, rakePct: '', rakeCap: '' } : { ...state, on: false };
+      state = value?.icm ? { ...value.icm, edited: !!value.icm.edited, rakePct: '', rakeCap: '' } : { ...state, on: false };
       // a scenario stores the rake the user entered, never ICM's displayed 0
       if (value?.icm) {
         if (els.rakePct) els.rakePct.value = String(value.rakePct ?? els.rakePct.value ?? '');

@@ -381,10 +381,12 @@ export function initBestSizeView(el, ctx) {
 // ------------------------------------------------------ Browse panel ----
 
 /** Switch to REPORTS and open a saved sweep by name. The library is
- *  reports.js's; this only clicks the entry once it renders (best effort). */
-function openSavedReport(name) {
+ *  reports.js's; refresh it first (a sweep started here does not touch the
+ *  Reports poll), then click the entry once it renders. */
+async function openSavedReport(name, ctx) {
   document.querySelector('.tab[data-tab="reports"]')?.click();
-  const find = () => [...document.querySelectorAll('#rep-library .report-item')].find(b => b.title === name);
+  await ctx?.refreshReports?.();
+  const find = () => [...document.querySelectorAll('#rep-library .report-item')].find(b => b.dataset.name === name);
   const hit = find();
   if (hit) return hit.click();
   let tries = 0;
@@ -459,7 +461,7 @@ export function initBrowseBestSize(el, ctx) {
         : `<button type="button" class="btn xs" id="bsb-run" ${S.key == null ? 'disabled' : ''}>FIND</button>`) + `</div>` + body;
     el.querySelector('#bsb-run')?.addEventListener('click', run);
     el.querySelector('#bsb-stop')?.addEventListener('click', () => api.reportsStop().catch(() => {}));
-    el.querySelector('#bsb-report')?.addEventListener('click', () => openSavedReport(S.rep.name));
+    el.querySelector('#bsb-report')?.addEventListener('click', () => openSavedReport(S.rep.name, ctx));
     el.querySelector('#bsb-use')?.addEventListener('click', () => {
       const row = S.rep.flops[0];
       ctx.openInBrowse(spotWithSize(S.rep, row.board, row.verdict.best), row.board);

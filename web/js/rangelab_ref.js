@@ -180,8 +180,8 @@ export function initRangeLabRef(host) {
     update(S.ctx);
   }
 
-  async function show(promise, context) {
-    const seq = ++S.seq;
+  async function show(promise, context, gen) {
+    const seq = gen ?? ++S.seq;
     let spot;
     try { spot = await promise; } catch (e) { if (seq === S.seq) clear(esc(e.message)); return; }
     if (seq !== S.seq) return; // superseded by a newer request
@@ -217,17 +217,22 @@ export function initRangeLabRef(host) {
     try { spot = (await api.rangeLabMatch(req)).spot; } catch (e) { if (seq === S.seq) clear(esc(e.message)); return; }
     if (seq !== S.seq) return; // superseded while the matcher was in flight
     if (spot) { render(spot); return; }
-    // No chart for this line: show the nearest one instead of emptying the panel.
+    // No chart for this line: show the nearest one instead of emptying the
+    // panel. Carry this request's generation: if the user navigates before
+    // the fallback lands, the older continuation must not replace the newer
+    // match (and must not label it "matching").
     S.miss = true;
     pickNearest(g);
-    browse(null);
+    browse(null, seq);
   }
 
-  async function browse(keepSpot) {
+  async function browse(keepSpot, gen) {
+    const mine = gen ?? ++S.seq;
     const g = game();
     if (!g) return;
     let list;
-    try { list = await api.rangeLabSituations(g.tag, el.variant.value, Number(el.depth.value)); } catch (e) { clear(esc(e.message)); return; }
+    try { list = await api.rangeLabSituations(g.tag, el.variant.value, Number(el.depth.value)); } catch (e) { if (mine === S.seq) clear(esc(e.message)); return; }
+    if (mine !== S.seq) return; // superseded while the fallback was loading
     const groups = new Map();
     list.forEach(s => { if (!groups.has(s.family_label)) groups.set(s.family_label, []); groups.get(s.family_label).push(s); });
     el.spot.innerHTML = [...groups].map(([fam, items]) => `<optgroup label="${esc(fam)}">` +
@@ -236,7 +241,7 @@ export function initRangeLabRef(host) {
     const same = keepSpot && list.find(s => s.family_label === keepSpot.family_label && s.label === keepSpot.label);
     if (same) el.spot.value = String(same.id);
     if (!list.length) { clear('No charts at this open size and stack.'); return; }
-    await show(api.rangeLabSpot(Number(el.spot.value)), 'Chart not found.');
+    await show(api.rangeLabSpot(Number(el.spot.value)), 'Chart not found.', mine);
   }
 
   function update(ctx) {
