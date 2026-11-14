@@ -1,7 +1,7 @@
 // 13x13 range editor with drag painting, weight brush, text sync and presets.
 
 import { cellInfo, cellCombos, comboIndex, weightsToText } from './cards.js';
-import { api, toast } from './api.js';
+import { api } from './api.js';
 
 export class RangeEditor {
   constructor(matrixEl, opts) {
@@ -15,6 +15,12 @@ export class RangeEditor {
     this.player = 0;
     this.painting = false;
     this.paintValue = 1.0;
+    // parse failures stay under the box until the next edit
+    this.errorEl = document.createElement('p');
+    this.errorEl.className = 'bs-error';
+    this.errorEl.setAttribute('role', 'alert');
+    this.errorEl.hidden = true;
+    this.textEl.after(this.errorEl);
     this.buildGrid();
     this.bind();
     this.render();
@@ -46,6 +52,7 @@ export class RangeEditor {
     };
     this.brushEl.addEventListener('input', brush);
     brush();
+    this.textEl.addEventListener('input', () => { this.errorEl.hidden = true; });
 
     this.el.addEventListener('mousedown', e => {
       const cell = e.target.closest('.cell');
@@ -127,10 +134,11 @@ export class RangeEditor {
     try {
       const res = await api.parseRange(this.textEl.value);
       this.ranges[player] = Float32Array.from(res.weights);
+      this.errorEl.hidden = true;
       this.render();
-      toast(`parsed: ${res.combos.toFixed(1)} combos`);
     } catch (e) {
-      toast(`range error: ${e.message}`, true);
+      this.errorEl.textContent = `range error: ${e.message}`;
+      this.errorEl.hidden = false;
     }
   }
 

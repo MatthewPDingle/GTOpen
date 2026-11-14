@@ -1,16 +1,39 @@
-// Presentation only: keep original report names as API/file identifiers.
-export function reportLabel(name, villain) {
-  let title = String(name || 'Untitled report').replace(/^overnight-\d{8}-\d{6}-[a-f\d]+\s+/i, '');
-  let context = '';
-  const scenario = title.match(/^(\d+-max)\s+(\d+bb)\s+\$?(\d+[/-]\d+)(?:\s*:\s*.*?\brake)?\s+(?=[A-Z]\s+(?:BTN|CO|BB|SB|UTG|HJ|MP))/i);
-  if (scenario) {
-    context = `$${scenario[3].replace('-', '/')} · ${scenario[2]} · ${scenario[1]}`;
-    title = title.slice(scenario[0].length).replace(/^[A-Z]\s+/, '');
-  }
-  const variant = title.match(/\s+-\s+(GTO postflop|(?:fish|TAG) (?:station|folder))$/i);
-  if (variant) title = title.slice(0, variant.index);
-  if (villain) title = title.replace(/\s+vs (?:fish|TAG)$/i, '');
-  return { title, context, model: villain ? `vs ${String(villain).replace(/^Data\s*·\s*/, '')}` : 'GTO' };
+// Presentation only: a report's identity arrives normalized in the library
+// list (`summary`, built by /api/reports).
+
+const STREET = ['F', 'T', 'R'];
+
+export function fmtNum(x) {
+  if (!Number.isFinite(x)) return '—';
+  return Number.isInteger(x) ? String(x) : String(+x.toFixed(2));
+}
+
+/** Villain model label, or GTO when the run had no modeled villain. */
+export function modelLabel(villain) {
+  return villain ? `vs ${String(villain).replace(/^Data\s*·\s*/, '')}` : 'GTO';
+}
+
+/** The report card's two identity lines, from the list endpoint's summary:
+ *  the spot on the card, the solved settings in the card's tooltip. */
+export function reportCardFacts(summary = {}) {
+  const context = [
+    summary.stakes ? `$${summary.stakes}` : '',
+    summary.bb ? `${fmtNum(summary.bb)}bb` : '',
+    summary.players ? `${summary.players}-max` : '',
+    summary.rake_pct != null ? `${fmtNum(summary.rake_pct)}% rake` : '',
+  ].filter(Boolean).join(' · ');
+  const menu = side => (summary[`${side}_sizes`] || [])
+    .map((s, i) => `${STREET[i] || i + 1} ${s}`).join(' · ');
+  const oop = menu('oop'), ip = menu('ip');
+  const sizes = !oop && !ip ? '' : oop === ip ? `sizes ${oop}` : `sizes OOP ${oop} · IP ${ip}`;
+  const detail = [
+    summary.pot != null ? `pot ${fmtNum(summary.pot)}` : '',
+    summary.stack != null ? `stack ${fmtNum(summary.stack)}` : '',
+    sizes,
+    summary.sweep_sizes?.length ? `swept ${summary.sweep_sizes.map(fmtNum).join('/')}` : '',
+    summary.target != null ? `target ${fmtNum(summary.target)}%` : '',
+  ].filter(Boolean).join(' · ');
+  return { context, detail };
 }
 
 export function reportTimestamp(created) {

@@ -40,9 +40,9 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   const summary = document.createElement('summary');
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Tournament spots: every terminal pays each player the change in their share of the '
-    + 'prize pool (Malmuth–Harville ICM) instead of chips. EVs read in bb equivalents. Stacks use the same '
-    + 'units as the pot. Needs rake 0. A Preflop Lab export from an ICM game fills this in.';
+  note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
+    + 'instead of chips; EVs read in bb equivalents, stacks use the pot’s units. '
+    + 'A Preflop Lab ICM export fills this in.';
   details.append(note);
   const on = document.createElement('label');
   on.className = 'check';
@@ -65,8 +65,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   others.setAttribute('aria-label', 'Stacks of every other player still in');
   const othersLabel = document.createElement('label');
   othersLabel.style.gridColumn = '1 / -1';
-  othersLabel.dataset.tip = 'Everyone still in the tournament who is not in this hand: players who folded at '
-    + 'this table and players at other tables. "144x25" means 144 players with 25 each.';
+  othersLabel.dataset.tip = 'Everyone still in the tournament but not in this hand: players who folded at '
+    + 'this table, and players at other tables. "144x25": 144 players with 25 each.';
   othersLabel.append('Other players’ stacks ', others);
   const behind = [];
   if (seats === 2) {
@@ -75,8 +75,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
       input.type = 'number'; input.min = '0'; input.step = 'any';
       input.placeholder = 'effective stack';
       const label = document.createElement('label');
-      label.dataset.tip = `${who}'s chips behind at the start of the solve, if more than the effective stack. `
-        + 'Chips past the effective stack are never at risk but count for ICM.';
+      label.dataset.tip = `${who} chips behind at the start of the solve. Chips past the effective stack `
+        + 'are never at risk but count for ICM.';
       label.append(`${who} chips behind `, input);
       behind.push(input);
       grid.append(label);
@@ -85,14 +85,51 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   grid.append(payLabel, othersLabel);
   details.append(grid);
   anchor.after(details);
+  // ICM solves need rake 0 (the server refuses otherwise), so the panel's
+  // rake fields are driven to 0 and disabled while ICM is on. What they held
+  // is kept here and given back when ICM goes off.
+  const rakes = [...anchor.querySelectorAll('input[id*="rake"]')];
+  let rakeStash = null;
+
+  function holdRake() {
+    if (rakeStash) return;
+    rakeStash = rakes.map(el => ({ el, value: el.value }));
+    for (const el of rakes) {
+      el.value = '0';
+      el.disabled = true;
+      if (!el.closest('label')?.querySelector('.icm-rake')) {
+        const tag = document.createElement('span');
+        tag.className = 'dim icm-rake';
+        tag.textContent = 'ICM · 0';
+        el.closest('label')?.append(' ', tag);
+      }
+    }
+  }
+  /** Give the fields back; `restore` puts the remembered numbers in, which is
+   *  what turning ICM off means. A newly loaded spot (set) must keep the
+   *  numbers it just wrote instead. */
+  function releaseRake(restore) {
+    if (!rakeStash) return;
+    for (const { el, value } of rakeStash) {
+      if (restore) el.value = value;
+      el.disabled = false;
+      el.closest('label')?.querySelector('.icm-rake')?.remove();
+    }
+    rakeStash = null;
+  }
 
   function render() {
+    if (onBox.checked) holdRake();
+    else releaseRake(false);
     grid.hidden = !onBox.checked;
     summary.textContent = onBox.checked ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
     if (onBox.checked) details.open = true;
   }
   const changed = () => { render(); onChange(); };
-  onBox.addEventListener('change', changed);
+  onBox.addEventListener('change', () => {
+    if (!onBox.checked) releaseRake(true); // the user turned ICM off
+    changed();
+  });
   for (const el of [payouts, others, ...behind]) el.addEventListener('input', changed);
   render();
 
@@ -113,6 +150,9 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
     },
     /** Fill from a request's or export's `icm` (falsy turns ICM off). */
     set(icm) {
+      // The spot's rake (if the caller just wrote one) is the new baseline:
+      // drop the previous spot's held numbers without putting them back.
+      releaseRake(false);
       onBox.checked = !!icm;
       if (icm) {
         payouts.value = (icm.payouts || []).join(', ');

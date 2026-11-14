@@ -3219,29 +3219,231 @@ async fn report_stop_run(State(state): State<Arc<AppState>>) -> Json<serde_json:
     Json(serde_json::json!({"ok": true}))
 }
 
+/// Identity of one report for the library, normalized here so no client parses
+/// a report name or guesses a spot from it.
+#[derive(Default, Serialize)]
+struct ReportSummary {
+    /// Display title: the name with the run id, leading game block and
+    /// opponent/variant suffix removed.
+    title: String,
+    /// Table size, stakes and depth: only present when the name carried them
+    /// (report files do not record blinds or seats).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    players: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stakes: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    bb: Option<f64>,
+    /// The spot, as solved: pot-share chips, rake in percent of the pot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pot: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stack: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rake_pct: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rake_cap: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_raises: Option<u64>,
+    /// Convergence target, % pot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    target: Option<f64>,
+    /// Swept size of a per-size variant report, % pot.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    size: Option<f64>,
+    /// One entry per street: "33 75/r60" (bet / raise / donk).
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    oop_sizes: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    ip_sizes: Vec<String>,
+    /// A sweep's candidate sizes.
+    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+    sweep_sizes: Vec<f64>,
+}
+
+/// Strip the "overnight-YYYYMMDD-HHMMSS-hex " prefix study runs put in front of
+/// report names.
+fn strip_run_id(s: &str) -> Option<&str> {
+    let rest = s.strip_prefix("overnight-")?;
+    let b = rest.as_bytes();
+    if b.len() < 16 || b[8] != b'-' || b[15] != b'-' { return None; }
+    if !b[..8].iter().all(|c| c.is_ascii_digit()) || !b[9..15].iter().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    let tail = &rest[16..];
+    let end = tail.find(' ')?;
+    if end == 0 || !tail[..end].bytes().all(|c| c.is_ascii_hexdigit()) { return None; }
+    Some(tail[end..].trim_start())
+}
+
+/// "6-max 100bb 2-5: 1% rake BTN vs BB …" — the table size, stakes and depth
+/// the study tooling writes in front of a report name. Report files do not
+/// record blinds or seats, so this is the only source.
+fn split_game(name: &str) -> Option<((u32, String, f64), &str)> {
+    let (players, rest) = name.split_once(' ')?;
+    let players: u32 = players.strip_suffix("-max")?.parse().ok()?;
+    if !(2..=10).contains(&players) { return None; }
+    let (depth, rest) = rest.trim_start().split_once(' ')?;
+    let bb: f64 = depth.strip_suffix("bb")?.parse().ok()?;
+    if !(bb.is_finite() && bb > 0.0) { return None; }
+    let (stakes, rest) = rest.trim_start().split_once(' ')?;
+    let stakes = stakes.trim_start_matches('$').trim_end_matches(':');
+    let mut parts = stakes.split(['-', '/']);
+    let (small, big) = (parts.next()?, parts.next()?);
+    if parts.next().is_some() { return None; }
+    let (small, big): (f64, f64) = (small.parse().ok()?, big.parse().ok()?);
+    if !(small > 0.0 && big > 0.0) { return None; }
+    Some(((players, format!("{small}/{big}"), bb), rest.trim_start()))
+}
+
+/// Strip a leading "1% rake " between the game block's colon and the positions.
+fn strip_rake_prefix(s: &str) -> &str {
+    let mut words = s.splitn(3, ' ');
+    let first = words.next().unwrap_or("");
+    if first.ends_with('%') && words.next().is_some_and(|w| w.eq_ignore_ascii_case("rake")) {
+        return words.next().unwrap_or("");
+    }
+    s
+}
+
+/// A report's display title and the game block its name carried, if any.
+fn report_title(name: &str) -> (Option<(u32, String, f64)>, String) {
+    let body = strip_run_id(name.trim()).unwrap_or_else(|| name.trim());
+    let mut title = body.to_string();
+    let game = split_game(body).map(|(game, rest)| {
+        title = strip_rake_prefix(rest).trim().to_string();
+        game
+    });
+    for suffix in [
+        " - GTO postflop", " - fish station", " - fish folder", " - TAG station", " - TAG folder",
+    ] {
+        if let Some(t) = title.strip_suffix(suffix) {
+            title = t.trim_end().to_string();
+        }
+    }
+    // "6-max 100bb 2-5: 1% rake" and friends leave nothing after the prefix:
+    // an empty title would reach the library as a blank row
+    if title.is_empty() {
+        title = body.to_string();
+    }
+    (game, title)
+}
+
+fn size_menu(spot: Option<&serde_json::Value>, side: &str) -> Vec<String> {
+    let Some(rows) = spot.and_then(|s| s.get(side)).and_then(|x| x.as_array()) else {
+        return Vec::new();
+    };
+    rows.iter()
+        .map(|row| {
+            let field = |k: &str| row.get(k).and_then(|x| x.as_str()).unwrap_or("");
+            let mut out = field("bet").to_string();
+            if !field("raise").is_empty() {
+                out.push_str(&format!("/r{}", field("raise")));
+            }
+            if !field("donk").is_empty() {
+                out.push_str(&format!("/d{}", field("donk")));
+            }
+            out
+        })
+        .collect()
+}
+
+fn report_summary(v: &serde_json::Value, size: Option<f64>) -> ReportSummary {
+    let spot = v.get("spot");
+    let num = |key: &str| {
+        spot.and_then(|s| s.get(key))
+            .and_then(|x| x.as_f64())
+            .filter(|x| x.is_finite())
+    };
+    let (game, title) = report_title(v.get("name").and_then(|x| x.as_str()).unwrap_or(""));
+    // A per-size variant is identified by the sweep it belongs to, which the
+    // file records; the swept size carries the difference.
+    let (game, title) = match v.get("sweep_parent").and_then(|x| x.as_str()) {
+        Some(parent) => {
+            let (parent_game, parent_title) = report_title(parent);
+            (parent_game.or(game), parent_title)
+        }
+        None => (game, title),
+    };
+    let finite = |x: f64| x.is_finite().then_some(x);
+    ReportSummary {
+        title,
+        players: game.as_ref().map(|g| g.0),
+        stakes: game.as_ref().map(|g| g.1.clone()),
+        bb: game.as_ref().map(|g| g.2),
+        pot: num("starting_pot"),
+        stack: num("effective_stack"),
+        rake_pct: num("rake_pct"),
+        rake_cap: num("rake_cap"),
+        max_raises: spot.and_then(|s| s.get("max_raises")).and_then(|x| x.as_u64()),
+        target: v.get("target_pct").and_then(|x| x.as_f64()).and_then(finite),
+        size: size.and_then(finite),
+        oop_sizes: size_menu(spot, "oop"),
+        ip_sizes: size_menu(spot, "ip"),
+        sweep_sizes: v.get("grid").and_then(|g| g.as_array())
+            .map(|g| g.iter().filter_map(|x| x.as_f64().and_then(finite)).collect())
+            .unwrap_or_default(),
+    }
+}
+
 async fn report_list() -> Json<serde_json::Value> {
-    let mut out = Vec::new();
+    // One file is parsed at a time and only its library entry is kept: report
+    // files can be a few MB per flop (size sweeps with keep_variants), so a
+    // whole library parsed at once would be gigabytes.
+    let mut out: Vec<serde_json::Value> = Vec::new();
+    // name of a per-size variant -> size, from the variant tables of the sweeps
+    let mut variant_sizes: std::collections::HashMap<String, f64> = std::collections::HashMap::new();
+    // entries whose size was not known when they were read (the sweep may come
+    // later in the directory listing): patched once every file has been seen
+    let mut pending_sizes: Vec<(usize, String)> = Vec::new();
     if let Ok(rd) = std::fs::read_dir("saves/reports") {
         for e in rd.flatten() {
             let p = e.path();
             if p.extension().and_then(|x| x.to_str()) != Some("json") {
                 continue;
             }
-            if let Ok(text) = std::fs::read_to_string(&p) {
-                if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
-                    out.push(serde_json::json!({
-                        "name": v.get("name"),
-                        "created": v.get("created"),
-                        "n_flops": v.get("flops").and_then(|f| f.as_array()).map(|a| a.len()),
-                        "complete": v.get("complete"),
-                        "lines": v.get("lines").and_then(|x| x.as_bool()).unwrap_or(false),
-                        "villain": v.get("villain").and_then(|x| x.get("name")),
-                        "kind": v.get("kind").and_then(|x| x.as_str()).unwrap_or("report"),
-                        "sweep_parent": v.get("sweep_parent"),
-                        "board_sample": v.get("flops").and_then(|f| f.get(0)).and_then(|r| r.get("board")),
-                    }));
+            let Ok(text) = std::fs::read_to_string(&p) else { continue };
+            let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) else { continue };
+            // A per-size variant's report file does not repeat the size it
+            // swept; its parent sweep's variant table does. Read that instead
+            // of the name suffix.
+            if v.get("kind").and_then(|k| k.as_str()) == Some("sweep") {
+                for var in v.get("variants").and_then(|x| x.as_array()).into_iter().flatten() {
+                    let name = var.get("name").and_then(|x| x.as_str());
+                    let size = var.get("size").and_then(|x| x.as_f64());
+                    if let (Some(name), Some(size)) = (name, size) {
+                        variant_sizes.insert(name.to_string(), size);
+                    }
                 }
             }
+            let name = v.get("name").and_then(|x| x.as_str());
+            let size = name.and_then(|n| variant_sizes.get(n)).copied();
+            let summary = report_summary(&v, size);
+            // only a per-size variant can gain a size this way
+            if size.is_none() && v.get("sweep_parent").is_some() {
+                if let Some(n) = name {
+                    pending_sizes.push((out.len(), n.to_string()));
+                }
+            }
+            out.push(serde_json::json!({
+                "name": name,
+                "created": v.get("created"),
+                "n_flops": v.get("flops").and_then(|f| f.as_array()).map(|a| a.len()),
+                "complete": v.get("complete"),
+                "lines": v.get("lines").and_then(|x| x.as_bool()).unwrap_or(false),
+                "villain": v.get("villain").and_then(|x| x.get("name")),
+                "kind": v.get("kind").and_then(|x| x.as_str()).unwrap_or("report"),
+                "sweep_parent": v.get("sweep_parent"),
+                "board_sample": v.get("flops").and_then(|f| f.get(0)).and_then(|r| r.get("board")),
+                "summary": summary,
+            }));
+        }
+    }
+    // sweeps read after their variants: fill in the size the parent names
+    for (i, name) in pending_sizes {
+        let Some(size) = variant_sizes.get(&name).copied().filter(|s| s.is_finite()) else { continue };
+        if let Some(summary) = out.get_mut(i).and_then(|e| e.get_mut("summary")) {
+            summary["size"] = serde_json::json!(size);
         }
     }
     out.sort_by_key(|v| -(v.get("created").and_then(|c| c.as_i64()).unwrap_or(0)));
@@ -4470,6 +4672,95 @@ async fn main() {
     if let Err(error) = axum::serve(listener, app).await {
         eprintln!("server error: {error}");
         std::process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod report_summary_tests {
+    use super::{report_summary, report_title};
+
+    #[test]
+    fn game_block_and_run_id_leave_a_readable_title() {
+        let (game, title) = report_title(
+            "overnight-20261030-093012-a1b2c3 6-max 100bb 2-5: 1% rake BTN vs BB SRP vs fish - fish station",
+        );
+        let game = game.expect("game block");
+        assert_eq!((game.0, game.1.as_str(), game.2), (6, "2/5", 100.0));
+        assert_eq!(title, "BTN vs BB SRP vs fish");
+    }
+
+    #[test]
+    fn a_name_without_a_game_block_keeps_its_title() {
+        let (game, title) = report_title("BTN vs BB SRP");
+        assert!(game.is_none());
+        assert_eq!(title, "BTN vs BB SRP");
+    }
+
+    #[test]
+    fn summary_reads_the_spot_and_the_swept_size() {
+        let v = serde_json::json!({
+            "name": "BTN vs BB",
+            "spot": {
+                "starting_pot": 6.0, "effective_stack": 100.0,
+                "rake_pct": 5.0, "rake_cap": 10.0, "max_raises": 3,
+                "oop": [{"bet": "33 75", "raise": "60", "donk": ""},
+                        {"bet": "75", "raise": "60", "donk": ""}],
+                "ip": [{"bet": "33 75", "raise": "60", "donk": ""},
+                       {"bet": "75", "raise": "60", "donk": ""}],
+            },
+            "target_pct": 0.35,
+        });
+        let s = report_summary(&v, Some(12.5));
+        assert_eq!(s.pot, Some(6.0));
+        assert_eq!(s.max_raises, Some(3));
+        assert_eq!(s.target, Some(0.35));
+        assert_eq!(s.size, Some(12.5));
+        assert_eq!(s.oop_sizes, ["33 75/r60", "75/r60"]);
+        assert!(s.players.is_none() && s.stakes.is_none());
+    }
+
+    #[test]
+    fn a_per_size_variant_is_named_by_its_sweep() {
+        let variant = serde_json::json!({
+            "name": "6-max 100bb 2-5: BTN vs BB sweep size 12_5",
+            "sweep_parent": "6-max 100bb 2-5: BTN vs BB sweep",
+        });
+        let s = report_summary(&variant, Some(12.5));
+        assert_eq!(s.title, "BTN vs BB sweep");
+        assert_eq!((s.players, s.stakes.as_deref(), s.bb), (Some(6), Some("2/5"), Some(100.0)));
+        assert_eq!(s.size, Some(12.5));
+    }
+
+    #[test]
+    fn a_legacy_file_without_a_spot_still_summarizes() {
+        let s = report_summary(&serde_json::json!({"name": "old report"}), None);
+        assert_eq!(s.title, "old report");
+        assert!(s.pot.is_none() && s.rake_pct.is_none() && s.oop_sizes.is_empty());
+        let json = serde_json::to_value(&s).unwrap();
+        assert_eq!(json.as_object().unwrap().len(), 1, "only the title is known");
+    }
+
+    #[test]
+    fn malformed_names_keep_a_readable_title() {
+        for name in [
+            "", " ", "6-max", "6-max 100bb", "6-max 100bb 2-5:", "6-max 100bb 2-5: 1% rake",
+            "6-max xbb 2-5: BTN vs BB", "99-max 100bb 2-5: BTN vs BB", "6-max 0bb 2-5: BTN vs BB",
+            "6-max 100bb 0-5: BTN vs BB", "overnight-2026-a1b2c3 x", "overnight-20261030-093012",
+            "overnight-20261030-093012-zzzz no space", "… · 🂡 vs 🂢", "-max 100bb 2-5: x",
+        ] {
+            let (game, title) = report_title(name);
+            if !name.trim().is_empty() {
+                assert!(!title.is_empty(), "empty title for {name:?}");
+            }
+            if let Some((players, stakes, bb)) = game {
+                assert!((2..=10).contains(&players) && bb > 0.0 && bb.is_finite());
+                assert!(!stakes.is_empty());
+            }
+        }
+        // no spot and no name at all must still serialize
+        let s = report_summary(&serde_json::json!({}), None);
+        assert_eq!(s.title, "");
+        assert!(serde_json::to_value(&s).is_ok());
     }
 }
 

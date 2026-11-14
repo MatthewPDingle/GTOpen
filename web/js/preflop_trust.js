@@ -20,10 +20,8 @@ const esc = s => String(s).replace(/[&<>"']/g, c =>
 const pct = t => `${Math.round(t * 100)}%`;
 const bb = x => (x == null ? '—' : `${x >= 0 ? '+' : ''}${(+x).toFixed(3)}`);
 
-const TIP = 'How sure you are of the profiled seats’ reads. At p% each profiled seat plays its '
-  + 'profile p% of the time and otherwise adapts to your strategy like a solver seat (each seat on its own). '
-  + '100% is the max exploit; lower levels give up some EV against the reads for safety if they are wrong. '
-  + 'A new level restarts your seat’s average: RE-SOLVE to adapt. Solver and frozen seats are not affected.';
+const TIP = 'At p% each profiled seat plays its read p% of the time and otherwise adapts to you, independently. '
+  + '100% is the max exploit; lower levels give up EV against the read for safety.';
 
 /**
  * @param {HTMLElement} panel  the #pfl-trust container
@@ -40,7 +38,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     try {
       await api.pfTrust(t);
       if (S.st) { S.st.trust = t; S.st.trust_readout = null; }
-      toast(t == null ? 'trust the read: off (max exploit)' : `trust the read: ${pct(t)} — RE-SOLVE to adapt`);
+      toast(`trust the read: ${pct(t)} — RE-SOLVE to adapt`);
     } catch (e) {
       toast(e.message, true);
     } finally {
@@ -54,7 +52,10 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const r = st.trust_readout;
     if (!r) {
       if (st.state === 'running') return 'solving…';
-      return st.trust == null ? 'off: the hero plays the max exploit' : 'RE-SOLVE to see what this level buys and costs';
+      // no readout yet: only the max-exploit level is already a finished answer
+      return (st.trust == null || st.trust >= 1)
+        ? 'the hero plays the max exploit — RE-SOLVE to see what this level buys and costs'
+        : 'RE-SOLVE to see what this level buys and costs';
     }
     return `EV vs the reads <b>${bb(r.hero_ev_vs_read)}</b> · vs the mix <b>${bb(r.hero_ev_vs_mixture)}</b>`
       + ` · if they adapt <b>${bb(r.hero_ev_vs_adapting)}</b> <span class="dim">bb/hand at ${pct(r.trust)}</span>`;
@@ -71,6 +72,7 @@ export function initPreflopTrust(panel, { toast, positions }) {
     }
     const running = st.state === 'running';
     if (!force && S.draft != null) return; // mid-drag: keep the slider
+    // a null level is the max exploit, shown as 100% on the slider
     const t = st.trust == null ? 1 : st.trust;
     const stamp = JSON.stringify([st.trust, running, seats, st.trust_readout, S.busy]);
     if (!force && stamp === S.stamp) return;
@@ -79,12 +81,11 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const names = seats.map(i => esc(positions()[i] ?? i)).join(', ');
     panel.innerHTML = `
       <div class="trust-row">
-        <span class="trust-head" data-tip="${esc(TIP)}">TRUST THE READ</span>
+        <span class="trust-head">TRUST THE READ<button type="button" class="info-dot"
+          aria-label="How the trust level works" data-tip="${esc(TIP)}">?</button></span>
         <input type="range" class="trust-slider" min="0" max="100" step="5" value="${Math.round(t * 100)}"
           aria-label="Trust the read, percent" ${running || S.busy ? 'disabled' : ''}>
         <span class="trust-val">${pct(t)}</span>
-        ${st.trust != null ? `<button class="btn ghost xs" data-act="off" ${running || S.busy ? 'disabled' : ''}
-          data-tip="Turn the dial off: the hero plays the max exploit against the profiles.">off</button>` : ''}
         <span class="dim">applies to ${names}</span>
       </div>
       <div class="trust-row"><span class="trust-readout">${readoutHtml(st)}</span></div>`;
@@ -92,7 +93,6 @@ export function initPreflopTrust(panel, { toast, positions }) {
     const val = panel.querySelector('.trust-val');
     slider.addEventListener('input', () => { S.draft = +slider.value / 100; val.textContent = pct(S.draft); });
     slider.addEventListener('change', () => setTrust(+slider.value / 100));
-    panel.querySelector('[data-act="off"]')?.addEventListener('click', () => setTrust(null));
   }
 
   return {

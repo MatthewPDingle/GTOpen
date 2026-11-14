@@ -32,9 +32,7 @@ export function createSeatStacks(els, positionsFor, changed) {
   summary.textContent = 'Stacks by seat';
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Starting stacks in bb, before antes. Blank seats use the Stack above. '
-    + 'Short stacks call or shove all-in for less; extra chips are returned uncalled, and '
-    + 'all-ins for different amounts make side pots, each won by the best hand among the seats in it.';
+  note.textContent = 'Starting stacks in bb, before antes.';
   details.append(note);
   const table = document.createElement('table');
   table.innerHTML = '<thead><tr><th>Seat</th><th>Stack · bb</th></tr></thead><tbody></tbody>';
@@ -43,7 +41,8 @@ export function createSeatStacks(els, positionsFor, changed) {
   function render() {
     const body = table.querySelector('tbody');
     body.replaceChildren();
-    for (const p of positionsFor(+els.players.value)) {
+    const seats = positionsFor(+els.players.value);
+    for (const p of seats) {
       const tr = document.createElement('tr');
       const th = document.createElement('th');
       th.textContent = p;
@@ -55,7 +54,9 @@ export function createSeatStacks(els, positionsFor, changed) {
       input.addEventListener('input', () => { rows[p] = input.value; changed(); });
       td.append(input); tr.append(th, td); body.append(tr);
     }
-    const custom = Object.values(rows).some(v => String(v ?? '').trim());
+    // only the seats on screen count: a leftover entry for a seat this table
+    // no longer has must not claim the game uses custom stacks
+    const custom = seats.some(p => String(rows[p] ?? '').trim());
     summary.textContent = custom ? 'Stacks by seat (custom)' : 'Stacks by seat';
     if (custom) details.open = true;
   }
