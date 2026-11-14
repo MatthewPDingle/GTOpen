@@ -13,6 +13,7 @@
 //! from different seeds disagree at a solve's leaves by about as much as
 //! they improve on each other, and their mean is steadier and scores better.
 use super::equity::NUM_CLASSES;
+use super::leaf_total::TotalRule;
 use std::path::Path;
 
 const MAGIC: &[u8; 8] = b"GTOLEAF1";
@@ -38,6 +39,8 @@ struct Member {
 /// A loaded leaf-value net (one member) or ensemble (the mean of several).
 pub struct LeafNet {
     pub header: serde_json::Value,
+    /// The header's "total_rule", if the file carries one (leaf_total.rs).
+    pub total_rule: Option<TotalRule>,
     members: Vec<Member>,
 }
 
@@ -121,7 +124,8 @@ impl LeafNet {
         if vals.iter().any(|v| !v.is_finite()) {
             return Err("leaf net has invalid numbers".into());
         }
-        Ok(LeafNet { header, members })
+        let total_rule = TotalRule::from_header(&header).map_err(|e| format!("leaf net header: {e}"))?;
+        Ok(LeafNet { header, total_rule, members })
     }
 
     /// How many nets the file holds (1 unless it is an ensemble).
@@ -176,7 +180,7 @@ impl LeafNet {
         let sizes: Vec<Vec<usize>> = members.iter()
             .map(|m| std::iter::once(m.layers[0].rows).chain(m.layers.iter().map(|l| l.cols)).collect())
             .collect();
-        LeafNet { header: serde_json::json!({"sizes": sizes[0], "ensemble": sizes}), members }
+        LeafNet { header: serde_json::json!({"sizes": sizes[0], "ensemble": sizes}), total_rule: None, members }
     }
 
     /// The input vector, exactly as tools/datagen/gonogo.py builds it.
@@ -310,6 +314,7 @@ pub(crate) fn constant_net(bias: &[f32]) -> LeafNet {
     assert_eq!(bias.len(), 2 * NUM_CLASSES);
     LeafNet {
         header: serde_json::json!({"sizes": [inputs, 1, 2 * NUM_CLASSES]}),
+        total_rule: None,
         members: vec![Member {
             mu: vec![0.0; inputs],
             sd: vec![1.0; inputs],
@@ -409,8 +414,24 @@ mod tests {
         // one net read as an ensemble of two (trailing data missing) is refused too
         let single = LeafNet::from_bytes(&a).unwrap();
         let sizes = single.header["sizes"].clone();
-        let two = LeafNet { header: serde_json::json!({"sizes": sizes, "ensemble": [sizes, sizes]}), members: single.members };
+        let two = LeafNet { header: serde_json::json!({"sizes": sizes, "ensemble": [sizes, sizes]}), total_rule: None,
+                            members: single.members };
         assert!(LeafNet::from_bytes(&two.to_bytes()).is_err());
+    }
+
+    #[test]
+    fn a_total_rule_in_the_header_is_read_with_the_net() {
+        let mut net = LeafNet::from_bytes(&tiny_net(7)).unwrap();
+        assert!(net.total_rule.is_none());
+        net.header["total_rule"] = serde_json::json!({"form": "share",
+            "coef": {"limped": [0.4, 0, 0, 0], "srp": [0.5, 0, 0, 0], "3bet": [0.8, 0, 0, 0], "4bet": [0.3, 0, 0, 0]},
+            "valid": {"rake_frac": [0.05, 0.05], "cap_over_pot": [0.05, 2.0], "pot_bb": [2, 100], "stack_over_pot": [0.3, 60]}});
+        let read = LeafNet::from_bytes(&net.to_bytes()).unwrap();
+        assert!(read.total_rule.is_some());
+        // a rule that cannot be read refuses the file instead of being dropped
+        net.header["total_rule"]["form"] = serde_json::json!("cubic");
+        let err = LeafNet::from_bytes(&net.to_bytes()).err().unwrap();
+        assert!(err.contains("total_rule"), "{err}");
     }
 
     #[test]

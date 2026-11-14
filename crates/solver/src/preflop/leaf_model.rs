@@ -13,6 +13,8 @@
 //! does not store corrections, so this is also what a reload computes: a
 //! loaded game shows the EVs and the gap the solve reported.
 use super::equity::{class_prob, NUM_CLASSES};
+use super::leaf_fix::LeafFix;
+use super::leaf_total::{book_leaf, leaf_total, LeafBooks, LeafSums, LeafTotal};
 use super::leafnet::{pot_type_for_raises, LeafNet, LeafSpot};
 use super::{PreflopSolver, KIND_ACTION, KIND_POT_SHARE};
 use rayon::prelude::*;
@@ -67,6 +69,19 @@ pub(crate) struct LeafState {
     pub(crate) aside: Option<Vec<f32>>,
     /// Bumped whenever `corr` changes (the GPU engine re-uploads then).
     pub(crate) version: u32,
+    /// Research settings: pinning the total, blocking at the leaf
+    /// (leaf_total.rs). The default uses the net's output as it is.
+    pub(crate) books: LeafBooks,
+    /// Research setting: corrections from a file, added to the net's output
+    /// (leaf_fix.rs). None by default.
+    pub(crate) fix: Option<LeafFixAt>,
+}
+
+/// A corrections file matched to this game's learned terminals.
+pub(crate) struct LeafFixAt {
+    fix: LeafFix,
+    /// Per learned terminal: the index of its own line in the file, or NO_SLOT.
+    line: Vec<u32>,
 }
 
 /// Iterations between refreshes (env PREFLOP_LEAF_REFRESH, default 50).
@@ -89,6 +104,46 @@ pub struct LeafRefresh {
     /// between the players; positive means postflop play is worth more
     /// than balanced says to both of them.
     pub mean_excess: f64,
+    /// Terminals priced with a correction from a file on top of the net's
+    /// output (leaf_fix.rs).
+    pub fixed: usize,
+    /// Terminals whose total was pinned at this refresh (leaf_total.rs).
+    pub pinned: usize,
+    /// Terminals whose total is known (exactly, or by the net file's rule),
+    /// and over them, weighted by how often both players get there, what the
+    /// net's output as the solve books it pays the two players together
+    /// above that total (fraction of the pot).
+    pub known: usize,
+    pub surplus: f64,
+}
+
+/// The sums of one learned terminal at the current average strategies
+/// (`PreflopSolver::leaf_sums`).
+#[derive(Debug, Clone)]
+pub struct LeafTerminalSums {
+    pub node: usize,
+    /// Index into `leafnet::POT_TYPES`.
+    pub pot_type: usize,
+    pub pot_bb: f64,
+    /// How often both players get there (the product of their reach masses).
+    pub weight: f64,
+    /// What the two values must add up to, where that is known.
+    pub known: LeafTotal,
+    pub sums: LeafSums,
+}
+
+/// The net's output for one learned terminal.
+struct LeafPred {
+    /// Corrections as the solve prices with them, oop 169 then ip 169.
+    corr: Vec<f32>,
+    /// Both seats' reaches, normalized.
+    reach: [Vec<f32>; 2],
+    /// The product of the two reach masses.
+    joint: f64,
+    known: LeafTotal,
+    sums: LeafSums,
+    /// A correction from a file was added (leaf_fix.rs).
+    fixed: bool,
 }
 
 impl PreflopSolver {
@@ -136,10 +191,113 @@ impl PreflopSolver {
         if std::env::var("PREFLOP_PRUNE").is_err() {
             self.prune = false;
         }
+        let books = LeafBooks::from_env()?;
+        books.check(net.total_rule.is_some())?;
+        let fix = match LeafFix::from_env()? {
+            Some(fix) => Some(self.match_leaf_fix(&slot, nodes.len(), fix)?),
+            None => None,
+        };
+        if let Some(f) = &fix {
+            // a game priced with a corrections file says so wherever its status is shown
+            let note = f.fix.summary();
+            eprintln!("{note}");
+            if !self.realization_note.is_empty() {
+                self.realization_note.push_str("; ");
+            }
+            self.realization_note.push_str(&note);
+        }
         self.leaf = Some(Box::new(LeafState { net, slot, nodes, seats, corr: Vec::new(), refreshes: 0,
                                               interval: refresh_interval(), weight: refresh_weight(), latest: Vec::new(), fresh_at: None, aside: None,
-                                              version: 0 }));
+                                              version: 0, books, fix }));
         Ok(())
+    }
+
+    /// Find the learned terminal each of the file's lines ends at. A line is
+    /// the action labels from the root, folds included, joined as
+    /// `datagen::line_key` joins a leaf's path.
+    fn match_leaf_fix(&self, slot: &[u32], terminals: usize, fix: LeafFix) -> Result<LeafFixAt, String> {
+        let mut line = vec![NO_SLOT; terminals];
+        for (i, key) in fix.lines().enumerate() {
+            let mut node = 0usize;
+            for step in key.split(" | ") {
+                let nd = &self.nodes[node];
+                let labels = || -> Vec<String> {
+                    nd.actions.iter().map(|x| format!("{} {}", self.cfg.positions[nd.actor as usize], x.label)).collect()
+                };
+                let a = (nd.kind == KIND_ACTION).then(|| labels().iter().position(|l| l == step)).flatten().ok_or_else(|| {
+                    let here = if nd.kind == KIND_ACTION { format!("the actions there are {}", labels().join(", ")) }
+                               else { "the hand is over before it".to_string() };
+                    format!("{}: line \"{key}\" is not in this game: no step \"{step}\" ({here})", fix.source)
+                })?;
+                node = self.child(node, a);
+            }
+            let k = slot[node];
+            if k == NO_SLOT {
+                return Err(format!("{}: line \"{key}\" does not end at a heads-up flop with chips behind", fix.source));
+            }
+            line[k as usize] = i as u32;
+        }
+        Ok(LeafFixAt { fix, line })
+    }
+
+    /// Corrections added to the net's output at learned leaves (research;
+    /// the default is the file named by env PREFLOP_LEAF_FIX, see
+    /// leaf_fix.rs), or None for the net's output alone. They take effect at
+    /// the next refresh or measurement. A save does not keep them: a game
+    /// solved with them shows the same EVs and gap again only when it is
+    /// loaded with the same corrections.
+    pub fn set_leaf_fix(&mut self, fix: Option<LeafFix>) -> Result<(), String> {
+        let st = self.leaf.as_ref().ok_or("the game has no learned leaves")?;
+        let matched = match fix {
+            Some(fix) => Some(self.match_leaf_fix(&st.slot, st.nodes.len(), fix)?),
+            None => None,
+        };
+        let st = self.leaf.as_mut().unwrap();
+        st.fix = matched;
+        st.fresh_at = None;
+        Ok(())
+    }
+
+    /// The corrections in use, if any.
+    pub fn leaf_fix(&self) -> Option<&LeafFix> {
+        self.leaf.as_ref().and_then(|st| st.fix.as_ref()).map(|f| &f.fix)
+    }
+
+    /// The research settings for learned leaves (the defaults are the
+    /// PREFLOP_LEAF_PIN, PREFLOP_LEAF_PIN_SUM and PREFLOP_LEAF_BLOCKING
+    /// environment variables, see leaf_total.rs). They take effect at the
+    /// next refresh or measurement. A save does not keep them: a game solved
+    /// with them shows the same EVs and gap again only when it is loaded
+    /// under the same settings.
+    pub fn set_leaf_books(&mut self, books: LeafBooks) -> Result<(), String> {
+        let st = self.leaf.as_mut().ok_or("the game has no learned leaves")?;
+        books.check(st.net.total_rule.is_some())?;
+        if st.books != books {
+            st.books = books;
+            st.fresh_at = None;
+        }
+        Ok(())
+    }
+
+    pub fn leaf_books(&self) -> Option<LeafBooks> {
+        self.leaf.as_ref().map(|st| st.books)
+    }
+
+    /// Every learned terminal both players reach, with what its values add
+    /// up to at the current average strategies: the net is run on them (as
+    /// at a refresh, under the current settings) and the sums are taken of
+    /// its output, the dealt sums included. The corrections the solve
+    /// prices with are left as they are. None without a learned model.
+    pub fn leaf_sums(&mut self) -> Option<Vec<LeafTerminalSums>> {
+        let st = self.leaf.take()?;
+        let rows = self.leaf_predictions(&st, true).into_iter().enumerate().filter_map(|(k, pred)| {
+            let pred = pred?;
+            let nd = &self.nodes[st.nodes[k] as usize];
+            Some(LeafTerminalSums { node: st.nodes[k] as usize, pot_type: pot_type_for_raises(nd.raises), pot_bb: nd.pot,
+                                    weight: pred.joint, known: pred.known, sums: pred.sums })
+        }).collect();
+        self.leaf = Some(st);
+        Some(rows)
     }
 
     /// The learned correction for seat `p` at terminal `node`, if any.
@@ -189,8 +347,8 @@ impl PreflopSolver {
         let mut table = vec![0f32; st.nodes.len() * 2 * NUM_CLASSES];
         let stored = st.aside.as_ref().unwrap_or(&st.corr);
         let (mut diff, mut weight) = (0f64, 0f64);
-        for (k, pred) in self.leaf_predictions(st).into_iter().enumerate() {
-            let Some((new, reach, joint)) = pred else { continue };
+        for (k, pred) in self.leaf_predictions(st, false).into_iter().enumerate() {
+            let Some(LeafPred { corr: new, reach, joint, .. }) = pred else { continue };
             let at = k * 2 * NUM_CLASSES;
             for side in 0..2 {
                 for h in 0..NUM_CLASSES {
@@ -303,7 +461,7 @@ impl PreflopSolver {
     pub fn refresh_leaf_values(&mut self) -> Option<LeafRefresh> {
         self.leaf_measure_end();
         let mut st = self.leaf.take()?;
-        let fresh = self.leaf_predictions(&st);
+        let fresh = self.leaf_predictions(&st, false);
         let n = st.nodes.len() * 2 * NUM_CLASSES;
         let first = st.corr.is_empty();
         let mut stats = LeafRefresh { terminals: st.nodes.len(), ..Default::default() };
@@ -317,9 +475,17 @@ impl PreflopSolver {
         let mut latest = vec![0f32; n];
         let (mut weighted, mut weight) = (0f64, 0f64);
         let (mut excess, mut excess_w) = (0f64, 0f64);
+        let (mut surplus, mut surplus_w) = (0f64, 0f64);
         for (k, pred) in fresh.into_iter().enumerate() {
-            let Some((new, reach, joint)) = pred else { continue };
+            let Some(LeafPred { corr: new, reach, joint, sums, fixed, .. }) = pred else { continue };
             stats.priced += 1;
+            stats.fixed += fixed as usize;
+            stats.pinned += sums.pinned as usize;
+            if let Some(fair) = sums.fair {
+                stats.known += 1;
+                surplus += joint * (sums.booked - fair);
+                surplus_w += joint;
+            }
             latest[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES].copy_from_slice(&new);
             let block = &mut st.corr[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES];
             for (c, n) in block.iter_mut().zip(&new) {
@@ -340,6 +506,7 @@ impl PreflopSolver {
         }
         stats.mean_abs = if weight > 0.0 { weighted / weight } else { 0.0 };
         stats.mean_excess = if excess_w > 0.0 { excess / excess_w } else { 0.0 };
+        stats.surplus = if surplus_w > 0.0 { surplus / surplus_w } else { 0.0 };
         st.refreshes += 1;
         st.version += 1;
         st.latest = latest;
@@ -350,15 +517,17 @@ impl PreflopSolver {
 
     /// Net corrections per learned terminal (None where a player never gets
     /// there), with both seats' normalized reaches and the product of their
-    /// reach masses, for weighting. Runs with
+    /// reach masses, for weighting. `measure` asks for the dealt sums of
+    /// every terminal (leaf_total.rs), needed or not. Runs with
     /// `self.leaf` taken, so terminal_value prices plain balanced.
-    fn leaf_predictions(&self, st: &LeafState) -> Vec<Option<(Vec<f32>, [Vec<f32>; 2], f64)>> {
+    fn leaf_predictions(&self, st: &LeafState, measure: bool) -> Vec<Option<LeafPred>> {
         // reaches of both seats at every learned terminal, under the average strategies
         let mut at: Vec<Option<[Vec<f32>; 2]>> = vec![None; st.nodes.len()];
         let mut reaches: Vec<Vec<f32>> = self.root_reaches();
         self.leaf_walk(0, &mut reaches, st, &mut at);
         // inputs of every reached terminal
-        struct Leaf { k: usize, x: Vec<f32>, balanced: Vec<f32>, room: f32, norm: [Vec<f32>; 2], joint: f64 }
+        struct Leaf { k: usize, x: Vec<f32>, balanced: Vec<f32>, room: f32, norm: [Vec<f32>; 2], joint: f64,
+                      invested: [f64; 2], known: LeafTotal, pot_type: usize }
         let leaves: Vec<Leaf> = at.into_par_iter().enumerate().filter_map(|(k, pair)| {
             let pair = pair?;
             let node = st.nodes[k] as usize;
@@ -392,10 +561,15 @@ impl PreflopSolver {
                 pot_type: pot_type_for_raises(nd.raises),
             };
             let x = LeafNet::features(&spot);
+            let known = leaf_total(st.net.total_rule.as_ref(), spot.pot_bb, spot.stack_bb, spot.rake_frac, spot.rake_cap_bb,
+                                   spot.pot_type);
+            let pot_type = spot.pot_type;
+            let invested = seats.map(|q| nd.invested[q as usize] / nd.pot);
             let [b0, b1] = balanced;
             let balanced: Vec<f32> = b0.into_iter().chain(b1).collect();
             let norm = [std::mem::take(&mut norm[seats[0] as usize]), std::mem::take(&mut norm[seats[1] as usize])];
-            Some(Leaf { k, x, balanced, room: (stack / nd.pot) as f32, norm, joint: mass[0] as f64 * mass[1] as f64 })
+            Some(Leaf { k, x, balanced, room: (stack / nd.pot) as f32, norm, joint: mass[0] as f64 * mass[1] as f64,
+                        invested, known, pot_type })
         }).collect();
         // the net, in batches (each weight row is read once per batch)
         const BATCH: usize = 32;
@@ -404,14 +578,25 @@ impl PreflopSolver {
             let out = st.net.residual_batch(&xs);
             out.chunks_exact(2 * NUM_CLASSES).map(|c| c.to_vec()).collect::<Vec<_>>()
         }).collect();
-        let mut result: Vec<Option<(Vec<f32>, [Vec<f32>; 2], f64)>> = (0..st.nodes.len()).map(|_| None).collect();
-        for (leaf, mut corr) in leaves.into_iter().zip(corrs) {
+        let mut result: Vec<Option<LeafPred>> = (0..st.nodes.len()).map(|_| None).collect();
+        let booked: Vec<(usize, LeafPred)> = leaves.into_par_iter().zip(corrs).map(|(leaf, mut corr)| {
+            // corrections from a file, when there are any, on top of the net's output
+            let fixed = st.fix.as_ref().map_or(false, |f| {
+                let line = Some(f.line[leaf.k]).filter(|&i| i != NO_SLOT).map(|i| i as usize);
+                f.fix.add(leaf.pot_type, line, &mut corr)
+            });
             // A class can lose at most what is behind and win at most the pot
             // plus what is behind: keep balanced + correction in that band.
             for (c, &b) in corr.iter_mut().zip(&leaf.balanced) {
                 *c = if c.is_finite() { c.clamp(-leaf.room - b, 1.0 + leaf.room - b) } else { 0.0 };
             }
-            result[leaf.k] = Some((corr, leaf.norm, leaf.joint));
+            // the pin and the blocking, when they are on; the leaf's sums either way
+            let sums = book_leaf(st.books, measure, &mut corr, &leaf.balanced, [&leaf.norm[0], &leaf.norm[1]], leaf.room,
+                                 leaf.invested, leaf.known);
+            (leaf.k, LeafPred { corr, reach: leaf.norm, joint: leaf.joint, known: leaf.known, sums, fixed })
+        }).collect();
+        for (k, pred) in booked {
+            result[k] = Some(pred);
         }
         result
     }
@@ -807,6 +992,197 @@ mod tests {
             checked_folds += l.path.iter().any(|x| x.ends_with("Fold")) as usize;
         }
         assert!(checked_folds > 0, "some leaves follow a fold");
+    }
+
+    /// `game` without rake when `rake` is false: every learned leaf's total is then the whole pot.
+    fn pin_game(n: usize, rake: bool, books: LeafBooks) -> PreflopSolver {
+        let mut posts = vec![0.0; n];
+        posts[n - 2] = 0.5;
+        posts[n - 1] = 1.0;
+        let cfg: PreflopConfig = serde_json::from_value(serde_json::json!({
+            "positions": (0..n).map(|p| format!("P{p}")).collect::<Vec<_>>(), "stack": 30.0,
+            "posts": posts, "limp": true, "open_raises": [2.5], "raise_mults": [3.0], "max_raises": 3,
+            "add_allin": true, "rake_pct": if rake { 5.0 } else { 0.0 }, "rake_cap": 2.0, "realization": "leafnet",
+        })).unwrap();
+        let mut s = PreflopSolver::new(cfg, table()).unwrap();
+        s.install_leaf_net(Arc::new(constant_net(&pattern(0.03)))).unwrap();
+        s.set_leaf_schedule(u32::MAX, Some(1.0)); // refreshes driven by the test
+        s.set_leaf_books(books).unwrap();
+        for _ in 0..20 {
+            s.iterate();
+        }
+        s
+    }
+
+    #[test]
+    fn the_pin_holds_every_known_total_and_leaves_the_rest_alone() {
+        use crate::preflop::leaf_total::{PinSum, PinTotal};
+        assert_eq!(game("leafnet", 3).leaf_books(), Some(LeafBooks::default()), "off unless asked for");
+        let pin = LeafBooks { pin: PinTotal::Exact, ..Default::default() };
+        // no rake: every leaf's two values must add up to the pot
+        let mut off = pin_game(3, false, LeafBooks::default());
+        let mut on = pin_game(3, false, pin);
+        assert_eq!(off.arena_snapshot(), on.arena_snapshot(), "the same strategies before the first refresh");
+        let (free, held) = (off.refresh_leaf_values().unwrap(), on.refresh_leaf_values().unwrap());
+        assert!(free.priced > 3 && free.pinned == 0 && free.known == free.priced);
+        assert_eq!((held.priced, held.pinned, held.known), (free.priced, free.priced, free.priced));
+        let (unpinned, pinned) = (off.leaf_sums().unwrap(), on.leaf_sums().unwrap());
+        assert_eq!(unpinned.len(), free.priced);
+        let mut moved = 0;
+        for (a, b) in unpinned.iter().zip(&pinned) {
+            assert_eq!((a.node, a.known, b.known), (b.node, LeafTotal::Exact(1.0), LeafTotal::Exact(1.0)));
+            // the same net output on the same ranges, then held to the pot
+            assert_eq!(a.sums.net_dealt, b.sums.net_dealt);
+            assert_eq!(a.sums.dealt, a.sums.net_dealt);
+            assert!((b.sums.dealt.unwrap() - 1.0).abs() < 2e-5, "node {}: {:?}", b.node, b.sums);
+            moved += ((a.sums.net_dealt.unwrap() - 1.0).abs() > 1e-3) as usize;
+        }
+        assert!(moved > 3, "the unpinned totals are off");
+        // the solve prices with the pinned values: one shift for every class of a terminal
+        let (free_corr, held_corr) = (off.leaf.as_ref().unwrap().corr.clone(), on.leaf.as_ref().unwrap().corr.clone());
+        let st = on.leaf.as_ref().unwrap();
+        for row in &pinned {
+            let k = st.slot[row.node] as usize;
+            let at = k * 2 * NUM_CLASSES;
+            let shift = held_corr[at] - free_corr[at];
+            let want = (1.0 - row.sums.net_dealt.unwrap()) / 2.0;
+            assert!((shift as f64 - want).abs() < 1e-4, "node {}: {shift} vs {want}", row.node);
+        }
+        // the books: above the pot with the pin on the dealt sum alone where ranges block each other,
+        // level with blocking counted at the leaf or with the pin on the plain sum
+        for books in [LeafBooks { blocking: true, ..pin }, LeafBooks { sum: PinSum::Plain, ..pin }] {
+            let mut s = pin_game(3, false, books);
+            assert_eq!(s.arena_snapshot(), on.arena_snapshot());
+            let r = s.refresh_leaf_values().unwrap();
+            assert!(r.pinned == r.priced && r.surplus.abs() < 2e-5, "{books:?}: {r:?}");
+            for _ in 0..20 {
+                s.iterate();
+            }
+            let (gaps, evs) = s.gaps_and_evs();
+            assert!(gaps.iter().chain(&evs).all(|v| v.is_finite()), "{books:?}");
+        }
+        assert!(held.surplus.abs() > 1e-5, "the plain sum is not the dealt sum: {}", held.surplus);
+        // with rake, only the leaves at the cap are known: 5% of the pot reaches 2 bb at 40 bb
+        let mut off = pin_game(3, true, LeafBooks::default());
+        let mut on = pin_game(3, true, pin);
+        let (free, held) = (off.refresh_leaf_values().unwrap(), on.refresh_leaf_values().unwrap());
+        assert!(held.pinned > 0 && held.pinned < held.priced && held.pinned == held.known && free.known == held.known);
+        let rows = on.leaf_sums().unwrap();
+        let (free_corr, held_corr) = (&off.leaf.as_ref().unwrap().corr, &on.leaf.as_ref().unwrap().corr);
+        let st = on.leaf.as_ref().unwrap();
+        for row in &rows {
+            let k = st.slot[row.node] as usize;
+            let block = k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES;
+            if row.pot_bb >= 40.0 {
+                assert_eq!(row.known, LeafTotal::Exact(1.0 - 2.0 / row.pot_bb));
+                assert!(row.sums.pinned && (row.sums.dealt.unwrap() - (1.0 - 2.0 / row.pot_bb)).abs() < 2e-5);
+            } else {
+                assert_eq!(row.known, LeafTotal::Unknown);
+                assert!(!row.sums.pinned && free_corr[block.clone()] == held_corr[block]);
+            }
+        }
+        // "rule" needs a net file that carries one
+        let err = on.set_leaf_books(LeafBooks { pin: PinTotal::Rule, ..Default::default() }).unwrap_err();
+        assert!(err.contains("total_rule"), "{err}");
+    }
+
+    #[test]
+    fn corrections_from_a_file_land_on_their_leaves() {
+        let block = |s: &PreflopSolver, k: usize| s.leaf.as_ref().unwrap().corr[k * 2 * NUM_CLASSES..(k + 1) * 2 * NUM_CLASSES].to_vec();
+        let mut off = pin_game(3, true, LeafBooks::default());
+        let free = off.refresh_leaf_values().unwrap();
+        assert!(off.leaf_fix().is_none() && free.fixed == 0 && free.priced > 3);
+        let priced: Vec<usize> = off.leaf_sums().unwrap().iter().map(|row| off.leaf.as_ref().unwrap().slot[row.node] as usize).collect();
+        let pot_type = |s: &PreflopSolver, k: usize| pot_type_for_raises(s.nodes[s.leaf.as_ref().unwrap().nodes[k] as usize].raises);
+        let terminals = off.leaf.as_ref().unwrap().nodes.len();
+
+        // one entry for every leaf: each side gets its own numbers, at every priced terminal
+        let every: Vec<f32> = (0..2 * NUM_CLASSES).map(|i| if i < NUM_CLASSES { 0.004 } else { -0.003 }).collect();
+        let mut fix = LeafFix::named("test");
+        fix.set_all(&every).unwrap();
+        let mut on = pin_game(3, true, LeafBooks::default());
+        assert_eq!(off.arena_snapshot(), on.arena_snapshot());
+        on.set_leaf_fix(Some(fix)).unwrap();
+        let fixed = on.refresh_leaf_values().unwrap();
+        assert_eq!((fixed.priced, fixed.fixed), (free.priced, free.priced));
+        for k in 0..terminals {
+            let (a, b) = (block(&off, k), block(&on, k));
+            for i in 0..2 * NUM_CLASSES {
+                let want = if priced.contains(&k) { every[i] } else { 0.0 };
+                assert!((b[i] - a[i] - want).abs() < 1e-6, "terminal {k} entry {i}: {} vs {want}", b[i] - a[i]);
+            }
+        }
+        // the corrections are part of what the solve is measured against and left priced with
+        let before = on.gaps_and_evs();
+        on.leaf_settle(true);
+        assert_eq!(on.leaf.as_ref().unwrap().corr, on.leaf.as_ref().unwrap().latest);
+        assert_eq!(on.gaps_and_evs(), before);
+        assert_ne!(before, off.gaps_and_evs(), "the EVs move with the values");
+        assert_eq!(on.consistent_gaps_and_evs().unwrap().2, 0.0);
+
+        // a pot type's entry and one line's entry: only their terminals move, and where both fit they add up
+        let leaves = off.hu_flop_leaves();
+        let leaf = leaves.iter().find(|l| l.raises == 1).expect("a single-raised leaf");
+        let own = off.leaf.as_ref().unwrap().slot[leaf.node] as usize;
+        let (by_type, by_line) = (pattern(0.002), pattern(-0.005));
+        let mut fix = LeafFix::named("test");
+        fix.set_pot_type(1, &by_type).unwrap();
+        fix.set_line(&crate::datagen::line_key(&leaf.path), &by_line).unwrap();
+        on.set_leaf_fix(Some(fix)).unwrap();
+        let fixed = on.refresh_leaf_values().unwrap();
+        let single_raised = priced.iter().filter(|&&k| pot_type(&off, k) == 1).count();
+        assert!(single_raised > 1 && single_raised < free.priced && fixed.fixed == single_raised, "{fixed:?}");
+        for k in 0..terminals {
+            let (a, b) = (block(&off, k), block(&on, k));
+            for i in 0..2 * NUM_CLASSES {
+                let mut want = if priced.contains(&k) && pot_type(&off, k) == 1 { by_type[i] } else { 0.0 };
+                want += if k == own { by_line[i] } else { 0.0 };
+                assert!((b[i] - a[i] - want).abs() < 1e-6, "terminal {k} entry {i}: {} vs {want}", b[i] - a[i]);
+            }
+        }
+        // taken away again, the net's output alone
+        on.set_leaf_fix(None).unwrap();
+        assert_eq!(on.refresh_leaf_values().unwrap().fixed, 0);
+        assert_eq!(on.leaf.as_ref().unwrap().corr, off.leaf.as_ref().unwrap().corr);
+
+        // a line that is not a learned leaf of this game is refused, and the game keeps what it had
+        let step = leaf.path[0].clone();
+        for (line, says) in [("P0 Raise 99".to_string(), "not in this game"), (step.clone(), "does not end at a heads-up flop"),
+                             (format!("{} | P0 Fold", crate::datagen::line_key(&leaf.path)), "the hand is over")] {
+            let mut fix = LeafFix::named("test");
+            fix.set_line(&line, &every).unwrap();
+            let err = on.set_leaf_fix(Some(fix)).unwrap_err();
+            assert!(err.contains(says), "{line}: {err}");
+            assert!(on.leaf_fix().is_none());
+        }
+        assert!(game("balanced", 3).set_leaf_fix(None).is_err(), "no learned leaves, no corrections");
+    }
+
+    #[test]
+    fn the_pin_applies_after_the_corrections() {
+        use crate::preflop::leaf_total::PinTotal;
+        // no rake: every total is the pot. A file that adds 1% of the pot to both players is taken back by the pin.
+        let pin = LeafBooks { pin: PinTotal::Exact, ..Default::default() };
+        let (mut plain, mut fixed) = (pin_game(3, false, pin), pin_game(3, false, pin));
+        let mut fix = LeafFix::named("test");
+        fix.set_all(&vec![0.01; 2 * NUM_CLASSES]).unwrap();
+        fixed.set_leaf_fix(Some(fix)).unwrap();
+        let (a, b) = (plain.refresh_leaf_values().unwrap(), fixed.refresh_leaf_values().unwrap());
+        assert!(b.fixed == b.priced && b.pinned == b.priced && a.pinned == a.priced);
+        for (x, y) in plain.leaf.as_ref().unwrap().corr.iter().zip(&fixed.leaf.as_ref().unwrap().corr) {
+            assert!((x - y).abs() < 2e-5, "{x} vs {y}");
+        }
+        // one player up and the other down by the same amount moves value between them and stays
+        let mut fix = LeafFix::named("test");
+        fix.set_all(&(0..2 * NUM_CLASSES).map(|i| if i < NUM_CLASSES { 0.01 } else { -0.01 }).collect::<Vec<f32>>()).unwrap();
+        fixed.set_leaf_fix(Some(fix)).unwrap();
+        fixed.refresh_leaf_values().unwrap();
+        for row in fixed.leaf_sums().unwrap() {
+            assert!(row.sums.pinned && (row.sums.dealt.unwrap() - 1.0).abs() < 2e-5);
+            let k = fixed.leaf.as_ref().unwrap().slot[row.node] as usize * 2 * NUM_CLASSES;
+            let moved = fixed.leaf.as_ref().unwrap().corr[k] - plain.leaf.as_ref().unwrap().corr[k];
+            assert!((moved - 0.01).abs() < 2e-4, "node {}: {moved}", row.node);
+        }
     }
 
     #[test]

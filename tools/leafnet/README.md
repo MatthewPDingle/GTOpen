@@ -149,6 +149,15 @@ pool, and checked by solving again with the retrained net:
   net scores differently on another net's ranges.
 - `train.py`'s `real_weight` and `real_distill_mix` change how much, and on
   which target, the net's loss counts those rows.
+- `train.py`'s `play_floor` changes how a row's weight is shared among its
+  hands. A hand's loss weight follows its weight in the range, so a hand at
+  0.001 counts for a thousandth of a hand the range always plays, and a hand
+  at zero has no solved value at all, yet a preflop solve reads the net's
+  value for exactly those hands to decide whether they enter. With
+  `play_floor` F every solved hand counts as if its weight were at least F,
+  and the row's total stays what it was. It is off by default, and it
+  reaches hands outside a range only in rows whose flop solves gave them a
+  token weight (`python -m unittest tools/leafnet/test_train.py`, needs torch).
 - **Solving the held-out games again.** The check that counts is a net on
   the ranges of its own solves: solve the held-out games again with the
   retrained net, export and solve their leaves, and score the net there.
