@@ -76,6 +76,29 @@ their own distill_mix (None = the same; 0 = only the unbiased value minus
 luck target). Both leave the teachers, the synthetic leaves and every pool
 row's loss as they are, and do nothing on a snapshot without such rows.
 
+Hands outside the range (CONFIG["play_floor"], CONFIG["play_floor_rows"]).
+A class's weight in every loss is its share of the range's combos (w.npy),
+so a hand at a thousandth of the range's most-played hand counts for a
+thousandth of it, and a hand at zero has no target at all. A preflop solve
+reads the net exactly there: the value of a hand it does not play yet decides
+whether the hand enters the range. On exact solves with a token weight (0.001)
+on the hands just outside each range, every net so far read those hands 1.2
+to 1.5% of the pot too low. "play_floor" F counts every hand that has a
+solved value as if its weight in the range were at least F (a range's
+largest weight is 1): its loss weight becomes the one it would have at
+max(weight, F), and each player's weights in the row are then scaled back
+to the total they had. So the floor moves weight inside a row, from the
+hands the range plays most to the hands it plays least, and a row counts
+for as much as before. It acts in the teachers' loss, in the net's loss on
+value minus luck and in its loss on the flop average alike. 1 = every
+solved hand counts by its combos alone; 0 = off, the losses are unchanged.
+The range the net SEES is not changed, only what the loss counts. A hand
+without a solved value stays uncounted: reaching hands outside the range
+needs rows whose solves carry token weights. "play_floor_rows": "real"
+applies it to the real-range rows only, "all" to every training row.
+Teachers trained with a floor are cached under their own names. Validation,
+the harness's scores and the synthetic leaves keep the snapshot's weights.
+
 Seeds. With "t_ens" every seed shares the same teachers, and "syn_seed" also
 shares the synthetic leaves, so seed replicates differ only in the net's
 initialisation and batch order.
@@ -143,6 +166,8 @@ CONFIG = {
     "syn_ens": True,        # label the synthetic leaves with the same teacher ensemble (needs the seeds' saved teachers)
     "real_weight": 1.0,     # loss weight of real-range rows (exact solves of preflop-solve ranges), 1 = like any row
     "real_distill_mix": None,  # distill_mix of real-range rows (None = distill_mix; 0 = value minus luck only)
+    "play_floor": 0.0,      # count every solved hand in the losses as if its weight in the range were at least this (0 = off)
+    "play_floor_rows": "real",  # rows the floor applies to: "real" (real-range rows) or "all"
 }
 
 from flops import NC, Teacher, flop_tables, load_side  # noqa: E402
@@ -179,6 +204,80 @@ def subset_tag(data):
     if sel is None:
         return ""
     return f"-n{len(sel)}-{hashlib.sha256(np.asarray(sel, np.int64).tobytes()).hexdigest()[:8]}"
+
+
+def play_floor_factor(rng, floor):
+    """What CONFIG["play_floor"] multiplies a class's loss weight by: max(1, floor / r) for a class at weight
+    r > 0 in its range, 1 elsewhere. A loss weight is proportional to r, so the product is the loss weight
+    the class would have at max(r, floor)."""
+    rng = np.asarray(rng, np.float64)
+    return np.where(rng > 0, np.maximum(1.0, floor / np.maximum(rng, 1e-300)), 1.0)
+
+
+def play_floor(cfg, data):
+    """The training rows' loss weights under CONFIG["play_floor"], in data.x_train's order, or None when the
+    floor is off or applies to no row: (weights (n, 338) like data.w_train, factor (n, 338) float32 on the
+    CPU, which is weights / the snapshot's). In a row the floor applies to, each player's weights keep their
+    total. The weights come from the snapshot's own files, so a token weight is not lost to data.w_train's
+    half precision. Kept on the data object: the teachers and the net of one run share them."""
+    floor = float(cfg.get("play_floor", 0.0) or 0.0)
+    if floor <= 0:
+        return None
+    which = cfg.get("play_floor_rows", "real")
+    if which not in ("real", "all"):
+        raise ValueError(f'play_floor_rows must be "real" or "all", not {which!r}')
+    if not floor <= 1:
+        raise ValueError(f"play_floor is a weight in a range (0 to 1), not {floor}")
+    kept = getattr(data, "_play_floor", None)
+    if kept is not None and kept[0] == (floor, which):
+        return kept[1]
+    tr = train_rows(data, np.load(os.path.join(data.dir, "split.npy")))
+    rows = np.ones(len(tr), bool) if which == "all" else real_rows(data)
+    out = None
+    if rows is None:
+        log(f"play_floor {floor:g}: this snapshot has no real-range rows, the losses are unchanged")
+    else:
+        x = np.load(os.path.join(data.dir, "x.npy"), mmap_mode="r")
+        w = np.load(os.path.join(data.dir, "w.npy"), mmap_mode="r")
+        fac = np.ones((len(tr), 2 * NC), np.float32)
+        wl = np.empty((len(tr), 2 * NC), np.float32)
+        raised = counted = 0
+        thin = np.zeros(2)                        # the chosen rows' weight on hands under 0.05, before and after
+        total = 0.0
+        for i in range(0, len(tr), 8192):
+            part = tr[i:i + 8192]
+            wp = np.asarray(w[part], np.float64).reshape(len(part), -1)
+            sel = rows[i:i + 8192]
+            if sel.any():
+                m = int(sel.sum())
+                r = np.asarray(x[part[sel]])[:, :2 * NC]
+                ws = wp[sel]
+                f = play_floor_factor(r, floor)
+                raised += int(((ws > 0) & (f > 1)).sum())
+                counted += int((ws > 0).sum())
+                # each player's weights back to their total: the floor moves weight inside the row
+                before = ws.reshape(m, 2, NC).sum(axis=2)
+                after = (ws * f).reshape(m, 2, NC).sum(axis=2)
+                f = (f.reshape(m, 2, NC) * np.where(after > 0, before / np.maximum(after, 1e-300), 1.0)[:, :, None]).reshape(m, -1)
+                fac[i:i + 8192][sel] = f
+                thin += [float(ws[r < 0.05].sum()), float((ws * f)[r < 0.05].sum())]
+                total += float(ws.sum())
+            wl[i:i + 8192] = wp * fac[i:i + 8192]
+        share = thin / max(total, 1e-300)
+        log(f"play_floor {floor:g} on {int(rows.sum()):,} of {len(tr):,} training rows ({which}): "
+            f"{raised:,} of their {counted:,} solved hand classes are lifted; hands under a weight of 0.05 "
+            f"were {share[0]:.2%} of those rows' loss weight and are {share[1]:.1%}")
+        out = (torch.from_numpy(wl).to(data.w_train.device, data.w_train.dtype), torch.from_numpy(fac))
+    data._play_floor = ((floor, which), out)
+    return out
+
+
+def floored(t, fac, chunk=8192):
+    """A tensor of per-class weights (n, 338) times a play floor's factor, in t's own type and place."""
+    out = torch.empty_like(t)
+    for i in range(0, len(t), chunk):
+        out[i:i + chunk] = (t[i:i + chunk].float() * fac[i:i + chunk].to(t.device)).to(t.dtype)
+    return out
 
 
 class PoolTeacher(Teacher):
@@ -284,6 +383,8 @@ def teacher_tag(cfg):
         tag += "-" + cfg["t_arch"] + "x".join(str(int(v)) for v in cfg.get("t_pool", [24, 8, 128]))
     if cfg.get("t_schedule", "plateau") != "plateau":
         tag += "-" + cfg["t_schedule"]
+    if float(cfg.get("play_floor", 0.0) or 0.0) > 0:
+        tag += f"-pf{float(cfg['play_floor']):g}" + ("" if cfg.get("play_floor_rows", "real") == "real" else "all")
     return tag
 
 
@@ -368,6 +469,8 @@ def teacher_targets(cfg, data, generator):
         return float((data.w_val * (pred - data.r_val) ** 2).sum() / data.w_val.sum())
 
     best, best_state, stale, step, n, bs = float("inf"), None, 0, 0, data.n_train, 512
+    pf = None if have_model else play_floor(cfg, data)
+    w_train = data.w_train if pf is None else pf[0]       # the loss weights, with the play floor when set
     done = have_model
     if have_model:
         best_state = torch.load(model_path, map_location=dev)
@@ -376,7 +479,7 @@ def teacher_targets(cfg, data, generator):
         perm = torch.randperm(n, generator=generator, device="cpu").to(dev)
         for i in range(0, n - bs + 1, bs):
             idx = perm[i:i + bs]
-            x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), data.w_train[idx].float()
+            x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), w_train[idx].float()
             if t_cosine:
                 for g in opt.param_groups:
                     g["lr"] = cfg["t_lr"] * (0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(step / cfg["t_steps"], 1.0))))
@@ -714,6 +817,11 @@ def run(cfg, data, budget, generator):
             row_mix = torch.full((n, 1), float(mix), device=data.device)
             row_mix[is_real] = real_mix
         log(f"{int(real.sum()):,} real-range rows of {n:,}: weight {real_w:g}, distill mix {real_mix:g} (others {mix:g})")
+    # play floor: every solved hand of the chosen rows counts as if at least at that weight, in both terms
+    pf = play_floor(cfg, data)
+    w_train = data.w_train if pf is None else pf[0]
+    if pf is not None and wbar is not None:
+        wbar = floored(wbar, pf[1])
     ema_decay = float(cfg.get("ema", 0.0))
     avg = copy.deepcopy(model) if ema_decay else None      # running average of the weights: validated and returned
     cosine = cfg.get("schedule", "plateau") == "cosine"   # lr falls to 1% over max_steps; no early stop
@@ -727,7 +835,7 @@ def run(cfg, data, budget, generator):
                 stop = True
                 break
             idx = perm[i:i + bs]
-            x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), data.w_train[idx].float()
+            x, r, w = data.x_train[idx].float(), data.r_train[idx].float(), w_train[idx].float()
             if row_w is not None:
                 w = w * row_w[idx]
             if xs is not None:
