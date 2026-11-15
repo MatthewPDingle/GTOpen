@@ -67,7 +67,9 @@ You can start directly in Setup if you already have ranges. Preflop Lab is optio
 
 **Preflop sizes:** expand **Sizes by position** to override opens, 3-bets, and 4-bets or later raises for each seat. Blank cells inherit the defaults above. A 3-bet multiplier of `4` facing a 6bb open raises to 24bb. Build a fresh game after changing sizes.
 
-**Preflop rake:** new scenarios use **Balanced (approx.)**, which splits one pot between the heads-up players and deducts your configured rake explicitly. Set rake to `0` for no rake; with positive rake, a cap of `0` means uncapped. Old saves retain their old model. [How the approximation works](docs/preflop_balanced_model.md).
+**Preflop values:** new scenarios use **learned flop values**: the Balanced model plus a correction learned from exact flop solves (`cache/leaf_net_v2.bin`), which values hands by how they play after the flop and counts rake on the final pot. It prices heads-up flops; multiway and all-in pots, and games with ICM payouts, use Balanced alone. Untick "learned flop values" in the Preflop Lab for Balanced alone (solves about twice as fast). [What the net is and how it was checked](docs/technical_reference.md).
+
+**Preflop rake:** **Balanced (approx.)** splits one pot between the heads-up players and deducts your configured rake explicitly. Set rake to `0` for no rake; with positive rake, a cap of `0` means uncapped. Old saves retain their old model. [How the approximation works](docs/preflop_balanced_model.md).
 
 ### Preflop and player models
 

@@ -24,7 +24,9 @@ pub mod evidence;
 pub mod leafnet;
 pub mod leafnet_catalog;
 mod leaf_model;
-pub use leaf_model::{FlopLeaf, LeafRefresh};
+pub mod leaf_fix;
+pub mod leaf_total;
+pub use leaf_model::{FlopLeaf, LeafRefresh, LeafTerminalSums};
 mod continuation;
 pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
@@ -118,9 +120,10 @@ pub struct PreflopConfig {
     #[serde(default = "default_realization")]
     pub realization: String,
     /// Which leaf net realization "leafnet" uses: None (or "v1") is the
-    /// shipped net; "SNAPSHOT/RUN" is a net the leaf-net harness
-    /// (tools/leafnet) exported under its work folder. Kept in saves, so a
-    /// loaded game is priced by the net it was solved with.
+    /// first shipped net; "v2" is the shipped net a new Preflop Lab game
+    /// uses; "SNAPSHOT/RUN" is a net the leaf-net harness (tools/leafnet)
+    /// exported under its work folder. Kept in saves, so a loaded game is
+    /// priced by the net it was solved with.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub leaf_net: Option<String>,
     /// Seats that may never raise: their action menus keep fold/limp/call/check

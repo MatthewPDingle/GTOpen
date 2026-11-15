@@ -2172,8 +2172,9 @@ struct PfModelEvidenceRequest {
 }
 
 /// Pure provenance inspection; no AppState or live solver lock is involved.
-/// Leaf nets realization "leafnet" can use: the shipped v1 and every net the
-/// leaf-net harness kept (see solver::preflop::leafnet_catalog).
+/// Leaf nets realization "leafnet" can use: the shipped nets (v2, the
+/// default of a new game, and v1) and every net the leaf-net harness kept
+/// (see solver::preflop::leafnet_catalog).
 async fn pf_leafnets() -> Result<Json<serde_json::Value>, ApiError> {
     tokio::task::spawn_blocking(solver::preflop::leafnet_catalog::list)
         .await
