@@ -1,18 +1,39 @@
-// Which leaf net "learned flop values" uses: the shipped v1, a net the
-// leaf-net harness (tools/leafnet) kept, or an ensemble it built (one file
-// that averages several kept nets). The list comes from the server, which
-// reads the harness's work folder; saves remember the net by name.
+// Which leaf net "learned flop values" uses: a shipped net (v2, the one a
+// new game uses, or v1, the first), a net the leaf-net harness
+// (tools/leafnet) kept, or an ensemble it built (one file that averages
+// several kept nets). The list comes from the server, which reads the
+// harness's work folder; saves remember the net by name.
 import { api } from './api.js';
 
-const SHIPPED = 'v1';
-const STORE = 'pfl-leafnet';
+/** The first shipped net: what a game that names no net was solved with. */
+export const FIRST_NET = 'v1';
+/** The net a new game uses. */
+export const DEFAULT_NET = 'v2';
+// The remembered pick. A new key since v2 shipped, so that the new default
+// reaches a browser that remembered v1 from before.
+const STORE = 'pfl-leafnet-2';
+
+/** The value model of a game built from the form: learned flop values when
+ *  ticked, except with ICM payouts, which the leaf net does not price. */
+export const modelFor = (learned, icm) => (learned && !icm ? 'leafnet' : 'balanced');
+/** Engine fields for a pick: none when learned values are off. v1 stays
+ *  unnamed, as in every game saved before a second net shipped. */
+export const netConfig = (on, id) => (on && id && id !== FIRST_NET ? { leaf_net: id } : {});
+/** The net to show for a game: its own when it uses learned values (no name
+ *  means v1), else the remembered pick, else the default. */
+export const netOf = (cfg, remembered) =>
+  (cfg?.realization === 'leafnet' ? (cfg.leaf_net || FIRST_NET) : (remembered || DEFAULT_NET));
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const k = n => (n >= 1000 ? `${Math.round(n / 1000)}k` : String(n));
 
-function label(net) {
+export function label(net) {
   if (net.kind === 'shipped') {
-    return `v1 · shipped${net.train_examples ? ` · ${k(net.train_examples)} examples` : ''}`;
+    const parts = [net.id, net.default ? 'shipped · default' : 'shipped'];
+    if (net.members) parts.push(`mean of ${net.members} nets`);
+    if (net.train_examples) parts.push(`${k(net.train_examples)} examples`);
+    if (net.available === false) parts.push('missing');
+    return parts.join(' · ');
   }
   const parts = [`${(/^snap-(\d+k)/.exec(net.snapshot || '') || [])[1] || net.snapshot} data`];
   if (net.val_class != null) parts.push(`error ${net.val_class.toFixed(4)}`);
@@ -30,13 +51,15 @@ function label(net) {
 function metadata(net, work) {
   if (!net) return '';
   const parts = [];
-  if (net.kind === 'shipped') parts.push(net.available === false ? 'v1 missing from this build' : 'v1 · shipped with GTOpen');
-  else {
+  if (net.kind === 'shipped') {
+    parts.push(net.available === false ? `${net.id} missing from this build` : `${net.id} · ${net.desc || 'shipped with GTOpen'}`);
+    if (net.time) parts.push(`trained ${String(net.time).slice(0, 10)}`);
+  } else {
     parts.push(`${net.snapshot}/${net.run}`);
     if (net.time) parts.push(`kept ${net.time.replace('T', ' ').slice(0, 16)}`);
   }
   if (net.train_examples) parts.push(`trained on ${net.train_examples.toLocaleString()} examples`);
-  if (net.members) parts.push(`mean of ${net.members} nets`);
+  if (net.members && net.kind !== 'shipped') parts.push(`mean of ${net.members} nets`);
   else if (net.kind !== 'shipped' && net.desc) parts.push(net.desc);
   if (net.leaf_class != null) parts.push(`real-leaf error ${net.leaf_class}`);
   if (work && net.kind !== 'shipped') parts.push(`work ${work}`);
@@ -45,18 +68,20 @@ function metadata(net, work) {
 
 export function createLeafNetPicker(els, onChange) {
   const row = els.leafNetRow, sel = els.leafNet;
-  if (!sel) return { config: () => ({}), load() {}, refresh() {} };
+  if (!sel) return { config: () => ({}), load() {}, sync() {}, refresh() {} };
   const meta = document.createElement('p');
   meta.className = 'dim mono';
   meta.style.cssText = 'font-size:10px;margin:2px 0 0;overflow-wrap:anywhere';
   sel.closest('label')?.after(meta);
   let nets = [];
-  let wanted = localStorage.getItem(STORE) || SHIPPED;
+  const remembered = () => localStorage.getItem(STORE);
+  let wanted = netOf(null, remembered());
   let work = '';
   let pending = false;
   let error = '';
 
-  const sync = () => { if (row) row.hidden = !els.leaf?.checked; };
+  // hidden while learned values are off, or unavailable for this game (ICM)
+  const sync = () => { if (row) row.hidden = !els.leaf?.checked || !!els.leaf?.disabled; };
   const chosen = () => nets.find(n => n.id === sel.value) || null;
 
   function render() {
@@ -85,12 +110,12 @@ export function createLeafNetPicker(els, onChange) {
       nets = out.nets || [];
       work = out.work || '';
     } catch (e) {
-      nets = [{ id: SHIPPED, kind: 'shipped' }];
+      nets = [{ id: DEFAULT_NET, kind: 'shipped', default: true }, { id: FIRST_NET, kind: 'shipped' }];
       error = `leaf nets unavailable: ${e.message}`;
     } finally {
       pending = false;
     }
-    if (!nets.some(n => n.id === SHIPPED)) nets.push({ id: SHIPPED, kind: 'shipped' });
+    if (!nets.some(n => n.id === FIRST_NET)) nets.push({ id: FIRST_NET, kind: 'shipped' });
     render();
   }
 
@@ -106,14 +131,16 @@ export function createLeafNetPicker(els, onChange) {
   refresh();
 
   return {
-    // fields for the engine config; nothing when unticked or the shipped net
-    config: () => (els.leaf?.checked && sel.value && sel.value !== SHIPPED ? { leaf_net: sel.value } : {}),
-    // a loaded game's choice, shown without changing the remembered default
+    // fields for the engine config; `on` is whether this game uses learned values
+    config: (on = !!els.leaf?.checked) => netConfig(on, sel.value),
+    // a loaded game's choice, shown without changing the remembered pick;
+    // no game (a fresh scenario) goes back to the remembered pick
     load(cfg) {
-      wanted = cfg.realization === 'leafnet' ? (cfg.leaf_net || SHIPPED) : (localStorage.getItem(STORE) || SHIPPED);
+      wanted = netOf(cfg, remembered());
       render();
       sync();
     },
+    sync,
     refresh,
   };
 }

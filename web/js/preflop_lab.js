@@ -16,17 +16,21 @@ import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
-import { createLeafNetPicker } from './preflop_leafnet.js';
+import { createLeafNetPicker, modelFor } from './preflop_leafnet.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
 // jams in the overbet shade.
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
+// The balanced model alone: games with ICM payouts, and "learned flop
+// values" unticked.
 const DEFAULT_REALIZATION = 'balanced';
-// Opt-in: balanced plus the learned flop correction (beta).
+// What a new game uses: balanced plus the learned flop correction.
 const LEARNED_REALIZATION = 'leafnet';
 const currentModel = (m) => m === DEFAULT_REALIZATION || m === LEARNED_REALIZATION;
+// "learned flop values" is on unless this browser turned it off.
+const LEARNED_STORE = 'pfl-leaf';
 
 // One window-level pointer release for the paint grid: a handler registered
 // per editor open would pile up one more copy on every open.
@@ -86,8 +90,22 @@ const PRESETS = [
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
-  const icmControls = createIcmControls(els, positionsFor, () => estSoon());
+  const learnedWanted = () => localStorage.getItem(LEARNED_STORE) !== '0';
+  if (els.leaf) {
+    els.leaf.checked = learnedWanted();
+    els.leaf.addEventListener('change', () => localStorage.setItem(LEARNED_STORE, els.leaf.checked ? '1' : '0'));
+  }
+  const icmControls = createIcmControls(els, positionsFor, () => { syncLearned(); estSoon(); });
   const leafNets = createLeafNetPicker(els, () => estSoon());
+  // ICM payouts are priced by the balanced model: the box is greyed while
+  // ICM is on and keeps its tick for when ICM is turned off again.
+  function syncLearned() {
+    if (!els.leaf) return;
+    els.leaf.disabled = !!icmControls.config().icm;
+    els.leaf.closest('label')?.classList.toggle('dim', els.leaf.disabled);
+    leafNets.sync();
+  }
+  syncLearned();
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // hero mode's trust dial, fed by every status poll
   const trustDial = els.trust ? initPreflopTrust(els.trust, { toast, positions: () => S.positions || [] }) : null;
@@ -545,8 +563,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.rakeCap.value = p.rakeCap;
     // after the rake fields: ICM re-reads them as the numbers to restore
     icmControls.restore(p);
-    // Scenarios configure fresh games and carry no model choice; picking one
-    // also starts fresh when the loaded game uses an older model.
+    // Scenarios configure fresh games and carry no model choice: picking one
+    // goes back to this browser's own choice (learned flop values unless it
+    // was turned off) after a loaded game showed its own, and starts fresh
+    // when the loaded game uses an older model.
+    if (els.leaf) els.leaf.checked = learnedWanted();
+    leafNets.load(null);
+    syncLearned();
     if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
   };
   const currentScenario = () => ({
@@ -739,9 +762,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       rake_pct: +els.rakePct.value || 0,
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
-      realization: els.leaf?.checked ? LEARNED_REALIZATION : DEFAULT_REALIZATION,
-      ...leafNets.config(),
+      ...model(),
     };
+  }
+  // the value model and, for learned flop values, its net
+  function model() {
+    const realization = modelFor(!!els.leaf?.checked, !!icmControls.config().icm);
+    return { realization, ...leafNets.config(realization === LEARNED_REALIZATION) };
   }
 
   // ----- build / solve -----
@@ -994,6 +1021,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.activeModel = cfg.realization || 'static';
     if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
     leafNets.load(cfg);
+    syncLearned();
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be

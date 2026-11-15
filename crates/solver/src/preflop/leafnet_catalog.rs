@@ -1,7 +1,7 @@
-//! Which leaf nets the Preflop Lab can use: the shipped v1, every net the
-//! leaf-net harness (tools/leafnet) kept and every ensemble it built
-//! (`harness.py ensemble`: one file whose output is the mean of several
-//! kept nets).
+//! Which leaf nets the Preflop Lab can use: the shipped nets (v2, the one a
+//! new game uses, and v1, the first), every net the leaf-net harness
+//! (tools/leafnet) kept and every ensemble it built (`harness.py ensemble`:
+//! one file whose output is the mean of several kept nets).
 //!
 //! The harness writes each run to `WORK/runs/SNAPSHOT/RUN/leaf_net.bin` and
 //! never changes it afterwards, so "SNAPSHOT/RUN" names a net for good and a
@@ -14,8 +14,51 @@ use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-/// The name of the shipped net (also what `leaf_net: None` means).
+/// The first shipped net, and what `leaf_net: None` means: games saved
+/// before a second net shipped carry no name and keep this one.
 pub const SHIPPED: &str = "v1";
+
+/// The net a new Preflop Lab game uses.
+pub const DEFAULT_NET: &str = "v2";
+
+/// A net that ships in cache/.
+pub struct ShippedNet {
+    pub name: &'static str,
+    pub file: &'static str,
+    pub desc: &'static str,
+    /// When it was trained and on how many examples, where the file's
+    /// header does not say.
+    pub trained: Option<&'static str>,
+    pub examples: Option<u64>,
+}
+
+/// The shipped nets, newest first.
+///
+/// v2 (2026-11) is the mean of three 2x1334 nets trained on the community
+/// pool plus exact solves of GTOpen's own preflop ranges (harness run
+/// snap-73k-real2/ens3-real2, byte for byte). v1 (2026-11-09) is the first
+/// net, trained on the pool's random ranges only.
+pub const SHIPPED_NETS: [ShippedNet; 2] = [
+    ShippedNet {
+        name: DEFAULT_NET,
+        file: "leaf_net_v2.bin",
+        desc: "shipped with GTOpen: mean of three nets, trained on the pool and on exact solves of solved preflop ranges",
+        trained: Some("2026-11-12"),
+        examples: Some(66_325),
+    },
+    ShippedNet { name: SHIPPED, file: "leaf_net_v1.bin", desc: "shipped with GTOpen: the first net", trained: None, examples: None },
+];
+
+/// The shipped net of that name.
+pub fn shipped(name: &str) -> Option<&'static ShippedNet> {
+    SHIPPED_NETS.iter().find(|n| n.name == name)
+}
+
+/// Where a shipped net's file is, if this build has it.
+pub fn shipped_path(net: &ShippedNet) -> Option<PathBuf> {
+    // the server runs from the repo root; tests run from crates/solver
+    ["cache", "../../cache"].iter().map(|dir| Path::new(dir).join(net.file)).find(|p| p.is_file())
+}
 
 fn repo_roots() -> Vec<PathBuf> {
     // the server runs from the repo root; tests run from crates/solver
@@ -46,7 +89,8 @@ fn valid_part(s: &str) -> bool {
 pub fn research_net_path(name: &str) -> Result<PathBuf, String> {
     let parts: Vec<&str> = name.split('/').collect();
     if parts.len() != 2 || !parts.iter().all(|p| valid_part(p)) {
-        return Err(format!("leaf net \"{name}\" is not \"{SHIPPED}\" or SNAPSHOT/RUN"));
+        let names: Vec<&str> = SHIPPED_NETS.iter().map(|n| n.name).collect();
+        return Err(format!("leaf net \"{name}\" is not a shipped net ({}) or SNAPSHOT/RUN", names.join(", ")));
     }
     let work = work_dir().ok_or_else(|| {
         format!("leaf net \"{name}\" comes from the leaf-net harness, but its work folder was not found (set LEAFNET_WORK)")
@@ -97,7 +141,7 @@ fn num(v: Option<&String>) -> Value {
 }
 
 /// Every net the Preflop Lab can use, newest research nets first, the
-/// shipped net last.
+/// shipped nets last (v2, then v1). `default` marks the net a new game uses.
 pub fn list() -> Value {
     let mut nets = Vec::new();
     let work = work_dir();
@@ -174,17 +218,27 @@ pub fn list() -> Value {
             t(b).cmp(&t(a))
         });
     }
-    let shipped = LeafNet::load_default().ok().map(|n| n.header);
-    nets.push(json!({
-        "id": SHIPPED,
-        "kind": "shipped",
-        "time": shipped.as_ref().and_then(|h| h.get("trained")),
-        "desc": "shipped with GTOpen",
-        "train_examples": shipped.as_ref().and_then(|h| h.get("dataset_examples")),
-        "sizes": shipped.as_ref().and_then(|h| h.get("sizes")),
-        "available": shipped.is_some(),
-    }));
-    json!({ "work": work.map(|w| w.display().to_string()), "nets": nets })
+    for net in &SHIPPED_NETS {
+        // v1 answers to LEAF_NET too, so it is read the way a solve loads it
+        let header = if net.name == SHIPPED {
+            LeafNet::load_default().ok().map(|n| n.header)
+        } else {
+            shipped_path(net).and_then(|p| read_header(&p))
+        };
+        let field = |key: &str| header.as_ref().and_then(|h| h.get(key)).cloned();
+        nets.push(json!({
+            "id": net.name,
+            "kind": "shipped",
+            "default": net.name == DEFAULT_NET,
+            "time": field("trained").or_else(|| net.trained.map(|t| json!(t))),
+            "desc": net.desc,
+            "train_examples": field("dataset_examples").or_else(|| net.examples.map(|n| json!(n))),
+            "members": field("ensemble").as_ref().and_then(Value::as_array).map(Vec::len),
+            "sizes": field("sizes"),
+            "available": header.is_some(),
+        }));
+    }
+    json!({ "work": work.map(|w| w.display().to_string()), "default": DEFAULT_NET, "nets": nets })
 }
 
 #[cfg(test)]
@@ -195,10 +249,32 @@ mod tests {
 
     #[test]
     fn names_must_be_two_plain_parts() {
-        for bad in ["", "v2", "a/b/c", "../x", "snap/..", "snap/.hidden", "snap/run x", "snap\\run", "/abs"] {
+        for bad in ["", "v3", "a/b/c", "../x", "snap/..", "snap/.hidden", "snap/run x", "snap\\run", "/abs"] {
             assert!(research_net_path(bad).is_err(), "{bad} accepted");
         }
         assert!(valid_part("snap-73k-2026-11-10") && valid_part("20261110-031200-s0"));
+    }
+
+    #[test]
+    fn a_new_game_uses_v2_and_an_unnamed_net_stays_v1() {
+        assert_eq!((DEFAULT_NET, SHIPPED), ("v2", "v1"), "a save without a net name was solved with v1");
+        assert_eq!(SHIPPED_NETS[0].name, DEFAULT_NET, "newest first");
+        for net in &SHIPPED_NETS {
+            assert!(valid_part(net.name) && shipped(net.name).is_some());
+            assert!(research_net_path(net.name).is_err(), "{} is not a harness run", net.name);
+            // every shipped net is in the repo: a default that cannot load would fail every new game
+            let path = shipped_path(net).unwrap_or_else(|| panic!("cache/{} is missing", net.file));
+            let loaded = LeafNet::load_named(Some(net.name)).unwrap();
+            assert_eq!(read_header(&path).as_ref(), Some(&loaded.header));
+        }
+        assert!(shipped("v3").is_none());
+        // the two shipped nets are different files: v2 averages three nets, v1 is one
+        assert_eq!(LeafNet::load_named(Some(DEFAULT_NET)).unwrap().members(), 3);
+        if std::env::var_os("LEAF_NET").is_none() {
+            let (unnamed, v1) = (LeafNet::load_named(None).unwrap(), LeafNet::load_named(Some(SHIPPED)).unwrap());
+            assert_eq!(v1.members(), 1);
+            assert_eq!(unnamed.header, v1.header, "no name means v1");
+        }
     }
 
     #[test]
@@ -233,7 +309,10 @@ mod tests {
         std::env::set_var("LEAFNET_WORK", &work);
         let out = list();
         let ids: Vec<&str> = out["nets"].as_array().unwrap().iter().map(|n| n["id"].as_str().unwrap()).collect();
-        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v1"]);
+        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v2", "v1"]);
+        assert_eq!(out["default"], "v2");
+        let n = out["nets"].as_array().unwrap().len();
+        assert_eq!((&out["nets"][n - 2]["default"], &out["nets"][n - 1]["default"]), (&json!(true), &json!(false)));
         assert_eq!(out["nets"][0]["members"], 2);
         assert_eq!(out["nets"][0]["averages_best"], true);
         assert_eq!(out["nets"][0]["best"], false);

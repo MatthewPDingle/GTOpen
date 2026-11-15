@@ -120,9 +120,10 @@ pub struct PreflopConfig {
     #[serde(default = "default_realization")]
     pub realization: String,
     /// Which leaf net realization "leafnet" uses: None (or "v1") is the
-    /// shipped net; "SNAPSHOT/RUN" is a net the leaf-net harness
-    /// (tools/leafnet) exported under its work folder. Kept in saves, so a
-    /// loaded game is priced by the net it was solved with.
+    /// first shipped net; "v2" is the shipped net a new Preflop Lab game
+    /// uses; "SNAPSHOT/RUN" is a net the leaf-net harness (tools/leafnet)
+    /// exported under its work folder. Kept in saves, so a loaded game is
+    /// priced by the net it was solved with.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub leaf_net: Option<String>,
     /// Seats that may never raise: their action menus keep fold/limp/call/check

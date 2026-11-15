@@ -64,12 +64,14 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 
 Every run is appended to `WORK/results.tsv`. The current best's net is
 `WORK/runs/<snapshot>/best_leaf_net.bin`, in the format the Preflop Lab
-loads (`cache/leaf_net_v1.bin` is v1).
+loads. The nets that ship are `cache/leaf_net_v2.bin` (v2, what a new game
+uses: this harness's `snap-73k-real2/ens3-real2`) and `cache/leaf_net_v1.bin`
+(v1, the first).
 
 ## Using a kept net in the Preflop Lab
 
-Tick "learned flop values" and pick a net under it: v1, any run the keep
-rule kept (each snapshot's best is starred), or an ensemble ("mean of 3
+"Learned flop values" is ticked by default; pick a net under it: v2 (the
+default), v1, any run the keep rule kept (each snapshot's best is starred), or an ensemble ("mean of 3
 nets", starred when it averages the best's seed copies). The server finds the work
 folder through `LEAFNET_WORK`, else `leafnet_work/` in the repo,
 `../leafnet-work` or `../GTOpen-research/leafnet-work`. Nets are named

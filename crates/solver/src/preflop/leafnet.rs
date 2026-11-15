@@ -139,21 +139,33 @@ impl LeafNet {
         Self::from_bytes(&bytes).map_err(|e| format!("{}: {e}", p.display()))
     }
 
-    /// `LEAF_NET`, else the shipped net under cache/.
+    /// A shipped net's file under cache/ (the server runs from the repo
+    /// root, tests from crates/solver).
+    fn load_shipped(file: &str) -> Result<Self, String> {
+        Self::load(format!("cache/{file}")).or_else(|_| Self::load(format!("../../cache/{file}")))
+    }
+
+    /// `LEAF_NET`, else the first shipped net (v1) under cache/: the net of
+    /// a game that names none.
     pub fn load_default() -> Result<Self, String> {
         if let Ok(p) = std::env::var("LEAF_NET") {
             return Self::load(p);
         }
-        Self::load("cache/leaf_net_v1.bin").or_else(|_| Self::load("../../cache/leaf_net_v1.bin"))
+        Self::load_shipped("leaf_net_v1.bin")
     }
 
     /// The net a game names (`PreflopConfig::leaf_net`): None or "v1" is
-    /// [`Self::load_default`]; "SNAPSHOT/RUN" is a net the leaf-net harness
-    /// kept (see leafnet_catalog.rs).
+    /// [`Self::load_default`]; "v2" is the net a new Preflop Lab game uses;
+    /// "SNAPSHOT/RUN" is a net the leaf-net harness kept (see
+    /// leafnet_catalog.rs).
     pub fn load_named(name: Option<&str>) -> Result<Self, String> {
+        use super::leafnet_catalog::{research_net_path, shipped, SHIPPED};
         match name {
-            None | Some("") | Some(super::leafnet_catalog::SHIPPED) => Self::load_default(),
-            Some(n) => Self::load(super::leafnet_catalog::research_net_path(n)?),
+            None | Some("") | Some(SHIPPED) => Self::load_default(),
+            Some(n) => match shipped(n) {
+                Some(net) => Self::load_shipped(net.file),
+                None => Self::load(research_net_path(n)?),
+            },
         }
     }
 
