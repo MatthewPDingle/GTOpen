@@ -24,43 +24,67 @@
     </nav>
     <div id="hdr-right">
       <div id="solve-controls" class="hidden">
-        <span id="solve-readout" class="mono dim" tabindex="0" data-tip="Live solve progress: iterations completed and current exploitability (% of pot)."></span>
-        <button id="btn-solve-top" class="btn primary sm" data-tip="Start or continue solving the built tree — works from any screen, so you can re-solve (e.g. after locking a node) without leaving Browse.">SOLVE</button>
-        <button id="btn-stop-top" class="btn danger sm hidden" data-tip="Pause the solver; the current solution stays browsable.">STOP</button>
+        <button id="btn-solve-top" class="btn primary sm">SOLVE</button>
+        <button id="btn-stop-top" class="btn danger sm hidden">STOP</button>
       </div>
-      <div id="status-pill" tabindex="0"><span class="dot"></span><span id="status-text">idle</span></div>
+      <div id="status-pill"><span class="dot"></span><span id="status-text">idle</span></div>
     </div>
   </header>
+
+  <!-- Loaded spot + tree/solve state, shared by SETUP, SOLVE, BROWSE, REPORTS -->
+  <div id="spot-strip" class="hidden" role="group" aria-label="Loaded spot">
+    <span class="ss-k">SPOT</span>
+    <span id="ss-board" class="ss-board"></span>
+    <span id="ss-pos" class="ss-pos"></span>
+    <span class="ss-sep"></span>
+    <span id="ss-money" class="ss-money"></span>
+    <span class="ss-sep"></span>
+    <span id="ss-sizes" class="ss-sizes"></span>
+    <span class="ss-grow"></span>
+    <span class="ss-stateline"><button id="ss-state" class="ss-state" type="button">not built</button></span>
+    <!-- announces the state, not the numbers: those change on every poll -->
+    <span id="ss-live" class="sr-only" aria-live="polite" aria-atomic="true"></span>
+  </div>
+
+  <div id="error-bar" class="hidden" role="alert">
+    <span id="error-text"></span>
+    <button id="error-retry" class="btn xs">RETRY</button>
+    <button id="error-dismiss" class="btn ghost xs" aria-label="Dismiss error">✕</button>
+  </div>
 
   <!-- ============================== SETUP =============================== -->
   <main id="view-setup" class="view">
     <div class="setup-heading">
-      <div><h1>Postflop setup</h1><p>Define the ranges and the game you want to solve.</p></div>
+      <div><h1>Postflop setup</h1></div>
       <span class="setup-format">HEADS-UP · FLOP / TURN / RIVER</span>
+    </div>
+    <div id="setup-drift" class="drift-notice hidden" role="status">
+      <span>SETUP changed</span>
+      <button id="btn-rebuild" class="btn sm">REBUILD</button>
     </div>
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
-        <h2><span class="setup-step">01</span> Ranges <span class="info-dot" tabindex="0" data-tip="Define what each player can hold when the solved street begins. Click or drag on the grid to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above the diagonal = suited, below = offsuit.">?</span></h2>
+        <h2><span class="setup-step">01</span> Ranges <button type="button" class="info-dot" aria-label="How range painting works" data-tip="Click or drag to paint hands at the brush weight; click a painted hand again to erase it. Diagonal = pocket pairs, above = suited, below = offsuit.">?</button></h2>
         <div class="range-tabs">
-          <button class="rtab active" data-player="0" data-tip="Out of position — acts FIRST on every street (e.g. the big blind caller). You are editing this player's range.">OOP</button>
-          <button class="rtab" data-player="1" data-tip="In position — acts LAST on every street (e.g. the button raiser). You are editing this player's range.">IP</button>
-          <select id="preset-select" data-tip="Reload a spot exported from the Preflop Lab: both ranges, pot, stack and rake in one click."><option value="">from Preflop Lab…</option></select>
+          <button class="rtab active" data-player="0" data-tip="Out of position — acts first on every street (e.g. the big blind caller).">OOP</button>
+          <button class="rtab" data-player="1" data-tip="In position — acts last on every street (e.g. the button raiser).">IP</button>
+          <select id="preset-select" aria-label="Load a Preflop Lab spot" data-tip="Loads both ranges, pot, stack and rake from a Preflop Lab export."><option value="">from Preflop Lab…</option></select>
         </div>
         <div class="range-editor-wrap">
           <div id="range-matrix" class="matrix editor"></div>
           <div class="range-tools">
-            <label class="slider-row" data-tip="Weight applied when painting. 50% means each combo is in the range half the time — use it to model mixed preflop strategies (e.g. AJo 3-bet 50% / call 50%).">brush weight
+            <label class="slider-row" data-tip="50% means each combo is in the range half the time — use it to model mixed strategies (e.g. AJo 3-bet 50% / call 50%).">brush weight
               <input type="range" id="brush-weight" min="0" max="100" value="100">
               <span id="brush-weight-val" class="mono">100%</span>
             </label>
             <div class="btn-row">
-              <button id="range-clear" class="btn ghost" data-tip="Remove every hand from this player's range.">clear</button>
-              <button id="range-all" class="btn ghost" data-tip="Add all 1326 combos at 100% — useful as a starting point before pruning.">fill 100%</button>
+              <button id="range-clear" class="btn ghost">clear</button>
+              <button id="range-all" class="btn ghost">fill 100%</button>
             </div>
-            <textarea id="range-text" aria-label="Range text" spellcheck="false" data-tip="Range text. Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
+            <textarea id="range-text" aria-label="Range text" spellcheck="false" data-tip="Examples: AA · TT+ · A5s-A2s · 99-66 · ATs+ · KQo · AhKh (exact combo) · QQ:0.5 (50% weight). Comma-separated; later entries overwrite earlier ones." placeholder="AA,AKs,KQs:0.5,A5s-A2s,JJ-88…"></textarea>
             <div class="btn-row">
-              <button id="range-apply-text" class="btn" data-tip="Parse the text above and load it onto the grid (replaces hands it mentions).">apply text</button>
-              <span id="range-combo-count" class="mono dim" tabindex="0" data-tip="Total weighted combos in this range (AKs = 4, AKo = 12, AA = 6, before any board card removal).">0 combos</span>
+              <button id="range-apply-text" class="btn" data-tip="Replaces this player's entire range with the parsed text.">apply text</button>
+              <span id="range-combo-count" class="mono dim" tabindex="0" data-tip="Weighted combos, before board card removal.">0 combos</span>
             </div>
           </div>
         </div>
@@ -68,33 +92,40 @@
 
       <div class="setup-details">
       <section class="panel" id="panel-board">
-        <h2><span class="setup-step">02</span> Board <span class="info-dot" tabindex="0" data-tip="The community cards where the solve starts. 3 cards = solve flop, turn and river. 4 cards = turn + river subgame. 5 = river only. Fewer streets = much faster and smaller solves.">?</span></h2>
+        <h2><span class="setup-step">02</span> Board <button type="button" class="info-dot" aria-label="Board cards" data-tip="Cards where the solve starts. 3 = flop, turn and river; 4 = turn and river; 5 = river only.">?</button></h2>
         <div class="setup-board-strip"><div id="board-input-cards" class="board-cards"></div><span id="setup-street" class="setup-street" aria-live="polite"></span></div>
         <div id="deck-picker" class="deck-picker"></div>
-        <div class="hint">Pick 3 cards to solve from the flop, 4 from the turn, 5 from the river.</div>
       </section>
 
       <section class="panel" id="panel-money">
-        <h2><span class="setup-step">03</span> Pot &amp; stack <span class="info-dot" tabindex="0" data-tip="Chip amounts are unitless — use big blinds or chips, just stay consistent. Example 100bb single-raised pot: pot 60, stack 970 (chips with bb = 25)... or simply pot 6.5, stack 97.5 in bb.">?</span></h2>
-        <div class="field-grid">
-          <label data-tip="Total chips already in the middle when the solved street begins — both players' previous bets plus any dead money.">Starting pot <input type="number" id="cfg-pot" value="60" min="1"></label>
-          <label data-tip="Chips each player has behind at the start of the solve (effective = the smaller stack).">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
-          <label data-tip="Rake taken from the final pot at showdown or fold, as a percent. Set 0 for rake-free study. Rake meaningfully tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
-          <label data-tip="Maximum rake in chips (0 = uncapped). Online NL500+ is usually capped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
-          <label data-tip="If a configured bet or raise would commit this percent of the remaining stack, it becomes all-in instead. Enter 85 for 85%; 100 keeps configured sizes until they reach the stack. Values must be greater than 0 and at most 100.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="0" max="100" step="any"></label>
-          <label class="check" data-tip="Always offer shoving as an extra option on every street, in addition to the configured sizes."><input type="checkbox" id="cfg-addallin"> add all-in</label>
+        <h2><span class="setup-step">03</span> Pot &amp; stack <button type="button" class="info-dot" aria-label="Pot and stack units" data-tip="Amounts are unitless — chips or bb, but keep pot and stack in the same unit. Example: pot 6.5, stack 97.5 in bb.">?</button></h2>
+        <div class="field-grid field-groups">
+          <fieldset class="field-group">
+            <legend>Pot &amp; stack</legend>
+            <label data-tip="Both players' previous bets plus any dead money.">Starting pot <input type="number" id="cfg-pot" value="60" min="1"></label>
+            <label data-tip="The smaller of the two stacks behind.">Effective stack <input type="number" id="cfg-stack" value="970" min="1"></label>
+          </fieldset>
+          <fieldset class="field-group">
+            <legend>Rake</legend>
+            <label data-tip="Taken from the final pot at showdown or fold. Tightens calling ranges.">rake % <input type="number" id="cfg-rake" value="0" min="0" max="10" step="0.5"></label>
+            <label data-tip="0 = uncapped.">rake cap <input type="number" id="cfg-rakecap" value="0" min="0"></label>
+          </fieldset>
+          <fieldset class="field-group">
+            <legend>All-in</legend>
+            <label data-tip="A bet or raise committing this much of the remaining stack becomes all-in; 100 = only a full-stack commitment.">All-in threshold % <input type="number" id="cfg-allinthr" value="85" min="0" max="100" step="any"></label>
+            <label class="check"><input type="checkbox" id="cfg-addallin"> add all-in</label>
+          </fieldset>
         </div>
       </section>
 
       <section class="panel" id="panel-sizes">
-        <h2><span class="setup-step">04</span> Bet sizing <span class="dim">(% pot · “a” = all-in · “2.5x” = raise multiple)</span> <span class="info-dot" tabindex="0" data-tip="Which bet sizes each player may use, per street. More sizes = more accurate but the tree grows fast: 1-2 sizes per spot is plenty for study. '33 75' offers a third-pot and three-quarter-pot bet; 'a' adds all-in; raises also accept '2.5x' = 2.5 times the bet faced.">?</span></h2>
+        <h2><span class="setup-step">04</span> Bet sizing <span class="dim">(% pot · “a” = all-in · “2.5x” = raise multiple)</span> <button type="button" class="info-dot" aria-label="Bet size syntax" data-tip="Per player, per street. '33 75' = a third-pot and three-quarter-pot bet.">?</button></h2>
         <table class="sizes-table">
           <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
           <tbody id="sizes-body"></tbody>
         </table>
         <div class="build-row">
-          <button id="btn-build" class="btn primary" data-tip="Construct the full game tree and allocate solver memory. You'll see the tree size and RAM before anything heavy runs — rebuild any time you change the setup.">BUILD TREE</button>
-          <span id="build-info" class="mono dim"></span>
+          <button id="btn-build" class="btn primary">BUILD TREE</button>
         </div>
       </section>
       </div>
@@ -104,24 +135,30 @@
   <!-- ============================== 3-WAY =============================== -->
   <main id="view-threeway" class="view">
     <div class="setup-heading">
-      <div><h1>3-way postflop</h1><p>Three players see the flop, turn or river. Solved on the GPU when the tree fits, otherwise on the CPU.</p></div>
+      <div><h1>3-way postflop</h1><p>GPU when the tree fits, otherwise CPU.</p></div>
       <span class="setup-format">THREE-WAY · FLOP / TURN / RIVER</span>
     </div>
     <div class="mw-grid">
       <div class="mw-left">
         <section class="panel">
-          <h2><span class="setup-step">01</span> Spot <span class="info-dot" tabindex="0" data-tip="Players are listed in postflop action order: P1 acts first on every street, P3 last (e.g. BB, CO, BTN). Ranges use the usual range text (AA, TT+, A5s-A2s, KQo:0.5 ...). Chips are unitless.">?</span></h2>
+          <h2><span class="setup-step">01</span> Spot <button type="button" class="info-dot" aria-label="3-way spot order and ranges" data-tip="Players are in postflop action order: P1 first, P3 last (e.g. BB, CO, BTN). Ranges use the usual text (AA, TT+, A5s-A2s, KQo:0.5…). Chips are unitless.">?</button></h2>
           <div class="field-grid">
             <label data-tip="3 cards = solve flop, turn and river; 4 = turn + river; 5 = river only.">Board <input type="text" id="mw-board" value="Ks7h2d" spellcheck="false"></label>
-            <label data-tip="Chips in the middle when the solved street begins (each player is treated as having put in a third).">Starting pot <input type="number" id="mw-pot" value="80" min="1"></label>
+            <label data-tip="Each player is treated as having put in a third.">Starting pot <input type="number" id="mw-pot" value="80" min="1"></label>
           </div>
           <div id="mw-players"></div>
-          <div class="field-grid" style="margin-top:8px">
-            <label data-tip="Rake as a percent of the contested pot (uncalled bets are returned first).">rake % <input type="number" id="mw-rake" value="0" min="0" max="10" step="0.5"></label>
-            <label data-tip="Maximum rake in chips (0 = uncapped).">rake cap <input type="number" id="mw-rakecap" value="0" min="0"></label>
-            <label data-tip="A bet or raise that would commit this percent of the remaining stack becomes all-in.">All-in threshold % <input type="number" id="mw-allinthr" value="85" min="1" max="100"></label>
-            <label data-tip="Raises allowed per street (bet = 0 raises). 2 keeps 3-way trees small.">max raises <input type="number" id="mw-maxraises" value="2" min="0" max="4"></label>
-            <label class="check" data-tip="Offer all-in as an extra option at every bet/raise decision."><input type="checkbox" id="mw-addallin"> add all-in</label>
+          <div class="field-grid field-groups" style="margin-top:8px">
+            <fieldset class="field-group">
+              <legend>Rake</legend>
+              <label data-tip="Taken from the contested pot; uncalled bets are returned first.">rake % <input type="number" id="mw-rake" value="0" min="0" max="10" step="0.5"></label>
+              <label data-tip="0 = uncapped.">rake cap <input type="number" id="mw-rakecap" value="0" min="0"></label>
+            </fieldset>
+            <fieldset class="field-group">
+              <legend>All-in &amp; raises</legend>
+              <label data-tip="Committing this much of the remaining stack makes it all-in.">All-in threshold % <input type="number" id="mw-allinthr" value="85" min="1" max="100"></label>
+              <label data-tip="Bet = 0 raises.">max raises <input type="number" id="mw-maxraises" value="2" min="0" max="4"></label>
+              <label class="check"><input type="checkbox" id="mw-addallin"> add all-in</label>
+            </fieldset>
           </div>
           <table class="sizes-table" style="margin-top:8px">
             <thead><tr><th></th><th>bet % pot</th><th>raise % pot</th></tr></thead>
@@ -132,7 +169,8 @@
             </tbody>
           </table>
           <div class="build-row">
-            <button id="mw-build" class="btn primary" data-tip="Build the 3-way tree and show its size and memory before solving.">BUILD TREE</button>
+            <button id="mw-build" class="btn primary">BUILD TREE</button>
+            <span id="mw-build-state" class="ctl-state">not built</span>
             <span id="mw-build-info" class="mono dim"></span>
           </div>
         </section>
@@ -160,7 +198,7 @@
         </section>
       </div>
       <section class="panel mw-browse">
-        <h2>Browse <span class="info-dot" tabindex="0" data-tip="Click an action to follow it, a card to deal it, or a step in the line to go back. Cells show the acting player's strategy per hand class; bar height is how much of that class still reaches this spot. Hover a cell for its combos and EVs.">?</span></h2>
+        <h2>Browse <button type="button" class="info-dot" aria-label="Browse navigation" data-tip="Click an action to follow it, a card to deal it, or a step in the line to go back. Cells show the acting player's strategy per hand class; bar height = how much of the class reaches this spot.">?</button></h2>
         <div id="mw-line" class="mw-line"></div>
         <div id="mw-head" class="mw-head mono"></div>
         <div id="mw-actions" class="mw-actions"></div>
@@ -175,38 +213,38 @@
 
   <!-- ============================== SOLVE =============================== -->
   <main id="view-solve" class="view">
+    <h1 class="sr-only">Solve</h1>
     <div class="solve-grid">
       <section class="panel" id="panel-run">
         <h2>Run</h2>
         <div class="field-grid">
-          <label data-tip="Hard cap on CFR iterations. The solve stops earlier as soon as the accuracy target is hit, so this is just a safety limit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
-          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% is fine for quick looks, 0.2–0.3% for serious study. Tighter targets require more solving; the cost depends on the tree and convergence.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
-          <label data-tip="Measure accuracy every N iterations. Check cost depends on the tree and engine; CUDA reuses evaluation work. Shorter intervals spend more time checking and can detect the target sooner.">check every <input type="number" id="run-check" value="10" min="1"></label>
+          <label data-tip="Safety cap: the solve stops earlier when the accuracy target is hit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
+          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% for quick looks, 0.2–0.3% for serious study.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
+          <label data-tip="Shorter intervals cost more check time but detect the target sooner.">check every <input type="number" id="run-check" value="10" min="1"></label>
         </div>
         <div class="btn-row">
-          <button id="btn-solve" class="btn primary" data-tip="Start (or continue) solving the built tree. You can stop and resume — progress is kept.">SOLVE</button>
-          <button id="btn-stop" class="btn danger" data-tip="Pause the solver. The current solution stays browsable and SOLVE will continue from where it stopped.">STOP</button>
+          <button id="btn-solve" class="btn primary">SOLVE</button>
+          <button id="btn-stop" class="btn danger" disabled>STOP</button>
+          <span id="run-state" class="ctl-state"></span>
         </div>
-        <div id="tree-summary" class="mono dim"></div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in system RAM, not total process memory. The GPU number is a conservative full-tree estimate: packing and scratch reuse can lower actual VRAM. The default budget uses live free VRAM minus 512 MB; SOLVER_GPU_MEM_MB overrides it. Actual fit is checked at solve time, with CPU fallback if CUDA cannot fit the plan."></div>
-        <div id="compute-info" class="mono"></div>
-        <h2 style="margin-top:24px">Persistence <span class="info-dot" tabindex="0" data-tip="Saves write the full solution to ./saves/ on disk so you can come back to it after closing the app. Loading replaces the current session.">?</span></h2>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in RAM, not total process memory. GPU VRAM is a conservative full-tree estimate; actual fit is checked at solve time, with CPU fallback."></div>
+        <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
-          <button id="btn-save" class="btn" data-tip="Write the current solve (tree + strategies) to disk.">save</button>
+          <button id="btn-save" class="btn">save</button>
         </div>
         <div class="btn-row">
           <select id="load-select"><option value="">saved solves…</option></select>
-          <button id="btn-load" class="btn" data-tip="Load a previously saved solve and jump straight to browsing it.">load</button>
+          <button id="btn-load" class="btn">load</button>
         </div>
       </section>
       <section class="panel" id="panel-progress">
         <h2>Convergence</h2>
         <div class="bignum-row">
-          <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot. This is the real distance from game-theory optimal — at 0.3% the strategies are effectively unexploitable for practical purposes."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
-          <div class="bignum" tabindex="0" data-tip="CFR iterations completed. Each iteration updates both players' strategies across the whole tree."><label>iteration</label><div id="iter-now" class="mono">0</div></div>
+          <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
+          <div class="bignum"><label>iteration</label><div id="iter-now" class="mono">0</div></div>
           <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
-          <div class="bignum" tabindex="0" data-tip="Live iterations per second measured between progress updates, smoothed. Includes accuracy checks and checkpoint transfers; the rate depends on this tree, engine, and machine. Published benchmark rates are not used here."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
+          <div class="bignum" tabindex="0" data-tip="Rate is smoothed and includes accuracy checks and checkpoint transfers."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
         </div>
         <canvas id="convergence-chart" width="900" height="320" tabindex="0" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
       </section>
@@ -215,21 +253,22 @@
 
   <!-- ============================== BROWSE ============================== -->
   <main id="view-browse" class="view">
+    <h1 class="sr-only">Browse</h1>
     <div id="history-wrap">
-      <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left" data-tip="Scroll the action line left.">‹</button>
-      <div id="history-bar" tabindex="0" data-tip="The action line so far. Each panel is a decision point — the highlighted entry is the action taken. Click ANY action to jump to that line (including roads not taken), or click a turn/river card to change the runout. Scroll with the arrows, the mouse wheel, or drag."></div>
-      <button id="hist-right" class="hist-nav hidden" aria-label="scroll history right" data-tip="Scroll the action line right.">›</button>
+      <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left">‹</button>
+      <div id="history-bar" tabindex="0" data-tip="Each panel is a decision point. Click any action to jump to that line, including roads not taken, or click a turn/river card to change the runout. Scroll with the arrows, wheel, or drag."></div>
+      <button id="hist-right" class="hist-nav hidden" aria-label="scroll history right">›</button>
     </div>
     <div class="browse-top">
       <div class="browse-modes">
         <div class="seg" id="seg-player">
-          <button data-v="0" class="active" data-tip="Show OOP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">OOP</button><button data-v="1" data-tip="Show IP's hands in the matrix. Auto-switches to whoever is to act when you navigate.">IP</button>
+          <button data-v="0" class="active" data-tip="Auto-switches to whoever is to act when you navigate.">OOP</button><button data-v="1" data-tip="Auto-switches to whoever is to act when you navigate.">IP</button>
         </div>
         <div class="seg" id="seg-mode">
-          <button data-v="strategy" class="active" data-tip="Strategy view: each cell splits into action colors by how often that hand takes each action. Brightness = how much of the hand still reaches this node.">STRAT</button><button data-v="ev" data-tip="Expected value heatmap in chips (pot-share convention: a hand that captures the whole pot shows EV = pot; a fold shows 0). Colors are relative to the hands on display: red = lowest EV here, green = highest — not winning vs losing. Bar height = how much of the hand reaches this node.">EV</button><button data-v="eq" data-tip="Raw equity heatmap: chance of winning at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="Max-exploit view: the true best response for the selected player against the opponent's CURRENT strategy (including your node locks). Cells show BR actions; numbers show each hand's EV gain over the current strategy. Lock villain to a pool tendency, then read off what beats it.">EXPLOIT</button>
+          <button data-v="strategy" class="active" data-tip="Cells split into action colors by frequency; brightness = how much of the hand reaches this node.">STRAT</button><button data-v="ev" data-tip="EV in chips, pot-share: capturing the whole pot = pot, a fold = 0. Colors are relative to the displayed hands (red = lowest here, green = highest), not win/lose. Bar height = how much of the hand reaches this node.">EV</button><button data-v="eq" data-tip="Equity at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="Best response for the selected player against the opponent's current strategy, including node locks. Numbers = each hand's EV gain over the current strategy. Lock villain to a pool tendency, then read off what beats it.">EXPLOIT</button>
         </div>
         <div class="view-menu-wrap">
-          <button id="view-menu-btn" class="view-menu-btn" data-tip="Cell display options: how cells are filled (Normalized / Range height / Full height) and combo orientation (Vertical = per-combo columns / Horizontal = combined bar).">▦ display ▾</button>
+          <button id="view-menu-btn" class="view-menu-btn" data-tip="Vertical = per-combo columns; horizontal = combined bar.">▦ display ▾</button>
           <div id="view-menu" class="view-menu hidden">
             <button class="vm-item" data-fill="normalized"><span class="vm-ico">▆</span>Normalized</button>
             <button class="vm-item" data-fill="range"><span class="vm-ico">▃</span>Range height</button>
@@ -241,16 +280,16 @@
         </div>
       </div>
       <div id="villain-locks"></div>
-      <div id="browse-pot" class="mono dim" tabindex="0" data-tip="Pot at this node, and how many chips each player has committed so far this hand."></div>
+      <div id="browse-pot" class="mono dim"></div>
     </div>
     <div id="trust-panel" class="hidden" aria-live="polite"></div>
     <div class="browse-grid">
       <section class="panel matrix-panel">
         <div id="browse-matrix" class="matrix browse"></div>
-        <div id="matrix-legend" class="legend" tabindex="0" data-tip="Color key for the matrix. Hover any hand above for its combo-by-combo breakdown in the HANDS panel; click a hand to pin it there."></div>
+        <div id="matrix-legend" class="legend" tabindex="0" data-tip="Hover a hand for its combo breakdown in HANDS; click to pin it."></div>
       </section>
       <div class="browse-right">
-        <section class="panel" id="panel-eqchart" tabindex="0" data-tip="Equity distribution: each player's hands sorted from weakest to strongest (x = % of range, y = equity vs the opponent's range here). A line that hugs the top-right has the nut advantage; the gap between lines shows who's ahead at each part of the range. Hover hands in the matrix to see where they sit; hover the chart for the hand at each percentile.">
+        <section class="panel" id="panel-eqchart" tabindex="0" data-tip="Hands sorted weakest to strongest (x = % of range, y = equity vs the opponent's range). A line hugging the top-right has the nut advantage. Hover the chart for the hand at each percentile.">
           <div class="eqchart-wrap">
             <canvas id="equity-chart" width="620" height="232"></canvas>
             <div class="eqchart-stats" id="eqchart-stats"></div>
@@ -265,10 +304,10 @@
         </section>
         <section class="panel" id="panel-hands">
           <div class="hands-tabs">
-            <button class="htab active" data-v="hands" data-tip="One tile per combo of the hovered hand: the bar splits by action frequency (aggressive actions on the left) with each action's EV listed. Differences between suits reveal blocker effects.">HANDS</button>
-            <button class="htab" data-v="summary" data-tip="Aggregate view of the hovered hand class: combo count, weight, average equity/EV, and the overall action mix with per-action EVs.">SUMMARY</button>
-            <button class="htab" data-v="filters" data-tip="Break the range into made-hand categories, draws and equity buckets — each with its share of the range and how it plays here. Click rows to filter the matrix (include or exclude); suit buttons narrow by suit.">FILTERS</button>
-            <button class="htab" data-v="blockers" data-tip="How holding each individual card shifts the strategy versus the range average. Big positive numbers under a bet = the best cards to bluff with (they block calls); big positives under check/call = good bluff-catchers.">BLOCKERS</button>
+            <button class="htab active" data-v="hands" data-tip="One tile per combo; bars split by action frequency (aggressive actions left), with each action's EV. Suit differences show blocker effects.">HANDS</button>
+            <button class="htab" data-v="summary">SUMMARY</button>
+            <button class="htab" data-v="filters" data-tip="Click rows to include or exclude them in the matrix; suit buttons narrow by suit.">FILTERS</button>
+            <button class="htab" data-v="blockers" data-tip="How holding each card shifts strategy vs the range average. Big positive numbers under a bet = best bluff cards (they block calls); under check/call = good bluff-catchers.">BLOCKERS</button>
             <span id="hands-label" class="mono dim"></span>
           </div>
           <div id="hands-content"></div>
@@ -276,30 +315,29 @@
       </div>
     </div>
   </main>
-</div>
-<div id="toast"></div>
+
   <!-- ============================= REPORTS ============================== -->
   <main id="view-reports" class="view">
     <div class="reports-layout">
       <section class="panel rep-sidebar">
         <details class="rep-create"><summary>New report</summary>
-        <h2>New report <span class="info-dot" tabindex="0" data-tip="Solves the CURRENT SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background on this machine. Duration depends on the boards, tree size, target accuracy, and whether each board fits on the GPU.">?</span></h2>
+        <h2>New report <button type="button" class="info-dot" aria-label="What a report solves" data-tip="Solves the current SETUP spot (ranges, sizes, pot, rake) across a canonical flop subset and aggregates strategy, EV, EQ and EQR per flop. Runs in the background.">?</button></h2>
         <label class="pfl-row" style="font-size:11px">Name <input type="text" id="rep-name" placeholder="BTN vs BB SRP…" style="flex:1"></label>
-        <label class="pfl-row" style="font-size:11px" data-tip="More flops improve texture coverage and add solve work; time also depends on the selected boards. 47 for a quick look, 95 standard, 184 fine-grained, 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
+        <label class="pfl-row" style="font-size:11px" data-tip="47 for a quick look, 95 standard, 184 fine-grained; 1755 = every strategically distinct flop (long).">Flops <select id="rep-flops" style="flex:1">
           <option>47</option><option>95</option><option selected>184</option><option value="1755">1755 (all)</option>
         </select></label>
-        <label class="chk" style="font-size:11px" data-tip="Solve every report with one bet-size menu — flop 33% / 75%, turn 75%, river 75% (big river bets become all-ins via the threshold), raises 60% pot, 3 raises max — so reports stay comparable across spots. Untick to use SETUP's sizes instead."><input type="checkbox" id="rep-stdsizes" checked> standard report sizes</label>
-        <label class="chk" style="font-size:11px" data-tip="Best size sweep: instead of one report, solve one single-size tree per candidate size of ONE bet (the chosen player's first bet on the flop; IP's is the bet after a check) on every flop, to 0.15% pot, then refine between the best size's neighbours. Shows the best size per flop, sizes the solves can't separate (ties), and the EV lost by always using one size. Costs about (sizes + 3) solves per flop; the rest of the tree uses the menu above."><input type="checkbox" id="rep-sweep"> best size sweep</label>
+        <label class="chk" style="font-size:11px" data-tip="Fixed menu: flop 33/75%, turn and river 75%, raises 60% pot, 3 raises max — bets committing past the all-in threshold become jams. Untick to use SETUP's sizes."><input type="checkbox" id="rep-stdsizes" checked> standard report sizes</label>
+        <label class="chk" style="font-size:11px" data-tip="One single-size tree per candidate size of one bet on every flop, to 0.15% pot, then refined between the best size's neighbours. Reports the best size per flop, ties, and the EV lost by always using one size. Costs about (sizes + 3) solves per flop; the rest of the tree uses the menu above."><input type="checkbox" id="rep-sweep"> best size sweep</label>
         <div id="rep-sweep-opts" class="hidden">
           <label class="pfl-row" style="font-size:11px">Bet <select id="rep-sweep-player" style="flex:1"><option value="1">IP's flop bet after a check</option><option value="0">OOP's first flop bet</option></select></label>
-          <label class="pfl-row" style="font-size:11px" data-tip="Candidate sizes for that bet, % of the pot.">Sizes % pot <input type="text" id="rep-sweep-sizes" value="25 33 50 75 125" style="flex:1"></label>
-          <label class="pfl-row" style="font-size:11px" data-tip="Golden-section solves per flop between the best grid size's neighbours (0 = grid only). Skipped when the best size is the smallest or largest candidate.">Refine <select id="rep-sweep-refine" style="flex:1"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
-          <label class="chk" style="font-size:11px" data-tip="Also save each candidate size as an ordinary report you can browse by node (a few MB per flop per size)."><input type="checkbox" id="rep-sweep-keep" checked> keep per-size reports</label>
+          <label class="pfl-row" style="font-size:11px">Sizes % pot <input type="text" id="rep-sweep-sizes" value="25 33 50 75 125" style="flex:1"></label>
+          <label class="pfl-row" style="font-size:11px" data-tip="Extra golden-section solves between the best size's neighbours; 0 = grid only. Skipped at the smallest or largest candidate.">Refine <select id="rep-sweep-refine" style="flex:1"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+          <label class="chk" style="font-size:11px" data-tip="Each size is also saved as a browsable report (a few MB per flop per size)."><input type="checkbox" id="rep-sweep-keep" checked> keep per-size reports</label>
         </div>
-        <label class="chk" style="font-size:11px" id="rep-villain-row" data-tip="Lock the villain to his postflop profile on every flop before measuring (extra solve per flop). Requires a lab export with a modeled seat."><input type="checkbox" id="rep-vsvillain"> vs modeled villain</label>
-        <label class="pfl-row" style="font-size:11px" id="rep-villain-trust-row" data-tip="Trust the read: how sure the hero is of the villain's profile. At p% the hero re-adapts against a villain who plays the profile p% of the time and otherwise adapts like a solver; 100% is the max exploit, 0% is GTO. Below 100% each flop also records the hero's EV against the read and his worst case. Only used with vs modeled villain.">Trust the read % <input type="number" id="rep-villain-trust" value="100" min="0" max="100" step="5" style="width:64px"></label>
+        <label class="chk" style="font-size:11px" id="rep-villain-row" data-tip="Extra solve per flop. Requires a Preflop Lab export with a modeled seat."><input type="checkbox" id="rep-vsvillain"> vs modeled villain</label>
+        <label class="pfl-row" style="font-size:11px" id="rep-villain-trust-row" data-tip="How sure the hero is of the villain's profile: at p% the villain plays it p% of the time and otherwise plays like a solver. 100% = max exploit, 0% = GTO. Below 100% each flop also records EV against the read and the worst case.">Trust the read % <input type="number" id="rep-villain-trust" value="100" min="0" max="100" step="5" style="width:64px"></label>
         <div class="btn-row">
-          <button id="rep-run" class="btn primary" data-tip="Start the report on the spot currently configured in SETUP.">RUN REPORT</button>
+          <button id="rep-run" class="btn primary" data-tip="Uses the spot currently configured in SETUP.">RUN REPORT</button>
           <button id="rep-stop" class="btn danger hidden">STOP</button>
         </div>
         </details>
@@ -308,14 +346,14 @@
         <input type="search" id="rep-search" placeholder="Search reports…" aria-label="Search reports">
         <div id="rep-library"></div>
       </section>
-      <div id="rep-empty-state" class="panel rep-empty-state"><h2>Aggregate reports</h2><p>Select a report from the library to explore strategies across flops.</p></div>
+      <div id="rep-empty-state" class="panel rep-empty-state"><h1>Aggregate reports</h1><p>Select a report from the library.</p></div>
       <section class="panel hidden" id="rep-viewer">
         <div class="pfl-nodehead"><h1 id="rep-title"></h1></div>
         <div id="rep-context"></div>
         <details class="rep-settings"><summary>Report settings</summary>
         <div id="rep-subtitle" class="mono dim" style="font-size:10px;margin-bottom:6px"></div>
         </details>
-        <div id="rep-ribbon" class="hidden" data-tip=""></div>
+        <div id="rep-ribbon" class="hidden"></div>
         <div id="rep-display" class="seg rep-display" aria-label="Report view"></div>
         <div id="rep-controls" class="ro-controls"></div>
         <div id="rep-aggregate" class="rep-summary"></div>
@@ -334,96 +372,95 @@
 
   <!-- =========================== PREFLOP LAB ============================ -->
   <main id="view-preflop" class="view active">
+    <h1 class="sr-only">Preflop Lab</h1>
     <div class="pfl-layout">
       <section class="panel pfl-side">
-        <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <span class="info-dot" tabindex="0" data-tip="Solves the configured preflop betting tree for 2–9 players, including limps and your chosen raise sizes. Postflop values are estimated automatically; future flop, turn and river betting is not solved here. All-in pots use showdown-equity estimates. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop with exactly two players can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</span></h2>
-        <label class="pfl-row pfl-source" data-tip="SOLVE THIS GAME: build and solve any table you describe (limps, sizes, rake, seat count, player models). RANGE LAB CHARTS: use the canonical charts from Range Lab instead. No solve: pick the game, open size and stack, walk the line on the right, and send heads-up flops to the postflop solver.">Ranges from
+        <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <button type="button" class="info-dot" aria-label="Preflop game model" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</button></h2>
+        <label class="pfl-row pfl-source">Ranges from
           <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical)</option></select></label>
         <div id="pfl-canon" class="hidden">
           <div class="pfl-step">1 · CHOOSE THE CHARTS</div>
-          <label class="pfl-row" data-tip="The Range Lab game: its seat count, blinds, straddle or antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
+          <label class="pfl-row" data-tip="Seat count, blinds, straddle/antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
           <div class="pfl-grid2">
-            <label data-tip="The open size the charts were made with (cash), or the tournament stage.">Open / stage <select id="pfl-canon-variant"></select></label>
-            <label data-tip="Starting stack in big blinds.">Stack <select id="pfl-canon-depth"></select></label>
-            <label data-tip="Rake carried into the postflop spot when you send a flop to SETUP. It doesn't change the charts.">Postflop rake % <input id="pfl-canon-rakepct" type="number" value="0" min="0" step="0.5"></label>
-            <label data-tip="Postflop rake cap in bb (0 = uncapped).">Rake cap (bb) <input id="pfl-canon-rakecap" type="number" value="0" min="0" step="0.5"></label>
+            <label data-tip="Open size for cash charts; tournament stage otherwise.">Open / stage <select id="pfl-canon-variant"></select></label>
+            <label>Stack <select id="pfl-canon-depth"></select></label>
+            <label data-tip="Carried into the postflop spot on export; does not change the charts.">Postflop rake % <input id="pfl-canon-rakepct" type="number" value="0" min="0" step="0.5"></label>
+            <label data-tip="0 = uncapped.">Rake cap (bb) <input id="pfl-canon-rakecap" type="number" value="0" min="0" step="0.5"></label>
           </div>
           <div id="pfl-canon-note" class="dim" style="font-size:11px;line-height:1.5;margin:4px 0 2px"></div>
         </div>
         <div id="pfl-solve-setup">
         <div class="pfl-step">1 · SET UP THE SCENARIO</div>
-        <label class="pfl-row" data-tip="Ready-made game configs, plus your own. Pick one, tweak any field, then BUILD — SOLVE also rebuilds automatically when settings changed. SAVE keeps the fields as shown under a name of your choice (saving under a built-in's name replaces it in the list); DELETE removes a saved scenario.">Scenario <select id="pfl-preset" style="flex:1"></select></label>
+        <label class="pfl-row">Scenario <select id="pfl-preset" style="flex:1"></select></label>
         <div class="btn-row" style="margin:-2px 0 4px">
-          <button id="pfl-scn-save" class="btn ghost xs" data-tip="Save the scenario fields exactly as shown, under a name you choose — edit a built-in and save it under the same name to replace it, or a new name to add one.">SAVE SCENARIO</button>
-          <button id="pfl-scn-del" class="btn ghost xs hidden" data-tip="Delete this saved scenario (built-ins can't be deleted; a replaced built-in comes back).">DELETE</button>
+          <button id="pfl-scn-save" class="btn ghost xs" data-tip="Saving under a built-in's name replaces it.">SAVE SCENARIO</button>
+          <button id="pfl-scn-del" class="btn ghost xs hidden" data-tip="Built-ins can't be deleted; a replaced built-in comes back.">DELETE</button>
         </div>
         <div class="pfl-grid2">
-          <label data-tip="2–9 seats; positions are assigned automatically. Heads-up: SB is the button and acts first preflop.">Players <select id="pfl-players">
+          <label data-tip="Positions are assigned automatically. Heads-up: SB is the button and acts first preflop.">Players <select id="pfl-players">
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
           </select></label>
-          <label data-tip="Starting stack in big blinds for every seat. Give seats different stacks under Stacks by seat.">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
-          <label data-tip="Enter both blind stakes in the same units, e.g. 2 and 2 for $2/$2. The engine converts them to big blinds; stack and bet sizes below stay in bb.">Small blind <input id="pfl-sb" type="number" value="1" min="0.01" step="any"></label>
-          <label data-tip="The stake worth one big blind. Examples: 2 for $2/$2, 5 for $2/$5. Small blind / big blind determines the posted fraction.">Big blind <input id="pfl-bb" type="number" value="2" min="0.01" step="any"></label>
-          <label class="pfl-straddle-toggle" data-tip="Live straddle by the seat immediately left of BB. The next seat acts first; the straddler keeps a check/raise option. All amounts still use the original big blind.">UTG straddle <input id="pfl-straddle-on" type="checkbox"></label>
+          <label data-tip="Per-seat stacks are set under Stacks by seat.">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
+          <label data-tip="Enter both stakes in the same units (2 and 2 for $2/$2). Converted to bb; stack and sizes below stay in bb.">Small blind <input id="pfl-sb" type="number" value="1" min="0.01" step="any"></label>
+          <label data-tip="Stake worth one bb: 2 for $2/$2, 5 for $2/$5. SB/BB sets the posted fraction.">Big blind <input id="pfl-bb" type="number" value="2" min="0.01" step="any"></label>
+          <label class="pfl-straddle-toggle" data-tip="Straddle by the seat left of BB. The next seat acts first; the straddler keeps a check/raise option. Amounts still use the original big blind.">UTG straddle <input id="pfl-straddle-on" type="checkbox"></label>
           <label>Straddle (bb) <input id="pfl-straddle" type="number" value="2" min="2" step="0.5" disabled></label>
           <div id="pfl-straddle-note" class="dim pfl-straddle-note" role="status" hidden></div>
           <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="Comma list of raise-TO amounts in the original big blind. With a 2 bb straddle, use at least 4 bb. Empty = no ordinary raises (all-in can still be enabled)."></label>
-          <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="Default 3-bet multipliers of the previous raise-to amount. Position overrides are below."></label>
-          <label data-tip="Cap on raises per hand (the open counts as raise #1; a 3-bet is #2). Deep re-raise chains multiply tree size fast — 2–3 covers most live games.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
-          <label data-tip="Per-player ante in bb, added to the starting pot. More dead money widens every range.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
-          <label data-tip="Percent of the final pot, taken only from pots that see a flop (no flop, no drop). High proportional rake reshapes preflop play: defends tighten, and big open sizes lose to limping — the blinds are the only outside prize while every bb built into the pot gets taxed.">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
-          <label data-tip="Rake ceiling in bb (0 = uncapped). A low cap that binds early behaves like online rake (extra pot-building is tax-free); a high cap keeps rake proportional, which punishes big preflop sizings.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
+          <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="Multiplier of the previous raise-to amount. Position overrides are below."></label>
+          <label data-tip="The open counts as raise 1 and a 3-bet as 2.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+          <label data-tip="Added to the starting pot.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label data-tip="Taken only from pots that see a flop (no flop, no drop).">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
+          <label data-tip="0 = uncapped.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
         </div>
         <div class="pfl-row">
-          <label class="chk" data-tip="Adds open-limping and limping behind — the spots preset libraries can't model. Limp chains grow the tree quickly on full tables."><input id="pfl-limp" type="checkbox"> allow limps</label>
-          <label class="chk" data-tip="Adds jam as an action everywhere; configured raises that would commit most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
-          <label class="chk" data-tip="Beta. Pots with exactly three players use a table of 3-way showdown equity by hand class, with all three hands dealt from one deck, so card removal between the hands is exact. Pots with four or more players keep the coupled-deck model. The first build computes the table once (a few minutes) and caches it. Solves on CPU for now."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
-          <label class="chk" data-tip="Beta. Heads-up flops are priced with the balanced model plus a correction from a small net trained on exact flop solves (the community dataset). The correction follows both players' ranges at each flop and is recomputed every 50 iterations as the strategies change. It was trained on broad random ranges, so treat narrow 3-bet and 4-bet pots with care. Multiway pots and all-in pots are unchanged; not available with ICM. Solves on the standard GPU plan."><input id="pfl-leaf" type="checkbox"> learned flop values</label>
+          <label class="chk"><input id="pfl-limp" type="checkbox"> allow limps</label>
+          <label class="chk" data-tip="Sizes committing most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
+          <label class="chk" data-tip="Beta. Three-player pots use exact 3-way showdown equity from one deck, so card removal between hands is exact; 4+ players keep the coupled-deck model. First build computes and caches the table (a few minutes). Solves on CPU."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
+          <label class="chk" data-tip="Beta. Prices heads-up flops with the balanced model plus a correction trained on exact flop solves. Trained on broad random ranges, so narrow 3-bet and 4-bet pots are less reliable. Multiway and all-in pots unchanged; not available with ICM."><input id="pfl-leaf" type="checkbox"> learned flop values</label>
         </div>
         <div class="pfl-row" id="pfl-leafnet-row" hidden>
-          <label data-tip="Which learned net prices the heads-up flops. v1 ships with GTOpen; the others are the nets the leaf-net training loop (tools/leafnet) kept on this machine, newest first, with their validation error (lower is better). &quot;Mean of N nets&quot; averages N copies of one net trained from different seeds: single copies disagree on borderline hands, and the mean is steadier. ★ marks each snapshot's current best and the mean of its copies. A saved game remembers its net.">Leaf net <select id="pfl-leafnet"></select></label>
+          <label data-tip="Which net prices heads-up flops. Validation error shown (lower is better), newest first; ★ marks each snapshot's best run and the mean of its copies. Mean of N nets averages copies trained from different seeds, steadier on borderline hands. A saved game remembers its net.">Leaf net <select id="pfl-leafnet"></select></label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
-          data-tip="Live tree size and CPU solver-arena RAM before you build; this is not total process memory or GPU VRAM. Limits follow this machine's available RAM (arenas may take ~40%; PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB override). GPU fit is checked when solving. Branching multiplies: sizes x raise cap x limps x players."></div>
+          data-tip="Live tree size and solver-arena RAM before you build; not total process memory or GPU VRAM. Limits follow this machine's RAM; GPU fit is checked when solving."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
-          <button id="pfl-build" class="btn" data-tip="Build the game tree for the settings above (SOLVE does this automatically if you skip it).">BUILD GAME</button>
-          <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="Progress toward the accuracy target (best-response gap 0.005 bb), measured every 50 iterations — on big games that measurement itself takes a while and the bar says 'measuring accuracy' during it. Solving stops at the target or at the 3000-iteration safety cap, whichever comes first."><i></i><span></span></div>
+          <button id="pfl-build" class="btn" data-tip="Optional — SOLVE builds automatically.">BUILD GAME</button>
+          <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="Progress toward the 0.005 bb best-response-gap target, measured every 50 iterations; big games show 'measuring accuracy' meanwhile."><i></i><span></span></div>
           <div class="pfl-step">3 · SOLVE</div>
-          <button id="pfl-solve" class="btn primary" data-tip="Run CFR on the built game; builds first when needed. Stops as soon as the accuracy target is reached (total best-response gap under 0.005 bb) — the 3000-iteration maximum is only a safety cap, not the destination.">SOLVE</button>
-          <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Pause the solve — everything stays browsable and RE-SOLVE continues from here.">STOP</button>
+          <button id="pfl-solve" class="btn primary" data-tip="Builds first if needed. Stops at the 0.005 bb target; 3000 iterations is a safety cap.">SOLVE</button>
+          <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Everything stays browsable; RE-SOLVE continues from here.">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
-        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Live solver state: iteration count and the per-seat best-response gaps measured at the last checkpoint."></div>
-        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <span class="info-dot" tabindex="0" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting on every solve. FROZEN: pinned to whatever it played at the last solve. PROFILE (an archetype, HUD stats, or a saved player): plays like a real person. A profile's ranges are made by bending the CURRENT solve's equilibrium toward its stats — the hands the equilibrium likes most stay in longest — so the order matters: (1) SOLVE the plain game once. (2) Give every seat you want modeled its profile (edit = tweak stats, paint hands, set postflop tendencies; COPY TO ALL SEATS gives the whole table one player). (3) SOLVE again — the solver seats adapt to the new table; a changed table restarts convergence, so the grids show play against these opponents. (4) Pick a HERO (the seat you play) and SOLVE once more: hero freezes every other seat (profiles keep their profile, solver seats keep their last solved strategy) and re-solves only your seat, which turns your strategy into a maximum-exploit line; your own seat's profile is ignored while it is the hero. NOTE a profile seat is never solved — its grid shows its profile as is — so a table where EVERY seat is a profile has nothing to solve until you pick a HERO. 'bleeds X bb' beside a seat = what that seat loses per hand to a best response, i.e. the price of playing that way. Postflop tendencies only matter once a spot is SENT TO POSTFLOP. Everything, profiles included, solves on the GPU.">?</span></div>
+        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Iteration count and per-seat best-response gaps from the last checkpoint."></div>
+        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <button type="button" class="info-dot" aria-label="Seat types" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting. FROZEN: pinned to what it played at the last solve. PROFILE (archetype, HUD stats or a saved player): plays like a real person; its ranges bend the current solve's equilibrium toward its stats, so solve the plain game before modelling seats. A profile seat is never solved — its grid shows the profile as is — so a table where every seat is a profile has nothing to solve until you pick a HERO; while a seat is the HERO its profile is ignored. 'bleeds X bb' = what that seat loses per hand to a best response. Postflop tendencies only matter once a spot is sent to postflop.">?</button></div>
         <div id="pfl-model"></div>
         <div id="pfl-editor" class="hidden"></div>
         <div class="pfl-row" style="margin-top:6px">
-          <label class="chk" style="flex:1" data-tip="Set this LAST — the rhythm is three solves: (1) baseline, (2) model seats + SOLVE so the table adapts, (3) pick HERO + SOLVE for the max exploit. Hero freezes everyone else: modeled seats play their profiles, unmodeled seats pin to their step-2 strategies (which is why the table must be solved first — shortcut: if every other seat is modeled, set hero right away). Your seat's learning resets on hero-set so the exploit chart converges clean.">HERO
+          <label class="chk" style="flex:1" data-tip="Set last. Hero freezes every other seat: modeled seats play their profiles, unmodeled seats pin to their last solved strategy. Re-solves only your seat; its learning resets.">HERO
             <select id="pfl-hero" style="flex:1;margin-left:6px"><option value="">off</option></select>
           </label>
-          <button id="pfl-apply" class="btn" data-tip="Send the seat models to the solver. A CHANGED table resets the learning state so the next solve converges fresh against it (SOLVE does this apply automatically when you forget); re-applying an unchanged model costs nothing.">APPLY MODEL</button>
+          <button id="pfl-apply" class="btn" data-tip="A changed table resets learning so the next solve converges against it; SOLVE applies pending changes automatically. Re-applying an unchanged model costs nothing.">APPLY MODEL</button>
         </div>
         <div id="pfl-trust" class="hidden"></div>
         </div>
 
         <div class="pfl-step">5 · SET UP THE PREFLOP ACTION</div>
         <p id="pfl-step5" class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 0">
-          Once solved, construct the hand in the panel to the right: each segment
-          of the action ribbon lists every available action with its solved
-          frequency — click one to advance the line, or click any earlier action
-          to branch. When the line reaches the flop <b>heads-up</b>, step 6
-          unlocks.
+          Each ribbon segment lists the available actions with solved frequencies; click one to
+          advance the line, or an earlier action to branch. Step 6 unlocks when the line reaches
+          the flop <b>heads-up</b>.
         </p>
-        <div class="pfl-step" tabindex="0" data-tip="Enabled when the line on the right ends at a flop with exactly two players. Sends both conditional ranges, pot, effective stack and rake into SETUP — pick a board there and solve postflop for real.">6 · SEND IT POSTFLOP</div>
-        <button id="pfl-export" class="btn primary" disabled
-          data-tip="Carry this heads-up flop spot into the postflop solver's SETUP.">
+        <div class="pfl-step">6 · SEND IT POSTFLOP</div>
+        <button id="pfl-export" class="btn primary" disabled>
           SEND TO POSTFLOP SETUP</button>
+        <div id="pfl-export-state" class="ctl-state">needs a flop line</div>
         <div id="pfl-solve-saved">
-        <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="A saved game stores the whole session: config, every seat's model, point locks, and the full solver state — loading resumes exactly where you left off, RE-SOLVE continues converging.">SAVED GAMES</div>
+        <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="Stores config, seat models, point locks and solver state.">SAVED GAMES</div>
         <div class="btn-row">
-          <select id="pfl-savedsel" style="flex:1" data-tip="Rebuilds the tree and restores strategies, seat models, and iteration exactly as saved — RE-SOLVE continues converging. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
-          <button id="pfl-savegame" class="btn ghost" data-tip="Save the current game to disk (saves/preflop/). Big multiway games write a few hundred MB to a couple of GB.">SAVE</button>
+          <select id="pfl-savedsel" style="flex:1" data-tip="Restores strategies, seat models and iteration. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
+          <button id="pfl-savegame" class="btn ghost" data-tip="Writes to saves/preflop/. Big multiway games use hundreds of MB to a few GB.">SAVE</button>
         </div>
         </div>
       </section>
@@ -438,7 +475,7 @@
         </div>
         <div id="pfl-seats"></div>
         <div class="pfl-gridbar hidden" id="pfl-fillseg">
-          <div class="seg" id="pfl-rangeseg" data-tip="Whose arriving range the grid shows at this flop."></div>
+          <div class="seg" id="pfl-rangeseg"></div>
         </div>
         <div id="pfl-grid" class="matrix browse hidden"></div>
         <div id="pfl-gridcap" class="dim" style="font-size:10px;line-height:1.5;margin-top:6px;max-width:720px"></div>
@@ -447,6 +484,8 @@
       </section>
     </div>
   </main>
+</div>
+<div id="toast"></div>
 
 <script type="module" src="js/app.js"></script>
 <script type="module" src="js/multiway.js"></script>

@@ -4,7 +4,7 @@
 // dial sets how sure the hero is of the read: with probability p the
 // villain plays the profile, otherwise he plays freely and adapts to the
 // hero (Restricted Nash Response, crates/solver/src/rnr.rs). 100% is the
-// max exploit (today's lock and re-adapt), 0% is GTO.
+// max exploit against the locked read, 0% is GTO.
 //
 // After each solve the server reports what the level buys and costs
 // (status.trust_readout): the hero's EV against the read, and his worst
@@ -51,9 +51,7 @@ export function initTrust(panel, { toast, villain, posLabel, startSweep }) {
       await api.trust(t);
       S.trust = t;
       S.readout = null;
-      toast(S.running
-        ? `trust ${pct(t)} — applied to the running solve`
-        : `trust the read: ${pct(t)} — RE-SOLVE to adapt`);
+      toast(`trust the read: ${pct(t)}`);
     } catch (e) {
       toast(e.message, true);
     } finally {
@@ -88,12 +86,13 @@ export function initTrust(panel, { toast, villain, posLabel, startSweep }) {
     const hero = posLabel(1 - v), vill = posLabel(v);
     panel.innerHTML = `
       <div class="trust-row">
-        <span class="trust-head">TRUST THE READ <span class="info-dot" tabindex="0" data-tip="How sure are you of ${esc(vill)}'s profile? At p% the solve assumes he plays the profile p% of the time and otherwise adapts to you like a solver. 100% = max exploit (the profile is a fact); 0% = GTO. In between, ${esc(hero)} keeps most of the exploit's EV while risking much less if the read is wrong. Manual node locks stay facts at every level.">?</span></span>
+        <span class="trust-head">TRUST THE READ <button type="button" class="info-dot" aria-label="How the trust level works" data-tip="At p% ${esc(vill)} plays the profile p% of the time and otherwise adapts to ${esc(hero)}. Manual node locks stay facts at every level.">?</button></span>
         <input type="range" class="trust-slider" min="0" max="100" step="5" value="${Math.round(t * 100)}"
           aria-label="Trust the read, percent" ${sweeping || S.busy ? 'disabled' : ''}>
         <span class="trust-val mono">${pct(t)}</span>
+        <span class="dim">100% max exploit · 0% GTO</span>
         <button class="btn ghost sm trust-sweep" ${S.running ? 'disabled' : ''}
-          data-tip="Solve 100%, 90%, 80%, 70%, 50%, 25% and 0% in a row (each warm-starts from the last; uses the SOLVE tab's target and max iterations per level) and chart EV vs the read against the worst case. Click a point to pick that level.">${sweeping ? `SWEEPING ${S.sweep.current + 1}/${S.sweep.levels.length}…` : 'SWEEP'}</button>
+          data-tip="Solve 100%, 90%, 80%, 70%, 50%, 25% and 0% and chart EV against the read versus the worst case.">${sweeping ? `SWEEPING ${S.sweep.current + 1}/${S.sweep.levels.length}…` : 'SWEEP'}</button>
         <span class="trust-readout mono">${readoutText()}</span>
       </div>
       ${S.sweep && S.sweep.points.length ? `<details class="trust-curve"${S.showCurve ? ' open' : ''}>

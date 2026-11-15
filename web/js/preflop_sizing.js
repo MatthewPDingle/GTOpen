@@ -43,7 +43,7 @@ export function createPositionSizing(els, positionsFor, changed) {
   const details = document.createElement('details'); details.className = 'pfl-position-sizes';
   const summary = document.createElement('summary'); summary.textContent = 'Sizes by position'; details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Blank overrides use the defaults above. Opens are raise-to amounts in bb; re-raises multiply the previous raise-to amount. For example, 4× facing 6bb raises to 24bb. 3-bet sizes also apply to squeezes; 4-bet+ sizes apply after two or more raises.';
+  note.textContent = 'Example: 4× facing 6 bb raises to 24 bb. 3-bet sizes also apply to squeezes; 4-bet+ sizes apply after two or more raises.';
   details.append(note);
   const table = document.createElement('table');
   table.innerHTML = '<thead><tr><th>Seat</th><th>Open · bb</th><th>3-bet · ×prev</th><th>4-bet+ · ×prev</th></tr></thead><tbody></tbody>';

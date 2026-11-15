@@ -24,8 +24,8 @@ const BET_SHADES = {
 };
 // Player colors: OOP light cyan, IP green.
 const EQ_COLORS = ['#8edced', '#46b556'];
-// Equity chart margins (CSS px).
-const EQ_M = { L: 38, R: 10, T: 12, B: 24 };
+// Equity chart margins (CSS px); the roomier left/bottom hold axis titles.
+const EQ_M = { L: 50, R: 12, T: 14, B: 38 };
 
 /** Toast suffix for a lock reply that also froze earlier decisions. */
 function frozenNote(out) {
@@ -49,9 +49,27 @@ function isPrefix(a, b) {
   return a.length <= b.length && a.every((s, i) => stepEq(s, b[i]));
 }
 
+/** Earlier decisions a freeze-earlier lock would still freeze: action steps
+ *  on the line whose node (the prefix BEFORE the step, as freeze_line walks
+ *  it) carries no lock. Pure so the per-ancestor rule is testable: a lock at
+ *  the node being viewed must never make its ancestors look locked. */
+export function freezeableAncestors(path, pathLabels, board, isLocked) {
+  let n = 0;
+  for (let i = 0; i < path.length; i++) {
+    if (path[i].type !== 'action') continue;
+    const prefix = pathLabels.slice(0, i);
+    const desc = prefix.length ? `${board} ${prefix.join(' > ')}` : `${board} root`;
+    if (!isLocked(desc)) n++;
+  }
+  return n;
+}
+
 export class Browser {
-  constructor(els) {
+  constructor(els, hooks = {}) {
     this.els = els;
+    /** The app's persistent failure surface (app.js reportError); falls back to
+     *  a toast when the browser is constructed on its own. */
+    this.onError = hooks.onError || null;
     this.path = [];        // the node currently VIEWED (a prefix of `line`)
     this.line = [];        // the full navigated line (cursor can sit anywhere on it)
     this.lineHistory = null; // cached node history for the whole line (ribbon source)
@@ -60,8 +78,27 @@ export class Browser {
     this._refreshGen = 0;  // serializes overlapping /api/node refreshes (stale-response guard)
     this.lockHistory = null; // server's lock undo/redo stacks (labels), see setLockHistory
     this.lockStepBusy = false;
-    this.freezeLine = false; // lock option: also freeze earlier decisions on the line
-    try { this.freezeLine = localStorage.getItem('gtopen.freezeLine') === '1'; } catch { /* storage off */ }
+    // Lock option: also freeze the earlier decisions on the line. On by
+    // default — a lock below the root otherwise shifts earlier play silently.
+    this.freezeLine = true;
+    try {
+      const saved = localStorage.getItem('gtopen.freezeLine');
+      if (saved != null) this.freezeLine = saved === '1';
+    } catch { /* storage off */ }
+    this.lockLabels = [];       // GET /api/locks labels (one per locked node)
+    this.lockCells = new Map(); // node label -> cells its per-hand lock covers
+    try {
+      // the server's lock label names only the combo COUNT, so remember which
+      // cells this tab locked (validated against /api/locks on every refresh)
+      for (const [at, cells] of JSON.parse(sessionStorage.getItem('gtopen.lockCells') || '[]')) {
+        this.lockCells.set(at, new Set(cells));
+      }
+    } catch { /* storage off */ }
+    this.pendingLockEdits = 0;  // lock/fit edits since the last finished solve
+    this._pendingBase = null;   // solve iteration those edits were made against
+    this._pendingGen = 0;
+    this.panelBusy = false;     // pointer/focus inside the filters/blockers panel
+    this.loadingNode = false;   // a /api/node fetch is in flight (not "no spot")
     this.player = 0;     // matrix viewpoint
     this.mode = 'strategy';
     this.exploit = null;          // /api/exploit payload for EXPLOIT mode
@@ -80,6 +117,7 @@ export class Browser {
     this.filterPreview = null;    // hovered filter: {type:'cat'|'suit', key}
     this.actionFilter = null;     // selected action tile -> grid shows its range
     this.buildMatrix();
+    this.buildBrowseChrome();
     if (this.els.eqCanvas) {
       this.els.eqCanvas.addEventListener('mousemove', e => {
         const r = this.els.eqCanvas.getBoundingClientRect();
@@ -153,7 +191,14 @@ export class Browser {
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.dataset.i = i; cell.dataset.j = j;
-        cell.innerHTML = `<div class="bars"></div><div class="fill"></div><div class="tag">${info.label}</div><div class="sub"></div>`;
+        cell.tabIndex = (i === 0 && j === 0) ? 0 : -1; // roving tab stop
+        cell.setAttribute('role', 'button');
+        cell.setAttribute('aria-label', info.label);
+        cell.setAttribute('aria-pressed', 'false');
+        cell.innerHTML = `<div class="bars"></div><div class="fill"></div>` +
+          `<div class="tag">${info.label}</div><div class="sub"></div>` +
+          `<i class="lk-mark" aria-hidden="true" style="position:absolute;top:3px;right:4px;` +
+          `width:6px;height:6px;border-radius:50%;display:none;z-index:4;pointer-events:none"></i>`;
         cell.addEventListener('click', () => this.selectCell(i, j));
         cell.addEventListener('mouseenter', () => {
           this.hoverCell = [i, j];
@@ -161,16 +206,340 @@ export class Browser {
           this.drawEquityChart();
           this.showHandPop(i, j, cell);
         });
+        // keyboard: focus shows the same hand the pointer would, and a visible
+        // ring replaces the transparent outline the grid uses for the mouse
+        cell.addEventListener('focus', () => {
+          cell.style.outline = '2px solid var(--accent)';
+          this.hoverCell = [i, j];
+          this.renderHandsPanel();
+          this.drawEquityChart();
+        });
+        cell.addEventListener('blur', () => {
+          cell.style.outline = '';
+          if (document.activeElement?.closest?.('.matrix')) return;
+          this.hoverCell = null;
+          this.renderHandsPanel();
+          this.drawEquityChart();
+        });
         m.appendChild(cell);
         this.cells.push(cell);
       }
     }
+    // arrow keys move the roving tab stop, Enter/Space pins the cell (the
+    // mouse-free route into the per-hand lock editor)
+    m.addEventListener('keydown', e => {
+      const cell = e.target.closest?.('.cell');
+      if (!cell || cell.parentElement !== m) return;
+      const i = +cell.dataset.i, j = +cell.dataset.j;
+      const delta = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] }[e.key];
+      if (delta) {
+        e.preventDefault();
+        this.focusCell(Math.max(0, Math.min(12, i + delta[0])), Math.max(0, Math.min(12, j + delta[1])));
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.selectCell(i, j);
+        this.focusCell(i, j);
+      }
+    });
     m.addEventListener('mouseleave', () => {
       this.hoverCell = null;
       this.renderHandsPanel(); // reverts to FILTERS/BLOCKERS when leaving the grid
       this.drawEquityChart();
       this.hideHandPop();
     });
+  }
+
+  /** Move the matrix's single tab stop and focus that cell. */
+  focusCell(i, j) {
+    const cell = this.cells?.[i * 13 + j];
+    if (!cell) return;
+    this.cells.forEach(c => { c.tabIndex = -1; });
+    cell.tabIndex = 0;
+    cell.focus();
+  }
+
+  /** Browse-owned chrome: pending-lock bar, no-spot panel and the filtered-share
+   *  line. Built here so every element the view reads has one owner. */
+  buildBrowseChrome() {
+    if (this.els.matrix?.after) {
+      this.emptyEl = document.createElement('div');
+      this.emptyEl.style.cssText =
+        'display:flex;align-items:center;gap:10px;padding:26px 8px;font-size:12px;color:var(--ink-dim)';
+      const txt = document.createElement('span');
+      txt.textContent = 'no spot loaded';
+      const setup = document.createElement('button');
+      setup.className = 'btn sm';
+      setup.textContent = 'OPEN SETUP';
+      setup.addEventListener('click', () =>
+        document.querySelector('.tab[data-tab="setup"]')?.click());
+      this.emptyEl.append(txt, setup);
+      this.els.matrix.after(this.emptyEl);
+    }
+    if (this.els.legend?.after) {
+      this.filterStateEl = document.createElement('div');
+      this.filterStateEl.style.cssText =
+        'display:none;align-items:center;gap:8px;font-size:11px;color:var(--ink-dim);margin-top:6px';
+      this.els.legend.after(this.filterStateEl);
+    }
+    const host = document.getElementById('view-browse');
+    const top = host?.querySelector('.browse-top');
+    if (host && top) {
+      this.pendingBar = document.createElement('div');
+      this.pendingBar.className = 'pending-locks';
+      this.pendingBar.setAttribute('role', 'status');
+      this.pendingBar.style.cssText =
+        'display:none;align-items:center;gap:10px;position:sticky;top:80px;z-index:40;' +
+        'margin:6px 0 2px;padding:5px 9px;font-size:11px;color:var(--ink);' +
+        'background:var(--accent-soft);border:1px solid var(--line2);' +
+        'border-left:3px solid var(--accent);border-radius:4px';
+      host.insertBefore(this.pendingBar, top);
+    }
+    // A filter/blocker edit must survive the pointer passing over the grid:
+    // keep the hover-flip off while the panel holds the pointer or the keyboard.
+    const content = this.els.handsContent;
+    if (content) {
+      const enter = () => { this.panelBusy = true; };
+      const leave = () => {
+        if (content.contains(document.activeElement) || content.matches(':hover')) return;
+        this.panelBusy = false;
+        this.renderHandsPanel();
+      };
+      content.addEventListener('pointerenter', enter);
+      content.addEventListener('pointerleave', leave);
+      content.addEventListener('focusin', enter);
+      // defer: during focusout the browser has not moved focus to the next
+      // control yet, and rebuilding the panel here would drop it
+      content.addEventListener('focusout', () => setTimeout(leave, 0));
+    }
+  }
+
+  /** The tab's no-spot state before a build: a node fetch in flight is
+   *  "loading", not "no spot". */
+  renderEmptyState() {
+    if (!this.emptyEl) return;
+    const empty = !this.view && !this.loadingNode;
+    this.emptyEl.style.display = empty ? 'flex' : 'none';
+    if (this.filterStateEl && !this.view) this.filterStateEl.style.display = 'none';
+  }
+
+  /** Matched share of the reach in the range under the active filters, and
+   *  whether anything matched at all. Null when no filter is on. */
+  filterShare() {
+    if (!this.view || !this.filtersActive()) return null;
+    const p = this.player;
+    const hands = this.handsFor(p);
+    let matched = 0, total = 0, any = false;
+    hands.forEach((h, hi) => {
+      if (!(h.reach > 1e-9)) return;
+      total += h.reach;
+      if (this.handMatches(p, hi)) { matched += h.reach; any = true; }
+    });
+    return { share: total > 0 ? matched / total : 0, any };
+  }
+
+  renderFilterState() {
+    const el = this.filterStateEl;
+    if (!el) return;
+    const fs = this.filterShare();
+    el.innerHTML = '';
+    if (!fs) { el.style.display = 'none'; return; }
+    el.style.display = 'flex';
+    const txt = document.createElement('span');
+    if (!fs.any) {
+      txt.textContent = 'showing 0% of range — no hands match';
+      const clear = document.createElement('button');
+      clear.className = 'btn ghost xs';
+      clear.textContent = 'clear filters';
+      clear.addEventListener('click', () => {
+        this.filterCats.clear();
+        this.filterSuits.clear();
+        this.applyFilters();
+      });
+      el.append(txt, clear);
+      return;
+    }
+    const pct = fs.share * 100;
+    txt.textContent = `showing ${pct < 10 ? pct.toFixed(1) : Math.round(pct)}% of range`;
+    el.appendChild(txt);
+  }
+
+  /** Record a lock/fit edit: the displayed strategy is stale until the next
+   *  solve, and the bar keeps that reminder visible (a toast would vanish). */
+  noteLockEdit() {
+    this.pendingLockEdits += 1;
+    if (this._pendingBase == null) {
+      const gen = ++this._pendingGen;
+      api.status().then(st => {
+        if (gen === this._pendingGen && this._pendingBase == null) this._pendingBase = st.iteration;
+      }).catch(() => { /* no baseline: the bar is still true */ });
+    }
+    this.onLockEdit?.(); // app.js resyncs the server's trust readout
+    this.renderPendingBar();
+  }
+
+  renderPendingBar() {
+    if (!this.pendingBar) return;
+    const n = this.pendingLockEdits;
+    this.pendingBar.style.display = n ? 'flex' : 'none';
+    this.pendingBar.innerHTML = '';
+    if (!n) return;
+    const txt = document.createElement('span');
+    txt.textContent = `${n} lock edit${n === 1 ? '' : 's'} pending — RE-SOLVE / EXPLOIT`;
+    const off = document.createElement('button');
+    off.className = 'btn ghost xs';
+    off.textContent = '×';
+    off.setAttribute('aria-label', 'dismiss the pending-lock reminder');
+    off.style.marginLeft = 'auto';
+    off.addEventListener('click', () => {
+      this.pendingLockEdits = 0;
+      this._pendingBase = null;
+      this.renderPendingBar();
+    });
+    this.pendingBar.append(txt, off);
+  }
+
+  /** Clear the bar once a solve has finished past the edits' baseline. */
+  clearPendingAfterSolve() {
+    if (!this.pendingLockEdits || this._pendingBase == null) return;
+    const base = this._pendingBase;
+    api.status().then(st => {
+      if (st.state === 'running' || st.iteration <= base) return;
+      this.pendingLockEdits = 0;
+      this._pendingBase = null;
+      this.renderPendingBar();
+    }).catch(() => {});
+  }
+
+  // ----- lock composition -----
+
+  /** The spot's root board: view.board includes cards dealt on the way here,
+   *  but lock descriptions (like the server's path_description) start from the
+   *  board the tree was built on. */
+  rootBoard() {
+    const dealt = (this.view?.history || []).filter(h => h.kind === 'card' && h.card).length;
+    const cards = this.view?.board || [];
+    return cards.slice(0, Math.max(0, cards.length - dealt)).join('');
+  }
+
+  /** The node's description in the server's own shape (see path_description in
+   *  crates/solver): "<flop> root" or "<flop> Check > Bet 3.3". This is the
+   *  "at" part the lock labels carry. */
+  lockNodeLabel() {
+    if (!this.view) return '';
+    const board = this.rootBoard();
+    return this.pathLabels?.length
+      ? `${board} ${this.pathLabels.join(' > ')}`
+      : `${board} root`;
+  }
+
+  /** Lock labels at the viewed node. GET /api/locks names the node itself (a
+   *  manual lock stores its description); the *kind* of lock is only in the
+   *  edit history (/api/locks/history), whose labels carry a "Lock …" prefix.
+   *  Composed state: per-hand edits stack on an earlier range/solved/fit lock
+   *  at the same node, so the history is walked back to that base. */
+  lockSummary(at) {
+    if (!at) return null;
+    const raw = (this.lockLabels || []).filter(l => lockLabelAtNode(l, at));
+    if (!raw.length) {
+      if (at === this.lockNodeLabel() && this.view?.locked && this.lockHistory?.profile_players?.length) return { kind: 'profile', combos: 0 };
+      return null;
+    }
+    const hist = (this.lockHistory?.undo || []).filter(h => editLabelAtNode(h, at));
+    const cur = hist.length ? editKind(hist[0]) : null;
+    if (cur && cur.kind !== 'none') {
+      if (cur.kind !== 'hands') return cur;
+      let combos = cur.combos;
+      for (let i = 1; i < hist.length; i++) {
+        const k = editKind(hist[i]);
+        if (k.kind === 'hands') { combos += k.combos; continue; }
+        if (k.kind === 'none') break;
+        return { ...k, combos };
+      }
+      return { kind: 'hands', combos };
+    }
+    // locks whose kind is written into the label itself
+    if (raw.some(l => l.startsWith(`${at} (least exploitable`))) return { kind: 'fit', combos: 0 };
+    if (raw.some(l => l.startsWith(`${at} (frozen on the line to `))) return { kind: 'solved', combos: 0 };
+    return { kind: 'other', combos: 0 };
+  }
+
+  /** Compact lock state for the panel head: "range + 6 combos", "solved", … */
+  lockSummaryText(at) {
+    const s = this.lockSummary(at);
+    if (!s) {
+      if (!this.view?.locked) return '';
+      return this.lockHistory?.profile_players?.length ? 'profile' : 'locked';
+    }
+    const words = { range: 'range', solved: 'solved', fit: 'fit', profile: 'profile' };
+    const base = words[s.kind] || 'locked';
+    if (s.kind === 'hands') return `${s.combos} combo${s.combos === 1 ? '' : 's'}`;
+    return s.combos ? `${base} + ${s.combos} combo${s.combos === 1 ? '' : 's'}` : base;
+  }
+
+  /** Cells a per-hand lock covers: remembered from this page's edits, plus
+   *  edit labels that name their combo ("Lock AsAh · …"). A class lock's
+   *  combos are not in the label, so they are only marked while this page
+   *  remembers the edit. */
+  lockedCellsAt(at) {
+    const out = new Set(at ? this.lockCells.get(at) || [] : []);
+    if (!at) return out;
+    for (const h of this.lockHistory?.undo || []) {
+      if (!editLabelAtNode(h, at)) continue;
+      if (editKind(h).kind !== 'hands') break; // an earlier base lock reset the node
+      const m = h.match(/^Lock ([2-9TJQKA][cdhs][2-9TJQKA][cdhs]) · /);
+      if (!m) continue;
+      try {
+        out.add(comboCell(cardFromString(m[1].slice(0, 2)), cardFromString(m[1].slice(2))));
+      } catch { /* not a combo label */ }
+    }
+    return out;
+  }
+
+  rememberLockedCell([i, j], at = this.lockNodeLabel()) {
+    if (!at) return;
+    if (!this.lockCells.has(at)) this.lockCells.set(at, new Set());
+    this.lockCells.get(at).add(`${i},${j}`);
+    this.saveLockCells();
+  }
+
+  /** Drop a node's per-hand cell marks (whole-range lock, unlock, re-fit). */
+  forgetLockCells(at) {
+    if (this.lockCells.delete(at)) this.saveLockCells();
+  }
+
+  /** Keep only marks whose node still carries a lock. */
+  pruneLockCells() {
+    const labels = this.lockLabels || [];
+    let changed = false;
+    for (const at of [...this.lockCells.keys()]) {
+      if (!labels.some(l => lockLabelAtNode(l, at))) { this.lockCells.delete(at); changed = true; }
+    }
+    if (changed) this.saveLockCells();
+  }
+
+  saveLockCells() {
+    try {
+      sessionStorage.setItem('gtopen.lockCells',
+        JSON.stringify([...this.lockCells].map(([at, cells]) => [at, [...cells]])));
+    } catch { /* storage off */ }
+  }
+
+  /** Repaint the head badge when the lock history (the composition source)
+   *  arrives after the panel was first drawn. */
+  paintLockBadge() {
+    const el = this.els.actionList?.querySelector('[data-lock-summary]');
+    if (!el) return;
+    const text = this.lockSummaryText(this.lockNodeLabel());
+    el.textContent = text;
+    el.style.display = text ? '' : 'none';
+  }
+
+  /** Route an operation failure to the app's persistent error surface. Short
+   *  validation prompts stay toasts (nothing failed yet); a failed request or
+   *  lock edit must stay on screen with its retry. */
+  fail(e, retry = null) {
+    if (this.onError) this.onError(e, retry);
+    else toast(e.message, true);
   }
 
   async refresh() {
@@ -182,20 +551,29 @@ export class Browser {
     // multi-second fetch, so only the LATEST refresh may apply its response
     // (same staleness idea as loadRunouts/loadExploit, generation-counted).
     const gen = ++this._refreshGen;
+    this.loadingNode = true;
+    this.renderEmptyState();
+    const locksP = api.locks().catch(() => this.lockLabels || []);
     let view;
     try {
       view = await api.node(this.path);
     } catch (e) {
       if (gen !== this._refreshGen) return; // superseded: a newer refresh owns the UI
-      toast(`node error: ${e.message}`, true);
+      this.loadingNode = false;
+      this.fail(e, () => this.refresh());
       if (this.path.length) { this.path = []; this.line = []; this.lineHistory = null; return this.refresh(); }
       this.view = null;
       if (this.els.matrix) this.els.matrix.style.opacity = '';
       if (this.els.pot) this.els.pot.textContent = '—';
+      this.renderEmptyState();
       return;
     }
     if (gen !== this._refreshGen) return; // stale response: user navigated again mid-flight
+    this.loadingNode = false;
     this.view = view;
+    this.lockLabels = await locksP; // which nodes hold a lock
+    this.pruneLockCells();
+    if (gen !== this._refreshGen) return;
     // lock undo/redo labels: cheap, and kept off the critical path
     api.lockHistory().then(h => { if (gen === this._refreshGen) this.setLockHistory(h); }).catch(() => {});
     this.exploit = null;        // stale for the new node/strategy state
@@ -247,6 +625,8 @@ export class Browser {
     // normal paint and keeps the .45 dim while EXPLOIT data for this node loads
     this.els.pot.textContent =
       `pot ${fmt(this.view.pot)} · ${this.posLabel(0)} in ${fmt(this.view.put[0])} / ${this.posLabel(1)} in ${fmt(this.view.put[1])}`;
+    this.renderEmptyState();
+    this.clearPendingAfterSolve();
   }
 
   actionColors() {
@@ -270,6 +650,12 @@ export class Browser {
     this.villainLocked = null; // player index whose postflop profile is locked in
     this.villainLockEvidence = null;
     this.lockHistory = null;   // server's lock undo/redo stacks (labels)
+    this.lockLabels = [];      // a new session starts with no locks
+    this.lockCells.clear();
+    this.saveLockCells();
+    this.pendingLockEdits = 0; // pending edits described the old session
+    this._pendingBase = null;
+    this.renderPendingBar();
   }
 
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
@@ -300,7 +686,7 @@ export class Browser {
       for (const sg of this.preflop.segments) {
         const s = document.createElement('div');
         s.className = 'hist-seg hist-preflop';
-        s.dataset.tip = 'Preflop action that produced this spot (from the preflop study panel or the PREFLOP LAB) — context only, not part of the solved postflop tree.';
+        s.dataset.tip = 'Preflop action that produced this spot — not part of the solved postflop tree.';
         const h = document.createElement('div');
         h.className = 'hist-head';
         h.innerHTML = `<span>${sg.pos}</span>`;
@@ -316,6 +702,9 @@ export class Browser {
     // at depth = this.path.length. Viewing a node never truncates the line.
     const hist = this.lineHistory || this.view.history || [];
     const cursor = this.path.length;
+    // what the freeze option would still hold: only dim when it would lock
+    // something (freezeCount skips decisions that already carry a lock)
+    const freezing = this.freezeLine && this.freezeCount() > 0;
     const STREETS = ['FLOP', 'TURN', 'RIVER'];
 
     const seg = (depth, cls = '') => {
@@ -328,10 +717,10 @@ export class Browser {
       el.appendChild(d);
       return d;
     };
-    const head = (parent, left, right) => {
+    const head = (parent, left, right, unit) => {
       const h = document.createElement('div');
       h.className = 'hist-head';
-      h.innerHTML = `<span>${left}</span>${right != null ? `<b>${right}</b>` : ''}`;
+      h.innerHTML = `<span>${left}</span>${right != null ? `<b>${unit ? unit + ' ' : ''}${right}</b>` : ''}`;
       parent.appendChild(h);
       return h;
     };
@@ -343,8 +732,7 @@ export class Browser {
     {
       const s = seg(null);
       s.classList.add('hist-board');
-      s.dataset.tip = 'The starting board. Click any past node to view it without losing the rest of the line.';
-      head(s, STREETS[Math.max(0, initLen - 3)], fmt(rootPot));
+      head(s, STREETS[Math.max(0, initLen - 3)], fmt(rootPot), 'pot');
       const row = document.createElement('div');
       row.className = 'hist-cards';
       for (let k = 0; k < initLen; k++) {
@@ -359,14 +747,17 @@ export class Browser {
       const isCursor = i === cursor;
       if (h.kind === 'action') {
         const s = seg(i, isCursor ? 'current' : '');
-        s.dataset.tip = `${this.posLabel(h.player)} decision. Click to view this node; click a different action to branch the line here.`;
-        head(s, this.posLabel(h.player), fmt(h.stack));
+        // what the freeze option would hold: dim the earlier decisions it locks
+        if (freezing && i < cursor && this.view.node_type === 'action') {
+          s.style.opacity = '.45';
+        }
+        head(s, this.posLabel(h.player), fmt(h.stack), 'stack');
         h.actions.forEach((a, k) => {
           const chip = document.createElement('button');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
           chip.textContent = a.label;
           chip.dataset.tip = h.chosen === k
-            ? 'The action taken in this line — click to view this node.'
+            ? ''
             : `Branch the line: take ${a.label.toLowerCase()} from here instead.`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -379,8 +770,8 @@ export class Browser {
         });
       } else if (h.kind === 'card') {
         const s = seg(i, isCursor ? 'current' : '');
-        s.dataset.tip = 'Card dealt. Click to view this point; change the card from the panel below.';
-        head(s, STREETS[h.street], fmt(h.pot));
+        s.dataset.tip = 'Click to view this point; pick another card in the panel to change the runout.';
+        head(s, STREETS[h.street], fmt(h.pot), 'pot');
         const row = document.createElement('div');
         row.className = 'hist-cards';
         row.appendChild(h.card ? cardChip(h.card, 'bcard mini') : facedownChip('bcard mini'));
@@ -472,16 +863,25 @@ export class Browser {
       this.view.actions.forEach((a, k) => {
         const freq = totalReach > 0 ? freqs[k] / totalReach : 0;
         const ev = evs[k].d > 1e-9 ? evs[k].n / evs[k].d : null;
-        const tile = document.createElement('div');
-        tile.className = 'act-tile' + (this.actionFilter === k ? ' sel' : '');
+        const sel = this.actionFilter === k;
+        // a toggle button: the badge + aria-pressed say the grid is filtered
+        const tile = document.createElement('button');
+        tile.type = 'button';
+        tile.className = 'act-tile' + (sel ? ' sel' : '');
+        tile.setAttribute('aria-pressed', sel ? 'true' : 'false');
         tile.style.background = colors[k];
-        tile.dataset.tip = `${a.label}: ${(freq * 100).toFixed(1)}% of the range, ${freqs[k].toFixed(1)} combos${ev != null ? `, avg EV ${fmt(ev)}` : ''}. Click to show only this action's range on the grid.`;
+        tile.style.font = 'inherit';
+        tile.style.textAlign = 'left';
+        tile.dataset.tip = `${a.label}: avg EV ${ev != null ? fmt(ev) : '—'}. Click to filter the grid to this action.`;
         tile.innerHTML = `
           <div class="at-label">${a.label}</div>
           <div class="at-foot">
             <span class="at-pct">${(freq * 100).toFixed(1)}%</span>
             <span class="at-combos">${freqs[k].toFixed(1)}<small>combos</small></span>
-          </div>`;
+          </div>` +
+          (sel ? `<span class="at-badge" aria-hidden="true" style="position:absolute;top:4px;right:5px;` +
+            `font:9px/1 var(--font-disp);letter-spacing:.08em;background:#fff;color:#111;` +
+            `border-radius:2px;padding:2px 4px">filter</span>` : '');
         tile.addEventListener('click', () => {
           this.actionFilter = this.actionFilter === k ? null : k;
           this.renderActions();
@@ -499,12 +899,6 @@ export class Browser {
         return `<i style="width:${(freq * 100).toFixed(2)}%;background:${colors[k]}"></i>`;
       }).join('');
       el.appendChild(sumbar);
-      if (this.actionFilter != null) {
-        const hint = document.createElement('div');
-        hint.className = 'act-filter-hint';
-        hint.textContent = `grid showing: ${this.view.actions[this.actionFilter].label} frequency · click the tile again to clear`;
-        el.appendChild(hint);
-      }
       this.renderLockControls(el, colors);
     } else if (this.view.node_type === 'chance') {
       this.els.actionsTitle.textContent =
@@ -522,10 +916,9 @@ export class Browser {
           b.innerHTML = `${RANKS[r]}<span class="suit-${SUITS[s]}">${glyph}</span>`;
           if (!avail.has(cs)) b.classList.add('used');
           b.addEventListener('click', () => {
-            // one pick per fetch: a second click mid-flight used to push a
-            // second card step onto the SAME path array, the server rejected
-            // the two-card path, and refresh()'s recovery dumped the user at
-            // the root with the whole navigated line gone
+            // one pick per fetch: a second card step on the same path is
+            // rejected by the server, and refresh()'s recovery would drop the
+            // whole navigated line
             if (this._pickerBusy) return;
             this._pickerBusy = true;
             picker.querySelectorAll('button').forEach(x => { x.disabled = true; });
@@ -541,7 +934,7 @@ export class Browser {
       btn.className = 'btn';
       btn.style.marginTop = '12px';
       btn.textContent = 'RUNOUTS REPORT';
-      btn.dataset.tip = 'Strategy and equity for every possible next card at once — spot which cards favor which player and which runouts get barreled.';
+      btn.dataset.tip = 'Strategy and equity for every possible next card.';
       btn.addEventListener('click', () => this.loadRunouts(btn));
       el.appendChild(btn);
     } else {
@@ -557,11 +950,10 @@ export class Browser {
   renderLockControls(el, colors) {
     const p = this.view.player;
     const acts = this.view.actions;
-    const na = acts.length;
     const hands = this.view.players[p].hands;
     const locked = this.view.locked;
-    const label = this.pathLabels?.length
-      ? this.view.board.join('') + ' ' + this.pathLabels.join(' > ') : 'root';
+    const label = this.lockNodeLabel();
+    const summary = this.lockSummaryText(label);
     if (this.lockMode !== 'hands') this.lockMode = 'range';
 
     // current reach-weighted aggregate frequency per action
@@ -572,23 +964,33 @@ export class Browser {
       tot += h.reach;
       h.strategy.forEach((s, k) => agg[k] += s * h.reach);
     });
-    const curFreq = agg.map(x => tot > 1e-9 ? x / tot : 1 / na);
+    const curFreq = agg.map(x => tot > 1e-9 ? x / tot : 0);
 
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <span class="info-dot" data-tip="A lock pins THIS node's strategy so the solver stops adapting it. Two ways to use it: (1) RE-SOLVE — every other node re-optimizes around your assumption ('how should I play if villain really folds 70% here?'). (2) EXPLOIT mode — see the best response to the locked strategy immediately, no re-solve. Locks persist until UNLOCK, cover all suit-equivalent runouts, and re-locking replaces the old lock (never compounds).">?</span>${locked ? ' <span class="lock-badge">LOCKED</span>' : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span></div>
+      <div class="lock-head">NODE LOCKING <button type="button" class="info-dot" aria-label="How node locking works" data-tip="Pins this node's strategy until you unlock it. Covers all suit-equivalent runouts; re-locking replaces the previous lock.">?</button>${summary ? ` <span class="lock-badge" data-lock-summary>${summary}</span>` : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span>${locked ? '<button type="button" class="btn ghost xs lock-unlock" data-tip="clears this node\'s lock">unlock all</button>' : ''}</div>
       <div class="lock-modes seg">
         <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
-          data-tip="Model a read about the whole range: 'folds 70% to this bet'. You set aggregate action frequencies and the solved strategy is rebalanced to hit them — each hand's mix is scaled proportionally, so the RIGHT hands do the extra folding/calling. This is the mode for pool tendencies.">Overall %</button>
+          data-tip="Model a whole-range read: 'folds 70% to this bet'. Each hand's mix is scaled proportionally, so the right hands do the extra folding or calling.">Overall %</button>
         <button data-lm="hands" class="${this.lockMode === 'hands' ? 'active' : ''}"
-          data-tip="Surgical edits: set exact action frequencies for one hand class (click a cell to pin it). Every other hand keeps its current strategy. Use when the read is hand-specific — 'always slowplays sets here' — rather than about the whole range.">Per hand</button>
+          data-tip="Set exact action frequencies for one hand class (click a cell to pin it); other hands keep their current strategy.">Per hand</button>
       </div>
       <div class="lock-body"></div>`;
     const body = wrap.querySelector('.lock-body');
     this.paintLockHistory(wrap.querySelector('.lock-history'));
     wrap.querySelectorAll('.lock-modes button').forEach(b =>
       b.addEventListener('click', () => { this.lockMode = b.dataset.lm; this.renderActions(); }));
+    wrap.querySelector('.lock-unlock')?.addEventListener('click', async () => {
+      try {
+        const out = await api.unlock(this.path);
+        this.setLockHistory(out.history);
+        this.forgetLockCells(label);
+        this.noteLockEdit();
+        toast('unlocked');
+        this.refresh();
+      } catch (e) { this.fail(e); }
+    });
 
     // a per-action [ %] editor with a live total + normalize button
     const freqEditor = (init) => {
@@ -633,11 +1035,20 @@ export class Browser {
     };
 
     if (this.lockMode === 'range') {
+      if (tot <= 1e-9) {
+        // no reach: any prefill would be a uniform guess, not "the solution"
+        const help = document.createElement('div'); help.className = 'lk-help';
+        help.textContent = 'no hands reach this node';
+        const foot = document.createElement('div'); foot.className = 'btn-row';
+        this.appendLockFooter(foot, label);
+        body.append(help, foot);
+        el.appendChild(wrap);
+        return;
+      }
       const help = document.createElement('div');
       help.className = 'lk-help';
-      help.innerHTML = 'Set how often the <b>whole range</b> takes each action, choose how to get there, then lock. ' +
-        'The pre-filled values are the current solution. ' +
-        'Then <b>RE-SOLVE</b> to make the rest of the tree adapt to the read \u2014 or open <b>EXPLOIT</b> to punish it directly, no re-solve needed.';
+      help.innerHTML = 'Set how often the <b>whole range</b> takes each action. ' +
+        'The pre-filled values are the current solution.';
       const ed = freqEditor(curFreq);
       body.append(help, ed.cont, ed.sumRow);
       const fit = this.view.fit;
@@ -648,13 +1059,13 @@ export class Browser {
         const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '\u2014';
         st.innerHTML = '<b>Least-exploitable fit running.</b> ' + acts.map((a, k) =>
           `${a.label} ${pct(fit.achieved[k])} \u2192 ${pct(fit.target[k])}`).join(' \u00b7 ') +
-          '. The solve steers this node onto the targets and locks the result when it ends (one undo removes it).';
+          '. Locked when the solve ends; one undo removes it.';
         body.appendChild(st);
       }
       const methods = [
-        ['rake', 'Scale', 'Rescale the solved strategy: every hand\u2019s mix is scaled by the same factor until the range hits your numbers. Hands that never took an action can\u2019t be scaled into it.'],
-        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes. Good for a quick read; a best response can still punish it, because the rest of the tree hasn\u2019t adapted.'],
-        ['full', 'Least exploitable', 'Find the play for the WHOLE tree that hits your numbers while giving away the least to a best response, by re-solving with a temporary per-action bounty at this node. Starts a RE-SOLVE; the result is locked when it ends.'],
+        ['rake', 'Scale', 'Scale every hand\u2019s mix by the same factor until the range hits your numbers. Hands that never take an action can\u2019t be scaled in.'],
+        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes, and a best response can still punish it.'],
+        ['full', 'Least exploitable', 'Find the play for the whole tree that hits your numbers while giving away the least to a best response. Starts a RE-SOLVE; the result is locked when it ends.'],
       ];
       if (!methods.some(m => m[0] === this.fitMethod)) {
         let saved = null;
@@ -686,28 +1097,29 @@ export class Browser {
         if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
         try {
           if (this.fitMethod === 'full') {
-            const out = await api.fit(this.path, freqs, label, this.freezeLine && this.hasEarlierDecision());
-            this.setLockHistory(out.history); this.onLockEdit?.();
-            toast(`least-exploitable fit set${frozenNote(out)} — re-solving; the node is locked when the solve ends`);
+            const out = await api.fit(this.path, freqs, label, this.freezeLine && this.freezeCount() > 0);
+            this.forgetLockCells(label); // a tree fit replaces per-hand marks
+            this.setLockHistory(out.history); this.noteLockEdit();
+            toast(`least-exploitable fit set${frozenNote(out)} — solving; locks when the solve ends`);
             document.getElementById('btn-solve-top')?.click();
           } else {
             const out = await this.lockHere({ kind: this.fitMethod === 'quick' ? 'fit' : 'range', freqs }, label);
-            toast(`locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`);
+            toast(`locked${frozenNote(out)}`);
           }
           this.refresh();
-        } catch (e) { toast(e.message, true); }
+        } catch (e) { this.fail(e); }
       });
       foot.appendChild(lock);
       if (fit) {
         const cancel = document.createElement('button'); cancel.className = 'btn ghost'; cancel.textContent = 'CANCEL FIT';
-        cancel.dataset.tip = 'Stop steering this node. It keeps learning freely in the solve, and nothing is locked.';
+        cancel.dataset.tip = 'Stop steering this node; nothing is locked.';
         cancel.addEventListener('click', async () => {
           try { await api.fitCancel(this.path); toast('fit cancelled'); this.refresh(); }
-          catch (e) { toast(e.message, true); }
+          catch (e) { this.fail(e); }
         });
         foot.appendChild(cancel);
       }
-      this.appendLockFooter(foot, label, locked);
+      this.appendLockFooter(foot, label);
       body.appendChild(foot);
     } else {
       const sel = this.selectedCell;
@@ -728,27 +1140,31 @@ export class Browser {
         }
         if (!combos.length) {
           body.innerHTML = `<div class="lk-help">${info.label} is not in ${this.posLabel(p)}'s range here.</div>`;
+        } else if (ct <= 1e-9) {
+          // combos exist but nothing reaches: a uniform 1/na prefill would be
+          // a fabricated "current solution", so refuse the edit instead
+          body.innerHTML = `<div class="lk-help">${info.label} — this hand no longer reaches this node.</div>`;
         } else {
-          const cur = cagg.map(x => ct > 1e-9 ? x / ct : 1 / na);
+          const cur = cagg.map(x => x / ct);
           const help = document.createElement('div'); help.className = 'lk-help';
-          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}). Other hands are unchanged.`;
+          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}).`;
           const ed = freqEditor(cur);
           body.append(help, ed.cont, ed.sumRow);
           const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = `LOCK ${info.label}`;
-          lock.dataset.tip = 'Pin exact frequencies for just this hand class; the rest of the range keeps playing its current strategy. Applies on top of any Overall % lock at this node.';
           lock.addEventListener('click', async () => {
             const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
             if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
             const edits = combos.map(c => ({ combo: c, freqs }));
             try {
               const out = await this.lockHere({ kind: 'hands', edits }, label);
-              toast(`${info.label} locked${frozenNote(out)} — RE-SOLVE to adapt the tree, or open EXPLOIT to attack it as-is`); this.refresh();
-            } catch (e) { toast(e.message, true); }
+              this.rememberLockedCell(sel, label);
+              toast(`${info.label} locked${frozenNote(out)}`); this.refresh();
+            } catch (e) { this.fail(e); }
           });
           foot.appendChild(lock);
         }
       }
-      this.appendLockFooter(foot, label, locked);
+      this.appendLockFooter(foot, label);
       body.appendChild(foot);
     }
     el.appendChild(wrap);
@@ -757,8 +1173,10 @@ export class Browser {
   /** Lock the current node with `mode`, freezing the earlier decisions on
    *  the line too when that option is on. Returns the server's reply. */
   async lockHere(mode, label) {
-    const out = await api.lock(this.path, mode, label, this.freezeLine && this.hasEarlierDecision());
-    this.setLockHistory(out.history); this.onLockEdit?.();
+    const out = await api.lock(this.path, mode, label, this.freezeLine && this.freezeCount() > 0);
+    // a whole-range/solved lock recomputes every hand: drop per-cell marks
+    if (mode.kind !== 'hands') this.forgetLockCells(label);
+    this.setLockHistory(out.history); this.noteLockEdit();
     return out;
   }
 
@@ -767,10 +1185,19 @@ export class Browser {
     return this.path.some(step => step.type === 'action');
   }
 
+  /** Earlier decisions a freeze-earlier lock would still freeze: action steps
+   *  on the line whose node (the prefix BEFORE the step, as freeze_line walks
+   *  it) carries no lock yet. */
+  freezeCount() {
+    if (!this.view || !this.pathLabels || !this.hasEarlierDecision()) return 0;
+    return freezeableAncestors(this.path, this.pathLabels, this.rootBoard(), d => !!this.lockSummary(d));
+  }
+
   setLockHistory(h) {
     if (!h) return;
     this.lockHistory = h;
     this.paintLockHistory(this.els.actionList?.querySelector('.lock-history'));
+    this.paintLockBadge(); // composition may include a range base from the history
   }
 
   /** Undo / redo buttons in the lock panel head, labelled with the edit
@@ -788,9 +1215,8 @@ export class Browser {
       const key = dir === 'undo' ? 'Ctrl+Z' : 'Ctrl+Shift+Z';
       b.setAttribute('aria-label', list.length ? `${word}: ${list[0]}` : `Nothing to ${word.toLowerCase()}`);
       b.dataset.tip = list.length
-        ? `${word}: ${list[0]} (${key}).` + (list.length > 1 ? ` ${list.length - 1} more step${list.length > 2 ? 's' : ''} after this.` : '') +
-          ' Covers node locks, unlocks and villain profile locks in this session; RE-SOLVE afterwards to update the strategy.'
-        : `Nothing to ${word.toLowerCase()}. Lock edits made in this session can be undone and redone (${key}).`;
+        ? `${word}: ${list[0]} (${key}).` + (list.length > 1 ? ` ${list.length - 1} more step${list.length > 2 ? 's' : ''} after this.` : '')
+        : `Nothing to ${word.toLowerCase()}.`;
       b.addEventListener('click', e => { e.stopPropagation(); this.stepLockHistory(dir); });
       el.appendChild(b);
     }
@@ -804,12 +1230,14 @@ export class Browser {
     try {
       const out = await (dir === 'undo' ? api.lockUndo() : api.lockRedo());
       this.lockStepBusy = false;
-      this.setLockHistory(out.history); this.onLockEdit?.();
+      this.setLockHistory(out.history); this.noteLockEdit();
+      this.lockCells.clear(); // an undo/redo changes the per-hand composition
+      this.saveLockCells();
       this.syncVillainLocked(out.history);
-      if (out.label) toast(`${dir === 'undo' ? 'undid' : 'redid'}: ${out.label} — RE-SOLVE to update the strategy`);
+      if (out.label) toast(`${dir === 'undo' ? 'undid' : 'redid'}: ${out.label}`);
       await this.refresh();
     } catch (e) {
-      toast(e.message, true);
+      this.fail(e);
       // a refused step clears the server's history: show what is left
       api.lockHistory().then(h => this.setLockHistory(h)).catch(() => {});
     } finally {
@@ -831,40 +1259,33 @@ export class Browser {
     }
   }
 
-  /** Shared "lock as solved" + "unlock" buttons for the lock panel footer. */
-  appendLockFooter(foot, label, locked) {
-    if (this.hasEarlierDecision()) {
+  /** Shared "lock as solved" + "freeze earlier" controls for the lock panel. */
+  appendLockFooter(foot, label) {
+    const freezeN = this.freezeCount();
+    if (freezeN > 0) {
       const line = document.createElement('label');
       line.className = 'chk lk-line';
-      line.dataset.tip = 'Also LOCK AS SOLVED every earlier decision on this line that is not locked yet, for both players, in the same step. Without it, a lock deep in the tree can shift earlier play on RE-SOLVE (e.g. locking the response to a c-bet changes how often the c-bet happens). Locks already on the line are kept. One undo removes all of it.';
+      line.dataset.tip = 'also freeze every earlier decision on this line';
       const box = document.createElement('input');
       box.type = 'checkbox';
       box.checked = !!this.freezeLine;
       box.addEventListener('change', () => {
         this.freezeLine = box.checked;
         try { localStorage.setItem('gtopen.freezeLine', box.checked ? '1' : '0'); } catch { /* storage off */ }
+        this.renderHistory(); // dim the ribbon segments a lock would freeze
       });
-      line.append(box, document.createTextNode(' freeze earlier decisions on this line'));
+      line.append(box, document.createTextNode(
+        ` freeze ${freezeN} earlier decision${freezeN === 1 ? '' : 's'}`));
       foot.prepend(line);
     }
     const freeze = document.createElement('button');
     freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
-    freeze.dataset.tip = 'The other kind of lock: freeze this node EXACTLY as currently solved \u2014 you change nothing, it just stops adapting. Use it to hold parts of the tree constant while you experiment elsewhere: lock earlier streets as solved, then edit/lock a later node and RE-SOLVE \u2014 only the unlocked parts adapt. (LOCK FREQUENCIES pins YOUR numbers; LOCK AS SOLVED pins the solver\u2019s.)';
+    freeze.dataset.tip = 'Freeze this node exactly as currently solved \u2014 it stops adapting while you experiment elsewhere. (LOCK FREQUENCIES pins your numbers; LOCK AS SOLVED pins the solver\u2019s.)';
     freeze.addEventListener('click', async () => {
-      try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)} — this node now stays fixed through re-solves`); this.refresh(); }
-      catch (e) { toast(e.message, true); }
+      try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)}`); this.refresh(); }
+      catch (e) { this.fail(e); }
     });
     foot.appendChild(freeze);
-    if (locked) {
-      const un = document.createElement('button');
-      un.className = 'btn ghost'; un.textContent = 'UNLOCK';
-      un.dataset.tip = 'Remove the lock: this node adapts again on the next RE-SOLVE.';
-      un.addEventListener('click', async () => {
-        try { const out = await api.unlock(this.path); this.setLockHistory(out.history); this.onLockEdit?.(); toast('unlocked'); this.refresh(); }
-        catch (e) { toast(e.message, true); }
-      });
-      foot.appendChild(un);
-    }
   }
 
   async loadRunouts(btn) {
@@ -872,7 +1293,7 @@ export class Browser {
     const forPath = JSON.stringify(this.path); // guard against navigating away mid-compute
     let rep;
     try { rep = await api.runouts(this.path); }
-    catch (e) { toast(e.message, true); btn.disabled = false; btn.textContent = 'RUNOUTS REPORT'; return; }
+    catch (e) { this.fail(e); btn.disabled = false; btn.textContent = 'RUNOUTS REPORT'; return; }
     btn.disabled = false; btn.textContent = 'RUNOUTS REPORT';
     if (JSON.stringify(this.path) !== forPath) return; // stale: user moved on
     this.runoutRep = rep;
@@ -884,6 +1305,9 @@ export class Browser {
     const rep = this.runoutRep;
     const el = this.els.runouts;
     if (!el) return;
+    // keep keyboard focus on the sort column across the rebuild
+    const focusSort = document.activeElement?.classList?.contains('ro-sort')
+      ? document.activeElement.dataset.sort : null;
     el.innerHTML = '';
     if (!rep) return;
     if (!this.runoutMetric) this.runoutMetric = 'eq';
@@ -925,12 +1349,12 @@ export class Browser {
         brick: !flushy && !paired && !over && !straighty };
     };
     const TEX = [
-      ['all', 'ALL', 'Every possible next card.'],
+      ['all', 'ALL', ''],
       ['flushy', 'FLUSH', 'Cards bringing a third (or fourth) card of a suit.'],
-      ['paired', 'PAIRS', 'Cards pairing the board.'],
-      ['straighty', 'STRAIGHTY', 'Cards landing within 3 ranks of two or more board cards — straights and big draws arrive.'],
+      ['paired', 'PAIRS', ''],
+      ['straighty', 'STRAIGHTY', 'Cards within 3 ranks of two or more board cards.'],
       ['over', 'OVER', 'Overcards to the board.'],
-      ['brick', 'BRICK', 'None of the above — the blanks.'],
+      ['brick', 'BRICK', 'None of the above.'],
     ];
 
     const valOf = (row, col) =>
@@ -951,9 +1375,9 @@ export class Browser {
     const bar = document.createElement('div');
     bar.className = 'ro-controls';
     const MET = [
-      ['eq', 'EQ', 'Average equity on each runout.'],
+      ['eq', 'EQ', ''],
       ['ev', 'EV', 'Average EV on each runout (pot-share: EV OOP + EV IP = pot).'],
-      ['eqr', 'EQR', 'Equity realization = EV / (pot \u00d7 equity). 1.00 = converting exactly your equity share; above 1 = over-realizing (position, playability), below = under.'],
+      ['eqr', 'EQR', 'Equity realization = EV / (pot \u00d7 equity). 1.00 = exactly your equity share; above 1 over-realizes, below under-realizes.'],
     ];
     bar.innerHTML =
       `<div class="seg">${MET.map(([k, l, t]) =>
@@ -968,15 +1392,27 @@ export class Browser {
 
     const arrow = key => key === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
     const cls = key => `ro-sort${key === sortCol ? ' sorted' : ''}`;
+    const ariaSort = key => key === sortCol ? (sortDir === -1 ? 'descending' : 'ascending') : 'none';
+    // real buttons (role=columnheader carries aria-sort); one shared hint below
+    const sortBtn = (clsName, key, label, style = '') =>
+      `<button type="button" role="columnheader" aria-sort="${ariaSort(key)}" ` +
+      `class="${clsName} ${cls(key)}" data-sort="${key}" ` +
+      `style="background:none;border:0;font:inherit;color:inherit;padding:0;text-align:inherit;cursor:pointer;${style}">` +
+      `${label}${arrow(key)}</button>`;
     const stratLabel = rep.player != null ? this.posLabel(rep.player) + ' strategy' : 'strategy';
     const mname = metric.toUpperCase();
+    const hint = document.createElement('div');
+    hint.className = 'dim';
+    hint.style.cssText = 'font-size:10px;margin:2px 0 5px';
+    hint.textContent = 'click a column to sort';
+    el.appendChild(hint);
     const head = document.createElement('div');
     head.className = 'combo-row head';
     head.innerHTML =
-      `<span class="cname ${cls('card')}" data-sort="card" data-tip="Sort by card (rank then suit). Click again to flip direction.">card${arrow('card')}</span>` +
-      `<span class="cbar ${cls('strat')}" data-sort="strat" style="background:none" data-tip="Sort by total betting frequency — spot which runouts get barreled most. Click again to flip.">${stratLabel}${arrow('strat')}</span>` +
-      `<span class="cnum ${cls('oop')}" data-sort="oop" data-tip="Sort by OOP ${mname}. Click again to flip.">OOP ${mname}${arrow('oop')}</span>` +
-      `<span class="cnum ${cls('ip')}" data-sort="ip" data-tip="Sort by IP ${mname}. Click again to flip.">IP ${mname}${arrow('ip')}</span>`;
+      sortBtn('cname', 'card', 'card') +
+      sortBtn('cbar', 'strat', stratLabel, 'height:auto;display:block') +
+      sortBtn('cnum', 'oop', `OOP ${mname}`, 'text-align:right') +
+      sortBtn('cnum', 'ip', `IP ${mname}`, 'text-align:right');
     el.appendChild(head);
 
     // aggregate over the visible (filtered) cards, equal weight per card
@@ -1026,6 +1462,9 @@ export class Browser {
         else this.runoutSort = { col, dir: -1 };                    // new column: desc first
         this.renderRunouts();
       }));
+    if (focusSort != null) {
+      el.querySelector(`.ro-sort[data-sort="${focusSort}"]`)?.focus();
+    }
   }
 
   // ----- matrix -----
@@ -1139,7 +1578,7 @@ export class Browser {
         stale = true; // user navigated / toggled player / left exploit mid-flight
       }
     } catch (e) {
-      toast(e.message, true);
+      this.fail(e);
       this.els.matrix.style.opacity = ''; // un-dim; grid keeps its last paint
     }
     finally { this._exploitLoading = false; }
@@ -1223,7 +1662,7 @@ export class Browser {
   }
 
   renderMatrix() {
-    if (!this.view) return; // the grid is clickable before any node is loaded
+    if (!this.view) { this.renderEmptyState(); return; } // no spot yet: the tab says so
     const p = this.player;
     const colors = this.actionColors();
     if (this.mode === 'exploit' && !this.exploitReady()) {
@@ -1239,6 +1678,11 @@ export class Browser {
     const aggs = [];
     for (let i = 0; i < 13; i++)
       for (let j = 0; j < 13; j++) aggs.push(this.cellAgg(i, j, p));
+    // lock coverage for this node, painted as a corner dot per cell
+    const lockAt = this.lockNodeLabel();
+    const lockState = this.lockSummary(lockAt);
+    const lockedCells = this.lockedCellsAt(lockAt);
+    const wholeLocked = !!lockState && lockState.kind !== 'hands';
     // Normalize fill height to the busiest hand class in the FULL (unfiltered)
     // range, so applying a filter just blanks non-matching cells instead of
     // rescaling the height of the ones that remain.
@@ -1322,8 +1766,18 @@ export class Browser {
         fill.style.height = '0';
         cell.classList.toggle('empty', agg.present === 0 || agg.reach <= 1e-9);
         cell.classList.toggle('absent', agg.present === 0);
-        cell.classList.toggle('selected',
-          this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j);
+        const isSelected = !!(this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j);
+        cell.classList.toggle('selected', isSelected);
+        cell.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+        // lock dot: bright on cells a per-hand lock names, dim on every cell a
+        // whole-range/solved/fit lock constrains
+        const mark = cell.querySelector('.lk-mark');
+        if (mark) {
+          const hand = lockedCells.has(`${i},${j}`);
+          const whole = wholeLocked && agg.present > 0 && agg.reach > 1e-9;
+          mark.style.display = (hand || whole) ? 'block' : 'none';
+          mark.style.background = hand ? '#f5c542' : 'rgba(245,197,66,.55)';
+        }
         const intensity = fillH(agg.reach / Math.max(agg.total, 1));
         if (effMode === 'strategy' && agg.strat
             && this.actionFilter != null && this.actionFilter < agg.strat.length) {
@@ -1427,6 +1881,7 @@ export class Browser {
         }
       }
     }
+    this.renderFilterState();
   }
 
   renderLegend() {
@@ -1518,10 +1973,10 @@ export class Browser {
       b.disabled = !!task;
       if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${this.posLabel(p)}…`;
       b.dataset.tip = on
-        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision. RE-SOLVE adapts your play; EXPLOIT reads the max punishment. Click to clear.`
+        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision.`
         : hasContextualBetting(v.stats)
-          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve. Then RE-SOLVE to adapt.`
-          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets. Then RE-SOLVE or EXPLOIT.`;
+          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve.`
+          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets.`;
       b.addEventListener('click', () => this.toggleVillainLock(p, v));
       box.appendChild(b);
     }
@@ -1570,26 +2025,25 @@ export class Browser {
     try {
       if (clearing) {
         const out = await api.profileLocksClear();
-        this.setLockHistory(out.history); this.onLockEdit?.();
+        this.setLockHistory(out.history); this.noteLockEdit();
         this.villainLocked = null;
         this.villainLockEvidence = null;
         toast('villain profile locks cleared');
       } else {
         const out = await api.profileLocks(p, v.stats,
           this.preflop ? this.preflop.aggressor : null, this.preflop?.pot_type ?? null, v.name);
-        this.setLockHistory(out.history); this.onLockEdit?.();
+        this.setLockHistory(out.history); this.noteLockEdit();
         this.villainLocked = p;
         this.villainLockEvidence = out.root_evidence || null;
         const worst = (out.rows || []).reduce((w, r) =>
           !w || Math.abs(r.achieved - r.target) > Math.abs(w.achieved - w.target) ? r : w, null);
         toast(`${out.locked} nodes locked to ${v.name}` +
-          (worst ? ` (worst fit: ${worst.label} ${worst.achieved.toFixed(0)}% vs target ${worst.target.toFixed(0)}%)` : '') +
-          ' \u2014 RE-SOLVE to adapt, then EXPLOIT');
+          (worst ? ` (worst fit: ${worst.label} ${worst.achieved.toFixed(0)}% vs target ${worst.target.toFixed(0)}%)` : ''));
       }
-      this.villainLockTask.phase = 'Refreshing strategy display…';
+      this.villainLockTask.phase = 'Refreshing…';
       this.renderVillainLocks();
       await this.refresh(); // keep feedback visible through the EV query too
-    } catch (e) { toast(e.message, true); }
+    } catch (e) { this.fail(e); }
     finally {
       clearInterval(timer);
       this.villainLockTask = null;
@@ -1604,7 +2058,9 @@ export class Browser {
     if (!this.view) { content.innerHTML = ''; label.textContent = ''; return; }
     // Hovering a hand temporarily flips FILTERS/BLOCKERS to the HANDS view, so
     // you can inspect a combo without leaving your filter; it reverts on exit.
-    const flip = this.hoverCell && (this.handsTab === 'filters' || this.handsTab === 'blockers');
+    // It stays put while the panel holds the pointer/keyboard (mid-edit).
+    const flip = !this.panelBusy && this.hoverCell
+      && (this.handsTab === 'filters' || this.handsTab === 'blockers');
     const eff = flip ? 'hands' : this.handsTab;
     if (this.els.handsTabs) {
       this.els.handsTabs.querySelectorAll('.htab').forEach(x =>
@@ -1761,6 +2217,13 @@ export class Browser {
     const isActor = this.view.node_type === 'action' && this.view.player === p;
     const colors = this.actionColors();
     const na = (this.view.actions || []).length;
+    // the panel is rebuilt on every filter change: keep keyboard focus on the
+    // control that was just used
+    const ae = content.contains(document.activeElement) ? document.activeElement : null;
+    const focusSel = ae?.dataset?.key ? `.filter-row[data-key="${ae.dataset.key}"]`
+      : ae?.dataset?.suit ? `.suit-btn[data-suit="${ae.dataset.suit}"]`
+      : ae?.dataset?.fmode ? `[data-fmode="${ae.dataset.fmode}"]`
+      : ae?.id === 'filter-clear' ? '#filter-clear' : null;
 
     // reach + strategy mix per category
     const agg = new Map();
@@ -1787,7 +2250,7 @@ export class Browser {
           `<div style="width:${((s / a.reach) * 100).toFixed(1)}%;background:${colors[k]}"></div>`).join('');
       }
       return `<div class="filter-row${sel ? ' sel' : ''}" data-key="${key}"
-        data-tip="Click to filter the matrix by this category. The bar shows how these hands play here.">
+        data-tip="The bar shows how these hands play here.">
         <span class="fname">${label}</span>
         <span class="fpct">${pct.toFixed(1)}%</span>
         <span class="fbar">${bar}</span></div>`;
@@ -1819,12 +2282,10 @@ export class Browser {
     content.innerHTML = `
       <div class="filter-top">
         <div class="seg">
-          <button data-fmode="include" class="${this.filterMode === 'include' ? 'active' : ''}"
-            data-tip="Matrix shows ONLY hands matching the selected filters.">INCLUDE</button>
-          <button data-fmode="exclude" class="${this.filterMode === 'exclude' ? 'active' : ''}"
-            data-tip="Matrix hides hands matching the selected filters.">EXCLUDE</button>
+          <button data-fmode="include" class="${this.filterMode === 'include' ? 'active' : ''}">INCLUDE</button>
+          <button data-fmode="exclude" class="${this.filterMode === 'exclude' ? 'active' : ''}">EXCLUDE</button>
         </div>
-        <button class="btn ghost" id="filter-clear" data-tip="Clear all active filters.">clear</button>
+        <button class="btn ghost" id="filter-clear">clear</button>
       </div>
       <div class="filter-suits">
         <span class="dim">Offsuit</span>${offsuitBtns}
@@ -1876,6 +2337,7 @@ export class Browser {
     });
     // panel was rebuilt: re-sync the preview dim (hovered row may be gone)
     this.applyFilterPreview();
+    if (focusSel) content.querySelector(focusSel)?.focus();
   }
 
   applyFilters() {
@@ -1925,7 +2387,7 @@ export class Browser {
       const avgEv = evW > 1e-12 ? ev / evW : null;
       const avgEq = eqW > 1e-12 ? eq / eqW : null;
       const eqr = avgEv != null && avgEq > 1e-9 ? avgEv / (avgEq * pot) : null;
-      return `<div class="eqstat" data-tip="${this.posLabel(p)} at this node. EQR = equity realization: EV as a fraction of (equity × pot). Under 100% means this range under-realizes its equity — typical for out-of-position or capped ranges.">
+      return `<div class="eqstat" data-tip="EQR = equity realization: EV as a fraction of (equity × pot). Under 100% this range under-realizes its equity.">
         <div class="eqstat-head"><i style="background:${EQ_COLORS[p]}"></i>${this.posLabel(p)}</div>
         <div class="eqstat-grid">
           <span><label>EV</label><div>${avgEv != null ? fmt(avgEv) : '—'}</div></span>
@@ -1957,16 +2419,30 @@ export class Browser {
     const py = y => H - B - y * (H - T - B);
     ctx.clearRect(0, 0, W, H);
 
-    // grid
+    // grid + tick labels, with the two axis titles so the panel tooltip is not
+    // the only place that defines the axes
     ctx.strokeStyle = '#262626';
     ctx.fillStyle = '#8a8a8a';
     ctx.font = '12px IBM Plex Mono';
+    ctx.textAlign = 'right';
     for (const v of [0.25, 0.5, 0.75]) {
       ctx.beginPath(); ctx.moveTo(px(0), py(v)); ctx.lineTo(px(1), py(v)); ctx.stroke();
-      ctx.fillText(`${v * 100}`, 8, py(v) + 4);
+      ctx.fillText(`${v * 100}`, L - 7, py(v) + 4);
       ctx.beginPath(); ctx.moveTo(px(v), py(0)); ctx.lineTo(px(v), py(1)); ctx.stroke();
-      ctx.fillText(`${v * 100}`, px(v) - 9, H - 7);
+      ctx.textAlign = 'center';
+      ctx.fillText(`${v * 100}`, px(v), H - B + 14);
+      ctx.textAlign = 'right';
     }
+    ctx.font = '11px IBM Plex Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('% of range', L + (W - L - R) / 2, H - 6);
+    ctx.save();
+    ctx.translate(13, T + (H - T - B) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('equity', 0, 0);
+    ctx.restore();
+    ctx.textAlign = 'start';
+    ctx.font = '12px IBM Plex Mono';
 
     // curves
     for (const p of [1, 0]) {
@@ -2017,7 +2493,9 @@ export class Browser {
       ctx.beginPath(); ctx.moveTo(px(xv), py(0)); ctx.lineTo(px(xv), py(1)); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle = '#c8c8c8';
-      ctx.fillText(`${Math.round(xv * 100)}`, px(xv) - 9, H - 7);
+      ctx.textAlign = 'center';
+      ctx.fillText(`${Math.round(xv * 100)}`, px(xv), H - B + 14);
+      ctx.textAlign = 'start';
       const lines = [];
       for (const p of [0, 1]) {
         const { pts } = this.eqCurves[p];
@@ -2047,6 +2525,9 @@ export class Browser {
   renderBlockersPanel(content) {
     const p = this.player;
     const isActor = this.view.node_type === 'action' && this.view.player === p;
+    // keep keyboard focus on the sort column across the rebuild
+    const focusSort = content.contains(document.activeElement)
+      ? document.activeElement.dataset?.sort : null;
     if (!isActor) {
       content.innerHTML = '<div class="dim" style="padding:10px 4px;font-size:11px">' +
         'Blocker effects are shown for the player to act — navigate to one of their decision nodes.</div>';
@@ -2105,13 +2586,20 @@ export class Browser {
 
     const arrow = k =>
       k === sortCol ? (sortDir === -1 ? ' ▼' : ' ▲') : '';
+    const ariaSort = k =>
+      k === sortCol ? (sortDir === -1 ? 'descending' : 'ascending') : 'none';
+    // header cells are buttons: focusable, Enter/Space sorts, aria-sort labels
+    // the active column (one shared hint above instead of per-column tips)
     const header =
       `<div class="blocker-row head" style="grid-template-columns:52px repeat(${na},1fr)">` +
-      `<span class="bk-head${sortCol === 'card' ? ' sorted' : ''}" data-sort="card" ` +
-      `data-tip="Sort by card (rank, then suit). Click again to flip direction.">cards${arrow('card')}</span>` +
+      `<button type="button" role="columnheader" aria-sort="${ariaSort('card')}" ` +
+      `class="bk-head${sortCol === 'card' ? ' sorted' : ''}" data-sort="card" ` +
+      `style="background:none;border:0;font:inherit;color:inherit">cards${arrow('card')}</button>` +
       acts.map((a, k) =>
-        `<span class="bk-head${k === sortCol ? ' sorted' : ''}" data-sort="${k}" ` +
-        `data-tip="Sort by this action's blocker shift — descending puts the strongest positive effect on top; click again for ascending (strongest negative)."><i style="background:${colors[k]}"></i>${a.label}${arrow(k)}</span>`
+        `<button type="button" role="columnheader" aria-sort="${ariaSort(k)}" ` +
+        `class="bk-head${k === sortCol ? ' sorted' : ''}" data-sort="${k}" ` +
+        `style="background:none;border:0;font:inherit;color:inherit">` +
+        `<i style="background:${colors[k]}"></i>${a.label}${arrow(k)}</button>`
       ).join('') + `</div>`;
 
     const body = rows.map(r => {
@@ -2127,9 +2615,16 @@ export class Browser {
       return `<div class="blocker-row" style="grid-template-columns:52px repeat(${na},1fr)">${cardHtml}${cells}</div>`;
     }).join('');
 
+    // delta key: colours run red (holding it folds more) -> green (plays more)
+    const key = `<div class="dim" style="display:flex;gap:10px;align-items:center;font-size:10px;margin-bottom:6px">` +
+      [['−', 'hsl(8 65% 41%)'], ['0', 'hsl(70 50% 40%)'], ['+', 'hsl(120 50% 34%)']]
+        .map(([s, c]) => `<span style="display:flex;align-items:center;gap:3px">` +
+          `<i style="width:9px;height:9px;border-radius:2px;background:${c}"></i>${s}</span>`).join('') +
+      `</div>`;
+
     content.innerHTML =
       `<div class="dim" style="font-size:11px;margin-bottom:8px">How holding each card shifts ` +
-      `${this.posLabel(p)}'s strategy vs the range average — the essence of blocker selection.</div>` +
+      `${this.posLabel(p)}'s strategy vs the range average.</div>` + key +
       header + `<div class="blocker-body">${body}</div>`;
 
     content.querySelectorAll('.bk-head').forEach(h =>
@@ -2142,6 +2637,7 @@ export class Browser {
         }
         this.renderBlockersPanel(content);
       }));
+    if (focusSort != null) content.querySelector(`.bk-head[data-sort="${focusSort}"]`)?.focus();
   }
 
   summaryHtml(present, isActor, colors, acts) {
@@ -2203,6 +2699,44 @@ function pctShares(shares) {
   const order = exact.map((x, k) => [x - out[k], k]).sort((a, b) => b[0] - a[0]);
   for (let i = 0; left > 0 && i < order.length; i++, left--) out[order[i][1]]++;
   return out;
+}
+
+/** Is this GET /api/locks label the lock at node `at`? A manual lock stores
+ *  the node's own description; freeze-earlier and materialized fits append a
+ *  parenthetical. Older sessions labelled the root just "root". */
+function lockLabelAtNode(label, at) {
+  if (!at) return false;
+  if (label === at || label.startsWith(`${at} (`)) return true;
+  return at.endsWith(' root') && label === 'root';
+}
+
+/** Edit-history labels append the node after " · " (lock_edit_label), then an
+ *  optional "(+N earlier decisions frozen)" note. */
+function editLabelAtNode(label, at) {
+  if (!at) return false;
+  return label.endsWith(` · ${at}`) || label.includes(` · ${at} (`);
+}
+
+/** What an edit-history label did, by its prefix (lock_edit_label in
+ *  crates/server/src/main.rs). "Lock 6 combos" is a per-hand lock. */
+function editKind(label) {
+  if (label.startsWith('Lock frequencies (least EV loss)')) return { kind: 'fit', combos: 0 };
+  if (label.startsWith('Lock frequencies')) return { kind: 'range', combos: 0 };
+  if (label.startsWith('Lock as solved')) return { kind: 'solved', combos: 0 };
+  if (label.startsWith('Start least-exploitable fit')) return { kind: 'fit', combos: 0 };
+  if (label.startsWith('Unlock')) return { kind: 'none', combos: 0 };
+  const many = label.match(/^Lock (\d+) combos · /);
+  if (many) return { kind: 'hands', combos: +many[1] };
+  if (label.startsWith('Lock ')) return { kind: 'hands', combos: 1 };
+  return { kind: 'other', combos: 0 };
+}
+
+/** Matrix cell ("i,j") holding a two-card combo, matching cellInfo()'s order. */
+function comboCell(a, b) {
+  const hi = Math.max(rank(a), rank(b));
+  const lo = Math.min(rank(a), rank(b));
+  if (hi === lo) return `${12 - hi},${12 - hi}`;
+  return suit(a) === suit(b) ? `${12 - hi},${12 - lo}` : `${12 - lo},${12 - hi}`;
 }
 
 function fmt(x) {
