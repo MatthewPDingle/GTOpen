@@ -12,9 +12,11 @@ import { initBrowseBestSize } from './best_size.js';
 import { initTrust } from './trust.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
 import { createPostflopIcm } from './postflop_icm.js';
+import { initPixelGrids } from './pixel_grid.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
+initPixelGrids();
 
 // ---------------------------------------------------------------------------
 // Tabs
