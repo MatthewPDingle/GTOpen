@@ -36,8 +36,10 @@ export function createPositionSizing(els, positionsFor, changed) {
   let rows = {};
   const label = document.createElement('label');
   label.textContent = '4-bet+ ×prev ';
+  // the box is narrow: a short placeholder, the full story in the tooltip
+  label.dataset.tip = 'Size of 4-bets and later raises, as a multiple of the previous raise (comma list for several sizes). Leave empty to use the 3-bet multiplier.';
   const later = document.createElement('input');
-  later.type = 'text'; later.placeholder = 'Default re-raise sizes'; later.setAttribute('aria-label','Default 4-bet and later multipliers');
+  later.type = 'text'; later.placeholder = 'as 3-bet'; later.setAttribute('aria-label','4-bet and later multipliers; empty uses the 3-bet multiplier');
   label.append(later); els.mult.closest('label').after(label);
   els.mult.setAttribute('aria-label','Default 3-bet multipliers');
   const details = document.createElement('details'); details.className = 'pfl-position-sizes';
