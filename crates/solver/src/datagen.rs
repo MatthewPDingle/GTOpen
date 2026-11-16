@@ -33,14 +33,24 @@ pub const FORMAT_VERSION: u32 = 1;
 ///   a heads-up flop in a 6-max solve); 20% of pots scaled up 1.6x to 2.6x
 ///   to cover straddled games and big live opens; rake none, 5% (cap 2 to
 ///   4 bb), 10% (cap 6 to 10 bb) or anything from 3% to 10% (cap 1 to 10 bb).
-pub const GENERATOR_VERSION: u32 = 3;
+/// - v4: common live and online games. Pot types 10% / 55% / 20% / 15%. Each
+///   pot comes from an online table (40%, pots as in v3, starting stacks 25
+///   to 200 bb), a live table (40%, pots 1.3x to 2x for 3 to 6 bb opens and
+///   live re-raise sizes, stacks 50 to 300 bb) or a straddled table (20%,
+///   pots 2x to 4x, stacks 50 to 400 bb). Rake none (20%: no-rake solves and
+///   games paid by the hour), 5% capped at 0.5 to 12 bb (35%: online, the
+///   cap in big blinds falling as stakes rise), 10% capped at 1 to 10 bb
+///   (35%: live rooms) or anything from 3% to 10% capped at 0.5 to 12 bb
+///   (10%). Caps are drawn log-uniform, so low live caps (2 to 4 bb at 10%)
+///   are well covered.
+pub const GENERATOR_VERSION: u32 = 4;
 /// Generator versions whose uploads are still accepted: the current one and
 /// the one before, so jobs finished just before an update still count.
-pub const ACCEPTED_GENERATORS: [u32; 2] = [2, 3];
+pub const ACCEPTED_GENERATORS: [u32; 2] = [3, 4];
 /// Where this version's jobs start inside each contributor block, so a new
 /// version never reuses a job number (and file name) an older one uploaded.
-/// v2 used offset 0.
-const VERSION_JOB_OFFSET: u64 = 1 << 23;
+/// v2 used offset 0, v3 offset 2^23.
+const VERSION_JOB_OFFSET: u64 = 3 << 22;
 /// Name of the fixed postflop bet menu (see [`menu_tree`]).
 pub const MENU: &str = "lean-v2";
 /// Chips per big blind in generated spots (the M5 configs' convention).
@@ -354,7 +364,11 @@ fn draw_inputs(version: u32, job: u64, index: u32, attempt: u32) -> ExampleInput
         seed = Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64();
     }
     let mut rng = Rng::new(seed);
-    let mut ex = if version == 2 { draw_v2(&mut rng) } else { draw_v3(&mut rng) };
+    let mut ex = match version {
+        2 => draw_v2(&mut rng),
+        3 => draw_v3(&mut rng),
+        _ => draw_v4(&mut rng),
+    };
     ex.job = job;
     ex.index = index;
     ex.attempt = attempt;
@@ -381,7 +395,12 @@ fn pick_pot_type(rng: &mut Rng, types: &PotTypes) -> (&'static str, f64, f64, f6
 /// Stack behind at the flop: starting stack log-uniform 25 to 200 bb, each
 /// player having put in half the pot, SPR capped at [`MAX_SPR`].
 fn draw_stack(rng: &mut Rng, pot_bb: f64) -> f64 {
-    let mut start = rng.log_range(25.0, 200.0);
+    draw_stack_from(rng, pot_bb, 25.0, 200.0)
+}
+
+/// [`draw_stack`] with the starting stack log-uniform from `lo` to `hi` bb.
+fn draw_stack_from(rng: &mut Rng, pot_bb: f64, lo: f64, hi: f64) -> f64 {
+    let mut start = rng.log_range(lo, hi);
     if start - pot_bb / 2.0 < 2.0 {
         start = pot_bb / 2.0 + rng.range(2.0, 20.0);
     }
@@ -445,6 +464,41 @@ fn draw_v3(rng: &mut Rng) -> ExampleInputs {
         (0.10, round1(rng.range(6.0, 10.0)))
     } else {
         ((rng.range(0.03, 0.10) * 1000.0).round() / 1000.0, round1(rng.log_range(1.0, 10.0)))
+    };
+    finish(rng, chosen.0, pot_bb, pot_scale, stack_bb, rake)
+}
+
+/// Generator v4 sampling (see [`GENERATOR_VERSION`]).
+fn draw_v4(rng: &mut Rng) -> ExampleInputs {
+    let types: PotTypes = [
+        ("limped", 0.10, 2.0, 3.5),
+        ("srp", 0.55, 4.5, 7.5),
+        ("3bet", 0.20, 15.0, 26.0),
+        ("4bet", 0.15, 38.0, 55.0),
+    ];
+    let chosen = pick_pot_type(rng, &types);
+    // Table style: online sizes, live sizes (3 to 6 bb opens, bigger
+    // re-raises, deeper stacks) or a straddled live table (twice that again).
+    let style = rng.f64();
+    let (pot_scale, stack_lo, stack_hi) = if style < 0.4 {
+        (1.0, 25.0, 200.0)
+    } else if style < 0.8 {
+        (round2(rng.range(1.3, 2.0)), 50.0, 300.0)
+    } else {
+        (round2(rng.range(2.0, 4.0)), 50.0, 400.0)
+    };
+    let pot_bb = round2(rng.range(chosen.2, chosen.3) * pot_scale);
+    let stack_bb = draw_stack_from(rng, pot_bb, stack_lo, stack_hi);
+    let u = rng.f64();
+    let cap = |rng: &mut Rng, lo: f64, hi: f64| (rng.log_range(lo, hi) * 20.0).round() / 20.0;
+    let rake = if u < 0.20 {
+        (0.0, 0.0)
+    } else if u < 0.55 {
+        (0.05, cap(rng, 0.5, 12.0))
+    } else if u < 0.90 {
+        (0.10, cap(rng, 1.0, 10.0))
+    } else {
+        ((rng.range(0.03, 0.10) * 1000.0).round() / 1000.0, cap(rng, 0.5, 12.0))
     };
     finish(rng, chosen.0, pot_bb, pot_scale, stack_bb, rake)
 }
@@ -940,13 +994,26 @@ mod tests {
         assert_eq!((fnv1a(s.as_bytes()), s.len()), (0xf3b9_96f0_c8bb_a227, 413_200));
     }
 
+    /// v3 uploads are checked the same way: this hash was taken before v4 was added.
+    #[test]
+    fn v3_inputs_are_unchanged() {
+        let mut s = String::new();
+        for job in [42u64, 16861638950914, 900_000_000_123] {
+            for i in 0..40 {
+                s.push_str(&serde_json::to_string(&example_inputs_for(3, job, i, None)).unwrap());
+                s.push_str(&serde_json::to_string(&example_inputs_for(3, job, i, Some(6.0))).unwrap());
+            }
+        }
+        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0x64a2_6454_5b00_e782, 417_855));
+    }
+
     #[test]
     fn v3_mix_matches_its_description() {
         let n = 4000;
         let mut count = std::collections::HashMap::new();
         let (mut scaled, mut raked10) = (0, 0);
         for i in 0..n {
-            let ex = example_inputs(7, i);
+            let ex = example_inputs_for(3, 7, i, None);
             *count.entry(ex.pot_type.clone()).or_insert(0) += 1;
             scaled += (ex.pot_scale > 1.0) as usize;
             raked10 += (ex.rake_pct == 0.10) as usize;
@@ -961,8 +1028,51 @@ mod tests {
         assert!((scaled as f64 / n as f64 - 0.2).abs() < 0.025);
         assert!((raked10 as f64 / n as f64 - 0.2).abs() < 0.025);
         // An unscaled v3 record serializes without pot_scale, like v2 ones.
-        let plain = (0..n).map(|i| example_inputs(7, i)).find(|e| e.pot_scale == 1.0).unwrap();
+        let plain = (0..n).map(|i| example_inputs_for(3, 7, i, None)).find(|e| e.pot_scale == 1.0).unwrap();
         assert!(!serde_json::to_string(&plain).unwrap().contains("pot_scale"));
+    }
+
+    #[test]
+    fn v4_mix_matches_its_description() {
+        let n = 6000;
+        let mut count = std::collections::HashMap::new();
+        let (mut online, mut live, mut straddled) = (0, 0, 0);
+        let (mut none, mut five, mut ten, mut low_live_cap, mut deep) = (0, 0, 0, 0, 0);
+        for i in 0..n {
+            let ex = example_inputs(7, i);
+            *count.entry(ex.pot_type.clone()).or_insert(0) += 1;
+            match ex.pot_scale {
+                s if s == 1.0 => online += 1,
+                s if (1.3..2.0).contains(&s) => live += 1,
+                s => {
+                    assert!((2.0..=4.0).contains(&s), "pot_scale {s}");
+                    straddled += 1
+                }
+            }
+            assert!(ex.stack_bb > 0.0 && ex.stack_bb <= MAX_SPR * ex.pot_bb + 1e-9);
+            assert!(ex.stack_bb + ex.pot_bb / 2.0 <= 400.0 + 1e-9);
+            assert!((0.0..=0.10).contains(&ex.rake_pct) && ex.rake_cap_bb <= 12.0);
+            assert!(ex.rake_pct == 0.0 || ex.rake_cap_bb >= 0.5);
+            none += (ex.rake_pct == 0.0) as usize;
+            five += (ex.rake_pct == 0.05) as usize;
+            ten += (ex.rake_pct == 0.10) as usize;
+            low_live_cap += (ex.rake_pct == 0.10 && (2.5..=4.5).contains(&ex.rake_cap_bb)) as usize;
+            deep += (ex.stack_bb + ex.pot_bb / 2.0 > 200.0) as usize;
+            assert!(ex.pot_type != "srp" || ex.pot_bb <= 7.5 * 4.0 + 1e-9);
+        }
+        let share = |x: usize| x as f64 / n as f64;
+        let by_type = |t: &str| share(count.get(t).copied().unwrap_or(0));
+        for (t, want) in [("limped", 0.10), ("srp", 0.55), ("3bet", 0.20), ("4bet", 0.15)] {
+            assert!((by_type(t) - want).abs() < 0.025, "{t}: {}", by_type(t));
+        }
+        for (got, want, what) in [(online, 0.4, "online"), (live, 0.4, "live"), (straddled, 0.2, "straddled"),
+                                   (none, 0.2, "no rake"), (five, 0.35, "5%"), (ten, 0.35, "10%")] {
+            assert!((share(got) - want).abs() < 0.025, "{what}: {}", share(got));
+        }
+        // 10% rake with a live room's low cap (Pan's 8-max game: 3.4 bb) is no longer rare.
+        assert!(share(low_live_cap) > 0.07, "low live caps {}", share(low_live_cap));
+        // live and straddled tables reach past the 200 bb v3 stopped at
+        assert!(share(deep) > 0.1, "deep {}", share(deep));
     }
 
     #[test]
@@ -970,8 +1080,8 @@ mod tests {
         assert_ne!(contributor_base("alice"), contributor_base("bob"));
         assert_eq!(contributor_base("Alice"), contributor_base("alice"));
         assert_eq!(contributor_job("alice", 3), contributor_base("alice") + VERSION_JOB_OFFSET + 3);
-        // v3 jobs never land on the job numbers v2 handed out (k below 2^23).
-        assert!(contributor_job("alice", 0) - contributor_base("alice") >= 1 << 23);
+        // v4 jobs never land on the job numbers v2 (from 0) or v3 (from 2^23) handed out.
+        assert!(contributor_job("alice", 0) - contributor_base("alice") >= 3 << 22);
     }
 
     #[test]
@@ -1009,4 +1119,3 @@ mod tests {
         assert!((total - 1.0).abs() < 0.15, "total {total}");
     }
 }
-

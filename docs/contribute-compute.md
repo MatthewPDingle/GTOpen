@@ -170,7 +170,7 @@ Each example is one line of JSON:
 | Field | Meaning |
 | --- | --- |
 | `board`, `pot_type`, `pot_bb`, `stack_bb`, `rake_pct`, `rake_cap_bb` | The spot. Stacks are behind at the flop; `rake_pct` is a fraction (0.05 = 5%), capped at `rake_cap_bb`. |
-| `pot_scale` | Present only when the pot was scaled up from its pot type's usual size (1.6x to 2.6x), to cover straddled games and big live opens. |
+| `pot_scale` | Present only when the pot was scaled up from its pot type's usual size: v4 1.3x to 2x for live tables and 2x to 4x for straddled ones, v3 1.6x to 2.6x. |
 | `range` | Two lists of 169 class weights (OOP, IP) in the Preflop Lab class order. |
 | `reach` | Combo mass per class after board card removal. |
 | `eq` | Equity per class against the other range. |
@@ -182,13 +182,20 @@ The postflop menu is fixed and lean (`lean-v2`): one bet size per street
 (33% on the flop, 75% on the turn and river), raises to 60% of the pot, and
 at most a bet and a raise per street. Stacks are capped at 40 times the pot.
 
-Generator v3 (from 2026-11-09) draws pot types at about the rate they reach
-heads-up flops in a 6-max Preflop Lab solve: 10% limped, 65% single-raised,
-15% 3-bet and 10% 4-bet. A fifth of the pots are scaled up 1.6x to 2.6x for
-straddled games and big live opens. Rake is none (30%), 5% capped at 2 to
-4 bb (35%), 10% capped at 6 to 10 bb (20%), or anything from 3% to 10%
-capped at 1 to 10 bb (15%). Generator v2 drew 15% / 45% / 28% / 12% with
-either no rake or 5% capped at 3 bb; its examples stay in the dataset.
+Generator v4 (from 2026-11-16) adds the games people commonly play live
+and online. Pot types are 10% limped, 55% single-raised, 20% 3-bet and 15%
+4-bet. Each pot comes from an online table (40%: pots as in v3, starting
+stacks 25 to 200 bb), a live table (40%: pots 1.3x to 2x bigger for 3 to
+6 bb opens and live re-raise sizes, stacks 50 to 300 bb) or a straddled
+table (20%: pots 2x to 4x, stacks 50 to 400 bb); `pot_scale` records which.
+Rake is none (20%), 5% capped at 0.5 to 12 bb (35%, online), 10% capped at
+1 to 10 bb (35%, live rooms) or anything from 3% to 10% capped at 0.5 to
+12 bb (10%).
+Generator v3 (2026-11-09 to 11-16) drew 10% / 65% / 15% / 10%, scaled a
+fifth of the pots up 1.6x to 2.6x, and drew rake none (30%), 5% capped at
+2 to 4 bb (35%), 10% capped at 6 to 10 bb (20%) or 3% to 10% capped at 1 to
+10 bb (15%). Generator v2 drew 15% / 45% / 28% / 12% with either no rake or
+5% capped at 3 bb. Their examples stay in the dataset.
 Ranges are sampled broadly
 (top-x% and capped ranges, DeepStack-style random ranges, polarized and
 mixed ranges) because the net has to be right on ranges the Preflop Lab
