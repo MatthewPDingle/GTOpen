@@ -16,7 +16,7 @@ import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
-import { createLeafNetPicker, modelFor } from './preflop_leafnet.js';
+import { createLeafNet, modelFor } from './preflop_leafnet.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -96,14 +96,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.leaf.addEventListener('change', () => localStorage.setItem(LEARNED_STORE, els.leaf.checked ? '1' : '0'));
   }
   const icmControls = createIcmControls(els, positionsFor, () => { syncLearned(); estSoon(); });
-  const leafNets = createLeafNetPicker(els, () => estSoon());
+  const leafNets = createLeafNet();
   // ICM payouts are priced by the balanced model: the box is greyed while
   // ICM is on and keeps its tick for when ICM is turned off again.
   function syncLearned() {
     if (!els.leaf) return;
     els.leaf.disabled = !!icmControls.config().icm;
     els.leaf.closest('label')?.classList.toggle('dim', els.leaf.disabled);
-    leafNets.sync();
   }
   syncLearned();
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
