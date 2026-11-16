@@ -449,11 +449,11 @@ def render(work, out, repo, goal):
         parts.append(
             f'<section class="panel"><h2>What the current snapshot contains</h2>'
             f'<p class="note">{m["examples"]:,} examples from {m["files"]} job files, frozen {E(m["created"][:16])} UTC; '
-            f'{int(stats["scaled"].sum()):,} with scaled-up pots (v3). Test jobs are never used by the loop.</p>'
+            f'{int(stats["scaled"].sum()):,} with scaled-up pots (v3 and later). Test jobs are never used by the loop.</p>'
             f'<div class="grid2"><div><h2>Pot type</h2>{bars(pts, "pot types")}<h2 style="margin-top:14px">Split</h2>'
             f'{bars(split, "split")}<h2 style="margin-top:14px">Generator</h2>{bars(gens, "generator versions")}'
             f'<h2 style="margin-top:14px">Rake</h2>{bars(rakes, "rake")}</div>'
-            f'<div><h2>Pot at the flop</h2>{histogram(stats["pot"], [0, 3.5, 7.5, 15, 26, 40, 55, 100, 200], "pot sizes", "bb")}'
+            f'<div><h2>Pot at the flop</h2>{histogram(stats["pot"], [0, 3.5, 7.5, 15, 26, 40, 55, 100, 200, 400], "pot sizes", "bb")}'
             f'<h2 style="margin-top:14px">Stack-to-pot ratio</h2>'
             f'{histogram(stats["spr"], [0, 1, 2, 4, 8, 16, 41], "stack to pot", "")}'
             f'<h2 style="margin-top:14px">Effective stack</h2>{histogram(stats["stack"], [0, 25, 50, 100, 150, 200, 400], "stacks", "bb")}'
