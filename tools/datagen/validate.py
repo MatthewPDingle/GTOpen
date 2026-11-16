@@ -115,6 +115,28 @@ def check_job(cli, login, job, local_jsonl, sample):
     return errors, summary
 
 
+def generator_of(local_jsonl):
+    """The generator version in a pooled job file's header line (None if unreadable)."""
+    try:
+        with open(local_jsonl, encoding="utf-8") as f:
+            return json.loads(f.readline()).get("generator_version")
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def update_note(versions, current):
+    """A friendly request to update, for jobs made with an older generator that is still accepted."""
+    older = sorted({v for v in versions if isinstance(v, int) and current and v < current})
+    if not older:
+        return ""
+    made = " and ".join(f"v{v}" for v in older)
+    return (f"\n\nThese jobs were made with generator {made}. They are merged and count in full. "
+            f"Generator v{current} is out now: it adds the games people commonly play live (10% rake with "
+            "low caps, straddles, bigger opens, deeper stacks), so new jobs help most on it. When it suits "
+            "you, please update GTOpen (git pull, rebuild) and restart the generator. "
+            "See docs/contribute-compute.md.")
+
+
 def is_game_file(path):
     """True for a real-range game file (plain .jsonl), by its header."""
     try:
@@ -380,11 +402,12 @@ def run_prs(args):
                                                discussion_status="open")]
     print(f"{repo}: {len(prs)} open pull requests")
     merged_events = []
+    current = cfg.get("current_generator")
     try:
         for pr in prs:
             rev = f"refs/pr/{pr.num}"
             new, other = pr_changes(api, repo, pr.num)
-            errors, jobs = [], []
+            errors, jobs, versions = [], [], []
             other += [p for p in new if p in main_oids]  # "new" file already in main: a duplicate
             new = [p for p in new if p not in main_oids]
             if other:
@@ -412,6 +435,7 @@ def run_prs(args):
                         login, job = m.group(1), int(m.group(2))
                         errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
                         jobs.append((login, "pool", summary.get("examples", 0)))
+                        versions.append(generator_of(plain))
                     errors += [f"{path}: {e}" for e in errs]
             finally:
                 shutil.rmtree(stage, ignore_errors=True)
@@ -429,11 +453,13 @@ def run_prs(args):
                     api.comment_discussion(repo, pr.num, body, repo_type="dataset")
                     api.change_discussion_status(repo, pr.num, "closed", repo_type="dataset")
                 continue
-            print(f"PR #{pr.num} ({pr.title}): OK, {len(jobs)} jobs, {examples} examples")
+            note = update_note(versions, current)
+            print(f"PR #{pr.num} ({pr.title}): OK, {len(jobs)} jobs, {examples} examples"
+                  + (" (older generator: asked to update)" if note else ""))
             if args.dry_run:
                 continue
             api.merge_pull_request(repo, pr.num, repo_type="dataset",
-                                   comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!")
+                                   comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!" + note)
             main_oids.update({p: "" for p in new})
             now = datetime.datetime.now(datetime.timezone.utc)
             for login, kind in groups:
