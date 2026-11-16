@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict';
-import { blindPosts, unraisedWinner } from '../web/js/preflop_blinds.js';
+import { blindPosts, smallBlindBb, unraisedWinner } from '../web/js/preflop_blinds.js';
 import { formatPreflopView } from '../web/js/preflop_actions.js';
 const positions = ['BTN', 'SB', 'BB'];
 assert.deepEqual(blindPosts(positions, {smallBlind:2,bigBlind:2}), [0,1,1]);
 assert.deepEqual(blindPosts(positions, {smallBlind:2,bigBlind:5}), [0,.4,1]);
+// the form's bb amounts and older scenarios' stakes give the same posts
+assert.deepEqual(blindPosts(positions, {smallBlind:0.4,bigBlind:1}), [0,.4,1]);
+assert.equal(smallBlindBb({smallBlind:2,bigBlind:5}), 0.4);
+assert.equal(smallBlindBb({smallBlind:1,bigBlind:2}), 0.5);
+assert.equal(smallBlindBb({smallBlind:0.5,bigBlind:1}), 0.5);
 assert.deepEqual(blindPosts(positions, {}), [0,.5,1]);
 for (const [smallBlind,bigBlind] of [[0,2],[3,2],[2,0],[NaN,2]])
   assert.throws(() => blindPosts(positions, {smallBlind,bigBlind}));

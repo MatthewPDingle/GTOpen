@@ -77,9 +77,10 @@ game). Config shape (see `PreflopConfig` in
  "open_raises_by_seat":null,"raise_mults_by_seat":null}
 ```
 
-- The UI/scenario fields `smallBlind` and `bigBlind` are stake denominations;
-  convert to `posts` in bb before calling the engine (2/2 = SB 1, BB 1;
-  2/5 = SB 0.4, BB 1). API config remains normalized. Old saves retain their
+- The Preflop Lab form takes every amount in bb, the blinds too (small blind
+  0.4 and big blind 1 for $2/$5). Saved scenarios from before 2026-11-16 hold
+  the stakes in `smallBlind` / `bigBlind` (2 and 5); only their ratio is used,
+  so both convert to the same `posts`. API config remains normalized. Old saves retain their
   original posts. Call action `to` remains the total, while UI labels show
   the incremental call/completion, excluding antes.
 - `max_raises` counts ALL raises (open=1 … 5-bet=4). Re-raise TO = to_call ×
