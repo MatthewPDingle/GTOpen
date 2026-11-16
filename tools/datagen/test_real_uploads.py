@@ -228,6 +228,40 @@ class ValidateTests(Base):
                          [("Anyone", None, 2), ("Maint", "real", 3)])
         self.assertEqual(p["contributors"], {"Maint": 3, "Anyone": 2})
 
+    def pool_job(self, job, generator):
+        d = os.path.join(self.tmp, f"pool-{job}")
+        os.makedirs(d)
+        rows = [{"type": "header", "job": job, "contributor": "Anyone", "generator_version": generator},
+                {"type": "example"}, {"type": "example"}]
+        path = os.path.join(d, "job.jsonl")
+        with open(path, "w") as f:
+            f.write("".join(json.dumps(r) + "\n" for r in rows))
+        return self.gz(path)
+
+    def test_older_generator_jobs_are_merged_with_a_friendly_request_to_update(self):
+        with mock.patch.object(validate, "load_config", lambda: {
+                "hf_repo": REPO, "go_no_go_examples": 10, "goal_examples": 100, "real_contributors": ["Maint"],
+                "current_generator": 4}):
+            self.open_pr({"data/Anyone/job-1001.jsonl.gz": self.pool_job(1001, 3),
+                          "data/Anyone/job-1002.jsonl.gz": self.pool_job(1002, 4)})
+            self.open_pr({"data/Anyone/job-1003.jsonl.gz": self.pool_job(1003, 4)})
+            text = self.validate()
+        self.assertEqual([self.hub.prs[n]["status"] for n in (1, 2)], ["merged", "merged"])
+        self.assertIn("asked to update", text)
+        first, second = self.hub.prs[1]["comments"][-1], self.hub.prs[2]["comments"][-1]
+        self.assertIn("Thank you!", first)
+        self.assertIn("generator v3. They are merged and count in full", first)
+        self.assertIn("Generator v4 is out now", first)
+        self.assertEqual(second, "Validated 1 jobs (2 examples). Thank you!")
+        self.assertEqual(self.progress()["total_examples"], 6)
+
+    def test_the_current_generator_in_config_matches_the_solver(self):
+        import re
+        with open(os.path.join(ROOT, "crates", "solver", "src", "datagen.rs"), encoding="utf-8") as f:
+            rust = int(re.search(r"pub const GENERATOR_VERSION: u32 = (\d+);", f.read()).group(1))
+        with open(os.path.join(HERE, "config.json"), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["current_generator"], rust)
+
     def test_game_files_from_other_logins_are_turned_away(self):
         game = game_file(self.tmp, "Stranger", "round1", "g01")
         self.open_pr({"real/Stranger/round1/g01.jsonl.gz": self.gz(game)})

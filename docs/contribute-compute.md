@@ -158,7 +158,8 @@ Anyone can upload, so every upload is checked before it is merged:
   data removed.
 - **Versions are pinned.** Each file records the generator version and bet
   menu. The validator accepts the current generator version and the one
-  before it, so jobs finished just before an update still count. Anything
+  before it, so jobs finished just before an update still count; their
+  merge note then asks you to update when it suits you. Anything
   older is rejected with a note asking you to `git pull` and rebuild.
 
 Rejected uploads get a comment on their Hugging Face pull request saying why.
