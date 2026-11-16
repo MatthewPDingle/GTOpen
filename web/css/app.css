@@ -1154,12 +1154,6 @@ textarea {
 .pfl-row { margin: 8px 0; display: flex; gap: 14px; align-items: center; }
 .pfl-row select { flex: 1; }
 .pfl-row[hidden] { display: none; }
-/* the picker on its own line, the chosen net's one-line description under it
-   (in one row the description took the width and squeezed the picker to nothing) */
-#pfl-leafnet-row { flex-wrap: wrap; row-gap: 2px; }
-#pfl-leafnet-row label { flex: 1 1 100%; display: flex; gap: 8px; align-items: center; min-width: 0; white-space: nowrap; }
-#pfl-leafnet-row select { min-width: 0; }
-#pfl-leafnet-row > p { flex: 0 0 100%; min-width: 0; }
 .pfl-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 8px 0; }
 .pfl-side .chk { flex-direction: row; justify-content: flex-start; }
 #pfl-ribbon-wrap { display: flex; gap: 6px; align-items: stretch; margin-bottom: 10px; }
