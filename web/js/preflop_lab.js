@@ -771,9 +771,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // ----- build / solve -----
 
   // One progress strip, always under the solve step. Solve progress is real
-  // (iterations and gap); a build cannot know its own progress, so it shows
-  // the phase, the planned size and elapsed time, never a percentage.
+  // (iterations and gap). A build is one request that cannot report its own
+  // progress, so its bar is an estimate that only moves forward: the planned
+  // size times this browser's measured build speed (it slows near the end
+  // rather than stopping short or running back), and the label carries the
+  // phase, the size and the elapsed time.
   const SOLVE_ITERS = 3000;
+  const BUILD_RATE_STORE = 'pfl-build-ms-per-mnode';
   els.stop.after(els.prog); // stable position: under 3 · SOLVE, for build, load and resumed runs
   els.prog.dataset.tip = 'Build: phase, nodes and elapsed time. Solve: iterations and gap toward 0.005 bb.';
   const progFill = els.prog.querySelector('i');
@@ -785,14 +789,19 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     progFill.style.width = `${Math.max(0, Math.min(100, pct)).toFixed(1)}%`;
     progLab.textContent = label;
   }
-  // Indeterminate build: the bar sweeps while the label carries the facts.
-  function progressPulse(labelFn) {
+  // Build: an estimated bar that never moves back. With an expected time it
+  // runs to 90% by then and creeps toward 99% after; without one it creeps
+  // from the start. Completion sets 100%.
+  function progressPulse(labelFn, expectedMs = 0) {
     clearInterval(progPulse);
     els.prog.classList.remove('hidden');
     const t0 = performance.now();
     const tick = () => {
       const el = performance.now() - t0;
-      progFill.style.width = `${(10 + (el % 1400) / 1400 * 80).toFixed(1)}%`;
+      const pct = expectedMs > 0
+        ? (el < expectedMs ? 90 * el / expectedMs : 90 + 9 * (1 - Math.exp(-(el - expectedMs) / expectedMs)))
+        : 95 * (1 - Math.exp(-el / 8000));
+      progFill.style.width = `${pct.toFixed(1)}%`;
       progLab.textContent = labelFn(el);
     };
     tick();
@@ -818,18 +827,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.build.disabled = true;
     els.solve.disabled = true;
     els.buildInfo.textContent = '';
-    progressPulse(() => 'counting · tree size…');
+    progressSet(0, 'counting · tree size…');
     let expected = 0;
     try { expected = (await api.pfEstimate(cfg)).nodes || 0; } catch { /* build reports errors */ }
     const eqCold = !localStorage.getItem('pfl-eq-built');
     const t0 = performance.now();
+    // ms per million nodes of this machine's last build (none on a cold cache:
+    // the first build also computes the equity tables)
+    const rate = +localStorage.getItem(BUILD_RATE_STORE) || 0;
+    const expectedMs = !eqCold && rate > 0 && expected > 0 ? rate * expected / 1e6 : 0;
     progressPulse(el => `building · ${eqCold ? 'equity cache' : 'allocating'} · ` +
-      `${expected ? `${expected.toLocaleString()} nodes · ` : ''}${Math.round(el / 1000)} s`);
+      `${expected ? `${expected.toLocaleString()} nodes · ` : ''}${Math.round(el / 1000)} s` +
+      (expectedMs ? ` of about ${Math.max(1, Math.round(expectedMs / 1000))} s` : ''), expectedMs);
     try {
       const info = await api.pfBuild(cfg, els.eq3?.checked ? 'three_way_table_v1' : null);
       S.multiwayModel = info.multiway_equity_model || S.multiwayModel;
       renderModelStrip();
       icmControls.showSummary(info.icm);
+      if (!eqCold && expected > 0) {
+        const took = performance.now() - t0;
+        localStorage.setItem(BUILD_RATE_STORE, String(took / expected * 1e6));
+      }
       localStorage.setItem('pfl-eq-built', '1');
       S.built = true;
       S.activeModel = cfg.realization;
