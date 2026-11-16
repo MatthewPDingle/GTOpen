@@ -401,8 +401,8 @@
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
           </select></label>
           <label data-tip="Per-seat stacks are set under Stacks by seat.">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
-          <label data-tip="Enter both stakes in the same units (2 and 2 for $2/$2). Converted to bb; stack and sizes below stay in bb.">Small blind <input id="pfl-sb" type="number" value="1" min="0.01" step="any"></label>
-          <label data-tip="Stake worth one bb: 2 for $2/$2, 5 for $2/$5. SB/BB sets the posted fraction.">Big blind <input id="pfl-bb" type="number" value="2" min="0.01" step="any"></label>
+          <label data-tip="The small blind in big blinds, like every amount here: 0.5 for $1/$2, 1 for $2/$2, 0.4 for $2/$5.">Small blind (bb) <input id="pfl-sb" type="number" value="0.5" min="0.01" max="1" step="any"></label>
+          <label data-tip="Every amount in the Preflop Lab is in big blinds, so the big blind is always 1.">Big blind (bb) <input id="pfl-bb" type="number" value="1" disabled></label>
           <label class="pfl-straddle-toggle" data-tip="Straddle by the seat left of BB. The next seat acts first; the straddler keeps a check/raise option. Amounts still use the original big blind.">UTG straddle <input id="pfl-straddle-on" type="checkbox"></label>
           <label>Straddle (bb) <input id="pfl-straddle" type="number" value="2" min="2" step="0.5" disabled></label>
           <div id="pfl-straddle-note" class="dim pfl-straddle-note" role="status" hidden></div>

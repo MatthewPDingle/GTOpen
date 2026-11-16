@@ -11,7 +11,7 @@ import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, segmen
 import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
-import { blindSizes, blindPosts, unraisedWinner } from './preflop_blinds.js';
+import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
@@ -543,8 +543,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // (saves/scenarios/). A saved scenario with a built-in's name replaces it.
   let SCENARIOS = [];   // [{...preset, mine: bool}]
   const applyPreset = (p) => {
-    els.smallBlind.value = blindSizes(p).smallBlind;
-    els.bigBlind.value = blindSizes(p).bigBlind;
+    els.smallBlind.value = smallBlindBb(p);
+    els.bigBlind.value = 1;
     els.players.value = p.players;
     els.straddleOn.checked = Number(p.straddle || 0) > 0;
     els.straddle.value = p.straddle || 2;
@@ -573,7 +573,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
-    smallBlind: +els.smallBlind.value, bigBlind: +els.bigBlind.value,
+    smallBlind: +els.smallBlind.value, bigBlind: 1,
     straddle: els.straddleOn.checked ? +els.straddle.value : 0,
     opens: els.opens.value.trim(), mult: els.mult.value.trim(),
     ...positionSizing.scenario(),
@@ -595,8 +595,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const idx = SCENARIOS.findIndex(same);
     if (idx >= 0) {
       els.preset.value = String(idx);
-      els.smallBlind.value = blindSizes(SCENARIOS[idx]).smallBlind;
-      els.bigBlind.value = blindSizes(SCENARIOS[idx]).bigBlind;
     }
     else {
       if (!els.preset.querySelector('option[value="-1"]')) els.preset.add(new Option('Current game (custom settings)', '-1'));
@@ -1000,7 +998,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.players.value = cfg.positions.length;
     els.stack.value = cfg.stack;
     els.smallBlind.value = cfg.posts[cfg.positions.indexOf('SB')] ?? 0.5;
-    els.bigBlind.value = cfg.posts[cfg.positions.indexOf('BB')] ?? 1;
+    els.bigBlind.value = 1;
     els.straddleOn.checked = !!cfg.utg_straddle;
     els.straddle.value = cfg.utg_straddle ? cfg.posts[0] : 2;
     syncStraddleControls();

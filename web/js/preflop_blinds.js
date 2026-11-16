@@ -1,6 +1,14 @@
-// Blind stakes are entered in the same units; the engine always uses bb.
+// A scenario's blinds. Older saved scenarios hold the stakes (2 and 5 for
+// $2/$5); the form shows and saves every amount in bb (small blind 0.4, big
+// blind 1). The engine always uses bb.
 export function blindSizes(scenario = {}) {
   return { smallBlind: Number(scenario.smallBlind ?? 1), bigBlind: Number(scenario.bigBlind ?? 2) };
+}
+
+/** The small blind in bb, as the form shows it. */
+export function smallBlindBb(scenario = {}) {
+  const { smallBlind, bigBlind } = blindSizes(scenario);
+  return Math.round(smallBlind / bigBlind * 1e6) / 1e6;
 }
 
 export function blindPosts(positions, scenario) {
