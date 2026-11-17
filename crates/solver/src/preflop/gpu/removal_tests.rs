@@ -45,6 +45,7 @@ fn blockers_match_the_cpu() {
         ("4 seats, side pots", game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0])), false),
         ("3 seats, exact 3-way table", game(3, "balanced", None), true),
     ];
+    let mut shared_runs = 0;
     for (name, cfg, three_way) in cases {
         let learned = cfg.realization == "leafnet";
         let mut s = PreflopSolver::new(cfg, table()).unwrap();
@@ -62,12 +63,23 @@ fn blockers_match_the_cpu() {
         if learned {
             s.refresh_leaf_values().unwrap();
         }
+        // The shared plan runs 3+ seat games without side pots or the 3-way
+        // table; it must agree with the normal plan at the same strategies.
+        let shared = s.n > 2 && !three_way && s.nodes.iter().all(|nd| nd.side_pots.is_empty());
+        {
+            let (mut fast, selection) = PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA");
+            eprintln!("{name}: {} ({:?})", selection.mode, selection.fallback_reason);
+            assert!(shared || selection.mode == "normal_gpu", "{name}: {selection:?}");
+            shared_runs += (selection.mode == "retained_cohorts") as usize;
+            let fast = fast.gaps_and_evs().unwrap();
+            let normal = PreflopGpu::new(&s, 2000).unwrap().gaps_and_evs().unwrap();
+            assert!(fast.0.iter().chain(&fast.1).zip(normal.0.iter().chain(&normal.1)).all(|(x, y)| (x - y).abs() < 2e-4),
+                "{name}: shared plan {fast:?} normal plan {normal:?}");
+        }
         // the plan the server picks, then the normal plan directly
         for fast in [true, false] {
             let mut g = if fast {
-                let (g, selection) = PreflopGpu::new_throughput(&s, 2000).expect("test requires CUDA");
-                assert_eq!(selection.mode, "normal_gpu", "{name}");
-                g
+                PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
             } else {
                 PreflopGpu::new(&s, 2000).expect("test requires CUDA")
             };
@@ -88,6 +100,7 @@ fn blockers_match_the_cpu() {
             assert!(close(&cpu, &gpu), "{name}, after learning: cpu {cpu:?} gpu {gpu:?}");
         }
     }
+    assert!(shared_runs >= 2, "the shared plan ran {shared_runs} of the games it should take");
 }
 
 #[test]
@@ -101,7 +114,14 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
         for _ in 0..15 {
             s.iterate();
         }
-        let mut g = PreflopGpu::new(&s, 2000).expect("test requires CUDA");
+        // the normal plan, then the plan the server picks (the shared one
+        // for the 3-seat game)
+        for fast in [false, true] {
+        let mut g = if fast {
+            PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
+        } else {
+            PreflopGpu::new(&s, 2000).expect("test requires CUDA")
+        };
         let np = s.n;
         for p in 0..np {
             g.down(1, p as i32).unwrap();
@@ -128,7 +148,8 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
                         "{name} seat {p} node {node} class {h}: gpu {got} cpu {}", expected[h]);
                 }
             }
-            eprintln!("{name} seat {p}: worst relative difference {worst:.2e}");
+            eprintln!("{name} seat {p}{}: worst relative difference {worst:.2e}", if fast { ", server plan" } else { "" });
+        }
         }
     }
 }

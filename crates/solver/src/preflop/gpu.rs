@@ -972,11 +972,10 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
-        // Blockers reprice terminals around the normal plan's kernels only,
-        // and the legacy pairwise product shares the heads-up equity cache.
-        if s.cfg.card_removal && (cohorts || unrolled || _narrow) {
-            return Err("blockers (card removal) use the normal GPU plan".into());
-        }
+        // Blockers reprice terminals around the other kernels on every plan
+        // (the shared-evaluation variants only change how multiway CDFs are
+        // built and read). The legacy pairwise product shares the heads-up
+        // equity cache, so it declines them.
         if s.cfg.card_removal && s.multiway.is_none() {
             return Err("blockers (card removal) need the coupled multiway model on the GPU".into());
         }
