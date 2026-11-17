@@ -17,6 +17,7 @@ import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
+import { blockersConfig, blockersOf, blockersWanted, rememberBlockers } from './preflop_blockers.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -95,14 +96,22 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.leaf.checked = learnedWanted();
     els.leaf.addEventListener('change', () => localStorage.setItem(LEARNED_STORE, els.leaf.checked ? '1' : '0'));
   }
+  if (els.blockers) {
+    els.blockers.checked = blockersWanted(localStorage);
+    els.blockers.addEventListener('change', () => rememberBlockers(localStorage, els.blockers.checked));
+  }
   const icmControls = createIcmControls(els, positionsFor, () => { syncLearned(); estSoon(); });
   const leafNets = createLeafNet();
   // ICM payouts are priced by the balanced model: the box is greyed while
   // ICM is on and keeps its tick for when ICM is turned off again.
   function syncLearned() {
-    if (!els.leaf) return;
-    els.leaf.disabled = !!icmControls.config().icm;
-    els.leaf.closest('label')?.classList.toggle('dim', els.leaf.disabled);
+    const icm = !!icmControls.config().icm;
+    // Blockers are not combined with ICM payouts either.
+    for (const box of [els.leaf, els.blockers]) {
+      if (!box) continue;
+      box.disabled = icm;
+      box.closest('label')?.classList.toggle('dim', icm);
+    }
   }
   syncLearned();
   const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
@@ -567,6 +576,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // was turned off) after a loaded game showed its own, and starts fresh
     // when the loaded game uses an older model.
     if (els.leaf) els.leaf.checked = learnedWanted();
+    if (els.blockers) els.blockers.checked = blockersWanted(localStorage);
     leafNets.load(null);
     syncLearned();
     if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
@@ -765,7 +775,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // the value model and, for learned flop values, its net
   function model() {
     const realization = modelFor(!!els.leaf?.checked, !!icmControls.config().icm);
-    return { realization, ...leafNets.config(realization === LEARNED_REALIZATION) };
+    return {
+      realization, ...leafNets.config(realization === LEARNED_REALIZATION),
+      ...blockersConfig(!!els.blockers?.checked, !!icmControls.config().icm),
+    };
   }
 
   // ----- build / solve -----
@@ -1035,6 +1048,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     icmControls.load(cfg);
     S.activeModel = cfg.realization || 'static';
     if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
+    if (els.blockers) els.blockers.checked = blockersOf(cfg);
     leafNets.load(cfg);
     syncLearned();
     S.built = true;
