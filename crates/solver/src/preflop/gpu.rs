@@ -25,6 +25,7 @@ mod terminal_unroll;
 mod narrow_offsets;
 mod adaptive_throughput;
 mod icm;
+mod removal;
 mod rnr;
 pub use adaptive_throughput::ThroughputSelection;
 #[cfg(test)]
@@ -35,6 +36,8 @@ mod three_way_tests;
 mod icm_tests;
 #[cfg(test)]
 mod leaf_tests;
+#[cfg(test)]
+mod removal_tests;
 #[cfg(all(test, feature = "preflop-research"))]
 mod exact_reuse_inventory;
 #[cfg(all(test, feature = "preflop-research"))]
@@ -249,6 +252,8 @@ pub struct PreflopGpu {
     phase_trace: Option<PhaseEventTrace>,
     /// ICM terminal tables when the game pays tournament prizes.
     icm: Option<icm::IcmGpu>,
+    /// Blockers (card removal): the kernels around the terminal pass.
+    removal: Option<removal::RemovalGpu>,
     /// The trust dial's free types and mixtures (hero mode with a dial).
     rnr: Option<Box<rnr::GpuRnr>>,
 }
@@ -967,6 +972,14 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
+        // Blockers reprice terminals around the normal plan's kernels only,
+        // and the legacy pairwise product shares the heads-up equity cache.
+        if s.cfg.card_removal && (cohorts || unrolled || _narrow) {
+            return Err("blockers (card removal) use the normal GPU plan".into());
+        }
+        if s.cfg.card_removal && s.multiway.is_none() {
+            return Err("blockers (card removal) need the coupled multiway model on the GPU".into());
+        }
         // ICM rewrites the terminal money per traverser, which only the
         // normal plan's kernels read.
         if s.icm.is_some() && (cohorts || unrolled || _narrow) {
@@ -990,7 +1003,8 @@ impl PreflopGpu {
         let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
         let leaf_bytes = s.leaf_terminals().map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
         let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
-            + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6;
+            + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6
+            + removal::RemovalGpu::bytes(s, reach_blocks, eq_channels * NUM_CLASSES * NUM_CLASSES) as f64 / 1e6;
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -1256,6 +1270,7 @@ impl PreflopGpu {
                 }
             }
         }
+        let removal_gpu = removal::RemovalGpu::new(&ctx, &stream, s, arch, reach_blocks, &eq)?;
         let cprob: Vec<f32> = (0..NUM_CLASSES).map(class_prob).collect();
 
         let arena_len = s.arena_len;
@@ -1521,6 +1536,7 @@ impl PreflopGpu {
             #[cfg(test)]
             phase_trace: None,
             icm: icm_gpu,
+            removal: removal_gpu,
             rnr: rnr_gpu,
             _ctx: ctx,
             stream,
@@ -1711,7 +1727,10 @@ impl PreflopGpu {
                 unsafe {
                     for channel in 0..self.eq_channels {
                         let at = channel*NUM_CLASSES*NUM_CLASSES;
-                        let table = self.d_eq.slice(at..at+NUM_CLASSES*NUM_CLASSES);
+                        // With blockers the cache holds the removal-weighted
+                        // sums pf_removal_heads_up reads.
+                        let tables = self.removal.as_ref().map_or(&self.d_eq, |r| &r.d_eq_w);
+                        let table = tables.slice(at..at+NUM_CLASSES*NUM_CLASSES);
                         let at = channel*self.eq_cache_stride as usize;
                         let mut cache = self.d_eq_cache.slice_mut(at..at+self.eq_cache_stride as usize);
                         self.stream.launch_builder(&self.f_equities)
@@ -1738,7 +1757,8 @@ impl PreflopGpu {
         self.learned_terminals(p)?;
         #[cfg(feature = "preflop-research")]
         self.interface_terminals(p)?;
-        self.multiway_terminals(p, gate)
+        self.multiway_terminals(p, gate)?;
+        self.removal_scale(p)
     }
 
     fn ordinary_terminals(&mut self, p: i32) -> Result<(), String> {
@@ -1777,6 +1797,7 @@ impl PreflopGpu {
                 .arg(&mut self.d_val)
                 .launch(Self::cfg(self.nterms))
                 .map_err(e)?;
+            self.removal_heads_up(p)?;
             if self.sp_nterms > 0 {
                 self.stream.launch_builder(&self.f_side_pot_terminal)
                     .arg(&self.d_sp_terms).arg(&p).arg(&self.np)

@@ -17,6 +17,7 @@ import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
+import { blockersConfig, blockersOf } from './preflop_blockers.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -389,6 +390,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!visible) return;
     const value = S.activeModel || 'unknown';
     const legacy = !currentModel(value);
+    const builtCfg = JSON.parse(S.builtCfg || '{}');
+    // every new game has blockers except with ICM payouts; a save from
+    // before them keeps its solve
+    const blockers = blockersOf(builtCfg)
+      ? statusChip('blockers', 'Each hand\u2019s own two cards come out of the deck before it is valued, so hands that block the others\u2019 strong hands see more folds. Exact heads-up; with three or more players the opponents\u2019 cards do not block each other.')
+      : builtCfg.icm
+        ? statusChip('no blockers \u00b7 ICM', 'Games with ICM payouts are solved without blockers for now.')
+        : statusChip('no blockers \u00b7 saved', 'Saved game from before blockers: every hand gets the same fold chance. RE-SOLVE continues it; BUILD GAME starts with blockers.');
     modelStrip.replaceChildren(
       statusChip(`value · ${value}${legacy ? ' · saved' : ''}`,
         legacy
@@ -396,6 +405,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           : 'Value model of the built game.'),
       ...(S.multiwayModel ? [statusChip(`multiway · ${MULTIWAY_LABEL[S.multiwayModel] || S.multiwayModel}`,
         MULTIWAY_TIP[S.multiwayModel] || '')] : []),
+      blockers,
       ...(legacy ? [(() => { const el = statusChip('RE-SOLVE continues it'); el.style.borderStyle = 'dashed'; return el; })()] : []),
     );
   }
@@ -765,7 +775,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   // the value model and, for learned flop values, its net
   function model() {
     const realization = modelFor(!!els.leaf?.checked, !!icmControls.config().icm);
-    return { realization, ...leafNets.config(realization === LEARNED_REALIZATION) };
+    return {
+      realization, ...leafNets.config(realization === LEARNED_REALIZATION),
+      ...blockersConfig(!!icmControls.config().icm),
+    };
   }
 
   // ----- build / solve -----
