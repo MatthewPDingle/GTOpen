@@ -151,7 +151,8 @@ pub struct PreflopConfig {
     /// Blockers: condition each opponent's range on the traverser's own two
     /// cards at every terminal (removal.rs), so hands differ in how often
     /// the others fold. Off keeps the independent-class model, and with it
-    /// every older save's payoffs. CPU only for now; not with ICM.
+    /// every older save's payoffs. Not with ICM; on the GPU it uses the
+    /// normal plan.
     #[serde(default, skip_serializing_if = "is_false")]
     pub card_removal: bool,
 }
