@@ -3,8 +3,8 @@
 //!
 //! cargo run --release -p solver --example blockers_compare -- [GAME.json] [ITERATIONS]
 //!
-//! GAME.json is a PreflopConfig (the default is a 6-max 100 bb game with the
-//! static realization). Run from the repo root so `cache/` resolves.
+//! GAME.json is a PreflopConfig ("-" or nothing: a 6-max 100 bb game with
+//! the static realization). Run from the repo root so `cache/` resolves.
 use solver::preflop::equity::{class_label, EquityTable, NUM_CLASSES};
 use solver::preflop::{PreflopConfig, PreflopSolver};
 use std::sync::Arc;
@@ -12,7 +12,7 @@ use std::time::Instant;
 
 fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
-    let cfg: PreflopConfig = match args.first() {
+    let cfg: PreflopConfig = match args.first().filter(|path| path.as_str() != "-") {
         Some(path) => serde_json::from_slice(&std::fs::read(path).expect("read game")).expect("parse game"),
         None => serde_json::from_value(serde_json::json!({
             "positions": ["UTG", "HJ", "CO", "BTN", "SB", "BB"], "posts": [0, 0, 0, 0, 0.5, 1.0],
