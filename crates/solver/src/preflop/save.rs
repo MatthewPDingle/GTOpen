@@ -279,7 +279,7 @@ mod tests {
 
     fn fixture() -> PreflopSolver {
         static EQ: OnceLock<Arc<EquityTable>> = OnceLock::new();
-        let cfg = PreflopConfig { leaf_net: None,
+        let cfg = PreflopConfig { leaf_net: None, card_removal: false,
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 2.0, stacks: None, posts: vec![0.0, 0.5, 1.0], ante: 0.0,

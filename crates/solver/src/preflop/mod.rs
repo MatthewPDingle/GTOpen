@@ -28,6 +28,7 @@ pub mod leaf_fix;
 pub mod leaf_total;
 pub use leaf_model::{FlopLeaf, LeafRefresh, LeafTerminalSums};
 mod continuation;
+pub mod removal;
 pub mod rnr;
 pub use continuation::{ContinuationEstimate, ContinuationPlayerValue};
 mod save;
@@ -147,6 +148,12 @@ pub struct PreflopConfig {
     /// Malmuth–Harville prize equity (in bb equivalents) instead of chips.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub icm: Option<IcmConfig>,
+    /// Blockers: condition each opponent's range on the traverser's own two
+    /// cards at every terminal (removal.rs), so hands differ in how often
+    /// the others fold. Off keeps the independent-class model, and with it
+    /// every older save's payoffs. CPU only for now; not with ICM.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub card_removal: bool,
 }
 
 fn is_false(value: &bool) -> bool { !*value }
@@ -1894,8 +1901,18 @@ impl PreflopSolver {
     }
 
     /// Terminal chip deltas for traverser p (per class), times the product of
-    /// the other players' reach mass.
+    /// the other players' reach mass (with card removal: the mass left once
+    /// the traverser's class holds its two cards, see removal.rs).
     fn chip_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
+        if self.cfg.card_removal {
+            self.removal_terminal_value(node, p, reaches, out);
+            return;
+        }
+        self.plain_terminal_value(node, p, reaches, out);
+    }
+
+    /// The independent-class terminal value (no card removal).
+    fn plain_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
         let nd = &self.nodes[node];
         let mut prob = 1f64;
         for q in 0..self.n {
@@ -3395,6 +3412,9 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     if cfg.posts.len() != n {
         return Err("posts must align with positions".into());
     }
+    if cfg.card_removal && cfg.icm.is_some() {
+        return Err("blockers (card_removal) do not support ICM games yet".into());
+    }
     if cfg.utg_straddle {
         if n<3 || cfg.posts[n-1]<=0.0 || cfg.posts[n-2]<=0.0
             || cfg.posts[n-2]>cfg.posts[n-1] || cfg.posts[0]<2.0*cfg.posts[n-1]
@@ -4277,3 +4297,5 @@ impl PreflopSolver {
 mod checkpoint_tests;
 #[cfg(test)]
 mod stacks_tests;
+#[cfg(test)]
+mod removal_tests;

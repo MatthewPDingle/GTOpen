@@ -967,6 +967,11 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
+        // Blockers change every terminal kernel; until those land, such
+        // games solve on the CPU.
+        if s.cfg.card_removal {
+            return Err("blockers (card removal) are CPU-only for now".into());
+        }
         // ICM rewrites the terminal money per traverser, which only the
         // normal plan's kernels read.
         if s.icm.is_some() && (cohorts || unrolled || _narrow) {
