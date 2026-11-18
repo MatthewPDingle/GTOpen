@@ -27,13 +27,27 @@ The fit has **not** been retrained on rake-free solves. Hand-dependent distortio
 
 If the fit is unavailable, Balanced falls back to raw equity and reports that limitation. Old calibrated saves keep their legacy fallback and payoff semantics. New Balanced saves use format v4 so older binaries cannot silently continue them under another model.
 
-## Sizes by position
+## Sizes by seat
 
-The global menus are opening raise-to sizes in bb, 3-bet multipliers, and 4-bet+ multipliers. Expand **Sizes by position** to override each menu for a seat. Multiple comma-separated values offer multiple legal actions; blank cells inherit the corresponding default. Squeezes use the 3-bet menu. Re-raise multipliers apply to the previous total raise-to amount, not the extra chips added.
+The global menus are opening raise-to sizes in bb, 3-bet multipliers, and 4-bet+ multipliers. Expand **Sizes by seat** (called "Sizes by position" before version 1.2.0) to override each menu for a seat. Multiple comma-separated values offer multiple legal actions; blank cells inherit the corresponding default. Squeezes use the 3-bet menu. Re-raise multipliers apply to the previous total raise-to amount, not the extra chips added.
 
 For example, against a 6bb open, a default 3-bet multiplier of 3 offers 18bb. SB=4, BB=4.5, and the straddler=5 instead offer 24bb, 27bb, and 30bb. With a separate 4-bet multiplier of 2.5, a 4-bet facing 24bb goes to 60bb. Minimum-raise and all-in rules still apply. Sizes remain in the original big blind when a straddle is active.
 
 API fields: `open_raises_by_seat`, `raise_mults_by_seat`, `fourbet_mults`, and `fourbet_mults_by_seat`. Seat lists follow `positions`; an empty inner list inherits its default. Omitting the new four-bet fields preserves the old behavior where the re-raise menu applied at every depth. UI-loaded old games preserve that inheritance explicitly.
+
+## Sizes that follow the action
+
+Three optional settings change raise amounts with the action so far. Each spot keeps the same number of raise sizes, so the tree does not grow (a bigger raise can reach the all-in threshold sooner, which makes it slightly smaller).
+
+- `limper_extra` (bb, default 0): every open size grows by this for each limper already in, the small blind completing included. Open 3 with two limpers and 1 here offers 5. A seat's own open sizes grow the same way.
+- `caller_extra` (default 0; the UI tick box sends 1): a re-raise is the multiple of the raise it faces plus this share of what the callers of that raise have put in. 3x an open of 3 is 9; with two callers and 1 here it is 9 + 3 + 3 = 15. A call all-in for less counts for what it put in. Limpers who have not called the raise are not callers. 4-bets over callers of a 3-bet work the same way.
+- `raise_mults_oop` and `fourbet_mults_oop` (default absent): the 3-bet and 4-bet+ multipliers for a seat that is out of position to the raiser it faces, meaning it acts before that seat on the flop (`PreflopConfig::postflop_order`: small blind, big blind, then the other seats in order; heads-up the big blind acts first). Absent uses the in-position menu. A seat's own list in `raise_mults_by_seat` or `fourbet_mults_by_seat` wins in and out of position. With `fourbet_mults` absent too, an out-of-position 4-bet uses the out-of-position 3-bet menu.
+
+Example, 6-max with open 3, 3-bet 3 in position and 4 out, callers' money on: UTG opens 3, HJ and CO call. The BTN's 3-bet is 15 and the SB's is 18.
+
+Games using any of these save as format v7, which older binaries refuse; with all of them off the config and the save are byte-for-byte what they were. The UI's built-in scenarios turn them on (1 bb per limper, callers' money, 3x in position and 4x out); saved scenarios without the keys keep them off.
+
+Leaf net coverage: the net was trained on 3-bet pots up to about 104 bb (26 bb at up to four times the usual table scale). Squeezes over several callers of a large open, and raises over many limpers, build heads-up flop pots past that, where its values are an extrapolation.
 
 ## Validation
 

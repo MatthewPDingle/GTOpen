@@ -16,7 +16,7 @@ use axum::Json;
 /// level it needs (`NEEDS_SERVER_LEVEL` in web/js/version.js) and asks for a
 /// restart when the server reports less. Raise both together whenever the
 /// page starts to need something new from the server.
-pub const SERVER_LEVEL: u32 = 1;
+pub const SERVER_LEVEL: u32 = 2;
 
 /// Where the app's change log link points.
 pub const CHANGELOG_URL: &str = "https://github.com/MatthewPDingle/GTOpen/blob/master/CHANGELOG.md";

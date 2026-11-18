@@ -2,6 +2,15 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.2.0 - 2026-11-18
+
+- Preflop Lab can size raises the way players do. Three new settings sit beside the sizes they change: an extra amount per limper when raising over limps, a tick box that adds the callers' money to a 3-bet or 4-bet (3 times an open of 3 is 9, and over two callers it becomes 15), and separate 3-bet and 4-bet sizes out of position. Out of position means acting before the raiser on the flop.
+- The built-in scenarios use these sizes: 1 bb more per limper, callers' money added, and 3-bets of 3 times the raise in position and 4 times out of position. The three 8-max scenarios had two 3-bet sizes to choose from and now have one for each position, which makes them about a third to a half smaller.
+- Scenarios and games you saved are unchanged: the new settings stay off in them until you fill them in. The game does not get bigger when you turn them on, because each spot keeps the same number of raise sizes.
+- "Sizes by position" is now called "Sizes by seat", so that "position" only means in or out of position.
+- Squeezes over several callers, and raises over a string of limpers, can make pots bigger than the leaf net was trained on. Its flop values are less reliable in those rare, very large pots.
+- Close GTOpen and start it again after updating: until then the header shows "restart GTOpen" and the new sizes cannot be built.
+
 ## 1.1.4 - 2026-11-18
 
 - The "?" beside the Preflop Lab title now names the leaf net: a neural net trained on real flop solves that values each hand on a two-player flop. It also says that other pots, and games without learned flop values, use a simpler estimate.
