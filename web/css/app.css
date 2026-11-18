@@ -99,6 +99,14 @@ b { font-weight: inherit; }
 #status-pill.ready .dot { background: var(--blue); }
 @keyframes pulse { 50% { opacity: .35; } }
 
+/* app version: a quiet link to the change log at the end of the header */
+.app-version {
+  font: 11px var(--font-data); letter-spacing: .04em; white-space: nowrap;
+  color: var(--ink-faint); text-decoration: none;
+}
+.app-version:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.app-version:focus-visible { color: var(--ink); outline: 1px solid var(--accent); outline-offset: 3px; }
+
 /* header solve controls — present once a tree is built, so you solve from anywhere */
 #solve-controls { display: flex; align-items: center; gap: 8px; }
 #solve-controls.hidden { display: none; }

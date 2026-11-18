@@ -71,6 +71,7 @@ export const api = {
   solve: opts => req('POST', '/api/solve', opts),
   stop: () => req('POST', '/api/stop'),
   status: () => req('GET', '/api/status'),
+  version: () => req('GET', '/api/version'),
   node: path => req('POST', '/api/node', { path }),
   exploit: (path, exploiter) => req('POST', '/api/exploit', { path, exploiter }),
   pfBuild: (cfg, model) => req('POST', '/api/preflop/spot' + (model ? `?multiway_model=${encodeURIComponent(model)}` : ''), cfg),

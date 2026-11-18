@@ -384,7 +384,8 @@ response + EV gain vs the current strategy), `POST /api/lock {path, mode}`,
 `POST /api/unlock`, `GET /api/locks`, `GET /api/locks/history`,
 `POST /api/locks/undo`, `POST /api/locks/redo`, `POST /api/runouts {path}`,
 `POST /api/range/parse`, `POST /api/save|load {name}`, `GET /api/saves`,
-`GET /api/presets`.
+`GET /api/presets`, `GET /api/version` (`version` and `date` from the newest
+`CHANGELOG.md` entry, the checkout's `commit`, `changelog_url`).
 
 Preflop lab: `POST /api/preflop/spot {config}`, `POST /api/preflop/solve`,
 `POST /api/preflop/stop`, `GET /api/preflop/status`,
