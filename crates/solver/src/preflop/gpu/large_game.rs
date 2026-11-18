@@ -11,8 +11,8 @@
 //! same inputs in the same order, so a solve matches the normal plan bit for
 //! bit when both use the same sample batch and equity-cache choice.
 //!
-//! This file is the host-side plan (no CUDA). The launches are in
-//! `large_game/run.rs`.
+//! The first half of this file is the host-side plan (no CUDA); the order
+//! of work and the launches follow it.
 use super::*;
 
 /// How finely the tree may be cut: a part holds at most 1/k of the nodes.
@@ -511,23 +511,42 @@ impl Plan {
     }
 }
 
-/// The cut for `budget_mb`: the coarsest one that affords full 32-sample
-/// multiway batches and the heads-up equity cache; failing that, the one
-/// with the largest batches. Coarser cuts mean fewer, larger launches.
+/// The coarsest cut `choose` picks by itself. Measured on a 32 GB card
+/// (5.8M and 11.5M nodes, 8 seats): 16 and 24 parts ran as fast as or faster
+/// than 4 to 12, and held far less.
+const FIRST_CHOICE: usize = 16;
+
+/// Share of the budget a cut should stay under when a finer one can: a plan
+/// that filled the card to the last few hundred MB spilled into shared
+/// system memory under Windows and ran two to three times slower.
+const ROOMY: f64 = 0.9;
+
+/// The cut for `budget_mb`: from `FIRST_CHOICE` towards finer cuts, the
+/// first that affords full 32-sample multiway batches and the heads-up
+/// equity cache within `ROOMY` of the budget; failing that, the one with
+/// the largest batches (then the cache, then the least memory).
+/// `PREFLOP_GPU_LARGE_PARTS` pins the cut for experiments.
 pub(super) fn choose(s: &PreflopSolver, lists: &Lists, budget_mb: u64) -> Result<(Plan, Fit), String> {
     let budget = (budget_mb as usize).saturating_mul(1_000_000);
+    let roomy = (budget as f64 * ROOMY) as usize;
     let forced_parts = std::env::var("PREFLOP_GPU_LARGE_PARTS").ok().and_then(|v| v.parse::<usize>().ok());
     let mut best: Option<(Plan, Fit)> = None;
     let mut least = usize::MAX;
     for &parts in LADDER.iter() {
-        if forced_parts.is_some_and(|f| f != parts) { continue; }
+        match forced_parts {
+            Some(forced) => if forced != parts { continue; },
+            None => if parts < FIRST_CHOICE { continue; },
+        }
         let plan = Plan::build(s, lists, parts)?;
         least = least.min(plan.fixed_bytes(s, lists)? + plan.mw_capacity_max * (NUM_CLASSES + 1) * 4);
         let Some(fit) = plan.fit(s, lists, budget, None)? else { continue; };
         let full = (fit.batch == 0 || fit.batch >= 32) && (fit.eq_cache || plan.eq_union_max == 0);
-        let better = best.as_ref().map_or(true, |(_, b)| (fit.batch, fit.eq_cache) > (b.batch, b.eq_cache));
-        if better { best = Some((plan, fit)); }
-        if full { break; }
+        let done = full && fit.need_bytes <= roomy;
+        let rank = |f: &Fit| (f.batch, f.eq_cache, std::cmp::Reverse(f.need_bytes));
+        if done || best.as_ref().map_or(true, |(_, b)| rank(&fit) > rank(b)) {
+            best = Some((plan, fit));
+        }
+        if done { break; }
     }
     best.ok_or_else(|| format!(
         "needs ~{:.0} MB VRAM even in large-game mode (budget {budget_mb} MB)", least as f64 / 1e6))

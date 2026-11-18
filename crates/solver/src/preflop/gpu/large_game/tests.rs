@@ -395,9 +395,14 @@ fn the_cut_shrinks_what_the_card_holds_and_budgets_decide_the_rest() {
     assert!(large.is_finite());
     println!("6 seats, {} nodes: normal plan {normal:.0} MB, large-game mode {large:.0} MB", s.nodes.len());
     assert_eq!(large, large_tree_need_mb(&s) + large_policy_need_mb(&s));
-    // room to spare: the coarsest cut, with full batches and the cache
+    // room to spare: the first choice of cut, with full batches and the cache
     let (plan, fit) = choose(&s, &lists, 100_000).unwrap();
-    assert_eq!((plan.parts, fit.batch, fit.eq_cache), (2, 32, true));
+    assert_eq!((plan.parts, fit.batch, fit.eq_cache), (16, 32, true));
+    // a budget that cut would nearly fill: a finer one that leaves room, still with all of it
+    let tight = (fit.need_bytes as f64 / 1e6 / 0.95) as u64;
+    let (finer, fit) = choose(&s, &lists, tight).unwrap();
+    assert!(finer.parts > 16 && (fit.batch, fit.eq_cache) == (32, true), "{} parts, {fit:?}", finer.parts);
+    assert!(fit.need_bytes as f64 <= tight as f64 * 1e6 * 0.9);
     // room for the large-game mode only: a fine cut that still fits
     let (plan, fit) = choose(&s, &lists, large.ceil() as u64 + 1).unwrap();
     assert!(fit.need_bytes as f64 / 1e6 <= large.ceil() + 1.0 && plan.chunks.len() > 2);
