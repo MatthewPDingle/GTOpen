@@ -90,7 +90,7 @@ export function segmentLevels(history) {
 const WORK = 'The solver works on a spot in proportion to how often hands reach it';
 const NOT_STRATEGY = 'The ranges below are not a strategy: two solves of this game can disagree completely here.';
 
-/** The note above the grid, in plain words: {level, title, text, fix} or null when the spot is solved. */
+/** The note behind the warning icon beside the node title, in plain words: {level, title, text, fix} or null when the spot is solved. */
 export function lineNote(status) {
   if (!status || status.level === 'ok') return null;
   const n = oneIn(status.chance);
@@ -122,4 +122,10 @@ export function lineNote(status) {
     text: `This exact line comes up ${often}${rarest}. ${WORK}, and it has done almost no work here. ${NOT_STRATEGY}`,
     fix: 'To study this line, give the seats on it player models or locks that take these actions, then solve again.',
   };
+}
+
+/** The note as the plain text of its warning icon's tooltip: title, explanation, then the fix. */
+export function lineNoteText(note) {
+  if (!note) return '';
+  return [note.title, note.text].filter(Boolean).join('\n') + (note.fix ? `\n\n${note.fix}` : '');
 }

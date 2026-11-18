@@ -16,6 +16,11 @@ export function publicationLabel(publication) {
     : `gap ${gap ?? '?'} bb measured at iteration ${measured}`;
   return `Preview · iteration ${iteration} · ${accuracy}`;
 }
+// The banner above the node marks ranges that are still a preview. A solve that
+// reached its target needs no banner: the gap chip already shows it.
+export function showsPublicationBanner(publication) {
+  return !!publication && !publication.converged;
+}
 export function solveCompletionLabel(status) {
   if (status.stop_reason === 'target_reached') return 'Target gap reached';
   if (status.stop_reason === 'iteration_limit') return 'Iteration limit reached · target not reached';

@@ -7,7 +7,8 @@
 // Contract: while a tip is up the tip element is role="tooltip" and the
 // target carries aria-describedby="tip", so assistive tech reads the same
 // text the pointer shows; the link is removed on hide. Keyboard focus shows
-// at once (no hover delay). Escape hides.
+// at once (no hover delay). Escape hides. Add data-tip-click to a control
+// whose only job is its tip, so a click or tap opens it too.
 //
 // An explanatory dot is a real button (a focusable span announces no button
 // role):
@@ -74,6 +75,12 @@ export function initTooltips() {
   });
   document.addEventListener('focusout', e => leave(tipTarget(e.target), e.relatedTarget));
   document.addEventListener('mousedown', hide, true);
+  // A control that exists only for its tip (data-tip-click) also opens it on
+  // click or tap: the mousedown above just hid it, and touch has no hover.
+  document.addEventListener('click', e => {
+    const t = tipTarget(e.target);
+    if (t?.hasAttribute('data-tip-click')) { pointer = null; enter(t, true); }
+  });
   window.addEventListener('scroll', hide, true);
   window.addEventListener('resize', hide);
   document.addEventListener('close', hide, true);

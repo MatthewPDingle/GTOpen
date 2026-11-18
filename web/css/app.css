@@ -1087,6 +1087,8 @@ textarea {
 #tip .tip-rows { display: grid; grid-template-columns: auto auto; column-gap: 14px; margin-top: 3px; }
 #tip .tip-rows span:nth-child(2n) { text-align: right; font-family: var(--font-data); font-variant-numeric: tabular-nums; }
 #tip .dim { color: var(--ink-dim); }
+/* a heading line above a tip's text */
+#tip .tip-title { display: block; margin-bottom: 3px; font-weight: 600; }
 #tip .rep-tip-heading { display: grid; gap: 5px; margin-bottom: 7px; }
 #tip .rep-tip-heading > .dim { font-size: 10px; }
 #tip .rep-tip-swatch { display: inline-block; width: 8px; height: 8px;
@@ -1323,7 +1325,6 @@ textarea {
 .model-evidence-body { border-top: 1px solid var(--line); padding: 5px 10px 7px; line-height: 1.45; }
 .model-evidence-body p { margin: 4px 0; overflow-wrap: anywhere; }
 .model-evidence-caveat { color: var(--ink-faint); font-size: 10px; }
-#pfl-node-evidence { max-width: 940px; }
 .pfl-continuation{margin-top:8px;border-top:1px solid var(--line,#343434);padding-top:6px;font-size:11px}
 .pfl-continuation summary{cursor:pointer;color:var(--muted,#aaa)}
 .pfl-continuation-body{display:grid;grid-template-columns:minmax(190px,260px) minmax(0,1fr);gap:20px;margin-top:8px;max-width:920px}
@@ -1334,12 +1335,16 @@ textarea {
 
 /* Early strategy snapshots retain visible provenance through preflop export. */
 .pfl-preview-note { margin: 6px 0; padding: 7px 9px; border-left: 3px solid #bd9851; background: #bd985112; color: #dac89e; font-size: 11px; line-height: 1.4; }
-.pfl-preview-note.converged { border-color: var(--accent, #70b76a); color: #a3c99d; }
 .pfl-preview-option { display: flex; align-items: center; gap: 6px; margin: 6px 0; font-size: 11px; color: var(--muted, #999); }
 #pfl-publication { margin: 4px 0 6px; padding: 5px 8px; }
 .pfl-main > .pfl-nodehead { gap: 8px; flex-wrap: wrap; align-items: center; }
 .pfl-main #pfl-nodetitle { flex: 1 1 280px; }
-.pfl-main #pfl-node-evidence { flex: 0 1 360px; min-width: 0; }
+.pfl-main #pfl-node-evidence { flex: none; }
+/* The node's evidence, shrunk to a link: its tooltip holds the text. */
+.model-evidence-link { padding: 2px 4px; border: 0; border-radius: 3px; background: none; cursor: help;
+  font: inherit; font-size: 11px; color: var(--ink-faint); text-decoration: underline dotted; text-underline-offset: 3px; }
+.model-evidence-link:hover { color: var(--ink); }
+.model-evidence-link:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 
 /* Keep live-straddle controls within the scenario grid. */
 .pfl-grid2 .pfl-straddle-toggle input { width:auto; justify-self:start; }
@@ -1349,12 +1354,12 @@ textarea {
 
 /* Flag rare branches without adding a separate study workflow. */
 /* A line the solution (almost) never plays is not solved (web/js/preflop_reach.js). */
-.pfl-reach-warning { margin: 6px 0 10px; font-size: 12px; line-height: 1.5; color: #cec7b9; }
-.pfl-reach-warning strong { color: #efca80; margin-right: 6px; }
-.pfl-reach-warning em { display: block; margin-top: 4px; font-style: normal; color: #e6e6e6; }
-.pfl-reach-warning.seldom { color: #e4c377; }
-.pfl-reach-warning.unsolved { padding: 9px 12px; border: 1px solid #74603d; border-left: 3px solid #e0a43a; border-radius: 4px; background: #28251e; }
-.pfl-reach-warning.unsolved strong { display: block; font-size: 13px; margin: 0 0 2px; }
+/* A warning icon before the node title; its tooltip holds the explanation. */
+.pfl-reach-warning { display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 22px; height: 22px; padding: 0; border: 0; border-radius: 4px; background: none; cursor: help; color: #c9b27a; }
+.pfl-reach-warning.unsolved { color: #e0a43a; }
+.pfl-reach-warning:hover { background: #e0a43a26; }
+.pfl-reach-warning:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }
 /* its ranges stay readable, but no longer look like a result */
 #pfl-grid.pfl-unsolved { opacity: .45; filter: saturate(.45); }
 #pfl-legend.pfl-unsolved { opacity: .7; }
