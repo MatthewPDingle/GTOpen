@@ -229,7 +229,7 @@
           <button id="btn-stop" class="btn danger" disabled>STOP</button>
           <span id="run-state" class="ctl-state"></span>
         </div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The graphics memory figure is the most a solve could take on the graphics card (GPU); the real fit is checked when the solve starts, and a spot that does not fit is solved on the processor (CPU) instead."></div>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The GPU memory figure is the most a solve could take on the GPU; the real fit is checked when the solve starts, and a spot that does not fit is solved on the CPU instead."></div>
         <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
@@ -377,7 +377,7 @@
     <h1 class="sr-only">Preflop Lab</h1>
     <div class="pfl-layout">
       <section class="panel pfl-side">
-        <h2>PREFLOP GAME <span class="pill">· 2 to 9 players</span> <button type="button" class="info-dot" aria-label="About the Preflop Lab" data-tip="Solves preflop play for 2 to 9 players. It doesn't play out the flop, turn and river; it estimates what each hand is worth once the flop comes, so treat close decisions as approximate. When a line reaches the flop with two or three players, you can send it on to the postflop solver.">?</button></h2>
+        <h2>PREFLOP GAME <span class="pill">· 2 to 9 players</span> <button type="button" class="info-dot" aria-label="About the Preflop Lab" data-tip="Solves preflop play for 2 to 9 players. It doesn't play out the flop, turn and river. Instead the leaf net, a neural net trained on real flop solves, estimates what each hand is worth on a two-player flop. Other pots, and games without learned flop values, use a simpler estimate. Treat close decisions as approximate. When a line reaches the flop with two or three players, you can send it on to the postflop solver.">?</button></h2>
         <label class="pfl-row pfl-source">Ranges from
           <select id="pfl-source" style="flex:1"><option value="solve">GTOpen's solver · your exact game</option><option value="canonical">Canonical GTO charts · ready-made</option></select></label>
         <div id="pfl-source-hint" class="dim">GTOpen works out the ranges for the game you set up below.</div>
@@ -420,10 +420,10 @@
           <label class="chk" data-tip="Lets players call the big blind instead of raising or folding."><input id="pfl-limp" type="checkbox"> allow limps</label>
           <label class="chk" data-tip="Adds going all-in to every raising choice. A raise that would put in most of a stack becomes all-in either way."><input id="pfl-allin" type="checkbox"> all-in option</label>
           <label class="chk" data-tip="Beta. Values three-player pots more accurately, with all three hands dealt from one deck. The first game built with it takes a few extra minutes."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
-          <label class="chk" data-tip="On by default. Values each hand by how it plays after the flop, learned from many thousands of solved flops. It covers flops with two players; bigger pots, all-in pots and games with tournament payouts use a simpler estimate. Close decisions are the least reliable. Untick to use the simpler estimate everywhere."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
+          <label class="chk" data-tip="On by default. Values each hand by how it plays after the flop, using the leaf net: a neural net trained on many thousands of real flop solves. It covers flops with two players; bigger pots, all-in pots and games with tournament payouts use a simpler estimate. Close decisions are the least reliable. Untick to use the simpler estimate everywhere."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
-          data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the graphics card (GPU) or the processor (CPU). It updates as you change the form."></div>
+          data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the GPU or the CPU. It updates as you change the form."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Optional. SOLVE builds the game for you.">BUILD GAME</button>

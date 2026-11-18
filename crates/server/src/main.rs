@@ -341,17 +341,17 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
     let (budget_mb, total_mb) = match card {
         PfCard::NoEngine => {
             plan.card = "unsupported";
-            plan.reason = "this copy of GTOpen has no graphics card support".into();
+            plan.reason = "this copy of GTOpen has no GPU support".into();
             return plan;
         }
         PfCard::Off => {
             plan.card = "off";
-            plan.reason = "the graphics card is switched off for GTOpen (SOLVER_GPU=0)".into();
+            plan.reason = "the GPU is switched off for GTOpen (SOLVER_GPU=0)".into();
             return plan;
         }
         PfCard::Missing => {
             plan.card = "none";
-            plan.reason = "no NVIDIA graphics card found".into();
+            plan.reason = "no NVIDIA GPU found".into();
             return plan;
         }
         PfCard::Ready { budget_mb, total_mb } => (budget_mb as f64, total_mb as f64),
@@ -363,17 +363,17 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
     plan.gpu_limit_mb = empty_mb;
     if !gpu_need_mb.is_finite() {
         plan.card = "too_big";
-        plan.reason = "too big for the graphics card".into();
+        plan.reason = "too big for the GPU".into();
     } else if gpu_need_mb > empty_mb {
         plan.card = "too_big";
         plan.reason = format!(
-            "too big for this graphics card (needs {} there, the card can give {})",
+            "too big for this GPU (needs {} of GPU memory, it has {})",
             gb(gpu_need_mb), gb(empty_mb)
         );
     } else if gpu_need_mb > budget_mb {
         plan.card = "busy";
         plan.reason = format!(
-            "the graphics card has too little free right now (needs {}, {} free)",
+            "the GPU has too little memory free right now (needs {}, {} free)",
             gb(gpu_need_mb), gb(budget_mb)
         );
     } else {
@@ -1986,10 +1986,10 @@ async fn pf_solve(
                     // the plan's plain reason when it saw this coming
                     st.gpu_note = match st.size.map(|size| size.plan()) {
                         Some(plan) if plan.engine == "cpu" => {
-                            format!("Solving on the processor (CPU): {}.", plan.reason)
+                            format!("Solving on the CPU: {}.", plan.reason)
                         }
                         _ => format!(
-                            "Solving on the processor (CPU): the graphics card could not take this game ({err})."
+                            "Solving on the CPU: the GPU could not take this game ({err})."
                         ),
                     };
                     None

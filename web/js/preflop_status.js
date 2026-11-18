@@ -45,12 +45,12 @@ export function engineChip(st, formEngine = null) {
   const running = st.state === 'running';
   if (st.gpu) {
     if (!running && formEngine === 'gpu') return null;
-    return { label: '⚡ GPU', tip: running ? 'Solving on the graphics card (GPU).' : 'Solved on the graphics card (GPU).' };
+    return { label: '⚡ GPU', tip: running ? 'Solving on the GPU.' : 'Solved on the GPU.' };
   }
   if (!running && formEngine === 'cpu') return null;
-  // a solve that fell back to the processor says why
+  // a solve that fell back to the CPU says why
   if (st.gpu_note) return { label: 'CPU', tip: st.gpu_note };
-  if (!st.plan) return running ? { label: 'CPU', tip: 'Solving on the processor (CPU).' } : null;
+  if (!st.plan) return running ? { label: 'CPU', tip: 'Solving on the CPU.' } : null;
   if (!running && st.plan.engine === formEngine) return null;
   return planChip(st.plan, running);
 }

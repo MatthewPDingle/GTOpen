@@ -398,7 +398,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   else els.modelBox.before(modelStrip);
   const VALUE_LABEL = { leafnet: 'learned flop values', balanced: 'simple flop values' };
   const VALUE_TIP = {
-    leafnet: 'This game values two-player flops with the learned model.',
+    leafnet: 'This game values two-player flops with the leaf net, a neural net trained on real flop solves.',
     balanced: 'This game values flops with the simple estimate, not the learned model.',
   };
   const MULTIWAY_LABEL = {

@@ -3,7 +3,7 @@ import { statusChips, engineChip, isStopping, runningLabel, endedLabel } from '.
 
 const labels = (st, opts) => statusChips(st, opts).map(c => c.label);
 const gpuPlan = { engine: 'gpu', reason: '' };
-const cpuPlan = { engine: 'cpu', reason: 'too big for this graphics card (needs 31.5 GB there, the card can give 31.4 GB)' };
+const cpuPlan = { engine: 'cpu', reason: 'too big for this GPU (needs 31.5 GB of GPU memory, it has 31.4 GB)' };
 const seats = { positions: ['BTN', 'SB', 'BB'] };
 
 // a built game before any solve: the size line already says everything
@@ -15,10 +15,10 @@ const running = { state: 'running', iteration: 647, published_iteration: 640, ac
 assert.deepEqual(labels(running, { ...seats, formEngine: 'gpu' }), ['⚡ GPU']);
 // the first moments, before the card reports in
 assert.deepEqual(labels({ state: 'running', iteration: 0, plan: gpuPlan }, { formEngine: 'gpu' }), ['GPU…']);
-// a solve on the processor says so, with the reason in the tip
+// a solve on the CPU says so, with the reason in the tip
 let chips = statusChips({ state: 'running', iteration: 12, plan: cpuPlan }, { formEngine: 'cpu' });
 assert.deepEqual(chips.map(c => c.label), ['CPU']);
-assert.match(chips[0].tip, /^Solving on the processor \(CPU\): too big for this graphics card/);
+assert.match(chips[0].tip, /^Solving on the CPU: too big for this GPU/);
 
 // a finished solve: that it is done, and the final gap, once each
 const done = { state: 'done', stop_reason: 'target_reached', iteration: 1600, published_iteration: 1600,
@@ -54,7 +54,7 @@ assert.deepEqual(labels({ state: 'stopped', iteration: 74, published_iteration: 
 assert.equal(engineChip(done, 'gpu'), null);
 assert.equal(engineChip(done, 'cpu').label, '⚡ GPU');
 const fellBack = { state: 'done', iteration: 300, gpu: false, plan: gpuPlan,
-  gpu_note: 'Solving on the processor (CPU): the graphics card could not take this game (out of memory).' };
+  gpu_note: 'Solving on the CPU: the GPU could not take this game (out of memory).' };
 assert.deepEqual(engineChip(fellBack, 'gpu'), { label: 'CPU', tip: fellBack.gpu_note });
 assert.equal(engineChip(fellBack, 'cpu'), null);
 // a built game whose table (profiles, locks) no longer fits the card, though the form's game would

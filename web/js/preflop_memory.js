@@ -31,47 +31,51 @@ export function cardState(plan) {
   if (plan.card) return plan.card;
   if (plan.engine === 'gpu') return 'fits';
   if (!(plan.gpu_total_mb > 0)) {
-    return /switched off/.test(plan.reason) ? 'off' : /no graphics card support/.test(plan.reason) ? 'unsupported' : 'none';
+    return /switched off/.test(plan.reason) ? 'off' : /no (graphics card|GPU) support/.test(plan.reason) ? 'unsupported' : 'none';
   }
   return /right now/.test(plan.reason) ? 'busy' : 'too_big';
 }
 
-/** The graphics card's own line: what the game needs there against what the
+/** The GPU's own line: what the game needs there against what the
  *  card has, kept apart from the RAM line so the two are never read as one. */
 export function cardText(plan) {
   const need = sizeText(plan.gpu_need_mb);
   const limit = plan.gpu_limit_mb ?? Math.max(0, plan.gpu_total_mb - CARD_MARGIN_MB);
   switch (cardState(plan)) {
-    case 'fits': return `Graphics card: needs ${need}, ${sizeText(plan.gpu_free_mb)} free \u2014 fits\u00a0\u2713`;
+    case 'fits': return `GPU memory: needs ${need}, ${sizeText(plan.gpu_free_mb)} free \u2014 fits\u00a0\u2713`;
     case 'too_big': return Number.isFinite(plan.gpu_need_mb)
-      ? `Graphics card: needs ${need}, has ${sizeText(limit)} \u2014 too big\u00a0\u2717`
-      : 'Graphics card: far too big for the card\u00a0\u2717';
-    case 'busy': return `Graphics card: needs ${need}, only ${sizeText(plan.gpu_free_mb)} free now \u2014 no room\u00a0\u2717`;
-    case 'off': return 'Graphics card: switched off for GTOpen (SOLVER_GPU=0)';
-    case 'unsupported': return 'Graphics card: this copy of GTOpen cannot use one';
-    default: return 'Graphics card: no NVIDIA card found';
+      ? `GPU memory: needs ${need}, has ${sizeText(limit)} \u2014 too big\u00a0\u2717`
+      : 'GPU memory: far too big for this GPU\u00a0\u2717';
+    case 'busy': return `GPU memory: needs ${need}, only ${sizeText(plan.gpu_free_mb)} free now \u2014 no room\u00a0\u2717`;
+    case 'off': return 'GPU: switched off for GTOpen (SOLVER_GPU=0)';
+    case 'unsupported': return 'GPU: this copy of GTOpen cannot use one';
+    default: return 'GPU: no NVIDIA GPU found';
   }
 }
 
-/** Where the next solve will run. The card's line above says why. */
+/** Where the next solve will run and what it uses: a GPU solve needs the
+ *  RAM as well (the game is built there and its results come back there); a
+ *  CPU solve uses RAM only. The GPU's line above says why it is the CPU. */
 export function engineText(plan) {
-  return plan.engine === 'gpu' ? 'Solves on: GPU (graphics card)' : 'Solves on: CPU (processor), slower';
+  return plan.engine === 'gpu'
+    ? 'Solves on: GPU \u2014 uses both the RAM and the GPU memory'
+    : 'Solves on: CPU, slower \u2014 uses the RAM only';
 }
 
 /** The engine chip until a solve reports its own engine: the plan before
  *  one, and the first moments of one while the card is being set up. */
 export function planChip(plan, running = false) {
   if (plan.engine !== 'gpu') {
-    return { label: 'CPU', tip: `${running ? 'Solving' : 'The next solve will run'} on the processor (CPU): ${plan.reason}.` };
+    return { label: 'CPU', tip: `${running ? 'Solving' : 'The next solve will run'} on the CPU: ${plan.reason}.` };
   }
   return running
-    ? { label: 'GPU\u2026', tip: 'Getting the graphics card (GPU) ready.' }
-    : { label: 'GPU', tip: 'The next solve will run on the graphics card (GPU).' };
+    ? { label: 'GPU\u2026', tip: 'Getting the GPU ready.' }
+    : { label: 'GPU', tip: 'The next solve will run on the GPU.' };
 }
 
 /**
  * The size lines of the game on the form, from an estimate reply: the game
- * tree, RAM, the graphics card and where it solves, one fact a line.
+ * tree, RAM, GPU memory and where it solves, one fact a line.
  * Returns the lines, the "?" popup text and the state of the RAM line
  * ('ok' | 'warn' | 'bad').
  */
@@ -97,14 +101,14 @@ export function estimateView(e) {
   const tip = !plan.engine ? RESTART_TIP : [
     `RAM is this computer's normal memory; every game has to fit there. Right now it can take ` +
       `a game like this up to about ${sizeText(limit)}.`,
-    `A graphics card (GPU) solves much faster, but the game has to fit in the card's free memory too. ` +
-      `It needs more there than in RAM: the card works on the whole game at once, so besides the ` +
-      `solver's tables it holds a range for every spot and a value for every ending. ` +
-      `When it does not fit, the game solves on the processor (CPU): same answer, slower.`,
+    `A GPU solve is much faster and uses both: this RAM, and the GPU's own memory. The game takes ` +
+      `more room on the GPU than a CPU solve takes in RAM, because the GPU works on the whole game ` +
+      `at once: besides the solver's tables it holds a range for every spot and a value for every ` +
+      `ending. When it does not fit there, the game solves on the CPU, in RAM only: same answer, slower.`,
     state === 'warn' ? 'Only just fits: the build may still be refused if memory gets tighter.' : '',
     state === 'bad' ? `To make the game smaller: ${smaller}.` : '',
-    e.ok && card === 'too_big' ? `To fit the card, make the game smaller: ${smaller}.` : '',
-    e.ok && card === 'busy' ? 'To fit the card, close whatever else is using it, or make the game smaller.' : '',
+    e.ok && card === 'too_big' ? `To fit the GPU, make the game smaller: ${smaller}.` : '',
+    e.ok && card === 'busy' ? 'To fit the GPU, close whatever else is using it, or make the game smaller.' : '',
   ].filter(Boolean).join(' ');
   return { lines, tip, state };
 }
