@@ -77,6 +77,20 @@ impl PreflopGpu {
             Err(error) => Err(e(error)),
         };
         let result = Self::adaptive_with_offsets(s, budget_mb, free, true);
+        // A game the normal plan cannot hold: the same kernels, the tree
+        // worked through in parts (large_game.rs). Only reached when every
+        // plan above has refused, so a game that fits never comes here.
+        let result = match result {
+            Err(normal) if probe.is_ok() => match Self::new_large(s, budget_mb) {
+                Ok(g) => Ok((g, ThroughputSelection {
+                    mode: "large_game", configured_budget_mb: budget_mb, cohort_limit_mb: None,
+                    fallback_reason: Some(normal), narrow_offsets: false,
+                    static_cdf: false, static_cdf_fallback_reason: None,
+                })),
+                Err(large) => Err(format!("{normal}; large-game mode: {large}")),
+            },
+            other => other,
+        };
         drop(probe);
         result
     }

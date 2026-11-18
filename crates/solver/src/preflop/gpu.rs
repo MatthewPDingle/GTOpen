@@ -27,6 +27,8 @@ mod adaptive_throughput;
 mod icm;
 mod removal;
 mod rnr;
+mod large_game;
+pub use large_game::{large_need_mb, large_need_of, large_plan_report, large_policy_need_mb, large_tree_need_mb, LargeGameInfo};
 pub use adaptive_throughput::ThroughputSelection;
 #[cfg(test)]
 mod side_pot_tests;
@@ -256,6 +258,9 @@ pub struct PreflopGpu {
     removal: Option<removal::RemovalGpu>,
     /// The trust dial's free types and mixtures (hero mode with a dial).
     rnr: Option<Box<rnr::GpuRnr>>,
+    /// Large-game mode: the tree is worked through in parts (large_game.rs).
+    /// None on the normal plan, whose launches never look at it.
+    large: Option<Box<large_game::Device>>,
 }
 
 // Terminal values remain live across BR/average passes. Action values are
@@ -1086,6 +1091,16 @@ impl PreflopGpu {
     }
 
     fn new_with_kernel_offsets(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool) -> Result<Self, String> {
+        Self::construct(s, budget_mb, allow_compact, force_minimal, cohorts, unrolled, _cohort_limit_mb, _narrow, None)
+    }
+
+    /// `large` = None builds the normal plan exactly as before. Some swaps
+    /// in large-game mode's block tables and scratch sizes (large_game.rs);
+    /// the kernels and every other table are the same.
+    fn construct(s: &PreflopSolver, budget_mb: u64, allow_compact: bool, force_minimal: bool, cohorts: bool, unrolled: bool, _cohort_limit_mb: Option<u64>, _narrow: bool, mut large: Option<large_game::Selected>) -> Result<Self, String> {
+        if large.is_some() && (cohorts || unrolled || _narrow) {
+            return Err("large-game mode uses the normal plan's kernels".into());
+        }
         // Blockers reprice terminals around the other kernels on every plan
         // (the shared-evaluation variants only change how multiway CDFs are
         // built and read). The legacy pairwise product shares the heads-up
@@ -1109,12 +1124,22 @@ impl PreflopGpu {
         if s.rnr_active().is_some() && (cohorts || unrolled || _narrow) {
             return Err("the trust dial uses the normal GPU plan".into());
         }
-        let reach_blocks = s.nodes.len().checked_add(s.n - 1)
-            .filter(|&len| len <= u32::MAX as usize)
-            .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
-        let values = ValuePlan::build(s);
+        let reach_blocks = match large.as_ref() {
+            Some(l) => l.plan.reach_blocks,
+            None => s.nodes.len().checked_add(s.n - 1)
+                .filter(|&len| len <= u32::MAX as usize)
+                .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?,
+        };
+        let values = match large.as_mut() {
+            Some(l) => l.plan.take_values(),
+            None => ValuePlan::build(s),
+        };
         let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
-        let mut need = base_need_mb(s, values.blocks, reach_blocks);
+        // Large-game mode's figure already holds everything it allocates.
+        let mut need = match large.as_ref() {
+            Some(l) => l.fit.need_bytes as f64 / 1e6,
+            None => base_need_mb(s, values.blocks, reach_blocks),
+        };
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -1250,12 +1275,17 @@ impl PreflopGpu {
         // Reserve actual forced allocation before CDF and optional caches,
         // including the legacy path without CDF storage.
         let literal_reference_base_mb = need;
-        need = reserve_forced_vram_mb(need, forced.len(), budget_mb)?;
+        if large.is_none() {
+            need = reserve_forced_vram_mb(need, forced.len(), budget_mb)?;
+        }
         let static_seats: Vec<bool> = (0..np).map(|p| s.seat_static(p)).collect();
         let n_forced = src.iter().filter(|&&x| x == 2).count();
         let n_frozen = src.iter().filter(|&&x| x == 1).count();
 
-        let reach_src = reach_sources(s);
+        let reach_src = match large.as_mut() {
+            Some(l) => std::mem::take(&mut l.plan.reach_src),
+            None => reach_sources(s),
+        };
         let act_nodes = &values.action_nodes;
         let spans = values.spans.clone();
         // trust dial: free arenas after the main ones, mixtures after the
@@ -1272,8 +1302,11 @@ impl PreflopGpu {
             None
         };
 
-        let mut eq_plan = EquityCachePlan::build(s, &reach_src);
-        let mut mw_plan = EquityCachePlan::multiway(s, &reach_src);
+        // Large-game mode: each part's slot tables, one after another.
+        let (mut eq_plan, mut mw_plan) = match large.as_mut() {
+            Some(l) => l.plan.take_slot_tables(np),
+            None => (EquityCachePlan::build(s, &reach_src), EquityCachePlan::multiway(s, &reach_src)),
+        };
         let mw_terms: Vec<u32> = s.nodes.iter().enumerate()
             .filter(|(_, nd)| coupled_terminal(s, nd))
             .map(|(i, _)| i as u32).collect();
@@ -1309,7 +1342,10 @@ impl PreflopGpu {
         if use_multiway && std::env::var("PREFLOP_MW_KEY_STATS").as_deref() == Ok("1") {
             multiway_terminal_key_stats(s, &reach_src, &mw_terms);
         }
-        let mut compact = if use_multiway && allow_compact {
+        let mut compact = if let Some(l) = large.as_mut() {
+            // per part, with its own flag at launch; this is all their maps
+            MultiwayCompactPlan { capacity: l.plan.mw_capacity_max, map: std::mem::take(&mut l.plan.mw_compact), bytes: 0, enabled: false }
+        } else if use_multiway && allow_compact {
             MultiwayCompactPlan::build(&mw_plan, np)?
         } else { MultiwayCompactPlan::union(mw_plan.blocks.len()) };
         let mut mw_batch = 0usize;
@@ -1320,7 +1356,18 @@ impl PreflopGpu {
         let mut mw_reference = None;
         let mut mw_reference_source = "not_applicable";
         let mut mw_literal_reference = None;
-        if use_multiway {
+        // Scratch the multiway kernels write per CDF slot and per terminal.
+        let mut mw_active_len = 0usize;
+        let mut mw_prob_len = mw_ordinary.len().max(1);
+        if let Some(l) = large.as_ref() {
+            mw_reference_source = "large_game";
+            mw_batch = l.fit.batch;
+            mw_cache_len = (l.plan.mw_capacity_max * l.fit.batch * (NUM_CLASSES + 1)).max(1);
+            use_mw_normalized = true;
+            mw_normalized_len = (l.plan.mw_capacity_max * NUM_CLASSES).max(1);
+            mw_active_len = l.plan.mw_union_max.max(1);
+            mw_prob_len = l.plan.mw_terms_max.max(1);
+        } else if use_multiway {
             let mut fixed = mw_plan.metadata_bytes() + mw_terms.len() * 8 + mw_plan.blocks.len() * 4
                 + 3 * super::multiway::SAMPLES * NUM_CLASSES * 4 + compact.bytes;
             let reference_fixed = mw_plan.metadata_bytes() + mw_terms.len() * 4
@@ -1351,18 +1398,30 @@ impl PreflopGpu {
         } else {
             mw_plan = EquityCachePlan::disabled(np);
         }
+        if large.is_none() {
+            mw_active_len = mw_plan.blocks.len();
+        }
         let eq_cache_fits = !eq_plan.blocks.is_empty()
             && need + (eq_plan.bytes() * eq_channels) as f64 / 1e6 <= budget_mb as f64;
-        let use_eq_cache = mw_reference.as_ref().map_or(eq_cache_fits, |r| r.use_eq_cache);
-        if use_eq_cache && !eq_cache_fits {
-            return Err("reference HU equity cache does not fit the optimized layout; solving on CPU".into());
+        let use_eq_cache = match large.as_ref() {
+            Some(l) => l.fit.eq_cache,
+            None => mw_reference.as_ref().map_or(eq_cache_fits, |r| r.use_eq_cache),
+        };
+        if large.is_none() {
+            if use_eq_cache && !eq_cache_fits {
+                return Err("reference HU equity cache does not fit the optimized layout; solving on CPU".into());
+            }
+            if use_eq_cache {
+                need += (eq_plan.bytes() * eq_channels) as f64 / 1e6;
+            } else {
+                eq_plan = EquityCachePlan::disabled(np);
+            }
         }
-        if use_eq_cache {
-            need += (eq_plan.bytes() * eq_channels) as f64 / 1e6;
-        } else {
-            eq_plan = EquityCachePlan::disabled(np);
-        }
-        let eq_cache_len = if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES * eq_channels } else { 1 };
+        let eq_cache_len = match large.as_ref() {
+            // the largest part's cache; each part fills it for itself
+            Some(l) => if use_eq_cache { l.plan.eq_union_max * NUM_CLASSES * eq_channels } else { 1 },
+            None => if use_eq_cache { eq_plan.blocks.len() * NUM_CLASSES * eq_channels } else { 1 },
+        };
 
         // Threads in a warp evaluate consecutive hero classes. Transpose so
         // they read consecutive equities at each opponent-class step; the
@@ -1587,8 +1646,8 @@ impl PreflopGpu {
             mw_union_slots: mw_plan.blocks.len() as u32,
             use_mw_compact: compact.enabled as i32,
             d_mw_terms: stream.clone_htod(if mw_ordinary.is_empty() { &[0u32][..] } else { mw_ordinary.as_slice() }).map_err(e)?,
-            d_mw_active: if use_mw_prepared { stream.alloc_zeros::<u32>(mw_plan.blocks.len()).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
-            d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_ordinary.len().max(1)).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
+            d_mw_active: if use_mw_prepared { stream.alloc_zeros::<u32>(mw_active_len).map_err(e)? } else { stream.null::<u32>().map_err(e)? },
+            d_mw_prob: if use_mw_prepared { stream.alloc_zeros::<f32>(mw_prob_len).map_err(e)? } else { stream.null::<f32>().map_err(e)? },
             mw_spans: mw_plan.spans,
             mw_batch: mw_batch as u32,
             mw_nterms: mw_ordinary.len() as u32,
@@ -1648,8 +1707,17 @@ impl PreflopGpu {
             icm: icm_gpu,
             removal: removal_gpu,
             rnr: rnr_gpu,
+            large: None,
             _ctx: ctx,
             stream,
+        };
+        let gpu = match large {
+            Some(selected) => {
+                let mut gpu = gpu;
+                gpu.large = Some(Box::new(large_game::Device::new(&gpu, selected)?));
+                gpu
+            }
+            None => gpu,
         };
         let gpu = if let Some(plan)=cohort_plan {
             let mut gpu=gpu;
@@ -1710,6 +1778,7 @@ impl PreflopGpu {
     fn sweep(&mut self, p: i32, mode: i32) -> Result<(), String> {
         #[cfg(feature = "preflop-research")]
         if self.research_predictive_sweep(p, mode)? { return Ok(()); }
+        if self.large.is_some() { return self.large_sweep(p, mode); }
         self.down(mode, p)?;
         self.terminals(p)?;
         self.up(p, mode)?;
@@ -2288,6 +2357,7 @@ impl PreflopGpu {
     }
 
     fn queue_evaluation(&mut self) -> Result<(), String> {
+        if self.large.is_some() { return self.large_queue_evaluation(); }
         self.down(1, -1)?;
         if self.research_cohorts.is_some() { return self.queue_cohort_evaluation(); }
         for p in 0..self.np {

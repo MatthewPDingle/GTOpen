@@ -53,9 +53,16 @@ export function cardText(plan) {
   }
 }
 
+/** A game too big for the card's normal solve that the card still takes a
+ *  part at a time (a server from before the mode never says so). */
+export function largeGame(plan) {
+  return plan.engine === 'gpu' && plan.gpu_mode === 'large';
+}
+
 /** Where the next solve will run. The card's line above says why. */
 export function engineText(plan) {
-  return plan.engine === 'gpu' ? 'Solves on: GPU (graphics card)' : 'Solves on: CPU (processor), slower';
+  if (plan.engine !== 'gpu') return 'Solves on: CPU (processor), slower';
+  return largeGame(plan) ? 'Solves on: GPU (graphics card), large-game mode' : 'Solves on: GPU (graphics card)';
 }
 
 /** The engine chip until a solve reports its own engine: the plan before
@@ -64,8 +71,9 @@ export function planChip(plan, running = false) {
   if (plan.engine !== 'gpu') {
     return { label: 'CPU', tip: `${running ? 'Solving' : 'The next solve will run'} on the processor (CPU): ${plan.reason}.` };
   }
-  return running
-    ? { label: 'GPU\u2026', tip: 'Getting the graphics card (GPU) ready.' }
+  if (running) return { label: 'GPU\u2026', tip: 'Getting the graphics card (GPU) ready.' };
+  return largeGame(plan)
+    ? { label: 'GPU', tip: 'The next solve will run on the graphics card (GPU), in large-game mode.' }
     : { label: 'GPU', tip: 'The next solve will run on the graphics card (GPU).' };
 }
 
@@ -100,7 +108,11 @@ export function estimateView(e) {
     `A graphics card (GPU) solves much faster, but the game has to fit in the card's free memory too. ` +
       `It needs more there than in RAM: the card works on the whole game at once, so besides the ` +
       `solver's tables it holds a range for every spot and a value for every ending. ` +
-      `When it does not fit, the game solves on the processor (CPU): same answer, slower.`,
+      `A game too big for that can still solve on the card in large-game mode, a part of the game ` +
+      `at a time: same answer, with more steps for the card to run. ` +
+      `When even that does not fit, the game solves on the processor (CPU): same answer, slower.`,
+    plan.engine && largeGame(plan)
+      ? 'This game is in large-game mode: it is too big for the card all at once, so the card takes it a part at a time.' : '',
     state === 'warn' ? 'Only just fits: the build may still be refused if memory gets tighter.' : '',
     state === 'bad' ? `To make the game smaller: ${smaller}.` : '',
     e.ok && card === 'too_big' ? `To fit the card, make the game smaller: ${smaller}.` : '',
