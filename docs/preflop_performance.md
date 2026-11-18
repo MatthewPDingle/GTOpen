@@ -19,19 +19,27 @@ graphics memory a solve needs, which is a different figure from these allocation
 
 ## Memory and engine shown in the Preflop Lab
 
-Before a build the lab shows how much memory the game on the form needs and
+Before a build the lab shows, one fact a line, the RAM the game on the form
+needs, what it needs on the graphics card against what the card has, and
 whether it will solve on the graphics card (GPU) or the processor (CPU). Each
 fact shows once: the chips under SOLVE name the engine only while a solve runs
 or when it differs from that line. The numbers come from the server (`plan` on the estimate, build, load,
 session and status replies):
 
+- The card's own verdict is `plan.card`: `fits`, `too_big` (more than the card
+  could give even when empty, `gpu_limit_mb`), `busy` (too little free right
+  now), or `none` / `off` / `unsupported` when there is no card to use.
 - RAM: both solver tables plus about 400 bytes a node for the tree. A GPU solve
   adds a second copy of the tables, which it keeps in RAM to hand results back.
 - Graphics memory: the least the GPU engine can run in
   (`gpu::minimum_need_mb`), with every optional cache left out. It is two to
   three times the solver tables: the card also holds a range table per node, a
   value table per terminal, the tree, the learned flop corrections, blockers
-  and one sample of the multiway range tables. Before a build the same figure
+  and one sample of the multiway range tables. The CPU walks one line of the
+  tree at a time and keeps ranges and values only for that line; the GPU works
+  level by level over the whole tree, so it holds them for every node at once.
+  On an 11.5M-node 8-max game: tables 14.5 GB, ranges 7.3, values 4.6, multiway
+  2.0, tree 1.6, learned flop values 0.9, blockers 0.6, 31.5 GB in all. Before a build the same figure
   comes from the size walk's counts (`gpu::minimum_need_of`); a test keeps the
   two equal.
 - The game solves on the GPU when that need fits the card's free memory less

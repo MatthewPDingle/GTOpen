@@ -262,6 +262,12 @@ struct PfEnginePlan {
     /// 0 when there is no usable card.
     gpu_free_mb: f64,
     gpu_total_mb: f64,
+    /// The most the card could give a solve with nothing else on it (MB).
+    gpu_limit_mb: f64,
+    /// The card's side of the plan, for the lab to word on its own line:
+    /// "fits" | "too_big" (for the card even when empty) | "busy" (too
+    /// little free right now) | "none" | "off" | "unsupported".
+    card: &'static str,
 }
 
 /// The tree outside the two big tables: about 400 bytes a node (measured
@@ -308,14 +314,17 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
     let mut plan = PfEnginePlan { engine: "cpu", ram_mb: arena_mb + tree_mb, gpu_need_mb, ..Default::default() };
     let (budget_mb, total_mb) = match card {
         PfCard::NoEngine => {
+            plan.card = "unsupported";
             plan.reason = "this copy of GTOpen has no graphics card support".into();
             return plan;
         }
         PfCard::Off => {
+            plan.card = "off";
             plan.reason = "the graphics card is switched off for GTOpen (SOLVER_GPU=0)".into();
             return plan;
         }
         PfCard::Missing => {
+            plan.card = "none";
             plan.reason = "no NVIDIA graphics card found".into();
             return plan;
         }
@@ -325,19 +334,24 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
     plan.gpu_total_mb = total_mb;
     // the most the card could give with nothing else on it
     let empty_mb = (total_mb - GPU_MARGIN_MB as f64).max(0.0);
+    plan.gpu_limit_mb = empty_mb;
     if !gpu_need_mb.is_finite() {
+        plan.card = "too_big";
         plan.reason = "too big for the graphics card".into();
     } else if gpu_need_mb > empty_mb {
+        plan.card = "too_big";
         plan.reason = format!(
             "too big for this graphics card (needs {} there, the card can give {})",
             gb(gpu_need_mb), gb(empty_mb)
         );
     } else if gpu_need_mb > budget_mb {
+        plan.card = "busy";
         plan.reason = format!(
             "the graphics card has too little free right now (needs {}, {} free)",
             gb(gpu_need_mb), gb(budget_mb)
         );
     } else {
+        plan.card = "fits";
         plan.engine = "gpu";
         // a GPU solve keeps a second copy of the two tables in RAM to hand
         // results back
