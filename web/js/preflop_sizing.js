@@ -45,28 +45,45 @@ export function createPositionSizing(els, positionsFor, changed) {
   const details = document.createElement('details'); details.className = 'pfl-position-sizes';
   const summary = document.createElement('summary'); summary.textContent = 'Sizes by position'; details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Example: 4× facing a raise to 6 bb makes it 24 bb. Squeezes use the 3-bet sizes.';
+  note.textContent = 'Type in a box to give that seat its own sizes, for example 4 or 4,6. They replace the main setting for that seat. An empty box uses the main setting, shown in grey.';
   details.append(note);
   const table = document.createElement('table');
-  table.innerHTML = '<thead><tr><th>Seat</th><th>Open · bb</th><th>3-bet · ×prev</th><th>4-bet+ · ×prev</th></tr></thead><tbody></tbody>';
+  table.innerHTML = '<thead><tr><th>Seat</th>'
+    + '<th tabindex="0" data-tip="What this seat raises to when it is the first to raise, in big blinds. Also used when it raises over limpers.">Open · bb</th>'
+    + '<th tabindex="0" data-tip="This seat\u2019s 3-bet, as a multiple of the raise it faces: 4 against a raise to 6 bb makes it 24 bb. Its squeezes use this too.">3-bet · ×prev</th>'
+    + '<th tabindex="0" data-tip="This seat\u2019s 4-bets and later raises, as a multiple of the raise it faces.">4-bet+ · ×prev</th></tr></thead><tbody></tbody>';
   details.append(table);
   const rebuild = document.createElement('p'); rebuild.textContent = 'Build and solve again for new sizes to count.'; details.append(rebuild);
   els.mult.closest('.pfl-grid2').after(details);
+  // An empty box shows, in grey, the main setting that seat will use.
+  const mainSizes = () => ({
+    open: els.opens.value.trim() || 'none',
+    three: els.mult.value.trim() || 'none',
+    later: later.value.trim() || els.mult.value.trim() || 'none',
+  });
+  function placeholders() {
+    const main = mainSizes();
+    table.querySelectorAll('input').forEach(input => { input.placeholder = main[input.dataset.size]; });
+  }
   function render() {
     const body = table.querySelector('tbody'); body.replaceChildren();
     for (const p of positionsFor(+els.players.value)) {
       const tr = document.createElement('tr'); const title = document.createElement('th'); title.textContent = p; tr.append(title);
       for (const [key,name] of [['open','open sizes in bb'],['three','3-bet multipliers'],['later','4-bet and later multipliers']]) {
         const td=document.createElement('td'), input=document.createElement('input');
-        input.type='text'; input.value=rows[p]?.[key] || ''; input.placeholder='Default'; input.setAttribute('aria-label',`${p} ${name}`);
+        input.type='text'; input.value=rows[p]?.[key] || ''; input.dataset.size=key; input.setAttribute('aria-label',`${p} ${name}; empty uses the main setting`);
         input.addEventListener('input',()=>{(rows[p]??={})[key]=input.value; changed();}); td.append(input); tr.append(td);
       }
       body.append(tr);
     }
+    placeholders();
   }
   later.addEventListener('input',changed); els.players.addEventListener('change',render); render();
+  for (const el of [els.opens, els.mult, later]) el.addEventListener('input', placeholders);
+  details.addEventListener('toggle', placeholders);
   return {
-    config: () => sizingConfig(positionsFor(+els.players.value), rows, later.value, els.mult.value),
+    // the form is read after every change, so the grey defaults follow a loaded scenario too
+    config: () => { placeholders(); return sizingConfig(positionsFor(+els.players.value), rows, later.value, els.mult.value); },
     scenario: () => ({positionSizes: JSON.parse(JSON.stringify(rows)), laterMult: later.value.trim()}),
     restore: value => { rows=JSON.parse(JSON.stringify(value?.positionSizes || value?.rows || {})); later.value=value?.laterMult ?? value?.later ?? ''; render(); },
     load: cfg => {const value=sizingFromConfig(cfg); rows=value.rows; later.value=value.later; render();},
