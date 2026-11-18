@@ -121,8 +121,8 @@ pub struct PreflopConfig {
     #[serde(default = "default_realization")]
     pub realization: String,
     /// Which leaf net realization "leafnet" uses: None (or "v1") is the
-    /// first shipped net; "v2" is the shipped net a new Preflop Lab game
-    /// uses; "SNAPSHOT/RUN" is a net the leaf-net harness (tools/leafnet)
+    /// first shipped net; "v3" is the shipped net a new Preflop Lab game
+    /// uses and "v2" the one before it; "SNAPSHOT/RUN" is a net the leaf-net harness (tools/leafnet)
     /// exported under its work folder. Kept in saves, so a loaded game is
     /// priced by the net it was solved with.
     #[serde(default, skip_serializing_if = "Option::is_none")]
