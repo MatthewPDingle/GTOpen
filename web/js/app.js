@@ -44,6 +44,7 @@ const state = {
   solved: false,
   saved: false,         // current solve persisted via save/load (gates discard confirms)
   running: false,       // last /api/status was "running" (gates discard confirms)
+  stopping: false,      // STOP clicked and the solve has not ended yet
   building: false,      // a BUILD request is in flight
   drift: false,         // SETUP no longer describes the built tree
   status: null,         // last /api/status payload (strip + run state derive from it)
@@ -578,6 +579,7 @@ function stripStateInfo() {
   const pct = st?.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
   const fits = st?.fits?.length ? ` · fitting ${st.fits.length}` : '';
   if (st?.state === 'running') {
+    if (state.stopping) return { text: `stopping · iter ${iter.toLocaleString()}${pct}`, tone: 'live', target: 'solve', phase: 'stopping' };
     return { text: `${engineToken(st)}iter ${iter.toLocaleString()}${pct}`, tone: 'live', target: 'solve', phase: 'running' };
   }
   if (iter > 0) {
@@ -603,6 +605,7 @@ const STRIP_SAY = {
   drift: 'SETUP changed — the tree no longer matches it',
   unbuilt: 'no tree built',
   running: 'solving',
+  stopping: 'stopping the solve',
   'solve-solved': 'solve finished',
   'solve-stopped': 'solve stopped',
   built: 'tree built',
@@ -621,7 +624,7 @@ function syncRunState() {
   else if (!state.built) { text = 'not built'; tone = 'warn'; }
   else if (running) {
     const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
-    text = `${engineToken(st)}iter ${st.iteration.toLocaleString()}${pct}`;
+    text = `${state.stopping ? 'stopping · ' : engineToken(st)}iter ${st.iteration.toLocaleString()}${pct}`;
     tone = 'live';
   } else if ((st?.iteration || 0) > 0) {
     const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
@@ -650,9 +653,16 @@ function syncSolveActions() {
   $('solve-controls').classList.toggle('hidden', !state.built);
   $('btn-solve-top').classList.toggle('hidden', running);
   $('btn-stop-top').classList.toggle('hidden', !running);
-  $('btn-stop-top').disabled = !running;
   $('btn-solve').disabled = running;
-  $('btn-stop').disabled = !running;
+  // STOP answers at once: both buttons say "stopping" from the click until
+  // the solve has ended (it finishes its iteration and measures one last time)
+  const stopping = running && state.stopping;
+  for (const id of ['btn-stop', 'btn-stop-top']) {
+    $(id).disabled = !running || stopping;
+    $(id).classList.toggle('busy', stopping);
+    const word = stopping ? 'STOPPING\u2026' : 'STOP';
+    if ($(id).textContent !== word) $(id).textContent = word;
+  }
 }
 
 // Clicking the state goes to the control that owns it: BUILD TREE for
@@ -824,7 +834,13 @@ async function startSolve() {
 $('btn-solve').addEventListener('click', startSolve);
 
 $('btn-stop').addEventListener('click', async () => {
-  try { await api.stop(); } catch (e) { reportError(e, () => api.stop()); }
+  if (state.stopping) return;
+  state.stopping = true;
+  refreshSession(); // the buttons and the status lines say "stopping" at once
+  $('status-text').textContent = $('status-text').textContent.replace(/^running/, 'stopping');
+  // the request returns when the solve has ended, so show that end right away
+  try { await api.stop(); } catch (e) { state.stopping = false; reportError(e, () => api.stop()); }
+  pollStatus();
 });
 
 // Header solve controls — solve/stop/monitor from any screen, so Browse is the
@@ -860,12 +876,13 @@ async function pollStatus() {
   let st;
   try { st = await api.status(); } catch { return; }
   state.status = st;
+  if (st.state !== 'running') state.stopping = false;
   const pill = $('status-pill');
   pill.className = '';
   if (st.state === 'running') pill.classList.add('running');
   else if (st.state === 'done') pill.classList.add('done');
   else if (st.state === 'ready') pill.classList.add('ready');
-  $('status-text').textContent = st.state + (st.state === 'running' ? ` · iter ${st.iteration}` : '');
+  $('status-text').textContent = (state.stopping ? 'stopping' : st.state) + (st.state === 'running' ? ` · iter ${st.iteration}` : '');
 
   $('iter-now').textContent = st.iteration;
   $('elapsed-now').textContent = `${Math.round(st.elapsed_secs)}s`;

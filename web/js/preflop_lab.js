@@ -9,7 +9,7 @@ import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
 import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
 import { studyTarget, studyGuide, studyEditorHint } from './preflop_study.js';
-import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
+import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
@@ -20,7 +20,7 @@ import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
 import { estimateView } from './preflop_memory.js';
-import { statusChips as chipsFor } from './preflop_status.js';
+import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from './preflop_status.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -191,6 +191,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
                           // SAVE GAME re-send the table when set
     engineFrozen: null,  // engine-truth frozen mask from /status, if reported
     solveRunning: false, // mirrors status "running" (table changes refused)
+    stopRequested: false, // STOP clicked here and the solve has not ended yet
     runBase: null,   // solver iteration count when the current run started
     runStart: null,  // wall-clock start of the current run (for the timer)
     lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
@@ -963,12 +964,32 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     } catch (e) { toast(errText(e), true); progressHide(); }
     finally { els.solve.disabled = false; }
   });
+  // STOP answers at once: the button and the progress line say "stopping"
+  // from the click until the solve has really ended. The solve ends with one
+  // last accuracy check, so that can take a few seconds.
+  const STOP_LABEL = els.stop.textContent, STOP_TIP = els.stop.dataset.tip;
+  function showStopping(stopping) {
+    els.stop.disabled = stopping;
+    els.stop.classList.toggle('busy', stopping);
+    els.stop.textContent = stopping ? 'STOPPING\u2026' : STOP_LABEL;
+    els.stop.dataset.tip = stopping
+      ? 'Stopping. The solve finishes with one last accuracy check, so you know how accurate the result is.'
+      : STOP_TIP;
+  }
   els.stop.addEventListener('click', () => {
-    els.stop.disabled = true;
-    progLab.textContent = 'stopping…';
-    api.pfStop().catch(e => {
+    if (S.stopRequested) return;
+    S.stopRequested = true;
+    showStopping(true);
+    // straight away, not at the next status poll
+    progLab.textContent = progLab.textContent.replace(/^solving/, 'stopping');
+    // follow the stop closely, so its end shows as soon as it happens
+    if (S.polling) clearInterval(S.polling);
+    S.polling = setInterval(poll, 250);
+    api.pfStop().then(poll, e => {
       // a swallowed failure would leave the button dead at "stopping…"
-      els.stop.disabled = false;
+      S.stopRequested = false;
+      showStopping(false);
+      startPolling(); // back to the usual pace, and the line back to "solving"
       toast(`stop failed — ${errText(e)}`, true);
     });
   });
@@ -1201,6 +1222,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? 'RE-SOLVE' : 'SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
+    if (!running) S.stopRequested = false;
+    const stopping = isStopping(st, S.stopRequested);
+    showStopping(stopping);
     // run timer: wall-clock since this run started (or since the page found
     // it already running)
     const secs = Math.max(0, Math.round((Date.now() - (S.runStart || Date.now())) / 1000));
@@ -1224,28 +1248,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const runIter = Math.max(0, st.iteration - (S.runBase || 0));
       S.runPct = Math.max(S.runPct,
         100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
-      let label;
-      if (st.phase === 'publishing') {
-        label = `solving · iter ${st.iteration} · ${clock} · publishing preview…`;
-      } else if (st.phase === 'measuring') {
-        label = `solving · iter ${st.iteration} · ${clock} · measuring accuracy…`;
-      } else if (st.gap_total > 0) {
-        label = `solving · iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} \u2192 0.0050`;
-      } else {
-        label = `solving · iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : earlyPreviews ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
-      }
-      progressSet(S.runPct, label);
+      progressSet(S.runPct, runningLabel(st, { clock, shown, earlyPreviews, stopping }));
     } else if (S.lastState === 'running') {
       // a run just ended (target hit, max iterations, STOP — or a crash,
       // which the engine reports in `error` and must not read as a STOP)
-      els.stop.disabled = false;
       S.runBase = null;
       S.runStart = null;
       if (st.error) {
         progressSet(100, `stopped — ${st.error}`);
         toast(st.error, true);
       } else {
-        progressSet(100, `done · ${solveCompletionLabel(st)} · ${clock}`);
+        progressSet(100, endedLabel(st, clock));
       }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {
