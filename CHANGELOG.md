@@ -2,11 +2,28 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
-## 1.2.0 - 2026-11-18
+## 1.3.0 - 2026-11-18
 
 - Bigger Preflop Lab games can solve on the GPU. A game too big for the GPU all at once used to go to the CPU. Now the GPU takes it a part at a time ("large-game mode"), which needs roughly 40% less GPU memory, so games up to about 1.7 times as big fit. The answer is the same.
+- Tested on an RTX 5090: an 8-max 150bb game with two open sizes, limps and the all-in option took about 7 minutes a step on the CPU and now takes about 7 seconds on the GPU.
 - Games that already fit the GPU solve exactly as before, at the same speed. Large-game mode is used only when the normal solve has no room, and the "Solves on" line says when it is.
 - Not covered yet, so these still go to the CPU when too big: tournament payouts, the trust dial, unequal stacks and the exact 3-way table.
+
+## 1.2.0 - 2026-11-18
+
+- Preflop Lab can size raises the way players do. Three new settings sit beside the sizes they change: an extra amount per limper when raising over limps, a tick box that adds the callers' money to a 3-bet or 4-bet (3 times an open of 3 is 9, and over two callers it becomes 15), and separate 3-bet and 4-bet sizes out of position. Out of position means acting before the raiser on the flop.
+- The built-in scenarios use these sizes: 1 bb more per limper, callers' money added, and 3-bets of 3 times the raise in position and 4 times out of position. The three 8-max scenarios had two 3-bet sizes to choose from and now have one for each position, which makes them about a third to a half smaller.
+- Scenarios and games you saved are unchanged: the new settings stay off in them until you fill them in. The game does not get bigger when you turn them on, because each spot keeps the same number of raise sizes.
+- "Sizes by position" is now called "Sizes by seat", so that "position" only means in or out of position.
+- The bigger squeezes make some flop pots larger than the leaf net was trained on. It values them the same as the same spot in smaller chips (checked: its values move about 0.2% of the pot), so the learned flop values hold there too.
+- Close GTOpen and start it again after updating: until then the header shows "restart GTOpen" and the new sizes cannot be built.
+
+## 1.1.5 - 2026-11-18
+
+- STOP answers at once. The button turns to "STOPPING…" and the progress line says "stopping" from the click until the solve has really ended, in the Preflop Lab and in the postflop Solve tab. Before, nothing changed for a few seconds and the click looked lost.
+- A stopped Preflop Lab solve says how accurate it is. It ends with one last accuracy check, so the line under SOLVE reads "stopped · iter 110" and "gap 0.5712 → 0.0050": the gap of the strategy on screen, next to the target. Before, a stopped solve showed no gap at all.
+- That last check is why STOP takes a few seconds on a big game. The progress line says "checking final accuracy…" while it runs. Pressing STOP during an accuracy check no longer throws that check away and repeats the work.
+- A stopped postflop solve also measures its accuracy once more, so the exploitability it shows belongs to the iteration it stopped at, not to an earlier check.
 
 ## 1.1.4 - 2026-11-18
 

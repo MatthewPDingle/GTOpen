@@ -134,6 +134,16 @@ game). Config shape (see `PreflopConfig` in
   `fourbet_mults_by_seat` split later raises from the 3-bet menu; omission
   retains the original all-round multiplier inheritance. These features
   save as v4, which older binaries refuse.
+- Sizes that follow the action (all off unless set; the UI's built-in
+  scenarios turn them on): `limper_extra` (bb added to every open per limper
+  already in), `caller_extra` (1 = a re-raise adds what the callers of the
+  raise it faces put in: 3x an open of 3 over two callers is 9 + 3 + 3),
+  `raise_mults_oop` / `fourbet_mults_oop` (multipliers for a seat that acts
+  before the raiser on the flop; a seat's own by-seat list still wins). The
+  number of sizes per spot is unchanged. Such games save as v7. See "Sizes
+  that follow the action" in `docs/preflop_balanced_model.md`; tests in
+  `crates/solver/tests/preflop_situational_sizing.rs` and
+  `node tools/test_preflop_sizing.mjs`.
 - New games use `coupled_deck_v1` for 3+ live-player leaves: 1,024 deterministic
   latent-strength samples (seed 90210), whole-pot shares net configured rake,
   no positional realization multiplier. This is not a shared physical deal;
@@ -150,7 +160,11 @@ bleed and never converges — drops below `target_gap`), `status`
 `realization_note` is non-empty when "calibrated" could not load its fit and
 the HU game was priced with the static model; `multiway_equity_model` identifies
 the active continuation version), `session` (GET: the live game —
-config, seats, iteration, hero/frozen, state), `stop`,
+config, seats, iteration, hero/frozen, state), `stop` (returns at once; the
+solve then ends with one last accuracy check, so `gaps` and
+`accuracy_iteration` belong to the strategies it leaves; until `state` leaves
+"running", `status` has `stopping: true` and, during that check, `phase:
+"final_check"`; a build or load over a running solve skips the check),
 `node` `{"path":[i,j,...]}` (action indices; returns actor, actions+freqs,
 `strategy` as na×169 action-major flat array, per-class reach), `generate`
 `{"seat":i,"stats":{...},"name":"..."}` (stat-driven profile from the CURRENT
@@ -214,7 +228,9 @@ weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
 (best response), `/api/lock` (node locking), `/api/save`|`load`, `/api/runouts`,
 `/api/reports/*` (batch flop reports; `/api/reports/lines {name, line}` reads a
 finished report at any node — `a<i>` per action, `c` per any-card step). The
-web UI at :3737 drives all of it.
+web UI at :3737 drives all of it. `/api/stop` returns when the solve has ended;
+a stopped solve measures its exploitability once more, so `exploit_pct` and the
+last `history` point belong to the iteration it stopped at.
 
 Size sweeps ("dynamic sizing", `crates/server/src/sweep.rs`,
 `crates/solver/src/size_sweep.rs`): `/api/reports/run` with

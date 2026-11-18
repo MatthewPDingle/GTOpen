@@ -4,12 +4,13 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
-import { createPositionSizing } from './preflop_sizing.js';
+import { createPositionSizing, usesSituationalSizes } from './preflop_sizing.js';
+import { needsRestart } from './version.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
 import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
 import { studyTarget, studyGuide, studyEditorHint } from './preflop_study.js';
-import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
+import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
@@ -20,7 +21,7 @@ import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
 import { estimateView } from './preflop_memory.js';
-import { statusChips as chipsFor } from './preflop_status.js';
+import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from './preflop_status.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -58,6 +59,11 @@ function positionsFor(nPlayers) {
   return [...all.slice(7 - (nPlayers - 2)), 'SB', 'BB'];
 }
 
+// How players really size raises: 1 bb more per limper, a re-raise adds the
+// callers' money, and 3-bets are 3x in position, 4x out of position. The
+// built-in scenarios use it; a scenario saved without these keys has them off.
+const REAL_SIZES = { limperExtra: '1', callerMoney: true, multOop: '4' };
+
 const PRESETS = [
   {
     name: 'HU 10bb push/fold',
@@ -67,26 +73,31 @@ const PRESETS = [
   {
     name: 'HU 25bb: limp, raise, jam',
     players: 2, stack: 25, opens: '2,2.5', mult: '3', maxRaises: 3,
+    limperExtra: '1',
     limp: true, allin: true, ante: 0, rakePct: 0, rakeCap: 0,
   },
   {
     name: '6-max 100bb low-stakes: limps + 5% rake',
     players: 6, stack: 100, opens: '2.5,4', mult: '3', maxRaises: 3,
+    ...REAL_SIZES, laterMult: '2.3', laterOop: '2.7',
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
   },
   {
     name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake', smallBlind: 2, bigBlind: 2,
-    players: 8, stack: 150, opens: '7.5,10', mult: '2,4', maxRaises: 2,
+    players: 8, stack: 150, opens: '7.5,10', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 8.5,
   },
   {
     name: '8-max 150bb $2/5: limps + 10%, 9 cap rake', smallBlind: 2, bigBlind: 5,
-    players: 8, stack: 150, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    players: 8, stack: 150, opens: '3,4', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
   },
   {
     name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake', smallBlind: 2, bigBlind: 5,
-    players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    players: 8, stack: 200, opens: '3,4', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 2.2,
   },
 ];
@@ -191,6 +202,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
                           // SAVE GAME re-send the table when set
     engineFrozen: null,  // engine-truth frozen mask from /status, if reported
     solveRunning: false, // mirrors status "running" (table changes refused)
+    stopRequested: false, // STOP clicked here and the solve has not ended yet
     runBase: null,   // solver iteration count when the current run started
     runStart: null,  // wall-clock start of the current run (for the timer)
     lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
@@ -624,7 +636,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const same = s => Object.entries(cur).every(([k, v]) =>
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
       k === 'positionSizes' || k === 'seatStacks' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
-      k === 'laterMult' ? String(s[k] || '') === String(v) :
+      k === 'laterMult' || k === 'limperExtra' || k === 'multOop' || k === 'laterOop' ? String(s[k] || '') === String(v) :
+      k === 'callerMoney' ? !!s[k] === v :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
@@ -858,6 +871,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     let cfg;
     try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
+    // A GTOpen program from before these sizes would ignore them and quietly
+    // build the old game instead.
+    if (usesSituationalSizes(cfg)) {
+      let info = null;
+      try { info = await api.version(); } catch { /* no reply: older still */ }
+      if (needsRestart(info)) {
+        toast('Restart GTOpen to use the new raise sizes: the program that is running is older than this page.', true);
+        return false;
+      }
+    }
     els.build.disabled = true;
     els.solve.disabled = true;
     els.buildInfo.textContent = '';
@@ -963,12 +986,32 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     } catch (e) { toast(errText(e), true); progressHide(); }
     finally { els.solve.disabled = false; }
   });
+  // STOP answers at once: the button and the progress line say "stopping"
+  // from the click until the solve has really ended. The solve ends with one
+  // last accuracy check, so that can take a few seconds.
+  const STOP_LABEL = els.stop.textContent, STOP_TIP = els.stop.dataset.tip;
+  function showStopping(stopping) {
+    els.stop.disabled = stopping;
+    els.stop.classList.toggle('busy', stopping);
+    els.stop.textContent = stopping ? 'STOPPING\u2026' : STOP_LABEL;
+    els.stop.dataset.tip = stopping
+      ? 'Stopping. The solve finishes with one last accuracy check, so you know how accurate the result is.'
+      : STOP_TIP;
+  }
   els.stop.addEventListener('click', () => {
-    els.stop.disabled = true;
-    progLab.textContent = 'stopping…';
-    api.pfStop().catch(e => {
+    if (S.stopRequested) return;
+    S.stopRequested = true;
+    showStopping(true);
+    // straight away, not at the next status poll
+    progLab.textContent = progLab.textContent.replace(/^solving/, 'stopping');
+    // follow the stop closely, so its end shows as soon as it happens
+    if (S.polling) clearInterval(S.polling);
+    S.polling = setInterval(poll, 250);
+    api.pfStop().then(poll, e => {
       // a swallowed failure would leave the button dead at "stopping…"
-      els.stop.disabled = false;
+      S.stopRequested = false;
+      showStopping(false);
+      startPolling(); // back to the usual pace, and the line back to "solving"
       toast(`stop failed — ${errText(e)}`, true);
     });
   });
@@ -1201,6 +1244,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.solve.textContent = st.state === 'done' || st.state === 'stopped' ? 'RE-SOLVE' : 'SOLVE';
     els.solve.classList.toggle('hidden', st.state === 'running');
     els.stop.classList.toggle('hidden', st.state !== 'running');
+    if (!running) S.stopRequested = false;
+    const stopping = isStopping(st, S.stopRequested);
+    showStopping(stopping);
     // run timer: wall-clock since this run started (or since the page found
     // it already running)
     const secs = Math.max(0, Math.round((Date.now() - (S.runStart || Date.now())) / 1000));
@@ -1224,28 +1270,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const runIter = Math.max(0, st.iteration - (S.runBase || 0));
       S.runPct = Math.max(S.runPct,
         100 * Math.max(runIter / SOLVE_ITERS, Math.min(1, Math.max(0, gapProg))));
-      let label;
-      if (st.phase === 'publishing') {
-        label = `solving · iter ${st.iteration} · ${clock} · publishing preview…`;
-      } else if (st.phase === 'measuring') {
-        label = `solving · iter ${st.iteration} · ${clock} · measuring accuracy…`;
-      } else if (st.gap_total > 0) {
-        label = `solving · iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} \u2192 0.0050`;
-      } else {
-        label = `solving · iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : earlyPreviews ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
-      }
-      progressSet(S.runPct, label);
+      progressSet(S.runPct, runningLabel(st, { clock, shown, earlyPreviews, stopping }));
     } else if (S.lastState === 'running') {
       // a run just ended (target hit, max iterations, STOP — or a crash,
       // which the engine reports in `error` and must not read as a STOP)
-      els.stop.disabled = false;
       S.runBase = null;
       S.runStart = null;
       if (st.error) {
         progressSet(100, `stopped — ${st.error}`);
         toast(st.error, true);
       } else {
-        progressSet(100, `done · ${solveCompletionLabel(st)} · ${clock}`);
+        progressSet(100, endedLabel(st, clock));
       }
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1200);
       if (S.heroPending && S.model && S.model.hero != null && st.iteration > 0) {

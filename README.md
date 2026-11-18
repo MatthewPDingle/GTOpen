@@ -65,7 +65,9 @@ You can start directly in Setup if you already have ranges. Preflop Lab is optio
 
 **Units:** preflop stacks and sizes are in big blinds; Small blind and Big blind specify the stake amounts (enter `2` and `2` for $2/$2). Postflop bet sizes are percentages of the pot; `33 75` offers two sizes, `a` means all-in, and `2.5x` means a raise multiple.
 
-**Preflop sizes:** expand **Sizes by position** to override opens, 3-bets, and 4-bets or later raises for each seat. Blank cells inherit the defaults above. A 3-bet multiplier of `4` facing a 6bb open raises to 24bb. Build a fresh game after changing sizes.
+**Preflop sizes:** expand **Sizes by seat** to override opens, 3-bets, and 4-bets or later raises for each seat. Blank cells inherit the defaults above. A 3-bet multiplier of `4` facing a 6bb open raises to 24bb. Build a fresh game after changing sizes.
+
+**Sizes that follow the action:** `+ per limper (bb)` adds that many big blinds to an open for each limper already in. `re-raises add the callers' money` adds what the callers of a raise put in to a 3-bet or 4-bet over them (3x an open of 3 is 9; over two callers it is 15). The `out of position` boxes give 3-bets and 4-bets their own multipliers for a player who will act before the raiser on the flop. All three are off in scenarios and games saved before version 1.2.0.
 
 **Preflop values:** new scenarios use **learned flop values**: the Balanced model plus a correction learned from exact flop solves (`cache/leaf_net_v3.bin`), which values hands by how they play after the flop and counts rake on the final pot. It prices heads-up flops; multiway and all-in pots, and games with ICM payouts, use Balanced alone. Untick "learned flop values" in the Preflop Lab for Balanced alone (solves about twice as fast). [What the net is and how it was checked](docs/technical_reference.md).
 

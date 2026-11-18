@@ -54,6 +54,7 @@ fn hero_session() -> Arc<AppState> {
     *state.preflop.lock().unwrap() = Some(PreflopSession {
         solver: Arc::new(Mutex::new(s)),
         stop: Arc::new(AtomicBool::new(false)),
+        abandon: Arc::new(AtomicBool::new(false)),
         status: Arc::new(Mutex::new(status)),
         worker: None,
     });

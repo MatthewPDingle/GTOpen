@@ -154,9 +154,33 @@ pub struct PreflopConfig {
     /// every older save's payoffs. Not with ICM.
     #[serde(default, skip_serializing_if = "is_false")]
     pub card_removal: bool,
+    /// Sizes that follow the action so far (all off by default, which keeps
+    /// every older tree). Each spot keeps the same number of raise sizes;
+    /// only the amounts change.
+    ///
+    /// Raising over limpers: every open size grows by this many bb for each
+    /// limper already in (open 3 with two limpers and 1 here = 5).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub limper_extra: f64,
+    /// Re-raising over callers: this share of what the callers of the raise
+    /// faced have put in is added on top of the multiple (1 = all of it: 3x
+    /// an open of 3 with two callers = 9 + 3 + 3 = 15). Limpers who have
+    /// not called the raise are not callers.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub caller_extra: f64,
+    /// 3-bet multipliers for a seat that is out of position to the raiser
+    /// it faces (acts before that seat on the flop, see `postflop_order`).
+    /// None = the same as in position (`raise_mults`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub raise_mults_oop: Option<Vec<f64>>,
+    /// The same for 4-bets and later. None = `fourbet_mults`, or with that
+    /// absent too the 3-bet menu for the seat's position.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fourbet_mults_oop: Option<Vec<f64>>,
 }
 
 fn is_false(value: &bool) -> bool { !*value }
+fn is_zero(value: &f64) -> bool { *value == 0.0 }
 
 impl PreflopConfig {
     /// Seat `seat`'s starting stack (bb, before antes).
@@ -195,17 +219,57 @@ impl PreflopConfig {
             _ => &self.open_raises,
         }
     }
-    fn mults_of(&self, actor: usize, raises: u8) -> &[f64] {
+    /// Re-raise multipliers for `actor` facing raise number `raises`. A
+    /// seat's own list wins; otherwise `oop` (the seat acts before the
+    /// raiser on the flop) picks the out-of-position list when one is set.
+    fn mults_of(&self, actor: usize, raises: u8, oop: bool) -> &[f64] {
         if raises >= 2 {
             if let Some(per) = &self.fourbet_mults_by_seat {
                 if !per[actor].is_empty() { return &per[actor]; }
             }
+            if oop {
+                if let Some(out) = &self.fourbet_mults_oop { return out; }
+            }
             if let Some(global) = &self.fourbet_mults { return global; }
         }
-        match &self.raise_mults_by_seat {
-            Some(per) if !per[actor].is_empty() => &per[actor],
+        if let Some(per) = &self.raise_mults_by_seat {
+            if !per[actor].is_empty() { return &per[actor]; }
+        }
+        match &self.raise_mults_oop {
+            Some(out) if oop => out,
             _ => &self.raise_mults,
         }
+    }
+    /// Postflop acting order: seats with posts first (SB before BB by post
+    /// size), then the rest in seat order (matches standard table layouts).
+    /// Heads-up is the exception: the SB IS the button and acts LAST
+    /// postflop, so the BB is OOP.
+    pub fn postflop_order(&self) -> Vec<usize> {
+        let n = self.positions.len();
+        if n == 2 {
+            let mut out = vec![0usize, 1];
+            out.sort_by(|&a, &b| self.posts[b].partial_cmp(&self.posts[a]).unwrap()
+                .then_with(|| b.cmp(&a))); // Equal blinds: seat 1 is still the BB/OOP.
+            return out;
+        }
+        let mut blinds: Vec<usize> = (0..n).filter(|&i| self.posts[i] > 0.0).collect();
+        blinds.sort_by(|&a, &b| self.posts[a].partial_cmp(&self.posts[b]).unwrap());
+        let mut out = blinds.clone();
+        out.extend((0..n).filter(|i| !blinds.contains(i)));
+        out
+    }
+    /// True when `seat` is out of position to `other`: it acts before
+    /// `other` on the flop and every later street.
+    pub fn out_of_position(&self, seat: usize, other: usize) -> bool {
+        let order = self.postflop_order();
+        let rank = |s: usize| order.iter().position(|&x| x == s);
+        rank(seat) < rank(other)
+    }
+    /// True when any size follows the action (limpers, callers, position).
+    /// Such games save in a format older binaries refuse (save.rs).
+    pub fn situational_sizing(&self) -> bool {
+        self.limper_extra != 0.0 || self.caller_extra != 0.0
+            || self.raise_mults_oop.is_some() || self.fourbet_mults_oop.is_some()
     }
 }
 
@@ -372,6 +436,9 @@ struct BuildState {
     raised: u32,
     limpers: u8,
     callers: u8,
+    /// What the callers of the current raise have put in between them (bb;
+    /// a call all-in for less counts for what it is). Back to 0 at a raise.
+    call_money: f64,
     next_seat: usize,
     /// Last raiser/jammer so far (255 = nobody — limped or unopened pot).
     aggressor: u8,
@@ -969,17 +1036,7 @@ impl PreflopSolver {
     /// Heads-up is the exception: the SB IS the button and acts LAST
     /// postflop, so the BB is OOP.
     pub fn postflop_order(&self) -> Vec<usize> {
-        if self.n == 2 {
-            let mut out = vec![0usize, 1];
-            out.sort_by(|&a, &b| self.cfg.posts[b].partial_cmp(&self.cfg.posts[a]).unwrap()
-                .then_with(|| b.cmp(&a))); // Equal blinds: seat 1 is still the BB/OOP.
-            return out;
-        }
-        let mut blinds: Vec<usize> = (0..self.n).filter(|&i| self.cfg.posts[i] > 0.0).collect();
-        blinds.sort_by(|&a, &b| self.cfg.posts[a].partial_cmp(&self.cfg.posts[b]).unwrap());
-        let mut out = blinds.clone();
-        out.extend((0..self.n).filter(|i| !blinds.contains(i)));
-        out
+        self.cfg.postflop_order()
     }
 
     fn live_count(&self, live: u32) -> usize {
@@ -3499,9 +3556,15 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
             ));
         }
     }
-    for &m in cfg.raise_mults.iter().chain(cfg.fourbet_mults.iter().flatten()) {
+    for &m in cfg.raise_mults.iter().chain(cfg.fourbet_mults.iter().flatten())
+        .chain(cfg.raise_mults_oop.iter().flatten()).chain(cfg.fourbet_mults_oop.iter().flatten()) {
         if !m.is_finite() || m <= 0.0 {
             return Err(format!("raise_mults must be finite and > 0, got {m}"));
+        }
+    }
+    for (name, extra) in [("limper_extra", cfg.limper_extra), ("caller_extra", cfg.caller_extra)] {
+        if !extra.is_finite() || extra < 0.0 {
+            return Err(format!("{name} must be finite and >= 0, got {extra}"));
         }
     }
     // > 1 would let a raise land ABOVE the stack (the jam clamp could no
@@ -3555,6 +3618,7 @@ fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
         raised: 0,
         limpers: 0,
         callers: 0,
+        call_money: 0.0,
         next_seat: cfg.first_to_act(),
         aggressor: 255,
         acted: vec![-1.0; n],
@@ -3628,10 +3692,18 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
     {
         let mut tos: Vec<f64> = Vec::new();
         if st.raises == 0 {
-            tos.extend(cfg.opens_of(actor).iter().cloned());
+            // Over limpers every open grows by a fixed amount per limper.
+            let extra = cfg.limper_extra * st.limpers as f64;
+            tos.extend(cfg.opens_of(actor).iter().map(|open| open + extra));
         } else {
-            for m in cfg.mults_of(actor, st.raises) {
-                let to = (st.to_call * m).max(st.to_call + st.last_raise);
+            // A re-raise is a multiple of the raise it faces plus the money
+            // of the players who called that raise, and may use its own
+            // multipliers when the raiser has position.
+            let oop = (cfg.raise_mults_oop.is_some() || cfg.fourbet_mults_oop.is_some())
+                && cfg.out_of_position(actor, st.aggressor as usize);
+            let extra = cfg.caller_extra * st.call_money;
+            for m in cfg.mults_of(actor, st.raises, oop) {
+                let to = (st.to_call * m + extra).max(st.to_call + st.last_raise);
                 tos.push(to);
             }
         }
@@ -3686,6 +3758,7 @@ fn next_state_of(
         raised: st.raised,
         limpers: st.limpers,
         callers: st.callers,
+        call_money: st.call_money,
         next_seat: (actor + 1) % n,
         aggressor: st.aggressor,
         acted: st.acted.clone(),
@@ -3707,6 +3780,7 @@ fn next_state_of(
                     ns.limpers += 1;
                 } else {
                     ns.callers += 1;
+                    ns.call_money += a.to;
                 }
             }
         }
@@ -3722,6 +3796,7 @@ fn next_state_of(
             ns.raises = st.raises + 1;
             ns.raised |= 1 << actor;
             ns.callers = 0; // a raise starts a fresh calling round
+            ns.call_money = 0.0;
             ns.acted[actor] = a.to;
             if all_in {
                 ns.allin |= 1 << actor;

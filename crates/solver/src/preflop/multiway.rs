@@ -276,7 +276,7 @@ mod tests {
 
     #[test]
     fn coupled_payoffs_flow_through_cfr_and_charge_rake_once() {
-        let cfg = PreflopConfig { leaf_net: None, card_removal: false,
+        let cfg = PreflopConfig { leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 4.0, stacks: None,

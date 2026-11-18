@@ -128,6 +128,7 @@ async fn estimate_and_status_report_the_same_plan() {
     *state.preflop.lock().unwrap() = Some(PreflopSession {
         solver: Arc::new(Mutex::new(built)),
         stop: Arc::new(AtomicBool::new(false)),
+        abandon: Arc::new(AtomicBool::new(false)),
         status: Arc::new(Mutex::new(status)),
         worker: None,
     });

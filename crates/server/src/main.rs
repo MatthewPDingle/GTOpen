@@ -40,6 +40,10 @@ mod preflop_trust_tests;
 mod save_resume_tests;
 #[cfg(test)]
 mod preflop_memory_tests;
+#[cfg(test)]
+mod preflop_stop_tests;
+#[cfg(test)]
+mod stop_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -106,6 +110,9 @@ fn pf_yield_to_waiters() {
 #[derive(Default)]
 struct AppState {
     session: Mutex<Option<Session>>,
+    /// Set while the postflop session is being replaced: a solve stopped for
+    /// that skips its last exploitability measurement, which nobody would read.
+    discard_solve: AtomicBool,
     status: Mutex<StatusInfo>,
     preflop: Mutex<Option<PreflopSession>>,
     report: Mutex<ReportStatus>,
@@ -144,7 +151,12 @@ struct ReportStatus {
 
 struct PreflopSession {
     solver: Arc<Mutex<solver::preflop::PreflopSolver>>,
+    /// STOP: the solve ends after one last accuracy check on the strategies
+    /// it stops with.
     stop: Arc<AtomicBool>,
+    /// Set with `stop` when the session is going away (`halt`): the worker
+    /// then skips that last check, and cuts short one that is running.
+    abandon: Arc<AtomicBool>,
     status: Arc<Mutex<PreflopStatus>>,
     /// Solve worker thread, if one was ever started. Always joined before the
     /// session is replaced — pf_stop_and_join up front, and pf_install_session
@@ -154,14 +166,28 @@ struct PreflopSession {
     worker: Option<std::thread::JoinHandle<()>>,
 }
 
+impl PreflopSession {
+    /// Stop a running solve for good, without its last accuracy check: the
+    /// session is being replaced, so nobody will read the number.
+    fn halt(&self) {
+        self.abandon.store(true, Ordering::Relaxed);
+        self.stop.store(true, Ordering::Relaxed);
+    }
+}
+
 #[derive(Clone, Serialize, Default)]
 struct PreflopStatus {
     /// "idle" | "running" | "done" | "stopped"
     state: String,
-    /// While running: "iterating" or "measuring" (the best-response
-    /// accuracy pass — long on big trees; the UI explains the pause).
+    /// While running: "iterating", "publishing", "measuring" (the
+    /// best-response accuracy pass — long on big trees; the UI explains the
+    /// pause) or "final_check" (that pass as the last act of a stopped solve).
     #[serde(default)]
     phase: String,
+    /// True from the STOP request until the solve has ended (filled in by
+    /// the status handler from the session's stop flag).
+    #[serde(default)]
+    stopping: bool,
     /// True while the preflop solve runs on the GPU.
     #[serde(default)]
     gpu: bool,
@@ -1005,6 +1031,7 @@ async fn start_solve(
     }
 
     session.stop.store(false, Ordering::Relaxed);
+    state.discard_solve.store(false, Ordering::Relaxed);
     let solver = session.solver.clone();
     let stop = session.stop.clone();
     let lock_gen = session.lock_gen.clone();
@@ -1160,6 +1187,26 @@ fn end_sweep(app: &AppState) {
     }
 }
 
+/// Whether a stopping postflop solve at `iteration` should measure its
+/// exploitability one last time: not when the session is being replaced,
+/// nothing was solved, or the number on show was measured at this iteration.
+fn measure_at_stop(app: &AppState, iteration: u32) -> bool {
+    iteration > 0
+        && !app.discard_solve.load(Ordering::Relaxed)
+        && app.status.lock().unwrap().history.last().map(|h| h.iteration) != Some(iteration)
+}
+
+/// A stopped solve's last exploitability measurement, taken on the
+/// strategies it stops with.
+fn record_last_measurement(st: &mut StatusInfo, iteration: u32, exploit: f64, pot: f64, elapsed: f64) {
+    let pct = exploit / pot * 100.0;
+    st.iteration = iteration;
+    st.exploit_chips = exploit;
+    st.exploit_pct = pct;
+    st.elapsed_secs = elapsed;
+    st.history.push(HistoryPoint { iteration, exploit_pct: pct });
+}
+
 /// CPU solve loop. `base` is the solver's cumulative iteration at the start
 /// of THIS run: termination compares (iteration - base) against the request's
 /// max_iterations (per-run semantics, like report_solve), while the status
@@ -1176,14 +1223,19 @@ fn cpu_solve_loop(
     let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
     loop {
         if stop.load(Ordering::Relaxed) {
-            let note = {
+            let (note, last) = {
                 let mut s = lock_unpoisoned(&solver);
                 let note = finish_fits(&mut s);
                 s.ensure_symmetric();
-                note
+                // the number shown for a stopped solve belongs to what it leaves
+                let last = measure_at_stop(app, s.iteration).then(|| (s.iteration, s.exploitability()));
+                (note, last)
             };
             end_sweep(app);
             let mut st = app.status.lock().unwrap();
+            if let Some((it, e)) = last {
+                record_last_measurement(&mut st, it, e, pot, start.elapsed().as_secs_f64());
+            }
             end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
             break;
@@ -1313,6 +1365,13 @@ fn gpu_solve_inner(
     loop {
         if stop.load(Ordering::Relaxed) {
             let mut s = lock_unpoisoned(&solver);
+            // the number shown for a stopped solve belongs to what it leaves
+            // (best response on the device, as at every check)
+            let last = if measure_at_stop(app, gpu.iteration) {
+                Some((gpu.iteration, gpu.exploitability(&s)?))
+            } else {
+                None
+            };
             gpu.sync_to_cpu(&mut s)?;
             gpu.download_fits(&mut s)?;
             let note = finish_fits(&mut s);
@@ -1320,6 +1379,9 @@ fn gpu_solve_inner(
             drop(s);
             end_sweep(app);
             let mut st = app.status.lock().unwrap();
+            if let Some((it, e)) = last {
+                record_last_measurement(&mut st, it, e, pot, start.elapsed().as_secs_f64());
+            }
             end_fits_status(&mut st, note);
             st.state = "stopped".to_string();
             return Ok(());
@@ -1439,6 +1501,7 @@ async fn stop_solve(State(state): State<Arc<AppState>>) -> Json<serde_json::Valu
 fn install_session(state: &Arc<AppState>, session: Session, status: StatusInfo) {
     let mut guard = lock_unpoisoned(&state.session);
     if let Some(old) = guard.as_mut() {
+        state.discard_solve.store(true, Ordering::Relaxed);
         old.stop.store(true, Ordering::Relaxed);
         if let Some(handle) = old.worker.take() {
             let _ = handle.join();
@@ -1451,6 +1514,9 @@ fn install_session(state: &Arc<AppState>, session: Session, status: StatusInfo) 
 fn stop_current(state: &Arc<AppState>, drop_session: bool) {
     let mut guard = state.session.lock().unwrap();
     if let Some(session) = guard.as_mut() {
+        if drop_session {
+            state.discard_solve.store(true, Ordering::Relaxed);
+        }
         session.stop.store(true, Ordering::Relaxed);
         if let Some(handle) = session.worker.take() {
             let _ = handle.join();
@@ -1523,12 +1589,13 @@ fn preflop_equity() -> Arc<solver::preflop::equity::EquityTable> {
 /// Stop a running preflop solve AND reap its worker thread before the
 /// session is replaced: a merely-signalled worker keeps running through its
 /// current (possibly long) measuring pass, burning the shared rayon pool and
-/// holding its VRAM into the next session's build/solve.
+/// holding its VRAM into the next session's build/solve. `halt` also skips
+/// the last accuracy check a plain STOP ends with.
 async fn pf_stop_and_join(state: &Arc<AppState>) -> Result<(), ApiError> {
     let old_worker = {
         let mut guard = state.preflop.lock().unwrap();
         guard.as_mut().and_then(|s| {
-            s.stop.store(true, Ordering::Relaxed);
+            s.halt();
             s.worker.take()
         })
     };
@@ -1564,7 +1631,7 @@ async fn pf_install_session(
         let old_worker = {
             let mut guard = state.preflop.lock().unwrap();
             let worker = guard.as_mut().and_then(|s| {
-                s.stop.store(true, Ordering::Relaxed);
+                s.halt();
                 s.worker.take()
             });
             match worker {
@@ -1636,6 +1703,7 @@ async fn pf_build(
         PreflopSession {
             solver: Arc::new(Mutex::new(built)),
             stop: Arc::new(AtomicBool::new(false)),
+            abandon: Arc::new(AtomicBool::new(false)),
             status: Arc::new(Mutex::new(status)),
             worker: None,
         },
@@ -1738,6 +1806,18 @@ fn pf_measured_gaps(s: &mut solver::preflop::PreflopSolver) -> (Vec<f64>, Vec<f6
     out
 }
 
+/// How a preflop solve ended.
+#[derive(Clone, Copy, PartialEq)]
+enum PfEnd {
+    /// Target or iteration limit, straight after an accuracy check.
+    Done,
+    /// STOP, after one last accuracy check on the strategies it stopped with.
+    Stopped,
+    /// Cut off with no accuracy check on what it leaves: a crash, a session
+    /// being replaced, or a STOP before the first iteration finished.
+    Interrupted,
+}
+
 /// Caller holds the solver mutex. Publish terminal state only after clearing
 /// cancellation, so a reader observing stopped/done cannot receive canceled
 /// zero-valued evaluations. Interrupted native arenas retain existing counter
@@ -1746,12 +1826,12 @@ fn pf_finish_preflop(
     s: &mut solver::preflop::PreflopSolver,
     status: &Mutex<PreflopStatus>,
     reason: &str,
-    interrupted: bool,
+    end: PfEnd,
     error: Option<String>,
 ) {
     s.set_stop_flag(None);
     let mut st = lock_unpoisoned(status);
-    if interrupted {
+    if end == PfEnd::Interrupted {
         st.invalidate_accuracy(s.iteration);
         st.preview_note = "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.".into();
     }
@@ -1760,7 +1840,7 @@ fn pf_finish_preflop(
     st.stop_reason = reason.into();
     st.phase = "idle".into();
     if let Some(error) = error { st.error = error; }
-    st.state = if interrupted {"stopped"} else {"done"}.into();
+    st.state = if end == PfEnd::Done {"done"} else {"stopped"}.into();
 }
 
 #[derive(Clone, Serialize)]
@@ -1862,9 +1942,10 @@ async fn pf_solve(
     let session = guard
         .as_mut()
         .ok_or_else(|| bad_request("no preflop game built yet"))?;
-    let (solver, stop, status) = (
+    let (solver, stop, abandon, status) = (
         session.solver.clone(),
         session.stop.clone(),
+        session.abandon.clone(),
         session.status.clone(),
     );
     {
@@ -1878,6 +1959,7 @@ async fn pf_solve(
             ));
         }
         stop.store(false, Ordering::Relaxed);
+        abandon.store(false, Ordering::Relaxed);
         st.plan = st.size.map(|size| size.plan());
         st.state = "running".into();
         st.stop_reason.clear();
@@ -1970,7 +2052,19 @@ async fn pf_solve(
 
         loop {
             pf_yield_to_waiters();
-            if stop.load(Ordering::Relaxed) {
+            // STOP ends the solve with one last accuracy check (the checkpoint
+            // code below) on the strategies it stops with, so the gap it
+            // reports is the gap of what is left on screen. There is no check
+            // when the session is going away or nothing was solved yet.
+            let stopping = stop.load(Ordering::Relaxed);
+            let check_at_stop = stopping && !abandon.load(Ordering::Relaxed) && {
+                #[cfg(feature = "gpu")]
+                let on_device = gpu.is_some().then_some(gpu_iteration);
+                #[cfg(not(feature = "gpu"))]
+                let on_device: Option<u32> = None;
+                on_device.unwrap_or_else(|| lock_unpoisoned(&solver).iteration) > 0
+            };
+            if stopping && !check_at_stop {
                 #[cfg(feature = "gpu")]
                 if let Some(g) = gpu.as_ref() {
                     let mut s = lock_unpoisoned(&solver);
@@ -1997,12 +2091,17 @@ async fn pf_solve(
                 // learned realization: leave the game priced with the net's
                 // output at the strategies it stops with, as a reload prices it
                 s.leaf_settle(false);
-                pf_finish_preflop(&mut s, &status, "stopped", true, None);
+                pf_finish_preflop(&mut s, &status, "stopped", PfEnd::Interrupted, None);
                 return;
             }
             let mut s = lock_unpoisoned(&solver);
+            // an accuracy check answers to `abandon` alone (see below)
+            s.set_stop_flag(Some(stop.clone()));
+            if !stopping {
+            // false: the pass was cut short by STOP, some seats swept
             #[cfg(feature = "gpu")]
-            {
+            let completed = {
+                let mut completed;
                 let mut failed: Option<String> = None;
                 match gpu.as_mut() {
                     Some(g) => {
@@ -2011,6 +2110,7 @@ async fn pf_solve(
                         drop(s);
                         let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
                         s = lock_unpoisoned(&solver);
+                        completed = matches!(result, Ok(true));
                         match result {
                             Err(err) => failed = Some(err),
                             // learned realization: refresh the flop
@@ -2030,7 +2130,7 @@ async fn pf_solve(
                         }
                     }
                     None => {
-                        s.try_iterate();
+                        completed = s.try_iterate();
                     }
                 }
                 if let Some(err) = failed {
@@ -2049,24 +2149,31 @@ async fn pf_solve(
                         st.gpu_note =
                             format!("GPU failed mid-solve: {err} — continuing on CPU");
                     }
-                    s.try_iterate();
+                    // the device's pass is lost; this one decides
+                    completed = s.try_iterate();
                 }
-            }
+                completed
+            };
             #[cfg(not(feature = "gpu"))]
-            s.try_iterate();
+            let completed = s.try_iterate();
             if stop.load(Ordering::Relaxed) {
-                // interrupted pass: nothing to publish, the loop head
-                // finalizes (GPU sync + "stopped")
+                // STOP: nothing to publish here, the loop head takes over. A
+                // pass cut short moved the strategies without moving the
+                // iteration count, so the net's output for this iteration no
+                // longer belongs to them.
+                if !completed {
+                    s.leaf_mark_moved();
+                }
                 drop(s);
                 continue;
             }
             done += 1;
-            #[cfg(feature = "gpu")]
-            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
-            #[cfg(not(feature = "gpu"))]
-            let iteration = s.iteration;
             let checkpoint = done % check == 0 || done >= max;
             if !checkpoint {
+                #[cfg(feature = "gpu")]
+                let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
+                #[cfg(not(feature = "gpu"))]
+                let iteration = s.iteration;
                 // Real learned preview: no extra CFR or accuracy pass. A GPU
                 // download stages BOTH arenas transactionally for coherent reads.
                 #[cfg(feature = "gpu")]
@@ -2096,14 +2203,22 @@ async fn pf_solve(
                 drop(s);
                 continue;
             }
+            }
+            #[cfg(feature = "gpu")]
+            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
+            #[cfg(not(feature = "gpu"))]
+            let iteration = s.iteration;
             {
                 // Announce accuracy work before it runs. GPU measurement leaves
                 // the published host snapshot available; CPU work holds it.
                 {
                     let mut st = status.lock().unwrap();
                     st.iteration = iteration;
-                    st.phase = "measuring".into();
+                    st.phase = if stopping {"final_check"} else {"measuring"}.into();
                 }
+                // STOP does not cut an accuracy check short: the check that is
+                // running becomes the solve's last one. Only `abandon` does.
+                s.set_stop_flag(Some(abandon.clone()));
                 #[cfg(feature = "gpu")]
                 let (gaps, evs) = {
                     // a failed checkpoint download counts as a GPU failure
@@ -2209,11 +2324,14 @@ async fn pf_solve(
                 // Update the snapshot tag while holding the same solver lock as
                 // its arenas. Node/export cannot observe mixed generations.
                 status.lock().unwrap().published_iteration = s.iteration;
-                if stop.load(Ordering::Relaxed) {
+                if abandon.load(Ordering::Relaxed) {
                     // the accuracy pass was cut short — its numbers are
-                    // partial, keep the last published checkpoint
+                    // partial; the loop head ends the solve without them
+                    stop.store(true, Ordering::Relaxed);
                     continue;
                 }
+                // a STOP that came during the check: this was the last one
+                let stopping = stopping || stop.load(Ordering::Relaxed);
                 let total: f64 = gaps
                     .iter()
                     .zip(&live)
@@ -2229,13 +2347,19 @@ async fn pf_solve(
                 st.gap_total = total;
                 st.evs = evs;
                 st.trust_readout = trust_readout;
-                if total < req.target_gap || done >= max {
-                    let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
+                if total < req.target_gap || done >= max || stopping {
+                    let (reason, end) = if total < req.target_gap {
+                        ("target_reached", PfEnd::Done)
+                    } else if done >= max {
+                        ("iteration_limit", PfEnd::Done)
+                    } else {
+                        ("stopped", PfEnd::Stopped)
+                    };
                     drop(st);
                     // learned realization: the finished game is priced as it
                     // was just measured, and as a reload will price it
                     s.leaf_settle(false);
-                    pf_finish_preflop(&mut s, &status, reason, false, None);
+                    pf_finish_preflop(&mut s, &status, reason, end, None);
                     return;
                 }
             }
@@ -2248,7 +2372,7 @@ async fn pf_solve(
             // working instead of panicking on a poisoned lock
             solver.clear_poison();
             let mut s = lock_unpoisoned(&solver);
-            pf_finish_preflop(&mut s, &status, "error", true, Some(format!("solve crashed: {msg}")));
+            pf_finish_preflop(&mut s, &status, "error", PfEnd::Interrupted, Some(format!("solve crashed: {msg}")));
         }
     });
     session.worker = Some(handle);
@@ -2267,7 +2391,11 @@ async fn pf_status(State(state): State<Arc<AppState>>) -> Json<PreflopStatus> {
         .lock()
         .unwrap()
         .as_ref()
-        .map(|s| s.status.lock().unwrap().clone())
+        .map(|s| {
+            let mut st = s.status.lock().unwrap().clone();
+            st.stopping = st.state == "running" && s.stop.load(Ordering::Relaxed);
+            st
+        })
         .unwrap_or_default();
     // a running solve keeps the plan it started with: the card is its own now
     if st.state != "running" {
@@ -2648,6 +2776,7 @@ async fn pf_load_game(
         PreflopSession {
             solver: Arc::new(Mutex::new(loaded)),
             stop: Arc::new(AtomicBool::new(false)),
+            abandon: Arc::new(AtomicBool::new(false)),
             status: Arc::new(Mutex::new(status)),
             worker: None,
         },
@@ -4775,6 +4904,7 @@ async fn main() {
     init_rayon();
     let state = Arc::new(AppState {
         session: Mutex::new(None),
+        discard_solve: AtomicBool::new(false),
         status: Mutex::new(StatusInfo {
             state: "idle".to_string(),
             ..Default::default()
