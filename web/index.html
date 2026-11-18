@@ -229,7 +229,7 @@
           <button id="btn-stop" class="btn danger" disabled>STOP</button>
           <span id="run-state" class="ctl-state"></span>
         </div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The graphics memory figure is the most a solve could take on the graphics card (GPU); the real fit is checked when the solve starts, and a spot that does not fit is solved on the processor (CPU) instead."></div>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The GPU memory figure is the most a solve could take on the GPU; the real fit is checked when the solve starts, and a spot that does not fit is solved on the CPU instead."></div>
         <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
@@ -423,7 +423,7 @@
           <label class="chk" data-tip="On by default. Values each hand by how it plays after the flop, learned from many thousands of solved flops. It covers flops with two players; bigger pots, all-in pots and games with tournament payouts use a simpler estimate. Close decisions are the least reliable. Untick to use the simpler estimate everywhere."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
-          data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the graphics card (GPU) or the processor (CPU). It updates as you change the form."></div>
+          data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the GPU or the CPU. It updates as you change the form."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Optional. SOLVE builds the game for you.">BUILD GAME</button>

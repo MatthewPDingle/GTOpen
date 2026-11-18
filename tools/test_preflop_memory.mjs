@@ -10,39 +10,40 @@ assert.equal(sizeText(0.2), '1 MB');
 const gpu = { engine: 'gpu', reason: '', ram_mb: 2147.483648, gpu_need_mb: 1073.741824, gpu_free_mb: 30000, gpu_total_mb: 34190 };
 const cpu = {
   engine: 'cpu', ram_mb: 21474.83648, gpu_need_mb: 33784, gpu_free_mb: 32000, gpu_total_mb: 34190,
-  reason: 'too big for this graphics card (needs 31.5 GB there, the card can give 31.4 GB)',
+  reason: 'too big for this GPU (needs 31.5 GB of GPU memory, it has 31.4 GB)',
 };
 
-// the graphics card has its own line, apart from RAM: what the game needs there against what the card has
+// GPU memory has its own line, apart from RAM: what the game needs there against what the GPU has
 const GB = 2 ** 30 / 1e6;
 const busy = { engine: 'cpu', card: 'busy', ram_mb: 9000, gpu_need_mb: 20 * GB, gpu_free_mb: 8 * GB, gpu_total_mb: 34190, gpu_limit_mb: 33678,
-  reason: 'the graphics card has too little free right now (needs 20.0 GB, 8.0 GB free)' };
+  reason: 'the GPU has too little memory free right now (needs 20.0 GB, 8.0 GB free)' };
 const noCard = card => ({ engine: 'cpu', card, ram_mb: 500, gpu_need_mb: 300, gpu_free_mb: 0, gpu_total_mb: 0, gpu_limit_mb: 0, reason: 'x' });
-assert.equal(cardText({ ...gpu, card: 'fits', gpu_limit_mb: 33678 }), 'Graphics card: needs 1.0 GB, 27.9 GB free — fits\u00a0✓');
+assert.equal(cardText({ ...gpu, card: 'fits', gpu_limit_mb: 33678 }), 'GPU memory: needs 1.0 GB, 27.9 GB free — fits\u00a0✓');
 assert.equal(cardText({ ...cpu, card: 'too_big', gpu_limit_mb: 33678 }),
-  'Graphics card: needs 31.5 GB, has 31.4 GB — too big\u00a0✗');
-assert.equal(cardText({ ...cpu, card: 'too_big', gpu_need_mb: null }), 'Graphics card: far too big for the card\u00a0✗');
-assert.equal(cardText(busy), 'Graphics card: needs 20.0 GB, only 8.0 GB free now — no room\u00a0✗');
-assert.equal(cardText(noCard('none')), 'Graphics card: no NVIDIA card found');
-assert.equal(cardText(noCard('off')), 'Graphics card: switched off for GTOpen (SOLVER_GPU=0)');
-assert.equal(cardText(noCard('unsupported')), 'Graphics card: this copy of GTOpen cannot use one');
+  'GPU memory: needs 31.5 GB, has 31.4 GB — too big\u00a0✗');
+assert.equal(cardText({ ...cpu, card: 'too_big', gpu_need_mb: null }), 'GPU memory: far too big for this GPU\u00a0✗');
+assert.equal(cardText(busy), 'GPU memory: needs 20.0 GB, only 8.0 GB free now — no room\u00a0✗');
+assert.equal(cardText(noCard('none')), 'GPU: no NVIDIA GPU found');
+assert.equal(cardText(noCard('off')), 'GPU: switched off for GTOpen (SOLVER_GPU=0)');
+assert.equal(cardText(noCard('unsupported')), 'GPU: this copy of GTOpen cannot use one');
 // a server from before `card` and `gpu_limit_mb`: the same lines, read from the rest of its plan
 assert.equal(cardState(gpu), 'fits');
 assert.equal(cardState(cpu), 'too_big');
-assert.equal(cardText(cpu), 'Graphics card: needs 31.5 GB, has 31.4 GB — too big\u00a0✗');
+assert.equal(cardText(cpu), 'GPU memory: needs 31.5 GB, has 31.4 GB — too big\u00a0✗');
 assert.equal(cardState({ ...busy, card: undefined }), 'busy');
 assert.equal(cardState({ ...noCard(undefined), reason: 'no NVIDIA graphics card found' }), 'none');
 assert.equal(cardState({ ...noCard(undefined), reason: 'the graphics card is switched off for GTOpen (SOLVER_GPU=0)' }), 'off');
 assert.equal(cardState({ ...noCard(undefined), reason: 'this copy of GTOpen has no graphics card support' }), 'unsupported');
-assert.equal(engineText(gpu), 'Solves on: GPU (graphics card)');
-assert.equal(engineText(cpu), 'Solves on: CPU (processor), slower');
+assert.equal(cardState({ ...noCard(undefined), reason: 'this copy of GTOpen has no GPU support' }), 'unsupported');
+assert.equal(engineText(gpu), 'Solves on: GPU — uses both the RAM and the GPU memory');
+assert.equal(engineText(cpu), 'Solves on: CPU, slower — uses the RAM only');
 
 // the chip before a solve is the plan; in a solve's first moments it says what is happening
-assert.deepEqual(planChip(gpu), { label: 'GPU', tip: 'The next solve will run on the graphics card (GPU).' });
+assert.deepEqual(planChip(gpu), { label: 'GPU', tip: 'The next solve will run on the GPU.' });
 assert.equal(planChip(gpu, true).label, 'GPU…');
 assert.equal(planChip(cpu).label, 'CPU');
-assert.match(planChip(cpu).tip, /^The next solve will run on the processor \(CPU\): too big for this graphics card/);
-assert.match(planChip(cpu, true).tip, /^Solving on the processor \(CPU\): too big for this graphics card/);
+assert.match(planChip(cpu).tip, /^The next solve will run on the CPU: too big for this GPU/);
+assert.match(planChip(cpu, true).tip, /^Solving on the CPU: too big for this GPU/);
 
 const estimate = (over = {}) => ({
   nodes: 1_000_000, action_nodes: 480_000, arena_mb: 1600, truncated: false, ok: true,
@@ -55,10 +56,11 @@ assert.equal(view.state, 'ok');
 assert.deepEqual(view.lines, [
   'Game tree: 1,000,000 nodes',
   'RAM: needs about 2.0 GB — fits\u00a0✓',
-  'Graphics card: needs 1.0 GB, 27.9 GB free — fits\u00a0✓',
-  'Solves on: GPU (graphics card)',
+  'GPU memory: needs 1.0 GB, 27.9 GB free — fits\u00a0✓',
+  'Solves on: GPU — uses both the RAM and the GPU memory',
 ]);
-assert.match(view.tip, /It needs more there than in RAM: the card works on the whole game at once/);
+assert.match(view.tip, /A GPU solve is much faster and uses both: this RAM, and the GPU's own memory/);
+assert.match(view.tip, /because the GPU works on the whole game at once/);
 
 // too big for the card: it still fits the computer, and the line says why the CPU
 view = estimateView(estimate({ plan: cpu, nodes: 11_546_836, arena_mb: 15_611 }));
@@ -67,12 +69,12 @@ assert.equal(view.lines[0], 'Game tree: 11,546,836 nodes');
 // RAM and the card are separate lines, so "fits" is never read as fitting the card
 assert.deepEqual(view.lines.slice(1), [
   'RAM: needs about 20.0 GB — fits\u00a0✓',
-  'Graphics card: needs 31.5 GB, has 31.4 GB — too big\u00a0✗',
-  'Solves on: CPU (processor), slower',
+  'GPU memory: needs 31.5 GB, has 31.4 GB — too big\u00a0✗',
+  'Solves on: CPU, slower — uses the RAM only',
 ]);
-assert.match(view.tip, /To fit the card, make the game smaller/);
+assert.match(view.tip, /To fit the GPU, make the game smaller/);
 assert.match(estimateView(estimate({ plan: busy })).tip, /close whatever else is using it/);
-assert.doesNotMatch(estimateView(estimate({ plan: noCard('none') })).tip, /To fit the card/);
+assert.doesNotMatch(estimateView(estimate({ plan: noCard('none') })).tip, /To fit the GPU/);
 
 // near the RAM limit, and over it
 view = estimateView(estimate({ arena_mb: 36_000 }));
