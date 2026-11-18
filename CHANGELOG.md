@@ -8,7 +8,7 @@ What changed in GTOpen, newest first, in plain words. The version you are runnin
 - The built-in scenarios use these sizes: 1 bb more per limper, callers' money added, and 3-bets of 3 times the raise in position and 4 times out of position. The three 8-max scenarios had two 3-bet sizes to choose from and now have one for each position, which makes them about a third to a half smaller.
 - Scenarios and games you saved are unchanged: the new settings stay off in them until you fill them in. The game does not get bigger when you turn them on, because each spot keeps the same number of raise sizes.
 - "Sizes by position" is now called "Sizes by seat", so that "position" only means in or out of position.
-- Squeezes over several callers, and raises over a string of limpers, can make pots bigger than the leaf net was trained on. Its flop values are less reliable in those rare, very large pots.
+- The bigger squeezes make some flop pots larger than the leaf net was trained on. It values them the same as the same spot in smaller chips (checked: its values move about 0.2% of the pot), so the learned flop values hold there too.
 - Close GTOpen and start it again after updating: until then the header shows "restart GTOpen" and the new sizes cannot be built.
 
 ## 1.1.4 - 2026-11-18

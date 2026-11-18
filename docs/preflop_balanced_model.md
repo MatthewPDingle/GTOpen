@@ -47,7 +47,7 @@ Example, 6-max with open 3, 3-bet 3 in position and 4 out, callers' money on: UT
 
 Games using any of these save as format v7, which older binaries refuse; with all of them off the config and the save are byte-for-byte what they were. The UI's built-in scenarios turn them on (1 bb per limper, callers' money, 3x in position and 4x out); saved scenarios without the keys keep them off.
 
-Leaf net coverage: the net was trained on 3-bet pots up to about 104 bb (26 bb at up to four times the usual table scale). Squeezes over several callers of a large open, and raises over many limpers, build heads-up flop pots past that, where its values are an extrapolation.
+Leaf net coverage: the net was trained on 3-bet pots up to about 104 bb (26 bb at up to four times the usual table scale). Squeezes over several callers of a large open, and raises over many limpers, build heads-up flop pots past that (about 300 bb with 10 bb opens). Flop play does not depend on the chip scale once the stack and the rake cap are given per pot, and the net follows that: given the same leaves at 0.7 of the top of its trained range, with the same stack-to-pot ratio and rake cap per pot, its per-hand values move 0.21% of the pot on average (0.30% at the 90th percentile), no more than leaves inside the range halved the same way (0.24%). Checked 2026-11-18 with net v3 on the 6-max built-in scenario and on a 150 bb version of it with 7.5 and 10 bb opens, at the starting ranges. This shows the net does not go wrong because a pot is large; it is not a comparison with exact solves of those pots.
 
 ## Validation
 
