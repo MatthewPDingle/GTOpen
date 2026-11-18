@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.1.5 - 2026-11-18
+
+- STOP answers at once. The button turns to "STOPPING…" and the progress line says "stopping" from the click until the solve has really ended, in the Preflop Lab and in the postflop Solve tab. Before, nothing changed for a few seconds and the click looked lost.
+- A stopped Preflop Lab solve says how accurate it is. It ends with one last accuracy check, so the line under SOLVE reads "stopped · iter 110" and "gap 0.5712 → 0.0050": the gap of the strategy on screen, next to the target. Before, a stopped solve showed no gap at all.
+- That last check is why STOP takes a few seconds on a big game. The progress line says "checking final accuracy…" while it runs. Pressing STOP during an accuracy check no longer throws that check away and repeats the work.
+- A stopped postflop solve also measures its accuracy once more, so the exploitability it shows belongs to the iteration it stopped at, not to an earlier check.
+
 ## 1.1.4 - 2026-11-18
 
 - The "?" beside the Preflop Lab title now names the leaf net: a neural net trained on real flop solves that values each hand on a two-player flop. It also says that other pots, and games without learned flop values, use a simpler estimate.
