@@ -764,6 +764,120 @@ pub fn vram_estimate_mb(s: &PreflopSolver) -> f64 {
         + (EquityCachePlan::build(s, &sources).bytes() + mw_bytes + forced_bytes + icm::IcmGpu::bytes(s) + rnr::bytes(s)) as f64 / 1e6
 }
 
+/// The tables every GPU solve of this game holds, in MB: reaches, values,
+/// both arenas, the tree, the extra equity channels, ICM, the learned flop
+/// corrections and blockers. The constructor's first budget check.
+fn base_need_mb(s: &PreflopSolver, value_blocks: usize, reach_blocks: usize) -> f64 {
+    let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
+    let leaf_bytes = s.leaf_terminals().map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
+    minimum_vram_mb(s, value_blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
+        + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6
+        + removal::RemovalGpu::bytes(s, reach_blocks, eq_channels * NUM_CLASSES * NUM_CLASSES) as f64 / 1e6
+}
+
+/// The least GPU memory (MB) a solve of this built game can run in: what the
+/// constructor reserves with every optional cache left out. No CUDA is
+/// needed, so the app can say before a solve whether the game fits the
+/// card. A budget below this always solves on the CPU; the constructor
+/// stays the authority at solve time.
+pub fn minimum_need_mb(s: &PreflopSolver) -> f64 {
+    tree_need_mb(s) + policy_need_mb(s)
+}
+
+/// The part of `minimum_need_mb` that changes with the table: locked and
+/// profiled strategies and the trust dial. Cheap next to `tree_need_mb`.
+pub fn policy_need_mb(s: &PreflopSolver) -> f64 {
+    match forced_policy_elements(s).and_then(forced_storage_bytes) {
+        Ok(bytes) => (bytes + rnr::bytes(s)) as f64 / 1e6,
+        Err(_) => f64::INFINITY,
+    }
+}
+
+/// The part of `minimum_need_mb` fixed by the built tree and its model.
+pub fn tree_need_mb(s: &PreflopSolver) -> f64 {
+    let Some(reach_blocks) = s.nodes.len().checked_add(s.n - 1).filter(|&len| len <= u32::MAX as usize) else {
+        return f64::INFINITY;
+    };
+    if s.arena_len > u32::MAX as usize || (s.cfg.card_removal && s.multiway.is_none()) {
+        return f64::INFINITY;
+    }
+    let mut bytes = 0;
+    let mw_terms = s.nodes.iter().filter(|nd| coupled_terminal(s, nd)).count();
+    let sp = SidePots::build(s, mw_terms > 0);
+    if sp.count > 0 {
+        bytes += sp.bytes();
+    }
+    if let Some(t) = s.three_way.as_ref() {
+        let tw_terms = s.nodes.iter()
+            .filter(|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 3 && nd.side_pots.is_empty())
+            .count();
+        if tw_terms > 0 || sp.count > 0 {
+            bytes += 2 * t.arrays().0.len() * 4 + tw_terms * 4;
+        }
+    }
+    if mw_terms > 0 {
+        // Multiway pots: the fixed tables plus one sample of the range
+        // tables, in whichever of the two layouts is smaller.
+        let mw = EquityCachePlan::multiway(s, &reach_sources(s));
+        let samples = 3 * super::multiway::SAMPLES * NUM_CLASSES * 4;
+        let one = (NUM_CLASSES + 1) * 4;
+        let original = mw.metadata_bytes() + mw_terms * 4 + samples + mw.blocks.len() * one;
+        let compact = MultiwayCompactPlan::build(&mw, s.n).unwrap_or_else(|_| MultiwayCompactPlan::union(mw.blocks.len()));
+        let optimized = mw.metadata_bytes() + mw_terms * 8 + mw.blocks.len() * 4 + samples
+            + compact.bytes + compact.capacity * one;
+        bytes += original.min(optimized);
+    }
+    base_need_mb(s, ValuePlan::build(s).blocks, reach_blocks) + bytes as f64 / 1e6
+}
+
+/// `minimum_need_mb` for a game that is not built yet, from the counts of
+/// the size walk (`estimate_tree`): a fresh game, with no locked strategies
+/// or trust dial. It leaves out the ICM tables and the opt-in 3-way table,
+/// which the walk does not count.
+pub fn minimum_need_of(cfg: &super::PreflopConfig, est: &super::TreeEstimate) -> f64 {
+    let (nc, np) = (NUM_CLASSES as f64, cfg.positions.len() as f64);
+    let (n, arena, g) = (est.nodes as f64, est.arena_len as f64, &est.gpu);
+    let reach_blocks = n + np - 1.0;
+    if reach_blocks > u32::MAX as f64 || arena > u32::MAX as f64 {
+        return f64::INFINITY;
+    }
+    let balanced = super::balanced_family(&cfg.realization);
+    let value_blocks = 1.0 + (est.nodes - est.action_nodes) as f64
+        + (g.level_widths[0] + g.level_widths[1]) as f64;
+    // reaches, values, both arenas and the tree, as minimum_vram_mb
+    let mut bytes = reach_blocks * (nc + 1.0) * 4.0 + value_blocks * nc * 4.0
+        + 2.0 * arena * 4.0 + n * (np * 12.0 + 44.0) + 64e6;
+    let eq_channels = if balanced { 3.0 } else { 1.0 };
+    bytes += (eq_channels - 1.0) * nc * nc * 4.0;
+    if cfg.realization == "leafnet" {
+        bytes += g.leaf_terminals as f64 * (2.0 * nc * 4.0 + 12.0);
+    }
+    if cfg.card_removal {
+        bytes += reach_blocks * 13.0 * 4.0 + eq_channels * nc * nc * 4.0 + g.heads_up_terminals as f64 * 4.0;
+    }
+    bytes += 4.0; // the placeholder for locked strategies
+    if g.side_pot_terminals > 0 {
+        // SidePots::bytes: terminals, their starts, amounts and masks, the
+        // equity table and the multiway list
+        bytes += (2 * g.side_pot_terminals + 1 + 2 * g.side_pots + g.side_pot_multiway.max(1)) as f64 * 4.0
+            + nc * nc * 4.0;
+    }
+    if g.multiway_terminals > 0 {
+        let (terms, union) = (g.multiway_terminals as f64, g.multiway_tables as f64);
+        let metadata = (reach_blocks + 2.0 * union + g.multiway_seat_tables as f64) * 4.0;
+        let samples = (3 * super::multiway::SAMPLES * NUM_CLASSES * 4) as f64;
+        let one = (nc + 1.0) * 4.0;
+        let original = metadata + terms * 4.0 + samples + union * one;
+        // MultiwayCompactPlan: each seat's own tables, if the map pays for itself
+        let capacity = g.multiway_max_seat_tables as f64;
+        let map = union * np * 4.0;
+        let (map, capacity) = if map < (union - capacity) * one { (map, capacity) } else { (0.0, union) };
+        let optimized = metadata + terms * 8.0 + union * 4.0 + samples + map + capacity * one;
+        bytes += original.min(optimized);
+    }
+    bytes / 1e6
+}
+
 // Host-only, opt-in diagnostic. Does not modify source layouts, reaches, arenas,
 // GPU allocations or launches. All temporary records are dropped before return.
 fn multiway_terminal_key_stats(s: &PreflopSolver, sources: &[u32], terms: &[u32]) {
@@ -1000,10 +1114,7 @@ impl PreflopGpu {
             .ok_or_else(|| "reach table beyond 32-bit block indexing; solving on CPU".to_string())?;
         let values = ValuePlan::build(s);
         let eq_channels = if super::balanced_family(&s.cfg.realization) {3usize} else {1};
-        let leaf_bytes = s.leaf_terminals().map_or(0, |(nodes, _, _)| nodes.len() * (2 * NUM_CLASSES * 4 + 12));
-        let mut need = minimum_vram_mb(s, values.blocks) + ((eq_channels-1)*NUM_CLASSES*NUM_CLASSES*4) as f64 / 1e6
-            + icm::IcmGpu::bytes(s) as f64 / 1e6 + leaf_bytes as f64 / 1e6
-            + removal::RemovalGpu::bytes(s, reach_blocks, eq_channels * NUM_CLASSES * NUM_CLASSES) as f64 / 1e6;
+        let mut need = base_need_mb(s, values.blocks, reach_blocks);
         if need > budget_mb as f64 {
             return Err(format!(
                 "needs ~{need:.0} MB VRAM (budget {budget_mb} MB)"
@@ -1018,7 +1129,7 @@ impl PreflopGpu {
         // indices inside the buffers (no CUDA error, garbage strategies).
         if s.arena_len > u32::MAX as usize {
             return Err(format!(
-                "arenas have {} entries â€” beyond the GPU engine's 32-bit arena indexing; solving on CPU",
+                "arenas have {} entries, beyond the GPU engine's 32-bit arena indexing; solving on CPU",
                 s.arena_len
             ));
         }

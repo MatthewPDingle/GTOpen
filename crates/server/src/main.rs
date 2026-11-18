@@ -38,6 +38,8 @@ mod trust_tests;
 mod preflop_trust_tests;
 #[cfg(test)]
 mod save_resume_tests;
+#[cfg(test)]
+mod preflop_memory_tests;
 
 fn bad_request(msg: impl Into<String>) -> ApiError {
     (StatusCode::BAD_REQUEST, msg.into())
@@ -207,6 +209,141 @@ struct PreflopStatus {
     trust_seats: Vec<usize>,
     /// What the last measured level buys and costs the hero (bb/hand).
     trust_readout: Option<solver::preflop::rnr::PfTrustReadout>,
+    /// What the game takes in memory, measured at build/load.
+    #[serde(skip)]
+    size: Option<PfSize>,
+    /// Where the next solve will run, from the memory free right now
+    /// (filled in when the status is read).
+    plan: Option<PfEnginePlan>,
+}
+
+/// What a built Preflop Lab game takes in memory.
+#[derive(Clone, Copy)]
+struct PfSize {
+    /// The regret and strategy tables (MB).
+    arena_mb: f64,
+    nodes: usize,
+    /// The least graphics memory a GPU solve needs (MB): the part fixed by
+    /// the tree, and the part that follows the table (locks, profiles, the
+    /// trust dial). Zero in a build without the GPU engine.
+    gpu_tree_mb: f64,
+    gpu_policy_mb: f64,
+}
+
+impl PfSize {
+    fn of(s: &solver::preflop::PreflopSolver) -> Self {
+        #[cfg(feature = "gpu")]
+        let (gpu_tree_mb, gpu_policy_mb) =
+            (solver::preflop::gpu::tree_need_mb(s), solver::preflop::gpu::policy_need_mb(s));
+        #[cfg(not(feature = "gpu"))]
+        let (gpu_tree_mb, gpu_policy_mb) = (0.0, 0.0);
+        PfSize { arena_mb: s.arena_mb(), nodes: s.nodes.len(), gpu_tree_mb, gpu_policy_mb }
+    }
+
+    fn plan(&self) -> PfEnginePlan {
+        pf_engine_plan(self.arena_mb, self.nodes, self.gpu_tree_mb + self.gpu_policy_mb)
+    }
+}
+
+/// How much memory a Preflop Lab game needs and where it will be solved, for
+/// the lab to show before a solve. The solve itself still checks the card
+/// when it starts and falls back to the CPU if the game does not fit.
+#[derive(Clone, Serialize, Default)]
+struct PfEnginePlan {
+    /// "gpu" | "cpu"
+    engine: &'static str,
+    /// Why the CPU, in plain words (empty on the GPU).
+    reason: String,
+    /// RAM the game takes while it is solved (MB).
+    ram_mb: f64,
+    /// The least graphics memory a GPU solve needs (MB); 0 without the GPU engine.
+    gpu_need_mb: f64,
+    /// Graphics memory a solve may use right now, and the card's size (MB);
+    /// 0 when there is no usable card.
+    gpu_free_mb: f64,
+    gpu_total_mb: f64,
+}
+
+/// The tree outside the two big tables: about 400 bytes a node (measured
+/// 330 to 440 on 5M- and 11M-node games).
+const PF_TREE_BYTES_PER_NODE: f64 = 400.0;
+
+/// What the machine offers a GPU solve.
+#[derive(Clone, Copy)]
+enum PfCard {
+    /// Built without the GPU engine.
+    NoEngine,
+    /// SOLVER_GPU=0.
+    Off,
+    /// No CUDA device or runtime.
+    Missing,
+    /// What a solve may use right now and the card's size (MB).
+    Ready { budget_mb: u64, total_mb: u64 },
+}
+
+fn pf_card() -> PfCard {
+    #[cfg(feature = "gpu")]
+    {
+        if !gpu_enabled() {
+            return PfCard::Off;
+        }
+        match solver::gpu::vram_info_mb() {
+            // the same budget the solve will get
+            Some((_, total_mb)) => PfCard::Ready { budget_mb: gpu_budget().0, total_mb },
+            None => PfCard::Missing,
+        }
+    }
+    #[cfg(not(feature = "gpu"))]
+    PfCard::NoEngine
+}
+
+fn pf_engine_plan(arena_mb: f64, nodes: usize, gpu_need_mb: f64) -> PfEnginePlan {
+    pf_engine_plan_on(pf_card(), arena_mb, nodes, gpu_need_mb)
+}
+
+fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64) -> PfEnginePlan {
+    // in the GB that Windows and a card's box use (1024 MB), like the lab
+    let gb = |mb: f64| format!("{:.1} GB", mb * 1e6 / (1u64 << 30) as f64);
+    let tree_mb = nodes as f64 * PF_TREE_BYTES_PER_NODE / 1e6;
+    let mut plan = PfEnginePlan { engine: "cpu", ram_mb: arena_mb + tree_mb, gpu_need_mb, ..Default::default() };
+    let (budget_mb, total_mb) = match card {
+        PfCard::NoEngine => {
+            plan.reason = "this copy of GTOpen has no graphics card support".into();
+            return plan;
+        }
+        PfCard::Off => {
+            plan.reason = "the graphics card is switched off for GTOpen (SOLVER_GPU=0)".into();
+            return plan;
+        }
+        PfCard::Missing => {
+            plan.reason = "no NVIDIA graphics card found".into();
+            return plan;
+        }
+        PfCard::Ready { budget_mb, total_mb } => (budget_mb as f64, total_mb as f64),
+    };
+    plan.gpu_free_mb = budget_mb;
+    plan.gpu_total_mb = total_mb;
+    // the most the card could give with nothing else on it
+    let empty_mb = (total_mb - GPU_MARGIN_MB as f64).max(0.0);
+    if !gpu_need_mb.is_finite() {
+        plan.reason = "too big for the graphics card".into();
+    } else if gpu_need_mb > empty_mb {
+        plan.reason = format!(
+            "too big for this graphics card (needs {} there, the card can give {})",
+            gb(gpu_need_mb), gb(empty_mb)
+        );
+    } else if gpu_need_mb > budget_mb {
+        plan.reason = format!(
+            "the graphics card has too little free right now (needs {}, {} free)",
+            gb(gpu_need_mb), gb(budget_mb)
+        );
+    } else {
+        plan.engine = "gpu";
+        // a GPU solve keeps a second copy of the two tables in RAM to hand
+        // results back
+        plan.ram_mb += arena_mb;
+    }
+    plan
 }
 
 struct Session {
@@ -486,7 +623,6 @@ fn gpu_enabled() -> bool {
 
 /// Safety headroom (MB) kept free on top of the VRAM estimate, for the CUDA
 /// context, plan arrays and lock tables not counted in the estimate.
-#[cfg(feature = "gpu")]
 const GPU_MARGIN_MB: u64 = 512;
 
 /// Effective GPU memory budget (MB) and whether the GPU is usable for this run.
@@ -1422,17 +1558,20 @@ async fn pf_build(
         let eq = preflop_equity();
         let mut built = solver::preflop::PreflopSolver::new(cfg, eq)?;
         built.set_multiway_equity_model(&model)?;
-        Ok::<_, String>(built)
+        let size = PfSize::of(&built);
+        Ok::<_, String>((built, size))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
+    let (built, size) = built;
     let nodes = built.nodes.len();
     let action_nodes = built.nodes.iter().filter(|n| n.kind == 0).count();
     let arena_mb = built.arena_mb();
     let multiway_equity_model = built.multiway_equity_model();
     let icm = built.icm_summary();
     let mut status = PreflopStatus::default();
+    status.size = Some(size);
     status.state = "idle".into();
     status.hero = built.hero;
     status.frozen = built.seat_frozen.clone();
@@ -1450,7 +1589,8 @@ async fn pf_build(
     .await?;
     Ok(Json(serde_json::json!({
         "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb,
-        "multiway_equity_model": multiway_equity_model, "icm": icm
+        "multiway_equity_model": multiway_equity_model, "icm": icm,
+        "plan": size.plan()
     })))
 }
 
@@ -1458,10 +1598,18 @@ async fn pf_build(
 async fn pf_estimate(
     Json(cfg): Json<solver::preflop::PreflopConfig>,
 ) -> Result<Json<serde_json::Value>, ApiError> {
-    let est = tokio::task::spawn_blocking(move || solver::preflop::estimate_tree(&cfg))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?
-        .map_err(bad_request)?;
+    let est = tokio::task::spawn_blocking(move || {
+        let est = solver::preflop::estimate_tree(&cfg)?;
+        #[cfg(feature = "gpu")]
+        let gpu_need_mb = solver::preflop::gpu::minimum_need_of(&cfg, &est);
+        #[cfg(not(feature = "gpu"))]
+        let gpu_need_mb = 0.0;
+        Ok::<_, String>((est, gpu_need_mb))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    let (est, gpu_need_mb) = est;
     let arena_mb = est.arena_len as f64 * 8.0 / 1e6;
     let (limit_nodes, limit_mb) =
         (solver::preflop::limit_nodes(), solver::preflop::limit_arena_mb());
@@ -1474,6 +1622,7 @@ async fn pf_estimate(
         "ok": ok,
         "limit_nodes": limit_nodes,
         "limit_arena_mb": limit_mb,
+        "plan": pf_engine_plan(arena_mb, est.nodes as usize, gpu_need_mb),
     })))
 }
 
@@ -1594,6 +1743,11 @@ impl PreflopStatus {
     fn mirror_trust(&mut self, s: &solver::preflop::PreflopSolver) {
         self.trust = s.trust();
         self.trust_seats = s.trust_seats();
+        // profiles and the dial also change what a GPU solve needs
+        #[cfg(feature = "gpu")]
+        if let Some(size) = self.size.as_mut() {
+            size.gpu_policy_mb = solver::preflop::gpu::policy_need_mb(s);
+        }
     }
 }
 #[derive(Serialize)]
@@ -1666,6 +1820,7 @@ async fn pf_solve(
             ));
         }
         stop.store(false, Ordering::Relaxed);
+        st.plan = st.size.map(|size| size.plan());
         st.state = "running".into();
         st.stop_reason.clear();
         st.preview_note.clear();
@@ -1710,7 +1865,8 @@ async fn pf_solve(
         // VRAM budget; anything else — including a mid-solve CUDA error —
         // falls back to the CPU + system RAM without losing progress.
         #[cfg(feature = "gpu")]
-        let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() {
+        // no card (or no CUDA runtime) is the processor's job, not an error
+        let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() && solver::gpu::vram_info_mb().is_some() {
             let budget = gpu_budget().0;
             let s = lock_unpoisoned(&solver);
             match solver::preflop::gpu::PreflopGpu::new_throughput(&s, budget) {
@@ -1731,8 +1887,15 @@ async fn pf_solve(
                     println!("preflop gpu unavailable ({err}); solving on CPU");
                     let mut st = status.lock().unwrap();
                     st.gpu = false;
-                    st.gpu_note =
-                        format!("GPU unavailable: {err} — solving on CPU + system RAM");
+                    // the plan's plain reason when it saw this coming
+                    st.gpu_note = match st.size.map(|size| size.plan()) {
+                        Some(plan) if plan.engine == "cpu" => {
+                            format!("Solving on the processor (CPU): {}.", plan.reason)
+                        }
+                        _ => format!(
+                            "Solving on the processor (CPU): the graphics card could not take this game ({err})."
+                        ),
+                    };
                     None
                 }
             }
@@ -2039,13 +2202,17 @@ async fn pf_stop(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::
 }
 
 async fn pf_status(State(state): State<Arc<AppState>>) -> Json<PreflopStatus> {
-    let st = state
+    let mut st = state
         .preflop
         .lock()
         .unwrap()
         .as_ref()
         .map(|s| s.status.lock().unwrap().clone())
         .unwrap_or_default();
+    // a running solve keeps the plan it started with: the card is its own now
+    if st.state != "running" {
+        st.plan = st.size.map(|size| size.plan());
+    }
     Json(st)
 }
 
@@ -2378,11 +2545,14 @@ async fn pf_load_game(
     pf_stop_and_join(&state).await?;
     let path = pf_game_path(&req.name).map_err(bad_request)?;
     let loaded = tokio::task::spawn_blocking(move || {
-        solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())
+        let loaded = solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())?;
+        let size = PfSize::of(&loaded);
+        Ok::<_, String>((loaded, size))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
+    let (loaded, size) = loaded;
     let seats: Vec<serde_json::Value> = (0..loaded.cfg.positions.len())
         .map(|i| {
             serde_json::json!({
@@ -2400,8 +2570,10 @@ async fn pf_load_game(
         "arena_mb": loaded.arena_mb(),
         "iteration": loaded.iteration,
         "seats": seats,
+        "plan": size.plan(),
     });
     let status = PreflopStatus {
+        size: Some(size),
         state: "stopped".into(),
         iteration: loaded.iteration,
         published_iteration: loaded.iteration,
@@ -2448,6 +2620,7 @@ async fn pf_session_info(
             "nodes": s.nodes.len(),
             "action_nodes": s.nodes.iter().filter(|n| n.kind == 0).count(),
             "arena_mb": s.arena_mb(),
+            "plan": st.size.map(|size| size.plan()),
             "iteration": s.iteration,
             "publication": st.publication(),
             "seats": seats,

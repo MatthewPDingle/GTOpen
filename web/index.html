@@ -228,7 +228,7 @@
           <button id="btn-stop" class="btn danger" disabled>STOP</button>
           <span id="run-state" class="ctl-state"></span>
         </div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="CPU arenas are solver data in RAM, not total process memory. GPU VRAM is a conservative full-tree estimate; actual fit is checked at solve time, with CPU fallback."></div>
+        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The graphics memory figure is the most a solve could take on the graphics card (GPU); the real fit is checked when the solve starts, and a spot that does not fit is solved on the processor (CPU) instead."></div>
         <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
         <div class="btn-row">
           <input type="text" id="save-name" placeholder="save name…">
@@ -422,7 +422,7 @@
           <label class="chk" data-tip="On by default. Prices heads-up flops with the balanced model plus a correction learned from exact flop solves, so hands are valued by how they play after the flop and rake counts on the final pot. Solves take about twice as long. Borderline hands and the small blind's limp-or-raise split are the least reliable. Multiway and all-in pots use the balanced model alone, and so do games with ICM payouts. Untick for the balanced model alone."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
-          data-tip="Live tree size and solver-arena RAM before you build; not total process memory or GPU VRAM. Limits follow this machine's RAM; GPU fit is checked when solving."></div>
+          data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the graphics card (GPU) or the processor (CPU). It updates as you change the form."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
           <button id="pfl-build" class="btn" data-tip="Optional — SOLVE builds automatically.">BUILD GAME</button>
@@ -432,7 +432,7 @@
           <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Everything stays browsable; RE-SOLVE continues from here.">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
-        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="Iteration count and per-seat best-response gaps from the last checkpoint."></div>
+        <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="How the last solve ended and its gap. Hover a chip for detail."></div>
         <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <button type="button" class="info-dot" aria-label="Seat types" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting. FROZEN: pinned to what it played at the last solve. PROFILE (archetype, HUD stats or a saved player): plays like a real person; its ranges bend the current solve's equilibrium toward its stats, so solve the plain game before modelling seats. A profile seat is never solved — its grid shows the profile as is — so a table where every seat is a profile has nothing to solve until you pick a HERO; while a seat is the HERO its profile is ignored. 'bleeds X bb' = what that seat loses per hand to a best response. Postflop tendencies only matter once a spot is sent to postflop.">?</button></div>
         <div id="pfl-model"></div>
         <div id="pfl-editor" class="hidden"></div>

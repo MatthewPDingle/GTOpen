@@ -18,6 +18,8 @@ import { defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
+import { estimateView } from './preflop_memory.js';
+import { statusChips as chipsFor } from './preflop_status.js';
 
 // Same key as the Browse matrix (browse.js): fold blue, check/call green,
 // raises in the postflop bet reds — small / medium / large by size rank,
@@ -354,7 +356,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (continuation) exportBody.appendChild(continuation);
   }
 
-  // ----- status chips (state · iter · gap · measured · engine) -----
+  // ----- status chips: what the progress bar and the size line do not say (preflop_status.js) -----
   const statusChips = document.createElement('div');
   statusChips.style.cssText = 'display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center';
   const statusWarn = document.createElement('div');
@@ -701,35 +703,26 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       return;
     }
     if (seq !== estSeq) return; // stale response: a newer one is coming
-    const nodes = (+e.nodes).toLocaleString();
-    const mb = e.arena_mb < 1 ? e.arena_mb.toFixed(1) : e.arena_mb.toFixed(0);
-    const fmtBig = x => x >= 1e6 ? (x / 1e6).toFixed(1) + 'M'
-      : x >= 1e4 ? Math.round(x / 1e3) + 'k' : (+x).toLocaleString();
-    const caps = `this machine allows ${fmtBig(e.limit_nodes)} nodes / ` +
-      (e.limit_arena_mb >= 1000 ? (e.limit_arena_mb / 1000).toFixed(1) + ' GB' : e.limit_arena_mb.toFixed(0) + ' MB');
-    const borderline = e.ok &&
-      (e.nodes > 0.9 * e.limit_nodes || e.arena_mb > 0.9 * e.limit_arena_mb);
-    els.estimate.classList.toggle('warn', borderline);
-    const capsTip = `${caps}. The caps track FREE RAM, so they move as other apps use memory ` +
-      `(PREFLOP_MAX_NODES / PREFLOP_MAX_ARENA_MB env vars override). ` +
-      `CPU arena limits, not GPU memory; GPU fit is checked when solving.`;
-    const dot = t => ` <button type="button" class="info-dot" aria-label="How this tree-size estimate is measured" data-tip="${t}">?</button>`;
-    if (e.ok && borderline) {
-      els.estimate.classList.remove('bad');
-      els.estimate.innerHTML =
-        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits, <b>barely</b> \u26a0` +
-        dot(capsTip + ' Little headroom: the build may still refuse if memory tightens \u2014 close big apps or trim a size.');
-    } else if (e.ok) {
-      els.estimate.classList.remove('bad');
-      els.estimate.innerHTML =
-        `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 fits \u2713` + dot(capsTip);
-    } else {
-      els.estimate.classList.add('bad');
-      els.estimate.innerHTML = (e.truncated
-        ? `tree &gt; <b>${nodes}</b> nodes \u00b7 &gt; ${mb} MB CPU arenas \u2014 too big \u2717`
-        : `tree \u2248 <b>${nodes}</b> nodes \u00b7 ${mb} MB CPU arenas \u2014 too big \u2717`) +
-        dot(capsTip + ' Trim open sizes, re-raise multipliers, the raise cap, or limps.');
-    }
+    // how big the game is, what memory it needs and where it will solve
+    const view = estimateView(e);
+    S.formEngine = e.ok ? e.plan.engine : null; // the chips do not repeat it
+    els.estimate.classList.toggle('warn', view.state === 'warn');
+    els.estimate.classList.toggle('bad', view.state === 'bad');
+    els.estimate.replaceChildren();
+    view.lines.forEach((line, i) => {
+      const row = document.createElement('div');
+      row.textContent = line;
+      if (i === 0) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'info-dot';
+        dot.setAttribute('aria-label', 'About memory and where the game is solved');
+        dot.dataset.tip = view.tip;
+        dot.textContent = '?';
+        row.append(' ', dot);
+      }
+      els.estimate.append(row);
+    });
   }
   window.addEventListener('focus', () => estSoon());
   let estT = null;
@@ -891,8 +884,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       S.lastGaps = null;
       closeEditor();
       renderModel();
-      els.buildInfo.textContent =
-        `${info.nodes.toLocaleString()} nodes · ${info.action_nodes.toLocaleString()} decision points · ${info.arena_mb.toFixed(0)} MB CPU arenas`;
+      els.buildInfo.textContent = ''; // the size line above has the nodes, memory and engine
       progressSet(100, 'built \u2713');
       setTimeout(() => { if (S.lastState !== 'running') progressHide(); }, 1500);
       lastIter = 0;
@@ -1107,8 +1099,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     lastIter = out.iteration;
     renderSaveState();
     icmControls.showSummary(out.icm);
-    els.buildInfo.textContent =
-      `${out.nodes.toLocaleString()} nodes · ${out.arena_mb.toFixed(0)} MB CPU arenas · loaded “${name}” at iter ${out.iteration}`;
+    els.buildInfo.textContent = `loaded “${name}”`;
     updateEstimate();
     startPolling();
     refresh();
@@ -1160,19 +1151,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       previewCheck.disabled = running;
       if (!running) previewCapability.then(supported => { previewCheck.disabled = S.solveRunning || !supported; });
     }
-    let gapChip = null;
     if (st.gaps && st.gaps.length) {
-      gapChip = statusChip(`gap ${st.gap_total.toFixed(4)} \u2192 0.0050`,
-        'Best-response gap: how much each seat could still gain by deviating (bb). Only seats still learning converge; ' +
-        'a frozen or ruled seat’s gap is its BLEED against its pinned strategy. ' +
-        st.gaps.map((g, i) => `${S.positions[i] || i}: ${g.toFixed(4)}`).join(' · '));
       S.lastGaps = st.gaps;
     } else if (st.accuracy_iteration === null) {
       S.lastGaps = null; // a changed model must not retain the old gap claim
     }
     renderModel(); // cheap: it skips unless its rendered state changed
-    const engine = st.gpu ? statusChip('\u26a1 GPU', 'Solving on CUDA.')
-      : statusChip('CPU', st.gpu_note || 'Solving on CPU.');
     const err = st.error || ''; // a crashed worker is not a STOP
     // the engine could not load its realization fit and priced with a fallback:
     // reword its note for this game's model, show it every time, toast it once
@@ -1186,17 +1170,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       toast(realizationNote, true);
     }
     const shown = publishedIteration(st);
-    const chips = [statusChip(st.state, 'Solver state.')];
-    chips.push(statusChip(`iter ${st.iteration}`, 'Iterations completed; the counter survives resumes and loads.'));
-    if (st.published_iteration !== undefined) {
-      chips.push(statusChip(`displayed ${shown}`, 'Iteration of the strategy snapshot on screen.'));
-    }
-    if (gapChip) chips.push(gapChip);
-    if (st.accuracy_iteration != null) {
-      chips.push(statusChip(`measured @ ${st.accuracy_iteration}`, 'Iteration of the last accuracy measurement.'));
-    }
-    chips.push(engine);
-    statusChips.replaceChildren(...chips);
+    // each fact once: the progress bar has a running solve's iteration and
+    // gap, the size line has memory and the planned engine (preflop_status.js)
+    statusChips.replaceChildren(...chipsFor(st, { positions: S.positions, formEngine: S.formEngine })
+      .map(chip => statusChip(chip.label, chip.tip)));
     const warnings = [err, realizationNote, st.preview_note || ''].filter(Boolean);
     statusWarn.textContent = warnings.join(' \u00b7 ');
     statusWarn.classList.toggle('hidden', !warnings.length);
@@ -3192,8 +3169,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!sess || !sess.config) return;
     try {
       await applyLoadedGame('current session', sess, { quiet: true, onDisk: false });
-      els.buildInfo.textContent =
-        `${sess.nodes.toLocaleString()} nodes · ${sess.arena_mb.toFixed(0)} MB CPU arenas · session resumed at iter ${sess.iteration}`;
+      els.buildInfo.textContent = 'session resumed';
       if (sess.state === 'running') { progressSet(0, 'solving'); }
     } catch (e) { console.warn('could not adopt the preflop session', e); }
   })();
