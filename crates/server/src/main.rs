@@ -3517,7 +3517,7 @@ async fn rl_spot(Json(req): Json<RlSpotRequest>) -> Result<Json<serde_json::Valu
     rl_blocking(move |lib| lib.spot(req.id))
         .await?
         .map(Json)
-        .ok_or_else(|| (StatusCode::NOT_FOUND, "no such Range Lab chart (the data files may have changed; reload the list)".to_string()))
+        .ok_or_else(|| (StatusCode::NOT_FOUND, "no such canonical GTO chart (the data files may have changed; reload the list)".to_string()))
 }
 
 async fn rl_match(Json(req): Json<rangelab::MatchRequest>) -> Result<Json<serde_json::Value>, ApiError> {

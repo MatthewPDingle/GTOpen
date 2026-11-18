@@ -44,7 +44,7 @@ The app
 ### October 2026
 
 - **Compare two reports** side by side, and **undo and redo for lock edits** in Browse (Ctrl+Z, Ctrl+Shift+Z).
-- **Canonical Range Lab charts in the Preflop Lab.** If you have Range Lab's charts on your computer, the Preflop Lab shows them next to the solver's ranges. The charts themselves are not part of GTOpen.
+- **Canonical GTO charts in the Preflop Lab.** If you have the chart files on your computer, the Preflop Lab can show them in place of a solve. The charts themselves are not part of GTOpen.
 - Fixes for the all-in option: the all-in threshold is read correctly, and CPU solves with all-in sizes converge again.
 
 ### Earlier
