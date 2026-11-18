@@ -704,8 +704,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     if (seq !== estSeq) return; // stale response: a newer one is coming
     // how big the game is, what memory it needs and where it will solve
-    const view = estimateView(e);
-    S.formEngine = e.ok ? e.plan.engine : null; // the chips do not repeat it
+    let view;
+    try { view = estimateView(e); }
+    catch (err) { // never a blank line: say that the size could not be shown
+      console.warn('could not show the game size', err);
+      view = { lines: ['\u26a0 Could not work out this game\u2019s size and memory. Refresh the page; if it stays, restart GTOpen.'], tip: String(err?.message || err), state: 'bad' };
+    }
+    S.formEngine = e.ok && e.plan ? e.plan.engine : null; // the chips do not repeat it
     els.estimate.classList.toggle('warn', view.state === 'warn');
     els.estimate.classList.toggle('bad', view.state === 'bad');
     els.estimate.replaceChildren();

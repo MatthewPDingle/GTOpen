@@ -10,6 +10,14 @@ use std::path::{Path, PathBuf};
 
 use axum::Json;
 
+/// What this server can do for the page, as a number. The page and the change
+/// log are read from disk, so a pull alone updates them while a server that
+/// was not rebuilt and restarted keeps running old code. The page knows the
+/// level it needs (`NEEDS_SERVER_LEVEL` in web/js/version.js) and asks for a
+/// restart when the server reports less. Raise both together whenever the
+/// page starts to need something new from the server.
+pub const SERVER_LEVEL: u32 = 1;
+
 /// Where the app's change log link points.
 pub const CHANGELOG_URL: &str = "https://github.com/MatthewPDingle/GTOpen/blob/master/CHANGELOG.md";
 
@@ -105,9 +113,10 @@ pub fn checkout_commit(repo: &Path) -> Option<String> {
     (full.len() >= 9 && full.bytes().all(|b| b.is_ascii_hexdigit())).then(|| full[..9].to_string())
 }
 
-/// `GET /api/version`: `{version, date, commit, changelog_url}`. `version`
-/// and `date` are null when no change log is found, `commit` outside a git
-/// checkout.
+/// `GET /api/version`: `{version, date, commit, changelog_url, server_level}`.
+/// `version` and `date` are null when no change log is found, `commit`
+/// outside a git checkout. `server_level` is this program's own, not the
+/// checkout's.
 pub fn version_info(repo: &Path) -> serde_json::Value {
     let release = std::fs::read_to_string(repo.join("CHANGELOG.md"))
         .ok()
@@ -117,6 +126,7 @@ pub fn version_info(repo: &Path) -> serde_json::Value {
         "date": release.as_ref().map(|r| r.date.as_str()),
         "commit": checkout_commit(repo),
         "changelog_url": CHANGELOG_URL,
+        "server_level": SERVER_LEVEL,
     })
 }
 
@@ -228,5 +238,19 @@ mod tests {
         let info = version_info(&repo_root());
         assert_eq!(info["version"], newest.version.as_str());
         assert_eq!(info["date"], newest.date.as_str());
+    }
+
+    /// The page asks for a restart when the server's level is below the one
+    /// it needs, so the two numbers move together.
+    #[test]
+    fn the_page_needs_exactly_this_server_level() {
+        let js = std::fs::read_to_string(repo_root().join("web/js/version.js")).unwrap();
+        let needs = js
+            .lines()
+            .find_map(|line| line.strip_prefix("export const NEEDS_SERVER_LEVEL = "))
+            .and_then(|rest| rest.trim_end_matches(';').trim().parse::<u32>().ok())
+            .expect("web/js/version.js needs `export const NEEDS_SERVER_LEVEL = N;`");
+        assert_eq!(needs, SERVER_LEVEL, "raise SERVER_LEVEL and NEEDS_SERVER_LEVEL together");
+        assert_eq!(version_info(&repo_root())["server_level"], SERVER_LEVEL);
     }
 }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { sizeText, memoryText, engineText, planChip, estimateView } from '../web/js/preflop_memory.js';
+import { sizeText, memoryText, engineText, planChip, estimateView, UNKNOWN_ENGINE } from '../web/js/preflop_memory.js';
 
 // sizes in the GB Windows and a card's box use (the server sends 1 MB = 1,000,000 bytes)
 assert.equal(sizeText(34359.738368), '32.0 GB');
@@ -64,3 +64,20 @@ for (const v of [estimateView(estimate()), estimateView(estimate({ plan: cpu }))
   assert.doesNotMatch(v.lines.join(' ') + v.tip, /arena|VRAM|CUDA|env var/i);
 }
 console.log('preflop memory: ok');
+
+// A server that was pulled but not restarted sends no plan: the size still shows, and says why the rest is missing.
+{
+  const old = estimate({ nodes: 5_779_786, arena_mb: 7800 });
+  delete old.plan;
+  const view = estimateView(old);
+  assert.equal(view.state, 'ok');
+  assert.equal(view.lines[0], 'Game tree: 5,779,786 nodes');
+  assert.match(view.lines[1], /^Memory: about 9\.\d GB of RAM — fits/);
+  assert.equal(view.lines[2], UNKNOWN_ENGINE);
+  assert.match(view.lines[2], /restart GTOpen/);
+  assert.match(view.tip, /newer than the GTOpen program that is running/);
+  const tooBig = estimateView({ ...old, ok: false });
+  assert.equal(tooBig.lines.length, 2);
+  assert.equal(tooBig.state, 'bad');
+}
+console.log('preflop memory without a plan: ok');
