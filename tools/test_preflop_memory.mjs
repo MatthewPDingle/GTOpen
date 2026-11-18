@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { sizeText, cardState, cardText, engineText, planChip, estimateView, UNKNOWN_ENGINE } from '../web/js/preflop_memory.js';
+import { sizeText, cardState, cardText, engineText, largeGame, planChip, estimateView, UNKNOWN_ENGINE } from '../web/js/preflop_memory.js';
 
 // sizes in the GB Windows and a card's box use (the server sends 1 MB = 1,000,000 bytes)
 assert.equal(sizeText(34359.738368), '32.0 GB');
@@ -75,6 +75,25 @@ assert.deepEqual(view.lines.slice(1), [
 assert.match(view.tip, /To fit the GPU, make the game smaller/);
 assert.match(estimateView(estimate({ plan: busy })).tip, /close whatever else is using it/);
 assert.doesNotMatch(estimateView(estimate({ plan: noCard('none') })).tip, /To fit the GPU/);
+
+// too big for the GPU all at once, but not a part at a time: still the GPU, and the line says which way
+const large = { engine: 'gpu', card: 'fits', gpu_mode: 'large', reason: '', ram_mb: 35_840.6, gpu_need_mb: 19_095,
+  gpu_free_mb: 33_678, gpu_total_mb: 34_190, gpu_limit_mb: 33_678 };
+view = estimateView(estimate({ plan: large, nodes: 11_546_836, arena_mb: 15_611 }));
+assert.deepEqual(view.lines.slice(1), [
+  'RAM: needs about 33.4 GB — fits\u00a0✓',
+  'GPU memory: needs 17.8 GB, 31.4 GB free — fits\u00a0✓',
+  'Solves on: GPU, large-game mode — uses RAM and GPU memory',
+]);
+assert.ok(view.lines.every(line => line.length <= 58), 'the lines fit a narrow panel');
+assert.match(view.tip, /This game is in large-game mode: it is too big for the GPU all at once/);
+assert.doesNotMatch(view.tip, /To fit the card/);
+assert.equal(planChip(large).tip, 'The next solve will run on the GPU, in large-game mode.');
+// a game that fits whole, and a server from before the mode, read as before
+assert.equal(largeGame(gpu), false);
+assert.equal(largeGame({ ...cpu, gpu_mode: 'large' }), false);
+assert.doesNotMatch(estimateView(estimate()).tip, /This game is in large-game mode/);
+assert.match(estimateView(estimate()).tip, /can still solve on the GPU in large-game mode/);
 
 // near the RAM limit, and over it
 view = estimateView(estimate({ arena_mb: 36_000 }));

@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.3.0 - 2026-11-18
+
+- Bigger Preflop Lab games can solve on the GPU. A game too big for the GPU all at once used to go to the CPU. Now the GPU takes it a part at a time ("large-game mode"), which needs roughly 40% less GPU memory, so games up to about 1.7 times as big fit. The answer is the same.
+- Tested on an RTX 5090: an 8-max 150bb game with two open sizes, limps and the all-in option took about 7 minutes a step on the CPU and now takes about 7 seconds on the GPU.
+- Games that already fit the GPU solve exactly as before, at the same speed. Large-game mode is used only when the normal solve has no room, and the "Solves on" line says when it is.
+- Not covered yet, so these still go to the CPU when too big: tournament payouts, the trust dial, unequal stacks and the exact 3-way table.
+
 ## 1.2.0 - 2026-11-18
 
 - Preflop Lab can size raises the way players do. Three new settings sit beside the sizes they change: an extra amount per limper when raising over limps, a tick box that adds the callers' money to a 3-bet or 4-bet (3 times an open of 3 is 9, and over two callers it becomes 15), and separate 3-bet and 4-bet sizes out of position. Out of position means acting before the raiser on the flop.

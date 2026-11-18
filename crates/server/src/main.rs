@@ -254,20 +254,37 @@ struct PfSize {
     /// trust dial). Zero in a build without the GPU engine.
     gpu_tree_mb: f64,
     gpu_policy_mb: f64,
+    /// The same two parts for the GPU's large-game mode, which works on the
+    /// tree a part at a time and so needs less. Infinite when the mode does
+    /// not cover the game.
+    gpu_large_tree_mb: f64,
+    gpu_large_policy_mb: f64,
 }
 
 impl PfSize {
     fn of(s: &solver::preflop::PreflopSolver) -> Self {
         #[cfg(feature = "gpu")]
-        let (gpu_tree_mb, gpu_policy_mb) =
-            (solver::preflop::gpu::tree_need_mb(s), solver::preflop::gpu::policy_need_mb(s));
+        let (gpu_tree_mb, gpu_policy_mb, gpu_large_tree_mb, gpu_large_policy_mb) = (
+            solver::preflop::gpu::tree_need_mb(s),
+            solver::preflop::gpu::policy_need_mb(s),
+            solver::preflop::gpu::large_tree_need_mb(s),
+            solver::preflop::gpu::large_policy_need_mb(s),
+        );
         #[cfg(not(feature = "gpu"))]
-        let (gpu_tree_mb, gpu_policy_mb) = (0.0, 0.0);
-        PfSize { arena_mb: s.arena_mb(), nodes: s.nodes.len(), gpu_tree_mb, gpu_policy_mb }
+        let (gpu_tree_mb, gpu_policy_mb, gpu_large_tree_mb, gpu_large_policy_mb) =
+            (0.0, 0.0, f64::INFINITY, f64::INFINITY);
+        PfSize {
+            arena_mb: s.arena_mb(), nodes: s.nodes.len(),
+            gpu_tree_mb, gpu_policy_mb, gpu_large_tree_mb, gpu_large_policy_mb,
+        }
     }
 
     fn plan(&self) -> PfEnginePlan {
-        pf_engine_plan(self.arena_mb, self.nodes, self.gpu_tree_mb + self.gpu_policy_mb)
+        pf_engine_plan(
+            self.arena_mb, self.nodes,
+            self.gpu_tree_mb + self.gpu_policy_mb,
+            self.gpu_large_tree_mb + self.gpu_large_policy_mb,
+        )
     }
 }
 
@@ -282,8 +299,13 @@ struct PfEnginePlan {
     reason: String,
     /// RAM the game takes while it is solved (MB).
     ram_mb: f64,
-    /// The least graphics memory a GPU solve needs (MB); 0 without the GPU engine.
+    /// The least graphics memory the GPU solve named by `gpu_mode` needs
+    /// (MB), or the least any GPU solve would need when the game solves on
+    /// the CPU; 0 without the GPU engine.
     gpu_need_mb: f64,
+    /// "" for the normal GPU solve; "large" when the game is too big for it
+    /// and solves in the GPU's large-game mode (a part of the tree at a time).
+    gpu_mode: &'static str,
     /// Graphics memory a solve may use right now, and the card's size (MB);
     /// 0 when there is no usable card.
     gpu_free_mb: f64,
@@ -329,11 +351,16 @@ fn pf_card() -> PfCard {
     PfCard::NoEngine
 }
 
-fn pf_engine_plan(arena_mb: f64, nodes: usize, gpu_need_mb: f64) -> PfEnginePlan {
-    pf_engine_plan_on(pf_card(), arena_mb, nodes, gpu_need_mb)
+fn pf_engine_plan(arena_mb: f64, nodes: usize, gpu_need_mb: f64, gpu_large_mb: f64) -> PfEnginePlan {
+    pf_engine_plan_on(pf_card(), arena_mb, nodes, gpu_need_mb, gpu_large_mb)
 }
 
-fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64) -> PfEnginePlan {
+/// `gpu_need_mb` is what the normal GPU solve needs and `gpu_large_mb` what
+/// its large-game mode needs (infinite when the mode does not cover the
+/// game). The normal solve is used whenever it fits, as the solve does.
+fn pf_engine_plan_on(
+    card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64, gpu_large_mb: f64,
+) -> PfEnginePlan {
     // in the GB that Windows and a card's box use (1024 MB), like the lab
     let gb = |mb: f64| format!("{:.1} GB", mb * 1e6 / (1u64 << 30) as f64);
     let tree_mb = nodes as f64 * PF_TREE_BYTES_PER_NODE / 1e6;
@@ -361,6 +388,25 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
     // the most the card could give with nothing else on it
     let empty_mb = (total_mb - GPU_MARGIN_MB as f64).max(0.0);
     plan.gpu_limit_mb = empty_mb;
+    if gpu_need_mb.is_finite() && gpu_need_mb <= budget_mb {
+        plan.card = "fits";
+        plan.engine = "gpu";
+        // a GPU solve keeps a second copy of the two tables in RAM to hand
+        // results back
+        plan.ram_mb += arena_mb;
+        return plan;
+    }
+    if gpu_large_mb.is_finite() && gpu_large_mb <= budget_mb {
+        plan.card = "fits";
+        plan.engine = "gpu";
+        plan.gpu_mode = "large";
+        plan.gpu_need_mb = gpu_large_mb;
+        plan.ram_mb += arena_mb;
+        return plan;
+    }
+    // on the CPU: say the least the card would have had to give
+    let gpu_need_mb = gpu_need_mb.min(gpu_large_mb);
+    plan.gpu_need_mb = gpu_need_mb;
     if !gpu_need_mb.is_finite() {
         plan.card = "too_big";
         plan.reason = "too big for the GPU".into();
@@ -376,12 +422,6 @@ fn pf_engine_plan_on(card: PfCard, arena_mb: f64, nodes: usize, gpu_need_mb: f64
             "the GPU has too little memory free right now (needs {}, {} free)",
             gb(gpu_need_mb), gb(budget_mb)
         );
-    } else {
-        plan.card = "fits";
-        plan.engine = "gpu";
-        // a GPU solve keeps a second copy of the two tables in RAM to hand
-        // results back
-        plan.ram_mb += arena_mb;
     }
     plan
 }
@@ -1683,15 +1723,18 @@ async fn pf_estimate(
     let est = tokio::task::spawn_blocking(move || {
         let est = solver::preflop::estimate_tree(&cfg)?;
         #[cfg(feature = "gpu")]
-        let gpu_need_mb = solver::preflop::gpu::minimum_need_of(&cfg, &est);
+        let gpu_need_mb = (
+            solver::preflop::gpu::minimum_need_of(&cfg, &est),
+            solver::preflop::gpu::large_need_of(&cfg, &est),
+        );
         #[cfg(not(feature = "gpu"))]
-        let gpu_need_mb = 0.0;
+        let gpu_need_mb = (0.0, f64::INFINITY);
         Ok::<_, String>((est, gpu_need_mb))
     })
     .await
     .map_err(|e| bad_request(e.to_string()))?
     .map_err(bad_request)?;
-    let (est, gpu_need_mb) = est;
+    let (est, (gpu_need_mb, gpu_large_mb)) = est;
     let arena_mb = est.arena_len as f64 * 8.0 / 1e6;
     let (limit_nodes, limit_mb) =
         (solver::preflop::limit_nodes(), solver::preflop::limit_arena_mb());
@@ -1704,7 +1747,7 @@ async fn pf_estimate(
         "ok": ok,
         "limit_nodes": limit_nodes,
         "limit_arena_mb": limit_mb,
-        "plan": pf_engine_plan(arena_mb, est.nodes as usize, gpu_need_mb),
+        "plan": pf_engine_plan(arena_mb, est.nodes as usize, gpu_need_mb, gpu_large_mb),
     })))
 }
 
@@ -1841,6 +1884,7 @@ impl PreflopStatus {
         #[cfg(feature = "gpu")]
         if let Some(size) = self.size.as_mut() {
             size.gpu_policy_mb = solver::preflop::gpu::policy_need_mb(s);
+            size.gpu_large_policy_mb = solver::preflop::gpu::large_policy_need_mb(s);
         }
     }
 }
@@ -1969,7 +2013,9 @@ async fn pf_solve(
                 Ok((g,selection)) => {
                     let mut st = status.lock().unwrap();
                     st.gpu = true;
-                    st.gpu_note = if selection.mode == "retained_cohorts" {
+                    st.gpu_note = if selection.mode == "large_game" {
+                        "Large-game GPU mode".into()
+                    } else if selection.mode == "retained_cohorts" {
                         "Shared GPU evaluation".into()
                     } else if selection.static_cdf {
                         "Memory-efficient GPU evaluation".into()

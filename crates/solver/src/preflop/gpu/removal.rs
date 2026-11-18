@@ -4,16 +4,16 @@
 use super::*;
 
 pub(super) struct RemovalGpu {
-    f_rank_mass: CudaFunction,
-    f_heads_up: CudaFunction,
-    f_scale: CudaFunction,
+    pub(super) f_rank_mass: CudaFunction,
+    pub(super) f_heads_up: CudaFunction,
+    pub(super) f_scale: CudaFunction,
     /// 13 per-rank masses per reach block.
-    d_rank_mass: CudaSlice<f32>,
+    pub(super) d_rank_mass: CudaSlice<f32>,
     /// The equity tables (as `d_eq`), each entry times its removal weight.
     pub(super) d_eq_w: CudaSlice<f32>,
     /// Heads-up single-pot pot-share terminals.
-    d_hu_terms: CudaSlice<u32>,
-    hu_count: u32,
+    pub(super) d_hu_terms: CudaSlice<u32>,
+    pub(super) hu_count: u32,
 }
 
 /// Heads-up pot-share terminals without side pots, the ones the CPU prices

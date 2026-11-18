@@ -53,13 +53,20 @@ export function cardText(plan) {
   }
 }
 
+/** A game too big for the GPU's normal solve that the GPU still takes a
+ *  part at a time (a server from before the mode never says so). */
+export function largeGame(plan) {
+  return plan.engine === 'gpu' && plan.gpu_mode === 'large';
+}
+
 /** Where the next solve will run and what it uses: a GPU solve needs the
  *  RAM as well (the game is built there and its results come back there); a
  *  CPU solve uses RAM only. The GPU's line above says why it is the CPU. */
 export function engineText(plan) {
-  return plan.engine === 'gpu'
-    ? 'Solves on: GPU \u2014 uses both the RAM and the GPU memory'
-    : 'Solves on: CPU, slower \u2014 uses the RAM only';
+  if (plan.engine !== 'gpu') return 'Solves on: CPU, slower \u2014 uses the RAM only';
+  return largeGame(plan)
+    ? 'Solves on: GPU, large-game mode \u2014 uses RAM and GPU memory'
+    : 'Solves on: GPU \u2014 uses both the RAM and the GPU memory';
 }
 
 /** The engine chip until a solve reports its own engine: the plan before
@@ -68,8 +75,9 @@ export function planChip(plan, running = false) {
   if (plan.engine !== 'gpu') {
     return { label: 'CPU', tip: `${running ? 'Solving' : 'The next solve will run'} on the CPU: ${plan.reason}.` };
   }
-  return running
-    ? { label: 'GPU\u2026', tip: 'Getting the GPU ready.' }
+  if (running) return { label: 'GPU\u2026', tip: 'Getting the GPU ready.' };
+  return largeGame(plan)
+    ? { label: 'GPU', tip: 'The next solve will run on the GPU, in large-game mode.' }
     : { label: 'GPU', tip: 'The next solve will run on the GPU.' };
 }
 
@@ -104,7 +112,11 @@ export function estimateView(e) {
     `A GPU solve is much faster and uses both: this RAM, and the GPU's own memory. The game takes ` +
       `more room on the GPU than a CPU solve takes in RAM, because the GPU works on the whole game ` +
       `at once: besides the solver's tables it holds a range for every spot and a value for every ` +
-      `ending. When it does not fit there, the game solves on the CPU, in RAM only: same answer, slower.`,
+      `ending. A game too big for that can still solve on the GPU in large-game mode, a part of the ` +
+      `game at a time: same answer, with more steps for the GPU to run. When even that does not fit, ` +
+      `the game solves on the CPU, in RAM only: same answer, slower.`,
+    plan.engine && largeGame(plan)
+      ? 'This game is in large-game mode: it is too big for the GPU all at once, so the GPU takes it a part at a time.' : '',
     state === 'warn' ? 'Only just fits: the build may still be refused if memory gets tighter.' : '',
     state === 'bad' ? `To make the game smaller: ${smaller}.` : '',
     e.ok && card === 'too_big' ? `To fit the GPU, make the game smaller: ${smaller}.` : '',
