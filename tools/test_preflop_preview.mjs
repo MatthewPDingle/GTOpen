@@ -17,6 +17,9 @@ assert.equal(showsPublicationBanner({published_iteration:1600,converged:true}),f
 assert.match(solveCompletionLabel({state:'done',stop_reason:'iteration_limit'}),/target not reached/);
 assert.match(solveCompletionLabel({state:'done',stop_reason:'target_reached'}),/Target gap reached/);
 assert.doesNotMatch(solveCompletionLabel({state:'done'}),/Target gap reached/);
+// stopped by hand says so; a loaded game (stopped, no reason) keeps the neutral line
+assert.match(solveCompletionLabel({state:'stopped',stop_reason:'stopped'}),/^Stopped before the target gap/);
+assert.equal(solveCompletionLabel({state:'stopped',stop_reason:''}),'Stopped · current strategy retained');
 // Same seam the Lab uses: unsupported servers never receive an unknown field.
 const base = Object.freeze({iterations:2000,check_every:50,target_gap:0.005});
 for (const caps of [undefined,null,{}, {early_preview_v1:false}, {early_preview_v1:1}, {early_preview_v1:'true'}]) {

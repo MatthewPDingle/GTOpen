@@ -24,6 +24,7 @@ export function showsPublicationBanner(publication) {
 export function solveCompletionLabel(status) {
   if (status.stop_reason === 'target_reached') return 'Target gap reached';
   if (status.stop_reason === 'iteration_limit') return 'Iteration limit reached · target not reached';
+  if (status.stop_reason === 'stopped') return 'Stopped before the target gap · you keep the strategy it had, and RE-SOLVE carries on from there';
   if (status.state === 'stopped') return 'Stopped · current strategy retained';
   return 'Run complete · check the measured gap';
 }

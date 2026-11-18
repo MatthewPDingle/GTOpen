@@ -160,7 +160,11 @@ bleed and never converges — drops below `target_gap`), `status`
 `realization_note` is non-empty when "calibrated" could not load its fit and
 the HU game was priced with the static model; `multiway_equity_model` identifies
 the active continuation version), `session` (GET: the live game —
-config, seats, iteration, hero/frozen, state), `stop`,
+config, seats, iteration, hero/frozen, state), `stop` (returns at once; the
+solve then ends with one last accuracy check, so `gaps` and
+`accuracy_iteration` belong to the strategies it leaves; until `state` leaves
+"running", `status` has `stopping: true` and, during that check, `phase:
+"final_check"`; a build or load over a running solve skips the check),
 `node` `{"path":[i,j,...]}` (action indices; returns actor, actions+freqs,
 `strategy` as na×169 action-major flat array, per-class reach), `generate`
 `{"seat":i,"stats":{...},"name":"..."}` (stat-driven profile from the CURRENT
@@ -224,7 +228,9 @@ weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
 (best response), `/api/lock` (node locking), `/api/save`|`load`, `/api/runouts`,
 `/api/reports/*` (batch flop reports; `/api/reports/lines {name, line}` reads a
 finished report at any node — `a<i>` per action, `c` per any-card step). The
-web UI at :3737 drives all of it.
+web UI at :3737 drives all of it. `/api/stop` returns when the solve has ended;
+a stopped solve measures its exploitability once more, so `exploit_pct` and the
+last `history` point belong to the iteration it stopped at.
 
 Size sweeps ("dynamic sizing", `crates/server/src/sweep.rs`,
 `crates/solver/src/size_sweep.rs`): `/api/reports/run` with

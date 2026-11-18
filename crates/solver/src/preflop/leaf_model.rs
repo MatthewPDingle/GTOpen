@@ -363,6 +363,17 @@ impl PreflopSolver {
         (table, if weight > 0.0 { diff / weight } else { 0.0 })
     }
 
+    /// The average strategies moved without the iteration count moving (a
+    /// stopped solve's last pass ends part-way, some seats swept): the net's
+    /// output for this iteration no longer belongs to them, so the next
+    /// measurement or settle runs the net again. Does nothing without a
+    /// learned model.
+    pub fn leaf_mark_moved(&mut self) {
+        if let Some(st) = self.leaf.as_mut() {
+            st.fresh_at = None;
+        }
+    }
+
     /// Run the net on the current average strategies if it has not been
     /// (the corrections the solve prices with are left as they are).
     fn leaf_bring_latest(&mut self) {
@@ -937,6 +948,34 @@ mod tests {
         s.leaf_settle(true);
         assert!(s.leaf.as_ref().unwrap().corr.iter().all(|&c| c != 9.0));
         assert_eq!(s.leaf.as_ref().unwrap().fresh_at, fresh_at);
+    }
+
+    /// A stopped solve's last pass ends part-way: the strategies moved, the
+    /// iteration count did not. Unmarked, the game would stay priced with the
+    /// net's output for the strategies before that pass.
+    #[test]
+    fn a_pass_cut_short_makes_the_net_run_again() {
+        let mut s = game("leafnet", 3);
+        let drift = |s: &mut PreflopSolver| s.consistent_gaps_and_evs().unwrap().2;
+        for _ in 0..20 {
+            s.iterate();
+        }
+        s.leaf_settle(false);
+        let settled = s.leaf.as_ref().unwrap().corr.clone();
+        assert!(!s.leaf_values_stale());
+        // one seat's sweep of the next pass, as STOP leaves it
+        let mut reaches = s.root_reaches();
+        s.traverse(0, 0, &mut reaches, 0, 0);
+        assert_eq!(s.iteration, 20);
+        assert!(!s.leaf_values_stale(), "the count alone does not show the move");
+        s.leaf_settle(false);
+        assert_eq!(s.leaf.as_ref().unwrap().corr, settled);
+        s.leaf_mark_moved();
+        assert!(s.leaf_values_stale());
+        s.leaf_settle(false);
+        assert_ne!(s.leaf.as_ref().unwrap().corr, settled, "priced for the strategies after the sweep");
+        assert!(!s.leaf_values_stale());
+        assert_eq!(drift(&mut s), 0.0);
     }
 
     #[test]
