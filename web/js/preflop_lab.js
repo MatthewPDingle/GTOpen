@@ -4,7 +4,8 @@
 // the postflop solver's SETUP.
 
 import { api } from './api.js';
-import { createPositionSizing } from './preflop_sizing.js';
+import { createPositionSizing, usesSituationalSizes } from './preflop_sizing.js';
+import { needsRestart } from './version.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
 import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
@@ -58,6 +59,11 @@ function positionsFor(nPlayers) {
   return [...all.slice(7 - (nPlayers - 2)), 'SB', 'BB'];
 }
 
+// How players really size raises: 1 bb more per limper, a re-raise adds the
+// callers' money, and 3-bets are 3x in position, 4x out of position. The
+// built-in scenarios use it; a scenario saved without these keys has them off.
+const REAL_SIZES = { limperExtra: '1', callerMoney: true, multOop: '4' };
+
 const PRESETS = [
   {
     name: 'HU 10bb push/fold',
@@ -67,26 +73,31 @@ const PRESETS = [
   {
     name: 'HU 25bb: limp, raise, jam',
     players: 2, stack: 25, opens: '2,2.5', mult: '3', maxRaises: 3,
+    limperExtra: '1',
     limp: true, allin: true, ante: 0, rakePct: 0, rakeCap: 0,
   },
   {
     name: '6-max 100bb low-stakes: limps + 5% rake',
     players: 6, stack: 100, opens: '2.5,4', mult: '3', maxRaises: 3,
+    ...REAL_SIZES, laterMult: '2.3', laterOop: '2.7',
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 3,
   },
   {
     name: '8-max 150bb $2/2: limps + 10%, 8.5 cap rake', smallBlind: 2, bigBlind: 2,
-    players: 8, stack: 150, opens: '7.5,10', mult: '2,4', maxRaises: 2,
+    players: 8, stack: 150, opens: '7.5,10', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: false, ante: 0, rakePct: 10, rakeCap: 8.5,
   },
   {
     name: '8-max 150bb $2/5: limps + 10%, 9 cap rake', smallBlind: 2, bigBlind: 5,
-    players: 8, stack: 150, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    players: 8, stack: 150, opens: '3,4', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: true, ante: 0, rakePct: 10, rakeCap: 9,
   },
   {
     name: '8-max 200bb $2/5: limps + 5%, 2.2 cap rake', smallBlind: 2, bigBlind: 5,
-    players: 8, stack: 200, opens: '3,4', mult: '2.5,4', maxRaises: 2,
+    players: 8, stack: 200, opens: '3,4', mult: '3', maxRaises: 2,
+    ...REAL_SIZES,
     limp: true, allin: false, ante: 0, rakePct: 5, rakeCap: 2.2,
   },
 ];
@@ -625,7 +636,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const same = s => Object.entries(cur).every(([k, v]) =>
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
       k === 'positionSizes' || k === 'seatStacks' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
-      k === 'laterMult' ? String(s[k] || '') === String(v) :
+      k === 'laterMult' || k === 'limperExtra' || k === 'multOop' || k === 'laterOop' ? String(s[k] || '') === String(v) :
+      k === 'callerMoney' ? !!s[k] === v :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
@@ -859,6 +871,16 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     let cfg;
     try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
+    // A GTOpen program from before these sizes would ignore them and quietly
+    // build the old game instead.
+    if (usesSituationalSizes(cfg)) {
+      let info = null;
+      try { info = await api.version(); } catch { /* no reply: older still */ }
+      if (needsRestart(info)) {
+        toast('Restart GTOpen to use the new raise sizes: the program that is running is older than this page.', true);
+        return false;
+      }
+    }
     els.build.disabled = true;
     els.solve.disabled = true;
     els.buildInfo.textContent = '';

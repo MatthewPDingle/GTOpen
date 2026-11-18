@@ -2,6 +2,15 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.2.0 - 2026-11-18
+
+- Preflop Lab can size raises the way players do. Three new settings sit beside the sizes they change: an extra amount per limper when raising over limps, a tick box that adds the callers' money to a 3-bet or 4-bet (3 times an open of 3 is 9, and over two callers it becomes 15), and separate 3-bet and 4-bet sizes out of position. Out of position means acting before the raiser on the flop.
+- The built-in scenarios use these sizes: 1 bb more per limper, callers' money added, and 3-bets of 3 times the raise in position and 4 times out of position. The three 8-max scenarios had two 3-bet sizes to choose from and now have one for each position, which makes them about a third to a half smaller.
+- Scenarios and games you saved are unchanged: the new settings stay off in them until you fill them in. The game does not get bigger when you turn them on, because each spot keeps the same number of raise sizes.
+- "Sizes by position" is now called "Sizes by seat", so that "position" only means in or out of position.
+- The bigger squeezes make some flop pots larger than the leaf net was trained on. It values them the same as the same spot in smaller chips (checked: its values move about 0.2% of the pot), so the learned flop values hold there too.
+- Close GTOpen and start it again after updating: until then the header shows "restart GTOpen" and the new sizes cannot be built.
+
 ## 1.1.5 - 2026-11-18
 
 - STOP answers at once. The button turns to "STOPPING…" and the progress line says "stopping" from the click until the solve has really ended, in the Preflop Lab and in the postflop Solve tab. Before, nothing changed for a few seconds and the click looked lost.

@@ -134,6 +134,16 @@ game). Config shape (see `PreflopConfig` in
   `fourbet_mults_by_seat` split later raises from the 3-bet menu; omission
   retains the original all-round multiplier inheritance. These features
   save as v4, which older binaries refuse.
+- Sizes that follow the action (all off unless set; the UI's built-in
+  scenarios turn them on): `limper_extra` (bb added to every open per limper
+  already in), `caller_extra` (1 = a re-raise adds what the callers of the
+  raise it faces put in: 3x an open of 3 over two callers is 9 + 3 + 3),
+  `raise_mults_oop` / `fourbet_mults_oop` (multipliers for a seat that acts
+  before the raiser on the flop; a seat's own by-seat list still wins). The
+  number of sizes per spot is unchanged. Such games save as v7. See "Sizes
+  that follow the action" in `docs/preflop_balanced_model.md`; tests in
+  `crates/solver/tests/preflop_situational_sizing.rs` and
+  `node tools/test_preflop_sizing.mjs`.
 - New games use `coupled_deck_v1` for 3+ live-player leaves: 1,024 deterministic
   latent-strength samples (seed 90210), whole-pot shares net configured rake,
   no positional realization multiplier. This is not a shared physical deal;
