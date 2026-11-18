@@ -61,6 +61,32 @@ cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-thre
   desktop pushes by hand (SSH remote). If both machines are live, make sure
   the cron is off or it will fight the desktop's pushes.
 
+## Versions and the change log
+
+The newest entry of `CHANGELOG.md` (repo root) IS the app's version and release
+date. Nothing else holds a version number: the server reads the file on each
+page load (GET `/api/version`, `crates/server/src/version.rs`) and the header
+shows it as a link to the change log (`web/js/version.js`).
+
+Every pull request that changes what a user of the app sees or gets (the web
+UI, the server, solver results or speed, a shipped net) adds an entry at the
+top of `CHANGELOG.md`, above the previous one:
+
+```markdown
+## 1.0.1 - 2026-11-19
+
+- One plain line per change, written for a poker player, not a developer.
+```
+
+- The heading format is exact: `## X.Y.Z - YYYY-MM-DD` (plain hyphen, today's date).
+- Which number goes up: the last for fixes and small tweaks, the middle for a
+  new feature (last back to 0), the first only when Pan says so.
+- If master gained an entry while your branch was open, merge master and take
+  the next number; keep both entries, newest on top.
+- No entry for research tools, the data generator, tests or docs alone.
+- Checks: `cargo test -p server version` and `node tools/test_version.mjs`
+  (a heading that does not parse would leave the app on the old version).
+
 ## Preflop Lab HTTP API (the analysis workhorse)
 
 All POST bodies/responses are JSON. Request bodies reject unknown keys with

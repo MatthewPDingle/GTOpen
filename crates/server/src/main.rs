@@ -20,6 +20,7 @@ type ApiError = (StatusCode, String);
 mod multiway_api;
 mod rangelab;
 mod sweep;
+mod version;
 
 #[cfg(all(test, feature = "gpu"))]
 mod report_tests;
@@ -4566,6 +4567,7 @@ async fn main() {
     }
 
     let app = Router::new()
+        .route("/api/version", get(version::get_version))
         .route("/api/spot", post(build_spot))
         .route("/api/solve", post(start_solve))
         .route("/api/stop", post(stop_solve))

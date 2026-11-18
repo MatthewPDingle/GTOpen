@@ -110,6 +110,8 @@ Use the app's Save controls before closing or restarting the server. Files stay 
 
 To update, finish or stop running jobs, save both sessions, and pull the latest code with `git pull`. Backend changes require a server restart and rebuild; reopening an already-running Windows server keeps its existing binary. See [Windows updates and shortcuts](docs/windows_updates.md) for the full procedure.
 
+The app shows its version and release date at the right end of the top bar. Click it for the [change log](CHANGELOG.md), which lists what each version changed.
+
 ## What the results mean
 
 - **Postflop** solves the configured heads-up tree. Results depend on the ranges, sizes, rake, locks, and convergence target you choose.

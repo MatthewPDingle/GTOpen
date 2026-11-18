@@ -13,10 +13,12 @@ import { initTrust } from './trust.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
 import { createPostflopIcm } from './postflop_icm.js';
 import { initPixelGrids } from './pixel_grid.js';
+import { initVersion } from './version.js';
 
 const $ = id => document.getElementById(id);
 initTooltips();
 initPixelGrids();
+initVersion($('app-version'), api.version);
 
 // ---------------------------------------------------------------------------
 // Tabs
