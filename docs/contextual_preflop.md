@@ -54,10 +54,10 @@ precedence. At the default 25% threshold, the solver learns the response to
 large raises. The preview explains when its hypothetical amount reaches that
 threshold; its predicted frequencies are not then forced in the game.
 
-At a heads-up flop endpoint, expand **Preflop continuation estimate** below
+At a heads-up flop endpoint, expand **What this flop is worth (estimate)** below
 the range grid to inspect the current approximation. The two values include
-modeled future play, before subtracting preflop investments. **Unallocated
-amount** is the pot minus both values; under the calibrated model it mixes
+modeled future play, before subtracting preflop investments. **Left over
+(rake, estimate error)** is the pot minus both values; under the calibrated model it mixes
 embedded training rake and approximation error, and must not be read as an
 expected-rake estimate. The panel reports whether requested rake is applied.
 All-in equity uses the requested rake even with a calibrated setup.

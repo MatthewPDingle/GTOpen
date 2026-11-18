@@ -287,7 +287,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!v) {
       exportBody.innerHTML = `<div class="pfl-step" style="margin:0 0 4px">POSTFLOP SETUP</div>` +
         `<div><span style="color:#c96a5f">\u2717</span> flop reached</div>` +
-        `<div><span style="color:#c96a5f">\u2717</span> heads-up flop</div>` +
+        `<div><span style="color:#c96a5f">\u2717</span> two or three players</div>` +
         `<div><span style="color:#c96a5f">\u2717</span> strategy at iter \u2265 2</div>`;
       els.exportBtn.disabled = true;
       return;
@@ -339,8 +339,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const why = !ready && flop
       ? v.side_pots?.length
         ? 'This flop has side pots — the postflop solver starts from one pot with chips behind.'
-        : live.length > 2
-          ? `The postflop solver is heads-up only; this line reaches the flop <b>${live.length}-way</b>.`
+        : live.length > (canon.on ? 2 : 3)
+          ? `${canon.on ? 'Charts can send a flop with two players only' : 'The postflop solvers take two or three players'}; this line reaches the flop <b>${live.length}-way</b>.`
           : !chipsBehind
             ? 'Nobody has chips behind — the postflop solver needs a stack to bet.'
             : ''
@@ -349,7 +349,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       `<div class="pfl-step" style="margin:0 0 4px">${dest}</div>` +
       (canon.on
         ? tick(flop, 'flop reached') + tick(!!v.exportable, 'canonical GTO chart')
-        : tick(flop, 'flop reached') + tick(headsUp || three, three ? `${live.length} players` : 'heads-up, stacks left') +
+        : tick(flop, 'flop reached') + tick(headsUp || three, three ? 'three players' : headsUp ? 'two players' : 'two or three players') +
           tick(strategyReady, hasStrategy
             ? `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`
             : 'no solved strategy at this point') +
@@ -379,7 +379,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   statusWarn.style.cssText = 'margin-top:3px;line-height:1.4';
   els.status.replaceChildren(statusChips, statusWarn);
   delete els.status.dataset.tip; // the chips carry their own tips
-  els.applyBtn.dataset.tip = 'Sends the staged table and hero. A changed table resets learning; SOLVE does this automatically.';
+  els.applyBtn.dataset.tip = 'Puts your seat and HERO choices into the game. SOLVE does this for you.';
   function statusChip(label, tip) {
     const el = document.createElement('span');
     el.style.cssText = CHIP_STYLE;
@@ -395,15 +395,20 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   modelStrip.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center;margin:4px 0 6px';
   if (stepEls.model) stepEls.model.after(modelStrip);
   else els.modelBox.before(modelStrip);
+  const VALUE_LABEL = { leafnet: 'learned flop values', balanced: 'simple flop values' };
+  const VALUE_TIP = {
+    leafnet: 'This game values two-player flops with the learned model.',
+    balanced: 'This game values flops with the simple estimate, not the learned model.',
+  };
   const MULTIWAY_LABEL = {
-    coupled_deck_v1: 'coupled-deck',
-    three_way_table_v1: 'exact 3-way (beta)',
-    legacy_product: 'legacy product',
+    coupled_deck_v1: '3+ players \u00b7 estimate',
+    three_way_table_v1: '3 players \u00b7 exact equity (beta)',
+    legacy_product: '3+ players \u00b7 older estimate',
   };
   const MULTIWAY_TIP = {
-    coupled_deck_v1: 'Three or more players: coupled hand-strength samples and showdown value after rake. Approximate, not jointly dealt cards \u2014 overlapping tight ranges can still have large card-removal errors. Heads-up continuation is unchanged; the full postflop tree is not solved.',
-    three_way_table_v1: 'Three-player pots: showdown equity by hand class, all three hands from one deck, so card removal is exact (Monte-Carlo boards). Four or more: coupled hand-strength samples. Heads-up continuation is unchanged; the full postflop tree is not solved.',
-    legacy_product: 'This saved game keeps its original product-of-heads-up equity approximation. BUILD GAME starts with the current model.',
+    coupled_deck_v1: 'Pots with three or more players are valued by an estimate of each hand\u2019s share at showdown, after rake. It is roughest when several tight ranges meet.',
+    three_way_table_v1: 'Three-player pots are valued with all three hands dealt from one deck. Pots with four or more players use a rougher estimate.',
+    legacy_product: 'This saved game keeps the older estimate for pots with three or more players. BUILD GAME starts a game with the current one.',
   };
   function renderModelStrip() {
     const visible = S.built && !canon.on;
@@ -415,19 +420,18 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // every new game has blockers except with ICM payouts; a save from
     // before them keeps its solve
     const blockers = blockersOf(builtCfg)
-      ? statusChip('blockers', 'Each hand\u2019s own two cards come out of the deck before it is valued, so hands that block the others\u2019 strong hands see more folds. Exact heads-up; with three or more players the opponents\u2019 cards do not block each other.')
+      ? statusChip('blockers', 'The cards in a hand make some of the other players\u2019 hands less likely, and this solve counts that.')
       : builtCfg.icm
-        ? statusChip('no blockers \u00b7 ICM', 'Games with ICM payouts are solved without blockers for now.')
-        : statusChip('no blockers \u00b7 saved', 'Saved game from before blockers: every hand gets the same fold chance. RE-SOLVE continues it; BUILD GAME starts with blockers.');
+        ? statusChip('no blockers', 'Games with tournament payouts are solved without blockers for now.')
+        : statusChip('no blockers', 'This game was saved before blockers were added. RE-SOLVE continues it as it is; BUILD GAME starts a game with blockers.');
     modelStrip.replaceChildren(
-      statusChip(`value · ${value}${legacy ? ' · saved' : ''}`,
+      statusChip(legacy ? 'older flop values' : VALUE_LABEL[value],
         legacy
-          ? 'Saved game: keeps its original value model. RE-SOLVE continues it; BUILD GAME starts with the current model.'
-          : 'Value model of the built game.'),
-      ...(S.multiwayModel ? [statusChip(`multiway · ${MULTIWAY_LABEL[S.multiwayModel] || S.multiwayModel}`,
+          ? 'This saved game keeps the flop values it was solved with. RE-SOLVE continues it; BUILD GAME starts a game with the current ones.'
+          : VALUE_TIP[value]),
+      ...(S.multiwayModel ? [statusChip(MULTIWAY_LABEL[S.multiwayModel] || S.multiwayModel,
         MULTIWAY_TIP[S.multiwayModel] || '')] : []),
       blockers,
-      ...(legacy ? [(() => { const el = statusChip('RE-SOLVE continues it'); el.style.borderStyle = 'dashed'; return el; })()] : []),
     );
   }
 
@@ -809,7 +813,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const SOLVE_ITERS = 3000;
   const BUILD_RATE_STORE = 'pfl-build-ms-per-mnode';
   els.stop.after(els.prog); // stable position: under 3 · SOLVE, for build, load and resumed runs
-  els.prog.dataset.tip = 'Build: phase, nodes and elapsed time. Solve: iterations and gap toward 0.005 bb.';
+  els.prog.dataset.tip = 'How far along the build or solve is. A solve is done when its gap is down to 0.005 bb.';
   const progFill = els.prog.querySelector('i');
   const progLab = els.prog.querySelector('span');
   let progPulse = null;
@@ -1378,7 +1382,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const post = document.createElement('div');
       post.className = 'hist-seg pfl-straddle-post';
       post.innerHTML = `<div class="hist-head"><span>${esc(cfg.positions[0])}</span></div><div class="hist-chip">Straddle ${cfg.posts[0]} bb</div>`;
-      post.dataset.tip = 'Live forced post. Preflop action starts at the next seat; postflop position is unchanged.';
+      post.dataset.tip = 'The straddle. The next seat acts first before the flop.';
       el.appendChild(post);
     }
     const hist = S.lineHist || [];
@@ -1441,7 +1445,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
             : `${h.actor_pos}: ${a.label} ${frequencyDetail(a.freq)} of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
           if (h.strategy_note) chip.dataset.tip = h.strategy_note;
           else if (h.forced) chip.dataset.tip = autoFoldTip(h.actor_pos);
-          else if (a.freq === 0) chip.dataset.tip += ' Zero modeled frequency: its continuation may have no solved strategy.';
+          else if (a.freq === 0) chip.dataset.tip += ' Never played here, so the spots after it may not be solved.';
           else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, take this action and click "${HOW_LABEL}" beside the title.`;
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
@@ -1523,7 +1527,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       hideGrid();
       renderExportCard();
       els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
-      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No canonical GTO chart here" : v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
+      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No canonical GTO chart here" : v.strategy_note.startsWith("Unreachable") ? "The solution never reaches this line" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
       return;
     }
     let continuation = null;
@@ -1545,7 +1549,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       paintGrid();
       renderLegend(v, colors);
       els.gridCap.innerHTML =
-        `Grid = <b>${esc(v.actor_pos)}</b> · hover a cell for exact numbers.`;
+        `Showing <b>${esc(v.actor_pos)}</b>. Hover a hand for exact numbers.`;
       if (canon.on) {
         els.gridCap.innerHTML =
           `Grid = <b>${esc(v.actor_pos)}</b>'s canonical GTO chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
@@ -1570,7 +1574,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[wi])}'s range when everyone folds — bar height = share of combos</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[wi])}'s range when everyone folds. Bar height = how much of each hand gets here</span>`;
       els.gridCap.innerHTML = '';
     } else {
       const live = v.positions.filter((_, i) => v.live[i]);
@@ -1598,7 +1602,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       els.fillSeg.classList.remove('hidden');
       paintGrid();
       els.legend.innerHTML =
-        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s arriving range — bar height = share of that hand's combos reaching this flop</span>`;
+        `<span class="key"><i style="background:#f28c26"></i>${esc(v.positions[S.rangeSeat])}'s range at the flop. Bar height = how much of each hand gets here</span>`;
       els.gridCap.innerHTML = '';
       if (v.continuation) {
         const estimate = v.continuation;
@@ -1609,15 +1613,15 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         detail.className = 'pfl-continuation';
         const rows = [
           ['Pot', estimate.pot_bb],
-          ...estimate.players.map(p => [`${p.position} estimated value`, p.value_bb]),
-          ['Combined value', estimate.total_value_bb],
-          ['Unallocated amount', estimate.unallocated_bb],
+          ...estimate.players.map(p => [`${p.position}`, p.value_bb]),
+          ['Both together', estimate.total_value_bb],
+          ['Left over (rake, estimate error)', estimate.unallocated_bb],
         ];
-        detail.innerHTML = `<summary>Preflop continuation estimate</summary>` +
+        detail.innerHTML = `<summary>What this flop is worth (estimate)</summary>` +
           `<div class="pfl-continuation-body"><dl>${rows.map(([label,value]) =>
             `<dt>${esc(label)}</dt><dd>${Number(value).toFixed(2)} bb</dd>`).join('')}</dl>` +
-          `<div><p>Values use the arriving ranges and include modeled future play, before subtracting preflop investment.</p>` +
-          `<p>Requested rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'uncapped'}.</p>` +
+          `<div><p>Each player\u2019s average share of the pot from here, with the ranges they arrive with.</p>` +
+          `<p>Rake: ${Number(estimate.requested_rake_pct).toFixed(1)}% · ${estimate.requested_rake_cap_bb > 0 ? `cap ${Number(estimate.requested_rake_cap_bb).toFixed(2)} bb` : 'no cap'}.</p>` +
           `<p>${esc(estimateNote)}</p></div></div>`;
         continuation = detail;
       }
@@ -1726,9 +1730,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const BUCKET_TIPS = [
     'Nobody has entered yet: open-limp, open-raise, or fold.',
     'Facing limper(s), no raise: limp behind, raise, or fold.',
-    'Facing a single raise, no callers. One range covers every open size; solver-played seats stay size-aware.',
-    'Facing a raise plus caller(s) \u2014 the squeeze spot.',
-    'Facing a re-raise. Cold defense (no voluntary entry yet) and after-entry responses are separate; Situation picks which one you inspect. After-entry frequencies are conditional on reaching the decision, and re-raise depths are pooled.',
+    'Facing one raise and no callers. The same range is used against every open size.',
+    'Facing a raise that has callers: the squeeze spot.',
+    'Facing a re-raise. With money already in and with none in are two separate ranges; choose which one under Situation.',
   ];
 
   // Reuse a color for every seat using the same named model. Keep existing
@@ -1801,9 +1805,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           '</optgroup>';
       }
       sel.innerHTML = html;
-      sel.dataset.tip = 'Who sits here. Solver = equilibrium play (adapts on RE-SOLVE) · ' +
-        'Frozen = pinned to its current strategy (needs a solve) · a profile bends the solve ' +
-        'to its stats · saved players load from disk.';
+      sel.dataset.tip = 'Who sits here. Solver: plays the solved strategy. Frozen: stays on what it played ' +
+        'at the last solve. Or choose a player type or a saved player to make this seat play like that person.';
       const want = m.mode === 'live' ? 'live' : m.mode === 'frozen' ? 'frozen' : (m.selValue || 'live');
       if (!Array.from(sel.options).some(o => o.value === want)) {
         // the seat's profile matches no option (e.g. a loaded game's
@@ -1824,7 +1827,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const useImplied = !!m.implied && i !== unraisedWinner(editorContextualConfig(), S.positions);
       const stats = useImplied ? m.implied : m.profile?.response?.source_stats || m.stats || null;
       info.dataset.tip = (m.note ? m.note + ' \u2014 ' : '') +
-        (useImplied ? 'Implied' : 'Source') + ' VPIP / PFR / 3-bet percentages.';
+        (useImplied ? 'What this seat\u2019s ranges come to' : 'The numbers this player was built from') + ': VPIP / PFR / 3-bet, in percent.';
       info.textContent = m.mode === 'ruled' && stats &&
         [stats.vpip, stats.pfr, stats.threebet].every(Number.isFinite)
         ? `${stats.vpip.toFixed(0)}/${stats.pfr.toFixed(0)}/${stats.threebet.toFixed(1)}%` : '';
@@ -2121,47 +2124,46 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       ${!m.stats && !m.profile.response?.source_stats ? '<div class="dim" style="font-size:10px">This older profile has no saved generation stats. The fields below are defaults; generating will replace its ranges.</div>' : ''}
       ${m.note ? `<div class="dim" style="font-size:10px;line-height:1.4;margin:2px 0 4px">${esc(m.note)}</div>` : ''}
       ${st0.dataset ? `<label style="display:block;margin:8px 0"><input type="checkbox" id="pfe-dataset" checked> Use ${esc(st0.dataset.site)} ${st0.dataset.response_policies?.length ? 'measured preflop ranges' : st0.dataset.empirical_opening ? 'measured opening ranges' : 'measured entry contexts'}</label><div class="dim" style="font-size:10px">Disabled fields show pooled source rates; the dataset supplies the matching hand policies. Uncheck to edit those rates and generate reference-ordered ranges.</div>` : ''}
-      <div class="pfl-step" style="margin-top:6px" data-tip="How this player enters and defends pots before the flop. Each number is a frequency over the hands dealt in that situation; ranges are cut from a GTO reference ordering, re-ordered toward card appeal by naiveté.">PREFLOP TENDENCIES</div>
+      <div class="pfl-step" style="margin-top:6px" data-tip="How this player plays before the flop. Each number is how often they do it when the situation comes up.">PREFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-stats" style="margin:6px 0">
-        <label data-tip="VPIP: of all hands dealt, how often he voluntarily puts chips in preflop — by limping, calling or raising (blind posts don't count). When open-raise / open-limp are blank it sets his first-in width; it always scales the defend targets below.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
-        <label data-tip="PFR: of all hands dealt, how often he raises at least once preflop (opening, isolating, or re-raising). It is the raising slice of the VPIP; VPIP − PFR is his limping/calling share. When open-raise is blank it sets his first-in raise width.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
-        <label data-tip="Open-raise (first in): how often he raises when it is folded to him. Measured online: nit 9%, TAG 17%, loose-passive fish 12%, whale 14% (they limp instead).">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Open-limp (first in): how often he limps when it is folded to him. The derived number over-limps regs (a 17/12 TAG open-limps ~2%) and under-limps whales. Measured online: TAG 2%, tight-passive 11%, loose-passive fish 30%, whale 50%.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="3-bet: when he faces a single raise with no callers yet, how often he re-raises (always strength-ranked — a 1% 3-bettor 3-bets AA/KK only). The rest of his continuing hands call; the calling width comes from VPIP.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold to 3-bet+: conditional on having already entered and facing a re-raise. Measured ranges supply the hand policies instead of one rate; cold defense is a separate policy.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
-        <label data-tip="Squeeze: when he faces a raise that has ALREADY been called by someone, how often he re-raises. Its own situation, because even aggressive players squeeze tighter than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
-        <label data-tip="Fold vs raise (COLD): nothing invested yet, facing a single raise. Online pools fold 80–90% here: mostly fold, 3-bet the top, flat a little.">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Fold vs raise AFTER LIMPING: he limped and a raise comes. Measured limpers fold only 30–55% (they limped to see a flop) vs 80–90% cold, and this drives the whole exploit in a limpy game.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Iso-raise: facing one or more limpers with nothing invested yet, how often he raises.">iso-raise vs limpers % <input id="pfe-ir" type="number" value="${st.iso_raise != null ? st.iso_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Limp behind: facing limpers with nothing invested yet, how often he limps along. Limpy live games hinge on this number: it is what builds the multiway pots.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Fold vs a raise TO at least the bb amount beside it. Real players fold more to big raises; without a size band every size gets the same fold rate and the exploit picks the cheapest raise.">fold vs big raise % <span style="display:inline-flex;align-items:center;gap:3px"><input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100"><span class="dim">\u2265</span><input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb" style="width:56px"><span class="dim">bb</span></span><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Fold vs squeeze spot: facing a raise and one or more callers with nothing voluntarily invested.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
-        <label data-tip="Naiveté, 0–1: how the ranges are ORDERED, not how wide they are. 0 = solver-shaped: positional, and ranked by playability (the equilibrium folds dominated hands like Q9o to a raise but defends 53s). 1 = plays his cards: the same ranges from every seat, ranked by raw card appeal — high cards and any suited hand in, low suited junk out. A whale is ~0.7+, a reg ~0.2.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
-        <label data-tip="Fallback sizing for raises with no measured size mix: min, max, or jam (all-in).">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
+        <label data-tip="VPIP: how often they put money in before the flop by choice, by limping, calling or raising.">VPIP % <input id="pfe-vpip" type="number" value="${st.vpip}" min="1" max="100"></label>
+        <label data-tip="PFR: how often they raise before the flop. VPIP minus PFR is how often they just limp or call.">PFR % <input id="pfe-pfr" type="number" value="${st.pfr}" min="0" max="100"></label>
+        <label data-tip="How often they raise when everyone has folded to them. Leave empty to work it out from PFR.">open-raise % <input id="pfe-or" type="number" value="${st.open_raise != null ? st.open_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they limp when everyone has folded to them. Regulars almost never do; very loose players limp a third to half the time. Leave empty to work it out from VPIP and PFR.">open-limp % <input id="pfe-ol" type="number" value="${st.open_limp != null ? st.open_limp : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they re-raise when facing one raise and no callers. Their strongest hands 3-bet first.">3-bet % <input id="pfe-3b" type="number" value="${st.threebet}" min="0" max="100" step="0.5"></label>
+        <label data-tip="How often they fold to a re-raise after already putting money in.">fold to 3-bet+ % <input id="pfe-f3b" type="number" value="${st.fold_to_3bet}" min="0" max="100"></label>
+        <label data-tip="How often they re-raise when a raise has already been called. Most players do this less often than they 3-bet.">squeeze % <input id="pfe-sq" type="number" value="${st.squeeze}" min="0" max="100" step="0.5"></label>
+        <label data-tip="How often they fold to one raise with no money in yet. Online players fold 80 to 90% of the time here.">fold vs raise % <input id="pfe-fvr" type="number" value="${st.cont_vs_raise != null ? (100 - st.cont_vs_raise).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they fold when they limped and someone raises. Limpers fold much less than players with no money in, about 30 to 55%, and it matters a lot in games with many limpers.">fold vs raise after limping % <input id="pfe-fvrl" type="number" value="${st.cont_vs_raise_limped != null ? (100 - st.cont_vs_raise_limped).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they raise when one or more players have limped in front of them.">iso-raise vs limpers % <input id="pfe-ir" type="number" value="${st.iso_raise != null ? st.iso_raise : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they limp along after other limpers. This is what builds the big multiway pots in loose live games.">limp behind % <input id="pfe-lb" type="number" value="${st.limp_behind != null ? st.limp_behind : ''}" min="0" max="100" step="0.5"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they fold to a raise to at least the size in the second box. Most players fold more to big raises. Without it, every raise size gets the same fold rate.">fold vs big raise % <span style="display:inline-flex;align-items:center;gap:3px"><input id="pfe-fvrb" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? (100 - st.cont_vs_raise_bands[st.cont_vs_raise_bands.length - 1][1]).toFixed(0) : ''}" min="0" max="100"><span class="dim">\u2265</span><input id="pfe-fvrthr" type="number" value="${(st.cont_vs_raise_bands && st.cont_vs_raise_bands.length > 1) ? st.cont_vs_raise_bands[0][0] : ''}" min="1" step="0.5" placeholder="bb" style="width:56px"><span class="dim">bb</span></span><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="How often they fold to a raise that already has callers, with no money in yet.">fold vs squeeze % <input id="pfe-fsq" type="number" value="${st.cont_squeeze != null ? (100 - st.cont_squeeze).toFixed(0) : ''}" min="0" max="100"><span class="pfe-derived dim" style="font-size:9px;margin-left:3px" hidden>derived</span></label>
+        <label data-tip="From 0 to 1: which hands they pick, not how many. At 0 they choose hands like a solver, by position and by how well a hand plays. At 1 they play their cards: the same hands from every seat, high cards and anything suited. A regular is about 0.2, a very loose player 0.7 or more.">naiveté <input id="pfe-flat" type="number" value="${st.flatten}" min="0" max="1" step="0.05"></label>
+        <label data-tip="The raise size used when there is no measured size for this player: the smallest, the largest, or all-in.">fallback raise size <select id="pfe-size"><option value="min">min</option><option value="max">max</option><option value="jam">jam</option></select></label>
         ${measuredBands ? `<details style="grid-column:1/-1"><summary>Measured raise-size responses · ${measuredBands.length} bands</summary><div class="field-grid" style="margin-top:6px">${measuredBands.map(([bound,continuing],b) => `<label>Fold vs raise ${b===measuredBands.length-1 ? `above ${measuredBands[b-1][0]}` : b===0 ? `up to ${bound}` : `over ${measuredBands[b-1][0]}, up to ${bound}`} bb %<input id="pfe-band-${b}" type="number" min="0" max="100" step="0.1" value="${Math.round((100-continuing)*100)/100}"></label>`).join('')}</div></details>` : ''}
       </div>
-      <label class="dim" style="display:block;margin:8px 0">Adaptive responses from % of stack
+      <label class="dim" style="display:block;margin:8px 0" data-tip="Against a raise to at least this share of the stack, this player works out their own reply instead of using fixed numbers. Leave empty to always use the numbers.">Adaptive responses from % of stack
         <input id="pfe-adaptive" type="number" min="1" max="100" step="1" placeholder="blank = fixed" value="${m.profile.response?.adaptive_from != null ? m.profile.response.adaptive_from * 100 : ''}">
       </label>
-      <div class="dim" style="font-size:10px;line-height:1.4">At or above this raise-to amount, opponents learn their responses \u2014 a modeling assumption for large bets, not measured behavior. Blank keeps fixed responses.</div>
-      <div class="pfl-step" style="margin-top:10px" data-tip="The same player after the flop. Only used when a spot is sent to postflop SETUP, where the numbers become node locks on his postflop tree. 'Initiative' means he was the last to bet or raise so far in the hand.">POSTFLOP TENDENCIES</div>
+      <div class="pfl-step" style="margin-top:10px" data-tip="How this player plays after the flop. Used only when you send a spot to postflop setup. Initiative means they made the last bet or raise.">POSTFLOP TENDENCIES</div>
       <div class="field-grid" id="pfe-pf" style="margin:6px 0">
-        <label data-tip="C-bet: on the flop, when he has the initiative (he was the preflop raiser), how often he bets when it is his turn to act and nobody has bet yet.">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
-        <label data-tip="Turn barrel: on the turn, when he STILL has the initiative, how often he bets into an unbet pot. That means: he bet the flop and got called (the classic double barrel) — or he was the preflop raiser and the flop checked through, since a check doesn't hand the initiative over (a delayed c-bet). It is NOT independent of the flop: if the opponent bet or raised the flop, the initiative is theirs and this number no longer applies to him.">turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
-        <label data-tip="River barrel: on the river, when he still has the initiative (he made the last bet or raise in the hand so far), how often he bets into an unbet pot — the triple barrel, or a delayed barrel after streets that checked through.">river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
-        <label data-tip="Fold vs bet, flop: when he faces a bet or raise on the flop, how often he folds — at every raise depth and regardless of the size faced. The rest of his hands continue (call, or raise per 'raise vs bet').">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
-        <label data-tip="Fold vs bet, turn: when he faces a bet or raise on the turn, how often he folds — any depth, any size.">fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
-        <label data-tip="Fold vs bet, river: when he faces a bet or raise on the river, how often he folds — any depth, any size.">fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
-        <label data-tip="Raise vs bet: when he faces a bet or raise (any street, any depth), how often he raises — a share of ALL the hands facing it, alongside the fold number (fold + raise + call = 100). His strongest continuing hands raise first.">raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
-        <label data-tip="Donk / stab: how often he bets into an unbet pot when he does NOT have the initiative — leading into the aggressor (a donk bet), or stabbing after the aggressor checked. One number for all streets.">donk / stab % <input id="pfe-donk" type="number" min="0" max="100"></label>
-        <label data-tip="Which size his postflop bets and raises use: the smallest or the largest of whatever the postflop tree offers at each node.">bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
+        <label data-tip="How often they bet the flop as the preflop raiser when nobody has bet yet.">c-bet flop % <input id="pfe-cb0" type="number" min="0" max="100"></label>
+        <label data-tip="How often they bet the turn when they still have the initiative and nobody has bet: after their flop bet was called, or after the flop was checked through.">turn barrel % <input id="pfe-cb1" type="number" min="0" max="100"></label>
+        <label data-tip="How often they bet the river when they still have the initiative and nobody has bet.">river barrel % <input id="pfe-cb2" type="number" min="0" max="100"></label>
+        <label data-tip="How often they fold to a bet or raise on the flop, whatever its size.">fold vs bet flop % <input id="pfe-fb0" type="number" min="0" max="100"></label>
+        <label data-tip="How often they fold to a bet or raise on the turn, whatever its size.">fold vs bet turn % <input id="pfe-fb1" type="number" min="0" max="100"></label>
+        <label data-tip="How often they fold to a bet or raise on the river, whatever its size.">fold vs bet river % <input id="pfe-fb2" type="number" min="0" max="100"></label>
+        <label data-tip="How often they raise when facing a bet or raise, on any street. Fold, raise and call add up to 100. Their strongest hands raise first.">raise vs bet % <input id="pfe-rvb" type="number" min="0" max="100" step="0.5"></label>
+        <label data-tip="How often they bet without the initiative when nobody has bet: leading into the last raiser, or betting after that player checks. One number for all streets.">donk / stab % <input id="pfe-donk" type="number" min="0" max="100"></label>
+        <label data-tip="Whether their bets and raises after the flop use the smallest or the largest size on offer.">bet size <select id="pfe-bsz"><option value="min">min</option><option value="max">max</option></select></label>
       </div>
       <div class="btn-row" style="margin-top:8px">
-        <button class="btn" id="pfe-gen" data-tip="Rebuild this seat's ranges from the tendencies above. Numbers rebuild automatically; after hand-painting, this replaces the painted edits. It lights up when the stats and paint disagree.">GENERATE FROM STATS</button>
-        <button class="btn ghost" id="pfe-copyall" data-tip="Copies the preflop and postflop tendencies above to every other seat and generates each seat's own positional ranges (a 30/20 player opens tighter from UTG than from the BTN). Hand-painted edits are not copied.">COPY TO ALL SEATS</button>
+        <button class="btn" id="pfe-gen" data-tip="Rebuilds this seat's ranges from the numbers above, replacing any hands you painted. It lights up when the numbers and the ranges disagree.">GENERATE FROM STATS</button>
+        <button class="btn ghost" id="pfe-copyall" data-tip="Copies these numbers to every other seat and builds each seat's ranges for its position. Painted hands are not copied.">COPY TO ALL SEATS</button>
       </div>
-      <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="Frequencies measured from the generated ranges — compare with the stats above."></div>
-      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with every hand in each preflop situation. Built from the tendencies above; pick a brush and click hands to overrule any cell. Painted edits stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
+      <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the ranges below actually come to. Compare with the numbers above."></div>
+      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with each hand in each situation. Built from the numbers above. Pick a brush and click hands to change them; painted hands stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
       <div id="pfe-rangenote"></div>
       <div id="pfe-study-hint" class="pfe-study-hint hidden" role="note"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
@@ -2204,7 +2206,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div id="pfl-paint" class="matrix browse"></div>
       </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
         <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved player (saving under an existing name replaces it).">
-        <button class="btn" id="pfe-save" data-tip="Stores the stats, postflop tendencies and generated or painted ranges in saves/profiles/. It then appears under 'saved profiles' in every seat dropdown, on any game.">SAVE PLAYER</button>
+        <button class="btn" id="pfe-save" data-tip="Saves this player, with their numbers and ranges, to the saves/profiles folder. They then show under saved profiles for every seat, in any game.">SAVE PLAYER</button>
       </div>`;
     document.getElementById('pfe-size').value = st.raise_size || 'min';
     // Derived values live in the field that uses them: a blank first-in or
@@ -2259,12 +2261,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const legacy = document.getElementById('pfe-donk');
       legacy.disabled = true;
       legacy.closest('label').firstChild.textContent = 'legacy donk / stab % ';
-      legacy.closest('label').dataset.tip = 'Reference only: contextual profiles estimate betting by street and pot type, so this pooled number sets no targets.';
-      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'Preferred size for other bets and raises. Betting without initiative keeps the solved bet-size mix.';
+      legacy.closest('label').dataset.tip = 'Shown for reference only. This player\u2019s bets without the initiative are estimated for each street and pot type instead.';
+      document.getElementById('pfe-bsz').closest('label').dataset.tip = 'The size they prefer for their other bets and raises. Bets without the initiative keep the solver\u2019s mix of sizes.';
       const note = document.createElement('div');
       note.className = 'dim';
       note.style.cssText = 'font-size:10px;line-height:1.4;margin:4px 0';
-      note.textContent = 'Betting without initiative (donks, bets after checks, later-street leads and probes) is estimated by street and pot type. Sparse evidence stays closer to the solved strategy; hand selection and size mix come from the solve. These safeguards are modeling assumptions.';
+      note.textContent = 'Bets without the initiative are estimated for each street and pot type. Where there is little data they stay close to the solver\u2019s play.';
       note.dataset.tip = pf.contextual_betting.source || '';
       document.getElementById('pfe-pf').before(note);
     }
@@ -2708,10 +2710,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     };
     document.getElementById('pfe-contextual-fields').classList.toggle('hidden', !contextual);
     document.getElementById('pfe-reraise-explanation').textContent = contextual
-      ? `Contextual v1 · ${editorContextualConfig().stack}bb starting stack. Frequencies are conditional on arriving here, not a share of all dealt hands. This preview is read-only.`
+      ? `${editorContextualConfig().stack}bb starting stack. Each number is how often they do it once they get here, not a share of all hands dealt. This view cannot be edited.`
       : editorColdReraise()
-      ? 'No chips invested voluntarily yet \u2014 e.g. an open and a 3-bet before the BB acts.'
-      : 'Conditional on having already limped, called or raised \u2014 a 50% call here is not 50% of all dealt hands. Sparse hands borrow pooled estimates; raise depths and prices are mixed.';
+      ? 'No money in yet: for example, an open and a 3-bet before the big blind acts.'
+      : 'After already limping, calling or raising. Each number is how often they do it once they get here, not a share of all hands dealt.';
     if (contextual) {
       refreshContextualPreview();
       if (contextualPreview) {
@@ -3140,10 +3142,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function renderLegend(v, colors) {
     els.legend.innerHTML =
-      `<span class="key dim">cell colors = ${esc(v.actor_pos)}'s action mix:</span>` +
+      `<span class="key dim">colors = what ${esc(v.actor_pos)} does:</span>` +
       [...v.actions.keys()].reverse().map(k =>
         `<span class="key"><i style="background:${colors[k]}"></i>${esc(v.actions[k].label)}</span>`).join('') +
-      `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
+      `<span class="key dim">\u00b7 bar height = how much of the hand is still in the range \u00b7 number = how often a mixed hand continues \u00b7 dark = hand no longer in the range</span>`;
   }
 
   // ----- CANONICAL GTO CHARTS as the range source -----
@@ -3254,7 +3256,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModelStrip();
     renderApplyState();
     renderExportCard();
-    if (pill) pill.textContent = on ? 'Canonical GTO charts · no solve' : PILL_SOLVE;
+    if (pill) pill.textContent = on ? '· canonical GTO charts, no solve' : PILL_SOLVE;
     saveCanonPrefs();
     if (on && !canon.summary) loadCanon();
     clearRightPanel();
