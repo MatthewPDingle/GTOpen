@@ -8,7 +8,7 @@ import { createPositionSizing } from './preflop_sizing.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
 import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, segmentLevels } from './preflop_reach.js';
-import { publishedIteration, publicationKey, publicationLabel, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
+import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
@@ -1497,8 +1497,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
     }
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
-    previewBanner.classList.toggle('hidden', !v.publication);
-    previewBanner.classList.toggle('converged', !!v.publication?.converged);
+    previewBanner.classList.toggle('hidden', !showsPublicationBanner(v.publication));
     renderModelEvidence(nodeEvidence, v.model_evidence);
     rangeLab?.update(canon.on ? null : matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
