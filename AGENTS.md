@@ -88,7 +88,7 @@ game). Config shape (see `PreflopConfig` in
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.
-- `realization`: new UI scenarios use "leafnet" with `leaf_net: "v2"`
+- `realization`: new UI scenarios use "leafnet" with `leaf_net: "v3"`
   ("learned flop values", on by default since 2026-11): the balanced model
   plus a net's correction at heads-up flop leaves, trained on exact flop
   solves. Unticked, and always with ICM payouts, they use "balanced"

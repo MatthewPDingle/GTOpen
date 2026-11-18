@@ -1,5 +1,5 @@
-//! Which leaf nets the Preflop Lab can use: the shipped nets (v2, the one a
-//! new game uses, and v1, the first), every net the leaf-net harness
+//! Which leaf nets the Preflop Lab can use: the shipped nets (v3, the one a
+//! new game uses, v2 and v1, the first), every net the leaf-net harness
 //! (tools/leafnet) kept and every ensemble it built (`harness.py ensemble`:
 //! one file whose output is the mean of several kept nets).
 //!
@@ -19,7 +19,7 @@ use std::path::{Path, PathBuf};
 pub const SHIPPED: &str = "v1";
 
 /// The net a new Preflop Lab game uses.
-pub const DEFAULT_NET: &str = "v2";
+pub const DEFAULT_NET: &str = "v3";
 
 /// A net that ships in cache/.
 pub struct ShippedNet {
@@ -34,13 +34,25 @@ pub struct ShippedNet {
 
 /// The shipped nets, newest first.
 ///
-/// v2 (2026-11) is the mean of three 2x1334 nets trained on the community
-/// pool plus exact solves of GTOpen's own preflop ranges (harness run
-/// snap-73k-real2/ens3-real2, byte for byte). v1 (2026-11-09) is the first
-/// net, trained on the pool's random ranges only.
-pub const SHIPPED_NETS: [ShippedNet; 2] = [
+/// v3 (2026-11-17) is the mean of three 2x1334 nets trained on the pool
+/// with generator v3's and v4's examples (rake up to 10% with caps, larger
+/// pots, and from v4 straddles and stacks to 400 bb) and on exact solves of
+/// GTOpen's own preflop ranges, live 7 to 9 handed games among them (harness
+/// run snap-v4-live/ens3-live-quick, byte for byte). v2 (2026-11-12) is the
+/// same shape trained on generator v2's examples only, without rake or with
+/// 5% capped at 3 bb (snap-73k-real2/ens3-real2).
+/// v1 (2026-11-09) is the first net, trained on the pool's random ranges
+/// only.
+pub const SHIPPED_NETS: [ShippedNet; 3] = [
     ShippedNet {
         name: DEFAULT_NET,
+        file: "leaf_net_v3.bin",
+        desc: "shipped with GTOpen: mean of three nets, trained on the pool with higher rake, larger pots, straddles and deep stacks, and on exact solves of solved preflop ranges",
+        trained: Some("2026-11-17"),
+        examples: Some(159_809),
+    },
+    ShippedNet {
+        name: "v2",
         file: "leaf_net_v2.bin",
         desc: "shipped with GTOpen: mean of three nets, trained on the pool and on exact solves of solved preflop ranges",
         trained: Some("2026-11-12"),
@@ -141,7 +153,7 @@ fn num(v: Option<&String>) -> Value {
 }
 
 /// Every net the Preflop Lab can use, newest research nets first, the
-/// shipped nets last (v2, then v1). `default` marks the net a new game uses.
+/// shipped nets last (v3, v2, then v1). `default` marks the net a new game uses.
 pub fn list() -> Value {
     let mut nets = Vec::new();
     let work = work_dir();
@@ -249,15 +261,15 @@ mod tests {
 
     #[test]
     fn names_must_be_two_plain_parts() {
-        for bad in ["", "v3", "a/b/c", "../x", "snap/..", "snap/.hidden", "snap/run x", "snap\\run", "/abs"] {
+        for bad in ["", "v4", "a/b/c", "../x", "snap/..", "snap/.hidden", "snap/run x", "snap\\run", "/abs"] {
             assert!(research_net_path(bad).is_err(), "{bad} accepted");
         }
         assert!(valid_part("snap-73k-2026-11-10") && valid_part("20261110-031200-s0"));
     }
 
     #[test]
-    fn a_new_game_uses_v2_and_an_unnamed_net_stays_v1() {
-        assert_eq!((DEFAULT_NET, SHIPPED), ("v2", "v1"), "a save without a net name was solved with v1");
+    fn a_new_game_uses_v3_and_an_unnamed_net_stays_v1() {
+        assert_eq!((DEFAULT_NET, SHIPPED), ("v3", "v1"), "a save without a net name was solved with v1");
         assert_eq!(SHIPPED_NETS[0].name, DEFAULT_NET, "newest first");
         for net in &SHIPPED_NETS {
             assert!(valid_part(net.name) && shipped(net.name).is_some());
@@ -267,9 +279,11 @@ mod tests {
             let loaded = LeafNet::load_named(Some(net.name)).unwrap();
             assert_eq!(read_header(&path).as_ref(), Some(&loaded.header));
         }
-        assert!(shipped("v3").is_none());
-        // the two shipped nets are different files: v2 averages three nets, v1 is one
-        assert_eq!(LeafNet::load_named(Some(DEFAULT_NET)).unwrap().members(), 3);
+        assert!(shipped("v4").is_none());
+        // the shipped nets are different files: v3 and v2 average three nets each, v1 is one
+        let (v3, v2) = (LeafNet::load_named(Some(DEFAULT_NET)).unwrap(), LeafNet::load_named(Some("v2")).unwrap());
+        assert_eq!((v3.members(), v2.members()), (3, 3));
+        assert_ne!(v3.header, v2.header, "a game saved with v2 keeps v2");
         if std::env::var_os("LEAF_NET").is_none() {
             let (unnamed, v1) = (LeafNet::load_named(None).unwrap(), LeafNet::load_named(Some(SHIPPED)).unwrap());
             assert_eq!(v1.members(), 1);
@@ -309,10 +323,13 @@ mod tests {
         std::env::set_var("LEAFNET_WORK", &work);
         let out = list();
         let ids: Vec<&str> = out["nets"].as_array().unwrap().iter().map(|n| n["id"].as_str().unwrap()).collect();
-        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v2", "v1"]);
-        assert_eq!(out["default"], "v2");
+        assert_eq!(ids, ["snap-1k/ens2-r3", "snap-1k/r3", "snap-1k/r1", "v3", "v2", "v1"]);
+        assert_eq!(out["default"], "v3");
         let n = out["nets"].as_array().unwrap().len();
-        assert_eq!((&out["nets"][n - 2]["default"], &out["nets"][n - 1]["default"]), (&json!(true), &json!(false)));
+        assert_eq!(
+            (&out["nets"][n - 3]["default"], &out["nets"][n - 2]["default"], &out["nets"][n - 1]["default"]),
+            (&json!(true), &json!(false), &json!(false))
+        );
         assert_eq!(out["nets"][0]["members"], 2);
         assert_eq!(out["nets"][0]["averages_best"], true);
         assert_eq!(out["nets"][0]["best"], false);
