@@ -35,18 +35,19 @@ pub struct ShippedNet {
 /// The shipped nets, newest first.
 ///
 /// v3 (2026-11-17) is the mean of three 2x1334 nets trained on the pool
-/// with its live-game examples (10% rake with caps, larger opens,
-/// straddles, stacks to 400 bb) and on exact solves of GTOpen's own preflop
-/// ranges, live 7 to 9 handed games among them (harness run
-/// snap-v4-live/ens3-live-quick, byte for byte). v2 (2026-11-12) is the same
-/// shape trained before the pool had live games (snap-73k-real2/ens3-real2).
+/// with generator v3's and v4's examples (rake up to 10% with caps, larger
+/// pots, and from v4 straddles and stacks to 400 bb) and on exact solves of
+/// GTOpen's own preflop ranges, live 7 to 9 handed games among them (harness
+/// run snap-v4-live/ens3-live-quick, byte for byte). v2 (2026-11-12) is the
+/// same shape trained on generator v2's examples only, without rake or with
+/// 5% capped at 3 bb (snap-73k-real2/ens3-real2).
 /// v1 (2026-11-09) is the first net, trained on the pool's random ranges
 /// only.
 pub const SHIPPED_NETS: [ShippedNet; 3] = [
     ShippedNet {
         name: DEFAULT_NET,
         file: "leaf_net_v3.bin",
-        desc: "shipped with GTOpen: mean of three nets, trained on the pool with live-game rake, sizes, straddles and deep stacks, and on exact solves of solved preflop ranges",
+        desc: "shipped with GTOpen: mean of three nets, trained on the pool with higher rake, larger pots, straddles and deep stacks, and on exact solves of solved preflop ranges",
         trained: Some("2026-11-17"),
         examples: Some(159_809),
     },
