@@ -57,7 +57,7 @@ assert.equal(note.title, 'Not solved from here on');
 assert.match(note.text, /^UTG almost never takes Limp 1 bb here \(0\.004% of the time\), so this line is not part of the solution\./);
 assert.match(note.text, /in proportion to how often hands reach it/);
 assert.match(note.text, /not a strategy: two solves of this game can disagree completely here\.$/);
-assert.equal(note.fix, 'To study this line, give UTG a player model or a lock that takes Limp 1 bb, then solve again.');
+assert.equal(note.fix, 'To study this line, tell the solver that UTG is a player who takes Limp 1 bb, then solve again. "How to study this line" beside the title gives the steps.');
 
 // a common line carries no note, and neither does the root
 const common = [
@@ -101,7 +101,7 @@ assert.equal(lost.dropped, null);
 const lostNote = lineNote(lost);
 assert.equal(lostNote.title, 'Not solved here');
 assert.match(lostNote.text, /^This exact line comes up about once in 3\.3 million hands \(rarest step: CO 4-bet 3x, 5\.0%\)\./);
-assert.match(lostNote.fix, /player models or locks/);
+assert.match(lostNote.fix, /the seats on it are players who take these actions/);
 // a step at exactly the limit is still part of the solution
 assert.equal(lineStatus(view([node('UTG', [['Fold', 1 - RARE_STEP], ['Limp 1 bb', RARE_STEP]], 1), node('HJ', [['Fold', 1]])], RARE_STEP)).level, 'ok');
 // an action with exactly zero frequency is a dropped step too

@@ -248,7 +248,11 @@ step taken under 0.1% of the time, or below a `branch_probability` of 1e-6, the
 ranges are not solved (two solves of one game differ by tens of points there);
 below 1e-4 they are rough. The UI marks these spots (`web/js/preflop_reach.js`,
 `node tools/test_preflop_reach.mjs`). To study such a line, rule the seat with
-a profile or lock that takes the action and solve again.
+a profile or lock that takes the action and solve again. The UI has no control
+for point locks, so its "How to study this line" steps (beside the title of a
+spot that is not solved; `web/js/preflop_study.js`, `node tools/test_preflop_study.mjs`)
+use a player model only: they name the editor tab, brush and stat for the
+step, and the user does them.
 
 Caveats to carry into any writeup: EVs vs frozen profiles are ceilings;
 calibrated HU realization is pessimistic on no-initiative flatting (call ranges

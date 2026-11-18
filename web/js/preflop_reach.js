@@ -88,6 +88,9 @@ export function segmentLevels(history) {
 }
 
 const WORK = 'The solver works on a spot in proportion to how often hands reach it';
+/** The button beside the node title that lists the steps (web/js/preflop_study.js). */
+export const HOW_LABEL = 'How to study this line';
+const HOW = `"${HOW_LABEL}" beside the title gives the steps.`;
 const NOT_STRATEGY = 'The ranges below are not a strategy: two solves of this game can disagree completely here.';
 
 /** The note behind the warning icon beside the node title, in plain words: {level, title, text, fix} or null when the spot is solved. */
@@ -112,7 +115,7 @@ export function lineNote(status) {
       title: 'Not solved from here on',
       text: `${d.pos} almost never takes ${d.label} here (${frequencyDetail(d.freq)} of the time), so this line is not part of the solution. ` +
         `${WORK}, and it has done almost no work behind that action. ${NOT_STRATEGY}`,
-      fix: `To study this line, give ${d.pos} a player model or a lock that takes ${d.label}, then solve again.`,
+      fix: `To study this line, tell the solver that ${d.pos} is a player who takes ${d.label}, then solve again. ${HOW}`,
     };
   }
   const rarest = status.rarest ? ` (rarest step: ${step(status.rarest)}, ${frequencyDetail(status.rarest.freq)})` : '';
@@ -120,7 +123,7 @@ export function lineNote(status) {
     level: 'unsolved',
     title: 'Not solved here',
     text: `This exact line comes up ${often}${rarest}. ${WORK}, and it has done almost no work here. ${NOT_STRATEGY}`,
-    fix: 'To study this line, give the seats on it player models or locks that take these actions, then solve again.',
+    fix: `To study this line, tell the solver that the seats on it are players who take these actions, then solve again. ${HOW}`,
   };
 }
 
