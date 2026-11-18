@@ -84,6 +84,14 @@ top of `CHANGELOG.md`, above the previous one:
 - If master gained an entry while your branch was open, merge master and take
   the next number; keep both entries, newest on top.
 - No entry for research tools, the data generator, tests or docs alone.
+- The page and the change log are read from disk, so a `git pull` alone
+  updates them, while the server keeps running old code until it is rebuilt
+  and restarted (`GTOpen.cmd` reopens a running server without rebuilding).
+  When the page starts to need something new from the server (a reply field,
+  an endpoint), raise `SERVER_LEVEL` (`crates/server/src/version.rs`) and
+  `NEEDS_SERVER_LEVEL` (`web/js/version.js`) together: the header then shows
+  "restart GTOpen" to anyone whose running server is older. New page code must
+  also cope with a reply from an older server (a missing field is not a crash).
 - Checks: `cargo test -p server version` and `node tools/test_version.mjs`
   (a heading that does not parse would leave the app on the old version).
 

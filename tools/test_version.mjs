@@ -38,3 +38,28 @@ const top = /^## (\d+\.\d+\.\d+) - (\d{4}-\d{2}-\d{2})$/m.exec(readFileSync(new 
 assert.ok(top, 'CHANGELOG.md needs a `## 1.2.3 - YYYY-MM-DD` heading');
 assert.match(versionLabel({ version: top[1], date: top[2] }), /^v\d+\.\d+\.\d+ · \d{1,2} [A-Z][a-z]{2} \d{4}$/);
 console.log('version label tests passed');
+
+// A pull updates the page but not the running server: the header asks for a restart
+// when the server is older than the page needs.
+{
+  const { needsRestart, NEEDS_SERVER_LEVEL, RESTART_LABEL, RESTART_TIP } = await import('../web/js/version.js');
+  assert.equal(needsRestart({ ...info, server_level: NEEDS_SERVER_LEVEL }), false);
+  assert.equal(needsRestart({ ...info, server_level: NEEDS_SERVER_LEVEL + 1 }), false);
+  assert.equal(needsRestart(info), true, 'a server from before the level reports none');
+  assert.equal(needsRestart(null), true, 'a server with no /api/version is older still');
+  const note = () => { const hidden = new Set(['hidden']); return { textContent: '', dataset: {}, classList: { toggle: (c, on) => on ? hidden.add(c) : hidden.delete(c), contains: c => hidden.has(c) } }; };
+  let n = note();
+  await initVersion(link(), async () => ({ ...info, server_level: NEEDS_SERVER_LEVEL }), n);
+  assert.equal(n.classList.contains('hidden'), true);
+  assert.equal(n.textContent, '');
+  n = note();
+  await initVersion(link(), async () => info, n);
+  assert.equal(n.classList.contains('hidden'), false);
+  assert.equal(n.textContent, RESTART_LABEL);
+  assert.equal(n.dataset.tip, RESTART_TIP);
+  assert.match(RESTART_TIP, /close GTOpen, start it again/);
+  // the two numbers move together
+  const rs = readFileSync(new URL('../crates/server/src/version.rs', import.meta.url), 'utf8');
+  assert.equal(+/pub const SERVER_LEVEL: u32 = (\d+);/.exec(rs)[1], NEEDS_SERVER_LEVEL);
+}
+console.log('restart note tests passed');

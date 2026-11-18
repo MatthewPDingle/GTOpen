@@ -6,6 +6,11 @@ What changed in GTOpen, newest first, in plain words. The version you are runnin
 
 - Preflop Lab: a spot that is not solved now has a **How to study this line** button beside its title. It lists the steps for that exact action: which player type to give the seat, where to check or change its hands, and to solve again. "Show me" points at each control. The old advice mentioned a lock, which Preflop Lab has no control for; that is gone.
 
+## 1.0.4 - 2026-11-18
+
+- If you update GTOpen's files without restarting it, the page now says so: a "restart GTOpen" note shows at the top right until you close GTOpen and start it again. Before, parts of the page could just go blank, such as Preflop Lab's memory line.
+- Preflop Lab's memory line never goes blank. If it cannot work something out, it says what is missing and why.
+
 ## 1.0.3 - 2026-11-18
 
 - The ready-made preflop charts are now called "Canonical GTO charts" everywhere in the app.
