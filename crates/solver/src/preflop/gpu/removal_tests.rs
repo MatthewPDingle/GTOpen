@@ -153,3 +153,58 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
         }
     }
 }
+
+/// A solver for `cfg` after 20 CPU iterations, with a fixed learned
+/// correction installed when the game uses learned flop values.
+fn warmed(cfg: PreflopConfig) -> PreflopSolver {
+    let learned = cfg.realization == "leafnet";
+    let mut s = PreflopSolver::new(cfg, table()).unwrap();
+    if learned {
+        let pattern: Vec<f32> = (0..2 * NUM_CLASSES).map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0).collect();
+        s.install_leaf_net(Arc::new(constant_net(&pattern))).unwrap();
+        s.set_leaf_schedule(u32::MAX, Some(0.3));
+    }
+    for _ in 0..20 {
+        s.iterate();
+    }
+    if learned {
+        s.refresh_leaf_values().unwrap();
+    }
+    s
+}
+
+/// The shared plan must learn exactly what the normal plan learns: the same
+/// regrets and strategy sums, bit for bit, with checks in between as the
+/// server runs them.
+#[test]
+fn blockers_learn_the_same_on_the_shared_and_normal_plans() {
+    for (name, cfg) in [
+        ("3 seats static", game(3, "static", None)),
+        ("3 seats learned", game(3, "leafnet", None)),
+        ("4 seats balanced", game(4, "balanced", None)),
+        ("5 seats learned", game(5, "leafnet", None)),
+    ] {
+        let (mut a, mut b) = (warmed(cfg.clone()), warmed(cfg));
+        let (mut fast, selection) = PreflopGpu::new_throughput(&a, 12000).expect("test requires CUDA");
+        assert_eq!(selection.mode, "retained_cohorts", "{name}: {selection:?}");
+        let mut normal = PreflopGpu::new(&b, 4000).expect("test requires CUDA");
+        for round in 0..4 {
+            for _ in 0..10 {
+                fast.iterate(&mut a).unwrap();
+                normal.iterate(&mut b).unwrap();
+            }
+            for (what, x, y) in [
+                ("regrets", fast.stream.clone_dtoh(&fast.d_regrets).unwrap(), normal.stream.clone_dtoh(&normal.d_regrets).unwrap()),
+                ("strategy sums", fast.stream.clone_dtoh(&fast.d_strat).unwrap(), normal.stream.clone_dtoh(&normal.d_strat).unwrap()),
+            ] {
+                let len = fast.arena_len;
+                let differing = x[..len].iter().zip(&y[..len]).filter(|(u, v)| u.to_bits() != v.to_bits()).count();
+                let worst = x[..len].iter().zip(&y[..len]).map(|(u, v)| (u - v).abs()).fold(0f32, f32::max);
+                assert_eq!(differing, 0, "{name}, round {round}: {differing} of {len} {what} differ, largest by {worst:e}");
+            }
+            let (x, y) = (fast.gaps_and_evs().unwrap(), normal.gaps_and_evs().unwrap());
+            assert!(x.0.iter().chain(&x.1).zip(y.0.iter().chain(&y.1)).all(|(u, v)| (u - v).abs() < 2e-4),
+                "{name}, round {round}: shared plan {x:?} normal plan {y:?}");
+        }
+    }
+}
