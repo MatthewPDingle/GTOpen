@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.0.3 - 2026-11-18
+
+- The ready-made preflop charts are now called "Canonical GTO charts" everywhere in the app.
+- "Ranges from" in the Preflop Lab says what each choice is: GTOpen's solver works out the ranges for your exact game, the canonical GTO charts are ready-made for a few standard games with nothing to solve. A line under the choice says the same.
+- When the charts fold a seat for you, that seat now reads "no chart" and "Auto-fold" instead of "Fold 100%". Hover it to see why: the charts only cover the common lines.
+- The second chart under a solved hand grid is gone.
+
 ## 1.0.2 - 2026-11-18
 
 - Preflop Lab now says in plain words how much memory a game needs, in RAM and on the graphics card, and whether it will solve on the graphics card (GPU) or the processor (CPU), before you build it. When it will be the processor it says why, and the "?" beside it explains how to make the game fit the card. The words "CPU arenas" are gone.
@@ -49,7 +56,7 @@ The app
 ### October 2026
 
 - **Compare two reports** side by side, and **undo and redo for lock edits** in Browse (Ctrl+Z, Ctrl+Shift+Z).
-- **Canonical Range Lab charts in the Preflop Lab.** If you have Range Lab's charts on your computer, the Preflop Lab shows them next to the solver's ranges. The charts themselves are not part of GTOpen.
+- **Canonical GTO charts in the Preflop Lab.** If you have the chart files on your computer, the Preflop Lab can show them in place of a solve. The charts themselves are not part of GTOpen.
 - Fixes for the all-in option: the all-in threshold is read correctly, and CPU solves with all-in sizes converge again.
 
 ### Earlier
