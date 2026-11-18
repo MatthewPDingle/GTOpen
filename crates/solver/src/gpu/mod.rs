@@ -1729,7 +1729,11 @@ pub fn estimate_vram(spot: &crate::game::Spot) -> u64 {
 /// don't re-init the device; `mem_get_info` always reads live free memory.
 pub fn vram_info_mb() -> Option<(u64, u64)> {
     static MEM_CTX: std::sync::OnceLock<Option<Arc<CudaContext>>> = std::sync::OnceLock::new();
-    let ctx = MEM_CTX.get_or_init(|| CudaContext::new(0).ok()).as_ref()?;
+    // Without a CUDA runtime on the machine cudarc panics while loading it;
+    // that is "no device" here, not a crash of the caller.
+    let ctx = MEM_CTX
+        .get_or_init(|| std::panic::catch_unwind(|| CudaContext::new(0).ok()).ok().flatten())
+        .as_ref()?;
     let (free, total) = ctx.mem_get_info().ok()?;
     Some((free as u64 / 1_000_000, total as u64 / 1_000_000))
 }

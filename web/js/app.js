@@ -334,15 +334,15 @@ function collectSizes(who) {
 // ---- memory / GPU-eligibility readout -------------------------------------
 function gpuPlanText(info) {
   if (info.gpu_available === undefined) return ''; // server too old to report it
-  if (!info.gpu_available) return 'GPU off — solves on CPU';
+  if (!info.gpu_available) return 'no graphics card in use: solves on the processor (CPU)';
   const budget = (info.gpu_cap_mb / 1000).toFixed(1);
-  if (!info.vram_mb) return `GPU budget ${budget} GB`;
-  if (info.vram_mb <= info.gpu_cap_mb) return `GPU estimate within budget (${budget} GB)`;
-  return `GPU estimate above budget · final fit checked at solve (${budget} GB)`;
+  if (!info.vram_mb) return `${budget} GB of graphics memory free`;
+  if (info.vram_mb <= info.gpu_cap_mb) return `fits the graphics card (GPU, ${budget} GB free)`;
+  return `may not fit the graphics card (${budget} GB free): checked when the solve starts`;
 }
 function memSummary(info) {
-  const ram = `CPU arenas ~${(info.arena_mb / 1000).toFixed(2)} GB`;
-  const vram = info.vram_mb ? ` · GPU upper estimate ~${(info.vram_mb / 1000).toFixed(2)} GB` : '';
+  const ram = `RAM about ${(info.arena_mb / 1000).toFixed(2)} GB`;
+  const vram = info.vram_mb ? ` · graphics memory up to about ${(info.vram_mb / 1000).toFixed(2)} GB` : '';
   const plan = gpuPlanText(info);
   return `${ram}${vram}${plan ? ' · ' + plan : ''}`;
 }

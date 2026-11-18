@@ -14,7 +14,32 @@ now takes 185.170 ms per iteration versus 315.572 ms in its fresh control.
 All checked arena/gap/EV fingerprints and stopping iterations match. The
 [complete GPU report](../research/autoresearch/gpu-pass.md) documents workloads,
 repeats, hardware, and accuracy coverage. These are measured RTX 3090 results;
-CPU arena RAM displayed in the Preflop Lab is a different metric from VRAM.
+the Preflop Lab shows a game's RAM and, when it will solve on the GPU, the least
+graphics memory a solve needs, which is a different figure from these allocations.
+
+## Memory and engine shown in the Preflop Lab
+
+Before a build the lab shows how much memory the game on the form needs and
+whether it will solve on the graphics card (GPU) or the processor (CPU). Each
+fact shows once: the chips under SOLVE name the engine only while a solve runs
+or when it differs from that line. The numbers come from the server (`plan` on the estimate, build, load,
+session and status replies):
+
+- RAM: both solver tables plus about 400 bytes a node for the tree. A GPU solve
+  adds a second copy of the tables, which it keeps in RAM to hand results back.
+- Graphics memory: the least the GPU engine can run in
+  (`gpu::minimum_need_mb`), with every optional cache left out. It is two to
+  three times the solver tables: the card also holds a range table per node, a
+  value table per terminal, the tree, the learned flop corrections, blockers
+  and one sample of the multiway range tables. Before a build the same figure
+  comes from the size walk's counts (`gpu::minimum_need_of`); a test keeps the
+  two equal.
+- The game solves on the GPU when that need fits the card's free memory less
+  the 512 MB margin, the budget the solve itself gets. The solve still checks
+  the card when it starts and falls back to the CPU if the game does not fit.
+
+The RAM limit for a game is 40% of the RAM free at that moment for the solver
+tables, which leaves room for the tree and for a GPU solve's second copy.
 
 ## Historical early optimization pass
 
