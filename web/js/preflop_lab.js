@@ -7,7 +7,8 @@ import { api } from './api.js';
 import { createPositionSizing } from './preflop_sizing.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
-import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
+import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
+import { studyTarget, studyGuide, studyEditorHint } from './preflop_study.js';
 import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
@@ -146,6 +147,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
   els.nodeTitle.after(nodeEvidence);
+  // "How to study this line": a link beside the title of a spot that is not solved opens the
+  // by-hand steps under it (web/js/preflop_study.js writes the words; the user does the steps).
+  const studyOpen = document.createElement('button');
+  studyOpen.type = 'button';
+  studyOpen.className = 'pfl-study-open hidden';
+  studyOpen.textContent = HOW_LABEL;
+  studyOpen.setAttribute('aria-expanded', 'false');
+  studyOpen.setAttribute('aria-controls', 'pfl-study');
+  els.nodeTitle.after(studyOpen);
+  const studyPanel = document.createElement('div');
+  studyPanel.id = 'pfl-study';
+  studyPanel.className = 'pfl-study hidden';
+  studyPanel.setAttribute('role', 'region');
+  studyPanel.setAttribute('aria-label', HOW_LABEL);
+  els.nodeTitle.parentElement.after(studyPanel);
   const S = {
     built: false,
     formCfg: null,  // visible settings at build/load; independent of saved model metadata
@@ -1308,6 +1324,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderEvidenceLink(nodeEvidence, null);
     els.seats.innerHTML = '';
     S.view = null;
+    renderStudy();
     renderExportCard();
     hideGrid();
   }
@@ -1425,7 +1442,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           if (h.strategy_note) chip.dataset.tip = h.strategy_note;
           else if (h.forced) chip.dataset.tip = autoFoldTip(h.actor_pos);
           else if (a.freq === 0) chip.dataset.tip += ' Zero modeled frequency: its continuation may have no solved strategy.';
-          else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, give ${h.actor_pos} a player model or a lock that takes it, then solve again.`;
+          else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, take this action and click "${HOW_LABEL}" beside the title.`;
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
           chip.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1493,6 +1510,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
     previewBanner.classList.toggle('hidden', !showsPublicationBanner(v.publication));
     renderEvidenceLink(nodeEvidence, v.model_evidence);
+    renderStudy();
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
@@ -1607,6 +1625,100 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderExportCard(continuation);
   }
 
+  // ----- how to study a line that is not solved -----
+  // The steps are the user's to take: the panel names the seat, the tab, the brush and the
+  // number, and its buttons only point at the control (or open the seat's editor on the spot).
+
+  let studyShown = false;
+  let studySig = '';
+  const currentStudyTarget = () => {
+    const v = S.view;
+    // a branch a seat never takes at all shows no ranges, and is studied the same way
+    const blank = v?.strategy_note && !v.strategy_note.startsWith('Unreachable');
+    return !v || canon.on || blank ? null : studyTarget(v);
+  };
+  /** Draw the eye to a control: scroll it into view and ring it for a few seconds. */
+  function pointAt(el) {
+    if (!el) return;
+    el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); // as little as it takes: the steps stay in view
+    el.classList.remove('pfl-pointed');
+    void el.offsetWidth; // restart the ring when the same control is pointed at twice
+    el.classList.add('pfl-pointed');
+    setTimeout(() => el.classList.remove('pfl-pointed'), 3200);
+  }
+  /** Open a modeled seat's editor on the tab and brush the studied step needs. */
+  function openStudyRanges(si, target) {
+    openEditor(si);
+    if (S.editSeat !== si || target.entered || target.bucket >= 4) return;
+    document.querySelector(`#pfe-buckets button[data-b="${target.bucket}"]`)?.click();
+    if (target.bucket === 1) {
+      const contexts = S.model.seats[si].profile?.response?.limp_contexts || [];
+      const at = contexts.findIndex(c => c.limpers === target.limpers && !!c.free_check === target.freeCheck);
+      if (at >= 0) { S.editLimpContext = at; paintBucket(); updateRangeNote(); }
+    }
+    document.querySelector(`#pfe-palette button[data-a="${target.kind === 'check' ? 'call' : target.kind}"]:not(:disabled)`)?.click();
+  }
+  function renderStudy() {
+    const target = currentStudyTarget();
+    if (!target) studyShown = false; // the steps belong to the line they were opened on
+    studyOpen.classList.toggle('hidden', !target);
+    studyOpen.setAttribute('aria-expanded', String(studyShown));
+    studyPanel.classList.toggle('hidden', !studyShown);
+    renderEditorStudyHint(target);
+    if (!studyShown) { studySig = ''; studyPanel.replaceChildren(); return; }
+    const si = S.positions.indexOf(target.pos);
+    const m = S.model?.seats[si];
+    const seat = m?.mode === 'ruled'
+      ? { state: seatSigOf(m) === S.appliedSeatSigs[si] ? 'model' : 'picked', label: m.label }
+      : { state: m?.mode === 'frozen' ? 'frozen' : 'solver' };
+    const types = ARCHETYPES.map(a => a.name).filter(name => !deletedModels.has(`arch:${name}`));
+    const guide = studyGuide(target, seat, types,
+      { modelStep: stepEls.model?.textContent.trim(), solveLabel: els.solve.textContent.trim() });
+    const sig = JSON.stringify([guide, si, m?.mode]);
+    if (sig === studySig) return; // poll() comes through here every second during a solve
+    studySig = sig;
+    const make = (tag, className, text) => {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text != null) el.textContent = text;
+      return el;
+    };
+    const head = make('div', 'pfl-study-head');
+    const close = make('button', 'btn ghost xs', 'Close');
+    close.type = 'button';
+    close.addEventListener('click', () => { studyShown = false; renderStudy(); studyOpen.focus(); });
+    head.append(make('strong', '', HOW_LABEL), close);
+    const list = make('ol');
+    for (const step of guide.steps) {
+      const item = make('li', step.done ? 'done' : '');
+      item.append(make('span', '', step.text));
+      const button = make('button', 'btn ghost xs');
+      button.type = 'button';
+      if (step.key === 'ranges') {
+        button.textContent = `Open ${target.pos}'s ranges`;
+        button.disabled = m?.mode !== 'ruled';
+        button.dataset.tip = button.disabled ? `Pick a player type for ${target.pos} first (step 1).` : `Opens ${target.pos}'s editor on this spot.`;
+        button.addEventListener('click', () => openStudyRanges(si, target));
+      } else {
+        button.textContent = 'Show me';
+        button.dataset.tip = step.key === 'model' ? `Points at ${target.pos}'s row on the left.` : 'Points at the button on the left.';
+        button.addEventListener('click', () => pointAt(step.key === 'model' ? els.modelBox.children[si] : els.solve));
+      }
+      item.append(' ', button);
+      list.append(item);
+    }
+    studyPanel.replaceChildren(head, make('p', '', guide.why), list, make('p', 'pfl-study-after', guide.after));
+  }
+  studyOpen.addEventListener('click', () => { studyShown = !studyShown; renderStudy(); });
+  /** Inside the model editor: where to click for the step the viewed line needs, when it edits that seat. */
+  function renderEditorStudyHint(target = currentStudyTarget()) {
+    const el = document.getElementById('pfe-study-hint');
+    if (!el) return;
+    const mine = !!target && S.editSeat != null && S.positions[S.editSeat] === target.pos;
+    el.classList.toggle('hidden', !mine);
+    el.textContent = mine ? studyEditorHint(target) : '';
+  }
+
   // ----- 4 · MODEL THE PLAYERS -----
 
   const PCOLORS = { fold: '#4a78c8', call: '#5ca75f', raise: '#e8484c', jam: '#7d3ca3' };
@@ -1642,6 +1754,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!els.modelBox) return;
     renderApplyState();
     renderModelManager();
+    renderStudy(); // its steps follow the seat's model
     syncModelColors();
     els.ribbon.querySelectorAll('[data-model-seat]').forEach(el => {
       el.style.color = seatModelColor(Number(el.dataset.modelSeat));
@@ -2050,6 +2163,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="Frequencies measured from the generated ranges — compare with the stats above."></div>
       </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with every hand in each preflop situation. Built from the tendencies above; pick a brush and click hands to overrule any cell. Painted edits stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
       <div id="pfe-rangenote"></div>
+      <div id="pfe-study-hint" class="pfe-study-hint hidden" role="note"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
         BUCKET_NAMES.map((n, k) => `<button data-b="${k}" class="${k === 0 ? 'active' : ''}" data-tip="${BUCKET_TIPS[k]}">${n}</button>`).join('')
       }</div>
@@ -2416,6 +2530,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     updateRangeNote();
     renderEditorImplied();
     paintBucket();
+    renderEditorStudyHint();
     els.editor.tabIndex = -1;
     els.editor.scrollTop = 0;
     els.editor.focus();

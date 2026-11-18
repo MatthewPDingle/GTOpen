@@ -1339,8 +1339,9 @@ textarea {
 .pfl-preview-option { display: flex; align-items: center; gap: 6px; margin: 6px 0; font-size: 11px; color: var(--muted, #999); }
 #pfl-publication { margin: 4px 0 6px; padding: 5px 8px; }
 .pfl-main > .pfl-nodehead { gap: 8px; flex-wrap: wrap; align-items: center; }
-.pfl-main #pfl-nodetitle { flex: 1 1 280px; }
-.pfl-main #pfl-node-evidence { flex: none; }
+/* title, then the study link; the evidence link keeps the right end of the row */
+.pfl-main #pfl-nodetitle { flex: 0 1 auto; }
+.pfl-main #pfl-node-evidence { flex: none; margin-left: auto; }
 /* The node's evidence, shrunk to a link: its tooltip holds the text. */
 .model-evidence-link { padding: 2px 4px; border: 0; border-radius: 3px; background: none; cursor: help;
   font: inherit; font-size: 11px; color: var(--ink-faint); text-decoration: underline dotted; text-underline-offset: 3px; }
@@ -1361,6 +1362,27 @@ textarea {
 .pfl-reach-warning.unsolved { color: #e0a43a; }
 .pfl-reach-warning:hover { background: #e0a43a26; }
 .pfl-reach-warning:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }
+/* "How to study this line": a link beside the title opens the by-hand steps under it. */
+.pfl-study-open { flex: none; padding: 2px 7px; border: 1px solid #74603d; border-radius: 3px; background: #e0a43a14;
+  color: #efca80; font: inherit; font-size: 11px; cursor: pointer; }
+.pfl-study-open:hover, .pfl-study-open[aria-expanded="true"] { background: #e0a43a2e; }
+.pfl-study-open:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.pfl-study { margin: 2px 0 10px; padding: 9px 12px 8px; max-width: 760px; border: 1px solid #74603d; border-left: 3px solid #e0a43a;
+  border-radius: 4px; background: #28251e; font-size: 12px; line-height: 1.5; color: #dcd6c9; }
+.pfl-study-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 2px; }
+.pfl-study-head strong { font-size: 13px; color: #efca80; }
+.pfl-study p { margin: 4px 0; }
+.pfl-study ol { display: grid; gap: 7px; margin: 8px 0; padding-left: 20px; }
+.pfl-study li.done { color: #a3c99d; }
+.pfl-study li .btn { margin-left: 4px; vertical-align: baseline; }
+.pfl-study .pfl-study-after { font-size: 11px; color: var(--ink-dim); }
+/* a control one of its "Show me" buttons points at */
+.pfl-pointed { outline: 2px solid #e0a43a; outline-offset: 2px; border-radius: 3px; animation: pfl-point 1s ease-in-out 3; }
+@keyframes pfl-point { 50% { outline-color: transparent; } }
+@media (prefers-reduced-motion: reduce) { .pfl-pointed { animation: none; } }
+/* the same step, inside the editor of the seat it needs */
+.pfe-study-hint { margin: 6px 0 2px; padding: 6px 9px; border-left: 3px solid #e0a43a; background: #e0a43a14;
+  color: #efca80; font-size: 11px; line-height: 1.45; }
 /* its ranges stay readable, but no longer look like a result */
 #pfl-grid.pfl-unsolved { opacity: .45; filter: saturate(.45); }
 #pfl-legend.pfl-unsolved { opacity: .7; }
