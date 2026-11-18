@@ -5,7 +5,13 @@
 // Sizes are shown in the GB that Windows and a card's box use (1 GB =
 // 1024 MB), so "32 GB card" and "128 GB of RAM" compare directly.
 
+import { RESTART_TIP } from './version.js';
+
 const MB_PER_GB = 1024 * 1024 * 1024 / 1e6; // the server counts 1 MB = 1,000,000 bytes
+// the tree outside the solver's tables, as the server counts it
+const TREE_BYTES_PER_NODE = 400;
+/** The third line when the running server cannot say where the game solves. */
+export const UNKNOWN_ENGINE = 'Solves on: not known \u2014 restart GTOpen to finish updating it';
 
 /** A size for people: "18.8 GB", "132 GB", or "350 MB" under a gigabyte. */
 export function sizeText(mb) {
@@ -47,7 +53,9 @@ export function planChip(plan, running = false) {
  * ('ok' | 'warn' | 'bad').
  */
 export function estimateView(e) {
-  const plan = e.plan;
+  // A server from before the plan (pulled but not restarted) sends only the
+  // tree and its tables: show those, and say what is missing and why.
+  const plan = e.plan || { engine: null, ram_mb: e.arena_mb + e.nodes * TREE_BYTES_PER_NODE / 1e6 };
   const nodes = `${e.truncated ? 'more than ' : ''}${(+e.nodes).toLocaleString()}`;
   const borderline = e.ok && (e.nodes > 0.9 * e.limit_nodes || e.arena_mb > 0.9 * e.limit_arena_mb);
   const state = !e.ok ? 'bad' : borderline ? 'warn' : 'ok';
@@ -59,9 +67,9 @@ export function estimateView(e) {
     `Game tree: ${nodes} nodes`,
     `Memory: ${e.truncated ? `more than ${sizeText(plan.ram_mb)} of RAM` : memoryText(plan)} — ${verdict}`,
   ];
-  if (e.ok) lines.push(engineText(plan));
+  if (e.ok) lines.push(plan.engine ? engineText(plan) : UNKNOWN_ENGINE);
   const smaller = 'fewer sizes, fewer raises, no limps or no all-in option';
-  const tip = [
+  const tip = !plan.engine ? RESTART_TIP : [
     `RAM is this computer's normal memory; every game has to fit there. Right now it can take ` +
       `a game like this up to about ${sizeText(limit)}.`,
     `A graphics card (GPU) solves much faster, but only if the game fits in the card's free ` +

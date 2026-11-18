@@ -104,6 +104,11 @@ b { font-weight: inherit; }
   font: 11px var(--font-data); letter-spacing: .04em; white-space: nowrap;
   color: var(--ink-faint); text-decoration: none;
 }
+/* shown when the running server is older than the page (web/js/version.js) */
+.app-restart {
+  font: 11px var(--font-data); letter-spacing: .04em; white-space: nowrap; cursor: help;
+  padding: 2px 7px; border: 1px solid #74603d; border-radius: 10px; background: #28251e; color: #efca80;
+}
 .app-version:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .app-version:focus-visible { color: var(--ink); outline: 1px solid var(--accent); outline-offset: 3px; }
 

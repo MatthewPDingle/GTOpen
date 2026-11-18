@@ -19,6 +19,8 @@ automatically, without deleting their originals or replacing newer normal saves.
    after saving instead.
 3. Update the repository, then launch the existing Start menu shortcut or
    `GTOpen.cmd`. Wait for the build to finish and the browser to open.
+   If you pull without restarting, the page is newer than the running server
+   and shows a "restart GTOpen" note at the top right until you do steps 2-3.
 4. Load your saved sessions. Refresh an already-open browser tab to load any
    updated UI text or JavaScript.
 

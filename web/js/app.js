@@ -18,7 +18,7 @@ import { initVersion } from './version.js';
 const $ = id => document.getElementById(id);
 initTooltips();
 initPixelGrids();
-initVersion($('app-version'), api.version);
+initVersion($('app-version'), api.version, $('app-restart'));
 
 // ---------------------------------------------------------------------------
 // Tabs

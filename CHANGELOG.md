@@ -2,6 +2,11 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.0.3 - 2026-11-18
+
+- If you update GTOpen's files without restarting it, the page now says so: a "restart GTOpen" note shows at the top right until you close GTOpen and start it again. Before, parts of the page could just go blank, such as Preflop Lab's memory line.
+- Preflop Lab's memory line never goes blank. If it cannot work something out, it says what is missing and why.
+
 ## 1.0.2 - 2026-11-18
 
 - Preflop Lab now says in plain words how much memory a game needs, in RAM and on the graphics card, and whether it will solve on the graphics card (GPU) or the processor (CPU), before you build it. When it will be the processor it says why, and the "?" beside it explains how to make the game fit the card. The words "CPU arenas" are gone.
