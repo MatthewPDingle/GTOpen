@@ -22,7 +22,7 @@ const VOCABULARY = 'measured = real decisions · extrapolated = beyond the sampl
   + 'contextual = this situation’s model · from stats = generated from HUD numbers · saved policy = a stored range set · '
   + 'solver = solved equilibrium · adaptive = responds to the solve · manual lock = hand-edited · '
   + 'frozen solver = pinned strategy · unavailable, pending = transient states.';
-const CAVEAT = 'Provenance, not a confidence score.';
+const CAVEAT = 'This says where the play comes from, not how sure it is.';
 const kindOf = k => (k in KINDS ? k : 'saved_policy');
 const unique = lines => [...new Set(lines.filter(Boolean))];
 

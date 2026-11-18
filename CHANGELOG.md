@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.1.1 - 2026-11-18
+
+- Preflop Lab's tooltips and help text are shorter and in plain words, and the ones that had gone out of date are fixed. The "?" beside the panel title now says what the screen does in three sentences, and the title reads "Preflop game · 2 to 9 players".
+- The help no longer says only two-player flops can be sent to the postflop solver. Three-player flops can be sent too, and the SEND box now says so.
+- The small labels under MODEL say "learned flop values", "3+ players · estimate" and "blockers" instead of internal names.
+- Tournament payouts: an empty stack-off rate showed "off" but used 0.4. It now shows 0.4.
+
 ## 1.1.0 - 2026-11-18
 
 - Preflop Lab: a spot that is not solved now has a **How to study this line** button beside its title. It lists the steps for that exact action: which player type to give the seat, where to check or change its hands, and to solve again. "Show me" points at each control. The old advice mentioned a lock, which Preflop Lab has no control for; that is gone.

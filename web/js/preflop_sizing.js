@@ -37,7 +37,7 @@ export function createPositionSizing(els, positionsFor, changed) {
   const label = document.createElement('label');
   label.textContent = '4-bet+ ×prev ';
   // the box is narrow: a short placeholder, the full story in the tooltip
-  label.dataset.tip = 'Size of 4-bets and later raises, as a multiple of the previous raise (comma list for several sizes). Leave empty to use the 3-bet multiplier.';
+  label.dataset.tip = 'A 4-bet or later raise is this many times the raise it faces. Separate several sizes with commas. Leave empty to use the 3-bet number.';
   const later = document.createElement('input');
   later.type = 'text'; later.placeholder = 'as 3-bet'; later.setAttribute('aria-label','4-bet and later multipliers; empty uses the 3-bet multiplier');
   label.append(later); els.mult.closest('label').after(label);
@@ -45,12 +45,12 @@ export function createPositionSizing(els, positionsFor, changed) {
   const details = document.createElement('details'); details.className = 'pfl-position-sizes';
   const summary = document.createElement('summary'); summary.textContent = 'Sizes by position'; details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Example: 4× facing 6 bb raises to 24 bb. 3-bet sizes also apply to squeezes; 4-bet+ sizes apply after two or more raises.';
+  note.textContent = 'Example: 4× facing a raise to 6 bb makes it 24 bb. Squeezes use the 3-bet sizes.';
   details.append(note);
   const table = document.createElement('table');
   table.innerHTML = '<thead><tr><th>Seat</th><th>Open · bb</th><th>3-bet · ×prev</th><th>4-bet+ · ×prev</th></tr></thead><tbody></tbody>';
   details.append(table);
-  const rebuild = document.createElement('p'); rebuild.textContent = 'Size changes take effect after Build Game and a fresh solve.'; details.append(rebuild);
+  const rebuild = document.createElement('p'); rebuild.textContent = 'Build and solve again for new sizes to count.'; details.append(rebuild);
   els.mult.closest('.pfl-grid2').after(details);
   function render() {
     const body = table.querySelector('tbody'); body.replaceChildren();

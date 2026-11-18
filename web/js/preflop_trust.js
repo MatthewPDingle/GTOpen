@@ -20,8 +20,8 @@ const esc = s => String(s).replace(/[&<>"']/g, c =>
 const pct = t => `${Math.round(t * 100)}%`;
 const bb = x => (x == null ? '—' : `${x >= 0 ? '+' : ''}${(+x).toFixed(3)}`);
 
-const TIP = 'At p% each profiled seat plays its read p% of the time and otherwise adapts to you, independently. '
-  + '100% is the max exploit; lower levels give up EV against the read for safety.';
+const TIP = 'How far to trust your reads on the other players. At 100% you exploit them fully. '
+  + 'Lower it to play safer in case a read is wrong; you win a little less when the read is right.';
 
 /**
  * @param {HTMLElement} panel  the #pfl-trust container
