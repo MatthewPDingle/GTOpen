@@ -45,6 +45,7 @@ fn blockers_match_the_cpu() {
         ("4 seats, side pots", game(4, "static", Some(vec![12.0, 30.0, 6.0, 20.0])), false),
         ("3 seats, exact 3-way table", game(3, "balanced", None), true),
     ];
+    let mut shared_runs = 0;
     for (name, cfg, three_way) in cases {
         let learned = cfg.realization == "leafnet";
         let mut s = PreflopSolver::new(cfg, table()).unwrap();
@@ -62,12 +63,23 @@ fn blockers_match_the_cpu() {
         if learned {
             s.refresh_leaf_values().unwrap();
         }
+        // The shared plan runs 3+ seat games without side pots or the 3-way
+        // table; it must agree with the normal plan at the same strategies.
+        let shared = s.n > 2 && !three_way && s.nodes.iter().all(|nd| nd.side_pots.is_empty());
+        {
+            let (mut fast, selection) = PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA");
+            eprintln!("{name}: {} ({:?})", selection.mode, selection.fallback_reason);
+            assert!(shared || selection.mode == "normal_gpu", "{name}: {selection:?}");
+            shared_runs += (selection.mode == "retained_cohorts") as usize;
+            let fast = fast.gaps_and_evs().unwrap();
+            let normal = PreflopGpu::new(&s, 2000).unwrap().gaps_and_evs().unwrap();
+            assert!(fast.0.iter().chain(&fast.1).zip(normal.0.iter().chain(&normal.1)).all(|(x, y)| (x - y).abs() < 2e-4),
+                "{name}: shared plan {fast:?} normal plan {normal:?}");
+        }
         // the plan the server picks, then the normal plan directly
         for fast in [true, false] {
             let mut g = if fast {
-                let (g, selection) = PreflopGpu::new_throughput(&s, 2000).expect("test requires CUDA");
-                assert_eq!(selection.mode, "normal_gpu", "{name}");
-                g
+                PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
             } else {
                 PreflopGpu::new(&s, 2000).expect("test requires CUDA")
             };
@@ -88,6 +100,7 @@ fn blockers_match_the_cpu() {
             assert!(close(&cpu, &gpu), "{name}, after learning: cpu {cpu:?} gpu {gpu:?}");
         }
     }
+    assert!(shared_runs >= 2, "the shared plan ran {shared_runs} of the games it should take");
 }
 
 #[test]
@@ -101,7 +114,14 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
         for _ in 0..15 {
             s.iterate();
         }
-        let mut g = PreflopGpu::new(&s, 2000).expect("test requires CUDA");
+        // the normal plan, then the plan the server picks (the shared one
+        // for the 3-seat game)
+        for fast in [false, true] {
+        let mut g = if fast {
+            PreflopGpu::new_throughput(&s, 8000).expect("test requires CUDA").0
+        } else {
+            PreflopGpu::new(&s, 2000).expect("test requires CUDA")
+        };
         let np = s.n;
         for p in 0..np {
             g.down(1, p as i32).unwrap();
@@ -128,7 +148,63 @@ fn blockers_terminal_values_match_the_cpu_class_by_class() {
                         "{name} seat {p} node {node} class {h}: gpu {got} cpu {}", expected[h]);
                 }
             }
-            eprintln!("{name} seat {p}: worst relative difference {worst:.2e}");
+            eprintln!("{name} seat {p}{}: worst relative difference {worst:.2e}", if fast { ", server plan" } else { "" });
+        }
+        }
+    }
+}
+
+/// A solver for `cfg` after 20 CPU iterations, with a fixed learned
+/// correction installed when the game uses learned flop values.
+fn warmed(cfg: PreflopConfig) -> PreflopSolver {
+    let learned = cfg.realization == "leafnet";
+    let mut s = PreflopSolver::new(cfg, table()).unwrap();
+    if learned {
+        let pattern: Vec<f32> = (0..2 * NUM_CLASSES).map(|k| 0.04 * (((k * 7) % 11) as f32 - 5.0) / 5.0).collect();
+        s.install_leaf_net(Arc::new(constant_net(&pattern))).unwrap();
+        s.set_leaf_schedule(u32::MAX, Some(0.3));
+    }
+    for _ in 0..20 {
+        s.iterate();
+    }
+    if learned {
+        s.refresh_leaf_values().unwrap();
+    }
+    s
+}
+
+/// The shared plan must learn exactly what the normal plan learns: the same
+/// regrets and strategy sums, bit for bit, with checks in between as the
+/// server runs them.
+#[test]
+fn blockers_learn_the_same_on_the_shared_and_normal_plans() {
+    for (name, cfg) in [
+        ("3 seats static", game(3, "static", None)),
+        ("3 seats learned", game(3, "leafnet", None)),
+        ("4 seats balanced", game(4, "balanced", None)),
+        ("5 seats learned", game(5, "leafnet", None)),
+    ] {
+        let (mut a, mut b) = (warmed(cfg.clone()), warmed(cfg));
+        let (mut fast, selection) = PreflopGpu::new_throughput(&a, 12000).expect("test requires CUDA");
+        assert_eq!(selection.mode, "retained_cohorts", "{name}: {selection:?}");
+        let mut normal = PreflopGpu::new(&b, 4000).expect("test requires CUDA");
+        for round in 0..4 {
+            for _ in 0..10 {
+                fast.iterate(&mut a).unwrap();
+                normal.iterate(&mut b).unwrap();
+            }
+            for (what, x, y) in [
+                ("regrets", fast.stream.clone_dtoh(&fast.d_regrets).unwrap(), normal.stream.clone_dtoh(&normal.d_regrets).unwrap()),
+                ("strategy sums", fast.stream.clone_dtoh(&fast.d_strat).unwrap(), normal.stream.clone_dtoh(&normal.d_strat).unwrap()),
+            ] {
+                let len = fast.arena_len;
+                let differing = x[..len].iter().zip(&y[..len]).filter(|(u, v)| u.to_bits() != v.to_bits()).count();
+                let worst = x[..len].iter().zip(&y[..len]).map(|(u, v)| (u - v).abs()).fold(0f32, f32::max);
+                assert_eq!(differing, 0, "{name}, round {round}: {differing} of {len} {what} differ, largest by {worst:e}");
+            }
+            let (x, y) = (fast.gaps_and_evs().unwrap(), normal.gaps_and_evs().unwrap());
+            assert!(x.0.iter().chain(&x.1).zip(y.0.iter().chain(&y.1)).all(|(u, v)| (u - v).abs() < 2e-4),
+                "{name}, round {round}: shared plan {x:?} normal plan {y:?}");
         }
     }
 }

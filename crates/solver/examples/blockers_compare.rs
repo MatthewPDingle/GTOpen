@@ -21,7 +21,7 @@ fn main() {
         })).unwrap(),
     };
     let iterations: usize = args.get(1).map_or(300, |v| v.parse().expect("iterations"));
-    let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 2000));
+    let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 20000));
     for blockers in [false, true] {
         let mut c = cfg.clone();
         c.card_removal = blockers;

@@ -58,8 +58,6 @@ impl PreflopGpu {
             Some("ICM games use the normal GPU plan")
         } else if s.rnr_active().is_some() {
             Some("the trust dial uses the normal GPU plan")
-        } else if s.cfg.card_removal {
-            Some("blockers (card removal) use the normal GPU plan")
         } else {
             None
         };

@@ -217,6 +217,8 @@ impl PreflopGpu {
                                 values[start..start+NUM_CLASSES].iter().map(|x|x.to_bits())
                             }).collect()));
                         }
+                        // Blockers: as terminals_masked, after every terminal kernel.
+                        g.removal_scale(p)?;
                         for (slot,mode) in [if g.constrained_br[p as usize]{3}else{2},1].into_iter().enumerate() {
                             g.up(p,mode)?;
                             #[cfg(all(test, feature = "preflop-research"))]
