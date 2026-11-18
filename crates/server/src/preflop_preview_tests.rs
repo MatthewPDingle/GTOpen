@@ -35,7 +35,7 @@ fn terminal_stop_publication_clears_cancellation_before_waiting_reader_evaluates
         });
         ready_rx.recv_timeout(std::time::Duration::from_secs(10)).unwrap();
         let error=(reason=="error").then(||"injected worker failure".to_string());
-        pf_finish_preflop(&mut held,&status,reason,true,error);
+        pf_finish_preflop(&mut held,&status,reason,PfEnd::Interrupted,error);
         assert!(flag.load(Ordering::Relaxed),"clear the solver attachment, never erase caller cancellation");
         {
             let st=status.lock().unwrap();assert_eq!(st.state,"stopped");assert_eq!(st.stop_reason,reason);
@@ -59,7 +59,7 @@ fn completed_finish_preserves_measured_accuracy_and_clears_attached_stop() {
     let status=Mutex::new(PreflopStatus {state:"running".into(),iteration:s.iteration,
         published_iteration:s.iteration,accuracy_iteration:Some(s.iteration),gap_total:0.001,
         ..Default::default()});
-    pf_finish_preflop(&mut s,&status,"target_reached",false,None);
+    pf_finish_preflop(&mut s,&status,"target_reached",PfEnd::Done,None);
     let st=status.lock().unwrap();assert_eq!(st.state,"done");assert!(st.publication().converged);
     assert_eq!(st.accuracy_iteration,Some(s.iteration));assert_eq!(st.gap_total,0.001);
     assert_eq!(s.gaps_and_evs(),actual);
@@ -215,7 +215,7 @@ async fn production_capabilities_do_not_offer_experimental_payoff_models() {
 #[tokio::test]
 async fn rejected_model_does_not_even_access_session_or_stop_path() {
     let state = Arc::new(AppState {
-        session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
+        discard_solve: AtomicBool::new(false), session: Mutex::new(None), status: Mutex::new(StatusInfo {state:"preserved".into(),..Default::default()}),
         preflop: Mutex::new(None), report:Mutex::new(ReportStatus::default()),
         report_stop:Arc::new(AtomicBool::new(false)), report_cache:Mutex::new(Vec::new()),
     });
