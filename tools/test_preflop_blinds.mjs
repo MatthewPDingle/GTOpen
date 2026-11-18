@@ -25,7 +25,8 @@ const view = {positions, history:[
 const original = JSON.stringify(view);
 const formatted = formatPreflopView(view, {posts:[0,.5,1]});
 assert.equal(formatted.actions[0].label,'Call 6.5 bb');
-assert.equal(formatted.actions[1].label,'3-bet 3x');
+assert.equal(formatted.actions[1].label,'3-bet 22.5 bb');
+assert.equal(formatted.actions[1].note,'3x');
 assert.equal(formatted.actions[0].to,7.5);
 assert.equal(JSON.stringify(view),original);
 assert.equal(formatPreflopView({positions,history:[{actor_pos:'SB',actions:[{kind:'check',to:1,label:'Check'}]}]}, {posts:[0,1,1]}).actions[0].label,'Check');
@@ -42,5 +43,5 @@ for (const [actor,expected] of [['SB','Complete 1.5 bb'],['BB','Complete 1 bb'],
  const v={positions:straddled,history:[{actor_pos:actor,actions:[call(2)],chosen:null}]};
  assert.equal(formatPreflopView(v,{posts:[2,0,.5,1]}).actions[0].label,expected);
 }
-assert.equal(formatPreflopView({positions:straddled,history:[{actor_pos:'BTN',actions:[{kind:'raise',to:5,label:'Raise 5'}]}]}, {posts:[2,0,.5,1]}).actions[0].label,'Raise 5x');
+assert.equal(formatPreflopView({positions:straddled,history:[{actor_pos:'BTN',actions:[{kind:'raise',to:5,label:'Raise 5'}]}]}, {posts:[2,0,.5,1]}).actions[0].label,'Raise 5 bb');
 console.log('UTG straddle posts, validation, incremental calls, original-bb sizes, and unopened winner passed.');

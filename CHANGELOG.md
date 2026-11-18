@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.3.1 - 2026-11-18
+
+- Preflop Lab now shows every size in bb. Raises used to read as multiples ("3-bet 2.75x") beside calls in bb ("Call 3 bb"). A raise now shows the total it goes to, and a re-raise adds its multiple in brackets: "Raise 4 bb", "3-bet 11 bb (2.75x)", "Call 3 bb". A call still shows what you add.
+- When a re-raise adds the callers' money, the brackets say so: "3-bet 15 bb (3x + callers)".
+- The same wording is used in the action strip, the spot title, the colour key under the grid and the hand tooltips.
+
 ## 1.3.0 - 2026-11-18
 
 - Bigger Preflop Lab games can solve on the GPU. A game too big for the GPU all at once used to go to the CPU. Now the GPU takes it a part at a time ("large-game mode"), which needs roughly 40% less GPU memory, so games up to about 1.7 times as big fit. The answer is the same.
