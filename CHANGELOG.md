@@ -2,6 +2,21 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.2.0 - 2026-11-18
+
+- Bigger Preflop Lab games can solve on the GPU. A game too big for the GPU all at once used to go to the CPU. Now the GPU takes it a part at a time ("large-game mode"), which needs roughly 40% less GPU memory, so games up to about 1.7 times as big fit. The answer is the same.
+- Games that already fit the GPU solve exactly as before, at the same speed. Large-game mode is used only when the normal solve has no room, and the "Solves on" line says when it is.
+- Not covered yet, so these still go to the CPU when too big: tournament payouts, the trust dial, unequal stacks and the exact 3-way table.
+
+## 1.1.4 - 2026-11-18
+
+- The "?" beside the Preflop Lab title now names the leaf net: a neural net trained on real flop solves that values each hand on a two-player flop. It also says that other pots, and games without learned flop values, use a simpler estimate.
+- Sizes by position explains itself. Each empty box shows in grey the main size that seat will use, a line on top says what to type (for example 4 or 4,6), and each column heading has a tooltip.
+
+## 1.1.3 - 2026-11-18
+
+- Preflop Lab's memory lines say "GPU" and "CPU" plainly, and "GPU memory" for what the game needs on the card. The last line now says what a solve uses: a GPU solve uses both the RAM and the GPU memory, a CPU solve uses the RAM only.
+
 ## 1.1.2 - 2026-11-18
 
 - Preflop Lab's memory lines are clearer. RAM and the graphics card each get their own line, with what the game needs and what is there: "RAM: needs about 18.8 GB, fits" and "Graphics card: needs 31.5 GB, has 31.4 GB, too big". Before, "18.8 GB of RAM fits" sat next to "too big for the graphics card" and read like a contradiction.
