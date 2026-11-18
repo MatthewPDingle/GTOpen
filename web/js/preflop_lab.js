@@ -14,7 +14,7 @@ import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence, renderEvidenceLink } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
-import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
+import { defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
@@ -108,10 +108,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.leaf.closest('label')?.classList.toggle('dim', els.leaf.disabled);
   }
   syncLearned();
-  const rangeLab = els.rangeLab ? initRangeLabRef(els.rangeLab) : null;
   // hero mode's trust dial, fed by every status poll
   const trustDial = els.trust ? initPreflopTrust(els.trust, { toast, positions: () => S.positions || [] }) : null;
-  // Range source: this game's solve, or Range Lab's canonical charts walked
+  // Range source: this game's solve, or the canonical GTO charts walked
   // as a tree (no build or solve). Each source keeps its own line.
   const canon = { on: false, summary: null, tag: null, variant: null, depth: null, lines: {} };
   const previewBanner = document.createElement('div');
@@ -199,7 +198,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // ----- step rail: numbered steps follow the range source -----
-  // The page ships one rail for both sources. Range Lab charts skip the
+  // The page ships one rail for both sources. Canonical GTO charts skip the
   // build/solve/model steps, so the shared steps are renumbered.
   const stepEls = {};
   {
@@ -313,7 +312,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const rakePct = canon.on ? Number(els.canonRakePct.value) || 0 : Number(cfg.rake_pct) || 0;
       const rakeCap = canon.on ? Number(els.canonRakeCap.value) || 0 : Number(cfg.rake_cap) || 0;
       rows.push(['rake', rakePct ? `${rakePct}%${rakeCap ? ` · cap ${rakeCap} bb` : ' · uncapped'}` : 'none']);
-      if (canon.on) rows.push(['source', 'Range Lab chart']);
+      if (canon.on) rows.push(['source', 'Canonical GTO chart']);
       else rows.push(['models', live.map(p => {
         const i = S.positions.indexOf(p);
         const m = i >= 0 ? S.model?.seats[i] : null;
@@ -336,7 +335,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     exportBody.innerHTML =
       `<div class="pfl-step" style="margin:0 0 4px">${dest}</div>` +
       (canon.on
-        ? tick(flop, 'flop reached') + tick(!!v.exportable, 'Range Lab chart')
+        ? tick(flop, 'flop reached') + tick(!!v.exportable, 'canonical GTO chart')
         : tick(flop, 'flop reached') + tick(headsUp || three, three ? `${live.length} players` : 'heads-up, stacks left') +
           tick(strategyReady, hasStrategy
             ? `strategy at iter \u2265 2 · iter ${Math.max(0, lastIter)}`
@@ -1316,7 +1315,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     S.view = null;
     renderExportCard();
     hideGrid();
-    rangeLab?.update(null);
   }
 
   let refreshSeq = 0;
@@ -1373,7 +1371,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     const hist = S.lineHist || [];
     const cursor = S.cursor.length;
-    // spots the solve never really worked on (Range Lab charts are not a solve: no marks)
+    // spots the solve never really worked on (canonical GTO charts are not a solve: no marks)
     const levels = canon.on ? [] : segmentLevels(hist);
     hist.forEach((h, d) => {
       const seg = document.createElement('div');
@@ -1389,7 +1387,9 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           (S.engineFrozen && S.engineFrozen[si]));
         const adaptive = S.model?.seats[si]?.profile?.response?.adaptive_from != null && !S.engineFrozen?.[si];
         head.title = adaptive ? 'Modeled ordinary actions; adaptive large-bet responses' : '';
-        head.innerHTML = `<span>${adaptive ? '↔ ' : locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span><b>${h.pot.toFixed(1)}</b>`;
+        // a seat the charts fold automatically says why where its pot would be
+        head.innerHTML = `<span>${adaptive ? '↔ ' : locked ? '🔒 ' : ''}${esc(h.actor_pos)}</span>` +
+          (h.forced ? '<b class="no-chart">no chart</b>' : `<b>${h.pot.toFixed(1)}</b>`);
         const position = head.querySelector('span');
         position.dataset.modelSeat = si;
         position.style.color = seatModelColor(si);
@@ -1406,7 +1406,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         'Not solved: the line that leads here is one the solution almost never plays.';
       if (h.forced) {
         seg.classList.add('forced');
-        seg.dataset.tip = `Range Lab has no chart for ${h.actor_pos} here; its later charts assume ${h.actor_pos} folds.`;
+        seg.dataset.tip = autoFoldTip(h.actor_pos);
       }
       seg.addEventListener('click', () => {
         if (d !== cursor) { S.cursor = S.lineP.slice(0, d); refresh(); }
@@ -1418,15 +1418,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '') + (rare ? ' rare-step' : '');
           chip.classList.add('has-frequency');
           const actionLabel = document.createElement('span');
-          actionLabel.textContent = a.label;
+          actionLabel.textContent = h.forced ? 'Auto-fold' : a.label;
           const frequency = document.createElement('span');
           frequency.className = 'hist-frequency';
-          frequency.textContent = h.strategy_note ? "—" : frequencyText(a.freq);
+          // an automatic fold is not a chart frequency: no "100%"
+          frequency.textContent = h.forced ? '' : h.strategy_note ? "—" : frequencyText(a.freq);
           chip.append(actionLabel, frequency);
           chip.dataset.tip = h.chosen === k
             ? `${h.actor_pos} takes ${a.label} ${frequencyDetail(a.freq)} of the time here. Click to view the moment just after it.`
             : `${h.actor_pos}: ${a.label} ${frequencyDetail(a.freq)} of the time. Click to ${h.chosen == null ? 'take' : 'branch the line onto'} this action.`;
           if (h.strategy_note) chip.dataset.tip = h.strategy_note;
+          else if (h.forced) chip.dataset.tip = autoFoldTip(h.actor_pos);
           else if (a.freq === 0) chip.dataset.tip += ' Zero modeled frequency: its continuation may have no solved strategy.';
           else if (rare) chip.dataset.tip += ` The solution has all but dropped this action, so the spots after it are not solved. To study them, give ${h.actor_pos} a player model or a lock that takes it, then solve again.`;
           if (a.sizingHint) chip.dataset.tip += ` ${a.sizingHint}`;
@@ -1455,6 +1457,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     revealRibbonCursor ||= cursorKey !== ribbonCursor;
     ribbonCursor = cursorKey;
     updateRibbonScroll();
+  }
+
+  /** Why the charts folded a seat without asking: shown on that seat in the ribbon. */
+  function autoFoldTip(pos) {
+    return `Folded automatically: the canonical GTO charts have no chart for ${pos} at this point. ` +
+      `They only cover the common lines, and the next chart on this line assumes ${pos} folded.`;
   }
 
   function actionColors(actions) {
@@ -1490,7 +1498,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
     previewBanner.classList.toggle('hidden', !showsPublicationBanner(v.publication));
     renderEvidenceLink(nodeEvidence, v.model_evidence);
-    rangeLab?.update(canon.on ? null : matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
     // seats strip: only while there's action (the ribbon carries the rest)
     els.seats.innerHTML = v.kind !== 'action' ? '' : v.positions.map((p, i) => {
@@ -1503,7 +1510,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       hideGrid();
       renderExportCard();
       els.nodeTitle.textContent = v.actor_pos ? `${v.actor_pos} · strategy unavailable` : 'Unreachable continuation';
-      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No Range Lab chart here" : v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
+      els.gridCap.innerHTML = `<div class="pfl-unavailable" role="status"><strong>${canon.on ? "No canonical GTO chart here" : v.strategy_note.startsWith("Unreachable") ? "This line has zero modeled reach" : "No solved strategy at this point"}</strong><p>${esc(v.strategy_note)}</p></div>`;
       return;
     }
     let continuation = null;
@@ -1528,7 +1535,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         `Grid = <b>${esc(v.actor_pos)}</b> · hover a cell for exact numbers.`;
       if (canon.on) {
         els.gridCap.innerHTML =
-          `Grid = <b>${esc(v.actor_pos)}</b>'s Range Lab chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
+          `Grid = <b>${esc(v.actor_pos)}</b>'s canonical GTO chart at this point (${esc(v.game.label)} · ${esc(v.game.variant_label)} · ${v.game.depth} bb)` +
           (v.chart ? `: <b>${esc(v.chart.family_label)}</b>, ${esc(v.chart.label)}` : '') +
           `.` +
           (v.note ? `<div class="pfl-context-note">${esc(v.note)}</div>` : '');
@@ -2911,7 +2918,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         : await api.pfExport(S.cursor);
       const steps = takenSteps(S.cursor.length);
       const lineText = canon.on
-        ? 'Range Lab · ' + (steps.filter(s => s.kind !== 'fold').map(s => `${s.pos} ${s.label}`).join(' · ') || 'root')
+        ? 'Canonical GTO charts · ' + (steps.filter(s => s.kind !== 'fold').map(s => `${s.pos} ${s.label}`).join(' · ') || 'root')
         : steps.map(s => `${s.pos} ${s.label}`).join(' · ') || 'root';
       // ribbon segments for Browse: continuing actions only (folds are just
       // dead money in the pot, same convention as the study module)
@@ -3029,7 +3036,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       `<span class="key dim">\u00b7 bar height = share of the hand's combos still in range \u00b7 number = continue frequency of a mixed hand \u00b7 dark cell = hand no longer here</span>`;
   }
 
-  // ----- RANGE LAB CHARTS as the range source -----
+  // ----- CANONICAL GTO CHARTS as the range source -----
 
   const CANON_KEY = 'pfl-canon';
   const pill = els.canonBox.closest('.pfl-side').querySelector('h2 .pill');
@@ -3047,6 +3054,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function canonRequest(path) {
     return { tag: canon.tag, variant: canon.variant, depth: canon.depth, path };
   }
+  // one line under "Ranges from" saying what the chosen source is
+  const SOURCE_HINT = {
+    solve: els.sourceHint.textContent,
+    canonical: 'Ready-made charts for a few standard games. Nothing to solve.',
+  };
   const nearestBy = (list, key, x) => list.reduce((a, b) => Math.abs(key(b) - x) < Math.abs(key(a) - x) ? b : a);
 
   /** Open size / stage and stack lists for the chosen game, keeping the
@@ -3070,12 +3082,12 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   async function loadCanon() {
-    try { canon.summary = await api.rangeLab(); } catch (e) { els.canonNote.textContent = `Range Lab charts unavailable: ${e.message}`; return; }
+    try { canon.summary = await api.rangeLab(); } catch (e) { els.canonNote.textContent = `Canonical GTO charts unavailable: ${e.message}`; return; }
     const sm = canon.summary;
     if (!sm.total) {
       els.canonGame.innerHTML = '';
-      els.canonNote.innerHTML = 'No Range Lab data found. Put <code>data.js</code> and <code>cash-data.js</code> in ' +
-        sm.dirs.map(d => `<code>${esc(d)}</code>`).join(' or ') + ', then pick “Range Lab charts” again.';
+      els.canonNote.innerHTML = 'No chart files found on this computer. Put <code>data.js</code> and <code>cash-data.js</code> in ' +
+        sm.dirs.map(d => `<code>${esc(d)}</code>`).join(' or ') + ', then pick “Canonical GTO charts” again.';
       return;
     }
     els.canonGame.innerHTML = sm.games.map(g => `<option value="${esc(g.tag)}">${esc(g.label)}</option>`).join('');
@@ -3086,7 +3098,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.canonGame.value = canon.tag;
     fillCanonAxes();
     saveCanonPrefs();
-    els.canonNote.textContent = `${sm.total.toLocaleString()} canonical charts. Nothing to build or solve: the charts are the strategy.`;
+    els.canonNote.textContent = `${sm.total.toLocaleString()} charts on this computer.`;
     if (canon.on) refresh();
   }
 
@@ -3112,6 +3124,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
 
   function setSource(on) {
     els.source.value = on ? 'canonical' : 'solve';
+    els.sourceHint.textContent = SOURCE_HINT[els.source.value];
     if (canon.on !== on) {
       canon.lines[canon.on ? 'canonical' : 'solve'] = { cursor: S.cursor, lineP: S.lineP };
       const next = canon.lines[on ? 'canonical' : 'solve'] || { cursor: [], lineP: [] };
@@ -3124,7 +3137,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.canonBox.classList.toggle('hidden', !on);
     els.solveSetup.classList.toggle('hidden', on);
     els.solveSaved.classList.toggle('hidden', on);
-    els.rangeLab?.classList.toggle('hidden', on);
     // charts have no solve to explain: the rail renumbers instead
     els.step5.classList.toggle('hidden', on);
     renderStepRail();
@@ -3132,7 +3144,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     renderModelStrip();
     renderApplyState();
     renderExportCard();
-    if (pill) pill.textContent = on ? 'Range Lab charts · no solve' : PILL_SOLVE;
+    if (pill) pill.textContent = on ? 'Canonical GTO charts · no solve' : PILL_SOLVE;
     saveCanonPrefs();
     if (on && !canon.summary) loadCanon();
     clearRightPanel();

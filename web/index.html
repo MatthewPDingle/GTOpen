@@ -379,7 +379,8 @@
       <section class="panel pfl-side">
         <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <button type="button" class="info-dot" aria-label="Preflop game model" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</button></h2>
         <label class="pfl-row pfl-source">Ranges from
-          <select id="pfl-source" style="flex:1"><option value="solve">Solve this game</option><option value="canonical">Range Lab charts (canonical GTO)</option></select></label>
+          <select id="pfl-source" style="flex:1"><option value="solve">GTOpen's solver · your exact game</option><option value="canonical">Canonical GTO charts · ready-made</option></select></label>
+        <div id="pfl-source-hint" class="dim">GTOpen works out the ranges for the game you set up below.</div>
         <div id="pfl-canon" class="hidden">
           <div class="pfl-step">1 · CHOOSE THE CHARTS</div>
           <label class="pfl-row" data-tip="Seat count, blinds, straddle/antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
@@ -479,7 +480,6 @@
         <div id="pfl-grid" class="matrix browse hidden"></div>
         <div id="pfl-gridcap" class="dim" style="font-size:10px;line-height:1.5;margin-top:6px;max-width:720px"></div>
         <div id="pfl-legend" class="legend"></div>
-        <div id="pfl-rangelab"></div>
       </section>
     </div>
   </main>
