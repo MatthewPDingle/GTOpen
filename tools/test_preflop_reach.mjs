@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { RARE_STEP, SELDOM_LINE, UNSOLVED_LINE, frequencyText, frequencyDetail, oneIn, lineSteps, lineStatus, segmentLevels, lineNote } from '../web/js/preflop_reach.js';
+import { RARE_STEP, SELDOM_LINE, UNSOLVED_LINE, frequencyText, frequencyDetail, oneIn, lineSteps, lineStatus, segmentLevels, lineNote, lineNoteText } from '../web/js/preflop_reach.js';
 
 // One ribbon entry: the acting seat, its actions as [label, frequency], and the action taken (null = the spot viewed).
 const node = (actor_pos, actions, chosen = null) => ({ kind: 'action', actor_pos, chosen,
@@ -71,6 +71,10 @@ assert.equal(lineStatus(view([utg(null)], 1)).level, 'ok');
 assert.equal(lineStatus(view([utg(null)], 0)).level, 'ok'); // nothing taken yet
 assert.equal(lineStatus(undefined).level, 'ok');
 assert.equal(lineNote(null), null);
+// the warning icon's tooltip carries the whole note: title, explanation, then the fix on its own paragraph
+assert.equal(lineNoteText(null), '');
+assert.equal(lineNoteText(note), `${note.title}\n${note.text}\n\n${note.fix}`);
+assert.equal(lineNoteText({ level: 'seldom', title: 'Seldom played.', text: 'Rough.', fix: '' }), 'Seldom played.\nRough.');
 
 // no single dropped step: the line's chance decides, with the server's number when it sends one
 const rare = (branch_probability) => view([

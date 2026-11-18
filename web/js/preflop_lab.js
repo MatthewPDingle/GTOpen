@@ -7,12 +7,12 @@ import { api } from './api.js';
 import { createPositionSizing } from './preflop_sizing.js';
 import { createSeatStacks } from './preflop_stacks.js';
 import { createIcmControls } from './preflop_icm.js';
-import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, segmentLevels } from './preflop_reach.js';
+import { RARE_STEP, frequencyText, frequencyDetail, lineStatus, lineNote, lineNoteText, segmentLevels } from './preflop_reach.js';
 import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, solveCompletionLabel, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
 import { formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
-import { renderModelEvidence } from './model_evidence.js';
+import { renderModelEvidence, renderEvidenceLink } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { initRangeLabRef, matchContext, defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
@@ -130,10 +130,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     previewCheck.disabled = S.solveRunning || !supported;
     return supported;
   }).catch(() => false);
-  const reachWarning = document.createElement('div');
+  // A line that is not solved gets a small warning icon before the node title;
+  // its tooltip holds the explanation (hover, focus, click or tap).
+  const reachWarning = document.createElement('button');
+  reachWarning.type = 'button';
   reachWarning.className = 'pfl-reach-warning hidden';
-  reachWarning.setAttribute('role', 'status');
-  previewBanner.after(reachWarning);
+  reachWarning.dataset.tipClick = '';
+  reachWarning.innerHTML = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">' +
+    '<path d="M8 1.8 14.8 13.8H1.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>' +
+    '<path d="M8 6.2v3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>' +
+    '<circle cx="8" cy="11.7" r=".85" fill="currentColor"/></svg>';
+  els.nodeTitle.before(reachWarning);
   const nodeEvidence = document.createElement('div');
   nodeEvidence.id = 'pfl-node-evidence';
   nodeEvidence.className = 'hidden';
@@ -1316,11 +1323,13 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function clearRightPanel() {
     previewBanner.classList.add('hidden');
     reachWarning.className = 'pfl-reach-warning hidden';
+    delete reachWarning.dataset.tip;
+    delete reachWarning.dataset.tipHtml;
     els.ribbon.innerHTML = '';
     ribbonCursor = null;
     updateRibbonScroll();
     els.nodeTitle.textContent = '';
-    renderModelEvidence(nodeEvidence, null);
+    renderEvidenceLink(nodeEvidence, null);
     els.seats.innerHTML = '';
     S.view = null;
     renderExportCard();
@@ -1484,21 +1493,21 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   function renderNode() {
     const v = S.view;
     previewBanner.textContent = publicationLabel(v.publication);
-    // a line the solution (almost) never plays is not solved: say so above the grid, in words
-    reachWarning.replaceChildren();
+    // a line the solution (almost) never plays is not solved: a warning icon by the title says so, in words
     const lineWarning = canon.on || v.strategy_note ? null : lineNote(lineStatus(v));
     reachWarning.className = `pfl-reach-warning ${lineWarning ? lineWarning.level : 'hidden'}`;
     if (lineWarning) {
-      for (const [tag, text] of [['strong', lineWarning.title], ['span', lineWarning.text], ['em', lineWarning.fix]]) {
-        if (!text) continue;
-        const part = document.createElement(tag);
-        part.textContent = text;
-        reachWarning.append(part, ' '); // the space keeps the parts apart when read out or copied
-      }
+      reachWarning.setAttribute('aria-label', lineWarning.title.replace(/\.$/, ''));
+      reachWarning.dataset.tip = lineNoteText(lineWarning);
+      reachWarning.dataset.tipHtml = `<b class="tip-title">${esc(lineWarning.title)}</b>${esc(lineWarning.text)}` +
+        (lineWarning.fix ? `\n\n${esc(lineWarning.fix)}` : '');
+    } else {
+      delete reachWarning.dataset.tip;
+      delete reachWarning.dataset.tipHtml;
     }
     for (const el of [els.grid, els.legend]) el.classList.toggle('pfl-unsolved', lineWarning?.level === 'unsolved');
     previewBanner.classList.toggle('hidden', !showsPublicationBanner(v.publication));
-    renderModelEvidence(nodeEvidence, v.model_evidence);
+    renderEvidenceLink(nodeEvidence, v.model_evidence);
     rangeLab?.update(canon.on ? null : matchContext(v, JSON.parse(S.builtCfg || 'null')));
 
     // seats strip: only while there's action (the ribbon carries the rest)
