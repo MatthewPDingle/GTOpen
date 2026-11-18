@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.0.1 - 2026-11-18
+
+- Preflop Lab's results area carries fewer messages. The "Target reached" line is gone. "Not solved from here on" is now a small warning icon before the spot's title, and Evidence is a small link at the end of that row. Hover or click either one to read the same text as before.
+
 ## 1.0.0 - 2026-11-18
 
 The first numbered version. From here on, every change to the app gets a version number and a line in this file.
