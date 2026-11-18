@@ -870,8 +870,8 @@ impl PreflopSolver {
                 )
             } else {
                 format!(
-                    "{mb:.0} MB of solver arenas exceeds the {lim_mb:.0} MB limit \
-                     (env PREFLOP_MAX_ARENA_MB raises it)"
+                    "its solver tables need {mb:.0} MB of RAM and this computer can take \
+                     {lim_mb:.0} MB right now (env PREFLOP_MAX_ARENA_MB raises it)"
                 )
             };
             return Err(format!(
@@ -3813,6 +3813,34 @@ pub struct TreeEstimate {
     pub arena_len: u64,
     /// True when the walk stopped early (config absurdly large).
     pub truncated: bool,
+    /// What the GPU engine's memory depends on beyond the counts above.
+    pub gpu: GpuCounts,
+}
+
+/// Counts from the estimate walk that size the GPU engine's tables, so the
+/// lab can say before a build whether a game fits the graphics card
+/// (`gpu::minimum_need_of`). They assume the default multiway model.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct GpuCounts {
+    /// The widest even and odd action level below the root: action values
+    /// are scratch that alternate levels share.
+    pub level_widths: [u64; 2],
+    /// Heads-up flop terminals with one pot, and those of them with chips
+    /// behind (the ones learned flop values price).
+    pub heads_up_terminals: u64,
+    pub leaf_terminals: u64,
+    /// Terminals with side pots, their pots in total, and how many of the
+    /// terminals are multiway.
+    pub side_pot_terminals: u64,
+    pub side_pots: u64,
+    pub side_pot_multiway: u64,
+    /// Multiway (3+ seats) flop terminals and the range tables they read:
+    /// distinct tables, the sum of each seat's own count, and the largest
+    /// single seat's count.
+    pub multiway_terminals: u64,
+    pub multiway_tables: u64,
+    pub multiway_seat_tables: u64,
+    pub multiway_max_seat_tables: u64,
 }
 
 /// Count the tree a config would build — same enumeration logic as the
@@ -3823,37 +3851,131 @@ pub struct TreeEstimate {
 pub fn estimate_tree(cfg: &PreflopConfig) -> Result<TreeEstimate, String> {
     let n = validate(cfg)?;
     let cap = limit_nodes().saturating_add(limit_nodes() / 10).max(3_000_000);
-    let mut est = TreeEstimate {
-        nodes: 0,
-        action_nodes: 0,
-        arena_len: 0,
-        truncated: false,
+    let mut walk = CountWalk {
+        cfg,
+        n,
+        cap,
+        est: TreeEstimate {
+            nodes: 0,
+            action_nodes: 0,
+            arena_len: 0,
+            truncated: false,
+            gpu: GpuCounts::default(),
+        },
+        levels: Vec::new(),
+        tables: vec![Vec::new(); n],
     };
-    count_walk(cfg, n, root_state(cfg, n), &mut est, cap);
+    // Each seat starts on its own root range table (0..n); an action writes
+    // the actor a new one, numbered after the node it leads to.
+    let mut sources = [0u32; MAX_SEATS];
+    for (q, source) in sources.iter_mut().enumerate().take(n) {
+        *source = q as u32;
+    }
+    walk.visit(root_state(cfg, n), 0, sources);
+    let mut est = walk.est;
+    for (depth, &count) in walk.levels.iter().enumerate().skip(1) {
+        let width = &mut est.gpu.level_widths[depth % 2];
+        *width = (*width).max(count);
+    }
+    let words = walk.tables.iter().map(Vec::len).max().unwrap_or(0);
+    for w in 0..words {
+        let mut any = 0u64;
+        for seat in &walk.tables {
+            any |= seat.get(w).copied().unwrap_or(0);
+        }
+        est.gpu.multiway_tables += any.count_ones() as u64;
+    }
+    for seat in &walk.tables {
+        let count: u64 = seat.iter().map(|w| w.count_ones() as u64).sum();
+        est.gpu.multiway_seat_tables += count;
+        est.gpu.multiway_max_seat_tables = est.gpu.multiway_max_seat_tables.max(count);
+    }
     Ok(est)
 }
 
-fn count_walk(cfg: &PreflopConfig, n: usize, st: BuildState, est: &mut TreeEstimate, cap: u64) {
-    if est.truncated {
-        return;
+/// validate() allows 2..9 seats.
+const MAX_SEATS: usize = 9;
+
+struct CountWalk<'a> {
+    cfg: &'a PreflopConfig,
+    n: usize,
+    cap: u64,
+    est: TreeEstimate,
+    /// Action nodes per depth.
+    levels: Vec<u64>,
+    /// Per seat, the range tables of its opponents at multiway terminals
+    /// (one bit per table).
+    tables: Vec<Vec<u64>>,
+}
+
+impl CountWalk<'_> {
+    fn visit(&mut self, st: BuildState, depth: usize, sources: [u32; MAX_SEATS]) {
+        if self.est.truncated {
+            return;
+        }
+        self.est.nodes += 1;
+        if self.est.nodes > self.cap {
+            self.est.truncated = true;
+            return;
+        }
+        let n = self.n;
+        let live = ((1u32 << n) - 1) & !st.folded;
+        if live.count_ones() == 1 {
+            return; // fold-win terminal
+        }
+        let Some(actor) = next_actor_of(n, &st) else {
+            self.pot_share(&st, live, &sources);
+            return;
+        };
+        let acts = legal_actions_of(self.cfg, &st, actor);
+        self.est.action_nodes += 1;
+        self.est.arena_len += (acts.len() * NUM_CLASSES) as u64;
+        if self.levels.len() <= depth {
+            self.levels.resize(depth + 1, 0);
+        }
+        self.levels[depth] += 1;
+        for a in &acts {
+            let mut child = sources;
+            // the child is the next node counted
+            child[actor] = (n as u64 + self.est.nodes - 1) as u32;
+            self.visit(next_state_of(self.cfg, n, &st, actor, a), depth + 1, child);
+        }
     }
-    est.nodes += 1;
-    if est.nodes > cap {
-        est.truncated = true;
-        return;
-    }
-    let live = ((1u32 << n) - 1) & !st.folded;
-    if live.count_ones() == 1 {
-        return; // fold-win terminal
-    }
-    let Some(actor) = next_actor_of(n, &st) else {
-        return; // pot-share terminal
-    };
-    let acts = legal_actions_of(cfg, &st, actor);
-    est.action_nodes += 1;
-    est.arena_len += (acts.len() * NUM_CLASSES) as u64;
-    for a in &acts {
-        count_walk(cfg, n, next_state_of(cfg, n, &st, actor, a), est, cap);
+
+    fn pot_share(&mut self, st: &BuildState, live: u32, sources: &[u32; MAX_SEATS]) {
+        let (cfg, n) = (self.cfg, self.n);
+        let gpu = &mut self.est.gpu;
+        // equal stacks always settle to one pot with nothing returned
+        let settled = if cfg.unequal_stacks() { settle_pots(cfg, &st.invested, live) } else { None };
+        let pots = settled.as_ref().map_or(0, |(_, pots)| pots.len());
+        let multiway = live.count_ones() >= 3;
+        if pots > 0 {
+            gpu.side_pot_terminals += 1;
+            gpu.side_pots += pots as u64;
+            gpu.side_pot_multiway += u64::from(multiway);
+        }
+        if multiway {
+            gpu.multiway_terminals += 1;
+            for p in (0..n).filter(|&p| live & (1 << p) != 0) {
+                for q in (0..n).filter(|&q| q != p && live & (1 << q) != 0) {
+                    let (word, bit) = (sources[q] as usize / 64, sources[q] % 64);
+                    let seat = &mut self.tables[p];
+                    if seat.len() <= word {
+                        seat.resize(word + 1, 0);
+                    }
+                    seat[word] |= 1 << bit;
+                }
+            }
+        } else if pots == 0 {
+            gpu.heads_up_terminals += 1;
+            let invested = settled.as_ref().map_or(&st.invested, |(invested, _)| invested);
+            let pot: f64 = invested.iter().sum();
+            let left = (0..n).filter(|&q| live & (1 << q) != 0)
+                .map(|q| cfg.left(q, invested[q])).fold(f64::MAX, f64::min);
+            if left / pot > 1e-9 {
+                gpu.leaf_terminals += 1;
+            }
+        }
     }
 }
 

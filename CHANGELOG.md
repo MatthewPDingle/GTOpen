@@ -2,6 +2,11 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.0.2 - 2026-11-18
+
+- Preflop Lab now says in plain words how much memory a game needs, in RAM and on the graphics card, and whether it will solve on the graphics card (GPU) or the processor (CPU), before you build it. When it will be the processor it says why, and the "?" beside it explains how to make the game fit the card. The words "CPU arenas" are gone.
+- The bubbles under SOLVE no longer repeat the progress bar. While a solve runs you see only GPU or CPU there; when it ends you see how it ended and its gap, once.
+
 ## 1.0.1 - 2026-11-18
 
 - Preflop Lab's results area carries fewer messages. The "Target reached" line is gone. "Not solved from here on" is now a small warning icon before the spot's title, and Evidence is a small link at the end of that row. Hover or click either one to read the same text as before.
