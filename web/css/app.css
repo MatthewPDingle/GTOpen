@@ -1181,6 +1181,9 @@ textarea {
 #pfl-ribbon:focus-visible { outline: 1px dotted var(--ink-faint); outline-offset: 2px; }
 #pfl-ribbon-wrap .hist-nav:disabled { opacity: .3; cursor: default; }
 #pfl-ribbon .hist-seg { cursor: pointer; }
+/* sizes read in bb ("Raise 4 bb"): a little tighter, so eight seats still fit one row */
+#pfl-ribbon .hist-chip { padding: 2px 4px; }
+#pfl-ribbon .hist-chip.has-frequency { gap: 8px; }
 .pfl-nodehead { display: flex; justify-content: space-between; align-items: baseline; margin: 4px 0; }
 #pfl-nodetitle { font-size: 13px; color: var(--ink); font-weight: 600; }
 #pfl-seats { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 10px; }

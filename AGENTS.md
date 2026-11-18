@@ -116,7 +116,11 @@ game). Config shape (see `PreflopConfig` in
   the stakes in `smallBlind` / `bigBlind` (2 and 5); only their ratio is used,
   so both convert to the same `posts`. API config remains normalized. Old saves retain their
   original posts. Call action `to` remains the total, while UI labels show
-  the incremental call/completion, excluding antes.
+  the incremental call/completion, excluding antes. Every UI size is in bb:
+  a raise shows its total ("3-bet 11 bb") with the multiple of the raise
+  it faces as a note in brackets ("2.75x", or "3x + callers" when
+  `caller_extra` added the callers' money); `web/js/preflop_actions.js`,
+  `node tools/test_preflop_actions.mjs`.
 - `max_raises` counts ALL raises (open=1 … 5-bet=4). Re-raise TO = to_call ×
   mult, min-raise clamped; sizes ≥ 85% of stack become jams.
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists

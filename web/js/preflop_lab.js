@@ -12,7 +12,7 @@ import { RARE_STEP, HOW_LABEL, frequencyText, frequencyDetail, lineStatus, lineN
 import { studyTarget, studyGuide, studyEditorHint } from './preflop_study.js';
 import { publishedIteration, publicationKey, publicationLabel, showsPublicationBanner, supportsEarlyPreview, earlyPreviewRequest } from './preflop_preview.js';
 import { cellInfo } from './cards.js';
-import { formatPreflopView } from './preflop_actions.js';
+import { actionText, formatPreflopView } from './preflop_actions.js';
 import { blindSizes, blindPosts, smallBlindBb, unraisedWinner } from './preflop_blinds.js';
 import { renderModelEvidence, renderEvidenceLink } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
@@ -1397,7 +1397,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     (S.lineHist || []).slice(0, upTo).forEach(h => {
       if (h.chosen != null && h.actions[h.chosen]) {
         const a = h.actions[h.chosen];
-        out.push({ pos: h.actor_pos, label: a.label, kind: a.kind });
+        out.push({ pos: h.actor_pos, label: a.label, phrase: a.phrase, kind: a.kind });
       }
     });
     return out;
@@ -1572,7 +1572,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       const past = takenSteps(S.cursor.length);
       const lastAggr = [...past].reverse().find(s => s.kind === 'raise' || s.kind === 'jam');
       const facing = lastAggr && lastAggr.pos !== v.actor_pos
-        ? ` — facing ${lastAggr.pos}'s ${lastAggr.label}`
+        ? ` — facing ${lastAggr.pos}'s ${lastAggr.phrase || lastAggr.label}`
         : lastAggr && lastAggr.pos === v.actor_pos
           ? '' // their own raise came back around (someone called/limped behind)
           : past.length ? ' — unraised pot' : ' — first to act';
@@ -3152,11 +3152,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
             cell.dataset.tipHtml = '';
           } else {
             cell.dataset.tip = lab + (inRange ? ` — ${inRange}` : '') + '\n' +
-              v.actions.map((a, k) => `${a.label}  ${pct(k)}`).join('\n');
+              v.actions.map((a, k) => `${actionText(a)}  ${pct(k)}`).join('\n');
             cell.dataset.tipHtml = `<b>${lab}</b>` +
               (inRange ? ` <span class="dim">${inRange}</span>` : '') +
               `<div class="tip-rows">` + v.actions.map((a, k) =>
-                `<span>${esc(a.label)}</span><span>${pct(k)}</span>`).join('') +
+                `<span>${esc(actionText(a))}</span><span>${pct(k)}</span>`).join('') +
               `</div>`;
           }
         } else {
@@ -3179,7 +3179,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.legend.innerHTML =
       `<span class="key dim">colors = what ${esc(v.actor_pos)} does:</span>` +
       [...v.actions.keys()].reverse().map(k =>
-        `<span class="key"><i style="background:${colors[k]}"></i>${esc(v.actions[k].label)}</span>`).join('') +
+        `<span class="key"><i style="background:${colors[k]}"></i>${esc(actionText(v.actions[k]))}</span>`).join('') +
       `<span class="key dim">\u00b7 bar height = how much of the hand is still in the range \u00b7 number = how often a mixed hand continues \u00b7 dark = hand no longer in the range</span>`;
   }
 
