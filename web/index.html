@@ -377,18 +377,18 @@
     <h1 class="sr-only">Preflop Lab</h1>
     <div class="pfl-layout">
       <section class="panel pfl-side">
-        <h2>PREFLOP GAME <span class="pill">multiway · approximate postflop values</span> <button type="button" class="info-dot" aria-label="Preflop game model" data-tip="Solves the preflop betting tree for 2–9 players. Postflop values are estimated; future postflop betting is not solved here. All-in pots use showdown equity. The BR gap measures convergence within this approximate game, not accuracy against full poker. Any line reaching the flop heads-up can be sent to the postflop solver (step 6); ranges, pot, stack and rake carry over.">?</button></h2>
+        <h2>PREFLOP GAME <span class="pill">· 2 to 9 players</span> <button type="button" class="info-dot" aria-label="About the Preflop Lab" data-tip="Solves preflop play for 2 to 9 players. It doesn't play out the flop, turn and river; it estimates what each hand is worth once the flop comes, so treat close decisions as approximate. When a line reaches the flop with two or three players, you can send it on to the postflop solver.">?</button></h2>
         <label class="pfl-row pfl-source">Ranges from
           <select id="pfl-source" style="flex:1"><option value="solve">GTOpen's solver · your exact game</option><option value="canonical">Canonical GTO charts · ready-made</option></select></label>
         <div id="pfl-source-hint" class="dim">GTOpen works out the ranges for the game you set up below.</div>
         <div id="pfl-canon" class="hidden">
           <div class="pfl-step">1 · CHOOSE THE CHARTS</div>
-          <label class="pfl-row" data-tip="Seat count, blinds, straddle/antes and rake are fixed by the charts.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
+          <label class="pfl-row" data-tip="The charts set the number of players, blinds, straddle, antes and rake.">Game <select id="pfl-canon-game" style="flex:1"></select></label>
           <div class="pfl-grid2">
-            <label data-tip="Open size for cash charts; tournament stage otherwise.">Open / stage <select id="pfl-canon-variant"></select></label>
+            <label data-tip="The open size for cash games, the stage for tournaments.">Open / stage <select id="pfl-canon-variant"></select></label>
             <label>Stack <select id="pfl-canon-depth"></select></label>
-            <label data-tip="Carried into the postflop spot on export; does not change the charts.">Postflop rake % <input id="pfl-canon-rakepct" type="number" value="0" min="0" step="0.5"></label>
-            <label data-tip="0 = uncapped.">Rake cap (bb) <input id="pfl-canon-rakecap" type="number" value="0" min="0" step="0.5"></label>
+            <label data-tip="Used when you send a flop to the postflop solver. It does not change the charts.">Postflop rake % <input id="pfl-canon-rakepct" type="number" value="0" min="0" step="0.5"></label>
+            <label data-tip="0 means no cap.">Rake cap (bb) <input id="pfl-canon-rakecap" type="number" value="0" min="0" step="0.5"></label>
           </div>
           <div id="pfl-canon-note" class="dim" style="font-size:11px;line-height:1.5;margin:4px 0 2px"></div>
         </div>
@@ -396,71 +396,70 @@
         <div class="pfl-step">1 · SET UP THE SCENARIO</div>
         <label class="pfl-row">Scenario <select id="pfl-preset" style="flex:1"></select></label>
         <div class="btn-row" style="margin:-2px 0 4px">
-          <button id="pfl-scn-save" class="btn ghost xs" data-tip="Saving under a built-in's name replaces it.">SAVE SCENARIO</button>
-          <button id="pfl-scn-del" class="btn ghost xs hidden" data-tip="Built-ins can't be deleted; a replaced built-in comes back.">DELETE</button>
+          <button id="pfl-scn-save" class="btn ghost xs" data-tip="Saves the form as a scenario. Using a built-in scenario's name replaces it.">SAVE SCENARIO</button>
+          <button id="pfl-scn-del" class="btn ghost xs hidden" data-tip="Deletes a scenario you saved. If it replaced a built-in one, the built-in comes back.">DELETE</button>
         </div>
         <div class="pfl-grid2">
-          <label data-tip="Positions are assigned automatically. Heads-up: SB is the button and acts first preflop.">Players <select id="pfl-players">
+          <label data-tip="Seats are named for you. With two players the small blind is the button and acts first before the flop.">Players <select id="pfl-players">
             <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
           </select></label>
-          <label data-tip="Per-seat stacks are set under Stacks by seat.">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
+          <label data-tip="Everyone's starting stack. To give seats different stacks, open Stacks by seat below.">Stack (bb) <input id="pfl-stack" type="number" value="100" min="2" step="0.5"></label>
           <label data-tip="The small blind in big blinds, like every amount here: 0.5 for $1/$2, 1 for $2/$2, 0.4 for $2/$5.">Small blind (bb) <input id="pfl-sb" type="number" value="0.5" min="0.01" max="1" step="any"></label>
           <label data-tip="Every amount in the Preflop Lab is in big blinds, so the big blind is always 1.">Big blind (bb) <input id="pfl-bb" type="number" value="1" disabled></label>
-          <label class="pfl-straddle-toggle" data-tip="Straddle by the seat left of BB. The next seat acts first; the straddler keeps a check/raise option. Amounts still use the original big blind.">UTG straddle <input id="pfl-straddle-on" type="checkbox"></label>
+          <label class="pfl-straddle-toggle" data-tip="The seat after the big blind posts a straddle and acts last before the flop. Amounts stay in big blinds.">UTG straddle <input id="pfl-straddle-on" type="checkbox"></label>
           <label>Straddle (bb) <input id="pfl-straddle" type="number" value="2" min="2" step="0.5" disabled></label>
           <div id="pfl-straddle-note" class="dim pfl-straddle-note" role="status" hidden></div>
-          <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="Comma list of raise-TO amounts in the original big blind. With a 2 bb straddle, use at least 4 bb. Empty = no ordinary raises (all-in can still be enabled)."></label>
-          <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="Multiplier of the previous raise-to amount. Position overrides are below."></label>
-          <label data-tip="The open counts as raise 1 and a 3-bet as 2.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
-          <label data-tip="Added to the starting pot.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
-          <label data-tip="Taken only from pots that see a flop (no flop, no drop).">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
-          <label data-tip="0 = uncapped.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
+          <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="What an open raises to, in big blinds. Separate several sizes with commas. With a 2 bb straddle use at least 4. Leave empty for no raises (all-in can still be allowed)."></label>
+          <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="A 3-bet is this many times the raise it faces: 3 turns a 2.5 bb open into 7.5 bb. Separate several sizes with commas. Sizes by position are set below."></label>
+          <label data-tip="How many raises a hand can have. The open is raise 1, a 3-bet is 2, a 4-bet is 3.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+          <label data-tip="What each player antes, in big blinds.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label data-tip="Taken only from pots that see a flop.">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
+          <label data-tip="0 means no cap.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
         </div>
         <div class="pfl-row">
-          <label class="chk"><input id="pfl-limp" type="checkbox"> allow limps</label>
-          <label class="chk" data-tip="Sizes committing most of the stack become jams automatically."><input id="pfl-allin" type="checkbox"> all-in option</label>
-          <label class="chk" data-tip="Beta. Three-player pots use exact 3-way showdown equity from one deck, so card removal between hands is exact; 4+ players keep the coupled-deck model. First build computes and caches the table (a few minutes). Solves on CPU."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
-          <label class="chk" data-tip="On by default. Prices heads-up flops with the balanced model plus a correction learned from exact flop solves, so hands are valued by how they play after the flop and rake counts on the final pot. Solves take about twice as long. Borderline hands and the small blind's limp-or-raise split are the least reliable. Multiway and all-in pots use the balanced model alone, and so do games with ICM payouts. Untick for the balanced model alone."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
+          <label class="chk" data-tip="Lets players call the big blind instead of raising or folding."><input id="pfl-limp" type="checkbox"> allow limps</label>
+          <label class="chk" data-tip="Adds going all-in to every raising choice. A raise that would put in most of a stack becomes all-in either way."><input id="pfl-allin" type="checkbox"> all-in option</label>
+          <label class="chk" data-tip="Beta. Values three-player pots more accurately, with all three hands dealt from one deck. The first game built with it takes a few extra minutes."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
+          <label class="chk" data-tip="On by default. Values each hand by how it plays after the flop, learned from many thousands of solved flops. It covers flops with two players; bigger pots, all-in pots and games with tournament payouts use a simpler estimate. Close decisions are the least reliable. Untick to use the simpler estimate everywhere."><input id="pfl-leaf" type="checkbox" checked> learned flop values</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"
           data-tip="How big the game on the form is, how much memory it needs, and whether it will solve on the graphics card (GPU) or the processor (CPU). It updates as you change the form."></div>
         <div class="pfl-btncol">
           <div class="pfl-step">2 · BUILD THE GAME</div>
-          <button id="pfl-build" class="btn" data-tip="Optional — SOLVE builds automatically.">BUILD GAME</button>
-          <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="Progress toward the 0.005 bb best-response-gap target, measured every 50 iterations; big games show 'measuring accuracy' meanwhile."><i></i><span></span></div>
+          <button id="pfl-build" class="btn" data-tip="Optional. SOLVE builds the game for you.">BUILD GAME</button>
+          <div id="pfl-prog" class="pfl-prog hidden" tabindex="0" data-tip="How far along the build or solve is."><i></i><span></span></div>
           <div class="pfl-step">3 · SOLVE</div>
-          <button id="pfl-solve" class="btn primary" data-tip="Builds first if needed. Stops at the 0.005 bb target; 3000 iterations is a safety cap.">SOLVE</button>
-          <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Everything stays browsable; RE-SOLVE continues from here.">STOP</button>
+          <button id="pfl-solve" class="btn primary" data-tip="Builds the game first if needed. It stops by itself when the solution is close enough: when what the players could still gain by playing differently (the gap) is under 0.005 bb.">SOLVE</button>
+          <button id="pfl-stopbtn" class="btn danger hidden" data-tip="Stops the solve. You keep what it has so far, and RE-SOLVE carries on from there.">STOP</button>
         </div>
         <div id="pfl-buildinfo" class="mono dim" style="font-size:11px;margin-top:6px"></div>
         <div id="pfl-status" class="mono dim" style="font-size:11px;margin-top:2px" tabindex="0" data-tip="How the last solve ended and its gap. Hover a chip for detail."></div>
-        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span> <button type="button" class="info-dot" aria-label="Seat types" data-tip="Each seat is one of three things. SOLVER: plays the equilibrium and keeps adapting. FROZEN: pinned to what it played at the last solve. PROFILE (archetype, HUD stats or a saved player): plays like a real person; its ranges bend the current solve's equilibrium toward its stats, so solve the plain game before modelling seats. A profile seat is never solved — its grid shows the profile as is — so a table where every seat is a profile has nothing to solve until you pick a HERO; while a seat is the HERO its profile is ignored. 'bleeds X bb' = what that seat loses per hand to a best response. Postflop tendencies only matter once a spot is sent to postflop.">?</button></div>
+        <div class="pfl-step">4 · MODEL THE PLAYERS <span style="letter-spacing:.02em">· optional</span></div>
         <div id="pfl-model"></div>
         <div id="pfl-editor" class="hidden"></div>
         <div class="pfl-row" style="margin-top:6px">
-          <label class="chk" style="flex:1" data-tip="Set last. Hero freezes every other seat: modeled seats play their profiles, unmodeled seats pin to their last solved strategy. Re-solves only your seat; its learning resets.">HERO
+          <label class="chk" style="flex:1" data-tip="Your seat. Set it last. Every other seat is held still, players on their profiles and the rest on their last solve, and the next solve finds your best play against them.">HERO
             <select id="pfl-hero" style="flex:1;margin-left:6px"><option value="">off</option></select>
           </label>
-          <button id="pfl-apply" class="btn" data-tip="A changed table resets learning so the next solve converges against it; SOLVE applies pending changes automatically. Re-applying an unchanged model costs nothing.">APPLY MODEL</button>
+          <button id="pfl-apply" class="btn" data-tip="Puts your seat and HERO choices into the game. SOLVE does this for you.">APPLY MODEL</button>
         </div>
         <div id="pfl-trust" class="hidden"></div>
         </div>
 
         <div class="pfl-step">5 · SET UP THE PREFLOP ACTION</div>
         <p id="pfl-step5" class="dim" style="font-size:11px;line-height:1.5;margin:2px 0 0">
-          Each ribbon segment lists the available actions with solved frequencies; click one to
-          advance the line, or an earlier action to branch. Step 6 unlocks when the line reaches
-          the flop <b>heads-up</b>.
+          Click an action in the strip above the chart to follow the hand, or an earlier one to
+          try another line. A line that reaches the flop with two or three players can be sent postflop.
         </p>
         <div class="pfl-step">6 · SEND IT POSTFLOP</div>
         <button id="pfl-export" class="btn primary" disabled>
           SEND TO POSTFLOP SETUP</button>
         <div id="pfl-export-state" class="ctl-state">needs a flop line</div>
         <div id="pfl-solve-saved">
-        <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="Stores config, seat models, point locks and solver state.">SAVED GAMES</div>
+        <div class="pfl-step" style="margin-top:14px" tabindex="0" data-tip="A saved game keeps its setup, the players at each seat and the solution.">SAVED GAMES</div>
         <div class="btn-row">
-          <select id="pfl-savedsel" style="flex:1" data-tip="Restores strategies, seat models and iteration. Hero selection isn't stored; re-pick it after loading."><option value="">load a saved game…</option></select>
-          <button id="pfl-savegame" class="btn ghost" data-tip="Writes to saves/preflop/. Big multiway games use hundreds of MB to a few GB.">SAVE</button>
+          <select id="pfl-savedsel" style="flex:1" data-tip="Loads a saved game with its solution and players. The HERO choice is not saved, so pick it again."><option value="">load a saved game…</option></select>
+          <button id="pfl-savegame" class="btn ghost" data-tip="Saves to the saves/preflop folder. A big game with many players can take hundreds of MB to a few GB of disk.">SAVE</button>
         </div>
         </div>
       </section>

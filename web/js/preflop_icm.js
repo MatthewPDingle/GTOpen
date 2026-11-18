@@ -84,9 +84,8 @@ export function createIcmControls(els, positionsFor, changed) {
   const summary = document.createElement('summary');
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
-    + 'instead of chips; EVs read in bb equivalents. Stage presets use an approximate 1,000-player payout '
-    + 'structure and give other tables the table stack.';
+  note.textContent = 'Hands are valued in prize money instead of chips (ICM); results still read in big blinds. '
+    + 'The stage presets use a typical 1,000-player payout table and give players at other tables this table’s stack.';
   details.append(note);
   const on = document.createElement('label');
   on.className = 'chk';
@@ -119,10 +118,10 @@ export function createIcmControls(els, positionsFor, changed) {
   const stackLabel = document.createElement('label');
   stackLabel.append('Their stack (bb) ', fieldStack);
   const stackOff = document.createElement('input');
-  stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = 'off';
+  stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = '0.4';
   const offLabel = document.createElement('label');
-  offLabel.dataset.tip = 'How often a pot that sees the flop is played for the stacks behind: all-in with '
-    + 'chance k / (k + SPR). 0 prices a flop pot as the pot alone.';
+  offLabel.dataset.tip = 'How often a pot that sees the flop ends up all-in, which happens more when stacks are short '
+    + 'next to the pot. Leave empty for the usual 0.4. At 0 only the pot is at risk.';
   offLabel.append('Stack-off rate ', stackOff);
   grid.append(stageLabel, countLabel, stackLabel, offLabel, payLabel);
   details.append(grid);

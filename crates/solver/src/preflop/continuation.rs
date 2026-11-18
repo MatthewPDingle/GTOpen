@@ -97,11 +97,11 @@ impl PreflopSolver {
         let note = if calibrated {
             "The calibrated model embeds its training rake; this heads-up continuation does not respond to the requested rake. The unallocated amount combines embedded rake and model error, so it is not an expected-rake estimate. Send to postflop setup to solve a selected board with the requested rake."
         } else if model == "leafnet" {
-            "Balanced hand values plus a learned correction from exact flop solves (beta), with requested rake deducted once from the starting pot. The correction was trained on random ranges and is refreshed from the current strategies during the solve. Future betting is not solved."
+            "Each hand is valued by how it plays after the flop, learned from many thousands of solved flops, for these ranges, pot, stacks and rake. The flop itself is not solved here; send it to postflop setup to solve a board."
         } else if model == "balanced" {
-            "Relative hand values divide one pot, with requested rake deducted once from the starting pot. Historical calibration supplies relative hand weights only; this is not a retrained rake-free postflop model. Future betting and its rake are not solved."
+            "A simple estimate: the pot is shared out by how strong each hand is, with the rake taken once from the pot. Play after the flop is not solved here; send it to postflop setup to solve a board."
         } else if all_in {
-            "No postflop betting remains. Values use the cached heads-up equity table and the requested rake on the pot. Small accounting differences can come from equity sampling and rounding."
+            "Everyone is all-in, so each hand gets its share of the pot at showdown, less the rake."
         } else {
             "This approximation deducts the requested rake on the starting pot. It does not model how future betting changes rake; positional adjustments and equity sampling can also affect the total. Send to postflop setup for a selected-board solve."
         };

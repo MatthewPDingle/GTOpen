@@ -7,7 +7,7 @@ assert.equal(evidenceText(undefined), '');
 
 const solver = { kind: 'solver', label: 'Solver', summary: 'Strategy from the configured solver model; no fixed player policy applies here.', details: [] };
 assert.equal(evidenceText(solver),
-  'Evidence · solver · Solver\nStrategy from the configured solver model; no fixed player policy applies here.\n\nProvenance, not a confidence score.');
+  'Evidence · solver · Solver\nStrategy from the configured solver model; no fixed player policy applies here.\n\nThis says where the play comes from, not how sure it is.');
 
 // source, pooled coverage and details follow the summary; repeated lines appear once
 const measured = { kind: 'measured', label: 'Measured opens', summary: 'From real decisions.', source: 'pool A',
@@ -17,7 +17,7 @@ assert.equal(lines[0], 'Evidence · measured · Measured opens');
 assert.deepEqual(lines.slice(1, 5), ['From real decisions.', 'Source: pool A',
   'Pooled source coverage: 1,200 decisions · 30 sessions · 150 of 169 hand classes. Prices, stacks and earlier entry details are pooled.',
   'Second detail.']);
-assert.equal(lines.at(-1), 'Provenance, not a confidence score.');
+assert.equal(lines.at(-1), 'This says where the play comes from, not how sure it is.');
 
 // hands and sizing each get a headline; the sizing notes follow under their own heading
 const sized = { kind: 'stat_derived', label: 'From stats', summary: 'Generated from HUD numbers.', details: [],
