@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.1.2 - 2026-11-18
+
+- Preflop Lab's memory lines are clearer. RAM and the graphics card each get their own line, with what the game needs and what is there: "RAM: needs about 18.8 GB, fits" and "Graphics card: needs 31.5 GB, has 31.4 GB, too big". Before, "18.8 GB of RAM fits" sat next to "too big for the graphics card" and read like a contradiction.
+- The "?" beside those lines now says why a game needs more memory on the graphics card than in RAM.
+- The "Show early strategy previews" checkbox under SOLVE is gone. Previews are always on; the gold line above the hand grid already says when you are looking at one.
+
 ## 1.1.1 - 2026-11-18
 
 - Preflop Lab's tooltips and help text are shorter and in plain words, and the ones that had gone out of date are fixed. The "?" beside the panel title now says what the screen does in three sentences, and the title reads "Preflop game · 2 to 9 players".

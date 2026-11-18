@@ -8,8 +8,9 @@ const GB: f64 = (1u64 << 30) as f64 / 1e6; // MB in the GB the lab shows
 fn a_game_that_fits_the_card_solves_there() {
     let card = PfCard::Ready { budget_mb: 30_000, total_mb: 34_190 };
     let plan = pf_engine_plan_on(card, 1_000.0, 1_000_000, 2_400.0);
-    assert_eq!(plan.engine, "gpu");
+    assert_eq!((plan.engine, plan.card), ("gpu", "fits"));
     assert!(plan.reason.is_empty());
+    assert_eq!(plan.gpu_limit_mb, 34_190.0 - 512.0);
     // both tables, the tree, and the copy a GPU solve keeps in RAM
     assert_eq!(plan.ram_mb, 1_000.0 + 400.0 + 1_000.0);
     assert_eq!((plan.gpu_need_mb, plan.gpu_free_mb, plan.gpu_total_mb), (2_400.0, 30_000.0, 34_190.0));
@@ -20,7 +21,7 @@ fn a_game_bigger_than_the_card_solves_on_the_cpu_and_says_so() {
     // an 11.5M-node 8-max game on a 32 GB card: 15.6 GB of tables, 33.8 GB on the card
     let card = PfCard::Ready { budget_mb: 32_000, total_mb: 34_190 };
     let plan = pf_engine_plan_on(card, 15_611.0, 11_546_836, 33_784.0);
-    assert_eq!(plan.engine, "cpu");
+    assert_eq!((plan.engine, plan.card), ("cpu", "too_big"));
     assert_eq!(
         plan.reason,
         "too big for this graphics card (needs 31.5 GB there, the card can give 31.4 GB)"
@@ -33,7 +34,7 @@ fn a_game_bigger_than_the_card_solves_on_the_cpu_and_says_so() {
 fn a_busy_card_is_named_as_the_reason() {
     let card = PfCard::Ready { budget_mb: (8.0 * GB) as u64, total_mb: 34_190 };
     let plan = pf_engine_plan_on(card, 9_000.0, 5_000_000, 20.0 * GB);
-    assert_eq!(plan.engine, "cpu");
+    assert_eq!((plan.engine, plan.card), ("cpu", "busy"));
     assert_eq!(plan.reason, "the graphics card has too little free right now (needs 20.0 GB, 8.0 GB free)");
     // exactly at the budget still fits
     let fits = pf_engine_plan_on(PfCard::Ready { budget_mb: 20_000, total_mb: 34_190 }, 9_000.0, 5_000_000, 20_000.0);
@@ -42,18 +43,18 @@ fn a_busy_card_is_named_as_the_reason() {
 
 #[test]
 fn no_usable_card_has_a_plain_reason() {
-    for (card, words) in [
-        (PfCard::NoEngine, "has no graphics card support"),
-        (PfCard::Off, "switched off"),
-        (PfCard::Missing, "no NVIDIA graphics card found"),
+    for (card, name, words) in [
+        (PfCard::NoEngine, "unsupported", "has no graphics card support"),
+        (PfCard::Off, "off", "switched off"),
+        (PfCard::Missing, "none", "no NVIDIA graphics card found"),
     ] {
         let plan = pf_engine_plan_on(card, 100.0, 50_000, 300.0);
-        assert_eq!(plan.engine, "cpu");
+        assert_eq!((plan.engine, plan.card), ("cpu", name));
         assert!(plan.reason.contains(words), "{}", plan.reason);
         assert_eq!(plan.gpu_free_mb, 0.0);
     }
     let huge = pf_engine_plan_on(PfCard::Ready { budget_mb: 30_000, total_mb: 34_190 }, 100.0, 50_000, f64::INFINITY);
-    assert_eq!(huge.engine, "cpu");
+    assert_eq!((huge.engine, huge.card), ("cpu", "too_big"));
 }
 
 #[test]

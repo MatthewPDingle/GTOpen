@@ -120,17 +120,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   previewBanner.setAttribute('role', 'status');
   // Publication owns a full row; actor and evidence keep their existing row.
   els.nodeTitle.parentElement.before(previewBanner);
-  const previewOption = document.createElement('label');
-  previewOption.className = 'pfl-preview-option';
-  previewOption.innerHTML = '<input type="checkbox" checked> Show early strategy previews';
-  previewOption.dataset.tip = 'Shows the ranges while the solve is still running, updated as it goes. Early ranges are rough. The finished solve is the same either way.';
-  const previewCheck = previewOption.querySelector('input');
-  previewCheck.disabled = true;
-  els.solve.parentElement.after(previewOption);
+  // Early strategy previews are always on (a learned strategy after 2
+  // iterations, then every 10): the banner above the grid marks a preview,
+  // so there is no switch. An older server without them shows the first
+  // strategy at its accuracy checkpoint.
+  let earlyPreviews = false;
   const previewCapability = api.pfCapabilities().then(caps => {
-    const supported = supportsEarlyPreview(caps);
-    previewCheck.disabled = S.solveRunning || !supported;
-    return supported;
+    earlyPreviews = supportsEarlyPreview(caps);
+    return earlyPreviews;
   }).catch(() => false);
   // A line that is not solved gets a small warning icon before the node title;
   // its tooltip holds the explanation (hover, focus, click or tap).
@@ -959,7 +956,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       }
       progressSet(0, 'solving');
       const request = { iterations: SOLVE_ITERS, check_every: 50, target_gap: 0.005 };
-      await api.pfSolve(earlyPreviewRequest(request, previewCheck.checked, await previewCapability));
+      await api.pfSolve(earlyPreviewRequest(request, true, await previewCapability));
       S.gameSaved = false; // strategies are moving away from any on-disk copy
       renderSaveState();
       startPolling();
@@ -1173,8 +1170,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       // the server refuses table/hero changes mid-solve (409) — mirror it
       S.solveRunning = running;
       els.applyBtn.disabled = running;
-      previewCheck.disabled = running;
-      if (!running) previewCapability.then(supported => { previewCheck.disabled = S.solveRunning || !supported; });
     }
     if (st.gaps && st.gaps.length) {
       S.lastGaps = st.gaps;
@@ -1237,7 +1232,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       } else if (st.gap_total > 0) {
         label = `solving · iter ${st.iteration} · ${clock} · gap ${st.gap_total.toFixed(4)} \u2192 0.0050`;
       } else {
-        label = `solving · iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : previewCheck.checked ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
+        label = `solving · iter ${st.iteration} · ${clock} · ${shown >= 2 ? `preview at ${shown}; accuracy every 50 iter` : earlyPreviews ? "preparing first learned preview" : "first strategy at accuracy checkpoint"}`;
       }
       progressSet(S.runPct, label);
     } else if (S.lastState === 'running') {
