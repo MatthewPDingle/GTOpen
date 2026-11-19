@@ -27,10 +27,40 @@ const EQ_COLORS = ['#8edced', '#46b556'];
 // Equity chart margins (CSS px); the roomier left/bottom hold axis titles.
 const EQ_M = { L: 50, R: 12, T: 14, B: 38 };
 
-/** Toast suffix for a lock reply that also froze earlier decisions. */
+/** Toast suffix for a lock reply that also kept earlier decisions as solved. */
 function frozenNote(out) {
   const n = out?.frozen || 0;
-  return n ? ` (+${n} earlier decision${n > 1 ? 's' : ''} frozen too)` : '';
+  return n ? `, and ${n} earlier decision${n > 1 ? 's' : ''} kept as solved` : '';
+}
+
+/** An action label without its "(50%)" pot share: "Bet 4.25 (50%)" -> "Bet 4.25". */
+export function shortAction(label) {
+  return String(label || '').replace(/\s*\(\d+(\.\d+)?%\)\s*$/, '');
+}
+
+/** Where a lock sits, from the actions that lead to it: "first decision",
+ *  "after Check", "after … › Call › 7h › Check". */
+export function lockWhere(line) {
+  if (!line?.length) return 'first decision';
+  const parts = line.map(shortAction);
+  const tail = parts.length > 3 ? ['…', ...parts.slice(-3)] : parts;
+  return `after ${tail.join(' › ')}`;
+}
+
+/** What a lock makes the range do: "100% Check", "48% Check, 52% All-in 26". */
+export function lockMix(actions, freqs) {
+  const parts = [];
+  (actions || []).forEach((a, k) => {
+    const pct = Math.round((freqs?.[k] || 0) * 100);
+    if (pct >= 1) parts.push(`${pct}% ${shortAction(a)}`);
+  });
+  return parts.join(', ');
+}
+
+/** Hand names for a sentence: "AA, AKs, AKo" or "AA, AKs, AKo, KK, QQ + 4 more". */
+export function handList(names, max = 6) {
+  if (names.length <= max) return names.join(', ');
+  return `${names.slice(0, max - 1).join(', ')} + ${names.length - (max - 1)} more`;
 }
 
 function betShade(amount, pot) {
@@ -53,10 +83,12 @@ function isPrefix(a, b) {
  *  on the line whose node (the prefix BEFORE the step, as freeze_line walks
  *  it) carries no lock. Pure so the per-ancestor rule is testable: a lock at
  *  the node being viewed must never make its ancestors look locked. */
-export function freezeableAncestors(path, pathLabels, board, isLocked) {
+export function freezeableAncestors(path, pathLabels, board, isLocked, isOwn = () => true) {
   let n = 0;
   for (let i = 0; i < path.length; i++) {
     if (path[i].type !== 'action') continue;
+    // only the locked player's own decisions, when the server keeps just those
+    if (!isOwn(i)) continue;
     const prefix = pathLabels.slice(0, i);
     const desc = prefix.length ? `${board} ${prefix.join(' > ')}` : `${board} root`;
     if (!isLocked(desc)) n++;
@@ -85,6 +117,16 @@ export class Browser {
       const saved = localStorage.getItem('gtopen.freezeLine');
       if (saved != null) this.freezeLine = saved === '1';
     } catch { /* storage off */ }
+    // Hands picked in the grid for the lock box (cells "i,j" at the viewed
+    // node), the numbers typed there, and the list of every lock.
+    this.lockSel = new Set();
+    this.lockSelAt = '';
+    this.lockDraft = null;      // { at, vals }: typed numbers survive re-renders
+    this.lockScope = 'range';   // with filters on and nothing picked: 'range' | 'filtered'
+    this.locksView = null;      // GET /api/locks/list; null against an older server
+    this.serverLevel = null;    // what the running server can do (see version.js)
+    api.version().then(v => { this.serverLevel = v?.server_level ?? 0; })
+      .catch(() => { this.serverLevel = 0; });
     this.lockLabels = [];       // GET /api/locks labels (one per locked node)
     this.lockCells = new Map(); // node label -> cells its per-hand lock covers
     try {
@@ -172,11 +214,13 @@ export class Browser {
       if (e.key === 'Backspace' && this.path.length) {
         e.preventDefault();
         this.viewDepth(this.path.length - 1); // step cursor back, keep the line
-      } else if (e.key === 'Escape' && this.selectedCell) {
+      } else if (e.key === 'Escape' && (this.selectedCell || this.lockSel.size)) {
         this.selectedCell = null;
+        this.lockSel.clear();
         this.renderMatrix();
         this.renderHandsPanel();
         this.drawEquityChart();
+        if (this.view.node_type === 'action') this.renderActions();
       }
     });
   }
@@ -199,8 +243,15 @@ export class Browser {
           `<div class="tag">${info.label}</div><div class="sub"></div>` +
           `<i class="lk-mark" aria-hidden="true" style="position:absolute;top:3px;right:4px;` +
           `width:6px;height:6px;border-radius:50%;display:none;z-index:4;pointer-events:none"></i>`;
-        cell.addEventListener('click', () => this.selectCell(i, j));
-        cell.addEventListener('mouseenter', () => {
+        // press = pick (or pin); keep the button down and move to pick several
+        cell.addEventListener('mousedown', e => {
+          if (e.button !== 0) return;
+          const was = this.lockSel.has(`${i},${j}`);
+          this.selectCell(i, j);
+          this.dragPick = this.canPickHands() ? { add: !was } : null;
+        });
+        cell.addEventListener('mouseenter', e => {
+          if (this.dragPick && (e.buttons & 1)) this.pickCell(i, j, this.dragPick.add);
           this.hoverCell = [i, j];
           this.renderHandsPanel(); // flips FILTERS/BLOCKERS to HANDS while hovering
           this.drawEquityChart();
@@ -241,6 +292,8 @@ export class Browser {
         this.focusCell(i, j);
       }
     });
+    m.style.userSelect = 'none'; // dragging over hands picks them, not their text
+    window.addEventListener('mouseup', () => { this.dragPick = null; });
     m.addEventListener('mouseleave', () => {
       this.hoverCell = null;
       this.renderHandsPanel(); // reverts to FILTERS/BLOCKERS when leaving the grid
@@ -284,15 +337,11 @@ export class Browser {
     const host = document.getElementById('view-browse');
     const top = host?.querySelector('.browse-top');
     if (host && top) {
-      this.pendingBar = document.createElement('div');
-      this.pendingBar.className = 'pending-locks';
-      this.pendingBar.setAttribute('role', 'status');
-      this.pendingBar.style.cssText =
-        'display:none;align-items:center;gap:10px;position:sticky;top:80px;z-index:40;' +
-        'margin:6px 0 2px;padding:5px 9px;font-size:11px;color:var(--ink);' +
-        'background:var(--accent-soft);border:1px solid var(--line2);' +
-        'border-left:3px solid var(--accent);border-radius:4px';
-      host.insertBefore(this.pendingBar, top);
+      // the list of locks: who, where, what — and what to do next
+      this.locksBar = document.createElement('div');
+      this.locksBar.className = 'locks-bar';
+      this.locksBar.style.display = 'none';
+      host.insertBefore(this.locksBar, top);
     }
     // A filter/blocker edit must survive the pointer passing over the grid:
     // keep the hover-flip off while the panel holds the pointer or the keyboard.
@@ -364,41 +413,221 @@ export class Browser {
   }
 
   /** Record a lock/fit edit: the displayed strategy is stale until the next
-   *  solve, and the bar keeps that reminder visible (a toast would vanish). */
+   *  solve, and the list of locks says so until one has run. */
   noteLockEdit() {
     this.pendingLockEdits += 1;
     if (this._pendingBase == null) {
       const gen = ++this._pendingGen;
       api.status().then(st => {
         if (gen === this._pendingGen && this._pendingBase == null) this._pendingBase = st.iteration;
-      }).catch(() => { /* no baseline: the bar is still true */ });
+      }).catch(() => { /* no baseline: the note is still true */ });
     }
     this.onLockEdit?.(); // app.js resyncs the server's trust readout
-    this.renderPendingBar();
+    this.renderLocksBar();
   }
 
-  renderPendingBar() {
-    if (!this.pendingBar) return;
-    const n = this.pendingLockEdits;
-    this.pendingBar.style.display = n ? 'flex' : 'none';
-    this.pendingBar.innerHTML = '';
-    if (!n) return;
-    const txt = document.createElement('span');
-    txt.textContent = `${n} lock edit${n === 1 ? '' : 's'} pending — RE-SOLVE / EXPLOIT`;
-    const off = document.createElement('button');
-    off.className = 'btn ghost xs';
-    off.textContent = '×';
-    off.setAttribute('aria-label', 'dismiss the pending-lock reminder');
-    off.style.marginLeft = 'auto';
-    off.addEventListener('click', () => {
-      this.pendingLockEdits = 0;
-      this._pendingBase = null;
-      this.renderPendingBar();
-    });
-    this.pendingBar.append(txt, off);
+  /** The player a "best reply" most likely means: the one nobody locked. With
+   *  both players locked (or neither), the one whose hands are showing. */
+  bestReplyPlayer() {
+    const locked = new Set();
+    for (const l of this.locksView?.locks || []) if (l.kind !== 'kept') locked.add(l.player);
+    (this.locksView?.profile || []).forEach((n, p) => { if (n) locked.add(p); });
+    return locked.size === 1 ? 1 - [...locked][0] : this.player;
   }
 
-  /** Clear the bar once a solve has finished past the edits' baseline. */
+  /** Show `p`'s best play against the locks as they stand (the EXPLOIT view). */
+  showBestReply(p) {
+    this.player = p;
+    this.mode = 'exploit';
+    this.syncSegs();
+    this.renderActions();
+    this.renderMatrix();
+    this.renderLegend();
+    this.renderHandsPanel();
+    this.drawEquityChart();
+  }
+
+  /** Remove every lock. One Undo brings them all back. */
+  async clearAllLocks() {
+    try {
+      const out = await api.locksClear();
+      this.setLockHistory(out.history);
+      this.lockCells.clear();
+      this.saveLockCells();
+      this.syncVillainLocked(out.history);
+      this.noteLockEdit();
+      toast('all locks cleared (Undo brings them back)');
+      this.renderVillainLocks();
+      await this.refresh();
+    } catch (e) { this.fail(e); }
+  }
+
+  /** Remove one lock from the list, wherever the grid is. */
+  async removeLock(l) {
+    try {
+      const out = await api.unlock(l.path);
+      this.setLockHistory(out.history);
+      this.forgetLockCells(l.label);
+      this.noteLockEdit();
+      toast('lock removed');
+      await this.refresh();
+    } catch (e) { this.fail(e); }
+  }
+
+  /** The list of locks above the grid: one chip per locked decision (who,
+   *  where, what), click to go there, x to remove. After a lock change it
+   *  also offers the two ways to see the answer. */
+  renderLocksBar() {
+    const bar = this.locksBar;
+    if (!bar) return;
+    const lv = this.locksView;
+    const labels = this.lockLabels || [];
+    const profile = lv?.profile || [0, 0];
+    const count = lv ? lv.locks.length + (profile[0] ? 1 : 0) + (profile[1] ? 1 : 0) : labels.length;
+    const pending = this.pendingLockEdits > 0;
+    const solve = this.solveInfo?.() || { label: 'RE-SOLVE', drift: false, running: false };
+    if (!this.view || (!count && !pending)) {
+      bar.style.display = 'none';
+      bar.innerHTML = '';
+      this._locksBarKey = null;
+      return;
+    }
+    // repaint only on a real change: this runs on every status poll, and a
+    // rebuilt bar would drop the tooltip or the focus the user has on it
+    const key = JSON.stringify([lv, lv ? null : labels, pending, solve, this.path, this.player,
+      this.villainLocked, [...this.lockCells].map(([at, cells]) => [at, cells.size])]);
+    if (key === this._locksBarKey) return;
+    this._locksBarKey = key;
+    bar.style.display = 'flex';
+    bar.innerHTML = '';
+    const head = document.createElement('span');
+    head.className = 'lb-head';
+    head.textContent = 'LOCKS';
+    bar.appendChild(head);
+
+    const here = JSON.stringify(this.path);
+    const chip = (text, tip, { current = false, go = null, remove = null, removeTip = '' } = {}) => {
+      const c = document.createElement('span');
+      c.className = 'lb-chip' + (current ? ' current' : '');
+      const main = document.createElement(go ? 'button' : 'span');
+      main.className = 'lb-go';
+      if (go) { main.type = 'button'; main.addEventListener('click', go); }
+      main.textContent = text;
+      main.dataset.tip = tip;
+      c.appendChild(main);
+      if (remove) {
+        const x = document.createElement('button');
+        x.type = 'button';
+        x.className = 'lb-x';
+        x.textContent = '×';
+        x.setAttribute('aria-label', `remove: ${text}`);
+        x.dataset.tip = removeTip;
+        x.addEventListener('click', remove);
+        c.appendChild(x);
+      }
+      bar.appendChild(c);
+    };
+    if (lv) {
+      for (const l of lv.locks) {
+        const who = this.posLabel(l.player);
+        const what = l.kind === 'kept' ? 'kept as solved' : lockMix(l.actions, l.freqs);
+        const cells = [...(this.lockCells.get(l.label) || [])]
+          .map(k => cellInfo(...k.split(',').map(Number)).label);
+        let tip = `${who}, ${lockWhere(l.line)}: ${what}.`;
+        if (cells.length) tip += ` You set ${handList(cells, 12)}; ${who}'s other hands play as they did then.`;
+        if (l.kind === 'kept') tip += ` Held the way the solve had it, because it leads to another of ${who}'s locks.`;
+        if (l.kind === 'fit') tip += ' The result of a "hardest to punish" lock.';
+        const isHere = l.path && JSON.stringify(l.path) === here;
+        tip += isHere ? ' You are looking at it.' : l.path ? ' Click to go to this decision.' : '';
+        const some = cells.length && l.kind === 'manual' ? `${cells.length} hand${cells.length === 1 ? '' : 's'} set · ` : '';
+        chip(`${who} · ${lockWhere(l.line)} · ${some}${what}`, tip, {
+          current: isHere,
+          go: l.path && !isHere ? () => this.navigate(l.path) : null,
+          remove: l.path ? () => this.removeLock(l) : null,
+          removeTip: 'Remove this lock. The other locks stay.',
+        });
+      }
+      profile.forEach((n, p) => {
+        if (!n) return;
+        const who = this.posLabel(p);
+        const v = this.preflop?.villains?.[p === 0 ? 'oop' : 'ip'];
+        const name = this.villainLocked === p && v?.name ? v.name : 'a player model';
+        chip(`${who} · every decision · plays like ${name}`,
+          `${n} of ${who}'s decisions are locked to the model's bet, fold and raise rates.`, {
+            remove: () => (v && this.villainLocked === p ? this.toggleVillainLock(p, v) : this.clearProfileLocks()),
+            removeTip: `Remove the player model from ${who}. Your own locks stay.`,
+          });
+      });
+    } else {
+      // an older server only names the locks: restart GTOpen for the full list
+      for (const l of labels) chip(l, 'Restart GTOpen to jump to a lock or remove it from here.');
+    }
+    if (!count) {
+      const none = document.createElement('span');
+      none.className = 'lb-note';
+      none.textContent = 'none';
+      bar.appendChild(none);
+    } else if (lv && count > 1) {
+      const all = document.createElement('button');
+      all.type = 'button';
+      all.className = 'btn ghost xs';
+      all.textContent = 'clear all';
+      all.dataset.tip = 'Remove every lock. One Undo brings them all back.';
+      all.addEventListener('click', () => this.clearAllLocks());
+      bar.appendChild(all);
+    }
+    if (!pending) return;
+    // the next step after a lock change, said once and close to the locks
+    const next = document.createElement('span');
+    next.className = 'lb-next';
+    const note = document.createElement('span');
+    note.className = 'lb-note';
+    note.textContent = count ? 'not in the solve yet' : 'locks changed since the solve';
+    const why = document.createElement('button');
+    why.type = 'button';
+    why.className = 'info-dot';
+    why.textContent = '?';
+    why.setAttribute('aria-label', 'What to do after changing a lock');
+    why.dataset.tip = 'The grid still shows the solve from before your last lock change. ' +
+      'BEST REPLY shows at once how a player should play against the locks (the EXPLOIT view). ' +
+      'RE-SOLVE solves again with the locks in place, so both players adjust.';
+    next.append(note, why);
+    const p = this.bestReplyPlayer();
+    const reply = document.createElement('button');
+    reply.type = 'button';
+    reply.className = 'btn sm';
+    reply.textContent = `${this.posLabel(p)}'S BEST REPLY`;
+    reply.dataset.tip = `Show ${this.posLabel(p)}'s best play against the locks, right away. Same as picking ${this.posLabel(p)} and EXPLOIT.`;
+    reply.addEventListener('click', () => this.showBestReply(p));
+    next.appendChild(reply);
+    if (!solve.running) {
+      const again = document.createElement('button');
+      again.type = 'button';
+      again.className = 'btn sm' + (solve.drift ? ' ghost' : '');
+      again.textContent = solve.label;
+      again.dataset.tip = solve.drift
+        ? 'Setup no longer matches the tree you locked, so solving builds a new tree and drops these locks. To keep them, put Setup back the way it was.'
+        : 'Solve again with the locks in place, so both players adjust around them.';
+      again.addEventListener('click', () => document.getElementById('btn-solve-top')?.click());
+      next.appendChild(again);
+    }
+    bar.appendChild(next);
+  }
+
+  /** Drop a player model's locks when this page does not know which model made them. */
+  async clearProfileLocks() {
+    try {
+      const out = await api.profileLocksClear();
+      this.setLockHistory(out.history);
+      this.syncVillainLocked(out.history);
+      this.noteLockEdit();
+      toast('player model removed');
+      this.renderVillainLocks();
+      await this.refresh();
+    } catch (e) { this.fail(e); }
+  }
+
+  /** Clear the note once a solve has finished past the edits' baseline. */
   clearPendingAfterSolve() {
     if (!this.pendingLockEdits || this._pendingBase == null) return;
     const base = this._pendingBase;
@@ -406,7 +635,7 @@ export class Browser {
       if (st.state === 'running' || st.iteration <= base) return;
       this.pendingLockEdits = 0;
       this._pendingBase = null;
-      this.renderPendingBar();
+      this.renderLocksBar();
     }).catch(() => {});
   }
 
@@ -464,16 +693,21 @@ export class Browser {
   }
 
   /** Compact lock state for the panel head: "range + 6 combos", "solved", … */
-  lockSummaryText(at) {
+  lockSummaryText(at, viewed = true) {
     const s = this.lockSummary(at);
     if (!s) {
-      if (!this.view?.locked) return '';
-      return this.lockHistory?.profile_players?.length ? 'profile' : 'locked';
+      // `view.locked` describes the node on screen, not an earlier one
+      if (!viewed || !this.view?.locked) return '';
+      return this.lockHistory?.profile_players?.length ? 'player model' : 'locked';
     }
-    const words = { range: 'range', solved: 'solved', fit: 'fit', profile: 'profile' };
+    const words = { range: 'whole range', solved: 'as solved', fit: 'whole range', profile: 'player model' };
     const base = words[s.kind] || 'locked';
-    if (s.kind === 'hands') return `${s.combos} combo${s.combos === 1 ? '' : 's'}`;
-    return s.combos ? `${base} + ${s.combos} combo${s.combos === 1 ? '' : 's'}` : base;
+    // hand classes this page set, when it remembers them; else the combo count
+    const cells = this.lockedCellsAt(at).size;
+    const some = cells ? `${cells} hand${cells === 1 ? '' : 's'}`
+      : `${s.combos} combo${s.combos === 1 ? '' : 's'}`;
+    if (s.kind === 'hands') return some;
+    return s.combos ? `${base} + ${some}` : base;
   }
 
   /** Cells a per-hand lock covers: remembered from this page's edits, plus
@@ -554,6 +788,7 @@ export class Browser {
     this.loadingNode = true;
     this.renderEmptyState();
     const locksP = api.locks().catch(() => this.lockLabels || []);
+    const listP = api.locksList().catch(() => null); // an older server has no list
     let view;
     try {
       view = await api.node(this.path);
@@ -563,6 +798,7 @@ export class Browser {
       this.fail(e, () => this.refresh());
       if (this.path.length) { this.path = []; this.line = []; this.lineHistory = null; return this.refresh(); }
       this.view = null;
+      this.renderLocksBar();
       if (this.els.matrix) this.els.matrix.style.opacity = '';
       if (this.els.pot) this.els.pot.textContent = '—';
       this.renderEmptyState();
@@ -572,6 +808,7 @@ export class Browser {
     this.loadingNode = false;
     this.view = view;
     this.lockLabels = await locksP; // which nodes hold a lock
+    this.locksView = await listP;
     this.pruneLockCells();
     if (gen !== this._refreshGen) return;
     // lock undo/redo labels: cheap, and kept off the critical path
@@ -609,6 +846,15 @@ export class Browser {
     this.pathLabels = (this.view.history || [])
       .slice(0, this.path.length)
       .map(h => h.kind === 'card' ? (h.card || '?') : (h.actions[h.chosen]?.label || '?'));
+    // hands picked for the lock box belong to one decision
+    const lockAt = this.lockNodeLabel();
+    if (lockAt !== this.lockSelAt) {
+      this.lockSel.clear();
+      this.lockSelAt = lockAt;
+      this.lockDraft = null;
+      this.lockScope = 'range';
+    }
+    this.renderLocksBar();
     this.renderHistory();
     this.renderVillainLocks();
     this.renderActions();
@@ -655,7 +901,10 @@ export class Browser {
     this.saveLockCells();
     this.pendingLockEdits = 0; // pending edits described the old session
     this._pendingBase = null;
-    this.renderPendingBar();
+    this.locksView = null;
+    this.lockSel.clear();
+    this.lockDraft = null;
+    this.renderLocksBar();
   }
 
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
@@ -702,9 +951,15 @@ export class Browser {
     // at depth = this.path.length. Viewing a node never truncates the line.
     const hist = this.lineHistory || this.view.history || [];
     const cursor = this.path.length;
-    // what the freeze option would still hold: only dim when it would lock
-    // something (freezeCount skips decisions that already carry a lock)
-    const freezing = this.freezeLine && this.freezeCount() > 0;
+    // every box that holds a lock shows a padlock: labels of the line so far
+    // name each box the way the server names its lock
+    const board = this.rootBoard();
+    const stepLabels = hist.map(h =>
+      h.kind === 'card' ? (h.card || '?') : h.kind === 'action' ? (h.actions[h.chosen]?.label || '?') : '?');
+    const lockAtStep = i => {
+      const before = stepLabels.slice(0, i);
+      return this.lockSummaryText(before.length ? `${board} ${before.join(' > ')}` : `${board} root`, false);
+    };
     const STREETS = ['FLOP', 'TURN', 'RIVER'];
 
     const seg = (depth, cls = '') => {
@@ -747,11 +1002,15 @@ export class Browser {
       const isCursor = i === cursor;
       if (h.kind === 'action') {
         const s = seg(i, isCursor ? 'current' : '');
-        // what the freeze option would hold: dim the earlier decisions it locks
-        if (freezing && i < cursor && this.view.node_type === 'action') {
-          s.style.opacity = '.45';
+        const hd = head(s, this.posLabel(h.player), fmt(h.stack), 'stack');
+        const locked = lockAtStep(i);
+        if (locked) {
+          const mark = document.createElement('i');
+          mark.className = 'hist-lock';
+          mark.textContent = '\u{1F512}';
+          mark.dataset.tip = `${this.posLabel(h.player)} is locked here (${locked}).`;
+          hd.firstChild.after(mark);
         }
-        head(s, this.posLabel(h.player), fmt(h.stack), 'stack');
         h.actions.forEach((a, k) => {
           const chip = document.createElement('button');
           chip.className = 'hist-chip' + (h.chosen === k ? ' taken' : '');
@@ -872,14 +1131,14 @@ export class Browser {
         tile.style.background = colors[k];
         tile.style.font = 'inherit';
         tile.style.textAlign = 'left';
-        tile.dataset.tip = `${a.label}: avg EV ${ev != null ? fmt(ev) : '—'}. Click to filter the grid to this action.`;
+        tile.dataset.tip = `${a.label}: average EV ${ev != null ? fmt(ev) : '—'}. Click to show only the hands that take it. The arrow goes to what happens after it.`;
         tile.innerHTML = `
           <div class="at-label">${a.label}</div>
           <div class="at-foot">
             <span class="at-pct">${(freq * 100).toFixed(1)}%</span>
             <span class="at-combos">${freqs[k].toFixed(1)}<small>combos</small></span>
           </div>` +
-          (sel ? `<span class="at-badge" aria-hidden="true" style="position:absolute;top:4px;right:5px;` +
+          (sel ? `<span class="at-badge" aria-hidden="true" style="position:absolute;top:4px;right:27px;` +
             `font:9px/1 var(--font-disp);letter-spacing:.08em;background:#fff;color:#111;` +
             `border-radius:2px;padding:2px 4px">filter</span>` : '');
         tile.addEventListener('click', () => {
@@ -888,6 +1147,22 @@ export class Browser {
           this.renderMatrix();
           this.renderLegend();
         });
+        // the tile filters; this arrow follows the action, like its name in the line above
+        const go = document.createElement('span');
+        go.className = 'at-go';
+        go.setAttribute('role', 'button');
+        go.tabIndex = 0;
+        go.textContent = '›';
+        go.setAttribute('aria-label', `go to what happens after ${a.label}`);
+        go.dataset.tip = `Go to what happens after ${shortAction(a.label)}.`;
+        const follow = e => {
+          e.stopPropagation();
+          e.preventDefault();
+          this.navigate([...this.path, { type: 'action', index: k }]);
+        };
+        go.addEventListener('click', follow);
+        go.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') follow(e); });
+        tile.appendChild(go);
         tiles.appendChild(tile);
       });
       el.appendChild(tiles);
@@ -947,40 +1222,98 @@ export class Browser {
     }
   }
 
+  /** True when a click in the grid picks hands for the lock box: the grid
+   *  shows the hands of the player whose decision this is. */
+  canPickHands() {
+    return !!this.view && this.view.node_type === 'action' && this.player === this.view.player;
+  }
+
+  /** The acting player's combos in a grid cell, as [{ name, hi }]. */
+  actorCombos(i, j) {
+    if (!this.view || this.view.node_type !== 'action') return [];
+    const idx = this.handIdx[this.view.player];
+    const out = [];
+    for (const [a, b] of cellCombos(cellInfo(i, j))) {
+      const hi = idx.get(comboIndex(a, b));
+      if (hi !== undefined) out.push({ name: cardToString(a) + cardToString(b), hi });
+    }
+    return out;
+  }
+
+  /** What the lock box would set. Null means the whole range. Otherwise the
+   *  hands picked in the grid, or the hands the filters show: { kind, cells,
+   *  names, combos, filtered }. With filters on, a lock only sets the combos
+   *  that match them, which is how one suit or one hand group gets locked. */
+  lockTarget() {
+    if (!this.canPickHands()) return null;
+    const p = this.view.player;
+    const filtered = this.filtersActive();
+    const keep = c => !filtered || this.handMatches(p, c.hi);
+    const gather = (kind, cellList) => {
+      const out = { kind, cells: [], names: [], combos: [], filtered };
+      for (const [i, j] of cellList) {
+        const cs = this.actorCombos(i, j).filter(keep);
+        if (!cs.length) continue;
+        out.cells.push([i, j]);
+        out.names.push(cellInfo(i, j).label);
+        out.combos.push(...cs);
+      }
+      return out;
+    };
+    if (this.lockSel.size) {
+      const picked = [...this.lockSel].map(k => k.split(',').map(Number))
+        .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      return gather('picked', picked);
+    }
+    if (filtered && this.lockScope === 'filtered') {
+      const all = [];
+      for (let i = 0; i < 13; i++) for (let j = 0; j < 13; j++) all.push([i, j]);
+      return gather('filtered', all);
+    }
+    return null;
+  }
+
+  /** The lock box. One editor for every kind of lock: with no hand picked the
+   *  numbers are for the whole range, with hands picked (or filters applied)
+   *  they are exact for those hands. */
   renderLockControls(el, colors) {
     const p = this.view.player;
+    const who = this.posLabel(p);
     const acts = this.view.actions;
     const hands = this.view.players[p].hands;
     const locked = this.view.locked;
     const label = this.lockNodeLabel();
     const summary = this.lockSummaryText(label);
-    if (this.lockMode !== 'hands') this.lockMode = 'range';
+    const target = this.lockTarget();
+    const filtersOn = this.canPickHands() && this.filtersActive();
 
-    // current reach-weighted aggregate frequency per action
-    let tot = 0;
-    const agg = acts.map(() => 0);
-    hands.forEach(h => {
-      if (!h.strategy) return;
-      tot += h.reach;
-      h.strategy.forEach((s, k) => agg[k] += s * h.reach);
-    });
-    const curFreq = agg.map(x => tot > 1e-9 ? x / tot : 0);
+    // how a set of hands plays now: weighted by how often each gets here, or
+    // evenly when none does (a hand that never arrives still has a play)
+    const mixOf = idxs => {
+      let tot = 0, n = 0;
+      const agg = acts.map(() => 0), flat = acts.map(() => 0);
+      for (const hi of idxs) {
+        const h = hands[hi];
+        if (!h?.strategy) continue;
+        n++;
+        tot += h.reach;
+        h.strategy.forEach((x, k) => { agg[k] += x * h.reach; flat[k] += x; });
+      }
+      if (tot > 1e-9) return { mix: agg.map(x => x / tot), reach: tot };
+      return { mix: n ? flat.map(x => x / n) : null, reach: 0 };
+    };
+    const whole = mixOf(hands.map((_, i) => i));
+    const cur = target ? mixOf(target.combos.map(c => c.hi)) : whole;
 
     const wrap = document.createElement('div');
     wrap.className = 'lock-panel';
     wrap.innerHTML = `
-      <div class="lock-head">NODE LOCKING <button type="button" class="info-dot" aria-label="How node locking works" data-tip="Pins this node's strategy until you unlock it. Covers all suit-equivalent runouts; re-locking replaces the previous lock.">?</button>${summary ? ` <span class="lock-badge" data-lock-summary>${summary}</span>` : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span>${locked ? '<button type="button" class="btn ghost xs lock-unlock" data-tip="clears this node\'s lock">unlock all</button>' : ''}</div>
-      <div class="lock-modes seg">
-        <button data-lm="range" class="${this.lockMode === 'range' ? 'active' : ''}"
-          data-tip="Model a whole-range read: 'folds 70% to this bet'. Each hand's mix is scaled proportionally, so the right hands do the extra folding or calling.">Overall %</button>
-        <button data-lm="hands" class="${this.lockMode === 'hands' ? 'active' : ''}"
-          data-tip="Set exact action frequencies for one hand class (click a cell to pin it); other hands keep their current strategy.">Per hand</button>
-      </div>
+      <div class="lock-head">NODE LOCKING <button type="button" class="info-dot" aria-label="How node locking works" data-tip="A lock fixes how ${who} plays at this decision until you remove it. Then EXPLOIT shows the other player's best reply at once, and RE-SOLVE lets both players adjust. On a turn or river, a lock also covers the runouts that differ only by suit.">?</button>${summary ? ` <span class="lock-badge" data-lock-summary data-tip="What is locked at this decision now.">${summary}</span>` : ''}${this.view.fit ? ' <span class="lock-badge">FITTING</span>' : ''}<span class="lock-history"></span>${locked ? '<button type="button" class="btn ghost xs lock-unlock" data-tip="Remove the lock at this decision. Locks elsewhere stay.">unlock this decision</button>' : ''}</div>
+      <div class="lk-for"></div>
       <div class="lock-body"></div>`;
     const body = wrap.querySelector('.lock-body');
+    const forEl = wrap.querySelector('.lk-for');
     this.paintLockHistory(wrap.querySelector('.lock-history'));
-    wrap.querySelectorAll('.lock-modes button').forEach(b =>
-      b.addEventListener('click', () => { this.lockMode = b.dataset.lm; this.renderActions(); }));
     wrap.querySelector('.lock-unlock')?.addEventListener('click', async () => {
       try {
         const out = await api.unlock(this.path);
@@ -992,86 +1325,186 @@ export class Browser {
       } catch (e) { this.fail(e); }
     });
 
-    // a per-action [ %] editor with a live total + normalize button
-    const freqEditor = (init) => {
+    // --- who and which hands the numbers below are for
+    const say = html => { const sp = document.createElement('span'); sp.innerHTML = html; forEl.appendChild(sp); return sp; };
+    const link = (text, tip, fn) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'btn ghost xs'; b.textContent = text; b.dataset.tip = tip;
+      b.addEventListener('click', fn);
+      forEl.appendChild(b);
+      return b;
+    };
+    if (target?.kind === 'picked') {
+      say(`How <b>${who}</b> plays <b>${handList(target.names) || 'the picked hands'}</b> here` +
+        (target.filtered ? ' <span class="dim">(only the combos your filters show)</span>' : ''));
+      link('whole range instead', 'Drop the picked hands. The numbers then apply to the whole range.', () => {
+        this.lockSel.clear();
+        this.lockDraft = null;
+        this.renderMatrix();
+        this.renderActions();
+      });
+    } else if (filtersOn) {
+      say(`How <b>${who}</b> plays here, for`);
+      const seg = document.createElement('div');
+      seg.className = 'seg lk-method';
+      for (const [key, name, tip] of [
+        ['range', 'the whole range', 'The numbers are for the whole range, whatever the filters show.'],
+        ['filtered', 'the hands your filters show', 'The numbers are exact for the hands the FILTERS tab leaves in the grid, such as every top pair or one suit. The other hands stay as they play now.'],
+      ]) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = name; b.dataset.tip = tip;
+        b.className = this.lockScope === key ? 'active' : '';
+        b.addEventListener('click', () => { this.lockScope = key; this.lockDraft = null; this.renderActions(); });
+        seg.appendChild(b);
+      }
+      forEl.appendChild(seg);
+    } else if (this.canPickHands()) {
+      say(`How <b>${who}</b> plays here, as a <b>whole range</b>. <span class="dim">Click hands in the grid to lock only those.</span>`);
+    } else {
+      say(`How <b>${who}</b> plays here, as a <b>whole range</b>. <span class="dim">The grid is showing ${this.posLabel(1 - p)}'s hands.</span>`);
+      link(`show ${who}'s hands`, `Show ${who}'s hands in the grid, so you can pick the ones to lock.`, () => {
+        this.player = p;
+        this.syncSegs(); this.renderActions(); this.renderMatrix(); this.renderLegend();
+        this.renderHandsPanel(); this.drawEquityChart();
+      });
+    }
+
+    // --- one [ %] box per action; what is typed stays until it is locked
+    const draft = this.lockDraft && this.lockDraft.at === label && this.lockDraft.vals.length === acts.length
+      ? this.lockDraft.vals : null;
+    const freqEditor = init => {
       const cont = document.createElement('div');
       cont.className = 'lk-actions';
       const inputs = [];
-      const pcts = pctShares(init); // integers summing to exactly 100
+      const pcts = init ? pctShares(init) : acts.map(() => 0); // integers summing to exactly 100
+      const sumRow = document.createElement('div');
+      sumRow.className = 'lk-sumrow';
+      const sumEl = document.createElement('span'); sumEl.className = 'lk-sum';
+      const update = () => {
+        const t = inputs.reduce((a, i) => a + (+i.value || 0), 0);
+        sumEl.textContent = `total ${Math.round(t)}%`;
+        sumEl.classList.toggle('bad', Math.abs(t - 100) > 0.5);
+      };
+      const typed = () => { this.lockDraft = { at: label, vals: inputs.map(i => i.value) }; update(); };
       acts.forEach((a, k) => {
         const row = document.createElement('label');
         row.className = 'lk-act';
         row.innerHTML = `<i class="lk-sw" style="background:${colors[k]}"></i><span class="lk-lab">${a.label}</span>`;
+        const always = document.createElement('button');
+        always.type = 'button'; always.className = 'btn ghost xs lk-always'; always.textContent = 'always';
+        always.dataset.tip = `Set ${shortAction(a.label)} to 100% and the rest to 0.`;
+        always.addEventListener('click', e => {
+          e.preventDefault();
+          inputs.forEach((inp, m) => { inp.value = m === k ? '100' : '0'; });
+          typed();
+        });
         const inp = document.createElement('input');
         inp.type = 'number'; inp.min = '0'; inp.max = '100'; inp.step = '1';
-        inp.value = `${pcts[k]}`;
+        inp.value = draft ? draft[k] : `${pcts[k]}`;
         inp.className = 'lk-pct';
+        inp.setAttribute('aria-label', `${a.label} %`);
         const unit = document.createElement('span'); unit.className = 'lk-unit'; unit.textContent = '%';
-        row.appendChild(inp); row.appendChild(unit);
+        row.append(always, inp, unit);
         cont.appendChild(row);
         inputs.push(inp);
       });
-      const sumRow = document.createElement('div');
-      sumRow.className = 'lk-sumrow';
-      const sumEl = document.createElement('span'); sumEl.className = 'lk-sum';
-      const norm = document.createElement('button'); norm.className = 'btn ghost xs'; norm.textContent = 'normalize';
-      const update = () => {
-        const s = inputs.reduce((a, i) => a + (+i.value || 0), 0);
-        sumEl.textContent = `total ${Math.round(s)}%`;
-        sumEl.classList.toggle('bad', Math.abs(s - 100) > 0.5);
-      };
+      const norm = document.createElement('button'); norm.type = 'button'; norm.className = 'btn ghost xs'; norm.textContent = 'make it 100%';
+      norm.dataset.tip = 'Scale the numbers so they add up to 100%.';
       norm.addEventListener('click', () => {
-        const s = inputs.reduce((a, i) => a + (+i.value || 0), 0);
-        if (s > 0) {
+        const t = inputs.reduce((a, i) => a + (+i.value || 0), 0);
+        if (t > 0) {
           const np = pctShares(inputs.map(i => +i.value || 0));
           inputs.forEach((inp, k) => { inp.value = `${np[k]}`; });
+          typed();
         }
-        update();
       });
-      inputs.forEach(i => i.addEventListener('input', update));
+      inputs.forEach(i => i.addEventListener('input', typed));
       update();
-      sumRow.appendChild(sumEl); sumRow.appendChild(norm);
+      sumRow.append(sumEl, norm);
+      if (draft && init) {
+        const back = document.createElement('button'); back.type = 'button'; back.className = 'btn ghost xs'; back.textContent = 'as played now';
+        back.dataset.tip = 'Put back how these hands play now.';
+        back.addEventListener('click', () => { this.lockDraft = null; this.renderActions(); });
+        sumRow.appendChild(back);
+      }
       return { cont, inputs, sumRow };
     };
+    const readFreqs = ed => {
+      const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
+      if (freqs.reduce((a, b) => a + b, 0) <= 0) { toast('set at least one action above 0%', true); return null; }
+      return freqs;
+    };
+    const done = () => { this.lockSel.clear(); this.lockDraft = null; this.refresh(); };
+    const foot = document.createElement('div'); foot.className = 'btn-row';
 
-    if (this.lockMode === 'range') {
-      if (tot <= 1e-9) {
-        // no reach: any prefill would be a uniform guess, not "the solution"
+    if (target) {
+      // exact numbers for the picked (or filtered) hands
+      if (!target.combos.length) {
         const help = document.createElement('div'); help.className = 'lk-help';
-        help.textContent = 'no hands reach this node';
-        const foot = document.createElement('div'); foot.className = 'btn-row';
-        this.appendLockFooter(foot, label);
-        body.append(help, foot);
-        el.appendChild(wrap);
-        return;
+        help.textContent = target.kind === 'picked'
+          ? 'Your filters hide every combo of the picked hands. Clear the filters or pick other hands.'
+          : `Your filters leave none of ${who}'s hands.`;
+        body.appendChild(help);
+      } else {
+        const ed = freqEditor(cur.mix);
+        const n = target.cells.length;
+        const what = target.kind === 'filtered' ? 'FILTERED HANDS'
+          : n === 1 ? target.names[0] : `${n} HANDS`;
+        const note = document.createElement('div'); note.className = 'lk-help';
+        note.textContent = `${target.combos.length} combo${target.combos.length === 1 ? '' : 's'}. ${who}'s other hands stay as they play now.`;
+        body.append(ed.cont, ed.sumRow, note);
+        const lock = document.createElement('button'); lock.type = 'button'; lock.className = 'btn lk-go';
+        lock.textContent = `LOCK ${what}`;
+        lock.dataset.tip = 'Make these hands play exactly these numbers at this decision.';
+        lock.addEventListener('click', async () => {
+          const freqs = readFreqs(ed);
+          if (!freqs) return;
+          const edits = target.combos.map(c => ({ combo: c.name, freqs }));
+          try {
+            const out = await this.lockHere({ kind: 'hands', edits }, label);
+            for (const c of target.cells) this.rememberLockedCell(c, label);
+            toast(`${target.kind === 'filtered' ? 'filtered hands' : handList(target.names, 4)} locked${frozenNote(out)}`);
+            done();
+          } catch (e) { this.fail(plainLockError(e)); }
+        });
+        foot.appendChild(lock);
       }
-      const help = document.createElement('div');
-      help.className = 'lk-help';
-      help.innerHTML = 'Set how often the <b>whole range</b> takes each action. ' +
-        'The pre-filled values are the current solution.';
-      const ed = freqEditor(curFreq);
-      body.append(help, ed.cont, ed.sumRow);
+    } else if (whole.reach <= 1e-9) {
+      // nothing arrives: there is no range to shift, only single hands to set
+      const help = document.createElement('div'); help.className = 'lk-help';
+      help.textContent = `None of ${who}'s hands gets here in the solve, so there is no range to shift. Pick hands in the grid to set them one by one.`;
+      body.appendChild(help);
+    } else {
+      const ed = freqEditor(whole.mix);
+      body.append(ed.cont, ed.sumRow);
       const fit = this.view.fit;
       if (fit) {
-        // a least-exploitable fit is steering this node in the solve
+        // a "hardest to punish" lock is steering this decision in the solve
         const st = document.createElement('div');
         st.className = 'lk-help lk-fit';
-        const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '\u2014';
-        st.innerHTML = '<b>Least-exploitable fit running.</b> ' + acts.map((a, k) =>
-          `${a.label} ${pct(fit.achieved[k])} \u2192 ${pct(fit.target[k])}`).join(' \u00b7 ') +
-          '. Locked when the solve ends; one undo removes it.';
+        const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '—';
+        st.innerHTML = '<b>Working towards your numbers.</b> ' + acts.map((a, k) =>
+          `${a.label} ${pct(fit.achieved[k])} → ${pct(fit.target[k])}`).join(' · ') +
+          '. Locked when the solve ends; one Undo removes it.';
         body.appendChild(st);
       }
+      // which hands move when the range is pushed onto the numbers
       const methods = [
-        ['rake', 'Scale', 'Scale every hand\u2019s mix by the same factor until the range hits your numbers. Hands that never take an action can\u2019t be scaled in.'],
-        ['quick', 'Least EV loss', 'Move the hands that lose the least EV by switching, given how both players play now. Instant, only this node changes, and a best response can still punish it.'],
-        ['full', 'Least exploitable', 'Find the play for the whole tree that hits your numbers while giving away the least to a best response. Starts a RE-SOLVE; the result is locked when it ends.'],
+        ['rake', 'every hand a little', 'Every hand shifts its mix by the same factor until the range hits your numbers. A hand that never takes an action still never takes it.'],
+        ['quick', 'the cheapest hands', 'The hands that lose the least by switching do the switching. Instant, but a perfect counter can still punish it.'],
+        ['full', 'hardest to punish', 'Finds the way to hit your numbers that gives the other player the least. It starts a re-solve and locks the result when the solve ends.'],
       ];
       if (!methods.some(m => m[0] === this.fitMethod)) {
         let saved = null;
         try { saved = localStorage.getItem('gtopen.fitMethod'); } catch { /* storage off */ }
-        this.fitMethod = methods.some(m => m[0] === saved) ? saved : 'rake';
+        // "hardest to punish" starts a solve, so it is never the remembered default
+        this.fitMethod = saved === 'quick' ? 'quick' : 'rake';
       }
+      const how = document.createElement('div');
+      how.className = 'lk-how';
+      const cap = document.createElement('span');
+      cap.className = 'dim';
+      cap.textContent = 'Which hands change:';
       const seg = document.createElement('div');
       seg.className = 'seg lk-method';
       for (const [key, name, tip] of methods) {
@@ -1083,97 +1516,67 @@ export class Browser {
         b.addEventListener('click', () => {
           this.fitMethod = key;
           try { localStorage.setItem('gtopen.fitMethod', key); } catch { /* storage off */ }
-          this.renderActions();
+          this.renderActions(); // the typed numbers are kept (lockDraft)
         });
         seg.appendChild(b);
       }
-      body.appendChild(seg);
-      const foot = document.createElement('div'); foot.className = 'btn-row';
-      const lock = document.createElement('button'); lock.className = 'btn';
-      lock.textContent = this.fitMethod === 'full' ? 'FIT + RE-SOLVE' : 'LOCK FREQUENCIES';
-      lock.dataset.tip = methods.find(m => m[0] === this.fitMethod)[2];
+      how.append(cap, seg);
+      body.appendChild(how);
+      const lock = document.createElement('button'); lock.type = 'button'; lock.className = 'btn lk-go';
+      lock.textContent = this.fitMethod === 'full' ? 'LOCK + RE-SOLVE' : 'LOCK WHOLE RANGE';
+      lock.dataset.tip = this.fitMethod === 'full'
+        ? 'Start a re-solve that steers the range onto your numbers and locks the result when it ends.'
+        : `Make ${who}'s range take each action this often at this decision.`;
       lock.addEventListener('click', async () => {
-        const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
-        if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
+        const freqs = readFreqs(ed);
+        if (!freqs) return;
         try {
           if (this.fitMethod === 'full') {
-            const out = await api.fit(this.path, freqs, label, this.freezeLine && this.freezeCount() > 0);
+            const out = await api.fit(this.path, freqs, label, this.keepArg());
             this.forgetLockCells(label); // a tree fit replaces per-hand marks
             this.setLockHistory(out.history); this.noteLockEdit();
-            toast(`least-exploitable fit set${frozenNote(out)} — solving; locks when the solve ends`);
+            toast(`solving towards your numbers${frozenNote(out)}; locked when the solve ends`);
             document.getElementById('btn-solve-top')?.click();
           } else {
             const out = await this.lockHere({ kind: this.fitMethod === 'quick' ? 'fit' : 'range', freqs }, label);
-            toast(`locked${frozenNote(out)}`);
+            toast(`whole range locked${frozenNote(out)}`);
           }
-          this.refresh();
+          done();
         } catch (e) { this.fail(e); }
       });
       foot.appendChild(lock);
       if (fit) {
-        const cancel = document.createElement('button'); cancel.className = 'btn ghost'; cancel.textContent = 'CANCEL FIT';
-        cancel.dataset.tip = 'Stop steering this node; nothing is locked.';
+        const cancel = document.createElement('button'); cancel.type = 'button'; cancel.className = 'btn ghost'; cancel.textContent = 'CANCEL';
+        cancel.dataset.tip = 'Stop steering this decision. Nothing is locked.';
         cancel.addEventListener('click', async () => {
-          try { await api.fitCancel(this.path); toast('fit cancelled'); this.refresh(); }
+          try { await api.fitCancel(this.path); toast('cancelled'); this.refresh(); }
           catch (e) { this.fail(e); }
         });
         foot.appendChild(cancel);
       }
-      this.appendLockFooter(foot, label);
-      body.appendChild(foot);
-    } else {
-      const sel = this.selectedCell;
-      const foot = document.createElement('div'); foot.className = 'btn-row';
-      if (!sel) {
-        const help = document.createElement('div'); help.className = 'lk-help';
-        help.textContent = 'Click a hand in the matrix to pin it, then set its exact frequencies here.';
-        body.appendChild(help);
-      } else {
-        const info = cellInfo(sel[0], sel[1]);
-        let ct = 0; const cagg = acts.map(() => 0); const combos = [];
-        for (const [a, b] of cellCombos(info)) {
-          const hi = this.handIdx[p].get(comboIndex(a, b));
-          if (hi === undefined) continue;
-          combos.push(cardToString(a) + cardToString(b));
-          const h = hands[hi];
-          if (h.strategy) { ct += h.reach; h.strategy.forEach((s, k) => cagg[k] += s * h.reach); }
-        }
-        if (!combos.length) {
-          body.innerHTML = `<div class="lk-help">${info.label} is not in ${this.posLabel(p)}'s range here.</div>`;
-        } else if (ct <= 1e-9) {
-          // combos exist but nothing reaches: a uniform 1/na prefill would be
-          // a fabricated "current solution", so refuse the edit instead
-          body.innerHTML = `<div class="lk-help">${info.label} — this hand no longer reaches this node.</div>`;
-        } else {
-          const cur = cagg.map(x => x / ct);
-          const help = document.createElement('div'); help.className = 'lk-help';
-          help.innerHTML = `Set exact frequencies for <b style="color:var(--ink)">${info.label}</b> (${combos.length} combo${combos.length > 1 ? 's' : ''}).`;
-          const ed = freqEditor(cur);
-          body.append(help, ed.cont, ed.sumRow);
-          const lock = document.createElement('button'); lock.className = 'btn'; lock.textContent = `LOCK ${info.label}`;
-          lock.addEventListener('click', async () => {
-            const freqs = ed.inputs.map(i => Math.max(0, +i.value || 0));
-            if (freqs.reduce((a, b) => a + b, 0) <= 0) return toast('set at least one action above 0%', true);
-            const edits = combos.map(c => ({ combo: c, freqs }));
-            try {
-              const out = await this.lockHere({ kind: 'hands', edits }, label);
-              this.rememberLockedCell(sel, label);
-              toast(`${info.label} locked${frozenNote(out)}`); this.refresh();
-            } catch (e) { this.fail(e); }
-          });
-          foot.appendChild(lock);
-        }
-      }
-      this.appendLockFooter(foot, label);
-      body.appendChild(foot);
     }
+    this.appendLockFooter(foot, label);
+    body.appendChild(foot);
     el.appendChild(wrap);
   }
 
-  /** Lock the current node with `mode`, freezing the earlier decisions on
+  /** What "also keep the earlier play on this line" sends: nothing when the
+   *  box is off or has nothing to keep, else the locked player's own earlier
+   *  decisions ('own'; every decision on the line against an older server). */
+  keepArg() {
+    if (!this.freezeLine || this.freezeCount() <= 0) return false;
+    return this.keepsOwnOnly() ? 'own' : 'all';
+  }
+
+  /** The server can keep only the locked player's earlier decisions. */
+  keepsOwnOnly() {
+    return (this.serverLevel ?? 0) >= 4;
+  }
+
+  /** Lock the current node with `mode`, keeping the earlier decisions on
    *  the line too when that option is on. Returns the server's reply. */
   async lockHere(mode, label) {
-    const out = await api.lock(this.path, mode, label, this.freezeLine && this.freezeCount() > 0);
+    const out = await api.lock(this.path, mode, label, this.keepArg());
     // a whole-range/solved lock recomputes every hand: drop per-cell marks
     if (mode.kind !== 'hands') this.forgetLockCells(label);
     this.setLockHistory(out.history); this.noteLockEdit();
@@ -1185,12 +1588,15 @@ export class Browser {
     return this.path.some(step => step.type === 'action');
   }
 
-  /** Earlier decisions a freeze-earlier lock would still freeze: action steps
-   *  on the line whose node (the prefix BEFORE the step, as freeze_line walks
-   *  it) carries no lock yet. */
+  /** Earlier decisions the "keep earlier play" box would still hold: action
+   *  steps on the line that carry no lock yet. Only the acting player's own
+   *  ones when the server can tell them apart (see keepsOwnOnly). */
   freezeCount() {
     if (!this.view || !this.pathLabels || !this.hasEarlierDecision()) return 0;
-    return freezeableAncestors(this.path, this.pathLabels, this.rootBoard(), d => !!this.lockSummary(d));
+    const own = this.keepsOwnOnly() && this.view.node_type === 'action';
+    const hist = this.view.history || [];
+    return freezeableAncestors(this.path, this.pathLabels, this.rootBoard(), d => !!this.lockSummary(d),
+      i => !own || hist[i]?.player === this.view.player);
   }
 
   setLockHistory(h) {
@@ -1206,7 +1612,7 @@ export class Browser {
     if (!el) return;
     const h = this.lockHistory || { undo: [], redo: [] };
     el.innerHTML = '';
-    for (const [dir, glyph, word, list] of [['undo', '\u21b6', 'Undo', h.undo], ['redo', '\u21b7', 'Redo', h.redo]]) {
+    for (const [dir, glyph, word, list] of [['undo', '↶', 'Undo', h.undo], ['redo', '↷', 'Redo', h.redo]]) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'btn ghost xs lock-step';
@@ -1259,31 +1665,40 @@ export class Browser {
     }
   }
 
-  /** Shared "lock as solved" + "freeze earlier" controls for the lock panel. */
+  /** Shared "lock as solved" + "keep earlier play" controls for the lock box. */
   appendLockFooter(foot, label) {
-    const freezeN = this.freezeCount();
-    if (freezeN > 0) {
+    const keepN = this.freezeCount();
+    if (keepN > 0) {
+      const who = this.posLabel(this.view.player);
+      const own = this.keepsOwnOnly();
       const line = document.createElement('label');
       line.className = 'chk lk-line';
-      line.dataset.tip = 'also freeze every earlier decision on this line';
+      line.dataset.tip = own
+        ? `Ticked: how ${who} got here stays the way the solve has it, so a re-solve cannot change ${who}'s earlier play to suit this lock. ${this.posLabel(1 - this.view.player)}'s earlier play stays free. Unticked: both may change.`
+        : 'Ticked: every earlier decision on this line stays the way the solve has it when you re-solve.';
       const box = document.createElement('input');
       box.type = 'checkbox';
       box.checked = !!this.freezeLine;
       box.addEventListener('change', () => {
         this.freezeLine = box.checked;
         try { localStorage.setItem('gtopen.freezeLine', box.checked ? '1' : '0'); } catch { /* storage off */ }
-        this.renderHistory(); // dim the ribbon segments a lock would freeze
       });
-      line.append(box, document.createTextNode(
-        ` freeze ${freezeN} earlier decision${freezeN === 1 ? '' : 's'}`));
+      line.append(box, document.createTextNode(own
+        ? ` also keep ${who}'s ${keepN === 1 ? 'earlier decision' : `${keepN} earlier decisions`} on this line as solved`
+        : ` also keep the ${keepN === 1 ? 'earlier decision' : `${keepN} earlier decisions`} on this line as solved`));
       foot.prepend(line);
     }
     const freeze = document.createElement('button');
+    freeze.type = 'button';
     freeze.className = 'btn ghost'; freeze.textContent = 'LOCK AS SOLVED';
-    freeze.dataset.tip = 'Freeze this node exactly as currently solved \u2014 it stops adapting while you experiment elsewhere. (LOCK FREQUENCIES pins your numbers; LOCK AS SOLVED pins the solver\u2019s.)';
+    freeze.dataset.tip = 'Lock this decision the way the solve plays it now, so it stays put while you change things elsewhere and re-solve.';
     freeze.addEventListener('click', async () => {
-      try { const out = await this.lockHere({ kind: 'freeze' }, label); toast(`locked as solved${frozenNote(out)}`); this.refresh(); }
-      catch (e) { this.fail(e); }
+      try {
+        const out = await this.lockHere({ kind: 'freeze' }, label);
+        toast(`locked as solved${frozenNote(out)}`);
+        this.lockSel.clear(); this.lockDraft = null;
+        this.refresh();
+      } catch (e) { this.fail(e); }
     });
     foot.appendChild(freeze);
   }
@@ -1528,11 +1943,27 @@ export class Browser {
   }
 
   /** Effective render mode: in EXPLOIT, strategy-style cells when the
-   *  exploiter acts here, else an EV-style heatmap of the per-hand gain. */
+   *  exploiter acts here, else each hand's gain from the best reply (grey
+   *  for none, green for some: never the red-to-green EV scale, where the
+   *  lowest value on the grid is red and "nothing to gain" read as a jam). */
   effMode() {
     if (this.mode !== 'exploit') return this.mode;
     return this.exploitReady() && this.exploit.player === this.exploit.exploiter
-      ? 'strategy' : 'ev';
+      ? 'strategy' : 'gain';
+  }
+
+  /** In EXPLOIT the grid shows every hand of the player's range, not only
+   *  the ones the solve brings here: the best reply with a hand does not
+   *  depend on how often that hand arrives, and the hand under review is
+   *  often one the solve plays another way earlier on. */
+  showsWholeRange(p) {
+    return this.mode === 'exploit' && this.exploitReady() && p === this.player;
+  }
+
+  /** How much of a hand counts at this node: how often it gets here, or in
+   *  EXPLOIT its weight in the starting range (see showsWholeRange). */
+  presence(h, p) {
+    return this.showsWholeRange(p) ? (h.weight ?? h.reach) : h.reach;
   }
 
   /** Hand array driving the matrix: the exploit overlay (strategy = BR
@@ -1574,6 +2005,7 @@ export class Browser {
         this.renderActions();
         this.renderMatrix();
         this.renderLegend();
+        this.renderHandsPanel(); // the combo tiles show the best reply too
       } else {
         stale = true; // user navigated / toggled player / left exploit mid-flight
       }
@@ -1593,16 +2025,18 @@ export class Browser {
     const b = document.createElement('div');
     b.className = 'exploit-banner';
     if (!this.exploitReady()) {
-      b.innerHTML = `<b>EXPLOIT</b> computing best response for ${this.posLabel(this.player)}…`;
+      b.innerHTML = `<b>EXPLOIT</b> working out ${this.posLabel(this.player)}'s best reply…`;
     } else {
       const e = this.exploit;
       const nm = this.posLabel(e.exploiter);
+      const other = this.posLabel(1 - e.exploiter);
+      const mine = e.locked && e.player === e.exploiter;
       b.innerHTML = e.avg_gain != null
-        ? `<b>EXPLOIT</b> ${nm} best response vs current strategy: EV ` +
-          `<b>${fmt(e.avg_br_ev)}</b> vs ${fmt(e.avg_cur_ev)} → gains ` +
-          `<b>${fmt(e.avg_gain)}</b> chips/hand (reach-weighted)` +
-          (e.locked ? ' · this node is locked: BR cannot deviate here' : '')
-        : `<b>EXPLOIT</b> ${nm} has no reachable hands at this node.`;
+        ? `<b>EXPLOIT</b> ${nm}'s best reply to ${other} as ${other} plays now: ` +
+          `<b>${fmt(e.avg_br_ev)}</b> a hand from here instead of ${fmt(e.avg_cur_ev)} ` +
+          `(<b>+${fmt(Math.max(0, e.avg_gain))}</b>).` +
+          (mine ? ` ${nm} is locked at this decision, so the lock is what shows.` : '')
+        : `<b>EXPLOIT</b> ${nm} never gets here in the solve, so there is no average to show.`;
     }
     el.appendChild(b);
   }
@@ -1617,8 +2051,9 @@ export class Browser {
       const hi = idx.get(comboIndex(a, b));
       if (hi === undefined || !this.handMatches(p, hi)) continue;
       const h = hands[hi];
-      if (h.reach <= 1e-9) continue;
-      out.push({ reach: h.reach, ev: h.ev, eq: h.eq, strat: h.strategy,
+      const reach = this.presence(h, p);
+      if (reach <= 1e-9) continue;
+      out.push({ reach, ev: h.ev, eq: h.eq, strat: h.strategy,
                  combo: cardToString(a) + cardToString(b) });
     }
     return out;
@@ -1629,7 +2064,7 @@ export class Browser {
     const combos = cellCombos(cellInfo(i, j));
     const hands = this.handsFor(p);
     const idx = this.handIdx[p];
-    let reach = 0, weight = 0, ev = 0, evW = 0, eq = 0, eqW = 0;
+    let reach = 0, weight = 0, ev = 0, evW = 0, eq = 0, eqW = 0, arrives = 0;
     let strat = null, na = 0;
     if (this.view.node_type === 'action' && this.view.player === p) {
       na = this.view.actions.length;
@@ -1645,18 +2080,20 @@ export class Browser {
       if (hi === undefined) continue;
       if (!this.handMatches(p, hi)) continue;
       const h = hands[hi];
+      const pr = this.presence(h, p);
       present++;
-      reach += h.reach;
+      reach += pr;
+      arrives += h.reach;
       weight += h.weight;
       // EV/EQ averages weight by reach x valid (card-removal-adjusted opponent
       // mass, when the server provides it) so aggregates respect blockers
-      const w = h.reach * (h.valid != null ? h.valid : 1);
+      const w = pr * (h.valid != null ? h.valid : 1);
       if (h.ev != null) { ev += h.ev * w; evW += w; }
       if (h.eq != null) { eq += h.eq * w; eqW += w; }
-      if (strat && h.strategy) h.strategy.forEach((s, k) => strat[k] += s * h.reach);
+      if (strat && h.strategy) h.strategy.forEach((s, k) => strat[k] += s * pr);
     }
     if (strat && reach > 1e-12) strat = strat.map(s => s / reach);
-    return { present, total: possible, reach, weight,
+    return { present, total: possible, reach, weight, arrives,
              ev: evW > 1e-12 ? ev / evW : null,
              eq: eqW > 1e-12 ? eq / eqW : null, strat };
   }
@@ -1683,6 +2120,7 @@ export class Browser {
     const lockState = this.lockSummary(lockAt);
     const lockedCells = this.lockedCellsAt(lockAt);
     const wholeLocked = !!lockState && lockState.kind !== 'hands';
+    const picking = this.canPickHands(); // the hands the lock box is for
     // Normalize fill height to the busiest hand class in the FULL (unfiltered)
     // range, so applying a filter just blanks non-matching cells instead of
     // rescaling the height of the ones that remain.
@@ -1698,13 +2136,15 @@ export class Browser {
           if (hi !== undefined) r += hands[hi].reach;
         }
         maxReach = Math.max(maxReach, r / Math.max(poss, 1));
+        // (real arrival, also in EXPLOIT: it tells the rare hands apart)
       }
     }
     // Fill mode: how much of a cell/column to fill for a given per-combo reach.
     //  normalized -> relative to the busiest hand class (best use of space)
     //  range      -> the hand's actual weight/reach out of a full combo
     //  full       -> fill completely (ignore reach), just show the colors
-    const fillMode = this.fillMode || 'normalized';
+    const wholeRange = this.showsWholeRange(p);
+    const fillMode = wholeRange ? 'full' : (this.fillMode || 'normalized');
     const fillH = (perCombo) => {
       if (perCombo <= 1e-9) return 0;
       if (fillMode === 'full') return 1;
@@ -1722,6 +2162,21 @@ export class Browser {
       });
     }
     const evSpan = evMax - evMin;
+    // EXPLOIT with the other player to act: grey = nothing to gain, greener =
+    // more to gain with the best reply from here on
+    let gainMax = 0;
+    if (effMode === 'gain') {
+      hands.forEach((h, hi) => {
+        // (not the faded hands: their gain is against a play the solve never settled)
+        if (this.presence(h, p) > 1e-9 && h.ev != null && h.reach >= 0.02 * maxReach
+            && this.handMatches(p, hi)) gainMax = Math.max(gainMax, h.ev);
+      });
+    }
+    const gainColor = g => {
+      if (!(g > 0.005) || gainMax <= 0.005) return '#3d3d3d';
+      const t = Math.min(1, g / gainMax);
+      return `hsl(130 ${(25 + 40 * t).toFixed(0)}% ${(30 + 16 * t).toFixed(0)}%)`;
+    };
     const evColor = (ev) => {
       const t = evSpan > 1e-6 ? Math.max(0, Math.min(1, (ev - evMin) / evSpan)) : 0.5;
       return `hsl(${(t * 130).toFixed(0)} 70% 50%)`;
@@ -1766,19 +2221,27 @@ export class Browser {
         fill.style.height = '0';
         cell.classList.toggle('empty', agg.present === 0 || agg.reach <= 1e-9);
         cell.classList.toggle('absent', agg.present === 0);
+        // EXPLOIT shows every hand; the ones the solve rarely brings here are faded
+        cell.classList.toggle('rare', wholeRange && agg.reach > 1e-9
+          && agg.arrives / Math.max(agg.total, 1) < 0.02 * maxReach);
         const isSelected = !!(this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j);
-        cell.classList.toggle('selected', isSelected);
-        cell.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+        const isPicked = picking && this.lockSel.has(`${i},${j}`);
+        cell.classList.toggle('selected', isSelected && !isPicked);
+        cell.classList.toggle('picked', isPicked);
+        cell.setAttribute('aria-pressed', isSelected || isPicked ? 'true' : 'false');
         // lock dot: bright on cells a per-hand lock names, dim on every cell a
         // whole-range/solved/fit lock constrains
         const mark = cell.querySelector('.lk-mark');
         if (mark) {
-          const hand = lockedCells.has(`${i},${j}`);
-          const whole = wholeLocked && agg.present > 0 && agg.reach > 1e-9;
+          // the lock is the acting player's: no marks on the other player's hands
+          const hand = picking && lockedCells.has(`${i},${j}`);
+          const whole = picking && wholeLocked && agg.present > 0 && agg.reach > 1e-9;
           mark.style.display = (hand || whole) ? 'block' : 'none';
           mark.style.background = hand ? '#f5c542' : 'rgba(245,197,66,.55)';
         }
         const intensity = fillH(agg.reach / Math.max(agg.total, 1));
+        // a faded hand has no solved play here to compare the best reply with
+        const faded = cell.classList.contains('rare');
         if (effMode === 'strategy' && agg.strat
             && this.actionFilter != null && this.actionFilter < agg.strat.length) {
           // Action filter: show ONLY the selected action, in its colour. The
@@ -1849,7 +2312,7 @@ export class Browser {
           bars.style.height = `${(intensity * 100).toFixed(1)}%`;
           // "Strategy + EV" display: the hand's EV in the cell corner
           sub.textContent =
-            agg.ev != null && agg.reach > 1e-9 ? fmt(agg.ev) : '';
+            agg.ev != null && agg.reach > 1e-9 && !faded ? fmt(agg.ev) : '';
         } else if (effMode === 'strategy') {
           // not the actor: range-weight presence as a vertical orange bar
           bars.style.opacity = 0;
@@ -1868,6 +2331,15 @@ export class Browser {
           } else {
             renderAgg(bars, fill, sub, agg.ev != null ? evColor(agg.ev) : null,
               intensity, evText, agg.reach);
+          }
+        } else if (effMode === 'gain') {
+          const gainText = agg.ev != null && agg.reach > 1e-9 && !faded ? fmt(agg.ev) : '';
+          if (this.comboRows) {
+            const list = this.cellCombosData(i, j, p).filter(c => c.ev != null);
+            renderCols(bars, fill, sub, list, c => gainColor(faded ? 0 : c.ev), gainText);
+          } else {
+            renderAgg(bars, fill, sub, agg.ev != null ? gainColor(faded ? 0 : agg.ev) : null,
+              intensity, gainText, agg.reach);
           }
         } else if (effMode === 'eq') {
           const eqText = agg.eq != null && agg.reach > 1e-9 ? `${Math.round(agg.eq * 100)}%` : '';
@@ -1891,10 +2363,22 @@ export class Browser {
     if (this.mode === 'exploit') {
       const key = document.createElement('span');
       key.className = 'key';
-      key.textContent = this.effMode() === 'strategy'
-        ? `EXPLOIT: cells = ${this.posLabel(this.player)}'s best-response actions (mostly pure); cell number = EV gain vs current strategy`
-        : `EXPLOIT: heatmap = ${this.posLabel(this.player)}'s per-hand EV gain from best-responding vs the current strategy`;
+      const me = this.posLabel(this.player), them = this.posLabel(1 - this.player);
+      if (this.effMode() === 'strategy') {
+        key.textContent = `EXPLOIT: ${me}'s best play with each hand against ${them} as ${them} plays now, locks included. ` +
+          'The number is what it gains over the solve\'s play.';
+      } else if (this.view.node_type === 'action') {
+        key.innerHTML = `EXPLOIT: <b style="color:var(--ink)">${them} acts here</b>, so there is no ${me} play to show. ` +
+          `Click one of ${me}'s boxes in the line above. The number is what ${me}'s best reply gains with that hand from here on ` +
+          '(grey = nothing).';
+      } else {
+        key.textContent = `EXPLOIT: what ${me}'s best reply gains with each hand from here on (grey = nothing).`;
+      }
       el.appendChild(key);
+      const rare = document.createElement('span');
+      rare.className = 'key dim';
+      rare.textContent = `Every hand in ${me}'s range is shown. Faded = the solve rarely gets here with it, so it has no gain to show.`;
+      el.appendChild(rare);
       return;
     }
     if (this.view.node_type === 'action' && this.mode === 'strategy'
@@ -1930,23 +2414,52 @@ export class Browser {
     } else {
       el.innerHTML = `<span class="key"><i style="background:#f28c26"></i>range weight</span>`;
     }
+    // the grid can show one player's hands at the other player's decision
+    if (this.view.node_type === 'action' && this.view.player !== this.player) {
+      const note = document.createElement('span');
+      note.className = 'key dim';
+      note.textContent = `These are ${this.posLabel(this.player)}'s hands. ${this.posLabel(this.view.player)} acts here.`;
+      el.appendChild(note);
+    }
   }
 
   // ----- hands panel (hover-driven) -----
 
+  /** A press on a hand. When the grid shows the hands of the player whose
+   *  decision this is, it adds the hand to (or takes it out of) the hands
+   *  the lock box is for; the last hand pressed stays pinned in HANDS.
+   *  Otherwise it only pins or unpins the hand. */
   selectCell(i, j) {
-    // click pins/unpins a cell so it stays after the mouse leaves the matrix
-    if (this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j) {
-      this.selectedCell = null;
+    const key = `${i},${j}`;
+    const same = !!this.selectedCell && this.selectedCell[0] === i && this.selectedCell[1] === j;
+    if (this.canPickHands() && this.actorCombos(i, j).length) {
+      if (this.lockSel.has(key)) {
+        this.lockSel.delete(key);
+        if (same) this.selectedCell = null;
+      } else {
+        this.lockSel.add(key);
+        this.selectedCell = [i, j];
+      }
     } else {
-      this.selectedCell = [i, j];
+      this.selectedCell = same ? null : [i, j];
     }
+    this.afterPick();
+  }
+
+  /** Dragging over the grid: add (or remove) the hand under the pointer. */
+  pickCell(i, j, add) {
+    const key = `${i},${j}`;
+    if (!this.canPickHands() || !this.actorCombos(i, j).length || this.lockSel.has(key) === add) return;
+    if (add) { this.lockSel.add(key); this.selectedCell = [i, j]; }
+    else this.lockSel.delete(key);
+    this.afterPick();
+  }
+
+  afterPick() {
     this.renderMatrix();
     this.renderHandsPanel();
-    // per-hand lock editor targets the pinned cell — refresh it on pin change
-    if (this.lockMode === 'hands' && this.view && this.view.node_type === 'action') {
-      this.renderActions();
-    }
+    // the lock box follows the picked hands
+    if (this.view && this.view.node_type === 'action') this.renderActions();
   }
 
   /** Villain-profile locks: when the spot came from the Preflop Lab with a
@@ -2088,7 +2601,7 @@ export class Browser {
     const pinned = this.selectedCell && !this.hoverCell;
     label.textContent = info.label + (pinned ? ' · pinned' : '');
 
-    const d = this.cellHandData(i, j);
+    const d = this.cellHandData(i, j, { reply: eff === 'hands' });
     if (!d.cand.length) {
       content.innerHTML = '<div class="dim" style="padding:10px 4px;font-size:11px">not in range</div>';
       return;
@@ -2107,10 +2620,13 @@ export class Browser {
   // node — e.g. a suit that folded out on an earlier street keeps a tiny
   // non-zero reach — are dimmed rather than hidden, judged relative to the
   // busiest combo of the SAME hand.
-  cellHandData(i, j) {
+  cellHandData(i, j, { reply = false } = {}) {
     const info = cellInfo(i, j);
     const p = this.player;
-    const hands = this.view.players[p].hands;
+    // `reply`: in EXPLOIT the combo tiles show the best reply the grid shows
+    // (they used to keep the old solve's mix under the best reply's numbers)
+    const best = reply && this.showsWholeRange(p);
+    const hands = best ? this.handsFor(p) : this.view.players[p].hands;
     const idx = this.handIdx[p];
     const cand = [];
     let cellMaxReach = 0;
@@ -2123,19 +2639,21 @@ export class Browser {
     }
     return {
       cand,
-      minReach: Math.max(1e-9, cellMaxReach * 0.01),
+      best,
+      // a best reply holds for a combo however rarely it gets here: no dimming
+      minReach: best ? 0 : Math.max(1e-9, cellMaxReach * 0.01),
       isActor: this.view.node_type === 'action' && this.view.player === p,
       colors: this.actionColors(),
       acts: this.view.actions || [],
     };
   }
 
-  handTilesHtml({ cand, minReach, isActor, colors, acts }, mini = false) {
+  handTilesHtml({ cand, best, minReach, isActor, colors, acts }, mini = false) {
     // Layout: 2 columns up to 4 combos, 3 columns beyond.
     const cols3 = cand.length > 4;
     const tiles = cand.map(([h, a, b, m]) =>
       this.handTile(h, a, b, isActor, colors, acts, cols3,
-        !m || h.reach < minReach, mini));
+        !m || h.reach < minReach, mini, best));
     return `<div class="hand-tiles${cols3 ? ' cols3' : ''}">${tiles.join('')}</div>`;
   }
 
@@ -2148,7 +2666,7 @@ export class Browser {
       this.handPop.id = 'hand-pop';
       document.body.appendChild(this.handPop);
     }
-    const d = this.cellHandData(i, j);
+    const d = this.cellHandData(i, j, { reply: true });
     if (!d.cand.length) return this.hideHandPop();
     const pop = this.handPop;
     pop.innerHTML = this.handTilesHtml(d, true);
@@ -2175,11 +2693,11 @@ export class Browser {
     return act.label.toUpperCase();
   }
 
-  handTile(h, a, b, isActor, colors, acts, compact, dimmed, mini = false) {
+  handTile(h, a, b, isActor, colors, acts, compact, dimmed, mini = false, best = false) {
     const name =
       `<span class="suit-${SUITS[suit(a)]}">${RANKS[rank(a)]}${SUIT_GLYPH[SUITS[suit(a)]]}</span>` +
       `<span class="suit-${SUITS[suit(b)]}">${RANKS[rank(b)]}${SUIT_GLYPH[SUITS[suit(b)]]}</span>`;
-    const meta = `${h.eq != null ? (h.eq * 100).toFixed(0) + '% eq · ' : ''}EV`;
+    const meta = best ? 'best reply · EV' : `${h.eq != null ? (h.eq * 100).toFixed(0) + '% eq · ' : ''}EV`;
     let body;
     if (isActor && h.strategy) {
       // Horizontal split, aggressive actions on the left;
@@ -2188,8 +2706,14 @@ export class Browser {
       const lines = [];
       for (let k = acts.length - 1; k >= 0; k--) {
         const f = h.strategy[k];
-        if (f < 0.001) continue;
         const ev = h.evs && h.evs[k] != null ? fmt(h.evs[k]) : '—';
+        if (f < 0.001) {
+          // a best reply is one action: still list what the others are worth
+          if (best) lines.push(
+            `<div class="hand-line" style="opacity:.6"><span class="hl-lab">${mini ? this.miniLabel(acts[k]) : acts[k].label}</span>` +
+            `<span class="hl-ev">${ev}</span></div>`);
+          continue;
+        }
         segs.push(
           `<div style="flex:${f.toFixed(4)};background:${colors[k]}" ` +
           `data-tip="${acts[k].label}: ${(f * 100).toFixed(1)}% of the time · EV ${ev}"></div>`);
@@ -2200,6 +2724,9 @@ export class Browser {
       body = `<div class="htb-h${compact ? ' short' : ''}">` +
         `<div class="hseg-row">${segs.join('')}</div>` +
         `<div class="hand-lines">${lines.join('')}</div></div>`;
+    } else if (best) {
+      body = `<div class="htb flat"><span>EV <b>${h.br_ev != null ? fmt(h.br_ev) : '—'}</b></span>` +
+        `<span>gain <b>${h.gain != null ? fmt(h.gain) : '—'}</b></span></div>`;
     } else {
       body = `<div class="htb flat"><span>EV <b>${h.ev != null ? fmt(h.ev) : '—'}</b></span>` +
         `<span>EQ <b>${h.eq != null ? (h.eq * 100).toFixed(1) + '%' : '—'}</b></span></div>`;
@@ -2343,6 +2870,8 @@ export class Browser {
   applyFilters() {
     this.renderMatrix();
     this.renderHandsPanel();
+    // the lock box can be for "the hands your filters show"
+    if (this.view?.node_type === 'action') this.renderActions();
   }
 
 
@@ -2685,6 +3214,15 @@ export class Browser {
     this.els.segMode.querySelectorAll('button').forEach(b =>
       b.classList.toggle('active', b.dataset.v === this.mode));
   }
+}
+
+/** A refused per-hand lock, in plain words. The solver treats suits a board
+ *  cannot tell apart as one, so two such combos must be locked alike. */
+export function plainLockError(e) {
+  const m = /([2-9TJQKA][cdhs][2-9TJQKA][cdhs]) is mirrored by ([2-9TJQKA][cdhs][2-9TJQKA][cdhs])/.exec(e?.message || '');
+  if (!m) return e;
+  return new Error(`On this board ${m[1]} and ${m[2]} are the same hand apart from the suits, so they have to be locked alike. ` +
+    'Include both, or drop the suit filter.');
 }
 
 /** Round non-negative shares to integer percentages summing to EXACTLY 100

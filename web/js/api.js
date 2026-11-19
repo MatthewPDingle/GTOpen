@@ -66,6 +66,12 @@ async function req(method, url, body) {
   }
 }
 
+/** The request fields for "also keep the earlier play on this line". */
+function keepLine(keep) {
+  if (keep === 'own') return { lock_path_own: true };
+  return { lock_path: !!keep };
+}
+
 export const api = {
   buildSpot: cfg => req('POST', '/api/spot', cfg),
   solve: opts => req('POST', '/api/solve', opts),
@@ -104,8 +110,11 @@ export const api = {
   pfSaveGame: name => req('POST', '/api/preflop/save', { name }),
   pfLoadGame: name => req('POST', '/api/preflop/load', { name }),
   pfSavedGames: () => req('GET', '/api/preflop/saves'),
-  lock: (path, mode, label, lock_path = false) => req('POST', '/api/lock', { path, mode, label, lock_path }),
-  fit: (path, freqs, label, lock_path = false) => req('POST', '/api/fit', { path, freqs, label, lock_path }),
+  // keep: false = lock this decision only; 'own' = also keep the locked
+  // player's earlier decisions on the line as solved; 'all' = both players'
+  // (all an older server knows)
+  lock: (path, mode, label, keep = false) => req('POST', '/api/lock', { path, mode, label, ...keepLine(keep) }),
+  fit: (path, freqs, label, keep = false) => req('POST', '/api/fit', { path, freqs, label, ...keepLine(keep) }),
   fitCancel: (path = null) => req('POST', '/api/fit/cancel', { path }),
   fits: () => req('GET', '/api/fits'),
   lockHistory: () => req('GET', '/api/locks/history'),
@@ -124,6 +133,8 @@ export const api = {
   reportsDelete: name => req('POST', '/api/reports/delete', { name }),
   unlock: path => req('POST', '/api/unlock', { path }),
   locks: () => req('GET', '/api/locks'),
+  locksList: () => req('GET', '/api/locks/list'),
+  locksClear: () => req('POST', '/api/locks/clear'),
   runouts: path => req('POST', '/api/runouts', { path }),
   parseRange: text => req('POST', '/api/range/parse', { text }),
   presets: () => req('GET', '/api/presets'),

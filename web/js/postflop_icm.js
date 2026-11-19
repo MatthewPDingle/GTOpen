@@ -4,6 +4,22 @@
 
 const parseNums = text => String(text || '').split(/[\s,]+/).filter(Boolean);
 
+/** The tournament payouts of a spot request as one canonical string, or null
+ *  when it has none. The page sends empty lists and its own field order; the
+ *  server's echo drops empty lists and orders fields its own way. Comparing
+ *  the raw JSON made every tournament spot look as if SETUP had changed, so
+ *  the solve button rebuilt the tree and threw the node locks away. */
+export function icmFingerprint(icm) {
+  if (!icm) return null;
+  const num = x => Math.round(+x * 1e3) / 1e3; // the form holds three decimals
+  return JSON.stringify([
+    (icm.payouts || []).map(num),
+    icm.behind ? icm.behind.map(num) : null,
+    (icm.others || []).map(num),
+    (icm.field_groups || []).map(g => [+g.count, num(g.stack)]),
+  ]);
+}
+
 /** "35, 22, 144x25" -> { others: [35, 22], field_groups: [{count: 144, stack: 25}] } */
 export function parseStacks(text) {
   const others = [];

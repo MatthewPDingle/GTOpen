@@ -2,6 +2,18 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.4.0 - 2026-11-19
+
+- Node locking in the Browse tab is reworked to take a few clicks. Nothing it could do before is gone.
+- One lock box. Click the hands you want in the grid (drag to pick several), type how often they take each action, and press LOCK. With no hand picked, the lock is for the whole range. What you typed stays when you change anything else in the box, and "always" sets an action to 100%. The three ways to shift a whole range now read "every hand a little", "the cheapest hands" and "hardest to punish".
+- Lock by hand group or by suit: set FILTERS (top pair, flush draws, one suit) and choose "the hands your filters show".
+- A list of locks sits above the grid. Each says who, where and what ("BTN · after Check · 9 hands set · 59% Check, 41% All-in"). Click one to go there, the x removes it, and "clear all" removes them all (Undo brings them back). After a lock, the list offers the two next steps: BEST REPLY shows at once how the other player should answer, and RE-SOLVE lets both players adjust.
+- EXPLOIT shows every hand in the player's range, also the hands the solve rarely takes down this line (they are faded). The small hand tiles show the best reply too, with what each action is worth. When it is the other player's turn the grid says so, and hands with nothing to gain are grey, not red.
+- Each action tile has an arrow that follows that action. A click on the rest of the tile still only filters the grid.
+- Fixed: on a spot with tournament payouts the app always said Setup had changed and offered only REBUILD & SOLVE, which threw the locks away. It now offers RE-SOLVE and keeps them. Building a new tree also says how many locks it would throw away.
+- Changed: "keep earlier decisions as solved" now holds only the locked player's own earlier decisions on the line, so the other player stays free to answer the lock. It used to hold both players'.
+- Close GTOpen and start it again after updating. Until then the header shows "restart GTOpen", the list of locks has no click-to-go or remove buttons, and "keep earlier decisions" works the old way.
+
 ## 1.3.1 - 2026-11-18
 
 - Preflop Lab now shows every size in bb. Raises used to read as multiples ("3-bet 2.75x") beside calls in bb ("Call 3 bb"). A raise now shows the total it goes to, and a re-raise adds its multiple in brackets: "Raise 4 bb", "3-bet 11 bb (2.75x)", "Call 3 bb". A call still shows what you add.
