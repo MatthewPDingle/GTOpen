@@ -229,7 +229,11 @@ tournaments, so they are a shape reference, not the same game as a GTOpen solve.
 `/api/spot` (build; refuses over-budget trees), `/api/solve`, `/api/status`,
 `/api/node` (per-hand strategy/EV/EQ; `valid` = blocker-adjusted opponent mass —
 weight range aggregates by reach×valid or EV_OOP+EV_IP≠pot), `/api/exploit`
-(best response), `/api/lock` (node locking), `/api/save`|`load`, `/api/runouts`,
+(best response), `/api/lock` (node locking; `lock_path_own: true` also keeps the
+locked player's own earlier decisions on the line as solved, `lock_path: true`
+keeps both players'), GET `/api/locks/list` (every lock with its path, player,
+actions and reach-weighted frequencies; the Browse tab's list of locks) and
+POST `/api/locks/clear` (one undoable edit), `/api/save`|`load`, `/api/runouts`,
 `/api/reports/*` (batch flop reports; `/api/reports/lines {name, line}` reads a
 finished report at any node — `a<i>` per action, `c` per any-card step). The
 web UI at :3737 drives all of it. `/api/stop` returns when the solve has ended;

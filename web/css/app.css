@@ -340,6 +340,10 @@ textarea {
 }
 .cell:hover { outline: 1px solid var(--accent); z-index: 2; }
 .cell.selected { outline: 2px solid var(--accent); z-index: 3; }
+/* hands picked for the lock box, in the lock colour */
+.cell.picked { outline: 2px solid #f5c542; z-index: 3; }
+/* EXPLOIT shows every hand: the ones the solve rarely brings here are faded */
+.cell.rare .bars, .cell.rare .fill { opacity: .42 !important; }
 
 .cell .fill {
   position: absolute; left: 0; right: 0; bottom: 0;
@@ -534,7 +538,11 @@ textarea {
 .hist-chip.taken { background: #3c3c3c; color: #fff; }
 .hist-cards { display: flex; gap: 3px; align-items: center; flex: 1; }
 
-.browse-modes { display: flex; gap: 10px; }
+.browse-modes { display: flex; gap: 10px; align-items: center; }
+.seg-cap {
+  font-family: var(--font-disp); font-size: 10px; font-weight: 700;
+  letter-spacing: .14em; color: var(--ink-dim); margin-right: -4px;
+}
 .seg { display: flex; border: 1px solid var(--line2); border-radius: 4px; overflow: hidden; }
 .seg button {
   font-family: var(--font-disp); font-weight: 700; font-size: 11px; letter-spacing: .1em;
@@ -929,7 +937,9 @@ textarea {
 #hand-pop .hand-tile .hth { font-size: 10px; padding: 2px 5px; }
 #hand-pop .hand-tile .hth .meta { font-size: 8px; letter-spacing: .03em; }
 #hand-pop .htb-h, #hand-pop .htb-h.short { height: auto; }
-#hand-pop .hand-lines { position: static; padding: 1px 4px 2px; }
+/* in the flow (it gives the tile its height) yet positioned, so the labels
+   paint over the colour bar and not under it */
+#hand-pop .hand-lines { position: relative; left: auto; right: auto; bottom: auto; padding: 1px 4px 2px; }
 #hand-pop .hand-line, #hand-pop .htb-h.short .hand-line { font-size: 10px; line-height: 1.2; }
 #hand-pop .htb.flat { height: 30px; font-size: 10px; padding: 0 7px; }
 
@@ -1050,6 +1060,45 @@ textarea {
   padding: 4px 0; border-radius: 2px;
 }
 
+/* the list of locks above the Browse grid */
+.locks-bar {
+  align-items: center; gap: 6px; flex-wrap: wrap;
+  position: sticky; top: 80px; z-index: 40;
+  margin: 6px 0 2px; padding: 5px 9px; font-size: 11px; color: var(--ink);
+  background: var(--panel); border: 1px solid var(--line2);
+  border-left: 3px solid #f5c542; border-radius: 4px;
+}
+.lb-head {
+  font-family: var(--font-disp); font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; color: var(--ink-dim); margin-right: 4px;
+}
+.lb-chip {
+  display: inline-flex; align-items: stretch; overflow: hidden;
+  border: 1px solid var(--line2); border-radius: 3px; background: var(--bg2);
+}
+.lb-chip.current { border-color: var(--accent); }
+.lb-go {
+  font-family: var(--font-data); font-size: 11px; color: var(--ink);
+  background: none; border: none; padding: 3px 7px; text-align: left;
+}
+button.lb-go { cursor: pointer; }
+button.lb-go:hover { background: var(--panel2); }
+.lb-x {
+  background: none; border: none; border-left: 1px solid var(--line2);
+  color: var(--ink-dim); padding: 0 7px; cursor: pointer; font-size: 13px; line-height: 1;
+}
+.lb-x:hover { color: var(--red); background: var(--panel2); }
+.lb-note { color: var(--ink-dim); }
+.lb-next { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; }
+.hist-lock { font-style: normal; font-size: 9px; margin-left: 4px; }
+/* the arrow on an action tile: follow the action instead of filtering by it */
+.at-go {
+  position: absolute; top: 4px; right: 4px; width: 18px; height: 18px;
+  border-radius: 3px; background: rgba(0,0,0,.3); color: #fff;
+  font-size: 15px; line-height: 16px; text-align: center;
+}
+.at-go:hover, .at-go:focus-visible { background: rgba(0,0,0,.6); outline: 1px solid #fff; }
+
 /* node-lock panel */
 .lock-panel { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); }
 .lock-head {
@@ -1068,7 +1117,15 @@ textarea {
   flex-basis: 100%; display: flex; align-items: center; gap: 6px;
   font-size: 11px; color: var(--ink-dim); margin-bottom: 2px; cursor: pointer;
 }
-.lock-modes { width: max-content; margin-bottom: 9px; }
+.lk-for {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 12px; line-height: 1.4; color: var(--ink-dim); margin-bottom: 8px;
+}
+.lk-for b { color: var(--ink); }
+.lk-for .lk-method, .lk-how .lk-method { margin: 0; }
+.lk-how { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; margin: 4px 0 8px; }
+.lk-always { padding: 2px 6px; }
+.lk-go { min-width: 150px; }
 .lk-help { font-size: 11px; color: var(--ink-faint); line-height: 1.45; margin-bottom: 8px; }
 .lk-fit { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 7px; }
 .lk-method { width: max-content; margin: 8px 0; }

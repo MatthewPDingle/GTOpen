@@ -4255,6 +4255,11 @@ struct LockRequest {
     /// line, so a re-solve can't shift the play leading up to this lock.
     #[serde(default)]
     lock_path: bool,
+    /// Like `lock_path`, but only the earlier decisions of the player being
+    /// locked: how that player gets here stays as solved, the other player's
+    /// earlier play stays free to answer the lock. Wins over `lock_path`.
+    #[serde(default)]
+    lock_path_own: bool,
 }
 
 /// The session's postflop solver and its lock generation counter.
@@ -4297,7 +4302,13 @@ async fn lock_node(
         let mut s = lock_unpoisoned(&solver);
         let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
         let frozen = s.record_lock_edit(|s| {
-            let frozen = s.lock_node_on_line(&req.path, req.mode.clone(), at.clone(), req.lock_path)?;
+            let frozen = if req.lock_path_own {
+                // the target first: a refused lock leaves nothing frozen
+                s.lock_node(&req.path, req.mode.clone(), at.clone())?;
+                s.freeze_own_line(&req.path, &at)?
+            } else {
+                s.lock_node_on_line(&req.path, req.mode.clone(), at.clone(), req.lock_path)?
+            };
             Ok((frozen, lock_edit_label(&req.mode, &at, frozen)))
         })?;
         Ok::<_, String>((frozen, s.lock_history()))
@@ -4321,6 +4332,9 @@ struct FitRequest {
     /// Also freeze every unlocked earlier decision on the line first.
     #[serde(default)]
     lock_path: bool,
+    /// Like `lock_path`, but only the fitted player's own earlier decisions.
+    #[serde(default)]
+    lock_path_own: bool,
 }
 
 /// Start a least-exploitable (full) fit at a node. The next solve steers the
@@ -4336,7 +4350,13 @@ async fn start_fit(
         let at = if req.label.is_empty() { s.path_description(&req.path)? } else { req.label.clone() };
         let fit_label = format!("{at} (least exploitable)");
         let frozen = s.record_lock_edit(|s| {
-            let frozen = if req.lock_path { s.freeze_line(&req.path, &fit_label)? } else { 0 };
+            let frozen = if req.lock_path_own {
+                s.freeze_own_line(&req.path, &fit_label)?
+            } else if req.lock_path {
+                s.freeze_line(&req.path, &fit_label)?
+            } else {
+                0
+            };
             s.add_fit(&req.path, &req.freqs, fit_label.clone())?;
             let line = match frozen {
                 0 => String::new(),
@@ -4449,6 +4469,35 @@ async fn lock_undo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json
 
 async fn lock_redo(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
     lock_history_step(state, false).await
+}
+
+/// Every lock with its place in the tree and what it makes the range do:
+/// the list of locks the Browse tab shows.
+async fn list_locks_detail(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<solver::LocksView>, ApiError> {
+    let (solver, _) = session_solver(&state)?;
+    let view = tokio::task::spawn_blocking(move || lock_unpoisoned(&solver).locks_view())
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(view))
+}
+
+/// Remove every lock (and running fit) as one undoable edit.
+async fn clear_locks(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = session_solver(&state)?;
+    let (removed, fits, history) = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        let removed = s.record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string())))?;
+        Ok::<_, String>((removed, s.fits_view(), s.lock_history()))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    state.status.lock().unwrap().fits = fits;
+    clear_trust_readout(&state);
+    Ok(Json(serde_json::json!({"ok": true, "removed": removed, "history": history})))
 }
 
 async fn list_locks(
@@ -4952,6 +5001,8 @@ async fn main() {
         .route("/api/fit/cancel", post(cancel_fit))
         .route("/api/fits", get(list_fits))
         .route("/api/locks", get(list_locks))
+        .route("/api/locks/list", get(list_locks_detail))
+        .route("/api/locks/clear", post(clear_locks))
         .route("/api/locks/history", get(lock_history))
         .route("/api/locks/undo", post(lock_undo))
         .route("/api/locks/redo", post(lock_redo))
@@ -5345,6 +5396,64 @@ mod allin_threshold_tests {
         let (_, response) = post_json(app.clone(), "/api/locks/redo", serde_json::json!(null)).await;
         assert_eq!(json(&response)["label"], "Unlock · Ks7h2d3c4s root");
         assert_eq!(locks(), 1);
+    }
+
+    #[tokio::test]
+    async fn the_lock_list_and_clear_all_work_over_http() {
+        let state = Arc::new(AppState::default());
+        let app = Router::new()
+            .route("/api/spot", post(build_spot))
+            .route("/api/lock", post(lock_node))
+            .route("/api/locks/list", get(list_locks_detail))
+            .route("/api/locks/clear", post(clear_locks))
+            .route("/api/locks/undo", post(lock_undo))
+            .with_state(state.clone());
+        let mut body: serde_json::Value = serde_json::from_str(BASE).unwrap();
+        body["board"] = serde_json::json!("Ks7h2d3c4s");
+        let (status, response) = post_json(app.clone(), "/api/spot", body).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        let json = |s: &str| serde_json::from_str::<serde_json::Value>(s).unwrap();
+        let list = || async {
+            let response = app.clone().oneshot(Request::get("/api/locks/list").body(Body::empty()).unwrap())
+                .await.unwrap();
+            assert_eq!(response.status(), StatusCode::OK);
+            let body = to_bytes(response.into_body(), usize::MAX).await.unwrap();
+            serde_json::from_slice::<serde_json::Value>(&body).unwrap()
+        };
+        assert_eq!(list().await["locks"].as_array().unwrap().len(), 0);
+
+        // OOP checks, IP bets, OOP's answer: lock it and keep OOP's own earlier
+        // decision (the check). IP's bet between them stays free.
+        let at = serde_json::json!([{"type": "action", "index": 0}, {"type": "action", "index": 1}]);
+        let lock = serde_json::json!({"path": at, "mode": {"kind": "freeze"}, "lock_path_own": true});
+        let (status, response) = post_json(app.clone(), "/api/lock", lock).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        assert_eq!(json(&response)["frozen"], 1, "only OOP's check, not IP's bet");
+        let view = list().await;
+        let locks = view["locks"].as_array().unwrap();
+        assert_eq!(locks.len(), 2, "{view}");
+        // tree order: the root first
+        assert_eq!(locks[0]["path"], serde_json::json!([]));
+        assert_eq!(locks[0]["player"], 0);
+        assert_eq!(locks[0]["kind"], "kept");
+        assert_eq!(locks[0]["line"].as_array().unwrap().len(), 0);
+        assert_eq!(locks[1]["path"], at);
+        assert_eq!(locks[1]["player"], 0);
+        assert_eq!(locks[1]["kind"], "manual");
+        assert_eq!(locks[1]["line"].as_array().unwrap().len(), 2);
+        assert_eq!(locks[1]["line"][0], "Check");
+        assert_eq!(locks[1]["actions"].as_array().unwrap().len(), locks[1]["freqs"].as_array().unwrap().len());
+        assert_eq!(view["profile"], serde_json::json!([0, 0]));
+
+        // clear all is one edit: one undo brings both locks back
+        let (status, response) = post_json(app.clone(), "/api/locks/clear", serde_json::json!(null)).await;
+        assert_eq!(status, StatusCode::OK, "{response}");
+        assert_eq!(json(&response)["removed"], 2);
+        assert_eq!(json(&response)["history"]["undo"][0], "Clear all locks");
+        assert_eq!(list().await["locks"].as_array().unwrap().len(), 0);
+        let (_, response) = post_json(app.clone(), "/api/locks/undo", serde_json::json!(null)).await;
+        assert_eq!(json(&response)["label"], "Clear all locks");
+        assert_eq!(list().await["locks"].as_array().unwrap().len(), 2);
     }
 
     #[tokio::test]

@@ -258,16 +258,17 @@
     <h1 class="sr-only">Browse</h1>
     <div id="history-wrap">
       <button id="hist-left" class="hist-nav hidden" aria-label="scroll history left">‹</button>
-      <div id="history-bar" tabindex="0" data-tip="Each panel is a decision point. Click any action to jump to that line, including roads not taken, or click a turn/river card to change the runout. Scroll with the arrows, wheel, or drag."></div>
+      <div id="history-bar" tabindex="0" data-tip="Each box is one decision, and the name on it is the player who acts there. Click an action to go down that line, including ones not taken, or a turn or river card to change it. A padlock marks a locked decision. Scroll with the arrows, wheel, or drag."></div>
       <button id="hist-right" class="hist-nav hidden" aria-label="scroll history right">›</button>
     </div>
     <div class="browse-top">
       <div class="browse-modes">
+        <span class="seg-cap" data-tip="Whose hands the grid shows. It switches to the player to act each time you move along the line above.">HANDS OF</span>
         <div class="seg" id="seg-player">
-          <button data-v="0" class="active" data-tip="Auto-switches to whoever is to act when you navigate.">OOP</button><button data-v="1" data-tip="Auto-switches to whoever is to act when you navigate.">IP</button>
+          <button data-v="0" class="active" data-tip="Whose hands the grid shows. It switches to the player to act each time you move along the line above.">OOP</button><button data-v="1" data-tip="Whose hands the grid shows. It switches to the player to act each time you move along the line above.">IP</button>
         </div>
         <div class="seg" id="seg-mode">
-          <button data-v="strategy" class="active" data-tip="Cells split into action colors by frequency; brightness = how much of the hand reaches this node.">STRAT</button><button data-v="ev" data-tip="EV in chips, pot-share: capturing the whole pot = pot, a fold = 0. Colors are relative to the displayed hands (red = lowest here, green = highest), not win/lose. Bar height = how much of the hand reaches this node.">EV</button><button data-v="eq" data-tip="Equity at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="Best response for the selected player against the opponent's current strategy, including node locks. Numbers = each hand's EV gain over the current strategy. Lock villain to a pool tendency, then read off what beats it.">EXPLOIT</button>
+          <button data-v="strategy" class="active" data-tip="Cells split into action colors by frequency; brightness = how much of the hand reaches this node.">STRAT</button><button data-v="ev" data-tip="EV in chips, pot-share: capturing the whole pot = pot, a fold = 0. Colors are relative to the displayed hands (red = lowest here, green = highest), not win/lose. Bar height = how much of the hand reaches this node.">EV</button><button data-v="eq" data-tip="Equity at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.">EQ</button><button data-v="exploit" data-tip="The best play for the player whose hands are showing, against the other player as that player plays now, locks included. It needs no solve. Lock how someone plays, then read here what beats it. The number is what each hand gains.">EXPLOIT</button>
         </div>
         <div class="view-menu-wrap">
           <button id="view-menu-btn" class="view-menu-btn" data-tip="Vertical = per-combo columns; horizontal = combined bar.">▦ display ▾</button>

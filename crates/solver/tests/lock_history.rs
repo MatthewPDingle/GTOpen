@@ -235,3 +235,98 @@ fn profile_compiles_are_undoable_and_reported_per_player() {
     solver.undo_lock_edit().unwrap();
     assert_eq!(solver.lock_history().profile_players, vec![1]);
 }
+
+/// Turn spot with a three-decision line on the turn and a river behind it:
+/// OOP checks or bets, IP checks or bets, OOP folds or calls.
+fn turn() -> Solver {
+    let spot = Spot::new(SpotConfig {
+        board: "Ks7d2c5h".to_string(),
+        range_oop: "AA,KQs,76s".to_string(),
+        range_ip: "QQ,AKo,98s".to_string(),
+        tree: TreeConfig {
+            starting_pot: 100.0,
+            effective_stack: 300.0,
+            oop: [sizing("", ""), sizing("50", ""), sizing("50", "")],
+            ip: [sizing("", ""), sizing("50", ""), sizing("50", "")],
+            ..Default::default()
+        },
+    })
+    .unwrap();
+    let mut s = Solver::new(Arc::new(spot));
+    for _ in 0..20 {
+        s.iterate();
+    }
+    s
+}
+
+#[test]
+fn the_lock_list_says_where_each_lock_is_and_what_it_does() {
+    let mut s = turn();
+    let check = PathStep::Action { index: 0 };
+    let bet = PathStep::Action { index: 1 };
+    // IP after a check, then OOP facing IP's bet, then OOP's first river
+    // decision after the turn checks through and a river card
+    let ip_node = vec![check.clone()];
+    let oop_vs_bet = vec![check.clone(), bet.clone()];
+    let river = vec![check.clone(), check.clone(), PathStep::Card { card: "9s".into() }];
+    lock(&mut s, &ip_node, LockMode::Range { freqs: vec![0.25, 0.75] }, false);
+    lock(&mut s, &oop_vs_bet, LockMode::Freeze, false);
+    lock(&mut s, &river, LockMode::Range { freqs: vec![1.0, 0.0] }, false);
+
+    let view = s.locks_view();
+    assert_eq!(view.profile, [0, 0]);
+    assert_eq!(view.locks.len(), 3);
+    for l in &view.locks {
+        // every traced path leads back to the node that holds the lock
+        let path = l.path.as_ref().expect("path traced");
+        let idx = s.walk_path(path).unwrap().node_idx;
+        assert!(s.locks.contains_key(&idx), "{:?}", l.line);
+        assert_eq!(l.kind, "manual");
+        assert_eq!(l.actions.len(), l.freqs.len());
+        assert!((l.freqs.iter().sum::<f32>() - 1.0).abs() < 1e-4, "{:?}", l.freqs);
+    }
+    let ip = view.locks.iter().find(|l| l.line == ["Check"]).expect("IP's lock after the check");
+    assert_eq!(ip.player, 1);
+    assert!((ip.freqs[1] - 0.75).abs() < 0.02, "IP bets 75% of the time: {:?}", ip.freqs);
+    let deep = view.locks.iter().find(|l| l.line.len() == 3).expect("the river lock");
+    assert_eq!(deep.line[..2], ["Check", "Check"]);
+    assert_eq!((deep.player, deep.street), (0, 2));
+    assert!(deep.freqs[0] > 0.999, "OOP always checks the river: {:?}", deep.freqs);
+
+    // clearing everything is one edit, and one undo brings all three back
+    let before = s.locks.clone();
+    let n = s.record_lock_edit(|s| Ok((s.clear_all_locks(), "Clear all locks".to_string()))).unwrap();
+    assert_eq!(n, 3);
+    assert!(s.locks.is_empty() && s.locks_view().locks.is_empty());
+    s.undo_lock_edit().unwrap();
+    assert_eq!(s.locks, before);
+}
+
+#[test]
+fn freezing_the_own_line_leaves_the_other_player_free() {
+    let mut s = turn();
+    let check = PathStep::Action { index: 0 };
+    let bet = PathStep::Action { index: 1 };
+    // OOP facing IP's bet after checking: the line holds OOP's check (own)
+    // and IP's bet (the other player's)
+    let path = vec![check.clone(), bet.clone()];
+    let label = s.path_description(&path).unwrap();
+    let frozen = s
+        .record_lock_edit(|s| {
+            s.lock_node(&path, LockMode::Range { freqs: vec![0.5, 0.5] }, label.clone())?;
+            let n = s.freeze_own_line(&path, &label)?;
+            Ok((n, "Lock".to_string()))
+        })
+        .unwrap();
+    assert_eq!(frozen, 1, "only OOP's own check is kept as solved");
+    assert!(s.locks.contains_key(&0), "the root is OOP's decision");
+    let ip_node = node_idx(&s, &[check.clone()]);
+    assert!(!s.locks.contains_key(&ip_node), "IP's decision stays free to answer the lock");
+    let kept = s.locks_view().locks.into_iter().find(|l| l.line.is_empty()).unwrap();
+    assert_eq!(kept.kind, "kept");
+
+    // the old all-players freeze still takes both
+    let mut s = turn();
+    let frozen = lock(&mut s, &path, LockMode::Range { freqs: vec![0.5, 0.5] }, true);
+    assert_eq!(frozen, 2);
+}

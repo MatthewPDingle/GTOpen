@@ -17,7 +17,7 @@
 use crate::cards::card_to_string;
 use crate::cfr::Solver;
 use crate::query::{LockMode, PathStep, PROFILE_LABEL};
-use crate::tree::KIND_ACTION;
+use crate::tree::{KIND_ACTION, KIND_CHANCE, SENTINEL};
 use serde::Serialize;
 use std::collections::HashMap;
 
@@ -77,6 +77,39 @@ pub struct LockHistoryView {
     pub profile_players: Vec<usize>,
     /// Locked nodes in total (manual and profile).
     pub locked_nodes: usize,
+}
+
+/// One locked decision, for the UI's list of locks.
+#[derive(Debug, Clone, Serialize)]
+pub struct LockView {
+    /// Path to the locked node (the branch the solver visits, so a turn or
+    /// river card may be the suit-equivalent of the one the user browsed).
+    /// None when it could not be traced; the lock is still listed.
+    pub path: Option<Vec<PathStep>>,
+    /// The label the lock was stored with.
+    pub label: String,
+    /// The actions taken to get there ("Check", "Bet 4.25 (50%)", a card).
+    pub line: Vec<String>,
+    /// 0 = OOP, 1 = IP: whose decision it is.
+    pub player: u8,
+    pub street: u8,
+    /// "manual": set by the user. "kept": frozen as solved because it leads
+    /// to another lock. "fit": the result of a least-exploitable fit.
+    pub kind: &'static str,
+    /// Action labels at the node.
+    pub actions: Vec<String>,
+    /// How often the locked range takes each action, weighted by how often
+    /// each hand gets there now (by range weight when no hand does).
+    pub freqs: Vec<f32>,
+}
+
+/// GET /api/locks/list.
+#[derive(Debug, Clone, Serialize)]
+pub struct LocksView {
+    /// Every lock that is not part of a player profile, in tree order.
+    pub locks: Vec<LockView>,
+    /// Decisions locked by a player profile, for [OOP, IP].
+    pub profile: [usize; 2],
 }
 
 fn value_bytes(v: &LockValue) -> usize {
@@ -242,6 +275,124 @@ impl Solver {
         }
     }
 
+    /// The path from the root to node `target`. Nodes are numbered parent
+    /// first, then each child's whole subtree in turn, so the way down is
+    /// always the child with the largest index not above the target.
+    fn path_to_node(&self, target: u32) -> Option<Vec<PathStep>> {
+        let tree = &self.spot.tree;
+        let mut idx = 0u32;
+        let mut path = Vec::new();
+        while idx != target {
+            let node = tree.nodes.get(idx as usize)?;
+            let slots = match node.kind {
+                KIND_ACTION => node.num_children as usize,
+                KIND_CHANCE => 52,
+                _ => return None,
+            };
+            let (slot, child) = (0..slots)
+                .map(|k| (k, tree.children[node.children_start as usize + k]))
+                .filter(|&(_, c)| c != SENTINEL && c <= target)
+                .max_by_key(|&(_, c)| c)?;
+            path.push(if node.kind == KIND_ACTION {
+                PathStep::Action { index: slot }
+            } else {
+                PathStep::Card { card: card_to_string(slot as u8) }
+            });
+            idx = child;
+        }
+        Some(path)
+    }
+
+    /// Every lock, described for the UI: where it is, whose decision, and how
+    /// often the locked range takes each action. Profile locks can number in
+    /// the hundreds, so they are only counted.
+    pub fn locks_view(&self) -> LocksView {
+        let spot = &*self.spot;
+        let mut profile = [0usize; 2];
+        let mut idxs: Vec<u32> = Vec::new();
+        for &idx in self.locks.keys() {
+            let node = &spot.tree.nodes[idx as usize];
+            if self.lock_labels.get(&idx).is_some_and(|l| l.starts_with(PROFILE_LABEL)) {
+                profile[(node.player as usize).min(1)] += 1;
+            } else {
+                idxs.push(idx);
+            }
+        }
+        idxs.sort_unstable();
+        let locks = idxs
+            .into_iter()
+            .map(|idx| {
+                let node = &spot.tree.nodes[idx as usize];
+                let p = (node.player as usize).min(1);
+                let na = node.num_children as usize;
+                let nh = spot.hands[p].len();
+                let sigma = &self.locks[&idx];
+                let label = self.lock_labels.get(&idx).cloned().unwrap_or_default();
+                let path = self.path_to_node(idx);
+                let walk = path.as_ref().and_then(|p| self.walk_path(p).ok());
+                let mut line = Vec::new();
+                if let Some(path) = &path {
+                    let mut at = 0u32;
+                    for step in path {
+                        let n = &spot.tree.nodes[at as usize];
+                        let slot = match step {
+                            PathStep::Action { index } => {
+                                line.push(
+                                    self.action_views(at).get(*index).map(|a| a.label.clone()).unwrap_or_default(),
+                                );
+                                *index
+                            }
+                            PathStep::Card { card } => {
+                                line.push(card.clone());
+                                crate::cards::card_from_str(card).unwrap_or(0) as usize
+                            }
+                        };
+                        at = spot.tree.children[n.children_start as usize + slot];
+                    }
+                }
+                // weight each hand by how often it gets here; when none does
+                // (a line nobody takes), by its weight in the starting range
+                let reach = walk.as_ref().map(|w| &w.reach[p]);
+                let by_reach = reach.is_some_and(|r| r.iter().map(|&x| x as f64).sum::<f64>() > 1e-9);
+                let mut freqs = vec![0f64; na];
+                let mut total = 0f64;
+                for i in 0..nh {
+                    let w = if by_reach { reach.unwrap()[i] } else { spot.weights[p][i] } as f64;
+                    total += w;
+                    for (a, f) in freqs.iter_mut().enumerate() {
+                        *f += w * sigma[a * nh + i] as f64;
+                    }
+                }
+                let kind = if label.contains(" (frozen on the line to ") {
+                    "kept"
+                } else if label.ends_with(" (least exploitable)") {
+                    "fit"
+                } else {
+                    "manual"
+                };
+                LockView {
+                    path,
+                    label,
+                    line,
+                    player: p as u8,
+                    street: node.street,
+                    kind,
+                    actions: self.action_views(idx).into_iter().map(|a| a.label).collect(),
+                    freqs: freqs.iter().map(|&f| if total > 0.0 { (f / total) as f32 } else { 0.0 }).collect(),
+                }
+            })
+            .collect();
+        LocksView { locks, profile }
+    }
+
+    /// Remove every lock and running fit. Returns how many locks went. Call
+    /// inside `record_lock_edit` to make it one undoable edit.
+    pub fn clear_all_locks(&mut self) -> usize {
+        let n = self.locks.len();
+        self.clear_locks();
+        n
+    }
+
     /// Readable description of a path, in the style the UI labels locks
     /// with: the flop, then each action label or dealt card ("Ks7d2c Check >
     /// Bet 3.3 (33%)"); "<flop> root" for the empty path.
@@ -296,6 +447,22 @@ impl Solver {
     /// are kept. Returns how many decisions were frozen. Call inside
     /// `record_lock_edit` to make it part of one undoable edit.
     pub fn freeze_line(&mut self, path: &[PathStep], label: &str) -> Result<usize, String> {
+        self.freeze_line_of(path, label, None)
+    }
+
+    /// Like `freeze_line`, but only the decisions of the player who acts at
+    /// `path`: how that player gets to the lock stays as solved, while the
+    /// other player's earlier play is left free to answer it.
+    pub fn freeze_own_line(&mut self, path: &[PathStep], label: &str) -> Result<usize, String> {
+        let walk = self.walk_path(&self.canonical_path(path))?;
+        let node = &self.spot.tree.nodes[walk.node_idx as usize];
+        if node.kind != KIND_ACTION {
+            return Err("only action nodes can be locked".to_string());
+        }
+        self.freeze_line_of(path, label, Some(node.player))
+    }
+
+    fn freeze_line_of(&mut self, path: &[PathStep], label: &str, only: Option<u8>) -> Result<usize, String> {
         let mut frozen = 0;
         for (i, step) in path.iter().enumerate() {
             if !matches!(step, PathStep::Action { .. }) {
@@ -305,6 +472,9 @@ impl Solver {
             let walk = self.walk_path(&self.canonical_path(prefix))?;
             debug_assert_eq!(self.spot.tree.nodes[walk.node_idx as usize].kind, KIND_ACTION);
             if self.locks.contains_key(&walk.node_idx) {
+                continue;
+            }
+            if only.is_some_and(|p| self.spot.tree.nodes[walk.node_idx as usize].player != p) {
                 continue;
             }
             let desc = self.path_description(prefix)?;

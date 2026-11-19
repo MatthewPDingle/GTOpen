@@ -11,7 +11,7 @@ import { initReports } from './reports.js';
 import { initBrowseBestSize } from './best_size.js';
 import { initTrust } from './trust.js';
 import { allinThresholdPercent, allinThresholdRequest } from './threshold.js';
-import { createPostflopIcm } from './postflop_icm.js';
+import { createPostflopIcm, icmFingerprint } from './postflop_icm.js';
 import { initPixelGrids } from './pixel_grid.js';
 import { initVersion } from './version.js';
 
@@ -409,7 +409,7 @@ function spotFingerprint(req) {
     num(allinThresholdPercent(req.allin_threshold)),
     !!req.add_allin, +req.max_raises,
     sizes(req.oop), sizes(req.ip),
-    req.icm ? JSON.stringify(req.icm) : null,
+    icmFingerprint(req.icm),
   ]);
 }
 
@@ -466,6 +466,7 @@ function refreshSession() {
   renderStrip();
   syncRunState();
   syncSolveActions();
+  state.onSessionRefresh?.(); // Browse's list of locks names the solve button
 }
 
 // The strip describes the LOADED spot; while SETUP drifts it keeps showing
@@ -700,23 +701,23 @@ async function buildTree() {
   if (!cfg.range_ip) { reportError(new Error('IP range is empty')); return false; }
   // a running solve is destroyed by the session swap (the server stops it
   // once the new spot validates) — never do that unprompted
+  // node locks live only in the session: a new tree throws them away, saved
+  // solve or not, so every discard question names them. Editing a field never
+  // raises a modal on its own (the drift notice carries it).
+  const locks = state.built ? await api.locks().catch(() => []) : [];
+  const lockNote = locks.length
+    ? ` It also throws away your ${locks.length} locked decision${locks.length > 1 ? 's' : ''}.` : '';
   if (state.running &&
-      !confirm('A solve is RUNNING — building a new tree stops and discards it. Continue?')) {
+      !confirm(`A solve is RUNNING. Building a new tree stops and discards it.${lockNote} Continue?`)) {
     return false;
   }
   if (state.solved && !state.saved &&
-      !confirm('The current solve has not been saved — building a new tree discards it. Continue?')) {
+      !confirm(`The current solve has not been saved. Building a new tree discards it.${lockNote} Continue?`)) {
     return false;
   }
-  // node locks live only in the session, so a saved solve can still lose
-  // irreversible work to a rebuild. Ask only for that case; editing a field
-  // never raises a modal on its own (the drift notice carries it).
-  if (state.solved && state.saved && state.built) {
-    const locks = await api.locks().catch(() => []);
-    if (locks.length && !confirm(
-      `The current solve has ${locks.length} node lock${locks.length > 1 ? 's' : ''} — rebuilding discards them. Continue?`)) {
-      return false;
-    }
+  if (locks.length && !state.running && !(state.solved && !state.saved) && !confirm(
+    `Building a new tree throws away your ${locks.length} locked decision${locks.length > 1 ? 's' : ''}. Continue?`)) {
+    return false;
   }
   $('btn-build').disabled = true;
   $('btn-build').textContent = 'BUILDING…';
@@ -1110,6 +1111,14 @@ const browser = new Browser({
 }, { onError: reportError });
 // expose for console debugging / tooling
 window.browser = browser;
+// the list of locks offers the solve button by its current name, and says so
+// when that button would rebuild the tree (and drop the locks)
+browser.solveInfo = () => ({
+  label: $('btn-solve-top').textContent,
+  drift: !!state.drift,
+  running: !!state.running,
+});
+state.onSessionRefresh = () => browser.renderLocksBar();
 // Trust the read: the exploit dial under a villain profile lock
 const trustDial = initTrust($('trust-panel'), {
   toast,
@@ -1161,6 +1170,7 @@ $('seg-mode').querySelectorAll('button').forEach(b =>
     // renderActions too: the EXPLOIT banner lives in the actions panel and
     // must appear/disappear with the mode
     browser.syncSegs(); browser.renderActions(); browser.renderMatrix(); browser.renderLegend();
+    browser.renderHandsPanel(); // the combo tiles follow EXPLOIT
   }));
 
 // cell-display menu: fill mode (Normalized/Range/Full) + orientation (Vertical/Horizontal)
