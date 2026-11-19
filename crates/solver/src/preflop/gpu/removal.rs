@@ -17,10 +17,13 @@ pub(super) struct RemovalGpu {
 }
 
 /// Heads-up pot-share terminals without side pots, the ones the CPU prices
-/// with the opponent's range conditioned on the hero's cards.
-fn heads_up_terminals(s: &PreflopSolver) -> Vec<u32> {
+/// with the opponent's range conditioned on the hero's cards. Learned flop
+/// leaves are left out: the correction goes on their plain share
+/// (`PreflopSolver::leaf_priced`).
+pub(super) fn heads_up_terminals(s: &PreflopSolver) -> Vec<u32> {
     s.nodes.iter().enumerate()
-        .filter(|(_, nd)| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty())
+        .filter(|(i, nd)| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty()
+            && !s.leaf_priced(*i))
         .map(|(i, _)| i as u32)
         .collect()
 }

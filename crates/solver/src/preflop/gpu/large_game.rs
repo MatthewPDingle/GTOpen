@@ -84,7 +84,7 @@ impl Lists {
         }
         Ok(Self {
             terms: pick(&|nd| nd.kind != KIND_ACTION),
-            hu: pick(&|nd| nd.kind == KIND_POT_SHARE && nd.live.count_ones() == 2 && nd.side_pots.is_empty()),
+            hu: super::removal::heads_up_terminals(s),
             leaf,
             mw: pick(&|nd| coupled_terminal(s, nd)),
         })
@@ -606,7 +606,9 @@ pub fn large_need_of(cfg: &super::super::PreflopConfig, est: &super::super::Tree
     let eq_blocks = n.min(2.0 * hu);
     words += 1.01 * n + eq_blocks + (eq_blocks + 2.0 * hu);
     if cfg.card_removal {
-        words += part * 13.0 + channels * nc * nc + hu.max(1.0);
+        // the blockers' list of heads-up terminals leaves the learned leaves out
+        let learned = if cfg.realization == "leafnet" { g.leaf_terminals as f64 } else { 0.0 };
+        words += part * 13.0 + channels * nc * nc + (hu - learned).max(1.0);
     }
     if cfg.realization == "leafnet" {
         words += g.leaf_terminals as f64 * (3.0 + 2.0 * nc);
