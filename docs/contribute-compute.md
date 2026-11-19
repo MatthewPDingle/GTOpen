@@ -12,8 +12,7 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 
 [Contributors](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md) ·
 [Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
-the count and the graph update as soon as uploads are validated. The graph
-has one coloured band per contributor.
+the count and the graph update as soon as uploads are validated.
 
 **Status: first checkpoint passed (2026-11-09), collecting toward 300,000 examples.**
 At 57,400 examples a first net was trained and scored on 56 held-out jobs it
