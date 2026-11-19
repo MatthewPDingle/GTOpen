@@ -23,6 +23,11 @@ they are taken only from the logins in config.json's real_contributors, checked
 for plausibility, and a sample is re-solved like any other upload
 (--real-max-vram keeps the biggest trees off a shared GPU).
 
+What pooled jobs are drawn from is a published "game mix" (tools/datagen/mixes.json
+on the master branch). solve-cli reads that list itself while checking, so a new
+mix needs no update or restart here. --publish-situations puts a situation list
+(from `solve-cli datagen situations`) into the dataset for a mix to draw from.
+
 Needs a build of solve-cli (GPU build recommended) and, except with --local,
 `hf auth login` with write access to the dataset.
 """
@@ -45,6 +50,9 @@ PATH_RE = re.compile(r"^data/([A-Za-z0-9_-]+)/job-(\d+)\.jsonl\.gz$")
 REAL_PATH_RE = re.compile(r"^real/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)\.jsonl\.gz$")
 REAL_FORMAT = "gtopen-real-range"
 BLOCK = 1 << 24
+MIX_SHIFT = 44  # a job number of generator v5 on: its game mix above this bit, a number of the block below
+EXIT_LATER = 3  # solve-cli datagen verify: this machine cannot check the file right now
+SITUATIONS_NAME_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 
 
 def load_config():
@@ -82,6 +90,8 @@ def cuda_env():
         for d in (os.path.expanduser("~/.local/cuda-nvrtc/nvidia/cuda_nvrtc/lib"), "/usr/local/cuda/lib64"):
             if os.path.isdir(d):
                 env["LD_LIBRARY_PATH"] = d + os.pathsep + env.get("LD_LIBRARY_PATH", "")
+    # where solve-cli remembers the published game mixes, wherever this script is started from
+    env.setdefault("GTOPEN_MIX_DIR", os.path.join(ROOT, "datagen_out", ".mix"))
     return env
 
 
@@ -96,6 +106,10 @@ def verify_file(cli, path, sample, max_vram=None):
         cmd += ["--max-vram", str(max_vram)]
     proc = subprocess.run(cmd, capture_output=True, text=True, env=cuda_env())
     lines = [l for l in proc.stdout.splitlines() if l.startswith("{")]
+    if proc.returncode == EXIT_LATER:
+        # nothing wrong with the upload: its game mix could not be read here (no network, or a mix that
+        # needs a newer build). Nothing is merged or rejected, and the next pass tries again.
+        raise ToolError(proc.stderr.strip()[-400:] or "solve-cli could not check the file right now")
     if not lines:
         raise ToolError(
             "solve-cli crashed while verifying (exit code %s): %s\n"
@@ -107,7 +121,7 @@ def verify_file(cli, path, sample, max_vram=None):
 def check_job(cli, login, job, local_jsonl, sample):
     errors = []
     base = block_base(cli, login)
-    if not (base <= job < base + BLOCK):
+    if not (base <= job % (1 << MIX_SHIFT) < base + BLOCK):
         errors.append(f"job {job} is outside {login}'s block")
     summary = verify_file(cli, local_jsonl, sample)
     if summary.get("contributor") not in (None, login):
@@ -134,8 +148,8 @@ def update_note(versions, current):
         return ""
     made = " and ".join(f"v{v}" for v in older)
     return (f"\n\nThese jobs were made with generator {made}. They are merged and count in full. "
-            f"Generator v{current} is out now: it adds the games people commonly play live (10% rake with "
-            "low caps, straddles, bigger opens, deeper stacks), so new jobs help most on it. When it suits "
+            f"Generator v{current} is out now: from it on, your generator moves to each new mix of games "
+            "by itself, so this is the last update you need to make by hand for one. When it suits "
             "you, please update GTOpen (git pull, rebuild) and restart the generator. "
             "See docs/contribute-compute.md.")
 
@@ -678,6 +692,37 @@ def main():
         sys.exit(f"stopped, nothing was merged or rejected: {e}")
 
 
+def publish_situations(args):
+    """Put a situation list (from `solve-cli datagen situations`) into the dataset as situations/<list>.jsonl."""
+    import hashlib
+    with open(args.publish_situations, "rb") as f:
+        data = f.read()
+    try:
+        head = json.loads(data.split(b"\n", 1)[0])
+    except ValueError:
+        head = {}
+    name = head.get("list") if isinstance(head, dict) else None
+    if head.get("format") != "gtopen-situations" or not isinstance(name, str) or not SITUATIONS_NAME_RE.match(name):
+        sys.exit(f"{args.publish_situations} is not a situation list (make it with  solve-cli datagen situations)")
+    sha = hashlib.sha256(data).hexdigest()
+    path = f"situations/{name}.jsonl"
+    part = json.dumps({"kind": "situations", "share": 0.5, "list": name, "sha256": sha})
+    if args.dry_run:
+        print(f"--- dry run: {args.repo} was not changed ({path} would be {len(data)} bytes, "
+              f"{head.get('situations')} situations)")
+    else:
+        from huggingface_hub import HfApi
+        api = HfApi()
+        if api.file_exists(args.repo, path, repo_type="dataset"):
+            # a mix names a list by its exact bytes: a changed file would stop every generator on that mix
+            sys.exit(f"{args.repo} already has {path}: a published list is never changed. Give the new one another name.")
+        api.upload_file(path_or_fileobj=data, path_in_repo=path, repo_id=args.repo, repo_type="dataset",
+                        commit_message=f"Situation list {name} ({head.get('situations')} situations)")
+        print(f"{args.repo}: {path} written")
+    print("the part for a new mix in tools/datagen/mixes.json (set the share):")
+    print(part)
+
+
 def real_main():
     cfg = load_config()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -698,9 +743,14 @@ def real_main():
     ap.add_argument("--publish-notes", action="store_true",
                     help="write the real-range notes into the dataset (real/README.md and a section of the "
                          "dataset card) and stop; with --dry-run, print the card instead")
+    ap.add_argument("--publish-situations", metavar="FILE",
+                    help="put a situation list (from `solve-cli datagen situations`) into the dataset as "
+                         "situations/<list>.jsonl and stop; with --dry-run, only check it")
     args = ap.parse_args()
     if args.publish_notes:
         return publish_notes(args)
+    if args.publish_situations:
+        return publish_situations(args)
     if args.recount:
         from huggingface_hub import HfApi
         progress = recount(HfApi(), args.repo, args.dry_run)
