@@ -204,6 +204,34 @@ def run_local(args):
     return bad == 0
 
 
+def rate_limit_wait(err):
+    """Seconds to wait when err is the Hub answering "too many requests" (HTTP 429), else None.
+    The Hub counts requests in five-minute windows and says in its RateLimit header (t=seconds)
+    when the window ends."""
+    resp = getattr(err, "response", None)
+    if 429 not in (getattr(err, "code", None), getattr(resp, "status_code", None)):
+        return None
+    headers = getattr(resp, "headers", None) or getattr(err, "headers", None) or {}
+    headers = {str(k).lower(): str(v) for k, v in headers.items()}
+    m = re.search(r"\bt=(\d+)", headers.get("ratelimit", ""))
+    after = headers.get("retry-after", "")
+    wait = int(m.group(1)) if m else int(after) if after.isdigit() else 60
+    return min(max(wait, 1) + 5, 330)
+
+
+def patiently(fn, *args, **kwargs):
+    """Call fn; when the Hub says "too many requests", wait as long as it asks and call again."""
+    for attempt in range(6):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as err:
+            wait = rate_limit_wait(err)
+            if wait is None or attempt == 5:
+                raise
+            print(f"   Hugging Face asked for a pause (too many requests): carrying on in {wait} s", flush=True)
+            time.sleep(wait)
+
+
 def load_progress(api, repo):
     """progress.json from the dataset; an empty one only when the dataset has none yet.
     Any other failure is raised: a network blip must never start the count again from nothing."""
@@ -404,6 +432,7 @@ def backfill_times(api, repo, progress):
 TITLE_RE = re.compile(r"^([A-Za-z0-9_-]+): (\d+) (jobs|real-range games), (\d+) examples$")
 VALIDATED_RE = re.compile(r"^Validated (\d+) jobs \((\d+) examples\)")
 GRAPH_EVERY_S = 600  # during a long pass, redraw the GitHub graph at most this often
+RETRY_MIN = 5        # after a failed pass in --watch mode, try again this many minutes later
 
 
 def record_merges(api, repo, events, message):
@@ -458,7 +487,9 @@ def merged_pr_events(api, repo, pr):
     groups = {}  # (login, kind) -> [paths]
     try:
         added, other = pr_changes(api, repo, pr.num)
-    except Exception:
+    except Exception as err:
+        if rate_limit_wait(err) is not None:
+            raise  # asked to slow down: the caller waits and reads this pull request again
         added, other = [], []
     for path in added + other:  # it was merged, so the validator saw that it only adds files
         m, real = PATH_RE.match(path), REAL_PATH_RE.match(path)
@@ -511,7 +542,7 @@ def recount(api, repo, dry_run=False):
     events = []
     for pr in sorted(missing, key=lambda d: d.num):
         try:
-            found = merged_pr_events(api, repo, pr)
+            found = patiently(merged_pr_events, api, repo, pr)
         except Exception as err:
             print(f"   PR #{pr.num} is merged but not counted, and could not be read: {err}")
             continue
@@ -553,7 +584,7 @@ def run_prs(args):
     try:
         for pr in prs:
             rev = f"refs/pr/{pr.num}"
-            new, other = pr_changes(api, repo, pr.num)
+            new, other = patiently(pr_changes, api, repo, pr.num)
             errors, jobs, versions = [], [], []
             other += [p for p in new if p in main_oids]  # "new" file already in main: a duplicate
             new = [p for p in new if p not in main_oids]
@@ -569,7 +600,7 @@ def run_prs(args):
                         errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz "
                                       "and real/<login>/<set>/<game>.jsonl.gz)")
                         continue
-                    gz = hf_hub_download(repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
+                    gz = patiently(hf_hub_download, repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
                     plain = os.path.join(stage, f"file-{n}.jsonl")
                     with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
                         shutil.copyfileobj(src, dst)
@@ -620,7 +651,7 @@ def run_prs(args):
                 events.append(event)
             # Count it now: a validator closed part-way through a pass must not leave merges uncounted.
             try:
-                graph(record_merges(api, repo, events, f"progress: +{examples} examples"))
+                graph(patiently(record_merges, api, repo, events, f"progress: +{examples} examples"))
                 print(f"progress.json updated: +{examples} examples")
             except Exception as err:
                 print(f"   merged, but progress.json could not be written (the next pass adds it): "
@@ -683,6 +714,7 @@ def real_main():
     if args.local:
         sys.exit(0 if run_local(args) else 2)
     while True:
+        retry = None  # minutes until the next pass, when this one fails
         try:
             run_prs(args)
         except ToolError as e:
@@ -690,15 +722,19 @@ def real_main():
                 raise
             # solve-cli failed on this machine (often a GPU that was full): nothing in that pull request
             # was merged or rejected, and the next pass tries again
-            print(f"pass stopped, will retry in {args.watch:g} min: {e}", flush=True)
+            retry = args.watch
+            print(f"pass stopped, will retry in {retry:g} min: {e}", flush=True)
         except Exception as e:
             if args.watch <= 0:
                 raise
-            # a network or Hub hiccup must not end an overnight run
-            print(f"pass failed, will retry in {args.watch:g} min: {type(e).__name__}: {e}", flush=True)
+            # a network or Hub hiccup must not end an overnight run, nor leave uploads waiting a whole
+            # watch interval: go again soon (after the pause the Hub asks for, when it is a rate limit)
+            wait = rate_limit_wait(e)
+            retry = min(args.watch, wait / 60 if wait else RETRY_MIN)
+            print(f"pass failed, will retry in {retry:.2g} min: {type(e).__name__}: {e}", flush=True)
         if args.watch <= 0:
             break
-        time.sleep(args.watch * 60)
+        time.sleep((args.watch if retry is None else retry) * 60)
 
 
 if __name__ == "__main__":

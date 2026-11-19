@@ -454,6 +454,57 @@ class CountingTests(Base):
         self.validate()  # the next pass counts the merge that could not be written
         self.assertEqual(self.counted(), [(1, "Anyone", 1, 2), (2, "Anyone", 1, 2)])
 
+    def too_many(self, header=None):
+        import urllib.error
+        return urllib.error.HTTPError("https://hub.invalid/x", 429, "Too Many Requests", header or {}, None)
+
+    def test_the_hubs_rate_limit_says_how_long_to_wait(self):
+        self.assertEqual(validate.rate_limit_wait(self.too_many({"RateLimit": '"pages";r=0;t=42'})), 47)
+        self.assertEqual(validate.rate_limit_wait(self.too_many({"Retry-After": "10"})), 15)
+        self.assertEqual(validate.rate_limit_wait(self.too_many()), 65)
+        self.assertEqual(validate.rate_limit_wait(self.too_many({"RateLimit": '"pages";r=0;t=9999'})), 330)
+        hub_error = RuntimeError("429")  # huggingface_hub's errors carry the response
+        hub_error.response = types.SimpleNamespace(status_code=429, headers={"ratelimit": '"api";r=0;t=3'})
+        self.assertEqual(validate.rate_limit_wait(hub_error), 8)
+        self.assertIsNone(validate.rate_limit_wait(ConnectionError("no network")))
+
+    def test_a_rate_limit_in_the_recount_waits_and_carries_on(self):
+        for job in (1001, 1002, 1003):
+            self.pooled_pr(job)
+        self.lose_the_count()
+        real, calls, naps = validate.pr_diff, [], []
+
+        def limited(api, repo, num):  # the Hub refuses the second diff once
+            calls.append(num)
+            if calls.count(2) == 1 and num == 2:
+                raise self.too_many({"RateLimit": '"pages";r=0;t=30'})
+            return real(api, repo, num)
+
+        with mock.patch.object(validate, "pr_diff", limited), mock.patch.object(validate.time, "sleep", naps.append):
+            text = self.validate()
+        self.assertEqual(naps, [35])
+        self.assertIn("Hugging Face asked for a pause", text)
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 2), (2, "Anyone", 1, 2), (3, "Anyone", 1, 2)])
+
+    def test_a_failed_pass_is_tried_again_soon(self):
+        naps, passes = [], []
+
+        def run(args):
+            passes.append(1)
+            if len(passes) == 1:
+                raise self.too_many({"RateLimit": '"pages";r=0;t=100'})
+            if len(passes) == 2:
+                raise ConnectionError("no network")
+            if len(passes) == 4:
+                raise KeyboardInterrupt
+
+        argv = ["validate.py", "--watch", "60", "--solve-cli", sys.executable]
+        with mock.patch.object(validate, "run_prs", run), mock.patch.object(validate.time, "sleep", naps.append), \
+                mock.patch.object(sys, "argv", argv), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(KeyboardInterrupt):
+                validate.real_main()
+        self.assertEqual(naps, [105, 300, 3600])  # the Hub's pause, a short retry, then the usual hour
+
     def test_a_merge_written_twice_counts_once(self):
         self.pooled_pr(1001)
         self.pooled_pr(1002)
