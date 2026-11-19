@@ -26,6 +26,9 @@
   --font-data: "IBM Plex Mono", ui-monospace, monospace;
   --font-body: "IBM Plex Sans", system-ui, sans-serif;
   --font-disp: "Archivo", system-ui, sans-serif;
+
+  /* height of the sticky header; things that stick under it add to this */
+  --topbar-h: 46px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,21 +56,27 @@ b { font-weight: inherit; }
 
 #topbar {
   display: flex; align-items: center; gap: 20px;
-  padding: 0 16px; height: 46px;
+  padding: 0 16px; height: var(--topbar-h);
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, var(--bg2), var(--bg));
   position: sticky; top: 0; z-index: 50;
 }
 
+/* The logo is two fixed lines: the name, then the tagline. Both line heights
+   are set here so the gap between them is exactly the tagline's margin (the
+   "p" of the name hangs about 4px below its line, so the margin must clear
+   it). It never shrinks or wraps: a squeezed header takes the room from the
+   tabs instead. */
 .wordmark {
   font-family: var(--font-disp);
-  font-weight: 800; font-size: 19px; letter-spacing: .14em;
+  font-weight: 800; font-size: 19px; line-height: 19px; letter-spacing: .14em;
   color: var(--ink);
+  flex: none; white-space: nowrap;
 }
 .wordmark span { color: var(--accent); }
 .wordmark em {
-  font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: .3em;
-  color: var(--ink-faint); display: block; margin-top: -3px; text-transform: uppercase;
+  font-style: normal; font-weight: 500; font-size: 9px; line-height: 9px; letter-spacing: .3em;
+  color: var(--ink-faint); display: block; margin-top: 4px; text-transform: uppercase;
 }
 
 #tabs { display: flex; gap: 4px; }
@@ -123,7 +132,7 @@ b { font-weight: inherit; }
    from the built spot and /api/status; the state button owns the jump to its
    control. */
 #spot-strip {
-  position: sticky; top: 46px; z-index: 45;
+  position: sticky; top: var(--topbar-h); z-index: 45;
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 4px 16px; min-height: 30px;
   background: var(--bg2); border-bottom: 1px solid var(--line);
@@ -161,7 +170,7 @@ b { font-weight: inherit; }
 
 /* the last failure: persistent, dismissible, retryable — toasts are confirmations */
 #error-bar {
-  position: fixed; top: 84px; left: 50%; transform: translateX(-50%); z-index: 90;
+  position: fixed; top: calc(var(--topbar-h) + 38px); left: 50%; transform: translateX(-50%); z-index: 90;
   display: flex; align-items: center; gap: 10px;
   max-width: min(760px, calc(100vw - 24px)); padding: 7px 9px 7px 12px;
   background: #2a1c1c; border: 1px solid var(--red); border-radius: 5px;
@@ -701,7 +710,7 @@ textarea {
 
 /* flop reports */
 .reports-layout { display: grid; grid-template-columns: 286px minmax(0, 1fr); gap: 16px; align-items: start; }
-.rep-sidebar { position: sticky; top: 85px; max-height: calc(100vh - 103px); display: flex; flex-direction: column; padding: 12px; }
+.rep-sidebar { position: sticky; top: calc(var(--topbar-h) + 39px); max-height: calc(100vh - var(--topbar-h) - 57px); display: flex; flex-direction: column; padding: 12px; }
 .rep-create { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .rep-create > summary { cursor: pointer; color: var(--accent); font: 600 12px var(--font-disp); padding: 5px 0; }
 .rep-create h2 { display: none; }
@@ -1084,7 +1093,7 @@ textarea {
 /* the list of locks above the Browse grid */
 .locks-bar {
   align-items: center; gap: 6px; flex-wrap: wrap;
-  position: sticky; top: 80px; z-index: 40;
+  position: sticky; top: calc(var(--topbar-h) + 34px); z-index: 40;
   margin: 6px 0 2px; padding: 5px 9px; font-size: 11px; color: var(--ink);
   background: var(--panel); border: 1px solid var(--line2);
   border-left: 3px solid #f5c542; border-radius: 4px;
@@ -1224,14 +1233,25 @@ button.lb-go:hover { background: var(--panel2); }
   .solve-grid { grid-template-columns: 1fr; }
 }
 
-/* narrow windows: the header wraps instead of forcing body-level horizontal
-   scroll (its no-wrap row needs ~760px), and the range editor's tools column
-   drops below the grid (its two columns need ~630px) */
-@media (max-width: 980px) {
-  #topbar { flex-wrap: wrap; height: auto; min-height: 46px; padding: 4px 12px; row-gap: 0; }
-  #tabs { flex-wrap: wrap; }
+/* The header's single row (logo, six tabs, status) needs about 1450px while a
+   solve runs. Below that it is two rows: logo and status on top, the tabs
+   under them. Tab names stay on one line there, so nothing is squeezed and
+   the header does not move when a solve starts. --topbar-h is that two-row
+   height (4 + 32 logo + 5 + 28 tabs + 4 + 1 border). */
+@media (max-width: 1450px) {
+  :root { --topbar-h: 74px; }
+  #topbar { flex-wrap: wrap; height: auto; min-height: var(--topbar-h); padding: 4px 16px; row-gap: 5px; }
+  #hdr-right { order: 1; }
+  #tabs { order: 2; flex: 1 0 100%; flex-wrap: wrap; }
   .tab { white-space: nowrap; }
 }
+/* narrow windows: the status can drop to a row of its own and the tabs can
+   take two, so the header's height is no longer known (the spot strip stops
+   sticking under it, see #spot-strip) */
+@media (max-width: 980px) {
+  #topbar { padding: 4px 12px; }
+}
+/* the range editor's tools column drops below the grid (its two columns need ~630px) */
 @media (max-width: 700px) {
   .range-editor-wrap { grid-template-columns: 1fr; }
 }
