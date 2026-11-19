@@ -667,19 +667,31 @@ textarea {
 }
 .hand-tile .hth .meta { font-size: 9px; color: var(--ink-dim); font-weight: 400; letter-spacing: .06em; }
 
-/* horizontal strategy split with label/EV lines overlaid */
-.htb-h { position: relative; height: 132px; }
-.htb-h.short { height: 88px; }
+/* horizontal strategy split; over it a small table, one row per action:
+   name, how often, EV. The tile grows when a spot has many actions. */
+.hand-tile { display: flex; flex-direction: column; }
+.htb-h { position: relative; flex: 1; min-height: 132px; display: flex; flex-direction: column; justify-content: flex-end; }
+.htb-h.short { min-height: 88px; }
 .hseg-row { position: absolute; inset: 0; display: flex; }
-.hand-lines { position: absolute; left: 7px; right: 7px; bottom: 5px; }
+.hand-lines { position: relative; padding: 4px 7px 5px; }
 .hand-line {
-  display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  display: flex; align-items: baseline; gap: 8px;
   font-family: var(--font-data); font-size: 12px; color: #fff;
+  font-variant-numeric: tabular-nums;
   text-shadow: 0 1px 2px rgba(0,0,0,.75); white-space: nowrap; line-height: 1.45;
 }
-.htb-h.short .hand-line { font-size: 11px; line-height: 1.35; }
-.hand-line .hl-lab { overflow: hidden; text-overflow: ellipsis; }
-.hand-line .hl-ev { font-weight: 400; }
+.htb-h.short .hand-line { font-size: 11px; line-height: 1.35; gap: 6px; }
+.hand-line.off { opacity: .6; }
+.hand-line .hl-lab { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.hand-line .hl-f { flex: none; min-width: 46px; text-align: right; font-weight: 600; }
+.hand-line .hl-ev { flex: none; min-width: 40px; text-align: right; font-weight: 400; opacity: .92; }
+.htb-h.short .hl-f { min-width: 36px; }
+.htb-h.short .hl-ev { min-width: 30px; }
+/* the two column heads */
+.hand-line.hl-head, .htb-h.short .hand-line.hl-head {
+  font-size: 9px; line-height: 1.5; letter-spacing: .06em; text-transform: uppercase;
+}
+.hl-head .hl-f, .hl-head .hl-ev { font-weight: 400; opacity: .85; }
 .hand-tile .htb { display: flex; }
 .htb.flat {
   flex-direction: row; justify-content: space-between; align-items: center;
@@ -929,18 +941,27 @@ textarea {
 /* grid-hover popup: the HANDS tab's combo tiles in miniature, floated next
    to the hovered matrix cell (below the data-tip tooltip at 200) */
 #hand-pop {
-  position: fixed; z-index: 90; width: 268px; pointer-events: none;
+  position: fixed; z-index: 90; width: max-content; max-width: calc(100vw - 16px); pointer-events: none;
   background: var(--panel); border: 1px solid var(--line2); border-radius: 6px;
   padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.55);
 }
+/* the popup is as wide as its widest tile needs: no action name is cut */
+#hand-pop .hand-line .hl-lab { flex: 1 0 auto; overflow: visible; }
 #hand-pop .hand-tiles { gap: 3px; }
 #hand-pop .hand-tile .hth { font-size: 10px; padding: 2px 5px; }
 #hand-pop .hand-tile .hth .meta { font-size: 8px; letter-spacing: .03em; }
-#hand-pop .htb-h, #hand-pop .htb-h.short { height: auto; }
-/* in the flow (it gives the tile its height) yet positioned, so the labels
-   paint over the colour bar and not under it */
-#hand-pop .hand-lines { position: relative; left: auto; right: auto; bottom: auto; padding: 1px 4px 2px; }
-#hand-pop .hand-line, #hand-pop .htb-h.short .hand-line { font-size: 10px; line-height: 1.2; }
+#hand-pop .htb-h, #hand-pop .htb-h.short { min-height: 0; }
+#hand-pop .hand-lines { padding: 1px 5px 2px; }
+#hand-pop .hand-line, #hand-pop .htb-h.short .hand-line { font-size: 10px; line-height: 1.2; gap: 5px; }
+#hand-pop .hl-f, #hand-pop .htb-h.short .hl-f { min-width: 32px; }
+#hand-pop .hl-ev, #hand-pop .htb-h.short .hl-ev { min-width: 26px; }
+/* in the popup the column heads ride in the tile's top line */
+#hand-pop .hth .hl-head {
+  display: flex; gap: 5px; margin-left: 8px; font-size: 8px; letter-spacing: .03em; text-transform: uppercase;
+  color: var(--ink-dim); white-space: nowrap;
+}
+#hand-pop .hth .hl-head span { text-align: right; }
+#hand-pop .hth .hl-head .hl-ev { min-width: 26px; }
 #hand-pop .htb.flat { height: 30px; font-size: 10px; padding: 0 7px; }
 
 .summary-row {

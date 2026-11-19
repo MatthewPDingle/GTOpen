@@ -10,6 +10,16 @@ What changed in GTOpen, newest first, in plain words. The version you are runnin
 - Scenarios and games you saved are unchanged: their ante is still paid by each seat.
 - Close GTOpen and start it again after updating. Until then the header shows "restart GTOpen" and a game with a big blind ante will not build.
 
+## 1.4.3 - 2026-11-19
+
+- The BEST REPLY button is gone from the list of locks in the Browse tab. It did the same as EXPLOIT: pick whose hands to show under HANDS OF, then press EXPLOIT.
+
+## 1.4.2 - 2026-11-19
+
+- The small hand tiles in the Browse tab (HANDS, lower right) now say how often each action is taken. Each action has its own row: name, "how often" in bold, then EV, with the two column names right above the numbers.
+- The popup that shows when you hover a hand in the grid has the same two columns, and it is now as wide as it needs to be, so a raise no longer gets its name cut off.
+- A tile grows when a spot has many actions, so no row is hidden.
+
 ## 1.4.1 - 2026-11-19
 
 - The three ways to shift a whole range in the Browse lock box are called Scale, Least EV loss and Least exploitable again. Hover one to read what it does in plain words.

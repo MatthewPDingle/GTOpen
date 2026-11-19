@@ -426,27 +426,6 @@ export class Browser {
     this.renderLocksBar();
   }
 
-  /** The player a "best reply" most likely means: the one nobody locked. With
-   *  both players locked (or neither), the one whose hands are showing. */
-  bestReplyPlayer() {
-    const locked = new Set();
-    for (const l of this.locksView?.locks || []) if (l.kind !== 'kept') locked.add(l.player);
-    (this.locksView?.profile || []).forEach((n, p) => { if (n) locked.add(p); });
-    return locked.size === 1 ? 1 - [...locked][0] : this.player;
-  }
-
-  /** Show `p`'s best play against the locks as they stand (the EXPLOIT view). */
-  showBestReply(p) {
-    this.player = p;
-    this.mode = 'exploit';
-    this.syncSegs();
-    this.renderActions();
-    this.renderMatrix();
-    this.renderLegend();
-    this.renderHandsPanel();
-    this.drawEquityChart();
-  }
-
   /** Remove every lock. One Undo brings them all back. */
   async clearAllLocks() {
     try {
@@ -476,7 +455,8 @@ export class Browser {
 
   /** The list of locks above the grid: one chip per locked decision (who,
    *  where, what), click to go there, x to remove. After a lock change it
-   *  also offers the two ways to see the answer. */
+   *  also says the solve is older than the locks and offers to solve again
+   *  (the instant answer is the EXPLOIT view, which has its own button). */
   renderLocksBar() {
     const bar = this.locksBar;
     if (!bar) return;
@@ -589,17 +569,9 @@ export class Browser {
     why.textContent = '?';
     why.setAttribute('aria-label', 'What to do after changing a lock');
     why.dataset.tip = 'The grid still shows the solve from before your last lock change. ' +
-      'BEST REPLY shows at once how a player should play against the locks (the EXPLOIT view). ' +
+      'EXPLOIT shows at once how the player whose hands are showing should play against the locks. ' +
       'RE-SOLVE solves again with the locks in place, so both players adjust.';
     next.append(note, why);
-    const p = this.bestReplyPlayer();
-    const reply = document.createElement('button');
-    reply.type = 'button';
-    reply.className = 'btn sm';
-    reply.textContent = `${this.posLabel(p)}'S BEST REPLY`;
-    reply.dataset.tip = `Show ${this.posLabel(p)}'s best play against the locks, right away. Same as picking ${this.posLabel(p)} and EXPLOIT.`;
-    reply.addEventListener('click', () => this.showBestReply(p));
-    next.appendChild(reply);
     if (!solve.running) {
       const again = document.createElement('button');
       again.type = 'button';
@@ -2690,40 +2662,47 @@ export class Browser {
     if (act.label.startsWith('All-in')) return 'ALL-IN';
     const m = act.label.match(/\((\d+)%\)/);
     if (act.kind === 'bet' && m) return `BET ${m[1]}%`;
-    return act.label.toUpperCase();
+    // anything else with a bracket (a raise) keeps its amount: "RAISE 12"
+    return shortAction(act.label).toUpperCase();
   }
 
   handTile(h, a, b, isActor, colors, acts, compact, dimmed, mini = false, best = false) {
     const name =
       `<span class="suit-${SUITS[suit(a)]}">${RANKS[rank(a)]}${SUIT_GLYPH[SUITS[suit(a)]]}</span>` +
       `<span class="suit-${SUITS[suit(b)]}">${RANKS[rank(b)]}${SUIT_GLYPH[SUITS[suit(b)]]}</span>`;
-    const meta = best ? 'best reply · EV' : `${h.eq != null ? (h.eq * 100).toFixed(0) + '% eq · ' : ''}EV`;
+    const meta = best ? 'best reply' : (h.eq != null ? `${(h.eq * 100).toFixed(0)}% eq` : '');
     let body;
+    let heads = '';
     if (isActor && h.strategy) {
-      // Horizontal split, aggressive actions on the left;
-      // action labels with EVs overlaid bottom-left/right.
+      // Horizontal split, aggressive actions on the left; over it a small
+      // table, one row per action: name, how often, EV. The two column
+      // heads sit right above the numbers (in the popup: in the tile's top
+      // line, which is just as close there).
+      heads = `<span class="hl-f" data-tip="How often this hand takes each action.">how often</span>` +
+        `<span class="hl-ev" data-tip="What each action is worth to this hand, in the same units as the pot.">EV</span>`;
       const segs = [];
       const lines = [];
+      const ev = k => (h.evs && h.evs[k] != null ? fmt(h.evs[k]) : '—');
+      const line = (k, f, off) =>
+        `<div class="hand-line${off ? ' off' : ''}"><span class="hl-lab">${mini ? this.miniLabel(acts[k]) : acts[k].label}</span>` +
+        `<span class="hl-f">${freqPct(f)}</span>` +
+        `<span class="hl-ev">${ev(k)}</span></div>`;
       for (let k = acts.length - 1; k >= 0; k--) {
         const f = h.strategy[k];
-        const ev = h.evs && h.evs[k] != null ? fmt(h.evs[k]) : '—';
         if (f < 0.001) {
           // a best reply is one action: still list what the others are worth
-          if (best) lines.push(
-            `<div class="hand-line" style="opacity:.6"><span class="hl-lab">${mini ? this.miniLabel(acts[k]) : acts[k].label}</span>` +
-            `<span class="hl-ev">${ev}</span></div>`);
+          if (best) lines.push(line(k, 0, true));
           continue;
         }
         segs.push(
           `<div style="flex:${f.toFixed(4)};background:${colors[k]}" ` +
-          `data-tip="${acts[k].label}: ${(f * 100).toFixed(1)}% of the time · EV ${ev}"></div>`);
-        lines.push(
-          `<div class="hand-line"><span class="hl-lab">${mini ? this.miniLabel(acts[k]) : acts[k].label}</span>` +
-          `<span class="hl-ev">${ev}</span></div>`);
+          `data-tip="${acts[k].label}: ${freqPct(f)} of the time · EV ${ev(k)}"></div>`);
+        lines.push(line(k, f, false));
       }
+      const headRow = mini ? '' : `<div class="hand-line hl-head"><span class="hl-lab"></span>${heads}</div>`;
       body = `<div class="htb-h${compact ? ' short' : ''}">` +
         `<div class="hseg-row">${segs.join('')}</div>` +
-        `<div class="hand-lines">${lines.join('')}</div></div>`;
+        `<div class="hand-lines">${headRow}${lines.join('')}</div></div>`;
     } else if (best) {
       body = `<div class="htb flat"><span>EV <b>${h.br_ev != null ? fmt(h.br_ev) : '—'}</b></span>` +
         `<span>gain <b>${h.gain != null ? fmt(h.gain) : '—'}</b></span></div>`;
@@ -2731,7 +2710,9 @@ export class Browser {
       body = `<div class="htb flat"><span>EV <b>${h.ev != null ? fmt(h.ev) : '—'}</b></span>` +
         `<span>EQ <b>${h.eq != null ? (h.eq * 100).toFixed(1) + '%' : '—'}</b></span></div>`;
     }
-    const meta_html = mini ? '' : `<span class="meta">${meta}</span>`;
+    const meta_html = mini
+      ? (heads ? `<span class="hl-head">${heads}</span>` : '')
+      : `<span class="meta">${meta}</span>`;
     return `<div class="hand-tile${dimmed ? ' fdim' : ''}"><div class="hth"><span>${name}</span>${meta_html}</div>${body}</div>`;
   }
 
@@ -3275,6 +3256,15 @@ function comboCell(a, b) {
   const lo = Math.min(rank(a), rank(b));
   if (hi === lo) return `${12 - hi},${12 - hi}`;
   return suit(a) === suit(b) ? `${12 - hi},${12 - lo}` : `${12 - lo},${12 - hi}`;
+}
+
+/** How often an action is taken, for the combo tiles: "27.5%", and plain
+ *  "100%" / "0%" at the ends (no "100.0%"). */
+export function freqPct(f) {
+  const p = (f || 0) * 100;
+  if (p >= 99.95) return '100%';
+  if (p < 0.05) return '0%';
+  return `${p.toFixed(1)}%`;
 }
 
 function fmt(x) {
