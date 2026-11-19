@@ -46,14 +46,6 @@ fn refresh_weight() -> Option<f32> {
     }
 }
 
-/// MEASUREMENT ONLY (removed before merge). PREFLOP_LEAF_BLOCKERS: 0 = as
-/// shipped up to 1.6.1, 1 = plain input only, 2 (default) = plain input and
-/// the correction counted from the plain share (`leaf_blocker_shift`).
-pub(crate) fn leaf_blockers_mode() -> u8 {
-    static MODE: std::sync::OnceLock<u8> = std::sync::OnceLock::new();
-    *MODE.get_or_init(|| std::env::var("PREFLOP_LEAF_BLOCKERS").ok().and_then(|v| v.trim().parse().ok()).unwrap_or(2))
-}
-
 pub(crate) struct LeafState {
     pub(crate) net: Arc<LeafNet>,
     /// Per node: index of its learned terminal, or NO_SLOT.
@@ -630,11 +622,7 @@ impl PreflopSolver {
         seats.map(|q| {
             let seat = q as usize;
             let mut v = [0f32; NUM_CLASSES];
-            if leaf_blockers_mode() == 0 {
-                self.terminal_value(node, seat, norm, &mut v);
-            } else {
-                self.plain_terminal_value(node, seat, norm, &mut v);
-            }
+            self.plain_terminal_value(node, seat, norm, &mut v);
             let inv = nd.invested[seat];
             v.iter().map(|&x| ((x as f64 + inv) / nd.pot) as f32).collect()
         })
@@ -654,7 +642,7 @@ impl PreflopSolver {
     /// then pays plain share + correction, times the class's own chance of
     /// meeting the opponent's range.
     fn leaf_blocker_shift(&self, node: usize, seats: [u8; 2], norm: &[Vec<f32>], balanced: &[Vec<f32>; 2]) -> Option<Vec<f32>> {
-        if !self.cfg.card_removal || leaf_blockers_mode() != 2 {
+        if !self.cfg.card_removal {
             return None;
         }
         let nd = &self.nodes[node];
