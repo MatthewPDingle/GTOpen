@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.6.3 - 2026-11-19
+
+- Preflop Lab: new solves call raises more often, mostly from the big blind. Since blockers were added, the learned flop values were read slightly wrong, which made calling look worse than it is. In an 8-max test game a UTG open is now called 4.0% of the time instead of 2.5% (the canonical GTO chart says 7.1%), and the big blind's reply to a button open is close to the chart.
+- Calls from the seats between the opener and the button are still well under the charts. That is a separate piece of work.
+- Games you solved before keep their ranges. Solve them again to get the fix.
+
 ## 1.6.2 - 2026-11-19
 
 - Postflop: after you load a saved solve and then refresh the page, the setup form still shows that solve's spot. It used to fall back to the last tree you built, so the page said "SETUP changed" and offered REBUILD & SOLVE for a solve you had not touched.
