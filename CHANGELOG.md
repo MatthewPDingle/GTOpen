@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.5.1 - 2026-11-19
+
+- The "learned flop values" tick box is gone from the Preflop Lab. Every new cash game uses learned flop values, and games with tournament payouts use the simpler estimate, as before.
+- The small tag under 4 · MODEL still says which one a game used. Hover it to read what the leaf net is and where the simpler estimate applies.
+- A cash game you saved with the box unticked loads as it was solved, and RE-SOLVE continues it. BUILD GAME starts a new game with learned flop values.
+
 ## 1.5.0 - 2026-11-19
 
 - Preflop Lab has a big blind ante. A new "Paid by" choice beside the Ante box says who pays it: each seat, as before, or the big blind for the whole table, as in most tournaments.
