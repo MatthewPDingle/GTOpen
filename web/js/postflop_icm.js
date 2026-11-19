@@ -2,6 +2,8 @@
 // the spot request's `icm` on and off. Shared by SETUP (heads-up) and the
 // 3-WAY tab; the Preflop Lab's flop exports fill it in.
 
+import { holdRakeBoxes, releaseRakeBoxes } from './icm_rake.js';
+
 const parseNums = text => String(text || '').split(/[\s,]+/).filter(Boolean);
 
 /** The tournament payouts of a spot request as one canonical string, or null
@@ -51,21 +53,28 @@ export function formatStacks(icm) {
  * from the player rows. `onChange` runs after every edit.
  */
 export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {}) {
-  const details = document.createElement('details');
-  details.className = 'pfl-position-sizes postflop-icm';
-  const summary = document.createElement('summary');
-  details.append(summary);
-  const note = document.createElement('p');
-  note.textContent = 'Every pot pays the change in each player’s prize-pool share (Malmuth–Harville ICM) '
-    + 'instead of chips; EVs read in bb equivalents, stacks use the pot’s units. '
-    + 'A Preflop Lab ICM export fills this in.';
-  details.append(note);
+  // The on/off box always shows, so whether a spot uses tournament payouts
+  // reads without opening anything; its fields appear when it is on.
+  const details = document.createElement('div');
+  details.className = 'postflop-icm';
+  const onRow = document.createElement('div');
+  onRow.className = 'postflop-icm-on';
   const on = document.createElement('label');
   on.className = 'check';
   const onBox = document.createElement('input');
   onBox.type = 'checkbox';
-  on.append(onBox, ' use tournament payouts (ICM)');
-  details.append(on);
+  on.append(onBox, ' tournament payouts (ICM)');
+  const about = document.createElement('button');
+  about.type = 'button';
+  about.className = 'info-dot';
+  about.textContent = '?';
+  about.setAttribute('aria-label', 'About tournament payouts');
+  about.setAttribute('data-tip-click', '');
+  about.dataset.tip = 'Hands are valued in prize money instead of chips (ICM), so busting costs more than '
+    + 'doubling up wins. Results still read in big blinds, stacks use the pot’s units, and there is no rake. '
+    + 'A flop sent from a Preflop Lab tournament game fills this in.';
+  onRow.append(on, about);
+  details.append(onRow);
   const grid = document.createElement('div');
   grid.className = 'pfl-grid2';
   const payouts = document.createElement('textarea');
@@ -102,24 +111,17 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
   details.append(grid);
   anchor.after(details);
   // ICM solves need rake 0 (the server refuses otherwise), so the panel's
-  // rake fields are driven to 0 and disabled while ICM is on. What they held
-  // is kept here and given back when ICM goes off.
+  // rake fields are driven to 0 and greyed out while ICM is on (icm_rake.js
+  // says why in a tooltip). What they held is kept here and given back when
+  // ICM goes off.
   const rakes = [...anchor.querySelectorAll('input[id*="rake"]')];
   let rakeStash = null;
 
   function holdRake() {
     if (rakeStash) return;
     rakeStash = rakes.map(el => ({ el, value: el.value }));
-    for (const el of rakes) {
-      el.value = '0';
-      el.disabled = true;
-      if (!el.closest('label')?.querySelector('.icm-rake')) {
-        const tag = document.createElement('span');
-        tag.className = 'dim icm-rake';
-        tag.textContent = 'ICM · 0';
-        el.closest('label')?.append(' ', tag);
-      }
-    }
+    for (const el of rakes) el.value = '0';
+    holdRakeBoxes(rakes);
   }
   /** Give the fields back; `restore` puts the remembered numbers in, which is
    *  what turning ICM off means. A newly loaded spot (set) must keep the
@@ -128,9 +130,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
     if (!rakeStash) return;
     for (const { el, value } of rakeStash) {
       if (restore) el.value = value;
-      el.disabled = false;
-      el.closest('label')?.querySelector('.icm-rake')?.remove();
     }
+    releaseRakeBoxes(rakes);
     rakeStash = null;
   }
 
@@ -138,8 +139,6 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
     if (onBox.checked) holdRake();
     else releaseRake(false);
     grid.hidden = !onBox.checked;
-    summary.textContent = onBox.checked ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
-    if (onBox.checked) details.open = true;
   }
   const changed = () => { render(); onChange(); };
   onBox.addEventListener('change', () => {
