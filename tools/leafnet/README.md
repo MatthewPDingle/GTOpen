@@ -71,9 +71,10 @@ uses: this harness's `snap-v4-live/ens3-live-quick`), `cache/leaf_net_v2.bin`
 
 ## Using a kept net in the Preflop Lab
 
-"Learned flop values" is ticked by default; pick a net under it: v2 (the
-default), v1, any run the keep rule kept (each snapshot's best is starred), or an ensemble ("mean of 3
-nets", starred when it averages the best's seed copies). The server finds the work
+The Preflop Lab has no net picker and no "learned flop values" box: a game
+built there always uses the shipped default net. To solve with another net,
+name it in the game's `leaf_net` through the API: v2, v1, any run the keep
+rule kept, or an ensemble. The server finds the work
 folder through `LEAFNET_WORK`, else `leafnet_work/` in the repo,
 `../leafnet-work` or `../GTOpen-research/leafnet-work`. Nets are named
 `SNAPSHOT/RUN` and saves keep that name, so a saved game reloads with the

@@ -18,7 +18,7 @@ import { renderModelEvidence, renderEvidenceLink } from './model_evidence.js';
 import { editPostflopStats, hasContextualBetting } from './postflop_context.js';
 import { defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
-import { createLeafNet, modelFor } from './preflop_leafnet.js';
+import { createLeafNet, modelFor, valueTip } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
 import { anteBy, anteConfig, anteOf, sameAnte, usesBbAnte } from './preflop_ante.js';
 import { estimateView } from './preflop_memory.js';
@@ -29,14 +29,14 @@ import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from '.
 // jams in the overbet shade.
 const COLORS = { fold: '#4a78c8', check: '#5ca75f', call: '#5ca75f' };
 const RAISE_SHADES = ['#e8484c', '#c24345', '#a23a3c', '#7c3134'];
-// The balanced model alone: games with ICM payouts, and "learned flop
-// values" unticked.
+// The balanced model alone: games with ICM payouts, and games built with
+// it through the API.
 const DEFAULT_REALIZATION = 'balanced';
 // What a new game uses: balanced plus the learned flop correction.
 const LEARNED_REALIZATION = 'leafnet';
 const currentModel = (m) => m === DEFAULT_REALIZATION || m === LEARNED_REALIZATION;
-// "learned flop values" is on unless this browser turned it off.
-const LEARNED_STORE = 'pfl-leaf';
+// Where a browser kept the old "learned flop values" tick; no longer read.
+const OLD_LEARNED_STORE = 'pfl-leaf';
 
 // One window-level pointer release for the paint grid: a handler registered
 // per editor open would pile up one more copy on every open.
@@ -106,21 +106,9 @@ const PRESETS = [
 export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
-  const learnedWanted = () => localStorage.getItem(LEARNED_STORE) !== '0';
-  if (els.leaf) {
-    els.leaf.checked = learnedWanted();
-    els.leaf.addEventListener('change', () => localStorage.setItem(LEARNED_STORE, els.leaf.checked ? '1' : '0'));
-  }
-  const icmControls = createIcmControls(els, positionsFor, () => { syncLearned(); estSoon(); });
+  localStorage.removeItem(OLD_LEARNED_STORE);
+  const icmControls = createIcmControls(els, positionsFor, () => estSoon());
   const leafNets = createLeafNet();
-  // ICM payouts are priced by the balanced model: the box is greyed while
-  // ICM is on and keeps its tick for when ICM is turned off again.
-  function syncLearned() {
-    if (!els.leaf) return;
-    els.leaf.disabled = !!icmControls.config().icm;
-    els.leaf.closest('label')?.classList.toggle('dim', els.leaf.disabled);
-  }
-  syncLearned();
   // hero mode's trust dial, fed by every status poll
   const trustDial = els.trust ? initPreflopTrust(els.trust, { toast, positions: () => S.positions || [] }) : null;
   // Range source: this game's solve, or the canonical GTO charts walked
@@ -409,10 +397,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   if (stepEls.model) stepEls.model.after(modelStrip);
   else els.modelBox.before(modelStrip);
   const VALUE_LABEL = { leafnet: 'learned flop values', balanced: 'simple flop values' };
-  const VALUE_TIP = {
-    leafnet: 'This game values two-player flops with the leaf net, a neural net trained on real flop solves.',
-    balanced: 'This game values flops with the simple estimate, not the learned model.',
-  };
   const MULTIWAY_LABEL = {
     coupled_deck_v1: '3+ players \u00b7 estimate',
     three_way_table_v1: '3 players \u00b7 exact equity (beta)',
@@ -441,7 +425,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       statusChip(legacy ? 'older flop values' : VALUE_LABEL[value],
         legacy
           ? 'This saved game keeps the flop values it was solved with. RE-SOLVE continues it; BUILD GAME starts a game with the current ones.'
-          : VALUE_TIP[value]),
+          : valueTip(value, !!builtCfg.icm)),
       ...(S.multiwayModel ? [statusChip(MULTIWAY_LABEL[S.multiwayModel] || S.multiwayModel,
         MULTIWAY_TIP[S.multiwayModel] || '')] : []),
       blockers,
@@ -613,13 +597,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // after the rake fields: ICM re-reads them as the numbers to restore
     icmControls.restore(p);
     // Scenarios configure fresh games and carry no model choice: picking one
-    // goes back to this browser's own choice (learned flop values unless it
-    // was turned off) after a loaded game showed its own, and starts fresh
-    // when the loaded game uses an older model.
-    if (els.leaf) els.leaf.checked = learnedWanted();
+    // goes back to the default net after a loaded game showed its own, and
+    // starts fresh when the loaded game was valued another way than a new
+    // game would be (an older model, or simple flop values in a cash game).
     leafNets.load(null);
-    syncLearned();
-    if (S.built && !currentModel(S.activeModel)) S.formCfg = null;
+    if (S.built && S.activeModel !== model().realization) S.formCfg = null;
   };
   const currentScenario = () => ({
     players: +els.players.value, stack: +els.stack.value,
@@ -818,7 +800,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
   // the value model and, for learned flop values, its net
   function model() {
-    const realization = modelFor(!!els.leaf?.checked, !!icmControls.config().icm);
+    const realization = modelFor(!!icmControls.config().icm);
     return {
       realization, ...leafNets.config(realization === LEARNED_REALIZATION),
       ...blockersConfig(!!icmControls.config().icm),
@@ -1123,9 +1105,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     // loaded numbers as the ones to give back when it is turned off
     icmControls.load(cfg);
     S.activeModel = cfg.realization || 'static';
-    if (els.leaf) els.leaf.checked = S.activeModel === LEARNED_REALIZATION;
     leafNets.load(cfg);
-    syncLearned();
     S.built = true;
     syncScenarioSelection();
     S.gameSaved = opts.onDisk !== false; // a LOADED game IS the on-disk copy; an adopted live session may not be
