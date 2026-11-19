@@ -32,7 +32,7 @@ export function createSeatStacks(els, positionsFor, changed) {
   summary.textContent = 'Stacks by seat';
   details.append(summary);
   const note = document.createElement('p');
-  note.textContent = 'Starting stacks in bb, before antes.';
+  note.textContent = 'Stacks in bb. Antes are paid on top.';
   details.append(note);
   const table = document.createElement('table');
   table.innerHTML = '<thead><tr><th>Seat</th><th>Stack · bb</th></tr></thead><tbody></tbody>';

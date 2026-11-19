@@ -166,7 +166,7 @@ fn reference_artifact() -> &'static Artifact {
 /// Unsupported games retain the caller's existing static policy.
 pub fn is_supported(cfg: &PreflopConfig) -> bool {
     let n = cfg.positions.len();
-    (3..=6).contains(&n) && cfg.posts.len() == n && cfg.ante.abs() <= 1e-9
+    (3..=6).contains(&n) && cfg.posts.len() == n && cfg.ante.abs() <= 1e-9 && cfg.bb_ante.abs() <= 1e-9
         && cfg.posts[..n-2].iter().all(|p|p.abs() <= 1e-9)
         && (cfg.posts[n-2]-0.5).abs() <= 1e-9 && (cfg.posts[n-1]-1.0).abs() <= 1e-9
 }
@@ -175,7 +175,7 @@ pub fn support_note(cfg: &PreflopConfig) -> Option<String> {
     let n = cfg.positions.len();
     let mut why = Vec::new();
     if !(3..=6).contains(&n) { why.push("source tables have 3–6 players"); }
-    if cfg.ante.abs() > 1e-9 { why.push("source games have no ante"); }
+    if cfg.ante.abs() > 1e-9 || cfg.bb_ante.abs() > 1e-9 { why.push("source games have no ante"); }
     if cfg.posts.len() != n || n < 2 || cfg.posts[..n-2].iter().any(|p| p.abs() > 1e-9)
         || (cfg.posts[n-2] - 0.5).abs() > 1e-9 || (cfg.posts[n-1] - 1.0).abs() > 1e-9 {
         why.push("source blinds are 0.5/1 bb with no straddle");

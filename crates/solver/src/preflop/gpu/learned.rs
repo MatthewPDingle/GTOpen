@@ -8,7 +8,7 @@ pub(super) struct Learned {
 impl PreflopGpu {
     pub fn enable_learned_research(&mut self,s:&PreflopSolver,source:&str)->Result<Value,String> {
         if self.warmed || self.eval_warmed || self.learned.is_some() || s.cfg.realization!="balanced"
-            || s.cfg.rake_pct!=0.0 || s.cfg.ante!=0.0 || self.research.is_some()
+            || s.cfg.rake_pct!=0.0 || s.cfg.has_ante() || self.research.is_some()
             || self.research_cohorts.is_some() || self.research_exact_reuse.is_some()
             || self.research_cv.is_some() || self.research_behavioral.is_some()
             || self.research_predictive.is_some() || self.research_rm_plus.is_some()

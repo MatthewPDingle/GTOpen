@@ -106,7 +106,7 @@ impl DatasetModel {
         if cfg.posts.len()<self.min_players || cfg.posts.len()>self.max_players {
             note.push_str(&format!(" Table size extrapolated: {} players; source {}–{}.",cfg.posts.len(),self.min_players,self.max_players));
         }
-        if (cfg.ante>0.0)!=self.ante {note.push_str(" Ante format differs from the source; transfer is unvalidated.");}
+        if cfg.has_ante()!=self.ante {note.push_str(" Ante format differs from the source; transfer is unvalidated.");}
         if cfg.utg_straddle {note.push_str(" Live UTG straddle: source histories are unstraddled; transferred hand policies and sizes are estimates, not measured straddle behavior.");}
         if cfg.utg_straddle {note.push_str(" BB unopened entry is inferred from aggregate stats; its unstraddled free-check placeholder is not a paid calling range.");}
         if let Some(sb) = self.small_blind_bb {

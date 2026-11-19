@@ -413,7 +413,10 @@
           <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="What an open raises to, in big blinds. Separate several sizes with commas. With a 2 bb straddle use at least 4. Leave empty for no raises (all-in can still be allowed)."></label>
           <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="A 3-bet is this many times the raise it faces: 3 turns a 2.5 bb open into 7.5 bb. Separate several sizes with commas. With the box beside it filled, this is the size in position. Sizes by seat are set below."></label>
           <label data-tip="How many raises a hand can have. The open is raise 1, a 3-bet is 2, a 4-bet is 3.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
-          <label data-tip="What each player antes, in big blinds.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label class="pfl-newrow" data-tip="The ante, in big blinds. It goes into the pot before the cards and is paid on top of the stack, so every seat still plays the stack you set.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
+          <label data-tip="Who pays the ante. Each seat: everyone pays it. Big blind: the big blind pays it for the whole table, as in most tournaments (usually 1 bb). A 1 bb ante from the big blind makes the same pot as 0.125 bb from each of 8 seats.">Paid by <select id="pfl-ante-by">
+            <option value="each">each seat</option><option value="bb">big blind</option>
+          </select></label>
           <label data-tip="Taken only from pots that see a flop.">Rake % <input id="pfl-rakepct" type="number" value="0" min="0" step="0.5"></label>
           <label data-tip="0 means no cap.">Rake cap (bb) <input id="pfl-rakecap" type="number" value="0" min="0" step="0.5"></label>
         </div>
