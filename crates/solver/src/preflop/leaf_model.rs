@@ -48,7 +48,7 @@ fn refresh_weight() -> Option<f32> {
 
 /// MEASUREMENT ONLY (removed before merge). PREFLOP_LEAF_BLOCKERS: 0 = as
 /// shipped up to 1.6.1, 1 = plain input only, 2 (default) = plain input and
-/// the correction on the plain share.
+/// the correction counted from the plain share (`leaf_blocker_shift`).
 pub(crate) fn leaf_blockers_mode() -> u8 {
     static MODE: std::sync::OnceLock<u8> = std::sync::OnceLock::new();
     *MODE.get_or_init(|| std::env::var("PREFLOP_LEAF_BLOCKERS").ok().and_then(|v| v.trim().parse().ok()).unwrap_or(2))
@@ -142,7 +142,9 @@ pub struct LeafTerminalSums {
 
 /// The net's output for one learned terminal.
 struct LeafPred {
-    /// Corrections as the solve prices with them, oop 169 then ip 169.
+    /// Corrections as the solve prices with them, oop 169 then ip 169. With
+    /// blockers on they include the shift to the plain share
+    /// (`leaf_blocker_shift`), and so do the statistics of a refresh.
     corr: Vec<f32>,
     /// Both seats' reaches, normalized.
     reach: [Vec<f32>; 2],
@@ -306,17 +308,6 @@ impl PreflopSolver {
         }).collect();
         self.leaf = Some(st);
         Some(rows)
-    }
-
-    /// True at a terminal the learned model prices. The net's correction is
-    /// what an exact flop solve pays a class above its plain pot share, and
-    /// an exact solve already deals around the class's own cards. So with
-    /// blockers on, the correction goes on the plain share here, not on the
-    /// share against the conditioned range (that would count the cards twice).
-    #[inline]
-    pub(super) fn leaf_priced(&self, node: usize) -> bool {
-        leaf_blockers_mode() == 2
-            && self.leaf.as_ref().is_some_and(|st| st.slot.get(node).is_some_and(|&k| k != NO_SLOT))
     }
 
     /// The learned correction for seat `p` at terminal `node`, if any.
@@ -556,8 +547,8 @@ impl PreflopSolver {
         let mut reaches: Vec<Vec<f32>> = self.root_reaches();
         self.leaf_walk(0, &mut reaches, st, &mut at);
         // inputs of every reached terminal
-        struct Leaf { k: usize, x: Vec<f32>, balanced: Vec<f32>, room: f32, norm: [Vec<f32>; 2], joint: f64,
-                      invested: [f64; 2], known: LeafTotal, pot_type: usize }
+        struct Leaf { k: usize, x: Vec<f32>, balanced: Vec<f32>, shift: Option<Vec<f32>>, room: f32, norm: [Vec<f32>; 2],
+                      joint: f64, invested: [f64; 2], known: LeafTotal, pot_type: usize }
         let leaves: Vec<Leaf> = at.into_par_iter().enumerate().filter_map(|(k, pair)| {
             let pair = pair?;
             let node = st.nodes[k] as usize;
@@ -572,6 +563,7 @@ impl PreflopSolver {
                 norm[seats[side] as usize] = pair[side].iter().map(|v| v / mass[side]).collect();
             }
             let balanced = self.leaf_balanced(node, seats, &norm);
+            let shift = self.leaf_blocker_shift(node, seats, &norm, &balanced);
             let range = seats.map(|q| (0..NUM_CLASSES).map(|h| norm[q as usize][h] / class_prob(h)).collect::<Vec<f32>>());
             let stack = seats.iter().map(|&q| self.cfg.left(q as usize, nd.invested[q as usize])).fold(f64::MAX, f64::min);
             let spot = LeafSpot {
@@ -587,7 +579,7 @@ impl PreflopSolver {
             let [b0, b1] = balanced;
             let balanced: Vec<f32> = b0.into_iter().chain(b1).collect();
             let norm = [std::mem::take(&mut norm[seats[0] as usize]), std::mem::take(&mut norm[seats[1] as usize])];
-            Some(Leaf { k, x, balanced, room: (stack / nd.pot) as f32, norm, joint: mass[0] as f64 * mass[1] as f64,
+            Some(Leaf { k, x, balanced, shift, room: (stack / nd.pot) as f32, norm, joint: mass[0] as f64 * mass[1] as f64,
                         invested, known, pot_type })
         }).collect();
         // the net, in batches (each weight row is read once per batch)
@@ -612,6 +604,12 @@ impl PreflopSolver {
             // the pin and the blocking, when they are on; the leaf's sums either way
             let sums = book_leaf(st.books, measure, &mut corr, &leaf.balanced, [&leaf.norm[0], &leaf.norm[1]], leaf.room,
                                  leaf.invested, leaf.known);
+            // with blockers on, count the correction from the plain share (leaf_blocker_shift)
+            if let Some(shift) = &leaf.shift {
+                for (c, d) in corr.iter_mut().zip(shift) {
+                    *c += d;
+                }
+            }
             (leaf.k, LeafPred { corr, reach: leaf.norm, joint: leaf.joint, known: leaf.known, sums, fixed })
         }).collect();
         for (k, pred) in booked {
@@ -640,6 +638,44 @@ impl PreflopSolver {
             let inv = nd.invested[seat];
             v.iter().map(|&x| ((x as f64 + inv) / nd.pot) as f32).collect()
         })
+    }
+
+    /// With blockers on: for each class, the plain pot share (`balanced`)
+    /// less the share the blocker pricing uses at this terminal, the one
+    /// against the opponent's range once the class holds its two cards. Out
+    /// of position 169, then in position 169; None without blockers.
+    ///
+    /// The net's correction is what an exact flop solve pays a class above
+    /// its plain share, and an exact solve already deals around the class's
+    /// own cards. Added to the conditioned share as it is, the correction
+    /// would count those cards twice. The terminal pricing (CPU and GPU)
+    /// keeps the conditioned share, so the difference goes into the
+    /// corrections here, at the same ranges the net is run on: the terminal
+    /// then pays plain share + correction, times the class's own chance of
+    /// meeting the opponent's range.
+    fn leaf_blocker_shift(&self, node: usize, seats: [u8; 2], norm: &[Vec<f32>], balanced: &[Vec<f32>; 2]) -> Option<Vec<f32>> {
+        if !self.cfg.card_removal || leaf_blockers_mode() != 2 {
+            return None;
+        }
+        let nd = &self.nodes[node];
+        let mut shift = vec![0f32; 2 * NUM_CLASSES];
+        for side in 0..2 {
+            let seat = seats[side] as usize;
+            // the blocker pricing: chance x (pot x conditioned share - invested)
+            let mut v = [0f32; NUM_CLASSES];
+            self.terminal_value(node, seat, norm, &mut v);
+            // every other seat's reach has a mass of 1, so the chance is the opponent's conditioned mass
+            let mut chance = [0f64; NUM_CLASSES];
+            super::removal::conditioned_mass(&norm[seats[1 - side] as usize], &mut chance);
+            let inv = nd.invested[seat];
+            for h in 0..NUM_CLASSES {
+                if chance[h] > 1e-9 {
+                    let conditioned = (v[h] as f64 / chance[h] + inv) / nd.pot;
+                    shift[side * NUM_CLASSES + h] = (balanced[side][h] as f64 - conditioned) as f32;
+                }
+            }
+        }
+        Some(shift)
     }
 
     fn leaf_walk(&self, node: usize, reaches: &mut [Vec<f32>], st: &LeafState, at: &mut [Option<[Vec<f32>; 2]>]) {
@@ -820,51 +856,58 @@ mod tests {
     /// net's correction is what such a solve pays above the plain share. So
     /// with blockers on a learned leaf pays plain share + correction, times
     /// the class's own chance of meeting the opponent's range; the share
-    /// against the conditioned range would count the cards twice.
+    /// against the conditioned range would count the cards twice. Checked at
+    /// the ranges of the refresh, where the shift is exact.
     #[test]
     fn with_blockers_on_a_learned_leaf_pays_the_plain_share_plus_the_correction() {
         let mut s = blockers_game("leafnet", 3);
-        s.install_leaf_net(Arc::new(constant_net(&pattern(0.03)))).unwrap();
+        let bias = pattern(0.03);
+        s.install_leaf_net(Arc::new(constant_net(&bias))).unwrap();
         for _ in 0..20 {
             s.iterate();
         }
         assert!(s.refresh_leaf_values().unwrap().priced > 0);
-        let (nodes, seats) = { let st = s.leaf.as_ref().unwrap(); (st.nodes.clone(), st.seats.clone()) };
-        let reach = uneven_reaches();
-        let (mut blocked, mut moved) = (0f64, 0f64);
-        for (k, &node) in nodes.iter().enumerate() {
-            let node = node as usize;
+        let mut st = s.leaf.take().unwrap();
+        let mut at: Vec<Option<[Vec<f32>; 2]>> = vec![None; st.nodes.len()];
+        s.leaf_walk(0, &mut s.root_reaches(), &st, &mut at);
+        let (mut blocked, mut moved, mut leaves) = (0f64, 0f64, 0);
+        for (k, pair) in at.into_iter().enumerate() {
+            let Some(pair) = pair else { continue };
+            let mass = [pair[0].iter().sum::<f32>(), pair[1].iter().sum::<f32>()];
+            if !(mass[0] > 1e-12 && mass[1] > 1e-12) {
+                continue;
+            }
+            leaves += 1;
+            let (node, seats) = (st.nodes[k] as usize, st.seats[k]);
             let (pot, invested) = (s.nodes[node].pot, s.nodes[node].invested.clone());
             // folded seats: the full deal, a mass of 1 for every class
             let mut norm: Vec<Vec<f32>> = (0..s.n).map(|_| (0..NUM_CLASSES).map(class_prob).collect()).collect();
             for side in 0..2 {
-                norm[seats[k][side] as usize] = reach[side].clone();
+                norm[seats[side] as usize] = pair[side].iter().map(|v| v / mass[side]).collect();
             }
-            let st = s.leaf.take();
-            let plain = s.leaf_balanced(node, seats[k], &norm);
-            // what the balanced model pays with blockers on: the share against the conditioned range
-            let mut conditioned = [[0f32; NUM_CLASSES]; 2];
+            let plain = s.leaf_balanced(node, seats, &norm);
             for side in 0..2 {
-                s.terminal_value(node, seats[k][side] as usize, &norm, &mut conditioned[side]);
-            }
-            s.leaf = st;
-            for side in 0..2 {
-                let seat = seats[k][side] as usize;
+                let seat = seats[side] as usize;
                 let mut chance = [0f64; NUM_CLASSES];
-                crate::preflop::removal::conditioned_mass(&norm[seats[k][1 - side] as usize], &mut chance);
-                let corr = s.leaf_correction(node, seat).unwrap().to_vec();
+                crate::preflop::removal::conditioned_mass(&norm[seats[1 - side] as usize], &mut chance);
+                // the balanced model with blockers on: the share against the conditioned range
+                let mut conditioned = [0f32; NUM_CLASSES];
+                s.terminal_value(node, seat, &norm, &mut conditioned);
+                s.leaf = Some(st);
                 let mut got = [0f32; NUM_CLASSES];
                 s.terminal_value(node, seat, &norm, &mut got);
+                st = s.leaf.take().unwrap();
                 for h in 0..NUM_CLASSES {
-                    let expect = chance[h] * (pot * (plain[side][h] + corr[h]) as f64 - invested[seat]);
+                    let net = bias[side * NUM_CLASSES + h] as f64;
+                    let expect = chance[h] * (pot * (plain[side][h] as f64 + net) - invested[seat]);
                     assert!((got[h] as f64 - expect).abs() < 2e-4 * (1.0 + expect.abs()), "leaf {k} side {side} class {h}: {} vs {expect}", got[h]);
                     blocked = blocked.max((chance[h] - 1.0).abs());
-                    moved = moved.max(((conditioned[side][h] as f64 + chance[h] * pot * corr[h] as f64) - expect).abs() / pot);
+                    moved = moved.max((conditioned[h] as f64 + chance[h] * pot * net - expect).abs() / pot);
                 }
             }
         }
         // the test means something: blockers matter here, and the old pricing was elsewhere
-        assert!(blocked > 0.1 && moved > 0.005, "blocked {blocked} moved {moved}");
+        assert!(leaves > 3 && blocked > 0.02 && moved > 0.002, "leaves {leaves} blocked {blocked} moved {moved}");
     }
 
     /// Different values per class and per side, so a swapped side or class shows.

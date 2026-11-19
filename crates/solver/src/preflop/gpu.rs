@@ -858,9 +858,7 @@ pub fn minimum_need_of(cfg: &super::PreflopConfig, est: &super::TreeEstimate) ->
         bytes += g.leaf_terminals as f64 * (2.0 * nc * 4.0 + 12.0);
     }
     if cfg.card_removal {
-        // the blockers' list of heads-up terminals leaves the learned leaves out
-        let learned = if cfg.realization == "leafnet" { g.leaf_terminals } else { 0 };
-        bytes += reach_blocks * 13.0 * 4.0 + eq_channels * nc * nc * 4.0 + (g.heads_up_terminals - learned) as f64 * 4.0;
+        bytes += reach_blocks * 13.0 * 4.0 + eq_channels * nc * nc * 4.0 + g.heads_up_terminals as f64 * 4.0;
     }
     bytes += 4.0; // the placeholder for locked strategies
     if g.side_pot_terminals > 0 {

@@ -113,9 +113,9 @@ impl PreflopSolver {
     /// `chip_terminal_value` with card removal: each hero class's value
     /// times its own chance that the other seats hold their reaching hands.
     /// Heads-up showdowns also condition the opponent's range on the hero's
-    /// cards (exact at the class level). Folds, a folded traverser, side pots,
-    /// pots of three or more and learned flop leaves (`leaf_priced`) keep the
-    /// plain per-class value given the opponents' ranges, reweighted per class.
+    /// cards (exact at the class level). Folds, a folded traverser, side pots
+    /// and pots of three or more keep the plain per-class value given the
+    /// opponents' ranges, reweighted per class.
     pub(super) fn removal_terminal_value(&self, node: usize, p: usize, reaches: &[Vec<f32>], out: &mut [f32]) {
         let nd = &self.nodes[node];
         let mut prob = [1f64; NUM_CLASSES];
@@ -133,9 +133,7 @@ impl PreflopSolver {
             return;
         }
         let me = 1u32 << p;
-        if nd.kind == KIND_POT_SHARE && nd.live & me != 0 && nd.live.count_ones() == 2 && nd.side_pots.is_empty()
-            && !self.leaf_priced(node)
-        {
+        if nd.kind == KIND_POT_SHARE && nd.live & me != 0 && nd.live.count_ones() == 2 && nd.side_pots.is_empty() {
             let q = (0..self.n).find(|&q| q != p && nd.live & (1 << q) != 0).expect("a second live seat");
             self.removal_heads_up(node, p, &reaches[q], &prob, out);
             return;
