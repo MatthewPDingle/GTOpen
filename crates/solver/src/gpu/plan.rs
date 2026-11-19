@@ -20,6 +20,17 @@
 use crate::game::{Dealt, Spot};
 use crate::tree::{KIND_ACTION, KIND_CHANCE, KIND_TERM_FOLD, KIND_TERM_SHOWDOWN, SENTINEL};
 
+/// Plan layout options (see [`GpuPlan::build_with`]).
+#[derive(Clone, Copy, Debug, Default)]
+pub struct PlanOptions {
+    /// Give terminal (fold / showdown) nodes slots in the per-level parity
+    /// scratch instead of one resident slot each. Terminal values then live
+    /// only until their parent level consumes them, so an evaluation that
+    /// reuses them (mode 1 after mode 0 under rake, "trust the read") must
+    /// recompute them; `GpuSolver` does so whenever the plan has this set.
+    pub terminal_scratch: bool,
+}
+
 #[derive(Clone, Copy, Default)]
 pub struct LevelSpan {
     pub start: u32,
@@ -82,10 +93,15 @@ pub struct GpuPlan {
     /// Dense physical reach slots, sharing storage exactly when owners match.
     pub reach_slot: [Vec<u32>; 2],
     pub reach_blocks: [usize; 2],
-    /// CFV slots: persistent terminals plus alternating-level action/chance scratch.
+    /// CFV slots: persistent terminals plus alternating-level action/chance scratch
+    /// (with `terminal_scratch`, terminals share the scratch too).
     /// Unvisited nodes have no allocation.
     pub cfv_slot: Vec<u32>,
     pub cfv_blocks: usize,
+    /// Terminal cfvs live in the per-level scratch (`PlanOptions::terminal_scratch`).
+    pub terminal_scratch: bool,
+    /// Length of the tree's child-slot array (uploaded as is).
+    pub children_len: usize,
 
     // Per-hand arrays.
     pub hand_c1: [Vec<u32>; 2],
@@ -114,7 +130,12 @@ pub struct GpuPlan {
 }
 
 impl GpuPlan {
+    /// The upstream layout: one resident cfv slot per terminal.
     pub fn build(spot: &Spot, use_iso: bool) -> GpuPlan {
+        GpuPlan::build_with(spot, use_iso, &PlanOptions::default())
+    }
+
+    pub fn build_with(spot: &Spot, use_iso: bool, opts: &PlanOptions) -> GpuPlan {
         let n = spot.tree.nodes.len();
         let nh = [spot.hands[0].len(), spot.hands[1].len()];
         let iso_active = use_iso && spot.suit_perms.len() > 1;
@@ -214,13 +235,18 @@ impl GpuPlan {
             }
         }
 
-        // Terminal CFVs stay resident for repeated BR/average evaluations.
+        // Terminal CFVs stay resident for repeated BR/average evaluations
+        // (unless `terminal_scratch`: then they are scratch like the rest).
         // Action/chance CFVs live only from their up-sweep level until the
         // immediately preceding level consumes them. Reuse those scratch
         // slots between even levels and between odd levels, with root at 0.
+        let in_scratch = |kind: u8| {
+            kind == KIND_ACTION || kind == KIND_CHANCE
+                || (opts.terminal_scratch && (kind == KIND_TERM_FOLD || kind == KIND_TERM_SHOWDOWN))
+        };
         let mut widths = vec![0usize; max_level as usize + 1];
         for (ni, node) in spot.tree.nodes.iter().enumerate() {
-            if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE) {
+            if reached[ni] && in_scratch(node.kind) {
                 widths[level[ni] as usize] += 1;
             }
         }
@@ -234,7 +260,7 @@ impl GpuPlan {
         let mut cfv_blocks = parity_max[0] + parity_max[1];
         for (ni, node) in spot.tree.nodes.iter().enumerate() {
             if !reached[ni] { continue; }
-            if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
+            if in_scratch(node.kind) {
                 let l = level[ni] as usize;
                 cfv_slot[ni] = (base[l % 2] + used[l]) as u32;
                 used[l] += 1;
@@ -476,6 +502,8 @@ impl GpuPlan {
             reach_blocks,
             cfv_slot,
             cfv_blocks,
+            terminal_scratch: opts.terminal_scratch,
+            children_len: spot.tree.children.len(),
             hand_c1,
             hand_c2,
             hand_mask,
@@ -508,6 +536,36 @@ impl GpuPlan {
             + self.reach_blocks[1] as u64 * self.nh[1] as u64
             + self.cfv_blocks as u64 * self.nh_max as u64) * 4
     }
+
+    /// Device bytes of the read-only tables `GpuSolver` uploads for this plan
+    /// (everything except arenas, reach and cfv), without locks and fits:
+    /// per-node arrays (76 B/node, payoffs ×2 under ICM), work lists, child
+    /// slots, chance card tables, hand tables, river tables, scalars.
+    pub fn table_bytes(&self) -> u64 {
+        let n = self.num_nodes as u64;
+        let w = |len: usize| len as u64 * 4;
+        // player, na, data offset (8), children start, cdiv, river slot,
+        // cc span (2), reach slot (2), cfv slot, lock offsets (2 × 8)
+        let per_node = n * (4 + 4 + 8 + 4 + 4 + 4 + 8 + 8 + 4 + 16)
+            + w(self.node_twin.len() + self.node_tlose.len() + self.node_ttie.len());
+        let lists = w(self.action_nodes.len() + self.chance_parents.len() + self.chance_children.len()
+            + self.chance_cards.len() + self.chance_nodes.len() + self.fold_nodes.len()
+            + self.show_nodes.len() + self.children_len
+            + self.cc_card.len() + self.cc_child.len() + self.cc_perm.len()
+            + self.hand_perm_flat[0].len() + self.hand_perm_flat[1].len());
+        let mut hands = 0;
+        let mut river = 0;
+        for p in 0..2 {
+            // c1, c2, mask (8), same combo, weight; fold index: 53 offsets + 2 per hand
+            hands += self.nh[p] as u64 * 24 + w(53 + 2 * self.nh[p]);
+            river += w(self.riv_off[p].len() + self.riv_cnt[p].len() + self.riv_sorted_idx[p].len()
+                + self.riv_lower[p].len() + self.riv_upper[p].len()
+                + self.riv_card_off[p].len() + self.riv_card_pos[p].len());
+        }
+        // lock sigma placeholder, fit stride + 2 index words, discounts, eval roots
+        let scalars = w(1 + 48 + 2 + 3 + 4 * self.nh_max);
+        per_node + lists + hands + river + scalars
+    }
 }
 
 #[cfg(test)]
@@ -532,20 +590,29 @@ mod tests {
                     ..Default::default()
                 },
             }).unwrap();
-            for iso in [false, true] {
-                let plan = GpuPlan::build(&spot, iso);
+            for (iso, terminal_scratch) in [(false, false), (true, false), (false, true), (true, true)] {
+                let plan = GpuPlan::build_with(&spot, iso, &PlanOptions { terminal_scratch });
+                assert_eq!(plan.terminal_scratch, terminal_scratch);
                 assert_eq!(plan.cfv_slot[0], 0);
                 let mut used = vec![false; plan.cfv_blocks];
                 let mut terminals = std::collections::HashSet::new();
-                for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
-                    let slot = plan.cfv_slot[node as usize] as usize;
-                    assert!(terminals.insert(slot), "terminal caches must remain distinct");
-                    used[slot] = true;
+                if !terminal_scratch {
+                    for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
+                        let slot = plan.cfv_slot[node as usize] as usize;
+                        assert!(terminals.insert(slot), "terminal caches must remain distinct");
+                        used[slot] = true;
+                    }
                 }
                 let mut live = vec![std::collections::HashSet::new(); plan.num_levels];
                 for l in 0..plan.num_levels {
-                    for (nodes, spans) in [(&plan.action_nodes, &plan.action_spans),
-                        (&plan.chance_nodes, &plan.chance_node_spans)] {
+                    let mut lists = vec![(&plan.action_nodes, &plan.action_spans),
+                        (&plan.chance_nodes, &plan.chance_node_spans)];
+                    if terminal_scratch {
+                        // terminals are scratch outputs of their level like everything else
+                        lists.push((&plan.fold_nodes, &plan.fold_spans));
+                        lists.push((&plan.show_nodes, &plan.show_spans));
+                    }
+                    for (nodes, spans) in lists {
                         let span = spans[l];
                         for &node in &nodes[span.start as usize..(span.start + span.count) as usize] {
                             let slot = plan.cfv_slot[node as usize] as usize;
@@ -557,6 +624,14 @@ mod tests {
                     if l > 0 {
                         assert!(live[l].is_disjoint(&live[l - 1]), "a parent cannot overwrite child input storage");
                     }
+                }
+                let resident = GpuPlan::build(&spot, iso);
+                if terminal_scratch {
+                    assert!(plan.cfv_blocks <= resident.cfv_blocks);
+                    // only the cfv layout differs
+                    assert_eq!(plan.reach_blocks, resident.reach_blocks);
+                    assert_eq!(plan.arena_elements, resident.arena_elements);
+                    assert_eq!(plan.table_bytes(), resident.table_bytes());
                 }
                 assert!(used.iter().all(|&used| used));
                 for &child in &plan.cc_child {

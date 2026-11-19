@@ -27,9 +27,78 @@ use cudarc::driver::{
     sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, LaunchConfig,
     PushKernelArg,
 };
-use plan::{GpuPlan, LevelSpan};
+use plan::{GpuPlan, LevelSpan, PlanOptions};
 use std::sync::Arc;
 use rayon::prelude::*;
+
+/// VRAM a plan must leave free on top of its buffers (the budget checks).
+const HEADROOM: u64 = 512 * 1024 * 1024;
+
+/// Layout choices for [`GpuSolver::with_options`] and [`estimate_hu_bytes`].
+/// `None` fields take the defaults described on each.
+#[derive(Clone, Debug, Default)]
+pub struct HuGpuOptions {
+    /// VRAM budget in bytes. None: the device's free memory
+    /// ([`vram_info_mb`]); unlimited when it cannot be queried.
+    pub budget_bytes: Option<u64>,
+    /// Terminal cfvs in the per-level scratch (plan.rs `PlanOptions`).
+    /// None: on unless the game is general-sum (rake / ICM) or "trust the
+    /// read" is active, the two cases whose evaluations reuse terminal
+    /// values. Forcing it on is always correct: evaluations then recompute
+    /// the terminals they would have reused.
+    pub terminal_scratch: Option<bool>,
+    /// Whole-tree action arenas (direct DMA) instead of the compact packing of
+    /// reached nodes. None: full when the host store is f32 and it fits the
+    /// budget (the upstream rule). Some(true) requires f32 host storage.
+    pub full_arenas: Option<bool>,
+}
+
+/// Device bytes of a heads-up GPU solve by buffer class.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, serde::Serialize)]
+pub struct HuGpuBytes {
+    /// Regret + strategy arenas (f32).
+    pub arenas: u64,
+    /// Both players' reach buffers.
+    pub reach: u64,
+    /// Counterfactual values (resident terminals + per-level scratch).
+    pub cfv: u64,
+    /// Read-only tables: per-node arrays, work lists, hands, river tables.
+    pub tables: u64,
+    /// "Trust the read" extras (read reach, free villain arenas); 0 otherwise.
+    pub read: u64,
+    /// Free memory the budget check keeps on top (512 MiB).
+    pub headroom: u64,
+}
+
+impl HuGpuBytes {
+    pub fn total(&self) -> u64 {
+        self.arenas + self.reach + self.cfv + self.tables + self.read + self.headroom
+    }
+}
+
+fn auto_terminal_scratch(solver: &Solver) -> bool {
+    !solver.spot.tree.config.general_sum() && solver.rnr_active().is_none()
+}
+
+/// What [`GpuSolver::with_options`] would allocate for `spot` with f32 host
+/// storage and no "trust the read" (CPU only: builds the plan, no CUDA).
+pub fn estimate_hu_bytes(spot: &crate::game::Spot, use_iso: bool, o: &HuGpuOptions) -> HuGpuBytes {
+    let terminal_scratch = o.terminal_scratch.unwrap_or(!spot.tree.config.general_sum());
+    let plan = GpuPlan::build_with(spot, use_iso, &PlanOptions { terminal_scratch });
+    let tables = plan.table_bytes();
+    let full_bytes = (spot.tree.data_size[0] + spot.tree.data_size[1]) * 8;
+    let full = o.full_arenas.unwrap_or_else(|| {
+        o.budget_bytes.is_none_or(|b| plan.staging_bytes() + full_bytes + tables + HEADROOM <= b)
+    });
+    HuGpuBytes {
+        arenas: if full { full_bytes } else { (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8 },
+        reach: (plan.reach_blocks[0] * plan.nh[0] + plan.reach_blocks[1] * plan.nh[1]) as u64 * 4,
+        cfv: (plan.cfv_blocks * plan.nh_max) as u64 * 4,
+        tables,
+        read: 0,
+        headroom: HEADROOM,
+    }
+}
 
 const BLOCK: u32 = 128;
 /// Floats per fit in `d_fit` (layout in kernels.cu).
@@ -192,6 +261,11 @@ pub struct GpuSolver {
     /// Cached+page-locked host staging for fast arena transfers.
     h_staging: PinnedBuf,
     arena_layout: [ArenaLayout; 2],
+    /// Terminal cfvs share the per-level scratch: every evaluation recomputes
+    /// terminals instead of reusing them (`eval_up_with`).
+    terminal_scratch: bool,
+    /// Whole-tree action arenas (vs. the compact packing).
+    full_arenas: bool,
 
     pub iteration: u32,
     pub algo: Algorithm,
@@ -251,20 +325,44 @@ impl GpuSolver {
 
     /// Check the configured traversal's compact buffers before device allocation.
     /// Build the plan once and reuse it for both the budget check and upload.
+    /// The upstream layout and budget rule: terminal cfvs resident, and the
+    /// check counts staging + arenas + read extras + 512 MiB (not the tables).
+    /// [`GpuSolver::with_options`] is the general form.
     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
+        let o = HuGpuOptions { budget_bytes: Some(budget_bytes), terminal_scratch: Some(false), full_arenas: None };
+        Self::construct(solver, &o, true)
+    }
+
+    /// Build with explicit layout options (see [`HuGpuOptions`]); the budget
+    /// check counts every device buffer including the tables.
+    pub fn with_options(solver: &Solver, o: &HuGpuOptions) -> Result<GpuSolver, String> {
+        Self::construct(solver, o, false)
+    }
+
+    fn construct(solver: &Solver, o: &HuGpuOptions, legacy_budget: bool) -> Result<GpuSolver, String> {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
+        let terminal_scratch = o.terminal_scratch.unwrap_or_else(|| auto_terminal_scratch(solver));
+        let budget_bytes = o.budget_bytes
+            .unwrap_or_else(|| vram_info_mb().map_or(u64::MAX, |(free, _)| free * 1_000_000));
 
-        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+        let mut plan = GpuPlan::build_with(&solver.spot, solver.use_isomorphism, &PlanOptions { terminal_scratch });
+        let tables = if legacy_budget { 0 } else { plan.table_bytes() };
+        let f32_store = solver.storage == crate::store::Storage::F32;
         // F32 stores already support cheap direct DMA. Prefer that path if it
         // fits, avoiding inactive host snapshots on warm full-precision solves.
         // Compressed stores benefit from packing and parallel readback anyway;
         // a tight F32 budget can use the same exact compact representation.
         let full_needed = plan.staging_bytes()
             + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
-            + 512 * 1024 * 1024;
-        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+            + tables + HEADROOM;
+        let full_arenas = match o.full_arenas {
+            Some(true) if !f32_store => return Err("full action arenas need f32 host storage".into()),
+            Some(full) => full,
+            None => f32_store && full_needed <= budget_bytes,
+        };
+        if full_arenas {
             plan.use_full_action_arenas(&solver.spot);
         }
         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
@@ -274,7 +372,7 @@ impl GpuSolver {
             (plan.reach_blocks[r.villain] * plan.nh[r.villain]) as u64 * 4
                 + plan.arena_elements[r.villain] as u64 * 8
         });
-        let needed = plan.staging_bytes() + arena_bytes + read_bytes + 512 * 1024 * 1024;
+        let needed = plan.staging_bytes() + arena_bytes + read_bytes + tables + HEADROOM;
         if needed > budget_bytes {
             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
@@ -480,6 +578,8 @@ impl GpuSolver {
             eval_warmed: [false; 2],
             graphs: None,
             h_staging,
+            terminal_scratch,
+            full_arenas,
             iteration: solver.iteration,
             algo: solver.algo,
             _ctx: ctx,
@@ -784,6 +884,8 @@ impl GpuSolver {
     /// read/free mixture after `rnr_mix`). `free`: the traverser's own
     /// profile locks don't bind (the free villain's best response).
     fn eval_up_with(&mut self, p: usize, mode: i32, terminals: bool, opp_read: bool, free: bool) -> Result<(), String> {
+        // Scratch terminals do not survive their parent level: never reuse them.
+        let terminals = terminals || self.terminal_scratch;
         let locks = if free { &self.d_lock_off_free } else { &self.d_lock_off };
         let own_strat = match self.d_free.as_ref() {
             Some(f) if free && f.villain == p => &f.strat,
@@ -1582,6 +1684,57 @@ impl GpuSolver {
         self.stream.synchronize().map_err(e)
     }
 
+    /// Device bytes currently allocated, by class (from the live buffers).
+    pub fn device_bytes(&self) -> HuGpuBytes {
+        let b = |n: usize| n as u64;
+        let arenas = (0..2).map(|p| b(self.d_regrets[p].num_bytes() + self.d_strat[p].num_bytes())).sum();
+        let reach = b(self.d_reach[0].num_bytes() + self.d_reach[1].num_bytes());
+        let mut read = self.d_reach_read.as_ref().map_or(0, |r| b(r.num_bytes()));
+        if let Some(f) = &self.d_free {
+            read += b(f.regrets.num_bytes() + f.strat.num_bytes());
+        }
+        let pair = |x: &[CudaSlice<u32>; 2]| b(x[0].num_bytes() + x[1].num_bytes());
+        let tables = b(self.d_action_nodes.num_bytes() + self.d_chance_parents.num_bytes()
+            + self.d_chance_children.num_bytes() + self.d_chance_cards.num_bytes()
+            + self.d_chance_nodes.num_bytes() + self.d_fold_nodes.num_bytes()
+            + self.d_show_nodes.num_bytes() + self.d_node_player.num_bytes()
+            + self.d_node_na.num_bytes() + self.d_node_data_off.num_bytes()
+            + self.d_node_children_start.num_bytes() + self.d_node_twin.num_bytes()
+            + self.d_node_tlose.num_bytes() + self.d_node_ttie.num_bytes()
+            + self.d_node_cdiv.num_bytes() + self.d_node_river_slot.num_bytes()
+            + self.d_cc_start.num_bytes() + self.d_cc_count.num_bytes() + self.d_cc_card.num_bytes()
+            + self.d_cc_child.num_bytes() + self.d_cc_perm.num_bytes() + self.d_children.num_bytes()
+            + self.d_cfv_slot.num_bytes() + self.d_lock_off.num_bytes() + self.d_lock_off_free.num_bytes()
+            + self.d_lock_sigma.num_bytes() + self.d_fit.num_bytes() + self.d_fit_node.num_bytes()
+            + self.d_fit_order.num_bytes() + self.d_disc.num_bytes() + self.d_eval_roots.num_bytes())
+            + pair(&self.d_hand_perm) + pair(&self.d_rsrc) + pair(&self.d_fold_card_off)
+            + pair(&self.d_fold_card_idx) + pair(&self.d_hand_c1) + pair(&self.d_hand_c2)
+            + b(self.d_hand_mask[0].num_bytes() + self.d_hand_mask[1].num_bytes())
+            + pair(&self.d_same)
+            + b(self.d_weights[0].num_bytes() + self.d_weights[1].num_bytes())
+            + pair(&self.d_riv_off) + pair(&self.d_riv_cnt) + pair(&self.d_riv_idx)
+            + pair(&self.d_riv_lower) + pair(&self.d_riv_upper) + pair(&self.d_riv_card_off)
+            + pair(&self.d_riv_card_pos);
+        HuGpuBytes { arenas, reach, cfv: b(self.d_cfv.num_bytes()), tables, read, headroom: HEADROOM }
+    }
+
+    /// One-line layout summary, e.g. "f32 compact arenas, terminal cfv in
+    /// scratch, 5.95 GB on device".
+    pub fn describe(&self) -> String {
+        let total = self.device_bytes().total() - HEADROOM;
+        format!(
+            "f32 {} arenas, terminal cfv {}, {:.2} GB on device",
+            if self.full_arenas { "full" } else { "compact" },
+            if self.terminal_scratch { "in scratch" } else { "resident" },
+            total as f64 / 1e9
+        )
+    }
+
+    /// Whether terminal cfvs share the per-level scratch.
+    pub fn terminal_scratch(&self) -> bool {
+        self.terminal_scratch
+    }
+
     /// `Solver::sync_free_arenas` on the device: the free villain gets copies
     /// of the villain's arenas when the dial turns on, and loses them when
     /// it turns off.
@@ -2157,6 +2310,93 @@ mod tests {
             assert_eq!(arenas(&s), expected);
             assert_eq!(compact.exploitability(&s).unwrap().to_bits(),
                 full.exploitability(&s).unwrap().to_bits());
+        }
+    }
+
+    fn scratch_solver(board: &str, rake: f64) -> Solver {
+        let sizing = || StreetSizing {
+            bet: parse_sizes("50").unwrap(), raise: parse_sizes("2.5x").unwrap(), donk: vec![],
+        };
+        Solver::new(Arc::new(Spot::new(SpotConfig {
+            board: board.into(),
+            range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
+            range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
+            tree: TreeConfig {
+                starting_pot: 10.0, effective_stack: 40.0, rake_pct: rake, rake_cap: 1.0,
+                oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
+                ..Default::default()
+            },
+        }).unwrap()))
+    }
+
+    fn assert_same_exploitability(a: &mut GpuSolver, b: &mut GpuSolver, s: &Solver, iterations: u32, label: &str) {
+        for i in 1..=iterations {
+            a.iterate().unwrap();
+            b.iterate().unwrap();
+            if i % 10 == 0 {
+                assert_eq!(a.exploitability(s).unwrap().to_bits(), b.exploitability(s).unwrap().to_bits(),
+                    "{label}: exploitability at iteration {i}");
+            }
+        }
+    }
+
+    #[test]
+    fn gpu_terminal_scratch_matches_resident() {
+        let opts = |ts: bool, full: bool| HuGpuOptions {
+            budget_bytes: None, terminal_scratch: Some(ts), full_arenas: Some(full),
+        };
+        for (board, iso) in [("KsQs2dJd", true), ("KsQs2d", true), ("Qs7h2d", false)] {
+            for full in [false, true] {
+                let mut s = scratch_solver(board, 0.0);
+                s.use_isomorphism = iso;
+                let mut resident = GpuSolver::with_options(&s, &opts(false, full)).expect("test requires CUDA");
+                let mut scratch = GpuSolver::with_options(&s, &opts(true, full)).unwrap();
+                assert!(!resident.terminal_scratch() && scratch.terminal_scratch());
+                let (rb, sb) = (resident.device_bytes(), scratch.device_bytes());
+                assert!(sb.cfv < rb.cfv, "{board}: scratch cfv {} vs resident {}", sb.cfv, rb.cfv);
+                assert_eq!((sb.arenas, sb.reach, sb.tables), (rb.arenas, rb.reach, rb.tables));
+                let label = format!("{board} iso={iso} full={full}");
+                assert_same_exploitability(&mut resident, &mut scratch, &s, 30, &label);
+                for p in 0..2 {
+                    assert_device_bits(&device_bits(&resident, &resident.d_regrets[p]),
+                        &device_bits(&scratch, &scratch.d_regrets[p]), &format!("{label} regrets {p}"));
+                    assert_device_bits(&device_bits(&resident, &resident.d_strat[p]),
+                        &device_bits(&scratch, &scratch.d_strat[p]), &format!("{label} strat {p}"));
+                }
+            }
+        }
+        // Rake: the default keeps terminals resident; forcing the scratch makes
+        // mode 1 recompute the terminals it would reuse, bit for bit.
+        let s = scratch_solver("KsQs2d", 0.05);
+        assert!(!GpuSolver::with_options(&s, &HuGpuOptions::default()).unwrap().terminal_scratch());
+        let mut resident = GpuSolver::with_options(&s, &opts(false, true)).unwrap();
+        let mut scratch = GpuSolver::with_options(&s, &opts(true, true)).unwrap();
+        assert_same_exploitability(&mut resident, &mut scratch, &s, 20, "rake");
+        // Rake-free default turns it on; the legacy constructors keep the upstream layout.
+        let s = scratch_solver("KsQs2d", 0.0);
+        assert!(GpuSolver::with_options(&s, &HuGpuOptions::default()).unwrap().terminal_scratch());
+        assert!(!GpuSolver::new(&s).unwrap().terminal_scratch());
+        assert!(!GpuSolver::new_with_budget(&s, u64::MAX).unwrap().terminal_scratch());
+    }
+
+    #[test]
+    fn estimate_hu_bytes_matches_allocation() {
+        for (board, rake) in [("KsQs2dJd", 0.0), ("KsQs2d", 0.0), ("KsQs2d", 0.05)] {
+            let s = scratch_solver(board, rake);
+            for full_arenas in [None, Some(false), Some(true)] {
+                for terminal_scratch in [None, Some(false), Some(true)] {
+                    let o = HuGpuOptions { budget_bytes: None, terminal_scratch, full_arenas };
+                    let gpu = GpuSolver::with_options(&s, &o).expect("test requires CUDA");
+                    let est = estimate_hu_bytes(&s.spot, s.use_isomorphism, &o);
+                    assert_eq!(est, gpu.device_bytes(), "{board} rake {rake} {o:?}");
+                    assert!(gpu.describe().contains(if gpu.full_arenas { "full" } else { "compact" }));
+                }
+            }
+            // a budget below the estimate is refused before any allocation
+            let o = HuGpuOptions::default();
+            let need = estimate_hu_bytes(&s.spot, s.use_isomorphism, &HuGpuOptions { full_arenas: Some(false), ..o.clone() }).total();
+            let tight = HuGpuOptions { budget_bytes: Some(need - 1), full_arenas: Some(false), ..o };
+            assert!(GpuSolver::with_options(&s, &tight).is_err());
         }
     }
 
