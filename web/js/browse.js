@@ -334,6 +334,15 @@ export class Browser {
         'display:none;align-items:center;gap:8px;font-size:11px;color:var(--ink-dim);margin-top:6px';
       this.els.legend.after(this.filterStateEl);
     }
+    if (this.els.matrix?.before) {
+      // one line right above the grid, shown while the solve on screen is
+      // older than the locks (see renderStaleNote)
+      this.staleNote = document.createElement('div');
+      this.staleNote.className = 'stale-note';
+      this.staleNote.setAttribute('role', 'status');
+      this.staleNote.style.display = 'none';
+      this.els.matrix.before(this.staleNote);
+    }
     const host = document.getElementById('view-browse');
     const top = host?.querySelector('.browse-top');
     if (host && top) {
@@ -458,6 +467,7 @@ export class Browser {
    *  also says the solve is older than the locks and offers to solve again
    *  (the instant answer is the EXPLOIT view, which has its own button). */
   renderLocksBar() {
+    this.renderStaleNote();
     const bar = this.locksBar;
     if (!bar) return;
     const lv = this.locksView;
@@ -556,34 +566,64 @@ export class Browser {
       all.addEventListener('click', () => this.clearAllLocks());
       bar.appendChild(all);
     }
-    if (!pending) return;
-    // the next step after a lock change, said once and close to the locks
+    if (!pending || solve.running) return;
+    // the next step after a lock change sits with the locks; the grid itself
+    // says that it is out of date (renderStaleNote)
     const next = document.createElement('span');
     next.className = 'lb-next';
-    const note = document.createElement('span');
-    note.className = 'lb-note';
-    note.textContent = count ? 'not in the solve yet' : 'locks changed since the solve';
-    const why = document.createElement('button');
-    why.type = 'button';
-    why.className = 'info-dot';
-    why.textContent = '?';
-    why.setAttribute('aria-label', 'What to do after changing a lock');
-    why.dataset.tip = 'The grid still shows the solve from before your last lock change. ' +
-      'EXPLOIT shows at once how the player whose hands are showing should play against the locks. ' +
-      'RE-SOLVE solves again with the locks in place, so both players adjust.';
-    next.append(note, why);
-    if (!solve.running) {
+    {
       const again = document.createElement('button');
       again.type = 'button';
-      again.className = 'btn sm' + (solve.drift ? ' ghost' : '');
+      again.className = 'btn sm' + (solve.drift ? ' ghost' : ' due');
       again.textContent = solve.label;
       again.dataset.tip = solve.drift
         ? 'Setup no longer matches the tree you locked, so solving builds a new tree and drops these locks. To keep them, put Setup back the way it was.'
-        : 'Solve again with the locks in place, so both players adjust around them.';
+        : 'The solve on screen is from before your last lock change. Solve again with the locks in place, so both players adjust around them.';
       again.addEventListener('click', () => document.getElementById('btn-solve-top')?.click());
       next.appendChild(again);
     }
     bar.appendChild(next);
+  }
+
+  /** Is the solve on screen older than the locks? True from a lock change
+   *  until a solve has finished after it. EXPLOIT is never stale: it is worked
+   *  out against the locks as they stand. */
+  staleSolve() {
+    return !!this.view && this.pendingLockEdits > 0 && this.mode !== 'exploit';
+  }
+
+  /** Say at the grid itself that it shows the solve from before the last
+   *  lock change, and which button fixes that. One line above the grid, a tag
+   *  on the action panel's title and a mark on the two buttons it names: a
+   *  small note at the far end of the LOCKS row was easy to miss, and the old
+   *  ranges read as the answer to the lock. */
+  renderStaleNote() {
+    const note = this.staleNote;
+    if (!note) return;
+    const on = this.staleSolve();
+    const solve = this.solveInfo?.() || { label: 'RE-SOLVE', drift: false, running: false };
+    const lockedHere = !!this.view?.locked;
+    const key = JSON.stringify([on, solve, lockedHere]);
+    if (key === this._staleKey) return;
+    this._staleKey = key;
+    note.closest('.matrix-panel')?.classList.toggle('stale', on);
+    this.els.actionsTitle?.classList.toggle('stale', on && !solve.running);
+    this.els.segMode?.querySelector('button[data-v="exploit"]')?.classList.toggle('due', on && !solve.running);
+    note.style.display = on ? 'flex' : 'none';
+    if (!on) { note.innerHTML = ''; return; }
+    let text;
+    if (solve.running) {
+      text = 'Solving again with your locks in place. The grid updates as it goes.';
+    } else if (solve.drift) {
+      text = 'This is from before your last lock change. Setup has changed too, so solving would build a new tree and drop the locks. ' +
+        '<b>EXPLOIT</b> still shows the best reply to them now.';
+    } else if (lockedHere) {
+      text = `The locked play shows here, but the EVs are from before your last lock change. Press <b>${solve.label}</b> to update them.`;
+    } else {
+      text = `This is how it was solved before your last lock change. Press <b>${solve.label}</b> to solve with the locks, ` +
+        'or <b>EXPLOIT</b> to see the best reply now.';
+    }
+    note.innerHTML = `<b class="sn-tag">${solve.running ? 'SOLVING' : 'OLD SOLVE'}</b><span>${text}</span>`;
   }
 
   /** Drop a player model's locks when this page does not know which model made them. */
@@ -2071,6 +2111,7 @@ export class Browser {
   }
 
   renderMatrix() {
+    this.renderStaleNote(); // EXPLOIT hides it, a locked node words it differently
     if (!this.view) { this.renderEmptyState(); return; } // no spot yet: the tab says so
     const p = this.player;
     const colors = this.actionColors();
@@ -2446,22 +2487,36 @@ export class Browser {
     box.setAttribute('aria-busy', task ? 'true' : 'false');
     const pf = this.preflop;
     if (!pf || !pf.villains) return;
+    if (pf.villains.oop || pf.villains.ip) {
+      // a caption says what the buttons are: "LOCK BB TO <name>" on its own
+      // read as a second way to do what the lock box does
+      const cap = document.createElement('span');
+      cap.className = 'seg-cap';
+      cap.textContent = 'PLAY AS MODEL';
+      cap.dataset.tip = 'Make a player play like a saved player model at every decision after the flop: its bet, fold and raise rates. ' +
+        'This is separate from the lock box, which sets one decision. Nothing is locked until you press a button, and a model that is on shows in LOCKS.';
+      box.appendChild(cap);
+    }
     for (const [side, p] of [['oop', 0], ['ip', 1]]) {
       const v = pf.villains[side];
       if (!v) continue;
       const on = this.villainLocked === p;
+      const who = this.posLabel(p);
       const b = document.createElement('button');
       b.className = 'btn ghost sm vlock' + (on ? ' on' : '');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
       b.textContent = on
-        ? `\u{1F512} ${this.posLabel(p)} = ${v.name} \u00b7 unlock`
-        : `LOCK ${this.posLabel(p)} TO ${v.name}`;
+        ? `\u{1F512} ${who} = ${v.name} \u00b7 unlock`
+        : `${who} = ${v.name}`;
       b.disabled = !!task;
-      if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${this.posLabel(p)}…`;
+      if (task?.player === p) b.textContent = `${task.clearing ? 'UNLOCKING' : 'LOCKING'} ${who}…`;
+      const what = hasContextualBetting(v.stats)
+        ? `${v.name}'s betting estimates and other postflop tendencies. Where the evidence is thin, ${who} stays closer to the solved play.`
+        : `${v.name}'s postflop rates (c-bet ${v.stats.cbet.join('/')} \u00b7 fold to bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%).`;
       b.dataset.tip = on
-        ? `${v.name}'s postflop stats are locked into every ${this.posLabel(p)} decision.`
-        : hasContextualBetting(v.stats)
-          ? `Apply ${v.name}'s contextual betting estimates and other postflop tendencies. Sparse evidence stays closer to the solved strategy; missing context keeps its betting baseline. Hand selection is inferred from the solve.`
-          : `Compile ${v.name}'s postflop stats (c-bet ${v.stats.cbet.join('/')} \u00b7 fold-to-bet ${v.stats.fold_to_bet.join('/')} \u00b7 raise ${v.stats.raise_bet}%) into locks on every ${this.posLabel(p)} decision. Betting hands are inferred from the solve and adjusted to the stat targets.`;
+        ? `Every ${who} decision after the flop is locked to ${v.name}. Press to remove it. Your own locks stay.`
+        : `Off. Press to lock every ${who} decision after the flop to ${what} Which hands bet is taken from the solve. ` +
+          'This is a whole-game lock, separate from the lock box, which sets one decision.';
       b.addEventListener('click', () => this.toggleVillainLock(p, v));
       box.appendChild(b);
     }

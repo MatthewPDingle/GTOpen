@@ -2,6 +2,11 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.5.4 - 2026-11-19
+
+- The Browse tab now says, right at the grid, when what it shows is older than your locks. After a lock change an amber line above the grid reads OLD SOLVE and names the two ways on: RE-SOLVE to solve with the locks, or EXPLOIT to see the best reply at once. The action tiles carry the same OLD SOLVE tag, and both buttons turn amber until you use one. It used to be a small note at the far end of the LOCKS row.
+- The two buttons that lock a player to a saved player model now sit under the caption PLAY AS MODEL and read "BB = My Response". They lock every decision of that player after the flop, which is separate from the lock box (one decision). Nothing is locked until you press one, and a model that is on shows in LOCKS.
+
 ## 1.5.3 - 2026-11-19
 
 - The "learned flop values" tick box is gone from the Preflop Lab. Every new cash game uses learned flop values, and games with tournament payouts use the simpler estimate, as before.
