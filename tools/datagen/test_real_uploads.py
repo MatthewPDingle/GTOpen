@@ -427,6 +427,18 @@ class CountingTests(Base):
         self.assertIn("would add 2 examples", out.getvalue())
         self.assertNotIn("progress.json", self.hub.main)
 
+    def test_a_merge_written_twice_counts_once(self):
+        self.pooled_pr(1001)
+        self.pooled_pr(1002)
+        self.validate()
+        p = self.progress()
+        p["events"].append(dict(p["events"][0]))
+        self.hub.main["progress.json"] = json.dumps(p).encode()
+        text = self.validate()
+        self.assertIn("holds 1 merges twice: dropping the repeats", text)
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 2), (2, "Anyone", 1, 2)])
+        self.assertEqual(self.progress()["total_examples"], 4)
+
     def test_the_graph_is_drawn_at_the_end_of_a_long_pass(self):
         for job in (1001, 1002, 1003):
             self.pooled_pr(job)

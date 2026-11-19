@@ -482,13 +482,26 @@ def merged_pr_events(api, repo, pr):
 def recount(api, repo, dry_run=False):
     """Add every merged pull request that progress.json does not hold (a validator
     that was closed part-way through a pass used to leave its merges uncounted).
-    Returns the progress when something was added, else None."""
-    have = {e.get("pr") for e in load_progress(api, repo)["events"]}
+    Also drops a merge that was written twice. Returns the progress when it changed, else None."""
+    progress = load_progress(api, repo)
+    seen, once = set(), []
+    for e in progress["events"]:  # the same merge written twice (two validators at once) counts once
+        key = (e.get("pr"), e["contributor"], e.get("kind"))
+        if "pr" not in e or key not in seen:
+            once.append(e)
+        seen.add(key)
+    repeats = len(progress["events"]) - len(once)
+    if repeats:
+        print(f"progress.json holds {repeats} merges twice: {'would drop' if dry_run else 'dropping'} the repeats")
+        if not dry_run:
+            progress["events"] = once
+            save_progress(api, repo, progress, f"progress: {repeats} merges were counted twice")
+    have = {e.get("pr") for e in once}
     missing = [d for d in api.get_repo_discussions(repo, repo_type="dataset", discussion_type="pull_request",
                                                     discussion_status="all")
                if getattr(d, "status", None) == "merged" and d.num not in have]
     if not missing:
-        return None
+        return progress if repeats and not dry_run else None
     events = []
     for pr in sorted(missing, key=lambda d: d.num):
         try:
@@ -504,7 +517,7 @@ def recount(api, repo, dry_run=False):
     print(f"{len(missing)} merged pull requests were missing from progress.json: "
           f"{'would add' if dry_run else 'adding'} {n} examples")
     if dry_run or not events:
-        return None
+        return progress if repeats and not dry_run else None
     return record_merges(api, repo, events, f"progress: +{n} examples from earlier merges")
 
 
