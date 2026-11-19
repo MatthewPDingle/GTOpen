@@ -21,6 +21,16 @@
 //!    batch/realization/datagen)
 //!   SOLVER_GPU=1             solve on the GPU (requires `--features gpu`
 //!                            build; forces f32 storage)
+//!   SOLVER_GPU_MAX_CARDS_PER_GROUP=k|auto  opt-in turn-grouped GPU layout for
+//!                            trees whose resident layout does not fit: sweep
+//!                            the subtrees below the first chance layer in
+//!                            groups of at most k cards, or `auto`: the
+//!                            upstream resident layout when it fits the
+//!                            budget, else the resident layout with terminal
+//!                            cfvs in the scratch, else the fewest groups
+//!                            that fit. Unset: the resident layout, unchanged.
+//!   SOLVER_GPU_BUDGET_MB=N   VRAM budget of the grouped layout (default: free
+//!                            VRAM - 1024 MB, capped at 88% of the card)
 
 use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
 use std::sync::atomic::AtomicBool;
@@ -696,14 +706,12 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
     #[cfg(feature = "gpu")]
     if use_gpu {
         // spots too big for VRAM fall back to the CPU engine, like the server
-        // Budget from the card's real free memory (Windows reports free VRAM
-        // loosely, so also cap at 88% of the card): an oversized plan would
-        // otherwise spill into shared system memory and crawl.
-        let budget = match solver::gpu::vram_info_mb() {
-            Some((free, total)) => free.saturating_sub(1024).min(total * 88 / 100) * 1_000_000,
-            None => u64::MAX,
+        let budget = gpu_budget_bytes();
+        let built = match grouped_gpu_options(budget) {
+            Some(o) => build_grouped(solver, &o),
+            None => solver::gpu::GpuSolver::new_with_budget(solver, budget),
         };
-        let mut gpu = match solver::gpu::GpuSolver::new_with_budget(solver, budget) {
+        let mut gpu = match built {
             Ok(g) => g,
             Err(err) => {
                 eprintln!("  gpu unavailable ({err}) — solving on CPU");
@@ -740,13 +748,92 @@ fn run_gpu(_solver: &mut Solver, _opts: &RunOptions) {
     std::process::exit(1);
 }
 
+/// Budget from the card's real free memory (Windows reports free VRAM
+/// loosely, so also cap at 88% of the card): an oversized plan would
+/// otherwise spill into shared system memory and crawl.
+#[cfg(feature = "gpu")]
+fn gpu_budget_bytes() -> u64 {
+    match solver::gpu::vram_info_mb() {
+        Some((free, total)) => free.saturating_sub(1024).min(total * 88 / 100) * 1_000_000,
+        None => u64::MAX,
+    }
+}
+
+/// The opt-in turn-grouped layout (SOLVER_GPU_MAX_CARDS_PER_GROUP, see the
+/// header). None when unset: callers then use the resident constructors
+/// exactly as before.
+#[cfg(feature = "gpu")]
+fn grouped_gpu_options(default_budget: u64) -> Option<solver::gpu::HuGpuOptions> {
+    let v = std::env::var("SOLVER_GPU_MAX_CARDS_PER_GROUP").ok()?;
+    let max_cards_per_group = match v.as_str() {
+        "auto" => None,
+        s => match s.parse::<usize>() {
+            Ok(k) if k > 0 => Some(k),
+            _ => {
+                eprintln!("warning: SOLVER_GPU_MAX_CARDS_PER_GROUP={v:?} is not a positive integer or \"auto\" — ignored");
+                return None;
+            }
+        },
+    };
+    let budget_bytes = match std::env::var("SOLVER_GPU_BUDGET_MB") {
+        Ok(b) => match b.parse::<u64>() {
+            Ok(mb) if mb > 0 => mb * 1_000_000,
+            _ => {
+                eprintln!("warning: SOLVER_GPU_BUDGET_MB={b:?} is not a positive integer — using free VRAM");
+                default_budget
+            }
+        },
+        Err(_) => default_budget,
+    };
+    Some(solver::gpu::HuGpuOptions { budget_bytes: Some(budget_bytes), terminal_scratch: None, full_arenas: None, max_cards_per_group })
+}
+
+/// Grouped construction. `auto` first tries the upstream resident layout and
+/// budget rule (`new_with_budget`), so a spot that fits is built exactly as
+/// without the variable; otherwise `with_options` picks the resident layout
+/// with terminal cfvs in the scratch or the fewest groups that fit.
+#[cfg(feature = "gpu")]
+fn build_grouped(solver: &Solver, o: &solver::gpu::HuGpuOptions) -> Result<solver::gpu::GpuSolver, String> {
+    let budget = o.budget_bytes.unwrap_or(u64::MAX);
+    let mb = |b: u64| b as f64 / 1e6;
+    if o.max_cards_per_group.is_none() {
+        if let Ok(gpu) = solver::gpu::GpuSolver::new_with_budget(solver, budget) {
+            println!("gpu layout: budget {:.0} MB: the upstream resident layout fits", mb(budget));
+            return Ok(gpu);
+        }
+    }
+    let o = solver::gpu::HuGpuOptions { terminal_scratch: Some(true), ..o.clone() };
+    let est = solver::gpu::estimate_hu_layout(&solver.spot, solver.use_isomorphism, &o);
+    println!(
+        "gpu layout: budget {:.0} MB, planned {:.1} MB in {} (arenas {:.1} | reach {:.1} | cfv {:.1} | tables {:.1} MB)",
+        mb(budget),
+        mb(est.bytes.total()),
+        if est.groups.is_empty() {
+            "the resident layout, terminal cfvs in the scratch".to_string()
+        } else {
+            format!("{} turn groups of {:?} cards", est.groups.len(), est.groups.iter().map(Vec::len).collect::<Vec<_>>())
+        },
+        mb(est.bytes.arenas),
+        mb(est.bytes.reach),
+        mb(est.bytes.cfv),
+        mb(est.bytes.tables),
+    );
+    let gpu = solver::gpu::GpuSolver::with_options(solver, &o)?;
+    println!("gpu: {}", gpu.describe());
+    Ok(gpu)
+}
+
 #[cfg(feature = "gpu")]
 fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
     let pot = solver.spot.tree.config.starting_pot;
     // A save can record an algorithm the GPU engine cannot run (pcfr+) or a
     // tree the device cannot hold; report that instead of panicking through
     // `expect`.
-    let mut gpu = match solver::gpu::GpuSolver::new(solver) {
+    let built = match grouped_gpu_options(gpu_budget_bytes()) {
+        Some(o) => build_grouped(solver, &o),
+        None => solver::gpu::GpuSolver::new(solver),
+    };
+    let mut gpu = match built {
         Ok(gpu) => gpu,
         Err(err) => {
             eprintln!("cannot start the GPU solver: {err}");
