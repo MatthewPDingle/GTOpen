@@ -205,13 +205,19 @@ def run_local(args):
 
 
 def load_progress(api, repo):
+    """progress.json from the dataset; an empty one only when the dataset has none yet.
+    Any other failure is raised: a network blip must never start the count again from nothing."""
     from huggingface_hub import hf_hub_download
     try:
+        from huggingface_hub.errors import RemoteEntryNotFoundError as Missing
+    except ImportError:  # older huggingface_hub
+        from huggingface_hub.utils import EntryNotFoundError as Missing
+    try:
         p = hf_hub_download(repo, "progress.json", repo_type="dataset", force_download=True)
-        with open(p) as f:
-            return json.load(f)
-    except Exception:
+    except Missing:
         return {"format": "gtopen-leaf-values-progress", "events": []}
+    with open(p) as f:
+        return json.load(f)
 
 
 def save_progress(api, repo, progress, message):
@@ -622,12 +628,15 @@ def run_prs(args):
     finally:
         failed = sys.exc_info()[0] is not None
         if not args.dry_run and not failed:
-            progress = load_progress(api, repo)
-            filled = backfill_times(api, repo, progress)
-            if filled:
-                save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
-                print(f"progress.json: added merge times to {filled} older entries")
-                graph(progress)
+            try:
+                progress = load_progress(api, repo)
+                filled = backfill_times(api, repo, progress)
+                if filled:
+                    save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
+                    print(f"progress.json: added merge times to {filled} older entries")
+                    graph(progress)
+            except Exception as err:
+                print(f"   could not check older entries' merge times: {type(err).__name__}: {err}")
         graph(force=True)
 
 

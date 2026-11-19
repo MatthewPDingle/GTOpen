@@ -45,6 +45,10 @@ def game_file(folder, login, set_name, game, examples=3, **header):
     return path
 
 
+class Missing(FileNotFoundError):
+    """The Hub's answer for a file that is not in the repo."""
+
+
 class FakeHub:
     """The parts of HfApi and hf_hub_download the two tools use, over an in-memory repo with pull requests."""
 
@@ -115,7 +119,7 @@ class FakeHub:
         if revision and revision.startswith("refs/pr/"):
             data = self.prs[int(revision.rsplit("/", 1)[1])]["files"].get(path, data)
         if data is None:
-            raise FileNotFoundError(path)
+            raise Missing(path)
         d = tempfile.mkdtemp(dir=cache_dir or self.tmp)
         out = os.path.join(d, os.path.basename(path))
         with open(out, "wb") as f:
@@ -147,7 +151,9 @@ class Base(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.hub = FakeHub()
         self.hub.tmp = self.tmp
-        patches = [mock.patch.dict(sys.modules, {"huggingface_hub": self.hub.module()}),
+        patches = [mock.patch.dict(sys.modules, {
+                       "huggingface_hub": self.hub.module(),
+                       "huggingface_hub.errors": types.SimpleNamespace(RemoteEntryNotFoundError=Missing)}),
                    mock.patch.object(validate, "verify_file", fake_verify),
                    mock.patch.object(validate, "block_base", lambda cli, login, cache={}: 1000),
                    mock.patch.object(validate, "publish_graph", lambda progress: None),
@@ -426,6 +432,27 @@ class CountingTests(Base):
             self.assertIsNone(validate.recount(self.hub, REPO, dry_run=True))
         self.assertIn("would add 2 examples", out.getvalue())
         self.assertNotIn("progress.json", self.hub.main)
+
+    def test_a_dropped_connection_never_restarts_the_count(self):
+        self.pooled_pr(1001)
+        self.validate()
+        self.pooled_pr(1002)
+        before = self.hub.main["progress.json"]
+        real = self.hub.download
+
+        def flaky(repo, path, **kw):  # progress.json cannot be read; everything else can
+            if path == "progress.json":
+                raise ConnectionError("no network")
+            return real(repo, path, **kw)
+
+        with mock.patch.dict(sys.modules, {"huggingface_hub": types.SimpleNamespace(
+                HfApi=lambda: self.hub, hf_hub_download=flaky)}):
+            text = self.validate()
+        self.assertIn("merged, but progress.json could not be written (the next pass adds it)", text)
+        self.assertEqual(self.hub.main["progress.json"], before)  # not replaced by a near-empty one
+        self.assertEqual(self.hub.prs[2]["status"], "merged")
+        self.validate()  # the next pass counts the merge that could not be written
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 2), (2, "Anyone", 1, 2)])
 
     def test_a_merge_written_twice_counts_once(self):
         self.pooled_pr(1001)
