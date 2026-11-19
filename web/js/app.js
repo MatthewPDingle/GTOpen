@@ -1,4 +1,4 @@
-// App bootstrap: tabs, setup form, solve dashboard, browser wiring.
+// App bootstrap: tabs, the postflop setup & solve page, browser wiring.
 
 import { api, toast, normalizeError } from './api.js';
 import { RangeEditor } from './range_editor.js';
@@ -34,7 +34,7 @@ function showTab(name) {
   // server keeps mid-solve browse data fresh) — gating on solved showed the
   // PREVIOUS tree's solution until the first solve finished
   if (name === 'browse' && state.built) browser.refresh();
-  if (name === 'solve') drawChart(chartHistory); // canvas can't size/draw while hidden
+  if (name === 'setup') drawChart(chartHistory); // canvas can't size/draw while hidden
   renderStrip();
 }
 tabs.forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
@@ -58,7 +58,7 @@ const state = {
 
 /** Postflop screens that show the shared spot strip (the Preflop Lab and the
  *  3-way tab have their own sessions). */
-const STRIP_TABS = new Set(['setup', 'solve', 'browse', 'reports']);
+const STRIP_TABS = new Set(['setup', 'browse', 'reports']);
 
 // ---------------------------------------------------------------------------
 // Range editor
@@ -568,8 +568,9 @@ function engineToken(st) {
   return '';
 }
 
-/** The strip's state: what to show, its tone, where clicking it should go, and
- *  the phase to announce. `phase` changes only on a real state change, so the
+/** The strip's state: what to show, its tone, where clicking it should go
+ *  (`target`: 'setup' = BUILD TREE, 'solve' = the SOLVE button; both are on
+ *  the Postflop Setup & Solve page), and the phase to announce. `phase` changes only on a real state change, so the
  *  live region does not read the iteration count on every poll. */
 function stripStateInfo() {
   const st = state.status;
@@ -613,33 +614,50 @@ const STRIP_SAY = {
 };
 let stripPhase = null;
 
-/** One short line beside SOLVE/STOP: why STOP is unavailable, or how far the
- *  run got. Same numbers as the strip, local to the controls that use them. */
+/** What the run line's tooltip says in each state: the explanation that used
+ *  to be a notice box across the top of the page. */
+const RUN_TIPS = {
+  building: 'Building the tree from the setup on this page.',
+  drift: 'The setup on this page no longer matches the tree that was built. BUILD TREE or SOLVE builds it again from what is on the page now.',
+  unbuilt: 'No tree yet. SOLVE builds one from the setup on this page, then solves it.',
+  running: 'The solve is running. The % is how much a perfect opponent could still gain, as a share of the pot.',
+  ended: 'How the last solve ended. The % is how much a perfect opponent could still gain, as a share of the pot.',
+  built: 'The tree is built. Press SOLVE to solve it.',
+};
+
+/** One short line under BUILD TREE / SOLVE / STOP: what state the tree is in,
+ *  or how far the run got. Same numbers as the strip, local to the controls
+ *  that use them. */
 function syncRunState() {
   const st = state.status;
   const running = st?.state === 'running';
   const el = $('run-state');
-  let text = '', tone = '';
-  if (state.building) { text = 'building…'; tone = 'warn'; }
-  else if (state.drift) { text = 'SETUP changed'; tone = 'warn'; }
-  else if (!state.built) { text = 'not built'; tone = 'warn'; }
+  let text = '', tone = '', tip = '';
+  if (state.building) { text = 'building…'; tone = 'warn'; tip = RUN_TIPS.building; }
+  else if (state.drift) { text = 'SETUP changed'; tone = 'warn'; tip = RUN_TIPS.drift; }
+  else if (!state.built) { text = 'not built'; tone = 'warn'; tip = RUN_TIPS.unbuilt; }
   else if (running) {
     const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
     text = `${state.stopping ? 'stopping · ' : engineToken(st)}iter ${st.iteration.toLocaleString()}${pct}`;
-    tone = 'live';
+    tone = 'live'; tip = RUN_TIPS.running;
   } else if ((st?.iteration || 0) > 0) {
     const pct = st.exploit_pct > 0 ? ` · ${st.exploit_pct.toFixed(2)}%` : '';
     const fits = st.fits?.length
       ? ` · fitting ${st.fits.length} (off ${(Math.max(...st.fits.map(f => f.max_error)) * 100).toFixed(1)} pts)`
       : '';
     text = `${engineToken(st)}${st.state} · iter ${st.iteration.toLocaleString()}${pct}${fits}`;
-    tone = 'ok';
+    tone = 'ok'; tip = RUN_TIPS.ended;
   } else {
-    text = 'built · not solved';
+    text = 'built · not solved'; tip = RUN_TIPS.built;
   }
-  el.textContent = text;
+  // write only on change: this runs on every poll
+  if (el.textContent !== text) el.textContent = text;
   el.dataset.tone = tone;
-  $('setup-drift').classList.toggle('hidden', !state.drift);
+  if (el.dataset.tip !== tip) el.dataset.tip = tip;
+  // a changed setup marks the button that rebuilds, instead of a notice box
+  $('btn-build').classList.toggle('due', state.drift && !state.building);
+  // Browse is the next step as soon as there is a tree (it is browsable mid-solve)
+  $('btn-browse').classList.toggle('hidden', !state.built || state.building);
 }
 
 /** SOLVE/RE-SOLVE/REBUILD & SOLVE, and the controls that only apply mid-run. */
@@ -652,9 +670,10 @@ function syncSolveActions() {
     if ($(id).textContent !== label) $(id).textContent = label;
   }
   $('solve-controls').classList.toggle('hidden', !state.built);
-  $('btn-solve-top').classList.toggle('hidden', running);
-  $('btn-stop-top').classList.toggle('hidden', !running);
-  $('btn-solve').disabled = running;
+  // SOLVE and STOP share one place, in the header and on the page (as in the
+  // Preflop Lab): STOP takes it while a solve runs
+  for (const id of ['btn-solve', 'btn-solve-top']) $(id).classList.toggle('hidden', running);
+  for (const id of ['btn-stop', 'btn-stop-top']) $(id).classList.toggle('hidden', !running);
   // STOP answers at once: both buttons say "stopping" from the click until
   // the solve has ended (it finishes its iteration and measures one last time)
   const stopping = running && state.stopping;
@@ -666,19 +685,17 @@ function syncSolveActions() {
   }
 }
 
-// Clicking the state goes to the control that owns it: BUILD TREE for
-// built/not-built/SETUP-changed, the Run panel for a run in progress.
+// Clicking the state goes to the control that owns it, on the Postflop Setup
+// & Solve page: BUILD TREE for built/not-built/SETUP-changed, SOLVE for a run.
 $('ss-state').addEventListener('click', () => {
   const info = stripStateInfo();
-  if (info.target === 'solve') {
-    showTab('solve');
-    $('panel-run').scrollIntoView({ block: 'nearest' });
-    $('btn-solve').focus({ preventScroll: true });
-  } else {
-    showTab('setup');
-    ($('setup-drift').classList.contains('hidden') ? $('btn-build') : $('btn-rebuild')).focus();
-  }
+  showTab('setup');
+  const btn = info.target === 'solve' ? $('btn-solve') : $('btn-build');
+  $('panel-solve').scrollIntoView({ block: 'nearest' });
+  // STOP takes SOLVE's place while a run is on
+  (btn.classList.contains('hidden') ? $('btn-stop') : btn).focus({ preventScroll: true });
 });
+$('btn-browse').addEventListener('click', () => showTab('browse'));
 
 // SETUP is the source of truth: any edit re-checks drift. Range painting only
 // commits on mouseup, so that is the event the matrix can be watched through.
@@ -703,7 +720,7 @@ async function buildTree() {
   // once the new spot validates) — never do that unprompted
   // node locks live only in the session: a new tree throws them away, saved
   // solve or not, so every discard question names them. Editing a field never
-  // raises a modal on its own (the drift notice carries it).
+  // raises a modal on its own (the run line carries it).
   const locks = state.built ? await api.locks().catch(() => []) : [];
   const lockNote = locks.length
     ? ` It also throws away your ${locks.length} locked decision${locks.length > 1 ? 's' : ''}.` : '';
@@ -768,7 +785,11 @@ async function buildTree() {
     refreshSession();
     pollStatus();
     toast('tree built');
-    showTab('solve');
+    // building used to jump to the Solve tab; SOLVE is now on this page, so
+    // only make sure it is in view (and leave Browse or Reports alone)
+    if ($('view-setup').classList.contains('active')) {
+      $('panel-solve').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
     return true;
   } catch (e) {
     // validate-then-swap on the server: a refused build leaves the previous
@@ -794,15 +815,14 @@ async function buildTree() {
   }
 }
 $('btn-build').addEventListener('click', () => { buildTree(); });
-$('btn-rebuild').addEventListener('click', () => { buildTree(); });
 
 // ---------------------------------------------------------------------------
-// Solve dashboard
+// Solve (step 05 of the Postflop Setup & Solve page)
 // ---------------------------------------------------------------------------
 
 /** SOLVE: rebuild first when SETUP no longer describes the tree, then run.
  *  buildTree carries the only discard confirms (running/unsaved/locks); an
- *  edited field alone never raises a modal — the drift notice shows it. */
+ *  edited field alone never raises a modal — the run line shows it. */
 async function startSolve() {
   if (state.running || state.building) return;
   // SETUP is the source of truth: board clicks and range/stakes/size edits
@@ -946,7 +966,7 @@ function drawChart(history) {
   chartHistory = history;
   const cv = $('convergence-chart');
   // render at the element's CSS size x devicePixelRatio so text stays crisp
-  // (the CSS stretches the canvas to width:100%); skip while the SOLVE tab is
+  // (the CSS stretches the canvas to width:100%); skip while the page is
   // hidden (zero rect) — showTab redraws on entry
   const rect = cv.getBoundingClientRect();
   if (rect.width < 10) return;
@@ -1004,6 +1024,8 @@ function drawChart(history) {
   ctx.fillText(`iter ${xMax}`, W - 80, H - 8);
 }
 window.addEventListener('resize', () => drawChart(chartHistory));
+// the dashed target line follows the box as it is edited
+$('run-target').addEventListener('input', () => drawChart(chartHistory));
 
 // ---------------------------------------------------------------------------
 // Save / load
@@ -1081,7 +1103,7 @@ async function loadSolve() {
       if (st && st.spot_request) await applySpotToSetup(st.spot_request);
     } catch (e) { reportError(e, null, 'SETUP not updated'); }
     toast('loaded — go to BROWSE');
-    pollStatus(); // also refreshes the SOLVE tab's tree line from the new session
+    pollStatus(); // also refreshes the memory line under SOLVE from the new session
   } catch (e) { reportError(e, loadSolve); }
 }
 $('btn-load').addEventListener('click', loadSolve);

@@ -56,12 +56,12 @@ The first build takes longer. Large trees need substantial RAM; GPU solving also
 | Tab | What to do |
 | --- | --- |
 | **00 · Preflop Lab** | Build a 2–9-player game, choose blinds, stacks (equal or per seat) and raise sizes, assign optional player models, and solve. Follow an action line to a heads-up flop, then **Send to postflop setup**. |
-| **01 · Setup** | Enter or import both ranges, choose the board, and set pot, effective stack, rake, and bet sizes. |
-| **02 · Solve** | After **Build tree** in Setup, solve the selected board. Watch convergence, stop/resume, and save the session. |
-| **03 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. Undo and redo lock edits with the lock panel's buttons or Ctrl+Z / Ctrl+Shift+Z. |
-| **04 · Reports** | Solve the Setup configuration across **47, 95, 184, or all 1,755 canonical flops**. Compare results by board, high card, hand class, or texture, or put two reports side by side. |
+| **01 · Postflop Setup & Solve** | Enter or import both ranges, choose the board, and set pot, effective stack, rake, and bet sizes. Then, on the same page, press **Solve** (it builds the tree first), watch convergence, stop/resume, and save the session. |
+| **02 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. Undo and redo lock edits with the lock panel's buttons or Ctrl+Z / Ctrl+Shift+Z. |
+| **03 · Reports** | Solve the Setup configuration across **47, 95, 184, or all 1,755 canonical flops**. Compare results by board, high card, hand class, or texture, or put two reports side by side. |
+| **Beta 3-Way** | Build, solve and browse three-player postflop spots on one page. Still in beta. |
 
-You can start directly in Setup if you already have ranges. Preflop Lab is optional.
+You can start directly in Postflop Setup & Solve if you already have ranges. Preflop Lab is optional.
 
 **Units:** preflop stacks and sizes are in big blinds; Small blind and Big blind specify the stake amounts (enter `2` and `2` for $2/$2). Postflop bet sizes are percentages of the pot; `33 75` offers two sizes, `a` means all-in, and `2.5x` means a raise multiple.
 

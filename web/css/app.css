@@ -73,11 +73,14 @@ b { font-weight: inherit; }
   color: var(--ink-faint); display: block; margin-top: 3px; text-transform: uppercase;
 }
 
-#tabs { display: flex; gap: 4px; }
+/* Spacing is a little tighter than it was with six tabs: "POSTFLOP SETUP &
+   SOLVE" is a long name, and the strip must not take more of the header than
+   before, or the tabs wrap onto two lines while a solve shows its progress. */
+#tabs { display: flex; gap: 2px; }
 .tab {
-  font-family: var(--font-disp); font-weight: 600; font-size: 12px; letter-spacing: .12em;
+  font-family: var(--font-disp); font-weight: 600; font-size: 12px; letter-spacing: .1em;
   background: none; border: 1px solid transparent; color: var(--ink-dim);
-  padding: 6px 13px; cursor: pointer; border-radius: 3px;
+  padding: 6px 10px; cursor: pointer; border-radius: 3px;
   transition: all .15s;
 }
 .tab:hover { color: var(--ink); }
@@ -206,26 +209,20 @@ b { font-weight: inherit; }
 }
 .panel h2 .dim { text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-weight: 400; }
 
+/* Postflop Setup & Solve: the spot in two columns (01 Ranges | 02 Board,
+   03 Pot & stack, 04 Bet sizing), then 05 Solve. On a wide window Solve is a
+   third column, so the whole flow reads left to right without scrolling; on a
+   narrower one it is a band under the other two (see the media queries). */
 .setup-grid {
   display: grid; gap: 14px; align-items: start;
-  grid-template-columns: minmax(420px, .95fr) minmax(460px, 1.05fr);
+  grid-template-columns: minmax(420px, 1fr) minmax(440px, 1.05fr) minmax(360px, .8fr);
 }
 .setup-details { display: grid; gap: 12px; min-width: 0; }
-#view-setup { max-width: 1480px; }
 .setup-heading { display: flex; justify-content: space-between; align-items: center;
   gap: 16px; padding: 10px 2px 16px; }
 .setup-heading h1 { font: 600 18px var(--font-disp); color: var(--ink); }
 .setup-heading p { color: var(--ink-dim); font-size: 12px; margin-top: 5px; }
 .setup-format { font: 10px var(--font-data); color: var(--ink-faint); letter-spacing: .08em; }
-.drift-notice {
-  display: flex; align-items: center; gap: 12px;
-  margin: 0 0 12px; padding: 8px 12px;
-  background: rgba(224, 163, 58, .1); border: 1px solid #74603d;
-  border-left: 3px solid #e0a33a; border-radius: 4px;
-  color: #e4c377; font: 11px var(--font-data); letter-spacing: .04em;
-}
-.drift-notice.hidden { display: none; }
-.drift-notice .btn { margin-left: auto; }
 #view-setup .panel { padding: 14px; min-width: 0; }
 #view-setup .panel h2 { display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
   margin-bottom: 12px; padding-bottom: 10px; }
@@ -252,9 +249,28 @@ b { font-weight: inherit; }
 #view-setup .sizes-table { table-layout: fixed; }
 #view-setup .sizes-table th:first-child { width: 90px; }
 #view-setup .sizes-table input { min-width: 0; }
-#view-setup .build-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
-  flex-wrap: wrap; }
-#view-setup #btn-build { padding: 10px 20px; flex: 1; }
+
+/* 05 Solve: run controls, progress, saved solves */
+.solve-body { display: grid; gap: 14px; min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "run" "progress" "saves"; }
+.solve-run { grid-area: run; min-width: 0; }
+.solve-progress { grid-area: progress; min-width: 0; padding-top: 14px; border-top: 1px solid var(--line); }
+.solve-saves { grid-area: saves; min-width: 0; padding-top: 12px; border-top: 1px solid var(--line); }
+#view-setup .build-row { margin-top: 12px; gap: 8px; flex-wrap: wrap; }
+#view-setup .build-row .btn { padding: 9px 14px; white-space: nowrap; }
+#view-setup #btn-solve, #view-setup #btn-stop { flex: 1; }
+.run-line { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 22px; margin-top: 10px; }
+.run-line .ctl-state { font-size: 11px; cursor: help; }
+.solve-saves h3 {
+  display: flex; align-items: center; gap: 8px; margin: 0;
+  font-family: var(--font-disp); font-size: 10px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint);
+}
+.solve-saves .btn-row { flex-wrap: nowrap; }
+.solve-saves .btn-row input, .solve-saves .btn-row select { flex: 1; min-width: 0; }
+.solve-saves .btn-row .btn { min-width: 58px; }
 
 /* preflop segments in the browse history ribbon (read-only) */
 .hist-seg.hist-preflop { border-style: dashed; opacity: .82; }
@@ -476,15 +492,14 @@ textarea {
 #mem-info { margin-top: 8px; font-size: 11px; line-height: 1.6; }
 #mem-info:empty { display: none; }
 
-.solve-grid { display: grid; grid-template-columns: 330px 1fr; gap: 8px; }
-.bignum-row { display: flex; gap: 28px; margin-bottom: 14px; }
+.bignum-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 18px; margin-bottom: 12px; }
 .bignum label {
-  display: block; font-family: var(--font-disp); font-size: 10px; font-weight: 700;
-  letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px;
+  display: block; font-family: var(--font-disp); font-size: 9px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px;
 }
-.bignum div { font-size: 34px; font-weight: 500; color: var(--accent); line-height: 1.1; }
+.bignum div { font-size: 22px; font-weight: 500; color: var(--accent); line-height: 1.1; }
 .bignum span { font-size: 10px; }
-#convergence-chart { width: 100%; height: 320px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; }
+#convergence-chart { display: block; width: 100%; height: 290px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; }
 
 /* ------------------------------- browse ------------------------------- */
 
@@ -1241,10 +1256,24 @@ button.lb-go:hover { background: var(--panel2); }
 ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
+/* not wide enough for three columns: 05 Solve becomes a band under the
+   setup, run controls and saved solves on the left, progress on the right */
+@media (max-width: 1500px) {
+  .setup-grid { grid-template-columns: minmax(420px, .95fr) minmax(460px, 1.05fr); }
+  #view-setup { max-width: 1480px; }
+  #panel-solve { grid-column: 1 / -1; }
+  .solve-body { grid-template-columns: minmax(320px, .8fr) minmax(0, 1.2fr); column-gap: 22px;
+    grid-template-areas: "run progress" "saves progress"; align-items: start; }
+  .solve-progress { padding-top: 0; border-top: 0; }
+  #convergence-chart { height: 230px; }
+}
 @media (max-width: 1100px) {
   .setup-grid { grid-template-columns: 1fr; }
   .browse-grid { grid-template-columns: 1fr; }
-  .solve-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .solve-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "run" "progress" "saves"; }
+  .solve-progress { padding-top: 14px; border-top: 1px solid var(--line); }
 }
 
 /* narrow windows: the header wraps instead of forcing body-level horizontal
