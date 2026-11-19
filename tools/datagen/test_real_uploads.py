@@ -7,6 +7,7 @@ The last test solves four tiny flop spots with solve-cli on the CPU
 (`cargo build --release -p solver --bin solve-cli`) and is skipped without it.
 """
 import contextlib
+import datetime
 import gzip
 import io
 import json
@@ -51,6 +52,8 @@ class FakeHub:
         self.main = {}                 # path -> bytes
         self.prs = {}                  # num -> {"title", "files": {path: bytes}, "status", "comments": []}
         self.endpoint, self.token = "https://hub.invalid", None
+        self.commits = []              # messages of the files written to main
+        self.after_merge = None        # called with the number right after a merge (to stop a pass part-way)
 
     # --- upload.py
     def whoami(self):
@@ -71,16 +74,27 @@ class FakeHub:
         return [types.SimpleNamespace(path=p, blob_id="x") for p in self.main]
 
     def get_repo_discussions(self, repo, repo_type, discussion_type, discussion_status):
-        return [types.SimpleNamespace(num=n, title=pr["title"]) for n, pr in sorted(self.prs.items())
-                if pr["status"] == discussion_status]
+        return [types.SimpleNamespace(num=n, title=pr["title"], status=pr["status"])
+                for n, pr in sorted(self.prs.items(), reverse=True)  # newest first, like the Hub
+                if discussion_status in ("all", pr["status"])]
 
     def get_discussion_details(self, repo, num, repo_type):
-        diff = "".join(f"diff --git a/{p} b/{p}\n" + ("" if p in self.main else "new file mode 100644\n")
-                       for p in self.prs[num]["files"])
-        return types.SimpleNamespace(diff=diff, events=[])
+        pr = self.prs[num]
+        if pr.get("no_diff"):
+            diff = ""
+        else:
+            diff = "".join(f"diff --git a/{p} b/{p}\n" + ("" if p in self.main and pr["status"] == "open"
+                                                          else "new file mode 100644\n") for p in pr["files"])
+        when = datetime.datetime(2026, 1, 1, 12, 0, num)
+        events = [types.SimpleNamespace(type="comment", content=c, author=who, created_at=when)
+                  for who, c in pr["comments"]]
+        if pr["status"] == "merged":
+            events.append(types.SimpleNamespace(type="status-change", new_status="merged", author="maintainer",
+                                                created_at=when))
+        return types.SimpleNamespace(diff=diff, events=events)
 
     def comment_discussion(self, repo, num, body, repo_type):
-        self.prs[num]["comments"].append(body)
+        self.prs[num]["comments"].append(("maintainer", body))
 
     def change_discussion_status(self, repo, num, status, repo_type):
         self.prs[num]["status"] = status
@@ -88,10 +102,13 @@ class FakeHub:
     def merge_pull_request(self, repo, num, repo_type, comment=""):
         self.main.update(self.prs[num]["files"])
         self.prs[num]["status"] = "merged"
-        self.prs[num]["comments"].append(comment)
+        self.prs[num]["comments"].append(("maintainer", comment))
+        if self.after_merge:
+            self.after_merge(num)
 
     def upload_file(self, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message):
         self.main[path_in_repo] = path_or_fileobj
+        self.commits.append(commit_message)
 
     def download(self, repo, path, repo_type, revision=None, cache_dir=None, force_download=False):
         data = self.main.get(path)
@@ -156,6 +173,15 @@ class Base(unittest.TestCase):
     def progress(self):
         return json.loads(self.hub.main["progress.json"])
 
+    def open_pr(self, files, title="upload"):
+        num = len(self.hub.prs) + 1
+        self.hub.prs[num] = {"title": title, "files": files, "status": "open", "comments": []}
+        return num
+
+    def gz(self, path):
+        with open(path, "rb") as f:
+            return gzip.compress(f.read())
+
 
 class UploadTests(Base):
     def test_new_game_files_go_up_as_one_pull_request(self):
@@ -189,15 +215,6 @@ class UploadTests(Base):
 
 
 class ValidateTests(Base):
-    def open_pr(self, files, title="upload"):
-        num = len(self.hub.prs) + 1
-        self.hub.prs[num] = {"title": title, "files": files, "status": "open", "comments": []}
-        return num
-
-    def gz(self, path):
-        with open(path, "rb") as f:
-            return gzip.compress(f.read())
-
     def test_a_maintainers_game_files_are_merged_and_counted(self):
         game_file(self.tmp, "Maint", "round1", "g01", examples=3)
         game_file(self.tmp, "Maint", "round1", "g02", examples=4)
@@ -248,7 +265,7 @@ class ValidateTests(Base):
             text = self.validate()
         self.assertEqual([self.hub.prs[n]["status"] for n in (1, 2)], ["merged", "merged"])
         self.assertIn("asked to update", text)
-        first, second = self.hub.prs[1]["comments"][-1], self.hub.prs[2]["comments"][-1]
+        first, second = self.hub.prs[1]["comments"][-1][1], self.hub.prs[2]["comments"][-1][1]
         self.assertIn("Thank you!", first)
         self.assertIn("generator v3. They are merged and count in full", first)
         self.assertIn("Generator v4 is out now", first)
@@ -269,7 +286,7 @@ class ValidateTests(Base):
         self.assertIn("REJECT", text)
         pr = self.hub.prs[1]
         self.assertEqual(pr["status"], "closed")
-        self.assertIn("accepted from Maint only", pr["comments"][0])
+        self.assertIn("accepted from Maint only", pr["comments"][0][1])
         self.assertEqual(self.hub.main, {})                                # nothing merged, nothing counted
 
     def test_a_game_file_must_sit_where_its_header_says(self):
@@ -277,14 +294,14 @@ class ValidateTests(Base):
         self.open_pr({"real/Maint/round2/g01.jsonl.gz": self.gz(game)})
         self.validate()
         self.assertEqual(self.hub.prs[1]["status"], "closed")
-        self.assertIn("header set 'round1' does not match the path ('round2')", self.hub.prs[1]["comments"][0])
+        self.assertIn("header set 'round1' does not match the path ('round2')", self.hub.prs[1]["comments"][0][1])
 
     def test_the_verifiers_errors_reject_the_upload(self):
         game = game_file(self.tmp, "Maint", "round1", "g01", plant_errors=["example 2: re-solve differs"])
         self.open_pr({"real/Maint/round1/g01.jsonl.gz": self.gz(game)})
         self.validate()
         self.assertEqual(self.hub.prs[1]["status"], "closed")
-        self.assertIn("example 2: re-solve differs", self.hub.prs[1]["comments"][0])
+        self.assertIn("example 2: re-solve differs", self.hub.prs[1]["comments"][0][1])
 
     def test_a_published_game_file_cannot_be_replaced(self):
         game = game_file(self.tmp, "Maint", "round1", "g01")
@@ -292,7 +309,7 @@ class ValidateTests(Base):
         self.open_pr({"real/Maint/round1/g01.jsonl.gz": self.gz(game_file(self.tmp, "Maint", "round1", "g01", examples=9))})
         self.validate()
         self.assertEqual(self.hub.prs[1]["status"], "closed")
-        self.assertIn("changes or deletes existing files", self.hub.prs[1]["comments"][0])
+        self.assertIn("changes or deletes existing files", self.hub.prs[1]["comments"][0][1])
 
     def test_other_paths_are_still_refused(self):
         game = game_file(self.tmp, "Maint", "round1", "g01")
@@ -302,7 +319,7 @@ class ValidateTests(Base):
             self.open_pr({path: self.gz(game)})
             self.validate()
             self.assertEqual(self.hub.prs[1]["status"], "closed", path)
-            self.assertIn("unexpected file", self.hub.prs[1]["comments"][0])
+            self.assertIn("unexpected file", self.hub.prs[1]["comments"][0][1])
 
     def test_the_memory_cap_reaches_the_verifier(self):
         seen = []
@@ -312,6 +329,114 @@ class ValidateTests(Base):
             self.open_pr({"real/Maint/round1/g01.jsonl.gz": self.gz(game)})
             self.validate(real_max_vram=8)
         self.assertEqual(seen, [8])
+
+
+class CountingTests(Base):
+    """progress.json holds every merged pull request, however the validator was stopped."""
+
+    def pooled_pr(self, job, login="Anyone", examples=2, title=None):
+        d = os.path.join(self.tmp, f"job-{job}")
+        os.makedirs(d)
+        rows = [{"type": "header", "job": job, "contributor": login, "examples": examples}]
+        rows += [{"type": "example"}] * examples
+        with open(os.path.join(d, "job.jsonl"), "w") as f:
+            f.write("".join(json.dumps(r) + "\n" for r in rows))
+        return self.open_pr({f"data/{login}/job-{job}.jsonl.gz": self.gz(os.path.join(d, "job.jsonl"))},
+                            title=title or f"{login}: 1 jobs, {examples} examples")
+
+    def counted(self):
+        return sorted((e["pr"], e["contributor"], e["jobs"], e["examples"]) for e in self.progress()["events"])
+
+    def test_each_merge_is_written_before_the_next_pull_request(self):
+        self.pooled_pr(1001)
+        self.pooled_pr(1002)
+        seen = []
+        self.hub.after_merge = lambda num: seen.append(len(self.hub.commits))
+        self.validate()
+        self.assertEqual(seen, [0, 1])  # the first merge was in progress.json before the second happened
+        self.assertEqual(self.progress()["total_examples"], 4)
+
+    def test_a_validator_killed_part_way_loses_no_count(self):
+        self.pooled_pr(1001)
+        self.pooled_pr(1002)
+        self.pooled_pr(1003)
+
+        def kill(num):  # the window is closed right after the second merge, before anything is written for it
+            if len([p for p in self.hub.prs.values() if p["status"] == "merged"]) == 2:
+                raise KeyboardInterrupt
+
+        self.hub.after_merge = kill
+        with self.assertRaises(KeyboardInterrupt):
+            self.validate()
+        self.assertEqual(len(self.progress()["events"]), 1)
+        self.hub.after_merge = None
+        text = self.validate()  # the next start merges the one left and finds the one that was never written
+        self.assertIn("merged pull requests were missing from progress.json: adding 2 examples", text)
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 2), (2, "Anyone", 1, 2), (3, "Anyone", 1, 2)])
+        self.assertEqual(self.progress()["contributors"], {"Anyone": 6})
+        self.validate()  # and counts nothing twice
+        self.assertEqual(self.progress()["total_examples"], 6)
+
+    def lose_the_count(self):
+        """Merge everything that is open, then forget it was counted."""
+        self.validate()
+        del self.hub.main["progress.json"]
+
+    def test_uncounted_merges_are_credited_by_folder_with_the_merge_time(self):
+        self.pooled_pr(1001, login="Newcomer", examples=3, title="Somebody-else: 9 jobs, 900 examples")
+        self.lose_the_count()
+        self.validate()
+        (e,) = self.progress()["events"]
+        self.assertEqual((e["contributor"], e["jobs"], e["examples"], e["pr"]), ("Newcomer", 1, 3, 1))
+        self.assertEqual(e["time"], "2026-01-01T12:00:01+00:00")
+
+    def test_a_contributors_own_validated_comment_is_not_believed(self):
+        self.pooled_pr(1001, examples=3)
+        self.lose_the_count()
+        self.hub.prs[1]["comments"].append(("Anyone", "Validated 1 jobs (5000 examples). Thank you!"))
+        self.validate()
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 3)])
+
+    def test_real_range_and_mixed_merges_are_recounted_from_the_files(self):
+        self.pooled_pr(1001)
+        game = game_file(self.tmp, "Maint", "round1", "g01", examples=3)
+        self.hub.prs[1]["files"]["real/Maint/round1/g01.jsonl.gz"] = self.gz(game)
+        self.lose_the_count()
+        self.validate()
+        p = self.progress()
+        self.assertEqual(sorted((e["contributor"], e.get("kind"), e["jobs"], e["examples"]) for e in p["events"]),
+                         [("Anyone", None, 1, 2), ("Maint", "real", 1, 3)])
+        self.assertEqual(p["real_examples"], 3)
+
+    def test_without_a_diff_the_title_counts_only_if_the_validator_agrees(self):
+        self.pooled_pr(1001, examples=3)
+        self.pooled_pr(1002, examples=3, title="Anyone: 1 jobs, 300 examples")
+        self.lose_the_count()
+        for pr in self.hub.prs.values():
+            pr["no_diff"] = True
+        with mock.patch("urllib.request.urlopen", side_effect=OSError("gone")):
+            text = self.validate()
+        self.assertEqual(self.counted(), [(1, "Anyone", 1, 3)])
+        self.assertIn("PR #2 is merged but not counted, and could not be read", text)
+
+    def test_a_dry_run_lists_uncounted_merges_and_writes_nothing(self):
+        self.pooled_pr(1001)
+        self.lose_the_count()
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertIsNone(validate.recount(self.hub, REPO, dry_run=True))
+        self.assertIn("would add 2 examples", out.getvalue())
+        self.assertNotIn("progress.json", self.hub.main)
+
+    def test_the_graph_is_drawn_at_the_end_of_a_long_pass(self):
+        for job in (1001, 1002, 1003):
+            self.pooled_pr(job)
+        drawn = []
+        args = types.SimpleNamespace(repo=REPO, solve_cli="solve-cli", sample=3, dry_run=False, publish_graph=True,
+                                     real_max_vram=0)
+        with mock.patch.object(validate, "publish_graph", lambda progress: drawn.append(progress["total_examples"])), \
+                contextlib.redirect_stdout(io.StringIO()):
+            validate.run_prs(args)
+        self.assertEqual(drawn, [2, 6])  # at once after the first merge, then once more with everything
 
 
 class NotesTests(Base):

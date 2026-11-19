@@ -4,13 +4,16 @@
 For every open pull request on the dataset it downloads the new job files,
 checks each one with `solve-cli datagen verify` (header, regenerated inputs,
 sanity, and a re-solve of a few examples), then merges the pull request or
-closes it with the errors. Merged jobs are appended to progress.json in the
-dataset, which the GitHub progress graph reads.
+closes it with the errors. Each merge is written to progress.json in the
+dataset straight away (the GitHub progress graph reads it), and every pass
+first adds any merged pull request that progress.json does not hold yet, so a
+validator that was closed part-way through leaves nothing uncounted.
 
     python tools/datagen/validate.py                      # all open PRs
     python tools/datagen/validate.py --dry-run            # check, don't merge
     python tools/datagen/validate.py --local datagen_out  # check local files only
     python tools/datagen/validate.py --watch 60           # every hour
+    python tools/datagen/validate.py --recount            # only add merges missing from progress.json
 
 Besides pooled jobs (data/<login>/job-<n>.jsonl.gz, inputs regenerated from the
 job number) it accepts real-range game files (real/<login>/<set>/<game>.jsonl.gz:
@@ -392,16 +395,141 @@ def backfill_times(api, repo, progress):
     return filled
 
 
+TITLE_RE = re.compile(r"^([A-Za-z0-9_-]+): (\d+) (jobs|real-range games), (\d+) examples$")
+VALIDATED_RE = re.compile(r"^Validated (\d+) jobs \((\d+) examples\)")
+GRAPH_EVERY_S = 600  # during a long pass, redraw the GitHub graph at most this often
+
+
+def record_merges(api, repo, events, message):
+    """Add merge events to progress.json now, skipping pull requests it already holds.
+    Returns the progress as saved (or as read, when there was nothing to add)."""
+    progress = load_progress(api, repo)
+    have = {e.get("pr") for e in progress["events"]}
+    new = [e for e in events if e.get("pr") not in have]
+    if new:
+        progress["events"] += new
+        save_progress(api, repo, progress, message)
+    return progress
+
+
+def header_examples(api, repo, path):
+    """How many examples a job or game file on main holds (from its header, else by counting)."""
+    from huggingface_hub import hf_hub_download
+    stage = tempfile.mkdtemp(prefix="gtopen-recount-")
+    try:
+        gz = hf_hub_download(repo, path, repo_type="dataset", cache_dir=stage)
+        with gzip.open(gz, "rt", encoding="utf-8") as f:
+            head = json.loads(f.readline())
+            if isinstance(head.get("examples"), int):
+                return head["examples"]
+            return sum(1 for line in f if json.loads(line).get("type") == "example")
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
+
+def merged_pr_events(api, repo, pr):
+    """The progress events for a pull request that was merged but never counted.
+
+    Who is credited comes from the folders of the files it added; how much
+    comes from the validator's own merge comment (only a comment by the account
+    that merged it counts), or else from the files' headers on main. If the
+    Hub no longer serves the diff, the pull request's title is used, but only
+    when the validator's comment gives the same numbers."""
+    details = api.get_discussion_details(repo, pr.num, repo_type="dataset")
+    merged = [ev for ev in details.events if getattr(ev, "type", None) == "status-change"
+              and getattr(ev, "new_status", None) == "merged"]
+    if not merged:
+        raise RuntimeError("no merge event in its log")
+    when, merger = merged[-1].created_at, getattr(merged[-1], "author", None)
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=datetime.timezone.utc)
+    when = when.astimezone(datetime.timezone.utc)
+    said = None  # (jobs, examples) in the validator's merge comment
+    for ev in details.events:
+        m = VALIDATED_RE.match(str(getattr(ev, "content", ""))) if getattr(ev, "type", None) == "comment" else None
+        if m and merger is not None and getattr(ev, "author", None) == merger:
+            said = (int(m.group(1)), int(m.group(2)))
+    groups = {}  # (login, kind) -> [paths]
+    try:
+        added, other = pr_changes(api, repo, pr.num)
+    except Exception:
+        added, other = [], []
+    for path in added + other:  # it was merged, so the validator saw that it only adds files
+        m, real = PATH_RE.match(path), REAL_PATH_RE.match(path)
+        if m or real:
+            groups.setdefault(((m or real).group(1), "real" if real else "pool"), []).append(path)
+    counts = {}  # (login, kind) -> (jobs, examples)
+    if len(groups) == 1 and said and said[0] == len(next(iter(groups.values()))):
+        counts[next(iter(groups))] = said
+    elif groups:
+        for key, paths in groups.items():
+            counts[key] = (len(paths), sum(header_examples(api, repo, p) for p in paths))
+    else:
+        t = TITLE_RE.match(pr.title or "")
+        if not (t and said == (int(t.group(2)), int(t.group(4)))):
+            raise RuntimeError("its files could not be listed and its title does not match the validator's comment")
+        counts[(t.group(1), "real" if t.group(3) != "jobs" else "pool")] = said
+    events = []
+    for (login, kind), (jobs, examples) in sorted(counts.items()):
+        event = {"date": when.date().isoformat(), "time": when.isoformat(timespec="seconds"),
+                 "contributor": login, "jobs": jobs, "examples": examples, "pr": pr.num}
+        if kind == "real":
+            event["kind"] = "real"
+        events.append(event)
+    return events
+
+
+def recount(api, repo, dry_run=False):
+    """Add every merged pull request that progress.json does not hold (a validator
+    that was closed part-way through a pass used to leave its merges uncounted).
+    Returns the progress when something was added, else None."""
+    have = {e.get("pr") for e in load_progress(api, repo)["events"]}
+    missing = [d for d in api.get_repo_discussions(repo, repo_type="dataset", discussion_type="pull_request",
+                                                    discussion_status="all")
+               if getattr(d, "status", None) == "merged" and d.num not in have]
+    if not missing:
+        return None
+    events = []
+    for pr in sorted(missing, key=lambda d: d.num):
+        try:
+            found = merged_pr_events(api, repo, pr)
+        except Exception as err:
+            print(f"   PR #{pr.num} is merged but not counted, and could not be read: {err}")
+            continue
+        events += found
+        for e in found:
+            print(f"   PR #{pr.num}: merged {e['time']} but not counted: {e['contributor']}, "
+                  f"{e['jobs']} jobs, {e['examples']} examples")
+    n = sum(e["examples"] for e in events)
+    print(f"{len(missing)} merged pull requests were missing from progress.json: "
+          f"{'would add' if dry_run else 'adding'} {n} examples")
+    if dry_run or not events:
+        return None
+    return record_merges(api, repo, events, f"progress: +{n} examples from earlier merges")
+
+
 def run_prs(args):
     from huggingface_hub import HfApi, hf_hub_download
     api = HfApi()
     repo = args.repo
     cfg = load_config()
+    drawn = [None, 0.0]  # the progress to draw next, and when the graph was last pushed
+
+    def graph(progress=None, force=False):
+        if progress is not None:
+            drawn[0] = progress
+        if args.publish_graph and drawn[0] is not None and (force or time.time() - drawn[1] >= GRAPH_EVERY_S):
+            publish_graph(drawn[0])
+            drawn[:] = [None, time.time()]
+
+    try:
+        graph(recount(api, repo, args.dry_run))
+    except Exception as err:
+        print(f"   could not look for uncounted merges (will try again next pass): {type(err).__name__}: {err}")
     main_oids = tree_oids(api, repo)
     prs = [d for d in api.get_repo_discussions(repo, repo_type="dataset", discussion_type="pull_request",
                                                discussion_status="open")]
     print(f"{repo}: {len(prs)} open pull requests")
-    merged_events = []
     current = cfg.get("current_generator")
     try:
         for pr in prs:
@@ -462,6 +590,7 @@ def run_prs(args):
                                    comment=f"Validated {len(jobs)} jobs ({examples} examples). Thank you!" + note)
             main_oids.update({p: "" for p in new})
             now = datetime.datetime.now(datetime.timezone.utc)
+            events = []
             for login, kind in groups:
                 mine = [j for j in jobs if (j[0], j[1]) == (login, kind)]
                 event = {"date": now.date().isoformat(), "time": now.isoformat(timespec="seconds"),
@@ -469,24 +598,24 @@ def run_prs(args):
                          "examples": sum(j[2] for j in mine), "pr": pr.num}
                 if kind == "real":
                     event["kind"] = "real"  # jobs = game files here
-                merged_events.append(event)
+                events.append(event)
+            # Count it now: a validator closed part-way through a pass must not leave merges uncounted.
+            try:
+                graph(record_merges(api, repo, events, f"progress: +{examples} examples"))
+                print(f"progress.json updated: +{examples} examples")
+            except Exception as err:
+                print(f"   merged, but progress.json could not be written (the next pass adds it): "
+                      f"{type(err).__name__}: {err}")
     finally:
-        # record merges even when a later pull request fails, so none go uncounted
         failed = sys.exc_info()[0] is not None
-        if merged_events or (not args.dry_run and not failed):
+        if not args.dry_run and not failed:
             progress = load_progress(api, repo)
-            filled = 0 if args.dry_run or failed else backfill_times(api, repo, progress)
-            progress["events"] += merged_events
-            n = sum(e["examples"] for e in merged_events)
-            if merged_events:
-                save_progress(api, repo, progress, f"progress: +{n} examples")
-                print(f"progress.json updated: +{n} examples")
-            elif filled:
-                save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
+            filled = backfill_times(api, repo, progress)
             if filled:
+                save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
                 print(f"progress.json: added merge times to {filled} older entries")
-            if (merged_events or filled) and args.publish_graph:
-                publish_graph(progress)
+                graph(progress)
+        graph(force=True)
 
 
 def main():
@@ -507,6 +636,9 @@ def real_main():
                     help="don't push the progress graph to GitHub after merging")
     ap.add_argument("--local", help="check job files in a local folder instead of pull requests")
     ap.add_argument("--watch", type=float, default=0, help="repeat every N minutes")
+    ap.add_argument("--recount", action="store_true",
+                    help="add merged pull requests that progress.json does not hold yet and stop (every "
+                         "pass does this first anyway); with --dry-run, only list them")
     ap.add_argument("--real-max-vram", type=float, default=0, metavar="GB",
                     help="in real-range game files, re-solve only trees estimated to fit this much GPU memory "
                          "(0 = any size); a file with no such tree is rejected")
@@ -516,6 +648,14 @@ def real_main():
     args = ap.parse_args()
     if args.publish_notes:
         return publish_notes(args)
+    if args.recount:
+        from huggingface_hub import HfApi
+        progress = recount(HfApi(), args.repo, args.dry_run)
+        if progress is None:
+            print("nothing added to progress.json")
+        elif args.publish_graph:
+            publish_graph(progress)
+        return
     if not os.path.exists(args.solve_cli):
         sys.exit(f"{args.solve_cli} not found: build it with  cargo build --release -p solver --features gpu --bin solve-cli")
     if args.local:
@@ -523,8 +663,12 @@ def real_main():
     while True:
         try:
             run_prs(args)
-        except ToolError:
-            raise
+        except ToolError as e:
+            if args.watch <= 0:
+                raise
+            # solve-cli failed on this machine (often a GPU that was full): nothing in that pull request
+            # was merged or rejected, and the next pass tries again
+            print(f"pass stopped, will retry in {args.watch:g} min: {e}", flush=True)
         except Exception as e:
             if args.watch <= 0:
                 raise

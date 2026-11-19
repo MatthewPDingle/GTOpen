@@ -12,7 +12,8 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 
 [Contributors](https://github.com/MatthewPDingle/GTOpen/blob/datagen-progress/contributors.md) ·
 [Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
-the count and the graph update as soon as uploads are validated.
+the count and the graph update as soon as uploads are validated. The graph
+has one coloured band per contributor.
 
 **Status: first checkpoint passed (2026-11-09), collecting toward 300,000 examples.**
 At 57,400 examples a first net was trained and scored on 56 held-out jobs it
@@ -240,7 +241,12 @@ cargo build --release -p solver --features gpu --bin solve-cli
 python tools/datagen/validate.py --dry-run     # check open pull requests
 python tools/datagen/validate.py --watch 60    # check, merge, update progress.json hourly
 python tools/datagen/validate.py --local datagen_out   # check local files only
+python tools/datagen/validate.py --recount     # only add merges that progress.json is missing
 ```
+
+Each merge is written to `progress.json` straight away, and every pass starts
+by adding any merged pull request that `progress.json` does not hold yet. So
+the validator can be closed at any time: nothing it merged goes uncounted.
 
 A job file sent in by someone without a Hugging Face account: keep it as
 `FOLDER/NAME/job-NUMBER.jsonl` (NAME is the contributor name in its first
@@ -291,8 +297,8 @@ another set. On a GPU that is shared with a generator, give the validator
 no such tree is rejected rather than merged unchecked).
 
 `validate.py` needs a Hugging Face token with write access to the dataset.
-After each merge it redraws the progress graph and force-pushes it to the
-`datagen-progress` branch with your git credentials (`--no-graph` skips
-this). `.github/workflows/datagen-progress.yml` does the same on a schedule
+After a merge it redraws the progress graph and force-pushes it to the
+`datagen-progress` branch with your git credentials (at most every ten
+minutes during a long pass, and once at its end; `--no-graph` skips this). `.github/workflows/datagen-progress.yml` does the same on a schedule
 as a fallback, but GitHub often skips scheduled runs for hours. The dataset name, the go/no-go point and the goal live in
 `tools/datagen/config.json`.
