@@ -93,6 +93,31 @@ fn uncalled_chips_and_fold_rake_ignore_the_ante() {
     assert_eq!(each.fold_win_rake(nd), each.rake_of(nd.pot - 1.5));
 }
 
+/// With learned flop values and blockers on, the leaf net's input used to
+/// carry a term in what the seat had put in, so who paid the ante changed
+/// the net's answer. The input is the plain pot share: both ways of paying
+/// get the same corrections at the same strategies.
+#[test]
+fn learned_values_with_blockers_do_not_see_who_paid_the_ante() {
+    let corrections = |ante: f64, bb_ante: f64| {
+        let mut c = four(ante, bb_ante);
+        c.realization = "leafnet".into();
+        c.card_removal = true;
+        let mut s = PreflopSolver::new(c, table()).unwrap();
+        // a few steps, so the ranges are no longer the full deal (which blocks nothing)
+        for _ in 0..5 {
+            s.iterate();
+        }
+        assert!(s.refresh_leaf_values().unwrap().priced > 3);
+        s.leaf_terminals().unwrap().2.to_vec()
+    };
+    let (each, bb) = (corrections(0.25, 0.0), corrections(0.0, 1.0));
+    assert!(each.iter().any(|c| c.abs() > 1e-3), "the net corrects something");
+    // the two solves match step for step to float noise (see the next test)
+    let worst = each.iter().zip(&bb).map(|(x, y)| (x - y).abs()).fold(0f32, f32::max);
+    assert!(worst < 1e-4, "corrections differ by {worst} of the pot");
+}
+
 /// One bb from the big blind and a quarter from each of four seats build the
 /// same pot over the same stacks, so every terminal pays each seat the same
 /// up to what that seat paid in, and the solves agree.
