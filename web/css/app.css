@@ -59,15 +59,18 @@ b { font-weight: inherit; }
   position: sticky; top: 0; z-index: 50;
 }
 
+/* The logo is the name with the tagline under it. Both line heights are set
+   so the gap between them is exactly the tagline's margin: the "p" of the
+   name hangs about 4px below its line, and the margin has to clear it. */
 .wordmark {
   font-family: var(--font-disp);
-  font-weight: 800; font-size: 19px; letter-spacing: .14em;
+  font-weight: 800; font-size: 19px; line-height: 19px; letter-spacing: .14em;
   color: var(--ink);
 }
 .wordmark span { color: var(--accent); }
 .wordmark em {
-  font-style: normal; font-weight: 500; font-size: 9px; letter-spacing: .3em;
-  color: var(--ink-faint); display: block; margin-top: -3px; text-transform: uppercase;
+  font-style: normal; font-weight: 500; font-size: 9px; line-height: 10px; letter-spacing: .3em;
+  color: var(--ink-faint); display: block; margin-top: 3px; text-transform: uppercase;
 }
 
 #tabs { display: flex; gap: 4px; }
