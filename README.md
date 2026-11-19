@@ -59,6 +59,12 @@ python3 -m pip install --target ~/.local/cuda-nvrtc nvidia-cuda-nvrtc-cu12
 
 For a manual CPU build, run `cargo build --release -p server`, then `./target/release/gto-server` from the repository root.
 
+### macOS (Apple silicon)
+
+GTOpen is reported to work on Apple silicon Macs, but it has not been thoroughly tested there. Follow the Linux steps: `./start.sh` builds for the CPU, since GPU solving needs an NVIDIA card.
+
+### Memory
+
 Big trees need a lot of memory. The app shows the RAM and GPU memory a tree needs before you build it. A preflop game too big for the GPU in one piece is solved on the GPU a part at a time with the same result, and anything that still does not fit solves on the CPU.
 
 ## A tour of the app
