@@ -1581,7 +1581,8 @@ label.icm-rake-off input { opacity: .45; pointer-events: none; }
 .mw-head { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; font-size: 12px; }
 .mw-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; font-size: 13px; }
 .mw-body { display: grid; grid-template-columns: minmax(320px, 620px) minmax(220px, 1fr); gap: 12px; }
-.mw-detail { font-size: 12px; max-height: 620px; overflow-y: auto; }
+.mw-matrix-col { min-width: 0; }
+.mw-detail { font-size: 12px; max-height: 620px; overflow-y: auto; min-width: 0; }
 .mw-detail-head { font-weight: 600; margin-bottom: 6px; }
 .mw-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 6px; }
 .mw-key { display: inline-flex; align-items: center; gap: 4px; }

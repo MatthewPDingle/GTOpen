@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.6.1 - 2026-11-19
+
+- Beta 3-Way: the hand detail beside the grid shows again. The grid had grown across the whole panel and covered it. Hover a hand to see each combo's play and EV on the right.
+
 ## 1.6.0 - 2026-11-19
 
 - The Solve page is now part of the Setup page. The tab is called "01 · Postflop Setup & Solve": set the spot up in steps 01 to 04, then build and solve it in step 05 on the same page, with the progress numbers, the chart and your saved solves beside it. On a wide window everything fits on one screen.
