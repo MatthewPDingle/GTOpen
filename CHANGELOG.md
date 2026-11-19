@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.5.2 - 2026-11-19
+
+- The logo in the top left has room to breathe: the bottom of the "p" in "GTOpen" no longer drops into "open-source solver" under it.
+
 ## 1.5.1 - 2026-11-19
 
 - Tournament payouts are now a tick box in the Preflop Lab's scenario form, right under the rake boxes, so you can see and switch them without opening anything. Ticking it shows one more choice: the stage of the tournament.
