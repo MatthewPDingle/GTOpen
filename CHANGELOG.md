@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.4.2 - 2026-11-19
+
+- The BEST REPLY button is gone from the list of locks in the Browse tab. It did the same as EXPLOIT: pick whose hands to show under HANDS OF, then press EXPLOIT.
+
 ## 1.4.1 - 2026-11-19
 
 - The three ways to shift a whole range in the Browse lock box are called Scale, Least EV loss and Least exploitable again. Hover one to read what it does in plain words.

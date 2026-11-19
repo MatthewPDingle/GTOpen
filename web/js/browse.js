@@ -426,27 +426,6 @@ export class Browser {
     this.renderLocksBar();
   }
 
-  /** The player a "best reply" most likely means: the one nobody locked. With
-   *  both players locked (or neither), the one whose hands are showing. */
-  bestReplyPlayer() {
-    const locked = new Set();
-    for (const l of this.locksView?.locks || []) if (l.kind !== 'kept') locked.add(l.player);
-    (this.locksView?.profile || []).forEach((n, p) => { if (n) locked.add(p); });
-    return locked.size === 1 ? 1 - [...locked][0] : this.player;
-  }
-
-  /** Show `p`'s best play against the locks as they stand (the EXPLOIT view). */
-  showBestReply(p) {
-    this.player = p;
-    this.mode = 'exploit';
-    this.syncSegs();
-    this.renderActions();
-    this.renderMatrix();
-    this.renderLegend();
-    this.renderHandsPanel();
-    this.drawEquityChart();
-  }
-
   /** Remove every lock. One Undo brings them all back. */
   async clearAllLocks() {
     try {
@@ -476,7 +455,8 @@ export class Browser {
 
   /** The list of locks above the grid: one chip per locked decision (who,
    *  where, what), click to go there, x to remove. After a lock change it
-   *  also offers the two ways to see the answer. */
+   *  also says the solve is older than the locks and offers to solve again
+   *  (the instant answer is the EXPLOIT view, which has its own button). */
   renderLocksBar() {
     const bar = this.locksBar;
     if (!bar) return;
@@ -589,17 +569,9 @@ export class Browser {
     why.textContent = '?';
     why.setAttribute('aria-label', 'What to do after changing a lock');
     why.dataset.tip = 'The grid still shows the solve from before your last lock change. ' +
-      'BEST REPLY shows at once how a player should play against the locks (the EXPLOIT view). ' +
+      'EXPLOIT shows at once how the player whose hands are showing should play against the locks. ' +
       'RE-SOLVE solves again with the locks in place, so both players adjust.';
     next.append(note, why);
-    const p = this.bestReplyPlayer();
-    const reply = document.createElement('button');
-    reply.type = 'button';
-    reply.className = 'btn sm';
-    reply.textContent = `${this.posLabel(p)}'S BEST REPLY`;
-    reply.dataset.tip = `Show ${this.posLabel(p)}'s best play against the locks, right away. Same as picking ${this.posLabel(p)} and EXPLOIT.`;
-    reply.addEventListener('click', () => this.showBestReply(p));
-    next.appendChild(reply);
     if (!solve.running) {
       const again = document.createElement('button');
       again.type = 'button';
