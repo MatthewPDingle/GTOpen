@@ -258,7 +258,7 @@ Games with `balanced` or `leafnet` realization or separate 4-bet+ menus use `GTO
 
 Measured on an 8-max 150 bb game with max raises 3 (learned flop values, blockers on, RTX 5090, 19 Nov 2026): the opener called a 3-bet 4.1% of the time averaged over seven lines against 18.2% in the canonical charts, and 4-bet 23-32% against 13-23%. The same game with one more raise that could only be an all-in (max raises 4, `allin_threshold` lowered until the 5-bet was one): the opener's calls rose to 10.9% and the 3-bettor shoved over a 4-bet 28-32% of the time (charts 18-29%). Cold calls behind an open did not come back; that is a separate matter of the learned flop values. The tree grew from 0.81M to 5.77M nodes.
 
-So the cap belongs one raise above the last raise a study cares about. The form's jam rule ("Jam if a raise commits over N % of stack", `allin_threshold`, 30 for new games) keeps that extra level cheap: a raise that deep is one all-in action with only folds and calls behind it, in place of a sized raise and everything under it.
+So the cap belongs one raise above the last raise a study cares about. The form's jam rule ("Jam if a raise commits over N % of stack", `allin_threshold`, 30 for new games) keeps that extra level cheap: a raise that deep is one all-in action with only folds and calls behind it, in place of a sized raise and everything under it. In the built-in 8-max 150 bb $2/5 scenario with the rule at 30, max raises 3 is 3.82M nodes and max raises 4 is 4.05M; at 85 the same scenario with max raises 3 is over 5.5M.
 
 ## ICM payoffs (tournaments)
 
