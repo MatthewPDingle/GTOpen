@@ -62,10 +62,11 @@ pub struct HuGpuOptions {
     /// VRAM budget in bytes. None: the device's free memory
     /// ([`vram_info_mb`]); unlimited when it cannot be queried. The check
     /// counts every device buffer, including the solver's actual lock and fit
-    /// payloads, and stays in force after construction: `update_locks` and
-    /// `update_fits` refuse an update whose new buffers would exceed it
-    /// (before allocating anything). [`GpuSolver::new_with_budget`] keeps the
-    /// upstream rule instead: checked once, at construction.
+    /// payloads, and stays in force after construction: `update_locks`,
+    /// `update_fits` and the trust readout's read-reach buffer refuse an
+    /// allocation that would exceed it (before allocating anything).
+    /// [`GpuSolver::new_with_budget`] keeps the upstream rule instead: checked
+    /// once, at construction.
     pub budget_bytes: Option<u64>,
     /// Terminal cfvs in the per-level scratch (plan.rs `PlanOptions`).
     /// None: on unless the game is general-sum (rake / ICM) or "trust the
@@ -474,9 +475,9 @@ pub struct GpuSolver {
     terminal_scratch: bool,
     /// Whole-tree action arenas (vs. the compact packing).
     full_arenas: bool,
-    /// `with_options`' budget, also enforced by `update_locks` /
-    /// `update_fits`; None for `new` / `new_with_budget` (upstream: the
-    /// budget is checked at construction only).
+    /// `with_options`' budget, also enforced after construction by
+    /// `update_locks`, `update_fits` and `ensure_reach_read`; None for `new` /
+    /// `new_with_budget` (upstream: the budget is checked at construction only).
     budget: Option<u64>,
 
     pub iteration: u32,
@@ -1863,10 +1864,25 @@ impl GpuSolver {
         Ok(())
     }
 
-    /// Allocate the read villain's reach buffer if it is missing.
+    /// Allocate the read villain's reach buffer if it is missing. Every
+    /// caller goes through here: `update_locks` (dial on) and the trust-game
+    /// root values (`trust_readout`, which also runs with the dial off and
+    /// drops the buffer again). For `with_options` solvers the retained budget
+    /// is checked first, counting the new buffer on top of the current device
+    /// bytes (a replaced buffer is freed only after its replacement exists);
+    /// a refusal allocates nothing and leaves the solver unchanged.
     fn ensure_reach_read(&mut self, villain: usize) -> Result<(), String> {
         let len = self.d_reach[villain].len();
         if self.d_reach_read.as_ref().is_none_or(|b| b.len() != len) {
+            if let Some(budget) = self.budget {
+                let need = self.device_bytes().total() + self.d_reach[villain].num_bytes() as u64;
+                if need > budget {
+                    return Err(format!(
+                        "{} with the read villain's reach buffer; the GPU solver is unchanged",
+                        nofit_msg(need, budget)
+                    ));
+                }
+            }
             self.d_reach_read = Some(self.stream.alloc_zeros::<f32>(len).map_err(e)?);
         }
         Ok(())
@@ -2542,6 +2558,55 @@ mod tests {
         assert!(err.contains("with the new fits") && err.contains("unchanged"), "{err}");
         assert_eq!(g.device_bytes(), before);
         g.iterate().unwrap();
+    }
+
+    /// A read profile with the trust dial off: `trust_readout` needs the read
+    /// villain's reach buffer for the duration of the readout. With one byte
+    /// too little budget it is refused before allocation (the solver is
+    /// unchanged and keeps iterating); with room for exactly that buffer the
+    /// readout succeeds and drops it again. The legacy constructor keeps the
+    /// upstream behaviour (no retained budget).
+    #[test]
+    fn readout_reach_buffer_respects_the_budget() {
+        let folder = crate::query::PostflopStats {
+            contextual_betting: None,
+            cbet: [60.0, 55.0, 50.0],
+            fold_to_bet: [70.0, 70.0, 75.0],
+            raise_bet: 0.0,
+            donk: 30.0,
+            bet_size: "min".into(),
+        };
+        let mut s = scratch_solver("KsQs2d", 0.0);
+        for _ in 0..20 {
+            s.iterate();
+        }
+        s.lock_profile(1, &folder, None).unwrap();
+        let v = s.readout_trust().unwrap().villain;
+        assert!(s.rnr_active().is_none(), "the dial is off");
+        let probe = GpuSolver::with_options(&s, &resident(None)).expect("test requires CUDA");
+        assert!(probe.d_reach_read.is_none());
+        let (base, reach) = (probe.device_bytes().total(), probe.d_reach[v].num_bytes() as u64);
+        drop(probe);
+
+        let mut tight = GpuSolver::with_options(&s, &resident(Some(base + reach - 1))).unwrap();
+        tight.iterate().unwrap();
+        let before = tight.device_bytes();
+        let err = tight.trust_readout(&s).unwrap_err();
+        assert!(err.contains("reach buffer") && err.contains("unchanged"), "{err}");
+        assert_eq!(tight.device_bytes(), before);
+        assert!(tight.d_reach_read.is_none());
+        tight.iterate().unwrap();
+
+        let mut fits = GpuSolver::with_options(&s, &resident(Some(base + reach))).unwrap();
+        fits.iterate().unwrap();
+        let readout = fits.trust_readout(&s).unwrap();
+        assert_eq!(readout.trust, 1.0);
+        assert!(fits.d_reach_read.is_none(), "dropped again with the dial off");
+        fits.iterate().unwrap();
+
+        let mut legacy = GpuSolver::new_with_budget(&s, u64::MAX).unwrap();
+        legacy.iterate().unwrap();
+        legacy.trust_readout(&s).unwrap();
     }
 
     #[test]
