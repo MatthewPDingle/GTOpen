@@ -2,6 +2,11 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.6.2 - 2026-11-19
+
+- Postflop: after you load a saved solve and then refresh the page, the setup form still shows that solve's spot. It used to fall back to the last tree you built, so the page said "SETUP changed" and offered REBUILD & SOLVE for a solve you had not touched.
+- While a tree is building, SOLVE is dimmed and keeps its wording, and the speed readout is cleared for a tree that has not been solved yet.
+
 ## 1.6.1 - 2026-11-19
 
 - Beta 3-Way: the hand detail beside the grid shows again. The grid had grown across the whole panel and covered it. Hover a hand to see each combo's play and EV on the right.
