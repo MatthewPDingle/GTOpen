@@ -208,8 +208,30 @@ fn gpu_matches_cpu_big_blind_ante() {
     gs.prune = false;
     run_equivalence(cpu, gs);
 }
+/// An all-in over the last raise only adds nodes behind a capped raise, so
+/// the GPU must walk the bigger tree as the CPU does: heads-up, and three
+/// seats 60 bb deep where the 3-bet is the last raise and the shove over it
+/// can be called by two players.
+#[test]
+fn gpu_matches_cpu_all_in_over_the_last_raise() {
+    let mut cfg = hu25();
+    cfg.max_raises = 2;
+    cfg.add_allin = false;
+    cfg.allin_over_last_raise = true;
+    assert_gpu_matches_cpu(cfg.clone());
+    cfg.positions = (0..3).map(|i| format!("P{i}")).collect();
+    cfg.posts = vec![0., 0.5, 1.];
+    cfg.stack = 60.;
+    cfg.open_raises = vec![2.5];
+    cfg.realization = "raw".into();
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    cpu.prune = false;
+    gs.prune = false;
+    run_equivalence(cpu, gs);
+}
 fn hu25() -> PreflopConfig {
-    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig { bb_ante: 0.0, allin_over_last_raise: false, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 25.0, stacks: None,
@@ -440,7 +462,7 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
 #[test]
 fn gpu_push_fold_anchors() {
     let eq = table();
-    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig { bb_ante: 0.0, allin_over_last_raise: false, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 10.0, stacks: None,

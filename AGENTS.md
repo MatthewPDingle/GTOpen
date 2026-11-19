@@ -123,6 +123,15 @@ game). Config shape (see `PreflopConfig` in
   `node tools/test_preflop_actions.mjs`.
 - `max_raises` counts ALL raises (open=1 … 5-bet=4). Re-raise TO = to_call ×
   mult, min-raise clamped; sizes ≥ 85% of stack become jams.
+- `allin_over_last_raise` (default false; the form's "all-in over the last
+  raise"): the reply to the last raise the cap allows gains one action, an
+  all-in, and nothing may follow it. Without it the last raise can never be
+  re-raised, so it always sees a flop when called and a solve raises hands it
+  would otherwise call with (8-max 150 bb, max raises 3: the opener calls a
+  3-bet 4% of the time without it, 11% with it, the charts say 18%). The
+  tree grows several times over (0.8M to 5.8M nodes in that game). Such games
+  save as v9. Tests in `crates/solver/src/preflop/last_allin_tests.rs`; see
+  "The raise cap and the all-in over it" in `docs/technical_reference.md`.
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.
