@@ -34,12 +34,38 @@ use rayon::prelude::*;
 /// VRAM a plan must leave free on top of its buffers (the budget checks).
 const HEADROOM: u64 = 512 * 1024 * 1024;
 
+/// Device bytes of the lock-sigma buffer `update_locks` uploads for `solver`
+/// (at least one word: device buffers are never empty).
+fn lock_payload_bytes(solver: &Solver) -> u64 {
+    solver.locks.values().map(Vec::len).sum::<usize>().max(1) as u64 * 4
+}
+
+/// Device bytes of the fit buffers `update_fits` uploads for `solver` (one
+/// stride plus two index words per fit, at least one fit's worth).
+fn fit_payload_bytes(solver: &Solver) -> u64 {
+    solver.fit_entries().len().max(1) as u64 * (FIT_STRIDE as u64 + 2) * 4
+}
+
+/// Lock and fit payloads together (see [`PAYLOAD_PLACEHOLDER`]).
+fn payload_bytes(solver: &Solver) -> u64 {
+    lock_payload_bytes(solver) + fit_payload_bytes(solver)
+}
+
+/// The part of [`payload_bytes`] that `GpuPlan::table_bytes` already counts:
+/// one lock-sigma word, one fit stride and its two index words.
+const PAYLOAD_PLACEHOLDER: u64 = (1 + FIT_STRIDE as u64 + 2) * 4;
+
 /// Layout choices for [`GpuSolver::with_options`] and [`estimate_hu_bytes`].
 /// `None` fields take the defaults described on each.
 #[derive(Clone, Debug, Default)]
 pub struct HuGpuOptions {
     /// VRAM budget in bytes. None: the device's free memory
-    /// ([`vram_info_mb`]); unlimited when it cannot be queried.
+    /// ([`vram_info_mb`]); unlimited when it cannot be queried. The check
+    /// counts every device buffer, including the solver's actual lock and fit
+    /// payloads, and stays in force after construction: `update_locks` and
+    /// `update_fits` refuse an update whose new buffers would exceed it
+    /// (before allocating anything). [`GpuSolver::new_with_budget`] keeps the
+    /// upstream rule instead: checked once, at construction.
     pub budget_bytes: Option<u64>,
     /// Terminal cfvs in the per-level scratch (plan.rs `PlanOptions`).
     /// None: on unless the game is general-sum (rake / ICM) or "trust the
@@ -105,7 +131,8 @@ fn auto_terminal_scratch(solver: &Solver) -> bool {
 }
 
 /// What [`GpuSolver::with_options`] would allocate for `spot` with f32 host
-/// storage and no "trust the read" (CPU only: builds the plan, no CUDA).
+/// storage, no "trust the read" and no locks or fits (CPU only: builds the
+/// plan, no CUDA).
 /// Budget None: unlimited (so `max_cards_per_group: None` never groups).
 pub fn estimate_hu_bytes(spot: &crate::game::Spot, use_iso: bool, o: &HuGpuOptions) -> HuGpuBytes {
     estimate_hu_layout(spot, use_iso, o).bytes
@@ -118,7 +145,7 @@ pub fn estimate_hu_layout(spot: &crate::game::Spot, use_iso: bool, o: &HuGpuOpti
     let plan = GpuPlan::build_with(spot, use_iso, &PlanOptions { terminal_scratch });
     let blocker = (o.terminal_scratch == Some(false)).then_some("terminal cfvs forced resident");
     let budget = o.budget_bytes.unwrap_or(u64::MAX);
-    match choose_layout(spot, &plan, o, budget, true, false, None, blocker) {
+    match choose_layout(spot, &plan, o, budget, true, false, None, blocker, 0) {
         Ok(c) => HuGpuEstimate { bytes: c.bytes, groups: c.groups.map(|(_, g)| g).unwrap_or_default(), fits: true, error: None },
         Err(n) => HuGpuEstimate { bytes: n.bytes, groups: n.groups, fits: false, error: Some(n.msg) },
     }
@@ -155,10 +182,11 @@ fn nofit_msg(need: u64, budget: u64) -> String {
 #[allow(clippy::too_many_arguments)]
 fn choose_layout(
     spot: &crate::game::Spot, plan: &GpuPlan, o: &HuGpuOptions, budget: u64, f32_store: bool,
-    legacy: bool, rnr_villain: Option<usize>, blocker: Option<&str>,
+    legacy: bool, rnr_villain: Option<usize>, blocker: Option<&str>, payload: u64,
 ) -> Result<LayoutChoice, NoFit> {
     let nofit = |msg: String, bytes: HuGpuBytes, groups: Vec<Vec<u8>>| NoFit { msg, bytes, groups };
-    let tables = plan.table_bytes();
+    // `payload`: lock and fit bytes beyond the placeholders in table_bytes()
+    let tables = plan.table_bytes() + payload;
     let check_tables = if legacy { 0 } else { tables };
     let staging = plan.staging_bytes();
     let ds = spot.tree.data_size;
@@ -446,6 +474,10 @@ pub struct GpuSolver {
     terminal_scratch: bool,
     /// Whole-tree action arenas (vs. the compact packing).
     full_arenas: bool,
+    /// `with_options`' budget, also enforced by `update_locks` /
+    /// `update_fits`; None for `new` / `new_with_budget` (upstream: the
+    /// budget is checked at construction only).
+    budget: Option<u64>,
 
     pub iteration: u32,
     pub algo: Algorithm,
@@ -543,7 +575,9 @@ impl GpuSolver {
             None
         };
         let rnr_villain = solver.rnr_active().map(|r| r.villain);
-        let choice = choose_layout(&solver.spot, &plan, o, budget_bytes, f32_store, legacy_budget, rnr_villain, blocker)
+        // the legacy rule leaves the tables out of its check (upstream)
+        let payload = if legacy_budget { 0 } else { payload_bytes(solver) - PAYLOAD_PLACEHOLDER };
+        let choice = choose_layout(&solver.spot, &plan, o, budget_bytes, f32_store, legacy_budget, rnr_villain, blocker, payload)
             .map_err(|n| n.msg)?;
         if choice.full_arenas {
             plan.use_full_action_arenas(&solver.spot);
@@ -757,6 +791,7 @@ impl GpuSolver {
             h_staging,
             terminal_scratch,
             full_arenas,
+            budget: None, // set below, once the initial uploads are done
             iteration: solver.iteration,
             algo: solver.algo,
             _ctx: ctx,
@@ -777,6 +812,9 @@ impl GpuSolver {
         if solver.has_fits() {
             gpu.update_fits(solver, &[])?;
         }
+        // choose_layout counted the actual lock and fit payloads; from here
+        // on, updates are checked against the same budget
+        gpu.budget = (!legacy_budget).then_some(budget_bytes);
         Ok(gpu)
     }
 
@@ -1563,6 +1601,7 @@ impl GpuSolver {
         if !self.groups.is_empty() && !entries.is_empty() {
             return Err("least-exploitable fits are not supported with turn-grouped GPU sweeps".into());
         }
+        self.check_update_budget(solver, "fits", fit_payload_bytes(solver), false)?;
         let nn = self.h_node_level.len();
         let mut rows: Vec<(usize, u32, u32)> = Vec::new(); // (player, level, k)
         let mut nodes = Vec::with_capacity(entries.len());
@@ -1833,12 +1872,38 @@ impl GpuSolver {
         Ok(())
     }
 
+    /// `with_options`' budget after construction. An update must fit with
+    /// the buffers it allocates (`new_bytes`, plus the trust dial's copies when
+    /// `trust` and the dial turns on) counted on top of the current ones: each
+    /// replacement is allocated before the buffer it replaces is freed.
+    /// Checked before anything is allocated, so a refused update leaves the
+    /// solver as it was.
+    fn check_update_budget(&self, solver: &Solver, what: &str, new_bytes: u64, trust: bool) -> Result<(), String> {
+        let Some(budget) = self.budget else { return Ok(()) };
+        let mut need = self.device_bytes().total() + new_bytes;
+        if let Some(r) = solver.rnr_active().filter(|_| trust) {
+            let v = r.villain;
+            if self.d_free.as_ref().is_none_or(|f| f.villain != v) {
+                need += (self.d_regrets[v].num_bytes() + self.d_strat[v].num_bytes()) as u64;
+            }
+            if self.d_reach_read.as_ref().is_none_or(|b| b.len() != self.d_reach[v].len()) {
+                need += self.d_reach[v].num_bytes() as u64;
+            }
+        }
+        if need > budget {
+            return Err(format!("{} with the new {what}; the GPU solver is unchanged", nofit_msg(need, budget)));
+        }
+        Ok(())
+    }
+
     /// Re-upload the lock table after `solver.locks` changed, or after
     /// `Solver::set_trust` (the "trust the read" dial).
     pub fn update_locks(&mut self, solver: &Solver) -> Result<(), String> {
         if !self.groups.is_empty() && (!solver.locks.is_empty() || solver.rnr_active().is_some()) {
             return Err("node locks and trust the read are not supported with turn-grouped GPU sweeps".into());
         }
+        let offsets = solver.spot.tree.nodes.len() as u64 * 16;
+        self.check_update_budget(solver, "locks", offsets + lock_payload_bytes(solver), true)?;
         // Drain in-flight kernels before the assignments below drop (free) the
         // old device buffers. The server's mutex ordering already prevents an
         // overlap, but the safety of a device free shouldn't depend on it.
@@ -2392,6 +2457,91 @@ mod tests {
                     "{label}: exploitability at iteration {i}");
             }
         }
+    }
+
+    fn resident(budget: Option<u64>) -> HuGpuOptions {
+        HuGpuOptions { budget_bytes: budget, terminal_scratch: None, full_arenas: Some(false), max_cards_per_group: Some(0) }
+    }
+
+    /// Uniform target frequencies for the action node at `path` (root or one
+    /// action below it).
+    fn uniform_at(s: &Solver, path: &[PathStep]) -> Vec<f32> {
+        let tree = &s.spot.tree;
+        let mut idx = 0usize;
+        if let Some(PathStep::Action { index }) = path.first() {
+            idx = tree.children[tree.nodes[0].children_start as usize + *index as usize] as usize;
+        }
+        let na = tree.nodes[idx].num_children as usize;
+        vec![1.0 / na as f32; na]
+    }
+
+    /// `with_options`' resident budget counts the actual lock and fit
+    /// payloads, not only the one-entry placeholders of the plan's table
+    /// bytes: the allocated size is the boundary, one byte less is refused
+    /// before any allocation.
+    #[test]
+    fn resident_budget_counts_lock_and_fit_payloads() {
+        let after_check = [PathStep::Action { index: 0 }];
+        let plain = scratch_solver("KsQs2d", 0.0);
+        let base = GpuSolver::with_options(&plain, &resident(None)).expect("test requires CUDA").device_bytes().total();
+        let mut locked = scratch_solver("KsQs2d", 0.0);
+        locked.lock_node(&[], LockMode::Freeze, "root".into()).unwrap();
+        locked.lock_node(&after_check, LockMode::Freeze, "after check".into()).unwrap();
+        let mut fitted = scratch_solver("KsQs2d", 0.0);
+        let (t0, t1) = (uniform_at(&fitted, &[]), uniform_at(&fitted, &after_check));
+        fitted.add_fit(&[], &t0, "root".into()).unwrap();
+        fitted.add_fit(&after_check, &t1, "after check".into()).unwrap();
+        fitted.prepare_fits();
+        for (label, s, payload) in [
+            ("locks", &locked, lock_payload_bytes(&locked) - 4),
+            ("fits", &fitted, fit_payload_bytes(&fitted) - (FIT_STRIDE as u64 + 2) * 4),
+        ] {
+            assert!(payload > 0, "{label}");
+            let need = GpuSolver::with_options(s, &resident(None)).unwrap().device_bytes().total();
+            assert_eq!(need, base + payload, "{label}: device bytes = plain + payload beyond the placeholders");
+            let exact = GpuSolver::with_options(s, &resident(Some(need))).expect(label);
+            assert_eq!(exact.device_bytes().total(), need, "{label}");
+            let err = GpuSolver::with_options(s, &resident(Some(need - 1))).err().expect(label);
+            assert!(err.contains("spot needs"), "{label}: {err}");
+        }
+    }
+
+    /// The budget stays in force after construction: `update_locks` and
+    /// `update_fits` refuse buffers that would not fit (counted on top of the
+    /// current ones) before allocating, and the solver keeps working as it
+    /// was. The legacy constructors keep the upstream rule (construction only).
+    #[test]
+    fn budget_enforced_on_lock_and_fit_updates() {
+        let mut s = scratch_solver("KsQs2d", 0.0);
+        let base = GpuSolver::with_options(&s, &resident(None)).expect("test requires CUDA").device_bytes().total();
+        let offsets = s.spot.tree.nodes.len() as u64 * 16;
+        // room for re-uploading the (empty) lock tables, nothing more
+        let mut g = GpuSolver::with_options(&s, &resident(Some(base + offsets + 4))).unwrap();
+        g.update_locks(&s).unwrap();
+        g.iterate().unwrap();
+        s.lock_node(&[], LockMode::Freeze, "root".into()).unwrap();
+        let before = g.device_bytes();
+        let err = g.update_locks(&s).unwrap_err();
+        assert!(err.contains("with the new locks") && err.contains("unchanged"), "{err}");
+        assert_eq!(g.device_bytes(), before);
+        g.iterate().unwrap();
+        let mut legacy = GpuSolver::new_with_budget(&scratch_solver("KsQs2d", 0.0), u64::MAX).unwrap();
+        legacy.update_locks(&s).unwrap();
+
+        // fits: room for one fit's buffers on top of the current ones
+        let mut f = scratch_solver("KsQs2d", 0.0);
+        let one_fit = (FIT_STRIDE as u64 + 2) * 4;
+        let mut g = GpuSolver::with_options(&f, &resident(Some(base + one_fit))).unwrap();
+        let after_check = [PathStep::Action { index: 0 }];
+        let (t0, t1) = (uniform_at(&f, &[]), uniform_at(&f, &after_check));
+        f.add_fit(&[], &t0, "root".into()).unwrap();
+        f.add_fit(&after_check, &t1, "after check".into()).unwrap();
+        let fresh = f.prepare_fits();
+        let before = g.device_bytes();
+        let err = g.update_fits(&f, &fresh).unwrap_err();
+        assert!(err.contains("with the new fits") && err.contains("unchanged"), "{err}");
+        assert_eq!(g.device_bytes(), before);
+        g.iterate().unwrap();
     }
 
     #[test]
