@@ -6,7 +6,7 @@ What changed in GTOpen, newest first, in plain words. The version you are runnin
 
 - Preflop Lab: the raise settings now sit together. Max raises, "All-in as a raise size" (the old "all-in option", unchanged) and a new box: "Jam if a raise commits over 30 % of stack".
 - The new box turns any raise that would put in more than that share of the stack into an all-in. It used to be fixed at 85%. New games and the built-in scenarios use 30; leave it empty to switch it off. Scenarios you saved before keep 85 until you change it.
-- Why it matters: the last raise that Max raises allows can never be re-raised, so solves used it for hands that should just call. In an 8-max test game with max raises 3 the opener called 3-bets 4% of the time; with one more raise allowed, as an all-in, 11% (the canonical GTO charts say 18%). To study 4-bets, set Max raises to 4. With the 30% rule that extra raise is nearly always just an all-in, so the game grows only a little (about 6% in the built-in 8-max $2/5 scenario).
+- Why it matters: the last raise that Max raises allows can never be re-raised, so solves used it for hands that should just call. In an 8-max test game with max raises 3 the opener called 3-bets 4% of the time; with one more raise allowed, as an all-in, 11% (the canonical GTO charts say 18%). To study 4-bets, set Max raises to 4. With the 30% rule that extra raise is an all-in, which keeps the game from growing as much as it used to. How much it grows depends on your sizes: 6% in the built-in 8-max $2/5 scenario, about five times in a test game where a 4-bet to 36 bb stays a normal raise.
 - Page only: update and refresh the page, no restart needed.
 
 ## 1.6.3 - 2026-11-19
