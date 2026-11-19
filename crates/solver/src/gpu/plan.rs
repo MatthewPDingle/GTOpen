@@ -31,10 +31,31 @@ pub struct PlanOptions {
     pub terminal_scratch: bool,
 }
 
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]
 pub struct LevelSpan {
     pub start: u32,
     pub count: u32,
+}
+
+/// Work-list spans of one level of one sweep.
+#[derive(Clone, Copy, Default, Debug, PartialEq, Eq)]
+pub struct LevelSpans {
+    pub action: LevelSpan,
+    /// Chance edges whose parent is at this level (`chance_parents/children/cards`).
+    pub edge: LevelSpan,
+    /// Chance nodes (`chance_nodes`).
+    pub chance: LevelSpan,
+    pub fold: LevelSpan,
+    pub show: LevelSpan,
+}
+
+/// One level-synchronous sweep: the whole tree (resident plan), or in a
+/// grouped plan the root part or one group of first-layer subtrees. A group
+/// is entered through its `entry` chance edges (parents in the root part).
+#[derive(Clone, Default, Debug, PartialEq, Eq)]
+pub struct SweepSpans {
+    pub levels: Vec<LevelSpans>,
+    pub entry: LevelSpan,
 }
 
 pub struct GpuPlan {
@@ -102,6 +123,14 @@ pub struct GpuPlan {
     pub terminal_scratch: bool,
     /// Length of the tree's child-slot array (uploaded as is).
     pub children_len: usize,
+    /// Sweeps in traversal order. Resident plans: one sweep over the whole
+    /// tree, whose levels are the per-level spans above. Grouped plans
+    /// (`regroup`): the root part, then one sweep per group; the per-level
+    /// span vectors above are empty there.
+    pub sweeps: Vec<SweepSpans>,
+    /// First-layer card groups of a grouped plan, in sweep order (empty when
+    /// resident).
+    pub groups: Vec<Vec<u8>>,
 
     // Per-hand arrays.
     pub hand_c1: [Vec<u32>; 2],
@@ -462,6 +491,19 @@ impl GpuPlan {
             }
         }
 
+        let sweeps = vec![SweepSpans {
+            levels: (0..num_levels)
+                .map(|l| LevelSpans {
+                    action: action_spans[l],
+                    edge: chance_spans[l],
+                    chance: chance_node_spans[l],
+                    fold: fold_spans[l],
+                    show: show_spans[l],
+                })
+                .collect(),
+            entry: LevelSpan::default(),
+        }];
+
         GpuPlan {
             num_levels,
             nh,
@@ -504,6 +546,8 @@ impl GpuPlan {
             cfv_blocks,
             terminal_scratch: opts.terminal_scratch,
             children_len: spot.tree.children.len(),
+            sweeps,
+            groups: Vec::new(),
             hand_c1,
             hand_c2,
             hand_mask,
@@ -520,6 +564,206 @@ impl GpuPlan {
             riv_card_pos,
             riv_max_cnt,
         }
+    }
+
+    /// Turn the resident plan into a grouped one (multiway `Plan::build`,
+    /// heads-up form): the subtrees below the first chance layer (turn cards
+    /// for a flop root, river cards for a turn root) are swept one group of
+    /// cards at a time, sharing one reach and cfv scratch region. Only the
+    /// root part's reaches and the group roots' cfvs stay resident; terminals
+    /// always live in the per-level scratch. Arena offsets, river tables and
+    /// per-node scalars do not depend on the grouping and stay as built.
+    ///
+    /// `groups` must partition `layout.cards` (the layout of this plan). The
+    /// per-level span vectors are cleared: the kernels walk `sweeps`.
+    pub fn regroup(&mut self, spot: &Spot, layout: &HuLayout, groups: &[Vec<u8>]) -> Result<(), String> {
+        if !self.groups.is_empty() || self.sweeps.len() != 1 {
+            return Err("regroup needs a resident plan".into());
+        }
+        let mut group_of = [usize::MAX; 52];
+        for (g, cards) in groups.iter().enumerate() {
+            if cards.is_empty() {
+                return Err("empty card group".into());
+            }
+            for &c in cards {
+                if c >= 52 || group_of[c as usize] != usize::MAX {
+                    return Err(format!("card {c} is in two groups or out of range"));
+                }
+                group_of[c as usize] = g;
+            }
+        }
+        let mut grouped: Vec<u8> = groups.iter().flatten().copied().collect();
+        grouped.sort_unstable();
+        if grouped != layout.cards {
+            return Err(format!("groups {groups:?} do not partition the first-layer cards {:?}", layout.cards));
+        }
+        let n = self.num_nodes;
+        let reached = |ni: usize| layout.level[ni] != u32::MAX;
+        let sweep_of = |ni: usize| -> usize {
+            match layout.seg[ni] {
+                0 => 0,
+                s => 1 + group_of[s as usize - 1],
+            }
+        };
+        let num_sweeps = 1 + groups.len();
+        let mut num_levels = vec![0usize; num_sweeps];
+        for ni in 0..n {
+            if reached(ni) {
+                let s = sweep_of(ni);
+                num_levels[s] = num_levels[s].max(layout.level[ni] as usize + 1);
+            }
+        }
+
+        // cfv: per (sweep, level) scratch alternating between the two parity
+        // halves (sized by the widest level of either parity over all sweeps:
+        // sweeps run one after another), group roots resident after them.
+        let is_root = |ni: usize| layout.seg[ni] != 0 && layout.level[ni] == 0;
+        let mut width: Vec<Vec<usize>> = num_levels.iter().map(|&l| vec![0; l]).collect();
+        for ni in 0..n {
+            if reached(ni) && !is_root(ni) {
+                width[sweep_of(ni)][layout.level[ni] as usize] += 1;
+            }
+        }
+        let mut parity_max = [0usize; 2];
+        for w in &width {
+            for (l, &x) in w.iter().enumerate() {
+                parity_max[l % 2] = parity_max[l % 2].max(x);
+            }
+        }
+        let base = [0usize, parity_max[0]];
+        let mut used: Vec<Vec<usize>> = num_levels.iter().map(|&l| vec![0; l]).collect();
+        let mut cfv_slot = vec![u32::MAX; n];
+        let mut roots = 0usize;
+        for ni in 0..n {
+            if !reached(ni) {
+                continue;
+            }
+            if is_root(ni) {
+                cfv_slot[ni] = (parity_max[0] + parity_max[1] + roots) as u32;
+                roots += 1;
+            } else {
+                let (s, l) = (sweep_of(ni), layout.level[ni] as usize);
+                cfv_slot[ni] = (base[l % 2] + used[s][l]) as u32;
+                used[s][l] += 1;
+            }
+        }
+        debug_assert_eq!(roots, layout.num_roots);
+
+        // reach: the root part's owners count from 0 (node 0 first: slot 0
+        // holds the root weights); every group's from the root part's total,
+        // so all groups share one region. Owners of a group's nodes lie in
+        // that group (its entry edges rewrite both players' reach).
+        let mut reach_slot = [vec![0u32; n], vec![0u32; n]];
+        let mut reach_blocks = [0usize; 2];
+        for p in 0..2 {
+            let mut next = vec![layout.root_owners[p]; num_sweeps];
+            next[0] = 0;
+            let mut owner_slot = vec![u32::MAX; n];
+            for ni in 0..n {
+                if reached(ni) && self.reach_src[p][ni] as usize == ni {
+                    let s = sweep_of(ni);
+                    owner_slot[ni] = next[s] as u32;
+                    next[s] += 1;
+                }
+            }
+            for ni in 0..n {
+                let slot = owner_slot[self.reach_src[p][ni] as usize];
+                debug_assert!(slot != u32::MAX);
+                reach_slot[p][ni] = slot;
+            }
+            reach_blocks[p] = next.into_iter().max().unwrap_or(0);
+        }
+
+        // Work lists, sweep by sweep, level by level (node order within).
+        let mut by: Vec<Vec<[Vec<u32>; 4]>> =
+            num_levels.iter().map(|&l| (0..l).map(|_| Default::default()).collect()).collect();
+        for ni in 0..n {
+            if !reached(ni) {
+                continue;
+            }
+            let k = match spot.tree.nodes[ni].kind {
+                KIND_ACTION => 0,
+                KIND_CHANCE => 1,
+                KIND_TERM_FOLD => 2,
+                KIND_TERM_SHOWDOWN => 3,
+                _ => return Err("unknown node kind".into()),
+            };
+            by[sweep_of(ni)][layout.level[ni] as usize][k].push(ni as u32);
+        }
+        let mut edges: Vec<Vec<Vec<(u32, u32, u32)>>> = num_levels.iter().map(|&l| vec![Vec::new(); l]).collect();
+        let mut entry: Vec<Vec<(u32, u32, u32)>> = vec![Vec::new(); num_sweeps];
+        for i in 0..self.chance_parents.len() {
+            let (par, child, card) = (self.chance_parents[i], self.chance_children[i], self.chance_cards[i]);
+            let e = (par, child, card);
+            if layout.seg[par as usize] == 0 {
+                entry[sweep_of(child as usize)].push(e);
+            } else {
+                edges[sweep_of(par as usize)][layout.level[par as usize] as usize].push(e);
+            }
+        }
+        let mut lists: [Vec<u32>; 4] = Default::default();
+        let (mut cp, mut cc, mut ck) = (Vec::new(), Vec::new(), Vec::new());
+        let mut push_edges = |list: &[(u32, u32, u32)]| {
+            let span = LevelSpan { start: cp.len() as u32, count: list.len() as u32 };
+            for &(a, b, c) in list {
+                cp.push(a);
+                cc.push(b);
+                ck.push(c);
+            }
+            span
+        };
+        let span_of = |out: &mut Vec<u32>, v: &[u32]| {
+            let span = LevelSpan { start: out.len() as u32, count: v.len() as u32 };
+            out.extend_from_slice(v);
+            span
+        };
+        let mut sweeps = Vec::with_capacity(num_sweeps);
+        for s in 0..num_sweeps {
+            let mut sw = SweepSpans { entry: push_edges(&entry[s]), levels: Vec::with_capacity(num_levels[s]) };
+            for l in 0..num_levels[s] {
+                let [a, c, f, sh] = &by[s][l];
+                sw.levels.push(LevelSpans {
+                    action: span_of(&mut lists[0], a),
+                    chance: span_of(&mut lists[1], c),
+                    fold: span_of(&mut lists[2], f),
+                    show: span_of(&mut lists[3], sh),
+                    edge: push_edges(&edges[s][l]),
+                });
+            }
+            sweeps.push(sw);
+        }
+        let [action_nodes, chance_nodes, fold_nodes, show_nodes] = lists;
+        debug_assert_eq!(action_nodes.len(), self.action_nodes.len());
+        debug_assert_eq!(cp.len(), self.chance_parents.len());
+
+        self.action_nodes = action_nodes;
+        self.chance_nodes = chance_nodes;
+        self.fold_nodes = fold_nodes;
+        self.show_nodes = show_nodes;
+        self.chance_parents = cp;
+        self.chance_children = cc;
+        self.chance_cards = ck;
+        for v in [&mut self.action_spans, &mut self.chance_spans, &mut self.chance_node_spans,
+                  &mut self.fold_spans, &mut self.show_spans] {
+            v.clear();
+        }
+        self.num_levels = num_levels.iter().copied().max().unwrap_or(0);
+        self.cfv_slot = cfv_slot;
+        self.cfv_blocks = parity_max[0] + parity_max[1] + roots;
+        self.reach_slot = reach_slot;
+        self.reach_blocks = reach_blocks;
+        self.terminal_scratch = true;
+        self.sweeps = sweeps;
+        self.groups = groups.to_vec();
+        Ok(())
+    }
+
+    /// `build_with` + `regroup` with the plan's own layout.
+    pub fn build_grouped(spot: &Spot, use_iso: bool, opts: &PlanOptions, groups: &[Vec<u8>]) -> Result<GpuPlan, String> {
+        let mut plan = GpuPlan::build_with(spot, use_iso, opts);
+        let layout = HuLayout::from_plan(spot, &plan);
+        plan.regroup(spot, &layout, groups)?;
+        Ok(plan)
     }
 
     /// Direct whole-arena transfers avoid host snapshots when VRAM is ample.
@@ -568,10 +812,356 @@ impl GpuPlan {
     }
 }
 
+/// Segments of a resident plan's reached nodes for first-layer grouping
+/// (multiway `Layout`, heads-up form): the root part (segment 0) and the
+/// subtrees below each first-layer card c (segment 1 + c): turn cards under
+/// a flop root, river cards under a turn root. With suit isomorphism only
+/// representative cards have subtrees (the others are synthesized from them
+/// at the first-layer chance nodes, which belong to the root part).
+pub struct HuLayout {
+    /// 0 = root part, 1 + c = below first-layer card c.
+    pub seg: Vec<u8>,
+    /// Level within the node's segment (group roots, the children of the
+    /// first chance layer, are level 0); u32::MAX for unreached nodes.
+    pub level: Vec<u32>,
+    /// First-layer cards with subtrees, ascending.
+    pub cards: Vec<u8>,
+    /// Reach owners (= reach slots) of the root part, per player.
+    pub root_owners: [usize; 2],
+    /// Scratch cfv width of each root-part level.
+    pub root_width: Vec<usize>,
+    /// Per card 0..52: reach owners per player, and the scratch cfv width of
+    /// each level of its subtrees (level 0, the group roots, is resident).
+    pub card_owners: Vec<[usize; 2]>,
+    pub card_width: Vec<Vec<usize>>,
+    /// Group roots: one resident cfv slot each.
+    pub num_roots: usize,
+    pub nh: [usize; 2],
+}
+
+fn parity_max(widths: &[usize]) -> [usize; 2] {
+    let mut m = [0usize; 2];
+    for (l, &w) in widths.iter().enumerate() {
+        m[l % 2] = m[l % 2].max(w);
+    }
+    m
+}
+
+impl HuLayout {
+    /// Layout of a resident plan (`build` / `build_with`) of `spot`.
+    pub fn from_plan(spot: &Spot, plan: &GpuPlan) -> HuLayout {
+        let tree = &spot.tree;
+        let n = plan.num_nodes;
+        let mut seg = vec![0u8; n];
+        let mut level = vec![u32::MAX; n];
+        let mut card_owners = vec![[0usize; 2]; 52];
+        let mut card_width: Vec<Vec<usize>> = vec![Vec::new(); 52];
+        let mut root_width: Vec<usize> = Vec::new();
+        let mut root_owners = [0usize; 2];
+        let mut num_roots = 0usize;
+        // reached = has a cfv slot (resident plans give every reached node one)
+        let reached = |ni: usize| plan.cfv_slot[ni] != u32::MAX;
+        level[0] = 0;
+        let mut stack = vec![0u32];
+        while let Some(ni) = stack.pop() {
+            let ni = ni as usize;
+            let node = &tree.nodes[ni];
+            let (s, l) = (seg[ni], level[ni]);
+            let mut visit = |child: u32, first_layer_card: Option<u8>| {
+                let c = child as usize;
+                match first_layer_card {
+                    Some(card) => {
+                        seg[c] = 1 + card;
+                        level[c] = 0;
+                    }
+                    None => {
+                        seg[c] = s;
+                        level[c] = l + 1;
+                    }
+                }
+                stack.push(child);
+            };
+            match node.kind {
+                KIND_ACTION => {
+                    for a in 0..node.num_children as usize {
+                        visit(tree.children[node.children_start as usize + a], None);
+                    }
+                }
+                KIND_CHANCE => {
+                    for card in 0..52u8 {
+                        let child = tree.children[node.children_start as usize + card as usize];
+                        if child == SENTINEL || !reached(child as usize) {
+                            continue; // dealt, or a non-representative card
+                        }
+                        visit(child, (s == 0).then_some(card));
+                    }
+                }
+                _ => {}
+            }
+        }
+        for ni in 0..n {
+            if level[ni] == u32::MAX {
+                continue;
+            }
+            let (s, l) = (seg[ni] as usize, level[ni] as usize);
+            if s == 0 {
+                if root_width.len() <= l {
+                    root_width.resize(l + 1, 0);
+                }
+                root_width[l] += 1;
+            } else if l == 0 {
+                num_roots += 1;
+            } else {
+                let w = &mut card_width[s - 1];
+                if w.len() <= l {
+                    w.resize(l + 1, 0);
+                }
+                w[l] += 1;
+            }
+            for p in 0..2 {
+                if plan.reach_src[p][ni] as usize == ni {
+                    if s == 0 {
+                        root_owners[p] += 1;
+                    } else {
+                        card_owners[s - 1][p] += 1;
+                    }
+                }
+            }
+        }
+        let cards = (0..52u8).filter(|&c| card_owners[c as usize] != [0, 0]).collect();
+        HuLayout { seg, level, cards, root_owners, root_width, card_owners, card_width, num_roots, nh: plan.nh }
+    }
+
+    /// Reach slots per player and cfv slots of the plan `regroup` builds
+    /// for `groups`.
+    pub fn grouped_blocks(&self, groups: &[Vec<u8>]) -> ([usize; 2], usize) {
+        let mut reach = [0usize; 2];
+        let mut pm = parity_max(&self.root_width);
+        for g in groups {
+            let mut own = [0usize; 2];
+            let mut w: Vec<usize> = Vec::new();
+            for &c in g {
+                let c = c as usize;
+                for p in 0..2 {
+                    own[p] += self.card_owners[c][p];
+                }
+                let cw = &self.card_width[c];
+                if w.len() < cw.len() {
+                    w.resize(cw.len(), 0);
+                }
+                for (l, &x) in cw.iter().enumerate() {
+                    w[l] += x;
+                }
+            }
+            let gm = parity_max(&w);
+            for k in 0..2 {
+                reach[k] = reach[k].max(own[k]);
+                pm[k] = pm[k].max(gm[k]);
+            }
+        }
+        ([self.root_owners[0] + reach[0], self.root_owners[1] + reach[1]], pm[0] + pm[1] + self.num_roots)
+    }
+
+    /// Device bytes of reach and cfv under `groups` (f32).
+    pub fn grouped_staging(&self, groups: &[Vec<u8>]) -> (u64, u64) {
+        let (r, c) = self.grouped_blocks(groups);
+        let nh_max = self.nh[0].max(self.nh[1]) as u64;
+        ((r[0] * self.nh[0] + r[1] * self.nh[1]) as u64 * 4, c as u64 * nh_max * 4)
+    }
+
+    /// Groups of at most `k` cards, in card order.
+    pub fn chunks(&self, k: usize) -> Vec<Vec<u8>> {
+        self.cards.chunks(k.max(1)).map(|c| c.to_vec()).collect()
+    }
+
+    /// Fewest groups the greedy pass (cards in order, a new group whenever
+    /// the next card would overflow) finds whose reach + cfv fit `scratch`
+    /// bytes; None when not even single cards do (multiway `group_cards`).
+    pub fn group_cards(&self, scratch: u64) -> Option<Vec<Vec<u8>>> {
+        let fits = |g: &[Vec<u8>]| {
+            let (r, c) = self.grouped_staging(g);
+            r + c <= scratch
+        };
+        let mut groups: Vec<Vec<u8>> = Vec::new();
+        let mut cur: Vec<u8> = Vec::new();
+        for &c in &self.cards {
+            let mut next = cur.clone();
+            next.push(c);
+            let mut cand = groups.clone();
+            cand.push(next.clone());
+            if fits(&cand) {
+                cur = next;
+                continue;
+            }
+            if cur.is_empty() {
+                return None;
+            }
+            groups.push(std::mem::take(&mut cur));
+            let mut cand = groups.clone();
+            cand.push(vec![c]);
+            if !fits(&cand) {
+                return None;
+            }
+            cur = vec![c];
+        }
+        if !cur.is_empty() {
+            groups.push(cur);
+        }
+        Some(groups)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+
+    fn group_spot(board: &str, stack: f64) -> Spot {
+        let sizing = || StreetSizing {
+            bet: parse_sizes("50").unwrap(), raise: parse_sizes("2.5x").unwrap(), donk: vec![],
+        };
+        Spot::new(SpotConfig {
+            board: board.into(),
+            range_oop: "AA,KK,QQ,JJ,TT,99,AKs,AQs,JTs,87s,AKo".into(),
+            range_ip: "AA,QQ,TT,77,55,AQs,KQs,QJs,98s,AQo".into(),
+            tree: TreeConfig {
+                starting_pot: 10.0, effective_stack: stack,
+                oop: [sizing(), sizing(), sizing()],
+                ip: [sizing(), sizing(), sizing()],
+                ..Default::default()
+            },
+        }).unwrap()
+    }
+
+    /// Turn-grouped plans (no device): slot invariants of every sweep, the
+    /// layout's byte account equals the plan's, and everything except the
+    /// reach/cfv slots and work-list order matches the resident plan.
+    #[test]
+    fn plan_groups_hu_slots() {
+        // flop with flop all-in runouts (stack 40), a deeper flop, a turn root
+        for (board, stack) in [("KsQs2d", 40.0), ("Td9d6h", 90.0), ("Qs7h2dKh", 40.0)] {
+            let spot = group_spot(board, stack);
+            for iso in [false, true] {
+                let resident = GpuPlan::build_with(&spot, iso, &PlanOptions { terminal_scratch: true });
+                let layout = HuLayout::from_plan(&spot, &resident);
+                assert!(!layout.cards.is_empty());
+                if !iso {
+                    assert_eq!(layout.cards.len(), 52 - spot.board.len());
+                }
+                for p in 0..2 {
+                    let owners: usize = layout.root_owners[p] + layout.card_owners.iter().map(|o| o[p]).sum::<usize>();
+                    assert_eq!(owners, resident.reach_blocks[p], "{board} iso={iso}: owners partition");
+                }
+                let all = layout.chunks(52);
+                for groups in [layout.chunks(1), layout.chunks(3), all.clone()] {
+                    let label = format!("{board} iso={iso} {} groups", groups.len());
+                    let plan = GpuPlan::build_grouped(&spot, iso, &PlanOptions { terminal_scratch: true }, &groups).unwrap();
+                    assert_eq!(plan.groups, groups);
+                    assert_eq!(plan.sweeps.len(), 1 + groups.len(), "{label}");
+                    assert!(plan.terminal_scratch);
+                    assert_eq!(layout.grouped_blocks(&groups), (plan.reach_blocks, plan.cfv_blocks), "{label}");
+                    let (r, c) = layout.grouped_staging(&groups);
+                    assert_eq!(r + c, plan.staging_bytes(), "{label}");
+                    assert_eq!(plan.arena_elements, resident.arena_elements);
+                    assert_eq!(plan.node_data_off, resident.node_data_off);
+                    assert_eq!(plan.table_bytes(), resident.table_bytes());
+                    assert!(plan.reach_blocks[0] <= resident.reach_blocks[0] && plan.reach_blocks[1] <= resident.reach_blocks[1]);
+                    assert_eq!(plan.cfv_slot[0], 0);
+                    for p in 0..2 {
+                        assert_eq!(plan.reach_slot[p][0], 0);
+                    }
+                    let sweep_of = |n: usize| match layout.seg[n] {
+                        0 => 0,
+                        sg => 1 + groups.iter().position(|g| g.contains(&(sg - 1))).unwrap(),
+                    };
+                    let scratch_end = plan.cfv_blocks - layout.num_roots;
+                    // every reached node is listed once, in its sweep at its level
+                    let mut seen = vec![false; plan.num_nodes];
+                    let mut roots = std::collections::HashSet::new();
+                    for (s, sw) in plan.sweeps.iter().enumerate() {
+                        let mut prev: std::collections::HashSet<usize> = Default::default();
+                        for (l, ls) in sw.levels.iter().enumerate() {
+                            let mut live = std::collections::HashSet::new();
+                            for (nodes, sp) in [(&plan.action_nodes, ls.action), (&plan.chance_nodes, ls.chance),
+                                                (&plan.fold_nodes, ls.fold), (&plan.show_nodes, ls.show)] {
+                                for &n in &nodes[sp.start as usize..(sp.start + sp.count) as usize] {
+                                    let n = n as usize;
+                                    assert!(!std::mem::replace(&mut seen[n], true), "{label}: node {n} listed twice");
+                                    assert_eq!((sweep_of(n), layout.level[n] as usize), (s, l), "{label}: node {n}");
+                                    let slot = plan.cfv_slot[n] as usize;
+                                    if s > 0 && l == 0 {
+                                        assert!(slot >= scratch_end && slot < plan.cfv_blocks, "{label}: group root resident");
+                                        assert!(roots.insert(slot), "{label}: group roots distinct");
+                                    } else {
+                                        assert!(slot < scratch_end, "{label}: scratch below the resident roots");
+                                        assert!(live.insert(slot), "{label}: same-level outputs cannot alias");
+                                    }
+                                }
+                            }
+                            assert!(live.is_disjoint(&prev), "{label}: a parent cannot overwrite child input storage");
+                            prev = live;
+                            for (&par, &child) in plan.chance_parents[ls.edge.start as usize..(ls.edge.start + ls.edge.count) as usize]
+                                .iter().zip(&plan.chance_children[ls.edge.start as usize..(ls.edge.start + ls.edge.count) as usize])
+                            {
+                                assert_eq!((sweep_of(par as usize), layout.level[par as usize] as usize), (s, l), "{label}: edge level");
+                                assert_eq!(sweep_of(child as usize), s);
+                            }
+                        }
+                        let e = sw.entry;
+                        assert_eq!(e.count == 0, s == 0, "{label}: groups and only groups are entered");
+                        for i in e.start as usize..(e.start + e.count) as usize {
+                            let (par, child) = (plan.chance_parents[i] as usize, plan.chance_children[i] as usize);
+                            assert_eq!(sweep_of(par), 0);
+                            assert_eq!((sweep_of(child), layout.level[child]), (s, 0), "{label}: entry child is a group root");
+                        }
+                    }
+                    assert_eq!(roots.len(), layout.num_roots);
+                    for n in 0..plan.num_nodes {
+                        assert_eq!(seen[n], resident.cfv_slot[n] != u32::MAX, "{label}: node {n} reached");
+                    }
+                    for &child in &plan.cc_child {
+                        assert_ne!(plan.cfv_slot[child as usize], u32::MAX);
+                    }
+                    // reach: owners inside the node's sweep; one owner per slot and sweep
+                    for p in 0..2 {
+                        let mut owner_of: std::collections::HashMap<(usize, u32), u32> = Default::default();
+                        for n in 0..plan.num_nodes {
+                            if !seen[n] {
+                                continue;
+                            }
+                            let owner = plan.reach_src[p][n];
+                            assert_eq!(sweep_of(owner as usize), sweep_of(n), "{label}: owner in the node's sweep");
+                            let slot = plan.reach_slot[p][n];
+                            assert!((slot as usize) < plan.reach_blocks[p]);
+                            assert_eq!(slot, plan.reach_slot[p][owner as usize]);
+                            let prev = owner_of.insert((sweep_of(n), slot), owner);
+                            assert!(prev.is_none_or(|o| o == owner), "{label}: slot {slot} has two owners");
+                            if sweep_of(n) > 0 {
+                                assert!(slot as usize >= layout.root_owners[p], "{label}: groups above the root part");
+                            }
+                        }
+                    }
+                }
+                // a partition is required
+                let mut bad = layout.chunks(1);
+                bad.pop();
+                assert!(GpuPlan::build_grouped(&spot, iso, &PlanOptions { terminal_scratch: true }, &bad).is_err());
+                // the greedy grouping honours its budget and is never worse than single cards
+                let single = { let (r, c) = layout.grouped_staging(&layout.chunks(1)); r + c };
+                let whole = { let (r, c) = layout.grouped_staging(&all); r + c };
+                assert!(layout.group_cards(single - 1).is_none_or(|g| { let (r, c) = layout.grouped_staging(&g); r + c < single }));
+                assert_eq!(layout.group_cards(whole).map(|g| g.len()), Some(1));
+                let mid = (single + whole) / 2;
+                if let Some(g) = layout.group_cards(mid) {
+                    let (r, c) = layout.grouped_staging(&g);
+                    assert!(r + c <= mid);
+                    let mut cards: Vec<u8> = g.concat();
+                    cards.sort_unstable();
+                    assert_eq!(cards, layout.cards);
+                }
+            }
+        }
+    }
 
     #[test]
     fn river_bounds_match_strength_comparisons() {

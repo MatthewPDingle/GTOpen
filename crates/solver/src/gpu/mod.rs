@@ -24,10 +24,10 @@ use arena::{ArenaLayout, ZeroCheck};
 use crate::cfr::{Algorithm, Discounts, Solver};
 use crate::store::Store;
 use cudarc::driver::{
-    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, LaunchConfig,
+    sys, CudaContext, CudaFunction, CudaGraph, CudaModule, CudaSlice, CudaStream, DevicePtr, LaunchConfig,
     PushKernelArg,
 };
-use plan::{GpuPlan, LevelSpan, PlanOptions};
+use plan::{GpuPlan, HuLayout, LevelSpan, PlanOptions, SweepSpans};
 use std::sync::Arc;
 use rayon::prelude::*;
 
@@ -49,8 +49,32 @@ pub struct HuGpuOptions {
     pub terminal_scratch: Option<bool>,
     /// Whole-tree action arenas (direct DMA) instead of the compact packing of
     /// reached nodes. None: full when the host store is f32 and it fits the
-    /// budget (the upstream rule). Some(true) requires f32 host storage.
+    /// budget (the upstream rule); turn-grouped layouts use compact arenas
+    /// unless this is Some(true). Some(true) requires f32 host storage.
     pub full_arenas: Option<bool>,
+    /// Sweep the subtrees below the first chance layer (turn cards for a flop
+    /// root, river cards for a turn root) in groups of at most this many
+    /// cards, so that only one group's reach and cfv scratch is on the device
+    /// at a time (`GpuPlan::regroup`; same arithmetic, bit for bit). None:
+    /// the resident layout when it fits the budget, otherwise the fewest
+    /// groups that fit. Some(0): never group (the upstream layout). Turn
+    /// groups keep terminal cfvs in the scratch and refuse locks, fits and
+    /// "trust the read".
+    pub max_cards_per_group: Option<usize>,
+}
+
+/// What [`estimate_hu_layout`] predicts [`GpuSolver::with_options`] does.
+#[derive(Clone, Debug, Default)]
+pub struct HuGpuEstimate {
+    /// Device bytes of the chosen layout; when nothing fits, of the smallest
+    /// layout tried (one first-layer card per group, or resident).
+    pub bytes: HuGpuBytes,
+    /// First-layer card groups of that layout (empty = resident).
+    pub groups: Vec<Vec<u8>>,
+    /// The budget admits the layout.
+    pub fits: bool,
+    /// `with_options`' error when it does not.
+    pub error: Option<String>,
 }
 
 /// Device bytes of a heads-up GPU solve by buffer class.
@@ -82,22 +106,140 @@ fn auto_terminal_scratch(solver: &Solver) -> bool {
 
 /// What [`GpuSolver::with_options`] would allocate for `spot` with f32 host
 /// storage and no "trust the read" (CPU only: builds the plan, no CUDA).
+/// Budget None: unlimited (so `max_cards_per_group: None` never groups).
 pub fn estimate_hu_bytes(spot: &crate::game::Spot, use_iso: bool, o: &HuGpuOptions) -> HuGpuBytes {
+    estimate_hu_layout(spot, use_iso, o).bytes
+}
+
+/// [`estimate_hu_bytes`] with the chosen first-layer card groups and
+/// whether the budget admits the layout (CPU only).
+pub fn estimate_hu_layout(spot: &crate::game::Spot, use_iso: bool, o: &HuGpuOptions) -> HuGpuEstimate {
     let terminal_scratch = o.terminal_scratch.unwrap_or(!spot.tree.config.general_sum());
     let plan = GpuPlan::build_with(spot, use_iso, &PlanOptions { terminal_scratch });
+    let blocker = (o.terminal_scratch == Some(false)).then_some("terminal cfvs forced resident");
+    let budget = o.budget_bytes.unwrap_or(u64::MAX);
+    match choose_layout(spot, &plan, o, budget, true, false, None, blocker) {
+        Ok(c) => HuGpuEstimate { bytes: c.bytes, groups: c.groups.map(|(_, g)| g).unwrap_or_default(), fits: true, error: None },
+        Err(n) => HuGpuEstimate { bytes: n.bytes, groups: n.groups, fits: false, error: Some(n.msg) },
+    }
+}
+
+/// The device layout of a resident `plan`: arenas full or compact, and
+/// optionally first-layer card groups (the layout and the groups for
+/// `GpuPlan::regroup`).
+struct LayoutChoice {
+    full_arenas: bool,
+    groups: Option<(HuLayout, Vec<Vec<u8>>)>,
+    bytes: HuGpuBytes,
+}
+
+/// No layout fits: the error, and the smallest layout tried.
+struct NoFit {
+    msg: String,
+    bytes: HuGpuBytes,
+    groups: Vec<Vec<u8>>,
+}
+
+fn nofit_msg(need: u64, budget: u64) -> String {
+    format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)", need as f64 / 1e6, budget as f64 / 1e6)
+}
+
+/// Pick the layout for `plan` (built resident, with the requested terminal
+/// scratch) under `budget`: resident first unless `max_cards_per_group`
+/// asks for groups, then the fewest first-layer card groups that fit
+/// (greedy over the cards in order; one card per group as the last try).
+/// `legacy`: the upstream budget rule (no tables in the check, no groups).
+/// `rnr_villain`: "trust the read" extras on the resident layout.
+/// `blocker`: why groups are unavailable (locks, fits, trust the read,
+/// terminal cfvs forced resident).
+#[allow(clippy::too_many_arguments)]
+fn choose_layout(
+    spot: &crate::game::Spot, plan: &GpuPlan, o: &HuGpuOptions, budget: u64, f32_store: bool,
+    legacy: bool, rnr_villain: Option<usize>, blocker: Option<&str>,
+) -> Result<LayoutChoice, NoFit> {
+    let nofit = |msg: String, bytes: HuGpuBytes, groups: Vec<Vec<u8>>| NoFit { msg, bytes, groups };
     let tables = plan.table_bytes();
-    let full_bytes = (spot.tree.data_size[0] + spot.tree.data_size[1]) * 8;
-    let full = o.full_arenas.unwrap_or_else(|| {
-        o.budget_bytes.is_none_or(|b| plan.staging_bytes() + full_bytes + tables + HEADROOM <= b)
+    let check_tables = if legacy { 0 } else { tables };
+    let staging = plan.staging_bytes();
+    let ds = spot.tree.data_size;
+    let full_bytes = (ds[0] + ds[1]) * 8;
+    let compact_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+    if o.full_arenas == Some(true) && !f32_store {
+        return Err(nofit("full action arenas need f32 host storage".into(), HuGpuBytes::default(), Vec::new()));
+    }
+    // F32 stores already support cheap direct DMA. Prefer that path if it
+    // fits, avoiding inactive host snapshots on warm full-precision solves.
+    // Compressed stores benefit from packing and parallel readback anyway;
+    // a tight F32 budget can use the same exact compact representation.
+    let full = o.full_arenas.unwrap_or(f32_store && staging + full_bytes + check_tables + HEADROOM <= budget);
+    // "trust the read" keeps a second copy of the villain's reach
+    // and the free villain's own regret and strategy arenas
+    let read = rnr_villain.map_or(0, |v| {
+        let elements = if full { ds[v] } else { plan.arena_elements[v] as u64 };
+        (plan.reach_blocks[v] * plan.nh[v]) as u64 * 4 + elements * 8
     });
-    HuGpuBytes {
-        arenas: if full { full_bytes } else { (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8 },
+    let resident = HuGpuBytes {
+        arenas: if full { full_bytes } else { compact_bytes },
         reach: (plan.reach_blocks[0] * plan.nh[0] + plan.reach_blocks[1] * plan.nh[1]) as u64 * 4,
         cfv: (plan.cfv_blocks * plan.nh_max) as u64 * 4,
         tables,
-        read: 0,
+        read,
         headroom: HEADROOM,
+    };
+    let resident_need = staging + resident.arenas + read + check_tables + HEADROOM;
+    let resident_choice = || {
+        if resident_need <= budget {
+            Ok(LayoutChoice { full_arenas: full, groups: None, bytes: resident })
+        } else {
+            Err(nofit(nofit_msg(resident_need, budget), resident, Vec::new()))
+        }
+    };
+    let k = o.max_cards_per_group;
+    if legacy || k == Some(0) || (k.is_none() && resident_need <= budget) {
+        return resident_choice();
     }
+    if let Some(why) = blocker {
+        return match k {
+            Some(_) => Err(nofit(format!("turn-grouped GPU sweeps unavailable: {why}"), resident, Vec::new())),
+            None => resident_choice(),
+        };
+    }
+    let layout = HuLayout::from_plan(spot, plan);
+    if layout.cards.is_empty() {
+        return resident_choice(); // no chance layer below the root: nothing to group
+    }
+    let arenas = if o.full_arenas == Some(true) { full_bytes } else { compact_bytes };
+    let grouped = |g: &[Vec<u8>]| {
+        let (reach, cfv) = layout.grouped_staging(g);
+        HuGpuBytes { arenas, reach, cfv, tables, read: 0, headroom: HEADROOM }
+    };
+    let full_g = o.full_arenas == Some(true);
+    let groups = match k {
+        Some(k) => layout.chunks(k),
+        None => {
+            let fixed = arenas + tables + HEADROOM;
+            let singles = layout.chunks(1);
+            match budget.checked_sub(fixed).and_then(|scratch| layout.group_cards(scratch)) {
+                Some(g) => g,
+                // the greedy pass can miss a fit single cards achieve (parity halves of different groups)
+                None if grouped(&singles).total() <= budget => singles,
+                None => {
+                    let b = grouped(&singles);
+                    let (b, g) = if b.total() < resident.total() { (b, singles) } else { (resident, Vec::new()) };
+                    return Err(nofit(
+                        format!("{} even with one first-layer card per group", nofit_msg(b.total().min(resident_need), budget)),
+                        b,
+                        g,
+                    ));
+                }
+            }
+        }
+    };
+    let bytes = grouped(&groups);
+    if bytes.total() > budget {
+        return Err(nofit(nofit_msg(bytes.total(), budget), bytes, groups));
+    }
+    Ok(LayoutChoice { full_arenas: full_g, groups: Some((layout, groups)), bytes })
 }
 
 const BLOCK: u32 = 128;
@@ -144,6 +286,43 @@ fn e(err: impl std::fmt::Debug) -> String {
     format!("cuda: {err:?}")
 }
 
+/// Raw device pointer of a buffer. Everything in a `GpuSolver` runs on one
+/// stream with event tracking off, so the returned guard is inert; raw
+/// pointers let the per-sweep helpers borrow the solver immutably while
+/// their kernels write reach, cfv and arena buffers.
+fn dptr<T>(s: &CudaSlice<T>, stream: &CudaStream) -> u64 {
+    s.device_ptr(stream).0
+}
+
+/// Buffers of a down sweep: the arenas whose sigma is played (regrets, or
+/// strategy sums for evaluation), lock offsets, both reaches, and the hand
+/// counts (0 = leave that player's reach untouched).
+#[derive(Clone, Copy)]
+struct DownArgs {
+    arenas: [u64; 2],
+    locks: u64,
+    reach: [u64; 2],
+    nh: [i32; 2],
+}
+
+/// Buffers of an up sweep for traverser `p`.
+#[derive(Clone, Copy)]
+struct UpArgs {
+    p: usize,
+    /// None: the CFR update (`up_action`, fits); Some(mode): evaluation
+    /// (`up_action_eval`: 0 best response, 1 average strategy).
+    eval: Option<i32>,
+    /// Evaluate the terminals (false only when reusing resident terminals).
+    terminals: bool,
+    /// Traverser's regrets (update, fits; unused in evaluation) and strategy
+    /// (update target; the average played in evaluation mode 1).
+    regrets: u64,
+    strat: u64,
+    locks: u64,
+    own_reach: u64,
+    opp_reach: u64,
+}
+
 pub struct GpuSolver {
     _ctx: Arc<CudaContext>,
     stream: Arc<CudaStream>,
@@ -162,14 +341,15 @@ pub struct GpuSolver {
     f_restart_strat: CudaFunction,
 
     // plan metadata kept host-side
+    /// Levels of the first sweep (the whole tree unless grouped).
     num_levels: usize,
     nh: [i32; 2],
     nh_max: i32,
-    action_spans: Vec<LevelSpan>,
-    chance_spans: Vec<LevelSpan>,
-    chance_node_spans: Vec<LevelSpan>,
-    fold_spans: Vec<LevelSpan>,
-    show_spans: Vec<LevelSpan>,
+    /// Work-list spans: one sweep (resident), or the root part and then one
+    /// sweep per first-layer card group (`GpuPlan::regroup`).
+    sweeps: Vec<SweepSpans>,
+    /// First-layer card groups (empty when resident).
+    groups: Vec<Vec<u8>>,
     riv_max_cnt: [usize; 2],
 
     // device: work lists
@@ -329,7 +509,9 @@ impl GpuSolver {
     /// check counts staging + arenas + read extras + 512 MiB (not the tables).
     /// [`GpuSolver::with_options`] is the general form.
     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
-        let o = HuGpuOptions { budget_bytes: Some(budget_bytes), terminal_scratch: Some(false), full_arenas: None };
+        let o = HuGpuOptions {
+            budget_bytes: Some(budget_bytes), terminal_scratch: Some(false), full_arenas: None, max_cards_per_group: Some(0),
+        };
         Self::construct(solver, &o, true)
     }
 
@@ -343,40 +525,34 @@ impl GpuSolver {
         if solver.algo == Algorithm::PcfrPlus {
             return Err("GPU solver supports dcfr/cfr+ only".into());
         }
-        let terminal_scratch = o.terminal_scratch.unwrap_or_else(|| auto_terminal_scratch(solver));
+        let mut terminal_scratch = o.terminal_scratch.unwrap_or_else(|| auto_terminal_scratch(solver));
         let budget_bytes = o.budget_bytes
             .unwrap_or_else(|| vram_info_mb().map_or(u64::MAX, |(free, _)| free * 1_000_000));
 
         let mut plan = GpuPlan::build_with(&solver.spot, solver.use_isomorphism, &PlanOptions { terminal_scratch });
-        let tables = if legacy_budget { 0 } else { plan.table_bytes() };
         let f32_store = solver.storage == crate::store::Storage::F32;
-        // F32 stores already support cheap direct DMA. Prefer that path if it
-        // fits, avoiding inactive host snapshots on warm full-precision solves.
-        // Compressed stores benefit from packing and parallel readback anyway;
-        // a tight F32 budget can use the same exact compact representation.
-        let full_needed = plan.staging_bytes()
-            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
-            + tables + HEADROOM;
-        let full_arenas = match o.full_arenas {
-            Some(true) if !f32_store => return Err("full action arenas need f32 host storage".into()),
-            Some(full) => full,
-            None => f32_store && full_needed <= budget_bytes,
+        let blocker = if !solver.locks.is_empty() {
+            Some("node locks")
+        } else if solver.has_fits() {
+            Some("least-exploitable fits")
+        } else if solver.rnr_active().is_some() {
+            Some("trust the read")
+        } else if o.terminal_scratch == Some(false) {
+            Some("terminal cfvs forced resident")
+        } else {
+            None
         };
-        if full_arenas {
+        let rnr_villain = solver.rnr_active().map(|r| r.villain);
+        let choice = choose_layout(&solver.spot, &plan, o, budget_bytes, f32_store, legacy_budget, rnr_villain, blocker)
+            .map_err(|n| n.msg)?;
+        if choice.full_arenas {
             plan.use_full_action_arenas(&solver.spot);
         }
-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
-        // "trust the read" keeps a second copy of the villain's reach
-        // and the free villain's own regret and strategy arenas
-        let read_bytes = solver.rnr_active().map_or(0, |r| {
-            (plan.reach_blocks[r.villain] * plan.nh[r.villain]) as u64 * 4
-                + plan.arena_elements[r.villain] as u64 * 8
-        });
-        let needed = plan.staging_bytes() + arena_bytes + read_bytes + tables + HEADROOM;
-        if needed > budget_bytes {
-            return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
-                needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+        if let Some((layout, groups)) = choice.groups {
+            plan.regroup(&solver.spot, &layout, &groups)?;
+            terminal_scratch = true;
         }
+        let full_arenas = choice.full_arenas;
         let ctx = CudaContext::new(0).map_err(e)?;
         let stream = ctx.new_stream().map_err(e)?;
         // Everything in a GpuSolver runs on this one stream, so cudarc's
@@ -493,10 +669,14 @@ impl GpuSolver {
             f_restart_strat: func("restart_strat")?,
             h_node_data_off: plan.node_data_off.clone(),
             h_node_level: {
+                // fits need single-sweep levels (with_options refuses them on grouped plans)
                 let mut lv = vec![u32::MAX; plan.num_nodes];
-                for (l, sp) in plan.action_spans.iter().enumerate() {
-                    for &nd in &plan.action_nodes[sp.start as usize..(sp.start + sp.count) as usize] {
-                        lv[nd as usize] = l as u32;
+                if plan.sweeps.len() == 1 {
+                    for (l, ls) in plan.sweeps[0].levels.iter().enumerate() {
+                        let sp = ls.action;
+                        for &nd in &plan.action_nodes[sp.start as usize..(sp.start + sp.count) as usize] {
+                            lv[nd as usize] = l as u32;
+                        }
                     }
                 }
                 lv
@@ -506,14 +686,11 @@ impl GpuSolver {
             d_fit: stream.alloc_zeros::<f32>(FIT_STRIDE).map_err(e)?,
             d_fit_node: stream.alloc_zeros::<u32>(1).map_err(e)?,
             d_fit_order: stream.alloc_zeros::<u32>(1).map_err(e)?,
-            num_levels: plan.num_levels,
+            num_levels: plan.sweeps[0].levels.len(),
             nh: [nh[0] as i32, nh[1] as i32],
             nh_max: plan.nh_max as i32,
-            action_spans: plan.action_spans,
-            chance_spans: plan.chance_spans,
-            chance_node_spans: plan.chance_node_spans,
-            fold_spans: plan.fold_spans,
-            show_spans: plan.show_spans,
+            sweeps: plan.sweeps,
+            groups: plan.groups,
             riv_max_cnt: plan.riv_max_cnt,
 
             d_action_nodes: up32(&plan.action_nodes)?,
@@ -791,88 +968,41 @@ impl GpuSolver {
         self.eval_down_with(false)
     }
 
-    /// `free`: play the free villain (profile locks off; "trust the read").
-    fn eval_down_with(&mut self, free: bool) -> Result<(), String> {
+    /// Group reaches survive between sweeps only when there is at most one
+    /// group (multiway `groups_resident`); otherwise every group's down
+    /// sweep is repeated before its up sweep.
+    fn groups_resident(&self) -> bool {
+        self.sweeps.len() <= 2
+    }
+
+    /// Average-strategy down sweep buffers. `free`: play the free villain
+    /// (profile locks off; "trust the read").
+    fn eval_down_args(&self, free: bool) -> DownArgs {
+        let st = &self.stream;
         let locks = if free { &self.d_lock_off_free } else { &self.d_lock_off };
         let free_dev = self.d_free.as_ref().filter(|_| free);
         let strat = |q: usize| match free_dev {
-            Some(f) if f.villain == q => &f.strat,
-            _ => &self.d_strat[q],
+            Some(f) if f.villain == q => dptr(&f.strat, st),
+            _ => dptr(&self.d_strat[q], st),
         };
-        let (strat0, strat1) = (strat(0), strat(1));
-        let nh0 = self.nh[0];
-        let nh1 = self.nh[1];
-
-        let [reach0, reach1] = &mut self.d_reach;
-        unsafe {
-            self.stream
-                .launch_builder(&self.f_copy_root)
-                .arg(&self.d_weights[0])
-                .arg(&self.d_weights[1])
-                .arg(&mut *reach0)
-                .arg(&mut *reach1)
-                .arg(&nh0)
-                .arg(&nh1)
-                .launch(Self::cfg(4, 0))
-                .map_err(e)?;
+        DownArgs {
+            arenas: [strat(0), strat(1)],
+            locks: dptr(locks, st),
+            reach: [dptr(&self.d_reach[0], st), dptr(&self.d_reach[1], st)],
+            nh: self.nh,
         }
-        for l in 0..self.num_levels {
-            let sp = self.action_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                // average sigma comes from the strategy arenas
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_action)
-                        .arg(&self.d_action_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_node_player)
-                        .arg(&self.d_node_na)
-                        .arg(&self.d_node_data_off)
-                        .arg(&self.d_node_children_start)
-                        .arg(&self.d_children)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(strat0)
-                        .arg(strat1)
-                        .arg(locks)
-                        .arg(&self.d_lock_sigma)
-                        .arg(&mut *reach0)
-                        .arg(&mut *reach1)
-                        .arg(&nh0)
-                        .arg(&nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-            }
-            let sp = self.chance_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_chance)
-                        .arg(&self.d_chance_parents)
-                        .arg(&self.d_chance_children)
-                        .arg(&self.d_chance_cards)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(&self.d_hand_mask[0])
-                        .arg(&self.d_hand_mask[1])
-                        .arg(&mut *reach0)
-                        .arg(&mut *reach1)
-                        .arg(&nh0)
-                        .arg(&nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-            }
-        }
+    }
 
+    /// `free`: play the free villain (profile locks off; "trust the read").
+    /// Grouped plans with several groups only sweep the root part here;
+    /// `eval_up_with` re-derives each group's reaches before its up sweep.
+    fn eval_down_with(&mut self, free: bool) -> Result<(), String> {
+        let a = self.eval_down_args(free);
+        self.copy_root(a.reach, a.nh, &mut None)?;
+        let sweeps = if self.groups_resident() { self.sweeps.len() } else { 1 };
+        for s in 0..sweeps {
+            self.down_sweep(s, &a, &mut None)?;
+        }
         Ok(())
     }
 
@@ -886,6 +1016,11 @@ impl GpuSolver {
     fn eval_up_with(&mut self, p: usize, mode: i32, terminals: bool, opp_read: bool, free: bool) -> Result<(), String> {
         // Scratch terminals do not survive their parent level: never reuse them.
         let terminals = terminals || self.terminal_scratch;
+        let regroup = !self.groups_resident();
+        if regroup && (opp_read || free) {
+            return Err("trust the read is not supported with turn-grouped GPU sweeps".into());
+        }
+        let st = &self.stream;
         let locks = if free { &self.d_lock_off_free } else { &self.d_lock_off };
         let own_strat = match self.d_free.as_ref() {
             Some(f) if free && f.villain == p => &f.strat,
@@ -896,18 +1031,139 @@ impl GpuSolver {
             (None, true) => return Err("trust the read: reach buffer missing".into()),
             _ => &self.d_reach[1 - p],
         };
-        let (reach_arg0, reach_arg1) =
-            if p == 0 { (&self.d_reach[0], opp_reach) } else { (opp_reach, &self.d_reach[1]) };
+        let up = UpArgs {
+            p,
+            eval: Some(mode),
+            terminals,
+            regrets: 0,
+            strat: dptr(own_strat, st),
+            locks: dptr(locks, st),
+            own_reach: dptr(&self.d_reach[p], st),
+            opp_reach: dptr(opp_reach, st),
+        };
+        let down = self.eval_down_args(false);
+        for s in 1..self.sweeps.len() {
+            if regroup {
+                self.down_sweep(s, &down, &mut None)?;
+            }
+            self.up_sweep(s, &up, &mut None)?;
+        }
+        self.up_sweep(0, &up, &mut None)
+    }
+
+    /// Root reaches = the range weights (`nh[p] == 0`: player p untouched).
+    fn copy_root(&self, reach: [u64; 2], nh: [i32; 2], prof: &mut Option<&mut Profile>) -> Result<(), String> {
+        let t0 = profq(prof);
+        unsafe {
+            self.stream
+                .launch_builder(&self.f_copy_root)
+                .arg(&self.d_weights[0])
+                .arg(&self.d_weights[1])
+                .arg(&reach[0])
+                .arg(&reach[1])
+                .arg(&nh[0])
+                .arg(&nh[1])
+                .launch(Self::cfg(4, 0))
+                .map_err(e)?;
+        }
+        prof_acc(&self.stream, prof, 0, t0)
+    }
+
+    /// Chance edges `sp`: child reach = parent reach without the hands that
+    /// hold the dealt card (both players).
+    fn down_edges(&self, sp: LevelSpan, a: &DownArgs, prof: &mut Option<&mut Profile>) -> Result<(), String> {
+        if sp.count == 0 {
+            return Ok(());
+        }
+        let start = sp.start as i32;
+        let count = sp.count as i32;
+        let t0 = profq(prof);
+        unsafe {
+            self.stream
+                .launch_builder(&self.f_down_chance)
+                .arg(&self.d_chance_parents)
+                .arg(&self.d_chance_children)
+                .arg(&self.d_chance_cards)
+                .arg(&start)
+                .arg(&count)
+                .arg(&self.d_rsrc[0])
+                .arg(&self.d_rsrc[1])
+                .arg(&self.d_hand_mask[0])
+                .arg(&self.d_hand_mask[1])
+                .arg(&a.reach[0])
+                .arg(&a.reach[1])
+                .arg(&a.nh[0])
+                .arg(&a.nh[1])
+                .launch(Self::cfg(sp.count, 0))
+                .map_err(e)?;
+        }
+        prof_acc(&self.stream, prof, 2, t0)
+    }
+
+    /// Down sweep of sweep `s`: its entry chance edges, then level by level
+    /// the action nodes (children's actor reach) and the chance edges.
+    fn down_sweep(&self, s: usize, a: &DownArgs, prof: &mut Option<&mut Profile>) -> Result<(), String> {
+        let sw = &self.sweeps[s];
+        self.down_edges(sw.entry, a, prof)?;
+        for ls in &sw.levels {
+            let sp = ls.action;
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                let t0 = profq(prof);
+                unsafe {
+                    self.stream
+                        .launch_builder(&self.f_down_action)
+                        .arg(&self.d_action_nodes)
+                        .arg(&start)
+                        .arg(&count)
+                        .arg(&self.d_node_player)
+                        .arg(&self.d_node_na)
+                        .arg(&self.d_node_data_off)
+                        .arg(&self.d_node_children_start)
+                        .arg(&self.d_children)
+                        .arg(&self.d_rsrc[0])
+                        .arg(&self.d_rsrc[1])
+                        .arg(&a.arenas[0])
+                        .arg(&a.arenas[1])
+                        .arg(&a.locks)
+                        .arg(&self.d_lock_sigma)
+                        .arg(&a.reach[0])
+                        .arg(&a.reach[1])
+                        .arg(&a.nh[0])
+                        .arg(&a.nh[1])
+                        .launch(Self::cfg(sp.count, 0))
+                        .map_err(e)?;
+                }
+                prof_acc(&self.stream, prof, 1, t0)?;
+            }
+            self.down_edges(ls.edge, a, prof)?;
+        }
+        Ok(())
+    }
+
+    /// Up sweep of sweep `s` for traverser `a.p`, deepest level first:
+    /// terminals, chance averages, then action nodes (the CFR update, or an
+    /// evaluation mode). Group roots write resident cfv slots that the root
+    /// part's chance nodes read afterwards.
+    fn up_sweep(&self, s: usize, a: &UpArgs, prof: &mut Option<&mut Profile>) -> Result<(), String> {
+        let p = a.p;
+        let st = &self.stream;
+        let (reach0, reach1) = if p == 0 { (a.own_reach, a.opp_reach) } else { (a.opp_reach, a.own_reach) };
+        let cfv = dptr(&self.d_cfv, st);
         let nh_p = self.nh[p];
         let nh_o = self.nh[1 - p];
         let nh_max = self.nh_max;
         let pi = p as i32;
         let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
-        for l in (0..self.num_levels).rev() {
-            let sp = self.fold_spans[l];
-            if terminals && sp.count > 0 {
+        // fits exist only on single-sweep plans (with_options refuses them otherwise)
+        let fits = a.eval.is_none() && self.sweeps.len() == 1;
+        for (l, ls) in self.sweeps[s].levels.iter().enumerate().rev() {
+            let sp = ls.fold;
+            if a.terminals && sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
+                let t0 = profq(prof);
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_up_fold)
@@ -920,26 +1176,28 @@ impl GpuSolver {
                         .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
                         .arg(&self.d_rsrc[0])
                         .arg(&self.d_rsrc[1])
-                        .arg(reach_arg0)
-                        .arg(reach_arg1)
+                        .arg(&reach0)
+                        .arg(&reach1)
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
                         .arg(&self.d_fold_card_off[1 - p])
                         .arg(&self.d_fold_card_idx[1 - p])
                         .arg(&self.d_same[p])
                         .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
+                        .arg(&cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
                         .launch(Self::cfg(sp.count, nh_o as u32 * 4))
                         .map_err(e)?;
                 }
+                prof_acc(st, prof, 3, t0)?;
             }
-            let sp = self.show_spans[l];
-            if terminals && sp.count > 0 {
+            let sp = ls.show;
+            if a.terminals && sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
+                let t0 = profq(prof);
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_up_show)
@@ -951,7 +1209,7 @@ impl GpuSolver {
                         .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
                         .arg(&self.d_node_river_slot)
                         .arg(&self.d_rsrc[1 - p])
-                        .arg(opp_reach)
+                        .arg(&a.opp_reach)
                         .arg(&self.d_riv_off[p])
                         .arg(&self.d_riv_cnt[p])
                         .arg(&self.d_riv_idx[p])
@@ -966,18 +1224,20 @@ impl GpuSolver {
                         .arg(&self.d_hand_c1[p])
                         .arg(&self.d_hand_c2[p])
                         .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
+                        .arg(&cfv)
                         .arg(&nh_p)
                         .arg(&nh_o)
                         .arg(&nh_max)
                         .launch(Self::cfg(sp.count, show_shared))
                         .map_err(e)?;
                 }
+                prof_acc(st, prof, 4, t0)?;
             }
-            let sp = self.chance_node_spans[l];
+            let sp = ls.chance;
             if sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
+                let t0 = profq(prof);
                 unsafe {
                     self.stream
                         .launch_builder(&self.f_up_chance)
@@ -993,40 +1253,98 @@ impl GpuSolver {
                         .arg(&self.d_hand_mask[p])
                         .arg(&self.d_hand_perm[p])
                         .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
+                        .arg(&cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
                         .launch(Self::cfg(sp.count, 0))
                         .map_err(e)?;
                 }
+                prof_acc(st, prof, 5, t0)?;
             }
-            let sp = self.action_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
+            if let Some(fsp) = self.fit_spans[p].get(l).copied().filter(|f| fits && f.count > 0) {
+                let start = fsp.start as i32;
+                let count = fsp.count as i32;
+                let fit = dptr(&self.d_fit, st);
                 unsafe {
                     self.stream
-                        .launch_builder(&self.f_up_action_eval)
-                        .arg(&self.d_action_nodes)
+                        .launch_builder(&self.f_fit_apply)
+                        .arg(&self.d_fit_order)
                         .arg(&start)
                         .arg(&count)
-                        .arg(&pi)
-                        .arg(&mode)
-                        .arg(&self.d_node_player)
+                        .arg(&self.d_fit_node)
+                        .arg(&fit)
                         .arg(&self.d_node_na)
                         .arg(&self.d_node_data_off)
                         .arg(&self.d_node_children_start)
                         .arg(&self.d_children)
-                        .arg(own_strat)
-                        .arg(locks)
-                        .arg(&self.d_lock_sigma)
+                        .arg(&a.regrets)
+                        .arg(&self.d_rsrc[p])
+                        .arg(&a.own_reach)
                         .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
+                        .arg(&cfv)
                         .arg(&nh_p)
                         .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, 0))
+                        .launch(Self::cfg(fsp.count, 0))
                         .map_err(e)?;
                 }
+            }
+            let sp = ls.action;
+            if sp.count > 0 {
+                let start = sp.start as i32;
+                let count = sp.count as i32;
+                let t0 = profq(prof);
+                match a.eval {
+                    None => unsafe {
+                        self.stream
+                            .launch_builder(&self.f_up_action)
+                            .arg(&self.d_action_nodes)
+                            .arg(&start)
+                            .arg(&count)
+                            .arg(&pi)
+                            .arg(&self.d_node_player)
+                            .arg(&self.d_node_na)
+                            .arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start)
+                            .arg(&self.d_children)
+                            .arg(&a.regrets)
+                            .arg(&a.strat)
+                            .arg(&self.d_rsrc[p])
+                            .arg(&a.own_reach)
+                            .arg(&a.locks)
+                            .arg(&self.d_lock_sigma)
+                            .arg(&self.d_cfv_slot)
+                            .arg(&cfv)
+                            .arg(&self.d_disc)
+                            .arg(&nh_p)
+                            .arg(&nh_max)
+                            .launch(Self::cfg(sp.count, 0))
+                            .map_err(e)?;
+                    },
+                    Some(mode) => unsafe {
+                        self.stream
+                            .launch_builder(&self.f_up_action_eval)
+                            .arg(&self.d_action_nodes)
+                            .arg(&start)
+                            .arg(&count)
+                            .arg(&pi)
+                            .arg(&mode)
+                            .arg(&self.d_node_player)
+                            .arg(&self.d_node_na)
+                            .arg(&self.d_node_data_off)
+                            .arg(&self.d_node_children_start)
+                            .arg(&self.d_children)
+                            .arg(&a.strat)
+                            .arg(&a.locks)
+                            .arg(&self.d_lock_sigma)
+                            .arg(&self.d_cfv_slot)
+                            .arg(&cfv)
+                            .arg(&nh_p)
+                            .arg(&nh_max)
+                            .launch(Self::cfg(sp.count, 0))
+                            .map_err(e)?;
+                    },
+                }
+                prof_acc(st, prof, 6, t0)?;
             }
         }
         Ok(())
@@ -1035,82 +1353,19 @@ impl GpuSolver {
     /// Down sweep of the read villain's reach into `d_reach_read`: every
     /// lock binds (the read plays the profile); elsewhere he plays the
     /// shared current strategy (regrets) or, for evaluation, the average.
+    /// Only used on single-sweep plans (trust the read refuses groups).
     fn read_down(&mut self, villain: usize, use_strat: bool) -> Result<(), String> {
+        let st = &self.stream;
         let mut nh = [0i32; 2];
         nh[villain] = self.nh[villain];
-        let (nh0, nh1) = (nh[0], nh[1]);
-        let read = self.d_reach_read.as_mut().ok_or("trust the read: reach buffer missing")?;
-        let [reach0, reach1] = &mut self.d_reach;
+        let read = dptr(self.d_reach_read.as_ref().ok_or("trust the read: reach buffer missing")?, st);
         // the hero's buffer is passed with zero hands: never touched
-        let (r0, r1): (&mut CudaSlice<f32>, &mut CudaSlice<f32>) =
-            if villain == 0 { (read, reach1) } else { (reach0, read) };
+        let reach = if villain == 0 { [read, dptr(&self.d_reach[1], st)] } else { [dptr(&self.d_reach[0], st), read] };
         let arenas = if use_strat { &self.d_strat } else { &self.d_regrets };
-        unsafe {
-            self.stream
-                .launch_builder(&self.f_copy_root)
-                .arg(&self.d_weights[0])
-                .arg(&self.d_weights[1])
-                .arg(&mut *r0)
-                .arg(&mut *r1)
-                .arg(&nh0)
-                .arg(&nh1)
-                .launch(Self::cfg(4, 0))
-                .map_err(e)?;
-        }
-        for l in 0..self.num_levels {
-            let sp = self.action_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_action)
-                        .arg(&self.d_action_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_node_player)
-                        .arg(&self.d_node_na)
-                        .arg(&self.d_node_data_off)
-                        .arg(&self.d_node_children_start)
-                        .arg(&self.d_children)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(&arenas[0])
-                        .arg(&arenas[1])
-                        .arg(&self.d_lock_off)
-                        .arg(&self.d_lock_sigma)
-                        .arg(&mut *r0)
-                        .arg(&mut *r1)
-                        .arg(&nh0)
-                        .arg(&nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-            }
-            let sp = self.chance_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_chance)
-                        .arg(&self.d_chance_parents)
-                        .arg(&self.d_chance_children)
-                        .arg(&self.d_chance_cards)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(&self.d_hand_mask[0])
-                        .arg(&self.d_hand_mask[1])
-                        .arg(&mut *r0)
-                        .arg(&mut *r1)
-                        .arg(&nh0)
-                        .arg(&nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-            }
+        let a = DownArgs { arenas: [dptr(&arenas[0], st), dptr(&arenas[1], st)], locks: dptr(&self.d_lock_off, st), reach, nh };
+        self.copy_root(reach, nh, &mut None)?;
+        for s in 0..self.sweeps.len() {
+            self.down_sweep(s, &a, &mut None)?;
         }
         Ok(())
     }
@@ -1194,7 +1449,8 @@ impl GpuSolver {
     }
 
     /// One traverser sweep. `free_pass`: the free villain's sweep under
-    /// "trust the read" (profile locks off, his own arenas).
+    /// "trust the read" (profile locks off, his own arenas). Grouped plans:
+    /// root part down, then per group {entry, down, up}, then root part up.
     fn paired_sweep(
         &mut self, p: usize, mut prof: Option<&mut Profile>, reuse_player1_reach: bool, free_pass: bool,
     ) -> Result<(), String> {
@@ -1205,9 +1461,6 @@ impl GpuSolver {
         // p0 up updates player0 learning state and never writes either reach.
         // Every first sweep stays full, including after evaluation or resume.
         let mut down_nh = [nh0, if reuse_player1_reach { 0 } else { nh1 }];
-        let nh_p = self.nh[p];
-        let nh_o = self.nh[1 - p];
-        let nh_max = self.nh_max;
         // "trust the read": the hero's and the free villain's sweeps play the
         // free villain down (profile locks off, his own arenas), and the
         // hero's up sweep then faces the read/free mixture; the read
@@ -1216,13 +1469,6 @@ impl GpuSolver {
         let hero_vs_mix = matches!(rnr, Some(r) if r.villain != p);
         let free_pass = free_pass && matches!(rnr, Some(r) if r.villain == p);
         let free_view = hero_vs_mix || free_pass;
-        let down_locks = if free_view { &self.d_lock_off_free } else { &self.d_lock_off };
-        let free_dev = self.d_free.as_ref().filter(|_| free_view);
-        let down_regrets = |q: usize| match free_dev {
-            Some(f) if f.villain == q => &f.regrets,
-            _ => &self.d_regrets[q],
-        };
-        let (regrets0, regrets1) = (down_regrets(0), down_regrets(1));
         // The villain's two sweeps share the reaches: the hero's does not
         // change between them, the read villain's own reach is still the one
         // the hero's sweep computed (`d_reach_read`; when the villain goes
@@ -1233,83 +1479,23 @@ impl GpuSolver {
             let skip = if read_pass { r.villain } else { 1 - r.villain };
             down_nh[skip] = 0;
         }
-        let (down_nh0, down_nh1) = (down_nh[0], down_nh[1]);
 
-        let [reach0, reach1] = &mut self.d_reach;
-        let t0 = profq(&prof);
-        unsafe {
-            self.stream
-                .launch_builder(&self.f_copy_root)
-                .arg(&self.d_weights[0])
-                .arg(&self.d_weights[1])
-                .arg(&mut *reach0)
-                .arg(&mut *reach1)
-                .arg(&down_nh0)
-                .arg(&down_nh1)
-                .launch(Self::cfg(4, 0))
-                .map_err(e)?;
-        }
-        prof_acc(&self.stream, &mut prof, 0, t0)?;
-
-        for l in 0..self.num_levels {
-            let sp = self.action_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_action)
-                        .arg(&self.d_action_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_node_player)
-                        .arg(&self.d_node_na)
-                        .arg(&self.d_node_data_off)
-                        .arg(&self.d_node_children_start)
-                        .arg(&self.d_children)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(regrets0)
-                        .arg(regrets1)
-                        .arg(down_locks)
-                        .arg(&self.d_lock_sigma)
-                        .arg(&mut *reach0)
-                        .arg(&mut *reach1)
-                        .arg(&down_nh0)
-                        .arg(&down_nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 1, t0)?;
-            }
-            let sp = self.chance_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_down_chance)
-                        .arg(&self.d_chance_parents)
-                        .arg(&self.d_chance_children)
-                        .arg(&self.d_chance_cards)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(&self.d_hand_mask[0])
-                        .arg(&self.d_hand_mask[1])
-                        .arg(&mut *reach0)
-                        .arg(&mut *reach1)
-                        .arg(&down_nh0)
-                        .arg(&down_nh1)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 2, t0)?;
-            }
-        }
+        let st = &self.stream;
+        let reach = [dptr(&self.d_reach[0], st), dptr(&self.d_reach[1], st)];
+        let root = {
+            let locks = if free_view { &self.d_lock_off_free } else { &self.d_lock_off };
+            let free_dev = self.d_free.as_ref().filter(|_| free_view);
+            let regrets = |q: usize| match free_dev {
+                Some(f) if f.villain == q => dptr(&f.regrets, st),
+                _ => dptr(&self.d_regrets[q], st),
+            };
+            DownArgs { arenas: [regrets(0), regrets(1)], locks: dptr(locks, st), reach, nh: down_nh }
+        };
+        // A group's reaches outlive the group's sweep only when it is the
+        // only group: otherwise each group recomputes both players' reaches.
+        let group = if self.groups_resident() { root } else { DownArgs { nh: [nh0, nh1], ..root } };
+        self.copy_root(reach, down_nh, &mut prof)?;
+        self.down_sweep(0, &root, &mut prof)?;
 
         if let Some(r) = rnr.filter(|_| hero_vs_mix) {
             // the read's reach, then d_reach[villain] = p * read + (1 - p) * free
@@ -1319,185 +1505,33 @@ impl GpuSolver {
             // the villain sweeps first: no hero sweep has computed it yet
             self.read_down(p, false)?;
         }
+        let st = &self.stream;
         let up_locks = if free_pass { &self.d_lock_off_free } else { &self.d_lock_off };
-        let (up_regrets, up_strat) = match self.d_free.as_mut().filter(|_| free_pass) {
-            Some(f) => (&mut f.regrets, &mut f.strat),
-            None => (&mut self.d_regrets[p], &mut self.d_strat[p]),
+        let (up_regrets, up_strat) = match self.d_free.as_ref().filter(|_| free_pass) {
+            Some(f) => (&f.regrets, &f.strat),
+            None => (&self.d_regrets[p], &self.d_strat[p]),
         };
         // the traverser's own reach (the read villain's is d_reach_read) and
         // the opponent's (for the hero: the mixture, in d_reach[villain])
         let own_reach = match (&self.d_reach_read, read_pass) {
-            (Some(read), true) => read,
-            _ => &self.d_reach[p],
+            (Some(read), true) => dptr(read, st),
+            _ => reach[p],
         };
-        let opp_reach = &self.d_reach[1 - p];
-        let (reach_arg0, reach_arg1) = if p == 0 { (own_reach, opp_reach) } else { (opp_reach, own_reach) };
-
-        let pi = p as i32;
-        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
-        for l in (0..self.num_levels).rev() {
-            let sp = self.fold_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_up_fold)
-                        .arg(&self.d_fold_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&pi)
-                        .arg(&self.d_node_player)
-                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
-                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
-                        .arg(&self.d_rsrc[0])
-                        .arg(&self.d_rsrc[1])
-                        .arg(reach_arg0)
-                        .arg(reach_arg1)
-                        .arg(&self.d_hand_c1[p])
-                        .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_fold_card_off[1 - p])
-                        .arg(&self.d_fold_card_idx[1 - p])
-                        .arg(&self.d_same[p])
-                        .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
-                        .arg(&nh_p)
-                        .arg(&nh_o)
-                        .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 3, t0)?;
-            }
-            let sp = self.show_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_up_show)
-                        .arg(&self.d_show_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_node_twin.slice(p * self.payoff_stride..))
-                        .arg(&self.d_node_tlose.slice(p * self.payoff_stride..))
-                        .arg(&self.d_node_ttie.slice(p * self.payoff_stride..))
-                        .arg(&self.d_node_river_slot)
-                        .arg(&self.d_rsrc[1 - p])
-                        .arg(opp_reach)
-                        .arg(&self.d_riv_off[p])
-                        .arg(&self.d_riv_cnt[p])
-                        .arg(&self.d_riv_idx[p])
-                        .arg(&self.d_riv_lower[p])
-                        .arg(&self.d_riv_upper[p])
-                        .arg(&self.d_riv_off[1 - p])
-                        .arg(&self.d_riv_cnt[1 - p])
-                        .arg(&self.d_riv_idx[1 - p])
-                        .arg(&self.d_riv_card_off[1 - p])
-                        .arg(&self.d_riv_card_pos[1 - p])
-                        .arg(&self.d_same[p])
-                        .arg(&self.d_hand_c1[p])
-                        .arg(&self.d_hand_c2[p])
-                        .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
-                        .arg(&nh_p)
-                        .arg(&nh_o)
-                        .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, show_shared))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 4, t0)?;
-            }
-            let sp = self.chance_node_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_up_chance)
-                        .arg(&self.d_chance_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_cc_start)
-                        .arg(&self.d_cc_count)
-                        .arg(&self.d_cc_card)
-                        .arg(&self.d_cc_child)
-                        .arg(&self.d_cc_perm)
-                        .arg(&self.d_node_cdiv)
-                        .arg(&self.d_hand_mask[p])
-                        .arg(&self.d_hand_perm[p])
-                        .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
-                        .arg(&nh_p)
-                        .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 5, t0)?;
-            }
-            if let Some(fsp) = self.fit_spans[p].get(l).copied().filter(|f| f.count > 0) {
-                let start = fsp.start as i32;
-                let count = fsp.count as i32;
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_fit_apply)
-                        .arg(&self.d_fit_order)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&self.d_fit_node)
-                        .arg(&mut self.d_fit)
-                        .arg(&self.d_node_na)
-                        .arg(&self.d_node_data_off)
-                        .arg(&self.d_node_children_start)
-                        .arg(&self.d_children)
-                        .arg(&*up_regrets)
-                        .arg(&self.d_rsrc[p])
-                        .arg(own_reach)
-                        .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
-                        .arg(&nh_p)
-                        .arg(&nh_max)
-                        .launch(Self::cfg(fsp.count, 0))
-                        .map_err(e)?;
-                }
-            }
-            let sp = self.action_spans[l];
-            if sp.count > 0 {
-                let start = sp.start as i32;
-                let count = sp.count as i32;
-                let t0 = profq(&prof);
-                unsafe {
-                    self.stream
-                        .launch_builder(&self.f_up_action)
-                        .arg(&self.d_action_nodes)
-                        .arg(&start)
-                        .arg(&count)
-                        .arg(&pi)
-                        .arg(&self.d_node_player)
-                        .arg(&self.d_node_na)
-                        .arg(&self.d_node_data_off)
-                        .arg(&self.d_node_children_start)
-                        .arg(&self.d_children)
-                        .arg(&mut *up_regrets)
-                        .arg(&mut *up_strat)
-                        .arg(&self.d_rsrc[p])
-                        .arg(own_reach)
-                        .arg(up_locks)
-                        .arg(&self.d_lock_sigma)
-                        .arg(&self.d_cfv_slot)
-                        .arg(&mut self.d_cfv)
-                        .arg(&self.d_disc)
-                        .arg(&nh_p)
-                        .arg(&nh_max)
-                        .launch(Self::cfg(sp.count, 0))
-                        .map_err(e)?;
-                }
-                prof_acc(&self.stream, &mut prof, 6, t0)?;
-            }
+        let up = UpArgs {
+            p,
+            eval: None,
+            terminals: true,
+            regrets: dptr(up_regrets, st),
+            strat: dptr(up_strat, st),
+            locks: dptr(up_locks, st),
+            own_reach,
+            opp_reach: reach[1 - p],
+        };
+        for s in 1..self.sweeps.len() {
+            self.down_sweep(s, &group, &mut prof)?;
+            self.up_sweep(s, &up, &mut prof)?;
         }
+        self.up_sweep(0, &up, &mut prof)?;
         // once per iteration, after its last sweep
         let last_sweep = p == 1 && !(matches!(rnr, Some(r) if r.villain == 1) && !free_pass);
         if last_sweep && !self.fit_nodes.is_empty() {
@@ -1526,6 +1560,9 @@ impl GpuSolver {
     /// `update_locks` whenever fits change; captured graphs are rebuilt.
     pub fn update_fits(&mut self, solver: &Solver, fresh: &[u32]) -> Result<(), String> {
         let entries = solver.fit_entries();
+        if !self.groups.is_empty() && !entries.is_empty() {
+            return Err("least-exploitable fits are not supported with turn-grouped GPU sweeps".into());
+        }
         let nn = self.h_node_level.len();
         let mut rows: Vec<(usize, u32, u32)> = Vec::new(); // (player, level, k)
         let mut nodes = Vec::with_capacity(entries.len());
@@ -1722,12 +1759,26 @@ impl GpuSolver {
     /// scratch, 5.95 GB on device".
     pub fn describe(&self) -> String {
         let total = self.device_bytes().total() - HEADROOM;
+        let groups = match self.groups.len() {
+            0 => String::new(),
+            n => format!(", {n} turn group{} (<= {} cards)", if n == 1 { "" } else { "s" }, self.max_group_cards()),
+        };
         format!(
-            "f32 {} arenas, terminal cfv {}, {:.2} GB on device",
+            "f32 {} arenas, terminal cfv {}{groups}, {:.2} GB on device",
             if self.full_arenas { "full" } else { "compact" },
             if self.terminal_scratch { "in scratch" } else { "resident" },
             total as f64 / 1e9
         )
+    }
+
+    /// First-layer card groups swept one at a time (empty = resident).
+    pub fn groups(&self) -> &[Vec<u8>] {
+        &self.groups
+    }
+
+    /// Cards in the largest group (0 = resident).
+    pub fn max_group_cards(&self) -> usize {
+        self.groups.iter().map(Vec::len).max().unwrap_or(0)
     }
 
     /// Whether terminal cfvs share the per-level scratch.
@@ -1785,6 +1836,9 @@ impl GpuSolver {
     /// Re-upload the lock table after `solver.locks` changed, or after
     /// `Solver::set_trust` (the "trust the read" dial).
     pub fn update_locks(&mut self, solver: &Solver) -> Result<(), String> {
+        if !self.groups.is_empty() && (!solver.locks.is_empty() || solver.rnr_active().is_some()) {
+            return Err("node locks and trust the read are not supported with turn-grouped GPU sweeps".into());
+        }
         // Drain in-flight kernels before the assignments below drop (free) the
         // old device buffers. The server's mutex ordering already prevents an
         // overlap, but the safety of a device free shouldn't depend on it.
@@ -2034,7 +2088,7 @@ mod tests {
                 .launch(GpuSolver::cfg(4, 0)).unwrap();
         }
         for l in 0..gpu.num_levels {
-            let sp = gpu.action_spans[l];
+            let sp = gpu.sweeps[0].levels[l].action;
             if sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
@@ -2050,7 +2104,7 @@ mod tests {
                         .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
                 }
             }
-            let sp = gpu.chance_spans[l];
+            let sp = gpu.sweeps[0].levels[l].edge;
             if sp.count > 0 {
                 let start = sp.start as i32;
                 let count = sp.count as i32;
@@ -2343,7 +2397,7 @@ mod tests {
     #[test]
     fn gpu_terminal_scratch_matches_resident() {
         let opts = |ts: bool, full: bool| HuGpuOptions {
-            budget_bytes: None, terminal_scratch: Some(ts), full_arenas: Some(full),
+            budget_bytes: None, terminal_scratch: Some(ts), full_arenas: Some(full), max_cards_per_group: None,
         };
         for (board, iso) in [("KsQs2dJd", true), ("KsQs2d", true), ("Qs7h2d", false)] {
             for full in [false, true] {
@@ -2385,7 +2439,7 @@ mod tests {
             let s = scratch_solver(board, rake);
             for full_arenas in [None, Some(false), Some(true)] {
                 for terminal_scratch in [None, Some(false), Some(true)] {
-                    let o = HuGpuOptions { budget_bytes: None, terminal_scratch, full_arenas };
+                    let o = HuGpuOptions { budget_bytes: None, terminal_scratch, full_arenas, max_cards_per_group: None };
                     let gpu = GpuSolver::with_options(&s, &o).expect("test requires CUDA");
                     let est = estimate_hu_bytes(&s.spot, s.use_isomorphism, &o);
                     assert_eq!(est, gpu.device_bytes(), "{board} rake {rake} {o:?}");
@@ -2395,9 +2449,218 @@ mod tests {
             // a budget below the estimate is refused before any allocation
             let o = HuGpuOptions::default();
             let need = estimate_hu_bytes(&s.spot, s.use_isomorphism, &HuGpuOptions { full_arenas: Some(false), ..o.clone() }).total();
-            let tight = HuGpuOptions { budget_bytes: Some(need - 1), full_arenas: Some(false), ..o };
+            let tight = HuGpuOptions { budget_bytes: Some(need - 1), full_arenas: Some(false), max_cards_per_group: Some(0), ..o };
             assert!(GpuSolver::with_options(&s, &tight).is_err());
         }
+    }
+
+    fn grouped(k: Option<usize>) -> HuGpuOptions {
+        HuGpuOptions { budget_bytes: None, terminal_scratch: Some(true), full_arenas: Some(false), max_cards_per_group: k }
+    }
+
+    /// A 3-bet-pot-like flop: narrower ranges, SPR 4.5, two flop sizes.
+    fn threebet_solver() -> Solver {
+        let street = |bet: &str| StreetSizing { bet: parse_sizes(bet).unwrap(), raise: parse_sizes("2.5x").unwrap(), donk: vec![] };
+        Solver::new(Arc::new(Spot::new(SpotConfig {
+            board: "Td9d6h".into(),
+            range_oop: "QQ+,JJ,TT,99,AKs,AQs,AJs,KQs,QJs,JTs,T9s,98s,AKo,AQo".into(),
+            range_ip: "QQ+,JJ,TT,99,88,AKs,AQs,ATs,KJs,QJs,JTs,T9s,87s,AKo".into(),
+            tree: TreeConfig {
+                starting_pot: 20.0, effective_stack: 90.0,
+                oop: [street("33,75"), street("75"), street("75")],
+                ip: [street("33,75"), street("75"), street("75")],
+                ..Default::default()
+            },
+        }).unwrap()))
+    }
+
+    fn assert_same_arenas(a: &GpuSolver, b: &GpuSolver, label: &str) {
+        for p in 0..2 {
+            assert_device_bits(&device_bits(a, &a.d_regrets[p]), &device_bits(b, &b.d_regrets[p]), &format!("{label} regrets {p}"));
+            assert_device_bits(&device_bits(a, &a.d_strat[p]), &device_bits(b, &b.d_strat[p]), &format!("{label} strat {p}"));
+        }
+    }
+
+    /// Turn-grouped sweeps do exactly the resident arithmetic: regrets and
+    /// strategy sums bit for bit after the first iteration and after 50
+    /// (eager, then captured graphs, then a profiled iteration), and the
+    /// device exploitability bit for bit at every 10th iteration. Resident
+    /// reference: compact arenas, terminal cfvs in the scratch (grouping
+    /// always keeps terminals there).
+    #[test]
+    fn gpu_groups_match_resident_hu() {
+        let mut cases: Vec<(String, Solver)> = Vec::new();
+        for (board, iso, rake) in [("KsQs2dJd", true, 0.0), ("KsQs2d", true, 0.0), ("Qs7h2d", false, 0.0), ("KsQs2d", true, 0.05)] {
+            let mut s = scratch_solver(board, rake);
+            s.use_isomorphism = iso;
+            cases.push((format!("{board} iso={iso} rake={rake}"), s));
+        }
+        cases.push(("3bp Td9d6h".into(), threebet_solver()));
+        for (case, s) in &cases {
+            for k in [1, 3, 52] {
+                let mut resident = GpuSolver::with_options(s, &grouped(Some(0))).expect("test requires CUDA");
+                assert!(resident.groups().is_empty());
+                let mut g = GpuSolver::with_options(s, &grouped(Some(k))).unwrap();
+                let n = g.groups().len();
+                let label = format!("{case} k={k} ({n} groups)");
+                assert!(n >= 1 && g.max_group_cards() <= k, "{label}");
+                assert_eq!(k == 52, n == 1, "{label}");
+                assert!(g.describe().contains("turn group"), "{label}");
+                let (gb, rb) = (g.device_bytes(), resident.device_bytes());
+                assert_eq!((gb.arenas, gb.tables), (rb.arenas, rb.tables), "{label}");
+                if k == 1 {
+                    assert!(gb.reach < rb.reach, "{label}: one card's reach {} vs resident {}", gb.reach, rb.reach);
+                }
+                resident.iterate().unwrap();
+                g.iterate().unwrap();
+                assert_same_arenas(&resident, &g, &format!("{label} iteration 1"));
+                for i in 2..=50u32 {
+                    resident.iterate().unwrap();
+                    g.iterate().unwrap();
+                    if i % 10 == 0 {
+                        // evaluation in the middle of a solve (the next sweep refreshes the reaches)
+                        assert_eq!(g.exploitability(s).unwrap().to_bits(), resident.exploitability(s).unwrap().to_bits(),
+                            "{label}: exploitability at {i}");
+                    }
+                }
+                assert_same_arenas(&resident, &g, &format!("{label} iteration 50"));
+                // a repeated evaluation (captured graph), then a profiled iteration
+                assert_eq!(g.exploitability(s).unwrap().to_bits(), resident.exploitability(s).unwrap().to_bits(), "{label}");
+                let pg = g.iterate_profiled().unwrap();
+                let pr = resident.iterate_profiled().unwrap();
+                assert_eq!(pg.launches[0], 2);
+                assert!(pg.launches[1] >= pr.launches[1]);
+                g.iterate().unwrap();
+                resident.iterate().unwrap();
+                assert_same_arenas(&resident, &g, &format!("{label} after profiling"));
+                assert_eq!(g.exploitability(s).unwrap().to_bits(), resident.exploitability(s).unwrap().to_bits(), "{label} at 52");
+            }
+        }
+    }
+
+    /// Bit-pattern digest (FNV-1a over the words) and nonzero count of a
+    /// device buffer, read in chunks.
+    fn device_digest(gpu: &GpuSolver, d: &CudaSlice<f32>) -> (u64, usize) {
+        let (mut h, mut nonzero) = (0xcbf2_9ce4_8422_2325u64, 0usize);
+        let mut i = 0;
+        while i < d.len() {
+            let j = (i + (1 << 24)).min(d.len());
+            for x in gpu.stream.clone_dtoh(&d.slice(i..j)).unwrap() {
+                let b = x.to_bits();
+                nonzero += (b != 0) as usize;
+                h = (h ^ b as u64).wrapping_mul(0x0000_0100_0000_01b3);
+            }
+            i = j;
+        }
+        (h, nonzero)
+    }
+
+    fn arena_digests(gpu: &GpuSolver) -> Vec<(u64, usize)> {
+        (0..2).flat_map(|p| [device_digest(gpu, &gpu.d_regrets[p]), device_digest(gpu, &gpu.d_strat[p])]).collect()
+    }
+
+    /// The same on GTOpen's bench_spot (100bb SRP Ks7h2d, 1.35M nodes, 5.4 GB
+    /// resident): too big for two solvers on an 8 GB card, so one at a time
+    /// with digests of the device arenas (host store i16: only the device
+    /// arithmetic is compared, and it is f32 in every layout).
+    #[test]
+    fn gpu_groups_match_resident_bench_spot() {
+        let cfg: SpotConfig = serde_json::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../bench_spot.json"))).unwrap();
+        let s = Solver::with_storage(Arc::new(Spot::new(cfg).unwrap()), crate::store::Storage::Compressed);
+        let run = |k: usize| {
+            let mut g = GpuSolver::with_options(&s, &grouped(Some(k))).expect("test requires CUDA");
+            let groups = g.groups().len();
+            g.iterate().unwrap();
+            let first = arena_digests(&g);
+            for _ in 1..50 {
+                g.iterate().unwrap();
+            }
+            let e = g.exploitability(&s).unwrap();
+            (groups, first, arena_digests(&g), e.to_bits(), g.device_bytes())
+        };
+        let (_, first, last, expl, bytes) = run(0);
+        assert!(first.iter().chain(&last).all(|&(_, nz)| nz > 0));
+        for k in [1, 3, 52] {
+            let (groups, f, l, e, b) = run(k);
+            println!("bench_spot k={k}: {groups} groups, reach {:.2} GB + cfv {:.2} GB vs resident {:.2} + {:.2}",
+                b.reach as f64 / 1e9, b.cfv as f64 / 1e9, bytes.reach as f64 / 1e9, bytes.cfv as f64 / 1e9);
+            assert_eq!(f, first, "bench_spot k={k}: first iteration");
+            assert_eq!(l, last, "bench_spot k={k}: 50 iterations");
+            assert_eq!(e, expl, "bench_spot k={k}: exploitability");
+        }
+    }
+
+    /// Single-card groups converge like any layout, and the device's
+    /// exploitability agrees with the CPU best response on the downloaded
+    /// strategy.
+    #[test]
+    fn gpu_grouped_converges() {
+        let mut s = threebet_solver();
+        let mut g = GpuSolver::with_options(&s, &grouped(Some(1))).expect("test requires CUDA");
+        assert!(g.groups().len() > 1);
+        for _ in 0..200 {
+            g.iterate().unwrap();
+        }
+        let pot = s.spot.tree.config.starting_pot;
+        let e = g.exploitability(&s).unwrap();
+        assert!(e / pot * 100.0 < 0.5, "grouped exploitability {:.3}% pot after 200", e / pot * 100.0);
+        g.sync_strategy(&mut s).unwrap();
+        drop(g);
+        s.ensure_symmetric();
+        let cpu = s.exploitability();
+        assert!((e - cpu).abs() <= 1e-4 * pot, "gpu {e} vs cpu {cpu}");
+    }
+
+    /// Grouped estimates are exact, the automatic choice groups only when the
+    /// resident layout does not fit, and refusals happen before allocation.
+    #[test]
+    fn estimate_hu_layout_matches_grouped_allocation() {
+        for (board, iso) in [("KsQs2d", true), ("Qs7h2d", false), ("KsQs2dJd", true)] {
+            let mut s = scratch_solver(board, 0.0);
+            s.use_isomorphism = iso;
+            for k in [1, 3, 52] {
+                let o = grouped(Some(k));
+                let est = estimate_hu_layout(&s.spot, iso, &o);
+                let gpu = GpuSolver::with_options(&s, &o).expect("test requires CUDA");
+                assert!(est.fits);
+                assert_eq!(est.bytes, gpu.device_bytes(), "{board} k={k}");
+                assert_eq!(est.groups, gpu.groups(), "{board} k={k}");
+            }
+            let auto = HuGpuOptions { full_arenas: Some(false), ..HuGpuOptions::default() };
+            let resident = estimate_hu_layout(&s.spot, iso, &auto);
+            assert!(resident.fits && resident.groups.is_empty(), "unlimited budget: resident");
+            let single = estimate_hu_layout(&s.spot, iso, &HuGpuOptions { max_cards_per_group: Some(1), ..auto.clone() });
+            assert!(single.bytes.total() < resident.bytes.total(), "{board}");
+            // a budget just below the resident need: grouped, within the budget, exactly as estimated
+            let tight = HuGpuOptions { budget_bytes: Some(resident.bytes.total() - 1), ..auto.clone() };
+            let est = estimate_hu_layout(&s.spot, iso, &tight);
+            assert!(est.fits && !est.groups.is_empty() && est.bytes.total() < resident.bytes.total(), "{board}");
+            let gpu = GpuSolver::with_options(&s, &tight).unwrap();
+            assert_eq!((gpu.device_bytes(), gpu.groups()), (est.bytes, est.groups.as_slice()), "{board} auto");
+            drop(gpu);
+            // below one card per group: refused, with the smallest need in the message
+            let none = HuGpuOptions { budget_bytes: Some(single.bytes.total() - 1), ..auto.clone() };
+            let err = GpuSolver::with_options(&s, &none).err().expect("must not fit");
+            assert!(err.contains("spot needs ~") && err.contains("one first-layer card per group"), "{err}");
+            assert!(!estimate_hu_layout(&s.spot, iso, &none).fits);
+            assert!(GpuSolver::with_options(&s, &HuGpuOptions { budget_bytes: Some(single.bytes.total()), ..auto.clone() }).is_ok());
+            // Some(0) never groups; terminal cfvs forced resident cannot group
+            let never = HuGpuOptions { max_cards_per_group: Some(0), ..tight.clone() };
+            assert!(GpuSolver::with_options(&s, &never).is_err());
+            let resident_terms = HuGpuOptions { terminal_scratch: Some(false), max_cards_per_group: Some(3), ..auto.clone() };
+            assert!(GpuSolver::with_options(&s, &resident_terms).is_err());
+            // locks: refused when grouping is needed, and on a grouped solver
+            let mut g = GpuSolver::with_options(&s, &grouped(Some(3))).unwrap();
+            s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "group lock".into()).unwrap();
+            assert!(g.update_locks(&s).is_err());
+            assert!(GpuSolver::with_options(&s, &grouped(Some(3))).is_err());
+            assert!(GpuSolver::with_options(&s, &tight).is_err());
+            assert!(GpuSolver::with_options(&s, &HuGpuOptions::default()).is_ok(), "resident still takes locks");
+        }
+        // a river root has no chance layer: always resident
+        let s = scratch_solver("KsQs2dJd7c", 0.0);
+        let g = GpuSolver::with_options(&s, &grouped(Some(1))).unwrap();
+        assert!(g.groups().is_empty());
     }
 
     #[test]
