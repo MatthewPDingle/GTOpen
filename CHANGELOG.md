@@ -2,6 +2,14 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.5.1 - 2026-11-19
+
+- Tournament payouts are now a tick box in the Preflop Lab's scenario form, right under the rake boxes, so you can see and switch them without opening anything. Ticking it shows one more choice: the stage of the tournament.
+- The rest (players at other tables, their stack, stack-off rate, your own payout list and the prize-pool read-out) sits under "Advanced tournament settings", closed until you open it. Nothing was removed. Choosing the Custom stage opens it for you.
+- With tournament payouts on, the two rake boxes are greyed out at 0 and their tooltip says why: a tournament game has no rake. The cramped "ICM · 0" labels are gone. Your own rake numbers come back when you turn tournament payouts off.
+- The explanation of tournament payouts moved into a small "?" beside the tick box.
+- The Setup and 3-Way tabs got the same tick box and greyed rake boxes.
+
 ## 1.5.0 - 2026-11-19
 
 - Preflop Lab has a big blind ante. A new "Paid by" choice beside the Ante box says who pays it: each seat, as before, or the big blind for the whole table, as in most tournaments.
