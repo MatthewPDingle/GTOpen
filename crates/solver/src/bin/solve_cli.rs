@@ -29,8 +29,10 @@
 //!                            budget, else the resident layout with terminal
 //!                            cfvs in the scratch, else the fewest groups
 //!                            that fit. Unset: the resident layout, unchanged.
-//!   SOLVER_GPU_BUDGET_MB=N   VRAM budget of the grouped layout (default: free
-//!                            VRAM - 1024 MB, capped at 88% of the card)
+//!   SOLVER_GPU_BUDGET_MB=N   VRAM budget of the grouped layout in MB (default:
+//!                            free VRAM - 1024 MB, capped at 88% of the card).
+//!                            An invalid or out-of-range value of either
+//!                            variable is an error (exit 2).
 
 use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
 use std::sync::atomic::AtomicBool;
@@ -707,7 +709,7 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
     if use_gpu {
         // spots too big for VRAM fall back to the CPU engine, like the server
         let budget = gpu_budget_bytes();
-        let built = match grouped_gpu_options(budget) {
+        let built = match grouped_gpu_options_or_exit(budget) {
             Some(o) => build_grouped(solver, &o),
             None => solver::gpu::GpuSolver::new_with_budget(solver, budget),
         };
@@ -759,33 +761,51 @@ fn gpu_budget_bytes() -> u64 {
     }
 }
 
-/// The opt-in turn-grouped layout (SOLVER_GPU_MAX_CARDS_PER_GROUP, see the
-/// header). None when unset: callers then use the resident constructors
-/// exactly as before.
-#[cfg(feature = "gpu")]
-fn grouped_gpu_options(default_budget: u64) -> Option<solver::gpu::HuGpuOptions> {
-    let v = std::env::var("SOLVER_GPU_MAX_CARDS_PER_GROUP").ok()?;
-    let max_cards_per_group = match v.as_str() {
-        "auto" => None,
-        s => match s.parse::<usize>() {
-            Ok(k) if k > 0 => Some(k),
-            _ => {
-                eprintln!("warning: SOLVER_GPU_MAX_CARDS_PER_GROUP={v:?} is not a positive integer or \"auto\" — ignored");
-                return None;
-            }
-        },
+/// SOLVER_GPU_MAX_CARDS_PER_GROUP: `auto` (None) or a positive card count.
+#[cfg_attr(not(feature = "gpu"), allow(dead_code))]
+fn parse_max_cards(v: &str) -> Result<Option<usize>, String> {
+    if v == "auto" {
+        return Ok(None);
+    }
+    match v.parse::<usize>() {
+        Ok(k) if k > 0 => Ok(Some(k)),
+        _ => Err(format!("SOLVER_GPU_MAX_CARDS_PER_GROUP={v:?} is not a positive integer or \"auto\"")),
+    }
+}
+
+/// SOLVER_GPU_BUDGET_MB in bytes (MB = 1e6 bytes): a positive integer whose
+/// byte count fits in a u64.
+#[cfg_attr(not(feature = "gpu"), allow(dead_code))]
+fn parse_budget_mb(v: &str) -> Result<u64, String> {
+    let mb = match v.parse::<u64>() {
+        Ok(mb) if mb > 0 => mb,
+        _ => return Err(format!("SOLVER_GPU_BUDGET_MB={v:?} is not a positive integer number of MB")),
     };
+    mb.checked_mul(1_000_000)
+        .ok_or_else(|| format!("SOLVER_GPU_BUDGET_MB={v:?} is out of range (at most {} MB)", u64::MAX / 1_000_000))
+}
+
+/// The opt-in turn-grouped layout (SOLVER_GPU_MAX_CARDS_PER_GROUP, see the
+/// header). Ok(None) when unset: callers then use the resident constructors
+/// exactly as before. An invalid value is an error, never a silent fallback.
+#[cfg(feature = "gpu")]
+fn grouped_gpu_options(default_budget: u64) -> Result<Option<solver::gpu::HuGpuOptions>, String> {
+    let Ok(v) = std::env::var("SOLVER_GPU_MAX_CARDS_PER_GROUP") else { return Ok(None) };
+    let max_cards_per_group = parse_max_cards(&v)?;
     let budget_bytes = match std::env::var("SOLVER_GPU_BUDGET_MB") {
-        Ok(b) => match b.parse::<u64>() {
-            Ok(mb) if mb > 0 => mb * 1_000_000,
-            _ => {
-                eprintln!("warning: SOLVER_GPU_BUDGET_MB={b:?} is not a positive integer — using free VRAM");
-                default_budget
-            }
-        },
+        Ok(b) => parse_budget_mb(&b)?,
         Err(_) => default_budget,
     };
-    Some(solver::gpu::HuGpuOptions { budget_bytes: Some(budget_bytes), terminal_scratch: None, full_arenas: None, max_cards_per_group })
+    Ok(Some(solver::gpu::HuGpuOptions { budget_bytes: Some(budget_bytes), terminal_scratch: None, full_arenas: None, max_cards_per_group }))
+}
+
+/// [`grouped_gpu_options`], exiting with the diagnostic on an invalid value.
+#[cfg(feature = "gpu")]
+fn grouped_gpu_options_or_exit(default_budget: u64) -> Option<solver::gpu::HuGpuOptions> {
+    grouped_gpu_options(default_budget).unwrap_or_else(|err| {
+        eprintln!("error: {err}");
+        std::process::exit(2);
+    })
 }
 
 /// Grouped construction. `auto` first tries the upstream resident layout and
@@ -829,7 +849,7 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
     // A save can record an algorithm the GPU engine cannot run (pcfr+) or a
     // tree the device cannot hold; report that instead of panicking through
     // `expect`.
-    let built = match grouped_gpu_options(gpu_budget_bytes()) {
+    let built = match grouped_gpu_options_or_exit(gpu_budget_bytes()) {
         Some(o) => build_grouped(solver, &o),
         None => solver::gpu::GpuSolver::new(solver),
     };
@@ -924,6 +944,33 @@ fn run_gpu(solver: &mut Solver, opts: &RunOptions) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn budget_mb_parses_and_rejects_out_of_range() {
+        assert_eq!(parse_budget_mb("1"), Ok(1_000_000));
+        assert_eq!(parse_budget_mb("4000"), Ok(4_000_000_000));
+        let max = u64::MAX / 1_000_000;
+        assert_eq!(parse_budget_mb(&max.to_string()), Ok(max * 1_000_000));
+        for over in [(max + 1).to_string(), u64::MAX.to_string()] {
+            let err = parse_budget_mb(&over).unwrap_err();
+            assert!(err.contains("out of range"), "{over}: {err}");
+        }
+        // beyond u64 itself, zero, negative, fractional, empty, padded, text
+        for bad in ["18446744073709551616", "0", "-1", "4.5", "", " 4000", "4000 ", "abc"] {
+            let err = parse_budget_mb(bad).unwrap_err();
+            assert!(err.contains("not a positive integer"), "{bad:?}: {err}");
+        }
+    }
+
+    #[test]
+    fn max_cards_parses_auto_and_positive_counts() {
+        assert_eq!(parse_max_cards("auto"), Ok(None));
+        assert_eq!(parse_max_cards("1"), Ok(Some(1)));
+        assert_eq!(parse_max_cards("52"), Ok(Some(52)));
+        for bad in ["0", "-3", "", "Auto", "x"] {
+            assert!(parse_max_cards(bad).is_err(), "{bad:?}");
+        }
+    }
 
     #[test]
     fn peak_rss_macos_converts_bytes_to_mb() {
