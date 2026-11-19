@@ -667,7 +667,11 @@ function syncSolveActions() {
   const done = !!st && st.iteration > 0 && (st.state === 'done' || st.state === 'stopped');
   const label = state.drift ? 'REBUILD & SOLVE' : done ? 'RE-SOLVE' : 'SOLVE';
   for (const id of ['btn-solve', 'btn-solve-top']) {
-    if ($(id).textContent !== label) $(id).textContent = label;
+    // while the tree builds the button keeps the word that was pressed and
+    // is dimmed: the status still describes the tree being replaced, so the
+    // label would flip to RE-SOLVE for the length of the build
+    if (!state.building && $(id).textContent !== label) $(id).textContent = label;
+    $(id).disabled = !!state.building;
   }
   $('solve-controls').classList.toggle('hidden', !state.built);
   // SOLVE and STOP share one place, in the header and on the page (as in the
@@ -877,7 +881,13 @@ let ipsPrev = null, ipsEma = null;
 function updateIps(st) {
   const el = $('ips-now');
   if (!el) return;
-  if (st.state !== 'running') { ipsPrev = null; ipsEma = null; return; }
+  if (st.state !== 'running') {
+    ipsPrev = null; ipsEma = null;
+    // a finished solve keeps its last speed on show; a tree that has not been
+    // solved (just built or loaded) has none, so do not leave the old one up
+    if (!st.iteration || !(st.elapsed_secs > 0)) el.textContent = '—';
+    return;
+  }
   const now = performance.now();
   if (ipsPrev && st.iteration > ipsPrev.iter) {
     const inst = (st.iteration - ipsPrev.iter) / ((now - ipsPrev.t) / 1000);
@@ -1100,7 +1110,13 @@ async function loadSolve() {
     // node locks) away and re-solve a different spot from scratch.
     try {
       const st = await api.status();
-      if (st && st.spot_request) await applySpotToSetup(st.spot_request);
+      if (st && st.spot_request) {
+        await applySpotToSetup(st.spot_request);
+        // a page refresh restores SETUP from this key: left on the last BUILT
+        // spot, the refreshed page would call the loaded solve "SETUP changed"
+        // and offer to rebuild it
+        localStorage.setItem('gtopen-last-spot', JSON.stringify(st.spot_request));
+      }
     } catch (e) { reportError(e, null, 'SETUP not updated'); }
     toast('loaded — go to BROWSE');
     pollStatus(); // also refreshes the memory line under SOLVE from the new session
