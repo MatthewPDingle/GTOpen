@@ -1,14 +1,23 @@
 # GTOpen
 
-An open-source no-limit hold'em solver with a local browser interface. Build custom preflop scenarios, study heads-up postflop play, model opponents, and compare strategies across hundreds of flops.
+An open-source poker solver for no-limit hold'em that runs on your own computer. Solve preflop for your exact game, solve any heads-up flop, lock in a player's mistakes to see the best reply, and compare a strategy across hundreds of flops.
 
-Runs on your computer with a Rust engine and optional NVIDIA CUDA acceleration. The browser UI needs no frontend build step.
+![Browse: the solved strategy for every hand on a flop, with how often each action is taken and what it is worth](docs/screenshots/browse.png)
 
-![Browse: strategy grid, action frequencies, equity curves, and node locking](docs/screenshots/browse.png)
+## What you can do
+
+- **Solve preflop for your game.** 2 to 9 players, cash or tournament, with your stacks, blinds, antes, straddle, rake and raise sizes.
+- **Solve postflop spots.** Heads-up from the flop to the river with your own bet sizes. A flop reached in a preflop solve can be sent over with both ranges filled in.
+- **Read every hand.** How often each hand takes each action, what each action is worth, and how the two ranges match up.
+- **Lock a player and see the best reply.** Tell the solver how someone really plays a spot, then see how to play against it.
+- **Play against real player types.** Player models built from online hand histories, or your own built from a few stats.
+- **Compare across flops.** One setup solved on 47 to 1,755 flops, grouped by board type, with a search for the best bet size.
+
+It runs in your browser from a local server. An NVIDIA GPU makes solving much faster, and everything also runs on the CPU.
 
 ## Get started
 
-Install [Rust](https://www.rust-lang.org/tools/install) and Git, then clone the repository:
+Install [Rust](https://www.rust-lang.org/tools/install) and Git, then get the code:
 
 ```sh
 git clone https://github.com/MatthewPDingle/GTOpen.git
@@ -17,15 +26,15 @@ cd GTOpen
 
 ### Windows
 
-Use the Rust MSVC toolchain and install the **Desktop development with C++** workload from Visual Studio Build Tools.
+Use the Rust MSVC toolchain and install the **Desktop development with C++** workload from Visual Studio Build Tools. Then run:
 
 ```powershell
 .\GTOpen.cmd
 ```
 
-The launcher builds the app, starts a local server, and opens your browser. If GTOpen is already running, it reopens that server and preserves its sessions.
+The launcher builds the app, starts it and opens your browser. The first build takes a few minutes. If GTOpen is already running, the launcher reopens it and keeps your sessions.
 
-For NVIDIA GPU acceleration, install the CUDA runtime compiler once before launching (requires Python/pip and an NVIDIA driver):
+To solve on an NVIDIA GPU, install the CUDA runtime compiler once before launching (needs Python and an NVIDIA driver):
 
 ```powershell
 python -m pip install --target .cuda-nvrtc nvidia-cuda-nvrtc-cu12
@@ -40,7 +49,7 @@ Install a C/C++ build toolchain, then run:
 ./start.sh
 ```
 
-Open **http://127.0.0.1:3737**. The launcher selects a CUDA build when it detects NVIDIA support; otherwise it builds for CPU. For CUDA without a full toolkit:
+Open **http://127.0.0.1:3737** in your browser. The launcher builds for the GPU when it finds NVIDIA support and for the CPU otherwise. To use the GPU without a full CUDA toolkit:
 
 ```sh
 python3 -m pip install --target ~/.local/cuda-nvrtc nvidia-cuda-nvrtc-cu12
@@ -49,85 +58,72 @@ python3 -m pip install --target ~/.local/cuda-nvrtc nvidia-cuda-nvrtc-cu12
 
 For a manual CPU build, run `cargo build --release -p server`, then `./target/release/gto-server` from the repository root.
 
-The first build takes longer. Large trees need substantial RAM; GPU solving also depends on available VRAM. The app estimates memory before solving and can fall back to CPU.
+Big games need a lot of memory. The app says how much RAM and GPU memory a game needs before you solve it, and solves on the CPU when the game does not fit the GPU.
 
-## The workflow
+## A tour of the app
 
-| Tab | What to do |
-| --- | --- |
-| **00 · Preflop Lab** | Build a 2–9-player game, choose blinds, stacks (equal or per seat) and raise sizes, assign optional player models, and solve. Follow an action line to a heads-up flop, then **Send to postflop setup**. |
-| **01 · Postflop Setup & Solve** | Enter or import both ranges, choose the board, and set pot, effective stack, rake, and bet sizes. Then, on the same page, press **Solve** (it builds the tree first), watch convergence, stop/resume, and save the session. |
-| **02 · Browse** | Follow the action ribbon and inspect strategy, EV, equity, and individual hands. Lock frequencies or a player model, then re-solve to study the response. Undo and redo lock edits with the lock panel's buttons or Ctrl+Z / Ctrl+Shift+Z. |
-| **03 · Reports** | Solve the Setup configuration across **47, 95, 184, or all 1,755 canonical flops**. Compare results by board, high card, hand class, or texture, or put two reports side by side. |
-| **Beta 3-Way** | Build, solve and browse three-player postflop spots on one page. Still in beta. |
+The tabs run left to right in the order you would use them. You can start at Postflop Setup & Solve if you already have ranges; the Preflop Lab is optional.
 
-You can start directly in Postflop Setup & Solve if you already have ranges. Preflop Lab is optional.
+### 00 · Preflop Lab
 
-**Units:** preflop stacks and sizes are in big blinds; Small blind and Big blind specify the stake amounts (enter `2` and `2` for $2/$2). Postflop bet sizes are percentages of the pot; `33 75` offers two sizes, `a` means all-in, and `2.5x` means a raise multiple.
+Set up a game for 2 to 9 players and solve it. Choose stacks (equal or per seat), blinds, an ante or big blind ante, a UTG straddle, rake, and raise sizes, or start from a built-in scenario. Then click through the action to see each seat's range at every decision.
 
-**Preflop sizes:** expand **Sizes by seat** to override opens, 3-bets, and 4-bets or later raises for each seat. Blank cells inherit the defaults above. A 3-bet multiplier of `4` facing a 6bb open raises to 24bb. Build a fresh game after changing sizes.
+![Preflop Lab: the big blind's answer to a button raise in a 6-max cash game](docs/screenshots/preflop.png)
 
-**Sizes that follow the action:** `+ per limper (bb)` adds that many big blinds to an open for each limper already in. `re-raises add the callers' money` adds what the callers of a raise put in to a 3-bet or 4-bet over them (3x an open of 3 is 9; over two callers it is 15). The `out of position` boxes give 3-bets and 4-bets their own multipliers for a player who will act before the raiser on the flop. All three are off in scenarios and games saved before version 1.2.0.
+- Hands are valued by how they play after the flop, using a neural net trained on real flop solves, and each hand accounts for the cards it blocks.
+- Raise sizes can follow the action: more over limpers, the callers' money added to a squeeze, bigger 3-bets out of position.
+- Tick **tournament payouts (ICM)** to solve for prize money, from a final table to a 1,000-player bubble.
+- Give a seat a **player model** (a nit, a calling station, a measured online pool, or your own stats) and solve again to see how to play against it.
+- When the action reaches a flop with two or three players, **Send to postflop setup** carries the ranges over.
 
-**Preflop values:** new scenarios use **learned flop values**: the Balanced model plus a correction learned from exact flop solves (`cache/leaf_net_v3.bin`), which values hands by how they play after the flop and counts rake on the final pot. It prices heads-up flops; multiway and all-in pots, and games with ICM payouts, use Balanced alone. There is no switch in the Preflop Lab; a game can still ask for Balanced alone through the API (`realization: "balanced"`, solves about twice as fast). [What the net is and how it was checked](docs/technical_reference.md).
+### 01 · Postflop Setup & Solve
 
-**Preflop rake:** **Balanced (approx.)** splits one pot between the heads-up players and deducts your configured rake explicitly. Set rake to `0` for no rake; with positive rake, a cap of `0` means uncapped. Old saves retain their old model. [How the approximation works](docs/preflop_balanced_model.md).
+Enter or import both ranges, pick the board, and set the pot, stacks, rake and bet sizes. Press **Solve** on the same page and watch the solve close in on its target. Solves can be stopped, resumed and saved.
 
-### Preflop and player models
+![Postflop Setup & Solve: ranges, board, pot, bet sizes and the solve on one page](docs/screenshots/setup-solve.png)
 
-For a normal live straddle, enable **UTG straddle** in Preflop Lab and enter its size (default **2 bb**, tables of 3–9 players). The next seat acts first and the straddler keeps the final check/raise option. All sizes stay in the original big blind: a 2 bb straddle needs an ordinary opening raise of at least 4 bb. Save the setting with your scenario or game. [Straddle rules and model limitations](docs/utg-straddles.md).
+### 02 · Browse
 
-Use **Manage models** to create, edit, copy, or remove models from the menus. Assign models to seats, then apply them and re-solve. The **Evidence** indicator distinguishes measured hand policies and sizing from estimates and fallbacks.
+Follow the action through the solved tree. The grid shows every hand's strategy, EV or equity, and the panel beside it shows the hands you pick, with how often each action is taken and what it is worth. Filter by hand group (top pair, flush draws, a suit) and step through turn and river cards.
 
-The library includes Ignition NL10 and CoinPoker NL10/NL25/NL50/NL100 models. Coverage differs by dataset, position, and situation; saved or edited models keep their own settings.
+**Node locking.** Pick hands in the grid, or leave it on the whole range, type how often they take each action, and press **Lock**. **Exploit** shows the best reply at once, and **Re-solve** lets both players adjust around the lock. The locks you have set are listed above the grid.
 
-![Preflop Lab: scenario controls, player models, and a hand strategy grid](docs/screenshots/preflop.png)
+![Browse: the button is locked to always bet small, and the big blind's answer after a re-solve](docs/screenshots/locking.png)
 
-### Reports versus Browse
+### 03 · Reports
 
-Reports use the configuration in **Setup** and solve each flop independently. You do **not** need to Build tree or run Solve first just to generate a report.
+Solve the setup across 47, 95, 184 or all 1,755 distinct flops and compare the results by board, high card, hand class or texture. Reports can also be run against a player model, put side by side, or swept over bet sizes to find the best size on each flop.
 
-- **Standard report sizes** replaces Setup's bet menu with a shared report menu. Turn it off to use your Setup sizes.
-- **Vs modeled villain** applies one available player model from the Preflop export. It does not copy Browse's manual locks or lock both players. The current selection prefers OOP when both players have models.
-- **Compare** reads a second report at the same point of the action line, over the flops both reports share. Each step of the line is matched by action label, or by the same kind of action at the nearest pot-relative size (within 5% of the pot), so a 50% bet in a 10bb pot matches a 50% bet in a 20bb pot. When the starting pots differ, EV is shown as a share of the pot. IP's EV change mirrors OOP's, so only OOP's is listed per flop.
-- **Best size sweep** finds the best single size for one bet: IP's flop bet after a check, or OOP's first flop bet. Each flop is solved once per candidate size (default 25 / 33 / 50 / 75 / 125% pot, to 0.15% pot), then up to 3 more times between the best size's neighbours. The **Best size** view shows the best size per flop, the tie band (sizes whose EV gap is within the solves' combined exploitability, which the solves cannot separate), the best size mix by texture, and the EV lost by always using one size. Each candidate size is also kept as an ordinary report you can browse by node. A sweep costs about (sizes + 3) solves per flop. In **Browse**, **Find best size** (Actions panel, at OOP's first flop decision or IP's after a check) runs the same sweep on the current board.
-- **Open in Browse** rebuilds and solves the selected report spot; it does not load a stored full solve. Match the board, action line, sizes, and modeling assumptions when comparing frequencies. Different convergence targets can still produce differences.
+![Reports: the small blind's strategy in a 3-bet pot on 47 flops](docs/screenshots/reports.png)
 
-Use **Group by → High card** in Chart or Table, click column headings to sort, or switch to Hand classes and Textures. Hover a strategy bar for every action's frequency, including zeroes. Search and delete completed reports from the library.
+### Beta 3-Way
 
-![Reports: action frequencies across flops, filters, and a searchable library](docs/screenshots/reports.png)
+Build, solve and browse three-player postflop spots on one page. This part is still in beta.
 
-*Screenshots captured from the running app on 10 September 2026, using saved studies.*
+![Beta 3-Way: a solved three-player turn spot](docs/screenshots/three-way.png)
+
+*Screenshots are from version 1.6 (November 2026), solved on the CPU.*
+
+## Good to know
+
+- **Postflop solves play the whole hand out.** The answer is for the game you set up: it depends on the ranges, bet sizes, rake and locks you choose, and on how close to its target you let the solve run.
+- **Preflop solves are approximate.** The Preflop Lab does not play out the flop, turn and river. It estimates what each hand is worth once the flop comes, so treat close decisions as close.
+- **Rare preflop lines are not solved.** If the solution almost never takes an action, the ranges behind it mean nothing. The app marks these spots and shows how to study them.
+- **Player models mix measurement and estimate.** The Evidence link in the Preflop Lab says which is which.
+
+Sizes, rake, straddles, reports and the rest are covered in [Using GTOpen](docs/using_gtopen.md).
 
 ## Save and update
 
-Use the app's Save controls before closing or restarting the server. Files stay in the repository's `saves/` directory:
+Use the Save controls before closing GTOpen. Everything is kept in the `saves/` folder inside the repository: postflop solves, preflop games, scenarios, player models and reports.
 
-| Folder | Contents |
-| --- | --- |
-| `saves/` | Postflop solve sessions |
-| `saves/preflop/` | Preflop game sessions |
-| `saves/profiles/` | Saved player models |
-| `saves/reports/` | Reports and their per-node summaries |
+To update, stop any running solve, save, and run `git pull`. Then close GTOpen and start it again so it rebuilds. The header shows "restart GTOpen" while the running app is older than the files. Windows details are in [Updating on Windows](docs/windows_updates.md).
 
-To update, finish or stop running jobs, save both sessions, and pull the latest code with `git pull`. Backend changes require a server restart and rebuild; reopening an already-running Windows server keeps its existing binary. See [Windows updates and shortcuts](docs/windows_updates.md) for the full procedure.
-
-The app shows its version and release date at the right end of the top bar. Click it for the [change log](CHANGELOG.md), which lists what each version changed.
-
-## What the results mean
-
-- **Postflop** solves the configured heads-up tree. Results depend on the ranges, sizes, rake, locks, and convergence target you choose.
-- **Preflop** uses an approximate continuation model. New games use coupled-deck equity for pots with three or more players; heads-up pots retain the configured realization model. It does not solve the full multiway game through the river, and overlapping tight ranges can still expose large card-removal errors. [Model details](docs/technical_reference.md#preflop-continuation-model).
-- **Rare preflop lines are not solved.** The solver works on a spot in proportion to how often hands reach it, so the ranges behind an action the solution almost never takes (shown as `<0.1%` in the action ribbon) are not a strategy, and two solves of the same game can disagree completely there. The Preflop Lab marks these spots and says which action led off the solution. To study such a line, give that seat a player model that takes the action, then solve again: **How to study this line**, beside the title of such a spot, lists the steps for that exact action (which player type to pick, which tab and brush of its editor to use, then RE-SOLVE). The result is how to play against that player, not the equilibrium of the original game.
-- **Player models** combine observations and inference. Sparse or unsupported situations need estimates; a dataset label is not proof that every displayed hand frequency was observed.
-- **Tournament (ICM) preflop** spots take payouts and the players at other tables (Tournament payouts in the Preflop Lab, or `icm` in the game config) and solve on the GPU or CPU, from final tables to a 1,000-player bubble. Heads-up and 3-way postflop solves take the same payouts (a flop export from an ICM game carries them over). [ICM details](docs/technical_reference.md#icm-payoffs-tournaments).
-- Saved solves use GTOpen's own format.
-
-Older preflop saves keep their original equity model. **Re-solve** continues that model; save your work, then **Build game → Solve** to use the updated model in a fresh game.
+The version and its date show at the right end of the top bar. Click it for the [change log](CHANGELOG.md).
 
 ## Contribute compute
 
-Have an NVIDIA GPU that sits idle? GTOpen is pooling solves to train a small value network that gives the Preflop Lab real postflop-solved values at heads-up flops. One command builds the solver, generates examples and uploads them to a public dataset, with credit to your GitHub login. [How to contribute](docs/contribute-compute.md).
+Have an NVIDIA GPU that sits idle? GTOpen pools flop solves to train the neural net behind the Preflop Lab's hand values. One command builds the solver, generates examples and uploads them to a public dataset, with credit to your GitHub login. [How to contribute](docs/contribute-compute.md).
 
 [![Training data progress](https://raw.githubusercontent.com/MatthewPDingle/GTOpen/datagen-progress/progress.svg)](docs/contribute-compute.md)
 
@@ -135,44 +131,10 @@ Have an NVIDIA GPU that sits idle? GTOpen is pooling solves to train a small val
 
 | Topic | Guide |
 | --- | --- |
-| Model coverage | [Ignition](docs/ignition_models.md) · [CoinPoker](docs/coinpoker_models.md) · [Player types](docs/player_types.md) |
-| Model behavior | [Evidence labels](docs/model_evidence.md) · [Raise sizing](docs/preflop_action_sizing.md) · [Contextual preflop](docs/contextual_preflop.md) · [Contextual postflop](docs/postflop_contextual_model.md) |
-| Running studies | [Overnight reports](docs/overnight_reports.md) · [Contribute compute](docs/contribute-compute.md) · [Research setup](research/autoresearch/setup.md) |
-| Development | [Engine, CLI, API, and runtime settings](docs/technical_reference.md) · [GPU benchmarks](research/autoresearch/gpu-pass.md) · [Preflop performance results](research/autoresearch/passes/03-preflop-20260910/README.md) · [Preflop research](research/preflop-evolution/README.md) |
+| Using the app | [Using GTOpen](docs/using_gtopen.md) · [UTG straddles](docs/utg-straddles.md) · [Updating on Windows](docs/windows_updates.md) · [Change log](CHANGELOG.md) |
+| Player models | [Player types](docs/player_types.md) · [Ignition](docs/ignition_models.md) · [CoinPoker](docs/coinpoker_models.md) · [Evidence labels](docs/model_evidence.md) |
+| How it works | [Engine, settings, CLI and API](docs/technical_reference.md) · [Preflop values and rake](docs/preflop_balanced_model.md) · [Raise sizing](docs/preflop_action_sizing.md) |
+| Running studies | [Overnight reports](docs/overnight_reports.md) · [Contribute compute](docs/contribute-compute.md) |
+| Development and research | [Notes for developers](docs/development.md) |
 
-The code is organized into `crates/solver` (Rust engine), `crates/server` (HTTP API), and `web` (browser UI).
-
-### Local workspace and GPU research
-
-The desktop uses two folders:
-
-| Folder | Contents |
-| --- | --- |
-| `X:\Dev\GTOpen` | The application, source, research tools, dashboard and published reports. This is the only working Git checkout. |
-| `X:\Dev\GTOpen-research` | Raw dumps, saved research fixtures, build outputs and checksum-verified backups. These stay local. |
-
-The current application and consolidated reports are on
-[`master`](https://github.com/MatthewPDingle/GTOpen/tree/master).
-The [postflop GPU dashboard](web/research/postflop-gpu-20261016/index.html),
-[experiment ledger](research/postflop-gpu-20261016/experiments.md) and
-[workspace record](research/postflop-gpu-20261016/workspace-layout.json) explain the results and retained local evidence.
-Open the dashboard through the local server at `/research/postflop-gpu-20261016/`.
-Links marked **local dump** require this desktop's research data; the raw dumps are not distributed through GitHub.
-
-The former `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts are preserved as archive tags:
-[`archive/unfinished-hero-fix-20261030`](https://github.com/MatthewPDingle/GTOpen/tree/archive/unfinished-hero-fix-20261030)
-and [`archive/research-through-E127-20261030`](https://github.com/MatthewPDingle/GTOpen/tree/archive/research-through-E127-20261030).
-The adaptive-HERO fix is unfinished and is not applied to the running app.
-Historical research records retain their original paths and hashes; consult the workspace record before attempting to replay them.
-
-The active research tools default to the local `GTOpen-research/postflop-gpu-20261028` data folder.
-Set `GTOPEN_RESEARCH_DIR` to choose a different data directory for a new, explicitly started research pass.
-The older archive on `S:` is read-only; the retired `T:` paths are historical references.
-
-```sh
-# CPU tests
-cargo test --release -p solver
-
-# GPU integration tests (requires CUDA)
-cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1
-```
+The code is in `crates/solver` (the Rust engine), `crates/server` (the local server and API) and `web` (the browser page, no build step).
