@@ -246,6 +246,9 @@ python tools/datagen/validate.py --recount     # only add merges that progress.j
 Each merge is written to `progress.json` straight away, and every pass starts
 by adding any merged pull request that `progress.json` does not hold yet. So
 the validator can be closed at any time: nothing it merged goes uncounted.
+When Hugging Face answers "too many requests" it waits the pause it is asked
+for and carries on, and a pass that fails in `--watch` mode is tried again
+within five minutes.
 
 A job file sent in by someone without a Hugging Face account: keep it as
 `FOLDER/NAME/job-NUMBER.jsonl` (NAME is the contributor name in its first
