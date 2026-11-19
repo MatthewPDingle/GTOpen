@@ -2,6 +2,14 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.6.0 - 2026-11-19
+
+- The Solve page is now part of the Setup page. The tab is called "01 · Postflop Setup & Solve": set the spot up in steps 01 to 04, then build and solve it in step 05 on the same page, with the progress numbers, the chart and your saved solves beside it. On a wide window everything fits on one screen.
+- SOLVE builds the tree for you, so BUILD TREE is now optional. STOP takes SOLVE's place while a solve runs, as in the Preflop Lab. A new BROWSE button under them opens the tree as soon as it is built.
+- The amber "SETUP changed" bar across the top of the page is gone. The line under the buttons says it instead, BUILD TREE turns amber, and hovering the line explains it.
+- The other tabs are renumbered: 02 · Browse and 03 · Reports. The 3-way tab is now called "Beta 3-Way" and stays last.
+- Nothing was removed. The RE-SOLVE and STOP buttons in the top bar work as before, from any page.
+
 ## 1.5.4 - 2026-11-19
 
 - The Browse tab now says, right at the grid, when what it shows is older than your locks. After a lock change an amber line above the grid reads OLD SOLVE and names the two ways on: RE-SOLVE to solve with the locks, or EXPLOIT to see the best reply at once. The action tiles carry the same OLD SOLVE tag, and both buttons turn amber until you use one. It used to be a small note at the far end of the LOCKS row.

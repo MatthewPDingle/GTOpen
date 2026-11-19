@@ -16,11 +16,10 @@
     <div class="wordmark"><span>GTO</span>pen<em>open-source solver</em></div>
     <nav id="tabs">
       <button class="tab active" data-tab="preflop">00 · PREFLOP LAB</button>
-      <button class="tab" data-tab="setup">01 · SETUP</button>
-      <button class="tab" data-tab="solve">02 · SOLVE</button>
-      <button class="tab" data-tab="browse">03 · BROWSE</button>
-      <button class="tab" data-tab="reports">04 · REPORTS</button>
-      <button class="tab" data-tab="threeway">05 · 3-WAY</button>
+      <button class="tab" data-tab="setup">01 · POSTFLOP SETUP &amp; SOLVE</button>
+      <button class="tab" data-tab="browse">02 · BROWSE</button>
+      <button class="tab" data-tab="reports">03 · REPORTS</button>
+      <button class="tab" data-tab="threeway" data-tip="Three-player postflop solving. Still in beta.">BETA 3-WAY</button>
     </nav>
     <div id="hdr-right">
       <div id="solve-controls" class="hidden">
@@ -33,7 +32,7 @@
     </div>
   </header>
 
-  <!-- Loaded spot + tree/solve state, shared by SETUP, SOLVE, BROWSE, REPORTS -->
+  <!-- Loaded spot + tree/solve state, shared by POSTFLOP SETUP & SOLVE, BROWSE, REPORTS -->
   <div id="spot-strip" class="hidden" role="group" aria-label="Loaded spot">
     <span class="ss-k">SPOT</span>
     <span id="ss-board" class="ss-board"></span>
@@ -54,15 +53,12 @@
     <button id="error-dismiss" class="btn ghost xs" aria-label="Dismiss error">✕</button>
   </div>
 
-  <!-- ============================== SETUP =============================== -->
+  <!-- ======================= POSTFLOP SETUP & SOLVE ======================= -->
+  <!-- One page: set the spot up (01 to 04), then build and solve it (05). -->
   <main id="view-setup" class="view">
     <div class="setup-heading">
-      <div><h1>Postflop setup</h1></div>
+      <div><h1>Postflop setup &amp; solve</h1></div>
       <span class="setup-format">HEADS-UP · FLOP / TURN / RIVER</span>
-    </div>
-    <div id="setup-drift" class="drift-notice hidden" role="status">
-      <span>SETUP changed</span>
-      <button id="btn-rebuild" class="btn sm">REBUILD</button>
     </div>
     <div class="setup-grid">
       <section class="panel" id="panel-ranges">
@@ -126,19 +122,59 @@
           <thead><tr><th></th><th>flop</th><th>turn</th><th>river</th></tr></thead>
           <tbody id="sizes-body"></tbody>
         </table>
-        <div class="build-row">
-          <button id="btn-build" class="btn primary">BUILD TREE</button>
-        </div>
       </section>
       </div>
+
+      <section class="panel" id="panel-solve">
+        <h2><span class="setup-step">05</span> Solve <button type="button" class="info-dot" aria-label="How solving works" data-tip="SOLVE builds the tree from the setup on this page, then solves it, and stops by itself at the accuracy target. BUILD TREE only builds, to see how big the spot is first. You can open BROWSE as soon as the tree is built.">?</button></h2>
+        <div class="solve-body">
+          <div class="solve-run" id="panel-run">
+            <div class="field-grid">
+              <label data-tip="Safety cap: the solve stops earlier when the accuracy target is hit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
+              <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% for quick looks, 0.2–0.3% for serious study.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
+              <label data-tip="Shorter intervals cost more check time but detect the target sooner.">check every <input type="number" id="run-check" value="10" min="1"></label>
+            </div>
+            <div class="build-row">
+              <button id="btn-build" class="btn" data-tip="Optional. SOLVE builds the tree for you.">BUILD TREE</button>
+              <button id="btn-solve" class="btn primary">SOLVE</button>
+              <button id="btn-stop" class="btn danger hidden" data-tip="Stops the solve after one last accuracy check, so the exploitability shown is true for what you keep. RE-SOLVE carries on from there.">STOP</button>
+            </div>
+            <div class="run-line">
+              <span id="run-state" class="ctl-state" tabindex="0"></span>
+              <button id="btn-browse" class="btn ghost xs hidden" data-tip="Open this tree in Browse. You can look around while it solves.">BROWSE →</button>
+            </div>
+            <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The GPU memory figure is the most a solve could take on the GPU; the real fit is checked when the solve starts, and a spot that does not fit is solved on the CPU instead."></div>
+          </div>
+          <div class="solve-progress" id="panel-progress">
+            <div class="bignum-row">
+              <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
+              <div class="bignum"><label>iteration</label><div id="iter-now" class="mono">0</div></div>
+              <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
+              <div class="bignum" tabindex="0" data-tip="Rate is smoothed and includes accuracy checks and checkpoint transfers."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
+            </div>
+            <canvas id="convergence-chart" width="900" height="320" tabindex="0" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
+          </div>
+          <div class="solve-saves">
+            <h3>Saved solves <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h3>
+            <div class="btn-row">
+              <input type="text" id="save-name" placeholder="save name…">
+              <button id="btn-save" class="btn">save</button>
+            </div>
+            <div class="btn-row">
+              <select id="load-select"><option value="">saved solves…</option></select>
+              <button id="btn-load" class="btn">load</button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
-  <!-- ============================== 3-WAY =============================== -->
+  <!-- ============================ BETA 3-WAY ============================= -->
   <main id="view-threeway" class="view">
     <div class="setup-heading">
       <div><h1>3-way postflop</h1><p>GPU when the tree fits, otherwise CPU.</p></div>
-      <span class="setup-format">THREE-WAY · FLOP / TURN / RIVER</span>
+      <span class="setup-format">BETA · THREE-WAY · FLOP / TURN / RIVER</span>
     </div>
     <div class="mw-grid">
       <div class="mw-left">
@@ -209,46 +245,6 @@
           <div id="mw-detail" class="mw-detail mono"></div>
         </div>
         <div id="mw-cards" class="mw-cards"></div>
-      </section>
-    </div>
-  </main>
-
-  <!-- ============================== SOLVE =============================== -->
-  <main id="view-solve" class="view">
-    <h1 class="sr-only">Solve</h1>
-    <div class="solve-grid">
-      <section class="panel" id="panel-run">
-        <h2>Run</h2>
-        <div class="field-grid">
-          <label data-tip="Safety cap: the solve stops earlier when the accuracy target is hit.">max iterations <input type="number" id="run-iters" value="1000" min="10"></label>
-          <label data-tip="Stop when a perfect counter-strategy could only gain this much, as % of the pot. 0.5% for quick looks, 0.2–0.3% for serious study.">target exploit % pot <input type="number" id="run-target" value="0.3" min="0.05" step="0.05"></label>
-          <label data-tip="Shorter intervals cost more check time but detect the target sooner.">check every <input type="number" id="run-check" value="10" min="1"></label>
-        </div>
-        <div class="btn-row">
-          <button id="btn-solve" class="btn primary">SOLVE</button>
-          <button id="btn-stop" class="btn danger" disabled>STOP</button>
-          <span id="run-state" class="ctl-state"></span>
-        </div>
-        <div id="mem-info" class="mono dim" tabindex="0" data-tip="RAM is the solver's own data in this computer's normal memory. The GPU memory figure is the most a solve could take on the GPU; the real fit is checked when the solve starts, and a spot that does not fit is solved on the CPU instead."></div>
-        <h2 style="margin-top:24px">Persistence <button type="button" class="info-dot" aria-label="Saving and loading" data-tip="Writes the full solution to ./saves/. Loading replaces the current session.">?</button></h2>
-        <div class="btn-row">
-          <input type="text" id="save-name" placeholder="save name…">
-          <button id="btn-save" class="btn">save</button>
-        </div>
-        <div class="btn-row">
-          <select id="load-select"><option value="">saved solves…</option></select>
-          <button id="btn-load" class="btn">load</button>
-        </div>
-      </section>
-      <section class="panel" id="panel-progress">
-        <h2>Convergence</h2>
-        <div class="bignum-row">
-          <div class="bignum" tabindex="0" data-tip="How much a perfect exploiter could win against the current solution, as % of the pot."><label>exploitability</label><div id="exploit-now" class="mono">—</div><span class="dim">% of pot</span></div>
-          <div class="bignum"><label>iteration</label><div id="iter-now" class="mono">0</div></div>
-          <div class="bignum"><label>elapsed</label><div id="elapsed-now" class="mono">0s</div></div>
-          <div class="bignum" tabindex="0" data-tip="Rate is smoothed and includes accuracy checks and checkpoint transfers."><label>speed</label><div id="ips-now" class="mono">—</div><span class="dim">iter/s</span></div>
-        </div>
-        <canvas id="convergence-chart" width="900" height="320" tabindex="0" data-tip="Exploitability over iterations on a log scale. The dashed line is your target — when the curve crosses it, the solve stops."></canvas>
       </section>
     </div>
   </main>
