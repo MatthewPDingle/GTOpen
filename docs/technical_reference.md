@@ -252,6 +252,14 @@ Games with `balanced` or `leafnet` realization or separate 4-bet+ menus use `GTO
 - **Same game, different payer.** A big blind ante of `A` and a per-seat ante of `A / n` build the same tree, pots and stacks. Every terminal pays a seat the same up to the constant it paid in, and regrets are differences between actions, so the two solves match step for step to float noise (`same_game_as_each_seat_paying_a_share`); each seat's EV differs by that constant (the big blind's is lower by what it paid for the table). One exception: with ICM payouts who holds the chips matters. (Up to 1.6.1 learned flop values with blockers were a second one, because the leaf net's input carried a term in what the seat had put in; see "Blockers" above.)
 - **Saves.** Games with a big blind ante save as `GTOPREFLOP8`, so older binaries refuse them rather than drop the ante. Without one, the config and the save are unchanged.
 
+## The raise cap
+
+`PreflopConfig.max_raises` caps the raises of a hand, the all-in included: `legal_actions_of` offers no raise of any kind once `raises == max_raises`. The last raise the cap allows is therefore a raise nobody can answer with a raise. When called it always sees a flop, so it costs its owner less than the same raise in a game without the cap, and a solve uses it for hands it would otherwise call with.
+
+Measured on an 8-max 150 bb game with max raises 3 (learned flop values, blockers on, RTX 5090, 19 Nov 2026): the opener called a 3-bet 4.1% of the time averaged over seven lines against 18.2% in the canonical charts, and 4-bet 23-32% against 13-23%. The same game with one more raise that could only be an all-in (max raises 4, `allin_threshold` lowered until the 5-bet was one): the opener's calls rose to 10.9% and the 3-bettor shoved over a 4-bet 28-32% of the time (charts 18-29%). Cold calls behind an open did not come back; that is a separate matter of the learned flop values. The tree grew from 0.81M to 5.77M nodes.
+
+So the cap belongs one raise above the last raise a study cares about. The form's jam rule ("Jam if a raise commits over N % of stack", `allin_threshold`, 30 for new games) keeps that extra level cheap: a raise that deep is one all-in action with only folds and calls behind it, in place of a sized raise and everything under it.
+
 ## ICM payoffs (tournaments)
 
 `PreflopConfig.icm` turns a Preflop Lab game into a tournament spot: `{"payouts": [50, 30, 20], "field": [22.5, 40], "field_groups": [{"stack": 25, "count": 140}]}`. `payouts` is the prize for each finishing place among the players still in (first place first, any currency; only ratios matter). `field` lists the stacks in bb of players at other tables, who share the remaining places but take no part in the hand; `field_groups` adds many of them at once as counts of equal stacks. Every terminal then pays each seat the change in its Malmuth–Harville prize equity instead of its chip delta.
