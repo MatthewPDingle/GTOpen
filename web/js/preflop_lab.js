@@ -589,7 +589,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.maxRaises.value = p.maxRaises;
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
-    els.lastAllin.checked = !!p.lastAllin;
     els.ante.value = p.ante;
     els.anteBy.value = anteBy(p.anteBy);
     syncAnteBy();
@@ -612,7 +611,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ...positionSizing.scenario(),
     ...seatStacks.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
-    lastAllin: els.lastAllin.checked,
     ante: +els.ante.value, anteBy: anteBy(els.anteBy.value), rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
     // ICM owns the rake fields while it is on (they show 0): last, so its
     // remembered numbers replace the zero the form is displaying
@@ -624,7 +622,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       k === 'smallBlind' || k === 'bigBlind' ? Math.abs(blindSizes(s).smallBlind / blindSizes(s).bigBlind - cur.smallBlind / cur.bigBlind) < 1e-9 :
       k === 'positionSizes' || k === 'seatStacks' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
       k === 'laterMult' || k === 'limperExtra' || k === 'multOop' || k === 'laterOop' ? String(s[k] || '') === String(v) :
-      k === 'callerMoney' || k === 'lastAllin' ? !!s[k] === v :
+      k === 'callerMoney' ? !!s[k] === v :
       k === 'ante' || k === 'anteBy' ? sameAnte(s, cur) :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
@@ -769,7 +767,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   els.ante.addEventListener('input', syncAnteBy);
   syncAnteBy();
   [els.players, els.stack, els.smallBlind, els.bigBlind, els.straddleOn, els.straddle, els.opens, els.mult, els.maxRaises,
-   els.ante, els.anteBy, els.limp, els.allin, els.lastAllin].forEach(el => {
+   els.ante, els.anteBy, els.limp, els.allin].forEach(el => {
     el.addEventListener('input', estSoon);
     el.addEventListener('change', estSoon);
   });
@@ -794,8 +792,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       ...icmControls.config(),
       max_raises: +els.maxRaises.value || 1,
       add_allin: els.allin.checked,
-      // sent only when on: a GTOpen from before the option refuses a key it does not know
-      ...(els.lastAllin.checked ? { allin_over_last_raise: true } : {}),
       rake_pct: +els.rakePct.value || 0,
       rake_cap: +els.rakeCap.value || 0,
       no_flop_no_drop: true,
@@ -1099,7 +1095,6 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
-    els.lastAllin.checked = !!cfg.allin_over_last_raise;
     const ante = anteOf(cfg);
     els.ante.value = ante.amount;
     els.anteBy.value = ante.by;

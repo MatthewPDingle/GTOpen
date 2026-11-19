@@ -110,13 +110,6 @@ pub struct PreflopConfig {
     /// Always offer jam as a raise option.
     #[serde(default)]
     pub add_allin: bool,
-    /// An all-in may still go over the last raise `max_raises` allows (and
-    /// nothing may follow it). Without it the last raise can never be
-    /// re-raised, so it always sees a flop when called and the solve raises
-    /// hands it would otherwise call with. False (the default, and every
-    /// older save) leaves the tree exactly as it was.
-    #[serde(default, skip_serializing_if = "is_false")]
-    pub allin_over_last_raise: bool,
     /// A raise TO more than this fraction of the stack becomes a jam.
     #[serde(default = "default_allin_threshold")]
     pub allin_threshold: f64,
@@ -3723,18 +3716,13 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
         .fold(0.0, f64::max);
     let cap = own.min(cover);
     let reopened = st.acted[actor] < 0.0 || st.to_call - st.acted[actor] >= st.last_raise - 1e-9;
-    // Over the last raise the cap allows, only an all-in may follow, and
-    // only when the game asks for it (`allin_over_last_raise`).
-    let over_cap = cfg.allin_over_last_raise && st.raises > 0 && st.raises == cfg.max_raises;
-    if (st.raises < cfg.max_raises || over_cap)
+    if st.raises < cfg.max_raises
         && !cfg.call_only_seats.contains(&actor)
         && reopened
         && cap > st.to_call + 1e-9
     {
         let mut tos: Vec<f64> = Vec::new();
-        if over_cap {
-            tos.push(cap);
-        } else if st.raises == 0 {
+        if st.raises == 0 {
             // Over limpers every open grows by a fixed amount per limper.
             let extra = cfg.limper_extra * st.limpers as f64;
             tos.extend(cfg.opens_of(actor).iter().map(|open| open + extra));
@@ -3750,7 +3738,7 @@ fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<P
                 tos.push(to);
             }
         }
-        if cfg.add_allin && !over_cap {
+        if cfg.add_allin {
             tos.push(cap);
         }
         let mut seen: Vec<f64> = Vec::new();
@@ -4542,7 +4530,5 @@ mod checkpoint_tests;
 mod stacks_tests;
 #[cfg(test)]
 mod bb_ante_tests;
-#[cfg(test)]
-mod last_allin_tests;
 #[cfg(test)]
 mod removal_tests;

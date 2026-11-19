@@ -14,7 +14,7 @@ fn main() {
     let iters: u32 = std::env::args().nth(1).and_then(|v| v.parse().ok()).unwrap_or(600);
     let eq = Arc::new(EquityTable::load_or_build("cache/preflop_eq169.bin", 20_000));
     let positions = ["UTG", "UTG1", "UTG2", "LJ", "HJ", "CO", "BTN", "SB", "BB"];
-    let cfg = PreflopConfig { bb_ante: 0.0, allin_over_last_raise: false, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
         positions: positions.iter().map(|s| s.to_string()).collect(),
         stack: 100.0, stacks: None,

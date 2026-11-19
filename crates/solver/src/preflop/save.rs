@@ -34,11 +34,6 @@ pub(super) const MAGIC_SIZING: &[u8] = b"GTOPREFLOP7\n";
 // and continue them as a game without it, so it must refuse. A superset of
 // v7 (each earlier feature may be present or not).
 pub(super) const MAGIC_BB_ANTE: &[u8] = b"GTOPREFLOP8\n";
-// An all-in over the last raise adds nodes behind every capped raise; an
-// older binary would drop `allin_over_last_raise` and rebuild the smaller
-// tree, so it must refuse. A superset of v8 (each earlier feature, the big
-// blind ante included, may be present or not).
-pub(super) const MAGIC_LAST_ALLIN: &[u8] = b"GTOPREFLOP9\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -173,9 +168,7 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.allin_over_last_raise {
-            MAGIC_LAST_ALLIN
-        } else if self.cfg.bb_ante != 0.0 {
+        let magic = if self.cfg.bb_ante != 0.0 {
             MAGIC_BB_ANTE
         } else if self.cfg.situational_sizing() {
             MAGIC_SIZING
@@ -227,12 +220,10 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM && magic != MAGIC_SIZING && magic != MAGIC_BB_ANTE && magic != MAGIC_LAST_ALLIN {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM && magic != MAGIC_SIZING && magic != MAGIC_BB_ANTE {
             return Err("not a preflop game save".to_string());
         }
-        let last_allin = magic == MAGIC_LAST_ALLIN;
-        // v9 says nothing about the big blind ante: it may be there or not
-        let bb_ante = magic == MAGIC_BB_ANTE || last_allin;
+        let bb_ante = magic == MAGIC_BB_ANTE;
         // from v7 on, the earlier features are each present or not
         let sizing = magic == MAGIC_SIZING || bb_ante;
         let mut line = Vec::new();
@@ -254,10 +245,7 @@ impl PreflopSolver {
             return Err("preflop v4 save is missing its heads-up realization model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if last_allin != header.config.allin_over_last_raise {
-            return Err("an all-in over the last raise requires preflop v9 format and its setting".into());
-        }
-        if !last_allin && bb_ante != (header.config.bb_ante != 0.0) {
+        if bb_ante != (header.config.bb_ante != 0.0) {
             return Err("big blind ante saves require preflop v8 format and their ante".into());
         }
         if !bb_ante && sizing != header.config.situational_sizing() {
@@ -314,7 +302,7 @@ mod tests {
 
     fn fixture() -> PreflopSolver {
         static EQ: OnceLock<Arc<EquityTable>> = OnceLock::new();
-        let cfg = PreflopConfig { bb_ante: 0.0, allin_over_last_raise: false, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+        let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 2.0, stacks: None, posts: vec![0.0, 0.5, 1.0], ante: 0.0,

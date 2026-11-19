@@ -2,13 +2,6 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
-## 1.7.0 - 2026-11-19
-
-- Preflop Lab: new tick box "all-in over the last raise", beside "all-in option". Max raises stops the raising, so the last raise allowed could never be shoved on, and solves used it for hands that should just call. Ticked, a player can still go all-in over that last raise.
-- In an 8-max test game with max raises 3, the opener then called 3-bets 11% of the time instead of 4% (the canonical GTO charts say 18%).
-- It is off unless you tick it, because the game gets several times bigger. That test game took over 4 hours to solve instead of 15 minutes.
-- After updating, close GTOpen and start it again.
-
 ## 1.6.3 - 2026-11-19
 
 - Preflop Lab: new solves call raises more often, mostly from the big blind. Since blockers were added, the learned flop values were read slightly wrong, which made calling look worse than it is. In an 8-max test game a UTG open is now called 4.0% of the time instead of 2.5% (the canonical GTO chart says 7.1%), and the big blind's reply to a button open is close to the chart.
