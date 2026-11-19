@@ -4,8 +4,7 @@ What changed in GTOpen, newest first, in plain words. The version you are runnin
 
 ## 1.5.2 - 2026-11-19
 
-- The logo in the top left has room to breathe: "open-source solver" no longer touches the bottom of "GTOpen", and it always stays on one line.
-- In a window narrower than about 1450 pixels the top bar is now two tidy rows, the logo and status on top and the tabs under them. Before, the logo and the tab names were squeezed onto two or three lines and could spill out of the bar.
+- The logo in the top left has room to breathe: the bottom of the "p" in "GTOpen" no longer drops into "open-source solver" under it.
 
 ## 1.5.1 - 2026-11-19
 
