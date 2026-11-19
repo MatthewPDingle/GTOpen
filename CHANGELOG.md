@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.4.3 - 2026-11-19
+
+- The BEST REPLY button is gone from the list of locks in the Browse tab. It did the same as EXPLOIT: pick whose hands to show under HANDS OF, then press EXPLOIT.
+
 ## 1.4.2 - 2026-11-19
 
 - The small hand tiles in the Browse tab (HANDS, lower right) now say how often each action is taken. Each action has its own row: name, "how often" in bold, then EV, with the two column names right above the numbers.
