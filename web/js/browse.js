@@ -536,7 +536,7 @@ export class Browser {
         let tip = `${who}, ${lockWhere(l.line)}: ${what}.`;
         if (cells.length) tip += ` You set ${handList(cells, 12)}; ${who}'s other hands play as they did then.`;
         if (l.kind === 'kept') tip += ` Held the way the solve had it, because it leads to another of ${who}'s locks.`;
-        if (l.kind === 'fit') tip += ' The result of a "hardest to punish" lock.';
+        if (l.kind === 'fit') tip += ' The result of a "Least exploitable" lock.';
         const isHere = l.path && JSON.stringify(l.path) === here;
         tip += isHere ? ' You are looking at it.' : l.path ? ' Click to go to this decision.' : '';
         const some = cells.length && l.kind === 'manual' ? `${cells.length} hand${cells.length === 1 ? '' : 's'} set · ` : '';
@@ -1479,7 +1479,7 @@ export class Browser {
       body.append(ed.cont, ed.sumRow);
       const fit = this.view.fit;
       if (fit) {
-        // a "hardest to punish" lock is steering this decision in the solve
+        // a "Least exploitable" lock is steering this decision in the solve
         const st = document.createElement('div');
         st.className = 'lk-help lk-fit';
         const pct = v => Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : '—';
@@ -1490,14 +1490,14 @@ export class Browser {
       }
       // which hands move when the range is pushed onto the numbers
       const methods = [
-        ['rake', 'every hand a little', 'Every hand shifts its mix by the same factor until the range hits your numbers. A hand that never takes an action still never takes it.'],
-        ['quick', 'the cheapest hands', 'The hands that lose the least by switching do the switching. Instant, but a perfect counter can still punish it.'],
-        ['full', 'hardest to punish', 'Finds the way to hit your numbers that gives the other player the least. It starts a re-solve and locks the result when the solve ends.'],
+        ['rake', 'Scale', 'Every hand shifts its mix by the same factor until the range hits your numbers. A hand that never takes an action still never takes it.'],
+        ['quick', 'Least EV loss', 'The hands that lose the least by switching do the switching. Instant, but a perfect counter can still punish it.'],
+        ['full', 'Least exploitable', 'Finds the way to hit your numbers that gives the other player the least. It starts a re-solve and locks the result when the solve ends.'],
       ];
       if (!methods.some(m => m[0] === this.fitMethod)) {
         let saved = null;
         try { saved = localStorage.getItem('gtopen.fitMethod'); } catch { /* storage off */ }
-        // "hardest to punish" starts a solve, so it is never the remembered default
+        // "Least exploitable" starts a solve, so it is never the remembered default
         this.fitMethod = saved === 'quick' ? 'quick' : 'rake';
       }
       const how = document.createElement('div');

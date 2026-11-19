@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.4.1 - 2026-11-19
+
+- The three ways to shift a whole range in the Browse lock box are called Scale, Least EV loss and Least exploitable again. Hover one to read what it does in plain words.
+
 ## 1.4.0 - 2026-11-19
 
 - Node locking in the Browse tab is reworked to take a few clicks. Nothing it could do before is gone.
