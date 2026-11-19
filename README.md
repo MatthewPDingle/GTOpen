@@ -154,3 +154,7 @@ Have an NVIDIA GPU that sits idle? GTOpen pools flop solves to train the neural 
 | Development and research | [Notes for developers](docs/development.md) |
 
 The code is in `crates/solver` (the Rust engine), `crates/server` (the local server and API) and `web` (the browser page, no build step).
+
+## License
+
+GTOpen is licensed under the [Apache License 2.0](LICENSE). The community training dataset is published separately under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
