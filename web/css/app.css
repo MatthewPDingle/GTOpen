@@ -1490,6 +1490,10 @@ button.lb-go:hover { background: var(--panel2); }
 .pfl-straddle-note { grid-column:1 / -1; font-size:11px; line-height:1.4; }
 .pfl-straddle-note[hidden] { display:none; }
 .pfl-grid2 .pfl-callers-money { grid-column:1 / -1; }
+/* The raise controls share one row: how many raises, whether all-in is a size, and the jam rule. */
+.pfl-grid2 .pfl-raises { grid-column:1 / -1; display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px; }
+.pfl-raises label { justify-content:flex-start; gap:6px; white-space:nowrap; }
+.pfl-side .pfl-raises input[type="number"] { width:52px; }
 /* The ante starts a row of its own, with who pays it beside it. */
 .pfl-grid2 .pfl-newrow { grid-column:1; }
 .pfl-side #pfl-ante-by { width:112px; }

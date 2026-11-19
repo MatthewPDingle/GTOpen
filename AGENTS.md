@@ -122,7 +122,17 @@ game). Config shape (see `PreflopConfig` in
   `caller_extra` added the callers' money); `web/js/preflop_actions.js`,
   `node tools/test_preflop_actions.mjs`.
 - `max_raises` counts ALL raises (open=1 … 5-bet=4). Re-raise TO = to_call ×
-  mult, min-raise clamped; sizes ≥ 85% of stack become jams.
+  mult, min-raise clamped; sizes ≥ `allin_threshold` of the stack become
+  jams (API default 0.85). The form sets it with "Jam if a raise commits
+  over [30] % of stack": 30 for new games and the built-in scenarios, sent a
+  hair above (0.300000001) so a raise to exactly 30% stays a raise; empty
+  sends 1 (off); a scenario saved before the box existed keeps 85
+  (`web/js/preflop_jam.js`, `node tools/test_preflop_jam.mjs`).
+- The last raise `max_raises` allows can never be re-raised, the all-in
+  included, so it always sees a flop when called and a solve raises hands it
+  would otherwise call with. To study a raise, allow one more than it; with
+  the jam rule that extra raise is usually just an all-in. See "The raise
+  cap" in `docs/technical_reference.md`.
 - Per-seat overrides: `open_raises_by_seat`/`raise_mults_by_seat` (len-6 lists
   of lists; empty inner list = use global). Lets one seat explore a size menu
   while others stay pinned. `call_only_seats` bans raising for listed seats.

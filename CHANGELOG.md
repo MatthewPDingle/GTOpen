@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.7.0 - 2026-11-19
+
+- Preflop Lab: the raise settings now sit together. Max raises, "All-in as a raise size" (the old "all-in option", unchanged) and a new box: "Jam if a raise commits over 30 % of stack".
+- The new box turns any raise that would put in more than that share of the stack into an all-in. It used to be fixed at 85%. New games and the built-in scenarios use 30; leave it empty to switch it off. Scenarios you saved before keep 85 until you change it.
+- Why it matters: the last raise that Max raises allows can never be re-raised, so solves used it for hands that should just call. In an 8-max test game with max raises 3 the opener called 3-bets 4% of the time; with one more raise allowed, as an all-in, 11% (the canonical GTO charts say 18%). To study 4-bets, set Max raises to 4. With the 30% rule that extra raise is nearly always just an all-in, so the game grows only a little (about 6% in the built-in 8-max $2/5 scenario).
+- Page only: update and refresh the page, no restart needed.
+
 ## 1.6.3 - 2026-11-19
 
 - Preflop Lab: new solves call raises more often, mostly from the big blind. Since blockers were added, the learned flop values were read slightly wrong, which made calling look worse than it is. In an 8-max test game a UTG open is now called 4.0% of the time instead of 2.5% (the canonical GTO chart says 7.1%), and the big blind's reply to a button open is close to the chart.

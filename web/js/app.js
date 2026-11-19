@@ -1254,7 +1254,7 @@ initPreflopLab({
     straddleOn: $('pfl-straddle-on'), straddle: $('pfl-straddle'), straddleNote: $('pfl-straddle-note'),
     opens: $('pfl-opens'), mult: $('pfl-mult'), maxRaises: $('pfl-maxraises'),
     ante: $('pfl-ante'), anteBy: $('pfl-ante-by'), rakePct: $('pfl-rakepct'), rakeCap: $('pfl-rakecap'),
-    limp: $('pfl-limp'), allin: $('pfl-allin'), eq3: $('pfl-eq3'),
+    limp: $('pfl-limp'), allin: $('pfl-allin'), jamPct: $('pfl-jampct'), eq3: $('pfl-eq3'),
     build: $('pfl-build'), solve: $('pfl-solve'), stop: $('pfl-stopbtn'),
     prog: $('pfl-prog'),
     buildInfo: $('pfl-buildinfo'), status: $('pfl-status'),

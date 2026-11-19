@@ -409,7 +409,11 @@
           <div id="pfl-straddle-note" class="dim pfl-straddle-note" role="status" hidden></div>
           <label>Open sizes (bb) <input id="pfl-opens" type="text" value="2.5" data-tip="What an open raises to, in big blinds. Separate several sizes with commas. With a 2 bb straddle use at least 4. Leave empty for no raises (all-in can still be allowed)."></label>
           <label>3-bet ×prev <input id="pfl-mult" type="text" value="3" data-tip="A 3-bet is this many times the raise it faces: 3 turns a 2.5 bb open into 7.5 bb. Separate several sizes with commas. With the box beside it filled, this is the size in position. Sizes by seat are set below."></label>
-          <label data-tip="How many raises a hand can have. The open is raise 1, a 3-bet is 2, a 4-bet is 3.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+          <div class="pfl-raises">
+            <label data-tip="How many raises a hand can have. The open is raise 1, a 3-bet is 2, a 4-bet is 3, a 5-bet is 4. The last one can never be re-raised, so a solve leans on it too much: allow one more raise than the last one you want to study.">Max raises <input id="pfl-maxraises" type="number" value="4" min="1" max="8"></label>
+            <label class="chk" data-tip="Adds going all-in to every raising choice, beside the sizes you set."><input id="pfl-allin" type="checkbox"> All-in as a raise size</label>
+            <label data-tip="A raise that would put in more than this share of the stack is offered as all-in instead. Past about 30% you could not fold to a re-raise anyway. Leave it empty to switch the rule off.">Jam if a raise commits over <input id="pfl-jampct" type="number" value="30" min="1" max="100" step="1" placeholder="off"> % of stack</label>
+          </div>
           <label class="pfl-newrow" data-tip="The ante, in big blinds. It goes into the pot before the cards and is paid on top of the stack, so every seat still plays the stack you set.">Ante (bb) <input id="pfl-ante" type="number" value="0" min="0" step="0.1"></label>
           <label data-tip="Who pays the ante. Each seat: everyone pays it. Big blind: the big blind pays it for the whole table, as in most tournaments (usually 1 bb). A 1 bb ante from the big blind makes the same pot as 0.125 bb from each of 8 seats.">Paid by <select id="pfl-ante-by">
             <option value="each">each seat</option><option value="bb">big blind</option>
@@ -419,7 +423,6 @@
         </div>
         <div class="pfl-row">
           <label class="chk" data-tip="Lets players call the big blind instead of raising or folding."><input id="pfl-limp" type="checkbox"> allow limps</label>
-          <label class="chk" data-tip="Adds going all-in to every raising choice. A raise that would put in most of a stack becomes all-in either way."><input id="pfl-allin" type="checkbox"> all-in option</label>
           <label class="chk" data-tip="Beta. Values three-player pots more accurately, with all three hands dealt from one deck. The first game built with it takes a few extra minutes."><input id="pfl-eq3" type="checkbox"> exact 3-way equity</label>
         </div>
         <div id="pfl-estimate" class="mono dim" style="font-size:11px;margin:6px 0 2px" tabindex="0"

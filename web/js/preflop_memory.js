@@ -104,7 +104,7 @@ export function estimateView(e) {
   ];
   if (e.ok && plan.engine) lines.push(cardText(plan), engineText(plan));
   else if (e.ok) lines.push(UNKNOWN_ENGINE);
-  const smaller = 'fewer sizes, fewer raises, no limps or no all-in option';
+  const smaller = 'fewer sizes, fewer raises, no limps or no all-in as a raise size';
   const card = plan.engine ? cardState(plan) : null;
   const tip = !plan.engine ? RESTART_TIP : [
     `RAM is this computer's normal memory; every game has to fit there. Right now it can take ` +
