@@ -1,6 +1,8 @@
 // Tournament (ICM) payouts for the Preflop Lab. With ICM on, every terminal
 // pays the change in Malmuth–Harville prize equity, in bb equivalents.
 
+import { holdRakeBoxes, releaseRakeBoxes } from './icm_rake.js';
+
 /**
  * An approximate standard payout structure: prizes for places 1..paid of an
  * MTT with `entrants` players, in % of the prize pool. Prizes fall as 1/place
@@ -79,43 +81,66 @@ export function icmFromConfig(cfg) {
 export function createIcmControls(els, positionsFor, changed) {
   let state = { on: false, payouts: '', fieldCount: '', fieldStack: '', stage: '', stackOff: '', edited: false,
     rakePct: '', rakeCap: '' };
-  const details = document.createElement('details');
-  details.className = 'pfl-position-sizes pfl-icm';
-  const summary = document.createElement('summary');
-  details.append(summary);
-  const note = document.createElement('p');
-  note.textContent = 'Hands are valued in prize money instead of chips (ICM); results still read in big blinds. '
-    + 'The stage presets use a typical 1,000-player payout table and give players at other tables this table’s stack.';
-  details.append(note);
+  // Simple by default. The on/off box is part of the scenario form itself,
+  // right under the rake boxes it switches off, so whether a game uses
+  // tournament payouts shows without opening anything. Turning it on adds the
+  // stage. Everything a stage fills in (other tables, stack-off rate, the
+  // payout list) and the read-out of a built game sit under an "Advanced"
+  // opener, closed until the user opens it or picks the Custom stage, which
+  // needs them.
+  const details = document.createElement('div');
+  details.className = 'pfl-icm';
+  const onRow = document.createElement('div');
+  onRow.className = 'pfl-icm-on';
   const on = document.createElement('label');
   on.className = 'chk';
   const onBox = document.createElement('input');
   onBox.type = 'checkbox';
-  on.append(onBox, ' use tournament payouts (ICM)');
-  details.append(on);
-  const grid = document.createElement('div');
-  grid.className = 'pfl-grid2';
+  on.append(onBox, ' tournament payouts (ICM)');
+  const about = document.createElement('button');
+  about.type = 'button';
+  about.className = 'info-dot';
+  about.textContent = '?';
+  about.setAttribute('aria-label', 'About tournament payouts');
+  about.setAttribute('data-tip-click', '');
+  about.dataset.tip = 'Hands are valued in prize money instead of chips (ICM), so busting costs more than '
+    + 'doubling up wins. Results still read in big blinds, and there is no rake. Pick how far along the '
+    + 'tournament is under Stage.';
+  onRow.append(on, about);
+  details.append(onRow);
   const stage = document.createElement('select');
   stage.innerHTML = '<option value="">Custom</option>'
     + ICM_STAGES.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
-  const stageNote = document.createElement('span');
-  stageNote.className = 'dim';
   const stageLabel = document.createElement('label');
-  stageLabel.append('Stage ', stage, ' ', stageNote);
+  stageLabel.className = 'pfl-icm-stage';
+  stageLabel.dataset.tip = 'How far along the tournament is. Each stage uses the payouts of a typical '
+    + '1,000-player tournament. Custom lets you type your own under Advanced tournament settings.';
+  stageLabel.append('Stage ', stage);
+  details.append(stageLabel);
+  const advanced = document.createElement('details');
+  advanced.className = 'pfl-position-sizes pfl-icm-adv';
+  const advSummary = document.createElement('summary');
+  advSummary.dataset.tip = 'The numbers behind the stage: players at other tables, how often flops end all-in, '
+    + 'and the payout list. Change them here if your tournament differs.';
+  advanced.append(advSummary);
   const payouts = document.createElement('textarea');
-  payouts.rows = 2;
+  payouts.rows = 3;
   payouts.placeholder = 'e.g. 50, 30, 20';
   payouts.setAttribute('aria-label', 'Prize for each place, first place first');
   const payLabel = document.createElement('label');
-  payLabel.style.gridColumn = '1 / -1';
+  payLabel.className = 'pfl-icm-pay';
+  payLabel.dataset.tip = 'The prize for each place still to be paid, first place first. Any unit works: '
+    + 'only the proportions matter.';
   payLabel.append('Payouts, first place first ', payouts);
   const fieldCount = document.createElement('input');
   fieldCount.type = 'number'; fieldCount.min = '0'; fieldCount.step = '1';
   const countLabel = document.createElement('label');
+  countLabel.dataset.tip = 'How many players are still in at the other tables.';
   countLabel.append('Players at other tables ', fieldCount);
   const fieldStack = document.createElement('input');
   fieldStack.type = 'number'; fieldStack.min = '0.5'; fieldStack.step = '0.5';
   const stackLabel = document.createElement('label');
+  stackLabel.dataset.tip = 'The average stack at the other tables. Leave empty to use this table’s stack.';
   stackLabel.append('Their stack (bb) ', fieldStack);
   const stackOff = document.createElement('input');
   stackOff.type = 'number'; stackOff.min = '0'; stackOff.step = '0.25'; stackOff.placeholder = '0.4';
@@ -123,40 +148,40 @@ export function createIcmControls(els, positionsFor, changed) {
   offLabel.dataset.tip = 'How often a pot that sees the flop ends up all-in, which happens more when stacks are short '
     + 'next to the pot. Leave empty for the usual 0.4. At 0 only the pot is at risk.';
   offLabel.append('Stack-off rate ', stackOff);
-  grid.append(stageLabel, countLabel, stackLabel, offLabel, payLabel);
-  details.append(grid);
   const status = document.createElement('p');
   status.className = 'mono';
   status.hidden = true;
-  details.append(status);
-  const anchor = document.querySelector('.pfl-seat-stacks') || els.stack.closest('.pfl-grid2');
-  anchor?.after(details);
+  advanced.append(countLabel, stackLabel, offLabel, payLabel, status);
+  details.append(advanced);
+  els.stack.closest('.pfl-grid2')?.after(details);
 
+  // a stage whose numbers were changed says so, even with the opener closed
+  function renderEdited() {
+    advSummary.textContent = state.stage && state.edited
+      ? 'Advanced tournament settings · edited' : 'Advanced tournament settings';
+  }
   function render() {
     onBox.checked = state.on;
     stage.value = state.stage || '';
-    stageNote.textContent = state.stage ? (state.edited ? 'edited' : 'preset') : '';
+    renderEdited();
     payouts.value = state.payouts;
     fieldCount.value = state.fieldCount;
     fieldStack.value = state.fieldStack;
     stackOff.value = state.stackOff ?? '';
     fieldStack.placeholder = els.stack.value || 'Stack';
     zeroRake(state.on);
-    grid.hidden = !state.on;
-    summary.textContent = state.on ? 'Tournament payouts (ICM on)' : 'Tournament payouts (ICM)';
-    if (state.on) details.open = true;
+    stageLabel.hidden = !state.on;
+    advanced.hidden = !state.on;
   }
-  // ICM solves need rake 0, so the fields are driven to 0 and disabled, marked
-  // "ICM · 0". The numbers the user entered are kept in `state`, so turning ICM
-  // off (now, or after loading another scenario) gives them back.
+  // ICM solves need rake 0, so the fields are driven to 0 and greyed out
+  // (icm_rake.js says why in a tooltip). The numbers the user entered are kept
+  // in `state`, so turning ICM off (now, or after loading another scenario)
+  // gives them back.
   let holdingRake = false;
   const rakeFields = () => [els.rakePct, els.rakeCap].filter(Boolean);
   function releaseRake() {
     holdingRake = false;
-    for (const el of rakeFields()) {
-      el.disabled = false;
-      el.closest('label')?.querySelector('.icm-rake')?.remove();
-    }
+    releaseRakeBoxes(rakeFields());
   }
   function zeroRake(on) {
     if (on) {
@@ -166,26 +191,18 @@ export function createIcmControls(els, positionsFor, changed) {
         state.rakeCap = els.rakeCap?.value ?? '';
         holdingRake = true;
       }
-      for (const el of rakeFields()) {
-        el.value = '0';
-        el.disabled = true;
-        if (!el.closest('label')?.querySelector('.icm-rake')) {
-          const tag = document.createElement('span');
-          tag.className = 'dim icm-rake';
-          tag.textContent = 'ICM · 0';
-          el.closest('label')?.append(' ', tag);
-        }
-      }
+      for (const el of rakeFields()) el.value = '0';
+      holdRakeBoxes(rakeFields());
     } else if (holdingRake) {
       holdingRake = false;
       for (const [el, saved] of [[els.rakePct, state.rakePct], [els.rakeCap, state.rakeCap]]) {
-        if (!el) continue;
-        el.value = saved ?? '';
-        el.disabled = false;
-        el.closest('label')?.querySelector('.icm-rake')?.remove();
+        if (el) el.value = saved ?? '';
       }
+      releaseRakeBoxes(rakeFields());
     }
   }
+  // Custom has no preset behind it, so its numbers must be in view.
+  const showCustom = () => { if (state.on && !state.stage) advanced.open = true; };
   function applyStage(id) {
     const s = ICM_STAGES.find(x => x.id === id);
     if (!s) return;
@@ -196,15 +213,17 @@ export function createIcmControls(els, positionsFor, changed) {
     state.fieldStack = '';
   }
   const edit = fn => () => { fn(); render(); changed(); };
-  const presetEdited = () => { state.edited = true; };
+  const presetEdited = () => { state.edited = true; renderEdited(); };
   onBox.addEventListener('change', edit(() => {
     state.on = onBox.checked;
     if (state.on && !state.payouts) { state.stage = 'ft'; applyStage('ft'); }
+    showCustom();
   }));
   stage.addEventListener('change', edit(() => {
     state.stage = stage.value;
     state.edited = false;
     applyStage(stage.value);
+    showCustom();
   }));
   payouts.addEventListener('input', () => { state.payouts = payouts.value; presetEdited(); changed(); });
   fieldCount.addEventListener('input', () => { state.fieldCount = fieldCount.value; presetEdited(); changed(); });
@@ -229,6 +248,7 @@ export function createIcmControls(els, positionsFor, changed) {
         if (els.rakeCap) els.rakeCap.value = String(value.rakeCap ?? els.rakeCap.value ?? '');
       }
       releaseRake(); // the fields now hold this scenario's own numbers
+      showCustom();
       render();
     },
     load: cfg => {
@@ -237,6 +257,7 @@ export function createIcmControls(els, positionsFor, changed) {
       if (els.rakePct) els.rakePct.value = String(cfg.rake_pct ?? 0);
       if (els.rakeCap) els.rakeCap.value = String(cfg.rake_cap ?? 0);
       releaseRake();
+      showCustom();
       render();
     },
     /** Show what the built game's values mean (the build response's `icm`). */
@@ -247,7 +268,8 @@ export function createIcmControls(els, positionsFor, changed) {
         + (info.field || []).reduce((a, [, count, eq]) => a + count * eq, 0);
       const pct = pool > 0 ? 100 / (info.bb_per_prize * pool) : 0;
       const eqs = info.seat_equity.map(e => (100 * e / pool).toFixed(2) + '%').join(' · ');
-      status.textContent = `1 bb ≈ ${pct.toPrecision(3)}% of the prize pool · seat equity ${eqs}`;
+      status.textContent = `In the built game 1 bb is worth about ${pct.toPrecision(3)}% of the prize pool. `
+        + `Each seat’s share of the prize pool: ${eqs}`;
     },
   };
 }

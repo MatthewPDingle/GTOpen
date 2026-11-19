@@ -1442,6 +1442,11 @@ button.lb-go:hover { background: var(--panel2); }
 .pfl-grid2 .pfl-newrow { grid-column:1; }
 .pfl-side #pfl-ante-by { width:112px; }
 .pfl-grid2 .pfl-off { opacity:.45; }
+/* Rake boxes while tournament payouts are on (web/js/icm_rake.js): greyed out, the reason is in
+   their tooltip. The box lets the pointer through to its label, because a disabled box does not
+   show a tooltip in every browser. */
+label.icm-rake-off { color: var(--ink-faint); }
+label.icm-rake-off input { opacity: .45; pointer-events: none; }
 .pfl-straddle-post { opacity:.8; border-style:dashed; cursor:default; }
 
 /* Flag rare branches without adding a separate study workflow. */
@@ -1491,6 +1496,22 @@ button.lb-go:hover { background: var(--panel2); }
 .pfl-position-sizes th:first-child { width:40px; }
 .pfl-position-sizes td { padding:2px 3px; }
 .pfl-position-sizes input { width:100%; min-width:0; box-sizing:border-box; padding:4px; font-size:11px; }
+/* Tournament payouts in the Preflop Lab (web/js/preflop_icm.js): an on/off box in the form itself,
+   the stage when it is on, and the numbers behind a stage under an "Advanced" opener. */
+.pfl-icm { margin:8px 0; }
+.pfl-icm .pfl-icm-on { display:flex; align-items:center; }
+.pfl-icm .chk input { width:auto; }
+.pfl-icm label[hidden], .pfl-icm details[hidden] { display:none; }
+.pfl-icm .pfl-icm-stage { margin-top:7px; }
+.pfl-side .pfl-icm .pfl-icm-stage select { flex:1; width:auto; min-width:0; }
+.pfl-icm .pfl-icm-adv { margin-bottom:0; }
+.pfl-icm .pfl-icm-adv label { margin-top:6px; }
+.pfl-icm .pfl-icm-adv input { flex:none; width:90px; }
+.pfl-icm .pfl-icm-adv .pfl-icm-pay { flex-direction:column; align-items:stretch; gap:0; }
+.pfl-icm textarea { width:100%; box-sizing:border-box; resize:vertical; background:var(--panel2); color:var(--ink);
+  border:1px solid var(--line2); border-radius:3px; padding:4px 6px; font-size:11px; line-height:1.5;
+  min-height:0; margin-top:4px; }
+.pfl-icm .pfl-icm-adv p { margin:7px 0 0; overflow-wrap:anywhere; }
 .pfl-saved-value-note { margin:8px 0; color:#e4c377; font-size:11px; line-height:1.4; }
 
 /* ------------------------------- 3-WAY -------------------------------- */
@@ -1525,10 +1546,14 @@ button.lb-go:hover { background: var(--panel2); }
 }
 
 /* Postflop tournament payouts (ICM) panel, SETUP and 3-WAY */
-.postflop-icm > label.check { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 12px; }
-.postflop-icm > label.check input { width: auto; }
+.postflop-icm { margin: 10px 0 0; }
+.postflop-icm .postflop-icm-on { display: flex; align-items: center; }
+.postflop-icm label.check { display: flex; flex-direction: row; align-items: center; gap: 8px; font-size: 12px; }
+.postflop-icm label.check input { width: auto; }
+.postflop-icm .pfl-grid2[hidden] { display: none; }
 .postflop-icm .pfl-grid2 label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink-dim); }
-.postflop-icm textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.postflop-icm .pfl-grid2 input { width: 100%; min-width: 0; box-sizing: border-box; }
+.postflop-icm textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 48px; margin-top: 0; }
 
 /* ---- Best size (size-sweep reports, best_size.js) ---- */
 #rep-sweep-viewer { padding: 18px; min-width: 0; }
