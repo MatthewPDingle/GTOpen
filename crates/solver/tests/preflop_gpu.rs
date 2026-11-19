@@ -209,20 +209,34 @@ fn gpu_matches_cpu_big_blind_ante() {
     run_equivalence(cpu, gs);
 }
 /// An all-in over the last raise only adds nodes behind a capped raise, so
-/// the GPU must walk the bigger tree as the CPU does: heads-up, and three
-/// seats 60 bb deep where the 3-bet is the last raise and the shove over it
-/// can be called by two players.
+/// the GPU must walk the bigger tree as the CPU does: heads-up with the
+/// 3-bet as the last raise (25 and 60 bb), with the 4-bet as the last raise
+/// (100 bb), and three seats where the open is the last raise and the shove
+/// over it can be called twice.
+///
+/// The games are picked for the long comparison, which counts pure decisions
+/// that differ. Two CPU solves of one game that differ by float noise alone
+/// (regrets nudged by 1e-6 after five iterations) already disagree by that
+/// count in some games: 0.4% with two open sizes at 25 bb and the shove,
+/// about 4% with three seats and a 3-bet. In these four they agree (0.03% at
+/// most), so a difference here is the engine's.
 #[test]
 fn gpu_matches_cpu_all_in_over_the_last_raise() {
     let mut cfg = hu25();
+    cfg.open_raises = vec![2.5];
     cfg.max_raises = 2;
     cfg.add_allin = false;
     cfg.allin_over_last_raise = true;
     assert_gpu_matches_cpu(cfg.clone());
+    cfg.stack = 60.;
+    assert_gpu_matches_cpu(cfg.clone());
+    cfg.stack = 100.;
+    cfg.max_raises = 3;
+    assert_gpu_matches_cpu(cfg.clone());
     cfg.positions = (0..3).map(|i| format!("P{i}")).collect();
     cfg.posts = vec![0., 0.5, 1.];
     cfg.stack = 60.;
-    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 1;
     cfg.realization = "raw".into();
     let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
     let mut gs = PreflopSolver::new(cfg, table()).unwrap();
