@@ -20,6 +20,7 @@ import { defaultGame } from './rangelab_ref.js';
 import { initPreflopTrust } from './preflop_trust.js';
 import { createLeafNet, modelFor } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
+import { anteBy, anteConfig, anteOf, sameAnte, usesBbAnte } from './preflop_ante.js';
 import { estimateView } from './preflop_memory.js';
 import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from './preflop_status.js';
 
@@ -605,6 +606,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.limp.checked = p.limp;
     els.allin.checked = p.allin;
     els.ante.value = p.ante;
+    els.anteBy.value = anteBy(p.anteBy);
+    syncAnteBy();
     els.rakePct.value = p.rakePct;
     els.rakeCap.value = p.rakeCap;
     // after the rake fields: ICM re-reads them as the numbers to restore
@@ -626,7 +629,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     ...positionSizing.scenario(),
     ...seatStacks.scenario(),
     maxRaises: +els.maxRaises.value, limp: els.limp.checked, allin: els.allin.checked,
-    ante: +els.ante.value, rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
+    ante: +els.ante.value, anteBy: anteBy(els.anteBy.value), rakePct: +els.rakePct.value, rakeCap: +els.rakeCap.value,
     // ICM owns the rake fields while it is on (they show 0): last, so its
     // remembered numbers replace the zero the form is displaying
     ...icmControls.scenario(),
@@ -638,6 +641,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       k === 'positionSizes' || k === 'seatStacks' ? JSON.stringify(s[k] || {}) === JSON.stringify(v) :
       k === 'laterMult' || k === 'limperExtra' || k === 'multOop' || k === 'laterOop' ? String(s[k] || '') === String(v) :
       k === 'callerMoney' ? !!s[k] === v :
+      k === 'ante' || k === 'anteBy' ? sameAnte(s, cur) :
       k === 'straddle' ? Number(s.straddle || 0) === v :
       k === 'opens' || k === 'mult' ? String(s[k]).replace(/\s/g, '') === String(v).replace(/\s/g, '') : s[k] === v);
     const idx = SCENARIOS.findIndex(same);
@@ -774,8 +778,14 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   [els.players, els.straddleOn, els.straddle].forEach(el => el.addEventListener('change', syncStraddleControls));
   els.straddle.addEventListener('input', syncStraddleControls);
   syncStraddleControls();
+  // Who pays matters only once there is an ante to pay.
+  function syncAnteBy() {
+    els.anteBy.closest('label').classList.toggle('pfl-off', !(+els.ante.value > 0));
+  }
+  els.ante.addEventListener('input', syncAnteBy);
+  syncAnteBy();
   [els.players, els.stack, els.smallBlind, els.bigBlind, els.straddleOn, els.straddle, els.opens, els.mult, els.maxRaises,
-   els.ante, els.limp, els.allin].forEach(el => {
+   els.ante, els.anteBy, els.limp, els.allin].forEach(el => {
     el.addEventListener('input', estSoon);
     el.addEventListener('change', estSoon);
   });
@@ -791,7 +801,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       stack: +els.stack.value || 100,
       posts,
       ...(els.straddleOn.checked ? { utg_straddle: true } : {}),
-      ante: +els.ante.value || 0,
+      ...anteConfig(els.ante.value, els.anteBy.value),
       limp: els.limp.checked,
       open_raises: nums(els.opens.value),
       raise_mults: nums(els.mult.value),
@@ -873,11 +883,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     try { cfg = config(); } catch (e) { toast(e.message, true); return false; }
     // A GTOpen program from before these sizes would ignore them and quietly
     // build the old game instead.
-    if (usesSituationalSizes(cfg)) {
+    if (usesSituationalSizes(cfg) || usesBbAnte(cfg)) {
       let info = null;
       try { info = await api.version(); } catch { /* no reply: older still */ }
       if (needsRestart(info)) {
-        toast('Restart GTOpen to use the new raise sizes: the program that is running is older than this page.', true);
+        toast(`Restart GTOpen to use ${usesBbAnte(cfg) ? 'a big blind ante' : 'the new raise sizes'}: the program that is running is older than this page.`, true);
         return false;
       }
     }
@@ -1103,7 +1113,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     els.maxRaises.value = cfg.max_raises;
     els.limp.checked = !!cfg.limp;
     els.allin.checked = !!cfg.add_allin;
-    els.ante.value = cfg.ante || 0;
+    const ante = anteOf(cfg);
+    els.ante.value = ante.amount;
+    els.anteBy.value = ante.by;
+    syncAnteBy();
     els.rakePct.value = cfg.rake_pct || 0;
     els.rakeCap.value = cfg.rake_cap || 0;
     // after the rake fields: ICM shows 0 there while it is on, and reads the

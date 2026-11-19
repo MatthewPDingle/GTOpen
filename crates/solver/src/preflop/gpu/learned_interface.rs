@@ -86,7 +86,7 @@ impl PreflopGpu {
     }
     fn enable_interface_impl(&mut self,s:&PreflopSolver,source:&str,learned:bool,configured_rake_hu:bool)->Result<Value,String>{
         if self.warmed || self.eval_warmed || self.interface.is_some() || self.learned.is_some()
-            || s.cfg.realization!="balanced" || (!configured_rake_hu && s.cfg.rake_pct!=0.) || s.cfg.ante!=0.
+            || s.cfg.realization!="balanced" || (!configured_rake_hu && s.cfg.rake_pct!=0.) || s.cfg.has_ante()
             || self.research.is_some() || self.research_cohorts.is_some() || self.research_exact_reuse.is_some()
             || self.research_cv.is_some() || self.research_behavioral.is_some() || self.research_predictive.is_some()
             || self.research_rm_plus.is_some() || self.research_history_units.is_some() || self.research_root_ranges.is_some(){

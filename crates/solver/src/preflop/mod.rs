@@ -91,6 +91,12 @@ pub struct PreflopConfig {
     /// Dead ante per seat (goes to the pot, does not count toward calls).
     #[serde(default)]
     pub ante: f64,
+    /// Big blind ante: a dead ante only the big blind (the last seat) pays,
+    /// on top of `ante`. Like `ante` it is paid on top of the stack, so the
+    /// big blind still has `stack_of` to play with. Zero (the default, and
+    /// every older save) leaves the game exactly as it was.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub bb_ante: f64,
     /// Allow open-limps / limps behind (calls with no raise pending).
     #[serde(default)]
     pub limp: bool,
@@ -196,11 +202,30 @@ impl PreflopConfig {
     pub fn unequal_stacks(&self) -> bool {
         self.stacks.as_ref().is_some_and(|v| v.iter().any(|&x| x != v[0]))
     }
+    /// What only the big blind pays of the dead antes (see `bb_ante`).
+    #[inline]
+    pub fn bb_extra(&self, seat: usize) -> f64 {
+        if seat + 1 == self.positions.len() { self.bb_ante } else { 0.0 }
+    }
+    /// Seat `seat`'s dead ante: the per-seat ante, plus the big blind ante
+    /// for the big blind. A node's `invested` holds it; it never counts
+    /// toward matching a bet.
+    #[inline]
+    pub fn ante_of(&self, seat: usize) -> f64 {
+        self.ante + self.bb_extra(seat)
+    }
+    /// All the dead antes in the pot.
+    pub fn ante_total(&self) -> f64 {
+        self.ante * self.positions.len() as f64 + self.bb_ante
+    }
+    pub fn has_ante(&self) -> bool {
+        self.ante != 0.0 || self.bb_ante != 0.0
+    }
     /// Chips seat `seat` still has behind given its total investment
     /// (`invested` includes the dead ante, which is posted on top of the stack).
     #[inline]
     pub fn left(&self, seat: usize, invested: f64) -> f64 {
-        self.stack_of(seat) - invested + self.ante
+        self.stack_of(seat) - invested + self.ante_of(seat)
     }
     pub fn first_to_act(&self) -> usize { usize::from(self.utg_straddle) }
     pub fn unraised_winner(&self) -> Option<usize> {
@@ -869,6 +894,8 @@ impl PreflopSolver {
             return Err("hu_leaf_values needs a plain two-seat game".into());
         }
         let saved = (self.cfg.stack, self.cfg.stacks.take(), self.cfg.rake_pct, self.cfg.rake_cap);
+        // both players are given the same chips: no big blind ante here
+        let bb_ante = std::mem::take(&mut self.cfg.bb_ante);
         self.cfg.stack = pot / 2.0 + behind - self.cfg.ante;
         self.cfg.rake_pct = rake_pct;
         self.cfg.rake_cap = rake_cap;
@@ -888,6 +915,7 @@ impl PreflopSolver {
             let mass: f32 = range.iter().enumerate().map(|(k, w)| w * class_prob(k)).sum();
             if range.len() != NUM_CLASSES || !(mass > 0.0) {
                 (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
+                self.cfg.bb_ante = bb_ante;
                 return Err("each range needs 169 weights with positive mass".into());
             }
             reaches[seat] = range.iter().enumerate().map(|(k, w)| w * class_prob(k) / mass).collect();
@@ -903,6 +931,7 @@ impl PreflopSolver {
             }
         }
         self.nodes.pop();
+        self.cfg.bb_ante = bb_ante;
         (self.cfg.stack, self.cfg.stacks, self.cfg.rake_pct, self.cfg.rake_cap) = saved;
         Ok(out)
     }
@@ -1236,7 +1265,7 @@ impl PreflopSolver {
             if nd.bucket==BUCKET_VS_LIMPS {
                 let free=nd.actions.iter().any(|a|a.kind=="check");
                 let limpers=(0..self.n).filter(|&i|i!=nd.actor as usize &&
-                    nd.invested[i]>self.cfg.posts[i]+self.cfg.ante+1e-9).count().clamp(1,3) as u8;
+                    nd.invested[i]>self.cfg.posts[i]+self.cfg.ante_of(i)+1e-9).count().clamp(1,3) as u8;
                 if let Some(c)=prof.response.as_ref().and_then(|r|r.limp_contexts.iter().find(|c|c.free_check==free && c.limpers==limpers)) {
                     return Some(self.policy_sigma(node,&c.policy));
                 }
@@ -1264,7 +1293,7 @@ impl PreflopSolver {
             if (nd.bucket == BUCKET_VS_RAISE || nd.bucket == BUCKET_SQUEEZE) && !self.is_cold(nd) {
                 // Earlier limpers retain their investment even after folding.
                 let behind = (0..self.n).filter(|&i|self.cfg.acts_before(i,nd.actor as usize)).any(|i|
-                    nd.invested[i] > self.cfg.posts[i] + self.cfg.ante + 1e-9);
+                    nd.invested[i] > self.cfg.posts[i] + self.cfg.ante_of(i) + 1e-9);
                 let ld = if behind { prof.limp_defense.as_ref() } else {
                     prof.response.as_ref().and_then(|r| r.limp_unopened.as_ref())
                         .or(prof.limp_defense.as_ref())
@@ -1323,7 +1352,7 @@ impl PreflopSolver {
     /// The actor has put nothing in voluntarily yet (blind/ante only).
     fn is_cold(&self, nd: &PNode) -> bool {
         let a = nd.actor as usize;
-        nd.invested[a] <= self.cfg.posts[a] + self.cfg.ante + 1e-9
+        nd.invested[a] <= self.cfg.posts[a] + self.cfg.ante_of(a) + 1e-9
     }
 
     /// TO-amount (bb) the actor at `node` must call: the call action carries
@@ -1337,7 +1366,8 @@ impl PreflopSolver {
             .find(|a| a.kind == "call")
             .map(|a| a.to)
             .unwrap_or_else(|| {
-                nd.invested.iter().cloned().fold(0.0, f64::max) - self.cfg.ante
+                // the big blind's own ante is not part of what anyone bet
+                (0..self.n).map(|i| nd.invested[i] - self.cfg.bb_extra(i)).fold(0.0, f64::max) - self.cfg.ante
             })
     }
 
@@ -1348,7 +1378,7 @@ impl PreflopSolver {
             entry: if nd.raised & (1 << nd.actor) != 0 { contextual::Entry::Raised }
                 else if self.is_cold(nd) { contextual::Entry::Cold } else { contextual::Entry::Called },
             raises: nd.raises, pot: nd.pot,
-            invested: nd.invested[nd.actor as usize] - self.cfg.ante,
+            invested: nd.invested[nd.actor as usize] - self.cfg.ante_of(nd.actor as usize),
             to_call: self.faced_to(node),
         })
     }
@@ -1922,14 +1952,12 @@ impl PreflopSolver {
             return 0.0;
         }
         let w = nd.winner as usize;
-        let matched = nd
-            .invested
-            .iter()
-            .enumerate()
-            .filter(|(q, _)| *q != w)
-            .map(|(_, v)| *v)
-            .fold(0.0, f64::max);
-        let uncalled = (nd.invested.get(w).copied().unwrap_or(0.0) - matched).max(0.0);
+        // Compare what the seats bet: every seat holds the per-seat ante,
+        // but only the big blind holds the big blind ante.
+        let bet = |q: usize| nd.invested[q] - self.cfg.bb_extra(q);
+        let matched = (0..nd.invested.len()).filter(|&q| q != w).map(bet).fold(0.0, f64::max);
+        let own = if w < nd.invested.len() { bet(w) } else { 0.0 };
+        let uncalled = (own - matched).max(0.0);
         self.rake_of(nd.pot - uncalled)
     }
 
@@ -3495,6 +3523,9 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
     if !cfg.ante.is_finite() || cfg.ante < 0.0 {
         return Err(format!("ante must be finite and >= 0, got {}", cfg.ante));
     }
+    if !cfg.bb_ante.is_finite() || cfg.bb_ante < 0.0 {
+        return Err(format!("bb_ante must be finite and >= 0, got {}", cfg.bb_ante));
+    }
     let biggest_post = cfg.posts.iter().cloned().fold(0.0, f64::max);
     if let Some(stacks) = &cfg.stacks {
         if stacks.len() != n {
@@ -3608,7 +3639,7 @@ fn validate(cfg: &PreflopConfig) -> Result<usize, String> {
 
 fn root_state(cfg: &PreflopConfig, n: usize) -> BuildState {
     BuildState {
-        invested: (0..n).map(|i| cfg.posts[i] + cfg.ante).collect(),
+        invested: (0..n).map(|i| cfg.posts[i] + cfg.ante_of(i)).collect(),
         folded: 0,
         allin: 0,
         needs: (1u32 << n) - 1,
@@ -3647,7 +3678,7 @@ fn next_actor_of(n: usize, st: &BuildState) -> Option<usize> {
 /// an all-in for less than a full raise. With equal stacks every one of
 /// these rules reduces to the single-stack tree.
 fn legal_actions_of(cfg: &PreflopConfig, st: &BuildState, actor: usize) -> Vec<PAction> {
-    let inv_live = st.invested[actor] - cfg.ante;
+    let inv_live = st.invested[actor] - cfg.ante_of(actor);
     let own = cfg.stack_of(actor);
     let owed = (st.to_call - inv_live).max(0.0);
     let mut acts: Vec<PAction> = Vec::new();
@@ -3771,7 +3802,7 @@ fn next_state_of(
         }
         "check" | "call" => {
             // `a.to` is the faced amount, or the whole stack when short.
-            ns.invested[actor] = a.to + cfg.ante;
+            ns.invested[actor] = a.to + cfg.ante_of(actor);
             if (a.to - own).abs() < 1e-9 {
                 ns.allin |= 1 << actor;
             }
@@ -3785,7 +3816,7 @@ fn next_state_of(
             }
         }
         _ => {
-            ns.invested[actor] = a.to + cfg.ante;
+            ns.invested[actor] = a.to + cfg.ante_of(actor);
             let all_in = (a.to - own).abs() < 1e-9;
             // An all-in short of a full raise leaves the minimum raise as it was.
             if !all_in || a.to - st.to_call >= st.last_raise - 1e-9 {
@@ -3819,15 +3850,18 @@ fn next_state_of(
 fn settle_pots(cfg: &PreflopConfig, invested: &[f64], live: u32) -> Option<(Vec<f64>, Vec<(f64, u32)>)> {
     let n = invested.len();
     let is_live = |i: usize| live & (1 << i) != 0;
+    // What each seat bet, on the common base of the per-seat ante: only the
+    // big blind holds the big blind ante, and it is never returned.
+    let bet = |i: usize| invested[i] - cfg.bb_extra(i);
     let top = (0..n).filter(|&i| is_live(i))
-        .max_by(|&a, &b| invested[a].partial_cmp(&invested[b]).unwrap())?;
-    let second = (0..n).filter(|&q| q != top).map(|q| invested[q]).fold(f64::MIN, f64::max);
+        .max_by(|&a, &b| bet(a).partial_cmp(&bet(b)).unwrap())?;
+    let second = (0..n).filter(|&q| q != top).map(bet).fold(f64::MIN, f64::max);
     let mut inv = invested.to_vec();
-    let refunded = inv[top] > second + 1e-9;
+    let refunded = bet(top) > second + 1e-9;
     if refunded {
-        inv[top] = second;
+        inv[top] = second + cfg.bb_extra(top);
     }
-    let mut levels: Vec<f64> = (0..n).filter(|&i| is_live(i)).map(|i| inv[i] - cfg.ante).collect();
+    let mut levels: Vec<f64> = (0..n).filter(|&i| is_live(i)).map(|i| inv[i] - cfg.ante_of(i)).collect();
     levels.sort_by(|a, b| a.partial_cmp(b).unwrap());
     levels.dedup_by(|a, b| (*a - *b).abs() < 1e-9);
     if levels.len() < 2 {
@@ -3837,13 +3871,13 @@ fn settle_pots(cfg: &PreflopConfig, invested: &[f64], live: u32) -> Option<(Vec<
     let mut prev = 0.0;
     for (k, &level) in levels.iter().enumerate() {
         let mut amount: f64 = (0..n)
-            .map(|i| (inv[i] - cfg.ante - prev).clamp(0.0, level - prev))
+            .map(|i| (inv[i] - cfg.ante_of(i) - prev).clamp(0.0, level - prev))
             .sum();
         if k == 0 {
-            amount += cfg.ante * n as f64;
+            amount += cfg.ante * n as f64 + cfg.bb_ante;
         }
         let mask = (0..n)
-            .filter(|&i| is_live(i) && inv[i] - cfg.ante >= level - 1e-9)
+            .filter(|&i| is_live(i) && inv[i] - cfg.ante_of(i) >= level - 1e-9)
             .fold(0u32, |m, i| m | (1 << i));
         pots.push((amount, mask));
         prev = level;
@@ -4494,5 +4528,7 @@ impl PreflopSolver {
 mod checkpoint_tests;
 #[cfg(test)]
 mod stacks_tests;
+#[cfg(test)]
+mod bb_ante_tests;
 #[cfg(test)]
 mod removal_tests;

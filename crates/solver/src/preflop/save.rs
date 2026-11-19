@@ -29,6 +29,11 @@ pub(super) const MAGIC_ICM: &[u8] = b"GTOPREFLOP6\n";
 // older binary's rebuilt tree: it must refuse. A superset of v6 (ICM,
 // unequal stacks and a straddle may each be present or not).
 pub(super) const MAGIC_SIZING: &[u8] = b"GTOPREFLOP7\n";
+// A big blind ante changes every payoff but not the tree's shape, so the
+// arenas would fit an older binary's rebuilt tree: it would drop `bb_ante`
+// and continue them as a game without it, so it must refuse. A superset of
+// v7 (each earlier feature may be present or not).
+pub(super) const MAGIC_BB_ANTE: &[u8] = b"GTOPREFLOP8\n";
 
 fn legacy_multiway_equity_model() -> String {
     "legacy_product".into()
@@ -163,7 +168,9 @@ impl PreflopSolver {
     fn write_game(&self, path: &str) -> Result<(), String> {
         let file = std::fs::File::create(path).map_err(|e| e.to_string())?;
         let mut w = BufWriter::new(file);
-        let magic = if self.cfg.situational_sizing() {
+        let magic = if self.cfg.bb_ante != 0.0 {
+            MAGIC_BB_ANTE
+        } else if self.cfg.situational_sizing() {
             MAGIC_SIZING
         } else if self.cfg.icm.is_some() {
             MAGIC_ICM
@@ -213,10 +220,12 @@ impl PreflopSolver {
         let mut r = BufReader::new(file);
         let mut magic = [0u8; 12];
         r.read_exact(&mut magic).map_err(|e| e.to_string())?;
-        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM && magic != MAGIC_SIZING {
+        if magic != MAGIC_LEGACY && magic != MAGIC_COUPLED_DECK && magic != MAGIC_STRADDLE && magic != MAGIC_BALANCED && magic != MAGIC_STACKS && magic != MAGIC_ICM && magic != MAGIC_SIZING && magic != MAGIC_BB_ANTE {
             return Err("not a preflop game save".to_string());
         }
-        let sizing = magic == MAGIC_SIZING;
+        let bb_ante = magic == MAGIC_BB_ANTE;
+        // from v7 on, the earlier features are each present or not
+        let sizing = magic == MAGIC_SIZING || bb_ante;
         let mut line = Vec::new();
         loop {
             let mut b = [0u8; 1];
@@ -236,7 +245,10 @@ impl PreflopSolver {
             return Err("preflop v4 save is missing its heads-up realization model".into());
         }
         let header: Header = serde_json::from_value(raw_header).map_err(|e| e.to_string())?;
-        if sizing != header.config.situational_sizing() {
+        if bb_ante != (header.config.bb_ante != 0.0) {
+            return Err("big blind ante saves require preflop v8 format and their ante".into());
+        }
+        if !bb_ante && sizing != header.config.situational_sizing() {
             return Err("action-dependent raise sizes require preflop v7 format and their settings".into());
         }
         if !sizing && (magic == MAGIC_ICM) != header.config.icm.is_some() {
@@ -290,7 +302,7 @@ mod tests {
 
     fn fixture() -> PreflopSolver {
         static EQ: OnceLock<Arc<EquityTable>> = OnceLock::new();
-        let cfg = PreflopConfig { leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+        let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
             utg_straddle: false,
             positions: vec!["BTN".into(), "SB".into(), "BB".into()],
             stack: 2.0, stacks: None, posts: vec![0.0, 0.5, 1.0], ante: 0.0,

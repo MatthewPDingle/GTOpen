@@ -2,6 +2,14 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.5.0 - 2026-11-19
+
+- Preflop Lab has a big blind ante. A new "Paid by" choice beside the Ante box says who pays it: each seat, as before, or the big blind for the whole table, as in most tournaments.
+- The ante is paid on top of the stack either way, so every seat still plays the stack you set. To make the big blind shorter by its ante, give it its own stack under Stacks by seat.
+- A 1 bb ante from the big blind makes the same pot over the same stacks as 0.125 bb from each of 8 seats, so the ranges come out close to the same. The results per seat differ, because the big blind paid for everyone.
+- Scenarios and games you saved are unchanged: their ante is still paid by each seat.
+- Close GTOpen and start it again after updating. Until then the header shows "restart GTOpen" and a game with a big blind ante will not build.
+
 ## 1.4.1 - 2026-11-19
 
 - The three ways to shift a whole range in the Browse lock box are called Scale, Least EV loss and Least exploitable again. Hover one to read what it does in plain words.

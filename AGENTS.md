@@ -148,6 +148,13 @@ game). Config shape (see `PreflopConfig` in
   that follow the action" in `docs/preflop_balanced_model.md`; tests in
   `crates/solver/tests/preflop_situational_sizing.rs` and
   `node tools/test_preflop_sizing.mjs`.
+- Antes: `ante` is dead money from every seat, `bb_ante` (default 0) dead
+  money from the big blind alone (the form's "Paid by" choice). Both are paid
+  on top of the stack. Compare what seats BET with `ante_of(seat)` taken off,
+  never raw `invested`. A big blind ante saves as v8. See "Antes and the big
+  blind ante" in `docs/technical_reference.md`; tests in
+  `crates/solver/src/preflop/bb_ante_tests.rs` and
+  `node tools/test_preflop_ante.mjs`.
 - New games use `coupled_deck_v1` for 3+ live-player leaves: 1,024 deterministic
   latent-strength samples (seed 90210), whole-pot shares net configured rake,
   no positional realization multiplier. This is not a shared physical deal;

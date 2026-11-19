@@ -185,8 +185,31 @@ fn gpu_matches_cpu_live_utg_straddle() {
         run_equivalence(cpu, gs);
     }
 }
+/// A big blind ante is dead money from one seat. The pots, the rake on a
+/// fold-win (which must not treat the ante as an uncalled bet) and each
+/// seat's own stake reach the kernels from the host, so the GPU must price
+/// them as the CPU does, heads-up and with a third seat.
+#[test]
+fn gpu_matches_cpu_big_blind_ante() {
+    let mut cfg = hu25();
+    cfg.bb_ante = 1.0;
+    cfg.no_flop_no_drop = false;
+    assert_gpu_matches_cpu(cfg.clone());
+    cfg.positions = (0..3).map(|i| format!("P{i}")).collect();
+    cfg.posts = vec![0., 0.5, 1.];
+    cfg.stack = 12.;
+    cfg.open_raises = vec![2.5];
+    cfg.max_raises = 1;
+    cfg.add_allin = false;
+    cfg.realization = "raw".into();
+    let mut cpu = PreflopSolver::new(cfg.clone(), table()).unwrap();
+    let mut gs = PreflopSolver::new(cfg, table()).unwrap();
+    cpu.prune = false;
+    gs.prune = false;
+    run_equivalence(cpu, gs);
+}
 fn hu25() -> PreflopConfig {
-    PreflopConfig { leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 25.0, stacks: None,
@@ -417,7 +440,7 @@ fn run_equivalence(mut cpu: PreflopSolver, mut gs: PreflopSolver) {
 #[test]
 fn gpu_push_fold_anchors() {
     let eq = table();
-    let cfg = PreflopConfig { leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
+    let cfg = PreflopConfig { bb_ante: 0.0, leaf_net: None, card_removal: false, limper_extra: 0.0, caller_extra: 0.0, raise_mults_oop: None, fourbet_mults_oop: None,
         utg_straddle: false,
         positions: vec!["SB".into(), "BB".into()],
         stack: 10.0, stacks: None,

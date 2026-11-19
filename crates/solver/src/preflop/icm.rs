@@ -201,7 +201,7 @@ fn enumerate(pots: &[(f64, u32)], k: usize, cur: &mut Vec<u8>, out: &mut Vec<Vec
 impl IcmTables {
     pub(super) fn build(s: &PreflopSolver, icm: &IcmConfig) -> IcmTables {
         let n = s.n;
-        let start: Vec<f64> = (0..n).map(|i| s.cfg.stack_of(i) + s.cfg.ante).collect();
+        let start: Vec<f64> = (0..n).map(|i| s.cfg.stack_of(i) + s.cfg.ante_of(i)).collect();
         let groups = icm.groups();
         let players = icm.players(n);
         let prizes: f64 = icm.payouts.iter().take(players).sum();
