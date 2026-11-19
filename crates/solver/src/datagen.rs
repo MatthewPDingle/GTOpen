@@ -9,10 +9,17 @@
 //!
 //! Examples are fully determined by `(job, index)`: anyone can regenerate a
 //! job's inputs from its number, which is what lets pooled community
-//! uploads be checked (`solve-cli datagen verify`). Bump
-//! [`GENERATOR_VERSION`] whenever sampling, the menu or the solver changes
-//! the inputs or values a job produces; older versions' sampling stays in
-//! the code so their uploads can still be regenerated and checked.
+//! uploads be checked (`solve-cli datagen verify`).
+//!
+//! From generator v5 on, WHAT is drawn (pot sizes, stacks, rake, or a
+//! published list of situations) is data: a "game mix" from the published
+//! list of mixes (`crate::datagen_mix`, tools/datagen/mixes.json). A running
+//! generator reads that list before every job and moves to the newest mix by
+//! itself, so a new mix needs no update on contributors' machines. Bump
+//! [`GENERATOR_VERSION`] only when the code that draws or solves changes
+//! what a job number produces (the menu, the solver, how a mix is read);
+//! older versions' sampling stays in the code so their uploads can still be
+//! regenerated and checked.
 
 use crate::cards::{rank, suit};
 use crate::preflop::equity::{class_index, class_label, class_parts, NUM_CLASSES};
@@ -43,13 +50,21 @@ pub const FORMAT_VERSION: u32 = 1;
 ///   (35%: live rooms) or anything from 3% to 10% capped at 0.5 to 12 bb
 ///   (10%). Caps are drawn log-uniform, so low live caps (2 to 4 bb at 10%)
 ///   are well covered.
-pub const GENERATOR_VERSION: u32 = 4;
+/// - v5: the mix is data (see the module text and `crate::datagen_mix`).
+///   Mix 1 draws the same games as v4. A job's number carries its mix, so no
+///   two mixes share a job number or a file name.
+pub const GENERATOR_VERSION: u32 = 5;
+/// The last generator whose mix was written in code ([`example_inputs_for`]).
+pub const LAST_CODED_GENERATOR: u32 = 4;
 /// Generator versions whose uploads are still accepted: the current one and
-/// the one before, so jobs finished just before an update still count.
-pub const ACCEPTED_GENERATORS: [u32; 2] = [3, 4];
-/// Where this version's jobs start inside each contributor block, so a new
-/// version never reuses a job number (and file name) an older one uploaded.
-/// v2 used offset 0, v3 offset 2^23.
+/// the two before, so jobs finished before an update still count (v5 changed
+/// how a mix reaches contributors, not which games are wanted, so nobody's
+/// work is turned away because of it).
+pub const ACCEPTED_GENERATORS: [u32; 3] = [3, 4, 5];
+/// Where generator v4's jobs started inside each contributor block, so a new
+/// version never reused a job number (and file name) an older one uploaded.
+/// v2 used offset 0, v3 offset 2^23. From v5 on the mix sits above the block
+/// instead ([`mix_job`]).
 const VERSION_JOB_OFFSET: u64 = 3 << 22;
 /// Name of the fixed postflop bet menu (see [`menu_tree`]).
 pub const MENU: &str = "lean-v2";
@@ -59,6 +74,11 @@ pub const CHIPS_PER_BB: f64 = 10.0;
 pub const DEFAULT_PER_JOB: u32 = 100;
 /// Jobs per contributor block (contributor blocks never overlap in practice).
 const BLOCK_BITS: u32 = 24;
+/// A v5 job number is `mix << MIX_SHIFT` plus a number in the contributor's
+/// block (blocks end below 2^44, and so do all older job numbers).
+pub const MIX_SHIFT: u32 = 44;
+/// Largest mix id: keeps every job number below 2^53, exact in any JSON reader.
+pub const MAX_MIX_ID: u32 = 511;
 
 // ------------------------------------------------------------------ rng ----
 
@@ -98,7 +118,7 @@ impl Rng {
 }
 
 /// FNV-1a over bytes, for contributor blocks.
-fn fnv1a(bytes: &[u8]) -> u64 {
+pub(crate) fn fnv1a(bytes: &[u8]) -> u64 {
     let mut h: u64 = 0xcbf2_9ce4_8422_2325;
     for b in bytes {
         h ^= *b as u64;
@@ -113,9 +133,29 @@ pub fn contributor_base(login: &str) -> u64 {
     h << BLOCK_BITS
 }
 
-/// The `k`-th job of a contributor's block.
+/// The `k`-th job of a contributor's block as generators up to v4 numbered it.
 pub fn contributor_job(login: &str, k: u64) -> u64 {
     contributor_base(login) + ((k + VERSION_JOB_OFFSET) % (1u64 << BLOCK_BITS))
+}
+
+/// The `k`-th job a contributor solves under mix `mix` (generator v5 on).
+pub fn mix_job(login: &str, mix: u32, k: u64) -> u64 {
+    ((mix as u64) << MIX_SHIFT) | (contributor_base(login) + (k % (1u64 << BLOCK_BITS)))
+}
+
+/// The mix a job number belongs to (0 for the job numbers of generators up to v4).
+pub fn job_mix(job: u64) -> u32 {
+    (job >> MIX_SHIFT) as u32
+}
+
+/// The seed of draw `attempt` of example `index` of job `job`.
+pub(crate) fn attempt_seed(version: u32, job: u64, index: u32, attempt: u32) -> u64 {
+    let seed = example_seed(version, job, index);
+    if attempt == 0 {
+        seed
+    } else {
+        Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64()
+    }
 }
 
 fn example_seed(version: u32, job: u64, index: u32) -> u64 {
@@ -151,6 +191,11 @@ pub struct ExampleInputs {
     /// for straddled games and big live opens; 1 = not scaled, omitted).
     #[serde(default = "one", skip_serializing_if = "is_one")]
     pub pot_scale: f64,
+    /// For an example drawn from a published list of situations (ranges of a
+    /// GTOpen preflop solve, see `crate::datagen_mix`): "LIST/ID". Absent on
+    /// examples with random ranges.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub situation: Option<String>,
 }
 
 fn one() -> f64 {
@@ -318,28 +363,35 @@ pub const MAX_SPR: f64 = 40.0;
 /// Draws tried before a capped example gives up and keeps the smallest.
 const MAX_ATTEMPTS: u32 = 64;
 
-/// The inputs of example `index` of job `job` (no memory cap).
+/// The inputs of example `index` of job `job` as generator v4 drew them (no
+/// memory cap). Jobs of v5 on are drawn from a mix: `datagen_mix::Book::inputs`.
 pub fn example_inputs(job: u64, index: u32) -> ExampleInputs {
-    draw_inputs(GENERATOR_VERSION, job, index, 0)
+    draw_inputs(LAST_CODED_GENERATOR, job, index, 0)
 }
 
-/// The inputs of example `index` of job `job` for a contributor whose GPU
-/// holds trees up to `cap_gb` (estimated, see `Spot::vram_estimate_bytes`).
-/// Draws are rejected deterministically until one fits, so anyone can
-/// regenerate the same inputs from (job, index, cap).
+/// [`example_inputs`] for a contributor whose GPU holds trees up to `cap_gb`
+/// (estimated, see `Spot::vram_estimate_bytes`). Draws are rejected
+/// deterministically until one fits, so anyone can regenerate the same
+/// inputs from (job, index, cap).
 pub fn example_inputs_capped(job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
-    example_inputs_for(GENERATOR_VERSION, job, index, cap_gb)
+    example_inputs_for(LAST_CODED_GENERATOR, job, index, cap_gb)
 }
 
-/// [`example_inputs_capped`] as generator `version` drew it (one of
-/// [`ACCEPTED_GENERATORS`]), for checking uploads made before an update.
+/// [`example_inputs_capped`] as generator `version` drew it (2 to 4, the
+/// generators whose mix was written in code), for checking their uploads.
 pub fn example_inputs_for(version: u32, job: u64, index: u32, cap_gb: Option<f64>) -> ExampleInputs {
+    capped(cap_gb, |attempt| draw_inputs(version, job, index, attempt))
+}
+
+/// The first of `draw(0)`, `draw(1)`, ... whose tree fits `cap_gb` (the
+/// smallest of [`MAX_ATTEMPTS`] draws when none does); `draw(0)` with no cap.
+pub(crate) fn capped(cap_gb: Option<f64>, draw: impl Fn(u32) -> ExampleInputs) -> ExampleInputs {
     let Some(cap) = cap_gb else {
-        return draw_inputs(version, job, index, 0);
+        return draw(0);
     };
     let mut best: Option<(u64, ExampleInputs)> = None;
     for attempt in 0..MAX_ATTEMPTS {
-        let ex = draw_inputs(version, job, index, attempt);
+        let ex = draw(attempt);
         let bytes = estimated_vram_bytes(&ex);
         if bytes as f64 <= cap * 1e9 {
             return ex;
@@ -359,11 +411,7 @@ pub fn estimated_vram_bytes(ex: &ExampleInputs) -> u64 {
 }
 
 fn draw_inputs(version: u32, job: u64, index: u32, attempt: u32) -> ExampleInputs {
-    let mut seed = example_seed(version, job, index);
-    if attempt > 0 {
-        seed = Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64();
-    }
-    let mut rng = Rng::new(seed);
+    let mut rng = Rng::new(attempt_seed(version, job, index, attempt));
     let mut ex = match version {
         2 => draw_v2(&mut rng),
         3 => draw_v3(&mut rng),
@@ -399,7 +447,7 @@ fn draw_stack(rng: &mut Rng, pot_bb: f64) -> f64 {
 }
 
 /// [`draw_stack`] with the starting stack log-uniform from `lo` to `hi` bb.
-fn draw_stack_from(rng: &mut Rng, pot_bb: f64, lo: f64, hi: f64) -> f64 {
+pub(crate) fn draw_stack_from(rng: &mut Rng, pot_bb: f64, lo: f64, hi: f64) -> f64 {
     let mut start = rng.log_range(lo, hi);
     if start - pot_bb / 2.0 < 2.0 {
         start = pot_bb / 2.0 + rng.range(2.0, 20.0);
@@ -407,7 +455,7 @@ fn draw_stack_from(rng: &mut Rng, pot_bb: f64, lo: f64, hi: f64) -> f64 {
     round2((start - pot_bb / 2.0).min(MAX_SPR * pot_bb))
 }
 
-fn finish(rng: &mut Rng, pot_type: &str, pot_bb: f64, pot_scale: f64, stack_bb: f64, rake: (f64, f64)) -> ExampleInputs {
+pub(crate) fn finish(rng: &mut Rng, pot_type: &str, pot_bb: f64, pot_scale: f64, stack_bb: f64, rake: (f64, f64)) -> ExampleInputs {
     let board = random_flop(rng);
     let range = [sample_range(rng), sample_range(rng)];
     ExampleInputs {
@@ -422,6 +470,7 @@ fn finish(rng: &mut Rng, pot_type: &str, pot_bb: f64, pot_scale: f64, stack_bb: 
         range,
         attempt: 0,
         pot_scale,
+        situation: None,
     }
 }
 
@@ -574,7 +623,7 @@ pub fn leaf_boards(leaves_json: &str, inputs_jsonl: &str) -> Result<(Vec<String>
     Ok((positions, out))
 }
 
-fn round2(x: f64) -> f64 {
+pub(crate) fn round2(x: f64) -> f64 {
     (x * 100.0).round() / 100.0
 }
 
@@ -703,10 +752,18 @@ pub struct JobHeader {
     /// Memory cap (GB) the examples were drawn under; None = uncapped.
     #[serde(default)]
     pub max_vram_gb: Option<f64>,
+    /// The game mix the job was drawn from (generator v5 on) and that mix's
+    /// key (`datagen_mix::Mix::key`), so a file says what it was drawn from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mix: Option<u32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mix_key: Option<String>,
 }
 
 impl JobHeader {
-    pub fn new(job: u64, contributor: &str, examples: u32, target_pct: f64, max_iterations: u32, engine: &str, max_vram_gb: Option<f64>) -> Self {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(job: u64, contributor: &str, examples: u32, target_pct: f64, max_iterations: u32, engine: &str,
+               max_vram_gb: Option<f64>, mix: Option<(u32, String)>) -> Self {
         JobHeader {
             kind: "header".into(),
             format: FORMAT.into(),
@@ -721,6 +778,8 @@ impl JobHeader {
             engine: engine.into(),
             gtopen_version: env!("CARGO_PKG_VERSION").into(),
             max_vram_gb,
+            mix: mix.as_ref().map(|m| m.0),
+            mix_key: mix.map(|m| m.1),
         }
     }
 }
@@ -1007,6 +1066,19 @@ mod tests {
         assert_eq!((fnv1a(s.as_bytes()), s.len()), (0x64a2_6454_5b00_e782, 417_855));
     }
 
+    /// v4 uploads are checked the same way: this hash was taken before v5 was added.
+    #[test]
+    fn v4_inputs_are_unchanged() {
+        let mut s = String::new();
+        for job in [42u64, 16861638950914, 900_000_000_123] {
+            for i in 0..40 {
+                s.push_str(&serde_json::to_string(&example_inputs_for(4, job, i, None)).unwrap());
+                s.push_str(&serde_json::to_string(&example_inputs_for(4, job, i, Some(6.0))).unwrap());
+            }
+        }
+        assert_eq!((fnv1a(s.as_bytes()), s.len()), (0xc8d9_c8b1_49b2_d91c, 419_276));
+    }
+
     #[test]
     fn v3_mix_matches_its_description() {
         let n = 4000;
@@ -1082,6 +1154,25 @@ mod tests {
         assert_eq!(contributor_job("alice", 3), contributor_base("alice") + VERSION_JOB_OFFSET + 3);
         // v4 jobs never land on the job numbers v2 (from 0) or v3 (from 2^23) handed out.
         assert!(contributor_job("alice", 0) - contributor_base("alice") >= 3 << 22);
+    }
+
+    #[test]
+    fn a_job_number_carries_its_mix() {
+        let base = contributor_base("alice");
+        // every older job number is below 2^44 and reads as "no mix"
+        assert_eq!(job_mix(contributor_job("alice", 5)), 0);
+        assert_eq!(job_mix(LEAF_JOB_BASE + 7), 0);
+        assert!(contributor_base(&"z".repeat(30)) + (1 << BLOCK_BITS) <= 1 << MIX_SHIFT);
+        for (mix, k) in [(1u32, 0u64), (1, 1_000_000), (7, 3), (MAX_MIX_ID, (1 << BLOCK_BITS) - 1)] {
+            let job = mix_job("alice", mix, k);
+            assert_eq!(job_mix(job), mix);
+            // below the mix it is still a number of the contributor's own block
+            assert_eq!(job & ((1 << MIX_SHIFT) - 1), base + k);
+            assert!(job < 1 << 53, "exact in any JSON reader");
+        }
+        // two mixes never share a job number, so never a file name or a seed
+        assert_ne!(mix_job("alice", 1, 0), mix_job("alice", 2, 0));
+        assert_ne!(attempt_seed(5, mix_job("alice", 1, 0), 0, 0), attempt_seed(5, mix_job("alice", 2, 0), 0, 0));
     }
 
     #[test]

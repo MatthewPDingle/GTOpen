@@ -64,6 +64,9 @@ default model's error. The next goal is **300,000 examples**.
    hours, or `--jobs 5` to stop after five jobs. When it stops, it uploads
    whatever is finished.
 
+That is all. When the project wants a different mix of games solved, your
+generator moves to it by itself: see [Game mixes](#game-mixes).
+
 **The name.** Your GitHub login is the natural choice, but you don't need a
 GitHub account: nothing checks GitHub. The name picks your own block of job
 numbers, so your spots never overlap anyone else's, and it is how you are
@@ -132,14 +135,54 @@ CUDA_VISIBLE_DEVICES=1 ./target/release/solve-cli datagen run --contributor YOUR
 python tools/datagen/upload.py --contributor YOUR_NAME --watch 30
 ```
 
+## Game mixes
+
+What the pool needs changes over time: more live rake structures one month,
+a set of specific situations from GTOpen's own preflop solves the next. What
+your generator solves is therefore a **game mix**, a short published
+description: which pot sizes, stacks and rake to draw and how often, and
+which published lists of situations to draw from.
+
+You do not have to do anything when the mix changes. Before every job (and
+at most every five minutes) the generator reads the current list of mixes
+from this repository,
+[`tools/datagen/mixes.json`](../tools/datagen/mixes.json) on the `master`
+branch, and starts its next job on the newest one. Its window says so:
+
+```
+NEW GAME MIX: moving from mix 1 to mix 2: ... Nothing to do on your side.
+```
+
+The job in progress is finished and uploaded as usual, so nothing is lost.
+`solve-cli datagen mixes` shows the mixes and which one is current.
+
+- **It is only ever a description.** A mix holds shares, ranges of numbers
+  and the names of situation lists, all checked against fixed limits before
+  use. It cannot name a program, a file on your machine or a web address,
+  and your generator never downloads or runs new code by itself.
+- **Situation lists** are files in the public dataset (`situations/`). A mix
+  names a list together with its SHA-256, and your generator uses the file
+  only if it matches.
+- **Without a network** the generator carries on with the newest mix it has
+  seen (it remembers the list in `datagen_out/.mix/`), and says once that it
+  could not look.
+- **When a mix needs new program code** (a new kind of solve, say), the
+  window shows `PLEASE UPDATE` with what to do: stop it, `git pull`, start it
+  again. Until you do, it keeps solving the newest mix it can, and those jobs
+  still count.
+
+The list is read with `curl`, which Windows 10 and later, macOS and nearly
+every Linux system already have.
+
 ## What runs on your machine and what is uploaded
 
-`solve-cli datagen` solves random heads-up flop spots and nothing else. Each
+`solve-cli datagen` solves heads-up flop spots and nothing else. Each
 uploaded job file holds the spot inputs (board, pot, stack, rake, both
 ranges), the solved per-class values, equities and reach for both players,
 the solve's accuracy and time, your contributor name, the GTOpen version and
 whether it ran on GPU or CPU. Nothing else from your computer is read or
-sent. Uploads go to a public dataset under the
+sent. The only things it fetches are the list of game mixes from this
+repository and the situation lists a mix names from the dataset. Uploads go to a public dataset under the
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) license, so by
 uploading you agree to share your examples under it.
 
@@ -147,20 +190,24 @@ uploading you agree to share your examples under it.
 
 Anyone can upload, so every upload is checked before it is merged:
 
-- **Inputs are not chosen by contributors.** A job number determines all of
-  its spots, and each login gets its own block of job numbers. The
-  validator regenerates every example's inputs and rejects any mismatch.
+- **Inputs are not chosen by contributors.** A job number and the game mix
+  it belongs to determine all of its spots, and each login gets its own
+  block of job numbers. The validator regenerates every example's inputs
+  from the published mix and rejects any mismatch, and a job that names a
+  mix that was never published is rejected.
   (The one exception is the [real-range game files](#real-range-game-files),
   which only the maintainers upload for now.)
 - **A sample is re-solved.** The maintainer's machine re-solves three
   examples of every job and compares the values. A failed check rejects
   the upload, and a contributor caught sending bad data has all of their
   data removed.
-- **Versions are pinned.** Each file records the generator version and bet
-  menu. The validator accepts the current generator version and the one
-  before it, so jobs finished just before an update still count; their
-  merge note then asks you to update when it suits you. Anything
-  older is rejected with a note asking you to `git pull` and rebuild.
+- **Versions are pinned.** Each file records the generator version, the
+  game mix and the bet menu. The validator accepts the current generator
+  version and the two before it, so jobs finished before an update
+  still count; their merge note then asks you to update when it suits you.
+  Anything older is rejected with a note asking you to `git pull` and
+  rebuild. Jobs of an earlier mix are accepted too, unless that mix was
+  withdrawn.
 
 Rejected uploads get a comment on their Hugging Face pull request saying why.
 
@@ -178,10 +225,19 @@ Each example is one line of JSON:
 | `value` | Solved value per class, as a fraction of the pot (pot-share convention: the two players' range averages add up to about 1 minus rake). |
 | `iterations`, `exploit_pct_pot`, `seconds` | How the solve went. Solves stop at 0.5% of the pot. |
 | `attempt` | How many draws were skipped because their tree was over the job's memory cap (`max_vram_gb` in the file header). Training can reweight by it. |
+| `situation` | Present only on an example drawn from a published situation list: `LIST/ID`. Its ranges, pot, stack and rake are that entry's (the output of a GTOpen preflop solve); the flop is random. |
+
+The header line of a job file names the game mix it was drawn from (`mix`,
+with `mix_key`, a fingerprint of what that mix draws).
 
 The postflop menu is fixed and lean (`lean-v2`): one bet size per street
 (33% on the flop, 75% on the turn and river), raises to 60% of the pot, and
 at most a bet and a raise per street. Stacks are capped at 40 times the pot.
+
+From generator v5 (2026-11-20) the mix of games is no longer part of the
+program: it is a published [game mix](#game-mixes), and
+[`tools/datagen/mixes.json`](../tools/datagen/mixes.json) lists every mix
+there has been, with its shares. Mix 1 draws the same games as generator v4.
 
 Generator v4 (from 2026-11-16) adds the games people commonly play live
 and online. Pot types are 10% limped, 55% single-raised, 20% 3-bet and 15%
@@ -204,7 +260,8 @@ may produce later, not just today's.
 
 To regenerate an example's inputs yourself:
 `solve-cli datagen inputs JOB INDEX`, or `solve-cli datagen spot JOB INDEX`
-for a config that `solve-cli` can solve directly.
+for a config that `solve-cli` can solve directly. (A job number carries its
+game mix, so nothing else is needed.)
 
 ### Real-range game files
 
@@ -232,6 +289,15 @@ game files only from the logins in `tools/datagen/config.json`
 (`real_contributors`), checks every example's inputs and values for
 plausibility and re-solves a sample. `real/README.md` in the dataset has the
 field list.
+
+A game mix can also hand such ranges to every contributor: the maintainers
+publish a **situation list** (`situations/<list>.jsonl` in the dataset: one
+entry per heads-up flop situation of a solved game, without a flop), a mix
+gives it a share, and pooled jobs then draw entries from it on random flops.
+Those examples sit under `data/` like any pooled job, carry `situation`, and
+are checked like any pooled job, because the validator draws them again from
+the same list. The rule above holds for lists too: only ranges that a GTOpen
+solve produced.
 
 ## For the maintainer
 
@@ -297,6 +363,39 @@ A published game file is never changed: solves that finish later go up as
 another set. On a GPU that is shared with a generator, give the validator
 `--real-max-vram 8` so it re-solves only trees that fit in 8 GB (a file with
 no such tree is rejected rather than merged unchecked).
+
+### Changing what contributors solve
+
+Add a mix with the next id to `tools/datagen/mixes.json` and merge it to
+`master`. Running generators pick it up before their next job, and the
+validator reads the same file while it checks, so nobody restarts or updates
+anything. The shares of a mix's parts add up to 1, and so do the shares
+inside a `random` part (pot types, tables, rake). `cargo test -p solver --lib
+datagen_mix` checks the file.
+
+- **Never edit a published mix.** Uploads are checked by drawing their
+  inputs again from the mix they name, so an edit would fail every job made
+  under it. To change anything, add a new mix (to go back to an earlier one,
+  add it again under the next id).
+- To stop a mix whose jobs must not be accepted any more, set
+  `"withdrawn": true` on it and add the mix that replaces it.
+- A mix that needs new code in the generator says so with `needs_generator`
+  (and that code raises `GENERATOR_VERSION`). Older generators then keep to
+  the newest mix they can draw and ask their owners to update.
+
+To have contributors solve the situations of solved games (ranges from GTOpen
+solves only, never from charts or other tools):
+
+```sh
+solve-cli datagen leaves GAME.bin --out leaves/g01 --leaves 40      # per game
+solve-cli datagen situations LISTNAME leaves/g01 leaves/g02 --out lists
+python tools/datagen/validate.py --publish-situations lists/LISTNAME.jsonl
+```
+
+The last two commands print the part to put in the new mix
+(`{"kind": "situations", "list": ..., "sha256": ..., "share": ...}`). Publish
+the list before the mix is merged. A published list is never changed either;
+a new round gets a new name.
 
 `validate.py` needs a Hugging Face token with write access to the dataset.
 After a merge it redraws the progress graph and force-pushes it to the

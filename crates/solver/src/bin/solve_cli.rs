@@ -286,7 +286,7 @@ usage: solve-cli <config.json> [max_iterations] [target_exploit_pct] [--save PAT
        solve-cli resume <save.gto> [iteration_delta] [target_exploit_pct] [--save PATH]
        solve-cli batch <config.json> <boards-file|b1,b2,..> [max_iterations] [target]
        solve-cli realization <config.json> <boards-file|b1,b2,..> [max_iterations] [target] [out.jsonl]
-       solve-cli datagen <run|job|inputs|verify|block> ...   (value-net training data)
+       solve-cli datagen <run|job|inputs|verify|mixes|block> ...   (value-net training data)
        solve-cli flops <n|all>   (canonical flop classes; n = deterministic weighted subset)
 
 defaults: max_iterations 300 for a fresh solve and batch, 1000 for realization;

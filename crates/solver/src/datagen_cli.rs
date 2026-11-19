@@ -3,6 +3,7 @@
 
 use super::{solve_quiet, EnvOpts};
 use solver::datagen::{self, ExampleInputs, ExampleRecord, JobHeader, RealHeader};
+use solver::datagen_mix::{self, Book, MixSync};
 use solver::{Solver, Spot};
 use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
@@ -18,6 +19,9 @@ const USAGE: &str = "usage:
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D] [--max-vram GB]
                         (a pooled job file or a real-range game file; --max-vram: re-solve only trees that fit)
   solve-cli datagen block LOGIN
+  solve-cli datagen mixes                   (the published game mixes and the one being solved now)
+  solve-cli datagen situations NAME DIR [DIR ...] [--out FILE]
+                        (a situation list for a game mix from `datagen leaves` folders: one entry per leaf)
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
   solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)
   solve-cli datagen leaves GAME.bin [--out DIR] [--leaves N] [--boards M] [--seed S] [--boards-from EARLIER_DIR]
@@ -161,20 +165,74 @@ fn job_path(out: &Path, contributor: &str, job: u64) -> PathBuf {
     out.join(contributor).join(format!("job-{job}.jsonl"))
 }
 
-/// Solve a whole job into `<out>/<contributor>/job-<job>.jsonl` (written to
-/// a .part file first, renamed when complete).
-fn run_job(job: u64, contributor: &str, o: &Opts, env: &EnvOpts) -> Result<PathBuf, String> {
+/// Where this machine remembers the published game mixes and their
+/// situation lists: `<out>/.mix`, or the folder in `GTOPEN_MIX_DIR`.
+fn mix_dir(o: &Opts) -> PathBuf {
+    std::env::var("GTOPEN_MIX_DIR").ok().filter(|v| !v.is_empty()).map(PathBuf::from).unwrap_or_else(|| o.out.join(".mix"))
+}
+
+/// Why a job's mix cannot be used.
+enum MixProblem {
+    /// The job names a mix that was never published: the job is wrong.
+    Unknown(String),
+    /// This machine cannot tell right now (no network, an old build, a list
+    /// that will not download): nothing is wrong with the job.
+    Later(String),
+}
+
+/// The mixes with mix `id` ready to draw from. The published list is read
+/// again when it was last read a while ago or does not hold the mix.
+fn mix_for(o: &Opts, id: u32) -> Result<MixSync, MixProblem> {
+    let mut sync = MixSync::open(&mix_dir(o));
+    let mut read = sync.refresh_if_due();
+    if read.is_none() && !sync.book.mixes.contains_key(&id) {
+        read = Some(sync.refresh());
+    }
+    if let Some(needs) = sync.book.too_new.get(&id) {
+        return Err(MixProblem::Later(format!(
+            "game mix {id} needs generator v{needs} and this build is v{}: update GTOpen (git pull, rebuild)",
+            datagen::GENERATOR_VERSION)));
+    }
+    if !sync.book.mixes.contains_key(&id) {
+        return Err(match read {
+            Some(Err(e)) => MixProblem::Later(format!("game mix {id} is not known here and the published list could not be read ({e})")),
+            _ => MixProblem::Unknown(format!("game mix {id} is not a published mix")),
+        });
+    }
+    sync.load_lists(id).map_err(MixProblem::Later)?;
+    Ok(sync)
+}
+
+/// The inputs of example `index` of job `job`: from the game mix its number
+/// carries, or as generator v4 drew them for an older job number.
+fn job_inputs(sync: &mut Option<MixSync>, o: &Opts, job: u64, index: u32, cap: Option<f64>) -> ExampleInputs {
+    let id = datagen::job_mix(job);
+    if id == 0 {
+        return datagen::example_inputs_capped(job, index, cap);
+    }
+    if sync.is_none() {
+        *sync = Some(mix_for(o, id).unwrap_or_else(|e| match e {
+            MixProblem::Unknown(msg) | MixProblem::Later(msg) => fail(msg),
+        }));
+    }
+    sync.as_ref().unwrap().book.inputs(id, job, index, cap).unwrap_or_else(|e| fail(e))
+}
+
+/// Solve a whole job of game mix `mix` into `<out>/<contributor>/job-<job>.jsonl`
+/// (written to a .part file first, renamed when complete).
+fn run_job(job: u64, contributor: &str, o: &Opts, env: &EnvOpts, book: &Book, mix: u32) -> Result<PathBuf, String> {
+    let key = book.mixes.get(&mix).ok_or_else(|| format!("game mix {mix} is not known"))?.key();
     let path = job_path(&o.out, contributor, job);
     std::fs::create_dir_all(path.parent().unwrap()).map_err(|e| e.to_string())?;
     let part = path.with_extension("jsonl.part");
     let mut f = std::fs::File::create(&part).map_err(|e| format!("{}: {e}", part.display()))?;
     let engine = if use_gpu() { "gpu" } else { "cpu" };
     let cap = vram_cap(o);
-    let header = JobHeader::new(job, contributor, o.per_job, o.target, o.max_iters, engine, cap);
+    let header = JobHeader::new(job, contributor, o.per_job, o.target, o.max_iters, engine, cap, Some((mix, key)));
     writeln!(f, "{}", serde_json::to_string(&header).unwrap()).map_err(|e| e.to_string())?;
     let t0 = std::time::Instant::now();
     for index in 0..o.per_job {
-        let inputs = datagen::example_inputs_capped(job, index, cap);
+        let inputs = book.inputs(mix, job, index, cap)?;
         let rec = solve_example(&inputs, o, env)?;
         println!(
             "  job {job} #{index:3}  {:8} {:6} pot {:6.2}bb stack {:6.1}bb  iter {:4}  exploit {:5.2}%  [{:.1}s]",
@@ -221,8 +279,9 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 Some(s) => vec![s.parse().expect("index")],
                 None => (0..o.per_job).collect(),
             };
+            let mut sync = None;
             for i in indices {
-                let ex = datagen::example_inputs_capped(job, i, o.max_vram.filter(|&x| x > 0.0));
+                let ex = job_inputs(&mut sync, &o, job, i, o.max_vram.filter(|&x| x > 0.0));
                 println!("{}", serde_json::to_string(&ex).unwrap());
             }
         }
@@ -230,8 +289,9 @@ pub fn run(rest: &[String], env: &EnvOpts) {
             // Survey of tree sizes (estimated GPU memory) over a job's examples.
             let job: u64 = o.positional.first().and_then(|s| s.parse().ok()).unwrap_or(1);
             let mut rows = Vec::new();
+            let mut sync = None;
             for i in 0..o.per_job {
-                let ex = datagen::example_inputs(job, i);
+                let ex = job_inputs(&mut sync, &o, job, i, None);
                 let spot = Spot::new(ex.spot_config()).expect("spot");
                 let gb = spot.vram_estimate_bytes() as f64 / 1e9;
                 println!("{i:4} {:7} pot {:6.2} stack {:6.1} spr {:5.1} nodes {:8} vram {:6.2} GB",
@@ -250,7 +310,7 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 eprintln!("{USAGE}");
                 std::process::exit(1)
             };
-            let cfg = datagen::example_inputs(job, index).spot_config();
+            let cfg = job_inputs(&mut None, &o, job, index, None).spot_config();
             println!("{}", serde_json::to_string_pretty(&cfg).unwrap());
         }
         "job" => {
@@ -259,7 +319,15 @@ pub fn run(rest: &[String], env: &EnvOpts) {
                 std::process::exit(1)
             });
             let who = o.contributor.clone().unwrap_or_else(|| "local".into());
-            match run_job(job, &who, &o, env) {
+            let mix = datagen::job_mix(job);
+            if mix == 0 {
+                fail(format!("job {job} is a job number of generator v4 or older, which this build checks but no longer solves \
+                              (`datagen run` picks the job numbers of the current game mix)"));
+            }
+            let sync = mix_for(&o, mix).unwrap_or_else(|e| match e {
+                MixProblem::Unknown(msg) | MixProblem::Later(msg) => fail(msg),
+            });
+            match run_job(job, &who, &o, env, &sync.book, mix) {
                 Ok(p) => println!("wrote {}", p.display()),
                 Err(e) => {
                     eprintln!("job {job} failed: {e}");
@@ -280,6 +348,8 @@ pub fn run(rest: &[String], env: &EnvOpts) {
             baseline(Some(net));
         }
         "leaves" => leaves(&o),
+        "mixes" => mixes(&o),
+        "situations" => situations(&o),
         "solve" => solve_dir(&o, env),
         "run" => run_loop(&o, env),
         "verify" => verify(&o, env),
@@ -457,7 +527,7 @@ fn leaves(o: &Opts) {
                 pot_type: POT_TYPES[leaf.raises.min(3) as usize].to_string(),
                 pot_bb: r2(leaf.pot_bb), stack_bb: r2(leaf.stack_bb),
                 rake_pct: s.cfg.rake_pct / 100.0, rake_cap_bb: s.cfg.rake_cap,
-                range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0, pot_scale: 1.0,
+                range: [r3(&leaf.range[0]), r3(&leaf.range[1])], attempt: 0, pot_scale: 1.0, situation: None,
             };
             inputs.push_str(&serde_json::to_string(&ex).unwrap());
             inputs.push('\n');
@@ -523,6 +593,103 @@ fn solve_dir(o: &Opts, env: &EnvOpts) {
     }
 }
 
+/// Lines a long run prints once and then only hourly, however often their cause comes round.
+#[derive(Default)]
+struct Said(std::collections::HashMap<String, (String, std::time::Instant)>);
+
+impl Said {
+    fn say(&mut self, about: &str, line: String) {
+        match self.0.get(about) {
+            Some((last, when)) if *last == line && when.elapsed().as_secs() < 3600 => {}
+            _ => {
+                println!("{line}");
+                self.0.insert(about.to_string(), (line, std::time::Instant::now()));
+            }
+        }
+    }
+    fn forget(&mut self, about: &str) {
+        self.0.remove(about);
+    }
+}
+
+/// `datagen mixes`: the published game mixes as this machine sees them.
+fn mixes(o: &Opts) {
+    let mut sync = MixSync::open(&mix_dir(o));
+    match sync.refresh() {
+        Ok(skipped) => skipped.iter().for_each(|s| println!("note: {s}")),
+        Err(e) => println!("could not read the published list ({e}); showing what this machine has"),
+    }
+    let (current, passed) = sync.choose();
+    passed.iter().for_each(|p| println!("note: {p}"));
+    for m in sync.book.mixes.values() {
+        let state = if m.withdrawn { "withdrawn" } else if Some(m.id) == current { "CURRENT" } else { "earlier" };
+        println!("mix {:3}  {state:9}  key {}  {} ({})", m.id, m.key(), m.note, m.summary());
+    }
+    for (id, needs) in &sync.book.too_new {
+        println!("mix {id:3}  needs generator v{needs} (this build is v{}): update GTOpen to solve it", datagen::GENERATOR_VERSION);
+    }
+}
+
+/// `datagen situations NAME DIR...`: a situation list for a game mix, one
+/// entry per leaf of each `datagen leaves` folder (its ranges, pot, stack
+/// and rake; the flops are left to the generator). Prints the file's SHA-256
+/// and the part to put in a mix. The ranges must be the output of a GTOpen
+/// solve: the list is published in the public dataset.
+fn situations(o: &Opts) {
+    let Some((name, dirs)) = o.positional.split_first().filter(|(_, d)| !d.is_empty()) else { fail(USAGE.into()) };
+    if !datagen::plain_name(name) {
+        fail(format!("the list name {name:?} must be letters, digits, - or _ only"));
+    }
+    let mut text = String::new();
+    let mut n = 0usize;
+    for dir in dirs {
+        let dir = PathBuf::from(dir);
+        let game = dir.file_name().map(|x| x.to_string_lossy().into_owned()).unwrap_or_default();
+        let read = |file: &str| std::fs::read_to_string(dir.join(file)).unwrap_or_else(|e| fail(format!("{}: {e}", dir.join(file).display())));
+        let described: serde_json::Value = serde_json::from_str(&read("leaves.json")).unwrap_or_else(|e| fail(format!("{}: {e}", dir.join("leaves.json").display())));
+        let mut lines = std::collections::HashMap::new();
+        for leaf in described["leaves"].as_array().map(|a| a.as_slice()).unwrap_or(&[]) {
+            if let (Some(job), Some(path)) = (leaf["job"].as_u64(), leaf["path"].as_array()) {
+                let path: Vec<String> = path.iter().map(|x| x.as_str().map(String::from).unwrap_or_else(|| x.to_string())).collect();
+                lines.insert(job, datagen::line_key(&path));
+            }
+        }
+        let mut seen = std::collections::BTreeSet::new();
+        for line in read("inputs.jsonl").lines().filter(|l| !l.trim().is_empty()) {
+            let ex: ExampleInputs = serde_json::from_str(line).unwrap_or_else(|e| fail(format!("{}: {e}", dir.join("inputs.jsonl").display())));
+            if !seen.insert(ex.job) {
+                continue; // one entry per leaf, whatever flops it was exported with
+            }
+            let s = datagen_mix::Situation {
+                kind: "situation".into(),
+                id: format!("{game}:{}", ex.job.saturating_sub(LEAF_JOB_BASE)),
+                pot_type: ex.pot_type, pot_bb: ex.pot_bb, stack_bb: ex.stack_bb,
+                rake_pct: ex.rake_pct, rake_cap_bb: ex.rake_cap_bb, range: ex.range, weight: 1.0,
+                about: Some(serde_json::json!({"game": game, "line": lines.get(&ex.job)})),
+            };
+            text.push_str(&serde_json::to_string(&s).unwrap());
+            text.push('\n');
+            n += 1;
+        }
+    }
+    let header = serde_json::json!({"type": "header", "format": datagen_mix::SITUATIONS_FORMAT, "format_version": 1,
+                                    "list": name, "situations": n});
+    let text = format!("{header}\n{text}");
+    if let Err(e) = datagen_mix::SituationList::parse(&text) {
+        fail(format!("the list would not be accepted: {e}"));
+    }
+    let out = if o.out.extension().map(|e| e == "jsonl").unwrap_or(false) { o.out.clone() } else { o.out.join(format!("{name}.jsonl")) };
+    if let Some(parent) = out.parent().filter(|p| !p.as_os_str().is_empty()) {
+        std::fs::create_dir_all(parent).unwrap_or_else(|e| fail(format!("{}: {e}", parent.display())));
+    }
+    std::fs::write(&out, &text).unwrap_or_else(|e| fail(format!("{}: {e}", out.display())));
+    let sha = datagen_mix::sha256_hex(text.as_bytes());
+    println!("{n} situations -> {}", out.display());
+    println!("publish it as situations/{name}.jsonl in the dataset (python tools/datagen/validate.py --publish-situations {}),", out.display());
+    println!("then add a mix to tools/datagen/mixes.json with this part (set the share):");
+    println!("{}", serde_json::json!({"kind": "situations", "share": 0.5, "list": name, "sha256": sha}));
+}
+
 fn run_loop(o: &Opts, env: &EnvOpts) {
     let Some(login) = o.contributor.clone() else {
         eprintln!("datagen run needs --contributor <your GitHub login>\n{USAGE}");
@@ -546,6 +713,11 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
     );
     let mut done = 0u64;
     let mut k = o.worker;
+    // The game mix is read again before every job (at most every few minutes), so a new one is picked up
+    // without anyone restarting anything. The folder remembers the newest list for a start without a network.
+    let mut sync = MixSync::open(&mix_dir(o));
+    let mut said = Said::default();
+    let mut mix: Option<u32> = None;
     loop {
         if let Some(n) = o.jobs {
             if done >= n {
@@ -558,13 +730,46 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
                 break;
             }
         }
-        let job = datagen::contributor_job(&login, k);
+        match sync.refresh_if_due() {
+            Some(Err(e)) => said.say("read", format!("could not look for a new game mix ({e}); carrying on with the one this machine has")),
+            Some(Ok(skipped)) => {
+                said.forget("read");
+                for s in skipped {
+                    said.say(&s, format!("published game mixes: {s}"));
+                }
+            }
+            None => {}
+        }
+        let (chosen, passed) = sync.choose();
+        for p in passed {
+            said.say(&p, format!("game {p}; solving the mix before it meanwhile"));
+        }
+        let Some(id) = chosen else {
+            eprintln!("no game mix can be drawn on this machine: update GTOpen (git pull) and start again");
+            std::process::exit(1);
+        };
+        if let Some((newer, needs)) = sync.book.needs_update() {
+            said.say("update", format!(
+                "PLEASE UPDATE: the pool has moved to game mix {newer}, which needs a newer GTOpen (generator v{needs}, this is v{}). \
+                 Stop this window, run  git pull  and start it again. Until then this machine keeps solving mix {id}, which still counts.",
+                datagen::GENERATOR_VERSION));
+        }
+        if mix != Some(id) {
+            let m = &sync.book.mixes[&id];
+            match mix {
+                None => println!("game mix {id}: {} ({})", m.note, m.summary()),
+                Some(old) => println!("NEW GAME MIX: moving from mix {old} to mix {id}: {} ({}). Nothing to do on your side.", m.note, m.summary()),
+            }
+            mix = Some(id);
+            k = o.worker;
+        }
+        let job = datagen::mix_job(&login, id, k);
         k += o.workers;
         if job_path(&o.out, &login, job).exists() {
             continue; // finished in an earlier run
         }
         let tj = std::time::Instant::now();
-        match run_job(job, &login, o, env) {
+        match run_job(job, &login, o, env, &sync.book, id) {
             Ok(p) => {
                 done += 1;
                 println!(
@@ -637,6 +842,38 @@ fn verify(o: &Opts, env: &EnvOpts) {
         verify_real(file, h, &records, done_seen, errors, o, env);
     }
     let mut resolved = Vec::new();
+    // generator v5 on: the game mix the job says it was drawn from
+    let mut book: Option<Book> = None;
+    if let Some(h) = header.as_ref().filter(|h| h.generator_version > datagen::LAST_CODED_GENERATOR
+                                                 && datagen::ACCEPTED_GENERATORS.contains(&h.generator_version)) {
+        match h.mix {
+            None => errors.push("the header names no game mix".into()),
+            Some(id) if datagen::job_mix(h.job) != id => {
+                errors.push(format!("job {} is not a job number of game mix {id}", h.job))
+            }
+            Some(id) => match mix_for(o, id) {
+                Ok(sync) => {
+                    let mix = &sync.book.mixes[&id];
+                    if mix.withdrawn {
+                        errors.push(format!("game mix {id} was withdrawn: its jobs are no longer accepted"));
+                    } else if h.mix_key.as_deref() != Some(mix.key().as_str()) {
+                        errors.push(format!("drawn from another version of game mix {id} (key {}, the published mix has {})",
+                                            h.mix_key.as_deref().unwrap_or("none"), mix.key()));
+                    } else {
+                        book = Some(sync.book);
+                    }
+                }
+                Err(MixProblem::Unknown(msg)) => errors.push(msg),
+                Err(MixProblem::Later(msg)) => {
+                    // nothing wrong with the upload: this machine cannot check it now
+                    eprintln!("cannot check {file} now: {msg}");
+                    std::process::exit(3);
+                }
+            },
+        }
+    } else if let Some(h) = header.as_ref().filter(|h| datagen::job_mix(h.job) != 0) {
+        errors.push(format!("job {} is not a job number of generator v{}", h.job, h.generator_version));
+    }
     if let Some(h) = &header {
         if h.format != datagen::FORMAT
             || h.format_version != datagen::FORMAT_VERSION
@@ -663,8 +900,13 @@ fn verify(o: &Opts, env: &EnvOpts) {
                 errors.push(format!("example {i}: job/index {}/{} out of order", r.inputs.job, r.inputs.index));
                 continue;
             }
-            let expect = datagen::example_inputs_for(h.generator_version, h.job, i as u32, h.max_vram_gb);
-            if expect != r.inputs {
+            let expect = if h.generator_version <= datagen::LAST_CODED_GENERATOR {
+                Some(datagen::example_inputs_for(h.generator_version, h.job, i as u32, h.max_vram_gb))
+            } else {
+                // no book: the mix itself was refused above
+                book.as_ref().and_then(|b| b.inputs(h.mix.unwrap_or(0), h.job, i as u32, h.max_vram_gb).ok())
+            };
+            if expect.as_ref().map(|e| *e != r.inputs).unwrap_or(false) {
                 errors.push(format!("example {i}: inputs differ from job {} as generated", h.job));
             }
             if let Some(msg) = sanity(r) {
@@ -697,6 +939,7 @@ fn verify(o: &Opts, env: &EnvOpts) {
         "ok": errors.is_empty(),
         "job": header.as_ref().map(|h| h.job),
         "contributor": header.as_ref().map(|h| h.contributor.clone()),
+        "mix": header.as_ref().and_then(|h| h.mix),
         "examples": records.len(),
         "errors": errors,
         "resolved": resolved,

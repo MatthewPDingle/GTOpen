@@ -110,6 +110,9 @@ class FakeHub:
         if self.after_merge:
             self.after_merge(num)
 
+    def file_exists(self, repo_id, filename, repo_type):
+        return filename in self.main
+
     def upload_file(self, path_or_fileobj, path_in_repo, repo_id, repo_type, commit_message):
         self.main[path_in_repo] = path_or_fileobj
         self.commits.append(commit_message)
@@ -151,6 +154,7 @@ class Base(unittest.TestCase):
         self.tmp = tempfile.mkdtemp()
         self.hub = FakeHub()
         self.hub.tmp = self.tmp
+        self.real_verify_file = validate.verify_file
         patches = [mock.patch.dict(sys.modules, {
                        "huggingface_hub": self.hub.module(),
                        "huggingface_hub.errors": types.SimpleNamespace(RemoteEntryNotFoundError=Missing)}),
@@ -264,19 +268,75 @@ class ValidateTests(Base):
     def test_older_generator_jobs_are_merged_with_a_friendly_request_to_update(self):
         with mock.patch.object(validate, "load_config", lambda: {
                 "hf_repo": REPO, "go_no_go_examples": 10, "goal_examples": 100, "real_contributors": ["Maint"],
-                "current_generator": 4}):
-            self.open_pr({"data/Anyone/job-1001.jsonl.gz": self.pool_job(1001, 3),
-                          "data/Anyone/job-1002.jsonl.gz": self.pool_job(1002, 4)})
-            self.open_pr({"data/Anyone/job-1003.jsonl.gz": self.pool_job(1003, 4)})
+                "current_generator": 5}):
+            self.open_pr({"data/Anyone/job-1001.jsonl.gz": self.pool_job(1001, 4),
+                          "data/Anyone/job-1002.jsonl.gz": self.pool_job(1002, 5)})
+            self.open_pr({"data/Anyone/job-1003.jsonl.gz": self.pool_job(1003, 5)})
             text = self.validate()
         self.assertEqual([self.hub.prs[n]["status"] for n in (1, 2)], ["merged", "merged"])
         self.assertIn("asked to update", text)
         first, second = self.hub.prs[1]["comments"][-1][1], self.hub.prs[2]["comments"][-1][1]
         self.assertIn("Thank you!", first)
-        self.assertIn("generator v3. They are merged and count in full", first)
-        self.assertIn("Generator v4 is out now", first)
+        self.assertIn("generator v4. They are merged and count in full", first)
+        self.assertIn("Generator v5 is out now", first)
+        self.assertIn("moves to each new mix of games by itself", first)
         self.assertEqual(second, "Validated 1 jobs (2 examples). Thank you!")
         self.assertEqual(self.progress()["total_examples"], 6)
+
+    def test_a_job_number_may_carry_its_game_mix_above_the_contributors_block(self):
+        # generator v5 on: mix << 44 plus a number of the contributor's own block (the block starts at 1000 here)
+        mine, other = (3 << 44) + 1001, (3 << 44) + 1000 + (1 << 24)
+        self.open_pr({f"data/Anyone/job-{mine}.jsonl.gz": self.pool_job(mine, 5)})
+        self.open_pr({f"data/Anyone/job-{other}.jsonl.gz": self.pool_job(other, 5)})
+        self.validate()
+        self.assertEqual(self.hub.prs[1]["status"], "merged")
+        self.assertEqual(self.hub.prs[2]["status"], "closed")
+        self.assertIn("is outside Anyone's block", self.hub.prs[2]["comments"][0][1])
+
+    def test_a_game_mix_that_cannot_be_read_now_leaves_the_upload_waiting(self):
+        # solve-cli answers exit code 3 when it cannot read the job's game mix (no network, a mix that needs
+        # a newer build): that is this machine's problem, so the upload is neither merged nor turned away
+        answer = types.SimpleNamespace(returncode=3, stdout="", stderr="cannot check job.jsonl now: game mix 9 "
+                                       "is not known here and the published list could not be read (timed out)")
+        with mock.patch.object(validate, "verify_file", self.real_verify_file), \
+                mock.patch.object(validate.subprocess, "run", lambda *a, **k: answer):
+            self.open_pr({"data/Anyone/job-1001.jsonl.gz": self.pool_job(1001, 5)})
+            with self.assertRaises(validate.ToolError) as caught:
+                self.validate()
+        self.assertIn("game mix 9 is not known here", str(caught.exception))
+        self.assertNotIn("CUDA", str(caught.exception))
+        self.assertEqual(self.hub.prs[1]["status"], "open")
+        self.assertEqual(self.hub.prs[1]["comments"], [])
+
+    def test_a_situation_list_is_published_once_under_its_own_name(self):
+        import hashlib
+        rows = [{"type": "header", "format": "gtopen-situations", "format_version": 1, "list": "callfix-1", "situations": 1},
+                {"type": "situation", "id": "g1:0"}]
+        data = "".join(json.dumps(r) + "\n" for r in rows).encode()
+        path = os.path.join(self.tmp, "callfix-1.jsonl")
+        with open(path, "wb") as f:
+            f.write(data)
+        args = types.SimpleNamespace(repo=REPO, dry_run=True, publish_situations=path)
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            validate.publish_situations(args)
+        self.assertEqual(self.hub.main, {})                                # a dry run writes nothing
+        self.assertIn(hashlib.sha256(data).hexdigest(), out.getvalue())    # and still prints the part for a mix
+        args.dry_run = False
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            validate.publish_situations(args)
+        self.assertEqual(self.hub.main, {"situations/callfix-1.jsonl": data})
+        part = json.loads(out.getvalue().strip().splitlines()[-1])
+        self.assertEqual(part, {"kind": "situations", "share": 0.5, "list": "callfix-1",
+                                "sha256": hashlib.sha256(data).hexdigest()})
+        # a published list is never replaced: generators on a mix that names it need those exact bytes
+        with self.assertRaises(SystemExit) as stop:
+            validate.publish_situations(args)
+        self.assertIn("never changed", str(stop.exception))
+        with open(path, "w") as f:
+            f.write("{}\n")
+        with self.assertRaises(SystemExit) as stop:
+            validate.publish_situations(args)
+        self.assertIn("not a situation list", str(stop.exception))
 
     def test_the_current_generator_in_config_matches_the_solver(self):
         import re

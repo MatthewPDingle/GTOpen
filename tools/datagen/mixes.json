@@ -1,0 +1,34 @@
+{
+  "format": "gtopen-datagen-mixes",
+  "about": "Every game mix the pooled data generator has been given. The mix with the highest id that is not withdrawn is the one contributors solve: running generators read this file from the master branch before every job. NEVER edit a published mix (uploads made under it would stop passing their check); add a new one with the next id. See docs/contribute-compute.md, 'Game mixes'.",
+  "mixes": [
+    {
+      "id": 1,
+      "needs_generator": 5,
+      "note": "Common live and online games, random ranges",
+      "parts": [
+        {
+          "kind": "random",
+          "share": 1,
+          "pot_types": [
+            {"name": "limped", "share": 0.10, "pot_bb": [2, 3.5]},
+            {"name": "srp", "share": 0.55, "pot_bb": [4.5, 7.5]},
+            {"name": "3bet", "share": 0.20, "pot_bb": [15, 26]},
+            {"name": "4bet", "share": 0.15, "pot_bb": [38, 55]}
+          ],
+          "tables": [
+            {"share": 0.4, "pot_scale": [1, 1], "stack_bb": [25, 200]},
+            {"share": 0.4, "pot_scale": [1.3, 2], "stack_bb": [50, 300]},
+            {"share": 0.2, "pot_scale": [2, 4], "stack_bb": [50, 400]}
+          ],
+          "rake": [
+            {"share": 0.20, "pct": [0, 0], "cap_bb": [0, 0]},
+            {"share": 0.35, "pct": [0.05, 0.05], "cap_bb": [0.5, 12]},
+            {"share": 0.35, "pct": [0.10, 0.10], "cap_bb": [1, 10]},
+            {"share": 0.10, "pct": [0.03, 0.10], "cap_bb": [0.5, 12]}
+          ]
+        }
+      ]
+    }
+  ]
+}
