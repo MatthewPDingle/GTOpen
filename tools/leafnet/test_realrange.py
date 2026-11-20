@@ -472,6 +472,33 @@ class SnapshotTests(unittest.TestCase):
         self.assertIn("validation or test split", proc.stderr)
         self.assertFalse(os.path.exists(os.path.join(self.work, "snapshots", "stray")))
 
+    def test_examples_drawn_from_published_situations_are_real_range_training_rows(self):
+        """A v5 pool job mixes random ranges with draws from a situation list: the draws train, whatever the job."""
+        pool, rng = os.path.join(self.tmp, "pool-situations"), np.random.default_rng(12)
+        drawn = []
+        for job in range(1, 31):
+            recs = [example(rng, job, i) for i in range(4)]
+            for i in (1, 3):
+                recs[i]["situation"] = f"some-list/g{job}:{i}"
+            drawn += [False, True, False, True]
+            realrange.write_job_file(os.path.join(pool, "someone", f"job-{job}.jsonl.gz"),
+                                     {"type": "header", "generator_version": 5, "job": job}, recs)
+        self.prepare("--data", pool, "--name", "situations", "--side")
+        drawn = np.array(drawn)
+        gen, split, jobs = (self.load("situations", n) for n in ("generator", "split", "jobs"))
+        by_job = np.array([harness.SPLITS[split_of(int(j))] for j in jobs])
+        self.assertTrue((gen[drawn] == REAL_GENERATOR).all() and (gen[~drawn] == 5).all())
+        self.assertTrue((split[drawn] == harness.SPLITS["train"]).all())
+        np.testing.assert_array_equal(split[~drawn], by_job[~drawn])
+        m = self.manifest("situations")
+        self.assertEqual(m["situation_examples"], 60)
+        self.assertEqual(sum(m["situation_examples_by_job_split"].values()), 60)
+        self.assertGreater(m["situation_examples_by_job_split"]["val"], 0)
+        self.assertEqual(m["examples_by_split"]["val"], int(((by_job == harness.SPLITS["val"]) & ~drawn).sum()))
+        with open(os.path.join(self.work, "snapshots", "situations", "inputs_val.jsonl")) as f:
+            self.assertEqual(sum(1 for _ in f), m["examples_by_split"]["val"])
+        self.assertNotIn("situation_examples", self.manifest("base"))
+
     def net(self, name, bias):
         """A net whose residual is `bias` for every class: its predictions are the balanced model's plus bias."""
         path = os.path.join(self.tmp, name + ".bin")

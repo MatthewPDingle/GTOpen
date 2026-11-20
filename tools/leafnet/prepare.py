@@ -26,6 +26,15 @@ the pool files SNAP lists (hashes checked) instead of everything downloaded
 since, so two snapshots that differ only in their extra files have the same
 validation and test examples in the same rows.
 
+The pool's own real-range examples: from generator v5 a game mix can draw from
+a published list of situations (ranges of GTOpen preflop solves, `solve-cli
+datagen situations`); such an example names its situation. Those count as
+real-range rows too (generator.npy 100) and are training data whatever their
+job's split: one situation is solved on many flops across jobs, so it could
+not be held out by job, and the validation and test examples stay the random
+ranges they have always been. Real ranges are judged on held-out games
+(`--leafcheck`).
+
 Writes WORK/snapshots/<name>/ with:
     manifest.json   files, hashes, counts, split sizes, solve-cli used
     x.npy           features (n, 686), the layout of leafnet_io.FEATURES and
@@ -63,7 +72,8 @@ from validate import cuda_env, default_cli, load_config  # noqa: E402
 
 POT_TYPES = ["limped", "srp", "3bet", "4bet"]
 SPLIT_CODE = {"train": 0, "val": 1, "test": 2}
-REAL_GENERATOR = 100    # generator.npy for exact solves of real preflop ranges (realrange.py pack); the pool's are 1..3
+REAL_GENERATOR = 100    # generator.npy for exact solves of real preflop ranges (realrange.py pack, or a pool example
+                        # drawn from a published situation list); the pool's random-range examples keep their 1..5
 
 
 def work_dir():
@@ -167,6 +177,11 @@ def priced_files(cli, paths, cache_dir):
     return records, headers, base, rows
 
 
+def from_situation(record):
+    """A pool example drawn from a published list of situations (real preflop ranges), not random ranges."""
+    return bool(record.get("situation"))
+
+
 def save_arrays(out, records, headers, base, split=None):
     os.makedirs(out, exist_ok=True)
     rng, meta, y, mask, reach, w = arrays(records)
@@ -182,9 +197,13 @@ def save_arrays(out, records, headers, base, split=None):
     np.save(os.path.join(out, "jobs.npy"), jobs)
     np.save(os.path.join(out, "pot_type.npy"), np.array([POT_TYPES.index(r["pot_type"]) for r in records], np.int8))
     np.save(os.path.join(out, "pot_scale.npy"), np.array([float(r.get("pot_scale", 1.0)) for r in records], np.float32))
-    np.save(os.path.join(out, "generator.npy"), np.array([int(h.get("generator_version", 0)) for h in headers], np.int8))
+    real = np.array([from_situation(r) for r in records], bool)
+    generator = np.array([int(h.get("generator_version") or 0) for h in headers], np.int8)
+    generator[real] = REAL_GENERATOR
+    np.save(os.path.join(out, "generator.npy"), generator)
     if split is None:
         split = np.array([SPLIT_CODE[split_of(int(j))] for j in jobs], dtype=np.int8)
+        split[real] = SPLIT_CODE["train"]
     np.save(os.path.join(out, "split.npy"), split)
     return jobs, split
 
@@ -347,6 +366,12 @@ def main():
     if extra:
         manifest["extra_sources"] = [os.path.abspath(d) for d in args.extra]
         manifest["extra_examples_by_split"] = {s: int((extra_row & (split == c)).sum()) for s, c in SPLIT_CODE.items()}
+    drawn = np.array([from_situation(r) for r in records], bool)
+    if drawn.any():
+        # by the split their job alone would have given them: all of them are training rows
+        by_job = np.array([SPLIT_CODE[split_of(int(j))] for j in jobs], np.int8)
+        manifest["situation_examples"] = int(drawn.sum())
+        manifest["situation_examples_by_job_split"] = {s: int((drawn & (by_job == c)).sum()) for s, c in SPLIT_CODE.items()}
     with open(os.path.join(snap, "manifest.json"), "w", encoding="utf-8", newline="\n") as f:
         json.dump(manifest, f, indent=1)
     log(f"snapshot {name}: {n:,} examples from {len(rows)} files; "
@@ -356,6 +381,10 @@ def main():
         by = manifest["extra_examples_by_split"]
         log(f"   of those, {int(extra_row.sum()):,} examples from {len(extra)} --extra files: "
             f"train {by['train']:,} / val {by['val']:,} / test {by['test']:,}")
+    if drawn.any():
+        moved = int(drawn.sum()) - manifest["situation_examples_by_job_split"]["train"]
+        log(f"   {int(drawn.sum()):,} examples drawn from published situations count as real-range training rows "
+            f"({moved:,} of them from validation or test jobs)")
     if args.side:
         log("--side: CURRENT_SNAPSHOT is unchanged; pass --snapshot " + name + " to train.py and harness.py")
         return

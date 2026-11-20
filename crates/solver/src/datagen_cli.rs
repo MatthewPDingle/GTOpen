@@ -25,8 +25,11 @@ const USAGE: &str = "usage:
   solve-cli datagen baseline < examples.jsonl   (Preflop Lab's realization-model values per example)
   solve-cli datagen leafnet NET.bin < examples.jsonl   (a trained leaf net's values per example)
   solve-cli datagen leaves GAME.bin [--out DIR] [--leaves N] [--boards M] [--seed S] [--boards-from EARLIER_DIR]
+                        [--tokens W]
                         (a solved preflop game's heads-up flop leaves as examples: DIR/inputs.jsonl, DIR/leaves.json;
-                         --boards-from: give each line the flops an earlier export of the same game gave it)
+                         --boards-from: give each line the flops an earlier export of the same game gave it;
+                         --tokens: give every hand a range does not hold this share of its largest weight,
+                         0.0001 say, so the flop solves also price the hands just outside each range)
   solve-cli datagen solve DIR [--target PCT] [--max-iters N]   (solve DIR/inputs.jsonl into DIR/solved.jsonl; resumes)";
 
 struct Opts {
@@ -49,6 +52,8 @@ struct Opts {
     boards: u32,
     seed: u64,
     boards_from: Option<PathBuf>,
+    /// `datagen leaves`: weight of hands a range does not hold, as a share of its largest (0 = none).
+    tokens: f32,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -71,6 +76,7 @@ fn parse(rest: &[String]) -> Opts {
         boards: 8,
         seed: 1,
         boards_from: None,
+        tokens: 0.0,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -105,6 +111,14 @@ fn parse(rest: &[String]) -> Opts {
             "--boards" => { o.boards = num::<u32>(need(i), a).max(1); i += 1; }
             "--seed" => { o.seed = num(need(i), a); i += 1; }
             "--boards-from" => { o.boards_from = Some(PathBuf::from(need(i))); i += 1; }
+            "--tokens" => {
+                o.tokens = num(need(i), a);
+                if !(o.tokens >= 0.0 && o.tokens <= 0.001) {
+                    eprintln!("--tokens is a share of a range's largest weight, from 0 to 0.001 (0.0001 is usual)");
+                    std::process::exit(1);
+                }
+                i += 1;
+            }
             _ if a.starts_with("--") => {
                 eprintln!("unknown option {a}\n{USAGE}");
                 std::process::exit(1);
@@ -452,6 +466,10 @@ fn fail(msg: String) -> ! {
 /// seat's actions counted, folds included, times the pot), so rarer pot
 /// types are still checked. Each gets `--boards` random flops.
 ///
+/// With `--tokens W` every hand a range does not hold is exported at that
+/// share of the range's largest weight ([`datagen::export_range`]), so the
+/// flop solves give those hands a value too.
+///
 /// With `--boards-from EARLIER_DIR` a line that an earlier export of the same
 /// game holds gets that export's flops, and every other flop is drawn from the
 /// line's name instead of the leaf's rank. Solve a game again (with another
@@ -495,7 +513,7 @@ fn leaves(o: &Opts) {
     });
     let (mut kept_leaves, mut kept_boards) = (0usize, 0usize);
     std::fs::create_dir_all(&o.out).unwrap_or_else(|e| fail(format!("{}: {e}", o.out.display())));
-    let r3 = |w: &[f32]| w.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect::<Vec<f32>>();
+    let r3 = |w: &[f32]| datagen::export_range(w, o.tokens);
     let r2 = |x: f64| (x * 100.0).round() / 100.0;
     let mut inputs = String::new();
     let mut described = Vec::new();
@@ -543,6 +561,9 @@ fn leaves(o: &Opts) {
         "leaves_in_game": s.hu_flop_leaves().len(), "exported": all.len(), "boards_per_leaf": o.boards,
         "chip_share_covered": covered / total.max(1e-12), "leaves": described,
     });
+    if o.tokens > 0.0 {
+        summary["tokens"] = serde_json::json!(o.tokens);
+    }
     if earlier.is_some() {
         // how much of this export can be compared flop for flop with the earlier one
         summary["boards_kept"] = serde_json::json!({"leaves": kept_leaves, "examples": kept_boards});

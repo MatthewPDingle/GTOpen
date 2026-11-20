@@ -818,6 +818,27 @@ pub struct RealHeader {
 }
 
 /// True for names that are safe as one path component of the dataset.
+/// A leaf's range as `datagen leaves` writes it: weights to three decimals.
+/// With a `token` above 0, every class the rounded range does not hold gets
+/// that share of the range's largest weight (0.0001 = a ten-thousandth of
+/// the most played hand). A flop solve gives no value to a hand at weight
+/// zero, so without tokens nothing can be learned about the hands just
+/// outside a range, which are the ones a preflop solve asks about when it
+/// decides whether a hand enters. Small enough tokens leave the solve of the
+/// played hands as it was.
+pub fn export_range(range: &[f32], token: f32) -> Vec<f32> {
+    let mut out: Vec<f32> = range.iter().map(|&x| (x * 1000.0).round() / 1000.0).collect();
+    let max = out.iter().cloned().fold(0f32, f32::max);
+    if token > 0.0 && max > 0.0 {
+        // seven decimals: enough for a ten-thousandth of a weight of 0.001
+        let t = ((token * max) as f64 * 1e7).round() / 1e7;
+        for w in out.iter_mut().filter(|w| **w <= 0.0) {
+            *w = t as f32;
+        }
+    }
+    out
+}
+
 pub fn plain_name(s: &str) -> bool {
     !s.is_empty() && s.len() <= 64 && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
 }
@@ -891,6 +912,30 @@ pub fn compare_values(a: &ExampleValues, b: &ExampleValues) -> (f64, f64) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn exported_ranges_get_tokens_only_where_they_hold_nothing() {
+        let mut range = vec![0f32; NUM_CLASSES];
+        (range[0], range[1], range[2], range[3]) = (0.5004, 0.2, 0.0004, 0.0006);
+        // without a token: three decimals, zeros stay zeros (what every export so far wrote)
+        let plain = export_range(&range, 0.0);
+        assert_eq!(&plain[..4], &[0.5, 0.2, 0.0, 0.001]);
+        assert!(plain[4..].iter().all(|&w| w == 0.0));
+        // with one: every class the rounded range does not hold gets that share of the largest weight
+        let tok = export_range(&range, 0.0001);
+        assert_eq!(&tok[..2], &[0.5, 0.2]);
+        assert_eq!(tok[3], 0.001, "a hand the range holds keeps its weight");
+        assert!((tok[2] - 0.00005).abs() < 1e-9 && tok[4..].iter().all(|&w| w == tok[2]), "{}", tok[2]);
+        // the tokens together stay a sliver of the range
+        let (held, tokens): (f32, f32) = (tok[..2].iter().sum::<f32>() + tok[3], tok[2] + tok[4..].iter().sum::<f32>());
+        assert!(tokens < 0.02 * held, "{tokens} against {held}");
+        // an empty range stays empty, and the result passes the checks a pooled example must pass
+        assert!(export_range(&vec![0f32; NUM_CLASSES], 0.0001).iter().all(|&w| w == 0.0));
+        let ex = ExampleInputs { job: 1, index: 0, board: "AsKd7c".into(), pot_type: "srp".into(), pot_bb: 6.5, stack_bb: 97.0,
+                                 rake_pct: 0.05, rake_cap_bb: 3.0, range: [tok.clone(), tok], attempt: 0, pot_scale: 1.0,
+                                 situation: None };
+        assert_eq!(check_real_inputs(&ex), None);
+    }
 
     #[test]
     fn real_range_inputs_are_checked_for_plausibility() {
