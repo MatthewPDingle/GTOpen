@@ -99,6 +99,20 @@ applies it to the real-range rows only, "all" to every training row.
 Teachers trained with a floor are cached under their own names. Validation,
 the harness's scores and the synthetic leaves keep the snapshot's weights.
 
+The "near zero" inputs (CONFIG["near_zero"], near_zero.py). The floor above
+failed by itself: every floor that lifted the hands outside the range also
+lifted the hands inside it, because the net sees a range's weights on a
+linear scale and cannot tell "not held" from "held a little". With
+"near_zero" the net gets one more input per class and player,
+exp(-weight / 0.02): 1 for a hand the range does not hold, close to 0 from a
+tenth of the most played hand up. The net is then the wider layout of
+leafnet_io (1,024 inputs), which the solver reads like any other. The
+teachers, the synthetic leaves and the snapshot are unchanged; the extra
+inputs are built from the range inputs on the fly. Under the 4x size limit
+the widest two-layer net of that layout is 2x1218 (2x1334 without). It only
+has something to learn from rows whose solves carry token weights, and only
+if the loss counts those hands ("play_floor").
+
 Seeds. With "t_ens" every seed shares the same teachers, and "syn_seed" also
 shares the synthetic leaves, so seed replicates differ only in the net's
 initialisation and batch order.
@@ -168,9 +182,11 @@ CONFIG = {
     "real_distill_mix": None,  # distill_mix of real-range rows (None = distill_mix; 0 = value minus luck only)
     "play_floor": 0.0,      # count every solved hand in the losses as if its weight in the range were at least this (0 = off)
     "play_floor_rows": "real",  # rows the floor applies to: "real" (real-range rows) or "all"
+    "near_zero": False,     # the wider input layout: one more input per class that marks a hand the range does not hold
 }
 
 from flops import NC, Teacher, flop_tables, load_side  # noqa: E402
+from near_zero import NearZero  # noqa: E402
 
 
 def log(msg):
@@ -742,8 +758,18 @@ def prepare(cfg, data):
 
 # --------------------------------------------------------------- student ----
 
-def build(cfg, n_in, n_out):
+def build(cfg, n_in, n_out, data=None):
+    """The net: Linear/ReLU layers over the harness's normalized inputs, behind a NearZero when
+    CONFIG["near_zero"] is set (`data` then gives the normalization and the training rows it is fitted on)."""
     layers, d = [], n_in
+    if cfg.get("near_zero"):
+        layers.append(NearZero(data.mu, data.sd).to(data.device).fit(data.x_train))
+        d = n_in + 2 * NC
+        # the wider first layer costs multiply-adds: say so now, not after the run when the harness rejects it
+        macs = harness.macs([d] + [cfg["hidden"]] * cfg["depth"] + [n_out])
+        if macs > harness.MAX_MACS:
+            raise ValueError(f"near_zero with {cfg['depth']}x{cfg['hidden']} is {macs:,} multiply-adds per leaf, over "
+                             f"the limit {harness.MAX_MACS:,}: the widest two-layer net of this layout is 2x1218")
     for _ in range(cfg["depth"]):
         lin = torch.nn.Linear(d, cfg["hidden"])
         torch.nn.init.normal_(lin.weight, std=(2.0 / d) ** 0.5)
@@ -795,7 +821,7 @@ def run(cfg, data, budget, generator):
             m.train()
             return float((data.w_val * (pred - r_val_cv) ** 2).sum() / data.w_val.sum())
 
-    model = build(cfg, data.n_in, data.n_out).to(data.device)
+    model = build(cfg, data.n_in, data.n_out, data).to(data.device)
     weights = [p for n, p in model.named_parameters() if n.endswith("weight")]
     biases = [p for n, p in model.named_parameters() if n.endswith("bias")]
     opt = torch.optim.Adam([{"params": weights, "weight_decay": cfg["weight_decay"]},

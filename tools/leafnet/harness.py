@@ -278,11 +278,15 @@ class Budget:
 
 def to_mlp(model):
     """Weights and biases of a plain Linear/ReLU stack (Dropout and Identity
-    ignored), or a ValueError saying why the model is not deployable."""
+    ignored), or a ValueError saying why the model is not deployable. A
+    leading near_zero.NearZero (the wider input layout) is not part of the
+    stack: the first Linear then takes that layout's inputs, and the file
+    carries the module's mean and scale (near_zero.file_norm)."""
     import torch
+    import near_zero
     if not isinstance(model, torch.nn.Sequential):
         raise ValueError("train.py must return a torch.nn.Sequential of Linear and ReLU layers")
-    mods = [m for m in model if not isinstance(m, (torch.nn.Dropout, torch.nn.Identity))]
+    mods = [m for m in near_zero.split(model)[1] if not isinstance(m, (torch.nn.Dropout, torch.nn.Identity))]
     Ws, bs, expect_linear = [], [], True
     for m in mods:
         if isinstance(m, torch.nn.Linear) and expect_linear:
@@ -550,15 +554,18 @@ def evaluate_run(model, data, cfg, seed, steps, seconds, desc, cli, state, decid
     row["commit"], row["dirty"] = git_rev()
     verdict, reason = "discard", ""
     try:
+        import near_zero
         Ws, bs = to_mlp(model)
+        head = near_zero.split(model)[0]
+        n_in = data.n_in + (2 * NC if head is not None else 0)
         sizes = [Ws[0].shape[0]] + [W.shape[1] for W in Ws]
         row["macs"] = macs(sizes)
-        if sizes[0] != data.n_in or sizes[-1] != data.n_out:
-            raise ValueError(f"sizes {sizes} do not match {data.n_in} inputs / {data.n_out} outputs")
+        if sizes[0] != n_in or sizes[-1] != data.n_out:
+            raise ValueError(f"sizes {sizes} do not match {n_in} inputs / {data.n_out} outputs")
         if row["macs"] > MAX_MACS:
             raise ValueError(f"{row['macs']:,} multiply-adds per leaf is over the limit {MAX_MACS:,} ({MAX_MACS_X}x v1)")
         net_path = os.path.join(rdir, "leaf_net.bin")
-        leafnet_io.write(net_path, Ws, bs, data.mu, data.sd,
+        leafnet_io.write(net_path, Ws, bs, *near_zero.file_norm(head, data.mu, data.sd),
                          extra={"snapshot": data.snapshot, "run": run_id, "trainer": "tools/leafnet/train.py"})
         row["parity"] = f"{parity(cli, net_path, os.path.join(data.dir, 'inputs_val.jsonl'), model, data):.2e}"
         if float(row["parity"]) > PARITY_TOL:

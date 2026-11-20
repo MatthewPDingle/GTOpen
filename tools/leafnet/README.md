@@ -162,6 +162,18 @@ pool, and checked by solving again with the retrained net:
   and the row's total stays what it was. It is off by default, and it
   reaches hands outside a range only in rows whose flop solves gave them a
   token weight (`python -m unittest tools/leafnet/test_train.py`, needs torch).
+- `train.py`'s `near_zero` gives the net a second input layout: after the
+  686 inputs, one more per class and player, `exp(-weight / 0.02)`, which is
+  1 for a hand the range does not hold and close to 0 from a tenth of the
+  most played hand up. A weight on a linear scale cannot tell "not held"
+  from "held a little", which is why a floor alone lifted the played hands
+  along with the hands outside the range. The snapshot, the teachers and
+  every caller stay at 686 inputs: `near_zero.py` builds the extra inputs
+  in training, `leafnet_io.forward` and the Rust loader build them when a
+  net file's first layer takes 1,024. Off by default; under the 4x size
+  limit the widest two-layer net of that layout is 2x1218. It is a test,
+  not a kept recipe: no net with it has been trained on real data yet
+  (`python -m unittest tools/leafnet/test_near_zero.py`, needs torch).
 - **Solving the held-out games again.** The check that counts is a net on
   the ranges of its own solves: solve the held-out games again with the
   retrained net, export and solve their leaves, and score the net there.

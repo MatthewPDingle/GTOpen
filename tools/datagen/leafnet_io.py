@@ -44,6 +44,35 @@ POT_TYPES = ["limped", "srp", "3bet", "4bet"]
 FEATURES = ("range oop 169 (largest weight 1), range ip 169, balanced value oop 169, balanced value ip 169, "
             "ln pot_bb, ln stack_bb, ln(stack/pot), 10 x rake fraction, rake cap bb / pot, raked (0/1), "
             "pot type one-hot (limped, srp, 3bet, 4bet)")
+# The "near zero" layout: the inputs above, then one more per class and player that is 1 for a hand the range
+# does not hold and close to 0 from a tenth of the range's most played hand up. A net's first layer says which
+# layout it has (N_INPUTS or N_INPUTS_NEAR_ZERO); forward() and the Rust loader build the extra inputs
+# themselves from the first layout, so features on disk and every caller stay at N_INPUTS.
+NC = 169
+N_INPUTS = 4 * NC + 10
+N_INPUTS_NEAR_ZERO = N_INPUTS + 2 * NC
+NEAR_ZERO_TAU = 0.02
+FEATURES_NEAR_ZERO = FEATURES + f", near zero oop 169 (exp(-range weight / {NEAR_ZERO_TAU:g})), near zero ip 169"
+
+
+def near_zero(x):
+    """The extra inputs of the "near zero" layout, (n, 338), from first-layout inputs x (n, 686) as they are
+    on disk (not normalized)."""
+    return np.exp(-np.clip(np.asarray(x, np.float32)[:, :2 * NC], 0.0, 1.0) / np.float32(NEAR_ZERO_TAU))
+
+
+def inputs_for(x, n_in):
+    """First-layout inputs x as the inputs of a net whose first layer takes n_in."""
+    x = np.asarray(x, np.float32)
+    if x.shape[1] == n_in:
+        return x
+    if x.shape[1] == N_INPUTS and n_in == N_INPUTS_NEAR_ZERO:
+        return np.concatenate([x, near_zero(x)], axis=1)
+    raise ValueError(f"inputs of width {x.shape[1]} do not fit a net that takes {n_in}")
+
+
+def features_text(n_in):
+    return FEATURES_NEAR_ZERO if n_in == N_INPUTS_NEAR_ZERO else FEATURES
 
 
 def meta_features(pot_bb, stack_bb, rake_frac, rake_cap_bb, pot_type):
@@ -160,8 +189,10 @@ def _write(path, header, members):
 
 
 def write(path, weights, biases, mu, sd, extra=None):
-    header = {"format": "gtopen-leaf-net", "version": 1, "sizes": layer_sizes(weights), "activation": "relu",
-              "features": FEATURES, "output": "solved minus balanced value, oop 169 then ip 169, fraction of pot"}
+    sizes = layer_sizes(weights)
+    header = {"format": "gtopen-leaf-net", "version": 1, "sizes": sizes, "activation": "relu",
+              "features": features_text(sizes[0]),
+              "output": "solved minus balanced value, oop 169 then ip 169, fraction of pot"}
     header.update(extra or {})
     if header.get("total_rule") is not None:
         check_total_rule(header["total_rule"])
@@ -175,7 +206,7 @@ def write_ensemble(path, members, extra=None):
         raise ValueError("an ensemble needs at least two members")
     sizes = [layer_sizes(m[0]) for m in members]
     header = {"format": "gtopen-leaf-net", "version": 2, "sizes": sizes[0], "ensemble": sizes, "activation": "relu",
-              "features": FEATURES,
+              "features": "; ".join(dict.fromkeys(features_text(m[0]) for m in sizes)),
               "output": "mean over the members of solved minus balanced value, oop 169 then ip 169, fraction of pot"}
     header.update(extra or {})
     if header.get("total_rule") is not None:
@@ -223,7 +254,9 @@ def read(path):
 
 
 def forward(weights, biases, mu, sd, x):
-    x = (np.asarray(x, np.float32) - mu) / sd
+    """The net's output for inputs x of the first layout (a "near zero" net gets its extra inputs here) or of
+    the net's own width."""
+    x = (inputs_for(x, len(mu)) - mu) / sd
     for i, (W, b) in enumerate(zip(weights, biases)):
         x = x @ W + b
         if i < len(weights) - 1:
