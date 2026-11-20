@@ -207,6 +207,13 @@ class PlayFloorWeights(unittest.TestCase):
         half = train.teacher_tag(dict(train.CONFIG, play_floor=0.5))
         self.assertEqual(len({base, real, every, half}), 4)
         self.assertTrue(real.startswith(base))
+        # with the floor kept out of the teachers they are the usual ones, cache names and all
+        only_net = train.for_teachers(dict(train.CONFIG, play_floor=1.0, play_floor_teachers=False))
+        self.assertEqual(train.teacher_tag(only_net), base)
+        self.assertEqual(only_net["play_floor"], 0.0)
+        cfg = dict(train.CONFIG, play_floor=1.0)
+        self.assertIs(train.for_teachers(cfg), cfg)
+        self.assertTrue(train.CONFIG["play_floor_teachers"])
 
 
 class Budget:

@@ -98,6 +98,13 @@ needs rows whose solves carry token weights. "play_floor_rows": "real"
 applies it to the real-range rows only, "all" to every training row.
 Teachers trained with a floor are cached under their own names. Validation,
 the harness's scores and the synthetic leaves keep the snapshot's weights.
+"play_floor_teachers": False keeps the floor out of the teachers: they are
+the recipe's usual ones (and their cache), and the floor acts in the net's
+own loss only. A teacher sees a range's weights on a linear scale like any
+net without the "near zero" inputs, so a floor lifts its played hands too,
+and the net inherits that through the flop average and the synthetic
+leaves' labels. The net's main target, value minus luck, stays unbiased
+whatever the teachers get wrong.
 
 The "near zero" inputs (CONFIG["near_zero"], near_zero.py). The floor above
 failed by itself: every floor that lifted the hands outside the range also
@@ -182,6 +189,7 @@ CONFIG = {
     "real_distill_mix": None,  # distill_mix of real-range rows (None = distill_mix; 0 = value minus luck only)
     "play_floor": 0.0,      # count every solved hand in the losses as if its weight in the range were at least this (0 = off)
     "play_floor_rows": "real",  # rows the floor applies to: "real" (real-range rows) or "all"
+    "play_floor_teachers": True,  # False: the floor acts in the net's loss only, the teachers are trained without it
     "near_zero": False,     # the wider input layout: one more input per class that marks a hand the range does not hold
 }
 
@@ -402,6 +410,12 @@ def teacher_tag(cfg):
     if float(cfg.get("play_floor", 0.0) or 0.0) > 0:
         tag += f"-pf{float(cfg['play_floor']):g}" + ("" if cfg.get("play_floor_rows", "real") == "real" else "all")
     return tag
+
+
+def for_teachers(cfg):
+    """The settings the teachers are trained and cached with: cfg, without the play floor when
+    CONFIG["play_floor_teachers"] is off."""
+    return cfg if cfg.get("play_floor_teachers", True) else dict(cfg, play_floor=0.0)
 
 
 def syn_kinds(cfg):
@@ -724,6 +738,7 @@ def prepare(cfg, data):
     recipe whose teacher is trained inside the run (no "t_ens", or "t_cache" off)."""
     if not (cfg.get("teacher") and cfg.get("t_ens") and cfg.get("t_cache")):
         return
+    cfg = for_teachers(cfg)
     cache_dir = load_side(data)[2]
     n_syn = int(cfg.get("n_syn", 0))
     syn_seed = None if cfg.get("syn_seed") is None else int(cfg["syn_seed"])
@@ -787,7 +802,8 @@ def run(cfg, data, budget, generator):
     if cfg.get("teacher"):
         # the teachers' side data (and the synthetic leaves) of cfg["syn_seed"] when set, so seed replicates share
         # their targets and differ only in the net's initialisation and batch order
-        tcfg = cfg if cfg.get("syn_seed") is None else dict(cfg, seed=int(cfg["syn_seed"]))
+        tc = for_teachers(cfg)                   # the teachers' settings (cfg itself unless the floor is the net's only)
+        tcfg = tc if cfg.get("syn_seed") is None else dict(tc, seed=int(cfg["syn_seed"]))
         kinds = syn_kinds(cfg)                   # "mix+fresh": n_syn leaves of each kind
         tcfg = dict(tcfg, syn_kind=kinds[0])
         z = teacher_targets(tcfg, data, generator)
@@ -796,7 +812,7 @@ def run(cfg, data, budget, generator):
             xs, Ts, ws = z["xs"], z["Ts"], z["ws"]
         if cfg.get("t_ens"):
             # average the real leaves' targets over several teachers (seeds); each is trained or read from the cache
-            zs = [teacher_targets(dict(cfg, seed=s, n_syn=0, val_cv=False), data, generator) for s in cfg["t_ens"]]
+            zs = [teacher_targets(dict(tc, seed=s, n_syn=0, val_cv=False), data, generator) for s in cfg["t_ens"]]
             T = torch.stack([q["T"].float() for q in zs]).mean(0).half()
             own = torch.stack([q["own"].float() for q in zs]).mean(0).half()
             del zs
