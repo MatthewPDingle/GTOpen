@@ -3,5 +3,23 @@
   "current_generator": 5,
   "real_contributors": ["MatthewPDingle"],
   "go_no_go_examples": 50000,
-  "goal_examples": 300000
+  "goal_examples": 300000,
+  "stages": [
+    {
+      "since": "2026-11-06",
+      "title": "Random ranges in a first set of games",
+      "for": "Data for the first check and for leaf nets v1 and v2."
+    },
+    {
+      "since": "2026-11-16",
+      "title": "Random ranges in common live and online games (game mix 1)",
+      "for": "Data for leaf net v3, the learned flop values Preflop Lab uses today: live rake, straddles, deep stacks."
+    },
+    {
+      "since": "2026-11-21T01:53:00+00:00",
+      "title": "Game mix 2: half as mix 1, half spots from our own preflop solves",
+      "for": "Data for leaf net v4: what the hands just outside each range are worth, so calling ranges come out right.",
+      "target": {"list": "outside-hands-1", "solves": 15000}
+    }
+  ]
 }

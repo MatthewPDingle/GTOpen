@@ -413,6 +413,55 @@ class CountingTests(Base):
     def counted(self):
         return sorted((e["pr"], e["contributor"], e["jobs"], e["examples"]) for e in self.progress()["events"])
 
+    def spots_pr(self, job, spots=2, random=1, login="Anyone"):
+        """A job of game mix 2: `spots` examples drawn from a situation list and `random` with random ranges."""
+        job += 2 << validate.MIX_SHIFT
+        d = os.path.join(self.tmp, f"job-{job}")
+        os.makedirs(d)
+        rows = [{"type": "header", "job": job, "contributor": login, "examples": spots + random}]
+        rows += [{"type": "example", "situation": f"outside-hands-1/g01:{k}"} for k in range(spots)]
+        rows += [{"type": "example"}] * random
+        with open(os.path.join(d, "job.jsonl"), "w") as f:
+            f.write("".join(json.dumps(r) + "\n" for r in rows))
+        return self.open_pr({f"data/{login}/job-{job}.jsonl.gz": self.gz(os.path.join(d, "job.jsonl"))},
+                            title=f"{login}: 1 jobs, {spots + random} examples")
+
+    def test_examples_drawn_from_a_situation_list_are_counted_by_list(self):
+        self.pooled_pr(1001)
+        self.spots_pr(1002, spots=2, random=1)
+        self.spots_pr(1003, spots=4, random=3)
+        self.validate()
+        p = self.progress()
+        self.assertEqual([e["spots"] for e in sorted(p["events"], key=lambda e: e["pr"])],
+                         [{}, {"outside-hands-1": 2}, {"outside-hands-1": 4}])
+        self.assertEqual(p["spots"], {"outside-hands-1": 6})
+        self.assertEqual(p["total_examples"], 12)
+
+    def test_a_recounted_merge_counts_its_situation_examples_from_the_file(self):
+        self.spots_pr(1001, spots=3, random=2)
+        self.lose_the_count()
+        self.validate()
+        (e,) = self.progress()["events"]
+        self.assertEqual((e["examples"], e["spots"]), (5, {"outside-hands-1": 3}))
+
+    def test_merges_an_older_validator_recorded_get_their_situation_examples(self):
+        self.pooled_pr(1001)
+        self.spots_pr(1002, spots=3, random=2)
+        self.validate()
+        p = self.progress()
+        for e in p["events"]:
+            del e["spots"]                                   # as a validator from before the count wrote them
+        early, late = sorted(p["events"], key=lambda e: e["pr"])
+        early["time"], late["time"] = "2026-11-20T10:00:00+00:00", "2026-11-21T03:00:00+00:00"
+        self.hub.main["progress.json"] = json.dumps(p).encode()
+        text = self.validate()
+        self.assertIn("situation examples to 1", text)
+        early, late = sorted(self.progress()["events"], key=lambda e: e["pr"])
+        self.assertNotIn("spots", early)                     # from before any mix drew from a list: nothing to count
+        self.assertEqual(late["spots"], {"outside-hands-1": 3})
+        self.assertEqual(self.progress()["spots"], {"outside-hands-1": 3})
+        self.assertNotIn("situation examples to", self.validate())   # and it is done once
+
     def test_each_merge_is_written_before_the_next_pull_request(self):
         self.pooled_pr(1001)
         self.pooled_pr(1002)
