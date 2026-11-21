@@ -498,6 +498,18 @@ class SnapshotTests(unittest.TestCase):
         with open(os.path.join(self.work, "snapshots", "situations", "inputs_val.jsonl")) as f:
             self.assertEqual(sum(1 for _ in f), m["examples_by_split"]["val"])
         self.assertNotIn("situation_examples", self.manifest("base"))
+        # the flop side data follows the rows, not the files: a test job's situation rows are training rows
+        try:
+            import flops
+        except ImportError:
+            self.skipTest("needs torch")
+        snap = os.path.join(self.work, "snapshots", "situations")
+        data = types.SimpleNamespace(work=self.work, snapshot="situations", dir=snap, manifest=m)
+        flop, eq, _ = flops.load_side(data)
+        test = split == harness.SPLITS["test"]
+        self.assertTrue((drawn & (by_job == harness.SPLITS["test"])).any())
+        self.assertTrue((flop[~test] >= 0).all() and (flop[test] == -1).all())
+        self.assertTrue((np.abs(eq[~test]).sum(axis=(1, 2)) > 0).all() and not eq[test].any())
 
     def net(self, name, bias):
         """A net whose residual is `bias` for every class: its predictions are the balanced model's plus bias."""

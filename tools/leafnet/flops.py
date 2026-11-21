@@ -152,9 +152,12 @@ def load_side(data):
     flop = np.full(n, -1, np.int32)
     eq = np.zeros((n, 2, NC), np.float16)
     row = 0
+    test = split == harness.SPLITS["test"]
     for fm in m["files_manifest"]:
         k = fm["examples"]
-        if split[row] == harness.SPLITS["test"]:
+        # the split is per row, not per file: a test job's examples drawn from a published situation
+        # list are training rows (prepare.py), so only a file of nothing but test rows is passed over
+        if test[row:row + k].all():
             row += k
             continue
         with gzip.open(os.path.join(m["source"], fm["file"]), "rt", encoding="utf-8") as f:
@@ -162,11 +165,12 @@ def load_side(data):
             for line in f:
                 if '"type":"example"' not in line.replace(" ", ""):
                     continue
-                rec = json.loads(line)
-                assert int(rec["job"]) == int(jobs[row + i]), "snapshot order does not follow the manifest"
-                b = rec["board"]
-                flop[row + i] = ids[canon_key([(RANKS.index(b[j]), b[j + 1]) for j in (0, 2, 4)])]
-                eq[row + i] = np.nan_to_num(np.array(rec["eq"], np.float64)).astype(np.float16)
+                if not test[row + i]:
+                    rec = json.loads(line)
+                    assert int(rec["job"]) == int(jobs[row + i]), "snapshot order does not follow the manifest"
+                    b = rec["board"]
+                    flop[row + i] = ids[canon_key([(RANKS.index(b[j]), b[j + 1]) for j in (0, 2, 4)])]
+                    eq[row + i] = np.nan_to_num(np.array(rec["eq"], np.float64)).astype(np.float16)
                 i += 1
             assert i == k
         row += k
