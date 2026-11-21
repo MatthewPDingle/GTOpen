@@ -34,6 +34,7 @@ Needs a build of solve-cli (GPU build recommended) and, except with --local,
 
 import argparse
 import datetime
+import functools
 import gzip
 import json
 import os
@@ -130,6 +131,26 @@ def check_job(cli, login, job, local_jsonl, sample):
         errors.append(f"header job {summary.get('job')} does not match file name {job}")
     errors += summary.get("errors", [])
     return errors, summary
+
+
+def spots_in(local_jsonl):
+    """How many of a job file's examples were drawn from each published situation list: {list: count}.
+    Such an example names its situation as LIST/ID; an example with random ranges names none."""
+    out = {}
+    with open(local_jsonl, encoding="utf-8") as f:
+        for line in f:
+            if '"situation"' not in line:
+                continue
+            name = str(json.loads(line).get("situation") or "").split("/", 1)[0]
+            if name:
+                out[name] = out.get(name, 0) + 1
+    return out
+
+
+def add_spots(total, more):
+    for name, n in more.items():
+        total[name] = total.get(name, 0) + n
+    return total
 
 
 def generator_of(local_jsonl):
@@ -272,6 +293,10 @@ def save_progress(api, repo, progress, message):
         by[e["contributor"]] = by.get(e["contributor"], 0) + e["examples"]
     progress["contributors"] = dict(sorted(by.items(), key=lambda kv: -kv[1]))
     progress["real_examples"] = sum(e["examples"] for e in events if e.get("kind") == "real")
+    spots = {}
+    for e in events:
+        add_spots(spots, e.get("spots") or {})
+    progress["spots"] = dict(sorted(spots.items()))  # examples drawn from each published situation list
     progress["go_no_go_examples"] = cfg["go_no_go_examples"]
     progress["goal_examples"] = cfg["goal_examples"]
     progress["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
@@ -476,6 +501,44 @@ def header_examples(api, repo, path):
         shutil.rmtree(stage, ignore_errors=True)
 
 
+SPOTS_FROM = "2026-11-21T01:53:00+00:00"  # game mix 2, the first to draw from a situation list, was published then
+
+
+def file_spots(api, repo, path):
+    """{list: count} for a job file on main (see spots_in); nothing to read for a job of a mix before the lists."""
+    m = PATH_RE.match(path)
+    if not m or int(m.group(2)) >> MIX_SHIFT < 2:
+        return {}
+    from huggingface_hub import hf_hub_download
+    stage = tempfile.mkdtemp(prefix="gtopen-spots-")
+    try:
+        gz = hf_hub_download(repo, path, repo_type="dataset", cache_dir=stage)
+        plain = os.path.join(stage, "job.jsonl")
+        with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
+            shutil.copyfileobj(src, dst)
+        return spots_in(plain)
+    finally:
+        shutil.rmtree(stage, ignore_errors=True)
+
+
+def backfill_spots(api, repo, progress):
+    """Count the situation-list examples of merges that an older validator recorded without them."""
+    filled = 0
+    for e in progress.get("events", []):
+        if "spots" in e or "pr" not in e or e.get("kind") == "real" or (e.get("time") or "") < SPOTS_FROM:
+            continue
+        try:
+            added, other = patiently(pr_changes, api, repo, e["pr"])
+            mine = [p for p in added + other if PATH_RE.match(p) and PATH_RE.match(p).group(1) == e["contributor"]]
+            if not mine:
+                continue  # its files could not be listed: look again on a later pass
+            e["spots"] = functools.reduce(add_spots, (patiently(file_spots, api, repo, p) for p in mine), {})
+            filled += 1
+        except Exception as err:
+            print(f"   could not count the situation examples of PR #{e['pr']}: {type(err).__name__}: {err}")
+    return filled
+
+
 def merged_pr_events(api, repo, pr):
     """The progress events for a pull request that was merged but never counted.
 
@@ -526,6 +589,8 @@ def merged_pr_events(api, repo, pr):
                  "contributor": login, "jobs": jobs, "examples": examples, "pr": pr.num}
         if kind == "real":
             event["kind"] = "real"
+        elif (login, kind) in groups:
+            event["spots"] = functools.reduce(add_spots, (file_spots(api, repo, p) for p in groups[(login, kind)]), {})
         events.append(event)
     return events
 
@@ -622,11 +687,11 @@ def run_prs(args):
                         login = real.group(1)
                         errs, summary = check_game(args.solve_cli, login, real.group(2), real.group(3), plain,
                                                    args.sample, args.real_max_vram, set(cfg.get("real_contributors", [])))
-                        jobs.append((login, "real", summary.get("examples", 0)))
+                        jobs.append((login, "real", summary.get("examples", 0), {}))
                     else:
                         login, job = m.group(1), int(m.group(2))
                         errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
-                        jobs.append((login, "pool", summary.get("examples", 0)))
+                        jobs.append((login, "pool", summary.get("examples", 0), spots_in(plain)))
                         versions.append(generator_of(plain))
                     errors += [f"{path}: {e}" for e in errs]
             finally:
@@ -662,6 +727,8 @@ def run_prs(args):
                          "examples": sum(j[2] for j in mine), "pr": pr.num}
                 if kind == "real":
                     event["kind"] = "real"  # jobs = game files here
+                else:
+                    event["spots"] = functools.reduce(add_spots, (j[3] for j in mine), {})
                 events.append(event)
             # Count it now: a validator closed part-way through a pass must not leave merges uncounted.
             try:
@@ -676,9 +743,11 @@ def run_prs(args):
             try:
                 progress = load_progress(api, repo)
                 filled = backfill_times(api, repo, progress)
-                if filled:
-                    save_progress(api, repo, progress, f"progress: merge times for {filled} older entries")
-                    print(f"progress.json: added merge times to {filled} older entries")
+                counted = backfill_spots(api, repo, progress)
+                if filled or counted:
+                    save_progress(api, repo, progress, f"progress: merge times for {filled} older entries, "
+                                                       f"situation examples for {counted}")
+                    print(f"progress.json: added merge times to {filled} older entries, situation examples to {counted}")
                     graph(progress)
             except Exception as err:
                 print(f"   could not check older entries' merge times: {type(err).__name__}: {err}")

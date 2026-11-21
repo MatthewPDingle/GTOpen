@@ -8,6 +8,13 @@ Writes progress.svg (cumulative validated examples over time, with the
 go/no-go and goal marks) and contributors.md. Standard library only, so the
 GitHub Action needs no installs. A missing progress.json renders an empty
 "not started" chart.
+
+Under the graph the SVG lists the stages of config.json's "stages": what the
+pool was given to solve from when, and what that data is for. A stage is
+marked on the graph by its number where it began. A stage with a "target"
+({"list": NAME, "solves": N}) gets a bar: how many validated examples were
+drawn from that published situation list so far (the events' "spots", which
+validate.py counts as it merges).
 """
 
 import argparse
@@ -20,8 +27,9 @@ from xml.sax.saxutils import escape
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-W, H = 820, 340
+W, H = 820, 340               # H is the graph's part; the list of stages comes under it
 L, R, T, B = 64, 128, 64, 44  # plot margins (right margin holds the mark labels)
+STAGE_H, BAR_H = 42, 24       # a stage's row under the graph, and the extra room its target bar takes
 
 
 def load_config():
@@ -78,6 +86,25 @@ def series(progress):
     return out
 
 
+def stage_time(stage):
+    """When a stage began (UTC): its "since", a date or a full time."""
+    since = stage["since"]
+    if len(since) <= 10:
+        d = datetime.date.fromisoformat(since)
+        return datetime.datetime(d.year, d.month, d.day, tzinfo=UTC)
+    t = datetime.datetime.fromisoformat(since.replace("Z", "+00:00"))
+    return t.replace(tzinfo=UTC) if t.tzinfo is None else t.astimezone(UTC)
+
+
+def spots(progress):
+    """Validated examples drawn from each published situation list: {list: count}."""
+    out = {}
+    for e in progress.get("events", []):
+        for name, n in (e.get("spots") or {}).items():
+            out[name] = out.get(name, 0) + int(n)
+    return out
+
+
 def time_label(t, span_s):
     if span_s <= 2 * 86400:
         return t.strftime("%b %d %H:%M UTC").replace(" 0", " ")
@@ -107,28 +134,36 @@ def render_svg(progress, cfg):
     def Y(v):
         return T + ph * (1 - v / ymax)
 
+    stages = sorted(cfg.get("stages", []), key=stage_time)
+    done = spots(progress)
+    full = H + (34 + sum(STAGE_H + (BAR_H if s.get("target") else 0) for s in stages) + 8 if stages else 0)
     o = []
-    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
+    o.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {full}" width="{W}" height="{full}" '
              f'role="img" aria-labelledby="t d">')
     pct = 100 * total / goal if goal else 0
     title = f"{total:,} training examples from {n_contrib} contributor{'s' if n_contrib != 1 else ''}"
     o.append(f'<title id="t">GTOpen value-net training data: {escape(title)}</title>')
+    told = " ".join(f"Stage {i}, from {stage_time(s).strftime('%b %d').replace(' 0', ' ')}: {s['title']}. {s['for']}."
+                    for i, s in enumerate(stages, 1))
     o.append(f'<desc id="d">Cumulative validated examples over time. Go/no-go check at {gate:,}, '
-             f'goal {goal:,}. {pct:.1f}% of goal.</desc>')
+             f'goal {goal:,}. {pct:.1f}% of goal. {escape(told)}</desc>')
     o.append("""<style>
   .bg{fill:#fcfcfb}.t1{fill:#0b0b0b}.t2{fill:#52514e}.grid{stroke:#e4e3df}.axis{stroke:#b9b8b2}
   .mark{stroke:#8a8983;stroke-dasharray:5 4}.line{stroke:#2a78d6;fill:none}.area{fill:#2a78d6;fill-opacity:.12}
-  .dot{fill:#2a78d6;stroke:#fcfcfb}
+  .dot{fill:#2a78d6;stroke:#fcfcfb}.stage{stroke:#8a8983;stroke-dasharray:2 4}.num{fill:#52514e}.numt{fill:#fcfcfb}
+  .rule{stroke:#e4e3df}.track{fill:#e4e3df}.fill{fill:#2a78d6}
   text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
   @media (prefers-color-scheme: dark){
     .bg{fill:#1a1a19}.t1{fill:#f0efec}.t2{fill:#c3c2b7}.grid{stroke:#33332f}.axis{stroke:#5a5953}
     .mark{stroke:#8f8e87}.line{stroke:#3987e5}.area{fill:#3987e5;fill-opacity:.18}.dot{fill:#3987e5;stroke:#1a1a19}
+    .stage{stroke:#8f8e87}.num{fill:#c3c2b7}.numt{fill:#1a1a19}.rule{stroke:#33332f}.track{fill:#33332f}.fill{fill:#3987e5}
   }
 </style>""")
-    o.append(f'<rect class="bg" width="{W}" height="{H}" rx="8"/>')
+    o.append(f'<rect class="bg" width="{W}" height="{full}" rx="8"/>')
     o.append(f'<text class="t1" x="{L}" y="28" font-size="17" font-weight="600">{escape(title)}</text>')
     updated = progress.get("updated", "never")[:16].replace("T", " ")
-    sub = (f"{pct:.1f}% of the {fmt_k(goal)} goal · updated {updated}{' UTC' if updated != 'never' else ''}"
+    reached = f"past the {fmt_k(goal)} goal" if total >= goal else f"{pct:.1f}% of the {fmt_k(goal)} goal"
+    sub = (f"{reached} · updated {updated}{' UTC' if updated != 'never' else ''}"
            if pts else "Pilot starting: no validated examples yet")
     o.append(f'<text class="t2" x="{L}" y="48" font-size="12.5">{escape(sub)}</text>')
     # grid + y labels
@@ -148,6 +183,23 @@ def render_svg(progress, cfg):
         y = Y(val)
         o.append(f'<line class="mark" x1="{L}" x2="{L + pw}" y1="{y:.1f}" y2="{y:.1f}" stroke-width="1.5"/>')
         o.append(f'<text class="t2" x="{L + pw + 8}" y="{y + 4:.1f}" font-size="11.5">{escape(label)}</text>')
+    # where each stage began: a dotted line with the stage's number (a stage from before the graph's start sits at its left)
+    def badge(x, y, i):
+        return (f'<circle class="num" cx="{x:.1f}" cy="{y:.1f}" r="8"/>'
+                f'<text class="numt" x="{x:.1f}" y="{y + 3.8:.1f}" font-size="10.5" font-weight="600" text-anchor="middle">{i}</text>')
+
+    last_x = None
+    for i, s in enumerate(stages, 1):
+        t = stage_time(s)
+        if t > x1:
+            continue
+        x = max(X(t), L)
+        if last_x is not None and x - last_x < 18:
+            x = last_x + 18  # two stages close together: numbers side by side
+        last_x = x
+        if x > L + 0.5:
+            o.append(f'<line class="stage" x1="{x:.1f}" x2="{x:.1f}" y1="{T + 18}" y2="{T + ph}" stroke-width="1.5"/>')
+        o.append(badge(x, T + 9, i))
     # series (steps: the total holds until the next merge)
     if pts:
         path = [(X(x0), Y(0))]
@@ -162,6 +214,32 @@ def render_svg(progress, cfg):
         o.append(f'<circle class="dot" cx="{X(x1):.1f}" cy="{Y(total):.1f}" r="4.5" stroke-width="2"/>')
         o.append(f'<text class="t1" x="{X(x1) - 8:.1f}" y="{Y(total) - 10:.1f}" font-size="12.5" '
                  f'font-weight="600" text-anchor="end">{total:,}</text>')
+    # the stages: what the pool was given to solve, and what that data is for
+    if stages:
+        y = H
+        o.append(f'<line class="rule" x1="{L}" x2="{W - 24}" y1="{y}" y2="{y}" stroke-width="1"/>')
+        o.append(f'<text class="t1" x="{L}" y="{y + 22}" font-size="13" font-weight="600">'
+                 f'What the pool solves, and what it is for</text>')
+        y += 34
+        for i, s in enumerate(stages, 1):
+            when = stage_time(s).strftime("%b %d").replace(" 0", " ")
+            o.append(badge(L - 22, y + 10, i))
+            o.append(f'<text class="t1" x="{L}" y="{y + 14}" font-size="12.5"><tspan font-weight="600">'
+                     f'From {when}:</tspan> {escape(s["title"])}</text>')
+            o.append(f'<text class="t2" x="{L}" y="{y + 31}" font-size="12">{escape(s["for"])}</text>')
+            y += STAGE_H
+            target = s.get("target")
+            if target:
+                want, have = int(target["solves"]), done.get(target["list"], 0)
+                bw = 300
+                o.append(f'<rect class="track" x="{L}" y="{y}" width="{bw}" height="9" rx="4.5"/>')
+                if have:
+                    o.append(f'<rect class="fill" x="{L}" y="{y}" width="{max(bw * min(have / want, 1), 9):.1f}" '
+                             f'height="9" rx="4.5"/>')
+                o.append(f'<text class="t2" x="{L + bw + 10}" y="{y + 9}" font-size="12">'
+                         f'<tspan class="t1" font-weight="600">{have:,}</tspan> of {want:,} of these spots solved'
+                         f'{" · target reached" if have >= want else ""}</text>')
+                y += BAR_H
     o.append("</svg>")
     return "\n".join(o) + "\n"
 

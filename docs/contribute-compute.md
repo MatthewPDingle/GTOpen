@@ -14,11 +14,27 @@ dataset is far more than one desktop can produce quickly. Every GPU helps.
 [Dataset on Hugging Face](https://huggingface.co/datasets/GTOpen/gtopen-leaf-values) ·
 the count and the graph update as soon as uploads are validated.
 
-**Status: first checkpoint passed (2026-11-09), collecting toward 300,000 examples.**
-At 57,400 examples a first net was trained and scored on 56 held-out jobs it
-never saw. It beat every realization model Preflop Lab uses today, at both the
-hand-class and whole-range level, removing about 10% of the pot (RMS) of the
-default model's error. The next goal is **300,000 examples**.
+**Status (2026-11-21): close to the 300,000 goal, and solving for the next net.**
+The graph shows every validated example. Under it is what the pool has been
+given to solve since when, and what that data is for.
+
+| Since | What contributors solve | What it is for |
+| --- | --- | --- |
+| 6 Nov | Random ranges in a first set of games | The first check (below) and leaf nets v1 and v2 |
+| 16 Nov | Random ranges in common live and online games ([game mix](#game-mixes) 1) | Leaf net v3, the learned flop values Preflop Lab uses today |
+| 21 Nov | Game mix 2: half as mix 1, half spots from GTOpen's own preflop solves | Leaf net v4. **Target: 15,000 of these spots solved** |
+
+Mix 2's spots are the ranges our own preflop solves reach a flop with, and
+every hand a range does not hold is given a trace of weight so that the flop
+solve prices it too. Today's net never saw a value for those hands and prices
+them too low, which makes Preflop Lab call raises too rarely. A generator of
+version 5 moved to mix 2 by itself; an older one needs one last `git pull`
+and restart.
+
+The first check, on 2026-11-09: at 57,400 examples a first net was trained and
+scored on 56 held-out jobs it never saw. It beat every realization model
+Preflop Lab had then, at both the hand-class and whole-range level, removing
+about 10% of the pot (RMS) of the default model's error.
 
 ## What you need
 
@@ -373,6 +389,10 @@ anything. The shares of a mix's parts add up to 1, and so do the shares
 inside a `random` part (pot types, tables, rake). `cargo test -p solver --lib
 datagen_mix` checks the file.
 
+- **Say what it is for.** Add the mix to `"stages"` in
+  `tools/datagen/config.json` (since when, what is solved, what the data is
+  for, and a target if it draws from a situation list). The progress graph
+  lists the stages under the total and marks where each began.
 - **Never edit a published mix.** Uploads are checked by drawing their
   inputs again from the mix they name, so an edit would fail every job made
   under it. To change anything, add a new mix (to go back to an earlier one,
