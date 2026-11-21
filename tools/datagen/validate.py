@@ -141,7 +141,10 @@ def spots_in(local_jsonl):
         for line in f:
             if '"situation"' not in line:
                 continue
-            name = str(json.loads(line).get("situation") or "").split("/", 1)[0]
+            try:
+                name = str(json.loads(line).get("situation") or "").split("/", 1)[0]
+            except (ValueError, AttributeError):
+                continue  # not a record: the check of the file itself reports that
             if name:
                 out[name] = out.get(name, 0) + 1
     return out
