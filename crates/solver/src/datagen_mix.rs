@@ -997,13 +997,15 @@ mod tests {
         sync.url = published.to_string_lossy().into_owned();
         sync.lists_url = dir.join("published").to_string_lossy().into_owned();
         sync.every = std::time::Duration::ZERO; // look again every time
-        let built_in = sync.book.open_ids()[0];
-        // nothing published yet: the read fails and the built-in mix stays
+        let newest = sync.book.open_ids()[0];
+        // nothing published yet: the read fails and the newest built-in mix that needs no list stays
+        // (a built-in mix that draws from a list waits for the list like any other)
         assert!(sync.refresh().is_err());
-        assert_eq!(sync.choose().0, Some(built_in));
+        let built_in = sync.choose().0.expect("a built-in mix that needs no list");
+        assert!(built_in <= newest);
         // a new mix with a situation list whose file is not there yet: passed over, with the reason
         let mut next = mix(serde_json::json!([random_part(0.5), {"kind": "situations", "share": 0.5, "list": "callfix-1", "sha256": sha}]));
-        next["id"] = (built_in + 1).into();
+        next["id"] = (newest + 1).into();
         let mut all: Vec<serde_json::Value> = serde_json::from_str::<serde_json::Value>(BUILT_IN).unwrap()["mixes"].as_array().unwrap().clone();
         all.push(next);
         std::fs::write(&published, file(all.clone())).unwrap();
@@ -1016,27 +1018,27 @@ mod tests {
         assert!(sync.choose().1[0].contains("SHA-256 differs"));
         // the right file: the new mix is chosen and drawn
         std::fs::write(dir.join("published").join("callfix-1.jsonl"), &text).unwrap();
-        assert_eq!(sync.choose(), (Some(built_in + 1), vec![]));
-        let job = datagen::mix_job("alice", built_in + 1, 0);
-        assert!((0..50).any(|i| sync.book.inputs(built_in + 1, job, i, None).unwrap().situation.is_some()));
+        assert_eq!(sync.choose(), (Some(newest + 1), vec![]));
+        let job = datagen::mix_job("alice", newest + 1, 0);
+        assert!((0..50).any(|i| sync.book.inputs(newest + 1, job, i, None).unwrap().situation.is_some()));
         // a later start with no network still knows the new mix and its list
         std::fs::remove_dir_all(dir.join("published")).unwrap();
         let mut again = MixSync::open(&dir.join("cache"));
         again.url = published.to_string_lossy().into_owned();
         again.lists_url = dir.join("published").to_string_lossy().into_owned();
         assert!(again.refresh().is_err());
-        assert_eq!(again.choose(), (Some(built_in + 1), vec![]));
+        assert_eq!(again.choose(), (Some(newest + 1), vec![]));
         // the list was read (tried) a moment ago: not again for a few minutes, here or in another
         // process that shares the folder
         assert!(again.refresh_if_due().is_none());
         assert!(MixSync::open(&dir.join("cache")).refresh_if_due().is_none());
         // and a list that would not load is not fetched again on every job either
         let mut all = all;
-        all.push(serde_json::json!({"id": built_in + 2, "needs_generator": 5, "note": "another list",
+        all.push(serde_json::json!({"id": newest + 2, "needs_generator": 5, "note": "another list",
             "parts": [{"kind": "situations", "share": 1.0, "list": "missing", "sha256": "0".repeat(64)}]}));
         again.book.add_text(&file(all)).unwrap();
         let first = again.choose();
-        assert_eq!(first.0, Some(built_in + 1));
+        assert_eq!(first.0, Some(newest + 1));
         assert!(first.1[0].contains("situation list missing"), "{:?}", first.1);
         assert!(again.failed.contains_key(&"0".repeat(64)));
         std::fs::create_dir_all(dir.join("published")).unwrap();
