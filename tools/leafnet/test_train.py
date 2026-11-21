@@ -51,7 +51,8 @@ class Snapshot:
         self.dir, self.device, self.n_train = folder, "cpu", len(tr)
         self.n_in, self.n_out = N_IN, 2 * NC
         mu, sd = x[tr].mean(axis=0), x[tr].std(axis=0)                 # inputs normalized as the harness does
-        self.x_train = torch.from_numpy((x[tr] - mu) / np.where(sd < 1e-3, 1.0, sd)).half()
+        self.mu, self.sd = mu.astype(np.float32), np.where(sd < 1e-3, 1.0, sd).astype(np.float32)
+        self.x_train = torch.from_numpy((x[tr] - self.mu) / self.sd).half()
         self.w_train = torch.from_numpy(w.reshape(n, -1)[tr].astype(np.float32)).half()
         resid = np.zeros((n, 2 * NC), np.float32) if resid is None else resid
         self.r_train = torch.from_numpy(resid[tr]).half()
@@ -206,6 +207,13 @@ class PlayFloorWeights(unittest.TestCase):
         half = train.teacher_tag(dict(train.CONFIG, play_floor=0.5))
         self.assertEqual(len({base, real, every, half}), 4)
         self.assertTrue(real.startswith(base))
+        # with the floor kept out of the teachers they are the usual ones, cache names and all
+        only_net = train.for_teachers(dict(train.CONFIG, play_floor=1.0, play_floor_teachers=False))
+        self.assertEqual(train.teacher_tag(only_net), base)
+        self.assertEqual(only_net["play_floor"], 0.0)
+        cfg = dict(train.CONFIG, play_floor=1.0)
+        self.assertIs(train.for_teachers(cfg), cfg)
+        self.assertTrue(train.CONFIG["play_floor_teachers"])
 
 
 class Budget:

@@ -397,6 +397,11 @@ The last two commands print the part to put in the new mix
 the list before the mix is merged. A published list is never changed either;
 a new round gets a new name.
 
+Add `--tokens 0.0001` to `datagen leaves` to give every hand a range does not
+hold that share of the range's largest weight. The flop solves then price the
+hands just outside each range as well, which a leaf net needs to learn what
+they are worth; the hands the range does hold keep their values.
+
 `validate.py` needs a Hugging Face token with write access to the dataset.
 After a merge it redraws the progress graph and force-pushes it to the
 `datagen-progress` branch with your git credentials (at most every ten
