@@ -105,3 +105,85 @@ fn two_player_turn_matches_the_exact_heads_up_solver() {
     }
     assert!(ours.exploitability() < 0.25, "exploitability {}", ours.exploitability());
 }
+
+#[test]
+fn three_player_river_matches_the_exact_three_way_solver() {
+    use crate::multiway::{MwSolver, MwSpot, MwSpotConfig, MwTreeConfig};
+    let (board, ante, stack, bets, raises) = ("AsKd7c4h2s", 2.0, 20.0, "66", "100");
+    let cfg = config(3, &[board], ante, stack, bets, raises, false);
+    let mut s = BpSolver::new(&cfg, 1 << 30).unwrap();
+    for r in 0..40 {
+        s.run_round(1_000_000, 4, 31 + r);
+    }
+    let ours = s.sampled_values(4_000_000, 4, 3, None);
+
+    let tree = MwTreeConfig::uniform(3.0 * ante, stack, &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
+    let spot = MwSpot::new(MwSpotConfig { board: board.into(), ranges: std::array::from_fn(|_| any_two()), tree }).unwrap();
+    let spot = std::sync::Arc::new(spot);
+    let mut exact = MwSolver::new(spot.clone(), crate::store::Storage::F32);
+    for _ in 0..300 {
+        exact.iterate();
+    }
+    let (evs, gaps) = exact.exploitability();
+    eprintln!("3-way river: ours {ours:?}; exact values {evs:?} gaps {gaps:?}");
+    // The exact solver reports each seat's share of the pot; ours is the
+    // result after the ante.
+    for p in 0..3 {
+        let theirs = evs[p] - if evs.iter().sum::<f64>() > 1.0 { ante } else { 0.0 };
+        assert!((ours[p].0 - theirs).abs() < 0.05 + 4.0 * ours[p].1, "seat {p}: {} vs {theirs}", ours[p].0);
+    }
+    // First seat's opening action, hand by hand.
+    let root = &s.tree.nodes[0];
+    let na = root.num_children as usize;
+    let sig = exact.average_strategy(0);
+    let nh = spot.hands[0].len();
+    let mut diff = 0.0f64;
+    let mut freq = [vec![0.0f64; na], vec![0.0f64; na]];
+    for i in 0..nh {
+        let combo = spot.hand_combo[0][i] as u32;
+        let mut row = [0.0f32; super::tree::MAX_ACTIONS];
+        s.average(root, combo, &mut row);
+        for a in 0..na {
+            diff += (row[a] as f64 - sig[a * nh + i] as f64).abs() / 2.0;
+            freq[0][a] += row[a] as f64 / nh as f64;
+            freq[1][a] += sig[a * nh + i] as f64 / nh as f64;
+        }
+    }
+    eprintln!("first seat opening: ours {:?} exact {:?}, mean difference per hand {:.3}", freq[0], freq[1], diff / nh as f64);
+    for a in 0..na {
+        assert!((freq[0][a] - freq[1][a]).abs() < 0.03);
+    }
+}
+
+#[test]
+fn a_challenger_finds_little_to_gain_after_self_play_and_a_lot_before() {
+    let cfg = config(2, &["AsKd7c4h2s"], 2.0, 20.0, "66", "100", false);
+    let mut s = BpSolver::new(&cfg, 1 << 30).unwrap();
+    let gain = |s: &BpSolver| {
+        let base = s.sampled_values(2_000_000, 4, 1, None);
+        let exact = Exact2::new(s).unwrap().values();
+        let mut out = Vec::new();
+        for seat in 0..2 {
+            let t = s.train_challenger(seat, 2_000_000, 4, 9);
+            let c = super::solver::Challenger { seat, regret: &t };
+            let v = s.sampled_values(2_000_000, 4, 2, Some(&c));
+            out.push((v[seat].0 - base[seat].0, exact.best[seat] - exact.value[seat]));
+        }
+        out
+    };
+    // One round of self-play is still far from good.
+    s.run_round(2_000, 4, 1);
+    let before = gain(&s);
+    for r in 0..40 {
+        s.run_round(100_000, 4, 50 + r);
+    }
+    let after = gain(&s);
+    eprintln!("challenger gain (sampled, exact): before {before:?} after {after:?}");
+    for seat in 0..2 {
+        // The challenger never beats a perfect reply, and comes close to it.
+        assert!(before[seat].0 < before[seat].1 + 0.03);
+        assert!(before[seat].0 > 0.8 * before[seat].1);
+        assert!(after[seat].0 < after[seat].1 + 0.03);
+        assert!(after[seat].0 < 0.1);
+    }
+}
