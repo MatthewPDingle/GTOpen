@@ -18,20 +18,42 @@ use super::solver::BpSolver;
 use super::tree::*;
 use crate::cards::{combo_from_index, Card, NUM_COMBOS};
 
+/// Inputs per hand that describe how it stands against the ranges at a
+/// decision: per board, the share of the other seat's range it beats and
+/// its place in its own seat's range; then the share of the other seat's
+/// range still here, and how often the hand itself gets here.
+pub const RANGE: usize = 6;
+
+/// One decision as a `Policy` sees it.
+pub struct At<'a> {
+    pub node_idx: u32,
+    pub runout: &'a Runout,
+    /// Every card on the boards so far.
+    pub used: u64,
+    /// `[hand * RANGE ..]`, when the policy asked for it and the game was
+    /// built with hand-strength inputs.
+    pub range: Option<&'a [f32]>,
+}
+
 /// How every hand plays one decision.
 pub trait Policy: Sync {
-    /// Fill `out[action * 1326 + hand]` with the actor's probabilities at
-    /// `node_idx`. Hands that use a card in `used` are never read.
-    fn strategies(&self, node_idx: u32, runout: &Runout, used: u64, out: &mut [f32]);
+    /// Fill `out[action * 1326 + hand]` with the actor's probabilities.
+    /// Hands that use a card in `at.used` are never read.
+    fn strategies(&self, at: &At, out: &mut [f32]);
+    /// Whether `strategies` reads `at.range`.
+    fn wants_range(&self) -> bool {
+        false
+    }
 }
 
 /// The average strategy held in a solver's tables.
 pub struct TablePolicy<'a>(pub &'a BpSolver);
 
 impl Policy for TablePolicy<'_> {
-    fn strategies(&self, node_idx: u32, runout: &Runout, used: u64, out: &mut [f32]) {
+    fn strategies(&self, at: &At, out: &mut [f32]) {
         let s = self.0;
-        let node = &s.tree.nodes[node_idx as usize];
+        let (runout, used) = (at.runout, at.used);
+        let node = &s.tree.nodes[at.node_idx as usize];
         let na = node.num_children as usize;
         let street = node.street as usize;
         let mut row = [0.0f32; MAX_ACTIONS];
@@ -52,8 +74,8 @@ impl Policy for TablePolicy<'_> {
 pub struct UniformPolicy<'a>(pub &'a BpTree);
 
 impl Policy for UniformPolicy<'_> {
-    fn strategies(&self, node_idx: u32, _runout: &Runout, _used: u64, out: &mut [f32]) {
-        let na = self.0.nodes[node_idx as usize].num_children as usize;
+    fn strategies(&self, at: &At, out: &mut [f32]) {
+        let na = self.0.nodes[at.node_idx as usize].num_children as usize;
         out[..na * NUM_COMBOS].fill(1.0 / na as f32);
     }
 }
@@ -85,6 +107,8 @@ pub struct NodeView<'a> {
     pub action_vals: &'a [Vec<f32>],
     /// The same for the mix the actor plays.
     pub node_val: &'a [f32],
+    /// The range inputs (see `At::range`), when a policy asked for them.
+    pub range: Option<&'a [f32]>,
 }
 
 pub trait Recorder {
@@ -95,13 +119,29 @@ pub trait Recorder {
 pub struct Vals {
     /// Both seats playing their strategies.
     pub avg: [Vec<f32>; 2],
-    /// The seat playing a perfect reply (empty unless asked for).
-    pub best: [Vec<f32>; 2],
+    /// The seat playing a perfect reply (empty unless asked for): from the
+    /// first street on, from the turn on only, and on the river only. Before
+    /// the street a reply starts on, the seat plays its own strategy.
+    pub best: [[Vec<f32>; 2]; 3],
 }
 
-/// Hands in rising order of strength on each board, for one full runout.
-struct RiverCtx {
-    strength: Vec<Vec<u32>>,
+fn no_best() -> [[Vec<f32>; 2]; 3] {
+    Default::default()
+}
+
+fn best_like(avg: &[Vec<f32>; 2], want: bool) -> [[Vec<f32>; 2]; 3] {
+    if want {
+        [avg.clone(), avg.clone(), avg.clone()]
+    } else {
+        no_best()
+    }
+}
+
+/// Hands in rising order of strength on each board, for the cards dealt so
+/// far: showdown strength on the river, average strength over the cards to
+/// come before it. A key of 0 marks a hand that cannot be held.
+struct StreetCtx {
+    key: Vec<Vec<u32>>,
     order: Vec<Vec<u16>>,
 }
 
@@ -110,12 +150,21 @@ pub struct Walker<'a> {
     pub abs: &'a Abstraction,
     c1: [Card; NUM_COMBOS],
     c2: [Card; NUM_COMBOS],
+    /// Opposing hands a hand can face at the root.
+    pub root_norm: f32,
 }
 
 struct Cx<'a> {
     policy: &'a dyn Policy,
     chance: Chance,
     want_best: bool,
+    want_range: bool,
+    /// The strategy whose ranges the range inputs describe, when it is not
+    /// the one being played.
+    context: Option<&'a dyn Policy>,
+    /// Sampled cards depend on this, the spot and the cards so far only, so
+    /// two walks with one seed see the same cards whatever is played.
+    seed: u64,
 }
 
 fn all_zero(v: &[f32]) -> bool {
@@ -127,7 +176,9 @@ impl<'a> Walker<'a> {
         if tree.players() != 2 {
             return Err("whole-range play needs exactly two players".into());
         }
-        let mut w = Walker { tree, abs, c1: [0; NUM_COMBOS], c2: [0; NUM_COMBOS] };
+        let free = 52.0 - abs.dead.count_ones() as f32;
+        let mut w =
+            Walker { tree, abs, c1: [0; NUM_COMBOS], c2: [0; NUM_COMBOS], root_norm: (free - 2.0) * (free - 3.0) / 2.0 };
         for h in 0..NUM_COMBOS {
             let (a, b) = combo_from_index(h);
             w.c1[h] = a;
@@ -154,21 +205,27 @@ impl<'a> Walker<'a> {
     }
 
     /// Walk the game from the root. `rec` sees every decision; `rng` is used
-    /// only when cards are sampled.
+    /// only when cards are sampled. With a `context`, the range inputs
+    /// describe the ranges that strategy would arrive with, not the played
+    /// one's: self-play hands it the slow-moving average strategy, so a
+    /// spot's inputs do not jump about from one round to the next.
     pub fn run(
         &self,
         policy: &dyn Policy,
+        context: Option<&dyn Policy>,
         chance: Chance,
         want_best: bool,
         mut rec: Option<&mut dyn Recorder>,
         rng: &mut Rng,
     ) -> Vals {
-        let cx = Cx { policy, chance, want_best };
+        let want_range = policy.wants_range() || context.is_some_and(|c| c.wants_range());
+        let cx = Cx { policy, chance, want_best, want_range, context, seed: rng.next_u64() };
         let root = self.abs.root_street as usize;
         let reach = [self.root_reach(), self.root_reach()];
         let runout: Runout = [[0; 2]; 2];
-        let ctx = if root == 2 { Some(self.river_ctx(&runout)) } else { None };
-        self.eval(&cx, &mut rec, rng, 0, root, &reach, &runout, self.abs.dead, ctx.as_ref())
+        let ctx = self.street_ctx(root, &runout, self.abs.dead);
+        let fr = context.map(|_| reach.clone());
+        self.eval(&cx, &mut rec, rng, 0, root, &reach, fr.as_ref(), &runout, self.abs.dead, ctx.as_ref())
     }
 
     /// For each hand, the summed reach of opposing hands that share no card with it.
@@ -188,20 +245,99 @@ impl<'a> Walker<'a> {
             .collect()
     }
 
-    fn river_ctx(&self, runout: &Runout) -> RiverCtx {
+    /// The strength order of the hands on a street. Before the river it
+    /// needs the game's hand-strength inputs (`None` without them).
+    fn street_ctx(&self, street: usize, runout: &Runout, used: u64) -> Option<StreetCtx> {
         let nb = self.abs.num_boards();
-        let fulls: Vec<[Card; 5]> = (0..nb).map(|b| self.abs.full_board(b, runout)).collect();
-        let used = fulls.iter().flatten().fold(0u64, |m, &c| m | 1u64 << c);
-        let mut strength = Vec::new();
-        let mut order = Vec::new();
-        for full in &fulls {
-            let st = strengths(full, used);
-            let mut o: Vec<u16> = (0..NUM_COMBOS as u16).filter(|&h| st[h as usize] != 0).collect();
-            o.sort_unstable_by_key(|&h| st[h as usize]);
-            strength.push(st);
-            order.push(o);
+        let mut key = Vec::new();
+        if street == 2 {
+            let fulls: Vec<[Card; 5]> = (0..nb).map(|b| self.abs.full_board(b, runout)).collect();
+            let all = fulls.iter().flatten().fold(0u64, |m, &c| m | 1u64 << c);
+            for full in &fulls {
+                key.push(strengths(full, all));
+            }
+        } else {
+            let f = self.abs.feats.as_ref()?;
+            for b in 0..nb {
+                let avg = |h: usize| {
+                    if street == 0 {
+                        f.flop[b][h * 2]
+                    } else {
+                        f.turn[b][(runout[b][0] as usize * NUM_COMBOS + h) * 2]
+                    }
+                };
+                key.push(
+                    (0..NUM_COMBOS).map(|h| if self.hits(h, used) { 0 } else { (avg(h) * 1e6) as u32 + 1 }).collect(),
+                );
+            }
         }
-        RiverCtx { strength, order }
+        let order = key
+            .iter()
+            .map(|k| {
+                let mut o: Vec<u16> = (0..NUM_COMBOS as u16).filter(|&h| k[h as usize] != 0).collect();
+                o.sort_unstable_by_key(|&h| k[h as usize]);
+                o
+            })
+            .collect();
+        Some(StreetCtx { key, order })
+    }
+
+    /// For each hand, the summed reach of the hands in `reach` that it beats
+    /// in this order, plus half of those it ties, counting only hands that
+    /// share no card with it.
+    fn beaten(&self, key: &[u32], order: &[u16], reach: &[f32]) -> Vec<f32> {
+        let (c1, c2) = (&self.c1, &self.c2);
+        let mut out = vec![0.0f32; NUM_COMBOS];
+        let mut below = 0.0f64;
+        let mut below_card = [0.0f64; 52];
+        let mut i = 0;
+        while i < order.len() {
+            let mut j = i;
+            let mut tie = 0.0f64;
+            let mut tie_card = [0.0f64; 52];
+            while j < order.len() && key[order[j] as usize] == key[order[i] as usize] {
+                let h = order[j] as usize;
+                let r = reach[h] as f64;
+                tie += r;
+                tie_card[c1[h] as usize] += r;
+                tie_card[c2[h] as usize] += r;
+                j += 1;
+            }
+            for &h in &order[i..j] {
+                let h = h as usize;
+                let (a, c) = (c1[h] as usize, c2[h] as usize);
+                let weaker = below - below_card[a] - below_card[c];
+                let tied = tie - tie_card[a] - tie_card[c] + reach[h] as f64;
+                out[h] = (weaker + 0.5 * tied) as f32;
+            }
+            below += tie;
+            for c in 0..52 {
+                below_card[c] += tie_card[c];
+            }
+            i = j;
+        }
+        out
+    }
+
+    /// The range inputs of every hand of the seat to act.
+    fn range_feats(&self, ctx: &StreetCtx, own: &[f32], opp: &[f32]) -> Vec<f32> {
+        let mut out = vec![0.0f32; NUM_COMBOS * RANGE];
+        let opp_mass = self.compatible(opp);
+        let own_mass = self.compatible(own);
+        for b in 0..ctx.key.len() {
+            let vs_opp = self.beaten(&ctx.key[b], &ctx.order[b], opp);
+            let in_own = self.beaten(&ctx.key[b], &ctx.order[b], own);
+            for &h in &ctx.order[b] {
+                let h = h as usize;
+                out[h * RANGE + b * 2] = if opp_mass[h] > 1e-9 { vs_opp[h] / opp_mass[h] } else { 0.5 };
+                out[h * RANGE + b * 2 + 1] = if own_mass[h] > 1e-9 { in_own[h] / own_mass[h] } else { 0.5 };
+            }
+        }
+        for h in 0..NUM_COMBOS {
+            out[h * RANGE + 4] = opp_mass[h] / self.root_norm;
+            out[h * RANGE + 5] = own[h];
+        }
+        out
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -213,15 +349,17 @@ impl<'a> Walker<'a> {
         node_idx: u32,
         have: usize,
         reach: &[Vec<f32>; 2],
+        fr: Option<&[Vec<f32>; 2]>,
         runout: &Runout,
         used: u64,
-        ctx: Option<&RiverCtx>,
+        ctx: Option<&StreetCtx>,
     ) -> Vals {
         let node = &self.tree.nodes[node_idx as usize];
         let zeros = || vec![0.0f32; NUM_COMBOS];
         if all_zero(&reach[0]) && all_zero(&reach[1]) {
-            let best = if cx.want_best { [zeros(), zeros()] } else { [Vec::new(), Vec::new()] };
-            return Vals { avg: [zeros(), zeros()], best };
+            let avg = [zeros(), zeros()];
+            let best = best_like(&avg, cx.want_best);
+            return Vals { avg, best };
         }
         if node.kind == KIND_FOLD {
             let mut avg = [Vec::new(), Vec::new()];
@@ -232,12 +370,12 @@ impl<'a> Walker<'a> {
                 v.iter_mut().for_each(|x| *x *= gain);
                 avg[p] = v;
             }
-            let best = if cx.want_best { avg.clone() } else { [Vec::new(), Vec::new()] };
+            let best = best_like(&avg, cx.want_best);
             return Vals { avg, best };
         }
         let need = if node.kind == KIND_SHOWDOWN { 2 } else { node.street as usize };
         if have < need {
-            return self.deal_street(cx, rec, rng, node_idx, have, reach, runout, used);
+            return self.deal_street(cx, rec, rng, node_idx, have, reach, fr, runout, used);
         }
         if node.kind == KIND_SHOWDOWN {
             let ctx = ctx.expect("river context");
@@ -245,18 +383,41 @@ impl<'a> Walker<'a> {
                 self.showdown(node_idx, node, 0, &reach[1], ctx),
                 self.showdown(node_idx, node, 1, &reach[0], ctx),
             ];
-            let best = if cx.want_best { avg.clone() } else { [Vec::new(), Vec::new()] };
+            let best = best_like(&avg, cx.want_best);
             return Vals { avg, best };
         }
         let actor = node.player as usize;
         let other = 1 - actor;
         let na = node.num_children as usize;
         let mut sigma = vec![0.0f32; na * NUM_COMBOS];
-        cx.policy.strategies(node_idx, runout, used, &mut sigma);
+        let seen = fr.unwrap_or(reach);
+        let range = match ctx {
+            Some(c) if cx.want_range => Some(self.range_feats(c, &seen[actor], &seen[other])),
+            _ => None,
+        };
+        let at = At { node_idx, runout, used, range: range.as_deref() };
+        cx.policy.strategies(&at, &mut sigma);
+        // The context strategy's own play here moves its ranges on.
+        let mut context_sigma = Vec::new();
+        let mut child_fr: Option<[Vec<f32>; 2]> = None;
+        if let (Some(f), Some(c)) = (fr, cx.context) {
+            context_sigma = vec![0.0f32; na * NUM_COMBOS];
+            c.strategies(&at, &mut context_sigma);
+            let mut pair = [Vec::new(), Vec::new()];
+            pair[other] = f[other].clone();
+            child_fr = Some(pair);
+        }
         let mut avg_actor = zeros();
         let mut avg_other = zeros();
-        let mut best_actor = if cx.want_best { vec![f32::NEG_INFINITY; NUM_COMBOS] } else { Vec::new() };
-        let mut best_other = if cx.want_best { zeros() } else { Vec::new() };
+        // A reply that starts on a later street plays the mix here.
+        let street = node.street as usize;
+        let mut best = no_best();
+        if cx.want_best {
+            for (k, b) in best.iter_mut().enumerate() {
+                b[actor] = if street >= k { vec![f32::NEG_INFINITY; NUM_COMBOS] } else { zeros() };
+                b[other] = zeros();
+            }
+        }
         let recording = rec.is_some();
         let mut action_vals: Vec<Vec<f32>> = Vec::new();
         let mut child_reach = [Vec::new(), Vec::new()];
@@ -269,17 +430,28 @@ impl<'a> Walker<'a> {
                 continue;
             }
             child_reach[actor] = r;
-            let v = self.eval(cx, rec, rng, self.tree.child(node, a), have, &child_reach, runout, used, ctx);
+            if let (Some(pair), Some(f)) = (child_fr.as_mut(), fr) {
+                let ca = &context_sigma[a * NUM_COMBOS..(a + 1) * NUM_COMBOS];
+                pair[actor] = (0..NUM_COMBOS).map(|h| f[actor][h] * ca[h]).collect();
+            }
+            let child = self.tree.child(node, a);
+            let v = self.eval(cx, rec, rng, child, have, &child_reach, child_fr.as_ref(), runout, used, ctx);
             for h in 0..NUM_COMBOS {
                 avg_actor[h] += sa[h] * v.avg[actor][h];
                 avg_other[h] += v.avg[other][h];
             }
             if cx.want_best {
-                for h in 0..NUM_COMBOS {
-                    if v.best[actor][h] > best_actor[h] {
-                        best_actor[h] = v.best[actor][h];
+                for (k, b) in best.iter_mut().enumerate() {
+                    for h in 0..NUM_COMBOS {
+                        if street >= k {
+                            if v.best[k][actor][h] > b[actor][h] {
+                                b[actor][h] = v.best[k][actor][h];
+                            }
+                        } else {
+                            b[actor][h] += sa[h] * v.best[k][actor][h];
+                        }
+                        b[other][h] += v.best[k][other][h];
                     }
-                    best_other[h] += v.best[other][h];
                 }
             }
             if recording {
@@ -299,13 +471,12 @@ impl<'a> Walker<'a> {
                 opp_mass: &opp_mass,
                 action_vals: &action_vals,
                 node_val: &avg_actor,
+                range: range.as_deref(),
             });
         }
-        let mut out = Vals { avg: [Vec::new(), Vec::new()], best: [Vec::new(), Vec::new()] };
+        let mut out = Vals { avg: [Vec::new(), Vec::new()], best };
         out.avg[actor] = avg_actor;
         out.avg[other] = avg_other;
-        out.best[actor] = best_actor;
-        out.best[other] = best_other;
         out
     }
 
@@ -319,6 +490,7 @@ impl<'a> Walker<'a> {
         node_idx: u32,
         have: usize,
         reach: &[Vec<f32>; 2],
+        fr: Option<&[Vec<f32>; 2]>,
         runout: &Runout,
         used: u64,
     ) -> Vals {
@@ -347,6 +519,10 @@ impl<'a> Walker<'a> {
                 }
             }
         } else if nb == 1 {
+            let spot = (node_idx as u64) << 32
+                | (have as u64) << 60
+                | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+            let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
             let mut deck = free.clone();
             for i in 0..want {
                 let j = i + rng.below((deck.len() - i) as u32) as usize;
@@ -354,6 +530,10 @@ impl<'a> Walker<'a> {
                 draws.push([deck[i], 0]);
             }
         } else {
+            let spot = (node_idx as u64) << 32
+                | (have as u64) << 60
+                | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+            let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
             for _ in 0..want {
                 let a = rng.below(free.len() as u32) as usize;
                 let mut b = rng.below(free.len() as u32 - 1) as usize;
@@ -372,42 +552,48 @@ impl<'a> Walker<'a> {
                 mask |= 1u64 << draw[b];
             }
             let mut r = [reach[0].clone(), reach[1].clone()];
+            let mut f = fr.cloned();
             for h in 0..NUM_COMBOS {
                 if self.hits(h, mask) {
                     r[0][h] = 0.0;
                     r[1][h] = 0.0;
+                    if let Some(f) = f.as_mut() {
+                        f[0][h] = 0.0;
+                        f[1][h] = 0.0;
+                    }
                 }
             }
-            let ctx = if next == 2 { Some(self.river_ctx(&ro)) } else { None };
-            let mut v = self.eval(cx, rec, rng, node_idx, next, &r, &ro, used | mask, ctx.as_ref());
+            let ctx = self.street_ctx(next, &ro, used | mask);
+            let mut v = self.eval(cx, rec, rng, node_idx, next, &r, f.as_ref(), &ro, used | mask, ctx.as_ref());
             for h in 0..NUM_COMBOS {
                 if self.hits(h, mask) {
                     for p in 0..2 {
                         v.avg[p][h] = 0.0;
                         if cx.want_best {
-                            v.best[p][h] = 0.0;
+                            for b in v.best.iter_mut() {
+                                b[p][h] = 0.0;
+                            }
                         }
                     }
                 }
             }
             v
         };
-        let empty = || Vals {
-            avg: [vec![0.0f32; NUM_COMBOS], vec![0.0f32; NUM_COMBOS]],
-            best: if cx.want_best {
-                [vec![0.0f32; NUM_COMBOS], vec![0.0f32; NUM_COMBOS]]
-            } else {
-                [Vec::new(), Vec::new()]
-            },
+        let empty = || {
+            let avg = [vec![0.0f32; NUM_COMBOS], vec![0.0f32; NUM_COMBOS]];
+            let best = best_like(&avg, cx.want_best);
+            Vals { avg, best }
         };
         let add = |mut acc: Vals, v: Vals| {
             for p in 0..2 {
                 for h in 0..NUM_COMBOS {
                     acc.avg[p][h] += v.avg[p][h];
                 }
-                if !acc.best[p].is_empty() {
-                    for h in 0..NUM_COMBOS {
-                        acc.best[p][h] += v.best[p][h];
+                if cx.want_best {
+                    for (a, b) in acc.best.iter_mut().zip(&v.best) {
+                        for h in 0..NUM_COMBOS {
+                            a[p][h] += b[p][h];
+                        }
                     }
                 }
             }
@@ -431,48 +617,23 @@ impl<'a> Walker<'a> {
         };
         for p in 0..2 {
             sum.avg[p].iter_mut().for_each(|x| *x *= scale);
-            sum.best[p].iter_mut().for_each(|x| *x *= scale);
+            for b in sum.best.iter_mut() {
+                b[p].iter_mut().for_each(|x| *x *= scale);
+            }
         }
         sum
     }
 
-    fn showdown(&self, node_idx: u32, node: &BpNode, p: usize, reach: &[f32], ctx: &RiverCtx) -> Vec<f32> {
+    fn showdown(&self, node_idx: u32, node: &BpNode, p: usize, reach: &[f32], ctx: &StreetCtx) -> Vec<f32> {
         let nb = self.abs.num_boards();
         let put = self.tree.put(node_idx, p);
         let win = node.pot_net / nb as f32;
         let compat = self.compatible(reach);
         let mut out: Vec<f32> = compat.iter().map(|&c| -put * c).collect();
-        let (c1, c2) = (&self.c1, &self.c2);
         for b in 0..nb {
-            let order = &ctx.order[b];
-            let st = &ctx.strength[b];
-            let mut below = 0.0f64;
-            let mut below_card = [0.0f64; 52];
-            let mut i = 0;
-            while i < order.len() {
-                let mut j = i;
-                let mut tie = 0.0f64;
-                let mut tie_card = [0.0f64; 52];
-                while j < order.len() && st[order[j] as usize] == st[order[i] as usize] {
-                    let h = order[j] as usize;
-                    let r = reach[h] as f64;
-                    tie += r;
-                    tie_card[c1[h] as usize] += r;
-                    tie_card[c2[h] as usize] += r;
-                    j += 1;
-                }
-                for &h in &order[i..j] {
-                    let h = h as usize;
-                    let (a, c) = (c1[h] as usize, c2[h] as usize);
-                    let weaker = below - below_card[a] - below_card[c];
-                    let tied = tie - tie_card[a] - tie_card[c] + reach[h] as f64;
-                    out[h] += win * (weaker + 0.5 * tied) as f32;
-                }
-                below += tie;
-                for c in 0..52 {
-                    below_card[c] += tie_card[c];
-                }
-                i = j;
+            let won = self.beaten(&ctx.key[b], &ctx.order[b], reach);
+            for h in 0..NUM_COMBOS {
+                out[h] += win * won[h];
             }
         }
         out

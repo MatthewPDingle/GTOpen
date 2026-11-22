@@ -312,6 +312,7 @@ impl Recorder for RangeRecorder<'_> {
         let slots = &g.pubf.slots[v.node_idx as usize];
         let mask = slots[..na].iter().fold(0u8, |m, &s| m | 1 << s);
         let keep = self.keep[street];
+        let range = v.range;
         let mut hf = [0.0f32; HAND];
         for h in 0..NUM_COMBOS {
             let (c1, c2) = combo_from_index(h);
@@ -328,7 +329,7 @@ impl Recorder for RangeRecorder<'_> {
                 }
                 let p = keep * (w / THIN).min(1.0);
                 if self.rng.f32() < p {
-                    hand_feats(&g.abs, street, h, v.runout, &mut hf);
+                    hand_feats(&g.abs, street, h, v.runout, range, &mut hf);
                     cards = sample_cards(&g.abs, street, h, v.runout);
                     ready = true;
                     let scale = 1.0 / (v.opp_mass[h] * node.pot);
@@ -345,7 +346,7 @@ impl Recorder for RangeRecorder<'_> {
                 let p = keep * (r / THIN).min(1.0);
                 if self.rng.f32() < p {
                     if !ready {
-                        hand_feats(&g.abs, street, h, v.runout, &mut hf);
+                        hand_feats(&g.abs, street, h, v.runout, range, &mut hf);
                         cards = sample_cards(&g.abs, street, h, v.runout);
                     }
                     let mut t = [0.0f32; MENU];
@@ -359,9 +360,125 @@ impl Recorder for RangeRecorder<'_> {
     }
 }
 
+/// Every action equally often, as a context: it asks for the range inputs
+/// so the first run's examples carry them.
+struct RangedUniform<'a>(&'a BpTree);
+
+impl Policy for RangedUniform<'_> {
+    fn strategies(&self, at: &super::range::At, out: &mut [f32]) {
+        UniformPolicy(self.0).strategies(at, out)
+    }
+    fn wants_range(&self) -> bool {
+        true
+    }
+}
+
+/// The average of the strategies played over the rounds, held exactly in
+/// tables for the spots of one sampled walk. Comparing its score with the
+/// strategy net's on the same cards shows how much the strategy net loses
+/// by being a net.
+pub struct Mixture {
+    sums: std::collections::HashMap<(u32, [u8; 4]), Vec<f32>>,
+}
+
+struct MixRecorder<'a> {
+    seat: usize,
+    weight: f32,
+    into: &'a mut Mixture,
+}
+
+fn mix_key(node_idx: u32, runout: &Runout) -> (u32, [u8; 4]) {
+    (node_idx, [runout[0][0], runout[0][1], runout[1][0], runout[1][1]])
+}
+
+impl Recorder for MixRecorder<'_> {
+    fn node(&mut self, v: &NodeView) {
+        if v.actor != self.seat {
+            return;
+        }
+        let na = v.action_vals.len();
+        let row = self.into.sums.entry(mix_key(v.node_idx, v.runout)).or_insert_with(|| vec![0.0; na * NUM_COMBOS]);
+        for a in 0..na {
+            for h in 0..NUM_COMBOS {
+                row[a * NUM_COMBOS + h] += self.weight * v.own_reach[h] * v.sigma[a * NUM_COMBOS + h];
+            }
+        }
+    }
+}
+
+impl Policy for Mixture {
+    fn strategies(&self, at: &super::range::At, out: &mut [f32]) {
+        let Some(row) = self.sums.get(&mix_key(at.node_idx, at.runout)) else {
+            out.fill(1.0);
+            return;
+        };
+        let na = row.len() / NUM_COMBOS;
+        for h in 0..NUM_COMBOS {
+            let total: f32 = (0..na).map(|a| row[a * NUM_COMBOS + h]).sum();
+            for a in 0..na {
+                out[a * NUM_COMBOS + h] = if total > 0.0 { row[a * NUM_COMBOS + h] / total } else { 1.0 / na as f32 };
+            }
+        }
+    }
+}
+
+impl Mixture {
+    /// `nets[j]` is what was played in half round `j + 1` (`None`: every
+    /// action equally likely); the seat learning there is `j % 2` and the
+    /// round's weight is its number.
+    pub fn build(game: &GameCtx, nets: &[Option<&Mlp>], range_on: bool, chance: Chance, seed: u64) -> Result<Mixture, String> {
+        let walker = Walker::new(&game.tree, &game.abs)?;
+        let parts: Vec<Mixture> = nets
+            .par_iter()
+            .enumerate()
+            .map(|(j, net)| {
+                let mut m = Mixture { sums: Default::default() };
+                let uniform = UniformPolicy(&game.tree);
+                let netp;
+                let policy: &dyn Policy = match net {
+                    Some(n) => {
+                        netp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
+                        &netp
+                    }
+                    None => &uniform,
+                };
+                let mut rec = MixRecorder { seat: j % 2, weight: (j / 2 + 1) as f32, into: &mut m };
+                walker.run(policy, None, chance, false, Some(&mut rec), &mut Rng::new(seed));
+                m
+            })
+            .collect();
+        let mut all = Mixture { sums: Default::default() };
+        for part in parts {
+            for (k, row) in part.sums {
+                match all.sums.entry(k) {
+                    std::collections::hash_map::Entry::Occupied(mut e) => {
+                        for (a, b) in e.get_mut().iter_mut().zip(&row) {
+                            *a += b;
+                        }
+                    }
+                    std::collections::hash_map::Entry::Vacant(e) => {
+                        e.insert(row);
+                    }
+                }
+            }
+        }
+        Ok(all)
+    }
+}
+
 /// Play one run and return its examples (advantages, strategies), for one
-/// seat's decisions or, with `only` unset, for both.
-pub fn generate(spec: &GenSpec, net: Option<&Mlp>, only: Option<usize>, seed: u64) -> Result<(SampleBuf, SampleBuf), String> {
+/// seat's decisions or, with `only` unset, for both. `net` plays (without
+/// one, every action is equally likely). With `range_on` the nets read the
+/// range inputs; `context`, a strategy net, then sets the ranges they
+/// describe (without one, the played ranges).
+pub fn generate(
+    spec: &GenSpec,
+    net: Option<&Mlp>,
+    context: Option<&Mlp>,
+    range_on: bool,
+    only: Option<usize>,
+    seed: u64,
+) -> Result<(SampleBuf, SampleBuf), String> {
     if spec.game.tree.players != 2 {
         return Err("whole-range self-play needs exactly two players".into());
     }
@@ -378,17 +495,28 @@ pub fn generate(spec: &GenSpec, net: Option<&Mlp>, only: Option<usize>, seed: u6
             let netp;
             let policy: &dyn Policy = match net {
                 Some(n) => {
-                    netp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n };
+                    netp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
                     &netp
                 }
                 None => &uniform,
+            };
+            let ctxp;
+            let ranged = RangedUniform(&game.tree);
+            let context: Option<&dyn Policy> = match context {
+                Some(n) if range_on => {
+                    ctxp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
+                    Some(&ctxp)
+                }
+                // No net plays yet, but the examples still need the inputs.
+                _ if range_on && net.is_none() => Some(&ranged),
+                _ => None,
             };
             let walks: Vec<(SampleBuf, SampleBuf)> = (0..spec.walks)
                 .into_par_iter()
                 .map(|k| {
                     let s = gseed.wrapping_add(k as u64 * 0x9E37_79B9_7F4A_7C15);
                     let mut rec = RangeRecorder::new(&game, spec.keep, spec.weight_power, only, s ^ 0x5EED);
-                    walker.run(policy, chance, false, Some(&mut rec), &mut Rng::new(s));
+                    walker.run(policy, context, chance, false, Some(&mut rec), &mut Rng::new(s));
                     (rec.adv, rec.strat)
                 })
                 .collect();

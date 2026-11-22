@@ -33,7 +33,7 @@ import numpy as np
 import torch
 from torch import nn
 
-PUB, HAND, MENU = 57, 10, 6
+PUB, HAND, MENU = 57, 16, 6
 DENSE = PUB + HAND
 EMB_ROWS = 52 + 2 * 156
 KINDS = {"adv": 0, "strat": 1}
@@ -203,12 +203,11 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
     t0 = time.time()
     rows = torch.from_numpy(mem.rows).to(dev)
     cards = torch.from_numpy(mem.cards).to(dev)
-    pub = torch.from_numpy(mem.pub).to(dev)
+    pub = torch.from_numpy(mem.pub.astype(np.int32)).to(dev)
     hand = torch.from_numpy(mem.hand).to(dev)
     target = torch.from_numpy(mem.target).to(dev)
     weight = torch.from_numpy(mem.weight / mem.weight.mean()).to(dev)
-    bits = torch.arange(MENU, device=dev)
-    legal_all = ((torch.from_numpy(mem.mask).to(dev).long()[:, None] >> bits) & 1).bool()
+    legal_all = torch.from_numpy((mem.mask[:, None] >> np.arange(MENU, dtype=np.uint8)) & 1 > 0).to(dev)
     offset = torch.from_numpy(_OFFSET).to(dev)
     perms = torch.from_numpy(_PERMS).to(dev)
     # One example in twenty is held back to read the fit.
@@ -226,7 +225,7 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
 
     def batch_loss(idx, shuffle_suits):
         p = perms[torch.randint(0, 24, (len(idx),), device=dev)] if shuffle_suits else None
-        x = torch.cat([rows[pub[idx]], hand[idx]], 1)
+        x = torch.cat([rows[pub[idx].long()], hand[idx]], 1)
         pred = net(card_rows(cards[idx], offset, p), x)
         return loss_of(kind, pred, target[idx], legal_all[idx], weight[idx])
 
@@ -254,13 +253,18 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
             err, tot = torch.zeros(3, device=dev), torch.zeros(3, device=dev)
             for i in range(0, n_val, 65536):
                 idx = val[i:i + 65536]
-                x = torch.cat([rows[pub[idx]], hand[idx]], 1)
+                x = torch.cat([rows[pub[idx].long()], hand[idx]], 1)
                 pred = net(card_rows(cards[idx], offset), x)
                 w, s, lg = weight[idx], street[idx].long(), legal_all[idx]
                 err.index_add_(0, s, w * ((pred - target[idx]) ** 2 * lg).sum(1))
                 tot.index_add_(0, s, w * (target[idx] ** 2 * lg).sum(1))
             fit_by_street = [round(float(1 - e / t), 4) if t > 0 else None for e, t in zip(err, tot)]
     save_net(net, out, kind)
+    # Hand the GPU memory back between trainings: PyTorch would otherwise
+    # keep every earlier, smaller copy of the examples cached.
+    del rows, cards, pub, hand, target, weight, legal_all, street, order, val, fit, net, opt, sched
+    if dev.type == "cuda":
+        torch.cuda.empty_cache()
     return {"kind": kind, "examples": n, "steps": steps, "train_loss": running, "val_loss": val_loss,
             "fit_by_street": fit_by_street, "train_s": time.time() - t0}
 

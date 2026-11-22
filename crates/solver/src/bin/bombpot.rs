@@ -4,8 +4,10 @@
 //!       [--seed N] [--check-every N] [--challenge DEALS] [--exact]
 //!       [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]
 //!
-//!   bombpot gen <spec.json> --out PREFIX --iter N [--net net.bin] [--seat N] [--seed N] [--threads N]
-//!   bombpot score <config.json> --net net.bin [--turns N --rivers N] [--threads N]
+//!   bombpot gen <spec.json> --out PREFIX --iter N [--net net.bin] [--range on] [--context avg.bin]
+//!       [--seat N] [--seed N] [--threads N]
+//!   bombpot score <config.json> --net net.bin [--range on] [--turns N --rivers N] [--threads N]
+//!   bombpot mix <config.json> --nets none,adv1.bin,adv2.bin,... --net avg.bin [--range on] [--turns N --rivers N]
 //!   bombpot netcheck <examples.bps> --net net.bin [--rows N]
 //!
 //! `config.json` is a `BpConfig`: boards, the betting tree and the hand
@@ -13,8 +15,12 @@
 //!
 //! `gen` plays one run of self-play with a net (or, without one, with every
 //! action equally likely) and writes PREFIX.adv.bps and PREFIX.strat.bps for
-//! the trainer in tools/bombpot, for one seat's decisions (`--seat`) or all. `score` measures a two-player net exactly
-//! on one game. `netcheck` prints the net's outputs on stored examples, so
+//! the trainer in tools/bombpot, for one seat's decisions (`--seat`) or all.
+//! `score` measures a two-player net exactly on one game, and how much of
+//! the gap is left when the perfect reply may start only on the turn or
+//! only on the river. `mix` scores, on one sampled set of cards, the strategy
+//! net beside the exact average of the nets played in each half round.
+//! `--range on` is for nets trained with the range inputs. `netcheck` prints the net's outputs on stored examples, so
 //! the trainer can confirm both sides compute the same thing.
 
 use std::time::Instant;
@@ -140,11 +146,14 @@ fn gen(args: &[String], threads: usize) {
     }
     pool(threads);
     let net = if net_path.is_empty() { None } else { Some(Mlp::load(&net_path).unwrap_or_else(|e| fail(e))) };
+    // The strategy net whose ranges the range inputs describe.
+    let ctx_path: String = arg(args, "--context", String::new());
+    let context = if ctx_path.is_empty() { None } else { Some(Mlp::load(&ctx_path).unwrap_or_else(|e| fail(e))) };
     let t = Instant::now();
     let seat: i64 = arg(args, "--seat", -1);
     let only = if seat >= 0 { Some(seat as usize) } else { None };
     let seed = seed ^ (iter as u64) << 32 ^ ((seat + 1) as u64) << 56;
-    let (adv, strat) = generate(&spec, net.as_ref(), only, seed).unwrap_or_else(|e| fail(e));
+    let (adv, strat) = generate(&spec, net.as_ref(), context.as_ref(), range_on(args), only, seed).unwrap_or_else(|e| fail(e));
     adv.write(&format!("{out}.adv.bps"), iter).unwrap_or_else(|e| fail(e));
     strat.write(&format!("{out}.strat.bps"), iter).unwrap_or_else(|e| fail(e));
     println!(
@@ -152,6 +161,44 @@ fn gen(args: &[String], threads: usize) {
         serde_json::json!({ "event": "gen", "iter": iter, "seat": seat, "games": spec.games, "walks": spec.walks,
             "advantages": adv.n, "strategies": strat.n, "gen_s": t.elapsed().as_secs_f64() })
     );
+}
+
+fn range_on(args: &[String]) -> bool {
+    arg(args, "--range", String::from("off")) == "on"
+}
+
+/// The strategy net against the exact average of what was played, on the
+/// same sampled cards.
+fn mix(args: &[String], threads: usize) {
+    use solver::bombpot::deepcfr::{GameCtx, Mixture};
+    use solver::bombpot::exact::score;
+    use solver::bombpot::net::NetPolicy;
+    use solver::bombpot::range::Chance;
+    let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let cfg: BpConfig = serde_json::from_str(&text).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let list: String = arg(args, "--nets", String::new());
+    let avg_path: String = arg(args, "--net", String::new());
+    let chance = Chance::Sample { turn: arg(args, "--turns", 6), river: arg(args, "--rivers", 6) };
+    let seed: u64 = arg(args, "--seed", 1);
+    pool(threads);
+    let nets: Vec<Option<Mlp>> = list
+        .split(',')
+        .map(|p| if p == "none" { None } else { Some(Mlp::load(p).unwrap_or_else(|e| fail(e))) })
+        .collect();
+    let refs: Vec<Option<&Mlp>> = nets.iter().map(|n| n.as_ref()).collect();
+    let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
+    let pot = cfg.tree.starting_pot();
+    let mixture = Mixture::build(&game, &refs, range_on(args), chance, seed).unwrap_or_else(|e| fail(e));
+    let m = score(&game.tree, &game.abs, &mixture, chance, seed).unwrap_or_else(|e| fail(e));
+    let mut out = serde_json::json!({ "event": "mix", "half_rounds": nets.len(),
+        "mixture_gain_pct": m.gain_from().map(|g| 100.0 * g / pot) });
+    if !avg_path.is_empty() {
+        let avg = Mlp::load(&avg_path).unwrap_or_else(|e| fail(e));
+        let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &avg, range_on: range_on(args) };
+        let v = score(&game.tree, &game.abs, &policy, chance, seed).unwrap_or_else(|e| fail(e));
+        out["net_gain_pct"] = serde_json::json!(v.gain_from().map(|g| 100.0 * g / pot));
+    }
+    println!("{out}");
 }
 
 fn score_net(args: &[String], threads: usize) {
@@ -169,7 +216,7 @@ fn score_net(args: &[String], threads: usize) {
     let net = Mlp::load(&net_path).unwrap_or_else(|e| fail(e));
     let t = Instant::now();
     let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
-    let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &net };
+    let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &net, range_on: range_on(args) };
     let chance = if turns == 0 && rivers == 0 {
         Chance::All
     } else {
@@ -182,7 +229,8 @@ fn score_net(args: &[String], threads: usize) {
         "{}",
         serde_json::json!({ "event": "score", "boards": cfg.boards, "pot": pot, "exact": turns == 0 && rivers == 0,
             "value": v.value, "gain": gain, "gain_avg": v.exploitability(),
-            "gain_pct_of_pot": 100.0 * v.exploitability() / pot, "score_s": t.elapsed().as_secs_f64() })
+            "gain_pct_of_pot": 100.0 * v.exploitability() / pot,
+            "gain_pct_from_street": v.gain_from().map(|g| 100.0 * g / pot), "score_s": t.elapsed().as_secs_f64() })
     );
 }
 
@@ -231,6 +279,7 @@ fn main() {
     match args.get(1).map(|s| s.as_str()) {
         Some("gen") if args.len() >= 3 => return gen(&args, threads),
         Some("score") if args.len() >= 3 => return score_net(&args, threads),
+        Some("mix") if args.len() >= 3 => return mix(&args, threads),
         Some("netcheck") if args.len() >= 3 => return netcheck(&args),
         _ => {}
     }

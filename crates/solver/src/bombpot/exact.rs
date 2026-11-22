@@ -18,12 +18,24 @@ pub struct ExactValues {
     pub value: [f64; 2],
     /// Each seat's result with a perfect reply to the other's strategy.
     pub best: [f64; 2],
+    /// The same when the reply may start only on the turn, or only on the
+    /// river (index 0 is `best`): shows which street gives the most away.
+    pub best_from: [[f64; 2]; 3],
 }
 
 impl ExactValues {
     /// Average of the two seats' possible gains, in chips per hand.
     pub fn exploitability(&self) -> f64 {
         ((self.best[0] - self.value[0]) + (self.best[1] - self.value[1])) / 2.0
+    }
+
+    /// The same for replies that start on the flop, the turn or the river.
+    pub fn gain_from(&self) -> [f64; 3] {
+        let mut out = [0.0; 3];
+        for (o, b) in out.iter_mut().zip(&self.best_from) {
+            *o = ((b[0] - self.value[0]) + (b[1] - self.value[1])) / 2.0;
+        }
+        out
     }
 }
 
@@ -32,13 +44,17 @@ impl ExactValues {
 /// because the reply is fitted to the cards that were drawn).
 pub fn score(tree: &BpTree, abs: &Abstraction, policy: &dyn Policy, chance: Chance, seed: u64) -> Result<ExactValues, String> {
     let w = Walker::new(tree, abs)?;
-    let v = w.run(policy, chance, true, None, &mut Rng::new(seed));
+    let v = w.run(policy, None, chance, true, None, &mut Rng::new(seed));
     let reach = w.root_reach();
     let pairs = w.root_pairs();
-    let mut out = ExactValues { value: [0.0; 2], best: [0.0; 2] };
+    let mut out = ExactValues { value: [0.0; 2], best: [0.0; 2], best_from: [[0.0; 2]; 3] };
+    let total = |x: &[f32]| (0..NUM_COMBOS).map(|h| reach[h] as f64 * x[h] as f64).sum::<f64>() / pairs;
     for p in 0..2 {
-        out.value[p] = (0..NUM_COMBOS).map(|h| reach[h] as f64 * v.avg[p][h] as f64).sum::<f64>() / pairs;
-        out.best[p] = (0..NUM_COMBOS).map(|h| reach[h] as f64 * v.best[p][h] as f64).sum::<f64>() / pairs;
+        out.value[p] = total(&v.avg[p]);
+        for k in 0..3 {
+            out.best_from[k][p] = total(&v.best[k][p]);
+        }
+        out.best[p] = out.best_from[0][p];
     }
     Ok(out)
 }

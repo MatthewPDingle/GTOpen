@@ -10,7 +10,7 @@
 //! menu, and the net itself (`Mlp`, read from a file the trainer writes).
 
 use super::abstraction::{Abstraction, Runout};
-use super::range::Policy;
+use super::range::{At, Policy, RANGE};
 use super::tree::*;
 use crate::cards::{combo_from_index, combo_index, NUM_COMBOS};
 use crate::tree::Action;
@@ -26,10 +26,13 @@ pub const SLOT_ALLIN: u8 = 5;
 pub const NET_SEATS: usize = 6;
 /// Inputs about the betting, the same for every hand at a node.
 pub const PUB: usize = 57;
-/// Inputs about the hand's strength: per board, the average share of other
-/// hands beaten and its spread on the flop and on the turn, and the share
-/// beaten on the river (0 until that street is dealt).
-pub const HAND: usize = 10;
+/// Inputs about the hand. First its strength against any two cards: per
+/// board, the average share of other hands beaten and its spread on the
+/// flop and on the turn, and the share beaten on the river (0 until that
+/// street is dealt). Then how it stands against the ranges at this decision
+/// (`range::RANGE`).
+pub const HAND_STATIC: usize = 10;
+pub const HAND: usize = HAND_STATIC + RANGE;
 pub const DENSE: usize = PUB + HAND;
 /// Card slots: the two hole cards share one table; each board has its own
 /// for the flop, the turn card and the river card.
@@ -193,11 +196,22 @@ impl PublicFeats {
     }
 }
 
-/// The hand-strength inputs of one hand on one street.
+/// The inputs about one hand on one street; `range` is the walk's range
+/// inputs for every hand (`At::range`), left at 0 when not in use.
 #[inline]
-pub fn hand_feats(abs: &Abstraction, street: usize, hand: usize, runout: &Runout, out: &mut [f32; HAND]) {
+pub fn hand_feats(
+    abs: &Abstraction,
+    street: usize,
+    hand: usize,
+    runout: &Runout,
+    range: Option<&[f32]>,
+    out: &mut [f32; HAND],
+) {
     let f = abs.feats.as_ref().expect("built with_features");
     *out = [0.0; HAND];
+    if let Some(r) = range {
+        out[HAND_STATIC..].copy_from_slice(&r[hand * RANGE..(hand + 1) * RANGE]);
+    }
     for b in 0..abs.num_boards() {
         let o = b * 5;
         out[o] = f.flop[b][hand * 2];
@@ -455,26 +469,18 @@ pub struct NetPolicy<'a> {
     pub abs: &'a Abstraction,
     pub pubf: &'a PublicFeats,
     pub net: &'a Mlp,
-}
-
-impl NetPolicy<'_> {
-    /// One hand at one decision.
-    pub fn one(&self, node_idx: u32, hand: usize, runout: &Runout, out: &mut [f32; MAX_ACTIONS]) {
-        let node = &self.tree.nodes[node_idx as usize];
-        let street = node.street as usize;
-        let mut x = self.net.node_base(self.pubf.row(node_idx), &board_rows(self.abs, street, runout));
-        let mut tmp = Vec::new();
-        let mut hf = [0.0f32; HAND];
-        let mut raw = [0.0f32; MENU];
-        let (c1, c2) = combo_from_index(hand);
-        hand_feats(self.abs, street, hand, runout, &mut hf);
-        self.net.forward(&mut x, &mut tmp, c1, c2, &hf, &mut raw);
-        outputs_to_probs(self.net.kind, &raw, &self.pubf.slots[node_idx as usize], node.num_children as usize, out);
-    }
+    /// Whether the net was trained with the range inputs.
+    pub range_on: bool,
 }
 
 impl Policy for NetPolicy<'_> {
-    fn strategies(&self, node_idx: u32, runout: &Runout, used: u64, out: &mut [f32]) {
+    fn wants_range(&self) -> bool {
+        self.range_on
+    }
+
+    fn strategies(&self, at: &At, out: &mut [f32]) {
+        let (node_idx, runout, used) = (at.node_idx, at.runout, at.used);
+        let range = if self.range_on { Some(at.range.expect("range inputs")) } else { None };
         let node = &self.tree.nodes[node_idx as usize];
         let na = node.num_children as usize;
         let street = node.street as usize;
@@ -492,7 +498,7 @@ impl Policy for NetPolicy<'_> {
             }
             x.clear();
             x.extend_from_slice(&base);
-            hand_feats(self.abs, street, h, runout, &mut hf);
+            hand_feats(self.abs, street, h, runout, range, &mut hf);
             self.net.forward(&mut x, &mut tmp, c1, c2, &hf, &mut raw);
             outputs_to_probs(self.net.kind, &raw, slots, na, &mut probs);
             for a in 0..na {

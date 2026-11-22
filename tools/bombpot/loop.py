@@ -7,14 +7,16 @@
 The seats take turns. In each half of a round the engine plays the games in
 `spec.json` with the latest advantage net and writes examples of one seat's
 decisions (`bombpot gen --seat`); the trainer then fits the next advantage
-net to the examples of every round so far. Every `--score-every` rounds a
-strategy net is fitted to the mixes played so far and the engine scores it
-on each `--score` game (`bombpot score`): what a perfect opponent would gain
-against it, in chips and as a share of the starting pot.
+net to the advantages of every round so far, and the next strategy net to
+the mixes played so far. The strategy net is the one to play; it also tells
+self-play which ranges the net's range inputs describe. Every
+`--score-every` rounds the engine scores the strategy net on each `--score`
+game (`bombpot score`): what a perfect opponent would gain against it, in
+chips and as a share of the starting pot.
 
-Everything goes under DIR: examples in mem/, nets as adv_NNNN.bin (one per
-half round) and avg_NNNN.bin (per scored round), one JSON object per event
-in log.jsonl. A stopped loop picks
+Everything goes under DIR: examples in mem/, nets as adv_NNNN.bin and
+avg_NNNN.bin (one of each per half round), one JSON object per event in
+log.jsonl. A stopped loop picks
 up where it left off when started again with the same DIR.
 """
 import argparse
@@ -37,7 +39,12 @@ def lower_priority():
     if os.name == "nt":
         import ctypes
         below_normal = 0x00004000
-        ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), below_normal)
+        k32 = ctypes.windll.kernel32
+        # Handles are pointer-sized: without these types the call fails on
+        # 64-bit Windows and the trainer stays at normal priority.
+        k32.GetCurrentProcess.restype = ctypes.c_void_p
+        k32.SetPriorityClass.argtypes = [ctypes.c_void_p, ctypes.c_uint32]
+        k32.SetPriorityClass(k32.GetCurrentProcess(), below_normal)
         LOW["creationflags"] = below_normal
     else:
         os.nice(10)
@@ -63,12 +70,14 @@ def main():
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true")
     ap.add_argument("--steps", type=int, default=2000, help="training steps per half round")
-    ap.add_argument("--avg-steps", type=int, default=0, help="steps for a strategy net (0: twice --steps)")
+    ap.add_argument("--avg-steps", type=int, default=0, help="steps for a strategy net (0: as --steps)")
     ap.add_argument("--batch", type=int, default=8192)
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--warm", action="store_true", help="start each advantage net from the last one")
     ap.add_argument("--cap", type=int, default=40_000_000)
     ap.add_argument("--device", default="cuda" if T.torch.cuda.is_available() else "cpu")
+    ap.add_argument("--range", choices=["off", "played", "average"], default="off",
+                    help="range inputs: unused, from the ranges being played, or from the strategy net's ranges")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--low-priority", action="store_true", help="run below normal priority")
     ap.add_argument("--torch-threads", type=int, default=0, help="CPU threads for training (0: PyTorch's choice)")
@@ -95,29 +104,33 @@ def main():
     for step in range(1, a.iters * seats + 1):
         it, seat = (step + seats - 1) // seats, (step - 1) % seats
         prefix = os.path.join(mem_dir, f"r{it:04d}s{seat}")
-        done = os.path.exists(net_of("adv", step))
+        done = os.path.exists(net_of("adv", step)) and os.path.exists(net_of("avg", step))
         if not (done and os.path.exists(prefix + ".strat.bps")):
             cmd = [a.exe, "gen", a.spec, "--out", prefix, "--iter", str(it), "--seat", str(seat),
                    "--seed", str(a.seed)] + threads
             if step > 1:
                 cmd += ["--net", net_of("adv", step - 1)]
+            if a.range != "off":
+                cmd += ["--range", "on"]
+            if a.range == "average" and step > seats:
+                # Once every seat has a strategy on file, the range inputs
+                # follow the average strategy.
+                cmd += ["--context", net_of("avg", step - 1)]
             log(run(cmd))
         adv.add(prefix + ".adv.bps")
         strat.add(prefix + ".strat.bps")
         if not done:
-            init = net_of("adv", step - 1) if a.warm and step > 1 else None
-            res = T.train(adv, net_of("adv", step) + ".tmp", a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr,
-                          init, a.device, a.seed + step)
-            os.replace(net_of("adv", step) + ".tmp", net_of("adv", step))
-            log({"event": "train", "iter": it, "seat": seat, **res})
-        scoring = a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters)
-        if scoring and not os.path.exists(net_of("avg", it)):
-            res = T.train(strat, net_of("avg", it) + ".tmp", a.hidden, a.layers, not a.plain,
-                          a.avg_steps or 2 * a.steps, a.batch, a.lr, None, a.device, a.seed + step)
-            os.replace(net_of("avg", it) + ".tmp", net_of("avg", it))
-            log({"event": "train", "iter": it, **res})
+            for kind, mem, steps in (("adv", adv, a.steps), ("avg", strat, a.avg_steps or a.steps)):
+                init = net_of(kind, step - 1) if a.warm and step > 1 else None
+                res = T.train(mem, net_of(kind, step) + ".tmp", a.hidden, a.layers, not a.plain, steps, a.batch,
+                              a.lr, init, a.device, a.seed + step)
+                os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
+                log({"event": "train", "iter": it, "seat": seat, **res})
+        if a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters):
             for game in a.score:
-                cmd = [a.exe, "score", game, "--net", net_of("avg", it)] + threads
+                cmd = [a.exe, "score", game, "--net", net_of("avg", step)] + threads
+                if a.range != "off":
+                    cmd += ["--range", "on"]
                 if a.score_turns or a.score_rivers:
                     cmd += ["--turns", str(a.score_turns), "--rivers", str(a.score_rivers)]
                 log({"iter": it, "game": os.path.basename(game), **run(cmd)})

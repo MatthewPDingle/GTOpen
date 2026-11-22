@@ -64,7 +64,7 @@ fn a_recorder_sees_every_decision_with_consistent_values() {
     let g = GameCtx::new(&cfg).unwrap();
     let w = Walker::new(&g.tree, &g.abs).unwrap();
     let mut rec = Check { nodes: 0, worst: 0.0 };
-    w.run(&UniformPolicy(&g.tree), Chance::Sample { turn: 2, river: 2 }, false, Some(&mut rec), &mut Rng::new(3));
+    w.run(&UniformPolicy(&g.tree), None, Chance::Sample { turn: 2, river: 2 }, false, Some(&mut rec), &mut Rng::new(3));
     let d = g.tree.action_nodes;
     assert_eq!(rec.nodes as u64, d[0] + 2 * d[1] + 4 * d[2]);
     assert!(rec.worst < 1e-3, "{}", rec.worst);
@@ -138,7 +138,10 @@ fn the_net_reader_computes_what_the_file_says() {
     let mut pub_row = vec![0.0f32; PUB];
     pub_row[0] = 1.0;
     pub_row[7] = 0.25;
-    let hand: [f32; HAND] = [0.6, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    let mut hand = [0.0f32; HAND];
+    hand[0] = 0.6;
+    hand[1] = 0.1;
+    hand[HAND - 1] = 0.4;
     let (c1, c2) = (50u8, 7u8);
     let board = [emb_board_row(0, 0, 3), emb_board_row(0, 0, 20), emb_board_row(0, 0, 44)];
     // By hand, straight from the file's layout.
@@ -207,7 +210,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         held_out: vec!["AsKd7c".into()],
         weight_power: 1.0,
     };
-    let (adv, strat) = generate(&spec, None, None, 4).unwrap();
+    let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);
     assert_eq!(adv.recs.len(), adv.n as usize * SAMPLE_BYTES);
     // Every example names a row of betting inputs that exists, and an
@@ -218,7 +221,14 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         let idx = u32::from_le_bytes(r[20..24].try_into().unwrap()) as usize;
         assert!(idx < rows);
         let mask = r[12];
-        let t: Vec<f32> = (0..MENU).map(|k| f32::from_le_bytes(r[64 + k * 4..68 + k * 4].try_into().unwrap())).collect();
+        let at = 24 + HAND * 4;
+        let t: Vec<f32> =
+            (0..MENU).map(|k| f32::from_le_bytes(r[at + k * 4..at + 4 + k * 4].try_into().unwrap())).collect();
+        // Range inputs are shares between 0 and 1.
+        for k in HAND_STATIC..HAND {
+            let v = f32::from_le_bytes(r[24 + k * 4..28 + k * 4].try_into().unwrap());
+            assert!((0.0..=1.0001).contains(&v), "range input {k} = {v}");
+        }
         let legal = mask.count_ones() as f32;
         let sum: f32 = (0..MENU).filter(|&k| mask >> k & 1 != 0).map(|k| t[k]).sum();
         assert!(sum.abs() < 1e-2 * (1.0 + legal), "{t:?}");
@@ -252,9 +262,9 @@ struct TabPolicy<'a> {
 }
 
 impl super::range::Policy for TabPolicy<'_> {
-    fn strategies(&self, node_idx: u32, _: &super::abstraction::Runout, _: u64, out: &mut [f32]) {
-        let na = self.tree.nodes[node_idx as usize].num_children as usize;
-        let o = self.offs[node_idx as usize];
+    fn strategies(&self, at: &super::range::At, out: &mut [f32]) {
+        let na = self.tree.nodes[at.node_idx as usize].num_children as usize;
+        let o = self.offs[at.node_idx as usize];
         out[..na * NUM_COMBOS].copy_from_slice(&self.probs[o..o + na * NUM_COMBOS]);
     }
 }
@@ -315,7 +325,7 @@ fn self_play_from_recorded_values_becomes_hard_to_beat() {
         for seat in 0..2 {
             tab.seat = seat;
             let p = TabPolicy { tree: &tree, offs: &offs, probs: probs_of(&tab, false) };
-            w.run(&p, Chance::All, false, Some(&mut tab), &mut Rng::new(0));
+            w.run(&p, None, Chance::All, false, Some(&mut tab), &mut Rng::new(0));
         }
     }
     let end = gap(&tab);
