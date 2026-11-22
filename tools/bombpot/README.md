@@ -48,6 +48,20 @@ takes a few GB of GPU memory at the default `--cap`.
 Run one training job at a time on a small CPU-only machine: two PyTorch jobs
 on four cores crawl.
 
+## Net shapes
+
+`--width N` (loop and trainer) makes two-sided nets: one side reads the hand
+on its board, the other the board and the betting, and each action's output
+is a weighted sum of the two (`N` numbers in between). The engine then runs
+the hand side once per board and the other side once per decision for all
+hands, so games and scores run several times faster than with the one-piece
+net (`--width 0`), also with a much bigger net. `--hidden` and `--layers`
+size each side.
+
+In a spec, `"spread": true` makes the walks of a run share one shuffled deck
+(each takes the next cards) instead of each drawing its own: the same work
+covers the turn cards evenly, which steadies the flop examples.
+
 ## What score to expect
 
 `bombpot tables game.json --rounds 80 --every 10` trains plain tables the
