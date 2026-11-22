@@ -87,6 +87,11 @@ pub struct GenSpec {
     /// game for comparing a net with plain tables card for card.
     #[serde(default)]
     pub fixed_cards: Option<u64>,
+    /// Above 0: the nets play the flop and the turn only. Each river spot
+    /// a walk reaches is solved on the spot for the ranges that arrive, in
+    /// this many rounds, and no river examples are written.
+    #[serde(default)]
+    pub river_solve: u32,
 }
 
 fn one() -> usize {
@@ -566,11 +571,13 @@ impl TableRun {
         seed: u64,
         powers: Powers,
         noisy: Option<Noisy>,
+        river_iters: u32,
         rounds: usize,
         every: usize,
         mut report: impl FnMut(usize, &dyn Policy),
     ) -> Result<(), String> {
-        let walker = Walker::new(&game.tree, &game.abs)?;
+        let mut walker = Walker::new(&game.tree, &game.abs)?;
+        walker.river_iters = river_iters;
         let mut t = TableRun { regret: Default::default(), sum: Default::default() };
         for round in 1..=rounds {
             for seat in 0..2 {
@@ -626,7 +633,8 @@ pub fn generate(
         .par_iter()
         .map(|(cfg, gseed)| {
             let game = GameCtx::new(cfg)?;
-            let walker = Walker::new(&game.tree, &game.abs)?;
+            let mut walker = Walker::new(&game.tree, &game.abs)?;
+            walker.river_iters = spec.river_solve;
             let uniform = UniformPolicy(&game.tree);
             let netp;
             let policy: &dyn Policy = match net {

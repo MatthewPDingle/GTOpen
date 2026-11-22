@@ -205,7 +205,7 @@ fn mix(args: &[String], threads: usize) {
 /// score a perfectly fitted net would reach after as many rounds.
 fn tables(args: &[String], threads: usize) {
     use solver::bombpot::deepcfr::{GameCtx, Noisy, Powers, TableRun};
-    use solver::bombpot::exact::score;
+    use solver::bombpot::exact::score_solved;
     use solver::bombpot::range::Chance;
     let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
     let cfg: BpConfig = serde_json::from_str(&text).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
@@ -220,8 +220,9 @@ fn tables(args: &[String], threads: usize) {
     let powers = Powers { regret: arg(args, "--regret-power", 1.0), average: arg(args, "--avg-power", 1.0) };
     let walks: usize = arg(args, "--walks", 0);
     let noisy = (walks > 0).then(|| Noisy { walks, turn_draws: arg(args, "--turn-draws", 3), river_draws: arg(args, "--river-draws", 2) });
-    TableRun::run(&game, chance, seed, powers, noisy, rounds, every, |round, policy| {
-        let v = score(&game.tree, &game.abs, policy, chance, seed).unwrap_or_else(|e| fail(e));
+    let river: u32 = arg(args, "--river-solve", 0);
+    TableRun::run(&game, chance, seed, powers, noisy, river, rounds, every, |round, policy| {
+        let v = score_solved(&game.tree, &game.abs, policy, chance, seed, river).unwrap_or_else(|e| fail(e));
         println!(
             "{}",
             serde_json::json!({ "event": "tables", "round": round,
@@ -233,7 +234,7 @@ fn tables(args: &[String], threads: usize) {
 
 fn score_net(args: &[String], threads: usize) {
     use solver::bombpot::deepcfr::GameCtx;
-    use solver::bombpot::exact::score;
+    use solver::bombpot::exact::score_solved;
     use solver::bombpot::net::NetPolicy;
     use solver::bombpot::range::Chance;
     let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
@@ -252,7 +253,8 @@ fn score_net(args: &[String], threads: usize) {
     } else {
         Chance::Sample { turn: if turns == 0 { 52 } else { turns }, river: if rivers == 0 { 52 } else { rivers } }
     };
-    let v = score(&game.tree, &game.abs, &policy, chance, seed).unwrap_or_else(|e| fail(e));
+    let river: u32 = arg(args, "--river-solve", 0);
+    let v = score_solved(&game.tree, &game.abs, &policy, chance, seed, river).unwrap_or_else(|e| fail(e));
     let pot = cfg.tree.starting_pot();
     let gain = [v.best[0] - v.value[0], v.best[1] - v.value[1]];
     println!(

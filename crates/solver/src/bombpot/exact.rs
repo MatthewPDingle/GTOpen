@@ -43,7 +43,23 @@ impl ExactValues {
 /// is exact; with sampled cards it is an estimate (and reads a little high,
 /// because the reply is fitted to the cards that were drawn).
 pub fn score(tree: &BpTree, abs: &Abstraction, policy: &dyn Policy, chance: Chance, seed: u64) -> Result<ExactValues, String> {
-    let w = Walker::new(tree, abs)?;
+    score_solved(tree, abs, policy, chance, seed, 0)
+}
+
+/// As `score`. With `river_iters` above 0 the strategy scored is the
+/// policy's on the flop and turn and, on the river, the solution of each
+/// river spot for the ranges the policy arrives with (see
+/// `Walker::river_iters`).
+pub fn score_solved(
+    tree: &BpTree,
+    abs: &Abstraction,
+    policy: &dyn Policy,
+    chance: Chance,
+    seed: u64,
+    river_iters: u32,
+) -> Result<ExactValues, String> {
+    let mut w = Walker::new(tree, abs)?;
+    w.river_iters = river_iters;
     let v = w.run(policy, None, chance, true, None, &mut Rng::new(seed));
     let reach = w.root_reach();
     let pairs = w.root_pairs();

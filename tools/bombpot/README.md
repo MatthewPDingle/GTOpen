@@ -93,3 +93,21 @@ draw with seed 1, every round. Run with `--score-turns 6 --score-rivers 6`,
 the loop's scores then compare with the tables' round for round on the same
 small game, where a net sees every spot every round. A gap there is the
 net's fit; a gap only on the full game is too few cards seen per round.
+
+## Solving the river instead of learning it
+
+On the full game the nets' river play stopped improving after about ten
+rounds and then got worse (a net sees each of the 2,352 turn and river
+boards of a flop too rarely), while on fixed cards the same net stays ahead
+of the tables. So the river can be left to arithmetic: with
+`"river_solve": N` in the spec the nets play the flop and the turn only,
+and each river spot a walk reaches is solved on the spot, in N rounds, for
+the ranges that arrive (`Walker::river_iters`); no river examples are
+written. `bombpot score --river-solve N` (the loop's `--river-solve N`)
+scores that same mix: the strategy net to the river, then the solution for
+the ranges it brings. `bombpot tables --river-solve N` is the plain-tables
+reference for it: with N = 100 it reaches in 20 rounds what plain tables
+need about 35 for, and a reply that starts on the river gains about 1% of
+the pot (5% with N = 30). `specs/one_flop_river_solved.json` holds the
+settings; a half round of it solves 384 boards (about a minute of one
+core per 50).

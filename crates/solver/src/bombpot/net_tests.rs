@@ -78,6 +78,47 @@ fn walks_that_share_the_cards_cover_them_exactly() {
     assert!((mean - exact).abs() < 1e-4 && off > 1e-3, "exact {exact} shared {mean}");
 }
 
+struct Boards(std::collections::HashSet<[u8; 2]>);
+
+impl Recorder for Boards {
+    fn node(&mut self, v: &NodeView) {
+        if v.runout[0][1] != 0 || v.used.count_ones() == 5 {
+            self.0.insert(v.runout[0]);
+        }
+    }
+}
+
+#[test]
+fn walks_that_share_the_cards_do_not_repeat_river_cards() {
+    // 96 walks of 4 turn cards pass each turn card about 8 times; with 2
+    // river cards each, every pass must bring new ones.
+    let cfg = game(&["AsKd7c"], 3.0, 20.0);
+    let g = GameCtx::new(&cfg).unwrap();
+    let w = Walker::new(&g.tree, &g.abs).unwrap();
+    let mut seen = Boards(Default::default());
+    for walk in 0..96 {
+        let chance = Chance::Spread { turn: 4, river: 2, walk, deck: 5 };
+        w.run(&UniformPolicy(&g.tree), None, chance, false, Some(&mut seen), &mut Rng::new(walk as u64));
+    }
+    assert_eq!(seen.0.len(), 96 * 4 * 2);
+}
+
+#[test]
+fn a_river_solved_on_the_spot_leaves_little_to_gain_there() {
+    let cfg = game(&["AsKd7c"], 3.0, 20.0);
+    let g = GameCtx::new(&cfg).unwrap();
+    let policy = UniformPolicy(&g.tree);
+    let chance = Chance::Sample { turn: 2, river: 2 };
+    let pot = cfg.tree.starting_pot();
+    let plain = score(&g.tree, &g.abs, &policy, chance, 3).unwrap();
+    let solved = super::exact::score_solved(&g.tree, &g.abs, &policy, chance, 3, 200).unwrap();
+    let (before, after) = (plain.gain_from()[2] / pot, solved.gain_from()[2] / pot);
+    eprintln!("gain on the river, share of the pot: played at random {before:.4}, solved {after:.4}");
+    assert!(before > 0.05 && after < 0.005, "{before} {after}");
+    // The two seats' values still add up to the same pot.
+    assert!((solved.value[0] + solved.value[1] - plain.value[0] - plain.value[1]).abs() < 1e-3);
+}
+
 struct Check {
     nodes: usize,
     worst: f32,
@@ -303,6 +344,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         weight_power: 1.0,
         spread: false,
         fixed_cards: None,
+        river_solve: 0,
     };
     let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);

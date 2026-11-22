@@ -162,6 +162,35 @@ pub struct Walker<'a> {
     c2: [Card; NUM_COMBOS],
     /// Opposing hands a hand can face at the root.
     pub root_norm: f32,
+    /// Above 0: the policy is never asked how to play the river. Each time
+    /// a river card falls, the river betting is solved on the spot for the
+    /// ranges that arrive (this many rounds), and its values go back up.
+    /// One board only.
+    pub river_iters: u32,
+}
+
+/// What a river solve keeps for one decision, as `[action * 1326 + hand]`.
+struct RiverNode {
+    regret: Vec<f32>,
+    sum: Vec<f32>,
+}
+
+/// The strategy a river solve ends with.
+struct RiverPlay<'a> {
+    tree: &'a BpTree,
+    rows: std::collections::HashMap<u32, Vec<f32>>,
+}
+
+impl Policy for RiverPlay<'_> {
+    fn strategies(&self, at: &At, out: &mut [f32]) {
+        match self.rows.get(&at.node_idx) {
+            Some(row) => out[..row.len()].copy_from_slice(row),
+            None => {
+                let na = self.tree.nodes[at.node_idx as usize].num_children as usize;
+                out[..na * NUM_COMBOS].fill(1.0 / na as f32);
+            }
+        }
+    }
 }
 
 struct Cx<'a> {
@@ -188,7 +217,7 @@ impl<'a> Walker<'a> {
         }
         let free = 52.0 - abs.dead.count_ones() as f32;
         let mut w =
-            Walker { tree, abs, c1: [0; NUM_COMBOS], c2: [0; NUM_COMBOS], root_norm: (free - 2.0) * (free - 3.0) / 2.0 };
+            Walker { tree, abs, c1: [0; NUM_COMBOS], c2: [0; NUM_COMBOS], root_norm: (free - 2.0) * (free - 3.0) / 2.0, river_iters: 0 };
         for h in 0..NUM_COMBOS {
             let (a, b) = combo_from_index(h);
             w.c1[h] = a;
@@ -534,13 +563,37 @@ impl<'a> Walker<'a> {
             let spot = (have as u64) << 60
                 | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
             let mut deck = free.clone();
-            if let Chance::Spread { walk, deck: shared, .. } = cx.chance {
-                let rng = &mut Rng::new(shared ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
-                for i in 0..deck.len() - 1 {
-                    let j = i + rng.below((deck.len() - i) as u32) as usize;
-                    deck.swap(i, j);
-                }
-                let start = walk * want % deck.len();
+            if let Chance::Spread { walk, deck: shared, turn, .. } = cx.chance {
+                let shuffle = |deck: &mut Vec<Card>, spot: u64| {
+                    let rng = &mut Rng::new(shared ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+                    for i in 0..deck.len() - 1 {
+                        let j = i + rng.below((deck.len() - i) as u32) as usize;
+                        deck.swap(i, j);
+                    }
+                };
+                shuffle(&mut deck, spot);
+                // Which turn of the walks at this spot this one is. At the
+                // first cards dealt it is the walk's own number. One street
+                // on, the walks that came through the same card count up
+                // from 0 (each pass through the earlier deck brings one), so
+                // together they take the next cards here too instead of
+                // some of them the same ones.
+                let first = self.abs.root_street as usize;
+                let nth = if have == first {
+                    walk
+                } else if have == first + 1 {
+                    let last = runout[0][have - 1];
+                    let mut before: Vec<Card> = (0..52u8).filter(|&c| c == last || used >> c & 1 == 0).collect();
+                    shuffle(&mut before, (first as u64) << 60);
+                    let n = before.len();
+                    let took = turn.max(1);
+                    let at = before.iter().position(|&c| c == last).unwrap_or(0);
+                    let step = (at + n - walk * took % n) % n;
+                    (walk * took + step) / n
+                } else {
+                    walk
+                };
+                let start = nth * want % deck.len();
                 draws.extend((0..want).map(|j| [deck[(start + j) % deck.len()], 0]));
             } else {
                 let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
@@ -597,7 +650,11 @@ impl<'a> Walker<'a> {
                 }
             }
             let ctx = self.street_ctx(next, &ro, used | mask);
-            let mut v = self.eval(cx, rec, rng, node_idx, next, &r, f.as_ref(), &ro, used | mask, ctx.as_ref());
+            let solve = next == 2 && nb == 1 && self.river_iters > 0 && self.tree.nodes[node_idx as usize].kind == KIND_ACTION;
+            let mut v = match (solve, ctx.as_ref()) {
+                (true, Some(c)) => self.solve_river(cx, node_idx, &r, &ro, used | mask, c),
+                _ => self.eval(cx, rec, rng, node_idx, next, &r, f.as_ref(), &ro, used | mask, ctx.as_ref()),
+            };
             for h in 0..NUM_COMBOS {
                 if self.hits(h, mask) {
                     for p in 0..2 {
@@ -634,7 +691,10 @@ impl<'a> Walker<'a> {
         };
         // The first cards dealt fan out over the threads, unless a recorder
         // is listening (it takes the decisions in order).
-        let mut sum = if have == self.abs.root_street as usize && rec.is_none() {
+        // So do river cards whose betting is solved on the spot: no
+        // decision below them is shown to the recorder.
+        let solved = next == 2 && nb == 1 && self.river_iters > 0;
+        let mut sum = if (have == self.abs.root_street as usize && rec.is_none()) || solved {
             let seeds: Vec<u64> = draws.iter().map(|_| rng.next_u64()).collect();
             draws
                 .par_iter()
@@ -655,6 +715,121 @@ impl<'a> Walker<'a> {
             }
         }
         sum
+    }
+
+    /// Solve the river betting that starts at `node_idx` for the ranges
+    /// that arrive there, and return what every hand earns in the solution
+    /// (and, when asked, with a perfect reply to it).
+    fn solve_river(&self, cx: &Cx, node_idx: u32, reach: &[Vec<f32>; 2], runout: &Runout, used: u64, ctx: &StreetCtx) -> Vals {
+        let mut tabs = std::collections::HashMap::new();
+        // How often a hand takes each line of the river betting itself,
+        // whether or not it is in the range that arrives: so hands outside
+        // the range get a worked-out strategy too, and a fair value.
+        let valid: Vec<f32> = (0..NUM_COMBOS).map(|h| if self.hits(h, used) { 0.0 } else { 1.0 }).collect();
+        let sub = [valid.clone(), valid];
+        for t in 1..=self.river_iters {
+            self.river_round(&mut tabs, t, node_idx, reach, &sub, ctx);
+        }
+        let rows = tabs
+            .into_iter()
+            .map(|(k, tab)| {
+                let na = tab.sum.len() / NUM_COMBOS;
+                let mut row = vec![1.0 / na as f32; tab.sum.len()];
+                for h in 0..NUM_COMBOS {
+                    let total: f32 = (0..na).map(|a| tab.sum[a * NUM_COMBOS + h]).sum();
+                    if total > 0.0 {
+                        for a in 0..na {
+                            row[a * NUM_COMBOS + h] = tab.sum[a * NUM_COMBOS + h] / total;
+                        }
+                    }
+                }
+                (k, row)
+            })
+            .collect();
+        let play = RiverPlay { tree: self.tree, rows };
+        let local = Cx { policy: &play, chance: Chance::All, want_best: cx.want_best, want_range: false, context: None, seed: 0 };
+        self.eval(&local, &mut None, &mut Rng::new(0), node_idx, 2, reach, None, runout, used, Some(ctx))
+    }
+
+    /// One round of a river solve (regrets and average discounted the usual
+    /// way: round t's positive regrets by t^1.5 / (t^1.5 + 1), negative ones
+    /// halved, the average by (t / (t + 1))^2). Returns each seat's values.
+    fn river_round(
+        &self,
+        tabs: &mut std::collections::HashMap<u32, RiverNode>,
+        t: u32,
+        node_idx: u32,
+        reach: &[Vec<f32>; 2],
+        sub: &[Vec<f32>; 2],
+        ctx: &StreetCtx,
+    ) -> [Vec<f32>; 2] {
+        let node = &self.tree.nodes[node_idx as usize];
+        if all_zero(&reach[0]) && all_zero(&reach[1]) {
+            return [vec![0.0f32; NUM_COMBOS], vec![0.0f32; NUM_COMBOS]];
+        }
+        if node.kind == KIND_FOLD {
+            let mut out = [Vec::new(), Vec::new()];
+            for p in 0..2 {
+                let put = self.tree.put(node_idx, p);
+                let gain = if node.live >> p & 1 != 0 { node.pot_net - put } else { -put };
+                let mut v = self.compatible(&reach[1 - p]);
+                v.iter_mut().for_each(|x| *x *= gain);
+                out[p] = v;
+            }
+            return out;
+        }
+        if node.kind == KIND_SHOWDOWN {
+            return [self.showdown(node_idx, node, 0, &reach[1], ctx), self.showdown(node_idx, node, 1, &reach[0], ctx)];
+        }
+        let actor = node.player as usize;
+        let other = 1 - actor;
+        let na = node.num_children as usize;
+        let mut tab = tabs
+            .remove(&node_idx)
+            .unwrap_or_else(|| RiverNode { regret: vec![0.0; na * NUM_COMBOS], sum: vec![0.0; na * NUM_COMBOS] });
+        let mut sigma = vec![1.0 / na as f32; na * NUM_COMBOS];
+        for h in 0..NUM_COMBOS {
+            let total: f32 = (0..na).map(|a| tab.regret[a * NUM_COMBOS + h].max(0.0)).sum();
+            if total > 0.0 {
+                for a in 0..na {
+                    sigma[a * NUM_COMBOS + h] = tab.regret[a * NUM_COMBOS + h].max(0.0) / total;
+                }
+            }
+        }
+        let mut node_val = vec![0.0f32; NUM_COMBOS];
+        let mut other_val = vec![0.0f32; NUM_COMBOS];
+        let mut action_vals: Vec<Vec<f32>> = Vec::with_capacity(na);
+        let mut child_reach = [Vec::new(), Vec::new()];
+        let mut child_sub = [Vec::new(), Vec::new()];
+        child_reach[other] = reach[other].clone();
+        child_sub[other] = sub[other].clone();
+        for a in 0..na {
+            let sa = &sigma[a * NUM_COMBOS..(a + 1) * NUM_COMBOS];
+            child_reach[actor] = (0..NUM_COMBOS).map(|h| reach[actor][h] * sa[h]).collect();
+            child_sub[actor] = (0..NUM_COMBOS).map(|h| sub[actor][h] * sa[h]).collect();
+            let [v0, v1] = self.river_round(tabs, t, self.tree.child(node, a), &child_reach, &child_sub, ctx);
+            let (mine, theirs) = if actor == 0 { (v0, v1) } else { (v1, v0) };
+            for h in 0..NUM_COMBOS {
+                node_val[h] += sa[h] * mine[h];
+                other_val[h] += theirs[h];
+            }
+            action_vals.push(mine);
+        }
+        let tf = (t as f32).powf(1.5);
+        let (pos, avg) = (tf / (tf + 1.0), (t as f32 / (t as f32 + 1.0)).powi(2));
+        for a in 0..na {
+            for h in 0..NUM_COMBOS {
+                let i = a * NUM_COMBOS + h;
+                let r = tab.regret[i] + action_vals[a][h] - node_val[h];
+                tab.regret[i] = r * if r > 0.0 { pos } else { 0.5 };
+                tab.sum[i] = (tab.sum[i] + sub[actor][h] * sigma[i]) * avg;
+            }
+        }
+        tabs.insert(node_idx, tab);
+        let mut out = [Vec::new(), Vec::new()];
+        out[actor] = node_val;
+        out[other] = other_val;
+        out
     }
 
     fn showdown(&self, node_idx: u32, node: &BpNode, p: usize, reach: &[f32], ctx: &StreetCtx) -> Vec<f32> {

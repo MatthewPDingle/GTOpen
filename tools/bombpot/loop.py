@@ -81,6 +81,9 @@ def main():
     ap.add_argument("--score-every", type=int, default=10)
     ap.add_argument("--score-turns", type=int, default=0, help="score on this many turn cards (0: all, exact)")
     ap.add_argument("--score-rivers", type=int, default=0)
+    ap.add_argument("--river-solve", type=int, default=0,
+                    help="score with the river solved on the spot in this many rounds, for a spec with "
+                         "\"river_solve\" (nets then play the flop and the turn only)")
     ap.add_argument("--hidden", type=int, default=256)
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true")
@@ -168,6 +171,8 @@ def main():
                     cmd += ["--range", "on"]
                 if a.score_turns or a.score_rivers:
                     cmd += ["--turns", str(a.score_turns), "--rivers", str(a.score_rivers)]
+                if a.river_solve:
+                    cmd += ["--river-solve", str(a.river_solve)]
                 log({"iter": it, "game": os.path.basename(game), **run(cmd)})
         if a.keep_rounds and seat == seats - 1 and it > a.keep_rounds:
             for old_seat in range(seats):
