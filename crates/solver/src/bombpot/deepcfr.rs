@@ -466,6 +466,108 @@ impl Mixture {
     }
 }
 
+/// Plain tables trained the way the nets are (seats take turns, later rounds
+/// weigh more) on the cards of one sampled walk. Its score after as many
+/// rounds is what a net that fitted every example perfectly would reach.
+pub struct TableRun {
+    regret: std::collections::HashMap<(u32, [u8; 4]), Vec<f64>>,
+    sum: std::collections::HashMap<(u32, [u8; 4]), Vec<f64>>,
+}
+
+/// How much round `t` counts: `t^regret` for what is learned, `t^average`
+/// for the strategy that is kept (1, 1 is what the net loop does).
+#[derive(Clone, Copy)]
+pub struct Powers {
+    pub regret: f64,
+    pub average: f64,
+}
+
+struct TablePlay(std::collections::HashMap<(u32, [u8; 4]), Vec<f32>>);
+
+impl Policy for TablePlay {
+    fn strategies(&self, at: &super::range::At, out: &mut [f32]) {
+        match self.0.get(&mix_key(at.node_idx, at.runout)) {
+            Some(row) => out[..row.len()].copy_from_slice(row),
+            None => out.fill(1.0),
+        }
+    }
+}
+
+struct TableRecorder<'a> {
+    seat: usize,
+    weight: f64,
+    weight_avg: f64,
+    into: &'a mut TableRun,
+}
+
+impl Recorder for TableRecorder<'_> {
+    fn node(&mut self, v: &NodeView) {
+        if v.actor != self.seat {
+            return;
+        }
+        let na = v.action_vals.len();
+        let key = mix_key(v.node_idx, v.runout);
+        let regret = self.into.regret.entry(key).or_insert_with(|| vec![0.0; na * NUM_COMBOS]);
+        let sum = self.into.sum.entry(key).or_insert_with(|| vec![0.0; na * NUM_COMBOS]);
+        for a in 0..na {
+            for h in 0..NUM_COMBOS {
+                if v.opp_mass[h] > 0.0 {
+                    regret[a * NUM_COMBOS + h] += self.weight * (v.action_vals[a][h] - v.node_val[h]) as f64;
+                }
+                sum[a * NUM_COMBOS + h] += self.weight_avg * (v.own_reach[h] * v.sigma[a * NUM_COMBOS + h]) as f64;
+            }
+        }
+    }
+}
+
+impl TableRun {
+    fn play(rows: &std::collections::HashMap<(u32, [u8; 4]), Vec<f64>>) -> TablePlay {
+        TablePlay(
+            rows.iter()
+                .map(|(k, row)| {
+                    let na = row.len() / NUM_COMBOS;
+                    let mut out = vec![0.0f32; row.len()];
+                    for h in 0..NUM_COMBOS {
+                        let total: f64 = (0..na).map(|a| row[a * NUM_COMBOS + h].max(0.0)).sum();
+                        for a in 0..na {
+                            out[a * NUM_COMBOS + h] =
+                                if total > 0.0 { (row[a * NUM_COMBOS + h].max(0.0) / total) as f32 } else { 1.0 / na as f32 };
+                        }
+                    }
+                    (*k, out)
+                })
+                .collect(),
+        )
+    }
+
+    /// Train for `rounds` and call `report(round, average strategy)` every
+    /// `every` rounds.
+    pub fn run(
+        game: &GameCtx,
+        chance: Chance,
+        seed: u64,
+        powers: Powers,
+        rounds: usize,
+        every: usize,
+        mut report: impl FnMut(usize, &dyn Policy),
+    ) -> Result<(), String> {
+        let walker = Walker::new(&game.tree, &game.abs)?;
+        let mut t = TableRun { regret: Default::default(), sum: Default::default() };
+        for round in 1..=rounds {
+            for seat in 0..2 {
+                let policy = TableRun::play(&t.regret);
+                let r = round as f64;
+                let mut rec = TableRecorder { seat, weight: r.powf(powers.regret), weight_avg: r.powf(powers.average), into: &mut t };
+                walker.run(&policy, None, chance, false, Some(&mut rec), &mut Rng::new(seed));
+            }
+            if round % every == 0 || round == rounds {
+                report(round, &TableRun::play(&t.sum));
+            }
+        }
+        Ok(())
+    }
+}
+
 /// Play one run and return its examples (advantages, strategies), for one
 /// seat's decisions or, with `only` unset, for both. `net` plays (without
 /// one, every action is equally likely). With `range_on` the nets read the

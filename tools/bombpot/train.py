@@ -78,7 +78,8 @@ class Memory:
         self.kind = None
         self.seen = 0
 
-    def add(self, path, linear=True):
+    def add(self, path, power=2.0):
+        """Add one file. An example of round t counts t^power times."""
         kind, it, rows, recs = read_examples(path)
         if self.kind not in (None, kind):
             raise ValueError(f"{path}: mixes advantage and strategy examples")
@@ -103,7 +104,7 @@ class Memory:
         self.cards = np.concatenate([self.cards, recs["cards"]])
         self.mask = np.concatenate([self.mask, recs["mask"]])
         self.street = np.concatenate([self.street, recs["street"]])
-        self.weight = np.concatenate([self.weight, recs["weight"] * (it if linear else 1.0)])
+        self.weight = np.concatenate([self.weight, recs["weight"] * float(it) ** power])
         self.pub = np.concatenate([self.pub, recs["pub"].astype(np.int64) + shift])
         self.hand = np.concatenate([self.hand, recs["hand"]])
         self.target = np.concatenate([self.target, recs["target"]])
@@ -301,6 +302,7 @@ def main():
     ap.add_argument("--cap", type=int, default=40_000_000, help="most examples held")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--power", type=float, default=2.0, help="an example of round t counts t^power times")
     ap.add_argument("--check", help="path to the bombpot tool, to compare outputs")
     a = ap.parse_args()
     files = sorted(glob.glob(a.data))
@@ -308,7 +310,7 @@ def main():
         sys.exit(f"no files match {a.data}")
     mem = Memory(a.cap, a.seed)
     for f in files:
-        mem.add(f)
+        mem.add(f, a.power)
     res = train(mem, a.out, a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr, a.init, a.device, a.seed,
                 log=lambda s: print(s, file=sys.stderr))
     if a.check:

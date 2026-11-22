@@ -201,6 +201,34 @@ fn mix(args: &[String], threads: usize) {
     println!("{out}");
 }
 
+/// Plain tables trained like the nets on one sampled walk's cards: the
+/// score a perfectly fitted net would reach after as many rounds.
+fn tables(args: &[String], threads: usize) {
+    use solver::bombpot::deepcfr::{GameCtx, Powers, TableRun};
+    use solver::bombpot::exact::score;
+    use solver::bombpot::range::Chance;
+    let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let cfg: BpConfig = serde_json::from_str(&text).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let chance = Chance::Sample { turn: arg(args, "--turns", 6), river: arg(args, "--rivers", 6) };
+    let seed: u64 = arg(args, "--seed", 1);
+    let rounds: usize = arg(args, "--rounds", 40);
+    let every: usize = arg(args, "--every", 10);
+    pool(threads);
+    let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
+    let pot = cfg.tree.starting_pot();
+    let t = Instant::now();
+    let powers = Powers { regret: arg(args, "--regret-power", 1.0), average: arg(args, "--avg-power", 1.0) };
+    TableRun::run(&game, chance, seed, powers, rounds, every, |round, policy| {
+        let v = score(&game.tree, &game.abs, policy, chance, seed).unwrap_or_else(|e| fail(e));
+        println!(
+            "{}",
+            serde_json::json!({ "event": "tables", "round": round,
+                "gain_pct_from_street": v.gain_from().map(|g| 100.0 * g / pot), "s": t.elapsed().as_secs_f64() })
+        );
+    })
+    .unwrap_or_else(|e| fail(e));
+}
+
 fn score_net(args: &[String], threads: usize) {
     use solver::bombpot::deepcfr::GameCtx;
     use solver::bombpot::exact::score;
@@ -280,6 +308,7 @@ fn main() {
         Some("gen") if args.len() >= 3 => return gen(&args, threads),
         Some("score") if args.len() >= 3 => return score_net(&args, threads),
         Some("mix") if args.len() >= 3 => return mix(&args, threads),
+        Some("tables") if args.len() >= 3 => return tables(&args, threads),
         Some("netcheck") if args.len() >= 3 => return netcheck(&args),
         _ => {}
     }

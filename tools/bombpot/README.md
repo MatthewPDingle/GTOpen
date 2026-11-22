@@ -47,3 +47,20 @@ takes a few GB of GPU memory at the default `--cap`.
 
 Run one training job at a time on a small CPU-only machine: two PyTorch jobs
 on four cores crawl.
+
+## What score to expect
+
+`bombpot tables game.json --rounds 80 --every 10` trains plain tables the
+same way (seats take turns) on the cards of one sampled walk, in under a
+minute. Its score at a round is about what a net that fitted every example
+perfectly would reach there, so read a net's score against it before
+blaming the net. `--regret-power` and `--avg-power` set how much later
+rounds count (round t counts t^power times); the loop's `--power` and
+`--avg-power` are the same for the nets. On the README's game tables with
+power 1 need about 70 rounds to get under 3% of the pot, with power 2 about
+30.
+
+`bombpot mix game.json --nets none,adv_0001.bin,... --net avg_NNNN.bin`
+scores the exact average of the nets that played beside the strategy net,
+on the same sampled cards: a gap between the two is the strategy net's own
+loss.

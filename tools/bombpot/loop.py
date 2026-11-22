@@ -79,6 +79,9 @@ def main():
     ap.add_argument("--range", choices=["off", "played", "average"], default="off",
                     help="range inputs: unused, from the ranges being played, or from the strategy net's ranges")
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--power", type=float, default=2.0,
+                    help="an example of round t counts t^power times (plain tables learn about four times faster with 2 than with 1)")
+    ap.add_argument("--avg-power", type=float, default=2.0, help="the same for the strategy net")
     ap.add_argument("--low-priority", action="store_true", help="run below normal priority")
     ap.add_argument("--torch-threads", type=int, default=0, help="CPU threads for training (0: PyTorch's choice)")
     a = ap.parse_args()
@@ -117,8 +120,8 @@ def main():
                 # follow the average strategy.
                 cmd += ["--context", net_of("avg", step - 1)]
             log(run(cmd))
-        adv.add(prefix + ".adv.bps")
-        strat.add(prefix + ".strat.bps")
+        adv.add(prefix + ".adv.bps", a.power)
+        strat.add(prefix + ".strat.bps", a.avg_power)
         if not done:
             for kind, mem, steps in (("adv", adv, a.steps), ("avg", strat, a.avg_steps or a.steps)):
                 init = net_of(kind, step - 1) if a.warm and step > 1 else None
