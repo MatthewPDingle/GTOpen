@@ -2,6 +2,10 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.7.1 - 2026-11-22
+
+- Preflop: two players holding the same hand class now split all-in equity exactly equally, including when an older cached table is loaded. Other matchups keep their existing estimates. Rebuild and restart to use the correction.
+
 ## 1.7.0 - 2026-11-19
 
 - Preflop Lab: the raise settings now sit together. Max raises, "All-in as a raise size" (the old "all-in option", unchanged) and a new box: "Jam if a raise commits over 30 % of stack".
