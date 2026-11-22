@@ -205,8 +205,9 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         river_draws: 1,
         keep: [1.0, 0.2, 0.1],
         held_out: vec!["AsKd7c".into()],
+        weight_power: 1.0,
     };
-    let (adv, strat) = generate(&spec, None, 4).unwrap();
+    let (adv, strat) = generate(&spec, None, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);
     assert_eq!(adv.recs.len(), adv.n as usize * SAMPLE_BYTES);
     // Every example names a row of betting inputs that exists, and an
@@ -232,4 +233,92 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         assert_ne!(canon_flop(&parse_cards(&g.boards[0]).unwrap()), a);
         assert!((2.0..=4.0).contains(&g.tree.ante) && (15.0..=25.0).contains(&g.tree.stack));
     }
+}
+
+/// Plain tables fed by a recorder, one seat per pass: if what the recorder
+/// is told is right, this is self-play that ends up hard to beat.
+struct Tab {
+    offs: Vec<usize>,
+    regret: Vec<f32>,
+    sum: Vec<f64>,
+    round: f32,
+    seat: usize,
+}
+
+struct TabPolicy<'a> {
+    tree: &'a super::tree::BpTree,
+    offs: &'a [usize],
+    probs: Vec<f32>,
+}
+
+impl super::range::Policy for TabPolicy<'_> {
+    fn strategies(&self, node_idx: u32, _: &super::abstraction::Runout, _: u64, out: &mut [f32]) {
+        let na = self.tree.nodes[node_idx as usize].num_children as usize;
+        let o = self.offs[node_idx as usize];
+        out[..na * NUM_COMBOS].copy_from_slice(&self.probs[o..o + na * NUM_COMBOS]);
+    }
+}
+
+impl Recorder for Tab {
+    fn node(&mut self, v: &NodeView) {
+        if v.actor != self.seat {
+            return;
+        }
+        let na = v.action_vals.len();
+        let o = self.offs[v.node_idx as usize];
+        for a in 0..na {
+            for h in 0..NUM_COMBOS {
+                self.regret[o + a * NUM_COMBOS + h] += self.round * (v.action_vals[a][h] - v.node_val[h]);
+                self.sum[o + a * NUM_COMBOS + h] += (self.round * v.own_reach[h] * v.sigma[a * NUM_COMBOS + h]) as f64;
+            }
+        }
+    }
+}
+
+#[test]
+fn self_play_from_recorded_values_becomes_hard_to_beat() {
+    let cfg = game(&["AsKd7c4h2s"], 2.0, 20.0);
+    let boards = vec![parse_cards("AsKd7c4h2s").unwrap()];
+    let abs = Abstraction::new(&boards, &cfg.groups).unwrap();
+    let tree = BpTreeBuilder::build(&cfg.tree, 2, 1_000_000).unwrap();
+    let mut offs = vec![0usize; tree.nodes.len()];
+    let mut size = 0;
+    for (i, n) in tree.nodes.iter().enumerate() {
+        offs[i] = size;
+        size += n.num_children as usize * NUM_COMBOS;
+    }
+    let mut tab = Tab { offs: offs.clone(), regret: vec![0.0; size], sum: vec![0.0; size], round: 0.0, seat: 0 };
+    let w = Walker::new(&tree, &abs).unwrap();
+    let probs_of = |tab: &Tab, average: bool| -> Vec<f32> {
+        let mut probs = vec![0.0f32; size];
+        for (i, n) in tree.nodes.iter().enumerate() {
+            let na = n.num_children as usize;
+            for h in 0..NUM_COMBOS {
+                let at = |a: usize| offs[i] + a * NUM_COMBOS + h;
+                let raw: Vec<f64> =
+                    (0..na).map(|a| if average { tab.sum[at(a)] } else { tab.regret[at(a)].max(0.0) as f64 }).collect();
+                let total: f64 = raw.iter().sum();
+                for a in 0..na {
+                    probs[at(a)] = if total > 0.0 { (raw[a] / total) as f32 } else { 1.0 / na as f32 };
+                }
+            }
+        }
+        probs
+    };
+    let gap = |tab: &Tab| {
+        let p = TabPolicy { tree: &tree, offs: &offs, probs: probs_of(tab, true) };
+        score(&tree, &abs, &p, Chance::All, 0).unwrap().exploitability()
+    };
+    let start = gap(&tab);
+    for round in 1..=60 {
+        tab.round = round as f32;
+        for seat in 0..2 {
+            tab.seat = seat;
+            let p = TabPolicy { tree: &tree, offs: &offs, probs: probs_of(&tab, false) };
+            w.run(&p, Chance::All, false, Some(&mut tab), &mut Rng::new(0));
+        }
+    }
+    let end = gap(&tab);
+    eprintln!("whole-range self-play: a perfect opponent gains {start:.3} at the start, {end:.4} after 60 rounds (pot 4)");
+    assert!(end < 0.005 * 4.0, "{end}");
 }

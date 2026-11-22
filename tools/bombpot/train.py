@@ -59,7 +59,10 @@ def read_examples(path):
 
 
 class Memory:
-    """Examples of every run so far, capped by dropping at random."""
+    """Examples of every run so far. Past the cap it holds a uniform random
+    sample of everything seen (reservoir sampling)."""
+
+    FIELDS = ("cards", "mask", "street", "weight", "pub", "hand", "target")
 
     def __init__(self, cap, seed=0):
         self.cap = cap
@@ -67,6 +70,7 @@ class Memory:
         self.rows = np.zeros((0, PUB), np.float32)
         self.cards = np.zeros((0, 12), np.uint8)
         self.mask = np.zeros(0, np.uint8)
+        self.street = np.zeros(0, np.uint8)
         self.weight = np.zeros(0, np.float32)
         self.pub = np.zeros(0, np.int64)
         self.hand = np.zeros((0, HAND), np.float32)
@@ -79,19 +83,32 @@ class Memory:
         if self.kind not in (None, kind):
             raise ValueError(f"{path}: mixes advantage and strategy examples")
         self.kind = kind
+        self.seen += len(recs)
+        room = self.cap - len(self.weight)
+        if len(recs) > room:
+            # Full: every example ever seen stays with the same chance
+            # (cap / seen). New ones pass that draw, then push out old ones
+            # picked at random.
+            stay = self.rng.random(len(recs)) < self.cap / self.seen
+            stay[:room] |= True
+            recs = recs[stay]
+            out = max(0, len(recs) - room)
+            if out:
+                keep = np.ones(len(self.weight), bool)
+                keep[self.rng.choice(len(self.weight), out, replace=False)] = False
+                for name in self.FIELDS:
+                    setattr(self, name, getattr(self, name)[keep])
         shift = len(self.rows)
         self.rows = np.concatenate([self.rows, rows])
         self.cards = np.concatenate([self.cards, recs["cards"]])
         self.mask = np.concatenate([self.mask, recs["mask"]])
+        self.street = np.concatenate([self.street, recs["street"]])
         self.weight = np.concatenate([self.weight, recs["weight"] * (it if linear else 1.0)])
         self.pub = np.concatenate([self.pub, recs["pub"].astype(np.int64) + shift])
         self.hand = np.concatenate([self.hand, recs["hand"]])
         self.target = np.concatenate([self.target, recs["target"]])
-        self.seen += len(recs)
-        if len(self.weight) > self.cap:
-            keep = np.sort(self.rng.choice(len(self.weight), self.cap, replace=False))
-            for name in ("cards", "mask", "weight", "pub", "hand", "target"):
-                setattr(self, name, getattr(self, name)[keep])
+        if len(self.rows) > 2 * len(self.weight) + 100_000:
+            # Drop rows of betting inputs no example names any more.
             used, inverse = np.unique(self.pub, return_inverse=True)
             self.rows, self.pub = self.rows[used], inverse.astype(np.int64)
 
@@ -226,12 +243,26 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
         if log and (step + 1) % max(1, steps // 5) == 0:
             log(f"  step {step + 1}/{steps} loss {running:.5f}")
     net.eval()
+    street = torch.from_numpy(mem.street).to(dev)
     with torch.no_grad():
         val_loss = sum(batch_loss(val[i:i + 65536], False).item() * len(val[i:i + 65536])
                        for i in range(0, n_val, 65536)) / n_val
+        # Advantage nets: the share of the held-back targets' spread the net
+        # explains, per street (1 is a perfect fit, 0 is no better than zero).
+        fit_by_street = None
+        if kind == KINDS["adv"]:
+            err, tot = torch.zeros(3, device=dev), torch.zeros(3, device=dev)
+            for i in range(0, n_val, 65536):
+                idx = val[i:i + 65536]
+                x = torch.cat([rows[pub[idx]], hand[idx]], 1)
+                pred = net(card_rows(cards[idx], offset), x)
+                w, s, lg = weight[idx], street[idx].long(), legal_all[idx]
+                err.index_add_(0, s, w * ((pred - target[idx]) ** 2 * lg).sum(1))
+                tot.index_add_(0, s, w * (target[idx] ** 2 * lg).sum(1))
+            fit_by_street = [round(float(1 - e / t), 4) if t > 0 else None for e, t in zip(err, tot)]
     save_net(net, out, kind)
     return {"kind": kind, "examples": n, "steps": steps, "train_loss": running, "val_loss": val_loss,
-            "train_s": time.time() - t0}
+            "fit_by_street": fit_by_street, "train_s": time.time() - t0}
 
 
 def check(net_path, examples, exe, rows=64):

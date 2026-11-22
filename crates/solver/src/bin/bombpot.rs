@@ -4,7 +4,7 @@
 //!       [--seed N] [--check-every N] [--challenge DEALS] [--exact]
 //!       [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]
 //!
-//!   bombpot gen <spec.json> --out PREFIX --iter N [--net net.bin] [--seed N] [--threads N]
+//!   bombpot gen <spec.json> --out PREFIX --iter N [--net net.bin] [--seat N] [--seed N] [--threads N]
 //!   bombpot score <config.json> --net net.bin [--turns N --rivers N] [--threads N]
 //!   bombpot netcheck <examples.bps> --net net.bin [--rows N]
 //!
@@ -13,7 +13,7 @@
 //!
 //! `gen` plays one run of self-play with a net (or, without one, with every
 //! action equally likely) and writes PREFIX.adv.bps and PREFIX.strat.bps for
-//! the trainer in tools/bombpot. `score` measures a two-player net exactly
+//! the trainer in tools/bombpot, for one seat's decisions (`--seat`) or all. `score` measures a two-player net exactly
 //! on one game. `netcheck` prints the net's outputs on stored examples, so
 //! the trainer can confirm both sides compute the same thing.
 
@@ -141,12 +141,15 @@ fn gen(args: &[String], threads: usize) {
     pool(threads);
     let net = if net_path.is_empty() { None } else { Some(Mlp::load(&net_path).unwrap_or_else(|e| fail(e))) };
     let t = Instant::now();
-    let (adv, strat) = generate(&spec, net.as_ref(), seed ^ (iter as u64) << 32).unwrap_or_else(|e| fail(e));
+    let seat: i64 = arg(args, "--seat", -1);
+    let only = if seat >= 0 { Some(seat as usize) } else { None };
+    let seed = seed ^ (iter as u64) << 32 ^ ((seat + 1) as u64) << 56;
+    let (adv, strat) = generate(&spec, net.as_ref(), only, seed).unwrap_or_else(|e| fail(e));
     adv.write(&format!("{out}.adv.bps"), iter).unwrap_or_else(|e| fail(e));
     strat.write(&format!("{out}.strat.bps"), iter).unwrap_or_else(|e| fail(e));
     println!(
         "{}",
-        serde_json::json!({ "event": "gen", "iter": iter, "games": spec.games, "walks": spec.walks,
+        serde_json::json!({ "event": "gen", "iter": iter, "seat": seat, "games": spec.games, "walks": spec.walks,
             "advantages": adv.n, "strategies": strat.n, "gen_s": t.elapsed().as_secs_f64() })
     );
 }

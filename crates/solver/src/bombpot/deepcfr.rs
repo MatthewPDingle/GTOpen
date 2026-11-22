@@ -8,6 +8,11 @@
 //!
 //! Heads-up games are played with whole ranges (`range::Walker`), so the
 //! only luck left in an example is in the cards still to come.
+//!
+//! Runs take turns: a run records one seat's decisions only, and the next
+//! net is fitted before the other seat's run. Plain tables driven the same
+//! way get about ten times closer to unbeatable per run than when both
+//! seats are recorded at once (see `net_tests`).
 
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -66,10 +71,20 @@ pub struct GenSpec {
     /// Flops never drawn (kept back for scoring), in any suit arrangement.
     #[serde(default)]
     pub held_out: Vec<String>,
+    /// An advantage example weighs the share of the opposing range that
+    /// reaches the spot, to this power. 1 is the textbook rule. Below 1,
+    /// spots the opponent rarely enters get more of the net's attention
+    /// (they are where a perfect opponent looks for mistakes); plain tables
+    /// still converge at 0.5, a little slower.
+    #[serde(default = "one_f")]
+    pub weight_power: f32,
 }
 
 fn one() -> usize {
     1
+}
+fn one_f() -> f32 {
+    1.0
 }
 fn two() -> usize {
     2
@@ -236,6 +251,9 @@ pub struct RangeRecorder<'a> {
     pub adv: SampleBuf,
     pub strat: SampleBuf,
     keep: [f32; 3],
+    weight_power: f32,
+    /// Record this seat's decisions only.
+    only: Option<usize>,
     rng: Rng,
     /// Opposing hands a hand can face at the root: weights are shares of it.
     norm: f32,
@@ -246,13 +264,15 @@ pub struct RangeRecorder<'a> {
 const THIN: f32 = 0.05;
 
 impl<'a> RangeRecorder<'a> {
-    pub fn new(game: &'a GameCtx, keep: [f32; 3], seed: u64) -> RangeRecorder<'a> {
+    pub fn new(game: &'a GameCtx, keep: [f32; 3], weight_power: f32, only: Option<usize>, seed: u64) -> RangeRecorder<'a> {
         let free = 52.0 - game.abs.dead.count_ones() as f32;
         let mut r = RangeRecorder {
             game,
             adv: SampleBuf::new(KIND_ADVANTAGE),
             strat: SampleBuf::new(KIND_POLICY),
             keep,
+            weight_power,
+            only,
             rng: Rng::new(seed),
             norm: (free - 2.0) * (free - 3.0) / 2.0,
         };
@@ -282,6 +302,9 @@ pub fn sample_cards(abs: &Abstraction, street: usize, hand: usize, runout: &Runo
 
 impl Recorder for RangeRecorder<'_> {
     fn node(&mut self, v: &NodeView) {
+        if self.only.is_some_and(|p| p != v.actor) {
+            return;
+        }
         let g = self.game;
         let node = &g.tree.nodes[v.node_idx as usize];
         let na = node.num_children as usize;
@@ -298,8 +321,11 @@ impl Recorder for RangeRecorder<'_> {
             let mut ready = false;
             let mut cards = [0u8; 12];
             // Advantages, per unit of the opposing range and of the pot.
-            let w = v.opp_mass[h] / self.norm;
+            let mut w = v.opp_mass[h] / self.norm;
             if w > 1e-6 {
+                if self.weight_power != 1.0 {
+                    w = w.powf(self.weight_power);
+                }
                 let p = keep * (w / THIN).min(1.0);
                 if self.rng.f32() < p {
                     hand_feats(&g.abs, street, h, v.runout, &mut hf);
@@ -333,8 +359,9 @@ impl Recorder for RangeRecorder<'_> {
     }
 }
 
-/// Play one run and return its examples (advantages, strategies).
-pub fn generate(spec: &GenSpec, net: Option<&Mlp>, seed: u64) -> Result<(SampleBuf, SampleBuf), String> {
+/// Play one run and return its examples (advantages, strategies), for one
+/// seat's decisions or, with `only` unset, for both.
+pub fn generate(spec: &GenSpec, net: Option<&Mlp>, only: Option<usize>, seed: u64) -> Result<(SampleBuf, SampleBuf), String> {
     if spec.game.tree.players != 2 {
         return Err("whole-range self-play needs exactly two players".into());
     }
@@ -360,7 +387,7 @@ pub fn generate(spec: &GenSpec, net: Option<&Mlp>, seed: u64) -> Result<(SampleB
                 .into_par_iter()
                 .map(|k| {
                     let s = gseed.wrapping_add(k as u64 * 0x9E37_79B9_7F4A_7C15);
-                    let mut rec = RangeRecorder::new(&game, spec.keep, s ^ 0x5EED);
+                    let mut rec = RangeRecorder::new(&game, spec.keep, spec.weight_power, only, s ^ 0x5EED);
                     walker.run(policy, chance, false, Some(&mut rec), &mut Rng::new(s));
                     (rec.adv, rec.strat)
                 })
