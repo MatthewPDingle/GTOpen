@@ -302,16 +302,29 @@ impl BpSolver {
     }
 }
 
-/// Who plays what in a playout: every seat its average strategy, except that
-/// one seat may follow a challenger's regrets instead (its best action so far).
-pub struct Challenger<'a> {
+/// One seat trained on its own against the other seats' fixed average
+/// strategies. It may tell hands apart more finely than the solve did
+/// (its own `abs`), which shows what the solve's hand grouping gives away.
+pub struct Challenger {
     pub seat: usize,
-    pub regret: &'a Table,
+    pub abs: Abstraction,
+    /// First slot of each of the seat's nodes in `regret`.
+    offsets: Vec<u64>,
+    pub regret: Table,
+}
+
+impl Challenger {
+    #[inline]
+    fn base(&self, node_idx: u32, node: &BpNode, deal: &Deal) -> usize {
+        let b = self.abs.bucket(node.street as usize, deal.hand[self.seat] as usize, &deal.runout);
+        self.offsets[node_idx as usize] as usize + b as usize * node.num_children as usize
+    }
 }
 
 impl BpSolver {
     /// Play one dealt hand to the end with every seat drawing from its
-    /// average strategy, and add each seat's result to `out`.
+    /// average strategy, and add each seat's result to `out`. A challenger
+    /// plays its best action so far instead.
     pub fn playout(&self, deal: &Deal, rng: &mut Rng, challenger: Option<&Challenger>, out: &mut [f64]) {
         let mut idx = 0u32;
         loop {
@@ -324,11 +337,11 @@ impl BpSolver {
             }
             let p = node.player as usize;
             let na = node.num_children as usize;
-            let base = self.slot_base(node, deal.bucket[p][node.street as usize]);
             let a = match challenger {
                 Some(c) if c.seat == p => {
                     // The action with the most summed regret is the one that
                     // has earned the most against the fixed opponents.
+                    let base = c.base(idx, node, deal);
                     let mut best = 0;
                     for a in 1..na {
                         if c.regret.get(base + a) > c.regret.get(base + best) {
@@ -338,6 +351,7 @@ impl BpSolver {
                     best
                 }
                 _ => {
+                    let base = self.slot_base(node, deal.bucket[p][node.street as usize]);
                     let mut sigma = [0.0f32; MAX_ACTIONS];
                     normalise(&self.strat[p], base, na, &mut sigma);
                     sample(&sigma, na, rng)
@@ -387,14 +401,35 @@ impl BpSolver {
             .collect()
     }
 
-    /// Train one seat against the other seats' fixed average strategies and
-    /// return its regret table. Its best actions are an (approximate) best
-    /// reply inside the same hand grouping.
-    pub fn train_challenger(&self, seat: usize, deals: u64, threads: usize, seed: u64) -> Table {
-        let table = Table::zeroed(self.regret[seat].len());
+    /// Train one seat against the other seats' fixed average strategies.
+    /// `groups` is the challenger's own hand grouping (`None`: the solve's).
+    /// Its best actions are an approximate best reply, so what it gains is a
+    /// floor on what that seat could gain by changing only its own play.
+    pub fn train_challenger(
+        &self,
+        seat: usize,
+        groups: Option<&AbsConfig>,
+        deals: u64,
+        threads: usize,
+        seed: u64,
+        max_bytes: u64,
+    ) -> Result<Challenger, String> {
+        let abs = Abstraction::new(&self.boards, groups.unwrap_or(&self.abs.cfg))?;
+        let mut offsets = vec![0u64; self.tree.nodes.len()];
+        let mut size = 0u64;
+        for (i, node) in self.tree.nodes.iter().enumerate() {
+            if node.kind == KIND_ACTION && node.player as usize == seat {
+                offsets[i] = size;
+                size += abs.slots[node.street as usize] as u64 * node.num_children as u64;
+            }
+        }
+        if size * 4 > max_bytes {
+            return Err(format!("the challenger needs {:.1} GB, over the limit", size as f64 * 4.0 / 1e9));
+        }
+        let c = Challenger { seat, abs, offsets, regret: Table::zeroed(size as usize) };
         let n = self.players();
         let threads = threads.max(1);
-        let tref = &table;
+        let cref = &c;
         std::thread::scope(|sc| {
             for t in 0..threads {
                 let share = deals / threads as u64 + u64::from((t as u64) < deals % threads as u64);
@@ -402,16 +437,17 @@ impl BpSolver {
                     let mut rng = Rng::new(seed ^ 0x5151_7777 ^ (t as u64) << 40);
                     for _ in 0..share {
                         let deal = self.abs.deal(n, &mut rng);
-                        self.challenge(0, seat, tref, &deal, &mut rng);
+                        self.challenge(0, cref, &deal, &mut rng);
                     }
                 });
             }
         });
-        table
+        Ok(c)
     }
 
-    fn challenge(&self, node_idx: u32, seat: usize, table: &Table, deal: &Deal, rng: &mut Rng) -> f32 {
+    fn challenge(&self, node_idx: u32, c: &Challenger, deal: &Deal, rng: &mut Rng) -> f32 {
         let node = &self.tree.nodes[node_idx as usize];
+        let seat = c.seat;
         if node.live >> seat & 1 == 0 {
             return -self.tree.put(node_idx, seat);
         }
@@ -420,24 +456,25 @@ impl BpSolver {
         }
         let p = node.player as usize;
         let na = node.num_children as usize;
-        let base = self.slot_base(node, deal.bucket[p][node.street as usize]);
         let mut sigma = [0.0f32; MAX_ACTIONS];
         if p == seat {
-            regret_match(table, base, na, &mut sigma);
+            let base = c.base(node_idx, node, deal);
+            regret_match(&c.regret, base, na, &mut sigma);
             let mut util = [0.0f32; MAX_ACTIONS];
             let mut ev = 0.0f32;
             for a in 0..na {
-                util[a] = self.challenge(self.tree.child(node, a), seat, table, deal, rng);
+                util[a] = self.challenge(self.tree.child(node, a), c, deal, rng);
                 ev += sigma[a] * util[a];
             }
             for a in 0..na {
-                table.add(base + a, util[a] - ev);
+                c.regret.add(base + a, util[a] - ev);
             }
             ev
         } else {
+            let base = self.slot_base(node, deal.bucket[p][node.street as usize]);
             normalise(&self.strat[p], base, na, &mut sigma);
             let a = sample(&sigma, na, rng);
-            self.challenge(self.tree.child(node, a), seat, table, deal, rng)
+            self.challenge(self.tree.child(node, a), c, deal, rng)
         }
     }
 }

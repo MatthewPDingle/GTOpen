@@ -2,7 +2,7 @@
 //!
 //!   bombpot solve <config.json> [--rounds N] [--deals N] [--threads N]
 //!       [--seed N] [--check-every N] [--challenge DEALS] [--exact]
-//!       [--report out.json] [--max-gb G]
+//!       [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]
 //!
 //! `config.json` is a `BpConfig`: boards, the betting tree and the hand
 //! grouping. Progress goes to stdout as one JSON object per line.
@@ -10,6 +10,7 @@
 use std::time::Instant;
 
 use solver::bombpot::exact::Exact2;
+use solver::bombpot::AbsConfig;
 use solver::bombpot::solver::{BpConfig, BpSolver, Challenger};
 use solver::bombpot::tree::{KIND_ACTION, MAX_ACTIONS};
 use solver::tree::Action;
@@ -109,7 +110,7 @@ fn report(s: &BpSolver) -> serde_json::Value {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 3 || args[1] != "solve" {
-        eprintln!("usage: bombpot solve <config.json> [--rounds N] [--deals N] [--threads N] [--seed N] [--check-every N] [--challenge DEALS] [--exact] [--report out.json] [--max-gb G]");
+        eprintln!("usage: bombpot solve <config.json> [--rounds N] [--deals N] [--threads N] [--seed N] [--check-every N] [--challenge DEALS] [--exact] [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]");
         std::process::exit(2);
     }
     let text = std::fs::read_to_string(&args[2]).expect("read config");
@@ -123,6 +124,19 @@ fn main() {
     let max_gb: f64 = arg(&args, "--max-gb", 8.0);
     let exact = args.iter().any(|a| a == "--exact");
     let report_path: String = arg(&args, "--report", String::new());
+    // `--fine river,turn_strength,turn_draw,top`: the challenger tells hands
+    // apart this finely instead of using the solve's own grouping.
+    let fine: Option<AbsConfig> = args.iter().position(|a| a == "--fine").and_then(|i| args.get(i + 1)).map(|v| {
+        let p: Vec<f64> = v.split(',').map(|x| x.parse().expect("--fine takes four numbers")).collect();
+        AbsConfig {
+            river_groups: p[0] as usize,
+            turn_strength_groups: p[1] as usize,
+            turn_draw_groups: p[2] as usize,
+            top: p[3],
+            per_board: false,
+            lossless: false,
+        }
+    });
 
     let t0 = Instant::now();
     let mut s = match BpSolver::new(&cfg, (max_gb * 1e9) as u64) {
@@ -156,8 +170,9 @@ fn main() {
             let mut gains = Vec::new();
             let mut ses = Vec::new();
             for seat in 0..n {
-                let t = s.train_challenger(seat, challenge, threads, seed + 1000 + seat as u64);
-                let c = Challenger { seat, regret: &t };
+                let c: Challenger = s
+                    .train_challenger(seat, fine.as_ref(), challenge, threads, seed + 1000 + seat as u64, (max_gb * 1e9) as u64)
+                    .expect("challenger");
                 let v = s.sampled_values(2_000_000, threads, seed + 77, Some(&c));
                 gains.push(v[seat].0 - base[seat].0);
                 ses.push((v[seat].1.powi(2) + base[seat].1.powi(2)).sqrt());
@@ -179,6 +194,11 @@ fn main() {
         );
         if check_every > 0 && (r % check_every == 0 || r == rounds) {
             check(&s, solve_s);
+            if !report_path.is_empty() && r != rounds {
+                // Keep a report per check so two runs can be compared as they go.
+                let path = format!("{report_path}.round{r}");
+                std::fs::write(&path, serde_json::to_string(&report(&s)).unwrap()).expect("write report");
+            }
         }
     }
     if check_every == 0 {

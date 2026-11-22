@@ -164,8 +164,7 @@ fn a_challenger_finds_little_to_gain_after_self_play_and_a_lot_before() {
         let exact = Exact2::new(s).unwrap().values();
         let mut out = Vec::new();
         for seat in 0..2 {
-            let t = s.train_challenger(seat, 2_000_000, 4, 9);
-            let c = super::solver::Challenger { seat, regret: &t };
+            let c = s.train_challenger(seat, None, 2_000_000, 4, 9, 1 << 30).unwrap();
             let v = s.sampled_values(2_000_000, 4, 2, Some(&c));
             out.push((v[seat].0 - base[seat].0, exact.best[seat] - exact.value[seat]));
         }
@@ -186,4 +185,56 @@ fn a_challenger_finds_little_to_gain_after_self_play_and_a_lot_before() {
         assert!(after[seat].0 < after[seat].1 + 0.03);
         assert!(after[seat].0 < 0.1);
     }
+}
+
+#[test]
+fn two_boards_split_the_pot_the_same_way_in_playouts_and_exact_scoring() {
+    // Two independent pieces of code pay out a two-board showdown: the
+    // playout (one dealt hand at a time) and the exact scorer (every hand at
+    // once). On an untrained strategy they must give each seat the same value.
+    for boards in [["AsKd7c4h2s", "9h8h2dQcJc"], ["AsKd7c4h", "9h8h2dQc"]] {
+        let mut cfg = config(2, &boards, 3.0, 30.0, "66", "100", false);
+        cfg.groups = AbsConfig { river_groups: 8, ..Default::default() };
+        let mut s = BpSolver::new(&cfg, 1 << 30).unwrap();
+        // A little self-play so the strategy is not symmetric noise.
+        s.run_round(20_000, 4, 3);
+        let exact = Exact2::new(&s).unwrap().values();
+        let sampled = s.sampled_values(6_000_000, 4, 8, None);
+        eprintln!("two boards {boards:?}: exact {:?} sampled {sampled:?}", exact.value);
+        for p in 0..2 {
+            assert!((exact.value[p] - sampled[p].0).abs() < 4.0 * sampled[p].1 + 0.005, "seat {p}");
+        }
+        assert!((exact.value[0] + exact.value[1]).abs() < 1e-3);
+        assert!(exact.best[0] >= exact.value[0] - 1e-4 && exact.best[1] >= exact.value[1] - 1e-4);
+    }
+}
+
+#[test]
+fn two_player_two_board_river_self_play_becomes_hard_to_beat() {
+    let cfg = config(2, &["AsKd7c4h2s", "9h8h2dQcJc"], 3.0, 30.0, "66", "100", false);
+    let mut s = BpSolver::new(&cfg, 1 << 30).unwrap();
+    let start = Exact2::new(&s).unwrap().values().exploitability();
+    for r in 0..30 {
+        s.run_round(100_000, 4, 70 + r);
+    }
+    let v = Exact2::new(&s).unwrap().values();
+    eprintln!("two-board river: start {start:.4}, now {:.4}", v.exploitability());
+    assert!(v.exploitability() < 0.03 * 6.0, "exploitability {}", v.exploitability());
+}
+
+#[test]
+fn six_players_two_boards_run_and_the_money_adds_up() {
+    let mut cfg = config(6, &["AsKd7c", "9h8h2d"], 2.0, 98.0, "66", "100", false);
+    cfg.tree.max_raises = 1;
+    cfg.tree.rake_pct = 0.05;
+    cfg.tree.rake_cap = 3.0;
+    cfg.groups = AbsConfig { river_groups: 6, turn_strength_groups: 4, turn_draw_groups: 2, ..Default::default() };
+    let mut s = BpSolver::new(&cfg, 2 << 30).unwrap();
+    s.run_round(20_000, 4, 5);
+    let v = s.sampled_values(200_000, 4, 6, None);
+    let total: f64 = v.iter().map(|x| x.0).sum();
+    eprintln!("six players, two boards: values {v:?}");
+    // With rake the seats lose between them exactly what the house takes:
+    // more than nothing, never more than the cap.
+    assert!(total < 0.0 && total > -3.0, "total {total}");
 }

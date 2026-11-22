@@ -36,6 +36,10 @@ pub struct AbsConfig {
     /// beats the share `q` of other hands lands in group `groups * q^top`.
     #[serde(default = "default_top")]
     pub top: f64,
+    /// Keep a separate strategy for every exact board that can come, and
+    /// group hands only within a board (small games only).
+    #[serde(default)]
+    pub per_board: bool,
     /// Keep every hand apart on every board (small games only).
     #[serde(default)]
     pub lossless: bool,
@@ -61,6 +65,7 @@ impl Default for AbsConfig {
             turn_strength_groups: default_turn_strength(),
             turn_draw_groups: default_turn_draw(),
             top: default_top(),
+            per_board: false,
             lossless: false,
         }
     }
@@ -241,7 +246,13 @@ impl Abstraction {
                 seqs.checked_mul(NUM_COMBOS).ok_or("lossless game too large")?
             } else {
                 let per_board = if st == 1 { turn_groups } else { river_groups };
-                per_board.pow(nb as u32)
+                let groups = per_board.pow(nb as u32);
+                if cfg.per_board {
+                    let seqs = 52usize.checked_pow((later * nb) as u32).ok_or("per-board game too large")?;
+                    seqs.checked_mul(groups).ok_or("per-board game too large")?
+                } else {
+                    groups
+                }
             };
         }
         let mut a = Abstraction {
@@ -382,14 +393,16 @@ impl Abstraction {
             return hand as u32;
         }
         let nb = self.boards.len();
-        if self.cfg.lossless {
-            // Sequence of cards dealt since the root, boards in order.
-            let mut seq = 0usize;
+        // Sequence of cards dealt since the root, boards in order.
+        let mut seq = 0usize;
+        if self.cfg.lossless || self.cfg.per_board {
             for st in root + 1..=street {
                 for b in runout.iter().take(nb) {
                     seq = seq * 52 + b[st - 1] as usize;
                 }
             }
+        }
+        if self.cfg.lossless {
             return (seq * NUM_COMBOS + hand) as u32;
         }
         let mut g = 0usize;
@@ -406,6 +419,10 @@ impl Abstraction {
                 };
                 g = g * self.river_groups + self.river_tab[b][row * NUM_COMBOS + hand] as usize;
             }
+        }
+        if self.cfg.per_board {
+            let per = if street == 1 { self.turn_groups } else { self.river_groups };
+            g += seq * per.pow(nb as u32);
         }
         g as u32
     }
