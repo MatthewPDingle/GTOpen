@@ -16,6 +16,7 @@ mod contextual_postflop;
 pub mod evaluator;
 pub mod fit;
 pub mod game;
+pub mod gpu_turn;
 pub mod icm;
 pub mod lock_history;
 pub mod multiway;

@@ -151,6 +151,18 @@ CUDA_VISIBLE_DEVICES=1 ./target/release/solve-cli datagen run --contributor YOUR
 python tools/datagen/upload.py --contributor YOUR_NAME --watch 30
 ```
 
+### More than one solve on a GPU
+
+Two `solve-cli` processes on the same card (a generator and a validator, or
+two generators) take turns: each GPU solve waits until the one before it has
+finished, and says so while it waits. Without turns two big trees can start
+together, overflow the card and, on Windows, crawl in shared system memory
+for as long as both are alive. Turns cost no speed, because solves that
+share a card only time-slice it. Cards chosen with `CUDA_VISIBLE_DEVICES`
+have a turn each. `GTOPEN_GPU_TURN=0` switches turns off. Both processes
+must be a build that takes turns, so update and restart the generator and
+the validator together.
+
 ## Game mixes
 
 What the pool needs changes over time: more live rake structures one month,
