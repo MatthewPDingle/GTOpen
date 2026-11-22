@@ -92,6 +92,11 @@ pub struct GenSpec {
     /// this many rounds, and no river examples are written.
     #[serde(default)]
     pub river_solve: u32,
+    /// With no boards in the game: the run's games take these flops in
+    /// turn instead of drawing their own, so every run plays the same
+    /// flops (`games` of them, the list repeating if it is shorter).
+    #[serde(default)]
+    pub flops: Vec<String>,
 }
 
 fn one() -> usize {
@@ -151,13 +156,18 @@ pub fn canon_flop(cards: &[Card]) -> [u8; 3] {
 
 impl GenSpec {
     /// The game for one of the run's games.
-    pub fn draw_game(&self, rng: &mut Rng) -> Result<BpConfig, String> {
+    pub fn draw_game(&self, rng: &mut Rng, index: usize) -> Result<BpConfig, String> {
         let mut cfg = self.game.clone();
         if let Some([lo, hi]) = self.ante {
             cfg.tree.ante = lo + (hi - lo) * rng.f32() as f64;
         }
         if let Some([lo, hi]) = self.stack {
             cfg.tree.stack = lo + (hi - lo) * rng.f32() as f64;
+        }
+        if cfg.boards.is_empty() && !self.flops.is_empty() {
+            let flop = &self.flops[index % self.flops.len()];
+            parse_cards(flop)?;
+            cfg.boards = vec![flop.clone()];
         }
         if cfg.boards.is_empty() {
             let held: Vec<[u8; 3]> = self
@@ -627,7 +637,7 @@ pub fn generate(
     }
     let mut rng = Rng::new(seed);
     let games: Vec<(BpConfig, u64)> =
-        (0..spec.games).map(|_| spec.draw_game(&mut rng).map(|g| (g, rng.next_u64()))).collect::<Result<_, _>>()?;
+        (0..spec.games).map(|i| spec.draw_game(&mut rng, i).map(|g| (g, rng.next_u64()))).collect::<Result<_, _>>()?;
     let chance = Chance::Sample { turn: spec.turn_draws, river: spec.river_draws };
     let parts: Vec<Result<(SampleBuf, SampleBuf), String>> = games
         .par_iter()

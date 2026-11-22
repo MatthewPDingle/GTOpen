@@ -345,6 +345,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         spread: false,
         fixed_cards: None,
         river_solve: 0,
+        flops: Vec::new(),
     };
     let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);
@@ -375,7 +376,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
     assert_ne!(a, canon_flop(&parse_cards("AsKs7c").unwrap()));
     let mut rng = Rng::new(1);
     for _ in 0..3000 {
-        let g = spec.draw_game(&mut rng).unwrap();
+        let g = spec.draw_game(&mut rng, 0).unwrap();
         assert_ne!(canon_flop(&parse_cards(&g.boards[0]).unwrap()), a);
         assert!((2.0..=4.0).contains(&g.tree.ante) && (15.0..=25.0).contains(&g.tree.stack));
     }
