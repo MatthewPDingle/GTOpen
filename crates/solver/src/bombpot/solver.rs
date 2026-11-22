@@ -9,7 +9,7 @@
 //! Passes are grouped into rounds; round `k` counts `k` times as much as the
 //! first, so early, noisy play fades (linear weighting).
 
-use std::sync::atomic::{AtomicU32, Ordering::Relaxed};
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering::Relaxed};
 
 use serde::{Deserialize, Serialize};
 
@@ -58,6 +58,34 @@ impl Table {
     }
 }
 
+/// The same for summed strategy weights, in f64. A busy slot is added to
+/// tens of millions of times; in f32 each addition would then be rounded to
+/// a few steps of the running total, which bends the average strategy at
+/// exactly the most played spots.
+pub struct SumTable(Vec<AtomicU64>);
+
+impl SumTable {
+    pub fn zeroed(len: usize) -> SumTable {
+        let mut v = std::mem::ManuallyDrop::new(vec![0u64; len]);
+        // SAFETY: as for `Table`, with AtomicU64 and u64.
+        SumTable(unsafe { Vec::from_raw_parts(v.as_mut_ptr() as *mut AtomicU64, v.len(), v.capacity()) })
+    }
+    #[inline]
+    pub fn get(&self, i: usize) -> f64 {
+        f64::from_bits(self.0[i].load(Relaxed))
+    }
+    #[inline]
+    pub fn add(&self, i: usize, v: f64) {
+        self.0[i].store((self.get(i) + v).to_bits(), Relaxed)
+    }
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
 /// Regret matching: play each action in proportion to its positive regret.
 #[inline]
 pub fn regret_match(t: &Table, base: usize, na: usize, out: &mut [f32; MAX_ACTIONS]) {
@@ -82,17 +110,16 @@ pub fn regret_match(t: &Table, base: usize, na: usize, out: &mut [f32; MAX_ACTIO
 
 /// Normalise a row of summed strategy weights into probabilities.
 #[inline]
-pub fn normalise(t: &Table, base: usize, na: usize, out: &mut [f32; MAX_ACTIONS]) {
-    let mut sum = 0.0f32;
+pub fn normalise(t: &SumTable, base: usize, na: usize, out: &mut [f32; MAX_ACTIONS]) {
+    let mut raw = [0.0f64; MAX_ACTIONS];
+    let mut sum = 0.0f64;
     for a in 0..na {
-        let s = t.get(base + a);
-        out[a] = s;
-        sum += s;
+        raw[a] = t.get(base + a);
+        sum += raw[a];
     }
     if sum > 0.0 {
-        let inv = 1.0 / sum;
-        for o in out.iter_mut().take(na) {
-            *o *= inv;
+        for a in 0..na {
+            out[a] = (raw[a] / sum) as f32;
         }
     } else {
         let u = 1.0 / na as f32;
@@ -121,12 +148,12 @@ pub struct BpSolver {
     /// Per seat: regrets and summed strategy weights, laid out as
     /// `node.info_offset + slot * actions + action`.
     pub regret: Vec<Table>,
-    pub strat: Vec<Table>,
+    pub strat: Vec<SumTable>,
     pub rounds: u32,
     pub deals: u64,
 }
 
-/// Bytes the two tables of a solve would need.
+/// Bytes the two tables of a solve would need (f32 regrets, f64 sums).
 pub fn table_bytes(tree: &BpTree, abs: &Abstraction) -> u64 {
     let mut total = 0u64;
     for n in &tree.nodes {
@@ -134,7 +161,7 @@ pub fn table_bytes(tree: &BpTree, abs: &Abstraction) -> u64 {
             total += abs.slots[n.street as usize] as u64 * n.num_children as u64;
         }
     }
-    total * 8
+    total * 12
 }
 
 impl BpSolver {
@@ -165,7 +192,7 @@ impl BpSolver {
             }
         }
         let regret = sizes.iter().map(|&s| Table::zeroed(s as usize)).collect();
-        let strat = sizes.iter().map(|&s| Table::zeroed(s as usize)).collect();
+        let strat = sizes.iter().map(|&s| SumTable::zeroed(s as usize)).collect();
         Ok(BpSolver { tree, abs, boards, regret, strat, rounds: 0, deals: 0 })
     }
 
@@ -247,7 +274,7 @@ impl BpSolver {
             let s = &self.strat[p];
             for a in 0..na {
                 if sigma[a] > 0.0 {
-                    s.add(base + a, w * sigma[a]);
+                    s.add(base + a, (w * sigma[a]) as f64);
                 }
             }
             let a = sample(&sigma, na, rng);

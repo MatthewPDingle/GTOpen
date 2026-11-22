@@ -147,7 +147,7 @@ fn main() {
         }
     };
     let n = s.players();
-    let bytes: usize = s.regret.iter().map(|t| t.len() * 8).sum();
+    let bytes: usize = s.regret.iter().map(|t| t.len() * 12).sum();
     println!(
         "{}",
         serde_json::json!({
