@@ -50,6 +50,21 @@ def lower_priority():
         os.nice(10)
 
 
+def wait_for_gpu(free_gb, device, log):
+    """Hold a training run until the GPU has this much memory free (another
+    job on a shared card may be at its peak)."""
+    if not free_gb or not str(device).startswith("cuda"):
+        return
+    waited = 0
+    while T.torch.cuda.mem_get_info()[0] < free_gb * 2 ** 30:
+        if waited == 0:
+            log({"event": "wait", "why": f"under {free_gb} GB of GPU memory free"})
+        if waited >= 3600:
+            sys.exit("the GPU stayed full for an hour")
+        time.sleep(10)
+        waited += 10
+
+
 def run(cmd):
     out = subprocess.run(cmd, check=True, capture_output=True, text=True, **LOW).stdout.strip().splitlines()
     return json.loads(out[-1])
@@ -81,6 +96,11 @@ def main():
     ap.add_argument("--range", choices=["off", "played", "average"], default="off",
                     help="range inputs: unused, from the ranges being played, or from the strategy net's ranges")
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--gpu-free-gb", type=float, default=0,
+                    help="before each training run, wait until the GPU has this much memory free (shared card)")
+    ap.add_argument("--keep-rounds", type=int, default=0,
+                    help="keep the example files of this many rounds only (0: all). The loop holds every "
+                         "example in memory either way; after a restart it starts over from the files left")
     ap.add_argument("--fixed-suits", action="store_true",
                     help="do not rename suits at random while training (for a spec with one fixed flop)")
     ap.add_argument("--power", type=float, default=1.0,
@@ -113,7 +133,9 @@ def main():
         it, seat = (step + seats - 1) // seats, (step - 1) % seats
         prefix = os.path.join(mem_dir, f"r{it:04d}s{seat}")
         done = os.path.exists(net_of("adv", step)) and os.path.exists(net_of("avg", step))
-        if not (done and os.path.exists(prefix + ".strat.bps")):
+        if done and not os.path.exists(prefix + ".strat.bps"):
+            continue  # a finished round whose examples were cleared (--keep-rounds)
+        if not done or not os.path.exists(prefix + ".adv.bps"):
             cmd = [a.exe, "gen", a.spec, "--out", prefix, "--iter", str(it), "--seat", str(seat),
                    "--seed", str(a.seed)] + threads
             if step > 1:
@@ -130,6 +152,7 @@ def main():
         if not done:
             for kind, mem, steps in (("adv", adv, a.steps), ("avg", strat, a.avg_steps or a.steps)):
                 init = net_of(kind, step - 1) if a.warm and step > 1 else None
+                wait_for_gpu(a.gpu_free_gb, a.device, log)
                 res = T.train(mem, net_of(kind, step) + ".tmp", a.hidden, a.layers, not a.plain, steps, a.batch,
                               a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits, width=a.width)
                 os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
@@ -142,6 +165,12 @@ def main():
                 if a.score_turns or a.score_rivers:
                     cmd += ["--turns", str(a.score_turns), "--rivers", str(a.score_rivers)]
                 log({"iter": it, "game": os.path.basename(game), **run(cmd)})
+        if a.keep_rounds and seat == seats - 1 and it > a.keep_rounds:
+            for old_seat in range(seats):
+                for kind in ("adv", "strat"):
+                    old = os.path.join(mem_dir, f"r{it - a.keep_rounds:04d}s{old_seat}.{kind}.bps")
+                    if os.path.exists(old):
+                        os.remove(old)
 
 
 if __name__ == "__main__":

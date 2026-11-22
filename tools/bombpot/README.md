@@ -45,6 +45,11 @@ sample instead (quicker, reads a little high).
 the machine's GPU (see `tools/leafnet/README.md` for the RTX 50-series) and
 takes a few GB of GPU memory at the default `--cap`.
 
+On a GPU shared with another job, `--gpu-free-gb N` holds each training run
+until that much memory is free, and a smaller `--cap` lowers what training
+takes (about 1 GB per 8 million examples). `--keep-rounds N` keeps only the
+last rounds' example files on disk.
+
 Run one training job at a time on a small CPU-only machine: two PyTorch jobs
 on four cores crawl.
 
