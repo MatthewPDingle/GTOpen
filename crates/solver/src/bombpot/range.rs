@@ -87,6 +87,15 @@ pub enum Chance {
     All,
     /// This many random draws for the turn and for the river.
     Sample { turn: usize, river: usize },
+    /// As `Sample`, but the walks of one run share a shuffled deck at every
+    /// spot and each takes the next cards from it, so together they cover
+    /// the cards evenly instead of by luck. One board only (with two, the
+    /// same as `Sample`).
+    Spread { turn: usize, river: usize, walk: usize, deck: u64 },
+    /// The draws of `Sample` with the first number of each pair, of which
+    /// only the second number are tried, picked by `pick`: a noisy look at
+    /// the game that `Sample` plays in full.
+    Subset { turn: [usize; 2], river: [usize; 2], pick: u64 },
 }
 
 /// One decision as a `Recorder` sees it. Vectors are indexed by hand.
@@ -504,6 +513,8 @@ impl<'a> Walker<'a> {
         let want = match cx.chance {
             Chance::All => total,
             Chance::Sample { turn, river } => (if next == 1 { turn } else { river }).max(1),
+            Chance::Spread { turn, river, .. } => (if next == 1 { turn } else { river }).max(1),
+            Chance::Subset { turn, river, .. } => (if next == 1 { turn[0] } else { river[0] }).max(1),
         };
         let mut draws: Vec<[Card; 2]> = Vec::new();
         if want >= total {
@@ -522,12 +533,22 @@ impl<'a> Walker<'a> {
             let spot = (node_idx as u64) << 32
                 | (have as u64) << 60
                 | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
-            let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
             let mut deck = free.clone();
-            for i in 0..want {
-                let j = i + rng.below((deck.len() - i) as u32) as usize;
-                deck.swap(i, j);
-                draws.push([deck[i], 0]);
+            if let Chance::Spread { walk, deck: shared, .. } = cx.chance {
+                let rng = &mut Rng::new(shared ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+                for i in 0..deck.len() - 1 {
+                    let j = i + rng.below((deck.len() - i) as u32) as usize;
+                    deck.swap(i, j);
+                }
+                let start = walk * want % deck.len();
+                draws.extend((0..want).map(|j| [deck[(start + j) % deck.len()], 0]));
+            } else {
+                let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+                for i in 0..want {
+                    let j = i + rng.below((deck.len() - i) as u32) as usize;
+                    deck.swap(i, j);
+                    draws.push([deck[i], 0]);
+                }
             }
         } else {
             let spot = (node_idx as u64) << 32
@@ -541,6 +562,20 @@ impl<'a> Walker<'a> {
                     b += 1;
                 }
                 draws.push([free[a], free[b]]);
+            }
+        }
+        if let Chance::Subset { turn, river, pick } = cx.chance {
+            let take = (if next == 1 { turn[1] } else { river[1] }).max(1);
+            if take < draws.len() {
+                let spot = (node_idx as u64) << 32
+                    | (have as u64) << 60
+                    | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+                let rng = &mut Rng::new(pick ^ spot.wrapping_mul(0xD6E8_FEB8_6659_FD93));
+                for i in 0..take {
+                    let j = i + rng.below((draws.len() - i) as u32) as usize;
+                    draws.swap(i, j);
+                }
+                draws.truncate(take);
             }
         }
         let scale = (prob * total as f64 / draws.len() as f64) as f32;

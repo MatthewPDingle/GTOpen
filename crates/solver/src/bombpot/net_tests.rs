@@ -26,7 +26,7 @@ fn sampled_cards_average_to_the_exact_value() {
     let boards = vec![parse_cards("AsKd7c4h").unwrap()];
     let abs = Abstraction::new(&boards, &cfg.groups).unwrap();
     let tree = BpTreeBuilder::build(&cfg.tree, 1, 1_000_000).unwrap();
-    let policy = UniformPolicy(&tree);
+    let policy = Skew(&tree);
     let exact = score(&tree, &abs, &policy, Chance::All, 0).unwrap();
     // Asking for more cards than there are is the same as asking for all.
     let all = score(&tree, &abs, &policy, Chance::Sample { turn: 99, river: 99 }, 5).unwrap();
@@ -39,6 +39,43 @@ fn sampled_cards_average_to_the_exact_value() {
     mean /= runs as f64;
     eprintln!("exact {:.4}, sampled mean {mean:.4}", exact.value[0]);
     assert!((mean - exact.value[0]).abs() < 0.05, "exact {} sampled {mean}", exact.value[0]);
+}
+
+/// A lopsided strategy, so that results depend on the cards to come (when
+/// every action is equally likely they do not: the seats mirror each other).
+struct Skew<'a>(&'a super::tree::BpTree);
+
+impl super::range::Policy for Skew<'_> {
+    fn strategies(&self, at: &super::range::At, out: &mut [f32]) {
+        let na = self.0.nodes[at.node_idx as usize].num_children as usize;
+        for h in 0..NUM_COMBOS {
+            let w = |a: usize| 1.0 + ((h + 7 * a + at.node_idx as usize) % 5) as f32;
+            let total: f32 = (0..na).map(w).sum();
+            for a in 0..na {
+                out[a * NUM_COMBOS + h] = w(a) / total;
+            }
+        }
+    }
+}
+
+#[test]
+fn walks_that_share_the_cards_cover_them_exactly() {
+    // 48 river cards, 8 walks of 6: together they are every card once.
+    let cfg = game(&["AsKd7c4h"], 3.0, 20.0);
+    let boards = vec![parse_cards("AsKd7c4h").unwrap()];
+    let abs = Abstraction::new(&boards, &cfg.groups).unwrap();
+    let tree = BpTreeBuilder::build(&cfg.tree, 1, 1_000_000).unwrap();
+    let policy = Skew(&tree);
+    let exact = score(&tree, &abs, &policy, Chance::All, 0).unwrap().value[0];
+    let mut mean = 0.0;
+    let mut off = 0.0f64;
+    for walk in 0..8 {
+        let v = score(&tree, &abs, &policy, Chance::Spread { turn: 6, river: 6, walk, deck: 77 }, walk as u64).unwrap().value[0];
+        off = off.max((v - exact).abs());
+        mean += v / 8.0;
+    }
+    eprintln!("exact {exact:.5}, shared mean {mean:.5}, one walk off by up to {off:.4}");
+    assert!((mean - exact).abs() < 1e-4 && off > 1e-3, "exact {exact} shared {mean}");
 }
 
 struct Check {
@@ -209,6 +246,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         keep: [1.0, 0.2, 0.1],
         held_out: vec!["AsKd7c".into()],
         weight_power: 1.0,
+        spread: false,
     };
     let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);

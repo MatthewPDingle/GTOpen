@@ -78,6 +78,10 @@ pub struct GenSpec {
     /// still converge at 0.5, a little slower.
     #[serde(default = "one_f")]
     pub weight_power: f32,
+    /// The walks of a game share the cards to come evenly instead of each
+    /// drawing its own (less luck in the examples for the same work).
+    #[serde(default)]
+    pub spread: bool,
 }
 
 fn one() -> usize {
@@ -482,6 +486,15 @@ pub struct Powers {
     pub average: f64,
 }
 
+/// Each pass sees only part of the cards, like the net loop: `walks` looks,
+/// each trying `turn_draws` turn cards and `river_draws` river cards.
+#[derive(Clone, Copy)]
+pub struct Noisy {
+    pub walks: usize,
+    pub turn_draws: usize,
+    pub river_draws: usize,
+}
+
 struct TablePlay(std::collections::HashMap<(u32, [u8; 4]), Vec<f32>>);
 
 impl Policy for TablePlay {
@@ -547,6 +560,7 @@ impl TableRun {
         chance: Chance,
         seed: u64,
         powers: Powers,
+        noisy: Option<Noisy>,
         rounds: usize,
         every: usize,
         mut report: impl FnMut(usize, &dyn Policy),
@@ -557,8 +571,23 @@ impl TableRun {
             for seat in 0..2 {
                 let policy = TableRun::play(&t.regret);
                 let r = round as f64;
-                let mut rec = TableRecorder { seat, weight: r.powf(powers.regret), weight_avg: r.powf(powers.average), into: &mut t };
-                walker.run(&policy, None, chance, false, Some(&mut rec), &mut Rng::new(seed));
+                let (walks, turn, river) = match (noisy, chance) {
+                    (Some(n), Chance::Sample { turn, river }) => (n.walks.max(1), [turn, n.turn_draws], [river, n.river_draws]),
+                    _ => (1, [0; 2], [0; 2]),
+                };
+                for walk in 0..walks {
+                    let look = match noisy {
+                        Some(_) => Chance::Subset { turn, river, pick: Rng::new(seed ^ ((round * 2 + seat) * 1000 + walk) as u64).next_u64() },
+                        None => chance,
+                    };
+                    let mut rec = TableRecorder {
+                        seat,
+                        weight: r.powf(powers.regret) / walks as f64,
+                        weight_avg: r.powf(powers.average) / walks as f64,
+                        into: &mut t,
+                    };
+                    walker.run(&policy, None, look, false, Some(&mut rec), &mut Rng::new(seed));
+                }
             }
             if round % every == 0 || round == rounds {
                 report(round, &TableRun::play(&t.sum));
@@ -618,6 +647,10 @@ pub fn generate(
                 .map(|k| {
                     let s = gseed.wrapping_add(k as u64 * 0x9E37_79B9_7F4A_7C15);
                     let mut rec = RangeRecorder::new(&game, spec.keep, spec.weight_power, only, s ^ 0x5EED);
+                    let chance = match spec.spread {
+                        true => Chance::Spread { turn: spec.turn_draws, river: spec.river_draws, walk: k, deck: *gseed },
+                        false => chance,
+                    };
                     walker.run(policy, context, chance, false, Some(&mut rec), &mut Rng::new(s));
                     (rec.adv, rec.strat)
                 })

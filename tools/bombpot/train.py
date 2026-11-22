@@ -195,7 +195,7 @@ def loss_of(kind, pred, target, legal, weight):
 
 
 def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192, lr=1e-3, init=None,
-          device="cpu", seed=0, log=None):
+          device="cpu", seed=0, log=None, shuffle=True):
     """Fit a net to the memory and write it to `out`. Returns a summary."""
     torch.manual_seed(seed)
     dev = torch.device(device)
@@ -233,7 +233,7 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
     running = 0.0
     for step in range(steps):
         idx = fit[torch.randint(0, len(fit), (batch,), device=dev)]
-        loss = batch_loss(idx, True)
+        loss = batch_loss(idx, shuffle)
         opt.zero_grad(set_to_none=True)
         loss.backward()
         nn.utils.clip_grad_norm_(net.parameters(), 1.0)
@@ -302,6 +302,7 @@ def main():
     ap.add_argument("--cap", type=int, default=40_000_000, help="most examples held")
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--fixed-suits", action="store_true", help="do not rename suits at random (for one fixed flop)")
     ap.add_argument("--power", type=float, default=2.0, help="an example of round t counts t^power times")
     ap.add_argument("--check", help="path to the bombpot tool, to compare outputs")
     a = ap.parse_args()
@@ -312,7 +313,7 @@ def main():
     for f in files:
         mem.add(f, a.power)
     res = train(mem, a.out, a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr, a.init, a.device, a.seed,
-                log=lambda s: print(s, file=sys.stderr))
+                log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits)
     if a.check:
         res["engine_difference"] = check(a.out, files[0], a.check)
     print(json.dumps(res))

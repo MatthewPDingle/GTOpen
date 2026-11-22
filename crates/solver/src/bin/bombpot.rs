@@ -204,7 +204,7 @@ fn mix(args: &[String], threads: usize) {
 /// Plain tables trained like the nets on one sampled walk's cards: the
 /// score a perfectly fitted net would reach after as many rounds.
 fn tables(args: &[String], threads: usize) {
-    use solver::bombpot::deepcfr::{GameCtx, Powers, TableRun};
+    use solver::bombpot::deepcfr::{GameCtx, Noisy, Powers, TableRun};
     use solver::bombpot::exact::score;
     use solver::bombpot::range::Chance;
     let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
@@ -218,7 +218,9 @@ fn tables(args: &[String], threads: usize) {
     let pot = cfg.tree.starting_pot();
     let t = Instant::now();
     let powers = Powers { regret: arg(args, "--regret-power", 1.0), average: arg(args, "--avg-power", 1.0) };
-    TableRun::run(&game, chance, seed, powers, rounds, every, |round, policy| {
+    let walks: usize = arg(args, "--walks", 0);
+    let noisy = (walks > 0).then(|| Noisy { walks, turn_draws: arg(args, "--turn-draws", 3), river_draws: arg(args, "--river-draws", 2) });
+    TableRun::run(&game, chance, seed, powers, noisy, rounds, every, |round, policy| {
         let v = score(&game.tree, &game.abs, policy, chance, seed).unwrap_or_else(|e| fail(e));
         println!(
             "{}",
