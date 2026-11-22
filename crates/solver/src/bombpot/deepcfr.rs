@@ -430,7 +430,7 @@ impl Mixture {
     /// `nets[j]` is what was played in half round `j + 1` (`None`: every
     /// action equally likely); the seat learning there is `j % 2` and the
     /// round's weight is its number.
-    pub fn build(game: &GameCtx, nets: &[Option<&Mlp>], range_on: bool, chance: Chance, seed: u64) -> Result<Mixture, String> {
+    pub fn build(game: &GameCtx, nets: &[Option<&Net>], range_on: bool, chance: Chance, seed: u64) -> Result<Mixture, String> {
         let walker = Walker::new(&game.tree, &game.abs)?;
         let parts: Vec<Mixture> = nets
             .par_iter()
@@ -441,7 +441,7 @@ impl Mixture {
                 let netp;
                 let policy: &dyn Policy = match net {
                     Some(n) => {
-                        netp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
+                        netp = NetPolicy::new(&game.tree, &game.abs, &game.pubf, n, range_on);
                         &netp
                     }
                     None => &uniform,
@@ -604,8 +604,8 @@ impl TableRun {
 /// describe (without one, the played ranges).
 pub fn generate(
     spec: &GenSpec,
-    net: Option<&Mlp>,
-    context: Option<&Mlp>,
+    net: Option<&Net>,
+    context: Option<&Net>,
     range_on: bool,
     only: Option<usize>,
     seed: u64,
@@ -626,7 +626,7 @@ pub fn generate(
             let netp;
             let policy: &dyn Policy = match net {
                 Some(n) => {
-                    netp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
+                    netp = NetPolicy::new(&game.tree, &game.abs, &game.pubf, n, range_on);
                     &netp
                 }
                 None => &uniform,
@@ -635,7 +635,7 @@ pub fn generate(
             let ranged = RangedUniform(&game.tree);
             let context: Option<&dyn Policy> = match context {
                 Some(n) if range_on => {
-                    ctxp = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: n, range_on };
+                    ctxp = NetPolicy::new(&game.tree, &game.abs, &game.pubf, n, range_on);
                     Some(&ctxp)
                 }
                 // No net plays yet, but the examples still need the inputs.

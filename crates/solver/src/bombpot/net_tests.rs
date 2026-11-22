@@ -169,8 +169,8 @@ fn net_bytes(h: usize, layers: usize, residual: bool, kind: u32) -> Vec<u8> {
 fn the_net_reader_computes_what_the_file_says() {
     let (h, layers) = (40, 2);
     let bytes = net_bytes(h, layers, true, KIND_ADVANTAGE);
-    let net = Mlp::from_bytes(&bytes).unwrap();
-    assert!(Mlp::from_bytes(&bytes[..bytes.len() - 4]).is_err());
+    let net = Net::from_bytes(&bytes).unwrap();
+    assert!(Net::from_bytes(&bytes[..bytes.len() - 4]).is_err());
     let f = |i: usize| f32::from_le_bytes(bytes[36 + i * 4..40 + i * 4].try_into().unwrap());
     let mut pub_row = vec![0.0f32; PUB];
     pub_row[0] = 1.0;
@@ -209,12 +209,66 @@ fn the_net_reader_computes_what_the_file_says() {
     }
     let want: Vec<f64> =
         (0..MENU).map(|j| (0..h).map(|i| f(at + j * h + i) as f64 * x[i]).sum::<f64>() + f(at + MENU * h + j) as f64).collect();
-    let mut base = net.node_base(&pub_row, &board);
-    let mut raw = [0.0f32; MENU];
-    net.forward(&mut base, &mut Vec::new(), c1, c2, &hand, &mut raw);
+    let raw = net.example(&pub_row, &board, c1, c2, &hand);
     for j in 0..MENU {
         assert!((raw[j] as f64 - want[j]).abs() < 1e-4, "{raw:?} {want:?}");
     }
+}
+
+/// A decision played for all hands at once must match the net asked one
+/// hand at a time.
+struct OneByOne<'a> {
+    g: &'a GameCtx,
+    net: &'a Net,
+    seen: usize,
+    worst: f32,
+}
+
+impl Recorder for OneByOne<'_> {
+    fn node(&mut self, v: &NodeView) {
+        let node = &self.g.tree.nodes[v.node_idx as usize];
+        let (na, street) = (node.num_children as usize, node.street as usize);
+        let rows = board_rows(&self.g.abs, street, v.runout);
+        for h in (v.node_idx as usize % 7..NUM_COMBOS).step_by(97) {
+            let (c1, c2) = crate::cards::combo_from_index(h);
+            if (1u64 << c1 | 1u64 << c2) & v.used != 0 {
+                continue;
+            }
+            let mut hf = [0.0f32; HAND];
+            hand_feats(&self.g.abs, street, h, v.runout, None, &mut hf);
+            let raw = self.net.example(self.g.pubf.row(v.node_idx), &rows, c1, c2, &hf);
+            let mut p = [0.0f32; 8];
+            outputs_to_probs(self.net.kind(), &raw, &self.g.pubf.slots[v.node_idx as usize], na, &mut p);
+            for a in 0..na {
+                self.worst = self.worst.max((p[a] - v.sigma[a * NUM_COMBOS + h]).abs());
+            }
+            self.seen += 1;
+        }
+    }
+}
+
+#[test]
+fn a_two_sided_net_plays_all_hands_as_it_plays_each() {
+    // A file of the two-sided layout with arbitrary weights.
+    let (h, layers, d) = (16usize, 2usize, 8usize);
+    let mut bytes = b"BPN2".to_vec();
+    for v in [1, h, layers, d, PUB, HAND, EMB_ROWS, MENU, KIND_POLICY as usize] {
+        bytes.extend((v as u32).to_le_bytes());
+    }
+    let side = |n_in: usize, n_out: usize| EMB_ROWS * h + h * n_in + h + layers * (h * h + h) + n_out * h + n_out;
+    let mut rng = Rng::new(9);
+    for _ in 0..side(HAND, d) + side(PUB, MENU * (d + 1)) {
+        bytes.extend(((rng.next_u64() % 2001) as f32 / 2000.0 - 0.5).to_le_bytes());
+    }
+    let net = Net::from_bytes(&bytes).unwrap();
+    assert!(Net::from_bytes(&bytes[..bytes.len() - 4]).is_err());
+    let cfg = game(&["AsKd7c"], 3.0, 20.0);
+    let g = GameCtx::new(&cfg).unwrap();
+    let w = Walker::new(&g.tree, &g.abs).unwrap();
+    let policy = NetPolicy::new(&g.tree, &g.abs, &g.pubf, &net, false);
+    let mut rec = OneByOne { g: &g, net: &net, seen: 0, worst: 0.0 };
+    w.run(&policy, None, Chance::Sample { turn: 2, river: 2 }, false, Some(&mut rec), &mut Rng::new(3));
+    assert!(rec.seen > 1000 && rec.worst < 1e-4, "{} hands, off by {}", rec.seen, rec.worst);
 }
 
 #[test]

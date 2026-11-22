@@ -85,7 +85,8 @@ impl Policy for UniformPolicy<'_> {
 pub enum Chance {
     /// Every card: exact.
     All,
-    /// This many random draws for the turn and for the river.
+    /// This many random draws for the turn and for the river. Every betting
+    /// line of a walk gets the same cards (a walk plays a few whole boards).
     Sample { turn: usize, river: usize },
     /// As `Sample`, but the walks of one run share a shuffled deck at every
     /// spot and each takes the next cards from it, so together they cover
@@ -530,8 +531,7 @@ impl<'a> Walker<'a> {
                 }
             }
         } else if nb == 1 {
-            let spot = (node_idx as u64) << 32
-                | (have as u64) << 60
+            let spot = (have as u64) << 60
                 | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
             let mut deck = free.clone();
             if let Chance::Spread { walk, deck: shared, .. } = cx.chance {
@@ -551,8 +551,7 @@ impl<'a> Walker<'a> {
                 }
             }
         } else {
-            let spot = (node_idx as u64) << 32
-                | (have as u64) << 60
+            let spot = (have as u64) << 60
                 | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
             let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
             for _ in 0..want {
@@ -567,8 +566,7 @@ impl<'a> Walker<'a> {
         if let Chance::Subset { turn, river, pick } = cx.chance {
             let take = (if next == 1 { turn[1] } else { river[1] }).max(1);
             if take < draws.len() {
-                let spot = (node_idx as u64) << 32
-                    | (have as u64) << 60
+                let spot = (have as u64) << 60
                     | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
                 let rng = &mut Rng::new(pick ^ spot.wrapping_mul(0xD6E8_FEB8_6659_FD93));
                 for i in 0..take {

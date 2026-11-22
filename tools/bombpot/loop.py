@@ -69,6 +69,8 @@ def main():
     ap.add_argument("--hidden", type=int, default=256)
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true")
+    ap.add_argument("--width", type=int, default=0,
+                    help="above 0: two-sided nets with this many numbers between the sides (faster to play)")
     ap.add_argument("--steps", type=int, default=2000, help="training steps per half round")
     ap.add_argument("--avg-steps", type=int, default=0, help="steps for a strategy net (0: as --steps)")
     ap.add_argument("--batch", type=int, default=8192)
@@ -81,9 +83,10 @@ def main():
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--fixed-suits", action="store_true",
                     help="do not rename suits at random while training (for a spec with one fixed flop)")
-    ap.add_argument("--power", type=float, default=2.0,
-                    help="an example of round t counts t^power times (plain tables learn about four times faster with 2 than with 1)")
-    ap.add_argument("--avg-power", type=float, default=2.0, help="the same for the strategy net")
+    ap.add_argument("--power", type=float, default=1.0,
+                    help="an example of round t counts t^power times (plain tables learn about four times faster "
+                         "with 2 than with 1, but a net then leans on fewer, noisier examples)")
+    ap.add_argument("--avg-power", type=float, default=1.0, help="the same for the strategy net")
     ap.add_argument("--low-priority", action="store_true", help="run below normal priority")
     ap.add_argument("--torch-threads", type=int, default=0, help="CPU threads for training (0: PyTorch's choice)")
     a = ap.parse_args()
@@ -128,7 +131,7 @@ def main():
             for kind, mem, steps in (("adv", adv, a.steps), ("avg", strat, a.avg_steps or a.steps)):
                 init = net_of(kind, step - 1) if a.warm and step > 1 else None
                 res = T.train(mem, net_of(kind, step) + ".tmp", a.hidden, a.layers, not a.plain, steps, a.batch,
-                              a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits)
+                              a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits, width=a.width)
                 os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
                 log({"event": "train", "iter": it, "seat": seat, **res})
         if a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters):

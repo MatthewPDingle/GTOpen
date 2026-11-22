@@ -7,7 +7,7 @@
 //!
 //! This file holds the three things the trainer and the engine must agree
 //! on: the inputs (`PublicFeats`, `hand_feats`, the card slots), the action
-//! menu, and the net itself (`Mlp`, read from a file the trainer writes).
+//! menu, and the net itself (`Net`, read from a file the trainer writes).
 
 use super::abstraction::{Abstraction, Runout};
 use super::range::{At, Policy, RANGE};
@@ -288,6 +288,28 @@ fn gemv_plain(w: &[f32], x: &[f32], b: &[f32], out: &mut [f32]) {
     }
 }
 
+#[inline]
+fn gemv(fast: bool, w: &[f32], x: &[f32], b: &[f32], out: &mut [f32]) {
+    #[cfg(target_arch = "x86_64")]
+    if fast {
+        // SAFETY: `fast` is only set when the features were detected, and
+        // every caller passes `out.len() * x.len()` weights and
+        // `out.len()` biases.
+        unsafe { gemv_avx2(w, x, b, out) };
+        return;
+    }
+    let _ = fast;
+    gemv_plain(w, x, b, out)
+}
+
+fn fast_math() -> bool {
+    #[cfg(target_arch = "x86_64")]
+    let fast = std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("fma");
+    #[cfg(not(target_arch = "x86_64"))]
+    let fast = false;
+    fast
+}
+
 impl Mlp {
     pub fn load(path: &str) -> Result<Mlp, String> {
         let bytes = std::fs::read(path).map_err(|e| format!("{path}: {e}"))?;
@@ -300,12 +322,14 @@ impl Mlp {
         }
         let u = |i: usize| u32::from_le_bytes(bytes[4 + i * 4..8 + i * 4].try_into().unwrap()) as usize;
         let (version, h, layers, dense, emb_rows, menu, residual, kind) = (u(0), u(1), u(2), u(3), u(4), u(5), u(6), u(7));
-        if version != 1 || dense != DENSE || emb_rows != EMB_ROWS || menu != MENU {
+        // Nets from before the range inputs have fewer inputs: the missing
+        // ones are last and get no weight.
+        if version != 1 || (dense != DENSE && dense != DENSE - (HAND - HAND_STATIC)) || emb_rows != EMB_ROWS || menu != MENU {
             return Err(format!(
                 "net file is for other inputs (version {version}, {dense} inputs, {emb_rows} card slots, {menu} actions)"
             ));
         }
-        let floats = EMB_ROWS * h + h * DENSE + h + layers * (h * h + h) + MENU * h + MENU;
+        let floats = EMB_ROWS * h + h * dense + h + layers * (h * h + h) + MENU * h + MENU;
         if bytes.len() != 36 + floats * 4 {
             return Err("net file has the wrong length".into());
         }
@@ -316,7 +340,7 @@ impl Mlp {
             v
         };
         let emb = take(EMB_ROWS * h);
-        let wd_rows = take(h * DENSE);
+        let wd_rows = take(h * dense);
         let b0 = take(h);
         let mut w = Vec::new();
         let mut b = Vec::new();
@@ -328,27 +352,17 @@ impl Mlp {
         let bo = take(MENU);
         let mut wd = vec![0.0f32; DENSE * h];
         for j in 0..h {
-            for d in 0..DENSE {
-                wd[d * h + j] = wd_rows[j * DENSE + d];
+            for d in 0..dense {
+                wd[d * h + j] = wd_rows[j * dense + d];
             }
         }
-        #[cfg(target_arch = "x86_64")]
-        let fast = std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("fma");
-        #[cfg(not(target_arch = "x86_64"))]
-        let fast = false;
+        let fast = fast_math();
         Ok(Mlp { h, kind: kind as u32, residual: residual != 0, emb, wd, b0, w, b, wo, bo, fast })
     }
 
     #[inline]
     fn gemv(&self, w: &[f32], x: &[f32], b: &[f32], out: &mut [f32]) {
-        #[cfg(target_arch = "x86_64")]
-        if self.fast {
-            // SAFETY: the features were detected at load, and every slice
-            // holds `out.len() * x.len()` weights and `out.len()` biases.
-            unsafe { gemv_avx2(w, x, b, out) };
-            return;
-        }
-        gemv_plain(w, x, b, out)
+        gemv(self.fast, w, x, b, out)
     }
 
     #[inline]
@@ -405,6 +419,242 @@ impl Mlp {
             }
         }
         self.gemv(&self.wo, x, &self.bo, out);
+    }
+}
+
+/// One side of a two-sided net: card tables and a dense layer summed into
+/// the first hidden layer, hidden layers each added to their input, and a
+/// plain output layer.
+struct Tower {
+    h: usize,
+    n_out: usize,
+    emb: Vec<f32>,
+    /// One column of the dense layer per input.
+    wd: Vec<f32>,
+    b0: Vec<f32>,
+    w: Vec<Vec<f32>>,
+    b: Vec<Vec<f32>>,
+    wo: Vec<f32>,
+    bo: Vec<f32>,
+}
+
+impl Tower {
+    fn floats(h: usize, layers: usize, n_in: usize, n_out: usize) -> usize {
+        EMB_ROWS * h + h * n_in + h + layers * (h * h + h) + n_out * h + n_out
+    }
+
+    fn read(take: &mut dyn FnMut(usize) -> Vec<f32>, h: usize, layers: usize, n_in: usize, n_out: usize) -> Tower {
+        let emb = take(EMB_ROWS * h);
+        let rows = take(h * n_in);
+        let b0 = take(h);
+        let mut w = Vec::new();
+        let mut b = Vec::new();
+        for _ in 0..layers {
+            w.push(take(h * h));
+            b.push(take(h));
+        }
+        let wo = take(n_out * h);
+        let bo = take(n_out);
+        let mut wd = vec![0.0f32; n_in * h];
+        for j in 0..h {
+            for d in 0..n_in {
+                wd[d * h + j] = rows[j * n_in + d];
+            }
+        }
+        Tower { h, n_out, emb, wd, b0, w, b, wo, bo }
+    }
+
+    fn run(&self, fast: bool, rows: &[usize], dense: &[f32], x: &mut Vec<f32>, tmp: &mut Vec<f32>, out: &mut [f32]) {
+        let h = self.h;
+        x.clear();
+        x.extend_from_slice(&self.b0);
+        for (d, &v) in dense.iter().enumerate() {
+            if v != 0.0 {
+                for (a, c) in x.iter_mut().zip(&self.wd[d * h..(d + 1) * h]) {
+                    *a += v * c;
+                }
+            }
+        }
+        for &r in rows {
+            for (a, e) in x.iter_mut().zip(&self.emb[r * h..(r + 1) * h]) {
+                *a += e;
+            }
+        }
+        x.iter_mut().for_each(|v| *v = v.max(0.0));
+        tmp.resize(h, 0.0);
+        for (w, b) in self.w.iter().zip(&self.b) {
+            gemv(fast, w, x, b, tmp);
+            for (a, t) in x.iter_mut().zip(tmp.iter()) {
+                *a += t.max(0.0);
+            }
+        }
+        gemv(fast, &self.wo, x, &self.bo, &mut out[..self.n_out]);
+    }
+}
+
+const TWO_MAGIC: &[u8; 4] = b"BPN2";
+
+/// A two-sided net. One side reads the hand on its board (cards and
+/// strength) and returns `d` numbers; the other reads the situation (board
+/// and betting) and returns, per menu slot, `d` weights and an offset. A
+/// slot's output is the weighted sum plus the offset. The hand side is the
+/// same at every decision on a board, and the situation side is the same
+/// for every hand, so a decision for all hands costs one small net and a
+/// table of products instead of one net per hand.
+pub struct TwoNet {
+    pub kind: u32,
+    pub d: usize,
+    hand: Tower,
+    spot: Tower,
+    fast: bool,
+}
+
+impl TwoNet {
+    fn from_bytes(bytes: &[u8]) -> Result<TwoNet, String> {
+        if bytes.len() < 40 {
+            return Err("net file has the wrong length".into());
+        }
+        let u = |i: usize| u32::from_le_bytes(bytes[4 + i * 4..8 + i * 4].try_into().unwrap()) as usize;
+        let (version, h, layers, d, n_pub, n_hand, emb_rows, menu, kind) = (u(0), u(1), u(2), u(3), u(4), u(5), u(6), u(7), u(8));
+        if version != 1 || n_pub != PUB || n_hand != HAND || emb_rows != EMB_ROWS || menu != MENU {
+            return Err(format!(
+                "net file is for other inputs (version {version}, {n_pub}+{n_hand} inputs, {emb_rows} card slots, {menu} actions)"
+            ));
+        }
+        let floats = Tower::floats(h, layers, HAND, d) + Tower::floats(h, layers, PUB, MENU * (d + 1));
+        if bytes.len() != 40 + floats * 4 {
+            return Err("net file has the wrong length".into());
+        }
+        let mut at = 40;
+        let mut take = |n: usize| -> Vec<f32> {
+            let v = bytes[at..at + n * 4].chunks_exact(4).map(|c| f32::from_le_bytes(c.try_into().unwrap())).collect();
+            at += n * 4;
+            v
+        };
+        let hand = Tower::read(&mut take, h, layers, HAND, d);
+        let spot = Tower::read(&mut take, h, layers, PUB, MENU * (d + 1));
+        Ok(TwoNet { kind: kind as u32, d, hand, spot, fast: fast_math() })
+    }
+
+    /// The hand side for one hand: `d` numbers into `out`.
+    pub fn hand_side(&self, c1: u8, c2: u8, board_rows: &[usize], hand: &[f32; HAND], x: &mut Vec<f32>, tmp: &mut Vec<f32>, out: &mut [f32]) {
+        let mut rows = [0usize; 12];
+        rows[0] = c1 as usize;
+        rows[1] = c2 as usize;
+        rows[2..2 + board_rows.len()].copy_from_slice(board_rows);
+        self.hand.run(self.fast, &rows[..2 + board_rows.len()], hand, x, tmp, out);
+    }
+
+    /// The situation side at one decision: `MENU * d` weights (one row per
+    /// menu slot) and `MENU` offsets.
+    pub fn spot_side(&self, pub_row: &[f32], board_rows: &[usize], weights: &mut Vec<f32>, offsets: &mut [f32; MENU]) {
+        let d = self.d;
+        let (mut x, mut tmp) = (Vec::new(), Vec::new());
+        let mut raw = vec![0.0f32; MENU * (d + 1)];
+        self.spot.run(self.fast, board_rows, pub_row, &mut x, &mut tmp, &mut raw);
+        let scale = 1.0 / (d as f32).sqrt();
+        weights.clear();
+        for a in 0..MENU {
+            weights.extend(raw[a * (d + 1)..a * (d + 1) + d].iter().map(|v| v * scale));
+            offsets[a] = raw[a * (d + 1) + d];
+        }
+    }
+
+    #[inline]
+    pub fn combine(&self, weights: &[f32], offsets: &[f32; MENU], hand_side: &[f32], out: &mut [f32; MENU]) {
+        gemv(self.fast, weights, hand_side, offsets, out);
+    }
+}
+
+/// A net of either shape, as the trainer wrote it.
+pub enum Net {
+    One(Mlp),
+    Two(TwoNet),
+}
+
+impl Net {
+    pub fn load(path: &str) -> Result<Net, String> {
+        let bytes = std::fs::read(path).map_err(|e| format!("{path}: {e}"))?;
+        Net::from_bytes(&bytes).map_err(|e| format!("{path}: {e}"))
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> Result<Net, String> {
+        if bytes.len() >= 4 && &bytes[..4] == TWO_MAGIC {
+            TwoNet::from_bytes(bytes).map(Net::Two)
+        } else {
+            Mlp::from_bytes(bytes).map(Net::One)
+        }
+    }
+
+    pub fn kind(&self) -> u32 {
+        match self {
+            Net::One(n) => n.kind,
+            Net::Two(n) => n.kind,
+        }
+    }
+
+    /// The outputs for one hand at one decision.
+    pub fn example(&self, pub_row: &[f32], board_rows: &[usize], c1: u8, c2: u8, hand: &[f32; HAND]) -> [f32; MENU] {
+        let mut raw = [0.0f32; MENU];
+        match self {
+            Net::One(n) => {
+                let mut x = n.node_base(pub_row, board_rows);
+                n.forward(&mut x, &mut Vec::new(), c1, c2, hand, &mut raw);
+            }
+            Net::Two(n) => {
+                let mut side = vec![0.0f32; n.d];
+                n.hand_side(c1, c2, board_rows, hand, &mut Vec::new(), &mut Vec::new(), &mut side);
+                let mut weights = Vec::new();
+                let mut offsets = [0.0f32; MENU];
+                n.spot_side(pub_row, board_rows, &mut weights, &mut offsets);
+                n.combine(&weights, &offsets, &side, &mut raw);
+            }
+        }
+        raw
+    }
+}
+
+/// The hand side of a two-sided net for every hand, per board met so far.
+/// A walk meets the same board on every betting line, so the table is kept
+/// for as long as the policy lives.
+#[derive(Default)]
+pub struct HandSides(std::sync::RwLock<std::collections::HashMap<(u8, [u8; 4]), std::sync::Arc<Vec<f32>>>>);
+
+/// Tables kept at most (a full deck of turn and river cards on one flop
+/// is 2,402).
+const HAND_SIDES_KEPT: usize = 2600;
+
+impl HandSides {
+    fn get(&self, net: &TwoNet, abs: &Abstraction, street: usize, runout: &Runout, used: u64, rows: &[usize]) -> std::sync::Arc<Vec<f32>> {
+        let mut cards = [255u8; 4];
+        for b in 0..abs.num_boards() {
+            for st in 1..=street {
+                cards[b * 2 + st - 1] = runout[b][st - 1];
+            }
+        }
+        let key = (street as u8, cards);
+        if let Some(v) = self.0.read().unwrap().get(&key) {
+            return v.clone();
+        }
+        let d = net.d;
+        let mut table = vec![0.0f32; NUM_COMBOS * d];
+        let (mut x, mut tmp) = (Vec::new(), Vec::new());
+        let mut hf = [0.0f32; HAND];
+        for h in 0..NUM_COMBOS {
+            let (c1, c2) = combo_from_index(h);
+            if (1u64 << c1 | 1u64 << c2) & used != 0 {
+                continue;
+            }
+            hand_feats(abs, street, h, runout, None, &mut hf);
+            net.hand_side(c1, c2, rows, &hf, &mut x, &mut tmp, &mut table[h * d..(h + 1) * d]);
+        }
+        let table = std::sync::Arc::new(table);
+        let mut map = self.0.write().unwrap();
+        if map.len() >= HAND_SIDES_KEPT {
+            map.clear();
+        }
+        map.insert(key, table.clone());
+        table
     }
 }
 
@@ -468,9 +718,16 @@ pub struct NetPolicy<'a> {
     pub tree: &'a BpTree,
     pub abs: &'a Abstraction,
     pub pubf: &'a PublicFeats,
-    pub net: &'a Mlp,
-    /// Whether the net was trained with the range inputs.
+    pub net: &'a Net,
+    /// Whether the net was trained with the range inputs (one-sided nets only).
     pub range_on: bool,
+    sides: HandSides,
+}
+
+impl<'a> NetPolicy<'a> {
+    pub fn new(tree: &'a BpTree, abs: &'a Abstraction, pubf: &'a PublicFeats, net: &'a Net, range_on: bool) -> NetPolicy<'a> {
+        NetPolicy { tree, abs, pubf, net, range_on, sides: HandSides::default() }
+    }
 }
 
 impl Policy for NetPolicy<'_> {
@@ -485,7 +742,32 @@ impl Policy for NetPolicy<'_> {
         let na = node.num_children as usize;
         let street = node.street as usize;
         let slots = &self.pubf.slots[node_idx as usize];
-        let base = self.net.node_base(self.pubf.row(node_idx), &board_rows(self.abs, street, runout));
+        let net = match self.net {
+            Net::One(n) => n,
+            Net::Two(n) => {
+                assert!(!self.range_on, "a two-sided net has no range inputs");
+                let rows = board_rows(self.abs, street, runout);
+                let sides = self.sides.get(n, self.abs, street, runout, used, &rows);
+                let mut weights = Vec::new();
+                let mut offsets = [0.0f32; MENU];
+                n.spot_side(self.pubf.row(node_idx), &rows, &mut weights, &mut offsets);
+                let mut raw = [0.0f32; MENU];
+                let mut probs = [0.0f32; MAX_ACTIONS];
+                for h in 0..NUM_COMBOS {
+                    let (c1, c2) = combo_from_index(h);
+                    if (1u64 << c1 | 1u64 << c2) & used != 0 {
+                        continue;
+                    }
+                    n.combine(&weights, &offsets, &sides[h * n.d..(h + 1) * n.d], &mut raw);
+                    outputs_to_probs(n.kind, &raw, slots, na, &mut probs);
+                    for a in 0..na {
+                        out[a * NUM_COMBOS + h] = probs[a];
+                    }
+                }
+                return;
+            }
+        };
+        let base = net.node_base(self.pubf.row(node_idx), &board_rows(self.abs, street, runout));
         let mut x = Vec::with_capacity(base.len());
         let mut tmp = Vec::new();
         let mut hf = [0.0f32; HAND];
@@ -499,8 +781,8 @@ impl Policy for NetPolicy<'_> {
             x.clear();
             x.extend_from_slice(&base);
             hand_feats(self.abs, street, h, runout, range, &mut hf);
-            self.net.forward(&mut x, &mut tmp, c1, c2, &hf, &mut raw);
-            outputs_to_probs(self.net.kind, &raw, slots, na, &mut probs);
+            net.forward(&mut x, &mut tmp, c1, c2, &hf, &mut raw);
+            outputs_to_probs(net.kind, &raw, slots, na, &mut probs);
             for a in 0..na {
                 out[a * NUM_COMBOS + h] = probs[a];
             }

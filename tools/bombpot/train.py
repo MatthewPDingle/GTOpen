@@ -78,7 +78,7 @@ class Memory:
         self.kind = None
         self.seen = 0
 
-    def add(self, path, power=2.0):
+    def add(self, path, power=1.0):
         """Add one file. An example of round t counts t^power times."""
         kind, it, rows, recs = read_examples(path)
         if self.kind not in (None, kind):
@@ -137,6 +137,48 @@ class Net(nn.Module):
         return self.out(x)
 
 
+class Two(nn.Module):
+    """A two-sided net. The hand side reads the hand on its board (cards and
+    strength) and returns `d` numbers. The situation side reads the board and
+    the betting and returns, per menu slot, `d` weights and an offset. A
+    slot's output is the weighted sum plus the offset. In the engine the hand
+    side runs once per board and the situation side once per decision, for
+    all hands, so play costs far less than one net per hand."""
+
+    def __init__(self, hidden=256, layers=3, d=128):
+        super().__init__()
+        self.h, self.d, self.residual = hidden, d, True
+        self.hand_emb, self.spot_emb = (nn.Embedding(EMB_ROWS + 1, hidden, padding_idx=EMB_ROWS) for _ in range(2))
+        for emb in (self.hand_emb, self.spot_emb):
+            nn.init.normal_(emb.weight, std=0.3)
+            with torch.no_grad():
+                emb.weight[EMB_ROWS].zero_()
+        self.hand_dense, self.spot_dense = nn.Linear(HAND, hidden), nn.Linear(PUB, hidden)
+        self.hand_hidden = nn.ModuleList(nn.Linear(hidden, hidden) for _ in range(layers))
+        self.spot_hidden = nn.ModuleList(nn.Linear(hidden, hidden) for _ in range(layers))
+        self.hand_out, self.spot_out = nn.Linear(hidden, d), nn.Linear(hidden, MENU * (d + 1))
+
+    def forward(self, idx, dense):
+        x = torch.relu(self.hand_emb(idx).sum(1) + self.hand_dense(dense[:, PUB:]))
+        for layer in self.hand_hidden:
+            x = x + torch.relu(layer(x))
+        side = self.hand_out(x)
+        board = idx.clone()
+        board[:, :2] = EMB_ROWS  # the situation side does not see the hole cards
+        y = torch.relu(self.spot_emb(board).sum(1) + self.spot_dense(dense[:, :PUB]))
+        for layer in self.spot_hidden:
+            y = y + torch.relu(layer(y))
+        spot = self.spot_out(y).view(-1, MENU, self.d + 1)
+        return (spot[:, :, :self.d] * side[:, None, :]).sum(2) / self.d ** 0.5 + spot[:, :, self.d]
+
+    def sides(self):
+        return ((self.hand_emb, self.hand_dense, self.hand_hidden, self.hand_out),
+                (self.spot_emb, self.spot_dense, self.spot_hidden, self.spot_out))
+
+
+TWO_HEAD = struct.Struct("<4s9I")
+
+
 # Card-table row of each of an example's 12 cards: hole cards share one
 # table; each board has one for its flop, one for the turn, one for the river.
 _OFFSET = np.array([0, 0] + [52 + b * 156 + s * 52 for b in range(2) for s in (0, 0, 0, 1, 2)], np.int64)
@@ -155,6 +197,17 @@ def card_rows(cards, offset, perms=None):
 
 
 def save_net(net, path, kind):
+    if isinstance(net, Two):
+        with open(path, "wb") as f:
+            f.write(TWO_HEAD.pack(b"BPN2", 1, net.h, len(net.hand_hidden), net.d, PUB, HAND, EMB_ROWS, MENU, kind))
+            for emb, dense, hidden, out in net.sides():
+                parts = [emb.weight[:EMB_ROWS], dense.weight, dense.bias]
+                for layer in hidden:
+                    parts += [layer.weight, layer.bias]
+                parts += [out.weight, out.bias]
+                for p in parts:
+                    f.write(p.detach().cpu().numpy().astype("<f4").tobytes())
+        return
     layers = len(net.hidden)
     with open(path, "wb") as f:
         f.write(NET_HEAD.pack(b"BPN1", 1, net.h, layers, DENSE, EMB_ROWS, MENU, int(net.residual), kind))
@@ -168,6 +221,25 @@ def save_net(net, path, kind):
 
 def load_net(path):
     with open(path, "rb") as f:
+        if f.read(4) == b"BPN2":
+            f.seek(0)
+            _, version, h, layers, d, n_pub, n_hand, emb_rows, menu, kind = TWO_HEAD.unpack(f.read(TWO_HEAD.size))
+            if (version, n_pub, n_hand, emb_rows, menu) != (1, PUB, HAND, EMB_ROWS, MENU):
+                raise ValueError(f"{path}: not a net this trainer reads")
+            net = Two(h, layers, d)
+            take = lambda *shape: torch.from_numpy(np.fromfile(f, "<f4", int(np.prod(shape))).reshape(shape).copy())
+            with torch.no_grad():
+                for emb, dense, hidden, out in net.sides():
+                    emb.weight[:EMB_ROWS] = take(EMB_ROWS, h)
+                    dense.weight.copy_(take(*dense.weight.shape))
+                    dense.bias.copy_(take(h))
+                    for layer in hidden:
+                        layer.weight.copy_(take(h, h))
+                        layer.bias.copy_(take(h))
+                    out.weight.copy_(take(*out.weight.shape))
+                    out.bias.copy_(take(out.bias.shape[0]))
+            return net, kind
+        f.seek(0)
         magic, version, h, layers, dense, emb, menu, residual, kind = NET_HEAD.unpack(f.read(NET_HEAD.size))
         if magic != b"BPN1" or (version, dense, emb, menu) != (1, DENSE, EMB_ROWS, MENU):
             raise ValueError(f"{path}: not a net this trainer reads")
@@ -195,8 +267,10 @@ def loss_of(kind, pred, target, legal, weight):
 
 
 def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192, lr=1e-3, init=None,
-          device="cpu", seed=0, log=None, shuffle=True):
-    """Fit a net to the memory and write it to `out`. Returns a summary."""
+          device="cpu", seed=0, log=None, shuffle=True, width=0):
+    """Fit a net to the memory and write it to `out`. Returns a summary.
+    With `width` above 0 the net is two-sided (`Two`) with that many numbers
+    between the sides."""
     torch.manual_seed(seed)
     dev = torch.device(device)
     kind = mem.kind
@@ -220,7 +294,7 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
         net, _ = load_net(init)
         net = net.to(dev)
     else:
-        net = Net(hidden, layers, residual).to(dev)
+        net = (Two(hidden, layers, width) if width else Net(hidden, layers, residual)).to(dev)
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=lr, total_steps=steps, pct_start=0.05)
 
@@ -295,6 +369,7 @@ def main():
     ap.add_argument("--hidden", type=int, default=256)
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true", help="no skip connections")
+    ap.add_argument("--width", type=int, default=0, help="above 0: a two-sided net with this many numbers between the sides")
     ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--batch", type=int, default=8192)
     ap.add_argument("--lr", type=float, default=1e-3)
@@ -303,7 +378,7 @@ def main():
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--fixed-suits", action="store_true", help="do not rename suits at random (for one fixed flop)")
-    ap.add_argument("--power", type=float, default=2.0, help="an example of round t counts t^power times")
+    ap.add_argument("--power", type=float, default=1.0, help="an example of round t counts t^power times")
     ap.add_argument("--check", help="path to the bombpot tool, to compare outputs")
     a = ap.parse_args()
     files = sorted(glob.glob(a.data))
@@ -313,7 +388,7 @@ def main():
     for f in files:
         mem.add(f, a.power)
     res = train(mem, a.out, a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr, a.init, a.device, a.seed,
-                log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits)
+                log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits, width=a.width)
     if a.check:
         res["engine_difference"] = check(a.out, files[0], a.check)
     print(json.dumps(res))

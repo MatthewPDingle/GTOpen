@@ -26,7 +26,7 @@
 use std::time::Instant;
 
 use solver::bombpot::exact::Exact2;
-use solver::bombpot::net::Mlp;
+use solver::bombpot::net::Net;
 use solver::bombpot::AbsConfig;
 use solver::bombpot::solver::{BpConfig, BpSolver, Challenger};
 use solver::bombpot::tree::{KIND_ACTION, MAX_ACTIONS};
@@ -145,10 +145,10 @@ fn gen(args: &[String], threads: usize) {
         fail("gen needs --out PREFIX".into());
     }
     pool(threads);
-    let net = if net_path.is_empty() { None } else { Some(Mlp::load(&net_path).unwrap_or_else(|e| fail(e))) };
+    let net = if net_path.is_empty() { None } else { Some(Net::load(&net_path).unwrap_or_else(|e| fail(e))) };
     // The strategy net whose ranges the range inputs describe.
     let ctx_path: String = arg(args, "--context", String::new());
-    let context = if ctx_path.is_empty() { None } else { Some(Mlp::load(&ctx_path).unwrap_or_else(|e| fail(e))) };
+    let context = if ctx_path.is_empty() { None } else { Some(Net::load(&ctx_path).unwrap_or_else(|e| fail(e))) };
     let t = Instant::now();
     let seat: i64 = arg(args, "--seat", -1);
     let only = if seat >= 0 { Some(seat as usize) } else { None };
@@ -181,11 +181,11 @@ fn mix(args: &[String], threads: usize) {
     let chance = Chance::Sample { turn: arg(args, "--turns", 6), river: arg(args, "--rivers", 6) };
     let seed: u64 = arg(args, "--seed", 1);
     pool(threads);
-    let nets: Vec<Option<Mlp>> = list
+    let nets: Vec<Option<Net>> = list
         .split(',')
-        .map(|p| if p == "none" { None } else { Some(Mlp::load(p).unwrap_or_else(|e| fail(e))) })
+        .map(|p| if p == "none" { None } else { Some(Net::load(p).unwrap_or_else(|e| fail(e))) })
         .collect();
-    let refs: Vec<Option<&Mlp>> = nets.iter().map(|n| n.as_ref()).collect();
+    let refs: Vec<Option<&Net>> = nets.iter().map(|n| n.as_ref()).collect();
     let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
     let pot = cfg.tree.starting_pot();
     let mixture = Mixture::build(&game, &refs, range_on(args), chance, seed).unwrap_or_else(|e| fail(e));
@@ -193,8 +193,8 @@ fn mix(args: &[String], threads: usize) {
     let mut out = serde_json::json!({ "event": "mix", "half_rounds": nets.len(),
         "mixture_gain_pct": m.gain_from().map(|g| 100.0 * g / pot) });
     if !avg_path.is_empty() {
-        let avg = Mlp::load(&avg_path).unwrap_or_else(|e| fail(e));
-        let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &avg, range_on: range_on(args) };
+        let avg = Net::load(&avg_path).unwrap_or_else(|e| fail(e));
+        let policy = NetPolicy::new(&game.tree, &game.abs, &game.pubf, &avg, range_on(args));
         let v = score(&game.tree, &game.abs, &policy, chance, seed).unwrap_or_else(|e| fail(e));
         out["net_gain_pct"] = serde_json::json!(v.gain_from().map(|g| 100.0 * g / pot));
     }
@@ -243,10 +243,10 @@ fn score_net(args: &[String], threads: usize) {
     let rivers: usize = arg(args, "--rivers", 0);
     let seed: u64 = arg(args, "--seed", 1);
     pool(threads);
-    let net = Mlp::load(&net_path).unwrap_or_else(|e| fail(e));
+    let net = Net::load(&net_path).unwrap_or_else(|e| fail(e));
     let t = Instant::now();
     let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
-    let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &net, range_on: range_on(args) };
+    let policy = NetPolicy::new(&game.tree, &game.abs, &game.pubf, &net, range_on(args));
     let chance = if turns == 0 && rivers == 0 {
         Chance::All
     } else {
@@ -266,10 +266,10 @@ fn score_net(args: &[String], threads: usize) {
 
 /// Print the net's raw outputs for the first rows of an examples file.
 fn netcheck(args: &[String]) {
-    use solver::bombpot::net::{emb_board_row, HAND, MENU, PUB};
+    use solver::bombpot::net::{emb_board_row, HAND, PUB};
     let net_path: String = arg(args, "--net", String::new());
     let rows: usize = arg(args, "--rows", 64);
-    let net = Mlp::load(&net_path).unwrap_or_else(|e| fail(e));
+    let net = Net::load(&net_path).unwrap_or_else(|e| fail(e));
     let bytes = std::fs::read(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
     let n = u64::from_le_bytes(bytes[16..24].try_into().unwrap()) as usize;
     let n_pub = u64::from_le_bytes(bytes[24..32].try_into().unwrap()) as usize;
@@ -295,10 +295,7 @@ fn netcheck(args: &[String]) {
         for (k, h) in hand.iter_mut().enumerate() {
             *h = f(r + 24 + k * 4);
         }
-        let mut x = net.node_base(&pub_row, &board);
-        let mut raw = [0.0f32; MENU];
-        net.forward(&mut x, &mut Vec::new(), cards[0], cards[1], &hand, &mut raw);
-        out.push(raw.to_vec());
+        out.push(net.example(&pub_row, &board, cards[0], cards[1], &hand).to_vec());
     }
     println!("{}", serde_json::json!(out));
 }
