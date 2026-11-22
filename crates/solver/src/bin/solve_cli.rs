@@ -21,6 +21,8 @@
 //!    batch/realization/datagen)
 //!   SOLVER_GPU=1             solve on the GPU (requires `--features gpu`
 //!                            build; forces f32 storage)
+//!   GTOPEN_GPU_TURN=0        let GPU solves of several solve-cli processes overlap
+//!                            (default: they take turns on a card, see gpu_turn.rs)
 
 use solver::{Algorithm, RunOptions, Solver, Spot, SpotConfig, Storage};
 use std::sync::atomic::AtomicBool;
@@ -699,6 +701,10 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
         // Budget from the card's real free memory (Windows reports free VRAM
         // loosely, so also cap at 88% of the card): an oversized plan would
         // otherwise spill into shared system memory and crawl.
+        // One solve-cli at a time on a card (a generator and a validator
+        // share one): the free memory read below is only true while no
+        // other solve is about to allocate. Held until `gpu` is dropped.
+        let turn = solver::gpu_turn::take();
         let budget = match solver::gpu::vram_info_mb() {
             Some((free, total)) => free.saturating_sub(1024).min(total * 88 / 100) * 1_000_000,
             None => u64::MAX,
@@ -707,6 +713,7 @@ fn solve_quiet(solver: &mut Solver, max_iterations: u32, target: f64, use_gpu: b
             Ok(g) => g,
             Err(err) => {
                 eprintln!("  gpu unavailable ({err}) — solving on CPU");
+                drop(turn);
                 return solve_quiet(solver, max_iterations, target, false);
             }
         };
