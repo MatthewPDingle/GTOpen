@@ -145,18 +145,22 @@ class Two(nn.Module):
     side runs once per board and the situation side once per decision, for
     all hands, so play costs far less than one net per hand."""
 
-    def __init__(self, hidden=256, layers=3, d=128):
+    def __init__(self, hidden=256, layers=3, d=128, spot_hidden=0, spot_layers=0):
         super().__init__()
-        self.h, self.d, self.residual = hidden, d, True
-        self.hand_emb, self.spot_emb = (nn.Embedding(EMB_ROWS + 1, hidden, padding_idx=EMB_ROWS) for _ in range(2))
+        # The situation side runs once per decision in the engine, so it can
+        # be much larger than the hand side at almost no cost in play.
+        sh, sl = spot_hidden or hidden, spot_layers or layers
+        self.h, self.d, self.sh, self.residual = hidden, d, sh, True
+        self.hand_emb = nn.Embedding(EMB_ROWS + 1, hidden, padding_idx=EMB_ROWS)
+        self.spot_emb = nn.Embedding(EMB_ROWS + 1, sh, padding_idx=EMB_ROWS)
         for emb in (self.hand_emb, self.spot_emb):
             nn.init.normal_(emb.weight, std=0.3)
             with torch.no_grad():
                 emb.weight[EMB_ROWS].zero_()
-        self.hand_dense, self.spot_dense = nn.Linear(HAND, hidden), nn.Linear(PUB, hidden)
+        self.hand_dense, self.spot_dense = nn.Linear(HAND, hidden), nn.Linear(PUB, sh)
         self.hand_hidden = nn.ModuleList(nn.Linear(hidden, hidden) for _ in range(layers))
-        self.spot_hidden = nn.ModuleList(nn.Linear(hidden, hidden) for _ in range(layers))
-        self.hand_out, self.spot_out = nn.Linear(hidden, d), nn.Linear(hidden, MENU * (d + 1))
+        self.spot_hidden = nn.ModuleList(nn.Linear(sh, sh) for _ in range(sl))
+        self.hand_out, self.spot_out = nn.Linear(hidden, d), nn.Linear(sh, MENU * (d + 1))
 
     def forward(self, idx, dense):
         x = torch.relu(self.hand_emb(idx).sum(1) + self.hand_dense(dense[:, PUB:]))
@@ -176,7 +180,8 @@ class Two(nn.Module):
                 (self.spot_emb, self.spot_dense, self.spot_hidden, self.spot_out))
 
 
-TWO_HEAD = struct.Struct("<4s9I")
+TWO_HEAD = struct.Struct("<4s9I")   # version 1: both sides the same size
+TWO_HEAD2 = struct.Struct("<4s11I")
 
 
 # Card-table row of each of an example's 12 cards: hole cards share one
@@ -199,7 +204,8 @@ def card_rows(cards, offset, perms=None):
 def save_net(net, path, kind):
     if isinstance(net, Two):
         with open(path, "wb") as f:
-            f.write(TWO_HEAD.pack(b"BPN2", 1, net.h, len(net.hand_hidden), net.d, PUB, HAND, EMB_ROWS, MENU, kind))
+            f.write(TWO_HEAD2.pack(b"BPN2", 2, net.h, len(net.hand_hidden), net.sh, len(net.spot_hidden), net.d,
+                                   PUB, HAND, EMB_ROWS, MENU, kind))
             for emb, dense, hidden, out in net.sides():
                 parts = [emb.weight[:EMB_ROWS], dense.weight, dense.bias]
                 for layer in hidden:
@@ -223,19 +229,28 @@ def load_net(path):
     with open(path, "rb") as f:
         if f.read(4) == b"BPN2":
             f.seek(0)
-            _, version, h, layers, d, n_pub, n_hand, emb_rows, menu, kind = TWO_HEAD.unpack(f.read(TWO_HEAD.size))
-            if (version, n_pub, n_hand, emb_rows, menu) != (1, PUB, HAND, EMB_ROWS, MENU):
+            if struct.unpack("<I", f.read(8)[4:])[0] == 1:
+                f.seek(0)
+                _, _, h, layers, d, n_pub, n_hand, emb_rows, menu, kind = TWO_HEAD.unpack(f.read(TWO_HEAD.size))
+                sh, sl = h, layers
+            else:
+                f.seek(0)
+                _, version, h, layers, sh, sl, d, n_pub, n_hand, emb_rows, menu, kind = TWO_HEAD2.unpack(f.read(TWO_HEAD2.size))
+                if version != 2:
+                    raise ValueError(f"{path}: not a net this trainer reads")
+            if (n_pub, n_hand, emb_rows, menu) != (PUB, HAND, EMB_ROWS, MENU):
                 raise ValueError(f"{path}: not a net this trainer reads")
-            net = Two(h, layers, d)
+            net = Two(h, layers, d, sh, sl)
             take = lambda *shape: torch.from_numpy(np.fromfile(f, "<f4", int(np.prod(shape))).reshape(shape).copy())
             with torch.no_grad():
                 for emb, dense, hidden, out in net.sides():
-                    emb.weight[:EMB_ROWS] = take(EMB_ROWS, h)
+                    w = dense.weight.shape[0]
+                    emb.weight[:EMB_ROWS] = take(EMB_ROWS, w)
                     dense.weight.copy_(take(*dense.weight.shape))
-                    dense.bias.copy_(take(h))
+                    dense.bias.copy_(take(w))
                     for layer in hidden:
-                        layer.weight.copy_(take(h, h))
-                        layer.bias.copy_(take(h))
+                        layer.weight.copy_(take(w, w))
+                        layer.bias.copy_(take(w))
                     out.weight.copy_(take(*out.weight.shape))
                     out.bias.copy_(take(out.bias.shape[0]))
             return net, kind
@@ -267,10 +282,11 @@ def loss_of(kind, pred, target, legal, weight):
 
 
 def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192, lr=1e-3, init=None,
-          device="cpu", seed=0, log=None, shuffle=True, width=0):
+          device="cpu", seed=0, log=None, shuffle=True, width=0, spot=(0, 0)):
     """Fit a net to the memory and write it to `out`. Returns a summary.
     With `width` above 0 the net is two-sided (`Two`) with that many numbers
-    between the sides."""
+    between the sides, and `spot` (hidden, layers) sizes its situation side
+    (0: as the hand side)."""
     torch.manual_seed(seed)
     dev = torch.device(device)
     kind = mem.kind
@@ -294,7 +310,7 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
         net, _ = load_net(init)
         net = net.to(dev)
     else:
-        net = (Two(hidden, layers, width) if width else Net(hidden, layers, residual)).to(dev)
+        net = (Two(hidden, layers, width, *spot) if width else Net(hidden, layers, residual)).to(dev)
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=lr, total_steps=steps, pct_start=0.05)
 
@@ -370,6 +386,8 @@ def main():
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true", help="no skip connections")
     ap.add_argument("--width", type=int, default=0, help="above 0: a two-sided net with this many numbers between the sides")
+    ap.add_argument("--spot-hidden", type=int, default=0, help="two-sided nets: size of the situation side (0: as --hidden)")
+    ap.add_argument("--spot-layers", type=int, default=0)
     ap.add_argument("--steps", type=int, default=4000)
     ap.add_argument("--batch", type=int, default=8192)
     ap.add_argument("--lr", type=float, default=1e-3)
@@ -388,7 +406,8 @@ def main():
     for f in files:
         mem.add(f, a.power)
     res = train(mem, a.out, a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr, a.init, a.device, a.seed,
-                log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits, width=a.width)
+                log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits, width=a.width,
+                spot=(a.spot_hidden, a.spot_layers))
     if a.check:
         res["engine_difference"] = check(a.out, files[0], a.check)
     print(json.dumps(res))

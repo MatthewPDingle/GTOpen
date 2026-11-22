@@ -61,7 +61,10 @@ is a weighted sum of the two (`N` numbers in between). The engine then runs
 the hand side once per board and the other side once per decision for all
 hands, so games and scores run several times faster than with the one-piece
 net (`--width 0`), also with a much bigger net. `--hidden` and `--layers`
-size each side.
+size the hand side; `--spot-hidden` and `--spot-layers` size the situation
+side, which costs almost nothing in play and is where size pays most (on one
+round's examples a 512x3 situation side beside a 128x2 hand side explained
+0.83 of the river values, against 0.65 with both sides 128x2).
 
 In a spec, `"spread": true` makes the walks of a run share one shuffled deck
 (each takes the next cards) instead of each drawing its own: the same work

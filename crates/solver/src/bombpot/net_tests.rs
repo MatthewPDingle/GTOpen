@@ -250,14 +250,15 @@ impl Recorder for OneByOne<'_> {
 #[test]
 fn a_two_sided_net_plays_all_hands_as_it_plays_each() {
     // A file of the two-sided layout with arbitrary weights.
-    let (h, layers, d) = (16usize, 2usize, 8usize);
+    // The situation side has its own size (file version 2).
+    let (h, layers, sh, sl, d) = (16usize, 2usize, 24usize, 1usize, 8usize);
     let mut bytes = b"BPN2".to_vec();
-    for v in [1, h, layers, d, PUB, HAND, EMB_ROWS, MENU, KIND_POLICY as usize] {
+    for v in [2, h, layers, sh, sl, d, PUB, HAND, EMB_ROWS, MENU, KIND_POLICY as usize] {
         bytes.extend((v as u32).to_le_bytes());
     }
-    let side = |n_in: usize, n_out: usize| EMB_ROWS * h + h * n_in + h + layers * (h * h + h) + n_out * h + n_out;
+    let side = |h: usize, layers: usize, n_in: usize, n_out: usize| EMB_ROWS * h + h * n_in + h + layers * (h * h + h) + n_out * h + n_out;
     let mut rng = Rng::new(9);
-    for _ in 0..side(HAND, d) + side(PUB, MENU * (d + 1)) {
+    for _ in 0..side(h, layers, HAND, d) + side(sh, sl, PUB, MENU * (d + 1)) {
         bytes.extend(((rng.next_u64() % 2001) as f32 / 2000.0 - 0.5).to_le_bytes());
     }
     let net = Net::from_bytes(&bytes).unwrap();

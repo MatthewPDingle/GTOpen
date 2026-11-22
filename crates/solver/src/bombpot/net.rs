@@ -515,24 +515,31 @@ impl TwoNet {
             return Err("net file has the wrong length".into());
         }
         let u = |i: usize| u32::from_le_bytes(bytes[4 + i * 4..8 + i * 4].try_into().unwrap()) as usize;
-        let (version, h, layers, d, n_pub, n_hand, emb_rows, menu, kind) = (u(0), u(1), u(2), u(3), u(4), u(5), u(6), u(7), u(8));
-        if version != 1 || n_pub != PUB || n_hand != HAND || emb_rows != EMB_ROWS || menu != MENU {
-            return Err(format!(
-                "net file is for other inputs (version {version}, {n_pub}+{n_hand} inputs, {emb_rows} card slots, {menu} actions)"
-            ));
+        // Version 1 has one size for both sides; version 2 gives the
+        // situation side its own.
+        let version = u(0);
+        let (h, layers, sh, sl, d, at) = match version {
+            1 => (u(1), u(2), u(1), u(2), u(3), 4),
+            2 if bytes.len() >= 48 => (u(1), u(2), u(3), u(4), u(5), 6),
+            _ => return Err(format!("net file version {version} is not one this tool reads")),
+        };
+        let (n_pub, n_hand, emb_rows, menu, kind) = (u(at), u(at + 1), u(at + 2), u(at + 3), u(at + 4));
+        if n_pub != PUB || n_hand != HAND || emb_rows != EMB_ROWS || menu != MENU {
+            return Err(format!("net file is for other inputs ({n_pub}+{n_hand} inputs, {emb_rows} card slots, {menu} actions)"));
         }
-        let floats = Tower::floats(h, layers, HAND, d) + Tower::floats(h, layers, PUB, MENU * (d + 1));
-        if bytes.len() != 40 + floats * 4 {
+        let start = 4 + (at + 5) * 4;
+        let floats = Tower::floats(h, layers, HAND, d) + Tower::floats(sh, sl, PUB, MENU * (d + 1));
+        if bytes.len() != start + floats * 4 {
             return Err("net file has the wrong length".into());
         }
-        let mut at = 40;
+        let mut at = start;
         let mut take = |n: usize| -> Vec<f32> {
             let v = bytes[at..at + n * 4].chunks_exact(4).map(|c| f32::from_le_bytes(c.try_into().unwrap())).collect();
             at += n * 4;
             v
         };
         let hand = Tower::read(&mut take, h, layers, HAND, d);
-        let spot = Tower::read(&mut take, h, layers, PUB, MENU * (d + 1));
+        let spot = Tower::read(&mut take, sh, sl, PUB, MENU * (d + 1));
         Ok(TwoNet { kind: kind as u32, d, hand, spot, fast: fast_math() })
     }
 

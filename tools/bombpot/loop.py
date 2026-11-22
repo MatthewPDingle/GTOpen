@@ -84,6 +84,9 @@ def main():
     ap.add_argument("--hidden", type=int, default=256)
     ap.add_argument("--layers", type=int, default=3)
     ap.add_argument("--plain", action="store_true")
+    ap.add_argument("--spot-hidden", type=int, default=0,
+                    help="two-sided nets: size of the situation side, which costs almost nothing in play (0: as --hidden)")
+    ap.add_argument("--spot-layers", type=int, default=0)
     ap.add_argument("--width", type=int, default=0,
                     help="above 0: two-sided nets with this many numbers between the sides (faster to play)")
     ap.add_argument("--steps", type=int, default=2000, help="training steps per half round")
@@ -154,7 +157,8 @@ def main():
                 init = net_of(kind, step - 1) if a.warm and step > 1 else None
                 wait_for_gpu(a.gpu_free_gb, a.device, log)
                 res = T.train(mem, net_of(kind, step) + ".tmp", a.hidden, a.layers, not a.plain, steps, a.batch,
-                              a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits, width=a.width)
+                              a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits, width=a.width,
+                              spot=(a.spot_hidden, a.spot_layers))
                 os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
                 log({"event": "train", "iter": it, "seat": seat, **res})
         if a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters):
