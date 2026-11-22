@@ -4,12 +4,23 @@
 //!       [--seed N] [--check-every N] [--challenge DEALS] [--exact]
 //!       [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]
 //!
+//!   bombpot gen <spec.json> --out PREFIX --iter N [--net net.bin] [--seed N] [--threads N]
+//!   bombpot score <config.json> --net net.bin [--turns N --rivers N] [--threads N]
+//!   bombpot netcheck <examples.bps> --net net.bin [--rows N]
+//!
 //! `config.json` is a `BpConfig`: boards, the betting tree and the hand
 //! grouping. Progress goes to stdout as one JSON object per line.
+//!
+//! `gen` plays one run of self-play with a net (or, without one, with every
+//! action equally likely) and writes PREFIX.adv.bps and PREFIX.strat.bps for
+//! the trainer in tools/bombpot. `score` measures a two-player net exactly
+//! on one game. `netcheck` prints the net's outputs on stored examples, so
+//! the trainer can confirm both sides compute the same thing.
 
 use std::time::Instant;
 
 use solver::bombpot::exact::Exact2;
+use solver::bombpot::net::Mlp;
 use solver::bombpot::AbsConfig;
 use solver::bombpot::solver::{BpConfig, BpSolver, Challenger};
 use solver::bombpot::tree::{KIND_ACTION, MAX_ACTIONS};
@@ -107,8 +118,119 @@ fn report(s: &BpSolver) -> serde_json::Value {
     serde_json::json!({ "hands": hands, "nodes": nodes })
 }
 
+fn fail(e: String) -> ! {
+    eprintln!("{e}");
+    std::process::exit(1);
+}
+
+fn pool(threads: usize) {
+    rayon::ThreadPoolBuilder::new().num_threads(threads).build_global().ok();
+}
+
+fn gen(args: &[String], threads: usize) {
+    use solver::bombpot::deepcfr::{generate, GenSpec};
+    let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let spec: GenSpec = serde_json::from_str(&text).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let out: String = arg(args, "--out", String::new());
+    let iter: u32 = arg(args, "--iter", 1);
+    let seed: u64 = arg(args, "--seed", 1);
+    let net_path: String = arg(args, "--net", String::new());
+    if out.is_empty() {
+        fail("gen needs --out PREFIX".into());
+    }
+    pool(threads);
+    let net = if net_path.is_empty() { None } else { Some(Mlp::load(&net_path).unwrap_or_else(|e| fail(e))) };
+    let t = Instant::now();
+    let (adv, strat) = generate(&spec, net.as_ref(), seed ^ (iter as u64) << 32).unwrap_or_else(|e| fail(e));
+    adv.write(&format!("{out}.adv.bps"), iter).unwrap_or_else(|e| fail(e));
+    strat.write(&format!("{out}.strat.bps"), iter).unwrap_or_else(|e| fail(e));
+    println!(
+        "{}",
+        serde_json::json!({ "event": "gen", "iter": iter, "games": spec.games, "walks": spec.walks,
+            "advantages": adv.n, "strategies": strat.n, "gen_s": t.elapsed().as_secs_f64() })
+    );
+}
+
+fn score_net(args: &[String], threads: usize) {
+    use solver::bombpot::deepcfr::GameCtx;
+    use solver::bombpot::exact::score;
+    use solver::bombpot::net::NetPolicy;
+    use solver::bombpot::range::Chance;
+    let text = std::fs::read_to_string(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let cfg: BpConfig = serde_json::from_str(&text).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let net_path: String = arg(args, "--net", String::new());
+    let turns: usize = arg(args, "--turns", 0);
+    let rivers: usize = arg(args, "--rivers", 0);
+    let seed: u64 = arg(args, "--seed", 1);
+    pool(threads);
+    let net = Mlp::load(&net_path).unwrap_or_else(|e| fail(e));
+    let t = Instant::now();
+    let game = GameCtx::new(&cfg).unwrap_or_else(|e| fail(e));
+    let policy = NetPolicy { tree: &game.tree, abs: &game.abs, pubf: &game.pubf, net: &net };
+    let chance = if turns == 0 && rivers == 0 {
+        Chance::All
+    } else {
+        Chance::Sample { turn: if turns == 0 { 52 } else { turns }, river: if rivers == 0 { 52 } else { rivers } }
+    };
+    let v = score(&game.tree, &game.abs, &policy, chance, seed).unwrap_or_else(|e| fail(e));
+    let pot = cfg.tree.starting_pot();
+    let gain = [v.best[0] - v.value[0], v.best[1] - v.value[1]];
+    println!(
+        "{}",
+        serde_json::json!({ "event": "score", "boards": cfg.boards, "pot": pot, "exact": turns == 0 && rivers == 0,
+            "value": v.value, "gain": gain, "gain_avg": v.exploitability(),
+            "gain_pct_of_pot": 100.0 * v.exploitability() / pot, "score_s": t.elapsed().as_secs_f64() })
+    );
+}
+
+/// Print the net's raw outputs for the first rows of an examples file.
+fn netcheck(args: &[String]) {
+    use solver::bombpot::net::{emb_board_row, HAND, MENU, PUB};
+    let net_path: String = arg(args, "--net", String::new());
+    let rows: usize = arg(args, "--rows", 64);
+    let net = Mlp::load(&net_path).unwrap_or_else(|e| fail(e));
+    let bytes = std::fs::read(&args[2]).unwrap_or_else(|e| fail(format!("{}: {e}", args[2])));
+    let n = u64::from_le_bytes(bytes[16..24].try_into().unwrap()) as usize;
+    let n_pub = u64::from_le_bytes(bytes[24..32].try_into().unwrap()) as usize;
+    let rec = u32::from_le_bytes(bytes[44..48].try_into().unwrap()) as usize;
+    let f = |at: usize| f32::from_le_bytes(bytes[at..at + 4].try_into().unwrap());
+    let recs = 48 + n_pub * PUB * 4;
+    let mut out = Vec::new();
+    for i in 0..rows.min(n) {
+        let r = recs + i * rec;
+        let cards = &bytes[r..r + 12];
+        let pub_idx = u32::from_le_bytes(bytes[r + 20..r + 24].try_into().unwrap()) as usize;
+        let pub_row: Vec<f32> = (0..PUB).map(|k| f(48 + (pub_idx * PUB + k) * 4)).collect();
+        let mut board = Vec::new();
+        for b in 0..2 {
+            for k in 0..5 {
+                let c = cards[2 + b * 5 + k];
+                if c != 255 {
+                    board.push(emb_board_row(b, k.saturating_sub(2), c));
+                }
+            }
+        }
+        let mut hand = [0.0f32; HAND];
+        for (k, h) in hand.iter_mut().enumerate() {
+            *h = f(r + 24 + k * 4);
+        }
+        let mut x = net.node_base(&pub_row, &board);
+        let mut raw = [0.0f32; MENU];
+        net.forward(&mut x, &mut Vec::new(), cards[0], cards[1], &hand, &mut raw);
+        out.push(raw.to_vec());
+    }
+    println!("{}", serde_json::json!(out));
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    let threads: usize = arg(&args, "--threads", std::thread::available_parallelism().map(|n| n.get()).unwrap_or(4));
+    match args.get(1).map(|s| s.as_str()) {
+        Some("gen") if args.len() >= 3 => return gen(&args, threads),
+        Some("score") if args.len() >= 3 => return score_net(&args, threads),
+        Some("netcheck") if args.len() >= 3 => return netcheck(&args),
+        _ => {}
+    }
     if args.len() < 3 || args[1] != "solve" {
         eprintln!("usage: bombpot solve <config.json> [--rounds N] [--deals N] [--threads N] [--seed N] [--check-every N] [--challenge DEALS] [--exact] [--report out.json] [--max-gb G] [--fine river,turn_strength,turn_draw,top]");
         std::process::exit(2);
@@ -117,7 +239,6 @@ fn main() {
     let cfg: BpConfig = serde_json::from_str(&text).expect("parse config");
     let rounds: u32 = arg(&args, "--rounds", 20);
     let deals: u64 = arg(&args, "--deals", 1_000_000);
-    let threads: usize = arg(&args, "--threads", std::thread::available_parallelism().map(|n| n.get()).unwrap_or(4));
     let seed: u64 = arg(&args, "--seed", 1);
     let check_every: u32 = arg(&args, "--check-every", 0);
     let challenge: u64 = arg(&args, "--challenge", 0);

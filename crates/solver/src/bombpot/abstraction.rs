@@ -132,6 +132,18 @@ pub struct Deal {
     pub strength: [[u32; MAX_BOARDS]; MAX_PLAYERS],
 }
 
+/// Raw strength figures for a net, per board (flop root only). Each is a
+/// share of other hands beaten (0 to 1): on the river as it stands, earlier
+/// as the average over the cards to come, with its spread.
+pub struct HandFeats {
+    /// `[board][hand * 2]`: average and spread on the flop.
+    pub flop: Vec<Vec<f32>>,
+    /// `[board][(turn card * 1326 + hand) * 2]`: average and spread on the turn.
+    pub turn: Vec<Vec<f32>>,
+    /// `[board][combo(turn, river) * 1326 + hand]`.
+    pub river: Vec<Vec<f32>>,
+}
+
 pub struct Abstraction {
     pub cfg: AbsConfig,
     pub root_street: u8,
@@ -151,6 +163,8 @@ pub struct Abstraction {
     /// Flop root: `[board][combo(turn, river) * 1326 + hand]`.
     /// Turn root: `[board][river card * 1326 + hand]`.
     river_tab: Vec<Vec<u16>>,
+    /// Kept only when asked for (`with_features`).
+    pub feats: Option<HandFeats>,
 }
 
 fn mask_of(cards: &[Card]) -> u64 {
@@ -211,6 +225,18 @@ fn group_of(q: f32, groups: usize, top: f64) -> u16 {
 
 impl Abstraction {
     pub fn new(boards: &[Vec<Card>], cfg: &AbsConfig) -> Result<Abstraction, String> {
+        Abstraction::build(boards, cfg, false)
+    }
+
+    /// As `new`, and keeps the raw strength figures a net reads.
+    pub fn with_features(boards: &[Vec<Card>], cfg: &AbsConfig) -> Result<Abstraction, String> {
+        if boards.first().map(|b| b.len()) != Some(3) {
+            return Err("net features need flop boards".into());
+        }
+        Abstraction::build(boards, cfg, true)
+    }
+
+    fn build(boards: &[Vec<Card>], cfg: &AbsConfig, features: bool) -> Result<Abstraction, String> {
         if boards.is_empty() || boards.len() > MAX_BOARDS {
             return Err("give one or two boards".into());
         }
@@ -266,8 +292,12 @@ impl Abstraction {
             river_groups,
             turn_tab: Vec::new(),
             river_tab: Vec::new(),
+            feats: None,
         };
-        if !cfg.lossless && root_street < 2 {
+        if features {
+            a.feats = Some(HandFeats { flop: Vec::new(), turn: Vec::new(), river: Vec::new() });
+        }
+        if (!cfg.lossless && root_street < 2) || features {
             a.build_tables();
         }
         Ok(a)
@@ -329,12 +359,13 @@ impl Abstraction {
             // Turn: average river figure and its spread over the rivers.
             let sg = self.cfg.turn_strength_groups;
             let dg = self.cfg.turn_draw_groups;
-            let rows: Vec<Vec<u16>> = (0..52u8)
+            let rows: Vec<(Vec<u16>, Vec<f32>)> = (0..52u8)
                 .into_par_iter()
                 .map(|t| {
                     let mut row = vec![0u16; NUM_COMBOS];
+                    let mut raw = vec![0.0f32; NUM_COMBOS * 2];
                     if dead >> t & 1 != 0 {
-                        return row;
+                        return (row, raw);
                     }
                     let mut feats: Vec<(usize, f32, f32)> = Vec::new();
                     for h in 0..NUM_COMBOS {
@@ -373,11 +404,41 @@ impl Abstraction {
                     }
                     for i in 0..n {
                         row[feats[i].0] = sgroup[i] * dg as u16 + dgroup[i];
+                        raw[feats[i].0 * 2] = feats[i].1;
+                        raw[feats[i].0 * 2 + 1] = feats[i].2;
                     }
-                    row
+                    (row, raw)
                 })
                 .collect();
-            self.turn_tab.push(rows.concat());
+            self.turn_tab.push(rows.iter().flat_map(|r| r.0.iter().copied()).collect());
+            if let Some(f) = self.feats.as_mut() {
+                f.turn.push(rows.iter().flat_map(|r| r.1.iter().copied()).collect());
+                // Flop: average and spread over every pair of cards to come.
+                let mut flop = vec![0.0f32; NUM_COMBOS * 2];
+                for h in 0..NUM_COMBOS {
+                    let (mut s1, mut s2, mut n) = (0.0f64, 0.0f64, 0.0f64);
+                    for q in pct.iter().filter(|q| !q.is_empty()) {
+                        if q[h] >= 0.0 {
+                            s1 += q[h] as f64;
+                            s2 += (q[h] as f64).powi(2);
+                            n += 1.0;
+                        }
+                    }
+                    if n > 0.0 {
+                        let mean = s1 / n;
+                        flop[h * 2] = mean as f32;
+                        flop[h * 2 + 1] = (s2 / n - mean * mean).max(0.0).sqrt() as f32;
+                    }
+                }
+                f.flop.push(flop);
+                let mut river = vec![0.0f32; NUM_COMBOS * NUM_COMBOS];
+                for (pair, q) in pct.iter().enumerate() {
+                    for (h, &v) in q.iter().enumerate() {
+                        river[pair * NUM_COMBOS + h] = v.max(0.0);
+                    }
+                }
+                f.river.push(river);
+            }
         }
     }
 
