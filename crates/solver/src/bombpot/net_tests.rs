@@ -302,6 +302,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         held_out: vec!["AsKd7c".into()],
         weight_power: 1.0,
         spread: false,
+        fixed_cards: None,
     };
     let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);

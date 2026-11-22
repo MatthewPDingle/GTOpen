@@ -86,3 +86,10 @@ power 1 need about 70 rounds to get under 3% of the pot, with power 2 about
 scores the exact average of the nets that played beside the strategy net,
 on the same sampled cards: a gap between the two is the strategy net's own
 loss.
+
+`specs/one_flop_fixed_cards.json` (`"fixed_cards": 1`) makes the net loop
+play the very cards `bombpot tables` and `bombpot score --turns 6 --rivers 6`
+draw with seed 1, every round. Run with `--score-turns 6 --score-rivers 6`,
+the loop's scores then compare with the tables' round for round on the same
+small game, where a net sees every spot every round. A gap there is the
+net's fit; a gap only on the full game is too few cards seen per round.

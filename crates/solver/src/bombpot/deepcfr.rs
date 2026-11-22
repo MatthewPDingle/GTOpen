@@ -82,6 +82,11 @@ pub struct GenSpec {
     /// drawing its own (less luck in the examples for the same work).
     #[serde(default)]
     pub spread: bool,
+    /// Every walk of every run sees the same sampled cards: the ones
+    /// `bombpot tables` and `bombpot score` draw with this seed. A small
+    /// game for comparing a net with plain tables card for card.
+    #[serde(default)]
+    pub fixed_cards: Option<u64>,
 }
 
 fn one() -> usize {
@@ -651,7 +656,8 @@ pub fn generate(
                         true => Chance::Spread { turn: spec.turn_draws, river: spec.river_draws, walk: k, deck: *gseed },
                         false => chance,
                     };
-                    walker.run(policy, context, chance, false, Some(&mut rec), &mut Rng::new(s));
+                    let cards = spec.fixed_cards.unwrap_or(s);
+                    walker.run(policy, context, chance, false, Some(&mut rec), &mut Rng::new(cards));
                     (rec.adv, rec.strat)
                 })
                 .collect();
