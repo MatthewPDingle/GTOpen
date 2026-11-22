@@ -132,7 +132,14 @@ pub struct EquityTable {
 }
 
 impl EquityTable {
-    fn from_values(t: Vec<f32>, samples: u32) -> Self {
+    fn from_values(mut t: Vec<f32>, samples: u32) -> Self {
+        // Identical classes have equal equity by player-exchange symmetry.
+        // Enforce this for generated tables AND old disk caches before making
+        // the opponent-major copy; CPU and GPU consumers must see the same
+        // exact half. Leave every off-diagonal Monte-Carlo value untouched.
+        for h in 0..NUM_CLASSES {
+            t[h * NUM_CLASSES + h] = 0.5;
+        }
         let mut by_opponent = vec![0.0; t.len()];
         for h in 0..NUM_CLASSES {
             for j in 0..NUM_CLASSES {
@@ -290,6 +297,58 @@ impl EquityTable {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn assert_normalized(table: &EquityTable, original: &[f32]) {
+        for h in 0..NUM_CLASSES {
+            for j in 0..NUM_CLASSES {
+                let want = if h == j { 0.5 } else { original[h * NUM_CLASSES + j] };
+                assert_eq!(table.eq(h, j).to_bits(), want.to_bits(), "({h}, {j})");
+                assert_eq!(table.by_opponent[j * NUM_CLASSES + h].to_bits(), want.to_bits());
+            }
+        }
+    }
+
+    #[test]
+    fn constructor_normalizes_only_diagonal_in_both_layouts() {
+        let values: Vec<f32> = (0..NUM_CLASSES * NUM_CLASSES)
+            .map(|k| ((k * 37 + 11) % 997) as f32 / 996.0).collect();
+        let table = EquityTable::from_values(values.clone(), 123);
+        assert_normalized(&table, &values);
+        assert_eq!(table.samples, 123);
+    }
+
+    #[test]
+    fn stale_disk_cache_is_normalized_without_rebuilding_or_rewriting_it() {
+        // The shipped cache is the old on-disk format. Deliberately bias its
+        // diagonal even if a later release ships an improved table.
+        let mut bytes = include_bytes!("../../../../cache/preflop_eq169.bin").to_vec();
+        let samples = u32::from_le_bytes(bytes[..4].try_into().unwrap());
+        assert_eq!(bytes.len(), 4 + NUM_CLASSES * NUM_CLASSES * 4);
+        for h in 0..NUM_CLASSES {
+            let start = 4 + (h * NUM_CLASSES + h) * 4;
+            bytes[start..start + 4].copy_from_slice(&0.50215f32.to_le_bytes());
+        }
+        let values: Vec<f32> = bytes[4..].chunks_exact(4)
+            .map(|b| f32::from_le_bytes(b.try_into().unwrap())).collect();
+        let dir = std::env::temp_dir().join(format!("gtopen-stale-equity-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("eq.bin");
+        std::fs::write(&path, &bytes).unwrap();
+        let table = EquityTable::load_or_build(path.to_str().unwrap(), samples);
+        assert_normalized(&table, &values);
+        assert_eq!(table.samples, samples);
+        assert_eq!(std::fs::read(&path).unwrap(), bytes, "old cache stays byte-for-byte intact");
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn generated_table_has_exact_half_diagonal() {
+        let table = EquityTable::build(1);
+        for h in 0..NUM_CLASSES {
+            assert_eq!(table.eq(h, h).to_bits(), 0.5f32.to_bits());
+            assert_eq!(table.by_opponent[h * NUM_CLASSES + h].to_bits(), 0.5f32.to_bits());
+        }
+    }
 
     #[test]
     fn batched_equities_match_scalar_bits() {

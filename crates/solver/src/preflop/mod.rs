@@ -4532,3 +4532,5 @@ mod stacks_tests;
 mod bb_ante_tests;
 #[cfg(test)]
 mod removal_tests;
+#[cfg(test)]
+mod equity_invariant_tests;
