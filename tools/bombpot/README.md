@@ -53,6 +53,11 @@ last rounds' example files on disk.
 Run one training job at a time on a small CPU-only machine: two PyTorch jobs
 on four cores crawl.
 
+With `--in-ram` (loop and trainer) the examples stay in main memory and
+only each batch goes to the GPU. The trainer then holds about 1 GB of GPU
+memory whatever `--cap` is, in place of about 5 GB at 32 million examples,
+at the price of a slightly slower step. Use it when the card is nearly full.
+
 ## Net shapes
 
 `--width N` (loop and trainer) makes two-sided nets: one side reads the hand

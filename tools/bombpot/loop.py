@@ -107,6 +107,9 @@ def main():
     ap.add_argument("--keep-rounds", type=int, default=0,
                     help="keep the example files of this many rounds only (0: all). The loop holds every "
                          "example in memory either way; after a restart it starts over from the files left")
+    ap.add_argument("--in-ram", action="store_true",
+                    help="keep the examples in main memory, not on the GPU: a little slower per step, "
+                         "and the GPU holds about 1 GB whatever --cap is")
     ap.add_argument("--fixed-suits", action="store_true",
                     help="do not rename suits at random while training (for a spec with one fixed flop)")
     ap.add_argument("--power", type=float, default=1.0,
@@ -161,7 +164,7 @@ def main():
                 wait_for_gpu(a.gpu_free_gb, a.device, log)
                 res = T.train(mem, net_of(kind, step) + ".tmp", a.hidden, a.layers, not a.plain, steps, a.batch,
                               a.lr, init, a.device, a.seed + step, shuffle=not a.fixed_suits, width=a.width,
-                              spot=(a.spot_hidden, a.spot_layers))
+                              spot=(a.spot_hidden, a.spot_layers), in_ram=a.in_ram)
                 os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
                 log({"event": "train", "iter": it, "seat": seat, **res})
         if a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters):

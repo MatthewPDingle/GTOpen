@@ -282,28 +282,39 @@ def loss_of(kind, pred, target, legal, weight):
 
 
 def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192, lr=1e-3, init=None,
-          device="cpu", seed=0, log=None, shuffle=True, width=0, spot=(0, 0)):
+          device="cpu", seed=0, log=None, shuffle=True, width=0, spot=(0, 0), in_ram=False):
     """Fit a net to the memory and write it to `out`. Returns a summary.
     With `width` above 0 the net is two-sided (`Two`) with that many numbers
     between the sides, and `spot` (hidden, layers) sizes its situation side
-    (0: as the hand side)."""
+    (0: as the hand side). `in_ram` keeps the examples in main memory and
+    sends each batch to the device: a little slower per step, and the device
+    then holds the net and one batch only (about 1 GB on a GPU, whatever the
+    number of examples)."""
     torch.manual_seed(seed)
     dev = torch.device(device)
+    store = torch.device("cpu") if in_ram else dev
     kind = mem.kind
     n = len(mem)
     t0 = time.time()
     rows = torch.from_numpy(mem.rows).to(dev)
-    cards = torch.from_numpy(mem.cards).to(dev)
-    pub = torch.from_numpy(mem.pub.astype(np.int32)).to(dev)
-    hand = torch.from_numpy(mem.hand).to(dev)
-    target = torch.from_numpy(mem.target).to(dev)
-    weight = torch.from_numpy(mem.weight / mem.weight.mean()).to(dev)
-    legal_all = torch.from_numpy((mem.mask[:, None] >> np.arange(MENU, dtype=np.uint8)) & 1 > 0).to(dev)
+    cards = torch.from_numpy(mem.cards).to(store)
+    pub = torch.from_numpy(mem.pub.astype(np.int32)).to(store)
+    hand = torch.from_numpy(mem.hand).to(store)
+    target = torch.from_numpy(mem.target).to(store)
+    weight = torch.from_numpy(mem.weight / mem.weight.mean()).to(store)
+    legal_all = torch.from_numpy((mem.mask[:, None] >> np.arange(MENU, dtype=np.uint8)) & 1 > 0).to(store)
+    street = torch.from_numpy(mem.street).to(store)
     offset = torch.from_numpy(_OFFSET).to(dev)
     perms = torch.from_numpy(_PERMS).to(dev)
     # One example in twenty is held back to read the fit.
     g = torch.Generator(device="cpu").manual_seed(seed)
-    order = torch.randperm(n, generator=g).to(dev)
+    order = torch.randperm(n, generator=g).to(store)
+
+    def take(idx):
+        """One batch of examples on the device: cards, betting row, hand
+        numbers, target, legal actions, weight, street."""
+        return tuple(t[idx].to(dev, non_blocking=True)
+                     for t in (cards, pub, hand, target, legal_all, weight, street))
     n_val = max(1, n // 20)
     val, fit = order[:n_val], order[n_val:]
     if init:
@@ -315,14 +326,15 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=lr, total_steps=steps, pct_start=0.05)
 
     def batch_loss(idx, shuffle_suits):
+        c, pb, h, tg, lg, w, _ = take(idx)
         p = perms[torch.randint(0, 24, (len(idx),), device=dev)] if shuffle_suits else None
-        x = torch.cat([rows[pub[idx].long()], hand[idx]], 1)
-        pred = net(card_rows(cards[idx], offset, p), x)
-        return loss_of(kind, pred, target[idx], legal_all[idx], weight[idx])
+        x = torch.cat([rows[pb.long()], h], 1)
+        pred = net(card_rows(c, offset, p), x)
+        return loss_of(kind, pred, tg, lg, w)
 
     running = 0.0
     for step in range(steps):
-        idx = fit[torch.randint(0, len(fit), (batch,), device=dev)]
+        idx = fit[torch.randint(0, len(fit), (batch,), device=store)]
         loss = batch_loss(idx, shuffle)
         opt.zero_grad(set_to_none=True)
         loss.backward()
@@ -333,7 +345,6 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
         if log and (step + 1) % max(1, steps // 5) == 0:
             log(f"  step {step + 1}/{steps} loss {running:.5f}")
     net.eval()
-    street = torch.from_numpy(mem.street).to(dev)
     with torch.no_grad():
         val_loss = sum(batch_loss(val[i:i + 65536], False).item() * len(val[i:i + 65536])
                        for i in range(0, n_val, 65536)) / n_val
@@ -343,12 +354,12 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
         if kind == KINDS["adv"]:
             err, tot = torch.zeros(3, device=dev), torch.zeros(3, device=dev)
             for i in range(0, n_val, 65536):
-                idx = val[i:i + 65536]
-                x = torch.cat([rows[pub[idx].long()], hand[idx]], 1)
-                pred = net(card_rows(cards[idx], offset), x)
-                w, s, lg = weight[idx], street[idx].long(), legal_all[idx]
-                err.index_add_(0, s, w * ((pred - target[idx]) ** 2 * lg).sum(1))
-                tot.index_add_(0, s, w * (target[idx] ** 2 * lg).sum(1))
+                c, pb, h, tg, lg, w, st = take(val[i:i + 65536])
+                x = torch.cat([rows[pb.long()], h], 1)
+                pred = net(card_rows(c, offset), x)
+                st = st.long()
+                err.index_add_(0, st, w * ((pred - tg) ** 2 * lg).sum(1))
+                tot.index_add_(0, st, w * (tg ** 2 * lg).sum(1))
             fit_by_street = [round(float(1 - e / t), 4) if t > 0 else None for e, t in zip(err, tot)]
     save_net(net, out, kind)
     # Hand the GPU memory back between trainings: PyTorch would otherwise
@@ -396,6 +407,8 @@ def main():
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--fixed-suits", action="store_true", help="do not rename suits at random (for one fixed flop)")
+    ap.add_argument("--in-ram", action="store_true",
+                    help="keep the examples in main memory, not on the GPU (the GPU then holds about 1 GB)")
     ap.add_argument("--power", type=float, default=1.0, help="an example of round t counts t^power times")
     ap.add_argument("--check", help="path to the bombpot tool, to compare outputs")
     a = ap.parse_args()
@@ -407,7 +420,7 @@ def main():
         mem.add(f, a.power)
     res = train(mem, a.out, a.hidden, a.layers, not a.plain, a.steps, a.batch, a.lr, a.init, a.device, a.seed,
                 log=lambda s: print(s, file=sys.stderr), shuffle=not a.fixed_suits, width=a.width,
-                spot=(a.spot_hidden, a.spot_layers))
+                spot=(a.spot_hidden, a.spot_layers), in_ram=a.in_ram)
     if a.check:
         res["engine_difference"] = check(a.out, files[0], a.check)
     print(json.dumps(res))
