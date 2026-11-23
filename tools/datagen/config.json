@@ -1,6 +1,6 @@
 {
   "hf_repo": "GTOpen/gtopen-leaf-values",
-  "current_generator": 5,
+  "current_generator": 6,
   "real_contributors": ["MatthewPDingle"],
   "go_no_go_examples": 50000,
   "goal_examples": 300000,
@@ -19,7 +19,13 @@
       "since": "2026-11-21T01:53:00+00:00",
       "title": "Game mix 2: half as mix 1, half spots from our own preflop solves",
       "for": "Data for leaf net v4: what the hands just outside each range are worth, so calling ranges come out right.",
-      "target": {"list": "outside-hands-1", "solves": 15000}
+      "target": {"list": "outside-hands-1", "solves": 15000,
+                 "by_pot_type": {"limped": 952, "srp": 4765, "3bet": 4858, "4bet": 4425}}
+    },
+    {
+      "since": "2026-11-23",
+      "title": "Game mix 3: as mix 2, with big cards handed the big spots",
+      "for": "The same data as mix 2. Cards of 24 GB and more leave most small spots to smaller cards."
     }
   ]
 }

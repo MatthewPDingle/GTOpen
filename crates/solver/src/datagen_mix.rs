@@ -21,6 +21,14 @@
 //!   pot, stack and rake, taken from a GTOpen preflop solve) on a random
 //!   flop. The list is a file in the public dataset, pinned by its SHA-256.
 //!
+//! A mix can also carry card rules ([`CardRule`], generator v6 on). A card
+//! only solves trees that fit its memory, so small cards fill the pool with
+//! small trees while the big ones depend on the few big cards. A card rule
+//! has cards from a given size pass over most of the small trees, which any
+//! card can solve, and spend that time on the trees only they can hold. The
+//! rule is part of the mix, so a job's examples are still fully determined by
+//! (mix, job, index, cap) and can be drawn again to check an upload.
+//!
 //! A published mix is never edited: jobs are checked by drawing their inputs
 //! again from the mix they name, so an edit would fail every upload made
 //! under it. To change anything, add a mix with the next id. To stop one,
@@ -108,6 +116,24 @@ impl Part {
     }
 }
 
+/// How cards of a size choose among the games a mix draws: a card whose
+/// memory cap (the `max_vram_gb` of its jobs) is `cap_from_gb` or more keeps
+/// a drawn example whose estimated tree is under `under_gb` only with
+/// probability `keep`, and otherwise draws again. When several rules cover a
+/// card, the one with the highest `cap_from_gb` applies.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CardRule {
+    pub cap_from_gb: f64,
+    pub under_gb: f64,
+    pub keep: f64,
+}
+
+/// Most card rules a mix may hold.
+pub const MAX_CARD_RULES: usize = 8;
+/// The first generator that reads card rules.
+pub const CARD_RULES_GENERATOR: u32 = 6;
+
 /// One published game mix.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -122,6 +148,10 @@ pub struct Mix {
     #[serde(default, skip_serializing_if = "is_false")]
     pub withdrawn: bool,
     pub parts: Vec<Part>,
+    /// How cards of a size choose among the games (none: every card keeps
+    /// the first draw that fits it). In ascending order of `cap_from_gb`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub card_rules: Vec<CardRule>,
 }
 
 fn is_false(x: &bool) -> bool {
@@ -171,6 +201,27 @@ impl Mix {
             return Err(format!("{what}: the note must be one line of at most 200 characters"));
         }
         shares_ok(self.parts.iter().map(|p| p.share()), &format!("{what}: parts"))?;
+        if !self.card_rules.is_empty() && self.needs_generator < CARD_RULES_GENERATOR {
+            return Err(format!("{what}: card rules need generator v{CARD_RULES_GENERATOR} (needs_generator)"));
+        }
+        if self.card_rules.len() > MAX_CARD_RULES {
+            return Err(format!("{what}: {} card rules (at most {MAX_CARD_RULES})", self.card_rules.len()));
+        }
+        let mut last_cap = 0.0;
+        for r in &self.card_rules {
+            // every card a rule covers can hold trees above its limit, so it always has something to keep,
+            // and no rule takes the small trees off a card completely
+            if !(r.cap_from_gb.is_finite() && r.cap_from_gb >= 2.0 && r.cap_from_gb <= 1000.0 && r.cap_from_gb > last_cap) {
+                return Err(format!("{what}: card rule cap_from_gb {} (2 to 1000, in ascending order)", r.cap_from_gb));
+            }
+            if !(r.under_gb.is_finite() && r.under_gb >= 0.5 && r.under_gb < r.cap_from_gb) {
+                return Err(format!("{what}: card rule under_gb {} (0.5 or more, below its cap_from_gb {})", r.under_gb, r.cap_from_gb));
+            }
+            if !(r.keep.is_finite() && r.keep >= 0.01 && r.keep < 1.0) {
+                return Err(format!("{what}: card rule keep {} (0.01 or more, below 1)", r.keep));
+            }
+            last_cap = r.cap_from_gb;
+        }
         for part in &self.parts {
             match part {
                 Part::Random { pot_types, tables, rake, .. } => {
@@ -209,11 +260,29 @@ impl Mix {
         Ok(())
     }
 
-    /// A short fingerprint of what the mix draws (its id and parts; not the
-    /// note). Written in every job header.
+    /// A short fingerprint of what the mix draws (its id, parts and card
+    /// rules; not the note). Written in every job header.
     pub fn key(&self) -> String {
-        let text = serde_json::to_string(&(self.id, &self.parts)).expect("mix json");
+        let text = if self.card_rules.is_empty() {
+            serde_json::to_string(&(self.id, &self.parts)).expect("mix json")
+        } else {
+            serde_json::to_string(&(self.id, &self.parts, &self.card_rules)).expect("mix json")
+        };
         format!("{:016x}", datagen::fnv1a(text.as_bytes()))
+    }
+
+    /// The card rule a card with memory cap `cap_gb` follows (None: no cap,
+    /// which every rule covers), if any.
+    pub fn rule_for(&self, cap_gb: Option<f64>) -> Option<&CardRule> {
+        self.card_rules.iter().rev().find(|r| cap_gb.map_or(true, |c| c >= r.cap_from_gb))
+    }
+
+    /// One plain line on what the mix's card rule means for this card, for
+    /// the generator's window (None when no rule covers the card).
+    pub fn card_note(&self, cap_gb: Option<f64>) -> Option<String> {
+        self.rule_for(cap_gb).map(|r| format!(
+            "this card keeps about 1 in {:.0} of the games under {} GB, which smaller cards can solve, and spends the time on bigger ones",
+            1.0 / r.keep, r.under_gb))
     }
 
     /// The situation lists the mix draws from: (name, SHA-256).
@@ -428,15 +497,35 @@ impl Book {
     /// GPU that holds trees up to `cap_gb` (as `datagen::example_inputs_capped`).
     /// Fully determined by the mix, its lists and (job, index, cap).
     pub fn inputs(&self, mix_id: u32, job: u64, index: u32, cap_gb: Option<f64>) -> Result<ExampleInputs, String> {
+        let mix = self.ready_mix(mix_id)?;
+        if cap_gb.is_none() && mix.rule_for(None).is_none() {
+            return Ok(self.draw(mix, job, index, 0)); // nothing to choose by size: no tree is built
+        }
+        self.sized_inputs(mix_id, job, index, cap_gb).map(|x| x.0)
+    }
+
+    /// [`Book::inputs`] with the estimated size of the example's tree in bytes
+    /// (`datagen::estimated_vram_bytes`), which choosing by size works out anyway.
+    pub fn sized_inputs(&self, mix_id: u32, job: u64, index: u32, cap_gb: Option<f64>) -> Result<(ExampleInputs, u64), String> {
+        let mix = self.ready_mix(mix_id)?;
+        Ok(choose(
+            cap_gb,
+            mix.rule_for(cap_gb),
+            |attempt| self.draw(mix, job, index, attempt),
+            |attempt| datagen::attempt_coin(datagen::MIX_SEED_VERSION, job, index, attempt),
+        ))
+    }
+
+    fn ready_mix(&self, mix_id: u32) -> Result<&Mix, String> {
         let mix = self.mixes.get(&mix_id).ok_or_else(|| format!("mix {mix_id} is not known"))?;
         if !self.ready(mix) {
             return Err(format!("a situation list of mix {mix_id} is not loaded"));
         }
-        Ok(datagen::capped(cap_gb, |attempt| self.draw(mix, job, index, attempt)))
+        Ok(mix)
     }
 
     fn draw(&self, mix: &Mix, job: u64, index: u32, attempt: u32) -> ExampleInputs {
-        let mut rng = Rng::new(datagen::attempt_seed(datagen::GENERATOR_VERSION, job, index, attempt));
+        let mut rng = Rng::new(datagen::attempt_seed(datagen::MIX_SEED_VERSION, job, index, attempt));
         let part = pick(&mut rng, &mix.parts, |p| p.share());
         let mut ex = match part {
             Part::Random { pot_types, tables, rake, .. } => draw_random(&mut rng, pot_types, tables, rake),
@@ -464,6 +553,36 @@ impl Book {
         ex.attempt = attempt;
         ex
     }
+}
+
+/// The first of `draw(0)`, `draw(1)`, ... that the card takes, with its
+/// estimated tree size in bytes. A draw is taken when its tree fits `cap_gb`
+/// and, if a card `rule` applies and the tree is under the rule's limit, when
+/// `coin(attempt)` falls below the rule's `keep`. Without a rule this is
+/// `datagen::capped`: the first draw that fits, or the smallest of
+/// `datagen::MAX_ATTEMPTS` draws when none does. With a rule, when no draw is
+/// taken, the first one that fit and was passed over is.
+fn choose(cap_gb: Option<f64>, rule: Option<&CardRule>, draw: impl Fn(u32) -> ExampleInputs,
+          coin: impl Fn(u32) -> f64) -> (ExampleInputs, u64) {
+    let mut smallest: Option<(u64, ExampleInputs)> = None;
+    let mut passed: Option<(u64, ExampleInputs)> = None;
+    for attempt in 0..datagen::MAX_ATTEMPTS {
+        let ex = draw(attempt);
+        let bytes = datagen::estimated_vram_bytes(&ex);
+        if cap_gb.map_or(true, |cap| bytes as f64 <= cap * 1e9) {
+            let small = rule.map_or(false, |r| (bytes as f64) < r.under_gb * 1e9);
+            if !small || coin(attempt) < rule.map_or(1.0, |r| r.keep) {
+                return (ex, bytes);
+            }
+            if passed.is_none() {
+                passed = Some((bytes, ex));
+            }
+        } else if smallest.as_ref().map(|b| bytes < b.0).unwrap_or(true) {
+            smallest = Some((bytes, ex));
+        }
+    }
+    let (bytes, ex) = passed.or(smallest).expect("at least one draw");
+    (ex, bytes)
 }
 
 /// One of `items`, each with the chance its share gives it (shares add up to 1).
@@ -837,6 +956,102 @@ mod tests {
         assert_eq!((datagen::fnv1a(s.as_bytes()), s.len()), (0x4c2c_fd4d_98f1_4397, 416_894));
     }
 
+    fn ruled(rules: serde_json::Value) -> serde_json::Value {
+        let mut m = mix(serde_json::json!([random_part(1.0)]));
+        m["id"] = 3.into();
+        m["needs_generator"] = CARD_RULES_GENERATOR.into();
+        m["card_rules"] = rules;
+        m
+    }
+
+    #[test]
+    fn card_rules_are_bounds_checked_and_part_of_the_key() {
+        let plain: Mix = serde_json::from_value(ruled(serde_json::json!([]))).unwrap();
+        let rules = serde_json::json!([{"cap_from_gb": 12, "under_gb": 4, "keep": 0.5}, {"cap_from_gb": 19, "under_gb": 6, "keep": 0.25}]);
+        let m: Mix = serde_json::from_value(ruled(rules.clone())).unwrap();
+        m.check().unwrap();
+        assert_ne!(m.key(), plain.key());
+        // a mix without rules keeps the key it always had, and is written without the field
+        assert!(!serde_json::to_string(&plain).unwrap().contains("card_rules"));
+        // which rule a card follows: the highest one its cap reaches; no cap reaches them all
+        assert_eq!(m.rule_for(Some(6.0)), None);
+        assert_eq!(m.rule_for(Some(12.0)).unwrap().under_gb, 4.0);
+        assert_eq!(m.rule_for(Some(27.0)).unwrap().under_gb, 6.0);
+        assert_eq!(m.rule_for(None).unwrap().under_gb, 6.0);
+        assert!(m.card_note(Some(27.0)).unwrap().contains("1 in 4 of the games under 6 GB"));
+        assert_eq!(m.card_note(Some(6.0)), None);
+        let bad = |rules: serde_json::Value, needs: u32| {
+            let mut v = ruled(rules);
+            v["needs_generator"] = needs.into();
+            serde_json::from_value::<Mix>(v).map_err(|e| e.to_string()).and_then(|m| m.check()).unwrap_err()
+        };
+        assert!(bad(rules.clone(), 5).contains("need generator v6"));
+        assert!(bad(serde_json::json!([{"cap_from_gb": 19, "under_gb": 6, "keep": 0.25}, {"cap_from_gb": 12, "under_gb": 4, "keep": 0.5}]), 6)
+            .contains("ascending"));
+        assert!(bad(serde_json::json!([{"cap_from_gb": 12, "under_gb": 12, "keep": 0.5}]), 6).contains("under_gb"));
+        assert!(bad(serde_json::json!([{"cap_from_gb": 12, "under_gb": 4, "keep": 0.0}]), 6).contains("keep"));
+        assert!(bad(serde_json::json!([{"cap_from_gb": 12, "under_gb": 4, "keep": 1.0}]), 6).contains("keep"));
+        assert!(bad(serde_json::json!([{"cap_from_gb": 12, "under_gb": 4, "keep": 0.5, "run": "x"}]), 6).contains("unknown field"));
+        assert!(bad(serde_json::json!((0..9).map(|i| serde_json::json!({"cap_from_gb": 10 + i, "under_gb": 4, "keep": 0.5})).collect::<Vec<_>>()), 6)
+            .contains("at most 8"));
+    }
+
+    #[test]
+    fn a_card_rule_has_big_cards_pass_over_most_small_trees_and_changes_nothing_else() {
+        let rules = serde_json::json!([{"cap_from_gb": 12, "under_gb": 3, "keep": 0.25}]);
+        let mut plain = ruled(serde_json::json!([]));
+        plain["id"] = 4.into();
+        let mut book = Book::default();
+        assert!(book.add_text(&file(vec![ruled(rules), plain])).unwrap().is_empty());
+        let job = |mix| datagen::mix_job("alice", mix, 5);
+        let (mut small_with, mut small_without, mut passed) = (0, 0, 0);
+        for i in 0..60 {
+            // a card below the rule draws as if the mix had none (mix 4 is mix 3 without it; the job number differs, so
+            // compare each mix with itself)
+            let (ex, bytes) = book.sized_inputs(3, job(3), i, Some(6.0)).unwrap();
+            assert_eq!(bytes, datagen::estimated_vram_bytes(&ex));
+            assert!(bytes as f64 <= 6e9 || ex.attempt == datagen::MAX_ATTEMPTS - 1);
+            assert_eq!(ex, book.inputs(3, job(3), i, Some(6.0)).unwrap());
+            // a big card: the same draws in the same order, the first one it takes
+            let (big, big_bytes) = book.sized_inputs(3, job(3), i, Some(27.0)).unwrap();
+            assert_eq!((big.clone(), big_bytes), book.sized_inputs(3, job(3), i, Some(27.0)).unwrap());
+            assert_eq!(big, book.inputs(3, job(3), i, None).unwrap());           // nothing here is over 27 GB
+            assert_eq!(big_bytes, datagen::estimated_vram_bytes(&big));
+            let coin = datagen::attempt_coin(datagen::MIX_SEED_VERSION, job(3), i, big.attempt);
+            assert!(big_bytes as f64 >= 3e9 || coin < 0.25, "a small tree is kept only on its coin");
+            for a in 0..big.attempt {
+                // every draw before it was a small tree whose coin said pass
+                let earlier = book.draw(&book.mixes[&3], job(3), i, a);
+                assert!((datagen::estimated_vram_bytes(&earlier) as f64) < 3e9);
+                assert!(datagen::attempt_coin(datagen::MIX_SEED_VERSION, job(3), i, a) >= 0.25);
+                passed += 1;
+            }
+            small_with += ((big_bytes as f64) < 3e9) as u32;
+            // without the rule the first draw is taken whatever its size
+            let first = book.inputs(4, job(4), i, None).unwrap();
+            assert_eq!(first.attempt, 0);
+            small_without += ((datagen::estimated_vram_bytes(&first) as f64) < 3e9) as u32;
+        }
+        assert!(passed > 10, "{passed} draws passed over");
+        assert!(small_with * 2 < small_without, "{small_with} small trees with the rule, {small_without} without");
+        assert!(small_with > 0, "small trees are still solved, only less often");
+    }
+
+    #[test]
+    fn a_mixs_examples_do_not_depend_on_the_generator_that_draws_them() {
+        // mixes 1 and 2 were published under generator v5: a later generator must draw the same jobs
+        assert_eq!(datagen::MIX_SEED_VERSION, 5);
+        let book = Book::built_in();
+        let job = datagen::mix_job("alice", 1, 3);
+        let ex = book.inputs(1, job, 0, None).unwrap();
+        let mut rng = Rng::new(datagen::attempt_seed(5, job, 0, 0));
+        rng.f64(); // the pick of the mix's part (it has one)
+        let Part::Random { pot_types, tables, rake, .. } = &book.mixes[&1].parts[0] else { panic!("mix 1 is random") };
+        let mut again = draw_random(&mut rng, pot_types, tables, rake);
+        again.job = job;
+        assert_eq!(ex, again);
+    }
+
     #[test]
     fn a_mix_is_bounds_checked() {
         let ok: Mix = serde_json::from_value(mix(serde_json::json!([random_part(1.0)]))).unwrap();
@@ -904,7 +1119,7 @@ mod tests {
         let mut book = Book::default();
         let mut newer = mix(serde_json::json!([{"kind": "three_way", "share": 1.0, "seats": 3}]));
         newer["id"] = 4.into();
-        newer["needs_generator"] = 6.into();
+        newer["needs_generator"] = (datagen::GENERATOR_VERSION + 1).into();
         let mut broken = mix(serde_json::json!([random_part(0.4)]));
         broken["id"] = 3.into();
         let mut one = mix(serde_json::json!([random_part(1.0)]));
@@ -913,15 +1128,15 @@ mod tests {
         assert_eq!(book.mixes.keys().copied().collect::<Vec<_>>(), [1, 2]);
         assert_eq!(skipped.len(), 1);
         assert!(skipped[0].contains("mix 3 is not usable"), "{skipped:?}");
-        // the newest published mix needs generator 6: this build keeps to mix 2 and can say so
+        // the newest published mix needs a newer generator: this build keeps to mix 2 and can say so
         assert_eq!(book.open_ids(), [2, 1]);
-        assert_eq!(book.needs_update(), Some((4, 6)));
+        assert_eq!(book.needs_update(), Some((4, datagen::GENERATOR_VERSION + 1)));
         // a later list withdraws mix 2 and the too-new mix: back to mix 1, nothing to update for
         let mut two = mix(serde_json::json!([random_part(1.0)]));
         two["withdrawn"] = true.into();
         let mut gone = mix(serde_json::json!([]));
         gone["id"] = 4.into();
-        gone["needs_generator"] = 6.into();
+        gone["needs_generator"] = (datagen::GENERATOR_VERSION + 1).into();
         gone["withdrawn"] = true.into();
         let mut b2 = Book::default();
         b2.add_text(&file(vec![serde_json::json!({"id": 1, "needs_generator": 5, "note": "one", "parts": [random_part(1.0)]}), two, gone])).unwrap();

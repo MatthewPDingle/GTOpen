@@ -279,7 +279,7 @@ class ValidateTests(Base):
         self.assertIn("Thank you!", first)
         self.assertIn("generator v4. They are merged and count in full", first)
         self.assertIn("Generator v5 is out now", first)
-        self.assertIn("moves to each new mix of games by itself", first)
+        self.assertIn("the newest mix of games needs it", first)
         self.assertEqual(second, "Validated 1 jobs (2 examples). Thank you!")
         self.assertEqual(self.progress()["total_examples"], 6)
 
@@ -461,6 +461,52 @@ class CountingTests(Base):
         self.assertEqual(late["spots"], {"outside-hands-1": 3})
         self.assertEqual(self.progress()["spots"], {"outside-hands-1": 3})
         self.assertNotIn("situation examples to", self.validate())   # and it is done once
+
+    def kinds_pr(self, job, examples, login="Anyone"):
+        """A job of game mix 2 with the given example records."""
+        job += 2 << validate.MIX_SHIFT
+        d = os.path.join(self.tmp, f"job-{job}")
+        os.makedirs(d)
+        rows = [{"type": "header", "job": job, "contributor": login, "examples": len(examples)}]
+        rows += [dict({"type": "example"}, **e) for e in examples]
+        with open(os.path.join(d, "job.jsonl"), "w") as f:
+            f.write("".join(json.dumps(r) + "\n" for r in rows))
+        return self.open_pr({f"data/{login}/job-{job}.jsonl.gz": self.gz(os.path.join(d, "job.jsonl"))},
+                            title=f"{login}: 1 jobs, {len(examples)} examples")
+
+    def test_spots_are_counted_by_pot_type_and_examples_by_size(self):
+        spot = lambda k, pot_type, gb: {"situation": f"outside-hands-1/g01:{k}", "pot_type": pot_type,
+                                        "tree_bytes": int(gb * 1e9)}
+        self.kinds_pr(1001, [spot(0, "4bet", 2.5), spot(1, "4bet", 6.0), spot(2, "3bet", 6.1),
+                             {"pot_type": "srp", "tree_bytes": 20_000_000_000}, {"pot_type": "srp"}])
+        self.kinds_pr(1002, [spot(3, "srp", 18.5), spot(4, "4bet", 1.0)])
+        self.validate()
+        p = self.progress()
+        first, second = sorted(p["events"], key=lambda e: e["pr"])
+        self.assertEqual(first["spots"], {"outside-hands-1": 3})
+        self.assertEqual(first["spot_types"], {"outside-hands-1": {"4bet": 2, "3bet": 1}})
+        self.assertEqual(first["sizes"], {"0-6": 2, "6-12": 1, "19+": 1})   # the example without a size is not counted
+        self.assertEqual(p["spots"], {"outside-hands-1": 5})
+        self.assertEqual(p["spot_types"], {"outside-hands-1": {"3bet": 1, "4bet": 3, "srp": 1}})
+        self.assertEqual(p["sizes"], {"0-6": 3, "6-12": 1, "19+": 1, "12-19": 1})
+
+    def test_merges_counted_without_pot_types_get_them_once(self):
+        self.kinds_pr(1001, [{"situation": "outside-hands-1/a", "pot_type": "srp"},
+                             {"situation": "outside-hands-1/b", "pot_type": "4bet"}, {"pot_type": "srp"}])
+        self.pooled_pr(1002)
+        self.validate()
+        p = self.progress()
+        for e in p["events"]:
+            del e["spot_types"]                              # as the validator wrote them before it counted pot types
+            e["time"] = "2026-11-22T03:00:00+00:00"
+        self.hub.main["progress.json"] = json.dumps(p).encode()
+        text = self.validate()
+        self.assertIn("situation examples to 1", text)       # the merge without spots has nothing to split
+        spots, plain = sorted(self.progress()["events"], key=lambda e: e["pr"])
+        self.assertEqual(spots["spot_types"], {"outside-hands-1": {"srp": 1, "4bet": 1}})
+        self.assertNotIn("spot_types", plain)
+        self.assertEqual(self.progress()["spot_types"], {"outside-hands-1": {"4bet": 1, "srp": 1}})
+        self.assertNotIn("situation examples to", self.validate())
 
     def test_each_merge_is_written_before_the_next_pull_request(self):
         self.pooled_pr(1001)

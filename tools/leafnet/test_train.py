@@ -270,3 +270,28 @@ class PlayFloorTraining(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipIf(torch is None, "needs torch")
+class BalanceTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+
+    def snapshot(self, split=None, train_index=None):
+        n = 6
+        rng = np.full((n, 2, NC), 0.5, np.float32)
+        return Snapshot(self.tmp, rng, np.ones((n, 2, NC), np.float32), np.full(n, 5), split=split, train_index=train_index)
+
+    def test_the_rows_follow_the_training_split(self):
+        data = self.snapshot(split=[0, 1, 0, 2, 0, 0], train_index=[0, 2, 3])
+        np.save(os.path.join(self.tmp, "balance.npy"), np.arange(6, dtype=np.float32) + 1)
+        np.testing.assert_array_equal(train.balance_rows(data), [1, 5, 6])  # training rows 0, 2, 4, 5; keeps the 1st, 3rd, 4th
+
+    def test_on_without_weights_is_refused(self):
+        data = self.snapshot()
+        with self.assertRaises(SystemExit):
+            train.balance_rows(data)
+
+    def test_off_by_default(self):
+        self.assertFalse(train.CONFIG["balance"])
+
