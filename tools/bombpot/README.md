@@ -111,3 +111,22 @@ need about 35 for, and a reply that starts on the river gains about 1% of
 the pot (5% with N = 30). `specs/one_flop_river_solved.json` holds the
 settings; a half round of it solves 384 boards (about a minute of one
 core per 50).
+
+## Several flops in one net
+
+`"flops": [...]` in a spec makes every round play the same flops (each
+`walks` times). What the 5090 runs showed, in % of the pot a perfect
+opponent gains: six flops at 16 walks each are held about as well as one
+(4% after 40 rounds) but a flop the net never played stays at 40%; 24 flops
+at 4 walks each (the same work per round) score alike on played and unplayed
+flops, but slowly (32% and 34% after 20 rounds); 24 flops at 16 walks each
+reach 10% on played flops after 20 rounds and 28% on unplayed ones.
+
+`specs/47_flops_river_solved.json` and `specs/95_flops_river_solved.json`
+use the flop sets of Flop Reports (`solve-cli flops 47`), which hold every
+texture in its share of all flops. These flops are in their standard suits,
+so run them with `--fixed-suits` and score flops in standard suits as well
+(`specs/flop_*.json`; none of Jc8d4h, 9c6c5d, AcJd3h, 6d6c2h, Tc7c2c and
+KcQdTh is in either set): a flop in other suits is first renamed to its
+standard form, and the net never has to learn that suits are
+interchangeable.
