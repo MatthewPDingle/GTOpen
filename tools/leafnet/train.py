@@ -76,6 +76,14 @@ their own distill_mix (None = the same; 0 = only the unbiased value minus
 luck target). Both leave the teachers, the synthetic leaves and every pool
 row's loss as they are, and do nothing on a snapshot without such rows.
 
+Pool balance (CONFIG["balance"], off by default). Contributors' cards only
+solve flop trees that fit them, so the pool leans towards the small trees
+that every card can hold. `balance.py SNAPSHOT` writes balance.npy, a weight
+per row that makes each game mix count as it was meant to (see its docstring).
+With "balance" the net's loss multiplies each training row's weight by it, in
+both terms, on top of "real_weight". The teachers, the synthetic leaves and
+the validation loss are unchanged. A snapshot without balance.npy is refused.
+
 Hands outside the range (CONFIG["play_floor"], CONFIG["play_floor_rows"]).
 A class's weight in every loss is its share of the range's combos (w.npy),
 so a hand at a thousandth of the range's most-played hand counts for a
@@ -191,6 +199,7 @@ CONFIG = {
     "play_floor_rows": "real",  # rows the floor applies to: "real" (real-range rows) or "all"
     "play_floor_teachers": True,  # False: the floor acts in the net's loss only, the teachers are trained without it
     "near_zero": False,     # the wider input layout: one more input per class that marks a hand the range does not hold
+    "balance": False,       # weigh pool rows so each game mix counts as meant, whatever cards solved it (balance.py)
 }
 
 from flops import NC, Teacher, flop_tables, load_side  # noqa: E402
@@ -219,6 +228,14 @@ def real_rows(data):
         return None
     real = np.load(path)[train_rows(data, np.load(os.path.join(data.dir, "split.npy")))] == REAL_GENERATOR
     return real if real.any() else None
+
+
+def balance_rows(data):
+    """balance.npy's weights of the training rows (in data.x_train's order), float32."""
+    path = os.path.join(data.dir, "balance.npy")
+    if not os.path.exists(path):
+        raise SystemExit(f"CONFIG['balance'] is on but {path} does not exist: run tools/leafnet/balance.py on the snapshot")
+    return np.load(path)[train_rows(data, np.load(os.path.join(data.dir, "split.npy")))].astype(np.float32)
 
 
 def subset_tag(data):
@@ -859,6 +876,11 @@ def run(cfg, data, budget, generator):
             row_mix = torch.full((n, 1), float(mix), device=data.device)
             row_mix[is_real] = real_mix
         log(f"{int(real.sum()):,} real-range rows of {n:,}: weight {real_w:g}, distill mix {real_mix:g} (others {mix:g})")
+    if cfg.get("balance"):
+        bw = torch.from_numpy(balance_rows(data)).to(data.device).unsqueeze(1)
+        row_w = bw if row_w is None else row_w * bw
+        log(f"pool balance: training rows weighted {float(bw.min()):.2f} to {float(bw.max()):.2f}, "
+            f"effective rows {float(bw.sum()) ** 2 / float((bw ** 2).sum()):,.0f} of {n:,}")
     # play floor: every solved hand of the chosen rows counts as if at least at that weight, in both terms
     pf = play_floor(cfg, data)
     w_train = data.w_train if pf is None else pf[0]

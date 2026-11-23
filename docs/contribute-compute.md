@@ -40,8 +40,10 @@ about 10% of the pot (RMS) of the default model's error.
 
 - An NVIDIA GPU, ideally with 12 GB or more of VRAM. The generator sizes
   its spots to your card (trees up to 80% of its memory), so an 8 GB card
-  works but gets the smaller spots. It also runs on a CPU, but each example
-  takes minutes instead of seconds.
+  works but gets the smaller spots. That is fine: big cards are handed the
+  big spots (see [Cards of different sizes](#cards-of-different-sizes)), and
+  training weighs every card's work so the pool counts as one. It also runs
+  on a CPU, but each example takes minutes instead of seconds.
 - [Rust](https://www.rust-lang.org/tools/install) and Git, set up as in the
   [README](../README.md#get-started). On Windows, also install the CUDA
   runtime compiler as described there (`python -m pip install --target .cuda-nvrtc nvidia-cuda-nvrtc-cu12`).
@@ -202,6 +204,28 @@ The job in progress is finished and uploaded as usual, so nothing is lost.
 The list is read with `curl`, which Windows 10 and later, macOS and nearly
 every Linux system already have.
 
+### Cards of different sizes
+
+A card only solves trees that fit it: when a drawn spot is too big, the
+generator draws again (the example's `attempt` counts how often). On its own
+that would tilt the pool towards small trees, short stacks and 3-bet and
+4-bet pots, because many contributors have smaller cards, while the big
+spots (deep single-raised and limped pots) rest on the few big ones. Three
+things keep the pool balanced:
+
+- **Bigger cards get bigger games.** From generator v6 a mix can carry card
+  rules: a card from a given size passes over most of the small trees, which
+  any card can solve, and spends the time on the trees only it can hold. The
+  window says so once (`this card keeps about 1 in 4 of the games under 6
+  GB...`). Nothing changes for a small card.
+- **Every example records its tree's size** (`tree_bytes`), and the progress
+  graph counts the pool by size and a list's target by pot type, so a target
+  cannot be met with small spots alone.
+- **Training weighs the pool as the mix intends** (`tools/leafnet/balance.py`):
+  a spot only big cards can hold counts for what the mix wanted of it, a spot
+  every card can hold counts for less. What no contributor's card can hold
+  stays missing, so big cards remain the most valuable.
+
 ## What runs on your machine and what is uploaded
 
 `solve-cli datagen` solves heads-up flop spots and nothing else. Each
@@ -252,7 +276,8 @@ Each example is one line of JSON:
 | `eq` | Equity per class against the other range. |
 | `value` | Solved value per class, as a fraction of the pot (pot-share convention: the two players' range averages add up to about 1 minus rake). |
 | `iterations`, `exploit_pct_pot`, `seconds` | How the solve went. Solves stop at 0.5% of the pot. |
-| `attempt` | How many draws were skipped because their tree was over the job's memory cap (`max_vram_gb` in the file header). Training can reweight by it. |
+| `attempt` | How many draws were passed over before this one: trees over the job's memory cap (`max_vram_gb` in the file header), and from v6 small trees a card rule had a big card pass over. Training reweights by it. |
+| `tree_bytes` | From generator v6: the estimated GPU memory of the example's tree, in bytes. Checked like the inputs. `solve-cli datagen tree-sizes FILE` gives it for older files too. |
 | `situation` | Present only on an example drawn from a published situation list: `LIST/ID`. Its ranges, pot, stack and rake are that entry's (the output of a GTOpen preflop solve); the flop is random. |
 
 The header line of a job file names the game mix it was drawn from (`mix`,
@@ -266,6 +291,9 @@ From generator v5 (2026-11-20) the mix of games is no longer part of the
 program: it is a published [game mix](#game-mixes), and
 [`tools/datagen/mixes.json`](../tools/datagen/mixes.json) lists every mix
 there has been, with its shares. Mix 1 draws the same games as generator v4.
+Generator v6 (2026-11-23) adds card rules to mixes and `tree_bytes` to
+examples; it draws the jobs of mixes 1 and 2 exactly as v5 did, and uploads
+of v3 to v6 are all accepted.
 
 Generator v4 (from 2026-11-16) adds the games people commonly play live
 and online. Pot types are 10% limped, 55% single-raised, 20% 3-bet and 15%
@@ -290,6 +318,18 @@ To regenerate an example's inputs yourself:
 `solve-cli datagen inputs JOB INDEX`, or `solve-cli datagen spot JOB INDEX`
 for a config that `solve-cli` can solve directly. (A job number carries its
 game mix, so nothing else is needed.)
+
+### Weighing the pool for training
+
+`python tools/leafnet/balance.py SNAPSHOT` writes `balance.npy` and
+`balance.json` into a `prepare.py` snapshot: a weight per row that makes each
+mix count as it was meant to, given the caps and card rules the pool's cards
+drew under. Sizes of examples from before v6 are counted with `solve-cli
+datagen tree-sizes` (no solve; about a fifth of a second per example on one
+core, cached per file). `train.py` uses the weights with `CONFIG["balance"]`
+(off by default). The report gives, per mix, each card size's share and how
+often it took a draw, the share of big trees before and after weighing, and
+the effective number of rows.
 
 ### Real-range game files
 
@@ -414,6 +454,20 @@ datagen_mix` checks the file.
 - A mix that needs new code in the generator says so with `needs_generator`
   (and that code raises `GENERATOR_VERSION`). Older generators then keep to
   the newest mix they can draw and ask their owners to update.
+- **Card rules** (`"card_rules"`, needs generator 6): a list of
+  `{"cap_from_gb": C, "under_gb": U, "keep": K}`, in ascending order of `C`. A
+  card whose memory cap is `C` GB or more (80% of its memory, whole GB; the
+  `max_vram_gb` of its jobs) keeps a drawn spot whose tree is under `U` GB
+  only with probability `K` and otherwise draws again; the highest rule a card
+  reaches applies. Pick `U` near what small cards can hold, so big cards leave
+  those spots to them. Training undoes the rule's tilt as it undoes the caps'
+  (`balance.py` reads the rules from this file), so a rule changes who solves
+  what, not what the pool is worth.
+- **A target by pot type**: a stage's `target` can say how many solves of
+  each pot type it needs (`"by_pot_type"`, adding up to `"solves"`). The graph
+  then counts a pot type only up to its share and shows a row for each, so
+  extra small spots cannot fill the bar while big ones are short. Use the
+  list's own shares (entries by pot type, times the target).
 
 To have contributors solve the situations of solved games (ranges from GTOpen
 solves only, never from charts or other tools):

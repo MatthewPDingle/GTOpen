@@ -15,6 +15,15 @@ marked on the graph by its number where it began. A stage with a "target"
 ({"list": NAME, "solves": N}) gets a bar: how many validated examples were
 drawn from that published situation list so far (the events' "spots", which
 validate.py counts as it merges).
+
+A target can also say how many solves it needs of each pot type
+("by_pot_type": {"limped": N, "srp": N, ...}, adding up to "solves"). The big
+trees of a list fit only big cards, so small cards fill the small pot types
+many times over; counted in one lump, the target would look met while the big
+ones were still short. With "by_pot_type" the bar counts a pot type only up
+to what it needs, and a row per pot type shows which ones are short (the
+events' "spot_types"). Under the stages one line gives the pool's examples by
+game size, for the examples that record it (the events' "sizes").
 """
 
 import argparse
@@ -30,6 +39,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 W, H = 820, 340               # H is the graph's part; the list of stages comes under it
 L, R, T, B = 64, 128, 64, 44  # plot margins (right margin holds the mark labels)
 STAGE_H, BAR_H = 42, 24       # a stage's row under the graph, and the extra room its target bar takes
+TYPE_H = 17                   # a pot type's row under a target bar
+SIZES_H = 26                  # the line of game sizes under the stages
+POT_TYPES = (("limped", "Limped pots"), ("srp", "Single-raised pots"), ("3bet", "3-bet pots"), ("4bet", "4-bet pots"))
+SIZE_BANDS = (("0-6", "under 6 GB"), ("6-12", "6 to 12 GB"), ("12-19", "12 to 19 GB"), ("19+", "over 19 GB"))
 
 
 def load_config():
@@ -105,20 +118,55 @@ def spots(progress):
     return out
 
 
+def spot_types(progress):
+    """Validated examples drawn from each published situation list by pot type: {list: {pot type: count}}."""
+    out = {}
+    for e in progress.get("events", []):
+        for name, by in (e.get("spot_types") or {}).items():
+            mine = out.setdefault(name, {})
+            for pot_type, n in by.items():
+                mine[pot_type] = mine.get(pot_type, 0) + int(n)
+    return out
+
+
+def sizes(progress):
+    """Validated examples by size band, over the examples that record their tree size: {band: count}."""
+    out = {}
+    for e in progress.get("events", []):
+        for band, n in (e.get("sizes") or {}).items():
+            out[band] = out.get(band, 0) + int(n)
+    return out
+
+
+def target_rows(target, done, done_by_type):
+    """A target's count and its rows by pot type: (have, want, [(label, have, want)]).
+
+    With "by_pot_type" (and once any merge is counted by pot type) a pot type
+    counts only up to what the target needs of it, so extra solves of a kind
+    that is full do not stand in for a kind that is short. Otherwise the
+    list's examples count in one lump, as before."""
+    want, lump = int(target["solves"]), done.get(target["list"], 0)
+    needs, by = target.get("by_pot_type"), done_by_type.get(target["list"])
+    if not needs or not by:
+        return lump, want, []
+    rows = [(label, by.get(key, 0), int(needs[key])) for key, label in POT_TYPES if key in needs]
+    return sum(min(have, need) for _, have, need in rows), want, rows
+
+
 def time_label(t, span_s):
     if span_s <= 2 * 86400:
         return t.strftime("%b %d %H:%M UTC").replace(" 0", " ")
     return t.strftime("%b %d").replace(" 0", " ")
 
 
-def render_svg(progress, cfg):
+def render_svg(progress, cfg, now=None):
     goal = int(progress.get("goal_examples", cfg["goal_examples"]))
     gate = int(progress.get("go_no_go_examples", cfg["go_no_go_examples"]))
     pts = series(progress)
     total = pts[-1][1] if pts else 0
     n_contrib = len({e["contributor"] for e in progress.get("events", [])})
     ymax, ystep = nice_ceiling(max(goal, total) * 1.05)
-    now = datetime.datetime.now(UTC)
+    now = now or datetime.datetime.now(UTC)
     if pts:
         x1 = max(now, pts[-1][0])
         # lead-in before the first merge: a tenth of the span, at least an hour
@@ -135,8 +183,10 @@ def render_svg(progress, cfg):
         return T + ph * (1 - v / ymax)
 
     stages = sorted(cfg.get("stages", []), key=stage_time)
-    done = spots(progress)
-    full = H + (34 + sum(STAGE_H + (BAR_H if s.get("target") else 0) for s in stages) + 8 if stages else 0)
+    done, done_by_type, by_size = spots(progress), spot_types(progress), sizes(progress)
+    targets = {i: target_rows(s["target"], done, done_by_type) for i, s in enumerate(stages) if s.get("target")}
+    full = H + (34 + sum(STAGE_H + (BAR_H + TYPE_H * len(targets[i][2]) + (6 if targets[i][2] else 0) if i in targets else 0)
+                         for i, s in enumerate(stages)) + (SIZES_H if by_size else 0) + 8 if stages else 0)
     o = []
     o.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {full}" width="{W}" height="{full}" '
              f'role="img" aria-labelledby="t d">')
@@ -228,9 +278,8 @@ def render_svg(progress, cfg):
                      f'From {when}:</tspan> {escape(s["title"])}</text>')
             o.append(f'<text class="t2" x="{L}" y="{y + 31}" font-size="12">{escape(s["for"])}</text>')
             y += STAGE_H
-            target = s.get("target")
-            if target:
-                want, have = int(target["solves"]), done.get(target["list"], 0)
+            if i - 1 in targets:
+                have, want, rows = targets[i - 1]
                 bw = 300
                 o.append(f'<rect class="track" x="{L}" y="{y}" width="{bw}" height="9" rx="4.5"/>')
                 if have:
@@ -240,6 +289,24 @@ def render_svg(progress, cfg):
                          f'<tspan class="t1" font-weight="600">{have:,}</tspan> of {want:,} of these spots solved'
                          f'{" · target reached" if have >= want else ""}</text>')
                 y += BAR_H
+                # by pot type: the big trees fit few cards, so this is where a shortage shows
+                tw = 150
+                for label, got, need in rows:
+                    o.append(f'<text class="t2" x="{L}" y="{y + 7}" font-size="11.5">{escape(label)}</text>')
+                    o.append(f'<rect class="track" x="{L + 150}" y="{y}" width="{tw}" height="7" rx="3.5"/>')
+                    if got:
+                        o.append(f'<rect class="fill" x="{L + 150}" y="{y}" width="{max(tw * min(got / need, 1), 7):.1f}" '
+                                 f'height="7" rx="3.5"/>')
+                    o.append(f'<text class="t2" x="{L + 150 + tw + 10}" y="{y + 7}" font-size="11.5">'
+                             f'{got:,} of {need:,}{" · enough" if got >= need else ""}</text>')
+                    y += TYPE_H
+                if rows:
+                    y += 6
+        if by_size:
+            n = sum(by_size.values())
+            parts = " · ".join(f"{label} {100 * by_size.get(band, 0) / n:.0f}%" for band, label in SIZE_BANDS)
+            o.append(f'<text class="t2" x="{L}" y="{y + 14}" font-size="12"><tspan class="t1" font-weight="600">'
+                     f'Games by GPU memory needed:</tspan> {escape(parts)} (of {n:,} that record it)</text>')
     o.append("</svg>")
     return "\n".join(o) + "\n"
 

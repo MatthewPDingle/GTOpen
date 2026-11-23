@@ -16,6 +16,7 @@ const USAGE: &str = "usage:
   solve-cli datagen sizes JOB [--per-job N]   (estimated GPU memory per example)
   solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
+  solve-cli datagen tree-sizes FILE.jsonl...   (the estimated tree size of every example, for weighing the pool)
   solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D] [--max-vram GB]
                         (a pooled job file or a real-range game file; --max-vram: re-solve only trees that fit)
   solve-cli datagen block LOGIN
@@ -172,6 +173,7 @@ fn solve_example(inputs: &ExampleInputs, o: &Opts, env: &EnvOpts) -> Result<Exam
         iterations,
         exploit_pct_pot: (exploit * 10_000.0).round() / 10_000.0,
         seconds: (t0.elapsed().as_secs_f64() * 100.0).round() / 100.0,
+        tree_bytes: None,
     })
 }
 
@@ -246,8 +248,9 @@ fn run_job(job: u64, contributor: &str, o: &Opts, env: &EnvOpts, book: &Book, mi
     writeln!(f, "{}", serde_json::to_string(&header).unwrap()).map_err(|e| e.to_string())?;
     let t0 = std::time::Instant::now();
     for index in 0..o.per_job {
-        let inputs = book.inputs(mix, job, index, cap)?;
-        let rec = solve_example(&inputs, o, env)?;
+        let (inputs, tree_bytes) = book.sized_inputs(mix, job, index, cap)?;
+        let mut rec = solve_example(&inputs, o, env)?;
+        rec.tree_bytes = Some(tree_bytes);
         println!(
             "  job {job} #{index:3}  {:8} {:6} pot {:6.2}bb stack {:6.1}bb  iter {:4}  exploit {:5.2}%  [{:.1}s]",
             rec.inputs.board,
@@ -362,6 +365,7 @@ pub fn run(rest: &[String], env: &EnvOpts) {
             baseline(Some(net));
         }
         "leaves" => leaves(&o),
+        "tree-sizes" => tree_sizes(&o),
         "mixes" => mixes(&o),
         "situations" => situations(&o),
         "solve" => solve_dir(&o, env),
@@ -781,6 +785,9 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
                 None => println!("game mix {id}: {} ({})", m.note, m.summary()),
                 Some(old) => println!("NEW GAME MIX: moving from mix {old} to mix {id}: {} ({}). Nothing to do on your side.", m.note, m.summary()),
             }
+            if let Some(note) = m.card_note(vram_cap(o)) {
+                println!("game mix {id}: {note}");
+            }
             mix = Some(id);
             k = o.worker;
         }
@@ -806,6 +813,38 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
         }
     }
     println!("datagen: {done} jobs in {:.1} h", t0.elapsed().as_secs_f64() / 3600.0);
+}
+
+/// `datagen tree-sizes FILE...`: the estimated tree size of every example of
+/// pooled job files, one line `{"job":J,"index":I,"tree_bytes":B}` each, in
+/// the files' order. An example that records its size (generator v6 on) is
+/// read; for an older one the tree is built to count it (no solve, no GPU,
+/// about a fifth of a second of one core each, all cores used). Training
+/// uses the sizes to weigh the pool as its mix intends (tools/leafnet/balance.py).
+fn tree_sizes(o: &Opts) {
+    use rayon::prelude::*;
+    if o.positional.is_empty() {
+        eprintln!("{USAGE}");
+        std::process::exit(1);
+    }
+    let mut out = std::io::stdout().lock();
+    for file in &o.positional {
+        let text = std::fs::read_to_string(file).unwrap_or_else(|e| fail(format!("{file}: {e}")));
+        let records: Vec<ExampleRecord> = text
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .map(|l| serde_json::from_str::<serde_json::Value>(l).unwrap_or_else(|e| fail(format!("{file}: not JSON ({e})"))))
+            .filter(|v| v["type"] == "example")
+            .map(|v| serde_json::from_value(v).unwrap_or_else(|e| fail(format!("{file}: bad example ({e})"))))
+            .collect();
+        let sizes: Vec<u64> = records
+            .par_iter()
+            .map(|r| r.tree_bytes.unwrap_or_else(|| datagen::estimated_vram_bytes(&r.inputs)))
+            .collect();
+        for (r, bytes) in records.iter().zip(sizes) {
+            writeln!(out, "{{\"job\":{},\"index\":{},\"tree_bytes\":{bytes}}}", r.inputs.job, r.inputs.index).ok();
+        }
+    }
 }
 
 fn verify(o: &Opts, env: &EnvOpts) {
@@ -921,14 +960,22 @@ fn verify(o: &Opts, env: &EnvOpts) {
                 errors.push(format!("example {i}: job/index {}/{} out of order", r.inputs.job, r.inputs.index));
                 continue;
             }
+            // the tree size every example records from generator v6 on is drawn again with the inputs
+            let sized = h.generator_version >= datagen_mix::CARD_RULES_GENERATOR;
             let expect = if h.generator_version <= datagen::LAST_CODED_GENERATOR {
-                Some(datagen::example_inputs_for(h.generator_version, h.job, i as u32, h.max_vram_gb))
-            } else {
+                Some((datagen::example_inputs_for(h.generator_version, h.job, i as u32, h.max_vram_gb), None))
+            } else if sized {
                 // no book: the mix itself was refused above
-                book.as_ref().and_then(|b| b.inputs(h.mix.unwrap_or(0), h.job, i as u32, h.max_vram_gb).ok())
+                book.as_ref().and_then(|b| b.sized_inputs(h.mix.unwrap_or(0), h.job, i as u32, h.max_vram_gb).ok())
+                    .map(|(e, bytes)| (e, Some(bytes)))
+            } else {
+                book.as_ref().and_then(|b| b.inputs(h.mix.unwrap_or(0), h.job, i as u32, h.max_vram_gb).ok()).map(|e| (e, None))
             };
-            if expect.as_ref().map(|e| *e != r.inputs).unwrap_or(false) {
+            if expect.as_ref().map(|e| e.0 != r.inputs).unwrap_or(false) {
                 errors.push(format!("example {i}: inputs differ from job {} as generated", h.job));
+            } else if sized && expect.as_ref().map(|e| e.1 != r.tree_bytes).unwrap_or(false) {
+                errors.push(format!("example {i}: tree_bytes {:?} is not the size of its tree ({:?})",
+                                    r.tree_bytes, expect.as_ref().and_then(|e| e.1)));
             }
             if let Some(msg) = sanity(r) {
                 errors.push(format!("example {i}: {msg}"));

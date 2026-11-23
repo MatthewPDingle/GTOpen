@@ -53,14 +53,24 @@ pub const FORMAT_VERSION: u32 = 1;
 /// - v5: the mix is data (see the module text and `crate::datagen_mix`).
 ///   Mix 1 draws the same games as v4. A job's number carries its mix, so no
 ///   two mixes share a job number or a file name.
-pub const GENERATOR_VERSION: u32 = 5;
+/// - v6: a mix can say how cards of a size choose among its games
+///   (`datagen_mix::CardRule`: big cards pass over most of the small trees
+///   that any card can solve), and every example records the estimated size
+///   of its tree (`ExampleRecord::tree_bytes`), which is what training needs
+///   to weigh the pool as the mix intends. Jobs of mixes 1 and 2 are drawn
+///   exactly as v5 drew them ([`MIX_SEED_VERSION`]).
+pub const GENERATOR_VERSION: u32 = 6;
+/// The version in the seed of every example drawn from a mix. It stays at
+/// the generator that introduced mixes, so a job of a mix has the same
+/// examples whichever later generator solves or checks it.
+pub const MIX_SEED_VERSION: u32 = 5;
 /// The last generator whose mix was written in code ([`example_inputs_for`]).
 pub const LAST_CODED_GENERATOR: u32 = 4;
-/// Generator versions whose uploads are still accepted: the current one and
-/// the two before, so jobs finished before an update still count (v5 changed
-/// how a mix reaches contributors, not which games are wanted, so nobody's
-/// work is turned away because of it).
-pub const ACCEPTED_GENERATORS: [u32; 3] = [3, 4, 5];
+/// Generator versions whose uploads are still accepted, so jobs finished
+/// before an update still count (v5 changed how a mix reaches contributors
+/// and v6 how cards choose among its games, not which games are wanted, so
+/// nobody's work is turned away because of either).
+pub const ACCEPTED_GENERATORS: [u32; 4] = [3, 4, 5, 6];
 /// Where generator v4's jobs started inside each contributor block, so a new
 /// version never reused a job number (and file name) an older one uploaded.
 /// v2 used offset 0, v3 offset 2^23. From v5 on the mix sits above the block
@@ -156,6 +166,13 @@ pub(crate) fn attempt_seed(version: u32, job: u64, index: u32, attempt: u32) -> 
     } else {
         Rng::new(seed ^ (attempt as u64).wrapping_mul(0xD6E8_FEB8_6659_FD93)).next_u64()
     }
+}
+
+/// A number in [0, 1) for draw `attempt` of an example, independent of what
+/// the draw itself holds: the coin a mix's card rule tosses to keep or pass
+/// over a small tree (`datagen_mix::CardRule`).
+pub(crate) fn attempt_coin(version: u32, job: u64, index: u32, attempt: u32) -> f64 {
+    Rng::new(attempt_seed(version, job, index, attempt) ^ 0xC01D_CA4D_5EED_0B5E).f64()
 }
 
 fn example_seed(version: u32, job: u64, index: u32) -> u64 {
@@ -361,7 +378,7 @@ pub fn range_text(w: &[f32]) -> String {
 /// little information (leaf values flatten out as SPR grows).
 pub const MAX_SPR: f64 = 40.0;
 /// Draws tried before a capped example gives up and keeps the smallest.
-const MAX_ATTEMPTS: u32 = 64;
+pub(crate) const MAX_ATTEMPTS: u32 = 64;
 
 /// The inputs of example `index` of job `job` as generator v4 drew them (no
 /// memory cap). Jobs of v5 on are drawn from a mix: `datagen_mix::Book::inputs`.
@@ -731,6 +748,13 @@ pub struct ExampleRecord {
     pub iterations: u32,
     pub exploit_pct_pot: f64,
     pub seconds: f64,
+    /// Estimated GPU memory of the example's tree in bytes
+    /// ([`estimated_vram_bytes`]), on every example of a pooled job from
+    /// generator v6 on. A card only solves trees that fit it, so which cards
+    /// could have drawn an example depends on this number; training uses it
+    /// to weigh the pool as its mix intends (tools/leafnet/balance.py).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tree_bytes: Option<u64>,
 }
 
 /// File header line.

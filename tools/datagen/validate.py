@@ -133,27 +133,82 @@ def check_job(cli, login, job, local_jsonl, sample):
     return errors, summary
 
 
-def spots_in(local_jsonl):
-    """How many of a job file's examples were drawn from each published situation list: {list: count}.
-    Such an example names its situation as LIST/ID; an example with random ranges names none."""
-    out = {}
+SIZE_EDGES_GB = (6, 12, 19)  # game sizes are counted in these bands of estimated GPU memory:
+                             # what 8 GB, 16 GB and 24 GB cards can hold (a card draws trees up to 80% of its memory)
+
+
+def size_band(tree_bytes):
+    """The band of an example's estimated tree size: "0-6", "6-12", "12-19" or "19+" (GB)."""
+    gb = tree_bytes / 1e9
+    lo = 0
+    for edge in SIZE_EDGES_GB:
+        if gb <= edge:
+            return f"{lo}-{edge}"
+        lo = edge
+    return f"{lo}+"
+
+
+def kinds_in(local_jsonl):
+    """What kinds of game a job file's examples are, for the pool's balance:
+
+    "spots": {list: count}, how many were drawn from each published situation
+    list (such an example names its situation as LIST/ID; one with random
+    ranges names none); "spot_types": {list: {pot type: count}}, the same by
+    pot type, because the big trees of a list (limped and single-raised pots)
+    fit few cards and a list's target must not be met with its small ones;
+    "sizes": {band: count} over every example that records its tree size
+    (generator 6 on), see size_band."""
+    out = {"spots": {}, "spot_types": {}, "sizes": {}}
     with open(local_jsonl, encoding="utf-8") as f:
         for line in f:
-            if '"situation"' not in line:
+            if '"situation"' not in line and '"tree_bytes"' not in line:
                 continue
             try:
-                name = str(json.loads(line).get("situation") or "").split("/", 1)[0]
+                record = json.loads(line)
+                name = str(record.get("situation") or "").split("/", 1)[0]
+                size = record.get("tree_bytes")
+                pot_type = str(record.get("pot_type") or "unknown")
             except (ValueError, AttributeError):
                 continue  # not a record: the check of the file itself reports that
             if name:
-                out[name] = out.get(name, 0) + 1
+                out["spots"][name] = out["spots"].get(name, 0) + 1
+                by_type = out["spot_types"].setdefault(name, {})
+                by_type[pot_type] = by_type.get(pot_type, 0) + 1
+            if isinstance(size, (int, float)) and not isinstance(size, bool) and size > 0:
+                band = size_band(size)
+                out["sizes"][band] = out["sizes"].get(band, 0) + 1
     return out
 
 
+def spots_in(local_jsonl):
+    """How many of a job file's examples were drawn from each published situation list: {list: count}."""
+    return kinds_in(local_jsonl)["spots"]
+
+
 def add_spots(total, more):
+    """Add the counts of `more` to `total`, which may hold counts inside counts ({list: {pot type: n}})."""
     for name, n in more.items():
-        total[name] = total.get(name, 0) + n
+        if isinstance(n, dict):
+            add_spots(total.setdefault(name, {}), n)
+        else:
+            total[name] = total.get(name, 0) + n
     return total
+
+
+def add_kinds(total, more):
+    """Add one file's kinds_in to a running total of the same shape."""
+    for key in ("spots", "spot_types", "sizes"):
+        add_spots(total.setdefault(key, {}), more.get(key) or {})
+    return total
+
+
+def set_kinds(event, kinds):
+    """Write a merge's kinds into its progress event: "spots" always, the finer counts when there are any."""
+    event["spots"] = kinds.get("spots") or {}
+    event["spot_types"] = kinds.get("spot_types") or {}
+    if kinds.get("sizes"):
+        event["sizes"] = kinds["sizes"]
+    return event
 
 
 def generator_of(local_jsonl):
@@ -172,8 +227,7 @@ def update_note(versions, current):
         return ""
     made = " and ".join(f"v{v}" for v in older)
     return (f"\n\nThese jobs were made with generator {made}. They are merged and count in full. "
-            f"Generator v{current} is out now: from it on, your generator moves to each new mix of games "
-            "by itself, so this is the last update you need to make by hand for one. When it suits "
+            f"Generator v{current} is out now, and the newest mix of games needs it. When it suits "
             "you, please update GTOpen (git pull, rebuild) and restart the generator. "
             "See docs/contribute-compute.md.")
 
@@ -296,10 +350,12 @@ def save_progress(api, repo, progress, message):
         by[e["contributor"]] = by.get(e["contributor"], 0) + e["examples"]
     progress["contributors"] = dict(sorted(by.items(), key=lambda kv: -kv[1]))
     progress["real_examples"] = sum(e["examples"] for e in events if e.get("kind") == "real")
-    spots = {}
+    kinds = {"spots": {}, "spot_types": {}, "sizes": {}}
     for e in events:
-        add_spots(spots, e.get("spots") or {})
-    progress["spots"] = dict(sorted(spots.items()))  # examples drawn from each published situation list
+        add_kinds(kinds, e)
+    progress["spots"] = dict(sorted(kinds["spots"].items()))  # examples drawn from each published situation list
+    progress["spot_types"] = {name: dict(sorted(by.items())) for name, by in sorted(kinds["spot_types"].items())}
+    progress["sizes"] = kinds["sizes"]                        # examples by size band (generator 6 on)
     progress["go_no_go_examples"] = cfg["go_no_go_examples"]
     progress["goal_examples"] = cfg["goal_examples"]
     progress["updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
@@ -507,8 +563,8 @@ def header_examples(api, repo, path):
 SPOTS_FROM = "2026-11-21T01:53:00+00:00"  # game mix 2, the first to draw from a situation list, was published then
 
 
-def file_spots(api, repo, path):
-    """{list: count} for a job file on main (see spots_in); nothing to read for a job of a mix before the lists."""
+def file_kinds(api, repo, path):
+    """kinds_in for a job file on main; nothing to read for a job of a mix before the lists."""
     m = PATH_RE.match(path)
     if not m or int(m.group(2)) >> MIX_SHIFT < 2:
         return {}
@@ -519,23 +575,26 @@ def file_spots(api, repo, path):
         plain = os.path.join(stage, "job.jsonl")
         with gzip.open(gz, "rb") as src, open(plain, "wb") as dst:
             shutil.copyfileobj(src, dst)
-        return spots_in(plain)
+        return kinds_in(plain)
     finally:
         shutil.rmtree(stage, ignore_errors=True)
 
 
 def backfill_spots(api, repo, progress):
-    """Count the situation-list examples of merges that an older validator recorded without them."""
+    """Count the situation-list examples of merges that an older validator recorded without them, or
+    without their pot types."""
     filled = 0
     for e in progress.get("events", []):
-        if "spots" in e or "pr" not in e or e.get("kind") == "real" or (e.get("time") or "") < SPOTS_FROM:
+        if "pr" not in e or e.get("kind") == "real" or (e.get("time") or "") < SPOTS_FROM:
             continue
+        if "spots" in e and ("spot_types" in e or not e["spots"]):
+            continue  # counted, by pot type too (or it holds no spots to split)
         try:
             added, other = patiently(pr_changes, api, repo, e["pr"])
             mine = [p for p in added + other if PATH_RE.match(p) and PATH_RE.match(p).group(1) == e["contributor"]]
             if not mine:
                 continue  # its files could not be listed: look again on a later pass
-            e["spots"] = functools.reduce(add_spots, (patiently(file_spots, api, repo, p) for p in mine), {})
+            set_kinds(e, functools.reduce(add_kinds, (patiently(file_kinds, api, repo, p) for p in mine), {}))
             filled += 1
         except Exception as err:
             print(f"   could not count the situation examples of PR #{e['pr']}: {type(err).__name__}: {err}")
@@ -593,7 +652,7 @@ def merged_pr_events(api, repo, pr):
         if kind == "real":
             event["kind"] = "real"
         elif (login, kind) in groups:
-            event["spots"] = functools.reduce(add_spots, (file_spots(api, repo, p) for p in groups[(login, kind)]), {})
+            set_kinds(event, functools.reduce(add_kinds, (file_kinds(api, repo, p) for p in groups[(login, kind)]), {}))
         events.append(event)
     return events
 
@@ -694,7 +753,7 @@ def run_prs(args):
                     else:
                         login, job = m.group(1), int(m.group(2))
                         errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
-                        jobs.append((login, "pool", summary.get("examples", 0), spots_in(plain)))
+                        jobs.append((login, "pool", summary.get("examples", 0), kinds_in(plain)))
                         versions.append(generator_of(plain))
                     errors += [f"{path}: {e}" for e in errs]
             finally:
@@ -731,7 +790,7 @@ def run_prs(args):
                 if kind == "real":
                     event["kind"] = "real"  # jobs = game files here
                 else:
-                    event["spots"] = functools.reduce(add_spots, (j[3] for j in mine), {})
+                    set_kinds(event, functools.reduce(add_kinds, (j[3] for j in mine), {}))
                 events.append(event)
             # Count it now: a validator closed part-way through a pass must not leave merges uncounted.
             try:
