@@ -8,8 +8,9 @@ config file, and one line with its result.
 A config (see research/base.json) names the game settings (`spec`), the
 number of rounds, the options of loop.py (`loop`; `flags` lists the on/off
 ones) and two lists of flops to score the final strategy net on: `trained`
-(flops the spec practises on) and `unseen` (flops it never plays). Paths in
-a config are taken from the folder of this script.
+(flops the spec practises on) and `unseen` (flops it never plays); a config
+whose lists do not match its spec's flops is refused. Paths in a config are
+taken from the folder of this script.
 
 The run goes to DIR/<name>/ and can be stopped and started again. When it
 ends, DIR/<name>/result.json holds the scores and a copy of that line is
@@ -76,6 +77,18 @@ def main():
         sys.exit(f"{result_path} exists: this trial is finished (use another name)")
     with open(os.path.join(work, "config.json"), "w") as f:
         json.dump(cfg, f, indent=1)
+    # A flop counts as trained only if the spec practises on it, and as
+    # unseen only if it does not: a config copied to another flop set must
+    # not carry the old set's flops into the wrong average.
+    with open(os.path.join(HERE, cfg["spec"])) as f:
+        practised = set(json.load(f).get("flops", []))
+    if not practised:
+        sys.exit("the spec names no flops: trained and unseen flops cannot be told apart")
+    wrong = [b for b in cfg["trained"] if b not in practised] + [b for b in cfg["unseen"] if b in practised]
+    if wrong:
+        sys.exit(f"{wrong}: a trained flop the spec does not practise on, or an unseen flop it does")
+    if not cfg["trained"] or not cfg["unseen"]:
+        sys.exit("a config needs trained and unseen flops")
     games = [os.path.join(HERE, "specs", f"flop_{b}.json") for b in cfg["trained"] + cfg["unseen"]]
     for g in games:
         if not os.path.exists(g):

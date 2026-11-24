@@ -41,6 +41,12 @@ nothing may take over four hours.
    by more than the noise spread. Between one and two spreads, run it with
    a second seed and keep it only if the average still wins by a spread.
    `trained` may get up to 1 point worse for a kept idea, not more.
+   `trained` only compares between trials that score the same trained
+   flops. The base scores QcTc9d, Qc8c6c and Qc4d3h, the three flops the
+   47 and 95 sets share, so trials on those two sets compare; the 184 set
+   shares none of them, so a trial on it names trained flops of its own
+   and is judged on `unseen` alone. `trial.py` refuses a config whose
+   trained flops are not in its spec, or whose unseen flops are.
 3. **One change per trial.** Two ideas that each help are then tried
    together as their own trial.
 4. **The test flops are not yours.** `specs/flop_AcKd5d`, `KdKc9c`,
@@ -54,8 +60,11 @@ nothing may take over four hours.
 
 ## Ideas, roughly in the order I would try them
 
-- **More flops for the same work.** The 95 set at 4 walks, or the 184 set
-  at 2, against 47 at 8. Run G says fewer walks per flop learn slower; the
+- **More flops for the same work.** The 95 set at 4 walks
+  (`specs/95_flops_4_walks.json`) or the 184 set at 2
+  (`specs/184_flops_2_walks.json`) against 47 at 8. Not
+  `95_flops_river_solved.json`: that is the full-size run with 16 walks,
+  four times the work. Run G says fewer walks per flop learn slower; the
   question is which side wins for never-played flops at equal cost.
 - **A net that is told what a flop is.** Inputs for the situation side and
   the hand side that do not depend on the exact cards: paired or trips,
