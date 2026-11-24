@@ -9,13 +9,15 @@ whole brief for whoever runs the loop.
 One net that plays flops it never practised on. The measure is exact: the
 share of the starting pot a perfect opponent gains against the net
 (`bombpot score`), lower is better. A trial's score is the average of that
-over eight flops the net never plays (`unseen` in `trial.py`'s result).
+over 24 flops the net never plays (`unseen` in `trial.py`'s result).
 
 Where it stands (40 rounds, the 95 flop set, 16 walks a flop, 20 hours):
 6.7% on flops it trains on, 11.2% on flops it never played. The target for
 the full-size run is 3% on never-played flops. More rounds alone do not
 close the gap: between rounds 30 and 40 the trained flops improved and the
-never-played ones did not.
+never-played ones did not. On more flops the same net looks a little
+better: 9.8 on three further never-played flops and 8.6 on the eight test
+flops, scored once before the loop.
 
 ## A trial
 
@@ -23,24 +25,31 @@ never-played ones did not.
         --work WORK --exe target/release/bombpot --threads 10 --gpu-free-gb 2
 
 `research/base.json` is the starting recipe on the small game: the 47 flop
-set, 8 walks a flop, 15 rounds. It should take about two hours on a quiet
-machine. A new idea is a copy of the best config so far with one change and
-a new `name`. Results add up in `WORK/trials.jsonl`.
+set, 8 walks a flop, 15 rounds. It takes about 3.1 hours beside the
+generator, and 3.6 with the scoring of 24 unseen flops. A new idea is a
+copy of the best config so far with one change and a new `name`. Results
+add up in `WORK/trials.jsonl`.
 
 Keep the cost of a trial level: an idea that makes a trial slower than
 about 1.3 times the base has to pay for it (say so in the notes), and
-nothing may take over four hours.
+nothing may take over five hours.
 
 ## Rules of evidence
 
-1. **Noise first.** Run the base twice more with `seed` 2 and 3 before any
-   idea. The spread of `unseen` over the three seeds is the noise. If it is
-   over 2 points, lengthen the base (more rounds or walks) until it is not,
-   and start again from there.
+1. **Noise first.** Run the base with `seed` 1, 2 and 3 before any idea.
+   The spread of `unseen` over the three seeds (highest minus lowest) is
+   the noise, and their average is the base's score. Measured on 25 Nov:
+   20.6, 21.5 and 22.6, so the base is 21.6 and the spread 2.0. On the
+   first eight unseen flops alone the spread was 3.7, because single flops
+   move 3 to 8 points between seeds; that is why a trial scores 24. A
+   longer base was not tried: it would have cost twelve hours, and the
+   loop is after gains of several points.
 2. **Keep rule.** An idea is kept when its `unseen` beats the best so far
-   by more than the noise spread. Between one and two spreads, run it with
-   a second seed and keep it only if the average still wins by a spread.
-   `trained` may get up to 1 point worse for a kept idea, not more.
+   by more than two spreads. Between one and two spreads, run it with a
+   second seed and keep it only if the average still wins by a spread.
+   Under one spread it is dropped.
+   `trained` may get up to 2 points worse for a kept idea, not more (its
+   own spread over the three seeds is 1.6).
    `trained` only compares between trials that score the same trained
    flops. The base scores QcTc9d, Qc8c6c and Qc4d3h, the three flops the
    47 and 95 sets share, so trials on those two sets compare; the 184 set
