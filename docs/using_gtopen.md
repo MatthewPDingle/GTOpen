@@ -28,7 +28,7 @@ The details behind the [README](../README.md)'s tour: units, preflop sizes and v
 
 The Preflop Lab does not play out the flop, turn and river. It estimates what each hand is worth once the flop comes:
 
-- **Two-player flops** use **learned flop values**: a neural net (the leaf net, `cache/leaf_net_v3.bin`) trained on exact flop solves. It values hands by how they play after the flop and counts rake on the final pot.
+- **Two-player flops** use **learned flop values**: a neural net (the leaf net, `cache/leaf_net_v4.bin`) trained on exact flop solves. It values hands by how they play after the flop and counts rake on the final pot.
 - **Pots with three or more players, all-in pots and games with tournament payouts** use a simpler estimate.
 - **Blockers** are on for every new cash game: each hand accounts for the cards it takes away from the other players' ranges.
 

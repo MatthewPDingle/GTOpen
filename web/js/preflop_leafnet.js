@@ -9,7 +9,7 @@
 /** The first shipped net: what a game that names no net was solved with. */
 export const FIRST_NET = 'v1';
 /** The net a new game uses. */
-export const DEFAULT_NET = 'v3';
+export const DEFAULT_NET = 'v4';
 
 /** The value model of a game built from the form: learned flop values,
  *  except with ICM payouts, which the leaf net does not price. */

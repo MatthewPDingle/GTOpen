@@ -2,6 +2,13 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.8.0 - 2026-11-25
+
+- Preflop Lab: new games use a new set of learned flop values (leaf net v4). It was trained to value the hands just outside a range properly. Older nets priced those hands too low, which kept some of them out of calling ranges. On six test games the net never saw, that error is about half what it was, and the hands a range does play are valued as accurately as before.
+- What changes in solves: the big blind defends a little more against opens, and openers call 3-bets a little more (14% against 12% in a six-max test game; the canonical GTO charts say 19%). Calls from the seats between the opener and the button are still well under the charts.
+- Two known costs. Against a small 3-bet from the blinds the opener can call a few points too often (29% in one test spot, where exact flop solves support about 23 to 26%). And in a game without rake the small blind limps more than it should (about 56%, where a reference solution has 49%). Solves also need about a quarter more iterations to settle.
+- Games you solved before keep the values they were solved with. Rebuild and restart GTOpen to get the new net.
+
 ## 1.7.1 - 2026-11-22
 
 - Preflop: two players holding the same hand class now split all-in equity exactly equally, including when an older cached table is loaded. Other matchups keep their existing estimates. Rebuild and restart to use the correction.
