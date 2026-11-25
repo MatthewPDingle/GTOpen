@@ -24,6 +24,9 @@ cargo test --release -p solver
 # GPU integration tests (requires CUDA)
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1
 
+# Three-player GPU tests (marked ignored, so the plain command skips them)
+cargo test --release --features gpu -p solver --lib multiway -- --ignored --test-threads=1
+
 # Page tests, one file each
 node tools/test_version.mjs
 ```

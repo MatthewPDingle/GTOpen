@@ -33,6 +33,7 @@ cargo build --release -p server --features gpu   # the desktop: native Windows +
 GTOpen.cmd                                       # Windows launcher: builds, puts nvrtc on PATH, serves :3737, opens the browser
 cargo test --release -p solver                   # full suite; keep green
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1   # GPU equivalence suites
+cargo test --release --features gpu -p solver --lib multiway -- --ignored --test-threads=1   # three-player GPU tests (ignored without a card)
 ```
 
 - Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 128 GB,
