@@ -12,7 +12,7 @@ An open-source GTO solver for no-limit hold'em that runs on your own machine. It
 - **Player models.** Archetypes such as a nit or a calling station, measured Ignition and CoinPoker pools, or your own built from VPIP, PFR, 3-bet and fold-to-3-bet. Solve the max exploit against them, or dial it back toward equilibrium when you are less sure of the read.
 - **Aggregate reports.** One spot across 47, 95, 184 or all 1,755 strategically distinct flops, with strategy, EV, equity and EQR by flop, texture and hand class, and an EV-maximising bet size search.
 - **ICM.** Malmuth-Harville prize equity preflop and postflop, from a final table to a 1,000-player bubble.
-- **3-way postflop (beta).** Three-player flop, turn and river spots with per-seat stacks.
+- **3-way postflop (beta).** Three-player flop, turn and river spots with per-seat stacks, side pots and ICM, set up, solved and browsed on the same pages as heads-up spots.
 
 It runs in your browser from a local server, on an NVIDIA GPU (CUDA) or on the CPU. On an RTX 3090 a 1.35M-node flop tree reaches 0.3% of pot in about 7 to 11 seconds ([benchmarks](docs/technical_reference.md#performance)).
 
@@ -86,12 +86,15 @@ Build a 2 to 9 handed game and solve it, then click through the action to read e
 
 ### 01 · Postflop Setup & Solve
 
-Paint both ranges or paste them as text (`AA,KQs:0.5,A5s-A2s,AhKh`), or load them from a Preflop Lab spot. Pick a flop, turn or river board, then set the pot, effective stack, rake and cap.
+Paint the ranges or paste them as text (`AA,KQs:0.5,A5s-A2s,AhKh`), or load them from a Preflop Lab spot. Pick a flop, turn or river board, then set the pot, effective stack, rake and cap. The **Players** switch at the top right chooses a heads-up or a three-player spot.
 
 ![Postflop Setup & Solve: ranges, board, pot, bet sizes and the solve on one page](docs/screenshots/setup-solve.png)
 
 - **Sizes** are per player and per street: bets as % of pot, raises as % of pot or a multiple, donk bets for the out-of-position player, an all-in threshold and an optional all-in everywhere.
 - **Solve** runs to an exploitability target in % of pot (0.3 by default) and plots the convergence. Solves can be stopped, resumed and saved.
+- **Three players (beta).** One range and one stack per seat, side pots and ICM, a raise cap, and one bet menu and one raise menu shared by the three seats. The solve runs on the GPU when the tree fits, a part at a time when it nearly fits, and on the CPU otherwise.
+
+![Postflop Setup & Solve with Players on 3: three ranges, a stack per seat and one size menu](docs/screenshots/three-way.png)
 
 ### 02 · Browse
 
@@ -101,6 +104,10 @@ Walk any line of the solved tree, including lines the solution does not take, an
 - **Range against range.** An equity distribution graph for nut advantage, and each card's blocker effect on the strategy.
 - **Filters.** Narrow the grid to made-hand and draw classes or one suit.
 - **Best size.** A search for the EV-maximising single bet size on the current board.
+
+**Three-player spots (beta)** use the same page: strategy, EV, equity and the equity graph for all three ranges, the per-combo tiles, filters and blockers, and **Exploit** as one seat's best response to the other two. Node locking, best size, the runouts report and Reports are heads-up only for now.
+
+![Browse: a solved three-player turn spot](docs/screenshots/three-way-browse.png)
 
 **Node locking.** Pick combos in the grid, use the hands your filters show, or leave it on the whole range. Type the frequencies and press **Lock**. For a range-level lock, choose how the frequency is spread over hands: scaled evenly, least EV loss, or least exploitable. **Exploit** shows the best response to the opponent as locked, with no solve. **Re-solve** finds the equilibrium of the locked game. A player model can also be locked onto every one of a seat's postflop decisions.
 
@@ -116,13 +123,7 @@ Solve the setup across a 47, 95, 184 or 1,755 flop subset and read strategy, EV,
 - **Vs modeled villain** runs the report against a player model, with the same trust dial.
 - **Best size sweep** finds the best single size on each flop, marks the sizes the solves cannot separate, and shows the EV given up by always using one size.
 
-### Beta 3-Way
-
-Build, solve and browse three-player postflop spots on one page, with per-seat stacks, side pots and ICM. This part is still in beta.
-
-![Beta 3-Way: a solved three-player turn spot](docs/screenshots/three-way.png)
-
-*Screenshots are from version 1.6 (November 2026), solved on the CPU.*
+*Screenshots are from versions 1.6 and 1.10 (November 2026), solved on the CPU.*
 
 ## Accuracy and limits
 

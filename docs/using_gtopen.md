@@ -44,7 +44,7 @@ Before you build, the lab shows how much RAM and GPU memory the game needs and w
 
 ### Tournament payouts (ICM)
 
-Tick **tournament payouts (ICM)** under the rake boxes and choose the stage. The rest (players at other tables, their stacks, your own payout list) sits under **Advanced tournament settings**. Games solve on the GPU or CPU, from final tables to a 1,000-player bubble. A flop sent to the postflop solver from a tournament game keeps its payouts, and the Setup and 3-Way pages have the same tick box. [ICM details](technical_reference.md#icm-payoffs-tournaments).
+Tick **tournament payouts (ICM)** under the rake boxes and choose the stage. The rest (players at other tables, their stacks, your own payout list) sits under **Advanced tournament settings**. Games solve on the GPU or CPU, from final tables to a 1,000-player bubble. A flop sent to the postflop solver from a tournament game keeps its payouts, and the Postflop Setup & Solve page has the same tick box, for two or three players. [ICM details](technical_reference.md#icm-payoffs-tournaments).
 
 ### Player models
 
@@ -92,7 +92,7 @@ Files stay in the repository's `saves/` directory:
 | `saves/scenarios/` | Preflop Lab scenarios |
 | `saves/profiles/` | Saved player models |
 | `saves/reports/` | Reports and their per-node summaries |
-| `saves/3way/` | 3-way solves |
+| `saves/3way/` | Three-player postflop solves (they show in the same saved-solves list, marked "3 players") |
 
 Saved solves use GTOpen's own format.
 
@@ -102,4 +102,4 @@ Saved solves use GTOpen's own format.
 - **Preflop** uses an approximate continuation model (see [How hands are valued](#how-hands-are-valued)). It does not solve the full multiway game through the river, and overlapping tight ranges in pots of three or more can still expose card-removal errors. [Model details](technical_reference.md#preflop-continuation-model).
 - **Rare preflop lines are not solved**; see [Lines the solution never plays](#lines-the-solution-never-plays).
 - **Player models** combine observations and inference. Sparse or unsupported situations need estimates; a dataset label is not proof that every displayed hand frequency was observed.
-- **3-way postflop** is in beta.
+- **3-way postflop** is in beta. Set **Players** to 3 on the Postflop Setup & Solve page. Node locking, find best size, the runouts report and Reports are for two players only for now.

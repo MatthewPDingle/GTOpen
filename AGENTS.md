@@ -33,6 +33,7 @@ cargo build --release -p server --features gpu   # the desktop: native Windows +
 GTOpen.cmd                                       # Windows launcher: builds, puts nvrtc on PATH, serves :3737, opens the browser
 cargo test --release -p solver                   # full suite; keep green
 cargo test --release --features gpu --test gpu --test preflop_gpu -- --test-threads=1   # GPU equivalence suites
+cargo test --release --features gpu -p solver --lib multiway -- --ignored --test-threads=1   # three-player GPU tests (ignored without a card)
 ```
 
 - Home desktop (2026-09): Windows 11, Ryzen 5950X (16 solver threads), 128 GB,
@@ -266,6 +267,22 @@ finished report at any node — `a<i>` per action, `c` per any-card step). The
 web UI at :3737 drives all of it. `/api/stop` returns when the solve has ended;
 a stopped solve measures its exploitability once more, so `exploit_pct` and the
 last `history` point belong to the iteration it stopped at.
+
+Three-player postflop (`crates/server/src/multiway_api.rs`, solver in
+`crates/solver/src/multiway/`): `/api/mw/spot` takes `{board, ranges[3],
+starting_pot, stacks[3], sizes[3 streets]{bet, raise}, rake_pct, rake_cap,
+max_raises, allin_threshold (a percent), add_allin, seats[3]?, icm?}`;
+`/api/mw/solve` (adds `engine`: `auto|gpu|cpu`, `algorithm`), `stop`, `status`
+(echoes `spot_request`), `node {path}` and `exploit {path, exploiter}` in the
+heads-up reply shapes with three `players` (plus `put`, `live`, `ev_skipped`),
+`save|load {name}`, `saves`. No locks, runouts or reports. ONE postflop spot is
+loaded at a time: `/api/spot`, `/api/load`, `/api/mw/spot` and `/api/mw/load`
+each drop the other kind's session. Per-hand `eq` is showdown equity against
+both other ranges; EVs are pot-share, so the three range EVs sum to the pot
+without rake. On big trees EVs at root-street nodes are cut back (`ev_skipped`:
+`others` = actor only, `all` = none). The page (`web/js/api.js`) routes the
+same calls by which kind is loaded; the Players switch on Setup & Solve picks
+the kind to build (`node tools/test_three_players.mjs`).
 
 Size sweeps ("dynamic sizing", `crates/server/src/sweep.rs`,
 `crates/solver/src/size_sweep.rs`): `/api/reports/run` with

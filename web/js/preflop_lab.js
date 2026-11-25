@@ -105,7 +105,7 @@ const PRESETS = [
   },
 ];
 
-export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
+export function initPreflopLab({ els, onExport, onExport3, toast, gotoSetup }) {
   const positionSizing = createPositionSizing(els, positionsFor, () => estSoon());
   const seatStacks = createSeatStacks(els, positionsFor, () => estSoon());
   localStorage.removeItem(OLD_LEARNED_STORE);
@@ -3152,7 +3152,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (S.view && S.view.exportable3 && !canon.on) {
       try {
         const ex = await api.pfExport3(S.cursor);
-        if (window.gtopenApplyThreeWay) window.gtopenApplyThreeWay(ex);
+        await onExport3?.(ex);
       } catch (e) { toast(e.message, true); }
       return;
     }
