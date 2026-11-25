@@ -5,7 +5,7 @@ import { DEFAULT_NET, FIRST_NET, createLeafNet, modelFor, netConfig, netOf, valu
 assert.equal(modelFor(false), 'leafnet', 'no ICM: learned flop values, with no switch');
 assert.equal(modelFor(true), 'balanced', 'ICM payouts are priced by the balanced model');
 assert.equal(netOf(null), DEFAULT_NET, 'no game: the default net');
-assert.deepEqual(netConfig(true, DEFAULT_NET), { leaf_net: 'v3' }, 'the default net is named in the game');
+assert.deepEqual(netConfig(true, DEFAULT_NET), { leaf_net: 'v4' }, 'the default net is named in the game');
 
 // games from before a second net shipped name no net and mean v1
 assert.equal(netOf({ realization: 'leafnet' }), FIRST_NET, 'an unnamed net is v1');
@@ -18,12 +18,12 @@ assert.deepEqual(netConfig(false, DEFAULT_NET), {});
 
 // the form's net: default, a loaded game's own, back to the default for a fresh scenario
 const net = createLeafNet();
-assert.deepEqual(net.config(true), { leaf_net: 'v3' });
+assert.deepEqual(net.config(true), { leaf_net: 'v4' });
 assert.deepEqual(net.config(false), {});
 net.load({ realization: 'leafnet' });
 assert.deepEqual(net.config(true), {}, 'a re-solve of an old save keeps v1');
 net.load(null);
-assert.deepEqual(net.config(true), { leaf_net: 'v3' });
+assert.deepEqual(net.config(true), { leaf_net: 'v4' });
 
 // the tag under MODEL says why a game has the values it has
 assert.match(valueTip('leafnet', false), /leaf net: a neural net/);

@@ -64,16 +64,17 @@ $py = "..\leafnet-venv\Scripts\python.exe"
 
 Every run is appended to `WORK/results.tsv`. The current best's net is
 `WORK/runs/<snapshot>/best_leaf_net.bin`, in the format the Preflop Lab
-loads. The nets that ship are `cache/leaf_net_v3.bin` (v3, what a new game
-uses: this harness's `snap-v4-live/ens3-live-quick`), `cache/leaf_net_v2.bin`
-(v2, the one before: `snap-73k-real2/ens3-real2`) and `cache/leaf_net_v1.bin`
-(v1, the first).
+loads. The nets that ship are `cache/leaf_net_v4.bin` (v4, what a new game
+uses: this harness's `snap-v5/ens3-fix`), `cache/leaf_net_v3.bin` (v3, the
+one before: `snap-v4-live/ens3-live-quick`), `cache/leaf_net_v2.bin`
+(v2: `snap-73k-real2/ens3-real2`) and `cache/leaf_net_v1.bin` (v1, the
+first).
 
 ## Using a kept net in the Preflop Lab
 
 The Preflop Lab has no net picker and no "learned flop values" box: a game
 built there always uses the shipped default net. To solve with another net,
-name it in the game's `leaf_net` through the API: v2, v1, any run the keep
+name it in the game's `leaf_net` through the API: v3, v2, v1, any run the keep
 rule kept, or an ensemble. The server finds the work
 folder through `LEAFNET_WORK`, else `leafnet_work/` in the repo,
 `../leafnet-work` or `../GTOpen-research/leafnet-work`. Nets are named

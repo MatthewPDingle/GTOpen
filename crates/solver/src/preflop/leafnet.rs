@@ -173,8 +173,8 @@ impl LeafNet {
     }
 
     /// The net a game names (`PreflopConfig::leaf_net`): None or "v1" is
-    /// [`Self::load_default`]; "v3" is the net a new Preflop Lab game uses
-    /// and "v2" the one before it;
+    /// [`Self::load_default`]; "v4" is the net a new Preflop Lab game uses,
+    /// "v3" and "v2" the ones before it;
     /// "SNAPSHOT/RUN" is a net the leaf-net harness kept (see
     /// leafnet_catalog.rs).
     pub fn load_named(name: Option<&str>) -> Result<Self, String> {
