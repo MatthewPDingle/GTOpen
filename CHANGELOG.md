@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.10.1 - 2026-11-25
+
+- Hand grids: the hand names and the numbers in the cells now have a dark edge round the letters, so they stay easy to read on bright green, yellow and orange cells. This covers every view in Browse (STRAT, EV, EQ, EXPLOIT), the Preflop Lab grid and the range editors.
+- Hands that are not in the range show in a slightly lighter grey.
+- Page only: update and refresh the page, no restart needed.
+
 ## 1.10.0 - 2026-11-25
 
 - Three-player postflop spots now live on the Postflop Setup & Solve and Browse pages. The separate Beta 3-Way tab is gone.
