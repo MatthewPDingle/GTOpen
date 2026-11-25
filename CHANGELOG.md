@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.9.1 - 2026-11-25
+
+- Preflop Lab: the two "Ranges from" choices have clearer names. "GTOpen's solver (Leafnet model)" solves your exact game, with the Leafnet model supplying the flop values. "Pre-solved GTO charts" are the ready-made charts for a few standard games.
+- "Pre-solved GTO charts" replaces "Canonical GTO charts" everywhere in the app.
+- Update and refresh the page. Two notes that come from the program itself show the new name after a rebuild and restart.
+
 ## 1.9.0 - 2026-11-25
 
 - Player models: the brush in "The ranges this player plays" can now mix actions. CALL, RAISE and JAM each have their own percent box, so a hand can call 60% and raise 40%. Whatever is left folds. Clicking a name still gives a brush that only does that.

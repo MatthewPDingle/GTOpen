@@ -623,7 +623,7 @@ struct Walk<'a> {
 
 impl<'a> Walk<'a> {
     fn new(lib: &'a Library, req: &'a TreeRequest) -> Result<Self, String> {
-        let positions = lib.positions.get(&req.tag).cloned().ok_or("no canonical GTO charts for this game")?;
+        let positions = lib.positions.get(&req.tag).cloned().ok_or("no pre-solved GTO charts for this game")?;
         let n = positions.len();
         // Range Lab's table setup: blinds by name, a 2 bb straddle acting
         // last, and a 12.5% ante in the tournament games.
@@ -864,7 +864,7 @@ impl Library {
         let (strategy_note, note, chart) = match (point, actor) {
             (Point::Missing, Some(p)) => (
                 Some(format!(
-                    "The canonical GTO charts have no chart for {} after this line. They cover unopened pots, single raises (with one caller for squeezes), 3-bets and 4-bets, and the big blind against a small-blind limp. Pick another action in the ribbon.",
+                    "The pre-solved GTO charts have no chart for {} after this line. They cover unopened pots, single raises (with one caller for squeezes), 3-bets and 4-bets, and the big blind against a small-blind limp. Pick another action in the ribbon.",
                     pos(p)
                 )),
                 None,
@@ -872,7 +872,7 @@ impl Library {
             ),
             (Point::Forced, Some(p)) => (
                 None,
-                Some(format!("The canonical GTO charts have no chart for {} here. The next chart on this line assumes {} folded, so {} is folded automatically.", pos(p), pos(p), pos(p))),
+                Some(format!("The pre-solved GTO charts have no chart for {} here. The next chart on this line assumes {} folded, so {} is folded automatically.", pos(p), pos(p), pos(p))),
                 Value::Null,
             ),
             (Point::Chart(id), _) => {
@@ -948,7 +948,7 @@ impl Library {
             "eff_stack_bb": eff,
             "rake_pct": req.rake_pct,
             "rake_cap": req.rake_cap,
-            "source": format!("Canonical GTO charts · {} · {} · {} bb", game_label(&req.tag), variant_label(&req.variant), fmt_bb(req.depth)),
+            "source": format!("Pre-solved GTO charts · {} · {} · {} bb", game_label(&req.tag), variant_label(&req.variant), fmt_bb(req.depth)),
         }))
     }
 }

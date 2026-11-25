@@ -222,11 +222,13 @@ does that; right-click copies a hand's mix into the brush. A `BucketPolicy`
 already stores `call` / `raise` / `jam` per class, so this is page-only
 (`web/js/preflop_brush.js`, `node tools/test_preflop_brush.mjs`).
 
-### Canonical GTO charts (Range Lab data)
+### Pre-solved GTO charts (Range Lab data)
 
 The Preflop Lab's "Ranges from" choice can walk ready-made charts instead of
-solving. The app calls them "Canonical GTO charts" everywhere a user reads
-(never "Range Lab", which nobody outside the project knows); they come from
+solving. The app calls them "Pre-solved GTO charts" everywhere a user reads
+(never "Range Lab", which nobody outside the project knows, and no longer
+"Canonical GTO charts"); the other choice reads "GTOpen's solver (Leafnet
+model)". The charts come from
 Pan's Range Lab trainer and code names keep `rangelab`
 (`web/js/rangelab_ref.js`, `crates/server/src/rangelab.rs`). The data
 is private and is NEVER committed (this repo is public): the

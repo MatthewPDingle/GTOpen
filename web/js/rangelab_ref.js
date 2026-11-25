@@ -1,4 +1,4 @@
-// CANONICAL GTO CHARTS: helpers for the Preflop Lab's "Ranges from" choice.
+// PRE-SOLVED GTO CHARTS: helpers for the Preflop Lab's "Ranges from" choice.
 // The charts are private data: the server reads them from local folders
 // (cache/rangelab/ or ../Range Lab/) and nothing here bundles them.
 
