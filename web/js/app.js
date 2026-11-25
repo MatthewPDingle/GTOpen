@@ -1,6 +1,6 @@
 // App bootstrap: tabs, the postflop setup & solve page, browser wiring.
 
-import { api, toast, normalizeError } from './api.js';
+import { api, toast, normalizeError, spotPlayers, isThreeWay } from './api.js';
 import { RangeEditor } from './range_editor.js';
 import { Browser, cardChip } from './browse.js';
 import { RANKS, SUITS, SUIT_GLYPH, cardToString } from './cards.js';
@@ -56,30 +56,93 @@ const state = {
   polling: null,
 };
 
-/** Postflop screens that show the shared spot strip (the Preflop Lab and the
- *  3-way tab have their own sessions). */
+/** Postflop screens that show the shared spot strip (the Preflop Lab has its
+ *  own session). */
 const STRIP_TABS = new Set(['setup', 'browse', 'reports']);
 
 // ---------------------------------------------------------------------------
 // Range editor
 // ---------------------------------------------------------------------------
 
-// Tournament payouts (ICM) for the heads-up spot, under Pot & stack.
+// Tournament payouts (ICM) for the spot, under Pot & stack.
 const postflopIcm = createPostflopIcm(document.querySelector('#panel-money .field-grid'), { seats: 2 });
 
+/** Range tabs: 0 and 1 are the two-player ranges (OOP, IP), 2 to 4 the
+ *  three-player ones in the order they act. Each count keeps its own. */
+const THREE_SLOT = 2;
 const editor = new RangeEditor($('range-matrix'), {
   textEl: $('range-text'),
   countEl: $('range-combo-count'),
   brushEl: $('brush-weight'),
   brushValEl: $('brush-weight-val'),
+  slots: THREE_SLOT + 3,
 });
 
+/** Show one range tab (and its range in the grid). */
+function selectRangeTab(slot) {
+  document.querySelectorAll('.rtab').forEach(x =>
+    x.classList.toggle('active', +x.dataset.player === slot));
+  editor.setPlayer(slot);
+}
 document.querySelectorAll('.rtab').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('.rtab').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    editor.setPlayer(+b.dataset.player);
+  b.addEventListener('click', () => selectRangeTab(+b.dataset.player));
+});
+
+// ---------------------------------------------------------------------------
+// Players: 2 (heads-up) or 3
+// ---------------------------------------------------------------------------
+
+/** How many players the form on this page is for. The spot that is loaded
+ *  has its own count (spotPlayers()); the two differ only until BUILD. */
+let setupPlayers = 2;
+/** The count the form was on when the page was last used. */
+let lastPlayers = 2;
+try { lastPlayers = +localStorage.getItem('gtopen-setup-players') === 3 ? 3 : 2; } catch { /* storage off */ }
+const SEAT_DEFAULTS = ['BB', 'CO', 'BTN'];
+const THREE_RANGES = [
+  '22-QQ,A2s-AJs,K5s-KJs,Q8s-QJs,J8s+,T7s+,96s+,86s+,75s+,64s+,54s,A8o-AJo,KTo+,QTo+,JTo',
+  '22-JJ,A2s-AJs,K9s+,Q9s+,J9s+,T8s+,97s+,87s,76s,65s,ATo-AJo,KJo+,QJo',
+  '22-QQ,A2s-AQs,K7s+,Q8s+,J8s+,T8s+,97s+,86s+,75s+,65s,54s,A9o-AQo,KTo+,QTo+,JTo',
+];
+const seatName = i => $(`cfg-seat-${i}`).value.trim() || SEAT_DEFAULTS[i];
+const seatNames = () => [0, 1, 2].map(seatName);
+
+/** The three range tabs carry the seat names typed beside the stacks. */
+function syncSeatNames() {
+  seatNames().forEach((name, i) => {
+    const tab = document.querySelector(`.rtab[data-player="${THREE_SLOT + i}"]`);
+    if (tab && tab.textContent !== name) tab.textContent = name;
   });
+}
+for (let i = 0; i < 3; i++) $(`cfg-seat-${i}`).addEventListener('input', syncSeatNames);
+
+const REPORT_RUN_TIP = $('rep-run').dataset.tip || '';
+/** Switch the form between two and three players. Each count keeps its own
+ *  ranges, stacks and sizes, so switching back loses nothing. */
+function setSetupPlayers(n) {
+  setupPlayers = n === 3 ? 3 : 2;
+  const three = setupPlayers === 3;
+  $('view-setup').classList.toggle('players-3', three);
+  $('seg-players').querySelectorAll('button').forEach(b => {
+    const on = +b.dataset.v === setupPlayers;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  postflopIcm.setSeats(setupPlayers);
+  syncSeatNames();
+  if ((editor.player >= THREE_SLOT) !== three) selectRangeTab(three ? THREE_SLOT : 0);
+  // Reports solve many flops with the two-player solver
+  $('rep-run').disabled = three;
+  $('rep-run').dataset.tip = three
+    ? 'Reports are for two players only for now. Set Players to 2 on the Setup & Solve page to run one.'
+    : REPORT_RUN_TIP;
+  try { localStorage.setItem('gtopen-setup-players', String(setupPlayers)); } catch { /* storage off */ }
+}
+$('seg-players').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b || +b.dataset.v === setupPlayers) return;
+  setSetupPlayers(+b.dataset.v);
+  refreshSession();
 });
 $('range-clear').addEventListener('click', () => editor.clear());
 $('range-all').addEventListener('click', () => editor.fillAll());
@@ -123,7 +186,9 @@ $('preset-select').addEventListener('change', async () => {
   sel.value = '';
   if (!v.startsWith('pfl:')) return;
   const sp = pflSpots()[+v.slice(4)];
-  if (sp) await applyExportedSpot(sp);
+  if (!sp) return;
+  if (Array.isArray(sp.positions)) await applyExportedThreeWay(sp);
+  else await applyExportedSpot(sp);
 });
 
 /** Fingerprint of the SETUP fields a Preflop Lab export pins down (ranges,
@@ -137,6 +202,7 @@ function preflopKey() {
 /** Load a preflop-lab export into SETUP: both ranges, pot, stack, tab labels.
  *  Also remembered so BUILD TREE hands the preflop line to Browse's ribbon. */
 async function applyExportedSpot(ex) {
+  setSetupPlayers(2);
   $('cfg-pot').value = ex.pot_bb;
   $('cfg-stack').value = ex.eff_stack_bb;
   if (ex.rake_pct != null) $('cfg-rake').value = ex.rake_pct;
@@ -168,12 +234,69 @@ async function applyExportedSpot(ex) {
   refreshSession();
 }
 
+/** Load a three-player Preflop Lab export into SETUP: the three ranges, seat
+ *  names, stacks, pot and rake, with Players on 3. The board stays as it is. */
+async function applyExportedThreeWay(ex) {
+  setSetupPlayers(3);
+  const num = x => +(+x).toFixed(2);
+  $('cfg-pot').value = num(ex.pot_bb);
+  ex.positions.forEach((pos, i) => {
+    $(`cfg-seat-${i}`).value = pos;
+    $(`cfg-stack-${i}`).value = num(ex.stacks_bb[i]);
+  });
+  if (ex.rake_pct != null) $('cfg-rake').value = ex.rake_pct;
+  if (ex.rake_cap != null) $('cfg-rakecap').value = ex.rake_cap;
+  postflopIcm.set(ex.icm || null);
+  for (let i = 0; i < 3; i++) await editor.setRangeText(THREE_SLOT + i, ex.ranges[i]);
+  syncSeatNames();
+  selectRangeTab(THREE_SLOT);
+  $('setup-preflop-preview')?.classList.add('hidden');
+  showTab('setup');
+  refreshSession();
+}
+
+/** Fill the three-player fields from a three-player spot request. */
+async function fillThreeWayForm(spot, { ranges = true } = {}) {
+  if (spot.starting_pot != null) $('cfg-pot').value = spot.starting_pot;
+  (spot.stacks || []).forEach((x, i) => { if ($(`cfg-stack-${i}`)) $(`cfg-stack-${i}`).value = x; });
+  (spot.seats || SEAT_DEFAULTS).forEach((x, i) => { if ($(`cfg-seat-${i}`)) $(`cfg-seat-${i}`).value = x; });
+  if (spot.rake_pct != null) $('cfg-rake').value = spot.rake_pct;
+  if (spot.rake_cap != null) $('cfg-rakecap').value = spot.rake_cap;
+  if (spot.allin_threshold != null) $('cfg-allinthr').value = +spot.allin_threshold;
+  if (spot.add_allin != null) $('cfg-addallin').checked = !!spot.add_allin;
+  if (spot.max_raises != null) $('cfg-maxraises').value = spot.max_raises;
+  postflopIcm.set(spot.icm || null);
+  if (spot.board) {
+    state.board = spot.board.match(/.{2}/g) || state.board;
+    renderBoardInput(); renderDeckPicker();
+  }
+  (spot.sizes || []).forEach((sz, st) => {
+    for (const kind of ['bet', 'raise']) {
+      const input = document.querySelector(
+        `#sizes-body input[data-who="all"][data-kind="${kind}"][data-street="${st}"]`);
+      if (input && sz[kind] != null) input.value = sz[kind];
+    }
+  });
+  syncSeatNames();
+  if (ranges) {
+    for (let i = 0; i < 3; i++) await editor.setRangeText(THREE_SLOT + i, (spot.ranges || [])[i] || '');
+    selectRangeTab(THREE_SLOT);
+  }
+}
+
 /** Put a spot request (the shape /api/spot takes and /api/status echoes as
  *  `spot_request`) into the SETUP form; with `ranges`, the range grids too.
  *  Used by LOAD (SETUP must describe the loaded solve) and by the last-spot
  *  restore at the bottom of this file. */
 async function applySpotToSetup(spot, { ranges = true } = {}) {
   $('setup-preflop-preview')?.classList.add('hidden');
+  if (isThreeWay(spot)) {
+    setSetupPlayers(3);
+    await fillThreeWayForm(spot, { ranges });
+    refreshSession();
+    return;
+  }
+  setSetupPlayers(2);
   if (spot.starting_pot != null) $('cfg-pot').value = spot.starting_pot;
   if (spot.effective_stack != null) $('cfg-stack').value = spot.effective_stack;
   if (spot.rake_pct != null) $('cfg-rake').value = spot.rake_pct;
@@ -199,8 +322,7 @@ async function applySpotToSetup(spot, { ranges = true } = {}) {
     await editor.setWeightsFromText(spot.range_ip || '');
     editor.setPlayer(0);
     await editor.setWeightsFromText(spot.range_oop || '');
-    document.querySelectorAll('.rtab').forEach(x =>
-      x.classList.toggle('active', x.dataset.player === '0'));
+    selectRangeTab(0);
   }
   refreshSession();
 }
@@ -209,11 +331,16 @@ async function applySpotToSetup(spot, { ranges = true } = {}) {
 // SETUP at the bottom of this file)
 let lastSpot = null;
 try { lastSpot = JSON.parse(localStorage.getItem('gtopen-last-spot') || 'null'); } catch {}
+// the last three-player spot is kept apart, so each player count restores its own
+let lastSpot3 = null;
+try { lastSpot3 = JSON.parse(localStorage.getItem('gtopen-last-spot-3') || 'null'); } catch {}
+if (!isThreeWay(lastSpot3)) lastSpot3 = null;
+if (isThreeWay(lastSpot)) lastSpot = null;
 
 // starting ranges: the last-built spot's when present — a rebuild after a
 // reload must solve what the user configured, not the demo — else demo
 // defaults so the app is usable immediately
-editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
+const rangesReady = editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
   '55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s+,97s+,86s+,75s+,64s+,54s,AJo-A8o,KTo-K9o,QTo+,JTo,T9o,98o'
 ).then(() => {
   editor.setPlayer(1);
@@ -225,6 +352,11 @@ editor.setWeightsFromText(lastSpot && lastSpot.range_oop ? lastSpot.range_oop :
   editor.setPlayer(0);
   document.querySelectorAll('.rtab').forEach(x =>
     x.classList.toggle('active', x.dataset.player === '0'));
+  // the three-player ranges: the last-built ones, else the demo defaults
+  return Promise.all([0, 1, 2].map(i =>
+    editor.setRangeText(THREE_SLOT + i, lastSpot3?.ranges?.[i] || THREE_RANGES[i]).catch(() => {})));
+}).then(() => {
+  if (setupPlayers === 3 && editor.player < THREE_SLOT) selectRangeTab(THREE_SLOT);
   refreshSession();
 });
 
@@ -287,6 +419,8 @@ renderDeckPicker();
 const SIZE_ROWS = [
   ['OOP bet', 'oop', 'bet'], ['OOP raise', 'oop', 'raise'], ['OOP donk', 'oop', 'donk'],
   ['IP bet', 'ip', 'bet'], ['IP raise', 'ip', 'raise'],
+  // three players share one menu
+  ['Bet', 'all', 'bet'], ['Raise', 'all', 'raise'],
 ];
 const SIZE_TIPS = {
   'OOP bet': 'Sizes OOP may bet when no one has bet yet this street (e.g. a c-bet after raising, or a lead after a check-through).',
@@ -294,10 +428,13 @@ const SIZE_TIPS = {
   'OOP donk': 'Sizes for leading INTO the previous street&#39;s aggressor (e.g. betting the turn after check-calling the flop).',
   'IP bet': 'Sizes IP may bet when checked to (or betting first after a check-through).',
   'IP raise': 'Sizes IP may raise when facing a bet or donk: % of pot after a call, or a 2.5x multiple.',
+  'Bet': 'Sizes any of the three players may bet when no one has bet yet this street.',
+  'Raise': 'Sizes any of the three players may raise when facing a bet: % of pot after a call, a 2.5x multiple, or a for all-in.',
 };
 const DEFAULT_SIZES = {
   oop: { bet: ['33', '75', '75'], raise: ['60', '60', '60'], donk: ['', '', ''] },
   ip: { bet: ['33 75', '75', '75'], raise: ['60', '60', '60'], donk: ['', '', ''] },
+  all: { bet: ['33', '66', '66'], raise: ['a', 'a', 'a'] },
 };
 
 function buildSizesTable() {
@@ -305,6 +442,7 @@ function buildSizesTable() {
   tbody.innerHTML = '';
   for (const [label, who, kind] of SIZE_ROWS) {
     const tr = document.createElement('tr');
+    tr.className = who === 'all' ? 'only-3' : 'only-2';
     tr.innerHTML = `<td data-tip="${SIZE_TIPS[label]}" tabindex="0">${label}</td>` + [0, 1, 2].map(st =>
       `<td><input type="text" data-who="${who}" data-kind="${kind}" data-street="${st}"
         aria-label="${['Flop', 'Turn', 'River'][st]} ${label}"
@@ -339,10 +477,16 @@ function gpuPlanText(info) {
   const budget = (info.gpu_cap_mb / 1000).toFixed(1);
   if (!info.vram_mb) return `${budget} GB of GPU memory free`;
   if (info.vram_mb <= info.gpu_cap_mb) return `fits the GPU (${budget} GB free)`;
+  // a three-player spot can also run on the GPU a part at a time
+  if (info.gpu_min_mb > 0) {
+    return info.gpu_min_mb <= info.gpu_cap_mb
+      ? `fits the GPU a part at a time (${budget} GB free)`
+      : `too big for the GPU (${budget} GB free): solves on the CPU`;
+  }
   return `may not fit the GPU (${budget} GB free): checked when the solve starts`;
 }
 function memSummary(info) {
-  const ram = `RAM about ${(info.arena_mb / 1000).toFixed(2)} GB`;
+  const ram = info.arena_mb < 5 ? 'RAM under 0.01 GB' : `RAM about ${(info.arena_mb / 1000).toFixed(2)} GB`;
   const vram = info.vram_mb ? ` · GPU memory up to about ${(info.vram_mb / 1000).toFixed(2)} GB` : '';
   const plan = gpuPlanText(info);
   return `${ram}${vram}${plan ? ' · ' + plan : ''}`;
@@ -361,7 +505,8 @@ function computeText(st) {
  *  and the engine note (the strip owns board/nodes/iter/exploit). */
 function detailLine(info, st) {
   const compute = computeText(st);
-  return `${info.action_nodes.toLocaleString()} decisions · hands ${info.hands_oop}/${info.hands_ip} · ` +
+  const hands = info.hands ? info.hands.join('/') : `${info.hands_oop}/${info.hands_ip}`;
+  return `${info.action_nodes.toLocaleString()} decisions · hands ${hands} · ` +
     `${memSummary(info)}${compute ? ` · ${compute}` : ''}`;
 }
 
@@ -374,6 +519,22 @@ function currentSpotRequest({ quiet = false } = {}) {
   try { icm = postflopIcm.request(); } catch (e) {
     if (!quiet) reportError(e);
     return null;
+  }
+  if (setupPlayers === 3) {
+    return {
+      board: state.board.join(''),
+      ranges: [0, 1, 2].map(i => editor.textFor(THREE_SLOT + i)),
+      starting_pot: +$('cfg-pot').value,
+      stacks: [0, 1, 2].map(i => +$(`cfg-stack-${i}`).value),
+      sizes: collectSizes('all').map(({ bet, raise }) => ({ bet, raise })),
+      rake_pct: +$('cfg-rake').value,
+      rake_cap: +$('cfg-rakecap').value,
+      max_raises: +$('cfg-maxraises').value,
+      allin_threshold: +$('cfg-allinthr').value,
+      add_allin: $('cfg-addallin').checked,
+      seats: seatNames(),
+      ...(icm ? { icm } : {}),
+    };
   }
   return {
     board: state.board.join(''),
@@ -402,6 +563,16 @@ function spotFingerprint(req) {
   const num = x => Math.round(+x * 1e6) / 1e6; // absorb float round-trips
   const sizes = a => (a || []).map(s =>
     [(s.bet || '').trim(), (s.raise || '').trim(), (s.donk || '').trim()]);
+  if (isThreeWay(req)) {
+    return JSON.stringify([
+      3, req.board, req.ranges,
+      num(req.starting_pot), (req.stacks || []).map(num),
+      num(req.rake_pct || 0), num(req.rake_cap || 0),
+      num(req.allin_threshold), !!req.add_allin, +req.max_raises,
+      sizes(req.sizes), req.seats || SEAT_DEFAULTS,
+      icmFingerprint(req.icm),
+    ]);
+  }
   return JSON.stringify([
     req.board, req.range_oop, req.range_ip,
     num(req.starting_pot), num(req.effective_stack),
@@ -476,11 +647,19 @@ function stripSource() {
   return currentSpotRequest({ quiet: true }) || {
     board: state.board.join(''),
     starting_pot: +$('cfg-pot').value,
-    effective_stack: +$('cfg-stack').value,
     rake_pct: +$('cfg-rake').value,
     rake_cap: +$('cfg-rakecap').value,
-    oop: collectSizes('oop'),
-    ip: collectSizes('ip'),
+    ...(setupPlayers === 3 ? {
+      ranges: [],
+      stacks: [0, 1, 2].map(i => +$(`cfg-stack-${i}`).value),
+      sizes: collectSizes('all'),
+      max_raises: +$('cfg-maxraises').value,
+      seats: seatNames(),
+    } : {
+      effective_stack: +$('cfg-stack').value,
+      oop: collectSizes('oop'),
+      ip: collectSizes('ip'),
+    }),
   };
 }
 
@@ -494,6 +673,13 @@ function sizeSeq(rows, kind) {
 }
 
 function sizeSummary(spot) {
+  if (isThreeWay(spot)) {
+    const bets = sizeSeq(spot.sizes, 'bet');
+    const raises = sizeSeq(spot.sizes, 'raise');
+    const n = +spot.max_raises;
+    return [bets && `bet ${bets}`, raises && `raise ${raises}`,
+      Number.isFinite(n) && `max ${n} raise${n === 1 ? '' : 's'}`].filter(Boolean).join(' · ');
+  }
   const parts = [];
   for (const who of ['oop', 'ip']) {
     const rows = spot[who] || [];
@@ -534,10 +720,17 @@ function renderStripBoard(board) {
 function renderStrip() {
   const spot = stripSource();
   renderStripBoard(spot.board);
-  const pos = [posLabel(0), posLabel(1)].filter(Boolean).join(' · ');
+  const three = isThreeWay(spot);
+  const pos = three
+    ? (spot.seats || SEAT_DEFAULTS).join(' · ')
+    : [posLabel(0), posLabel(1)].filter(Boolean).join(' · ');
   $('ss-pos').textContent = pos;
   const amount = x => Number.isFinite(+x) ? +x : '—';
-  const money = [`pot ${amount(spot.starting_pot)}`, `stack ${amount(spot.effective_stack)}`];
+  const stacks = spot.stacks || [];
+  const money = [`pot ${amount(spot.starting_pot)}`, !three
+    ? `stack ${amount(spot.effective_stack)}`
+    : stacks.every(x => x === stacks[0]) ? `stacks ${amount(stacks[0])}`
+      : `stacks ${stacks.map(amount).join(' / ')}`];
   if (+spot.rake_pct > 0) {
     money.push(`rake ${+spot.rake_pct}%${+spot.rake_cap > 0 ? ` cap ${+spot.rake_cap}` : ''}`);
   }
@@ -718,8 +911,14 @@ async function buildTree() {
     if (state.board.length < 3) reportError(new Error('pick at least a 3-card flop'));
     return false;
   }
-  if (!cfg.range_oop) { reportError(new Error('OOP range is empty')); return false; }
-  if (!cfg.range_ip) { reportError(new Error('IP range is empty')); return false; }
+  const three = isThreeWay(cfg);
+  if (three) {
+    const empty = cfg.ranges.findIndex(r => !r);
+    if (empty >= 0) { reportError(new Error(`${cfg.seats[empty]} range is empty`)); return false; }
+  } else {
+    if (!cfg.range_oop) { reportError(new Error('OOP range is empty')); return false; }
+    if (!cfg.range_ip) { reportError(new Error('IP range is empty')); return false; }
+  }
   // a running solve is destroyed by the session swap (the server stops it
   // once the new spot validates) — never do that unprompted
   // node locks live only in the session: a new tree throws them away, saved
@@ -766,13 +965,14 @@ async function buildTree() {
     // the last Preflop Lab export — but only while SETUP still matches it. A
     // build with edited ranges/pot/stack is a different spot: drop the stale
     // lab context (ribbon, positions, villain profiles) for good.
-    if (state.pendingPreflop && preflopKey() !== state.pendingPreflopKey) {
+    if (!three && state.pendingPreflop && preflopKey() !== state.pendingPreflopKey) {
       state.pendingPreflop = null;
       state.pendingPreflopKey = null;
       const rtabs = document.querySelectorAll('.rtab');
       if (rtabs.length >= 2) { rtabs[0].textContent = 'OOP'; rtabs[1].textContent = 'IP'; }
     }
-    if (state.pendingPreflop) {
+    browser.seats = three ? cfg.seats.slice() : null; // Browse names three players by seat
+    if (!three && state.pendingPreflop) {
       const ex = state.pendingPreflop;
       browser.preflop = { oop: ex.oop_pos, ip: ex.ip_pos, potBb: ex.pot_bb,
         effStackBb: ex.eff_stack_bb, segments: ex.segments || [],
@@ -781,7 +981,7 @@ async function buildTree() {
     } else {
       browser.preflop = null;
     }
-    localStorage.setItem('gtopen-last-spot', JSON.stringify(cfg));
+    localStorage.setItem(three ? 'gtopen-last-spot-3' : 'gtopen-last-spot', JSON.stringify(cfg));
     // the server reset its status to "ready" (iteration 0, no history): resync
     // the pill, strip, readouts, chart and header solve bar — after a finished
     // solve nothing polls any more, so they kept describing the previous solve
@@ -844,8 +1044,12 @@ async function startSolve() {
       max_iterations: +$('run-iters').value,
       target_exploit_pct: +$('run-target').value,
       check_every: +$('run-check').value,
+      // read by a three-player solve only (the Advanced opener)
+      engine: $('run-engine').value,
+      algorithm: $('run-algo').value,
     });
     clearError();
+    solveErrorShown = '';
     // a fresh run: completion (toast + Browse refresh below) keys on this
     // transition, and the new strategies aren't on disk yet
     state.solved = false;
@@ -873,6 +1077,9 @@ $('btn-stop').addEventListener('click', async () => {
 $('btn-solve-top').addEventListener('click', startSolve);
 $('btn-stop-top').addEventListener('click', () => $('btn-stop').click());
 let firstPoll = true;
+/** The last solve error put in the error bar (a three-player solve that
+ *  could not run says so in its status). */
+let solveErrorShown = '';
 
 // iterations/sec from successive status polls (client-side delta, so it
 // survives resumed solves where iteration is cumulative but elapsed resets);
@@ -933,7 +1140,17 @@ async function pollStatus() {
   }
   state.running = st.state === 'running';
   $('mem-info').textContent = st.tree ? detailLine(st.tree, st) : '';
+  // Browse names three players by their seats (also after a page reload)
+  browser.seats = isThreeWay(st.spot_request) ? (st.spot_request.seats || SEAT_DEFAULTS).slice() : null;
   refreshSession();
+  if (st.state === 'error' && st.error && st.error !== solveErrorShown) {
+    solveErrorShown = st.error;
+    reportError(new Error(st.error), null, 'solve');
+  }
+  if (st.state === 'error' && state.polling) {
+    clearInterval(state.polling);
+    state.polling = null;
+  }
   // solve completion: toast once per run, and refresh an open Browse view so
   // the lock → re-solve → inspect loop shows the adapted strategies (the view
   // renders from a cached node payload until refreshed)
@@ -1041,16 +1258,16 @@ $('run-target').addEventListener('input', () => drawChart(chartHistory));
 // Save / load
 // ---------------------------------------------------------------------------
 
-let saveNames = []; // known names, for the overwrite confirm
+let savedSolves = []; // [{ name, players }], for the list and the overwrite confirm
 async function refreshSaves() {
   try {
-    const names = await api.saves();
-    saveNames = names;
+    savedSolves = await api.saves();
     const sel = $('load-select');
     sel.innerHTML = '<option value="">saved solves…</option>';
-    names.forEach(n => {
+    savedSolves.forEach((sv, i) => {
       const o = document.createElement('option');
-      o.value = n; o.textContent = n;
+      o.value = String(i);
+      o.textContent = sv.players === 3 ? `${sv.name} · 3 players` : sv.name;
       sel.appendChild(o);
     });
   } catch {}
@@ -1067,7 +1284,9 @@ const sanitizeSaveName = s => String(s).replace(/[^\p{L}\p{N} ._-]/gu, '').trim(
 async function saveSolve() {
   const name = sanitizeSaveName($('save-name').value);
   if (!name) return reportError(new Error('enter a save name (letters, digits, - _ . space)'));
-  if (saveNames.includes(name) &&
+  // two-player and three-player saves are kept apart, so only a save of the
+  // loaded spot's kind can be overwritten
+  if (savedSolves.some(sv => sv.name === name && sv.players === spotPlayers()) &&
       !confirm(`"${name}" already exists — overwrite it?`)) return;
   try {
     await api.save(name);
@@ -1080,8 +1299,9 @@ async function saveSolve() {
 $('btn-save').addEventListener('click', saveSolve);
 
 async function loadSolve() {
-  const name = $('load-select').value;
-  if (!name) return reportError(new Error('pick a save'));
+  const pick = savedSolves[+$('load-select').value];
+  if ($('load-select').value === '' || !pick) return reportError(new Error('pick a save'));
+  const name = pick.name;
   // a running solve is stopped and dropped by the session swap — confirm it
   // (state.solved is false mid-run, so the unsaved check below can't fire)
   if (state.running &&
@@ -1098,7 +1318,7 @@ async function loadSolve() {
     }
   }
   try {
-    await api.load(name);
+    await api.load(name, pick.players);
     clearError();
     state.built = true; state.solved = true;
     state.running = false; // the loaded session is settled, not running
@@ -1115,7 +1335,8 @@ async function loadSolve() {
         // a page refresh restores SETUP from this key: left on the last BUILT
         // spot, the refreshed page would call the loaded solve "SETUP changed"
         // and offer to rebuild it
-        localStorage.setItem('gtopen-last-spot', JSON.stringify(st.spot_request));
+        localStorage.setItem(isThreeWay(st.spot_request) ? 'gtopen-last-spot-3' : 'gtopen-last-spot',
+          JSON.stringify(st.spot_request));
       }
     } catch (e) { reportError(e, null, 'SETUP not updated'); }
     toast('loaded — go to BROWSE');
@@ -1194,14 +1415,17 @@ const browseBestSize = initBrowseBestSize($('bestsize-browse'), {
   refreshReports: () => reports.refreshLibrary(),
   openReport: name => reports.openReport(name),
 });
-browser.onNodeChange = (view, path) => browseBestSize.update(view, path);
+// find best size sweeps the two-player solver: a three-player spot has none
+browser.onNodeChange = (view, path) => browseBestSize.update(spotPlayers() === 3 ? null : view, path);
 
-$('seg-player').querySelectorAll('button').forEach(b =>
-  b.addEventListener('click', () => {
-    browser.player = +b.dataset.v;
-    browser.syncSegs(); browser.renderActions(); browser.renderMatrix(); browser.renderLegend();
-    browser.renderHandsPanel(); browser.drawEquityChart();
-  }));
+// HANDS OF has a button per player (two or three), so listen on the group
+$('seg-player').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  browser.player = +b.dataset.v;
+  browser.syncSegs(); browser.renderActions(); browser.renderMatrix(); browser.renderLegend();
+  browser.renderHandsPanel(); browser.drawEquityChart();
+});
 $('seg-mode').querySelectorAll('button').forEach(b =>
   b.addEventListener('click', () => {
     browser.mode = b.dataset.v;
@@ -1273,6 +1497,16 @@ initPreflopLab({
   },
   toast,
   gotoSetup: () => showTab('setup'),
+  // a three-player flop: the same page, with Players on 3
+  onExport3: async ex => {
+    ex.name = `${ex.positions.join(' vs ')} \u00b7 ${+(+ex.pot_bb).toFixed(2)}bb pot \u00b7 3 players`;
+    const spots = pflSpots().filter(sp => sp.name !== ex.name);
+    spots.unshift(ex);
+    localStorage.setItem('gtopen-pfl-spots', JSON.stringify(spots.slice(0, 20)));
+    refreshPresetDropdown();
+    await applyExportedThreeWay(ex);
+    toast('3-player spot loaded: pick a board, then SOLVE');
+  },
   onExport: async (ex, lineText) => {
     ex.name = `${ex.oop_pos} vs ${ex.ip_pos} \u00b7 ${ex.pot_bb}bb pot \u00b7 ${lineText}`;
     const spots = pflSpots().filter(sp => sp.name !== ex.name);
@@ -1289,6 +1523,7 @@ initPreflopLab({
 
 /** Apply a report's spot + a chosen board into SETUP, then build and solve. */
 async function openReportSpot(spot, board, steps = []) {
+  setSetupPlayers(2); // reports are two-player spots
   $('cfg-pot').value = spot.starting_pot;
   $('cfg-stack').value = spot.effective_stack;
   $('cfg-rake').value = spot.rake_pct;
@@ -1336,7 +1571,7 @@ const reports = initReports({
   },
   toast,
   onError: reportError,
-  currentSpot: currentSpotRequest,
+  currentSpot: () => (setupPlayers === 3 ? null : currentSpotRequest()),
   villains: () => {
     const pf = browser.preflop;
     if (!pf || !pf.villains) return null;
@@ -1373,38 +1608,32 @@ new MutationObserver(syncExportState).observe(exportBtn, {
 });
 syncExportState();
 
-/** BUILD TREE (3-WAY) has no tree until multiway.js fills its info line. */
-const mwBuildInfo = $('mw-build-info');
-const mwBuildState = $('mw-build-state');
-function syncMwBuildState() {
-  const info = mwBuildInfo.textContent.trim();
-  mwBuildState.textContent = info ? '' : 'not built';
-  mwBuildState.dataset.tone = info ? '' : 'warn';
-}
-new MutationObserver(syncMwBuildState).observe(mwBuildInfo, {
-  childList: true, characterData: true, subtree: true,
-});
-syncMwBuildState();
-
-/** SOLVE/STOP (3-WAY) follow the live status line multiway.js keeps there. */
-const mwProgress = $('mw-progress');
-function syncMwRunState() {
-  const text = mwProgress.textContent.trim();
-  if (!text) return; // no status yet: leave both controls as they were
-  const running = text.startsWith('running');
-  $('mw-solve').disabled = running;
-  $('mw-stop').disabled = !running;
-}
-new MutationObserver(syncMwRunState).observe(mwProgress, {
-  childList: true, characterData: true, subtree: true,
-});
-syncMwRunState();
 // restore last config if present (the ranges were restored with the editor
 // bootstrap above, so a rebuild really reproduces the saved spot)
 try {
+  if (lastSpot3) fillThreeWayForm(lastSpot3, { ranges: false }).catch(() => {});
+  // last, so the fields the two forms share (pot, rake, board) hold its values
   if (lastSpot) applySpotToSetup(lastSpot, { ranges: false }).catch(() => {});
 } catch {}
 
-// initial status poll (e.g. after page reload during a solve)
-pollStatus();
-startPolling();
+// Which spot does the server hold (after a page reload, maybe mid-solve)? The
+// form follows it; with nothing loaded it reopens on the count used last.
+(async () => {
+  let want = await api.detectSpot();
+  const st = await api.status().catch(() => null);
+  if (want === 2 && !st?.tree) want = lastPlayers;
+  // a three-player spot the server holds is what the form shows, even in a
+  // browser that never built it; otherwise the last one built here
+  const held = want === 3 && isThreeWay(st?.spot_request) ? st.spot_request : null;
+  if (held && spotFingerprint(held) !== spotFingerprint(lastSpot3)) {
+    await rangesReady.catch(() => {}); // the starting ranges must not land on top
+    await fillThreeWayForm(held).catch(() => {});
+  } else if (want === 3 && lastSpot3) {
+    await fillThreeWayForm(lastSpot3, { ranges: false }).catch(() => {});
+  }
+  if (want !== setupPlayers) setSetupPlayers(want);
+  refreshSession();
+  // initial status poll
+  pollStatus();
+  startPolling();
+})();

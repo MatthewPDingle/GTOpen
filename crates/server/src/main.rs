@@ -862,7 +862,7 @@ async fn build_spot(
     // arenas); the new arenas are allocated only after the old session is
     // dropped below.
     let storage = storage_from_env();
-    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state) + multiway_api::arena_credit_mb();
     let node_cap = node_budget(cap_mb, &config, storage);
     let spot =
         tokio::task::spawn_blocking(move || Spot::new_with_limit(config, Some(node_cap)))
@@ -884,9 +884,13 @@ async fn build_spot(
     // The new spot is valid and fits: NOW stop any running solve and drop
     // the old session, freeing its arena before the new one is allocated.
     let st = state.clone();
-    tokio::task::spawn_blocking(move || stop_current(&st, true))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?;
+    tokio::task::spawn_blocking(move || {
+        stop_current(&st, true);
+        // One postflop spot at a time: a loaded 3-way spot goes too.
+        multiway_api::drop_session();
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
 
     let solver =
         tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
@@ -4744,7 +4748,7 @@ async fn load_solve(
     // probe spot (tree, no arenas) coexists with the old session; the loaded
     // arenas are allocated after the old ones are freed.
     let storage = storage_from_env();
-    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state) + multiway_api::arena_credit_mb();
     let probe_path = path_str.clone();
     let probe = tokio::task::spawn_blocking(move || peek_save(&probe_path, cap_mb, storage))
         .await
@@ -4774,9 +4778,13 @@ async fn load_solve(
     // session (a disk race between the peek and this load remains possible
     // but the cheap failure modes are all caught above).
     let st = state.clone();
-    tokio::task::spawn_blocking(move || stop_current(&st, true))
-        .await
-        .map_err(|e| bad_request(e.to_string()))?;
+    tokio::task::spawn_blocking(move || {
+        stop_current(&st, true);
+        // One postflop spot at a time: a loaded 3-way spot goes too.
+        multiway_api::drop_session();
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
     let solver = tokio::task::spawn_blocking(move || {
         Solver::load_with_storage(&path_str, storage)
     })

@@ -2,6 +2,19 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.10.0 - 2026-11-25
+
+- Three-player postflop spots now live on the Postflop Setup & Solve and Browse pages. The separate Beta 3-Way tab is gone.
+- Setup & Solve has a new switch at the top right: Players 2 or 3. On 2 the page is as it was. On 3 you get a third range tab with the seat names, one stack per player, a Max raises box, and one Bet row and one Raise row that all three players use. "Solve on" (Auto, GPU, CPU) and the algorithm sit under "Advanced" in step 05. Click a seat name beside a stack to rename it.
+- Three-player ranges are painted with the same editor as two-player ones, and the board picker and the progress chart work for them too.
+- Browse shows a three-player spot like any other: the line on top, HANDS OF with three names, STRAT and EV, the hand tiles, SUMMARY, FILTERS and BLOCKERS. New for three players: EQ (with the equity chart and one range card per player) and EXPLOIT, the best reply of one player to the other two as they play now.
+- Node locking, find best size, the runouts report and Reports are for two players only for now. On a three-player spot they stay in view, greyed, with a tooltip.
+- One list of saved solves holds both kinds; three-player ones are marked "3 players". Loading one fills in the form, seat names included for solves saved from now on.
+- Preflop Lab's SEND for a three-player flop lands on Setup & Solve with Players on 3.
+- Only one postflop spot is loaded at a time. Building or loading a three-player spot replaces a two-player one and the other way round, with the usual question about an unsaved solve.
+- Browse can be opened while a three-player solve runs on the CPU. Before, it waited for the solve to finish.
+- Rebuild and restart GTOpen for this one, then refresh the page.
+
 ## 1.9.1 - 2026-11-25
 
 - Preflop Lab: the two "Ranges from" choices have clearer names. "GTOpen's solver (Leafnet model)" solves your exact game, with the Leafnet model supplying the flop values. "Pre-solved GTO charts" are the ready-made charts for a few standard games.

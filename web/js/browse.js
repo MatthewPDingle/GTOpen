@@ -22,8 +22,14 @@ const BET_SHADES = {
   large: '#a23a3c',
   overbet: '#7c3134',
 };
-// Player colors: OOP light cyan, IP green.
+// Player colors: OOP light cyan, IP green; with three players the first to
+// act is cyan, the second amber, the last green.
 const EQ_COLORS = ['#8edced', '#46b556'];
+const EQ_COLORS_3 = ['#8edced', '#f2a23a', '#46b556'];
+const playerColor = (p, np) => (np === 3 ? EQ_COLORS_3 : EQ_COLORS)[p];
+/** "BB", "BB and CO": names in a sentence. */
+const joinNames = names => names.length <= 1 ? (names[0] || '')
+  : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 // Equity chart margins (CSS px); the roomier left/bottom hold axis titles.
 const EQ_M = { L: 50, R: 12, T: 14, B: 38 };
 
@@ -96,6 +102,18 @@ export function freezeableAncestors(path, pathLabels, board, isLocked, isOwn = (
   return n;
 }
 
+/** Tooltips of the modes that name the opposition: [two players, three]. */
+const MODE_TIPS = {
+  eq: [
+    "Equity at showdown vs the opponent's current range if all betting stopped. Compare with EV to see which hands over/under-realize their equity.",
+    'Equity at showdown against the current ranges of the players still in the hand, if all betting stopped. Compare with EV to see which hands over/under-realize their equity.',
+  ],
+  exploit: [
+    'The best play for the player whose hands are showing, against the other player as that player plays now, locks included. It needs no solve. Lock how someone plays, then read here what beats it. The number is what each hand gains.',
+    'The best play for the player whose hands are showing, against the other two players as they play now. It needs no solve. The number is what each hand gains.',
+  ],
+};
+
 export class Browser {
   constructor(els, hooks = {}) {
     this.els = els;
@@ -106,6 +124,7 @@ export class Browser {
     this.line = [];        // the full navigated line (cursor can sit anywhere on it)
     this.lineHistory = null; // cached node history for the whole line (ribbon source)
     this.preflop = null;   // {oop, ip, potBb, effStackBb, segments} from preflop study setup, else null
+    this.seats = null;     // seat names of a three-player spot, in the order they act
     this.view = null;
     this._refreshGen = 0;  // serializes overlapping /api/node refreshes (stale-response guard)
     this.lockHistory = null; // server's lock undo/redo stacks (labels), see setLockHistory
@@ -835,8 +854,11 @@ export class Browser {
       this.lineHistory = this.view.history;
     }
     // index hands by combo for matrix lookup
-    this.handIdx = [new Map(), new Map()];
-    for (const p of [0, 1]) {
+    const every = this.everyPlayer();
+    // HANDS OF may still point at a third player after a two-player spot loads
+    if (this.player >= every.length) this.player = 0;
+    this.handIdx = every.map(() => new Map());
+    for (const p of every) {
       this.view.players[p].hands.forEach((h, i) => {
         this.handIdx[p].set(comboIndex(h.c1, h.c2), i);
       });
@@ -844,7 +866,7 @@ export class Browser {
     // classify every hand for the Filters tab (cheap, done per node)
     const boardCards = this.view.board.map(cardFromString);
     this.boardSet = new Set(boardCards); // for board-aware combo-count normalization
-    this.cats = [0, 1].map(p =>
+    this.cats = every.map(p =>
       this.view.players[p].hands.map(h => ({
         ...classify(boardCards, h.c1, h.c2, h.eq),
         suits: suitTags(h.c1, h.c2),
@@ -882,7 +904,22 @@ export class Browser {
     // matrix opacity is owned by renderMatrix(): it clears the loading dim on a
     // normal paint and keeps the .45 dim while EXPLOIT data for this node loads
     this.els.pot.textContent =
-      `pot ${fmt(this.view.pot)} · ${this.posLabel(0)} in ${fmt(this.view.put[0])} / ${this.posLabel(1)} in ${fmt(this.view.put[1])}`;
+      `pot ${fmt(this.view.pot)} · ` + every.map(p => `${this.posLabel(p)} in ${fmt(this.view.put[p])}`).join(' / ');
+    // a three-player spot too big to price every hand while browsing says so
+    if (this.view.ev_skipped) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'info-dot';
+      dot.textContent = '?';
+      dot.style.marginLeft = '8px';
+      dot.setAttribute('aria-label', 'Why some EVs are missing here');
+      dot.setAttribute('data-tip-click', '');
+      dot.dataset.tip = (this.view.ev_skipped === 'all'
+        ? 'No EVs at this point: '
+        : 'EVs for the player to act only at this point: ') +
+        'this spot is too big to work the rest out while you browse. They are all there from the next street on.';
+      this.els.pot.appendChild(dot);
+    }
     this.renderEmptyState();
     this.clearPendingAfterSolve();
   }
@@ -922,8 +959,27 @@ export class Browser {
   /** Position label for player p: BB/BTN/… from the preflop study setup, else
    *  the generic OOP/IP. Used everywhere the two players are named. */
   posLabel(p) {
+    if (this.np === 3) return this.seats?.[p] || `P${p + 1}`;
     if (this.preflop) return p === 0 ? this.preflop.oop : this.preflop.ip;
     return p === 0 ? 'OOP' : 'IP';
+  }
+
+  /** How many players the spot being browsed has (2 until a node is read). */
+  get np() { return this.view?.players?.length || (this.seats ? 3 : 2); }
+  everyPlayer() { return Array.from({ length: this.np }, (_, p) => p); }
+  /** A three-player spot: node locking, find best size and runouts are for
+   *  two players only for now. */
+  get threeWay() { return this.np === 3; }
+  /** False for a player who has folded on the way to this node. */
+  isLive(p) { return !this.view?.live || !!this.view.live[p]; }
+  /** Everyone but p who is still in the hand, named for a sentence ("IP",
+   *  "CO and BTN"), and the verb form that goes with it. */
+  oppLabel(p) {
+    const others = this.everyPlayer().filter(q => q !== p && this.isLive(q));
+    return joinNames((others.length ? others : this.everyPlayer().filter(q => q !== p)).map(q => this.posLabel(q)));
+  }
+  oppCount(p) {
+    return this.everyPlayer().filter(q => q !== p && this.isLive(q)).length || 1;
   }
 
   /** Take a step from node depth `d`: follow the line if it matches, else branch. */
@@ -1054,9 +1110,12 @@ export class Browser {
         lbl.className = 'hist-chip taken';
         // fold vs showdown: HistoryStep doesn't carry it, so look at the
         // action that led here
+        // (with three players a fold ends the hand only when it leaves one)
         const prev = hist[i - 1];
+        const folds = hist.slice(0, i).filter(x => x.kind === 'action'
+          && x.actions[x.chosen]?.kind === 'fold').length;
         const folded = prev && prev.kind === 'action'
-          && prev.actions[prev.chosen]?.kind === 'fold';
+          && prev.actions[prev.chosen]?.kind === 'fold' && folds >= this.np - 1;
         lbl.textContent = folded ? 'Fold — hand over' : 'Showdown';
         s.appendChild(lbl);
       }
@@ -1186,7 +1245,8 @@ export class Browser {
         return `<i style="width:${(freq * 100).toFixed(2)}%;background:${colors[k]}"></i>`;
       }).join('');
       el.appendChild(sumbar);
-      this.renderLockControls(el, colors);
+      if (this.threeWay) this.renderTwoOnly(el, ['Node locking', 'Find best size']);
+      else this.renderLockControls(el, colors);
     } else if (this.view.node_type === 'chance') {
       this.els.actionsTitle.textContent =
         `dealing ${this.view.street === 1 ? 'turn' : 'river'} — pick a card`;
@@ -1223,21 +1283,40 @@ export class Browser {
       btn.textContent = 'RUNOUTS REPORT';
       btn.dataset.tip = 'Strategy and equity for every possible next card.';
       btn.addEventListener('click', () => this.loadRunouts(btn));
+      if (this.threeWay) {
+        btn.disabled = true;
+        btn.dataset.tip = 'The runouts report is for two players only for now.';
+      }
       el.appendChild(btn);
     } else {
       this.els.actionsTitle.textContent = 'Terminal';
       const banner = document.createElement('div');
       banner.className = 'terminal-banner';
+      const left = this.everyPlayer().filter(p => this.isLive(p)).map(p => this.posLabel(p));
       banner.textContent = this.view.node_type === 'terminal_fold'
-        ? 'fold — hand over' : 'showdown';
+        ? (this.threeWay ? `everyone else folded — ${left[0] || 'one player'} takes the pot` : 'fold — hand over')
+        : (this.threeWay ? `showdown — ${joinNames(left)}` : 'showdown');
       el.appendChild(banner);
     }
+  }
+
+  /** Tools that work for two players only for now: kept in view, greyed,
+   *  with one tooltip that says so. */
+  renderTwoOnly(el, names) {
+    const row = document.createElement('div');
+    row.className = 'two-only';
+    row.innerHTML = names.map(n => `<span>${n}</span>`).join('') +
+      '<button type="button" class="info-dot" data-tip-click aria-label="Why these are greyed">?</button>';
+    row.querySelector('.info-dot').dataset.tip =
+      `${joinNames(names)} ${names.length > 1 ? 'are' : 'is'} for two players only for now. Everything else on this page works with three.`;
+    el.appendChild(row);
   }
 
   /** True when a click in the grid picks hands for the lock box: the grid
    *  shows the hands of the player whose decision this is. */
   canPickHands() {
-    return !!this.view && this.view.node_type === 'action' && this.player === this.view.player;
+    // a three-player spot has no lock box to pick hands for
+    return !!this.view && !this.threeWay && this.view.node_type === 'action' && this.player === this.view.player;
   }
 
   /** The acting player's combos in a grid cell, as [{ name, hi }]. */
@@ -1373,7 +1452,7 @@ export class Browser {
     } else if (this.canPickHands()) {
       say(`How <b>${who}</b> plays here, as a <b>whole range</b>. <span class="dim">Click hands in the grid to lock only those.</span>`);
     } else {
-      say(`How <b>${who}</b> plays here, as a <b>whole range</b>. <span class="dim">The grid is showing ${this.posLabel(1 - p)}'s hands.</span>`);
+      say(`How <b>${who}</b> plays here, as a <b>whole range</b>. <span class="dim">The grid is showing ${this.posLabel(this.player)}'s hands.</span>`);
       link(`show ${who}'s hands`, `Show ${who}'s hands in the grid, so you can pick the ones to lock.`, () => {
         this.player = p;
         this.syncSegs(); this.renderActions(); this.renderMatrix(); this.renderLegend();
@@ -2036,15 +2115,18 @@ export class Browser {
   renderExploitBanner(el) {
     const b = document.createElement('div');
     b.className = 'exploit-banner';
-    if (!this.exploitReady()) {
+    if (this.threeWay && !this.isLive(this.player)) {
+      b.innerHTML = `<b>EXPLOIT</b> ${this.posLabel(this.player)} has folded on this line, so there is no reply to work out.`;
+    } else if (!this.exploitReady()) {
       b.innerHTML = `<b>EXPLOIT</b> working out ${this.posLabel(this.player)}'s best reply…`;
     } else {
       const e = this.exploit;
       const nm = this.posLabel(e.exploiter);
-      const other = this.posLabel(1 - e.exploiter);
+      const other = this.oppLabel(e.exploiter);
+      const plays = this.oppCount(e.exploiter) > 1 ? 'they play' : `${other} plays`;
       const mine = e.locked && e.player === e.exploiter;
       b.innerHTML = e.avg_gain != null
-        ? `<b>EXPLOIT</b> ${nm}'s best reply to ${other} as ${other} plays now: ` +
+        ? `<b>EXPLOIT</b> ${nm}'s best reply to ${other} as ${plays} now: ` +
           `<b>${fmt(e.avg_br_ev)}</b> a hand from here instead of ${fmt(e.avg_cur_ev)} ` +
           `(<b>+${fmt(Math.max(0, e.avg_gain))}</b>).` +
           (mine ? ` ${nm} is locked at this decision, so the lock is what shows.` : '')
@@ -2376,12 +2458,13 @@ export class Browser {
     if (this.mode === 'exploit') {
       const key = document.createElement('span');
       key.className = 'key';
-      const me = this.posLabel(this.player), them = this.posLabel(1 - this.player);
+      const me = this.posLabel(this.player), them = this.oppLabel(this.player);
+      const plays = this.oppCount(this.player) > 1 ? 'they play' : `${them} plays`;
       if (this.effMode() === 'strategy') {
-        key.textContent = `EXPLOIT: ${me}'s best play with each hand against ${them} as ${them} plays now, locks included. ` +
+        key.textContent = `EXPLOIT: ${me}'s best play with each hand against ${them} as ${plays} now${this.threeWay ? '' : ', locks included'}. ` +
           'The number is what it gains over the solve\'s play.';
       } else if (this.view.node_type === 'action') {
-        key.innerHTML = `EXPLOIT: <b style="color:var(--ink)">${them} acts here</b>, so there is no ${me} play to show. ` +
+        key.innerHTML = `EXPLOIT: <b style="color:var(--ink)">${this.posLabel(this.view.player)} acts here</b>, so there is no ${me} play to show. ` +
           `Click one of ${me}'s boxes in the line above. The number is what ${me}'s best reply gains with that hand from here on ` +
           '(grey = nothing).';
       } else {
@@ -2914,7 +2997,7 @@ export class Browser {
   // ----- equity distribution chart -----
 
   buildEqCurves() {
-    this.eqCurves = [0, 1].map(p => {
+    this.eqCurves = this.everyPlayer().map(p => {
       const hands = this.view.players[p].hands;
       const items = hands
         .map((h, i) => ({ i, eq: h.eq, reach: h.reach }))
@@ -2938,7 +3021,9 @@ export class Browser {
     const el = this.els.eqStats;
     if (!el) return;
     const pot = this.view.pot;
-    el.innerHTML = [0, 1].map(p => {
+    const np = this.np;
+    el.classList.toggle('three', np === 3);
+    el.innerHTML = this.everyPlayer().map(p => {
       const hands = this.view.players[p].hands;
       let r = 0, ev = 0, evW = 0, eq = 0, eqW = 0;
       hands.forEach(h => {
@@ -2952,6 +3037,17 @@ export class Browser {
       const avgEv = evW > 1e-12 ? ev / evW : null;
       const avgEq = eqW > 1e-12 ? eq / eqW : null;
       const eqr = avgEv != null && avgEq > 1e-9 ? avgEv / (avgEq * pot) : null;
+      // three players: one row of numbers each, so the three cards fit
+      if (np === 3) {
+        const out = !this.isLive(p);
+        return `<div class="eqstat" data-tip="${out ? 'This player has folded.' : 'EQR = equity realization: EV as a fraction of (equity × pot). Under 100% this range under-realizes its equity.'}">
+        <div class="eqstat-head"><i style="background:${playerColor(p, np)}"></i>${this.posLabel(p)}<small>${out ? 'folded' : r.toFixed(1) + ' combos'}</small></div>
+        <div class="eqstat-grid">
+          <span><label>EV</label><div>${avgEv != null ? fmt(avgEv) : '—'}</div></span>
+          <span><label>Equity</label><div>${avgEq != null ? (avgEq * 100).toFixed(1) + '%' : '—'}</div></span>
+          <span><label>EQR</label><div>${eqr != null ? `${Math.round(eqr * 100)}%` : '—'}</div></span>
+        </div></div>`;
+      }
       return `<div class="eqstat" data-tip="EQR = equity realization: EV as a fraction of (equity × pot). Under 100% this range under-realizes its equity.">
         <div class="eqstat-head"><i style="background:${EQ_COLORS[p]}"></i>${this.posLabel(p)}</div>
         <div class="eqstat-grid">
@@ -3010,10 +3106,11 @@ export class Browser {
     ctx.font = '12px IBM Plex Mono';
 
     // curves
-    for (const p of [1, 0]) {
+    const np = this.np;
+    for (const p of this.everyPlayer().reverse()) {
       const { pts } = this.eqCurves[p];
       if (!pts.length) continue;
-      ctx.strokeStyle = EQ_COLORS[p];
+      ctx.strokeStyle = playerColor(p, np);
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(px(0), py(pts[0].y));
@@ -3024,8 +3121,8 @@ export class Browser {
     ctx.lineWidth = 1;
 
     // legend
-    [0, 1].forEach(p => {
-      ctx.fillStyle = EQ_COLORS[p];
+    this.everyPlayer().forEach(p => {
+      ctx.fillStyle = playerColor(p, np);
       ctx.beginPath(); ctx.arc(L + 14, T + 10 + p * 17, 4, 0, 7); ctx.fill();
       ctx.fillStyle = '#a8a8a8';
       ctx.fillText(this.posLabel(p), L + 24, T + 14 + p * 17);
@@ -3062,14 +3159,14 @@ export class Browser {
       ctx.fillText(`${Math.round(xv * 100)}`, px(xv), H - B + 14);
       ctx.textAlign = 'start';
       const lines = [];
-      for (const p of [0, 1]) {
+      for (const p of this.everyPlayer()) {
         const { pts } = this.eqCurves[p];
         if (!pts.length) continue;
         let pt = pts[0];
         for (const q of pts) { if (q.x <= xv) pt = q; else break; }
         const h = this.view.players[p].hands[pt.i];
         lines.push({ p, text: `${this.posLabel(p)} ${h.combo} ${(pt.y * 100).toFixed(1)}%`, y: pt.y });
-        ctx.fillStyle = EQ_COLORS[p];
+        ctx.fillStyle = playerColor(p, np);
         ctx.beginPath(); ctx.arc(px(pt.x), py(pt.y), 3.5, 0, 7); ctx.fill();
       }
       // label box
@@ -3079,7 +3176,7 @@ export class Browser {
       ctx.fillStyle = 'rgba(18,18,18,.92)';
       ctx.fillRect(bx, by, bw, 18 * lines.length + 10);
       lines.forEach((l, k) => {
-        ctx.fillStyle = EQ_COLORS[l.p];
+        ctx.fillStyle = playerColor(l.p, np);
         ctx.fillText(l.text, bx + 8, by + 16 + 18 * k);
       });
     }
@@ -3242,13 +3339,36 @@ export class Browser {
   }
 
   syncSegs() {
-    this.els.segPlayer.querySelectorAll('button').forEach(b => {
+    // one HANDS OF button per player: two, or three for a three-player spot
+    const seg = this.els.segPlayer;
+    const np = this.np;
+    if (seg.querySelectorAll('button').length !== np) {
+      const tip = seg.querySelector('button')?.dataset.tip || '';
+      seg.replaceChildren(...this.everyPlayer().map(p => {
+        const b = document.createElement('button');
+        b.dataset.v = String(p);
+        b.dataset.tip = tip;
+        return b;
+      }));
+    }
+    seg.querySelectorAll('button').forEach(b => {
       const p = +b.dataset.v;
       b.classList.toggle('active', p === this.player);
+      b.classList.toggle('out', !this.isLive(p)); // folded on the way here
       b.textContent = this.posLabel(p); // BB/BTN… from preflop setup, else OOP/IP
     });
-    this.els.segMode.querySelectorAll('button').forEach(b =>
-      b.classList.toggle('active', b.dataset.v === this.mode));
+    this.els.segMode.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('active', b.dataset.v === this.mode);
+      // EQ and EXPLOIT say who the hands are up against
+      const tips = MODE_TIPS[b.dataset.v];
+      if (tips) b.dataset.tip = tips[np === 3 ? 1 : 0];
+    });
+    // the equity chart's tooltip names the opposition too
+    const chart = this.els.eqCanvas?.closest('[data-tip]');
+    if (chart) {
+      chart.dataset.tip = chart.dataset.tip.replace(/equity vs [^)]*\)/,
+        np === 3 ? 'equity vs the ranges of the players still in the hand)' : "equity vs the opponent's range)");
+    }
   }
 }
 

@@ -1588,37 +1588,43 @@ label.icm-rake-off input { opacity: .45; pointer-events: none; }
 .pfl-icm .pfl-icm-adv p { margin:7px 0 0; overflow-wrap:anywhere; }
 .pfl-saved-value-note { margin:8px 0; color:#e4c377; font-size:11px; line-height:1.4; }
 
-/* ------------------------------- 3-WAY -------------------------------- */
+/* --------------------- 2 or 3 players (Setup & Solve) ------------------ */
 
-.mw-grid { display: grid; grid-template-columns: minmax(360px, 460px) 1fr; gap: 12px; align-items: start; }
-.mw-left { display: flex; flex-direction: column; gap: 12px; }
-.mw-player { margin-top: 10px; }
-.mw-player-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.mw-player-head .mw-name { width: 70px; }
-.mw-player-head .mw-stack { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-dim); }
-.mw-player-head .mw-stack input { width: 80px; }
-.mw-player textarea { min-height: 54px; margin-top: 4px; }
-.mw-browse { min-height: 520px; }
-.mw-line { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-.mw-head { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; font-size: 12px; }
-.mw-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; font-size: 13px; }
-.mw-body { display: grid; grid-template-columns: minmax(320px, 620px) minmax(220px, 1fr); gap: 12px; }
-.mw-matrix-col { min-width: 0; }
-.mw-detail { font-size: 12px; max-height: 620px; overflow-y: auto; min-width: 0; }
-.mw-detail-head { font-weight: 600; margin-bottom: 6px; }
-.mw-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 6px; }
-.mw-key { display: inline-flex; align-items: center; gap: 4px; }
-.mw-key i { width: 10px; height: 10px; display: inline-block; border-radius: 2px; }
-.mw-combo { display: grid; grid-template-columns: 48px 1fr 56px; gap: 6px; align-items: center; padding: 1px 0; }
-.mw-combo span:last-child { text-align: right; }
-.mw-bar { display: flex; height: 10px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
-.mw-bar i { display: block; height: 100%; }
-.mw-cards { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.mw-card { cursor: pointer; }
-.mw-card:hover { outline: 1px solid var(--accent); }
-@media (max-width: 1100px) {
-  .mw-grid, .mw-body { grid-template-columns: 1fr; }
+/* The Players switch shows one set of fields or the other. */
+#view-setup:not(.players-3) .only-3 { display: none; }
+#view-setup.players-3 .only-2 { display: none; }
+.setup-format { display: flex; align-items: center; gap: 12px; }
+.setup-format .seg button { padding: 5px 13px; }
+.setup-format .seg small { font-size: 8px; letter-spacing: .12em; opacity: .75; margin-left: 2px; }
+/* A stack box named after its seat; the name is typed in place. */
+#view-setup.players-3 #panel-money .field-group:first-of-type {
+  flex-basis: 100%; grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+.seat-stack > span { display: flex; align-items: baseline; gap: 5px; }
+#view-setup .seat-stack input.seat-name {
+  width: 4.2em; padding: 0 2px 1px; background: none; border: 0;
+  border-bottom: 1px dotted var(--line2); border-radius: 0;
+  color: var(--ink); font: inherit; letter-spacing: .04em;
+}
+@supports (field-sizing: content) {
+  #view-setup .seat-stack input.seat-name { field-sizing: content; width: auto; min-width: 1.6em; max-width: 5.2em; }
+}
+.seat-stack input.seat-name:focus { border-bottom-color: var(--accent); }
+.solve-adv { margin-top: 8px; }
+.solve-adv > summary { cursor: pointer; font-size: 11px; color: var(--ink-faint); letter-spacing: .08em; text-transform: uppercase; }
+.solve-adv > summary:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+.solve-adv .field-grid { margin-top: 8px; }
+/* Browse tools that are for two players only for now: in view, greyed. */
+.two-only { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: 10px;
+  font: 10px var(--font-data); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); opacity: .7; }
+.two-only .info-dot { margin-left: auto; opacity: 1; }
+.seg button.out { opacity: .5; }
+/* Three range cards beside the equity chart: one row of numbers each. */
+.eqchart-stats.three .eqstat { padding: 5px 8px; }
+.eqchart-stats.three .eqstat-head { margin-bottom: 3px; }
+.eqchart-stats.three .eqstat-head small { margin-left: auto; font: 10px var(--font-data); color: var(--ink-faint); letter-spacing: 0; text-transform: none; }
+.eqchart-stats.three .eqstat-grid { grid-template-columns: 1fr 1fr 1fr; gap: 2px 6px; }
+.eqchart-stats.three .eqstat-grid div { font-size: 12px; }
 
 /* Postflop tournament payouts (ICM) panel, SETUP and 3-WAY */
 .postflop-icm { margin: 10px 0 0; }
@@ -1627,6 +1633,7 @@ label.icm-rake-off input { opacity: .45; pointer-events: none; }
 .postflop-icm label.check input { width: auto; }
 .postflop-icm .pfl-grid2[hidden] { display: none; }
 .postflop-icm .pfl-grid2 label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink-dim); }
+.postflop-icm .pfl-grid2 label[hidden] { display: none; }
 .postflop-icm .pfl-grid2 input { width: 100%; min-width: 0; box-sizing: border-box; }
 .postflop-icm textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 48px; margin-top: 0; }
 

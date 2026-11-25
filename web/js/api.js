@@ -72,14 +72,55 @@ function keepLine(keep) {
   return { lock_path: !!keep };
 }
 
+// One postflop spot is loaded at a time: a heads-up one (/api/*) or a
+// three-player one (/api/mw/*). The Setup & Solve and Browse pages call the
+// same functions for both; this is the number of players of the loaded spot.
+let players = 2;
+export const spotPlayers = () => players;
+export function setSpotPlayers(n) { players = n === 3 ? 3 : 2; }
+const mw = () => players === 3;
+/** A spot request for three players carries `ranges`, a heads-up one
+ *  `range_oop` / `range_ip`. */
+export const isThreeWay = spot => Array.isArray(spot?.ranges);
+
+/** A three-player status from a server older than the merged pages (it used
+ *  other field names), read into the names the pages expect. */
+function mwStatus(st) {
+  if (!st || 'elapsed_secs' in st) return st;
+  return {
+    ...st,
+    elapsed_secs: st.elapsed || 0,
+    gpu: st.engine === 'gpu',
+    gpu_note: '',
+    history: (st.history || []).map(h => Array.isArray(h) ? { iteration: h[0], exploit_pct: h[1] } : h),
+    tree: st.tree ? { arena_mb: st.tree.arena_mb_compressed, vram_mb: st.tree.gpu_mb, ...st.tree } : st.tree,
+  };
+}
+
 export const api = {
-  buildSpot: cfg => req('POST', '/api/spot', cfg),
-  solve: opts => req('POST', '/api/solve', opts),
-  stop: () => req('POST', '/api/stop'),
-  status: () => req('GET', '/api/status'),
+  /** Which kind of spot the server holds right now (asked once, on page load). */
+  async detectSpot() {
+    try {
+      const st = await req('GET', '/api/mw/status');
+      setSpotPlayers(st?.tree ? 3 : 2);
+    } catch { setSpotPlayers(2); }
+    return players;
+  },
+  async buildSpot(cfg) {
+    const three = isThreeWay(cfg);
+    const info = await req('POST', three ? '/api/mw/spot' : '/api/spot', cfg);
+    setSpotPlayers(three ? 3 : 2);
+    return info;
+  },
+  // engine and algorithm are choices of the three-player solve only
+  solve: ({ engine, algorithm, ...opts }) => mw()
+    ? req('POST', '/api/mw/solve', { ...opts, ...(engine ? { engine } : {}), ...(algorithm ? { algorithm } : {}) })
+    : req('POST', '/api/solve', opts),
+  stop: () => req('POST', mw() ? '/api/mw/stop' : '/api/stop'),
+  status: () => mw() ? req('GET', '/api/mw/status').then(mwStatus) : req('GET', '/api/status'),
   version: () => req('GET', '/api/version'),
-  node: path => req('POST', '/api/node', { path }),
-  exploit: (path, exploiter) => req('POST', '/api/exploit', { path, exploiter }),
+  node: path => req('POST', mw() ? '/api/mw/node' : '/api/node', { path }),
+  exploit: (path, exploiter) => req('POST', mw() ? '/api/mw/exploit' : '/api/exploit', { path, exploiter }),
   pfBuild: (cfg, model) => req('POST', '/api/preflop/spot' + (model ? `?multiway_model=${encodeURIComponent(model)}` : ''), cfg),
   pfEstimate: cfg => req('POST', '/api/preflop/estimate', cfg),
   pfSolve: opts => req('POST', '/api/preflop/solve', opts || {}),
@@ -117,7 +158,7 @@ export const api = {
   fit: (path, freqs, label, keep = false) => req('POST', '/api/fit', { path, freqs, label, ...keepLine(keep) }),
   fitCancel: (path = null) => req('POST', '/api/fit/cancel', { path }),
   fits: () => req('GET', '/api/fits'),
-  lockHistory: () => req('GET', '/api/locks/history'),
+  lockHistory: () => mw() ? Promise.resolve({ undo: [], redo: [] }) : req('GET', '/api/locks/history'),
   lockUndo: () => req('POST', '/api/locks/undo'),
   lockRedo: () => req('POST', '/api/locks/redo'),
   profileLocks: (player, stats, aggressor, pot_type = null, name = null) =>
@@ -132,15 +173,31 @@ export const api = {
   reportsLines: (name, line) => req('POST', '/api/reports/lines', { name, line }),
   reportsDelete: name => req('POST', '/api/reports/delete', { name }),
   unlock: path => req('POST', '/api/unlock', { path }),
-  locks: () => req('GET', '/api/locks'),
-  locksList: () => req('GET', '/api/locks/list'),
+  // a three-player spot has no node locks yet
+  locks: () => mw() ? Promise.resolve([]) : req('GET', '/api/locks'),
+  locksList: () => mw() ? Promise.resolve({ locks: [], profile: [0, 0] }) : req('GET', '/api/locks/list'),
   locksClear: () => req('POST', '/api/locks/clear'),
   runouts: path => req('POST', '/api/runouts', { path }),
   parseRange: text => req('POST', '/api/range/parse', { text }),
   presets: () => req('GET', '/api/presets'),
-  save: name => req('POST', '/api/save', { name }),
-  load: name => req('POST', '/api/load', { name }),
-  saves: () => req('GET', '/api/saves'),
+  save: name => req('POST', mw() ? '/api/mw/save' : '/api/save', { name }),
+  /** Load a saved solve; `n` is how many players it has (from `saves`). */
+  async load(name, n = 2) {
+    const out = await req('POST', n === 3 ? '/api/mw/load' : '/api/load', { name });
+    setSpotPlayers(n);
+    return out;
+  },
+  /** Every saved solve, both kinds: [{ name, players }]. */
+  async saves() {
+    const [two, three] = await Promise.all([
+      req('GET', '/api/saves'),
+      req('GET', '/api/mw/saves').catch(() => []),
+    ]);
+    return [
+      ...two.map(name => ({ name, players: 2 })),
+      ...three.map(s => ({ name: s.name, players: 3 })),
+    ];
+  },
 };
 
 let toastTimer = null;

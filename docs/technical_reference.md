@@ -241,7 +241,7 @@ Games with `balanced` or `leafnet` realization or separate 4-bet+ menus use `GTO
 - **Tree.** A seat that cannot cover the bet may call all-in for less (even with limping off). A raise is capped at the deepest stack still able to call it, so a big stack's "all-in" against shorter seats is labelled with the amount that can be called. No raise is offered when no one behind can put in more chips. An all-in for less than a full raise does not reopen raising for a seat that already acted, unless the raises since add up to a full one (standard no-limit rule); seats that have not acted keep their raise.
 - **Pots.** At a flop or showdown terminal the top contributor's uncalled chips are returned first. If live seats are all-in for different amounts, the pot is split into a main pot and side pots by all-in level (antes go to the main pot; folded chips go to every pot their contribution reaches). The node view lists them under `side_pots`.
 - **Payoffs.** Expected value is linear in the pots, so each pot pays its amount times the seat's chance of holding the best hand among the seats eligible for it. Two-way pots use the symmetrized pairwise equity table, so they pay out exactly what is in them; three or more use the game's multiway model. Rake is charged once on the whole pot and shared in proportion to pot size. Every side-pot terminal has a live all-in seat, so it is priced as showdown equity under every realization model.
-- **Exports.** SEND TO POSTFLOP uses the effective stack (the smaller of the two remaining stacks). SEND TO 3-WAY carries each seat's remaining stack. Neither is offered at a terminal with side pots or, for 3-way, when a live seat has no chips behind.
+- **Exports.** SEND TO POSTFLOP uses the effective stack (the smaller of the two remaining stacks). A three-player flop carries each seat's remaining stack to the same page, with Players on 3. Neither is offered at a terminal with side pots or, for 3-way, when a live seat has no chips behind.
 - **GPU.** Side-pot terminals have their own kernels. `pf_side_pot_terminal` runs after `pf_terminal` and prices heads-up pots with the symmetrized table (and 3+ way pots with the legacy product). Under the coupled model, `pf_side_pot_multiway` adds each 3+ way pot after every particle batch, reading the same CDF slots as `pf_multiway_terminal`, which skips these terminals. Pot amounts are uploaded already scaled by the terminal's rake. The shared-CDF throughput variants (retained cohorts, static CDFs) decline side-pot trees, so `new_throughput` picks the normal GPU plan for them. Equal-stack trees upload no side-pot data and launch the same kernels as before.
 - **Saves.** Games with unequal stacks save as `GTOPREFLOP5` so older binaries refuse them rather than rebuild an equal-stack tree.
 
@@ -278,7 +278,7 @@ So the cap belongs one raise above the last raise a study cares about. The form'
 
 ### Postflop ICM
 
-Heads-up and 3-way postflop spots take the same payouts: `TreeConfig.icm` / `MwTreeConfig.icm` (and `icm` in `/api/spot` and `/api/mw/spot`) is `{"payouts": [50, 30, 20], "behind": [8, 21], "others": [15, 12, 30], "field_groups": [{"stack": 20, "count": 5}]}`. `others` and `field_groups` are every player still in who is not in the hand (folded players at the table and players at other tables). `behind` is heads-up only: each player's chips behind at the root, at least the effective stack; the deeper player's extra chips are never at risk but count for ICM (default: the effective stack for both). 3-way spots take each stack from `stacks`. A Preflop Lab flop export from an ICM game fills all of it in, and SETUP and the 3-WAY tab have the same tick box, with their payout fields under it.
+Heads-up and 3-way postflop spots take the same payouts: `TreeConfig.icm` / `MwTreeConfig.icm` (and `icm` in `/api/spot` and `/api/mw/spot`) is `{"payouts": [50, 30, 20], "behind": [8, 21], "others": [15, 12, 30], "field_groups": [{"stack": 20, "count": 5}]}`. `others` and `field_groups` are every player still in who is not in the hand (folded players at the table and players at other tables). `behind` is heads-up only: each player's chips behind at the root, at least the effective stack; the deeper player's extra chips are never at risk but count for ICM (default: the effective stack for both). 3-way spots take each stack from `stacks`. A Preflop Lab flop export from an ICM game fills all of it in, and the Postflop Setup & Solve page has the same tick box for both kinds of spot, with the payout fields under it.
 
 - **Payoffs.** Every terminal pays each player the change in its Malmuth–Harville prize equity in bb equivalents, measured from the root with the pot split evenly between the players in the hand (a constant per player, so strategies do not depend on the split). Final stacks are exact: a fold or showdown settles the pot (side pots in 3-way) and adds it to what each player had behind. Winner-take-all payouts reproduce chip EV exactly. The game is general-sum, so exploitability compares each player's best response with its actual value, as with rake.
 - **Heads-up.** Each player gets its own win, lose and tie value per terminal (`icm::postflop::HuIcmPayoffs`); the CPU evaluators and the GPU kernels read the traverser's values instead of the shared chip amounts.
@@ -405,6 +405,14 @@ response + EV gain vs the current strategy), `POST /api/lock {path, mode}`,
 `POST /api/range/parse`, `POST /api/save|load {name}`, `GET /api/saves`,
 `GET /api/presets`, `GET /api/version` (`version` and `date` from the newest
 `CHANGELOG.md` entry, the checkout's `commit`, `changelog_url`).
+
+Three-player postflop spots use the same shapes under `/api/mw/`: `spot`,
+`solve` (also takes `engine` = `auto|gpu|cpu`), `stop`, `status`,
+`node {path}`, `exploit {path, exploiter}`, `save|load {name}`, `saves`. The
+node reply has three `players` and `put`/`live` per seat; its per-hand `eq` is
+showdown equity against both other ranges, and it has no locks or runouts.
+The server holds one postflop spot at a time, so building or loading either
+kind drops the other.
 
 Preflop lab: `POST /api/preflop/spot {config}`, `POST /api/preflop/solve`,
 `POST /api/preflop/stop`, `GET /api/preflop/status`,

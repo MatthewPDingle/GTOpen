@@ -367,6 +367,103 @@ fn showdown(
     run_hands(out, work);
 }
 
+/// Showdown equity of each of p's hands: the share of one pot p wins when
+/// the hand is checked down from here against the players still in, over
+/// the other players' reach (card removal exact, a folded player's cards
+/// included) and every runout still to come. NaN for a hand no opponent
+/// holding is compatible with, and for every hand of a player who folded.
+///
+/// `mass` is `compatible_mass` for p (the reach of compatible opponent hand
+/// pairs). Every such pair leaves the same number of runouts, so the sum of
+/// the per-runout masses is `mass` times that count.
+pub fn showdown_equity(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [&[f32]; NP], mass: &[f32]) -> Vec<f32> {
+    use rayon::prelude::*;
+    let nh = spot.hands[p].len();
+    if live & (1 << p) == 0 {
+        return vec![f32::NAN; nh];
+    }
+    let (q, r) = others(p);
+    let in_q = live & (1 << q) != 0;
+    let in_r = live & (1 << r) != 0;
+    if !in_q && !in_r {
+        return mass.iter().map(|&m| if m > 0.0 { 1.0 } else { f32::NAN }).collect();
+    }
+    // pay[cq][cr]: p's share given how each opponent compares (0 weaker,
+    // 1 tied, 2 stronger); a folded opponent never counts.
+    let mut pay = [[0.0f64; 3]; 3];
+    for (cq, row) in pay.iter_mut().enumerate() {
+        for (cr, v) in row.iter_mut().enumerate() {
+            let mut ties = 1.0;
+            let mut best = true;
+            for (alive, c) in [(in_q, cq), (in_r, cr)] {
+                if alive {
+                    match c {
+                        0 => {}
+                        1 => ties += 1.0,
+                        _ => best = false,
+                    }
+                }
+            }
+            *v = if best { 1.0 / ties } else { 0.0 };
+        }
+    }
+    let coef = basis_coeffs(&pay);
+    let board_len = spot.board.len() + dealt.len();
+    let dead = dealt.iter().fold(spot.board_mask, |m, &c| m | (1u64 << c));
+    let free: Vec<u8> = (0..52u8).filter(|&c| dead & (1u64 << c) == 0).collect();
+    let mut runouts: Vec<Vec<u8>> = Vec::new();
+    match 5 - board_len {
+        0 => runouts.push(dealt.to_vec()),
+        1 => {
+            for &c in &free {
+                let mut d = dealt.to_vec();
+                d.push(c);
+                runouts.push(d);
+            }
+        }
+        _ => {
+            for (i, &a) in free.iter().enumerate() {
+                for &b in &free[i + 1..] {
+                    runouts.push(vec![a, b]);
+                }
+            }
+        }
+    }
+    // Runouts a compatible hand triple (six cards) leaves open.
+    let left = (52 - board_len - 6) as f64;
+    let count = match 5 - board_len {
+        0 => 1.0,
+        1 => left,
+        _ => left * (left - 1.0) / 2.0,
+    };
+    let won = runouts
+        .par_iter()
+        .fold(
+            || (vec![0f64; nh], vec![0f32; nh]),
+            |(mut acc, mut buf), d| {
+                showdown(spot, spot.river.get(d), p, q, r, reach[q], reach[r], &coef, &mut buf);
+                for (a, &b) in acc.iter_mut().zip(buf.iter()) {
+                    *a += b as f64;
+                }
+                (acc, buf)
+            },
+        )
+        .map(|(acc, _)| acc)
+        .reduce(
+            || vec![0f64; nh],
+            |mut a, b| {
+                for (x, y) in a.iter_mut().zip(b) {
+                    *x += y;
+                }
+                a
+            },
+        );
+    won.iter()
+        .zip(mass)
+        .map(|(&w, &m)| if m > 0.0 { (w / (m as f64 * count)).clamp(0.0, 1.0) as f32 } else { f32::NAN })
+        .collect()
+}
+
 /// O(n^3) reference used by tests.
 pub fn terminal_cfv_brute(
     spot: &MwSpot,

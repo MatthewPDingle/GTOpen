@@ -10,8 +10,8 @@ export class RangeEditor {
     this.countEl = opts.countEl;
     this.brushEl = opts.brushEl;
     this.brushValEl = opts.brushValEl;
-    // two ranges: weights arrays of 1326
-    this.ranges = [new Float32Array(1326), new Float32Array(1326)];
+    // one weights array of 1326 per range tab (two unless `slots` says more)
+    this.ranges = Array.from({ length: opts.slots || 2 }, () => new Float32Array(1326));
     this.player = 0;
     this.painting = false;
     this.paintValue = 1.0;
@@ -145,6 +145,14 @@ export class RangeEditor {
   setWeightsFromText(text) {
     this.textEl.value = text;
     return this.applyText();
+  }
+
+  /** Set one tab's range from text without showing that tab (a parse
+   *  failure rejects; empty text empties the range). */
+  async setRangeText(slot, text) {
+    if (!String(text || '').trim()) this.ranges[slot] = new Float32Array(1326);
+    else this.ranges[slot] = Float32Array.from((await api.parseRange(text)).weights);
+    if (this.player === slot) { this.render(); this.syncText(); }
   }
 
   clear() {

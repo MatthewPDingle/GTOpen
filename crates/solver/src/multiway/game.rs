@@ -17,6 +17,9 @@ pub struct MwSpotConfig {
     /// Ranges in postflop action order (first to act first).
     pub ranges: [String; NP],
     pub tree: MwTreeConfig,
+    /// Seat names of the three players, in the same order (labels only).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub seats: Option<[String; NP]>,
 }
 
 /// Hand strengths on one complete five-card board.

@@ -1,6 +1,6 @@
 // Tournament (ICM) payoffs for postflop spots: a collapsible panel that turns
-// the spot request's `icm` on and off. Shared by SETUP (heads-up) and the
-// 3-WAY tab; the Preflop Lab's flop exports fill it in.
+// the spot request's `icm` on and off, on the Postflop Setup & Solve page for
+// two or three players; the Preflop Lab's flop exports fill it in.
 
 import { holdRakeBoxes, releaseRakeBoxes } from './icm_rake.js';
 
@@ -50,7 +50,8 @@ export function formatStacks(icm) {
 /**
  * Builds the panel after `anchor`. `seats` = 2 shows the chips-behind fields
  * (heads-up spots have one effective stack); 3-way spots take each stack
- * from the player rows. `onChange` runs after every edit.
+ * from the player rows. `setSeats` switches between the two. `onChange` runs
+ * after every edit.
  */
 export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {}) {
   // The on/off box always shows, so whether a spot uses tournament payouts
@@ -94,7 +95,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
     + 'this table, and players at other tables. "144x25": 144 players with 25 each.';
   othersLabel.append('Other players’ stacks ', others);
   const behind = [];
-  if (seats === 2) {
+  const behindLabels = [];
+  {
     for (const who of ['OOP', 'IP']) {
       const input = document.createElement('input');
       input.type = 'number'; input.min = '0'; input.step = 'any';
@@ -104,6 +106,8 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
         + 'are never at risk but count for ICM.';
       label.append(`${who} chips behind `, input);
       behind.push(input);
+      behindLabels.push(label);
+      label.hidden = seats !== 2;
       grid.append(label);
     }
   }
@@ -157,7 +161,7 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
         throw new Error('ICM payouts must be a list of non-negative prizes, first place first.');
       }
       const icm = { payouts: pay, ...parseStacks(others.value) };
-      if (behind.length && behind.some(b => b.value.trim() !== '')) {
+      if (seats === 2 && behind.some(b => b.value.trim() !== '')) {
         if (behind.some(b => b.value.trim() === '')) throw new Error('ICM: give both players’ chips behind, or neither.');
         icm.behind = behind.map(b => Number(b.value));
       }
@@ -177,5 +181,10 @@ export function createPostflopIcm(anchor, { seats = 2, onChange = () => {} } = {
       render();
     },
     get on() { return onBox.checked; },
+    /** 2 shows the chips-behind boxes, 3 hides them (and leaves them out). */
+    setSeats(n) {
+      seats = n === 3 ? 3 : 2;
+      for (const l of behindLabels) l.hidden = seats !== 2;
+    },
   };
 }

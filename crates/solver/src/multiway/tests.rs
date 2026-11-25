@@ -20,7 +20,7 @@ impl Rng {
 fn cfg(board: &str, ranges: [&str; 3], pot: f64, stacks: [f64; 3], bets: &str, raises: &str) -> MwSpotConfig {
     let mut t = MwTreeConfig::uniform(pot, stacks[0], &parse_sizes(bets).unwrap(), &parse_sizes(raises).unwrap());
     t.stacks = stacks;
-    MwSpotConfig { board: board.into(), ranges: ranges.map(String::from), tree: t }
+    MwSpotConfig { board: board.into(), ranges: ranges.map(String::from), tree: t, seats: None }
 }
 
 const R0: &str = "AA,KK,QQ,JJ,TT,99,AK,AQ,KQ,QJ,JT,T9s,98s,87s,A5s";
@@ -229,7 +229,9 @@ fn compressed_and_pcfr_turn_solves_converge() {
 
 #[test]
 fn save_load_round_trip_and_browse() {
-    use super::query::{class_index, class_label, node_view, MwStep};
+    use super::query::{class_index, class_label, exploit_view, node_view};
+    use crate::query::PathStep;
+    let act = |index| PathStep::Action { index };
     let c = cfg("Ks9d4c7h", [R0, R1, R2], 30.0, [90.0; 3], "66", "a");
     let (mut s, e) = solve(c, 20, Storage::Compressed, true, Algorithm::Dcfr);
     s.ensure_symmetric();
@@ -249,20 +251,199 @@ fn save_load_round_trip_and_browse() {
     assert_eq!(class_label(class_index(48, 49)), "AA");
     assert_eq!(class_label(class_index(51, 47)), "AKs");
     assert_eq!(class_label(class_index(50, 47)), "AKo");
-    // Root, then check, check, check, then a river card.
-    let root = node_view(&t, &[], true).unwrap();
-    assert_eq!(root.kind, "action");
-    let f: f64 = root.actions.iter().map(|a| a.freq).sum();
-    assert!((f - 1.0).abs() < 1e-4, "{f}");
-    assert!(root.hands.iter().all(|h| h.ev.map_or(true, |x| x.is_finite())));
-    let path = [MwStep::Action(0), MwStep::Action(0), MwStep::Action(0)];
-    let ch = node_view(&t, &path, false).unwrap();
-    assert_eq!(ch.kind, "chance");
+
+    // Range-average EV of a player: per-hand EVs weighted by reach x valid.
+    let avg_ev = |v: &super::query::MwNodeView, p: usize| {
+        let (mut w, mut x) = (0f64, 0f64);
+        for h in &v.players[p].hands {
+            if let Some(ev) = h.ev {
+                w += h.reach as f64 * h.valid as f64;
+                x += h.reach as f64 * h.valid as f64 * ev as f64;
+            }
+        }
+        x / w
+    };
+
+    // The root, in the shape the Browse page reads.
+    let root = node_view(&t, &[]).unwrap();
+    assert_eq!(root.node_type, "action");
+    assert_eq!(root.player, Some(0));
+    assert_eq!(root.live, [true; 3]);
+    assert_eq!(root.history.len(), 1);
+    assert!(root.ev_skipped.is_none());
+    assert!((root.pot - 30.0).abs() < 1e-6);
+    // Without rake the three range EVs add up to the pot.
+    let total: f64 = (0..3).map(|p| avg_ev(&root, p)).sum();
+    assert!((total - 30.0).abs() < 0.02, "EVs sum to {total}");
+    for (p, pl) in root.players.iter().enumerate() {
+        for h in &pl.hands {
+            assert_eq!(h.strategy.is_some(), p == 0);
+            assert!(h.eq.is_some_and(|x| (0.0..=1.0).contains(&x)), "{} eq {:?}", h.combo, h.eq);
+            if let (Some(sg), Some(evs), Some(ev)) = (&h.strategy, &h.evs, h.ev) {
+                assert!((sg.iter().sum::<f32>() - 1.0).abs() < 1e-4);
+                let mix: f32 = sg.iter().zip(evs).map(|(a, b)| a * b.unwrap()).sum();
+                assert!((mix - ev).abs() < 1e-3, "{}: {mix} vs {ev}", h.combo);
+            }
+        }
+    }
+    // Three-way equities add up to one pot as well.
+    let eq_total: f64 = (0..3)
+        .map(|p| {
+            let (mut w, mut x) = (0f64, 0f64);
+            for h in &root.players[p].hands {
+                w += h.reach as f64 * h.valid as f64;
+                x += h.reach as f64 * h.valid as f64 * h.eq.unwrap() as f64;
+            }
+            x / w
+        })
+        .sum();
+    assert!((eq_total - 1.0).abs() < 1e-3, "equities sum to {eq_total}");
+
+    // Best response: no hand loses by it, the bettor's options are scored.
+    let ex = exploit_view(&t, &[], 0).unwrap();
+    assert_eq!(ex.exploiter, 0);
+    assert!(ex.avg_gain.unwrap() >= -1e-4);
+    for h in &ex.hands {
+        assert!(h.gain.map_or(true, |g| g >= -2e-3), "{} gain {:?}", h.combo, h.gain);
+        assert!((h.br_strategy.as_ref().unwrap().iter().sum::<f32>() - 1.0).abs() < 1e-5);
+    }
+    let ex1 = exploit_view(&t, &[], 1).unwrap();
+    assert!(ex1.hands.iter().all(|h| h.br_strategy.is_none()));
+    assert!((ex1.avg_cur_ev.unwrap() as f64 - avg_ev(&root, 1)).abs() < 1e-3);
+    assert!(exploit_view(&t, &[], 3).is_err());
+
+    // A bet and a fold: the folded player has no equity and no EV.
+    let bet = root.actions.iter().position(|a| a.kind == "bet").unwrap();
+    let folded = node_view(&t, &[act(bet), act(0)]).unwrap();
+    assert_eq!(folded.history[1].actions[0].kind, "fold");
+    assert_eq!(folded.live, [true, false, true]);
+    assert_eq!(folded.player, Some(2));
+    assert!(folded.players[1].hands.iter().all(|h| h.eq.is_none() && h.ev.is_none()));
+    assert!(folded.players[0].hands.iter().any(|h| h.eq.is_some() && h.ev.is_some()));
+
+    // Check, check, check, then a river card.
+    let path = [act(0), act(0), act(0)];
+    let ch = node_view(&t, &path).unwrap();
+    assert_eq!(ch.node_type, "chance");
+    assert_eq!(ch.history.last().unwrap().kind, "card");
+    let cards = ch.available_cards.unwrap();
+    assert_eq!(cards.len(), 48);
     let mut path = path.to_vec();
-    path.push(MwStep::Card(ch.cards[0].clone()));
-    let river = node_view(&t, &path, true).unwrap();
+    path.push(PathStep::Card { card: cards[0].clone() });
+    let river = node_view(&t, &path).unwrap();
     assert_eq!(river.board.len(), 5);
-    assert_eq!(river.actor, Some(0));
+    assert_eq!(river.player, Some(0));
+    assert_eq!(river.history.len(), 5);
+    let total: f64 = (0..3).map(|p| avg_ev(&river, p)).sum();
+    assert!((total - 30.0).abs() < 0.02, "river EVs sum to {total}");
+}
+
+/// Equity by brute force: every opponent hand pair, every runout.
+fn equity_brute(spot: &MwSpot, live: u8, dealt: &[u8], p: usize, reach: [&[f32]; NP]) -> Vec<f64> {
+    use crate::cards::combo_index;
+    let (q, r) = others(p);
+    let dead = dealt.iter().fold(spot.board_mask, |m, &c| m | (1u64 << c));
+    let free: Vec<u8> = (0..52u8).filter(|&c| dead & (1u64 << c) == 0).collect();
+    let need = 5 - spot.board.len() - dealt.len();
+    let mut runouts: Vec<Vec<u8>> = Vec::new();
+    match need {
+        0 => runouts.push(dealt.to_vec()),
+        1 => runouts.extend(free.iter().map(|&c| [dealt, &[c]].concat())),
+        _ => {
+            for (i, &a) in free.iter().enumerate() {
+                runouts.extend(free[i + 1..].iter().map(|&b| vec![a, b]));
+            }
+        }
+    }
+    spot.hands[p]
+        .iter()
+        .map(|h| {
+            let (mut num, mut den) = (0f64, 0f64);
+            for (jq, hq) in spot.hands[q].iter().enumerate() {
+                if hq.mask & (h.mask | dead) != 0 || h.mask & dead != 0 {
+                    continue;
+                }
+                for (jr, hr) in spot.hands[r].iter().enumerate() {
+                    if hr.mask & (h.mask | hq.mask | dead) != 0 {
+                        continue;
+                    }
+                    let w = reach[q][jq] as f64 * reach[r][jr] as f64;
+                    if w == 0.0 {
+                        continue;
+                    }
+                    for d in &runouts {
+                        let rm = d.iter().fold(0u64, |m, &c| m | (1u64 << c));
+                        if rm & (h.mask | hq.mask | hr.mask) != 0 {
+                            continue;
+                        }
+                        let rank = &spot.river.get(d).rank;
+                        let mine = rank[combo_index(h.c1, h.c2)];
+                        let mut ties = 1.0;
+                        let mut best = true;
+                        for (o, ho) in [(q, hq), (r, hr)] {
+                            if live & (1 << o) != 0 {
+                                let theirs = rank[combo_index(ho.c1, ho.c2)];
+                                if theirs > mine {
+                                    best = false;
+                                } else if theirs == mine {
+                                    ties += 1.0;
+                                }
+                            }
+                        }
+                        den += w;
+                        if best {
+                            num += w / ties;
+                        }
+                    }
+                }
+            }
+            if den > 0.0 { num / den } else { f64::NAN }
+        })
+        .collect()
+}
+
+#[test]
+fn equity_matches_brute_force() {
+    use super::eval::{compatible_mass, showdown_equity};
+    // (board, ranges, cards dealt below the root): two cards to come, one
+    // to come (from a flop and from a turn root) and none.
+    let small = ["AA,KK,AKs,QJs,T9s", "QQ,JJ,AQs,KQs,98s,A5s", "TT,99,AKo,KJs,JTs"];
+    let cases: [(&str, [&str; 3], &[u8]); 5] = [
+        ("Ks9d4c", small, &[]),
+        ("Ks9d4c", small, &[21]),
+        ("Ks9d4c", small, &[21, 2]),
+        ("Ks9d4c7h", [R0, R1, R2], &[]),
+        ("Ks9d4c7h", [R0, R1, R2], &[0]),
+    ];
+    let mut rng = Rng(77);
+    for (board, ranges, dealt) in cases {
+        let spot = MwSpot::new(cfg(board, ranges, 30.0, [90.0; 3], "66", "a")).unwrap();
+        let dm = dealt.iter().fold(0u64, |m, &c| m | (1u64 << c));
+        assert_eq!(dm & spot.board_mask, 0);
+        let reach: [Vec<f32>; 3] = std::array::from_fn(|o| {
+            spot.hands[o].iter().map(|h| if h.mask & dm != 0 { 0.0 } else { rng.f() }).collect()
+        });
+        let rr = [&reach[0][..], &reach[1][..], &reach[2][..]];
+        for live in [0b111u8, 0b011, 0b101, 0b110] {
+            for p in 0..3 {
+                let mut mass = vec![0f32; spot.hands[p].len()];
+                compatible_mass(&spot, p, rr, &mut mass);
+                let fast = showdown_equity(&spot, live, dealt, p, rr, &mass);
+                if live & (1 << p) == 0 {
+                    assert!(fast.iter().all(|x| x.is_nan()));
+                    continue;
+                }
+                let slow = equity_brute(&spot, live, dealt, p, rr);
+                for (i, (a, b)) in fast.iter().zip(&slow).enumerate() {
+                    if b.is_nan() {
+                        assert!(a.is_nan() || mass[i] <= 1e-6, "{board} {dealt:?} live {live:b} p{p} hand {i}: {a}");
+                    } else {
+                        assert!((*a as f64 - b).abs() < 2e-4, "{board} {dealt:?} live {live:b} p{p} hand {i}: {a} vs {b}");
+                    }
+                }
+            }
+        }
+    }
 }
 
 

@@ -1627,7 +1627,7 @@ mod tests {
         t.stacks = stacks;
         t.rake_pct = rake;
         t.rake_cap = if rake > 0.0 { 3.0 } else { 0.0 };
-        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t };
+        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t, seats: None };
         Arc::new(MwSpot::new(c).unwrap())
     }
 
@@ -1638,7 +1638,7 @@ mod tests {
         t.icm = Some(crate::icm::postflop::PostflopIcm {
             payouts: payouts.to_vec(), behind: None, others: others.to_vec(), field_groups: vec![],
         });
-        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t };
+        let c = MwSpotConfig { board: board.into(), ranges: [R0, R1, R2].map(String::from), tree: t, seats: None };
         Arc::new(MwSpot::new(c).unwrap())
     }
 
