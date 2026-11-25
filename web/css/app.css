@@ -23,6 +23,12 @@
   --c-call: #5ca75f;
   --c-range: #f28c26;
 
+  /* dark edge round text that sits on a coloured grid cell (see .cell .tag) */
+  --cell-text-edge:
+    1px 0 0 rgba(0,0,0,.75), -1px 0 0 rgba(0,0,0,.75), 0 1px 0 rgba(0,0,0,.75), 0 -1px 0 rgba(0,0,0,.75),
+    1px 1px 0 rgba(0,0,0,.6), -1px 1px 0 rgba(0,0,0,.6), 1px -1px 0 rgba(0,0,0,.6), -1px -1px 0 rgba(0,0,0,.6),
+    0 0 3px rgba(0,0,0,.9), 0 1px 4px rgba(0,0,0,.8);
+
   --font-data: "IBM Plex Mono", ui-monospace, monospace;
   --font-body: "IBM Plex Sans", system-ui, sans-serif;
   --font-disp: "Archivo", system-ui, sans-serif;
@@ -372,24 +378,30 @@ textarea {
 .cell .bars { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; display: flex; }
 .cell .bars div { height: 100%; }
 
+/* The hand name and the number under it sit on fills of any colour (bright
+   yellow and green in EV and EQ, orange in the range editor) and, in a part
+   filled cell, on the dark cell behind. White text with a dark edge all round
+   the letters reads on every one of them; on the dark part the edge does not
+   show, so those cells look as they always did. A plain drop shadow is not
+   enough on yellow, so keep the name and the number on --cell-text-edge. */
 .cell .tag {
   position: absolute; top: 3px; left: 5px;
   font-family: var(--font-data); font-size: 14px; font-weight: 400;
-  color: var(--ink); text-shadow: 0 1px 3px rgba(0,0,0,.85);
+  color: #fff; text-shadow: var(--cell-text-edge);
   letter-spacing: .02em;
   pointer-events: none;
 }
 .cell .sub {
   position: absolute; bottom: 2px; right: 5px;
-  font-family: var(--font-data); font-size: 11px; font-weight: 400;
-  color: rgba(255,255,255,.9); text-shadow: 0 1px 3px rgba(0,0,0,.9);
+  font-family: var(--font-data); font-size: 11px; font-weight: 500;
+  color: #fff; text-shadow: var(--cell-text-edge);
   pointer-events: none;
 }
 /* Grayed-out cells (hand not in range, or zero reach at this node): recess the
    background instead of fading the whole cell, so the rank label stays legible.
    Bars/fill are already hidden (opacity 0) for these, so no content is revealed. */
 .cell.empty { background: #131313; }
-.cell.empty .tag { color: var(--ink-dim); text-shadow: 0 1px 2px rgba(0,0,0,.7); }
+.cell.empty .tag { color: #a8a8a8; text-shadow: 0 1px 2px rgba(0,0,0,.7); }
 
 /* range weights use the range-editor orange */
 .matrix.editor .cell .fill { background: linear-gradient(180deg, #f89c3a, #e07d18); }
@@ -1399,6 +1411,8 @@ button.lb-go:hover { background: var(--panel2); }
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 9px; letter-spacing: 0;
+  /* letters this small clog under the hard edge: a soft dark glow instead */
+  text-shadow: 0 0 2px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.8), 0 1px 2px rgba(0,0,0,.8);
 }
 .pfl-btncol { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .pfl-btncol .btn { width: 100%; }
