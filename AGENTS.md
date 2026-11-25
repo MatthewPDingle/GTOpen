@@ -214,6 +214,14 @@ over-limps regs. Range ORDER comes from `preflop/reference.rs` (a clean
 with `cargo run --release -p solver --example reference_order`), blended
 toward raw card appeal by naiveté — never from the current solve.
 
+The player-model editor paints these ranges by hand ("The ranges this player
+plays"). Its brush is a mix: a percent each for call, raise and jam, the rest
+folds (checks where checking is free), and a click or drag gives every hand
+exactly that mix. A name (FOLD / CALL / RAISE / JAM) sets a brush that only
+does that; right-click copies a hand's mix into the brush. A `BucketPolicy`
+already stores `call` / `raise` / `jam` per class, so this is page-only
+(`web/js/preflop_brush.js`, `node tools/test_preflop_brush.mjs`).
+
 ### Canonical GTO charts (Range Lab data)
 
 The Preflop Lab's "Ranges from" choice can walk ready-made charts instead of

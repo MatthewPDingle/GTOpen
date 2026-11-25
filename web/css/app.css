@@ -1368,11 +1368,29 @@ button.lb-go:hover { background: var(--panel2); }
 #pfl-editor { margin: 8px 0; padding: 8px; background: var(--bg2);
   border: 1px solid var(--line2); border-radius: 4px; }
 #pfl-editor .field-grid label { font-size: 10px; }
-.pfl-palette button.active { outline: 1px solid var(--accent); }
-/* Give the four paint buttons equal
-   width and centered text so flex shrink can't clip the labels */
-.pfl-palette { flex: 1 1 auto; }
-.pfl-palette button { flex: 1 1 0; padding: 5px 4px; text-align: center; }
+/* The range editor's brush: one tile per action, its name (a click makes the
+   brush only that) and its share of the mix. The bar along the bottom is as
+   wide as the share; the swatch beside the tiles is what a click paints. */
+.pfe-brush { align-items: stretch; flex-wrap: nowrap; gap: 6px; }
+.pfe-brush-parts { flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 4px; }
+.pfe-part { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4px;
+  padding: 3px 6px 6px; border: 1px solid var(--line2); border-radius: 4px; background: var(--bg2); overflow: hidden; }
+.pfe-part::after { content: ''; position: absolute; left: 0; bottom: 0; height: 3px; width: var(--share, 0%);
+  background: var(--tone, var(--accent)); transition: width .12s ease-out; }
+.pfe-part.on { border-color: var(--tone, var(--accent)); background: var(--panel2); }
+.pfe-part button { font-family: var(--font-disp); font-weight: 700; font-size: 11px; letter-spacing: .1em;
+  background: none; border: 0; color: var(--ink-dim); padding: 3px 0; cursor: pointer; }
+.pfe-part button:hover:not(:disabled), .pfe-part.on button { color: var(--ink); }
+.pfe-part button:disabled { opacity: .4; cursor: default; }
+.pfe-part label { display: flex; align-items: center; gap: 2px; color: var(--ink-dim); font-size: 10px; }
+.pfe-part input[type="number"] { width: 46px; min-width: 0; padding: 2px 3px; text-align: right;
+  font-family: var(--font-data); font-size: 12px; }
+.pfe-part input[readonly] { background: none; border-color: transparent; color: var(--ink-dim); }
+.pfe-part output { font-family: var(--font-data); font-size: 12px; color: var(--ink-dim); padding-right: 2px; }
+.pfe-brush-swatch { flex: 0 0 34px; display: flex; overflow: hidden; border: 1px solid var(--line2); border-radius: 4px; background: #131313; cursor: help; }
+.pfe-brush-swatch div { height: 100%; }
+#pfe-paint-totals { max-width: 520px; }
+#pfe-paint-totals .key i { border: 1px solid var(--line2); }
 #pfl-paint { max-width: 100%; margin-top: 6px; }
 #pfl-paint .cell { cursor: crosshair; }
 /* ~22px cells: the browse-grid tag styling (14px, offset from top-left)

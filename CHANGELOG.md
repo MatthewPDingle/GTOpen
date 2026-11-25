@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.9.0 - 2026-11-25
+
+- Player models: the brush in "The ranges this player plays" can now mix actions. CALL, RAISE and JAM each have their own percent box, so a hand can call 60% and raise 40%. Whatever is left folds. Clicking a name still gives a brush that only does that.
+- Right-click a hand to copy its mix into the brush. Undo now takes back a whole drag at once. The colour key under the grid shows what the grid adds up to.
+- Page only: update and refresh the page, no restart needed.
+
 ## 1.8.0 - 2026-11-25
 
 - Preflop Lab: new games use a new set of learned flop values (leaf net v4). It was trained to value the hands just outside a range properly. Older nets priced those hands too low, which kept some of them out of calling ranges. On six test games the net never saw, that error is about half what it was, and the hands a range does play are valued as accurately as before.
