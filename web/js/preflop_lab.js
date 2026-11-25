@@ -22,6 +22,7 @@ import { createLeafNet, modelFor, valueTip } from './preflop_leafnet.js';
 import { blockersConfig, blockersOf } from './preflop_blockers.js';
 import { anteBy, anteConfig, anteOf, sameAnte, usesBbAnte } from './preflop_ante.js';
 import { JAM_PCT_DEFAULT, jamConfig, jamPct, jamPctOf, sameJam, scenarioJamPct } from './preflop_jam.js';
+import { BRUSH_ACTIONS, DRAW_ORDER, pureBrush, setShare, brushParts, handBrush, brushText, rangeTotals } from './preflop_brush.js';
 import { estimateView } from './preflop_memory.js';
 import { statusChips as chipsFor, isStopping, runningLabel, endedLabel } from './preflop_status.js';
 
@@ -198,8 +199,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     lastGaps: null,  // per-seat BR gaps from the last checkpoint (bleeds)
     editSeat: null,  // seat open in the profile editor
     editBucket: 0,
-    paintAction: 'call',
-    paintWeight: 1.0,
+    brush: pureBrush('call'), // what a click paints: a mix of call / raise / jam, the rest folds
     painting: false,
   };
   let ARCHETYPES = [];
@@ -2197,7 +2197,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <button class="btn ghost" id="pfe-copyall" data-tip="Copies these numbers to every other seat and builds each seat's ranges for its position. Painted hands are not copied.">COPY TO ALL SEATS</button>
       </div>
       <div id="pfe-implied" class="mono dim" style="font-size:10px;margin:4px 0 6px" data-tip="What the ranges below actually come to. Compare with the numbers above."></div>
-      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with each hand in each situation. Built from the numbers above. Pick a brush and click hands to change them; painted hands stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
+      </div><div class="pfe-ranges"><div class="pfl-step" style="margin-top:6px" data-tip="What this seat does with each hand in each situation. Built from the numbers above. Pick a brush and click or drag over hands to change them. A brush can mix actions, such as call 60% and raise 40%. Painted hands stay until GENERATE FROM STATS runs again.">THE RANGES THIS PLAYER PLAYS</div>
       <div id="pfe-rangenote"></div>
       <div id="pfe-study-hint" class="pfe-study-hint hidden" role="note"></div>
       <div class="seg" id="pfe-buckets" style="margin-top:8px">${
@@ -2223,14 +2223,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
       <div id="pfe-paint-state" class="dim" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:10px;margin-top:6px">
         <span id="pfe-paint-caption"></span>
         <span id="pfe-paint-badge" class="hidden" style="background:#4b3a1a;color:#f3dfb2;padding:1px 6px;border-radius:8px;font-size:9px;letter-spacing:.08em">painted</span>
-        <button type="button" class="btn ghost xs hidden" id="pfe-paint-undo" data-tip="Undo the last stroke in this bucket.">undo</button>
+        <button type="button" class="btn ghost xs hidden" id="pfe-paint-undo" data-tip="Undo the last stroke in this bucket. A drag over several hands is one stroke.">undo</button>
         <button type="button" class="btn ghost xs hidden" id="pfe-paint-clear" data-tip="Discard every stroke in this bucket from this session.">clear</button>
       </div>
-      <div id="pfe-paint-controls" class="pfl-gridbar" style="margin-top:6px">
-        <div class="seg pfl-palette" id="pfe-palette">
-          <button data-a="fold" data-tip="Paint hands out of the range (fold / check back).">FOLD</button><button data-a="call" data-tip="Paint calls (or limps, in unopened spots).">CALL</button><button data-a="raise" data-tip="Paint raises \u2014 they use this profile\u2019s raise size.">RAISE</button><button data-a="jam" data-tip="Paint all-in jams.">JAM</button>
+      <div id="pfe-paint-controls" class="pfl-gridbar pfe-brush" style="margin-top:6px">
+        <div class="pfe-brush-parts" id="pfe-palette" role="group" aria-label="Brush">
+          <div class="pfe-part" data-part="fold"><button type="button" data-a="fold">FOLD</button><output id="pfe-mix-fold">0%</output></div>
+          <div class="pfe-part" data-part="call"><button type="button" data-a="call">CALL</button><label><input id="pfe-mix-call" type="number" min="0" max="100" step="5" inputmode="numeric" aria-label="call %"><span>%</span></label></div>
+          <div class="pfe-part" data-part="raise"><button type="button" data-a="raise">RAISE</button><label><input id="pfe-mix-raise" type="number" min="0" max="100" step="5" inputmode="numeric" aria-label="raise %"><span>%</span></label></div>
+          <div class="pfe-part" data-part="jam"><button type="button" data-a="jam">JAM</button><label><input id="pfe-mix-jam" type="number" min="0" max="100" step="5" inputmode="numeric" aria-label="all-in %"><span>%</span></label></div>
         </div>
-        <label class="dim" style="font-size:10px">weight <input id="pfe-w" type="range" min="5" max="100" value="100" style="width:70px;vertical-align:middle"> <span id="pfe-wv">100%</span></label>
+        <div class="pfe-brush-swatch" id="pfe-brush-swatch" role="img" data-tip-click></div>
       </div>
       <div id="pfe-not-applicable" class="pfe-not-applicable hidden" role="status">
         <strong>Not applicable — everyone folded; the last live blind wins</strong>
@@ -2238,6 +2241,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         <p>Choose <b>Vs Limps</b> for checks and raises, or a defensive tab for responses to bets.</p>
       </div>
       <div id="pfl-paint" class="matrix browse"></div>
+      <div id="pfe-paint-totals" class="legend"></div>
       </div></div><div class="btn-row pfe-save-row" style="margin-top:6px">
         <input type="text" id="pfe-name" placeholder="save as…" value="${esc(m.label)}" data-tip="Name for the saved player (saving under an existing name replaces it).">
         <button class="btn" id="pfe-save" data-tip="Saves this player, with their numbers and ranges, to the saves/profiles folder. They then show under saved profiles for every seat, in any game.">SAVE PLAYER</button>
@@ -2513,25 +2517,27 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         paintBucket();
         updateRangeNote();
       }));
-    // the brush (S.paintAction / S.paintWeight) survives across editor
-    // sessions — sync the controls to it so they show what a click paints
+    // the brush (S.brush) survives across editor sessions: the controls show
+    // what a click paints. A name sets a pure brush; a number box mixes.
     document.querySelectorAll('#pfe-palette button').forEach(b => {
-      b.classList.toggle('active', b.dataset.a === S.paintAction);
       b.addEventListener('click', () => {
-        S.paintAction = b.dataset.a;
-        document.querySelectorAll('#pfe-palette button').forEach(x =>
-          x.classList.toggle('active', x === b));
-        renderPaintState();
+        S.brush = pureBrush(b.dataset.a);
+        brushBase = S.brush;
+        renderBrush();
       });
     });
-    const w = document.getElementById('pfe-w');
-    w.value = Math.round(S.paintWeight * 100);
-    document.getElementById('pfe-wv').textContent = `${Math.round(S.paintWeight * 100)}%`;
-    w.addEventListener('input', () => {
-      S.paintWeight = +w.value / 100;
-      document.getElementById('pfe-wv').textContent = `${w.value}%`;
-      renderPaintState();
-    });
+    for (const action of BRUSH_ACTIONS) {
+      const box = document.getElementById(`pfe-mix-${action}`);
+      // Every keystroke is applied to the brush as it was when the box was
+      // entered, so a half-typed number never eats another action's share.
+      box.addEventListener('focus', () => { brushBase = S.brush; box.select(); });
+      box.addEventListener('input', () => {
+        S.brush = setShare(brushBase || S.brush, action, box.value === '' ? 0 : box.value);
+        renderBrush(box);
+      });
+      box.addEventListener('blur', () => { brushBase = null; renderBrush(); });
+      box.addEventListener('keydown', e => { if (e.key === 'Enter') box.blur(); });
+    }
     document.getElementById('pfe-paint-undo').addEventListener('click', () => {
       undoPaint(); paintBucket(); updateRangeNote();
     });
@@ -2574,6 +2580,11 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
   }
 
   let paintCells = [];
+  // One undo step per stroke: the first hand of a click or drag saves the
+  // range as it was, the hands the drag passes over afterwards do not.
+  let strokeStart = false;
+  // The brush as it was when a number box was entered (see the box wiring).
+  let brushBase = null;
   function buildPaintGrid() {
     const g = document.getElementById('pfl-paint');
     g.innerHTML = '';
@@ -2588,8 +2599,17 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         // roving tabindex: the grid is one tab stop, arrows move inside it
         cell.tabIndex = paintCells.length ? -1 : 0;
         cell.setAttribute('role', 'button');
-        cell.addEventListener('mousedown', e => { e.preventDefault(); S.painting = true; paintClass(idx); });
+        cell.addEventListener('mousedown', e => {
+          if (e.button !== 0) return; // the right button copies a hand's mix
+          e.preventDefault();
+          // done typing in a number box (preventDefault keeps the focus there)
+          if (document.activeElement?.closest?.('#pfe-palette')) document.activeElement.blur();
+          S.painting = true;
+          strokeStart = true;
+          paintClass(idx);
+        });
         cell.addEventListener('mouseenter', () => { if (S.painting) paintClass(idx); });
+        cell.addEventListener('contextmenu', e => { e.preventDefault(); pickUpHand(idx); });
         g.appendChild(cell);
         paintCells.push(cell);
       }
@@ -2607,7 +2627,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         next.focus();
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
+        strokeStart = true;
         paintClass(+cell.dataset.idx);
+      } else if (e.key === 'c' || e.key === 'C') {
+        pickUpHand(+cell.dataset.idx);
       }
     });
   }
@@ -2937,8 +2960,8 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const clear = document.getElementById('pfe-paint-clear');
     const m = editingModel();
     if (!caption || !badge || !m) return;
-    const brush = S.paintAction === 'fold' ? 'fold' : `${S.paintAction} ${Math.round(S.paintWeight * 100)}%`;
-    caption.textContent = `Painting ${paintSituation()} · ${brush}`;
+    caption.textContent = `Painting ${paintSituation()}`;
+    renderPaintTotals();
     const key = bucketKey();
     const painted = !!m.paintedBuckets?.has(key);
     badge.classList.toggle('hidden', !painted);
@@ -2947,6 +2970,91 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     const canClear = !!m.paintBase?.[key];
     clear.disabled = !canClear;
     clear.dataset.tip = canClear ? 'Discard every stroke in this bucket from this session.' : 'No pre-paint copy in this session.';
+  }
+
+  /** Under the grid: the colour key, with what the grid adds up to. */
+  function renderPaintTotals() {
+    const el = document.getElementById('pfe-paint-totals');
+    if (!el) return;
+    const pol = editorUnopenedNotApplicable() ? null : bucketPol();
+    el.classList.toggle('hidden', !pol);
+    if (!pol) return;
+    const free = editorFreeCheck();
+    // "After entering" holds each hand's play once it gets there, and not
+    // every hand does, so a share of all hands would mislead on that grid.
+    const whole = !(S.editBucket === 4 && (editorContextualVersion() || !editorColdReraise()));
+    const totals = rangeTotals(pol, free);
+    el.replaceChildren(...DRAW_ORDER.filter(a => !(free && a === 'fold')).map(a => {
+      const key = document.createElement('span');
+      key.className = 'key';
+      const dot = document.createElement('i');
+      dot.style.background = a === 'fold' ? '#20242a' : PCOLORS[a];
+      const name = { raise: 'Raise', jam: 'Jam', call: free ? 'Check' : 'Call', fold: 'Fold' }[a];
+      key.append(dot, whole ? `${name} ${totals[a].toFixed(1)}%` : name);
+      return key;
+    }));
+    el.dataset.tip = whole ? 'What this grid adds up to, as a share of all hands dealt.' : 'The colours of the grid.';
+  }
+
+  /** Checking is free in this grid (a blind facing limps): no hand folds. */
+  function editorFreeCheck() {
+    return S.editBucket === 1 && !!editingModel()?.profile?.response?.limp_contexts?.[S.editLimpContext || 0]?.free_check;
+  }
+
+  const BRUSH_TIPS = {
+    fold: 'Folds whatever the other actions leave. Click FOLD for a brush that only folds.',
+    call: 'How often a painted hand calls (limps, in unopened spots). Click CALL for a brush that only calls.',
+    raise: 'How often a painted hand raises, at this player\u2019s raise size. Click RAISE for a brush that only raises.',
+    jam: 'How often a painted hand goes all-in. Click JAM for a brush that only goes all-in.',
+    foldFree: 'Checking is free here, so no hand folds.',
+    callFree: 'Checks whatever the raises leave. Click CHECK for a brush that only checks.',
+  };
+  /** Show the brush: each action's share, and a swatch of what a click paints.
+   *  `typing` is the number box being typed in; its text is left alone. */
+  function renderBrush(typing = null) {
+    const palette = document.getElementById('pfe-palette');
+    if (!palette) return;
+    const free = editorFreeCheck();
+    const parts = brushParts(S.brush, free);
+    for (const action of ['fold', ...BRUSH_ACTIONS]) {
+      const part = palette.querySelector(`[data-part="${action}"]`);
+      const share = Math.round(parts[action] * 100);
+      part.classList.toggle('on', share > 0);
+      part.style.setProperty('--share', `${share}%`);
+      part.style.setProperty('--tone', PCOLORS[action]);
+      part.dataset.tip = BRUSH_TIPS[free && (action === 'fold' || action === 'call') ? `${action}Free` : action];
+      const button = part.querySelector('button');
+      if (action === 'fold') {
+        button.disabled = free;
+        part.querySelector('output').textContent = free ? '\u2013' : `${share}%`;
+        continue;
+      }
+      if (action === 'call') button.textContent = free ? 'CHECK' : 'CALL';
+      const box = part.querySelector('input');
+      // where checking is free the check share is what the raises leave
+      box.readOnly = free && action === 'call';
+      if (box !== typing) box.value = share;
+    }
+    const swatch = document.getElementById('pfe-brush-swatch');
+    const text = brushText(S.brush, free);
+    swatch.replaceChildren(...DRAW_ORDER.filter(a => parts[a] > 0.0005).map(a => {
+      const bar = document.createElement('div');
+      bar.style.width = `${parts[a] * 100}%`;
+      bar.style.background = a === 'fold' ? '#20242a' : PCOLORS[a];
+      return bar;
+    }));
+    swatch.setAttribute('aria-label', `Brush: ${text}`);
+    swatch.dataset.tip = `A click or drag paints: ${text}. Right-click a hand to copy its mix into the brush.`;
+  }
+
+  /** Right-click (or C on a focused hand): the brush takes that hand's mix. */
+  function pickUpHand(idx) {
+    if (editorUnopenedNotApplicable() || (S.editBucket === 4 && editorContextualVersion())) return;
+    const pol = bucketPol();
+    if (!pol) return;
+    S.brush = handBrush(pol.call[idx], pol.raise[idx], pol.jam[idx]);
+    brushBase = document.activeElement?.closest?.('#pfe-palette') ? S.brush : null;
+    renderBrush();
   }
 
   function paintClass(idx) {
@@ -2958,7 +3066,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     if (!pol) return;
     if (pm) {
       pm.painted = true; // stat edits now need explicit GENERATE
-      if (before) {
+      if (before && strokeStart) {
         const history = (pm.paintHistory ??= {})[key] ??= [];
         history.push(before);
         if (history.length > 40) history.shift();
@@ -2966,17 +3074,10 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
         (pm.paintedBuckets ??= new Set()).add(key);
       }
     }
-    pol.call[idx] = 0;
-    pol.raise[idx] = 0;
-    pol.jam[idx] = 0;
-    if (S.paintAction !== 'fold') pol[S.paintAction][idx] = S.paintWeight;
-    const freeLimp = S.editBucket === 1 && pm?.profile.response?.limp_contexts?.[S.editLimpContext || 0]?.free_check;
-    if (freeLimp) {
-      // There is no fold when checking is free. A partial check brush leaves
-      // the remainder raising, rather than drawing an impossible fold share.
-      if (S.paintAction === 'call') pol.raise[idx] = 1 - S.paintWeight;
-      pol.call[idx] = Math.max(0, 1 - pol.raise[idx] - pol.jam[idx]);
-    }
+    strokeStart = false;
+    // Where checking is free there is no fold: the brush's remainder checks.
+    const parts = brushParts(S.brush, editorFreeCheck());
+    for (const action of BRUSH_ACTIONS) pol[action][idx] = parts[action];
     // A hand-painted cold response must reach the live size-band policies too.
     if (S.editBucket === 2 && pm?.profile.vs_raise_bands) {
       for (const [, band] of pm.profile.vs_raise_bands) {
@@ -3013,10 +3114,7 @@ export function initPreflopLab({ els, onExport, toast, gotoSetup }) {
     }
     const pol = bucketPol();
     const freeLimp = S.editBucket === 1 && contexts[S.editLimpContext || 0]?.free_check;
-    const foldBrush = document.querySelector('#pfe-palette [data-a="fold"]');
-    const callBrush = document.querySelector('#pfe-palette [data-a="call"]');
-    if (foldBrush) foldBrush.disabled = !!freeLimp;
-    if (callBrush) callBrush.textContent = freeLimp ? 'CHECK' : 'CALL';
+    renderBrush();
     if (!pol) {
       // Inspecting a solver-managed bucket must not create an all-fold lock.
       // Only an explicit brush action takes ownership of this bucket.
