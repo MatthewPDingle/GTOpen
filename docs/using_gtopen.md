@@ -10,7 +10,7 @@ The details behind the [README](../README.md)'s tour: units, preflop sizes and v
 
 ## Preflop Lab
 
-**Ranges from.** Leave this on **GTOpen's solver** to work out the ranges for the game you set up. The other choice, **Canonical GTO charts**, shows ready-made charts in place of a solve. The chart files are not part of GTOpen, so that choice only works if you have them on your computer.
+**Ranges from.** Leave this on **GTOpen's solver (Leafnet model)** to work out the ranges for the game you set up. The other choice, **Pre-solved GTO charts**, shows ready-made charts in place of a solve. The chart files are not part of GTOpen, so that choice only works if you have them on your computer.
 
 ### Raise sizes
 

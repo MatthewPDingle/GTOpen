@@ -214,11 +214,13 @@ over-limps regs. Range ORDER comes from `preflop/reference.rs` (a clean
 with `cargo run --release -p solver --example reference_order`), blended
 toward raw card appeal by naiveté — never from the current solve.
 
-### Canonical GTO charts (Range Lab data)
+### Pre-solved GTO charts (Range Lab data)
 
 The Preflop Lab's "Ranges from" choice can walk ready-made charts instead of
-solving. The app calls them "Canonical GTO charts" everywhere a user reads
-(never "Range Lab", which nobody outside the project knows); they come from
+solving. The app calls them "Pre-solved GTO charts" everywhere a user reads
+(never "Range Lab", which nobody outside the project knows, and no longer
+"Canonical GTO charts"); the other choice reads "GTOpen's solver (Leafnet
+model)". The charts come from
 Pan's Range Lab trainer and code names keep `rangelab`
 (`web/js/rangelab_ref.js`, `crates/server/src/rangelab.rs`). The data
 is private and is NEVER committed (this repo is public): the

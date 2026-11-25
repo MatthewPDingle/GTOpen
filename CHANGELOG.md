@@ -2,6 +2,12 @@
 
 What changed in GTOpen, newest first, in plain words. The version you are running shows at the right end of the app's top bar.
 
+## 1.8.1 - 2026-11-25
+
+- Preflop Lab: the two "Ranges from" choices have clearer names. "GTOpen's solver (Leafnet model)" solves your exact game, with the Leafnet model supplying the flop values. "Pre-solved GTO charts" are the ready-made charts for a few standard games.
+- "Pre-solved GTO charts" replaces "Canonical GTO charts" everywhere in the app.
+- Update and refresh the page. Two notes that come from the program itself show the new name after a rebuild and restart.
+
 ## 1.8.0 - 2026-11-25
 
 - Preflop Lab: new games use a new set of learned flop values (leaf net v4). It was trained to value the hands just outside a range properly. Older nets priced those hands too low, which kept some of them out of calling ranges. On six test games the net never saw, that error is about half what it was, and the hands a range does play are valued as accurately as before.
