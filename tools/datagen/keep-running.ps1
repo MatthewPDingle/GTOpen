@@ -98,5 +98,6 @@ try {
         Start-Sleep -Seconds 60
     }
 } finally {
+    Note 'keep-running ended'
     $mutex.ReleaseMutex()
 }

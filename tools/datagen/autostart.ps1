@@ -16,7 +16,6 @@ if ($args.Count -lt 1) {
 }
 if ($args[0] -eq 'remove') {
     if (Get-ScheduledTask -TaskName $name -ErrorAction SilentlyContinue) {
-        Stop-ScheduledTask -TaskName $name -ErrorAction SilentlyContinue
         Unregister-ScheduledTask -TaskName $name -Confirm:$false
         Write-Host "Removed the task `"$name`". A generator window that is open keeps running until you close it."
     } else {
