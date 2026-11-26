@@ -165,6 +165,31 @@ have a turn each. `GTOPEN_GPU_TURN=0` switches turns off. Both processes
 must be a build that takes turns, so update and restart the generator and
 the validator together.
 
+### Running unattended (Windows)
+
+To leave a machine solving for days, have Windows start the generator at
+every sign-in and keep it running:
+
+```
+tools\datagen\autostart.cmd YOUR_GITHUB_LOGIN
+```
+
+This creates the scheduled task "GTOpen generator" for your user (not
+elevated, no time limit). It runs `tools\datagen\keep-running.cmd`, which
+starts the generator in a window, starts it again whenever it ends, and
+restarts it when no solve has been written for three hours (a stuck solve).
+Every 15 minutes the task looks that this is still running. Jobs carry on
+from where they stopped; an example that was stopped twice is left out the
+third time, so one bad solve cannot hold the machine. What it did is in
+`datagen_out\keep-running.log`.
+
+A restart only brings the generator back once someone is signed in, so set
+Windows to sign in by itself if the machine may restart for updates. To stop
+for good, run `tools\datagen\autostart.cmd remove` and close the window.
+Creating the file `datagen_out\STOP` pauses it until the file is deleted.
+Options after the login are passed to the generator, for example
+`--max-vram 21 --reserve-gb 4` to leave room on the card for another program.
+
 ## Game mixes
 
 What the pool needs changes over time: more live rake structures one month,
@@ -225,6 +250,33 @@ things keep the pool balanced:
   a spot only big cards can hold counts for what the mix wanted of it, a spot
   every card can hold counts for less. What no contributor's card can hold
   stays missing, so big cards remain the most valuable.
+
+### Three-player flops
+
+From generator v7 a mix can be of **three-player flops** (`"players": 3`):
+three random ranges, one stack, and an exact three-player solve of the flop.
+The Preflop Lab prices a flop with three players in the hand as showdown
+equity today, with no position and no betting; these solves say what such a
+flop is really worth to each player. Game mix 4 is the first.
+
+- **They are big.** A three-player tree is many times a heads-up one, so a
+  job holds 10 examples, a solve takes minutes, and one solve ends after an
+  hour whatever it has reached (`--max-minutes`). The bet menu `lean3-v1` is
+  the heads-up menu with one raise per street on the flop and the turn and no
+  raise on the river, which is what lets a 100 bb single-raised pot fit a
+  32 GB card.
+- **Small cards keep to heads-up flops.** A mix can ask for a card of a size
+  (`min_card_gb`: the trees it must hold). A generator on a smaller card, or
+  without a GPU, passes that mix over, says so once, and solves the mix
+  before it, which still counts.
+- **Jobs carry on after a stop.** A three-player job is written an example at
+  a time, and a generator that is started again picks it up from the last
+  finished example. An example the card could not hold beside whatever else
+  was running is written as a `skipped` line and the job goes on.
+- **Files.** A three-player job is `datagen_out/<login>/job3-<n>.jsonl` on
+  your machine and `three/<login>/job-<n>.jsonl.gz` in the dataset, so it
+  never mixes with the heads-up jobs under `data/`. The uploader handles
+  both.
 
 ## What runs on your machine and what is uploaded
 
@@ -330,6 +382,21 @@ core, cached per file). `train.py` uses the weights with `CONFIG["balance"]`
 (off by default). The report gives, per mix, each card size's share and how
 often it took a draw, the share of big trees before and after weighing, and
 the effective number of rows.
+
+### Three-player job files
+
+Files under `three/` hold three-player flop solves (format
+`gtopen-flop-values-3p`, menu `lean3-v1`). An example has the same spot
+fields as a heads-up one, with these differences: `range`, `reach`, `eq` and
+`value` are three lists of 169, in postflop action order (the first acts
+first on every street); `stack_bb` is the stack behind of all three; `value`
+is each class's share of the starting pot, the three range averages adding
+up to 1 minus the rake; `gaps_pct_pot` is each player's own best-response
+gap and `exploit_pct_pot` their mean; `ended` says whether the solve reached
+its target, its iteration limit or its time limit. A `skipped` line stands
+for an example its machine could not solve. A game with three players has
+more than one equilibrium and no guarantee of reaching one, so read the gaps
+with the values.
 
 ### Real-range game files
 

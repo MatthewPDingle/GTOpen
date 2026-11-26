@@ -15,7 +15,8 @@ validator that was closed part-way through leaves nothing uncounted.
     python tools/datagen/validate.py --watch 60           # every hour
     python tools/datagen/validate.py --recount            # only add merges missing from progress.json
 
-Besides pooled jobs (data/<login>/job-<n>.jsonl.gz, inputs regenerated from the
+Besides pooled jobs (data/<login>/job-<n>.jsonl.gz for heads-up flops and
+three/<login>/job-<n>.jsonl.gz for three-player flops, inputs regenerated from the
 job number) it accepts real-range game files (real/<login>/<set>/<game>.jsonl.gz:
 exact flop solves of the ranges a GTOpen preflop solve produced, from
 `tools/leafnet/realrange.py publish`). Their inputs cannot be regenerated, so
@@ -48,6 +49,8 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 PATH_RE = re.compile(r"^data/([A-Za-z0-9_-]+)/job-(\d+)\.jsonl\.gz$")
+THREE_PATH_RE = re.compile(r"^three/([A-Za-z0-9_-]+)/job-(\d+)\.jsonl\.gz$")  # three-player jobs (generator v7 on)
+THREE = "three-player"  # the name three-player solves are counted under, beside the situation lists
 REAL_PATH_RE = re.compile(r"^real/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)/([A-Za-z0-9_-]+)\.jsonl\.gz$")
 REAL_FORMAT = "gtopen-real-range"
 BLOCK = 1 << 24
@@ -119,7 +122,12 @@ def verify_file(cli, path, sample, max_vram=None):
     return json.loads(lines[-1])
 
 
-def check_job(cli, login, job, local_jsonl, sample):
+def job_match(path):
+    """The match of a pooled job's path in the dataset, heads-up (data/) or three-player (three/), else None."""
+    return PATH_RE.match(path) or THREE_PATH_RE.match(path)
+
+
+def check_job(cli, login, job, local_jsonl, sample, three=False):
     errors = []
     base = block_base(cli, login)
     if not (base <= job % (1 << MIX_SHIFT) < base + BLOCK):
@@ -129,6 +137,9 @@ def check_job(cli, login, job, local_jsonl, sample):
         errors.append(f"header contributor {summary.get('contributor')!r} does not match folder {login!r}")
     if summary.get("job") not in (None, job):
         errors.append(f"header job {summary.get('job')} does not match file name {job}")
+    if (summary.get("players") == 3) != three:
+        errors.append("a three-player job belongs in three/<login>/ and a heads-up job in data/<login>/ "
+                      "(update GTOpen and restart the uploader)")
     errors += summary.get("errors", [])
     return errors, summary
 
@@ -157,7 +168,8 @@ def kinds_in(local_jsonl):
     pot type, because the big trees of a list (limped and single-raised pots)
     fit few cards and a list's target must not be met with its small ones;
     "sizes": {band: count} over every example that records its tree size
-    (generator 6 on), see size_band."""
+    (generator 6 on), see size_band. The solves of a three-player job are
+    counted like a list of their own, under the name THREE."""
     out = {"spots": {}, "spot_types": {}, "sizes": {}}
     with open(local_jsonl, encoding="utf-8") as f:
         for line in f:
@@ -166,9 +178,11 @@ def kinds_in(local_jsonl):
             try:
                 record = json.loads(line)
                 name = str(record.get("situation") or "").split("/", 1)[0]
+                if record.get("type") == "example" and len(record.get("range") or []) == 3:
+                    name = THREE
                 size = record.get("tree_bytes")
                 pot_type = str(record.get("pot_type") or "unknown")
-            except (ValueError, AttributeError):
+            except (ValueError, AttributeError, TypeError):
                 continue  # not a record: the check of the file itself reports that
             if name:
                 out["spots"][name] = out["spots"].get(name, 0) + 1
@@ -279,11 +293,11 @@ def run_local(args):
                 total += 1
                 bad += bool(errors)
                 continue
-            m = re.match(r"^job-(\d+)\.jsonl$", name)
+            m = re.match(r"^job(3?)-(\d+)\.jsonl$", name)
             if not m:
                 continue
             login = os.path.basename(dirpath)
-            errors, summary = check_job(args.solve_cli, login, int(m.group(1)), path, args.sample)
+            errors, summary = check_job(args.solve_cli, login, int(m.group(2)), path, args.sample, three=bool(m.group(1)))
             diffs = ", ".join(f"#{r['index']} mean {r['mean_abs_diff']:.4f} max {r['max_abs_diff']:.4f}"
                               for r in summary.get("resolved", []))
             status = "ok " if not errors else "BAD"
@@ -553,7 +567,8 @@ def header_examples(api, repo, path):
         gz = hf_hub_download(repo, path, repo_type="dataset", cache_dir=stage)
         with gzip.open(gz, "rt", encoding="utf-8") as f:
             head = json.loads(f.readline())
-            if isinstance(head.get("examples"), int):
+            # a three-player job's header also counts the examples its machine had to leave out
+            if isinstance(head.get("examples"), int) and not THREE_PATH_RE.match(path):
                 return head["examples"]
             return sum(1 for line in f if json.loads(line).get("type") == "example")
     finally:
@@ -565,7 +580,7 @@ SPOTS_FROM = "2026-11-21T01:53:00+00:00"  # game mix 2, the first to draw from a
 
 def file_kinds(api, repo, path):
     """kinds_in for a job file on main; nothing to read for a job of a mix before the lists."""
-    m = PATH_RE.match(path)
+    m = job_match(path)
     if not m or int(m.group(2)) >> MIX_SHIFT < 2:
         return {}
     from huggingface_hub import hf_hub_download
@@ -591,7 +606,7 @@ def backfill_spots(api, repo, progress):
             continue  # counted, by pot type too (or it holds no spots to split)
         try:
             added, other = patiently(pr_changes, api, repo, e["pr"])
-            mine = [p for p in added + other if PATH_RE.match(p) and PATH_RE.match(p).group(1) == e["contributor"]]
+            mine = [p for p in added + other if job_match(p) and job_match(p).group(1) == e["contributor"]]
             if not mine:
                 continue  # its files could not be listed: look again on a later pass
             set_kinds(e, functools.reduce(add_kinds, (patiently(file_kinds, api, repo, p) for p in mine), {}))
@@ -631,7 +646,7 @@ def merged_pr_events(api, repo, pr):
             raise  # asked to slow down: the caller waits and reads this pull request again
         added, other = [], []
     for path in added + other:  # it was merged, so the validator saw that it only adds files
-        m, real = PATH_RE.match(path), REAL_PATH_RE.match(path)
+        m, real = job_match(path), REAL_PATH_RE.match(path)
         if m or real:
             groups.setdefault(((m or real).group(1), "real" if real else "pool"), []).append(path)
     counts = {}  # (login, kind) -> (jobs, examples)
@@ -736,10 +751,10 @@ def run_prs(args):
                 if not new:
                     errors.append("no new files")
                 for n, path in enumerate(new):
-                    m, real = PATH_RE.match(path), REAL_PATH_RE.match(path)
+                    m, real = job_match(path), REAL_PATH_RE.match(path)
                     if not m and not real:
-                        errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz "
-                                      "and real/<login>/<set>/<game>.jsonl.gz)")
+                        errors.append(f"unexpected file {path} (only data/<login>/job-<n>.jsonl.gz, "
+                                      "three/<login>/job-<n>.jsonl.gz and real/<login>/<set>/<game>.jsonl.gz)")
                         continue
                     gz = patiently(hf_hub_download, repo, path, repo_type="dataset", revision=rev, cache_dir=stage)
                     plain = os.path.join(stage, f"file-{n}.jsonl")
@@ -752,7 +767,8 @@ def run_prs(args):
                         jobs.append((login, "real", summary.get("examples", 0), {}))
                     else:
                         login, job = m.group(1), int(m.group(2))
-                        errs, summary = check_job(args.solve_cli, login, job, plain, args.sample)
+                        errs, summary = check_job(args.solve_cli, login, job, plain, args.sample,
+                                                  three=bool(THREE_PATH_RE.match(path)))
                         jobs.append((login, "pool", summary.get("examples", 0), kinds_in(plain)))
                         versions.append(generator_of(plain))
                     errors += [f"{path}: {e}" for e in errs]

@@ -9,9 +9,17 @@ use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+#[path = "datagen3_cli.rs"]
+mod three;
+
 const USAGE: &str = "usage:
   solve-cli datagen run --contributor LOGIN [--out DIR] [--jobs N] [--hours H]
                         [--worker I --workers W] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
+                        [--max-minutes M] [--reserve-gb G]
+                        (three-player game mixes: --max-minutes ends one solve after M minutes, 60 unless given;
+                         --reserve-gb leaves G GB of the card to other programs)
+  solve-cli datagen sizes3 [--contributor LOGIN] [--jobs N] [--max-vram GB]
+                        (the current three-player mix's first jobs for this card: pots, hands, estimated sizes)
   solve-cli datagen job JOB [--contributor LOGIN] [--out DIR] [--max-vram GB] [--per-job N] [--target PCT] [--max-iters N]
   solve-cli datagen sizes JOB [--per-job N]   (estimated GPU memory per example)
   solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
@@ -55,6 +63,12 @@ struct Opts {
     boards_from: Option<PathBuf>,
     /// `datagen leaves`: weight of hands a range does not hold, as a share of its largest (0 = none).
     tokens: f32,
+    /// --per-job was given (a three-player job has its own default size).
+    per_job_set: bool,
+    /// Three-player solves: one solve ends after this many minutes.
+    max_minutes: f64,
+    /// Three-player solves: GB of the card left to other programs.
+    reserve_gb: f64,
 }
 
 fn parse(rest: &[String]) -> Opts {
@@ -78,6 +92,9 @@ fn parse(rest: &[String]) -> Opts {
         seed: 1,
         boards_from: None,
         tokens: 0.0,
+        per_job_set: false,
+        max_minutes: 60.0,
+        reserve_gb: 0.0,
     };
     let mut i = 0;
     let need = |i: usize| -> &String {
@@ -101,7 +118,9 @@ fn parse(rest: &[String]) -> Opts {
             "--hours" => { o.hours = Some(num(need(i), a)); i += 1; }
             "--worker" => { o.worker = num(need(i), a); i += 1; }
             "--workers" => { o.workers = num::<u64>(need(i), a).max(1); i += 1; }
-            "--per-job" => { o.per_job = num::<u32>(need(i), a).max(1); i += 1; }
+            "--per-job" => { o.per_job = num::<u32>(need(i), a).max(1); o.per_job_set = true; i += 1; }
+            "--max-minutes" => { o.max_minutes = num::<f64>(need(i), a).max(0.1); i += 1; }
+            "--reserve-gb" => { o.reserve_gb = num::<f64>(need(i), a).clamp(0.0, 1000.0); i += 1; }
             "--target" => { o.target = num(need(i), a); i += 1; }
             "--max-iters" => { o.max_iters = num(need(i), a); i += 1; }
             "--sample" => { o.sample = num(need(i), a); i += 1; }
@@ -370,6 +389,7 @@ pub fn run(rest: &[String], env: &EnvOpts) {
         "situations" => situations(&o),
         "solve" => solve_dir(&o, env),
         "run" => run_loop(&o, env),
+        "sizes3" => three::sizes3(&o),
         "verify" => verify(&o, env),
         _ => {
             eprintln!("{USAGE}");
@@ -765,7 +785,9 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
             }
             None => {}
         }
-        let (chosen, passed) = sync.choose();
+        // a machine without a GPU solves three-player mixes only when asked to with --max-vram
+        let card = if use_gpu() || o.max_vram.is_some() { vram_cap(o) } else { Some(0.0) };
+        let (chosen, passed) = sync.choose_for(card);
         for p in passed {
             said.say(&p, format!("game {p}; solving the mix before it meanwhile"));
         }
@@ -793,11 +815,17 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
         }
         let job = datagen::mix_job(&login, id, k);
         k += o.workers;
-        if job_path(&o.out, &login, job).exists() {
+        let three = sync.book.mixes[&id].players == 3;
+        if job_path(&o.out, &login, job).exists() || three::job_path3(&o.out, &login, job).exists() {
             continue; // finished in an earlier run
         }
         let tj = std::time::Instant::now();
-        match run_job(job, &login, o, env, &sync.book, id) {
+        let ran = if three {
+            three::run_job3(job, &login, o, &sync.book, id, vram_cap(o))
+        } else {
+            run_job(job, &login, o, env, &sync.book, id)
+        };
+        match ran {
             Ok(p) => {
                 done += 1;
                 println!(
@@ -853,10 +881,17 @@ fn verify(o: &Opts, env: &EnvOpts) {
         std::process::exit(1);
     };
     let mut errors: Vec<String> = Vec::new();
-    let reader = std::io::BufReader::new(std::fs::File::open(file).unwrap_or_else(|e| {
+    let open = || std::fs::File::open(file).unwrap_or_else(|e| {
         eprintln!("{file}: {e}");
         std::process::exit(1)
-    }));
+    });
+    // a three-player job file has its own records and its own check
+    let mut first = String::new();
+    std::io::BufReader::new(open()).read_line(&mut first).ok();
+    if serde_json::from_str::<serde_json::Value>(&first).map_or(false, |v| v["format"] == solver::datagen3::FORMAT3) {
+        three::verify3(file, o);
+    }
+    let reader = std::io::BufReader::new(open());
     let mut header: Option<JobHeader> = None;
     let mut real: Option<RealHeader> = None;
     let mut records: Vec<ExampleRecord> = Vec::new();
