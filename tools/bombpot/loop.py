@@ -82,6 +82,9 @@ def main():
     ap.add_argument("--score-every", type=int, default=10)
     ap.add_argument("--score-turns", type=int, default=0, help="score on this many turn cards (0: all, exact)")
     ap.add_argument("--score-rivers", type=int, default=0)
+    ap.add_argument("--exact-every", type=int, default=0,
+                    help="with --score-turns or --score-rivers: also score on every card every this many rounds "
+                         "and after the last one (0: never)")
     ap.add_argument("--river-solve", type=int, default=0,
                     help="score with the river solved on the spot in this many rounds, for a spec with "
                          "\"river_solve\" (nets then play the flop and the turn only)")
@@ -169,16 +172,20 @@ def main():
                               spot=(a.spot_hidden, a.spot_layers), in_ram=a.in_ram)
                 os.replace(net_of(kind, step) + ".tmp", net_of(kind, step))
                 log({"event": "train", "iter": it, "seat": seat, **res})
-        if a.score and seat == seats - 1 and (it % a.score_every == 0 or it == a.iters):
+        sampled = bool(a.score_turns or a.score_rivers)
+        quick = it % a.score_every == 0 or it == a.iters
+        exact = sampled and a.exact_every and (it % a.exact_every == 0 or it == a.iters)
+        if a.score and seat == seats - 1 and (quick or exact):
             for game in a.score:
-                cmd = [a.exe, "score", game, "--net", net_of("avg", step)] + threads
-                if a.range != "off":
-                    cmd += ["--range", "on"]
-                if a.score_turns or a.score_rivers:
-                    cmd += ["--turns", str(a.score_turns), "--rivers", str(a.score_rivers)]
-                if a.river_solve:
-                    cmd += ["--river-solve", str(a.river_solve)]
-                log({"iter": it, "game": os.path.basename(game), **run(cmd)})
+                for on_every_card in ([False] if quick else []) + ([True] if exact else []):
+                    cmd = [a.exe, "score", game, "--net", net_of("avg", step)] + threads
+                    if a.range != "off":
+                        cmd += ["--range", "on"]
+                    if sampled and not on_every_card:
+                        cmd += ["--turns", str(a.score_turns), "--rivers", str(a.score_rivers)]
+                    if a.river_solve:
+                        cmd += ["--river-solve", str(a.river_solve)]
+                    log({"iter": it, "game": os.path.basename(game), **run(cmd)})
         if a.keep_rounds and seat == seats - 1 and it > a.keep_rounds:
             for old_seat in range(seats):
                 for kind in ("adv", "strat"):
