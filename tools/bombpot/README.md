@@ -1,7 +1,8 @@
 # Bomb pot net: training tools
 
-Self-play training of the bomb pot net (heads-up stage). The engine side is
-`crates/solver/src/bombpot/` (`range.rs`, `net.rs`, `deepcfr.rs`) and the
+Self-play training of the bomb pot net, for two players and (one flop at a
+time, new) three. The engine side is
+`crates/solver/src/bombpot/` (`range.rs`, `range3.rs`, `net.rs`, `deepcfr.rs`) and the
 `bombpot` tool; this folder holds the PyTorch side.
 
 | file | role |
@@ -135,3 +136,28 @@ so run them with `--fixed-suits` and score flops in standard suits as well
 KcQdTh is in either set): a flop in other suits is first renamed to its
 standard form, and the net never has to learn that suits are
 interchangeable.
+
+## Three players
+
+A spec whose game has `"players": 3` runs the same loop with three seats
+taking turns (`specs/3p_one_flop.json`, scored on
+`specs/3p_flop_AcQd8h.json`). What differs:
+
+- The engine plays whole ranges for all three seats (`range3.rs`): a hand's
+  value at the end of a line counts every pair of opposing hands that fits
+  with it, exactly. Checked against a slow hand-by-hand calculation and
+  against the exact three-way solver.
+- The score is what one seat gains by changing its own play alone, averaged
+  over the three seats, as a share of the starting pot. Two seats working
+  together are not looked at.
+- The river is not solved on the spot (`river_solve` and `--river-solve`
+  are for two players): the nets play all three streets, so `keep` needs a
+  share of river examples.
+- No range inputs (`--range` stays off).
+
+`bombpot tables game.json --turns 2 --rivers 2 --rounds 120 --regret-power 2
+--avg-power 2` trains plain tables the same way on a few sampled cards: what
+a net that fitted every example would reach. On AcQd8h with four runouts
+that is 21.6 / 6.0 / 2.6 / 1.6 / 1.0 / 0.7% after 20 to 120 rounds; with
+round weights of 1 it is about three times slower (31% after 40 rounds on
+one runout, against 14% with weights of 2).

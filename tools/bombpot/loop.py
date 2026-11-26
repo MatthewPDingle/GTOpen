@@ -4,7 +4,8 @@
     python tools/bombpot/loop.py --spec spec.json --work DIR --iters 100
         --exe target/release/bombpot [--score game.json ...] [--score-every 10]
 
-The seats take turns. In each half of a round the engine plays the games in
+The seats take turns (two or three of them, as the spec's game says). In
+each seat's part of a round the engine plays the games in
 `spec.json` with the latest advantage net and writes examples of one seat's
 decisions (`bombpot gen --seat`); the trainer then fits the next advantage
 net to the advantages of every round so far, and the next strategy net to
@@ -15,7 +16,7 @@ game (`bombpot score`): what a perfect opponent would gain against it, in
 chips and as a share of the starting pot.
 
 Everything goes under DIR: examples in mem/, nets as adv_NNNN.bin and
-avg_NNNN.bin (one of each per half round), one JSON object per event in
+avg_NNNN.bin (one of each per seat's part of a round), one JSON object per event in
 log.jsonl. A stopped loop picks
 up where it left off when started again with the same DIR.
 """
@@ -137,7 +138,8 @@ def main():
     threads = ["--threads", str(a.threads)] if a.threads else []
     adv, strat = T.Memory(a.cap, a.seed), T.Memory(a.cap, a.seed + 1)
     net_of = lambda kind, it: os.path.join(a.work, f"{kind}_{it:04d}.bin")
-    seats = 2
+    with open(a.spec) as f:
+        seats = json.load(f)["game"]["tree"]["players"]
     for step in range(1, a.iters * seats + 1):
         it, seat = (step + seats - 1) // seats, (step - 1) % seats
         prefix = os.path.join(mem_dir, f"r{it:04d}s{seat}")

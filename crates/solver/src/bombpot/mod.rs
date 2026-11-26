@@ -8,7 +8,8 @@
 //! * `abstraction`: dealing, and the grouping of similar hands on later streets.
 //! * `solver`: the self-play itself, playouts, and a one-seat challenger.
 //! * `range`: two-player play with every hand at once, for any strategy.
-//! * `exact`: exact scoring of a two-player strategy, to check the rest.
+//! * `range3`: the same for three players.
+//! * `exact`: exact scoring of a two- or three-player strategy, to check the rest.
 //! * `net`: a net in place of strategy tables (inputs, action menu, the net).
 //! * `deepcfr`: self-play that writes training examples for a net.
 
@@ -17,10 +18,13 @@ pub mod deepcfr;
 pub mod exact;
 pub mod net;
 pub mod range;
+pub mod range3;
 pub mod solver;
 pub mod tree;
 #[cfg(test)]
 mod net_tests;
+#[cfg(test)]
+mod range3_tests;
 #[cfg(test)]
 mod tests;
 

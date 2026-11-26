@@ -126,6 +126,14 @@ fn three_player_river_matches_the_exact_three_way_solver() {
     }
     let (evs, gaps) = exact.exploitability();
     eprintln!("3-way river: ours {ours:?}; exact values {evs:?} gaps {gaps:?}");
+    // The whole-range walk of the same tables: the values that the dealt
+    // hands above estimate, and little left for any one seat to gain.
+    let walked = super::exact::score(&s.tree, &s.abs, &super::range::TablePolicy(&s), super::range::Chance::All, 0).unwrap();
+    eprintln!("walked values {:?} gains {:?}", walked.value, walked.gain());
+    for p in 0..3 {
+        assert!((walked.value[p] - ours[p].0).abs() < 0.01 + 4.0 * ours[p].1, "seat {p}: {} vs {}", walked.value[p], ours[p].0);
+    }
+    assert!(walked.exploitability() < 0.05 * 3.0 * ante, "gain {}", walked.exploitability());
     // The exact solver reports each seat's share of the pot; ours is the
     // result after the ante.
     for p in 0..3 {

@@ -256,7 +256,7 @@ fn score_net(args: &[String], threads: usize) {
     let river: u32 = arg(args, "--river-solve", 0);
     let v = score_solved(&game.tree, &game.abs, &policy, chance, seed, river).unwrap_or_else(|e| fail(e));
     let pot = cfg.tree.starting_pot();
-    let gain = [v.best[0] - v.value[0], v.best[1] - v.value[1]];
+    let gain = v.gain();
     println!(
         "{}",
         serde_json::json!({ "event": "score", "boards": cfg.boards, "pot": pot, "exact": turns == 0 && rivers == 0,

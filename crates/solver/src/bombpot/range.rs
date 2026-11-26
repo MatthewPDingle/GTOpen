@@ -206,7 +206,106 @@ struct Cx<'a> {
     seed: u64,
 }
 
-fn all_zero(v: &[f32]) -> bool {
+/// The cards tried when the next street is dealt (one per board), and how
+/// many ways there are to deal it in all.
+pub(super) fn pick_draws(abs: &Abstraction, chance: Chance, seed: u64, have: usize, runout: &Runout, used: u64) -> (Vec<[Card; 2]>, usize) {
+    let nb = abs.num_boards();
+    let next = have + 1;
+    let free: Vec<Card> = (0..52u8).filter(|&c| used >> c & 1 == 0).collect();
+    let total = if nb == 1 { free.len() } else { free.len() * (free.len() - 1) };
+    let want = match chance {
+        Chance::All => total,
+        Chance::Sample { turn, river } => (if next == 1 { turn } else { river }).max(1),
+        Chance::Spread { turn, river, .. } => (if next == 1 { turn } else { river }).max(1),
+        Chance::Subset { turn, river, .. } => (if next == 1 { turn[0] } else { river[0] }).max(1),
+    };
+    let mut draws: Vec<[Card; 2]> = Vec::new();
+    if want >= total {
+        if nb == 1 {
+            draws.extend(free.iter().map(|&c| [c, 0]));
+        } else {
+            for &a in &free {
+                for &b in &free {
+                    if a != b {
+                        draws.push([a, b]);
+                    }
+                }
+            }
+        }
+    } else if nb == 1 {
+        let spot = (have as u64) << 60
+            | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+        let mut deck = free.clone();
+        if let Chance::Spread { walk, deck: shared, turn, .. } = chance {
+            let shuffle = |deck: &mut Vec<Card>, spot: u64| {
+                let rng = &mut Rng::new(shared ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+                for i in 0..deck.len() - 1 {
+                    let j = i + rng.below((deck.len() - i) as u32) as usize;
+                    deck.swap(i, j);
+                }
+            };
+            shuffle(&mut deck, spot);
+            // Which turn of the walks at this spot this one is. At the
+            // first cards dealt it is the walk's own number. One street
+            // on, the walks that came through the same card count up
+            // from 0 (each pass through the earlier deck brings one), so
+            // together they take the next cards here too instead of
+            // some of them the same ones.
+            let first = abs.root_street as usize;
+            let nth = if have == first {
+                walk
+            } else if have == first + 1 {
+                let last = runout[0][have - 1];
+                let mut before: Vec<Card> = (0..52u8).filter(|&c| c == last || used >> c & 1 == 0).collect();
+                shuffle(&mut before, (first as u64) << 60);
+                let n = before.len();
+                let took = turn.max(1);
+                let at = before.iter().position(|&c| c == last).unwrap_or(0);
+                let step = (at + n - walk * took % n) % n;
+                (walk * took + step) / n
+            } else {
+                walk
+            };
+            let start = nth * want % deck.len();
+            draws.extend((0..want).map(|j| [deck[(start + j) % deck.len()], 0]));
+        } else {
+            let rng = &mut Rng::new(seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+            for i in 0..want {
+                let j = i + rng.below((deck.len() - i) as u32) as usize;
+                deck.swap(i, j);
+                draws.push([deck[i], 0]);
+            }
+        }
+    } else {
+        let spot = (have as u64) << 60
+            | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+        let rng = &mut Rng::new(seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
+        for _ in 0..want {
+            let a = rng.below(free.len() as u32) as usize;
+            let mut b = rng.below(free.len() as u32 - 1) as usize;
+            if b >= a {
+                b += 1;
+            }
+            draws.push([free[a], free[b]]);
+        }
+    }
+    if let Chance::Subset { turn, river, pick } = chance {
+        let take = (if next == 1 { turn[1] } else { river[1] }).max(1);
+        if take < draws.len() {
+            let spot = (have as u64) << 60
+                | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
+            let rng = &mut Rng::new(pick ^ spot.wrapping_mul(0xD6E8_FEB8_6659_FD93));
+            for i in 0..take {
+                let j = i + rng.below((draws.len() - i) as u32) as usize;
+                draws.swap(i, j);
+            }
+            draws.truncate(take);
+        }
+    }
+    (draws, total)
+}
+
+pub(super) fn all_zero(v: &[f32]) -> bool {
     v.iter().all(|&x| x == 0.0)
 }
 
@@ -535,100 +634,10 @@ impl<'a> Walker<'a> {
     ) -> Vals {
         let nb = self.abs.num_boards();
         let next = have + 1;
-        let free: Vec<Card> = (0..52u8).filter(|&c| used >> c & 1 == 0).collect();
         // Cards left once both hands are out of the deck.
-        let left = free.len() as f64 - 4.0;
+        let left = (52 - used.count_ones()) as f64 - 4.0;
         let prob = if nb == 1 { 1.0 / left } else { 1.0 / (left * (left - 1.0)) };
-        let total = if nb == 1 { free.len() } else { free.len() * (free.len() - 1) };
-        let want = match cx.chance {
-            Chance::All => total,
-            Chance::Sample { turn, river } => (if next == 1 { turn } else { river }).max(1),
-            Chance::Spread { turn, river, .. } => (if next == 1 { turn } else { river }).max(1),
-            Chance::Subset { turn, river, .. } => (if next == 1 { turn[0] } else { river[0] }).max(1),
-        };
-        let mut draws: Vec<[Card; 2]> = Vec::new();
-        if want >= total {
-            if nb == 1 {
-                draws.extend(free.iter().map(|&c| [c, 0]));
-            } else {
-                for &a in &free {
-                    for &b in &free {
-                        if a != b {
-                            draws.push([a, b]);
-                        }
-                    }
-                }
-            }
-        } else if nb == 1 {
-            let spot = (have as u64) << 60
-                | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
-            let mut deck = free.clone();
-            if let Chance::Spread { walk, deck: shared, turn, .. } = cx.chance {
-                let shuffle = |deck: &mut Vec<Card>, spot: u64| {
-                    let rng = &mut Rng::new(shared ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
-                    for i in 0..deck.len() - 1 {
-                        let j = i + rng.below((deck.len() - i) as u32) as usize;
-                        deck.swap(i, j);
-                    }
-                };
-                shuffle(&mut deck, spot);
-                // Which turn of the walks at this spot this one is. At the
-                // first cards dealt it is the walk's own number. One street
-                // on, the walks that came through the same card count up
-                // from 0 (each pass through the earlier deck brings one), so
-                // together they take the next cards here too instead of
-                // some of them the same ones.
-                let first = self.abs.root_street as usize;
-                let nth = if have == first {
-                    walk
-                } else if have == first + 1 {
-                    let last = runout[0][have - 1];
-                    let mut before: Vec<Card> = (0..52u8).filter(|&c| c == last || used >> c & 1 == 0).collect();
-                    shuffle(&mut before, (first as u64) << 60);
-                    let n = before.len();
-                    let took = turn.max(1);
-                    let at = before.iter().position(|&c| c == last).unwrap_or(0);
-                    let step = (at + n - walk * took % n) % n;
-                    (walk * took + step) / n
-                } else {
-                    walk
-                };
-                let start = nth * want % deck.len();
-                draws.extend((0..want).map(|j| [deck[(start + j) % deck.len()], 0]));
-            } else {
-                let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
-                for i in 0..want {
-                    let j = i + rng.below((deck.len() - i) as u32) as usize;
-                    deck.swap(i, j);
-                    draws.push([deck[i], 0]);
-                }
-            }
-        } else {
-            let spot = (have as u64) << 60
-                | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
-            let rng = &mut Rng::new(cx.seed ^ spot.wrapping_mul(0x9E37_79B9_7F4A_7C15));
-            for _ in 0..want {
-                let a = rng.below(free.len() as u32) as usize;
-                let mut b = rng.below(free.len() as u32 - 1) as usize;
-                if b >= a {
-                    b += 1;
-                }
-                draws.push([free[a], free[b]]);
-            }
-        }
-        if let Chance::Subset { turn, river, pick } = cx.chance {
-            let take = (if next == 1 { turn[1] } else { river[1] }).max(1);
-            if take < draws.len() {
-                let spot = (have as u64) << 60
-                    | runout.iter().flatten().enumerate().fold(0u64, |m, (i, &c)| m | (c as u64) << (i * 8));
-                let rng = &mut Rng::new(pick ^ spot.wrapping_mul(0xD6E8_FEB8_6659_FD93));
-                for i in 0..take {
-                    let j = i + rng.below((draws.len() - i) as u32) as usize;
-                    draws.swap(i, j);
-                }
-                draws.truncate(take);
-            }
-        }
+        let (draws, total) = pick_draws(self.abs, cx.chance, cx.seed, have, runout, used);
         let scale = (prob * total as f64 / draws.len() as f64) as f32;
         let one = |draw: &[Card; 2], rec: &mut Option<&mut dyn Recorder>, rng: &mut Rng| -> Vals {
             let mut ro = *runout;

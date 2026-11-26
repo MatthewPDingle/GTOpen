@@ -6,8 +6,9 @@
 //! net to the advantages of every run so far; a final net fitted to the
 //! strategies is the one to play.
 //!
-//! Heads-up games are played with whole ranges (`range::Walker`), so the
-//! only luck left in an example is in the cards still to come.
+//! Games for two or three players are played with whole ranges
+//! (`range::Walker`, `range3::Walker3`), so the only luck left in an
+//! example is in the cards still to come.
 //!
 //! Runs take turns: a run records one seat's decisions only, and the next
 //! net is fitted before the other seat's run. Plain tables driven the same
@@ -20,6 +21,7 @@ use serde::{Deserialize, Serialize};
 use super::abstraction::{Abstraction, Rng, Runout};
 use super::net::*;
 use super::range::{Chance, NodeView, Policy, Recorder, UniformPolicy, Walker};
+use super::range3::Walker3;
 use super::solver::BpConfig;
 use super::tree::*;
 use crate::cards::{cards_to_string, combo_from_index, parse_cards, Card, NUM_COMBOS};
@@ -39,6 +41,49 @@ impl GameCtx {
         let tree = BpTreeBuilder::build(&cfg.tree, abs.root_street, 50_000_000)?;
         let pubf = PublicFeats::build(&tree, boards.len())?;
         Ok(GameCtx { cfg: cfg.clone(), tree, abs, pubf })
+    }
+}
+
+/// Whole-range play for two or three seats.
+pub enum Play<'a> {
+    Two(Walker<'a>),
+    Three(Walker3<'a>),
+}
+
+impl<'a> Play<'a> {
+    /// `river_iters`: see `Walker::river_iters` (two players only).
+    pub fn new(tree: &'a BpTree, abs: &'a Abstraction, river_iters: u32) -> Result<Play<'a>, String> {
+        match tree.players() {
+            2 => {
+                let mut w = Walker::new(tree, abs)?;
+                w.river_iters = river_iters;
+                Ok(Play::Two(w))
+            }
+            3 if river_iters > 0 => Err("with three players the river is not solved on the spot".into()),
+            3 => Ok(Play::Three(Walker3::new(tree, abs)?)),
+            _ => Err("whole-range play needs two or three players".into()),
+        }
+    }
+
+    /// Walk the game once for a recorder of one seat's decisions (`only`)
+    /// or of every seat's.
+    pub fn record(&self, policy: &dyn Policy, context: Option<&dyn Policy>, chance: Chance, only: Option<usize>, rec: &mut dyn Recorder, rng: &mut Rng) {
+        match self {
+            Play::Two(w) => {
+                w.run(policy, context, chance, false, Some(rec), rng);
+            }
+            Play::Three(w) => {
+                w.run(policy, chance, false, only, Some(rec), rng);
+            }
+        }
+    }
+
+    /// Opposing hands (or pairs of them) one hand can face at the root.
+    pub fn root_norm(&self) -> f32 {
+        match self {
+            Play::Two(w) => w.root_norm,
+            Play::Three(w) => w.root_norm(),
+        }
     }
 }
 
@@ -279,7 +324,8 @@ pub struct RangeRecorder<'a> {
     /// Record this seat's decisions only.
     only: Option<usize>,
     rng: Rng,
-    /// Opposing hands a hand can face at the root: weights are shares of it.
+    /// Opposing hands (with three players, pairs of them) a hand can face
+    /// at the root: weights are shares of it.
     norm: f32,
 }
 
@@ -290,6 +336,10 @@ const THIN: f32 = 0.05;
 impl<'a> RangeRecorder<'a> {
     pub fn new(game: &'a GameCtx, keep: [f32; 3], weight_power: f32, only: Option<usize>, seed: u64) -> RangeRecorder<'a> {
         let free = 52.0 - game.abs.dead.count_ones() as f32;
+        let mut norm = (free - 2.0) * (free - 3.0) / 2.0;
+        if game.tree.players() == 3 {
+            norm *= (free - 4.0) * (free - 5.0) / 2.0;
+        }
         let mut r = RangeRecorder {
             game,
             adv: SampleBuf::new(KIND_ADVANTAGE),
@@ -298,7 +348,7 @@ impl<'a> RangeRecorder<'a> {
             weight_power,
             only,
             rng: Rng::new(seed),
-            norm: (free - 2.0) * (free - 3.0) / 2.0,
+            norm,
         };
         // Every decision's betting inputs, so an example can name its node.
         r.adv.pub_rows.extend_from_slice(&game.pubf.rows);
@@ -586,11 +636,11 @@ impl TableRun {
         every: usize,
         mut report: impl FnMut(usize, &dyn Policy),
     ) -> Result<(), String> {
-        let mut walker = Walker::new(&game.tree, &game.abs)?;
-        walker.river_iters = river_iters;
+        let play = Play::new(&game.tree, &game.abs, river_iters)?;
+        let seats = game.tree.players();
         let mut t = TableRun { regret: Default::default(), sum: Default::default() };
         for round in 1..=rounds {
-            for seat in 0..2 {
+            for seat in 0..seats {
                 let policy = TableRun::play(&t.regret);
                 let r = round as f64;
                 let (walks, turn, river) = match (noisy, chance) {
@@ -599,7 +649,7 @@ impl TableRun {
                 };
                 for walk in 0..walks {
                     let look = match noisy {
-                        Some(_) => Chance::Subset { turn, river, pick: Rng::new(seed ^ ((round * 2 + seat) * 1000 + walk) as u64).next_u64() },
+                        Some(_) => Chance::Subset { turn, river, pick: Rng::new(seed ^ ((round * seats + seat) * 1000 + walk) as u64).next_u64() },
                         None => chance,
                     };
                     let mut rec = TableRecorder {
@@ -608,7 +658,7 @@ impl TableRun {
                         weight_avg: r.powf(powers.average) / walks as f64,
                         into: &mut t,
                     };
-                    walker.run(&policy, None, look, false, Some(&mut rec), &mut Rng::new(seed));
+                    play.record(&policy, None, look, Some(seat), &mut rec, &mut Rng::new(seed));
                 }
             }
             if round % every == 0 || round == rounds {
@@ -620,7 +670,7 @@ impl TableRun {
 }
 
 /// Play one run and return its examples (advantages, strategies), for one
-/// seat's decisions or, with `only` unset, for both. `net` plays (without
+/// seat's decisions or, with `only` unset, for every seat's. `net` plays (without
 /// one, every action is equally likely). With `range_on` the nets read the
 /// range inputs; `context`, a strategy net, then sets the ranges they
 /// describe (without one, the played ranges).
@@ -632,8 +682,12 @@ pub fn generate(
     only: Option<usize>,
     seed: u64,
 ) -> Result<(SampleBuf, SampleBuf), String> {
-    if spec.game.tree.players != 2 {
-        return Err("whole-range self-play needs exactly two players".into());
+    let seats = spec.game.tree.players;
+    if seats != 2 && seats != 3 {
+        return Err("whole-range self-play needs two or three players".into());
+    }
+    if seats == 3 && range_on {
+        return Err("the range inputs are for two players only".into());
     }
     let mut rng = Rng::new(seed);
     let games: Vec<(BpConfig, u64)> =
@@ -643,8 +697,7 @@ pub fn generate(
         .par_iter()
         .map(|(cfg, gseed)| {
             let game = GameCtx::new(cfg)?;
-            let mut walker = Walker::new(&game.tree, &game.abs)?;
-            walker.river_iters = spec.river_solve;
+            let play = Play::new(&game.tree, &game.abs, spec.river_solve)?;
             let uniform = UniformPolicy(&game.tree);
             let netp;
             let policy: &dyn Policy = match net {
@@ -675,7 +728,7 @@ pub fn generate(
                         false => chance,
                     };
                     let cards = spec.fixed_cards.unwrap_or(s);
-                    walker.run(policy, context, chance, false, Some(&mut rec), &mut Rng::new(cards));
+                    play.record(policy, context, chance, only, &mut rec, &mut Rng::new(cards));
                     (rec.adv, rec.strat)
                 })
                 .collect();
