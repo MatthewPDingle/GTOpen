@@ -438,7 +438,7 @@ pub fn verify3(file: &str, o: &Opts) -> ! {
             for i in picks {
                 let r = &records[i];
                 // the same number of iterations as the upload ran, so the two are like for like
-                let ro = Opts { target: -1.0, max_iters: r.iterations, max_minutes: f64::INFINITY, ..super::parse(&[]) };
+                let ro = Opts { target: -1.0, max_iters: r.iterations, max_minutes: f64::INFINITY, reserve_gb: o.reserve_gb, ..super::parse(&[]) };
                 match solve_example3(&r.inputs, r.tree_bytes, &ro) {
                     Ok(mine) => {
                         let (mean, max) = datagen3::compare_values3(&mine.values, &r.values);

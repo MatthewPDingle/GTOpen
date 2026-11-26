@@ -25,7 +25,7 @@ const USAGE: &str = "usage:
   solve-cli datagen inputs JOB [INDEX] [--per-job N] [--max-vram GB]
   solve-cli datagen spot JOB INDEX          (the example as a solve-cli spot config)
   solve-cli datagen tree-sizes FILE.jsonl...   (the estimated tree size of every example, for weighing the pool)
-  solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D] [--max-vram GB]
+  solve-cli datagen verify FILE.jsonl [--sample K] [--max-mean D] [--max-diff D] [--max-vram GB] [--reserve-gb G]
                         (a pooled job file or a real-range game file; --max-vram: re-solve only trees that fit)
   solve-cli datagen block LOGIN
   solve-cli datagen mixes                   (the published game mixes and the one being solved now)
