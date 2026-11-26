@@ -154,8 +154,10 @@ fn a_new_mix_reaches_a_generator_and_its_jobs_pass_the_check() {
     let out = check(&file, "validator");
     assert_eq!(out.status.code(), Some(2), "{}", text(&out));
     assert!(answer(&out)["errors"][0].as_str().unwrap().contains("was withdrawn"));
-    // (the newest earlier mix whose situation lists this test publishes: one of random ranges only)
-    let fallback = Book::built_in().mixes.values().rev().find(|m| m.lists().is_empty() && !m.withdrawn).unwrap().id;
+    // (the newest earlier mix whose situation lists this test publishes, and that this small card may draw:
+    // one of random ranges only, for any card)
+    let fallback = Book::built_in().mixes.values().rev()
+        .find(|m| m.lists().is_empty() && !m.withdrawn && m.min_card_gb == 0.0).unwrap().id;
     let out = cli(&dir, &run);
     assert!(out.status.success(), "{}", text(&out));
     assert!(text(&out).contains(&format!("game mix {fallback}: ")), "{}", text(&out));
@@ -234,7 +236,7 @@ fn a_card_rule_reaches_the_generator_and_the_check() {
     let job = datagen::mix_job("alice", id, 0);
     let file = dir.join("datagen_out").join("alice").join(format!("job-{job}.jsonl"));
     let solved = rows(&file);
-    assert_eq!(solved[0]["generator_version"].as_u64(), Some(6));
+    assert_eq!(solved[0]["generator_version"].as_u64(), Some(datagen::GENERATOR_VERSION as u64));
     let mut book = Book::default();
     book.add_text(&std::fs::read_to_string(dir.join("published").join("mixes.json")).unwrap()).unwrap();
     for (i, r) in solved[1..7].iter().enumerate() {

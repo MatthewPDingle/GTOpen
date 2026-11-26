@@ -1380,6 +1380,26 @@ impl MwGpuSolver {
     /// Root EVs and best-response gaps (chips) under the average strategy,
     /// computed on the device. Matches `MwSolver::exploitability`.
     pub fn exploitability(&mut self) -> Result<([f64; NP], [f64; NP]), String> {
+        let (best, avg) = self.root_values_all()?;
+        let denom = self.spot.root_triple_mass();
+        let mut evs = [0f64; NP];
+        let mut gaps = [0f64; NP];
+        for p in 0..NP {
+            let w = &self.spot.weights[p];
+            let dot = |v: &[f32]| w.iter().zip(v).map(|(&a, &b)| a as f64 * b as f64).sum::<f64>() / denom;
+            let br = dot(&best[p]);
+            let ev = dot(&avg[p]);
+            evs[p] = ev;
+            gaps[p] = (br - ev).max(0.0);
+        }
+        Ok((evs, gaps))
+    }
+
+    /// Every player's counterfactual value per hand at the root under the
+    /// average strategies: (when that player best responds, when it plays
+    /// its own average). The same numbers as `MwSolver::node_values(0, ..)`
+    /// with the range weights as reaches, without downloading the arenas.
+    pub fn root_values_all(&mut self) -> Result<([Vec<f32>; NP], [Vec<f32>; NP]), String> {
         self.reach_current = false;
         self.copy_root()?;
         self.down(0, 1, -1)?;
@@ -1388,18 +1408,13 @@ impl MwGpuSolver {
                 self.down(s, 1, -1)?;
             }
         }
-        let denom = self.spot.root_triple_mass();
-        let mut evs = [0f64; NP];
-        let mut gaps = [0f64; NP];
+        let mut best: [Vec<f32>; NP] = Default::default();
+        let mut avg: [Vec<f32>; NP] = Default::default();
         for p in 0..NP {
-            let w = &self.spot.weights[p];
-            let dot = |v: &[f32]| w.iter().zip(v).map(|(&a, &b)| a as f64 * b as f64).sum::<f64>() / denom;
-            let br = dot(&self.eval_values(p, 1)?);
-            let ev = dot(&self.eval_values(p, 2)?);
-            evs[p] = ev;
-            gaps[p] = (br - ev).max(0.0);
+            best[p] = self.eval_values(p, 1)?;
+            avg[p] = self.eval_values(p, 2)?;
         }
-        Ok((evs, gaps))
+        Ok((best, avg))
     }
 
     pub fn progress(&mut self, elapsed: f64) -> Result<MwProgress, String> {

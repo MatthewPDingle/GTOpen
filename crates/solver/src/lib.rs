@@ -11,6 +11,7 @@ pub mod best_response;
 pub mod cards;
 pub mod cfr;
 pub mod datagen;
+pub mod datagen3;
 pub mod datagen_mix;
 mod contextual_postflop;
 pub mod evaluator;

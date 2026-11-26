@@ -11,6 +11,9 @@ next to each job file records what has gone up.
     python tools/datagen/upload.py --contributor YOUR_GITHUB_LOGIN
     python tools/datagen/upload.py --contributor YOUR_GITHUB_LOGIN --watch 60
 
+Jobs of a three-player game mix (job3-<n>.jsonl, generator v7 on) go up the
+same way, into three/<login>/ of the dataset.
+
 Real-range game files (exact flop solves of the ranges a GTOpen preflop solve
 produced, written by `tools/leafnet/realrange.py publish ... --out DIR`) go up
 with
@@ -48,11 +51,20 @@ def finished_jobs(out_dir, login):
         return []
     jobs = []
     for name in sorted(os.listdir(d)):
-        if name.startswith("job-") and name.endswith(".jsonl"):
+        # job-<n>.jsonl: a heads-up job; job3-<n>.jsonl: a three-player job (generator v7 on)
+        if name.startswith(("job-", "job3-")) and name.endswith(".jsonl"):
             path = os.path.join(d, name)
             if not os.path.exists(path + ".uploaded"):
                 jobs.append(path)
     return jobs
+
+
+def repo_path(path, login):
+    """Where a job file goes in the dataset: data/<login>/ for heads-up jobs, three/<login>/ for three-player ones."""
+    name = os.path.basename(path)
+    if name.startswith("job3-"):
+        return f"three/{login}/job-{name[len('job3-'):]}.gz"
+    return f"data/{login}/{name}.gz"
 
 
 def check_header(path, login):
@@ -147,8 +159,7 @@ def upload_once(api, repo, out_dir, login):
             gz = os.path.join(stage, os.path.basename(path) + ".gz")
             with open(path, "rb") as src, gzip.open(gz, "wb", compresslevel=9) as dst:
                 shutil.copyfileobj(src, dst)
-            ops.append(CommitOperationAdd(
-                path_in_repo=f"data/{login}/{os.path.basename(gz)}", path_or_fileobj=gz))
+            ops.append(CommitOperationAdd(path_in_repo=repo_path(path, login), path_or_fileobj=gz))
         title = f"{login}: {len(jobs)} jobs, {examples} examples"
         info = api.create_commit(
             repo_id=repo, repo_type="dataset", operations=ops,

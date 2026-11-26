@@ -152,6 +152,27 @@ pub struct Mix {
     /// the first draw that fits it). In ascending order of `cap_from_gb`.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub card_rules: Vec<CardRule>,
+    /// Players in every example: 2 (heads-up flops, `datagen`) or 3
+    /// (three-player flops, `datagen3`, generator v7 on; random parts only).
+    #[serde(default = "two", skip_serializing_if = "is_two")]
+    pub players: u32,
+    /// The smallest memory cap (GB) a card needs to draw this mix (0: any
+    /// card, and a machine without a GPU). A generator on a smaller card
+    /// passes the mix over and solves the one before it, which still counts.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub min_card_gb: f64,
+}
+
+fn two() -> u32 {
+    2
+}
+
+fn is_two(x: &u32) -> bool {
+    *x == 2
+}
+
+fn is_zero(x: &f64) -> bool {
+    *x == 0.0
 }
 
 fn is_false(x: &bool) -> bool {
@@ -206,6 +227,23 @@ impl Mix {
         }
         if self.card_rules.len() > MAX_CARD_RULES {
             return Err(format!("{what}: {} card rules (at most {MAX_CARD_RULES})", self.card_rules.len()));
+        }
+        if !(self.players == 2 || self.players == 3) {
+            return Err(format!("{what}: {} players (2 or 3)", self.players));
+        }
+        if self.players == 3 {
+            if self.needs_generator < crate::datagen3::PLAYERS3_GENERATOR {
+                return Err(format!("{what}: three players need generator v{} (needs_generator)", crate::datagen3::PLAYERS3_GENERATOR));
+            }
+            if self.parts.iter().any(|p| !matches!(p, Part::Random { .. })) {
+                return Err(format!("{what}: a three-player mix draws random ranges only"));
+            }
+        }
+        if !(self.min_card_gb.is_finite() && (0.0..=1000.0).contains(&self.min_card_gb)) {
+            return Err(format!("{what}: min_card_gb {} (0 to 1000)", self.min_card_gb));
+        }
+        if self.min_card_gb > 0.0 && self.needs_generator < crate::datagen3::PLAYERS3_GENERATOR {
+            return Err(format!("{what}: min_card_gb needs generator v{} (needs_generator)", crate::datagen3::PLAYERS3_GENERATOR));
         }
         let mut last_cap = 0.0;
         for r in &self.card_rules {
@@ -263,7 +301,9 @@ impl Mix {
     /// A short fingerprint of what the mix draws (its id, parts and card
     /// rules; not the note). Written in every job header.
     pub fn key(&self) -> String {
-        let text = if self.card_rules.is_empty() {
+        let text = if self.players != 2 || self.min_card_gb != 0.0 {
+            serde_json::to_string(&(self.id, &self.parts, &self.card_rules, self.players, self.min_card_gb)).expect("mix json")
+        } else if self.card_rules.is_empty() {
             serde_json::to_string(&(self.id, &self.parts)).expect("mix json")
         } else {
             serde_json::to_string(&(self.id, &self.parts, &self.card_rules)).expect("mix json")
@@ -295,7 +335,8 @@ impl Mix {
 
     /// The mix in a few plain words per part, for the generator's window.
     pub fn summary(&self) -> String {
-        self.parts.iter().map(|p| match p {
+        let who = if self.players == 3 { "three-player flops: " } else { "" };
+        who.to_string() + &self.parts.iter().map(|p| match p {
             Part::Random { share, .. } => format!("{:.0}% random ranges", share * 100.0),
             Part::Situations { share, list, .. } => format!("{:.0}% situations from the list {list}", share * 100.0),
         }).collect::<Vec<_>>().join(", ")
@@ -498,6 +539,9 @@ impl Book {
     /// Fully determined by the mix, its lists and (job, index, cap).
     pub fn inputs(&self, mix_id: u32, job: u64, index: u32, cap_gb: Option<f64>) -> Result<ExampleInputs, String> {
         let mix = self.ready_mix(mix_id)?;
+        if mix.players != 2 {
+            return Err(format!("mix {mix_id} is a {}-player mix", mix.players));
+        }
         if cap_gb.is_none() && mix.rule_for(None).is_none() {
             return Ok(self.draw(mix, job, index, 0)); // nothing to choose by size: no tree is built
         }
@@ -508,12 +552,58 @@ impl Book {
     /// (`datagen::estimated_vram_bytes`), which choosing by size works out anyway.
     pub fn sized_inputs(&self, mix_id: u32, job: u64, index: u32, cap_gb: Option<f64>) -> Result<(ExampleInputs, u64), String> {
         let mix = self.ready_mix(mix_id)?;
+        if mix.players != 2 {
+            return Err(format!("mix {mix_id} is a {}-player mix", mix.players));
+        }
         Ok(choose(
             cap_gb,
             mix.rule_for(cap_gb),
             |attempt| self.draw(mix, job, index, attempt),
             |attempt| datagen::attempt_coin(datagen::MIX_SEED_VERSION, job, index, attempt),
         ))
+    }
+
+    /// [`Book::sized_inputs`] for a three-player mix: the inputs of example
+    /// `index` of job `job` and the estimated size of its solve
+    /// (`datagen3::estimated_vram_bytes3`). Fully determined by the mix and
+    /// (job, index, cap).
+    pub fn sized_inputs3(&self, mix_id: u32, job: u64, index: u32, cap_gb: Option<f64>) -> Result<(crate::datagen3::Inputs3, u64), String> {
+        let mix = self.ready_mix(mix_id)?;
+        if mix.players != 3 {
+            return Err(format!("mix {mix_id} is not a three-player mix"));
+        }
+        Ok(choose_by(
+            cap_gb,
+            mix.rule_for(cap_gb),
+            |attempt| self.draw3(mix, job, index, attempt),
+            |attempt| datagen::attempt_coin(datagen::MIX_SEED_VERSION, job, index, attempt),
+            crate::datagen3::estimated_vram_bytes3,
+        ))
+    }
+
+    fn draw3(&self, mix: &Mix, job: u64, index: u32, attempt: u32) -> crate::datagen3::Inputs3 {
+        let mut rng = Rng::new(datagen::attempt_seed(datagen::MIX_SEED_VERSION, job, index, attempt));
+        let part = pick(&mut rng, &mix.parts, |p| p.share());
+        let Part::Random { pot_types, tables, rake, .. } = part else {
+            unreachable!("Mix::check: a three-player mix has random parts only")
+        };
+        // the mix gives three-player pots directly; the stack is drawn as for two players
+        let two = draw_random(&mut rng, pot_types, tables, rake);
+        let third = datagen::sample_range(&mut rng);
+        let [a, b] = two.range;
+        crate::datagen3::Inputs3 {
+            job,
+            index,
+            board: two.board,
+            pot_type: two.pot_type,
+            pot_bb: two.pot_bb,
+            stack_bb: two.stack_bb,
+            rake_pct: two.rake_pct,
+            rake_cap_bb: two.rake_cap_bb,
+            range: [a, b, third],
+            attempt,
+            pot_scale: two.pot_scale,
+        }
     }
 
     fn ready_mix(&self, mix_id: u32) -> Result<&Mix, String> {
@@ -564,11 +654,17 @@ impl Book {
 /// taken, the first one that fit and was passed over is.
 fn choose(cap_gb: Option<f64>, rule: Option<&CardRule>, draw: impl Fn(u32) -> ExampleInputs,
           coin: impl Fn(u32) -> f64) -> (ExampleInputs, u64) {
-    let mut smallest: Option<(u64, ExampleInputs)> = None;
-    let mut passed: Option<(u64, ExampleInputs)> = None;
+    choose_by(cap_gb, rule, draw, coin, datagen::estimated_vram_bytes)
+}
+
+/// [`choose`] for any kind of example, given how its tree is sized.
+fn choose_by<T>(cap_gb: Option<f64>, rule: Option<&CardRule>, draw: impl Fn(u32) -> T,
+                coin: impl Fn(u32) -> f64, size: impl Fn(&T) -> u64) -> (T, u64) {
+    let mut smallest: Option<(u64, T)> = None;
+    let mut passed: Option<(u64, T)> = None;
     for attempt in 0..datagen::MAX_ATTEMPTS {
         let ex = draw(attempt);
-        let bytes = datagen::estimated_vram_bytes(&ex);
+        let bytes = size(&ex);
         if cap_gb.map_or(true, |cap| bytes as f64 <= cap * 1e9) {
             let small = rule.map_or(false, |r| (bytes as f64) < r.under_gb * 1e9);
             if !small || coin(attempt) < rule.map_or(1.0, |r| r.keep) {
@@ -826,8 +922,21 @@ impl MixSync {
     /// withdrawn and whose situation lists could be loaded. Also returns why
     /// any newer one was passed over.
     pub fn choose(&mut self) -> (Option<u32>, Vec<String>) {
+        self.choose_for(None)
+    }
+
+    /// [`MixSync::choose`] for a machine whose card holds trees up to
+    /// `card_gb` (None: any size; 0: no GPU): a mix that needs a bigger card
+    /// (`Mix::min_card_gb`) is passed over.
+    pub fn choose_for(&mut self, card_gb: Option<f64>) -> (Option<u32>, Vec<String>) {
         let mut notes = Vec::new();
         for id in self.book.open_ids() {
+            let need = self.book.mixes[&id].min_card_gb;
+            if card_gb.map_or(false, |c| c < need) {
+                notes.push(format!("mix {id} needs a graphics card that holds {need} GB trees (this machine: {})",
+                                   card_gb.filter(|c| *c > 0.0).map_or("no GPU".to_string(), |c| format!("{c} GB"))));
+                continue;
+            }
             match self.load_lists(id) {
                 Ok(()) => return (Some(id), notes),
                 Err(e) => notes.push(format!("mix {id} cannot be drawn here yet ({e})")),

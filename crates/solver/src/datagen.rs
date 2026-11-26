@@ -59,7 +59,12 @@ pub const FORMAT_VERSION: u32 = 1;
 ///   of its tree (`ExampleRecord::tree_bytes`), which is what training needs
 ///   to weigh the pool as the mix intends. Jobs of mixes 1 and 2 are drawn
 ///   exactly as v5 drew them ([`MIX_SEED_VERSION`]).
-pub const GENERATOR_VERSION: u32 = 6;
+///
+/// - v7: a mix can be of three-player flops (`"players": 3`, see
+///   `crate::datagen3`: three random ranges, one stack, the menu
+///   `lean3-v1`) and can ask for a card of a size (`min_card_gb`). Jobs of
+///   the heads-up mixes are drawn and solved exactly as before.
+pub const GENERATOR_VERSION: u32 = 7;
 /// The version in the seed of every example drawn from a mix. It stays at
 /// the generator that introduced mixes, so a job of a mix has the same
 /// examples whichever later generator solves or checks it.
@@ -70,7 +75,7 @@ pub const LAST_CODED_GENERATOR: u32 = 4;
 /// before an update still count (v5 changed how a mix reaches contributors
 /// and v6 how cards choose among its games, not which games are wanted, so
 /// nobody's work is turned away because of either).
-pub const ACCEPTED_GENERATORS: [u32; 4] = [3, 4, 5, 6];
+pub const ACCEPTED_GENERATORS: [u32; 5] = [3, 4, 5, 6, 7];
 /// Where generator v4's jobs started inside each contributor block, so a new
 /// version never reused a job number (and file name) an older one uploaded.
 /// v2 used offset 0, v3 offset 2^23. From v5 on the mix sits above the block
