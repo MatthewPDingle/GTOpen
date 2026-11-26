@@ -49,6 +49,13 @@ fn gaps_of(spot: &MwSpot, best: &[Vec<f32>; NP], avg: &[Vec<f32>; NP]) -> [f64; 
     })
 }
 
+/// `GTOPEN_TRACE=1` prints every accuracy check of a solve (for timing a card).
+fn trace(iteration: u32, pct: f64, t0: std::time::Instant) {
+    if std::env::var("GTOPEN_TRACE").map_or(false, |v| v == "1") {
+        eprintln!("    iter {iteration:4}  exploit {pct:7.3}% of pot  {:7.1} s", t0.elapsed().as_secs_f64());
+    }
+}
+
 fn ended(pct: f64, iteration: u32, t0: std::time::Instant, o: &Opts) -> Option<&'static str> {
     if pct <= o.target {
         Some("target")
@@ -83,6 +90,7 @@ fn solve_gpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
             let (best, avg) = g.root_values_all()?;
             let gaps = gaps_of(spot, &best, &avg);
             let pct = gaps.iter().sum::<f64>() / NP as f64 / pot * 100.0;
+            trace(g.iteration, pct, t0);
             if let Some(why) = ended(pct, g.iteration, t0, o) {
                 return Ok((last_check, gaps, avg, why));
             }
@@ -105,6 +113,7 @@ fn solve_cpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
             let avg: [Vec<f32>; NP] = std::array::from_fn(|p| s.node_values(0, p, reach, Dealt::default(), false));
             let gaps = gaps_of(spot, &best, &avg);
             let pct = gaps.iter().sum::<f64>() / NP as f64 / pot * 100.0;
+            trace(s.iteration, pct, t0);
             if let Some(why) = ended(pct, s.iteration, t0, o) {
                 return Ok((s.iteration, gaps, avg, why));
             }
@@ -408,7 +417,8 @@ pub fn verify3(file: &str, o: &Opts) -> ! {
                 if r.exploit_pct_pot > h.target_pct * 1.5 && r.ended == "target" {
                     return Some(format!("example {i}: exploitability {}% above its target", r.exploit_pct_pot));
                 }
-                if !["target", "iterations", "time"].contains(&r.ended.as_str()) || r.iterations == 0 {
+                if !["target", "iterations", "time"].contains(&r.ended.as_str()) || r.iterations == 0
+                    || (r.ended == "iterations" && r.iterations < h.max_iterations) {
                     return Some(format!("example {i}: ended {:?} after {} iterations", r.ended, r.iterations));
                 }
                 None
@@ -427,9 +437,10 @@ pub fn verify3(file: &str, o: &Opts) -> ! {
                     picks.push(i);
                 }
             }
-            let ro = Opts { target: h.target_pct, max_iters: h.max_iterations, ..super::parse(&[]) };
             for i in picks {
                 let r = &records[i];
+                // the same number of iterations as the upload ran, so the two are like for like
+                let ro = Opts { target: -1.0, max_iters: r.iterations, max_minutes: f64::INFINITY, ..super::parse(&[]) };
                 match solve_example3(&r.inputs, r.tree_bytes, &ro) {
                     Ok(mine) => {
                         let (mean, max) = datagen3::compare_values3(&mine.values, &r.values);
@@ -438,9 +449,11 @@ pub fn verify3(file: &str, o: &Opts) -> ! {
                         if !reach_ok {
                             errors.push(format!("example {}: reach differs from a re-solve", r.inputs.index));
                         }
-                        // an upload that stopped early is held to what it reached
-                        let slack = if r.ended == "target" { 1.0 } else { 2.0 };
-                        if mean > MAX_MEAN3.max(o.max_mean) * slack || max > MAX_DIFF3.max(o.max_diff) * slack {
+                        if (mine.exploit_pct_pot - r.exploit_pct_pot).abs() > 0.25 + 0.25 * mine.exploit_pct_pot {
+                            errors.push(format!("example {}: exploitability {}% where a re-solve has {}%",
+                                                r.inputs.index, r.exploit_pct_pot, mine.exploit_pct_pot));
+                        }
+                        if mean > MAX_MEAN3.max(o.max_mean) || max > MAX_DIFF3.max(o.max_diff) {
                             errors.push(format!("example {}: re-solve differs (mean {mean:.4}, max {max:.4} pot)", r.inputs.index));
                         }
                         resolved.push(datagen::VerifyResult { index: r.inputs.index, mean_abs_diff: mean, max_abs_diff: max });
