@@ -80,19 +80,17 @@ fn solve_gpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
     let mut g = MwGpuSolver::with_options(spot.clone(), solver::Algorithm::Dcfr, &opts)?;
     let pot = spot.tree.config.starting_pot;
     let t0 = std::time::Instant::now();
-    let mut last_check = 0u32;
     loop {
         g.iterate()?;
         g.synchronize()?;
         let late = t0.elapsed().as_secs_f64() >= o.max_minutes * 60.0;
         if g.iteration % 20 == 0 || g.iteration >= o.max_iters || late {
-            last_check = g.iteration;
             let (best, avg) = g.root_values_all()?;
             let gaps = gaps_of(spot, &best, &avg);
             let pct = gaps.iter().sum::<f64>() / NP as f64 / pot * 100.0;
             trace(g.iteration, pct, t0);
             if let Some(why) = ended(pct, g.iteration, t0, o) {
-                return Ok((last_check, gaps, avg, why));
+                return Ok((g.iteration, gaps, avg, why));
             }
         }
     }
