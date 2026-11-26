@@ -161,13 +161,32 @@ fn vram_cap(o: &Opts) -> Option<f64> {
 }
 
 fn detected_cap_gb() -> f64 {
+    detected_share_gb(0.8)
+}
+
+/// `share` of the GPU's memory in whole GB (at least 2), or 8 GB on a CPU-only machine.
+#[allow(unused_variables)]
+fn detected_share_gb(share: f64) -> f64 {
     #[cfg(feature = "gpu")]
     if use_gpu() {
         if let Some((_free, total_mb)) = solver::gpu::vram_info_mb() {
-            return ((total_mb as f64 / 1000.0) * 0.8).floor().max(2.0);
+            return ((total_mb as f64 / 1000.0) * share).floor().max(2.0);
         }
     }
     8.0
+}
+
+/// Tree-size cap for drawing three-player examples: --max-vram, else 70% of
+/// the GPU's memory. Lower than the heads-up cap because a three-player solve
+/// may plan for 80% of the card at most ([`three::CARD_SHARE`]) and a tree
+/// that only just fits runs in its slowest plan: with no options at all a
+/// machine must neither fill its card nor draw trees that take an hour.
+fn vram_cap3(o: &Opts) -> Option<f64> {
+    match o.max_vram {
+        Some(x) if x <= 0.0 => None,
+        Some(x) => Some(x.floor()),
+        None => Some(detected_share_gb(0.7)),
+    }
 }
 
 fn use_gpu() -> bool {
@@ -786,7 +805,7 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
             None => {}
         }
         // a machine without a GPU solves three-player mixes only when asked to with --max-vram
-        let card = if use_gpu() || o.max_vram.is_some() { vram_cap(o) } else { Some(0.0) };
+        let card = if use_gpu() || o.max_vram.is_some() { vram_cap3(o) } else { Some(0.0) };
         let (chosen, passed) = sync.choose_for(card);
         for p in passed {
             said.say(&p, format!("game {p}; solving the mix before it meanwhile"));
@@ -810,6 +829,10 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
             if let Some(note) = m.card_note(vram_cap(o)) {
                 println!("game mix {id}: {note}");
             }
+            if m.players == 3 {
+                println!("game mix {id}: three-player trees up to {} on this machine; a solve leaves a fifth of the card free",
+                         vram_cap3(o).map(|c| format!("{c} GB")).unwrap_or_else(|| "any size".into()));
+            }
             mix = Some(id);
             k = o.worker;
         }
@@ -821,7 +844,7 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
         }
         let tj = std::time::Instant::now();
         let ran = if three {
-            three::run_job3(job, &login, o, &sync.book, id, vram_cap(o))
+            three::run_job3(job, &login, o, &sync.book, id, vram_cap3(o))
         } else {
             run_job(job, &login, o, env, &sync.book, id)
         };
