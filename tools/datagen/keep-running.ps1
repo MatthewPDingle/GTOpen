@@ -51,9 +51,11 @@ function Last-Write {
 }
 
 function Stop-Generator {
-    # only the generator itself: a validator's solve-cli (datagen verify) is left alone
+    # only this checkout's generator: a validator's solve-cli (datagen verify) and a
+    # generator of another checkout are left alone
+    $mine = Join-Path $repo 'target\release\solve-cli.exe'
     Get-CimInstance Win32_Process -Filter "Name='solve-cli.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -match 'datagen\s+run' } |
+        Where-Object { $_.CommandLine -match 'datagen\s+run' -and $_.ExecutablePath -eq $mine } |
         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 }
 
