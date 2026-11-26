@@ -98,6 +98,34 @@ Inputs and embeddings live in `crates/solver/src/bombpot/net.rs` and
 `train.py --check` compare the two). A change to the inputs changes the
 example and net files, so it needs a rebuild and fresh trials.
 
+## What the loop found (to 26 Nov 2026)
+
+- **Noise.** Three seeds of the base give 20.6 / 21.5 / 22.6 on the 24
+  unseen flops (base 21.6, spread 2.0, trained 16.8). The gap between
+  unseen and trained is steadier than either (4.5 / 5.0 / 4.8).
+- **Nothing kept.** 95 flops at 4 walks: 32.3 unseen (gap 1.2, but both
+  sides far behind). Board inputs for the net: 20.5. Round weights 1.5:
+  22.4.
+- **The main finding.** A practised flop's score follows the work that
+  flop itself got (walks times rounds), whatever the number of flops in
+  the net: about 18% at 160, 10% at 320, 7% at 500 to 640, 4% at 720,
+  2.5% at 1,200. Flops hardly help each other on the practised side;
+  more flops only shrink the gap to never-played ones. One net at 3% on
+  all 1,755 flops is about a month of this machine for heads-up alone.
+- **The small game** at 15 rounds measures how far training got, not the
+  late gap of a full run. Read it that way.
+- **Quick steps (kept, config only).** On one flop a quarter of the
+  training (`steps` 1000, `avg-steps` 600) gives the same score round for
+  round: AcQd8h from scratch 17.2 / 7.0 / 3.9 / 3.1 after 10 / 20 / 30 / 40
+  rounds in 13 / 23 / 33 / 45 minutes (plain steps: 7.0 after about an
+  hour). Progress follows rounds of self-play.
+- **A general net as a head start.** Starting one flop from the 95-flop
+  nets with empty memories gains nothing (the memories overwrite the nets
+  within a round). Counting the general net as 10 rounds of history gives
+  a real head start (19.5 after one round, from 29.3) and is level with a
+  fresh start by round 20; as 40 rounds it drags. The code for this lives
+  on the desktop (`loop1\patches`), not in the repo.
+
 ## The machine
 
 The loop runs on Pan's desktop beside his own work. These are his rules.
@@ -107,13 +135,15 @@ The loop runs on Pan's desktop beside his own work. These are his rules.
   to `X:\Dev\GTOpen` or `X:\Dev\GTOpen-datagen`, and never touch the
   generator, validator or uploader windows, any `solve-cli`, his GTOpen
   app, or other programs of his.
-- At most 10 engine threads, below normal priority (`low-priority` is in
-  the base config). Always `in-ram`: the trainer then holds under 1 GB of
-  the graphics card.
-- Run every trial under the guard (`run_i95_guard3.ps1` is the pattern):
-  freeze the trial when the card passes 31.8 of 32.6 GB or a program of
-  Pan's other than his GTOpen app passes 2 GB (a game, ComfyUI), continue
-  after five clear minutes. The project's own leaf-net jobs do not count.
+- At most 12 engine threads, below normal priority (`low-priority` is in
+  the base config), 10 while his generator runs. Always `in-ram`: the
+  trainer then holds under 1 GB of the graphics card.
+- Run every trial under the guard (`loop1\guard.ps1` with `queue.txt`):
+  it freezes the trial only when the card passes 31.8 of 32.6 GB, or on
+  Pan's word, and continues after five clear minutes. (An earlier rule
+  also froze it when a program of his passed 2 GB; he dropped that on
+  25 Nov.) A file `loop1\STOP` switches the loop off, `loop1\HOLD_UNTIL`
+  holds it until a time.
 - Run detached with logs to files, so a trial survives a restart of the
   session, and read `WORK/trials.jsonl` and `notes.md` first on every wake.
 - If the generator's jobs get clearly slower than they are without us,
