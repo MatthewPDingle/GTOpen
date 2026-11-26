@@ -346,6 +346,7 @@ fn a_run_writes_examples_and_keeps_held_out_flops_out() {
         fixed_cards: None,
         river_solve: 0,
         flops: Vec::new(),
+        dealt: None,
     };
     let (adv, strat) = generate(&spec, None, None, true, None, 4).unwrap();
     assert!(adv.n > 1000 && strat.n > 1000);

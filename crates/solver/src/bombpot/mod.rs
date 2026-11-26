@@ -12,8 +12,10 @@
 //! * `exact`: exact scoring of a two- or three-player strategy, to check the rest.
 //! * `net`: a net in place of strategy tables (inputs, action menu, the net).
 //! * `deepcfr`: self-play that writes training examples for a net.
+//! * `dealt`: the same by dealt hands, for more players than whole ranges allow.
 
 pub mod abstraction;
+pub mod dealt;
 pub mod deepcfr;
 pub mod exact;
 pub mod net;
@@ -23,6 +25,8 @@ pub mod solver;
 pub mod tree;
 #[cfg(test)]
 mod net_tests;
+#[cfg(test)]
+mod dealt_tests;
 #[cfg(test)]
 mod range3_tests;
 #[cfg(test)]

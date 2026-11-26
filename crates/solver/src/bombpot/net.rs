@@ -742,6 +742,36 @@ impl Policy for NetPolicy<'_> {
         self.range_on
     }
 
+    fn one_hand(&self, at: &At, hand: usize, out: &mut [f32; MAX_ACTIONS]) {
+        let (node_idx, runout, used) = (at.node_idx, at.runout, at.used);
+        let node = &self.tree.nodes[node_idx as usize];
+        let na = node.num_children as usize;
+        let street = node.street as usize;
+        let slots = &self.pubf.slots[node_idx as usize];
+        let rows = board_rows(self.abs, street, runout);
+        let (c1, c2) = combo_from_index(hand);
+        let mut raw = [0.0f32; MENU];
+        *out = [0.0; MAX_ACTIONS];
+        match self.net {
+            Net::Two(n) => {
+                let sides = self.sides.get(n, self.abs, street, runout, used, &rows);
+                let mut weights = Vec::new();
+                let mut offsets = [0.0f32; MENU];
+                n.spot_side(self.pubf.row(node_idx), &rows, &mut weights, &mut offsets);
+                n.combine(&weights, &offsets, &sides[hand * n.d..(hand + 1) * n.d], &mut raw);
+                outputs_to_probs(n.kind, &raw, slots, na, out);
+            }
+            Net::One(net) => {
+                let range = if self.range_on { Some(at.range.expect("range inputs")) } else { None };
+                let mut x = net.node_base(self.pubf.row(node_idx), &rows);
+                let mut hf = [0.0f32; HAND];
+                hand_feats(self.abs, street, hand, runout, range, &mut hf);
+                net.forward(&mut x, &mut Vec::new(), c1, c2, &hf, &mut raw);
+                outputs_to_probs(net.kind, &raw, slots, na, out);
+            }
+        }
+    }
+
     fn strategies(&self, at: &At, out: &mut [f32]) {
         let (node_idx, runout, used) = (at.node_idx, at.runout, at.used);
         let range = if self.range_on { Some(at.range.expect("range inputs")) } else { None };

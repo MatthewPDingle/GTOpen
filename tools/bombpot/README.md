@@ -161,3 +161,26 @@ a net that fitted every example would reach. On AcQd8h with four runouts
 that is 21.6 / 6.0 / 2.6 / 1.6 / 1.0 / 0.7% after 20 to 120 rounds; with
 round weights of 1 it is about three times slower (31% after 40 rounds on
 one runout, against 14% with weights of 2).
+
+## Self-play by dealt hands
+
+A spec with a `"dealt"` part plays another way (`dealt.rs`,
+`specs/3p_one_flop_dealt.json`): one seat holds every hand, the other seats
+are each dealt one hand and the turn and river are dealt too; the others
+take one drawn action at each decision and the learner tries all of its
+own. One deal is a tiny fraction of the work of a whole-range walk and
+gives a noisy look at the same advantages (over many deals they average to
+the whole-range ones: `dealt_tests.rs`). It is the way that still works
+with four or more players, where whole ranges do not. The loop, the trainer
+and the scoring are unchanged.
+
+```json
+"keep": [0.008, 0.006, 0.006],
+"dealt": {"runouts": 1000, "hands": 24, "strategy_runouts": 200, "strategy_keep": [0.1, 0.05, 0.03]}
+```
+
+`runouts` turn-and-river deals, each with `hands` sets of hands for the
+other seats; `keep` is the share of the learner's hands kept as advantage
+examples per street. The mixes played are recorded on `strategy_runouts`
+separate walks that try every action of the other seats, so the strategy
+net averages the rounds as the whole-range loop does.

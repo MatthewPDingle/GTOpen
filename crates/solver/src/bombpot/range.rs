@@ -44,6 +44,15 @@ pub trait Policy: Sync {
     fn wants_range(&self) -> bool {
         false
     }
+    /// How one hand plays a decision: `out[action]`. Unless a policy has a
+    /// quicker way, it works out every hand.
+    fn one_hand(&self, at: &At, hand: usize, out: &mut [f32; MAX_ACTIONS]) {
+        let mut all = vec![0.0f32; MAX_ACTIONS * NUM_COMBOS];
+        self.strategies(at, &mut all);
+        for (a, o) in out.iter_mut().enumerate() {
+            *o = all[a * NUM_COMBOS + hand];
+        }
+    }
 }
 
 /// The average strategy held in a solver's tables.

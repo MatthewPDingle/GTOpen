@@ -142,6 +142,11 @@ pub struct GenSpec {
     /// flops (`games` of them, the list repeating if it is shorter).
     #[serde(default)]
     pub flops: Vec<String>,
+    /// Play by dealt hands instead of whole ranges (`dealt`): the way that
+    /// works for more than three players. `walks`, `turn_draws`,
+    /// `river_draws` and `spread` are then unused.
+    #[serde(default)]
+    pub dealt: Option<super::dealt::Dealt>,
 }
 
 fn one() -> usize {
@@ -258,7 +263,7 @@ impl SampleBuf {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn push(&mut self, cards: &[u8; 12], mask: u8, street: u8, player: u8, weight: f32, pub_idx: u32, hand: &[f32; HAND], target: &[f32; MENU]) {
+    pub(super) fn push(&mut self, cards: &[u8; 12], mask: u8, street: u8, player: u8, weight: f32, pub_idx: u32, hand: &[f32; HAND], target: &[f32; MENU]) {
         self.recs.extend_from_slice(cards);
         self.recs.extend_from_slice(&[mask, street, player, 0]);
         self.recs.extend_from_slice(&weight.to_le_bytes());
@@ -331,7 +336,7 @@ pub struct RangeRecorder<'a> {
 
 /// Below this share of the opposing range, an example is kept only that
 /// often and counts as this much, so rarely reached spots cost little space.
-const THIN: f32 = 0.05;
+pub(super) const THIN: f32 = 0.05;
 
 impl<'a> RangeRecorder<'a> {
     pub fn new(game: &'a GameCtx, keep: [f32; 3], weight_power: f32, only: Option<usize>, seed: u64) -> RangeRecorder<'a> {
@@ -683,11 +688,11 @@ pub fn generate(
     seed: u64,
 ) -> Result<(SampleBuf, SampleBuf), String> {
     let seats = spec.game.tree.players;
-    if seats != 2 && seats != 3 {
+    if spec.dealt.is_none() && seats != 2 && seats != 3 {
         return Err("whole-range self-play needs two or three players".into());
     }
-    if seats == 3 && range_on {
-        return Err("the range inputs are for two players only".into());
+    if (seats != 2 || spec.dealt.is_some()) && (range_on || spec.river_solve > 0) {
+        return Err("the range inputs and the river solve are for whole-range play with two players".into());
     }
     let mut rng = Rng::new(seed);
     let games: Vec<(BpConfig, u64)> =
@@ -697,7 +702,6 @@ pub fn generate(
         .par_iter()
         .map(|(cfg, gseed)| {
             let game = GameCtx::new(cfg)?;
-            let play = Play::new(&game.tree, &game.abs, spec.river_solve)?;
             let uniform = UniformPolicy(&game.tree);
             let netp;
             let policy: &dyn Policy = match net {
@@ -707,6 +711,19 @@ pub fn generate(
                 }
                 None => &uniform,
             };
+            if let Some(d) = &spec.dealt {
+                let mut adv = SampleBuf::new(KIND_ADVANTAGE);
+                let mut strat = SampleBuf::new(KIND_POLICY);
+                for seat in 0..seats {
+                    if only.map_or(true, |s| s == seat) {
+                        let (a, s) = super::dealt::play(&game, policy, d, spec.keep, seat, gseed.wrapping_add(seat as u64))?;
+                        adv.append(a);
+                        strat.append(s);
+                    }
+                }
+                return Ok((adv, strat));
+            }
+            let play = Play::new(&game.tree, &game.abs, spec.river_solve)?;
             let ctxp;
             let ranged = RangedUniform(&game.tree);
             let context: Option<&dyn Policy> = match context {
