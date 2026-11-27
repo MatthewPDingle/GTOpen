@@ -270,6 +270,41 @@ pub fn compare_values3(a: &Values3, b: &Values3) -> (f64, f64) {
     (if wsum > 0.0 { sum / wsum } else { 0.0 }, max)
 }
 
+/// Percent of the card a three-player solve plans for at most. A solve takes
+/// what it may (a bigger plan is a faster one), the desktop and other
+/// programs hold a few GB, and a card filled past its memory spills into
+/// system memory, where a solve runs ten times slower (measured on a 32 GB
+/// card: 88% left no room and an hour-long solve). `--reserve-gb` is kept
+/// out of the memory that is free when the solve starts, so it only lowers
+/// the plan where less than that would otherwise stay free.
+pub const CARD_SHARE: u64 = 80;
+
+/// Bytes a three-player solve may plan for: the free memory less 1 GB and
+/// the reserve, and at most [`CARD_SHARE`] of the card (memory in MB).
+pub fn plan_budget(free_mb: u64, total_mb: u64, reserve_gb: f64) -> u64 {
+    free_mb.saturating_sub(1024 + (reserve_gb * 1000.0) as u64).min(total_mb * CARD_SHARE / 100) * 1_000_000
+}
+
+/// What the three range averages of a record may add up to, in starting
+/// pots: `(lowest, highest)`.
+///
+/// The averages weigh a class by its reach, which ignores card removal
+/// between the ranges, so even without rake they miss the pot, and by more
+/// the deeper the stacks (a class's value spans about stack / pot pots):
+/// 203 pool solves were off by 0.12 at most, at 40 pots deep. Rake is
+/// charged on the pot at the end of the hand, not on the starting pot, so it
+/// can take up to its cap, or its share of the pot and all three stacks: a
+/// 10% rake capped at 8.5 bb takes more than a 7.9 bb starting pot when the
+/// money goes in.
+pub fn total_span(ex: &Inputs3) -> (f64, f64) {
+    let slack = 0.15 + 0.01 * ex.stack_bb / ex.pot_bb;
+    let mut rake = ex.rake_pct * (ex.pot_bb + NP as f64 * ex.stack_bb);
+    if ex.rake_cap_bb > 0.0 {
+        rake = rake.min(ex.rake_cap_bb);
+    }
+    (1.0 - rake / ex.pot_bb - slack, 1.0 + slack)
+}
+
 /// Checks a record's numbers for plausibility (None = fine).
 pub fn sanity3(r: &Record3) -> Option<String> {
     let ex = &r.inputs;
@@ -311,9 +346,9 @@ pub fn sanity3(r: &Record3) -> Option<String> {
         }
         total += vsum / wsum;
     }
-    // range averages (by reach, which ignores card removal between ranges) add up to about the pot less rake
-    if !(0.80 - ex.rake_pct..=1.12).contains(&total) {
-        return Some(format!("the three range values add up to {total:.3} of the pot"));
+    let (lowest, highest) = total_span(ex);
+    if !(lowest..=highest).contains(&total) {
+        return Some(format!("the three range values add up to {total:.3} of the pot ({lowest:.3} to {highest:.3} expected)"));
     }
     if !(r.exploit_pct_pot.is_finite() && r.exploit_pct_pot >= 0.0) || r.gaps_pct_pot.iter().any(|g| !(g.is_finite() && *g >= 0.0)) {
         return Some("bad exploitability".into());
@@ -415,5 +450,44 @@ mod tests {
         bad.values.value[0][k] = Some(9.0);
         assert!(sanity3(&bad).is_some());
         assert!(compare_values3(&bad.values, &rec.values).1 > 1.0);
+        // values that hand out two pots are caught, each one being possible on its own
+        let mut double = rec.clone();
+        for p in 0..NP {
+            for x in double.values.value[p].iter_mut().flatten() {
+                *x += 1.0 / 3.0;
+            }
+        }
+        assert!(sanity3(&double).unwrap().contains("add up to"), "{:?}", sanity3(&double));
+    }
+
+    #[test]
+    fn a_plan_leaves_a_fifth_of_the_card_and_the_reserve() {
+        const GB: u64 = 1_000_000_000;
+        // a free 32 GB card (34,190 MB): four fifths of it, whatever is free
+        assert_eq!(plan_budget(31_900, 34_190, 0.0), 27_352 * 1_000_000);
+        // a reserve below what stays free anyway changes nothing; a bigger one comes out of the free memory
+        assert_eq!(plan_budget(31_900, 34_190, 3.0), 27_352 * 1_000_000);
+        assert_eq!(plan_budget(31_900, 34_190, 6.0), (31_900 - 1024 - 6000) * 1_000_000);
+        // another program already on the card: what is free, less 1 GB
+        assert_eq!(plan_budget(12_000, 34_190, 0.0), (12_000 - 1024) * 1_000_000);
+        assert_eq!(plan_budget(5_000, 34_190, 6.0), 0);
+        assert!(plan_budget(8_000, 8_590, 0.0) > 6 * GB);
+    }
+
+    #[test]
+    fn the_total_allows_rake_on_the_final_pot_and_deep_stacks() {
+        let span = |pot_bb, stack_bb, rake_pct, rake_cap_bb| total_span(&Inputs3 { pot_bb, stack_bb, rake_pct, rake_cap_bb, ..narrow() });
+        let inside = |(lo, hi): (f64, f64), x: f64| lo <= x && x <= hi;
+        // two finished pool solves the first rule turned away (jobs ...586 and ...587)
+        assert!(inside(span(7.94, 55.06, 0.10, 8.5), 0.6855));
+        assert!(inside(span(3.39, 135.43, 0.0, 0.0), 1.1229));
+        // without rake nothing can be missing beyond the slack, however deep
+        let (lo, hi) = span(10.0, 100.0, 0.0, 0.0);
+        assert!((lo - 0.75).abs() < 1e-9 && (hi - 1.25).abs() < 1e-9, "{lo} {hi}");
+        // the cap bounds what rake can take; without a cap it is the share of all the money
+        assert!((span(10.0, 100.0, 0.05, 2.0).0 - (0.75 - 0.2)).abs() < 1e-9);
+        assert!((span(10.0, 10.0, 0.05, 0.0).0 - (1.0 - 0.2 - 0.16)).abs() < 1e-9);
+        // rake never lets the total pass the pot
+        assert_eq!(span(10.0, 100.0, 0.05, 2.0).1, span(10.0, 100.0, 0.0, 0.0).1);
     }
 }

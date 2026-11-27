@@ -11,13 +11,6 @@ use std::io::{BufRead, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-/// Percent of the card a three-player solve plans for at most. A solve takes
-/// what it may (a bigger plan is a faster one), the desktop and other
-/// programs hold a few GB, and a card filled past its memory spills into
-/// system memory, where a solve runs ten times slower (measured on a 32 GB
-/// card: 88% left no room and an hour-long solve; `--reserve-gb` takes more off).
-pub const CARD_SHARE: u64 = 80;
-
 /// Re-solves of a check may differ from the upload by this much (fractions
 /// of the pot: reach-weighted mean, and the largest class with real reach).
 /// Wider than the heads-up pool's limits: a three-player game has more than
@@ -82,7 +75,7 @@ fn solve_gpu(spot: &Arc<MwSpot>, o: &Opts) -> Result<Solved, String> {
     // true while no other solve is about to allocate. Held until the solve ends.
     let _turn = solver::gpu_turn::take();
     let (free, total) = solver::gpu::vram_info_mb().ok_or("the graphics card's memory could not be read")?;
-    let budget = free.saturating_sub(1024).min(total * CARD_SHARE / 100).saturating_sub((o.reserve_gb * 1000.0) as u64) * 1_000_000;
+    let budget = datagen3::plan_budget(free, total, o.reserve_gb);
     let opts = MwGpuOptions { budget_bytes: Some(budget), ..Default::default() };
     let mut g = MwGpuSolver::with_options(spot.clone(), solver::Algorithm::Dcfr, &opts)?;
     let pot = spot.tree.config.starting_pot;

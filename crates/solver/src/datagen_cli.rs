@@ -178,7 +178,7 @@ fn detected_share_gb(share: f64) -> f64 {
 
 /// Tree-size cap for drawing three-player examples: --max-vram, else 70% of
 /// the GPU's memory. Lower than the heads-up cap because a three-player solve
-/// may plan for 80% of the card at most ([`three::CARD_SHARE`]) and a tree
+/// may plan for 80% of the card at most ([`solver::datagen3::CARD_SHARE`]) and a tree
 /// that only just fits runs in its slowest plan: with no options at all a
 /// machine must neither fill its card nor draw trees that take an hour.
 fn vram_cap3(o: &Opts) -> Option<f64> {
@@ -805,7 +805,9 @@ fn run_loop(o: &Opts, env: &EnvOpts) {
             None => {}
         }
         // a machine without a GPU solves three-player mixes only when asked to with --max-vram
-        let card = if use_gpu() || o.max_vram.is_some() { vram_cap3(o) } else { Some(0.0) };
+        // which mix a card gets follows the rule the mixes were published under (80% of the card), so a
+        // card that solved a three-player mix keeps it; the trees it draws there follow vram_cap3
+        let card = if use_gpu() || o.max_vram.is_some() { vram_cap(o) } else { Some(0.0) };
         let (chosen, passed) = sync.choose_for(card);
         for p in passed {
             said.say(&p, format!("game {p}; solving the mix before it meanwhile"));

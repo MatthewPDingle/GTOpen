@@ -271,7 +271,8 @@ flop is really worth to each player. Game mix 4 is the first.
   `--max-vram` it draws trees up to 70% of the card. The fifth left free is
   for the desktop and small programs: a card filled past its memory spills
   into system memory and a solve then runs ten times slower. To keep more
-  room for another program on the card, pass `--reserve-gb G`.
+  room for another program on the card, pass `--reserve-gb G`: a solve then
+  leaves G GB of the memory that is free when it starts.
 - **Small cards keep to heads-up flops.** A mix can ask for a card of a size
   (`min_card_gb`: the trees it must hold). A generator on a smaller card, or
   without a GPU, passes that mix over, says so once, and solves the mix
