@@ -346,15 +346,18 @@ def train(mem, out, hidden=256, layers=3, residual=True, steps=4000, batch=8192,
             log(f"  step {step + 1}/{steps} loss {running:.5f}")
     net.eval()
     with torch.no_grad():
-        val_loss = sum(batch_loss(val[i:i + 65536], False).item() * len(val[i:i + 65536])
-                       for i in range(0, n_val, 65536)) / n_val
+        # In pieces no larger than a training batch, so that reading the
+        # fit never takes more device memory than a training step.
+        piece = min(batch, 65536)
+        val_loss = sum(batch_loss(val[i:i + piece], False).item() * len(val[i:i + piece])
+                       for i in range(0, n_val, piece)) / n_val
         # Advantage nets: the share of the held-back targets' spread the net
         # explains, per street (1 is a perfect fit, 0 is no better than zero).
         fit_by_street = None
         if kind == KINDS["adv"]:
             err, tot = torch.zeros(3, device=dev), torch.zeros(3, device=dev)
-            for i in range(0, n_val, 65536):
-                c, pb, h, tg, lg, w, st = take(val[i:i + 65536])
+            for i in range(0, n_val, piece):
+                c, pb, h, tg, lg, w, st = take(val[i:i + piece])
                 x = torch.cat([rows[pb.long()], h], 1)
                 pred = net(card_rows(c, offset), x)
                 st = st.long()
